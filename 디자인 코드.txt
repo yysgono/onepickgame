@@ -1,0 +1,427 @@
+import React, { useState, useRef, useEffect } from "react";
+import { useTranslation } from "react-i18next";
+import { getThumbnail } from "../utils";
+
+// 메인 컬러 팔레트
+const COLORS = {
+  main: "#1976ed",
+  sub: "#45b7fa",
+  lightGray: "#fafdff",
+  darkText: "#194893"
+};
+
+// 카드 진입 애니메이션
+const useSlideFadeIn = (length) => {
+  const refs = useRef([]);
+  useEffect(() => {
+    refs.current.forEach((ref, i) => {
+      if (ref) {
+        ref.style.opacity = "0";
+        ref.style.transform = "translateY(24px) scale(0.98)";
+        setTimeout(() => {
+          ref.style.transition = "opacity 0.5s cubic-bezier(.35,1,.4,1), transform 0.48s cubic-bezier(.35,1,.4,1)";
+          ref.style.opacity = "1";
+          ref.style.transform = "translateY(0) scale(1)";
+        }, 50 + 50 * i);
+      }
+    });
+  }, [length]);
+  return refs;
+};
+
+function Home({ worldcupList, onSelect, onMakeWorldcup }) {
+  const { t } = useTranslation();
+  const [search, setSearch] = useState("");
+  const [sort, setSort] = useState("popular");
+  const [shakeBtn, setShakeBtn] = useState(null);
+
+  const filtered = worldcupList
+    .filter(cup =>
+      cup.title.toLowerCase().includes(search.toLowerCase()) ||
+      (cup.desc || "").toLowerCase().includes(search.toLowerCase())
+    )
+    .sort((a, b) => {
+      if (sort === "recent") {
+        return (b.createdAt || b.id) > (a.createdAt || a.id) ? 1 : -1;
+      } else {
+        return (b.winCount || 0) - (a.winCount || 0);
+      }
+    });
+
+  const currentUser = localStorage.getItem("onepickgame_user") || "";
+  const cardRefs = useSlideFadeIn(filtered.length);
+  const isMobile = window.innerWidth < 600;
+
+  // 버튼 shake 애니메이션
+  const handleBtnShake = (btnId, callback) => {
+    setShakeBtn(btnId);
+    setTimeout(() => {
+      setShakeBtn(null);
+      callback && callback();
+    }, 300);
+  };
+
+  return (
+    <div style={{
+      width: "100vw",
+      minHeight: "100vh",
+      background: `linear-gradient(150deg, #fafdff 80%, #e3f0fb 100%)`,
+      display: "flex",
+      justifyContent: "center"
+    }}>
+      {/* 왼쪽 배너 */}
+      <div className="side-banner left-banner">
+        {/* 여기에 광고/배너 이미지 또는 광고 컴포넌트 */}
+        <div className="banner-inner">좌배너</div>
+      </div>
+
+      {/* 메인 컨텐츠 */}
+      <div
+        className="main-content-box"
+        style={{
+          width: "100%",
+          maxWidth: "1350px", // 그리드 최대폭 (원하는 대로 조절)
+          minHeight: "100vh",
+          margin: "0 12px",
+          padding: isMobile ? "22px 0 70px 0" : "36px 0 85px 0",
+          display: "flex",
+          flexDirection: "column"
+        }}
+      >
+        {/* 상단바/헤더 (fixed X, 일반 배치 예시. 필요시 고정으로 수정!) */}
+        <div
+          style={{
+            width: "100%",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            marginBottom: isMobile ? 18 : 28
+          }}
+        >
+          <span style={{
+            fontWeight: 900,
+            fontSize: isMobile ? 24 : 36,
+            color: COLORS.main,
+            letterSpacing: -1,
+            lineHeight: 1.2
+          }}>
+            OnePickGame
+          </span>
+          <div style={{ display: "flex", gap: 10 }}>
+            <button
+              onClick={onMakeWorldcup}
+              style={{
+                background: `linear-gradient(90deg, #fff 0%, #b1deff 80%)`,
+                color: COLORS.main,
+                fontWeight: 800,
+                fontSize: isMobile ? 15 : 18,
+                padding: isMobile ? "8px 20px" : "11px 28px",
+                border: "none",
+                borderRadius: 999,
+                boxShadow: "0 1px 8px #7fd4ff38",
+                cursor: "pointer"
+              }}>
+              + 월드컵 만들기
+            </button>
+            <button style={{
+              background: "#fff",
+              color: COLORS.main,
+              border: "none",
+              borderRadius: 999,
+              fontWeight: 700,
+              fontSize: isMobile ? 13 : 15,
+              padding: isMobile ? "8px 16px" : "8px 18px",
+              boxShadow: "0 1px 8px #1976ed18",
+              cursor: "pointer"
+            }}>
+              {currentUser === "admin" ? "admin" : "로그인"}
+            </button>
+          </div>
+        </div>
+
+        {/* 정렬/검색 */}
+        <div style={{
+          margin: "0 0 24px 0",
+          display: "flex",
+          alignItems: "center",
+          gap: 14, flexWrap: "wrap"
+        }}>
+          <button
+            style={{
+              background: sort === "popular"
+                ? `linear-gradient(90deg, ${COLORS.main} 60%, ${COLORS.sub} 100%)` : "#f3f6fa",
+              color: sort === "popular" ? "#fff" : COLORS.main,
+              fontWeight: 700,
+              border: "none",
+              borderRadius: 999,
+              padding: isMobile ? "9px 20px" : "12px 30px",
+              fontSize: isMobile ? 15 : 16,
+              boxShadow: sort === "popular" ? "0 2px 8px #1976ed22" : "none",
+              cursor: "pointer"
+            }}
+            onClick={() => setSort("popular")}
+          >{t("sort_popular")}</button>
+          <button
+            style={{
+              background: sort === "recent"
+                ? `linear-gradient(90deg, ${COLORS.main} 60%, ${COLORS.sub} 100%)` : "#f3f6fa",
+              color: sort === "recent" ? "#fff" : COLORS.main,
+              fontWeight: 700,
+              border: "none",
+              borderRadius: 999,
+              padding: isMobile ? "9px 20px" : "12px 30px",
+              fontSize: isMobile ? 15 : 16,
+              boxShadow: sort === "recent" ? "0 2px 8px #1976ed22" : "none",
+              cursor: "pointer"
+            }}
+            onClick={() => setSort("recent")}
+          >{t("sort_recent")}</button>
+          <div style={{ flex: 1 }} />
+          {/* 검색창 */}
+          <div style={{
+            display: "flex",
+            alignItems: "center",
+            position: "relative",
+            width: isMobile ? 180 : 340,
+            minHeight: isMobile ? 40 : 48,
+            maxWidth: "100%",
+            background: COLORS.lightGray,
+            borderRadius: 999,
+            border: "1.5px solid #b4c4e4",
+            boxShadow: "0 1px 8px #1976ed11"
+          }}>
+            <svg width="20" height="20" style={{
+              position: "absolute", left: 16, top: "50%", transform: "translateY(-50%)",
+              opacity: 0.43, pointerEvents: "none"
+            }}>
+              <circle cx="8" cy="8" r="7" stroke={COLORS.main} strokeWidth="2" fill="none" />
+              <line x1="13" y1="13" x2="19" y2="19" stroke={COLORS.main} strokeWidth="2" />
+            </svg>
+            <input
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+              placeholder={t("search")}
+              style={{
+                width: "100%",
+                border: "none",
+                outline: "none",
+                background: "transparent",
+                padding: isMobile ? "11px 12px 11px 42px" : "13px 17px 13px 46px",
+                fontSize: isMobile ? 15 : 17,
+                borderRadius: 999
+              }}
+            />
+          </div>
+        </div>
+
+        {/* 카드 리스트 */}
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: isMobile
+              ? "repeat(auto-fit, minmax(180px, 1fr))"
+              : "repeat(auto-fit, minmax(230px, 1fr))",
+            gap: isMobile ? 24 : 38,
+            width: "100%",
+            margin: "0 auto",
+            boxSizing: "border-box"
+          }}
+        >
+          {filtered.length === 0 && (
+            <div style={{
+              gridColumn: "1 / -1", color: "#aaa", fontSize: 22,
+              textAlign: "center", marginTop: 64
+            }}>
+              등록된 월드컵이 없습니다.
+            </div>
+          )}
+          {filtered.map((cup, idx) => (
+            <div
+              key={cup.id}
+              ref={el => cardRefs.current[idx] = el}
+              style={{
+                background: `linear-gradient(145deg, #fff 88%, #e3f0fb 100%)`,
+                borderRadius: 20,
+                boxShadow: "0 4px 24px #1976ed22, 0 2px 12px #b4c4e4",
+                overflow: "hidden",
+                minHeight: 360,
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "flex-start",
+                padding: 0,
+                margin: "0 auto",
+                cursor: "pointer",
+                transition: "box-shadow 0.17s, transform 0.18s cubic-bezier(.22,.68,.5,1.01)",
+                position: "relative"
+              }}
+              onClick={e => {
+                if (e.target.tagName !== "BUTTON") onSelect && onSelect(cup);
+              }}
+              onMouseOver={e => {
+                e.currentTarget.style.boxShadow =
+                  "0 10px 40px #1976ed38, 0 6px 18px #45b7fa23";
+                e.currentTarget.style.transform = "translateY(-10px) scale(1.045)";
+              }}
+              onMouseOut={e => {
+                e.currentTarget.style.boxShadow =
+                  "0 4px 24px #1976ed22, 0 2px 12px #b4c4e4";
+                e.currentTarget.style.transform = "none";
+              }}
+            >
+              {/* 썸네일 */}
+              <div style={{
+                width: "100%",
+                aspectRatio: "1 / 1",
+                borderTopLeftRadius: 20,
+                borderTopRightRadius: 20,
+                overflow: "hidden",
+                background: "#e7f3fd",
+                marginBottom: 0,
+                flexShrink: 0,
+                boxShadow: "0 2px 16px #e6f4fc70"
+              }}>
+                {cup.data[0]?.image ? (
+                  <img
+                    src={getThumbnail(cup.data[0]?.image)}
+                    alt=""
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover",
+                      display: "block",
+                    }}
+                  />
+                ) : (
+                  <div style={{
+                    width: "100%",
+                    height: "100%",
+                    background: "#e7f3fd"
+                  }} />
+                )}
+              </div>
+              {/* 내용/버튼 */}
+              <div style={{
+                padding: isMobile ? "13px 12px 12px 12px" : "20px 20px 14px 20px",
+                flex: 1,
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "flex-end"
+              }}>
+                <div style={{
+                  fontWeight: 900, fontSize: isMobile ? 17 : 21, marginBottom: 8,
+                  color: COLORS.darkText, textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap"
+                }}>{cup.title}</div>
+                <div style={{
+                  color: "#5a6988", fontSize: isMobile ? 13 : 15, marginBottom: 7,
+                  minHeight: 20, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap"
+                }}>{cup.desc}</div>
+                <div style={{
+                  color: "#99b", fontSize: isMobile ? 12 : 13, marginBottom: 3
+                }}>후보 수: {cup.data?.length || 0}</div>
+                <div style={{ display: "flex", gap: 10, margin: isMobile ? "13px 0 8px 0" : "16px 0 8px 0", justifyContent: "center" }}>
+                  <button
+                    onClick={e => {
+                      e.stopPropagation();
+                      handleBtnShake(`start-${cup.id}`, () => onSelect && onSelect(cup));
+                    }}
+                    className={shakeBtn === `start-${cup.id}` ? "shake-anim" : ""}
+                    style={{
+                      flex: 1,
+                      background: `linear-gradient(90deg, ${COLORS.main} 60%, ${COLORS.sub} 100%)`,
+                      color: "#fff",
+                      fontWeight: 700,
+                      fontSize: isMobile ? 14 : 17,
+                      border: "none",
+                      borderRadius: 999,
+                      padding: isMobile ? "10px 0" : "12px 0",
+                      cursor: "pointer",
+                      boxShadow: "0 2px 10px #a5d5ff30",
+                    }}
+                  >{t("start")}</button>
+                  <button
+                    onClick={e => {
+                      e.stopPropagation();
+                      handleBtnShake(`stats-${cup.id}`, () =>
+                        window.location.href = `/stats/${cup.id}`
+                      );
+                    }}
+                    className={shakeBtn === `stats-${cup.id}` ? "shake-anim" : ""}
+                    style={{
+                      flex: 1,
+                      background: "#e6f1fd",
+                      color: "#206eb2",
+                      fontWeight: 700,
+                      fontSize: isMobile ? 14 : 17,
+                      border: "none",
+                      borderRadius: 999,
+                      padding: isMobile ? "10px 0" : "12px 0",
+                      cursor: "pointer",
+                      boxShadow: "0 2px 8px #b1d4ff20"
+                    }}
+                  >{t("stats")}</button>
+                </div>
+                <div style={{ display: "flex", gap: 8, justifyContent: "center" }}>
+                  <button
+                    onClick={e => {
+                      e.stopPropagation();
+                      handleBtnShake(`share-${cup.id}`, () => {
+                        const url = `${window.location.origin}/select-round/${cup.id}`;
+                        navigator.clipboard.writeText(url);
+                        window?.toast?.success
+                          ? window.toast.success("링크가 복사되었습니다!")
+                          : alert(t("linkCopied"));
+                      });
+                    }}
+                    className={shakeBtn === `share-${cup.id}` ? "shake-anim" : ""}
+                    style={{
+                      background: "#444", color: "#fff", border: "none", borderRadius: 9,
+                      fontWeight: 700, fontSize: isMobile ? 12 : 14,
+                      padding: isMobile ? "7px 10px" : "7px 15px", cursor: "pointer"
+                    }}
+                  >{t("share")}</button>
+                  {cup.owner === currentUser && (
+                    <button
+                      onClick={e => {
+                        e.stopPropagation();
+                        handleBtnShake(`edit-${cup.id}`, () => window.location.href = `/edit-worldcup/${cup.id}`);
+                      }}
+                      className={shakeBtn === `edit-${cup.id}` ? "shake-anim" : ""}
+                      style={{
+                        background: COLORS.main, color: "#fff", border: "none", borderRadius: 9,
+                        fontWeight: 700, fontSize: isMobile ? 12 : 14,
+                        padding: isMobile ? "7px 10px" : "7px 15px", cursor: "pointer"
+                      }}
+                    >{t("edit")}</button>
+                  )}
+                  {(currentUser === "admin" || cup.owner === currentUser) && (
+                    <button
+                      onClick={e => {
+                        e.stopPropagation();
+                        handleBtnShake(`del-${cup.id}`, () => {
+                          if (!window.confirm(t("deleteConfirm"))) return;
+                          const newList = worldcupList.filter(c => c.id !== cup.id);
+                          localStorage.setItem("onepickgame_worldcupList", JSON.stringify(newList));
+                          window.location.reload();
+                        });
+                      }}
+                      className={shakeBtn === `del-${cup.id}` ? "shake-anim" : ""}
+                      style={{
+                        background: "#d33", color: "#fff", border: "none", borderRadius: 9,
+                        fontWeight: 700, fontSize: isMobile ? 12 : 14,
+                        padding: isMobile ? "7px 10px" : "7px 15px", cursor: "pointer"
+                      }}
+                    >{t("delete")}</button>
+                  )}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+        {/* shake 애니메이션 CSS */}
+        <style>
+          {`
+          .shake-anim {
+            animation: shakeX 0.32s cubic-bezier(.36,.07,.19,.97) both;
+          }
+          @keyframes shakeX {
+            10

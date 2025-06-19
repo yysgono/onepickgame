@@ -1,0 +1,22 @@
+{
+  "winner": "Winner",
+  "start": "Start",
+  "byeInfo": "The number of participants does not match, so there will be byes.",
+  "select": "Select",
+  "retry": "Retry",
+  "home": "Home",
+  "candidateCount": "{{count}} candidates",
+  "name": "Name",
+  "imageUrlOrYoutube": "Image URL or YouTube link",
+  "chooseFile": "Choose File",
+  "delete": "Delete",
+  "badword_warning": "Your input contains inappropriate words.",
+  "notEnoughCandidates": "Not enough candidates.",
+  "cannotShowResult": "Cannot show results.",
+  "strong": "Strong",
+  "popular": "Popular",
+  "recent": "Recent",
+  "share": "Share",
+  "stats": "Stats",
+  "bye": "BYE"
+}

@@ -1,0 +1,22 @@
+{
+  "winner": "Vencedor",
+  "start": "Iniciar",
+  "byeInfo": "O número de participantes não corresponde, então haverá byes.",
+  "select": "Selecionar",
+  "retry": "Tentar novamente",
+  "home": "Início",
+  "candidateCount": "{{count}} candidatos",
+  "name": "Nome",
+  "imageUrlOrYoutube": "URL da imagem ou link do YouTube",
+  "chooseFile": "Escolher arquivo",
+  "delete": "Excluir",
+  "badword_warning": "Sua entrada contém palavras impróprias.",
+  "notEnoughCandidates": "Candidatos insuficientes.",
+  "cannotShowResult": "Não é possível mostrar resultados.",
+  "strong": "Forte",
+  "popular": "Popular",
+  "recent": "Recentes",
+  "share": "Compartilhar",
+  "stats": "Estatísticas",
+  "bye": "BYE"
+}

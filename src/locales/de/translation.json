@@ -1,0 +1,22 @@
+{
+  "winner": "Gewinner",
+  "start": "Start",
+  "byeInfo": "Die Teilnehmerzahl stimmt nicht überein, daher gibt es Freilose.",
+  "select": "Auswählen",
+  "retry": "Erneut versuchen",
+  "home": "Startseite",
+  "candidateCount": "{{count}} Kandidaten",
+  "name": "Name",
+  "imageUrlOrYoutube": "Bild-URL oder YouTube-Link",
+  "chooseFile": "Datei wählen",
+  "delete": "Löschen",
+  "badword_warning": "Ihre Eingabe enthält unangemessene Wörter.",
+  "notEnoughCandidates": "Nicht genügend Kandidaten.",
+  "cannotShowResult": "Ergebnisse können nicht angezeigt werden.",
+  "strong": "Stark",
+  "popular": "Beliebt",
+  "recent": "Neueste",
+  "share": "Teilen",
+  "stats": "Statistiken",
+  "bye": "Freilos"
+}

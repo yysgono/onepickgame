@@ -1,0 +1,22 @@
+{
+  "winner": "勝者",
+  "start": "開始",
+  "byeInfo": "参加者数が合わないため、バイがあります。",
+  "select": "選択",
+  "retry": "再挑戦",
+  "home": "ホーム",
+  "candidateCount": "候補者 {{count}}人",
+  "name": "名前",
+  "imageUrlOrYoutube": "画像URLまたはYouTubeリンク",
+  "chooseFile": "ファイルを選択",
+  "delete": "削除",
+  "badword_warning": "不適切な言葉が含まれています。",
+  "notEnoughCandidates": "候補者が不足しています。",
+  "cannotShowResult": "結果を表示できません。",
+  "strong": "強い",
+  "popular": "人気順",
+  "recent": "最新順",
+  "share": "共有",
+  "stats": "統計",
+  "bye": "バイ"
+}

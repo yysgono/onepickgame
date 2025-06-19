@@ -1,38 +1,246 @@
-.App {
-  text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
+/* 전체 배경 + 중앙 카드 레이아웃 */
+.app-main-wrapper {
   min-height: 100vh;
+  background: #f6f8fa;
+  padding: 0;
+  width: 100vw;
+}
+.main-content-box {
+  background: #fff;
+  border-radius: 20px;
+  box-shadow: 0 2px 16px #0001;
+  margin: 0 auto;
+  padding: 38px 40px 60px 40px;
+  max-width: 1800px;   /* ★ 여기만 880px -> 1800px로 변경! */
+  min-width: 340px;
+  width: 100%;
+  position: relative;
+}
+
+/* 후보 카드/리스트, 댓글 박스 등 각 요소 공통 스타일 */
+.candidate-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  margin: 24px 0 8px 0;
+  justify-content: center;
+}
+.candidate-card {
+  background: #f8fafd;
+  border-radius: 14px;
+  box-shadow: 0 1px 10px #0001;
+  width: 230px;
+  min-width: 230px;
+  padding: 18px 15px 15px 15px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  transition: box-shadow .17s;
+  position: relative;
+}
+.candidate-card img {
+  width: 94px;
+  height: 94px;
+  border-radius: 10px;
+  object-fit: cover;
+  margin-bottom: 14px;
+  background: #eef2f5;
+  box-shadow: 0 0 0 1px #dce3eb;
 }
 
-.App-link {
-  color: #61dafb;
+.comment-box {
+  width: 680px;
+  margin: 32px auto 0 auto;
+  background: #f9fbfc;
+  border-radius: 13px;
+  box-shadow: 0 1px 7px #0001;
+  padding: 18px 18px 10px 18px;
+  font-size: 1.07em;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
+/* 버튼/입력칸, 기타 요소 스타일 예시 */
+.button-main {
+  background: #1976ed;
+  color: #fff;
+  border: none;
+  border-radius: 9px;
+  font-weight: 700;
+  font-size: 16px;
+  padding: 10px 28px;
+  cursor: pointer;
+  transition: background .13s;
+}
+.button-main:active {
+  background: #1663c7;
+}
+
+input, textarea {
+  border: 1.3px solid #d4dbe1;
+  border-radius: 9px;
+  font-size: 16px;
+  padding: 10px;
+  background: #f6f8fb;
+  margin-bottom: 7px;
+  transition: border .13s;
+}
+input:focus, textarea:focus {
+  border-color: #1976ed;
+  outline: none;
+}
+
+/* ------ 💡 후보 입력 영역 추가 (월드컵 만들기용) ------ */
+.candidate-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 6px;
+  align-items: center;
+}
+.candidate-row input,
+.candidate-row button,
+.candidate-row div {
+  /* 가로로 배치할 때 기본값 (데스크탑) */
+  min-width: 0;
+}
+.candidate-thumb {
+  width: 38px;
+  height: 38px;
+  object-fit: cover;
+  border-radius: 6px;
+  background: #eee;
+}
+
+/* ------ 모바일, 태블릿 대응 ------ */
+@media (max-width: 1000px) {
+  .main-content-box {
+    padding: 24px 4vw;
+    max-width: 98vw;
   }
-  to {
-    transform: rotate(360deg);
+  .comment-box {
+    width: 97vw;
+    min-width: 0;
+    max-width: 97vw;
   }
+}
+@media (max-width: 700px) {
+  .main-content-box {
+    padding: 13px 0vw;
+    border-radius: 12px;
+    min-width: 0;
+  }
+  .candidate-list {
+    flex-direction: column !important;
+    gap: 14px !important;
+  }
+  .candidate-card {
+    width: 92vw !important;
+    min-width: 0 !important;
+  }
+  .comment-box {
+    width: 98vw !important;
+    font-size: 1em !important;
+  }
+  /* 💡 후보 입력 가로→세로 전환 */
+  .candidate-row {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 8px !important;
+  }
+  .candidate-row input,
+  .candidate-row button,
+  .candidate-row div {
+    width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box;
+  }
+  .candidate-thumb {
+    margin: 0 auto 8px auto !important;
+  }
+
+  /* [★ 추가] 매치화면은 2장 항상 한 줄에 꽉 차게 */
+  .candidate-list.match-mode {
+    flex-direction: row !important;
+    gap: 0 !important;
+    width: 100vw !important;
+    justify-content: center !important;
+    align-items: stretch !important;
+    padding: 0 !important;
+  }
+  .candidate-list.match-mode .candidate-card {
+    width: 50vw !important;
+    min-width: 50vw !important;
+    max-width: 50vw !important;
+    margin: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .candidate-list.match-mode .candidate-card img {
+    width: 90% !important;
+    height: auto !important;
+    aspect-ratio: 1/1;
+    max-width: 140px;
+    margin: 0 auto 14px auto;
+  }
+}
+
+/* 추가적으로, 본문 내 각종 타이틀/작은 박스 등 */
+.page-title {
+  font-weight: 800;
+  font-size: 1.5em;
+  margin-bottom: 25px;
+  text-align: center;
+  letter-spacing: -0.5px;
+}
+.section-title {
+  font-weight: 700;
+  font-size: 1.13em;
+  margin: 20px 0 12px 2px;
+}
+.card-title {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;      /* 2줄까지 보이고 말줄임 */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 1.05em;
+  font-weight: 700;
+  margin: 7px 0 10px 0;
+  text-align: center;
+  max-width: 100%;
+  max-height: 2.6em;          /* ★ 2줄 이상 못넘게 (조절 가능) */
+  line-height: 1.3;
+  word-break: break-all;
+}
+
+/* ★ 카드 설명(월드컵 설명)도 2줄 말줄임 */
+.card-desc {
+  color: #888;
+  font-size: 15px;
+  margin-bottom: 14px;
+  text-align: center;
+  min-height: 24px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;      /* 2줄까지 보이고 말줄임 */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-height: 2.6em;
+  line-height: 1.3;
+  word-break: break-all;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
 }

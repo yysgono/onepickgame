@@ -1,0 +1,293 @@
+import React, { useMemo, useEffect } from "react";
+import { useParams, useLocation, useNavigate } from "react-router-dom";
+import StatsPage from "./StatsPage";
+import CommentBox from "./CommentBox";
+import { getYoutubeId, getThumbnail, saveWinnerStatsWithUser } from "../utils";
+import { useTranslation } from "react-i18next";
+
+// 모바일 체크 커스텀훅 (window undefined 안전)
+function useIsMobile(breakpoint = 800) {
+  const [isMobile, setIsMobile] = React.useState(
+    typeof window !== "undefined" ? window.innerWidth < breakpoint : false
+  );
+  React.useEffect(() => {
+    if (typeof window === "undefined") return;
+    const onResize = () => setIsMobile(window.innerWidth < breakpoint);
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, [breakpoint]);
+  return isMobile;
+}
+
+function ResultPage({ worldcupList }) {
+  const { id } = useParams();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { t } = useTranslation();
+  const winner = location.state?.winner;
+  // ** 경고 해결: useMemo로 memoization **
+  const matchHistory = useMemo(
+    () => location.state?.matchHistory || [],
+    [location.state]
+  );
+  const cup = worldcupList.find(c => String(c.id) === id);
+  const currentUser = typeof window !== "undefined"
+    ? localStorage.getItem("onepickgame_user") || "guest"
+    : "guest";
+  const isMobile = useIsMobile(800);
+
+  // 저장 effect
+  useEffect(() => {
+    if (cup && winner && matchHistory.length) {
+      saveWinnerStatsWithUser(currentUser, cup.id, winner, matchHistory);
+    }
+  }, [cup, winner, matchHistory, currentUser]);
+
+  if (!cup || !winner)
+    return <div style={{ padding: 80 }}>{t("cannotShowResult")}</div>;
+
+  const youtubeId = getYoutubeId(winner.image);
+  const imgSrc = youtubeId ? getThumbnail(winner.image) : winner.image;
+
+  // --- 우승자 이름 스타일 변수화 ---
+  const winnerNameStyle = {
+    fontSize: isMobile ? 23 : 28,
+    fontWeight: 600,
+    margin: "0 auto 12px auto",
+    maxWidth: isMobile ? 170 : 260,
+    wordBreak: "break-all",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    display: "-webkit-box",
+    WebkitLineClamp: 2,
+    WebkitBoxOrient: "vertical",
+    whiteSpace: "normal",
+    lineHeight: 1.18,
+    textAlign: "center",
+  };
+
+  // --- 모바일 버전 ---
+  if (isMobile) {
+    return (
+      <div style={{
+        width: "100vw",
+        minHeight: "100vh",
+        background: "#f5f7fa",
+      }}>
+        <div
+          style={{
+            maxWidth: "96vw",
+            margin: "0 auto",
+            background: "#fff",
+            borderRadius: 18,
+            padding: "24px 3vw 12px 3vw",
+            textAlign: "center"
+          }}
+        >
+          <h2 style={{ fontWeight: 700, fontSize: 32, marginBottom: 10 }}>
+            🥇 {t("winner")}
+          </h2>
+          <img
+            src={imgSrc}
+            alt={winner.name}
+            style={{
+              width: 180,
+              height: 180,
+              borderRadius: 14,
+              objectFit: "cover",
+              marginBottom: 12,
+              background: "#eee",
+              border: "3px solid #1976ed"
+            }}
+          />
+          {/* 👇 우승자 이름 줄바꿈 + 2줄 ... */}
+          <div style={winnerNameStyle}>
+            {winner.name}
+          </div>
+          <div className="page-title" style={{
+            fontWeight: 800,
+            fontSize: "1.62em",
+            marginBottom: 16,
+            wordBreak: "break-all"
+          }}>
+            {cup.title}
+          </div>
+          <div style={{
+            display: "flex",
+            justifyContent: "center",
+            gap: 14,
+            marginBottom: 18,
+            flexWrap: "wrap"
+          }}>
+            <button
+              style={{
+                padding: "10px 32px",
+                borderRadius: 10,
+                background: "#1976ed",
+                color: "#fff",
+                fontWeight: 700,
+                border: "none",
+                fontSize: 18,
+                marginTop: 8
+              }}
+              onClick={() => navigate(`/select-round/${cup.id}`)}
+            >
+              {t("retry")}
+            </button>
+            <button
+              style={{
+                padding: "10px 28px",
+                borderRadius: 10,
+                background: "#ddd",
+                color: "#333",
+                fontWeight: 700,
+                border: "none",
+                fontSize: 17,
+                marginTop: 8
+              }}
+              onClick={() => navigate("/")}
+            >
+              홈
+            </button>
+          </div>
+          <div style={{
+            margin: "30px auto 0",
+            maxWidth: 700,
+            width: "100%",
+            overflowX: "auto"
+          }}>
+            <StatsPage selectedCup={cup} showOnlyWinner={true} />
+          </div>
+          <div style={{
+            maxWidth: "96vw",
+            margin: "16px auto 0 auto",
+            background: "#fff",
+            borderRadius: 18,
+            padding: "18px 0 26px 0",
+          }}>
+            <CommentBox cupId={cup.id} />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // --- 데스크탑 버전 ---
+  return (
+    <div
+      style={{
+        width: "100%",
+        maxWidth: 1500,
+        margin: "0 auto",
+        display: "flex",
+        flexDirection: "row",
+        alignItems: "flex-start",
+        justifyContent: "center",
+        gap: 44,
+        padding: "60px 0",
+        boxSizing: "border-box",
+        background: "#f5f7fa"
+      }}
+    >
+      <div style={{
+        flex: 1,
+        maxWidth: 650,
+        minWidth: 400,
+        background: "#fff",
+        borderRadius: 18,
+        boxShadow: "0 3px 16px #0002",
+        padding: "36px 40px",
+        textAlign: "center"
+      }}>
+        <h2 style={{ fontWeight: 700, fontSize: 32, marginBottom: 10 }}>
+          🥇 {t("winner")}
+        </h2>
+        <img
+          src={imgSrc}
+          alt={winner.name}
+          style={{
+            width: 180,
+            height: 180,
+            borderRadius: 14,
+            objectFit: "cover",
+            marginBottom: 12,
+            background: "#eee",
+            border: "3px solid #1976ed"
+          }}
+        />
+        {/* 👇 우승자 이름 줄바꿈 + 2줄 ... */}
+        <div style={winnerNameStyle}>
+          {winner.name}
+        </div>
+        <div className="page-title" style={{
+          fontWeight: 800,
+          fontSize: "2.34em",
+          marginBottom: 16,
+          wordBreak: "break-all"
+        }}>
+          {cup.title}
+        </div>
+        <div style={{
+          display: "flex",
+          justifyContent: "center",
+          gap: 14,
+          marginBottom: 18,
+          flexWrap: "wrap"
+        }}>
+          <button
+            style={{
+              padding: "10px 32px",
+              borderRadius: 10,
+              background: "#1976ed",
+              color: "#fff",
+              fontWeight: 700,
+              border: "none",
+              fontSize: 20,
+              marginTop: 8
+            }}
+            onClick={() => navigate(`/select-round/${cup.id}`)}
+          >
+            {t("retry")}
+          </button>
+          <button
+            style={{
+              padding: "10px 28px",
+              borderRadius: 10,
+              background: "#ddd",
+              color: "#333",
+              fontWeight: 700,
+              border: "none",
+              fontSize: 19,
+              marginTop: 8
+            }}
+            onClick={() => navigate("/")}
+          >
+            홈
+          </button>
+        </div>
+        <div style={{
+          margin: "30px auto 0",
+          maxWidth: 840,
+          width: "100%",
+          overflowX: "auto"
+        }}>
+          <StatsPage selectedCup={cup} showOnlyWinner={true} />
+        </div>
+      </div>
+      <div style={{
+        flex: 1,
+        maxWidth: 650,
+        minWidth: 400,
+        background: "#fff",
+        borderRadius: 18,
+        boxShadow: "0 3px 16px #0002",
+        padding: "36px 40px",
+        alignSelf: "flex-start"
+      }}>
+        <CommentBox cupId={cup.id} />
+      </div>
+    </div>
+  );
+}
+
+export default ResultPage;

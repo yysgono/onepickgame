@@ -1,0 +1,22 @@
+{
+  "winner": "冠军",
+  "start": "开始",
+  "byeInfo": "参与人数不匹配，将有轮空。",
+  "select": "选择",
+  "retry": "重试",
+  "home": "主页",
+  "candidateCount": "候选人 {{count}} 名",
+  "name": "姓名",
+  "imageUrlOrYoutube": "图片链接或YouTube链接",
+  "chooseFile": "选择文件",
+  "delete": "删除",
+  "badword_warning": "包含不当词语。",
+  "notEnoughCandidates": "候选人不足。",
+  "cannotShowResult": "无法显示结果。",
+  "strong": "强",
+  "popular": "人气排序",
+  "recent": "最新排序",
+  "share": "分享",
+  "stats": "统计",
+  "bye": "轮空"
+}

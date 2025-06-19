@@ -1,0 +1,22 @@
+{
+  "winner": "우승자",
+  "start": "시작",
+  "byeInfo": "참가 인원이 맞지 않아 부전승이 발생합니다.",
+  "select": "선택",
+  "retry": "재도전",
+  "home": "홈",
+  "candidateCount": "후보 {{count}}명",
+  "name": "이름",
+  "imageUrlOrYoutube": "이미지 URL 또는 유튜브 링크",
+  "chooseFile": "파일 선택",
+  "delete": "삭제",
+  "badword_warning": "비속어 또는 금지어가 포함되어 있습니다.",
+  "notEnoughCandidates": "후보가 부족합니다.",
+  "cannotShowResult": "결과를 표시할 수 없습니다.",
+  "strong": "강력",
+  "popular": "인기순",
+  "recent": "최신순",
+  "share": "공유",
+  "stats": "통계",
+  "bye": "부전승"
+}
