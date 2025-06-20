@@ -10,9 +10,8 @@ import {
   editButtonStyle,
   delButtonStyle,
 } from "../styles/common";
-import { collection, getDocs } from "firebase/firestore";
-import { db } from "../utils/firebase"; // firebase 초기화한 db 임포트
 import MediaRenderer from "./MediaRenderer";
+import { fetchAllGames } from "../utils/firebaseGameApi"; // ⭐️ api 함수 import
 
 const useSlideFadeIn = (length) => {
   const refs = useRef([]);
@@ -40,14 +39,10 @@ function Home({ onSelect, onMakeWorldcup }) {
   const [shakeBtn, setShakeBtn] = useState(null);
   const [worldcupList, setWorldcupList] = useState([]);
 
-  // ✅ 파이어베이스에서 games 컬렉션 불러오기
+  // ✅ Firestore에서 games 컬렉션 불러오기 (api 함수 사용!)
   useEffect(() => {
     async function fetchGames() {
-      const snapshot = await getDocs(collection(db, "games"));
-      const list = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
+      const list = await fetchAllGames();
       setWorldcupList(list);
     }
     fetchGames();
