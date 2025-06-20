@@ -18,10 +18,11 @@ import AdminBar from "./components/AdminBar";
 import AdminDashboard from "./components/AdminDashboard";
 import AdminStatsPage from "./components/AdminStatsPage";
 
-// 회원가입/아이디찾기/비밀번호찾기 추가
 import SignupBox from "./components/SignupBox";
 import FindIdBox from "./components/FindIdBox";
 import FindPwBox from "./components/FindPwBox";
+
+import PostForm from "./components/PostForm"; // 추가
 
 const defaultWorldcupList = [
   {
@@ -233,7 +234,6 @@ function App() {
   return (
     <div className="app-main-wrapper" style={{overflowX:"hidden"}}>
       <Router>
-        {/* 최상단 고정 헤더 하나만 노출 */}
         <Header
           onLangChange={handleLangChange}
           onBackup={handleBackup}
@@ -254,7 +254,8 @@ function App() {
             <Route path="/edit-worldcup/:id" element={<EditWorldcupPageWrapper />} />
             <Route path="/admin" element={<AdminRoute />} />
             <Route path="/admin-stats" element={<AdminStatsRoute />} />
-
+            {/* 여기 새로 추가 */}
+            <Route path="/post-create" element={<PostForm />} />
             {/* 회원가입/아이디찾기/비밀번호찾기 */}
             <Route path="/signup" element={<SignupBox />} />
             <Route path="/find-id" element={<FindIdBox />} />
