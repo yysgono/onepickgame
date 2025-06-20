@@ -11,7 +11,8 @@ import {
   delButtonStyle,
 } from "../styles/common";
 
-// 카드 슬라이드 애니메이션 훅
+import MediaRenderer from "./MediaRenderer";  // 추가
+
 const useSlideFadeIn = (length) => {
   const refs = useRef([]);
   useEffect(() => {
@@ -192,7 +193,7 @@ function Home({ worldcupList, onSelect, onMakeWorldcup }) {
         </div>
       </div>
 
-      {/* 월드컵 카드 그리드 - 가운데 정렬 유지 */}
+      {/* 월드컵 카드 그리드 */}
       <div
         style={{
           display: "grid",
@@ -223,10 +224,9 @@ function Home({ worldcupList, onSelect, onMakeWorldcup }) {
         {filtered.map((cup, idx) => {
           const topCandidate = getMostWinner(cup.id, cup.data);
           const thumbnail = topCandidate
-            ? getThumbnail(topCandidate.image)
-            : cup.data[0]?.image
-            ? getThumbnail(cup.data[0]?.image)
-            : "";
+            ? topCandidate.image
+            : cup.data[0]?.image || "";
+
           return (
             <div
               key={cup.id}
@@ -267,16 +267,7 @@ function Home({ worldcupList, onSelect, onMakeWorldcup }) {
                 }}
               >
                 {thumbnail ? (
-                  <img
-                    src={thumbnail}
-                    alt=""
-                    style={{
-                      width: "100%",
-                      height: "100%",
-                      objectFit: "cover",
-                      display: "block",
-                    }}
-                  />
+                  <MediaRenderer url={thumbnail} alt={cup.title} />
                 ) : (
                   <div
                     style={{

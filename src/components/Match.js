@@ -1,6 +1,8 @@
+// Match.js
 import React, { useState, useEffect } from "react";
 import { getYoutubeId, saveWinnerStatsWithUser } from "../utils";
 import { useTranslation } from "react-i18next";
+import MediaRenderer from "./MediaRenderer";
 
 function makeInitialBracket(roundSize, players) {
   const byes = roundSize - players.length;
@@ -40,56 +42,6 @@ function truncateNames(candidates, maxWords = 3) {
     if (words.length <= maxWords) return c.name;
     return words.slice(0, maxWords).join(" ") + "…";
   });
-}
-
-// New media renderer to support mp4, gif, youtube, img
-function MediaRenderer({ url }) {
-  if (!url) return null;
-  const youtubeId = getYoutubeId(url);
-  const ext = url.split('.').pop().toLowerCase();
-  const isVideo = ext === "mp4" || ext === "webm" || ext === "ogg";
-  const isGif = ext === "gif";
-
-  if (youtubeId) {
-    return (
-      <iframe
-        width="100%"
-        height="100%"
-        style={{ border: "none", pointerEvents: "none" }}
-        src={`https://www.youtube.com/embed/${youtubeId}?autoplay=0&mute=1`}
-        title="YouTube video"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-        allowFullScreen
-      />
-    );
-  } else if (isVideo) {
-    return (
-      <video
-        style={{ width: "100%", height: "100%", objectFit: "cover", pointerEvents: "none" }}
-        src={url}
-        muted
-        loop
-        autoPlay
-        playsInline
-      />
-    );
-  } else if (isGif) {
-    return (
-      <img
-        src={url}
-        alt="gif"
-        style={{ width: "100%", height: "100%", objectFit: "cover", pointerEvents: "none" }}
-      />
-    );
-  } else {
-    return (
-      <img
-        src={url}
-        alt=""
-        style={{ width: "100%", height: "100%", objectFit: "cover", pointerEvents: "none" }}
-      />
-    );
-  }
 }
 
 function Match({ cup, round, onResult }) {
@@ -195,6 +147,8 @@ function Match({ cup, round, onResult }) {
 
   function CandidateBox({ c, onClick, disabled }) {
     const ytid = getYoutubeId(c?.image);
+    const isYoutube = !!ytid;
+
     return (
       <div
         style={{
@@ -208,7 +162,9 @@ function Match({ cup, round, onResult }) {
           width: isMobile ? "50vw" : 340,
           boxSizing: "border-box",
           opacity: c ? 1 : 0.25,
+          cursor: !isYoutube && c ? "pointer" : "default",
         }}
+        onClick={!isYoutube && c ? onClick : undefined}
       >
         <button
           onClick={c ? onClick : undefined}
@@ -245,14 +201,14 @@ function Match({ cup, round, onResult }) {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            cursor: c ? "pointer" : "default",
+            cursor: !isYoutube && c ? "pointer" : "default",
             boxSizing: "border-box",
             opacity: c ? 1 : 0.25,
           }}
-          onClick={c ? onClick : undefined}
+          onClick={!isYoutube && c ? onClick : undefined}
         >
           {c ? (
-            <MediaRenderer url={c.image} />
+            <MediaRenderer url={c.image} alt={c.name} />
           ) : (
             <span style={{ fontSize: isMobile ? 19 : 32, color: "#bbb" }}>
               {t("bye") || "BYE"}

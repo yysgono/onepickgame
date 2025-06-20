@@ -1,8 +1,9 @@
+// SelectRoundPage.js
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { getThumbnail } from "../utils";
 import COLORS from "../styles/theme";
 import { mainButtonStyle, selectStyle } from "../styles/common";
+import MediaRenderer from "./MediaRenderer";
 
 function isMobile() {
   if (typeof window !== "undefined") {
@@ -154,20 +155,7 @@ function SelectRoundPage({ cup, maxRound, candidates, onSelect }) {
                 boxShadow: "0 2px 12px #0001",
               }}
             >
-              <img
-                src={getThumbnail ? getThumbnail(c.image) : c.image}
-                alt={c.name}
-                title={c.name}
-                style={{
-                  width: "100%",
-                  height: "100%",
-                  objectFit: "cover",
-                  border: `${mobile ? 1 : 4}px solid #eee`,
-                  borderRadius: mobile ? 7 : 12,
-                  display: "block",
-                  background: "#eef2f5",
-                }}
-              />
+              <MediaRenderer url={c.image} alt={c.name} />
             </div>
             <div
               style={{

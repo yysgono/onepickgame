@@ -3,6 +3,7 @@ import { useParams, useLocation, useNavigate } from "react-router-dom";
 import StatsPage from "./StatsPage";
 import CommentBox from "./CommentBox";
 import { getYoutubeId, getThumbnail, saveWinnerStatsWithUser } from "../utils";
+import MediaRenderer from "./MediaRenderer";  // 추가
 import { useTranslation } from "react-i18next";
 
 // 모바일 체크 커스텀훅 (window undefined 안전)
@@ -87,19 +88,19 @@ function ResultPage({ worldcupList }) {
           <h2 style={{ fontWeight: 700, fontSize: 32, marginBottom: 10 }}>
             🥇 {t("winner")}
           </h2>
-          <img
-            src={imgSrc}
-            alt={winner.name}
+          <div
             style={{
               width: 180,
               height: 180,
               borderRadius: 14,
-              objectFit: "cover",
-              marginBottom: 12,
+              margin: "0 auto 12px auto",  // 수평 가운데 정렬
               background: "#eee",
-              border: "3px solid #1976ed"
+              border: "3px solid #1976ed",
+              overflow: "hidden",
             }}
-          />
+          >
+            <MediaRenderer url={winner.image} alt={winner.name} />
+          </div>
           {/* 👇 우승자 이름 줄바꿈 + 2줄 ... */}
           <div style={winnerNameStyle}>
             {winner.name}
@@ -202,19 +203,19 @@ function ResultPage({ worldcupList }) {
         <h2 style={{ fontWeight: 700, fontSize: 32, marginBottom: 10 }}>
           🥇 {t("winner")}
         </h2>
-        <img
-          src={imgSrc}
-          alt={winner.name}
+        <div
           style={{
             width: 180,
             height: 180,
             borderRadius: 14,
-            objectFit: "cover",
-            marginBottom: 12,
+            margin: "0 auto 12px auto", // 수평 가운데 정렬
             background: "#eee",
-            border: "3px solid #1976ed"
+            border: "3px solid #1976ed",
+            overflow: "hidden",
           }}
-        />
+        >
+          <MediaRenderer url={winner.image} alt={winner.name} />
+        </div>
         {/* 👇 우승자 이름 줄바꿈 + 2줄 ... */}
         <div style={winnerNameStyle}>
           {winner.name}

@@ -1,30 +1,29 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 import StatsPage from "./StatsPage";
-import { getThumbnail } from "../utils";
+import MediaRenderer from "./MediaRenderer";  // 추가
 
 function Result({ winner, cup, onRestart, onStats }) {
   const { t } = useTranslation();
-  const imgSrc = getThumbnail(winner.image);
 
   return (
     <div style={{ textAlign: "center", padding: 50 }}>
       <h2 style={{ fontWeight: 700, fontSize: 32, marginBottom: 10 }}>
         🥇 {t("winner")}
       </h2>
-      <img
-        src={imgSrc}
-        alt={winner.name}
+      <div
         style={{
           width: 180,
           height: 180,
           borderRadius: 14,
-          objectFit: "cover",
           marginBottom: 12,
           background: "#eee",
           border: "3px solid #1976ed",
+          overflow: "hidden",
         }}
-      />
+      >
+        <MediaRenderer url={winner.image} />
+      </div>
       <div style={{ fontSize: 28, fontWeight: 600, marginBottom: 26 }}>
         {winner.name}
       </div>
@@ -60,7 +59,6 @@ function Result({ winner, cup, onRestart, onStats }) {
         {t("stats")}
       </button>
       <div style={{ margin: "60px auto 0", maxWidth: 840 }}>
-        {/* showOnlyWinner는 boolean이 더 안전 */}
         <StatsPage selectedCup={cup} showOnlyWinner={true} />
       </div>
     </div>
