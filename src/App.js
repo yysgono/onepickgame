@@ -1,23 +1,22 @@
 import "./i18n";
-import "./App.css";
 import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route, useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import Header from "./components/Header";
 import Home from "./components/Home";
+import BackupPage from "./components/BackupPage";
 import SelectRoundPage from "./components/SelectRoundPage";
 import MatchPage from "./components/MatchPage";
 import ResultPage from "./components/ResultPage";
 import StatsPage from "./components/StatsPage";
 import WorldcupMaker from "./components/WorldcupMaker";
-import BackupPage from "./components/BackupPage";
 import ManageWorldcup from "./components/ManageWorldcup";
 import EditWorldcupPage from "./components/EditWorldcupPage";
 import AdminBar from "./components/AdminBar";
 import AdminDashboard from "./components/AdminDashboard";
 import AdminStatsPage from "./components/AdminStatsPage";
 
-// ↓↓↓ 이거 3개 추가! ↓↓↓
+// 회원가입, 아이디찾기, 비밀번호찾기 추가
 import SignupBox from "./components/SignupBox";
 import FindIdBox from "./components/FindIdBox";
 import FindPwBox from "./components/FindPwBox";
@@ -120,16 +119,9 @@ function App() {
     window.location.href = "/worldcup-maker";
   }
 
-  // Home 페이지 Wrapper
-  function HomeWrapper() {
-    const navigate = useNavigate();
-    return (
-      <Home
-        worldcupList={worldcupList}
-        onSelect={cup => navigate(`/select-round/${cup.id}`)}
-        onMakeWorldcup={handleMakeWorldcup}
-      />
-    );
+  // 홈 화면에서 월드컵 선택 시 라우팅
+  function handleSelect(cup) {
+    window.location.href = `/select-round/${cup.id}`;
   }
 
   // SelectRoundPage Wrapper - cup 객체 꼭 넘겨주기!
@@ -232,6 +224,7 @@ function App() {
   return (
     <div className="app-main-wrapper">
       <Router>
+        {/* 헤더는 라우터 바깥 최상단에 한 번만 렌더링 */}
         <Header
           onLangChange={handleLangChange}
           onBackup={handleBackup}
@@ -241,7 +234,7 @@ function App() {
         />
         <div className="main-content-box">
           <Routes>
-            <Route path="/" element={<HomeWrapper />} />
+            <Route path="/" element={<Home worldcupList={worldcupList} onSelect={handleSelect} onMakeWorldcup={handleMakeWorldcup} />} />
             <Route path="/select-round/:id" element={<SelectRoundPageWrapper />} />
             <Route path="/match/:id/:round" element={<MatchPage worldcupList={worldcupList} />} />
             <Route path="/result/:id/:round" element={<ResultPage worldcupList={worldcupList} />} />
@@ -253,7 +246,7 @@ function App() {
             <Route path="/admin" element={<AdminRoute />} />
             <Route path="/admin-stats" element={<AdminStatsRoute />} />
 
-            {/* ↓↓↓ 회원가입/ID/PW 찾기 페이지 추가 ↓↓↓ */}
+            {/* 회원가입, 아이디찾기, 비밀번호찾기 페이지 */}
             <Route path="/signup" element={<SignupBox />} />
             <Route path="/find-id" element={<FindIdBox />} />
             <Route path="/find-pw" element={<FindPwBox />} />

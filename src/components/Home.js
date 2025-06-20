@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { getThumbnail, getMostWinner } from "../utils";
 import COLORS from "../styles/theme";
@@ -10,26 +10,6 @@ import {
   editButtonStyle,
   delButtonStyle,
 } from "../styles/common";
-
-// 카드 슬라이드 애니메이션
-const useSlideFadeIn = (length) => {
-  const refs = useRef([]);
-  useEffect(() => {
-    refs.current.forEach((ref, i) => {
-      if (ref) {
-        ref.style.opacity = "0";
-        ref.style.transform = "translateY(24px) scale(0.98)";
-        setTimeout(() => {
-          ref.style.transition =
-            "opacity 0.5s cubic-bezier(.35,1,.4,1), transform 0.48s cubic-bezier(.35,1,.4,1)";
-          ref.style.opacity = "1";
-          ref.style.transform = "translateY(0) scale(1)";
-        }, 50 + 50 * i);
-      }
-    });
-  }, [length]);
-  return refs;
-};
 
 function Home({ worldcupList, onSelect, onMakeWorldcup }) {
   const { t } = useTranslation();
@@ -52,7 +32,6 @@ function Home({ worldcupList, onSelect, onMakeWorldcup }) {
     });
 
   const currentUser = localStorage.getItem("onepickgame_user") || "";
-  const cardRefs = useSlideFadeIn(filtered.length);
 
   const handleBtnShake = (btnId, callback) => {
     setShakeBtn(btnId);
@@ -63,7 +42,6 @@ function Home({ worldcupList, onSelect, onMakeWorldcup }) {
   };
 
   const isMobile = window.innerWidth < 700;
-  const headerHeight = isMobile ? 58 : 74;
 
   return (
     <div
@@ -71,84 +49,13 @@ function Home({ worldcupList, onSelect, onMakeWorldcup }) {
         width: "100%",
         maxWidth: 2100,
         margin: "0 auto",
-        padding: isMobile ? `24px 4vw 80px 4vw` : `38px 22px 90px 22px`,
-        minHeight: `calc(100vh - ${headerHeight}px)`, // 화면 높이에서 헤더 높이 뺌
-        overflowY: "auto", // 스크롤 가능하게
+        padding: isMobile ? "24px 4vw 80px 4vw" : "38px 22px 90px 22px",
+        minHeight: "70vh",
         background: `linear-gradient(150deg, #fafdff 80%, #e3f0fb 100%)`,
-        paddingTop: headerHeight, // 헤더 높이 만큼 패딩 줌
-        boxSizing: "border-box",
       }}
     >
-      {/* 상단바/헤더 */}
-      <header
-        style={{
-          position: "fixed",
-          top: 0,
-          left: 0,
-          width: "100%",
-          background: `linear-gradient(90deg, ${COLORS.main} 72%, ${COLORS.sub} 100%)`,
-          boxShadow: "0 3px 24px #1976ed18",
-          zIndex: 100,
-          padding: isMobile ? "13px 6vw" : "16px 2vw",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "center", gap: 18 }}>
-          <span
-            style={{
-              fontWeight: 900,
-              fontSize: isMobile ? 24 : 36,
-              color: "#fff",
-              letterSpacing: -1,
-              lineHeight: 1.2,
-              WebkitTextStroke: "1px #19489311",
-            }}
-          >
-            OnePickGame
-          </span>
-        </div>
-        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <button
-            onClick={onMakeWorldcup}
-            style={{
-              background: `linear-gradient(90deg, #fff 0%, #b1deff 80%)`,
-              color: COLORS.main,
-              fontWeight: 800,
-              fontSize: isMobile ? 15 : 18,
-              padding: isMobile ? "8px 20px" : "11px 28px",
-              border: "none",
-              borderRadius: 999,
-              marginLeft: 10,
-              boxShadow: "0 1px 8px #7fd4ff38",
-              cursor: "pointer",
-              transition: "all 0.18s",
-            }}
-          >
-            + 월드컵 만들기
-          </button>
-          <button
-            style={{
-              background: "#fff",
-              color: COLORS.main,
-              border: "none",
-              borderRadius: 999,
-              fontWeight: 700,
-              fontSize: isMobile ? 13 : 15,
-              padding: isMobile ? "8px 16px" : "8px 18px",
-              boxShadow: "0 1px 8px #1976ed18",
-              cursor: "pointer",
-              marginLeft: 8,
-            }}
-          >
-            {currentUser === "admin" ? "admin" : "로그인"}
-          </button>
-        </div>
-      </header>
-      <div style={{ height: isMobile ? 58 : 74 }} />
+      {/* 검색, 정렬 등 UI */}
 
-      {/* 정렬/검색 */}
       <div
         style={{
           margin: "0 0 24px 0",
@@ -261,6 +168,7 @@ function Home({ worldcupList, onSelect, onMakeWorldcup }) {
         </div>
       </div>
 
+      {/* 월드컵 카드 그리드 */}
       <div
         style={{
           display: "grid",
@@ -290,13 +198,10 @@ function Home({ worldcupList, onSelect, onMakeWorldcup }) {
           const topCandidate = getMostWinner(cup.id, cup.data);
           const thumbnail = topCandidate
             ? getThumbnail(topCandidate.image)
-            : cup.data[0]?.image
-            ? getThumbnail(cup.data[0]?.image)
-            : "";
+            : (cup.data[0]?.image ? getThumbnail(cup.data[0]?.image) : "");
           return (
             <div
               key={cup.id}
-              ref={(el) => (cardRefs.current[idx] = el)}
               style={{
                 ...cardBoxStyle,
                 maxWidth: 400,
@@ -353,20 +258,18 @@ function Home({ worldcupList, onSelect, onMakeWorldcup }) {
                   />
                 )}
                 {topCandidate && (
-                  <div
-                    style={{
-                      position: "absolute",
-                      top: 6,
-                      left: 8,
-                      background: "#ffd700ee",
-                      color: "#333",
-                      fontWeight: 800,
-                      fontSize: isMobile ? 12 : 15,
-                      padding: "2px 8px",
-                      borderRadius: 14,
-                      boxShadow: "0 1px 4px #0001",
-                    }}
-                  >
+                  <div style={{
+                    position: "absolute",
+                    top: 6,
+                    left: 8,
+                    background: "#ffd700ee",
+                    color: "#333",
+                    fontWeight: 800,
+                    fontSize: isMobile ? 12 : 15,
+                    padding: "2px 8px",
+                    borderRadius: 14,
+                    boxShadow: "0 1px 4px #0001"
+                  }}>
                     🥇 최다우승
                   </div>
                 )}
@@ -425,7 +328,9 @@ function Home({ worldcupList, onSelect, onMakeWorldcup }) {
                   style={{
                     display: "flex",
                     gap: 10,
-                    margin: isMobile ? "13px 0 8px 0" : "16px 0 8px 0",
+                    margin: isMobile
+                      ? "13px 0 8px 0"
+                      : "16px 0 8px 0",
                     justifyContent: "center",
                   }}
                 >
@@ -446,7 +351,7 @@ function Home({ worldcupList, onSelect, onMakeWorldcup }) {
                     onClick={(e) => {
                       e.stopPropagation();
                       handleBtnShake(`stats-${cup.id}`, () =>
-                        (window.location.href = `/stats/${cup.id}`)
+                        window.location.href = `/stats/${cup.id}`
                       );
                     }}
                     className={shakeBtn === `stats-${cup.id}` ? "shake-anim" : ""}
@@ -513,6 +418,7 @@ function Home({ worldcupList, onSelect, onMakeWorldcup }) {
           );
         })}
       </div>
+
       <style>
         {`
         .shake-anim {
