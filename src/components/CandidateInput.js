@@ -30,11 +30,11 @@ function CandidateInput({ value, onChange, onRemove }) {
 
   const thumb = youtubeThumb
     ? youtubeThumb
-    : isVideoFile
-    ? null // 비디오일 땐 이미지 미리보기 없음
-    : value.image?.startsWith("data:image")
+    : !isVideoFile && value.image?.startsWith("data:image")
     ? value.image
-    : value.image;
+    : !isVideoFile
+    ? value.image
+    : null; // 비디오 파일일 때는 썸네일 없음
 
   // 파일 업로드시 base64
   function handleFileChange(e) {

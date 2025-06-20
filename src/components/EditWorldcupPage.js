@@ -1,8 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { getThumbnail } from "../utils";
 
-// 기본 색상
 const COLORS = {
   main: "#1976ed",
   sub: "#45b7fa",
@@ -10,16 +9,25 @@ const COLORS = {
   gray: "#888"
 };
 
+function getFileExtension(url) {
+  if (!url) return "";
+  const parts = url.split("?")[0].split("/").pop().split(".");
+  if (parts.length === 1) return "";
+  return parts[parts.length - 1].toLowerCase();
+}
+
 function EditWorldcupPage({ worldcupList, setWorldcupList, cupId }) {
   const navigate = useNavigate();
   const currentUser = localStorage.getItem("onepickgame_user") || "";
 
-  // 편집할 월드컵
   const originalCup = worldcupList.find(cup => String(cup.id) === String(cupId));
   const [title, setTitle] = useState(originalCup?.title || "");
   const [desc, setDesc] = useState(originalCup?.desc || "");
   const [data, setData] = useState(originalCup?.data ? [...originalCup.data] : []);
   const [error, setError] = useState("");
+
+  // refs for file inputs for each candidate
+  const fileInputRefs = useRef([]);
 
   if (!originalCup) {
     return <div style={{ padding: 80 }}>월드컵을 찾을 수 없습니다.</div>;
@@ -28,21 +36,31 @@ function EditWorldcupPage({ worldcupList, setWorldcupList, cupId }) {
     return <div style={{ padding: 80 }}>수정 권한이 없습니다.</div>;
   }
 
-  // 후보 추가
   function handleAddCandidate() {
     setData(d => [...d, { id: Date.now() + Math.random(), name: "", image: "" }]);
   }
-  // 후보 삭제
   function handleDeleteCandidate(idx) {
     setData(d => d.filter((_, i) => i !== idx));
   }
-  // 후보 수정
   function handleCandidateChange(idx, key, value) {
     setData(d => d.map((item, i) =>
       i === idx ? { ...item, [key]: value } : item
     ));
   }
-  // 저장
+
+  function handleFileChange(idx, e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const allowed = /\.(jpe?g|png)$/i;
+    if (!allowed.test(file.name)) {
+      alert("jpg, jpeg, png 파일만 업로드 가능합니다.");
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = ev => handleCandidateChange(idx, "image", ev.target.result);
+    reader.readAsDataURL(file);
+  }
+
   function handleSave() {
     setError("");
     if (!title.trim()) return setError("제목을 입력하세요.");
@@ -68,7 +86,6 @@ function EditWorldcupPage({ worldcupList, setWorldcupList, cupId }) {
     navigate("/");
   }
 
-  // 반응형
   const isMobile = window.innerWidth < 700;
 
   return (
@@ -159,6 +176,32 @@ function EditWorldcupPage({ worldcupList, setWorldcupList, cupId }) {
                 background: "#fafdff"
               }}
             />
+            {/* 파일 업로드 버튼 */}
+            <button
+              type="button"
+              onClick={() => fileInputRefs.current[i].click()}
+              style={{
+                background: COLORS.main,
+                color: "#fff",
+                border: "none",
+                borderRadius: 8,
+                padding: "7px 14px",
+                fontWeight: 700,
+                cursor: "pointer",
+                fontSize: 14,
+                whiteSpace: "nowrap",
+                marginLeft: 6,
+              }}
+            >
+              파일
+            </button>
+            <input
+              type="file"
+              accept=".jpg,.jpeg,.png"
+              style={{ display: "none" }}
+              ref={el => fileInputRefs.current[i] = el}
+              onChange={e => handleFileChange(i, e)}
+            />
             {item.image && (
               <img
                 src={getThumbnail(item.image)}
@@ -166,7 +209,8 @@ function EditWorldcupPage({ worldcupList, setWorldcupList, cupId }) {
                 style={{
                   width: isMobile ? 32 : 44, height: isMobile ? 32 : 44,
                   objectFit: "cover", borderRadius: 8, background: "#f2f2f2",
-                  boxShadow: "0 2px 8px #0001", border: "1.2px solid #eee"
+                  boxShadow: "0 2px 8px #0001", border: "1.2px solid #eee",
+                  marginLeft: 8,
                 }}
               />
             )}
@@ -175,7 +219,7 @@ function EditWorldcupPage({ worldcupList, setWorldcupList, cupId }) {
               style={{
                 background: COLORS.danger, border: "none", borderRadius: 7,
                 color: "#fff", fontWeight: 700, padding: "9px 12px",
-                cursor: "pointer", fontSize: 14, marginLeft: 3,
+                cursor: "pointer", fontSize: 14, marginLeft: 8,
                 transition: "background 0.18s"
               }}
               onMouseOver={e => (e.currentTarget.style.background = "#b92a2a")}
