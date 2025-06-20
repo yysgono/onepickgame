@@ -119,9 +119,20 @@ function App() {
     window.location.href = "/worldcup-maker";
   }
 
-  // 홈 화면에서 월드컵 선택 시 라우팅
-  function handleSelect(cup) {
-    window.location.href = `/select-round/${cup.id}`;
+  // 홈 화면을 useNavigate로 감싼 래퍼 컴포넌트로 분리
+  function HomeWrapper() {
+    const navigate = useNavigate();
+    const handleSelect = (cup) => {
+      navigate(`/select-round/${cup.id}`);
+    };
+
+    return (
+      <Home
+        worldcupList={worldcupList}
+        onSelect={handleSelect}
+        onMakeWorldcup={handleMakeWorldcup}
+      />
+    );
   }
 
   // SelectRoundPage Wrapper - cup 객체 꼭 넘겨주기!
@@ -234,7 +245,8 @@ function App() {
         />
         <div className="main-content-box">
           <Routes>
-            <Route path="/" element={<Home worldcupList={worldcupList} onSelect={handleSelect} onMakeWorldcup={handleMakeWorldcup} />} />
+            {/* 수정된 부분: HomeWrapper 사용 */}
+            <Route path="/" element={<HomeWrapper />} />
             <Route path="/select-round/:id" element={<SelectRoundPageWrapper />} />
             <Route path="/match/:id/:round" element={<MatchPage worldcupList={worldcupList} />} />
             <Route path="/result/:id/:round" element={<ResultPage worldcupList={worldcupList} />} />

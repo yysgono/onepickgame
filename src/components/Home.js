@@ -177,6 +177,7 @@ function Home({ worldcupList, onSelect, onMakeWorldcup }) {
             : "repeat(auto-fit, minmax(230px, 1fr))",
           gap: isMobile ? 17 : 32,
           width: "100%",
+          maxWidth: 1200,       // <-- 여기에 maxWidth 추가해서 가운데 정렬
           margin: "0 auto",
           boxSizing: "border-box",
         }}
@@ -198,7 +199,9 @@ function Home({ worldcupList, onSelect, onMakeWorldcup }) {
           const topCandidate = getMostWinner(cup.id, cup.data);
           const thumbnail = topCandidate
             ? getThumbnail(topCandidate.image)
-            : (cup.data[0]?.image ? getThumbnail(cup.data[0]?.image) : "");
+            : cup.data[0]?.image
+            ? getThumbnail(cup.data[0]?.image)
+            : "";
           return (
             <div
               key={cup.id}
@@ -258,18 +261,20 @@ function Home({ worldcupList, onSelect, onMakeWorldcup }) {
                   />
                 )}
                 {topCandidate && (
-                  <div style={{
-                    position: "absolute",
-                    top: 6,
-                    left: 8,
-                    background: "#ffd700ee",
-                    color: "#333",
-                    fontWeight: 800,
-                    fontSize: isMobile ? 12 : 15,
-                    padding: "2px 8px",
-                    borderRadius: 14,
-                    boxShadow: "0 1px 4px #0001"
-                  }}>
+                  <div
+                    style={{
+                      position: "absolute",
+                      top: 6,
+                      left: 8,
+                      background: "#ffd700ee",
+                      color: "#333",
+                      fontWeight: 800,
+                      fontSize: isMobile ? 12 : 15,
+                      padding: "2px 8px",
+                      borderRadius: 14,
+                      boxShadow: "0 1px 4px #0001",
+                    }}
+                  >
                     🥇 최다우승
                   </div>
                 )}
@@ -328,9 +333,7 @@ function Home({ worldcupList, onSelect, onMakeWorldcup }) {
                   style={{
                     display: "flex",
                     gap: 10,
-                    margin: isMobile
-                      ? "13px 0 8px 0"
-                      : "16px 0 8px 0",
+                    margin: isMobile ? "13px 0 8px 0" : "16px 0 8px 0",
                     justifyContent: "center",
                   }}
                 >
@@ -351,7 +354,7 @@ function Home({ worldcupList, onSelect, onMakeWorldcup }) {
                     onClick={(e) => {
                       e.stopPropagation();
                       handleBtnShake(`stats-${cup.id}`, () =>
-                        window.location.href = `/stats/${cup.id}`
+                        (window.location.href = `/stats/${cup.id}`)
                       );
                     }}
                     className={shakeBtn === `stats-${cup.id}` ? "shake-anim" : ""}
@@ -360,7 +363,9 @@ function Home({ worldcupList, onSelect, onMakeWorldcup }) {
                     통계
                   </button>
                 </div>
-                <div style={{ display: "flex", gap: 8, justifyContent: "center" }}>
+                <div
+                  style={{ display: "flex", gap: 8, justifyContent: "center" }}
+                >
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
