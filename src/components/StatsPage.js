@@ -8,7 +8,12 @@ import { mainButtonStyle, grayButtonStyle } from "../styles/common";
 
 function getThumb(image) {
   const youtubeId = getYoutubeId(image);
+  const ext = image?.split('.').pop().toLowerCase();
+  const isVideo = ext === "mp4" || ext === "webm" || ext === "ogg";
+  const isGif = ext === "gif";
+
   if (youtubeId) return `https://img.youtube.com/vi/${youtubeId}/mqdefault.jpg`;
+  if (isVideo || isGif) return image;  // 영상/움짤은 원본 url 반환
   if (typeof image === "string" && image.startsWith("data:image/")) return image;
   if (isValidImageUrl(image)) return image;
   return "";
@@ -82,10 +87,9 @@ function StatsPage({ selectedCup, showOnlyWinner }) {
     return {};
   }
 
-  // 이름 2줄 제한 스타일
   const nameTdStyle = {
     maxWidth: isMobile ? 90 : 120,
-    wordBreak: "break-word", // 기존 break-all -> break-word 로 변경해 좀 더 자연스럽게 줄바꿈
+    wordBreak: "break-word",
     overflow: "hidden",
     textOverflow: "ellipsis",
     display: "-webkit-box",
@@ -103,8 +107,8 @@ function StatsPage({ selectedCup, showOnlyWinner }) {
     <div
       style={{
         width: "100%",
-        maxWidth: 1200,       // 최대 너비 제한
-        margin: "0 auto",     // 중앙 정렬 추가!
+        maxWidth: 1200,
+        margin: "0 auto",
         padding: isMobile ? "0 0 24px 0" : "0 0 32px 0",
         boxSizing: "border-box"
       }}
@@ -179,9 +183,9 @@ function StatsPage({ selectedCup, showOnlyWinner }) {
                 borderRadius: "12px",
                 textAlign: "center",
                 fontSize: isMobile ? 13 : 17,
-                tableLayout: "fixed",        // 추가: 칸 너비 고정
-                wordBreak: "break-word",     // 추가: 긴 단어 줄바꿈 강제
-                overflowWrap: "break-word",  // 추가: 긴 단어 줄바꿈 강제
+                tableLayout: "fixed",
+                wordBreak: "break-word",
+                overflowWrap: "break-word",
               }}
             >
               <thead>
@@ -245,16 +249,34 @@ function StatsPage({ selectedCup, showOnlyWinner }) {
                       ) : i + 1}
                     </td>
                     <td style={{ padding: "7px 0" }}>
-                      <img
-                        src={getThumb(row.image)}
-                        alt={row.name}
-                        style={{
-                          width: isMobile ? 30 : 44,
-                          height: isMobile ? 30 : 44,
-                          borderRadius: 9,
-                          objectFit: "cover"
-                        }}
-                      />
+                      {row.image && (
+                        row.image.endsWith(".mp4") || row.image.endsWith(".webm") || row.image.endsWith(".ogg") ? (
+                          <video
+                            src={row.image}
+                            style={{
+                              width: isMobile ? 30 : 44,
+                              height: isMobile ? 30 : 44,
+                              borderRadius: 9,
+                              objectFit: "cover"
+                            }}
+                            muted
+                            autoPlay
+                            loop
+                            playsInline
+                          />
+                        ) : (
+                          <img
+                            src={getThumb(row.image)}
+                            alt={row.name}
+                            style={{
+                              width: isMobile ? 30 : 44,
+                              height: isMobile ? 30 : 44,
+                              borderRadius: 9,
+                              objectFit: "cover"
+                            }}
+                          />
+                        )
+                      )}
                     </td>
                     <td
                       style={{

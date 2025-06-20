@@ -11,7 +11,7 @@ import {
   delButtonStyle,
 } from "../styles/common";
 
-// 카드 슬라이드 애니메이션
+// 카드 슬라이드 애니메이션 훅
 const useSlideFadeIn = (length) => {
   const refs = useRef([]);
   useEffect(() => {
@@ -73,7 +73,7 @@ function Home({ worldcupList, onSelect, onMakeWorldcup }) {
         padding: isMobile ? "24px 4vw 80px 4vw" : "38px 22px 90px 22px",
         minHeight: "70vh",
         background: `linear-gradient(150deg, #fafdff 80%, #e3f0fb 100%)`,
-        overflowX: "hidden", // 좌우 스크롤 방지
+        overflowX: "hidden",
         boxSizing: "border-box",
       }}
     >
@@ -201,10 +201,10 @@ function Home({ worldcupList, onSelect, onMakeWorldcup }) {
             : "repeat(auto-fit, minmax(230px, 1fr))",
           gap: isMobile ? 17 : 32,
           width: "100%",
-          maxWidth: 1000, // 최대 너비 제한해서 가운데 정렬 유지
-          margin: "0 auto", // 컨테이너 가로 가운데 정렬
+          maxWidth: 1000,
+          margin: "0 auto",
           boxSizing: "border-box",
-          justifyContent: "center", // 그리드 내부 아이템 중앙 정렬
+          justifyContent: "center",
         }}
       >
         {filtered.length === 0 && (
@@ -448,6 +448,7 @@ function Home({ worldcupList, onSelect, onMakeWorldcup }) {
           );
         })}
       </div>
+
       <style>
         {`
         .shake-anim {

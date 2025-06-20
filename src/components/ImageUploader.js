@@ -49,4 +49,5 @@ function ImageUploader({ onUpload }) {
     </div>
   );
 }
+
 export default ImageUploader;
