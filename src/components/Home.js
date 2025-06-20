@@ -11,7 +11,7 @@ import {
   delButtonStyle,
 } from "../styles/common";
 
-import MediaRenderer from "./MediaRenderer";  // 추가
+import MediaRenderer from "./MediaRenderer";
 
 const useSlideFadeIn = (length) => {
   const refs = useRef([]);
@@ -63,7 +63,8 @@ function Home({ worldcupList, onSelect, onMakeWorldcup }) {
     }, 300);
   };
 
-  const isMobile = window.innerWidth < 700;
+  const vw = typeof window !== "undefined" ? window.innerWidth : 1024;
+  const isMobile = vw < 700;
 
   return (
     <div
@@ -71,7 +72,9 @@ function Home({ worldcupList, onSelect, onMakeWorldcup }) {
         width: "100%",
         maxWidth: 2100,
         margin: "0 auto",
-        padding: isMobile ? "24px 4vw 80px 4vw" : "38px 22px 90px 22px",
+        padding: isMobile
+          ? "24px 4vw 80px 4vw"
+          : "38px 100px 90px 100px", // 양쪽 100px 광고 공간 확보
         minHeight: "70vh",
         background: `linear-gradient(150deg, #fafdff 80%, #e3f0fb 100%)`,
         overflowX: "hidden",
@@ -199,10 +202,10 @@ function Home({ worldcupList, onSelect, onMakeWorldcup }) {
           display: "grid",
           gridTemplateColumns: isMobile
             ? "repeat(auto-fit, minmax(160px, 1fr))"
-            : "repeat(auto-fit, minmax(230px, 1fr))",
+            : "repeat(auto-fit, minmax(180px, 1fr))", // 최소 180px로 6개 이상도 나옴
           gap: isMobile ? 17 : 32,
           width: "100%",
-          maxWidth: 1000,
+          maxWidth: 1200, // 광고 배너 공간 위해 줄임
           margin: "0 auto",
           boxSizing: "border-box",
           justifyContent: "center",
@@ -233,7 +236,7 @@ function Home({ worldcupList, onSelect, onMakeWorldcup }) {
               ref={(el) => (cardRefs.current[idx] = el)}
               style={{
                 ...cardBoxStyle,
-                maxWidth: 400,
+                maxWidth: 300,
                 margin: "0 auto",
               }}
               onClick={(e) => {

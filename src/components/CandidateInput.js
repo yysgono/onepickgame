@@ -11,14 +11,27 @@ function getYoutubeThumb(url) {
   return null;
 }
 
+// 확장자 추출 함수
+function getFileExtension(url) {
+  if (!url) return "";
+  const parts = url.split("?")[0].split("/").pop().split(".");
+  if (parts.length === 1) return "";
+  return parts[parts.length - 1].toLowerCase();
+}
+
 function CandidateInput({ value, onChange, onRemove }) {
   const { t, i18n } = useTranslation();
   const fileInputRef = useRef();
 
-  // 썸네일 로직 (유튜브 or 이미지)
+  // 썸네일 로직 (유튜브 or 이미지 or 비디오)
   const youtubeThumb = getYoutubeThumb(value.image);
+  const ext = getFileExtension(value.image);
+  const isVideoFile = ext === "mp4" || ext === "webm" || ext === "ogg";
+
   const thumb = youtubeThumb
     ? youtubeThumb
+    : isVideoFile
+    ? null // 비디오일 땐 이미지 미리보기 없음
     : value.image?.startsWith("data:image")
     ? value.image
     : value.image;
@@ -83,6 +96,9 @@ function CandidateInput({ value, onChange, onRemove }) {
           justifyContent: "center",
           overflow: "hidden",
           boxShadow: "0 2px 10px #1976ed18",
+          fontSize: 28,
+          color: "#1976ed",
+          userSelect: "none",
         }}
       >
         {thumb ? (
@@ -91,6 +107,11 @@ function CandidateInput({ value, onChange, onRemove }) {
             alt="thumb"
             style={{ width: "100%", height: "100%", objectFit: "cover" }}
           />
+        ) : isVideoFile ? (
+          // 비디오 파일 아이콘 (텍스트로 대체)
+          <span role="img" aria-label="video">
+            🎥
+          </span>
         ) : (
           <span style={{ color: "#b3d3fc", fontSize: 26 }}>?</span>
         )}
@@ -116,7 +137,7 @@ function CandidateInput({ value, onChange, onRemove }) {
       <input
         type="text"
         value={value.image}
-        onChange={e => onChange({ ...value, image: e.target.value })}
+        onChange={(e) => onChange({ ...value, image: e.target.value })}
         placeholder={t("imageUrlOrYoutube") || "이미지 URL / 유튜브"}
         style={{
           flex: 1,
@@ -144,8 +165,11 @@ function CandidateInput({ value, onChange, onRemove }) {
           boxShadow: "0 2px 7px #1976ed15",
           transition: "background 0.15s",
         }}
-        onMouseOver={e => e.currentTarget.style.background = "#45b7fa"}
-        onMouseOut={e => e.currentTarget.style.background = "linear-gradient(90deg, #1976ed 70%, #45b7fa 100%)"}
+        onMouseOver={(e) => (e.currentTarget.style.background = "#45b7fa")}
+        onMouseOut={(e) =>
+          (e.currentTarget.style.background =
+            "linear-gradient(90deg, #1976ed 70%, #45b7fa 100%)")
+        }
       >
         {t("chooseFile") || "파일"}
       </button>

@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
-import CandidateInput from "./CandidateInput";
-
-// 공통 스타일 import
+import CandidateInput from "./CandidateInput"; // 내부에서 MediaRenderer 사용 중이라 가정
 import COLORS from "../styles/theme";
 import {
   mainButtonStyle,
@@ -22,7 +20,7 @@ function WorldcupMaker({ onCreate, onCancel }) {
   const [desc, setDesc] = useState("");
   const [candidates, setCandidates] = useState([
     { id: 1, name: "", image: "" },
-    { id: 2, name: "", image: "" }
+    { id: 2, name: "", image: "" },
   ]);
   const [error, setError] = useState("");
   const user = localStorage.getItem("onepickgame_user");
@@ -37,27 +35,27 @@ function WorldcupMaker({ onCreate, onCancel }) {
   }
 
   function addCandidate() {
-    setCandidates(candidates => [
+    setCandidates((candidates) => [
       ...candidates,
-      { id: Date.now(), name: "", image: "" }
+      { id: Date.now(), name: "", image: "" },
     ]);
   }
   function updateCandidate(idx, val) {
-    setCandidates(cands => cands.map((c, i) => (i === idx ? val : c)));
+    setCandidates((cands) => cands.map((c, i) => (i === idx ? val : c)));
   }
   function removeCandidate(idx) {
-    setCandidates(cands => cands.filter((_, i) => i !== idx));
+    setCandidates((cands) => cands.filter((_, i) => i !== idx));
   }
   function handleSubmit(e) {
     e.preventDefault();
     setError("");
     const list = candidates
-      .map(c => ({
+      .map((c) => ({
         ...c,
         name: c.name.trim(),
-        image: c.image.trim()
+        image: c.image.trim(),
       }))
-      .filter(c => c.name && c.image);
+      .filter((c) => c.name && c.image);
     if (!title.trim()) return setError(t("enterWorldcupTitle"));
     if (list.length < 2) return setError(t("enterAtLeast2Candidates"));
     const newCup = {
@@ -67,10 +65,10 @@ function WorldcupMaker({ onCreate, onCancel }) {
       data: list.map((c, i) => ({
         id: String(i + 1),
         name: c.name,
-        image: c.image
+        image: c.image,
       })),
       creator: user,
-      owner: user
+      owner: user,
     };
     onCreate(newCup);
   }
@@ -84,7 +82,7 @@ function WorldcupMaker({ onCreate, onCancel }) {
         borderRadius: 18,
         boxShadow: "0 4px 20px #0002",
         padding: mobile ? 18 : 30,
-        position: "relative"
+        position: "relative",
       }}
     >
       <h2
@@ -94,7 +92,7 @@ function WorldcupMaker({ onCreate, onCancel }) {
           marginBottom: 20,
           fontSize: mobile ? 22 : 27,
           letterSpacing: "-1px",
-          color: COLORS.main
+          color: COLORS.main,
         }}
       >
         {t("createWorldcup")}
@@ -102,7 +100,7 @@ function WorldcupMaker({ onCreate, onCancel }) {
       <form onSubmit={handleSubmit}>
         <input
           value={title}
-          onChange={e => setTitle(e.target.value)}
+          onChange={(e) => setTitle(e.target.value)}
           placeholder={t("worldcupTitle")}
           maxLength={36}
           style={{
@@ -111,12 +109,12 @@ function WorldcupMaker({ onCreate, onCancel }) {
             borderRadius: 8,
             border: "1.5px solid #bbb",
             fontSize: mobile ? 15 : 18,
-            marginBottom: 16
+            marginBottom: 16,
           }}
         />
         <textarea
           value={desc}
-          onChange={e => setDesc(e.target.value)}
+          onChange={(e) => setDesc(e.target.value)}
           placeholder={t("descriptionOptional")}
           maxLength={100}
           rows={2}
@@ -126,7 +124,7 @@ function WorldcupMaker({ onCreate, onCancel }) {
             borderRadius: 8,
             border: "1.5px solid #bbb",
             fontSize: mobile ? 13 : 15,
-            marginBottom: 18
+            marginBottom: 18,
           }}
         />
         <div style={{ marginBottom: 18 }}>
@@ -137,7 +135,7 @@ function WorldcupMaker({ onCreate, onCancel }) {
             <CandidateInput
               key={c.id}
               value={c}
-              onChange={val => updateCandidate(i, val)}
+              onChange={(val) => updateCandidate(i, val)}
               onRemove={() => removeCandidate(i)}
             />
           ))}
@@ -150,7 +148,7 @@ function WorldcupMaker({ onCreate, onCancel }) {
               padding: mobile ? "8px 16px" : "10px 22px",
               borderRadius: 8,
               marginTop: 6,
-              width: mobile ? "100%" : undefined
+              width: mobile ? "100%" : undefined,
             }}
           >
             + {t("addCandidate")}
@@ -161,7 +159,7 @@ function WorldcupMaker({ onCreate, onCancel }) {
             style={{
               color: COLORS.danger,
               marginBottom: 10,
-              textAlign: "center"
+              textAlign: "center",
             }}
           >
             {error}
@@ -174,7 +172,7 @@ function WorldcupMaker({ onCreate, onCancel }) {
               ...mainButtonStyle(mobile),
               fontSize: mobile ? 15 : 17,
               borderRadius: 10,
-              padding: mobile ? "11px 0" : "13px 0"
+              padding: mobile ? "11px 0" : "13px 0",
             }}
           >
             {t("create")}
@@ -186,7 +184,7 @@ function WorldcupMaker({ onCreate, onCancel }) {
               ...grayButtonStyle(mobile),
               fontSize: mobile ? 15 : 17,
               borderRadius: 10,
-              padding: mobile ? "11px 0" : "13px 0"
+              padding: mobile ? "11px 0" : "13px 0",
             }}
           >
             {t("cancel")}
