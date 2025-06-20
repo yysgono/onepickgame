@@ -11,7 +11,7 @@ import {
   delButtonStyle,
 } from "../styles/common";
 import MediaRenderer from "./MediaRenderer";
-import { fetchAllGames } from "../utils/firebaseGameApi"; // ⭐️ api 함수 import
+import { fetchAllGames } from "../utils/firebaseGameApi"; // Firestore API 함수 import
 
 const useSlideFadeIn = (length) => {
   const refs = useRef([]);
@@ -39,7 +39,6 @@ function Home({ onSelect, onMakeWorldcup }) {
   const [shakeBtn, setShakeBtn] = useState(null);
   const [worldcupList, setWorldcupList] = useState([]);
 
-  // ✅ Firestore에서 games 컬렉션 불러오기 (api 함수 사용!)
   useEffect(() => {
     async function fetchGames() {
       const list = await fetchAllGames();
@@ -235,10 +234,12 @@ function Home({ onSelect, onMakeWorldcup }) {
           </div>
         )}
         {filtered.map((cup, idx) => {
-          const topCandidate = getMostWinner?.(cup.id, cup.data);
+          const topCandidate = Array.isArray(cup.data) ? getMostWinner(cup.id, cup.data) : null;
           const thumbnail = topCandidate
             ? topCandidate.image
-            : cup.data?.[0]?.image || cup.imageUrl || "";
+            : (Array.isArray(cup.data) && cup.data.length > 0)
+            ? cup.data[0].image
+            : cup.imageUrl || "";
 
           return (
             <div
@@ -432,7 +433,7 @@ function Home({ onSelect, onMakeWorldcup }) {
                         e.stopPropagation();
                         handleBtnShake(`del-${cup.id}`, () => {
                           if (!window.confirm("정말 삭제하시겠습니까?")) return;
-                          // 여기는 DB에서 삭제하는 코드로 바꾸면 됨!
+                          // DB 삭제 로직 추가 필요
                           window.location.reload();
                         });
                       }}
