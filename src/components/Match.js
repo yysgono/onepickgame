@@ -164,7 +164,6 @@ function Match({ cup, round, onResult }) {
           opacity: c ? 1 : 0.25,
           cursor: !isYoutube && c ? "pointer" : "default",
         }}
-        onClick={!isYoutube && c ? onClick : undefined}
       >
         <button
           onClick={c ? onClick : undefined}
@@ -205,7 +204,7 @@ function Match({ cup, round, onResult }) {
             boxSizing: "border-box",
             opacity: c ? 1 : 0.25,
           }}
-          onClick={!isYoutube && c ? onClick : undefined}
+          onClick={!isYoutube && c ? onClick : undefined} // 유튜브면 클릭 막음
         >
           {c ? (
             <MediaRenderer url={c.image} alt={c.name} />

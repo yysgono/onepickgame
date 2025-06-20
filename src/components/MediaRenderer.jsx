@@ -14,7 +14,7 @@ function MediaRenderer({ url, alt = "" }) {
       <iframe
         width="100%"
         height="100%"
-        style={{ border: "none", pointerEvents: "none" }}
+        style={{ border: "none" }} // pointerEvents 제거해서 클릭 가능
         src={`https://www.youtube.com/embed/${youtubeId}?autoplay=0&mute=1`}
         title="YouTube video"
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
