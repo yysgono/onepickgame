@@ -10,8 +10,8 @@ import {
   editButtonStyle,
   delButtonStyle,
 } from "../styles/common";
+
 import MediaRenderer from "./MediaRenderer";
-import { fetchAllGames } from "../utils/firebaseGameApi"; // Firestore API 함수 import
 
 const useSlideFadeIn = (length) => {
   const refs = useRef([]);
@@ -32,26 +32,17 @@ const useSlideFadeIn = (length) => {
   return refs;
 };
 
-function Home({ onSelect, onMakeWorldcup }) {
+function Home({ worldcupList, onSelect, onMakeWorldcup }) {
   const { t } = useTranslation();
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState("popular");
   const [shakeBtn, setShakeBtn] = useState(null);
-  const [worldcupList, setWorldcupList] = useState([]);
-
-  useEffect(() => {
-    async function fetchGames() {
-      const list = await fetchAllGames();
-      setWorldcupList(list);
-    }
-    fetchGames();
-  }, []);
 
   const filtered = worldcupList
     .filter(
       (cup) =>
-        (cup.title || "").toLowerCase().includes(search.toLowerCase()) ||
-        (cup.description || "").toLowerCase().includes(search.toLowerCase())
+        cup.title.toLowerCase().includes(search.toLowerCase()) ||
+        (cup.desc || "").toLowerCase().includes(search.toLowerCase())
     )
     .sort((a, b) => {
       if (sort === "recent") {
@@ -83,7 +74,7 @@ function Home({ onSelect, onMakeWorldcup }) {
         margin: "0 auto",
         padding: isMobile
           ? "24px 4vw 80px 4vw"
-          : "38px 100px 90px 100px",
+          : "38px 100px 90px 100px", // 양쪽 100px 광고 공간 확보
         minHeight: "70vh",
         background: `linear-gradient(150deg, #fafdff 80%, #e3f0fb 100%)`,
         overflowX: "hidden",
@@ -211,10 +202,10 @@ function Home({ onSelect, onMakeWorldcup }) {
           display: "grid",
           gridTemplateColumns: isMobile
             ? "repeat(auto-fit, minmax(160px, 1fr))"
-            : "repeat(auto-fit, minmax(180px, 1fr))",
+            : "repeat(auto-fit, minmax(180px, 1fr))", // 최소 180px로 6개 이상도 나옴
           gap: isMobile ? 17 : 32,
           width: "100%",
-          maxWidth: 1200,
+          maxWidth: 1200, // 광고 배너 공간 위해 줄임
           margin: "0 auto",
           boxSizing: "border-box",
           justifyContent: "center",
@@ -234,12 +225,10 @@ function Home({ onSelect, onMakeWorldcup }) {
           </div>
         )}
         {filtered.map((cup, idx) => {
-          const topCandidate = Array.isArray(cup.data) ? getMostWinner(cup.id, cup.data) : null;
+          const topCandidate = getMostWinner(cup.id, cup.data);
           const thumbnail = topCandidate
             ? topCandidate.image
-            : (Array.isArray(cup.data) && cup.data.length > 0)
-            ? cup.data[0].image
-            : cup.imageUrl || "";
+            : cup.data[0]?.image || "";
 
           return (
             <div
@@ -349,7 +338,7 @@ function Home({ onSelect, onMakeWorldcup }) {
                     whiteSpace: "nowrap",
                   }}
                 >
-                  {cup.description}
+                  {cup.desc}
                 </div>
                 <div
                   style={{
@@ -433,7 +422,11 @@ function Home({ onSelect, onMakeWorldcup }) {
                         e.stopPropagation();
                         handleBtnShake(`del-${cup.id}`, () => {
                           if (!window.confirm("정말 삭제하시겠습니까?")) return;
-                          // DB 삭제 로직 추가 필요
+                          const newList = worldcupList.filter((c) => c.id !== cup.id);
+                          localStorage.setItem(
+                            "onepickgame_worldcupList",
+                            JSON.stringify(newList)
+                          );
                           window.location.reload();
                         });
                       }}
