@@ -85,7 +85,7 @@ function StatsPage({ selectedCup, showOnlyWinner }) {
   // 이름 2줄 제한 스타일
   const nameTdStyle = {
     maxWidth: isMobile ? 90 : 120,
-    wordBreak: "break-all",
+    wordBreak: "break-word", // 기존 break-all -> break-word 로 변경해 좀 더 자연스럽게 줄바꿈
     overflow: "hidden",
     textOverflow: "ellipsis",
     display: "-webkit-box",
@@ -103,8 +103,8 @@ function StatsPage({ selectedCup, showOnlyWinner }) {
     <div
       style={{
         width: "100%",
-        maxWidth: 1200,
-        margin: "0 auto",
+        maxWidth: 1200,       // 최대 너비 제한
+        margin: "0 auto",     // 중앙 정렬 추가!
         padding: isMobile ? "0 0 24px 0" : "0 0 32px 0",
         boxSizing: "border-box"
       }}
@@ -178,7 +178,10 @@ function StatsPage({ selectedCup, showOnlyWinner }) {
                 background: "#fff",
                 borderRadius: "12px",
                 textAlign: "center",
-                fontSize: isMobile ? 13 : 17
+                fontSize: isMobile ? 13 : 17,
+                tableLayout: "fixed",        // 추가: 칸 너비 고정
+                wordBreak: "break-word",     // 추가: 긴 단어 줄바꿈 강제
+                overflowWrap: "break-word",  // 추가: 긴 단어 줄바꿈 강제
               }}
             >
               <thead>

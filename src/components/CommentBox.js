@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { hasBadword } from "../badwords-multilang";
 
-// 색상
 const COLORS = {
   main: "#1976ed",
   danger: "#d33",
@@ -29,6 +28,30 @@ function getNow(t) {
     " " +
     d.toTimeString().slice(0, 5)
   );
+}
+
+// 바이트 계산 함수
+function getByteLength(str) {
+  let len = 0;
+  for (let i=0; i < str.length; i++) {
+    const code = str.charCodeAt(i);
+    len += code > 127 ? 2 : 1;
+  }
+  return len;
+}
+// 바이트 기준 자르기
+function sliceByByte(str, maxBytes) {
+  let bytes = 0;
+  let result = "";
+  for (let i=0; i < str.length; i++) {
+    const char = str[i];
+    const code = str.charCodeAt(i);
+    const charBytes = code > 127 ? 2 : 1;
+    if (bytes + charBytes > maxBytes) break;
+    result += char;
+    bytes += charBytes;
+  }
+  return result;
 }
 
 function isSpam(newComment, cupId, comments) {
@@ -89,6 +112,9 @@ export default function CommentBox({ cupId }) {
       return setError(
         t("comment.badwordComment") || "댓글에 부적절한 단어가 포함되어 있습니다."
       );
+    if (getByteLength(nick) > 12)
+      return setError(t("comment.limitNicknameByte") || "닉네임은 최대 12바이트까지 가능합니다.");
+
     const all = JSON.parse(localStorage.getItem(COMMENT_KEY) || "{}");
     if (isSpam({ nickname: nick, content: text }, cupId, all))
       return setError(
@@ -164,6 +190,13 @@ export default function CommentBox({ cupId }) {
     setComments(newComments);
   };
 
+  // 닉네임 입력 변경시 12바이트 제한 적용
+  function handleNicknameChange(e) {
+    const val = e.target.value;
+    const sliced = sliceByByte(val, 12);
+    setNickname(sliced);
+  }
+
   return (
     <div
       style={{
@@ -203,9 +236,9 @@ export default function CommentBox({ cupId }) {
       >
         <input
           value={nickname}
-          onChange={(e) => setNickname(e.target.value.slice(0, 16))}
+          onChange={handleNicknameChange}
           placeholder={t("comment.nickname")}
-          maxLength={16}
+          maxLength={12}
           disabled={!!currentUser}
           style={{
             width: 120,

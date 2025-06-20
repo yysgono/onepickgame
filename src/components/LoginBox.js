@@ -37,15 +37,37 @@ function LoginBox() {
     window.location.reload();
   }
 
+  // 12바이트 엄격 제한, 한글/중국어/일본어 등 2바이트, 영어 등 1바이트
+  function handleNicknameChange(e) {
+    const val = e.target.value;
+    let bytes = 0;
+    let cutIndex = val.length;
+
+    for (let i = 0; i < val.length; i++) {
+      const code = val.charCodeAt(i);
+      const charBytes = code > 127 ? 2 : 1;
+      if (bytes + charBytes > 12) {
+        cutIndex = i;
+        break;
+      }
+      bytes += charBytes;
+    }
+
+    const newVal = val.slice(0, cutIndex);
+    setNickname(newVal);
+  }
+
   return (
-    <div style={{
-      display: "flex",
-      flexDirection: "column",
-      gap: 8,
-      alignItems: "flex-end",
-      marginBottom: 20,
-      justifyContent: "flex-end"
-    }}>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        gap: 8,
+        alignItems: "flex-end",
+        marginBottom: 20,
+        justifyContent: "flex-end"
+      }}
+    >
       {user ? (
         <>
           <b style={{ fontSize: 16 }}>{user}</b>
@@ -70,7 +92,7 @@ function LoginBox() {
             <input
               type="text"
               value={nickname}
-              onChange={e => setNickname(e.target.value)}
+              onChange={handleNicknameChange}
               placeholder={t("comment.nickname")}
               style={{
                 width: 110,
@@ -78,7 +100,8 @@ function LoginBox() {
                 borderRadius: 8,
                 border: "1px solid #bbb"
               }}
-              maxLength={16}
+              autoComplete="off"
+              spellCheck={false}
             />
             <button
               onClick={handleLogin}
@@ -95,7 +118,7 @@ function LoginBox() {
               {t("login")}
             </button>
           </div>
-          {/* ↓↓↓ 회원가입/ID/PW 찾기 버튼 ↓↓↓ */}
+          {/* 회원가입/아이디 찾기/비밀번호 찾기 */}
           <div style={{ display: "flex", gap: 10, marginTop: 8 }}>
             <button
               style={{

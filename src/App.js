@@ -1,8 +1,9 @@
 import "./i18n";
 import "./App.css";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { BrowserRouter as Router, Routes, Route, useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+
 import Header from "./components/Header";
 import Home from "./components/Home";
 import SelectRoundPage from "./components/SelectRoundPage";
@@ -230,7 +231,7 @@ function App() {
   }
 
   return (
-    <div className="app-main-wrapper">
+    <div className="app-main-wrapper" style={{overflowX:"hidden"}}>
       <Router>
         {/* 최상단 고정 헤더 하나만 노출 */}
         <Header
@@ -240,7 +241,7 @@ function App() {
           onMakeWorldcup={handleMakeWorldcup}
           isAdmin={isAdmin}
         />
-        <div className="main-content-box">
+        <div className="main-content-box" style={{overflowX:"hidden"}}>
           <Routes>
             <Route path="/" element={<HomeWrapper />} />
             <Route path="/select-round/:id" element={<SelectRoundPageWrapper />} />

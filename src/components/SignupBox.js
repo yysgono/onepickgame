@@ -1,5 +1,27 @@
 import React, { useState } from "react";
 
+function getByteLength(str) {
+  let len = 0;
+  for (let i=0; i < str.length; i++) {
+    const code = str.charCodeAt(i);
+    len += code > 127 ? 2 : 1;
+  }
+  return len;
+}
+function sliceByByte(str, maxBytes) {
+  let bytes = 0;
+  let result = "";
+  for (let i=0; i < str.length; i++) {
+    const char = str[i];
+    const code = str.charCodeAt(i);
+    const charBytes = code > 127 ? 2 : 1;
+    if (bytes + charBytes > maxBytes) break;
+    result += char;
+    bytes += charBytes;
+  }
+  return result;
+}
+
 function SignupBox() {
   const [nickname, setNickname] = useState("");
   const [userId, setUserId] = useState("");
@@ -7,12 +29,22 @@ function SignupBox() {
   const [success, setSuccess] = useState("");
   const [error, setError] = useState("");
 
+  function handleNicknameChange(e) {
+    const val = e.target.value;
+    const sliced = sliceByByte(val, 12);
+    setNickname(sliced);
+  }
+
   function handleSignup(e) {
     e.preventDefault();
     setError("");
     setSuccess("");
     if (!nickname || !userId || !password) {
       setError("모든 항목을 입력하세요.");
+      return;
+    }
+    if (getByteLength(nickname) > 12) {
+      setError("닉네임은 최대 12바이트까지 가능합니다.");
       return;
     }
     const userList = JSON.parse(localStorage.getItem("userList") || "[]");
@@ -36,10 +68,11 @@ function SignupBox() {
           <input
             type="text"
             value={nickname}
-            onChange={e => setNickname(e.target.value)}
+            onChange={handleNicknameChange}
             placeholder="닉네임"
             style={{ width: "100%", padding: 10, borderRadius: 7, border: "1.2px solid #bbb", fontSize: 16 }}
-            maxLength={16}
+            autoComplete="off"
+            spellCheck={false}
           />
         </div>
         <div style={{ marginBottom: 12 }}>

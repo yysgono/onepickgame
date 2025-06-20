@@ -3,7 +3,9 @@
   min-height: 100vh;
   background: #f6f8fa;
   padding: 0;
-  width: 100vw;
+  width: 100%;          /* 100vw → 100% 로 변경 */
+  overflow-x: hidden;   /* 좌우 스크롤 방지 */
+  box-sizing: border-box;
 }
 .main-content-box {
   background: #fff;
@@ -15,9 +17,11 @@
   min-width: 340px;
   width: 100%;
   position: relative;
+  overflow-x: hidden;  /* 좌우 스크롤 방지 */
+  box-sizing: border-box;
 }
 
-/* 후보 카드/리스트, 댓글 박스 등 각 요소 공통 스타일 */
+/* 이하 기존 스타일 유지 */
 .candidate-list {
   display: flex;
   flex-wrap: wrap;
