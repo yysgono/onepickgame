@@ -1,18 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { hasBadword } from "../badwords-multilang";
-import {
-  collection,
-  query,
-  where,
-  orderBy,
-  getDocs,
-  addDoc,
-  serverTimestamp,
-  deleteDoc,
-  doc,
-} from "firebase/firestore";
-import { db } from "../firebase"; // firebase.js 위치에 맞게 조정
 
 // 색상
 const COLORS = {
@@ -27,6 +15,9 @@ const COLORS = {
   soft: "#f5f7fa",
 };
 
+const COMMENT_KEY = "comments";
+
+// 시간 포맷
 function getNow(t) {
   const d = new Date(t || Date.now());
   return (
@@ -40,6 +31,27 @@ function getNow(t) {
   );
 }
 
+function isSpam(newComment, cupId, comments) {
+  const now = Date.now();
+  const list = comments[cupId] || [];
+  return list.some(
+    (c) =>
+      c.nickname === newComment.nickname &&
+      c.content === newComment.content &&
+      now - c.time < 60 * 1000
+  );
+}
+
+function isTripleRepeatNickname(nickname, cupId, comments) {
+  const list = comments[cupId] || [];
+  if (list.length < 3) return false;
+  return (
+    list[0].nickname === nickname &&
+    list[1].nickname === nickname &&
+    list[2].nickname === nickname
+  );
+}
+
 export default function CommentBox({ cupId }) {
   const { t, i18n } = useTranslation();
   const currentUser = localStorage.getItem("onepickgame_user") || "";
@@ -49,30 +61,16 @@ export default function CommentBox({ cupId }) {
   const [comments, setComments] = useState([]);
   const [error, setError] = useState("");
 
-  // Firestore에서 댓글 불러오기
-  async function fetchComments() {
-    const q = query(
-      collection(db, "comments"),
-      where("cupId", "==", cupId),
-      orderBy("time", "desc")
-    );
-    const querySnapshot = await getDocs(q);
-    const list = [];
-    querySnapshot.forEach((doc) => {
-      list.push({ id: doc.id, ...doc.data() });
-    });
-    setComments(list);
-  }
-
   useEffect(() => {
-    fetchComments();
+    const all = JSON.parse(localStorage.getItem(COMMENT_KEY) || "{}");
+    setComments((all[cupId] || []).sort((a, b) => b.time - a.time));
   }, [cupId]);
 
   function containsBadword(str) {
     return hasBadword(str, i18n.language);
   }
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     setError("");
     const nick = (currentUser || nickname).trim();
@@ -85,108 +83,99 @@ export default function CommentBox({ cupId }) {
     if (text.split("\n").length > 5) return setError(t("comment.limitLines"));
     if (containsBadword(nick))
       return setError(
-        t("comment.badwordNickname") ||
-          "닉네임에 부적절한 단어가 포함되어 있습니다."
+        t("comment.badwordNickname") || "닉네임에 부적절한 단어가 포함되어 있습니다."
       );
     if (containsBadword(text))
       return setError(
         t("comment.badwordComment") || "댓글에 부적절한 단어가 포함되어 있습니다."
       );
+    const all = JSON.parse(localStorage.getItem(COMMENT_KEY) || "{}");
+    if (isSpam({ nickname: nick, content: text }, cupId, all))
+      return setError(
+        t("spam_warning") || "You can't post the same comment too frequently. (1 min)"
+      );
+    if (isTripleRepeatNickname(nick, cupId, all))
+      return setError(
+        t("triple_warning") || "You can't post 4 consecutive comments with the same nickname."
+      );
 
-    // Firestore에 새 댓글 추가
-    try {
-      await addDoc(collection(db, "comments"), {
-        cupId,
-        nickname: nick,
-        content: text,
-        time: serverTimestamp(),
-        like: 0,
-        dislike: 0,
-        likedUsers: [],
-        dislikedUsers: [],
-      });
-      setContent("");
-      fetchComments(); // 댓글 다시 불러오기
-    } catch (error) {
-      setError(t("comment.errorSaving") || "댓글 저장 중 오류가 발생했습니다.");
-      console.error("Error adding comment: ", error);
-    }
+    const newComment = {
+      id: Date.now() + Math.random(),
+      nickname: nick,
+      content: text,
+      time: Date.now(),
+      like: 0,
+      dislike: 0,
+      likedUsers: [],
+      dislikedUsers: [],
+    };
+    all[cupId] = [newComment, ...(all[cupId] || [])].slice(0, 50); // 최대 50개
+    localStorage.setItem(COMMENT_KEY, JSON.stringify(all));
+    setComments(all[cupId]);
+    setContent("");
   };
 
-  const handleVote = async (commentId, type) => {
+  const handleVote = (commentId, type) => {
     const nick = (currentUser || nickname).trim() || t("anonymous");
-    const commentRef = doc(db, "comments", commentId);
-    const comment = comments.find((c) => c.id === commentId);
-    if (!comment) return;
-
-    // Firestore 문서 업데이트용 변수 생성
-    let updatedFields = {};
-
+    const all = JSON.parse(localStorage.getItem(COMMENT_KEY) || "{}");
+    const list = all[cupId] || [];
+    const idx = list.findIndex((c) => c.id === commentId);
+    if (idx === -1) return;
+    const c = list[idx];
     if (type === "like") {
-      const likedUsers = comment.likedUsers || [];
-      const dislikedUsers = comment.dislikedUsers || [];
-
-      if (likedUsers.includes(nick)) {
-        // 좋아요 취소
-        updatedFields.like = Math.max(0, comment.like - 1);
-        updatedFields.likedUsers = likedUsers.filter((u) => u !== nick);
+      if (c.likedUsers.includes(nick)) {
+        c.like = Math.max(0, c.like - 1);
+        c.likedUsers = c.likedUsers.filter((u) => u !== nick);
       } else {
-        // 좋아요 추가
-        updatedFields.like = (comment.like || 0) + 1;
-        updatedFields.likedUsers = [...likedUsers, nick];
-        // 싫어요 취소
-        updatedFields.dislikedUsers = dislikedUsers.filter((u) => u !== nick);
-        updatedFields.dislike = updatedFields.dislikedUsers.length;
+        c.like += 1;
+        c.likedUsers.push(nick);
+        c.dislikedUsers = c.dislikedUsers.filter((u) => u !== nick);
+        c.dislike = c.dislikedUsers.length;
       }
-    } else if (type === "dislike") {
-      const likedUsers = comment.likedUsers || [];
-      const dislikedUsers = comment.dislikedUsers || [];
-
-      if (dislikedUsers.includes(nick)) {
-        // 싫어요 취소
-        updatedFields.dislike = Math.max(0, comment.dislike - 1);
-        updatedFields.dislikedUsers = dislikedUsers.filter((u) => u !== nick);
+    } else {
+      if (c.dislikedUsers.includes(nick)) {
+        c.dislike = Math.max(0, c.dislike - 1);
+        c.dislikedUsers = c.dislikedUsers.filter((u) => u !== nick);
       } else {
-        // 싫어요 추가
-        updatedFields.dislike = (comment.dislike || 0) + 1;
-        updatedFields.dislikedUsers = [...dislikedUsers, nick];
-        // 좋아요 취소
-        updatedFields.likedUsers = likedUsers.filter((u) => u !== nick);
-        updatedFields.like = updatedFields.likedUsers.length;
+        c.dislike += 1;
+        c.dislikedUsers.push(nick);
+        c.likedUsers = c.likedUsers.filter((u) => u !== nick);
+        c.like = c.likedUsers.length;
       }
     }
-
-    try {
-      await commentRef.update(updatedFields); // Firestore 문서 업데이트
-      fetchComments();
-    } catch (error) {
-      console.error("Error updating vote: ", error);
-    }
+    all[cupId] = list;
+    localStorage.setItem(COMMENT_KEY, JSON.stringify(all));
+    setComments([...list]);
   };
 
-  const handleDelete = async (commentId) => {
-    const comment = comments.find((c) => c.id === commentId);
-    if (!comment) return;
-    if (!isAdmin && comment.nickname !== currentUser) return;
-
-    try {
-      await deleteDoc(doc(db, "comments", commentId));
-      fetchComments();
-    } catch (error) {
-      console.error("Error deleting comment: ", error);
+  // 관리자: 모든 댓글 삭제 가능, 일반: 자기 것만 삭제 가능
+  const handleDelete = (commentId) => {
+    const all = JSON.parse(localStorage.getItem(COMMENT_KEY) || "{}");
+    let newComments;
+    if (isAdmin) {
+      newComments = (all[cupId] || []).filter((c) => c.id !== commentId);
+    } else {
+      newComments = (all[cupId] || []).filter(
+        (c) => !(c.id === commentId && c.nickname === currentUser)
+      );
     }
+    all[cupId] = newComments;
+    localStorage.setItem(COMMENT_KEY, JSON.stringify(all));
+    setComments(newComments);
   };
 
   return (
     <div
       style={{
         maxWidth: 540,
+        width: "100%",
         margin: "38px auto",
         background: "#fff",
         borderRadius: 18,
         boxShadow: "0 4px 18px #1976ed11, 0 1px 6px #1976ed13",
         padding: "30px 22px",
         border: `1.3px solid ${COLORS.border}`,
+        boxSizing: "border-box",
       }}
     >
       <h3
@@ -363,7 +352,7 @@ export default function CommentBox({ cupId }) {
                   letterSpacing: 0.1,
                 }}
               >
-                {getNow(c.time?.seconds ? c.time.seconds * 1000 : c.time)}
+                {getNow(c.time)}
               </span>
             </div>
             <div

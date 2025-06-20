@@ -2,10 +2,11 @@ import React, { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 
+// 언어 목록
 const languages = [
   { code: "ko", label: "한국어" },
   { code: "en", label: "English" },
-  // ... 필요 시 추가
+  // 필요시 더 추가 가능
 ];
 
 export default function Header({ onLangChange, onBackup, onRestore, onMakeWorldcup, isAdmin }) {
@@ -26,6 +27,7 @@ export default function Header({ onLangChange, onBackup, onRestore, onMakeWorldc
     window.location.reload();
   }
 
+  // 회원가입, 아이디찾기, 비번찾기 열기 함수
   function openSignup() {
     setShowLogin(false);
     navigate("/signup");
@@ -55,7 +57,7 @@ export default function Header({ onLangChange, onBackup, onRestore, onMakeWorldc
       <div style={{
         maxWidth: 1800,
         margin: "0 auto",
-        padding: "0 28px",
+        padding: "0 28px 0 28px",
         display: "flex",
         alignItems: "center",
         justifyContent: "space-between",
@@ -164,6 +166,7 @@ export default function Header({ onLangChange, onBackup, onRestore, onMakeWorldc
               <option key={lang.code} value={lang.code}>{lang.label}</option>
             ))}
           </select>
+          {/* 로그인/로그아웃 + 유저ID */}
           {!currentUser && (
             <>
               <button
@@ -179,6 +182,7 @@ export default function Header({ onLangChange, onBackup, onRestore, onMakeWorldc
                 }}
                 onClick={() => setShowLogin(true)}
               >{t("login")}</button>
+              {/* 로그인 모달 */}
               {showLogin && (
                 <div style={{
                   position: "fixed",
@@ -224,6 +228,7 @@ export default function Header({ onLangChange, onBackup, onRestore, onMakeWorldc
                       }}
                       onClick={doLogin}
                     >{t("login")}</button>
+                    {/* 회원가입/아이디찾기/비번찾기 버튼 */}
                     <div style={{
                       marginTop: 14,
                       display: "flex",

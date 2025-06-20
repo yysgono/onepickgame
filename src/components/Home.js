@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { getThumbnail, getMostWinner } from "../utils";
 import COLORS from "../styles/theme";
@@ -10,6 +10,26 @@ import {
   editButtonStyle,
   delButtonStyle,
 } from "../styles/common";
+
+// 카드 슬라이드 애니메이션
+const useSlideFadeIn = (length) => {
+  const refs = useRef([]);
+  useEffect(() => {
+    refs.current.forEach((ref, i) => {
+      if (ref) {
+        ref.style.opacity = "0";
+        ref.style.transform = "translateY(24px) scale(0.98)";
+        setTimeout(() => {
+          ref.style.transition =
+            "opacity 0.5s cubic-bezier(.35,1,.4,1), transform 0.48s cubic-bezier(.35,1,.4,1)";
+          ref.style.opacity = "1";
+          ref.style.transform = "translateY(0) scale(1)";
+        }, 50 + 50 * i);
+      }
+    });
+  }, [length]);
+  return refs;
+};
 
 function Home({ worldcupList, onSelect, onMakeWorldcup }) {
   const { t } = useTranslation();
@@ -32,6 +52,7 @@ function Home({ worldcupList, onSelect, onMakeWorldcup }) {
     });
 
   const currentUser = localStorage.getItem("onepickgame_user") || "";
+  const cardRefs = useSlideFadeIn(filtered.length);
 
   const handleBtnShake = (btnId, callback) => {
     setShakeBtn(btnId);
@@ -54,8 +75,7 @@ function Home({ worldcupList, onSelect, onMakeWorldcup }) {
         background: `linear-gradient(150deg, #fafdff 80%, #e3f0fb 100%)`,
       }}
     >
-      {/* 검색, 정렬 등 UI */}
-
+      {/* 정렬/검색 */}
       <div
         style={{
           margin: "0 0 24px 0",
@@ -65,6 +85,7 @@ function Home({ worldcupList, onSelect, onMakeWorldcup }) {
           flexWrap: "wrap",
         }}
       >
+        {/* 인기순, 최신순 버튼 */}
         <button
           style={{
             background:
@@ -106,6 +127,7 @@ function Home({ worldcupList, onSelect, onMakeWorldcup }) {
           최신순
         </button>
         <div style={{ flex: 1 }} />
+        {/* 검색창 */}
         <div
           style={{
             display: "flex",
@@ -168,7 +190,7 @@ function Home({ worldcupList, onSelect, onMakeWorldcup }) {
         </div>
       </div>
 
-      {/* 월드컵 카드 그리드 */}
+      {/* 월드컵 카드 그리드 - 가운데 정렬 유지 */}
       <div
         style={{
           display: "grid",
@@ -177,8 +199,10 @@ function Home({ worldcupList, onSelect, onMakeWorldcup }) {
             : "repeat(auto-fit, minmax(230px, 1fr))",
           gap: isMobile ? 17 : 32,
           width: "100%",
-          margin: "0 auto",
+          maxWidth: 1000,     // 최대 너비 제한해서 가운데 정렬 유지
+          margin: "0 auto",  // 컨테이너 가로 가운데 정렬
           boxSizing: "border-box",
+          justifyContent: "center",  // 그리드 내부 아이템 중앙 정렬
         }}
       >
         {filtered.length === 0 && (
@@ -202,6 +226,7 @@ function Home({ worldcupList, onSelect, onMakeWorldcup }) {
           return (
             <div
               key={cup.id}
+              ref={(el) => (cardRefs.current[idx] = el)}
               style={{
                 ...cardBoxStyle,
                 maxWidth: 400,
@@ -258,18 +283,20 @@ function Home({ worldcupList, onSelect, onMakeWorldcup }) {
                   />
                 )}
                 {topCandidate && (
-                  <div style={{
-                    position: "absolute",
-                    top: 6,
-                    left: 8,
-                    background: "#ffd700ee",
-                    color: "#333",
-                    fontWeight: 800,
-                    fontSize: isMobile ? 12 : 15,
-                    padding: "2px 8px",
-                    borderRadius: 14,
-                    boxShadow: "0 1px 4px #0001"
-                  }}>
+                  <div
+                    style={{
+                      position: "absolute",
+                      top: 6,
+                      left: 8,
+                      background: "#ffd700ee",
+                      color: "#333",
+                      fontWeight: 800,
+                      fontSize: isMobile ? 12 : 15,
+                      padding: "2px 8px",
+                      borderRadius: 14,
+                      boxShadow: "0 1px 4px #0001",
+                    }}
+                  >
                     🥇 최다우승
                   </div>
                 )}
@@ -328,18 +355,15 @@ function Home({ worldcupList, onSelect, onMakeWorldcup }) {
                   style={{
                     display: "flex",
                     gap: 10,
-                    margin: isMobile
-                      ? "13px 0 8px 0"
-                      : "16px 0 8px 0",
+                    margin: isMobile ? "13px 0 8px 0" : "16px 0 8px 0",
                     justifyContent: "center",
                   }}
                 >
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
-                      handleBtnShake(
-                        `start-${cup.id}`,
-                        () => onSelect && onSelect(cup)
+                      handleBtnShake(`start-${cup.id}`, () =>
+                        onSelect && onSelect(cup)
                       );
                     }}
                     className={shakeBtn === `start-${cup.id}` ? "shake-anim" : ""}
@@ -351,7 +375,7 @@ function Home({ worldcupList, onSelect, onMakeWorldcup }) {
                     onClick={(e) => {
                       e.stopPropagation();
                       handleBtnShake(`stats-${cup.id}`, () =>
-                        window.location.href = `/stats/${cup.id}`
+                        (window.location.href = `/stats/${cup.id}`)
                       );
                     }}
                     className={shakeBtn === `stats-${cup.id}` ? "shake-anim" : ""}
@@ -360,7 +384,9 @@ function Home({ worldcupList, onSelect, onMakeWorldcup }) {
                     통계
                   </button>
                 </div>
-                <div style={{ display: "flex", gap: 8, justifyContent: "center" }}>
+                <div
+                  style={{ display: "flex", gap: 8, justifyContent: "center" }}
+                >
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
@@ -418,7 +444,6 @@ function Home({ worldcupList, onSelect, onMakeWorldcup }) {
           );
         })}
       </div>
-
       <style>
         {`
         .shake-anim {

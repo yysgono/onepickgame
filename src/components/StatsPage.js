@@ -3,7 +3,6 @@ import CommentBox from "./CommentBox";
 import { getYoutubeId, isValidImageUrl, getWinnerStats } from "../utils";
 import { useTranslation } from "react-i18next";
 
-// 공통 스타일 import
 import COLORS from "../styles/theme";
 import { mainButtonStyle, grayButtonStyle } from "../styles/common";
 
@@ -83,9 +82,9 @@ function StatsPage({ selectedCup, showOnlyWinner }) {
     return {};
   }
 
-  // 이름 2줄 제한 스타일(핵심만 추가)
+  // 이름 2줄 제한 스타일
   const nameTdStyle = {
-    maxWidth: isMobile ? 90 : 120, // 폭은 상황에 맞게 조절
+    maxWidth: isMobile ? 90 : 120,
     wordBreak: "break-all",
     overflow: "hidden",
     textOverflow: "ellipsis",
@@ -117,16 +116,27 @@ function StatsPage({ selectedCup, showOnlyWinner }) {
           alignItems: "flex-start",
           gap: 32,
           width: "100%",
+          justifyContent: isMobile ? "center" : undefined,
         }}
       >
         {/* 통계 표 */}
-        <div style={{
-          flex: 1.2,
-          minWidth: 340,
-          maxWidth: 700,
-        }}>
-          {/* 기간/검색 */}
-          <div style={{ marginBottom: 12, display: "flex", alignItems: "center", flexWrap: "wrap" }}>
+        <div
+          style={{
+            flex: 1.2,
+            minWidth: 340,
+            maxWidth: isMobile ? 700 : 700,
+            margin: isMobile ? "0 auto 32px auto" : undefined,
+          }}
+        >
+          {/* 기간/검색 버튼 */}
+          <div
+            style={{
+              marginBottom: 12,
+              display: "flex",
+              alignItems: "center",
+              flexWrap: "wrap",
+            }}
+          >
             {PERIODS.map((p) => (
               <button
                 key={p.key}
@@ -217,11 +227,13 @@ function StatsPage({ selectedCup, showOnlyWinner }) {
                       fontWeight: i + 1 <= 3 ? 700 : 400
                     }}
                   >
-                    <td style={{
-                      padding: "7px 0",
-                      fontSize: isMobile ? 15 : 19,
-                      ...getNameTextStyle(i + 1)
-                    }}>
+                    <td
+                      style={{
+                        padding: "7px 0",
+                        fontSize: isMobile ? 15 : 19,
+                        ...getNameTextStyle(i + 1)
+                      }}
+                    >
                       {i + 1 <= 3 ? (
                         <span>
                           <span style={{ fontSize: 18, verticalAlign: "middle" }}>👑</span>{" "}
@@ -245,24 +257,22 @@ function StatsPage({ selectedCup, showOnlyWinner }) {
                       style={{
                         padding: "7px 0",
                         ...getNameTextStyle(i + 1),
-                        ...nameTdStyle, // <-- 이름 2줄 제한 스타일
+                        ...nameTdStyle,
                       }}
                     >
                       {row.name}
                     </td>
-                    <td style={{
-                      padding: "7px 0",
-                      ...getNameTextStyle(i + 1)
-                    }}>{row.winCount}</td>
-                    <td style={{
-                      padding: "7px 0",
-                      ...getNameTextStyle(i + 1)
-                    }}>
+                    <td style={{ padding: "7px 0", ...getNameTextStyle(i + 1) }}>
+                      {row.winCount}
+                    </td>
+                    <td style={{ padding: "7px 0", ...getNameTextStyle(i + 1) }}>
                       {row.totalGames ? percent(row.winCount, row.totalGames) : "-"}
                     </td>
                     <td style={{ padding: "7px 0" }}>{row.matchWins}</td>
                     <td style={{ padding: "7px 0" }}>{row.matchCount}</td>
-                    <td style={{ padding: "7px 0" }}>{row.matchCount ? percent(row.matchWins, row.matchCount) : "-"}</td>
+                    <td style={{ padding: "7px 0" }}>
+                      {row.matchCount ? percent(row.matchWins, row.matchCount) : "-"}
+                    </td>
                   </tr>
                 ))}
                 {filteredStats.length === 0 && (
@@ -276,19 +286,24 @@ function StatsPage({ selectedCup, showOnlyWinner }) {
             </table>
           </div>
         </div>
+
         {/* 댓글 */}
         {!showOnlyWinner && (
-          <div style={{
-            flex: 1,
-            minWidth: 300,
-            maxWidth: 480,
-            background: "#fff",
-            borderRadius: 16,
-            boxShadow: "0 2px 12px #0001",
-            padding: 24,
-            marginTop: isMobile ? 32 : 0,
-            width: isMobile ? "100%" : undefined
-          }}>
+          <div
+            style={{
+              flex: 1,
+              minWidth: 300,
+              maxWidth: 480,
+              background: "#fff",
+              borderRadius: 16,
+              boxShadow: "0 2px 12px #0001",
+              padding: 24,
+              marginTop: isMobile ? 0 : 0,
+              width: isMobile ? "100%" : undefined,
+              marginLeft: isMobile ? "auto" : undefined,
+              marginRight: isMobile ? "auto" : undefined,
+            }}
+          >
             <CommentBox cupId={selectedCup.id} />
           </div>
         )}
