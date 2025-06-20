@@ -6,7 +6,7 @@ const COLORS = {
   main: "#1976ed",
   sub: "#45b7fa",
   danger: "#d33",
-  gray: "#888"
+  gray: "#888",
 };
 
 function getFileExtension(url) {
@@ -14,6 +14,14 @@ function getFileExtension(url) {
   const parts = url.split("?")[0].split("/").pop().split(".");
   if (parts.length === 1) return "";
   return parts[parts.length - 1].toLowerCase();
+}
+
+function getYoutubeThumb(url) {
+  const match = url.match(
+    /(?:youtu\.be\/|youtube\.com\/(?:embed\/|watch\?v=))([\w-]{11})/
+  );
+  if (match) return `https://img.youtube.com/vi/${match[1]}/mqdefault.jpg`;
+  return null;
 }
 
 function EditWorldcupPage({ worldcupList, setWorldcupList, cupId }) {
@@ -26,7 +34,7 @@ function EditWorldcupPage({ worldcupList, setWorldcupList, cupId }) {
   const [data, setData] = useState(originalCup?.data ? [...originalCup.data] : []);
   const [error, setError] = useState("");
 
-  // refs for file inputs for each candidate
+  // refs for file inputs
   const fileInputRefs = useRef([]);
 
   if (!originalCup) {
@@ -47,7 +55,6 @@ function EditWorldcupPage({ worldcupList, setWorldcupList, cupId }) {
       i === idx ? { ...item, [key]: value } : item
     ));
   }
-
   function handleFileChange(idx, e) {
     const file = e.target.files[0];
     if (!file) return;
@@ -60,7 +67,6 @@ function EditWorldcupPage({ worldcupList, setWorldcupList, cupId }) {
     reader.onload = ev => handleCandidateChange(idx, "image", ev.target.result);
     reader.readAsDataURL(file);
   }
-
   function handleSave() {
     setError("");
     if (!title.trim()) return setError("제목을 입력하세요.");
@@ -150,83 +156,121 @@ function EditWorldcupPage({ worldcupList, setWorldcupList, cupId }) {
         }}>
           후보 목록 <span style={{ color: COLORS.gray, fontSize: 14 }}>({data.length}개)</span>
         </div>
-        {data.map((item, i) => (
-          <div key={item.id} style={{
-            display: "flex", gap: 11, alignItems: "center", marginBottom: 13,
-            padding: "10px 9px", borderRadius: 12, background: "#fafdff",
-            boxShadow: "0 1.5px 8px #1976ed11",
-          }}>
-            <input
-              value={item.name}
-              onChange={e => handleCandidateChange(i, "name", e.target.value)}
-              placeholder="이름"
-              style={{
-                width: isMobile ? 78 : 120, minWidth: 50, padding: 9,
-                borderRadius: 8, border: `1.3px solid #bbb`, fontSize: 16
-              }}
-              maxLength={30}
-            />
-            <input
-              value={item.image}
-              onChange={e => handleCandidateChange(i, "image", e.target.value)}
-              placeholder="이미지 URL"
-              style={{
-                flex: 1, minWidth: 0, padding: 9,
-                borderRadius: 8, border: `1.3px solid #bbb`, fontSize: 15,
-                background: "#fafdff"
-              }}
-            />
-            {/* 파일 업로드 버튼 */}
-            <button
-              type="button"
-              onClick={() => fileInputRefs.current[i].click()}
-              style={{
-                background: COLORS.main,
-                color: "#fff",
-                border: "none",
-                borderRadius: 8,
-                padding: "7px 14px",
-                fontWeight: 700,
-                cursor: "pointer",
-                fontSize: 14,
-                whiteSpace: "nowrap",
-                marginLeft: 6,
-              }}
-            >
-              파일
-            </button>
-            <input
-              type="file"
-              accept=".jpg,.jpeg,.png"
-              style={{ display: "none" }}
-              ref={el => fileInputRefs.current[i] = el}
-              onChange={e => handleFileChange(i, e)}
-            />
-            {item.image && (
-              <img
-                src={getThumbnail(item.image)}
-                alt=""
+        {data.map((item, i) => {
+          const ext = getFileExtension(item.image);
+          const isVideoFile = ext === "mp4" || ext === "mov" || ext === "webm" || ext === "ogg";
+          const youtubeThumb = getYoutubeThumb(item.image);
+
+          // 썸네일
+          const thumb = youtubeThumb
+            ? youtubeThumb
+            : !isVideoFile && item.image?.startsWith("data:image")
+            ? item.image
+            : !isVideoFile
+            ? item.image
+            : null;
+
+          return (
+            <div key={item.id} style={{
+              display: "flex", gap: 11, alignItems: "center", marginBottom: 13,
+              padding: "10px 9px", borderRadius: 12, background: "#fafdff",
+              boxShadow: "0 1.5px 8px #1976ed11",
+            }}>
+              <input
+                value={item.name}
+                onChange={e => handleCandidateChange(i, "name", e.target.value)}
+                placeholder="이름"
                 style={{
-                  width: isMobile ? 32 : 44, height: isMobile ? 32 : 44,
-                  objectFit: "cover", borderRadius: 8, background: "#f2f2f2",
-                  boxShadow: "0 2px 8px #0001", border: "1.2px solid #eee",
-                  marginLeft: 8,
+                  width: isMobile ? 78 : 120, minWidth: 50, padding: 9,
+                  borderRadius: 8, border: `1.3px solid #bbb`, fontSize: 16
+                }}
+                maxLength={30}
+              />
+              <input
+                value={item.image}
+                onChange={e => handleCandidateChange(i, "image", e.target.value)}
+                placeholder="이미지 URL"
+                style={{
+                  flex: 1, minWidth: 0, padding: 9,
+                  borderRadius: 8, border: `1.3px solid #bbb`, fontSize: 15,
+                  background: "#fafdff"
                 }}
               />
-            )}
-            <button
-              onClick={() => handleDeleteCandidate(i)}
-              style={{
-                background: COLORS.danger, border: "none", borderRadius: 7,
-                color: "#fff", fontWeight: 700, padding: "9px 12px",
-                cursor: "pointer", fontSize: 14, marginLeft: 8,
-                transition: "background 0.18s"
-              }}
-              onMouseOver={e => (e.currentTarget.style.background = "#b92a2a")}
-              onMouseOut={e => (e.currentTarget.style.background = COLORS.danger)}
-            >삭제</button>
-          </div>
-        ))}
+              {/* PC 이미지 업로드 버튼 */}
+              <button
+                type="button"
+                onClick={() => fileInputRefs.current[i]?.click()}
+                style={{
+                  background: COLORS.main,
+                  color: "#fff",
+                  border: "none",
+                  borderRadius: 8,
+                  padding: "7px 14px",
+                  fontWeight: 700,
+                  cursor: "pointer",
+                  fontSize: 14,
+                  whiteSpace: "nowrap",
+                  marginLeft: 6,
+                }}
+              >
+                파일
+              </button>
+              <input
+                type="file"
+                accept=".jpg,.jpeg,.png"
+                style={{ display: "none" }}
+                ref={el => (fileInputRefs.current[i] = el)}
+                onChange={e => handleFileChange(i, e)}
+              />
+              {thumb ? (
+                <img
+                  src={thumb}
+                  alt=""
+                  style={{
+                    width: isMobile ? 32 : 44, height: isMobile ? 32 : 44,
+                    objectFit: "cover", borderRadius: 8, background: "#f2f2f2",
+                    boxShadow: "0 2px 8px #0001", border: "1.2px solid #eee",
+                    marginLeft: 8,
+                  }}
+                />
+              ) : isVideoFile ? (
+                <span
+                  style={{
+                    display: "inline-block",
+                    width: isMobile ? 32 : 44,
+                    height: isMobile ? 32 : 44,
+                    lineHeight: isMobile ? "32px" : "44px",
+                    textAlign: "center",
+                    fontSize: isMobile ? 24 : 32,
+                    borderRadius: 8,
+                    background: "#f2f2f2",
+                    color: "#1976ed",
+                    boxShadow: "0 2px 8px #0001",
+                    border: "1.2px solid #eee",
+                    userSelect: "none",
+                  }}
+                  role="img"
+                  aria-label="video file"
+                >
+                  🎥
+                </span>
+              ) : null}
+              <button
+                onClick={() => handleDeleteCandidate(i)}
+                style={{
+                  background: COLORS.danger, border: "none", borderRadius: 7,
+                  color: "#fff", fontWeight: 700, padding: "9px 12px",
+                  cursor: "pointer", fontSize: 14, marginLeft: 8,
+                  transition: "background 0.18s"
+                }}
+                onMouseOver={e => (e.currentTarget.style.background = "#b92a2a")}
+                onMouseOut={e => (e.currentTarget.style.background = COLORS.danger)}
+              >
+                삭제
+              </button>
+            </div>
+          );
+        })}
         <button
           onClick={handleAddCandidate}
           style={{
@@ -237,7 +281,9 @@ function EditWorldcupPage({ worldcupList, setWorldcupList, cupId }) {
           }}
           onMouseOver={e => (e.currentTarget.style.background = COLORS.sub)}
           onMouseOut={e => (e.currentTarget.style.background = COLORS.main)}
-        >+ 후보 추가</button>
+        >
+          + 후보 추가
+        </button>
       </div>
       {error && <div style={{ color: COLORS.danger, marginTop: 17, fontWeight: 700, textAlign: "center" }}>{error}</div>}
       <div style={{ marginTop: 38, textAlign: "center" }}>
@@ -250,7 +296,9 @@ function EditWorldcupPage({ worldcupList, setWorldcupList, cupId }) {
           }}
           onMouseOver={e => (e.currentTarget.style.background = COLORS.sub)}
           onMouseOut={e => (e.currentTarget.style.background = COLORS.main)}
-        >저장</button>
+        >
+          저장
+        </button>
         <button
           onClick={() => navigate("/")}
           style={{
@@ -258,7 +306,9 @@ function EditWorldcupPage({ worldcupList, setWorldcupList, cupId }) {
             fontSize: 18, padding: "13px 34px", cursor: "pointer",
             boxShadow: "0 1.5px 9px #1976ed09", marginLeft: 2
           }}
-        >취소</button>
+        >
+          취소
+        </button>
       </div>
     </div>
   );
