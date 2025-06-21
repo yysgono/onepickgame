@@ -1,8 +1,8 @@
+// src/components/StatsPage.js
 import React, { useState, useEffect } from "react";
 import CommentBox from "./CommentBox";
 import { getYoutubeId, isValidImageUrl, getWinnerStats } from "../utils";
 import { useTranslation } from "react-i18next";
-
 import COLORS from "../styles/theme";
 import { mainButtonStyle, grayButtonStyle } from "../styles/common";
 
@@ -11,7 +11,6 @@ function getThumb(image) {
   const ext = image?.split('.').pop().toLowerCase();
   const isVideo = ext === "mp4" || ext === "webm" || ext === "ogg";
   const isGif = ext === "gif";
-
   if (youtubeId) return `https://img.youtube.com/vi/${youtubeId}/mqdefault.jpg`;
   if (isVideo || isGif) return image;  // 영상/움짤은 원본 url 반환
   if (typeof image === "string" && image.startsWith("data:image/")) return image;
@@ -40,7 +39,7 @@ function StatsPage({ selectedCup, showOnlyWinner }) {
   const [sortDesc, setSortDesc] = useState(true);
   const [period, setPeriod] = useState("all");
   const [search, setSearch] = useState("");
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 800);
+  const [isMobile, setIsMobile] = useState(typeof window !== "undefined" ? window.innerWidth < 800 : false);
 
   useEffect(() => {
     const raw = getWinnerStats(selectedCup.id, period) || {};

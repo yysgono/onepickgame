@@ -1,6 +1,6 @@
 import "./i18n";
 import "./App.css";
-import React, { useState, useEffect, useRef } from "react";
+import React, { useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route, useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
@@ -23,27 +23,9 @@ import SignupBox from "./components/SignupBox";
 import FindIdBox from "./components/FindIdBox";
 import FindPwBox from "./components/FindPwBox";
 
-const defaultWorldcupList = [
-  {
-    id: "default-1",
-    title: "예시 월드컵",
-    desc: "샘플 월드컵 설명",
-    data: [
-      { id: "1", name: "치킨", image: "https://picsum.photos/id/10/400/400" },
-      { id: "2", name: "피자", image: "https://picsum.photos/id/20/400/400" },
-      { id: "3", name: "햄버거", image: "https://picsum.photos/id/30/400/400" },
-      { id: "4", name: "떡볶이", image: "https://picsum.photos/id/40/400/400" }
-    ]
-  }
-];
+import { fetchWorldcupById, fetchWorldcups } from "./db"; // db 불러오기
 
 function App() {
-  const [worldcupList, setWorldcupList] = useState(() => {
-    const saved = localStorage.getItem("onepickgame_worldcupList");
-    if (saved) return JSON.parse(saved);
-    return defaultWorldcupList;
-  });
-
   const { i18n } = useTranslation();
   const currentUser = localStorage.getItem("onepickgame_user") || "";
   const isAdmin = currentUser === "admin";
@@ -76,39 +58,12 @@ function App() {
     localStorage.setItem("onepickgame_lang", lng);
   }
 
-  function handleAddWorldcup(cup) {
-    const newList = [...worldcupList, cup];
-    setWorldcupList(newList);
-    localStorage.setItem("onepickgame_worldcupList", JSON.stringify(newList));
-  }
-
+  // 월드컵 리스트 백업/복구는 로컬에 남기고 싶을 때만 사용!
   function handleBackup() {
-    const data = localStorage.getItem("onepickgame_worldcupList") || "[]";
-    const blob = new Blob([data], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `worldcup_backup_${Date.now()}.json`;
-    a.click();
-    URL.revokeObjectURL(url);
+    alert("DB 연동 버전에서는 백업/복구 기능이 비활성화 될 수 있습니다.");
   }
-
   function handleRestore(e) {
-    const file = e.target.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = function(ev) {
-      try {
-        const data = JSON.parse(ev.target.result);
-        if (!Array.isArray(data)) throw new Error("형식 오류");
-        localStorage.setItem("onepickgame_worldcupList", JSON.stringify(data));
-        alert("복구 성공!");
-        window.location.reload();
-      } catch {
-        alert("복구 실패!");
-      }
-    };
-    reader.readAsText(file);
+    alert("DB 연동 버전에서는 백업/복구 기능이 비활성화 될 수 있습니다.");
     e.target.value = "";
   }
 
@@ -121,27 +76,48 @@ function App() {
     window.location.href = "/worldcup-maker";
   }
 
-  // Home 페이지 Wrapper
+  // Home 페이지 Wrapper (DB에서 월드컵 전체를 불러옴)
   function HomeWrapper() {
+    const [worldcupList, setWorldcupList] = React.useState([]);
+    const [loading, setLoading] = React.useState(true);
     const navigate = useNavigate();
+
+    useEffect(() => {
+      setLoading(true);
+      fetchWorldcups()
+        .then(setWorldcupList)
+        .finally(() => setLoading(false));
+    }, []);
+
     return (
       <Home
         worldcupList={worldcupList}
         onSelect={cup => navigate(`/select-round/${cup.id}`)}
         onMakeWorldcup={handleMakeWorldcup}
+        loading={loading}
       />
     );
   }
 
-  // SelectRoundPage Wrapper - cup 객체 꼭 넘겨주기!
+  // SelectRoundPage Wrapper (DB에서 해당 월드컵을 불러옴)
   function SelectRoundPageWrapper() {
     const { id } = useParams();
     const navigate = useNavigate();
-    const cup = worldcupList.find(c => String(c.id) === id);
+    const [cup, setCup] = React.useState(null);
+    const [loading, setLoading] = React.useState(true);
+
+    useEffect(() => {
+      setLoading(true);
+      fetchWorldcupById(id)
+        .then(setCup)
+        .finally(() => setLoading(false));
+    }, [id]);
+
+    if (loading) return <div style={{padding: 80, textAlign:"center"}}>로딩 중...</div>;
     if (!cup) return <div style={{ padding: 80 }}>월드컵 정보를 찾을 수 없습니다.</div>;
     return (
       <SelectRoundPage
-        cup={cup}   // 반드시 cup 객체 전달!
+        cup={cup}
         maxRound={cup.data.length}
         candidates={cup.data}
         onSelect={round => navigate(`/match/${id}/${round}`)}
@@ -149,47 +125,89 @@ function App() {
     );
   }
 
-  // 통계 페이지 Wrapper
+  // MatchPage Wrapper (DB에서 해당 월드컵을 불러옴)
+  function MatchPageWrapper() {
+    const { id, round } = useParams();
+    const [cup, setCup] = React.useState(null);
+    const [loading, setLoading] = React.useState(true);
+
+    useEffect(() => {
+      setLoading(true);
+      fetchWorldcupById(id)
+        .then(setCup)
+        .finally(() => setLoading(false));
+    }, [id]);
+
+    if (loading) return <div style={{padding: 80, textAlign:"center"}}>로딩 중...</div>;
+    if (!cup) return <div style={{ padding: 80 }}>월드컵 정보를 찾을 수 없습니다.</div>;
+    return (
+      <MatchPage
+        cup={cup}
+        round={Number(round)}
+      />
+    );
+  }
+
+  // ResultPage Wrapper (DB에서 해당 월드컵을 불러옴)
+  function ResultPageWrapper() {
+    const { id, round } = useParams();
+    const [cup, setCup] = React.useState(null);
+    const [loading, setLoading] = React.useState(true);
+
+    useEffect(() => {
+      setLoading(true);
+      fetchWorldcupById(id)
+        .then(setCup)
+        .finally(() => setLoading(false));
+    }, [id]);
+
+    if (loading) return <div style={{padding: 80, textAlign:"center"}}>로딩 중...</div>;
+    if (!cup) return <div style={{ padding: 80 }}>월드컵 정보를 찾을 수 없습니다.</div>;
+    return (
+      <ResultPage
+        cup={cup}
+        round={Number(round)}
+      />
+    );
+  }
+
+  // StatsPage Wrapper (DB에서 해당 월드컵을 불러옴)
   function StatsPageWrapper() {
     const { id } = useParams();
-    const cup = worldcupList.find(c => String(c.id) === id);
+    const [cup, setCup] = React.useState(null);
+    const [loading, setLoading] = React.useState(true);
+
+    useEffect(() => {
+      setLoading(true);
+      fetchWorldcupById(id)
+        .then(setCup)
+        .finally(() => setLoading(false));
+    }, [id]);
+
+    if (loading) return <div style={{padding: 80, textAlign:"center"}}>로딩 중...</div>;
     if (!cup) return <div style={{ padding: 80 }}>월드컵 정보를 찾을 수 없습니다.</div>;
     return <StatsPage selectedCup={cup} />;
   }
 
+  // 월드컵 생성(로컬X, 추후 DB 저장 함수로 바꿔주세요)
   function WorldcupMakerWrapper() {
     const navigate = useNavigate();
     return (
       <WorldcupMaker
-        onCreate={cup => {
-          handleAddWorldcup(cup);
-          navigate("/");
-        }}
+        onCreate={() => navigate("/")}
         onCancel={() => navigate("/")}
       />
     );
   }
 
+  // 아래 관리페이지 등은 필요시 DB방식으로 교체
   function ManageWorldcupWrapper() {
-    return (
-      <ManageWorldcup
-        user={currentUser}
-        isAdmin={isAdmin}
-        worldcupList={worldcupList}
-        setWorldcupList={setWorldcupList}
-      />
-    );
+    return <ManageWorldcup user={currentUser} isAdmin={isAdmin} />;
   }
 
   function EditWorldcupPageWrapper() {
     const { id } = useParams();
-    return (
-      <EditWorldcupPage
-        worldcupList={worldcupList}
-        setWorldcupList={setWorldcupList}
-        cupId={id}
-      />
-    );
+    return <EditWorldcupPage cupId={id} />;
   }
 
   // 관리자 전용 Route
@@ -245,12 +263,13 @@ function App() {
           <Routes>
             <Route path="/" element={<HomeWrapper />} />
             <Route path="/select-round/:id" element={<SelectRoundPageWrapper />} />
-            <Route path="/match/:id/:round" element={<MatchPage worldcupList={worldcupList} />} />
-            <Route path="/result/:id/:round" element={<ResultPage worldcupList={worldcupList} />} />
-            <Route path="/stats/:id" element={<StatsPageWrapper />} />
+            <Route path="/match/:id/:round" element={<MatchPageWrapper />} />
+            <Route path="/result/:id/:round" element={<ResultPageWrapper />} />
+            <Route path="/result/:id/:round" element={<ResultPage />} />
+                      <Route path="/stats/:id" element={<StatsPageWrapper />} />
             <Route path="/worldcup-maker" element={<WorldcupMakerWrapper />} />
             <Route path="/manage" element={<ManageWorldcupWrapper />} />
-            <Route path="/backup" element={<BackupPage worldcupList={worldcupList} setWorldcupList={setWorldcupList} />} />
+            <Route path="/backup" element={<BackupPage />} />
             <Route path="/edit-worldcup/:id" element={<EditWorldcupPageWrapper />} />
             <Route path="/admin" element={<AdminRoute />} />
             <Route path="/admin-stats" element={<AdminStatsRoute />} />
