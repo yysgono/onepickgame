@@ -12,7 +12,7 @@ import {
 } from "../styles/common";
 import MediaRenderer from "./MediaRenderer";
 
-// 🔥 여기에만 새로 추가!
+// 🔥 파이어베이스에서 월드컵 목록 가져오기
 import { fetchAllWorldcups } from "../utils/firebaseGameApi";
 
 const useSlideFadeIn = (length) => {
@@ -34,26 +34,20 @@ const useSlideFadeIn = (length) => {
   return refs;
 };
 
-function Home({ worldcupList: propWorldcupList, onSelect, onMakeWorldcup }) {
+// ✅ propWorldcupList 완전히 제거!
+function Home({ onSelect, onMakeWorldcup }) {
   const { t } = useTranslation();
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState("popular");
   const [shakeBtn, setShakeBtn] = useState(null);
 
-  // 🔥 DB에서 읽어온 데이터 저장용
-  const [dbWorldcupList, setDbWorldcupList] = useState([]);
+  // 파이어베이스에서 가져온 월드컵 리스트
+  const [worldcupList, setWorldcupList] = useState([]);
 
-  // 🔥 mount 시 한 번만 DB에서 불러옴
+  // 컴포넌트가 처음 렌더링될 때 1번만 DB에서 데이터 읽어옴
   useEffect(() => {
-    if (!propWorldcupList || propWorldcupList.length === 0) {
-      fetchAllWorldcups().then(setDbWorldcupList);
-    }
-  }, [propWorldcupList]);
-
-  // 🔥 worldcupList는 기존 props 우선, 없으면 DB에서 불러온 값
-  const worldcupList = (propWorldcupList && propWorldcupList.length > 0)
-    ? propWorldcupList
-    : dbWorldcupList;
+    fetchAllWorldcups().then(setWorldcupList);
+  }, []);
 
   const filtered = worldcupList
     .filter(
