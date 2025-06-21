@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { getThumbnail, getMostWinner } from "../utils";
-import { fetchWorldcups, addWorldcup } from "../db";
+import { fetchWorldcups, deleteWorldcup } from "../db"; // 여기 한 줄로 OK!
 import COLORS from "../styles/theme";
 import {
   cardBoxStyle,
@@ -11,10 +11,9 @@ import {
   editButtonStyle,
   delButtonStyle,
 } from "../styles/common";
-
 import MediaRenderer from "./MediaRenderer";
+import MakeWorldcup from "./MakeWorldcup";
 
-// ===== 카드 애니메이션 훅 (기존 코드 유지) =====
 const useSlideFadeIn = (length) => {
   const refs = useRef([]);
   useEffect(() => {
@@ -34,23 +33,23 @@ const useSlideFadeIn = (length) => {
   return refs;
 };
 
-function Home({ onSelect, onMakeWorldcup }) {
+function Home({ onSelect }) {
   const { t } = useTranslation();
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState("popular");
   const [shakeBtn, setShakeBtn] = useState(null);
-
-  // ⬇️⬇️⬇️ 여기 추가! 월드컵리스트 state 및 DB에서 불러오기
   const [worldcupList, setWorldcupList] = useState([]);
+  const [showMake, setShowMake] = useState(false);
+
+  // 리스트 불러오는 함수
+  const loadWorldcups = () => {
+    fetchWorldcups().then(setWorldcupList);
+  };
 
   useEffect(() => {
-    fetchWorldcups().then(setWorldcupList);
-    // 에러처리 하고 싶으면 아래처럼:
-    // fetchWorldcups().then(setWorldcupList).catch(console.error);
+    loadWorldcups();
   }, []);
-  // ⬆️⬆️⬆️
 
-  // 기존 filtered 로직도 worldcupList 사용!
   const filtered = worldcupList
     .filter(
       (cup) =>
@@ -94,6 +93,34 @@ function Home({ onSelect, onMakeWorldcup }) {
         boxSizing: "border-box",
       }}
     >
+      {/* 월드컵 만들기 버튼 */}
+      <div style={{ marginBottom: 28 }}>
+        <button
+          onClick={() => setShowMake(true)}
+          style={{
+            background: "#1976ed",
+            color: "#fff",
+            border: "none",
+            borderRadius: 9,
+            padding: "12px 34px",
+            fontWeight: 800,
+            fontSize: 18,
+            cursor: "pointer",
+            boxShadow: "0 2px 8px #1976ed22",
+          }}
+        >
+          + 월드컵 만들기
+        </button>
+      </div>
+
+      {/* MakeWorldcup 모달 */}
+      {showMake && (
+        <MakeWorldcup
+          onClose={() => setShowMake(false)}
+          onCreated={loadWorldcups}
+        />
+      )}
+
       {/* 정렬/검색 */}
       <div
         style={{
@@ -104,7 +131,6 @@ function Home({ onSelect, onMakeWorldcup }) {
           flexWrap: "wrap",
         }}
       >
-        {/* 인기순, 최신순 버튼 */}
         <button
           style={{
             background:
@@ -431,18 +457,17 @@ function Home({ onSelect, onMakeWorldcup }) {
                   )}
                   {(currentUser === "admin" || cup.owner === currentUser) && (
                     <button
-                      onClick={(e) => {
+                      onClick={async (e) => {
                         e.stopPropagation();
-                        handleBtnShake(`del-${cup.id}`, () => {
+                        handleBtnShake(`del-${cup.id}`, async () => {
                           if (!window.confirm("정말 삭제하시겠습니까?")) return;
-                          // 여기는 실제로 DB에서 삭제하려면 별도 함수 필요!
-                          // (아직은 localStorage만 삭제)
-                          const newList = worldcupList.filter((c) => c.id !== cup.id);
-                          localStorage.setItem(
-                            "onepickgame_worldcupList",
-                            JSON.stringify(newList)
-                          );
-                          window.location.reload();
+                          try {
+                            await deleteWorldcup(cup.id); // ⭐ DB에서 삭제!
+                            loadWorldcups(); // 리스트 갱신
+                          } catch (err) {
+                            alert("삭제 중 오류 발생!");
+                            console.error(err);
+                          }
                         });
                       }}
                       className={shakeBtn === `del-${cup.id}` ? "shake-anim" : ""}
