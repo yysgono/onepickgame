@@ -1,12 +1,12 @@
-import React, { useMemo, useEffect, useState } from "react";
+import React, { useMemo, useEffect } from "react";
 import { useParams, useLocation, useNavigate } from "react-router-dom";
 import StatsPage from "./StatsPage";
 import CommentBox from "./CommentBox";
 import { getYoutubeId, getThumbnail, saveWinnerStatsWithUser } from "../utils";
-import MediaRenderer from "./MediaRenderer";
+import MediaRenderer from "./MediaRenderer";  // 추가
 import { useTranslation } from "react-i18next";
-import { fetchWorldcupById } from "../db";
 
+// 모바일 체크 커스텀훅 (window undefined 안전)
 function useIsMobile(breakpoint = 800) {
   const [isMobile, setIsMobile] = React.useState(
     typeof window !== "undefined" ? window.innerWidth < breakpoint : false
@@ -20,47 +20,37 @@ function useIsMobile(breakpoint = 800) {
   return isMobile;
 }
 
-function ResultPage() {
+function ResultPage({ worldcupList }) {
   const { id } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
   const { t } = useTranslation();
   const winner = location.state?.winner;
+  // ** 경고 해결: useMemo로 memoization **
   const matchHistory = useMemo(
     () => location.state?.matchHistory || [],
     [location.state]
   );
-
-  // DB에서 월드컵 정보 불러오기
-  const [cup, setCup] = useState(null);
-  const [loading, setLoading] = useState(true);
-  useEffect(() => {
-    setLoading(true);
-    fetchWorldcupById(id)
-      .then(setCup)
-      .finally(() => setLoading(false));
-  }, [id]);
-
+  const cup = worldcupList.find(c => String(c.id) === id);
   const currentUser = typeof window !== "undefined"
     ? localStorage.getItem("onepickgame_user") || "guest"
     : "guest";
   const isMobile = useIsMobile(800);
 
-  // 우승 통계 저장
+  // 저장 effect
   useEffect(() => {
     if (cup && winner && matchHistory.length) {
       saveWinnerStatsWithUser(currentUser, cup.id, winner, matchHistory);
     }
   }, [cup, winner, matchHistory, currentUser]);
 
-  if (loading)
-    return <div style={{ padding: 80, textAlign: "center" }}>로딩 중...</div>;
   if (!cup || !winner)
     return <div style={{ padding: 80 }}>{t("cannotShowResult")}</div>;
 
   const youtubeId = getYoutubeId(winner.image);
   const imgSrc = youtubeId ? getThumbnail(winner.image) : winner.image;
 
+  // --- 우승자 이름 스타일 변수화 ---
   const winnerNameStyle = {
     fontSize: isMobile ? 23 : 28,
     fontWeight: 600,
@@ -77,7 +67,7 @@ function ResultPage() {
     textAlign: "center",
   };
 
-  // 모바일 버전
+  // --- 모바일 버전 ---
   if (isMobile) {
     return (
       <div style={{
@@ -103,7 +93,7 @@ function ResultPage() {
               width: 180,
               height: 180,
               borderRadius: 14,
-              margin: "0 auto 12px auto",
+              margin: "0 auto 12px auto",  // 수평 가운데 정렬
               background: "#eee",
               border: "3px solid #1976ed",
               overflow: "hidden",
@@ -111,7 +101,10 @@ function ResultPage() {
           >
             <MediaRenderer url={winner.image} alt={winner.name} />
           </div>
-          <div style={winnerNameStyle}>{winner.name}</div>
+          {/* 👇 우승자 이름 줄바꿈 + 2줄 ... */}
+          <div style={winnerNameStyle}>
+            {winner.name}
+          </div>
           <div className="page-title" style={{
             fontWeight: 800,
             fontSize: "1.62em",
@@ -180,7 +173,7 @@ function ResultPage() {
     );
   }
 
-  // 데스크탑 버전
+  // --- 데스크탑 버전 ---
   return (
     <div
       style={{
@@ -215,7 +208,7 @@ function ResultPage() {
             width: 180,
             height: 180,
             borderRadius: 14,
-            margin: "0 auto 12px auto",
+            margin: "0 auto 12px auto", // 수평 가운데 정렬
             background: "#eee",
             border: "3px solid #1976ed",
             overflow: "hidden",
@@ -223,7 +216,10 @@ function ResultPage() {
         >
           <MediaRenderer url={winner.image} alt={winner.name} />
         </div>
-        <div style={winnerNameStyle}>{winner.name}</div>
+        {/* 👇 우승자 이름 줄바꿈 + 2줄 ... */}
+        <div style={winnerNameStyle}>
+          {winner.name}
+        </div>
         <div className="page-title" style={{
           fontWeight: 800,
           fontSize: "2.34em",

@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { getThumbnail, getMostWinner } from "../utils";
-import { fetchWorldcups, deleteWorldcup } from "../db"; // 한줄로!
 import COLORS from "../styles/theme";
 import {
   cardBoxStyle,
@@ -11,9 +10,8 @@ import {
   editButtonStyle,
   delButtonStyle,
 } from "../styles/common";
+
 import MediaRenderer from "./MediaRenderer";
-import MakeWorldcup from "./MakeWorldcup";
-import Spinner from "./Spinner"; // 스피너!
 
 const useSlideFadeIn = (length) => {
   const refs = useRef([]);
@@ -34,28 +32,11 @@ const useSlideFadeIn = (length) => {
   return refs;
 };
 
-function Home({ onSelect }) {
+function Home({ worldcupList, onSelect, onMakeWorldcup }) {
   const { t } = useTranslation();
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState("popular");
   const [shakeBtn, setShakeBtn] = useState(null);
-  const [worldcupList, setWorldcupList] = useState([]);
-  const [showMake, setShowMake] = useState(false);
-  const [loading, setLoading] = useState(true);
-
-   console.log("worldcupList 실제값: ", worldcupList);
-
-  // 월드컵 리스트 불러오기
-  const loadWorldcups = () => {
-    setLoading(true);
-    fetchWorldcups()
-      .then(setWorldcupList)
-      .finally(() => setLoading(false));
-  };
-
-  useEffect(() => {
-    loadWorldcups();
-  }, []);
 
   const filtered = worldcupList
     .filter(
@@ -93,21 +74,13 @@ function Home({ onSelect }) {
         margin: "0 auto",
         padding: isMobile
           ? "24px 4vw 80px 4vw"
-          : "38px 100px 90px 100px",
+          : "38px 100px 90px 100px", // 양쪽 100px 광고 공간 확보
         minHeight: "70vh",
         background: `linear-gradient(150deg, #fafdff 80%, #e3f0fb 100%)`,
         overflowX: "hidden",
         boxSizing: "border-box",
       }}
     >
-      {/* MakeWorldcup 모달 */}
-      {showMake && (
-        <MakeWorldcup
-          onClose={() => setShowMake(false)}
-          onCreated={loadWorldcups}
-        />
-      )}
-
       {/* 정렬/검색 */}
       <div
         style={{
@@ -118,6 +91,7 @@ function Home({ onSelect }) {
           flexWrap: "wrap",
         }}
       >
+        {/* 인기순, 최신순 버튼 */}
         <button
           style={{
             background:
@@ -222,26 +196,22 @@ function Home({ onSelect }) {
         </div>
       </div>
 
-      {/* 월드컵 카드 그리드 or 스피너 */}
+      {/* 월드컵 카드 그리드 */}
       <div
         style={{
           display: "grid",
           gridTemplateColumns: isMobile
             ? "repeat(auto-fit, minmax(160px, 1fr))"
-            : "repeat(auto-fit, minmax(180px, 1fr))",
+            : "repeat(auto-fit, minmax(180px, 1fr))", // 최소 180px로 6개 이상도 나옴
           gap: isMobile ? 17 : 32,
           width: "100%",
-          maxWidth: 1200,
+          maxWidth: 1200, // 광고 배너 공간 위해 줄임
           margin: "0 auto",
           boxSizing: "border-box",
           justifyContent: "center",
         }}
       >
-        {loading ? (
-          <div style={{ gridColumn: "1 / -1", textAlign: "center", padding: 50 }}>
-            <Spinner />
-          </div>
-        ) : filtered.length === 0 ? (
+        {filtered.length === 0 && (
           <div
             style={{
               gridColumn: "1 / -1",
@@ -253,222 +223,224 @@ function Home({ onSelect }) {
           >
             등록된 월드컵이 없습니다.
           </div>
-        ) : (
-          filtered.map((cup, idx) => {
-            const topCandidate = getMostWinner(cup.id, cup.data);
-            const thumbnail = topCandidate
-              ? topCandidate.image
-              : cup.data[0]?.image || "";
+        )}
+        {filtered.map((cup, idx) => {
+          const topCandidate = getMostWinner(cup.id, cup.data);
+          const thumbnail = topCandidate
+            ? topCandidate.image
+            : cup.data[0]?.image || "";
 
-            return (
+          return (
+            <div
+              key={cup.id}
+              ref={(el) => (cardRefs.current[idx] = el)}
+              style={{
+                ...cardBoxStyle,
+                maxWidth: 300,
+                margin: "0 auto",
+              }}
+              onClick={(e) => {
+                if (e.target.tagName !== "BUTTON") onSelect && onSelect(cup);
+              }}
+              onMouseOver={(e) => {
+                e.currentTarget.style.boxShadow =
+                  "0 10px 40px #1976ed38, 0 6px 18px #45b7fa23";
+                e.currentTarget.style.transform =
+                  "translateY(-10px) scale(1.045)";
+              }}
+              onMouseOut={(e) => {
+                e.currentTarget.style.boxShadow =
+                  "0 4px 24px #1976ed22, 0 2px 12px #b4c4e4";
+                e.currentTarget.style.transform = "none";
+              }}
+            >
+              {/* 썸네일 */}
               <div
-                key={cup.id}
-                ref={(el) => (cardRefs.current[idx] = el)}
                 style={{
-                  ...cardBoxStyle,
-                  maxWidth: 300,
-                  margin: "0 auto",
-                }}
-                onClick={(e) => {
-                  if (e.target.tagName !== "BUTTON") onSelect && onSelect(cup);
-                }}
-                onMouseOver={(e) => {
-                  e.currentTarget.style.boxShadow =
-                    "0 10px 40px #1976ed38, 0 6px 18px #45b7fa23";
-                  e.currentTarget.style.transform =
-                    "translateY(-10px) scale(1.045)";
-                }}
-                onMouseOut={(e) => {
-                  e.currentTarget.style.boxShadow =
-                    "0 4px 24px #1976ed22, 0 2px 12px #b4c4e4";
-                  e.currentTarget.style.transform = "none";
+                  width: "100%",
+                  aspectRatio: "1 / 1",
+                  borderTopLeftRadius: 20,
+                  borderTopRightRadius: 20,
+                  overflow: "hidden",
+                  background: "#e7f3fd",
+                  marginBottom: 0,
+                  flexShrink: 0,
+                  boxShadow: "0 2px 16px #e6f4fc70",
+                  position: "relative",
                 }}
               >
-                {/* 썸네일 */}
+                {thumbnail ? (
+                  <MediaRenderer url={thumbnail} alt={cup.title} />
+                ) : (
+                  <div
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      background: "#e7f3fd",
+                    }}
+                  />
+                )}
+                {topCandidate && (
+                  <div
+                    style={{
+                      position: "absolute",
+                      top: 6,
+                      left: 8,
+                      background: "#ffd700ee",
+                      color: "#333",
+                      fontWeight: 800,
+                      fontSize: isMobile ? 12 : 15,
+                      padding: "2px 8px",
+                      borderRadius: 14,
+                      boxShadow: "0 1px 4px #0001",
+                    }}
+                  >
+                    🥇 최다우승
+                  </div>
+                )}
+              </div>
+              <div
+                style={{
+                  padding: isMobile
+                    ? "13px 12px 12px 12px"
+                    : "20px 20px 14px 20px",
+                  flex: 1,
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "flex-end",
+                }}
+              >
                 <div
                   style={{
-                    width: "100%",
-                    aspectRatio: "1 / 1",
-                    borderTopLeftRadius: 20,
-                    borderTopRightRadius: 20,
+                    fontWeight: 900,
+                    fontSize: isMobile ? 17 : 21,
+                    marginBottom: 8,
+                    color: COLORS.darkText,
+                    textOverflow: "ellipsis",
                     overflow: "hidden",
-                    background: "#e7f3fd",
-                    marginBottom: 0,
-                    flexShrink: 0,
-                    boxShadow: "0 2px 16px #e6f4fc70",
-                    position: "relative",
+                    textAlign: "center",
+                    wordBreak: "break-all",
+                    whiteSpace: "normal",
+                    lineHeight: 1.25,
+                    minHeight: isMobile ? 24 : 30,
                   }}
                 >
-                  {thumbnail ? (
-                    <MediaRenderer url={thumbnail} alt={cup.title} />
-                  ) : (
-                    <div
-                      style={{
-                        width: "100%",
-                        height: "100%",
-                        background: "#e7f3fd",
-                      }}
-                    />
-                  )}
-                  {topCandidate && (
-                    <div
-                      style={{
-                        position: "absolute",
-                        top: 6,
-                        left: 8,
-                        background: "#ffd700ee",
-                        color: "#333",
-                        fontWeight: 800,
-                        fontSize: isMobile ? 12 : 15,
-                        padding: "2px 8px",
-                        borderRadius: 14,
-                        boxShadow: "0 1px 4px #0001",
-                      }}
-                    >
-                      🥇 최다우승
-                    </div>
-                  )}
+                  {cup.title}
                 </div>
                 <div
                   style={{
-                    padding: isMobile
-                      ? "13px 12px 12px 12px"
-                      : "20px 20px 14px 20px",
-                    flex: 1,
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "flex-end",
+                    color: "#5a6988",
+                    fontSize: isMobile ? 13 : 15,
+                    marginBottom: 7,
+                    minHeight: 20,
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap",
                   }}
                 >
-                  <div
-                    style={{
-                      fontWeight: 900,
-                      fontSize: isMobile ? 17 : 21,
-                      marginBottom: 8,
-                      color: COLORS.darkText,
-                      textOverflow: "ellipsis",
-                      overflow: "hidden",
-                      textAlign: "center",
-                      wordBreak: "break-all",
-                      whiteSpace: "normal",
-                      lineHeight: 1.25,
-                      minHeight: isMobile ? 24 : 30,
+                  {cup.desc}
+                </div>
+                <div
+                  style={{
+                    color: "#99b",
+                    fontSize: isMobile ? 12 : 13,
+                    marginBottom: 3,
+                  }}
+                >
+                  후보 수: {cup.data?.length || 0}
+                </div>
+                <div
+                  style={{
+                    display: "flex",
+                    gap: 10,
+                    margin: isMobile ? "13px 0 8px 0" : "16px 0 8px 0",
+                    justifyContent: "center",
+                  }}
+                >
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleBtnShake(`start-${cup.id}`, () =>
+                        onSelect && onSelect(cup)
+                      );
                     }}
+                    className={shakeBtn === `start-${cup.id}` ? "shake-anim" : ""}
+                    style={mainButtonStyle(isMobile)}
                   >
-                    {cup.title}
-                  </div>
-                  <div
-                    style={{
-                      color: "#5a6988",
-                      fontSize: isMobile ? 13 : 15,
-                      marginBottom: 7,
-                      minHeight: 20,
-                      overflow: "hidden",
-                      textOverflow: "ellipsis",
-                      whiteSpace: "nowrap",
+                    시작
+                  </button>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleBtnShake(`stats-${cup.id}`, () =>
+                        (window.location.href = `/stats/${cup.id}`)
+                      );
                     }}
+                    className={shakeBtn === `stats-${cup.id}` ? "shake-anim" : ""}
+                    style={subButtonStyle(isMobile)}
                   >
-                    {cup.desc}
-                  </div>
-                  <div
-                    style={{
-                      color: "#99b",
-                      fontSize: isMobile ? 12 : 13,
-                      marginBottom: 3,
+                    통계
+                  </button>
+                </div>
+                <div
+                  style={{ display: "flex", gap: 8, justifyContent: "center" }}
+                >
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleBtnShake(`share-${cup.id}`, () => {
+                        const url = `${window.location.origin}/select-round/${cup.id}`;
+                        navigator.clipboard.writeText(url);
+                        window?.toast?.success
+                          ? window.toast.success("링크가 복사되었습니다!")
+                          : alert("링크가 복사되었습니다!");
+                      });
                     }}
+                    className={shakeBtn === `share-${cup.id}` ? "shake-anim" : ""}
+                    style={grayButtonStyle(isMobile)}
                   >
-                    후보 수: {cup.data?.length || 0}
-                  </div>
-                  <div
-                    style={{
-                      display: "flex",
-                      gap: 10,
-                      margin: isMobile ? "13px 0 8px 0" : "16px 0 8px 0",
-                      justifyContent: "center",
-                    }}
-                  >
+                    공유
+                  </button>
+                  {cup.owner === currentUser && (
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
-                        handleBtnShake(`start-${cup.id}`, () =>
-                          onSelect && onSelect(cup)
+                        handleBtnShake(
+                          `edit-${cup.id}`,
+                          () => (window.location.href = `/edit-worldcup/${cup.id}`)
                         );
                       }}
-                      className={shakeBtn === `start-${cup.id}` ? "shake-anim" : ""}
-                      style={mainButtonStyle(isMobile)}
+                      className={shakeBtn === `edit-${cup.id}` ? "shake-anim" : ""}
+                      style={editButtonStyle(isMobile)}
                     >
-                      시작
+                      수정
                     </button>
+                  )}
+                  {(currentUser === "admin" || cup.owner === currentUser) && (
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
-                        handleBtnShake(`stats-${cup.id}`, () =>
-                          (window.location.href = `/stats/${cup.id}`)
-                        );
-                      }}
-                      className={shakeBtn === `stats-${cup.id}` ? "shake-anim" : ""}
-                      style={subButtonStyle(isMobile)}
-                    >
-                      통계
-                    </button>
-                  </div>
-                  <div
-                    style={{ display: "flex", gap: 8, justifyContent: "center" }}
-                  >
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleBtnShake(`share-${cup.id}`, () => {
-                          const url = `${window.location.origin}/select-round/${cup.id}`;
-                          navigator.clipboard.writeText(url);
-                          window?.toast?.success
-                            ? window.toast.success("링크가 복사되었습니다!")
-                            : alert("링크가 복사되었습니다!");
+                        handleBtnShake(`del-${cup.id}`, () => {
+                          if (!window.confirm("정말 삭제하시겠습니까?")) return;
+                          const newList = worldcupList.filter((c) => c.id !== cup.id);
+                          localStorage.setItem(
+                            "onepickgame_worldcupList",
+                            JSON.stringify(newList)
+                          );
+                          window.location.reload();
                         });
                       }}
-                      className={shakeBtn === `share-${cup.id}` ? "shake-anim" : ""}
-                      style={grayButtonStyle(isMobile)}
+                      className={shakeBtn === `del-${cup.id}` ? "shake-anim" : ""}
+                      style={delButtonStyle(isMobile)}
                     >
-                      공유
+                      삭제
                     </button>
-                    {cup.owner === currentUser && (
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleBtnShake(
-                            `edit-${cup.id}`,
-                            () => (window.location.href = `/edit-worldcup/${cup.id}`)
-                          );
-                        }}
-                        className={shakeBtn === `edit-${cup.id}` ? "shake-anim" : ""}
-                        style={editButtonStyle(isMobile)}
-                      >
-                        수정
-                      </button>
-                    )}
-                    {(currentUser === "admin" || cup.owner === currentUser) && (
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleBtnShake(`del-${cup.id}`, () => {
-                            if (!window.confirm("정말 삭제하시겠습니까?")) return;
-                            deleteWorldcup(cup.id)
-                              .then(() => loadWorldcups())
-                              .catch(() => alert("삭제 실패"));
-                          });
-                        }}
-                        className={shakeBtn === `del-${cup.id}` ? "shake-anim" : ""}
-                        style={delButtonStyle(isMobile)}
-                      >
-                        삭제
-                      </button>
-                    )}
-                  </div>
+                  )}
                 </div>
               </div>
-            );
-          })
-        )}
+            </div>
+          );
+        })}
       </div>
 
       <style>

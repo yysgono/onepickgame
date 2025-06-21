@@ -1,7 +1,6 @@
-// src/components/EditWorldcupPage.js
 import React, { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { updateWorldcup } from "../db";
+import { getThumbnail } from "../utils";
 
 const COLORS = {
   main: "#1976ed",
@@ -25,26 +24,28 @@ function getYoutubeThumb(url) {
   return null;
 }
 
-function EditWorldcupPage({ cup }) {
+function EditWorldcupPage({ worldcupList, setWorldcupList, cupId }) {
   const navigate = useNavigate();
   const currentUser = localStorage.getItem("onepickgame_user") || "";
 
-  const [title, setTitle] = useState(cup?.title || "");
-  const [desc, setDesc] = useState(cup?.desc || "");
-  const [data, setData] = useState(cup?.data ? [...cup.data] : []);
+  const originalCup = worldcupList.find(cup => String(cup.id) === String(cupId));
+  const [title, setTitle] = useState(originalCup?.title || "");
+  const [desc, setDesc] = useState(originalCup?.desc || "");
+  const [data, setData] = useState(originalCup?.data ? [...originalCup.data] : []);
   const [error, setError] = useState("");
-  const [ok, setOk] = useState("");
+
+  // refs for file inputs
   const fileInputRefs = useRef([]);
 
-  if (!cup) {
+  if (!originalCup) {
     return <div style={{ padding: 80 }}>월드컵을 찾을 수 없습니다.</div>;
   }
-  if (cup.owner !== currentUser) {
+  if (originalCup.owner !== currentUser) {
     return <div style={{ padding: 80 }}>수정 권한이 없습니다.</div>;
   }
 
   function handleAddCandidate() {
-    setData(d => [...d, { name: "", image: "" }]);
+    setData(d => [...d, { id: Date.now() + Math.random(), name: "", image: "" }]);
   }
   function handleDeleteCandidate(idx) {
     setData(d => d.filter((_, i) => i !== idx));
@@ -66,15 +67,14 @@ function EditWorldcupPage({ cup }) {
     reader.onload = ev => handleCandidateChange(idx, "image", ev.target.result);
     reader.readAsDataURL(file);
   }
-
-  async function handleSave() {
-    setError(""); setOk("");
+  function handleSave() {
+    setError("");
     if (!title.trim()) return setError("제목을 입력하세요.");
     if (data.length < 2) return setError("후보가 2개 이상이어야 합니다.");
     if (data.some(item => !item.name.trim())) return setError("모든 후보에 이름을 입력하세요.");
 
     const updatedCup = {
-      ...cup,
+      ...originalCup,
       title: title.trim(),
       desc: desc.trim(),
       data: data.map(item => ({
@@ -83,16 +83,13 @@ function EditWorldcupPage({ cup }) {
         image: item.image.trim()
       }))
     };
-    try {
-      await updateWorldcup(cup.id, updatedCup);
-      setOk("수정 완료!");
-      setTimeout(() => {
-        navigate("/");
-      }, 800);
-    } catch (err) {
-      setError("저장 중 오류 발생!");
-      console.error(err);
-    }
+    const newList = worldcupList.map(cup =>
+      String(cup.id) === String(cupId) ? updatedCup : cup
+    );
+    setWorldcupList(newList);
+    localStorage.setItem("onepickgame_worldcupList", JSON.stringify(newList));
+    alert("수정 완료!");
+    navigate("/");
   }
 
   const isMobile = window.innerWidth < 700;
@@ -174,7 +171,7 @@ function EditWorldcupPage({ cup }) {
             : null;
 
           return (
-            <div key={i} style={{
+            <div key={item.id} style={{
               display: "flex", gap: 11, alignItems: "center", marginBottom: 13,
               padding: "10px 9px", borderRadius: 12, background: "#fafdff",
               boxShadow: "0 1.5px 8px #1976ed11",
@@ -289,7 +286,6 @@ function EditWorldcupPage({ cup }) {
         </button>
       </div>
       {error && <div style={{ color: COLORS.danger, marginTop: 17, fontWeight: 700, textAlign: "center" }}>{error}</div>}
-      {ok && <div style={{ color: COLORS.main, marginTop: 17, fontWeight: 700, textAlign: "center" }}>{ok}</div>}
       <div style={{ marginTop: 38, textAlign: "center" }}>
         <button
           onClick={handleSave}

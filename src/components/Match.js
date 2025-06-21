@@ -1,12 +1,19 @@
-// Match.js
 import React, { useState, useEffect } from "react";
 import { getYoutubeId, saveWinnerStatsWithUser } from "../utils";
 import { useTranslation } from "react-i18next";
 import MediaRenderer from "./MediaRenderer";
 
+// ✅ "4강/8강 등 선택 라운드만 딱 랜덤으로 추려서 진행" 핵심 수정
 function makeInitialBracket(roundSize, players) {
-  const byes = roundSize - players.length;
-  const arr = shuffle(players).concat(Array(byes).fill(null));
+  // 후보자가 라운드 크기보다 많으면, roundSize만 랜덤 추출!
+  let arr = [...players];
+  if (arr.length > roundSize) {
+    arr = shuffle(arr).slice(0, roundSize);
+  }
+  const byes = roundSize - arr.length;
+  if (byes > 0) {
+    arr = arr.concat(Array(byes).fill(null));
+  }
   return shuffle(arr);
 }
 
@@ -21,7 +28,8 @@ function getStageLabel(n) {
   if (n === 2) return "결승전";
   let power = 2;
   while (power < n) power *= 2;
-  return `${power}강`;
+  if (n === power) return `${n}강`;
+  return `${n}강`;
 }
 
 function getTotalRemainMatchCount(currentCandidates, idx) {
@@ -66,7 +74,7 @@ function Match({ cup, round, onResult }) {
         onResult(winners[0], realMatches);
         return;
       }
-      const nextRoundSize = Math.pow(2, Math.ceil(Math.log2(winners.length)));
+      const nextRoundSize = winners.length;
       setBrackets(prev => [...prev, makeInitialBracket(nextRoundSize, winners)]);
       setWinners([]);
       setIdx(0);
@@ -204,7 +212,7 @@ function Match({ cup, round, onResult }) {
             boxSizing: "border-box",
             opacity: c ? 1 : 0.25,
           }}
-          onClick={!isYoutube && c ? onClick : undefined} // 유튜브면 클릭 막음
+          onClick={!isYoutube && c ? onClick : undefined}
         >
           {c ? (
             <MediaRenderer url={c.image} alt={c.name} />

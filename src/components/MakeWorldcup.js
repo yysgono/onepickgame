@@ -1,7 +1,11 @@
 import React, { useState, useRef } from "react";
 import { useTranslation } from "react-i18next";
-import { addWorldcup } from "../db"; // 경로는 프로젝트 구조에 따라 맞춰주세요.
 
+function getNextId(list) {
+  return Math.max(0, ...list.map(x => parseInt(x.id, 10) || 0)) + 1;
+}
+
+// 유튜브 썸네일 추출 (필요시 사용)
 function getYoutubeThumb(url) {
   const match = url.match(
     /(?:youtu\.be\/|youtube\.com\/(?:embed\/|watch\?v=))([\w-]{11})/
@@ -10,6 +14,7 @@ function getYoutubeThumb(url) {
   return null;
 }
 
+// 확장자 추출 함수
 function getFileExtension(url) {
   if (!url) return "";
   const parts = url.split("?")[0].split("/").pop().split(".");
@@ -17,7 +22,7 @@ function getFileExtension(url) {
   return parts[parts.length - 1].toLowerCase();
 }
 
-export default function MakeWorldcup({ onClose, onCreated }) {
+export default function MakeWorldcup({ worldcupList, setWorldcupList, onClose }) {
   const { t } = useTranslation();
   const [title, setTitle] = useState("");
   const [desc, setDesc] = useState("");
@@ -27,13 +32,17 @@ export default function MakeWorldcup({ onClose, onCreated }) {
   ]);
   const [error, setError] = useState("");
   const [ok, setOk] = useState("");
+
+  // 파일 input refs 배열
   const fileInputRefs = useRef([]);
 
+  // 후보 추가/삭제/변경
   function addCandidate() {
     setCandidates(arr => [...arr, { name: "", image: "" }]);
   }
   function removeCandidate(idx) {
     setCandidates(arr => arr.filter((_, i) => i !== idx));
+    // ref 배열 정리도 필요하지만 생략 가능
   }
   function updateCandidate(idx, key, value) {
     setCandidates(arr =>
@@ -41,7 +50,8 @@ export default function MakeWorldcup({ onClose, onCreated }) {
     );
   }
 
-  async function handleSubmit(e) {
+  // 월드컵 생성
+  function handleSubmit(e) {
     e.preventDefault();
     setError(""); setOk("");
     if (!title.trim()) return setError("제목을 입력하세요.");
@@ -50,28 +60,23 @@ export default function MakeWorldcup({ onClose, onCreated }) {
 
     const owner = localStorage.getItem("onepickgame_user") || "";
     const newCup = {
+      id: getNextId(worldcupList),
       title: title.trim(),
       desc: desc.trim(),
       data: candidates.map(c => ({
+        id: Date.now() + Math.random(),
         name: c.name.trim(),
         image: c.image.trim(),
       })),
       createdAt: Date.now(),
       owner,
     };
-
-    console.log("[handleSubmit] 월드컵 추가 시도:", newCup);
-
-    try {
-      await addWorldcup(newCup);
-      setOk("월드컵이 생성되었습니다!");
-      setTitle(""); setDesc(""); setCandidates([{ name: "", image: "" }, { name: "", image: "" }]);
-      if (onCreated) onCreated(); // ★ 리스트 갱신
-      if (onClose) onClose();
-    } catch (err) {
-      setError("월드컵 저장 중 오류 발생! " + (err && err.message));
-      console.error("월드컵 저장 실패:", err);
-    }
+    const newList = [...worldcupList, newCup];
+    setWorldcupList(newList);
+    localStorage.setItem("onepickgame_worldcupList", JSON.stringify(newList));
+    setOk("월드컵이 생성되었습니다!");
+    setTitle(""); setDesc(""); setCandidates([{ name: "", image: "" }, { name: "", image: "" }]);
+    if (onClose) onClose();
   }
 
   return (
@@ -111,6 +116,7 @@ export default function MakeWorldcup({ onClose, onCreated }) {
             const ext = getFileExtension(c.image);
             const isVideoFile = ext === "mp4" || ext === "mov" || ext === "webm" || ext === "ogg";
 
+            // 썸네일 참고용 (URL 또는 유튜브 썸네일, 영상파일은 null)
             const thumb = youtubeThumb
               ? youtubeThumb
               : !isVideoFile && c.image?.startsWith("data:image")
