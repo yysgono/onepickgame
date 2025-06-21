@@ -18,10 +18,12 @@ import AdminBar from "./components/AdminBar";
 import AdminDashboard from "./components/AdminDashboard";
 import AdminStatsPage from "./components/AdminStatsPage";
 
-// 회원가입/아이디찾기/비밀번호찾기 추가
 import SignupBox from "./components/SignupBox";
 import FindIdBox from "./components/FindIdBox";
 import FindPwBox from "./components/FindPwBox";
+
+// 👇👇👇 여기에 이거 추가! (firebaseTest.js 임포트)
+import { firebaseTestWrite } from "./utils/firebaseTest";
 
 const defaultWorldcupList = [
   {
@@ -47,6 +49,11 @@ function App() {
   const { i18n } = useTranslation();
   const currentUser = localStorage.getItem("onepickgame_user") || "";
   const isAdmin = currentUser === "admin";
+
+  // 👇👇👇 여기에 이거 추가! (페이지 로딩될 때 1번만 실행)
+  useEffect(() => {
+    firebaseTestWrite();
+  }, []);
 
   useEffect(() => {
     const today = new Date().toISOString().slice(0, 10);
@@ -121,7 +128,6 @@ function App() {
     window.location.href = "/worldcup-maker";
   }
 
-  // Home 페이지 Wrapper
   function HomeWrapper() {
     const navigate = useNavigate();
     return (
@@ -133,7 +139,6 @@ function App() {
     );
   }
 
-  // SelectRoundPage Wrapper - cup 객체 꼭 넘겨주기!
   function SelectRoundPageWrapper() {
     const { id } = useParams();
     const navigate = useNavigate();
@@ -141,7 +146,7 @@ function App() {
     if (!cup) return <div style={{ padding: 80 }}>월드컵 정보를 찾을 수 없습니다.</div>;
     return (
       <SelectRoundPage
-        cup={cup}   // 반드시 cup 객체 전달!
+        cup={cup}
         maxRound={cup.data.length}
         candidates={cup.data}
         onSelect={round => navigate(`/match/${id}/${round}`)}
@@ -149,7 +154,6 @@ function App() {
     );
   }
 
-  // 통계 페이지 Wrapper
   function StatsPageWrapper() {
     const { id } = useParams();
     const cup = worldcupList.find(c => String(c.id) === id);
@@ -192,7 +196,6 @@ function App() {
     );
   }
 
-  // 관리자 전용 Route
   function AdminRoute() {
     if (!isAdmin) {
       return (
@@ -233,7 +236,6 @@ function App() {
   return (
     <div className="app-main-wrapper" style={{overflowX:"hidden"}}>
       <Router>
-        {/* 최상단 고정 헤더 하나만 노출 */}
         <Header
           onLangChange={handleLangChange}
           onBackup={handleBackup}

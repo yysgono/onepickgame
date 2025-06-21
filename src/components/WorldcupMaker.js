@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
-import CandidateInput from "./CandidateInput"; // 내부에서 MediaRenderer 사용 중이라 가정
+import CandidateInput from "./CandidateInput";
 import COLORS from "../styles/theme";
 import {
   mainButtonStyle,
   grayButtonStyle,
 } from "../styles/common";
+import { addWorldcupGame } from "../utils/firebaseGameApi"; // 🟢 추가
 
 function isMobile() {
   if (typeof window !== "undefined") {
@@ -23,6 +24,7 @@ function WorldcupMaker({ onCreate, onCancel }) {
     { id: 2, name: "", image: "" },
   ]);
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false); // 🟢 저장 중 상태
   const user = localStorage.getItem("onepickgame_user");
   const mobile = isMobile();
 
@@ -46,9 +48,11 @@ function WorldcupMaker({ onCreate, onCancel }) {
   function removeCandidate(idx) {
     setCandidates((cands) => cands.filter((_, i) => i !== idx));
   }
-  function handleSubmit(e) {
+
+  async function handleSubmit(e) {
     e.preventDefault();
     setError("");
+    if (loading) return; // 중복 방지
     const list = candidates
       .map((c) => ({
         ...c,
@@ -58,8 +62,8 @@ function WorldcupMaker({ onCreate, onCancel }) {
       .filter((c) => c.name && c.image);
     if (!title.trim()) return setError(t("enterWorldcupTitle"));
     if (list.length < 2) return setError(t("enterAtLeast2Candidates"));
+
     const newCup = {
-      id: "cup-" + Date.now(),
       title: title.trim(),
       desc: desc.trim(),
       data: list.map((c, i) => ({
@@ -70,7 +74,25 @@ function WorldcupMaker({ onCreate, onCancel }) {
       creator: user,
       owner: user,
     };
-    onCreate(newCup);
+
+    setLoading(true); // 저장 시작
+    try {
+      // 🟢 Firestore에 저장
+      const id = await addWorldcupGame(newCup);
+      alert("월드컵이 Firestore에 저장되었습니다!\nID: " + id);
+
+      // onCreate도 기존대로 호출
+      if (onCreate) {
+        onCreate({
+          ...newCup,
+          id,
+        });
+      }
+    } catch (e) {
+      setError("저장 실패! 잠시 후 다시 시도해 주세요.");
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -111,6 +133,7 @@ function WorldcupMaker({ onCreate, onCancel }) {
             fontSize: mobile ? 15 : 18,
             marginBottom: 16,
           }}
+          disabled={loading}
         />
         <textarea
           value={desc}
@@ -126,6 +149,7 @@ function WorldcupMaker({ onCreate, onCancel }) {
             fontSize: mobile ? 13 : 15,
             marginBottom: 18,
           }}
+          disabled={loading}
         />
         <div style={{ marginBottom: 18 }}>
           <div style={{ fontWeight: 700, marginBottom: 7 }}>
@@ -137,6 +161,7 @@ function WorldcupMaker({ onCreate, onCancel }) {
               value={c}
               onChange={(val) => updateCandidate(i, val)}
               onRemove={() => removeCandidate(i)}
+              disabled={loading}
             />
           ))}
           <button
@@ -150,6 +175,7 @@ function WorldcupMaker({ onCreate, onCancel }) {
               marginTop: 6,
               width: mobile ? "100%" : undefined,
             }}
+            disabled={loading}
           >
             + {t("addCandidate")}
           </button>
@@ -174,8 +200,9 @@ function WorldcupMaker({ onCreate, onCancel }) {
               borderRadius: 10,
               padding: mobile ? "11px 0" : "13px 0",
             }}
+            disabled={loading}
           >
-            {t("create")}
+            {loading ? t("saving") || "저장중..." : t("create")}
           </button>
           <button
             type="button"
@@ -186,6 +213,7 @@ function WorldcupMaker({ onCreate, onCancel }) {
               borderRadius: 10,
               padding: mobile ? "11px 0" : "13px 0",
             }}
+            disabled={loading}
           >
             {t("cancel")}
           </button>

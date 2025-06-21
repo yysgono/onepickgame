@@ -1,16 +1,25 @@
 // src/utils/firebaseGameApi.js
-
+import { db } from "./firebase";
 import { collection, addDoc, getDocs } from "firebase/firestore";
-import { db } from "./firebase"; // 반드시 src/utils/firebase.js에 있는 db import
 
-// 월드컵 게임 저장 (게임 생성)
-export async function saveGame(gameData) {
-  const docRef = await addDoc(collection(db, "games"), gameData);
-  return docRef.id; // 새로 생성된 게임 문서 ID 반환
+// 월드컵 게임 데이터 저장 함수
+export async function addWorldcupGame(gameData) {
+  try {
+    const docRef = await addDoc(collection(db, "games"), gameData);
+    return docRef.id; // 저장된 문서의 ID 반환
+  } catch (e) {
+    console.error("게임 저장 실패:", e);
+    throw e;
+  }
 }
 
-// 월드컵 게임 전체 불러오기
-export async function fetchAllGames() {
-  const snapshot = await getDocs(collection(db, "games"));
-  return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+// 월드컵 게임 목록 불러오는 함수 (옵션)
+export async function getWorldcupGames() {
+  try {
+    const snapshot = await getDocs(collection(db, "games"));
+    return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+  } catch (e) {
+    console.error("게임 목록 불러오기 실패:", e);
+    throw e;
+  }
 }
