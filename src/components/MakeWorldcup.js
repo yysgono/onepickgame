@@ -1,6 +1,6 @@
 import React, { useState, useRef } from "react";
 import { useTranslation } from "react-i18next";
-import { addWorldcup } from "../db"; // 경로 상황에 맞게!
+import { addWorldcup } from "../db"; // 경로는 프로젝트 구조에 따라 맞춰주세요.
 
 function getYoutubeThumb(url) {
   const match = url.match(
@@ -60,6 +60,8 @@ export default function MakeWorldcup({ onClose, onCreated }) {
       owner,
     };
 
+    console.log("[handleSubmit] 월드컵 추가 시도:", newCup);
+
     try {
       await addWorldcup(newCup);
       setOk("월드컵이 생성되었습니다!");
@@ -67,8 +69,8 @@ export default function MakeWorldcup({ onClose, onCreated }) {
       if (onCreated) onCreated(); // ★ 리스트 갱신
       if (onClose) onClose();
     } catch (err) {
-      setError("월드컵 저장 중 오류 발생!");
-      console.error(err);
+      setError("월드컵 저장 중 오류 발생! " + (err && err.message));
+      console.error("월드컵 저장 실패:", err);
     }
   }
 

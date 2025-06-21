@@ -43,6 +43,8 @@ function Home({ onSelect }) {
   const [showMake, setShowMake] = useState(false);
   const [loading, setLoading] = useState(true);
 
+   console.log("worldcupList 실제값: ", worldcupList);
+
   // 월드컵 리스트 불러오기
   const loadWorldcups = () => {
     setLoading(true);

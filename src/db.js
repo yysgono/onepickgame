@@ -6,7 +6,8 @@ import {
   getDoc,
   addDoc,
   doc,
-  deleteDoc
+  deleteDoc,
+  setDoc
 } from "firebase/firestore";
 
 // 월드컵 리스트 전체 불러오기
@@ -38,4 +39,11 @@ export async function deleteWorldcup(id) {
   if (!id) throw new Error("삭제할 ID가 없습니다.");
   const docRef = doc(db, "worldcups", id);
   await deleteDoc(docRef);
+}
+
+// 월드컵 수정하기
+export async function updateWorldcup(id, data) {
+  if (!id) throw new Error("수정할 ID가 없습니다.");
+  const docRef = doc(db, "worldcups", id);
+  await setDoc(docRef, data, { merge: true });
 }

@@ -1,7 +1,15 @@
+// src/App.js
+
 import "./i18n";
 import "./App.css";
 import React, { useEffect } from "react";
-import { BrowserRouter as Router, Routes, Route, useNavigate, useParams } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  useNavigate,
+  useParams,
+} from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
 import Header from "./components/Header";
@@ -23,7 +31,10 @@ import SignupBox from "./components/SignupBox";
 import FindIdBox from "./components/FindIdBox";
 import FindPwBox from "./components/FindPwBox";
 
-import { fetchWorldcupById, fetchWorldcups } from "./db"; // db 불러오기
+import {
+  fetchWorldcupById,
+  fetchWorldcups,
+} from "./db"; // db 불러오기
 
 function App() {
   const { i18n } = useTranslation();
@@ -205,10 +216,25 @@ function App() {
     return <ManageWorldcup user={currentUser} isAdmin={isAdmin} />;
   }
 
+  // ----------- 수정 페이지 Wrapper -------------
   function EditWorldcupPageWrapper() {
     const { id } = useParams();
-    return <EditWorldcupPage cupId={id} />;
+    const [cup, setCup] = React.useState(null);
+    const [loading, setLoading] = React.useState(true);
+
+    React.useEffect(() => {
+      setLoading(true);
+      fetchWorldcupById(id)
+        .then(setCup)
+        .finally(() => setLoading(false));
+    }, [id]);
+
+    if (loading) return <div style={{ padding: 80, textAlign: "center" }}>로딩 중...</div>;
+    if (!cup) return <div style={{ padding: 80 }}>월드컵 정보를 찾을 수 없습니다.</div>;
+
+    return <EditWorldcupPage cup={cup} />;
   }
+  // --------------------------------------------
 
   // 관리자 전용 Route
   function AdminRoute() {
@@ -265,8 +291,7 @@ function App() {
             <Route path="/select-round/:id" element={<SelectRoundPageWrapper />} />
             <Route path="/match/:id/:round" element={<MatchPageWrapper />} />
             <Route path="/result/:id/:round" element={<ResultPageWrapper />} />
-            <Route path="/result/:id/:round" element={<ResultPage />} />
-                      <Route path="/stats/:id" element={<StatsPageWrapper />} />
+            <Route path="/stats/:id" element={<StatsPageWrapper />} />
             <Route path="/worldcup-maker" element={<WorldcupMakerWrapper />} />
             <Route path="/manage" element={<ManageWorldcupWrapper />} />
             <Route path="/backup" element={<BackupPage />} />
