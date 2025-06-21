@@ -76,19 +76,20 @@ function CandidateInput({ value, onChange, onRemove }) {
       style={{
         display: "flex",
         alignItems: "center",
-        gap: 13,
+        gap: 10,
         marginBottom: 14,
-        padding: "14px 18px",
+        padding: "14px 10px",
         borderRadius: 13,
         background: "#fafdff",
         boxShadow: "0 1px 8px #b9d8ff28",
+        flexWrap: "wrap",
       }}
     >
       {/* 썸네일 미리보기 */}
       <div
         style={{
-          width: 54,
-          height: 54,
+          width: 60,
+          height: 60,
           borderRadius: 10,
           background: "#e3f0fb",
           display: "flex",
@@ -99,6 +100,7 @@ function CandidateInput({ value, onChange, onRemove }) {
           fontSize: 28,
           color: "#1976ed",
           userSelect: "none",
+          flexShrink: 0,
         }}
       >
         {thumb ? (
@@ -124,13 +126,14 @@ function CandidateInput({ value, onChange, onRemove }) {
         placeholder={t("name")}
         maxLength={24}
         style={{
-          width: 110,
+          width: 100,
           padding: "9px 8px",
           borderRadius: 7,
           border: "1.2px solid #b4c4e4",
           fontSize: 15,
           fontWeight: 600,
           background: "#fff",
+          flexShrink: 0,
         }}
       />
       {/* 이미지 URL */}
@@ -147,6 +150,8 @@ function CandidateInput({ value, onChange, onRemove }) {
           border: "1.2px solid #b4c4e4",
           fontSize: 15,
           background: "#fff",
+          marginRight: 8,
+          minWidth: 120,
         }}
       />
       {/* 파일 업로드 버튼 */}
@@ -163,7 +168,8 @@ function CandidateInput({ value, onChange, onRemove }) {
           cursor: "pointer",
           fontSize: 14.2,
           boxShadow: "0 2px 7px #1976ed15",
-          transition: "background 0.15s",
+          whiteSpace: "nowrap",
+          marginRight: 6,
         }}
         onMouseOver={(e) => (e.currentTarget.style.background = "#45b7fa")}
         onMouseOut={(e) =>
@@ -171,7 +177,7 @@ function CandidateInput({ value, onChange, onRemove }) {
             "linear-gradient(90deg, #1976ed 70%, #45b7fa 100%)")
         }
       >
-        {t("chooseFile") || "파일"}
+        {t("chooseFile") || "파일선택"}
       </button>
       <input
         ref={fileInputRef}
@@ -193,8 +199,8 @@ function CandidateInput({ value, onChange, onRemove }) {
           fontSize: 15,
           padding: "7px 14px",
           cursor: "pointer",
-          marginLeft: 4,
           boxShadow: "0 1px 5px #d33a",
+          whiteSpace: "nowrap",
         }}
       >
         {t("delete") || "삭제"}

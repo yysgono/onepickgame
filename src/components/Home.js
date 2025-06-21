@@ -10,8 +10,10 @@ import {
   editButtonStyle,
   delButtonStyle,
 } from "../styles/common";
-
 import MediaRenderer from "./MediaRenderer";
+
+// 🔥 여기에만 새로 추가!
+import { fetchAllWorldcups } from "../utils/firebaseGameApi";
 
 const useSlideFadeIn = (length) => {
   const refs = useRef([]);
@@ -32,17 +34,32 @@ const useSlideFadeIn = (length) => {
   return refs;
 };
 
-function Home({ worldcupList, onSelect, onMakeWorldcup }) {
+function Home({ worldcupList: propWorldcupList, onSelect, onMakeWorldcup }) {
   const { t } = useTranslation();
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState("popular");
   const [shakeBtn, setShakeBtn] = useState(null);
 
+  // 🔥 DB에서 읽어온 데이터 저장용
+  const [dbWorldcupList, setDbWorldcupList] = useState([]);
+
+  // 🔥 mount 시 한 번만 DB에서 불러옴
+  useEffect(() => {
+    if (!propWorldcupList || propWorldcupList.length === 0) {
+      fetchAllWorldcups().then(setDbWorldcupList);
+    }
+  }, [propWorldcupList]);
+
+  // 🔥 worldcupList는 기존 props 우선, 없으면 DB에서 불러온 값
+  const worldcupList = (propWorldcupList && propWorldcupList.length > 0)
+    ? propWorldcupList
+    : dbWorldcupList;
+
   const filtered = worldcupList
     .filter(
       (cup) =>
-        cup.title.toLowerCase().includes(search.toLowerCase()) ||
-        (cup.desc || "").toLowerCase().includes(search.toLowerCase())
+        (cup.title || "").toLowerCase().includes(search.toLowerCase()) ||
+        (cup.desc || cup.description || "").toLowerCase().includes(search.toLowerCase())
     )
     .sort((a, b) => {
       if (sort === "recent") {
@@ -74,7 +91,7 @@ function Home({ worldcupList, onSelect, onMakeWorldcup }) {
         margin: "0 auto",
         padding: isMobile
           ? "24px 4vw 80px 4vw"
-          : "38px 100px 90px 100px", // 양쪽 100px 광고 공간 확보
+          : "38px 100px 90px 100px",
         minHeight: "70vh",
         background: `linear-gradient(150deg, #fafdff 80%, #e3f0fb 100%)`,
         overflowX: "hidden",
@@ -202,10 +219,10 @@ function Home({ worldcupList, onSelect, onMakeWorldcup }) {
           display: "grid",
           gridTemplateColumns: isMobile
             ? "repeat(auto-fit, minmax(160px, 1fr))"
-            : "repeat(auto-fit, minmax(180px, 1fr))", // 최소 180px로 6개 이상도 나옴
+            : "repeat(auto-fit, minmax(180px, 1fr))",
           gap: isMobile ? 17 : 32,
           width: "100%",
-          maxWidth: 1200, // 광고 배너 공간 위해 줄임
+          maxWidth: 1200,
           margin: "0 auto",
           boxSizing: "border-box",
           justifyContent: "center",
@@ -226,9 +243,10 @@ function Home({ worldcupList, onSelect, onMakeWorldcup }) {
         )}
         {filtered.map((cup, idx) => {
           const topCandidate = getMostWinner(cup.id, cup.data);
-          const thumbnail = topCandidate
-            ? topCandidate.image
-            : cup.data[0]?.image || "";
+          const thumbnail =
+            topCandidate?.image ||
+            (cup.data && cup.data[0]?.image) ||
+            "";
 
           return (
             <div
@@ -338,7 +356,7 @@ function Home({ worldcupList, onSelect, onMakeWorldcup }) {
                     whiteSpace: "nowrap",
                   }}
                 >
-                  {cup.desc}
+                  {cup.desc || cup.description}
                 </div>
                 <div
                   style={{

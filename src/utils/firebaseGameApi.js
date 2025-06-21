@@ -1,16 +1,18 @@
-// src/utils/firebaseGameApi.js
+// firebaseGameApi.js
 
-import { collection, addDoc, getDocs } from "firebase/firestore";
-import { db } from "./firebase"; // 반드시 src/utils/firebase.js에 있는 db import
+// 1. 파이어베이스 관련 함수 불러오기
+import { collection, getDocs } from "firebase/firestore";
 
-// 월드컵 게임 저장 (게임 생성)
-export async function saveGame(gameData) {
-  const docRef = await addDoc(collection(db, "games"), gameData);
-  return docRef.id; // 새로 생성된 게임 문서 ID 반환
-}
+// 2. 파이어베이스 설정에서 export 한 db 인스턴스 불러오기
+import { db } from "./firebase"; // 네 firebase 설정한 js 파일명에 맞게 import해!
 
-// 월드컵 게임 전체 불러오기
-export async function fetchAllGames() {
-  const snapshot = await getDocs(collection(db, "games"));
-  return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+// 3. 모든 월드컵(문서) 불러오는 함수
+export async function fetchAllWorldcups() {
+  // 'onepick' 컬렉션에서 모든 문서를 가져옴
+  const querySnapshot = await getDocs(collection(db, "onepick"));
+  // 문서의 데이터만 배열로 만들어서 return
+  return querySnapshot.docs.map(doc => ({
+    id: doc.id,
+    ...doc.data()
+  }));
 }
