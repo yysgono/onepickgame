@@ -1,6 +1,6 @@
 // src/db.js
 import { db } from "./firebase";
-import { collection, getDocs, addDoc } from "firebase/firestore";
+import { collection, getDocs, addDoc, deleteDoc, doc } from "firebase/firestore";
 
 // 월드컵 리스트 불러오기 함수
 export async function fetchWorldcups() {
