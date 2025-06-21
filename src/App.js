@@ -1,6 +1,6 @@
 import "./i18n";
 import "./App.css";
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route, useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
@@ -17,8 +17,6 @@ import EditWorldcupPage from "./components/EditWorldcupPage";
 import AdminBar from "./components/AdminBar";
 import AdminDashboard from "./components/AdminDashboard";
 import AdminStatsPage from "./components/AdminStatsPage";
-
-// 회원가입/아이디찾기/비밀번호찾기 추가
 import SignupBox from "./components/SignupBox";
 import FindIdBox from "./components/FindIdBox";
 import FindPwBox from "./components/FindPwBox";
@@ -121,7 +119,7 @@ function App() {
     window.location.href = "/worldcup-maker";
   }
 
-  // Home 페이지 Wrapper
+  // 아래부터 페이지 별 Wrapper
   function HomeWrapper() {
     const navigate = useNavigate();
     return (
@@ -133,23 +131,49 @@ function App() {
     );
   }
 
-  // SelectRoundPage Wrapper - cup 객체 꼭 넘겨주기!
   function SelectRoundPageWrapper() {
     const { id } = useParams();
     const navigate = useNavigate();
     const cup = worldcupList.find(c => String(c.id) === id);
     if (!cup) return <div style={{ padding: 80 }}>월드컵 정보를 찾을 수 없습니다.</div>;
+    function getMaxRound(n) {
+      let r = 2;
+      while (r < n) r *= 2;
+      return r;
+    }
     return (
       <SelectRoundPage
-        cup={cup}   // 반드시 cup 객체 전달!
-        maxRound={cup.data.length}
-        candidates={cup.data}
+        cup={cup}
+        maxRound={getMaxRound(cup.data?.length || 0)}
+        candidates={cup.data || []}
         onSelect={round => navigate(`/match/${id}/${round}`)}
       />
     );
   }
 
-  // 통계 페이지 Wrapper
+  function MatchPageWrapper() {
+    const { id, round } = useParams();
+    const cup = worldcupList.find(c => String(c.id) === id);
+    const roundNum = Number(round) || (cup ? cup.data.length : 4);
+    const navigate = useNavigate();
+    if (!cup) return <div style={{ padding: 80 }}>월드컵 정보를 찾을 수 없습니다.</div>;
+    return (
+      <MatchPage
+        cup={cup}
+        round={roundNum}
+        onResult={(winner, matchHistory) => {
+          navigate(`/result/${cup.id}/${roundNum}`, {
+            state: { winner, matchHistory }
+          });
+        }}
+      />
+    );
+  }
+
+  function ResultPageWrapper() {
+    return <ResultPage worldcupList={worldcupList} />;
+  }
+
   function StatsPageWrapper() {
     const { id } = useParams();
     const cup = worldcupList.find(c => String(c.id) === id);
@@ -192,7 +216,6 @@ function App() {
     );
   }
 
-  // 관리자 전용 Route
   function AdminRoute() {
     if (!isAdmin) {
       return (
@@ -233,7 +256,6 @@ function App() {
   return (
     <div className="app-main-wrapper" style={{overflowX:"hidden"}}>
       <Router>
-        {/* 최상단 고정 헤더 하나만 노출 */}
         <Header
           onLangChange={handleLangChange}
           onBackup={handleBackup}
@@ -245,8 +267,8 @@ function App() {
           <Routes>
             <Route path="/" element={<HomeWrapper />} />
             <Route path="/select-round/:id" element={<SelectRoundPageWrapper />} />
-            <Route path="/match/:id/:round" element={<MatchPage worldcupList={worldcupList} />} />
-            <Route path="/result/:id/:round" element={<ResultPage worldcupList={worldcupList} />} />
+            <Route path="/match/:id/:round" element={<MatchPageWrapper />} />
+            <Route path="/result/:id/:round" element={<ResultPageWrapper />} />
             <Route path="/stats/:id" element={<StatsPageWrapper />} />
             <Route path="/worldcup-maker" element={<WorldcupMakerWrapper />} />
             <Route path="/manage" element={<ManageWorldcupWrapper />} />
@@ -254,8 +276,6 @@ function App() {
             <Route path="/edit-worldcup/:id" element={<EditWorldcupPageWrapper />} />
             <Route path="/admin" element={<AdminRoute />} />
             <Route path="/admin-stats" element={<AdminStatsRoute />} />
-
-            {/* 회원가입/아이디찾기/비밀번호찾기 */}
             <Route path="/signup" element={<SignupBox />} />
             <Route path="/find-id" element={<FindIdBox />} />
             <Route path="/find-pw" element={<FindPwBox />} />
