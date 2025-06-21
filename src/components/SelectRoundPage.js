@@ -1,3 +1,4 @@
+// SelectRoundPage.js
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import COLORS from "../styles/theme";
@@ -101,7 +102,7 @@ function SelectRoundPage({ cup, maxRound, candidates, onSelect }) {
             ))}
           </select>
           <button style={startBtnStyle} onClick={() => onSelect(selectedRound)}>
-            {t("start") || "시작"}
+            {t("start")}
           </button>
         </div>
         <div
@@ -112,10 +113,10 @@ function SelectRoundPage({ cup, maxRound, candidates, onSelect }) {
             marginTop: 8,
           }}
         >
-          후보 수: {candidates.length}
+          {t("candidateCount", { count: candidates.length })}
           {hasBye && (
             <span style={{ marginLeft: 10 }}>
-              ⚠️ 인원수가 맞지 않아 부전승이 발생합니다.
+              ⚠️ {t("byeInfo") || "인원수가 맞지 않아 부전승이 발생합니다."}
             </span>
           )}
         </div>

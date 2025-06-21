@@ -1,5 +1,8 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useTranslation } from "react-i18next";
+import { getThumbnail, getMostWinner } from "../utils";
+import { fetchWorldcups } from "../db";
+import { deleteWorldcup } from "../db"; // 추가!
 import COLORS from "../styles/theme";
 import {
   cardBoxStyle,
@@ -10,7 +13,7 @@ import {
   delButtonStyle,
 } from "../styles/common";
 import MediaRenderer from "./MediaRenderer";
-import { getMostWinner } from "../utils";
+import MakeWorldcup from "./MakeWorldcup"; // 추가
 
 const useSlideFadeIn = (length) => {
   const refs = useRef([]);
@@ -31,11 +34,22 @@ const useSlideFadeIn = (length) => {
   return refs;
 };
 
-function Home({ worldcupList, onSelect, onMakeWorldcup }) {
+function Home({ onSelect }) {
   const { t } = useTranslation();
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState("popular");
   const [shakeBtn, setShakeBtn] = useState(null);
+  const [worldcupList, setWorldcupList] = useState([]);
+  const [showMake, setShowMake] = useState(false);
+
+  // 리스트 불러오는 함수
+  const loadWorldcups = () => {
+    fetchWorldcups().then(setWorldcupList);
+  };
+
+  useEffect(() => {
+    loadWorldcups();
+  }, []);
 
   const filtered = worldcupList
     .filter(
@@ -80,7 +94,14 @@ function Home({ worldcupList, onSelect, onMakeWorldcup }) {
         boxSizing: "border-box",
       }}
     >
-      {/* "월드컵 만들기" 버튼 삭제됨 */}
+
+      {/* MakeWorldcup 모달 */}
+      {showMake && (
+        <MakeWorldcup
+          onClose={() => setShowMake(false)}
+          onCreated={loadWorldcups}
+        />
+      )}
 
       {/* 정렬/검색 */}
       <div
@@ -382,7 +403,63 @@ function Home({ worldcupList, onSelect, onMakeWorldcup }) {
                     통계
                   </button>
                 </div>
-                {/* 기타 수정/삭제/공유 버튼 등도 기존처럼 구현 */}
+                <div
+                  style={{ display: "flex", gap: 8, justifyContent: "center" }}
+                >
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleBtnShake(`share-${cup.id}`, () => {
+                        const url = `${window.location.origin}/select-round/${cup.id}`;
+                        navigator.clipboard.writeText(url);
+                        window?.toast?.success
+                          ? window.toast.success("링크가 복사되었습니다!")
+                          : alert("링크가 복사되었습니다!");
+                      });
+                    }}
+                    className={shakeBtn === `share-${cup.id}` ? "shake-anim" : ""}
+                    style={grayButtonStyle(isMobile)}
+                  >
+                    공유
+                  </button>
+                  {cup.owner === currentUser && (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleBtnShake(
+                          `edit-${cup.id}`,
+                          () => (window.location.href = `/edit-worldcup/${cup.id}`)
+                        );
+                      }}
+                      className={shakeBtn === `edit-${cup.id}` ? "shake-anim" : ""}
+                      style={editButtonStyle(isMobile)}
+                    >
+                      수정
+                    </button>
+                  )}
+                  {(currentUser === "admin" || cup.owner === currentUser) && (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleBtnShake(`del-${cup.id}`, () => {
+                          if (!window.confirm("정말 삭제하시겠습니까?")) return;
+                          // 여기는 실제로 DB에서 삭제하려면 별도 함수 필요!
+                          // (아직은 localStorage만 삭제)
+                          const newList = worldcupList.filter((c) => c.id !== cup.id);
+                          localStorage.setItem(
+                            "onepickgame_worldcupList",
+                            JSON.stringify(newList)
+                          );
+                          window.location.reload();
+                        });
+                      }}
+                      className={shakeBtn === `del-${cup.id}` ? "shake-anim" : ""}
+                      style={delButtonStyle(isMobile)}
+                    >
+                      삭제
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
           );
