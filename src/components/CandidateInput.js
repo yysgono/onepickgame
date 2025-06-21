@@ -1,8 +1,8 @@
 import React, { useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { hasBadword } from "../badwords-multilang";
+import { uploadCandidateImage } from "../utils/firebaseImageUpload"; // 추가
 
-// 유튜브 썸네일 추출
 function getYoutubeThumb(url) {
   const match = url.match(
     /(?:youtu\.be\/|youtube\.com\/(?:embed\/|watch\?v=))([\w-]{11})/
@@ -11,7 +11,6 @@ function getYoutubeThumb(url) {
   return null;
 }
 
-// 확장자 추출 함수
 function getFileExtension(url) {
   if (!url) return "";
   const parts = url.split("?")[0].split("/").pop().split(".");
@@ -23,7 +22,7 @@ function CandidateInput({ value, onChange, onRemove }) {
   const { t, i18n } = useTranslation();
   const fileInputRef = useRef();
 
-  // 썸네일 로직 (유튜브 or 이미지 or 비디오)
+  // 썸네일 로직
   const youtubeThumb = getYoutubeThumb(value.image);
   const ext = getFileExtension(value.image);
   const isVideoFile = ext === "mp4" || ext === "webm" || ext === "ogg";
@@ -34,10 +33,10 @@ function CandidateInput({ value, onChange, onRemove }) {
     ? value.image
     : !isVideoFile
     ? value.image
-    : null; // 비디오 파일일 때는 썸네일 없음
+    : null;
 
-  // 파일 업로드시 base64
-  function handleFileChange(e) {
+  // ✅ 파일 업로드 → Storage URL
+  async function handleFileChange(e) {
     const file = e.target.files[0];
     if (!file) return;
 
@@ -54,14 +53,17 @@ function CandidateInput({ value, onChange, onRemove }) {
       alert("gif, webp 파일은 업로드할 수 없습니다.");
       return;
     }
-    const reader = new FileReader();
-    reader.onload = (ev) => {
-      onChange({ ...value, image: ev.target.result });
-    };
-    reader.readAsDataURL(file);
+
+    // Storage 업로드
+    try {
+      const user = localStorage.getItem("onepickgame_user") || "guest";
+      const url = await uploadCandidateImage(file, user);
+      onChange({ ...value, image: url });
+    } catch (err) {
+      alert("이미지 업로드 실패: " + err.message);
+    }
   }
 
-  // 이름 입력시 비속어 필터
   function handleNameChange(e) {
     const name = e.target.value;
     if (hasBadword(name, i18n.language)) {
@@ -110,7 +112,6 @@ function CandidateInput({ value, onChange, onRemove }) {
             style={{ width: "100%", height: "100%", objectFit: "cover" }}
           />
         ) : isVideoFile ? (
-          // 비디오 파일 아이콘 (텍스트로 대체)
           <span role="img" aria-label="video">
             🎥
           </span>

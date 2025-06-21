@@ -1,6 +1,6 @@
 import "./i18n";
 import "./App.css";
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route, useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
@@ -17,44 +17,25 @@ import EditWorldcupPage from "./components/EditWorldcupPage";
 import AdminBar from "./components/AdminBar";
 import AdminDashboard from "./components/AdminDashboard";
 import AdminStatsPage from "./components/AdminStatsPage";
-
 import SignupBox from "./components/SignupBox";
 import FindIdBox from "./components/FindIdBox";
 import FindPwBox from "./components/FindPwBox";
 
-// 👇👇👇 여기에 이거 추가! (firebaseTest.js 임포트)
-import { firebaseTestWrite } from "./utils/firebaseTest";
-
-const defaultWorldcupList = [
-  {
-    id: "default-1",
-    title: "예시 월드컵",
-    desc: "샘플 월드컵 설명",
-    data: [
-      { id: "1", name: "치킨", image: "https://picsum.photos/id/10/400/400" },
-      { id: "2", name: "피자", image: "https://picsum.photos/id/20/400/400" },
-      { id: "3", name: "햄버거", image: "https://picsum.photos/id/30/400/400" },
-      { id: "4", name: "떡볶이", image: "https://picsum.photos/id/40/400/400" }
-    ]
-  }
-];
+import { subscribeWorldcupGames } from "./utils/firebaseGameApi"; // 실시간 구독
 
 function App() {
-  const [worldcupList, setWorldcupList] = useState(() => {
-    const saved = localStorage.getItem("onepickgame_worldcupList");
-    if (saved) return JSON.parse(saved);
-    return defaultWorldcupList;
-  });
-
+  const [worldcupList, setWorldcupList] = useState([]);
   const { i18n } = useTranslation();
   const currentUser = localStorage.getItem("onepickgame_user") || "";
   const isAdmin = currentUser === "admin";
 
-  // 👇👇👇 여기에 이거 추가! (페이지 로딩될 때 1번만 실행)
+  // ✅ 실시간 월드컵 리스트 구독
   useEffect(() => {
-    firebaseTestWrite();
+    const unsubscribe = subscribeWorldcupGames(setWorldcupList);
+    return unsubscribe;
   }, []);
 
+  // 기타 기능(언어/방문기록 등) 그대로 유지!
   useEffect(() => {
     const today = new Date().toISOString().slice(0, 10);
     let userId = localStorage.getItem("onepickgame_user");
@@ -81,12 +62,6 @@ function App() {
   function handleLangChange(lng) {
     i18n.changeLanguage(lng);
     localStorage.setItem("onepickgame_lang", lng);
-  }
-
-  function handleAddWorldcup(cup) {
-    const newList = [...worldcupList, cup];
-    setWorldcupList(newList);
-    localStorage.setItem("onepickgame_worldcupList", JSON.stringify(newList));
   }
 
   function handleBackup() {
@@ -165,8 +140,8 @@ function App() {
     const navigate = useNavigate();
     return (
       <WorldcupMaker
-        onCreate={cup => {
-          handleAddWorldcup(cup);
+        onCreate={() => {
+          // 실시간 반영이라 별도 set 필요 없음
           navigate("/");
         }}
         onCancel={() => navigate("/")}
@@ -256,8 +231,6 @@ function App() {
             <Route path="/edit-worldcup/:id" element={<EditWorldcupPageWrapper />} />
             <Route path="/admin" element={<AdminRoute />} />
             <Route path="/admin-stats" element={<AdminStatsRoute />} />
-
-            {/* 회원가입/아이디찾기/비밀번호찾기 */}
             <Route path="/signup" element={<SignupBox />} />
             <Route path="/find-id" element={<FindIdBox />} />
             <Route path="/find-pw" element={<FindPwBox />} />
