@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { getThumbnail, getMostWinner } from "../utils";
+import { fetchWorldcups, addWorldcup } from "../db";
 import COLORS from "../styles/theme";
 import {
   cardBoxStyle,
@@ -13,6 +14,7 @@ import {
 
 import MediaRenderer from "./MediaRenderer";
 
+// ===== 카드 애니메이션 훅 (기존 코드 유지) =====
 const useSlideFadeIn = (length) => {
   const refs = useRef([]);
   useEffect(() => {
@@ -32,12 +34,23 @@ const useSlideFadeIn = (length) => {
   return refs;
 };
 
-function Home({ worldcupList, onSelect, onMakeWorldcup }) {
+function Home({ onSelect, onMakeWorldcup }) {
   const { t } = useTranslation();
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState("popular");
   const [shakeBtn, setShakeBtn] = useState(null);
 
+  // ⬇️⬇️⬇️ 여기 추가! 월드컵리스트 state 및 DB에서 불러오기
+  const [worldcupList, setWorldcupList] = useState([]);
+
+  useEffect(() => {
+    fetchWorldcups().then(setWorldcupList);
+    // 에러처리 하고 싶으면 아래처럼:
+    // fetchWorldcups().then(setWorldcupList).catch(console.error);
+  }, []);
+  // ⬆️⬆️⬆️
+
+  // 기존 filtered 로직도 worldcupList 사용!
   const filtered = worldcupList
     .filter(
       (cup) =>
@@ -74,7 +87,7 @@ function Home({ worldcupList, onSelect, onMakeWorldcup }) {
         margin: "0 auto",
         padding: isMobile
           ? "24px 4vw 80px 4vw"
-          : "38px 100px 90px 100px", // 양쪽 100px 광고 공간 확보
+          : "38px 100px 90px 100px",
         minHeight: "70vh",
         background: `linear-gradient(150deg, #fafdff 80%, #e3f0fb 100%)`,
         overflowX: "hidden",
@@ -202,10 +215,10 @@ function Home({ worldcupList, onSelect, onMakeWorldcup }) {
           display: "grid",
           gridTemplateColumns: isMobile
             ? "repeat(auto-fit, minmax(160px, 1fr))"
-            : "repeat(auto-fit, minmax(180px, 1fr))", // 최소 180px로 6개 이상도 나옴
+            : "repeat(auto-fit, minmax(180px, 1fr))",
           gap: isMobile ? 17 : 32,
           width: "100%",
-          maxWidth: 1200, // 광고 배너 공간 위해 줄임
+          maxWidth: 1200,
           margin: "0 auto",
           boxSizing: "border-box",
           justifyContent: "center",
@@ -422,6 +435,8 @@ function Home({ worldcupList, onSelect, onMakeWorldcup }) {
                         e.stopPropagation();
                         handleBtnShake(`del-${cup.id}`, () => {
                           if (!window.confirm("정말 삭제하시겠습니까?")) return;
+                          // 여기는 실제로 DB에서 삭제하려면 별도 함수 필요!
+                          // (아직은 localStorage만 삭제)
                           const newList = worldcupList.filter((c) => c.id !== cup.id);
                           localStorage.setItem(
                             "onepickgame_worldcupList",
