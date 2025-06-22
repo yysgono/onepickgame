@@ -21,7 +21,7 @@ import SignupBox from "./components/SignupBox";
 import FindIdBox from "./components/FindIdBox";
 import FindPwBox from "./components/FindPwBox";
 
-import { subscribeWorldcupGames } from "./utils/firebaseGameApi"; // 실시간 구독
+import { supabase } from "./utils/supabaseClient";
 
 function App() {
   const [worldcupList, setWorldcupList] = useState([]);
@@ -29,13 +29,23 @@ function App() {
   const currentUser = localStorage.getItem("onepickgame_user") || "";
   const isAdmin = currentUser === "admin";
 
-  // ✅ 실시간 월드컵 리스트 구독
+  // Supabase로 월드컵 리스트 불러오기
   useEffect(() => {
-    const unsubscribe = subscribeWorldcupGames(setWorldcupList);
-    return unsubscribe;
+    async function fetchWorldcups() {
+      let { data, error } = await supabase
+        .from('worldcups')
+        .select('*')
+        .order('createdAt', { ascending: false });
+      if (error) {
+        console.error("Supabase worldcups fetch error:", error);
+      } else {
+        setWorldcupList(data || []);
+      }
+    }
+    fetchWorldcups();
   }, []);
 
-  // 기타 기능(언어/방문기록 등) 그대로 유지!
+  // (이하 동일)
   useEffect(() => {
     const today = new Date().toISOString().slice(0, 10);
     let userId = localStorage.getItem("onepickgame_user");
@@ -65,7 +75,7 @@ function App() {
   }
 
   function handleBackup() {
-    const data = localStorage.getItem("onepickgame_worldcupList") || "[]";
+    const data = JSON.stringify(worldcupList || []);
     const blob = new Blob([data], { type: "application/json" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -83,9 +93,8 @@ function App() {
       try {
         const data = JSON.parse(ev.target.result);
         if (!Array.isArray(data)) throw new Error("형식 오류");
-        localStorage.setItem("onepickgame_worldcupList", JSON.stringify(data));
-        alert("복구 성공!");
-        window.location.reload();
+        setWorldcupList(data); // 단순 프론트 복구
+        alert("복구 성공! (프론트에만 적용, DB 반영은 별도)");
       } catch {
         alert("복구 실패!");
       }
@@ -141,8 +150,7 @@ function App() {
     return (
       <WorldcupMaker
         onCreate={() => {
-          // 실시간 반영이라 별도 set 필요 없음
-          navigate("/");
+          window.location.href = "/";
         }}
         onCancel={() => navigate("/")}
       />

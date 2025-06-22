@@ -6,7 +6,8 @@ import {
   mainButtonStyle,
   grayButtonStyle,
 } from "../styles/common";
-import { addWorldcupGame } from "../utils/firebaseGameApi"; // 🟢 추가
+import { addWorldcupGame } from "../utils/supabaseGameApi"; // 변경!
+import { uploadCandidateImage } from "../utils/supabaseImageUpload"; // 변경!
 
 function isMobile() {
   if (typeof window !== "undefined") {
@@ -24,7 +25,7 @@ function WorldcupMaker({ onCreate, onCancel }) {
     { id: 2, name: "", image: "" },
   ]);
   const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false); // 🟢 저장 중 상태
+  const [loading, setLoading] = useState(false);
   const user = localStorage.getItem("onepickgame_user");
   const mobile = isMobile();
 
@@ -52,7 +53,8 @@ function WorldcupMaker({ onCreate, onCancel }) {
   async function handleSubmit(e) {
     e.preventDefault();
     setError("");
-    if (loading) return; // 중복 방지
+    if (loading) return;
+
     const list = candidates
       .map((c) => ({
         ...c,
@@ -60,28 +62,43 @@ function WorldcupMaker({ onCreate, onCancel }) {
         image: c.image.trim(),
       }))
       .filter((c) => c.name && c.image);
+
     if (!title.trim()) return setError(t("enterWorldcupTitle"));
     if (list.length < 2) return setError(t("enterAtLeast2Candidates"));
 
-    const newCup = {
-      title: title.trim(),
-      desc: desc.trim(),
-      data: list.map((c, i) => ({
-        id: String(i + 1),
-        name: c.name,
-        image: c.image,
-      })),
-      creator: user,
-      owner: user,
-    };
+    setLoading(true);
 
-    setLoading(true); // 저장 시작
     try {
-      // 🟢 Firestore에 저장
-      const id = await addWorldcupGame(newCup);
-      alert("월드컵이 Firestore에 저장되었습니다!\nID: " + id);
+      // base64 → Storage 업로드 후 public url로 변환
+      const updatedList = await Promise.all(
+        list.map(async (c) => {
+          if (c.image.startsWith("data:image")) {
+            const file = await fetch(c.image).then(r => r.blob());
+            const url = await uploadCandidateImage(
+              new File([file], `${c.name}.png`, { type: file.type }),
+              user
+            );
+            return { ...c, image: url };
+          }
+          return c;
+        })
+      );
 
-      // onCreate도 기존대로 호출
+      const newCup = {
+        title: title.trim(),
+        desc: desc.trim(),
+        data: updatedList.map((c, i) => ({
+          id: String(i + 1),
+          name: c.name,
+          image: c.image,
+        })),
+        creator: user,
+        owner: user,
+        createdAt: Date.now(),
+      };
+      const id = await addWorldcupGame(newCup);
+      alert("월드컵이 Supabase에 저장되었습니다!\nID: " + id);
+
       if (onCreate) {
         onCreate({
           ...newCup,

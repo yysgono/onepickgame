@@ -1,7 +1,7 @@
 import React, { useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { hasBadword } from "../badwords-multilang";
-import { uploadCandidateImage } from "../utils/firebaseImageUpload"; // 추가
+import { uploadCandidateImage } from "../utils/supabaseImageUpload"; // supabase 전용
 
 function getYoutubeThumb(url) {
   const match = url.match(
@@ -18,29 +18,25 @@ function getFileExtension(url) {
   return parts[parts.length - 1].toLowerCase();
 }
 
-function CandidateInput({ value, onChange, onRemove }) {
+function CandidateInput({ value, onChange, onRemove, disabled }) {
   const { t, i18n } = useTranslation();
   const fileInputRef = useRef();
 
-  // 썸네일 로직
+  // 썸네일 미리보기
   const youtubeThumb = getYoutubeThumb(value.image);
   const ext = getFileExtension(value.image);
   const isVideoFile = ext === "mp4" || ext === "webm" || ext === "ogg";
 
   const thumb = youtubeThumb
     ? youtubeThumb
-    : !isVideoFile && value.image?.startsWith("data:image")
-    ? value.image
-    : !isVideoFile
+    : !isVideoFile && value.image?.startsWith("http")
     ? value.image
     : null;
 
-  // ✅ 파일 업로드 → Storage URL
+  // supabase storage에 업로드
   async function handleFileChange(e) {
     const file = e.target.files[0];
     if (!file) return;
-
-    // 확장자 검사
     const allowed = /\.(jpe?g|png)$/i;
     const disallowed = /\.(gif|webp)$/i;
     const fileName = file.name || "";
@@ -54,7 +50,6 @@ function CandidateInput({ value, onChange, onRemove }) {
       return;
     }
 
-    // Storage 업로드
     try {
       const user = localStorage.getItem("onepickgame_user") || "guest";
       const url = await uploadCandidateImage(file, user);
@@ -136,6 +131,7 @@ function CandidateInput({ value, onChange, onRemove }) {
           background: "#fff",
           flexShrink: 0,
         }}
+        disabled={disabled}
       />
       {/* 이미지 URL */}
       <input
@@ -154,6 +150,7 @@ function CandidateInput({ value, onChange, onRemove }) {
           marginRight: 8,
           minWidth: 120,
         }}
+        disabled={disabled}
       />
       {/* 파일 업로드 버튼 */}
       <button
@@ -177,6 +174,7 @@ function CandidateInput({ value, onChange, onRemove }) {
           (e.currentTarget.style.background =
             "linear-gradient(90deg, #1976ed 70%, #45b7fa 100%)")
         }
+        disabled={disabled}
       >
         {t("chooseFile") || "파일선택"}
       </button>
@@ -186,6 +184,7 @@ function CandidateInput({ value, onChange, onRemove }) {
         accept=".jpg,.jpeg,.png"
         onChange={handleFileChange}
         style={{ display: "none" }}
+        disabled={disabled}
       />
       {/* 삭제 버튼 */}
       <button
@@ -203,6 +202,7 @@ function CandidateInput({ value, onChange, onRemove }) {
           boxShadow: "0 1px 5px #d33a",
           whiteSpace: "nowrap",
         }}
+        disabled={disabled}
       >
         {t("delete") || "삭제"}
       </button>
