@@ -2,12 +2,9 @@ import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import CandidateInput from "./CandidateInput";
 import COLORS from "../styles/theme";
-import {
-  mainButtonStyle,
-  grayButtonStyle,
-} from "../styles/common";
-import { addWorldcupGame } from "../utils/supabaseGameApi"; // 변경!
-import { uploadCandidateImage } from "../utils/supabaseImageUpload"; // 변경!
+import { mainButtonStyle, grayButtonStyle } from "../styles/common";
+import { addWorldcupGame } from "../utils/supabaseWorldcupApi";
+import { uploadCandidateImage } from "../utils/supabaseImageUpload";
 
 function isMobile() {
   if (typeof window !== "undefined") {
@@ -84,6 +81,7 @@ function WorldcupMaker({ onCreate, onCancel }) {
         })
       );
 
+      // createdAt → created_at로 맞추는 게 supabase에서 좋아요!
       const newCup = {
         title: title.trim(),
         desc: desc.trim(),
@@ -94,7 +92,7 @@ function WorldcupMaker({ onCreate, onCancel }) {
         })),
         creator: user,
         owner: user,
-        createdAt: Date.now(),
+        created_at: new Date().toISOString(), // ← 여기!
       };
       const id = await addWorldcupGame(newCup);
       alert("월드컵이 Supabase에 저장되었습니다!\nID: " + id);

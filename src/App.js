@@ -35,7 +35,7 @@ function App() {
       let { data, error } = await supabase
         .from('worldcups')
         .select('*')
-        .order('createdAt', { ascending: false });
+        .order('created_at', { ascending: false });
       if (error) {
         console.error("Supabase worldcups fetch error:", error);
       } else {

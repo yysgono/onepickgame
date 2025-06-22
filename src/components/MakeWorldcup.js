@@ -1,11 +1,10 @@
+// src/components/MakeWorldcup.jsx
+
 import React, { useState, useRef } from "react";
 import { useTranslation } from "react-i18next";
+import { uploadCandidateImage } from "../utils/supabaseImageUpload";
+import { addWorldcupGame } from "../utils/supabaseGameApi";
 
-function getNextId(list) {
-  return Math.max(0, ...list.map(x => parseInt(x.id, 10) || 0)) + 1;
-}
-
-// 유튜브 썸네일 추출 (필요시 사용)
 function getYoutubeThumb(url) {
   const match = url.match(
     /(?:youtu\.be\/|youtube\.com\/(?:embed\/|watch\?v=))([\w-]{11})/
@@ -14,7 +13,6 @@ function getYoutubeThumb(url) {
   return null;
 }
 
-// 확장자 추출 함수
 function getFileExtension(url) {
   if (!url) return "";
   const parts = url.split("?")[0].split("/").pop().split(".");
@@ -32,17 +30,14 @@ export default function MakeWorldcup({ worldcupList, setWorldcupList, onClose })
   ]);
   const [error, setError] = useState("");
   const [ok, setOk] = useState("");
-
-  // 파일 input refs 배열
+  const [loading, setLoading] = useState(false);
   const fileInputRefs = useRef([]);
 
-  // 후보 추가/삭제/변경
   function addCandidate() {
     setCandidates(arr => [...arr, { name: "", image: "" }]);
   }
   function removeCandidate(idx) {
     setCandidates(arr => arr.filter((_, i) => i !== idx));
-    // ref 배열 정리도 필요하지만 생략 가능
   }
   function updateCandidate(idx, key, value) {
     setCandidates(arr =>
@@ -50,33 +45,59 @@ export default function MakeWorldcup({ worldcupList, setWorldcupList, onClose })
     );
   }
 
-  // 월드컵 생성
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
     setError(""); setOk("");
+    if (loading) return;
+
     if (!title.trim()) return setError("제목을 입력하세요.");
     if (candidates.length < 2) return setError("후보가 2개 이상이어야 합니다.");
     if (candidates.some(c => !c.name.trim())) return setError("모든 후보에 이름을 입력하세요.");
 
-    const owner = localStorage.getItem("onepickgame_user") || "";
-    const newCup = {
-      id: getNextId(worldcupList),
-      title: title.trim(),
-      desc: desc.trim(),
-      data: candidates.map(c => ({
-        id: Date.now() + Math.random(),
-        name: c.name.trim(),
-        image: c.image.trim(),
-      })),
-      createdAt: Date.now(),
-      owner,
-    };
-    const newList = [...worldcupList, newCup];
-    setWorldcupList(newList);
-    localStorage.setItem("onepickgame_worldcupList", JSON.stringify(newList));
-    setOk("월드컵이 생성되었습니다!");
-    setTitle(""); setDesc(""); setCandidates([{ name: "", image: "" }, { name: "", image: "" }]);
-    if (onClose) onClose();
+    setLoading(true);
+
+    try {
+      const updatedCandidates = await Promise.all(
+        candidates.map(async c => {
+          let imageUrl = c.image?.trim();
+          if (imageUrl && imageUrl.startsWith("data:image")) {
+            const file = await fetch(imageUrl).then(r => r.blob());
+            const url = await uploadCandidateImage(
+              new File([file], `${c.name}.png`, { type: file.type }),
+              localStorage.getItem("onepickgame_user") || "guest"
+            );
+            imageUrl = url;
+          }
+          return { ...c, image: imageUrl };
+        })
+      );
+
+      const owner = localStorage.getItem("onepickgame_user") || "";
+      const newCup = {
+        title: title.trim(),
+        desc: desc.trim(),
+        data: updatedCandidates.map((c, i) => ({
+          id: String(i + 1),
+          name: c.name.trim(),
+          image: c.image,
+        })),
+        created_at: new Date().toISOString(),
+        owner,
+        creator: owner,
+      };
+
+      await addWorldcupGame(newCup);
+      setOk("월드컵이 생성되었습니다!");
+      setTitle(""); setDesc("");
+      setCandidates([{ name: "", image: "" }, { name: "", image: "" }]);
+      if (setWorldcupList) setWorldcupList([...worldcupList, newCup]);
+      if (onClose) onClose();
+    } catch (e) {
+      setError("저장 실패! 잠시 후 다시 시도해 주세요.");
+      console.error(e);
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -96,6 +117,7 @@ export default function MakeWorldcup({ worldcupList, setWorldcupList, onClose })
             maxLength={36}
             style={{ width: "100%", fontSize: 18, padding: 9, borderRadius: 8, border: "1.5px solid #bbb" }}
             autoFocus
+            disabled={loading}
           />
         </div>
         <div style={{ marginBottom: 22 }}>
@@ -105,6 +127,7 @@ export default function MakeWorldcup({ worldcupList, setWorldcupList, onClose })
             placeholder="설명(선택)"
             maxLength={60}
             style={{ width: "100%", fontSize: 16, padding: 8, borderRadius: 8, border: "1.2px solid #bbb" }}
+            disabled={loading}
           />
         </div>
         <div>
@@ -115,15 +138,13 @@ export default function MakeWorldcup({ worldcupList, setWorldcupList, onClose })
             const youtubeThumb = getYoutubeThumb(c.image);
             const ext = getFileExtension(c.image);
             const isVideoFile = ext === "mp4" || ext === "mov" || ext === "webm" || ext === "ogg";
-
-            // 썸네일 참고용 (URL 또는 유튜브 썸네일, 영상파일은 null)
             const thumb = youtubeThumb
               ? youtubeThumb
               : !isVideoFile && c.image?.startsWith("data:image")
-              ? c.image
-              : !isVideoFile
-              ? c.image
-              : null;
+                ? c.image
+                : !isVideoFile
+                  ? c.image
+                  : null;
 
             return (
               <div key={idx} style={{ display: "flex", gap: 8, marginBottom: 7, alignItems: "center" }}>
@@ -133,27 +154,25 @@ export default function MakeWorldcup({ worldcupList, setWorldcupList, onClose })
                   placeholder="이름"
                   maxLength={22}
                   style={{ width: 120, fontSize: 15, padding: 7, borderRadius: 7, border: "1.1px solid #bbb" }}
+                  disabled={loading}
                 />
                 <input
                   value={c.image}
                   onChange={e => updateCandidate(idx, "image", e.target.value)}
                   placeholder="이미지 URL (선택)"
                   style={{ flex: 1, fontSize: 14, padding: 7, borderRadius: 7, border: "1.1px solid #bbb" }}
+                  disabled={loading}
                 />
                 <button
                   type="button"
                   onClick={() => fileInputRefs.current[idx].click()}
                   style={{
                     background: "linear-gradient(90deg, #1976ed 70%, #45b7fa 100%)",
-                    color: "#fff",
-                    border: "none",
-                    borderRadius: 7,
-                    padding: "6px 14px",
-                    fontWeight: 700,
-                    cursor: "pointer",
-                    fontSize: 13,
+                    color: "#fff", border: "none", borderRadius: 7,
+                    padding: "6px 14px", fontWeight: 700, cursor: "pointer", fontSize: 13,
                     whiteSpace: "nowrap",
                   }}
+                  disabled={loading}
                 >
                   파일
                 </button>
@@ -176,12 +195,14 @@ export default function MakeWorldcup({ worldcupList, setWorldcupList, onClose })
                     reader.onload = ev => updateCandidate(idx, "image", ev.target.result);
                     reader.readAsDataURL(file);
                   }}
+                  disabled={loading}
                 />
                 {candidates.length > 2 && (
                   <button
                     type="button"
                     onClick={() => removeCandidate(idx)}
                     style={{ background: "#f5f5f5", color: "#d33", border: "none", borderRadius: 7, padding: "5px 13px", fontWeight: 700 }}
+                    disabled={loading}
                   >
                     삭제
                   </button>
@@ -193,6 +214,7 @@ export default function MakeWorldcup({ worldcupList, setWorldcupList, onClose })
             type="button"
             onClick={addCandidate}
             style={{ marginTop: 6, background: "#1976ed", color: "#fff", border: "none", borderRadius: 8, padding: "7px 14px", fontWeight: 700 }}
+            disabled={loading}
           >
             + 후보 추가
           </button>
@@ -203,14 +225,16 @@ export default function MakeWorldcup({ worldcupList, setWorldcupList, onClose })
           <button
             type="submit"
             style={{ background: "#1976ed", color: "#fff", border: "none", borderRadius: 10, fontWeight: 800, fontSize: 19, padding: "11px 40px", marginRight: 9 }}
+            disabled={loading}
           >
-            생성
+            {loading ? "저장중..." : "생성"}
           </button>
           {onClose && (
             <button
               type="button"
               onClick={onClose}
               style={{ background: "#ddd", color: "#333", border: "none", borderRadius: 8, fontWeight: 600, fontSize: 16, padding: "10px 32px" }}
+              disabled={loading}
             >
               닫기
             </button>
