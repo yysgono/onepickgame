@@ -1,6 +1,7 @@
 import React, { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { getThumbnail } from "../utils";
+import { updateWorldcupGame } from "../utils/supabaseWorldcupApi";
+import { uploadCandidateImage } from "../utils/supabaseImageUpload";
 
 const COLORS = {
   main: "#1976ed",
@@ -24,7 +25,7 @@ function getYoutubeThumb(url) {
   return null;
 }
 
-function EditWorldcupPage({ worldcupList, setWorldcupList, cupId }) {
+function EditWorldcupPage({ worldcupList, fetchWorldcups, cupId }) {
   const navigate = useNavigate();
   const currentUser = localStorage.getItem("onepickgame_user") || "";
 
@@ -33,8 +34,8 @@ function EditWorldcupPage({ worldcupList, setWorldcupList, cupId }) {
   const [desc, setDesc] = useState(originalCup?.desc || "");
   const [data, setData] = useState(originalCup?.data ? [...originalCup.data] : []);
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  // refs for file inputs
   const fileInputRefs = useRef([]);
 
   if (!originalCup) {
@@ -67,32 +68,52 @@ function EditWorldcupPage({ worldcupList, setWorldcupList, cupId }) {
     reader.onload = ev => handleCandidateChange(idx, "image", ev.target.result);
     reader.readAsDataURL(file);
   }
-  function handleSave() {
+
+  async function handleSave() {
     setError("");
     if (!title.trim()) return setError("제목을 입력하세요.");
     if (data.length < 2) return setError("후보가 2개 이상이어야 합니다.");
     if (data.some(item => !item.name.trim())) return setError("모든 후보에 이름을 입력하세요.");
+    setLoading(true);
 
-    const updatedCup = {
-      ...originalCup,
-      title: title.trim(),
-      desc: desc.trim(),
-      data: data.map(item => ({
-        ...item,
-        name: item.name.trim(),
-        image: item.image.trim()
-      }))
-    };
-    const newList = worldcupList.map(cup =>
-      String(cup.id) === String(cupId) ? updatedCup : cup
-    );
-    setWorldcupList(newList);
-    localStorage.setItem("onepickgame_worldcupList", JSON.stringify(newList));
-    alert("수정 완료!");
-    navigate("/");
+    try {
+      // base64 이미지라면 Storage에 업로드 후 public url로 변경
+      const updatedData = await Promise.all(
+        data.map(async item => {
+          let imageUrl = item.image;
+          if (imageUrl && imageUrl.startsWith("data:image")) {
+            const file = await fetch(imageUrl).then(r => r.blob());
+            const url = await uploadCandidateImage(
+              new File([file], `${item.name}.png`, { type: file.type }),
+              currentUser
+            );
+            imageUrl = url;
+          }
+          return {
+            ...item,
+            name: item.name.trim(),
+            image: imageUrl?.trim() || "",
+          };
+        })
+      );
+      const updatedCup = {
+        ...originalCup,
+        title: title.trim(),
+        desc: desc.trim(),
+        data: updatedData,
+      };
+      await updateWorldcupGame(originalCup.id, updatedCup);
+      if (fetchWorldcups) await fetchWorldcups();
+      alert("수정 완료!");
+      navigate("/");
+    } catch (e) {
+      setError("수정 실패! 다시 시도해 주세요.");
+    } finally {
+      setLoading(false);
+    }
   }
 
-  const isMobile = window.innerWidth < 700;
+  const isMobile = typeof window !== "undefined" && window.innerWidth < 700;
 
   return (
     <div
@@ -129,6 +150,7 @@ function EditWorldcupPage({ worldcupList, setWorldcupList, cupId }) {
             }}
             maxLength={38}
             placeholder="예시: BTS 이상형 월드컵"
+            disabled={loading}
           />
         </label>
       </div>
@@ -146,6 +168,7 @@ function EditWorldcupPage({ worldcupList, setWorldcupList, cupId }) {
             rows={2}
             maxLength={80}
             placeholder="간단 설명 (선택)"
+            disabled={loading}
           />
         </label>
       </div>
@@ -165,10 +188,10 @@ function EditWorldcupPage({ worldcupList, setWorldcupList, cupId }) {
           const thumb = youtubeThumb
             ? youtubeThumb
             : !isVideoFile && item.image?.startsWith("data:image")
-            ? item.image
-            : !isVideoFile
-            ? item.image
-            : null;
+              ? item.image
+              : !isVideoFile
+                ? item.image
+                : null;
 
           return (
             <div key={item.id} style={{
@@ -185,6 +208,7 @@ function EditWorldcupPage({ worldcupList, setWorldcupList, cupId }) {
                   borderRadius: 8, border: `1.3px solid #bbb`, fontSize: 16
                 }}
                 maxLength={30}
+                disabled={loading}
               />
               <input
                 value={item.image}
@@ -195,8 +219,8 @@ function EditWorldcupPage({ worldcupList, setWorldcupList, cupId }) {
                   borderRadius: 8, border: `1.3px solid #bbb`, fontSize: 15,
                   background: "#fafdff"
                 }}
+                disabled={loading}
               />
-              {/* PC 이미지 업로드 버튼 */}
               <button
                 type="button"
                 onClick={() => fileInputRefs.current[i]?.click()}
@@ -212,6 +236,7 @@ function EditWorldcupPage({ worldcupList, setWorldcupList, cupId }) {
                   whiteSpace: "nowrap",
                   marginLeft: 6,
                 }}
+                disabled={loading}
               >
                 파일
               </button>
@@ -221,6 +246,7 @@ function EditWorldcupPage({ worldcupList, setWorldcupList, cupId }) {
                 style={{ display: "none" }}
                 ref={el => (fileInputRefs.current[i] = el)}
                 onChange={e => handleFileChange(i, e)}
+                disabled={loading}
               />
               {thumb ? (
                 <img
@@ -265,6 +291,7 @@ function EditWorldcupPage({ worldcupList, setWorldcupList, cupId }) {
                 }}
                 onMouseOver={e => (e.currentTarget.style.background = "#b92a2a")}
                 onMouseOut={e => (e.currentTarget.style.background = COLORS.danger)}
+                disabled={loading}
               >
                 삭제
               </button>
@@ -281,6 +308,7 @@ function EditWorldcupPage({ worldcupList, setWorldcupList, cupId }) {
           }}
           onMouseOver={e => (e.currentTarget.style.background = COLORS.sub)}
           onMouseOut={e => (e.currentTarget.style.background = COLORS.main)}
+          disabled={loading}
         >
           + 후보 추가
         </button>
@@ -296,8 +324,9 @@ function EditWorldcupPage({ worldcupList, setWorldcupList, cupId }) {
           }}
           onMouseOver={e => (e.currentTarget.style.background = COLORS.sub)}
           onMouseOut={e => (e.currentTarget.style.background = COLORS.main)}
+          disabled={loading}
         >
-          저장
+          {loading ? "저장중..." : "저장"}
         </button>
         <button
           onClick={() => navigate("/")}
@@ -306,6 +335,7 @@ function EditWorldcupPage({ worldcupList, setWorldcupList, cupId }) {
             fontSize: 18, padding: "13px 34px", cursor: "pointer",
             boxShadow: "0 1.5px 9px #1976ed09", marginLeft: 2
           }}
+          disabled={loading}
         >
           취소
         </button>

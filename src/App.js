@@ -21,7 +21,7 @@ import SignupBox from "./components/SignupBox";
 import FindIdBox from "./components/FindIdBox";
 import FindPwBox from "./components/FindPwBox";
 
-import { supabase } from "./utils/supabaseClient";
+import { getWorldcupGames, deleteWorldcupGame } from "./utils/supabaseWorldcupApi"; // ← deleteWorldcupGame import 추가
 
 function App() {
   const [worldcupList, setWorldcupList] = useState([]);
@@ -29,23 +29,20 @@ function App() {
   const currentUser = localStorage.getItem("onepickgame_user") || "";
   const isAdmin = currentUser === "admin";
 
-  // Supabase로 월드컵 리스트 불러오기
-  useEffect(() => {
-    async function fetchWorldcups() {
-      let { data, error } = await supabase
-        .from('worldcups')
-        .select('*')
-        .order('created_at', { ascending: false });
-      if (error) {
-        console.error("Supabase worldcups fetch error:", error);
-      } else {
-        setWorldcupList(data || []);
-      }
+  // DB에서 월드컵 리스트 불러오기
+  const fetchWorldcups = async () => {
+    try {
+      const list = await getWorldcupGames();
+      setWorldcupList(list);
+    } catch (e) {
+      setWorldcupList([]);
     }
+  };
+
+  useEffect(() => {
     fetchWorldcups();
   }, []);
 
-  // (이하 동일)
   useEffect(() => {
     const today = new Date().toISOString().slice(0, 10);
     let userId = localStorage.getItem("onepickgame_user");
@@ -112,13 +109,23 @@ function App() {
     window.location.href = "/worldcup-maker";
   }
 
+  // HomeWrapper에서 삭제 반영!
   function HomeWrapper() {
     const navigate = useNavigate();
     return (
       <Home
         worldcupList={worldcupList}
+        fetchWorldcups={fetchWorldcups}
         onSelect={cup => navigate(`/select-round/${cup.id}`)}
         onMakeWorldcup={handleMakeWorldcup}
+        onDelete={async id => {
+          try {
+            await deleteWorldcupGame(id); // DB 삭제
+            setWorldcupList(list => list.filter(cup => cup.id !== id)); // 프론트에서도 삭제
+          } catch (e) {
+            alert("삭제 실패! " + (e.message || e));
+          }
+        }}
       />
     );
   }
@@ -149,6 +156,7 @@ function App() {
     const navigate = useNavigate();
     return (
       <WorldcupMaker
+        fetchWorldcups={fetchWorldcups}
         onCreate={() => {
           window.location.href = "/";
         }}
@@ -173,7 +181,7 @@ function App() {
     return (
       <EditWorldcupPage
         worldcupList={worldcupList}
-        setWorldcupList={setWorldcupList}
+        fetchWorldcups={fetchWorldcups}
         cupId={id}
       />
     );
