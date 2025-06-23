@@ -16,7 +16,7 @@ function MatchPage({ worldcupList }) {
   return (
     <Match
       cup={cup}
-      round={roundNum}
+      selectedCount={roundNum} // ★ 핵심: selectedCount로 넘김
       onResult={(winner, matchHistory) => {
         navigate(`/result/${cup.id}/${roundNum}`, {
           state: { winner, matchHistory }

@@ -15,16 +15,13 @@ function SelectRoundPage({ cup, maxRound, candidates, onSelect }) {
   const { t } = useTranslation();
   const [selectedRound, setSelectedRound] = useState(maxRound);
 
-  // 2,4,8,16,...,최대 maxRound
   const possibleRounds = [];
   for (let n = 2; n <= maxRound; n *= 2) {
     possibleRounds.push(n);
   }
-  // 후보 수와 동일한 "XX강"이 없으면, 추가 (예: 20명)
   if (!possibleRounds.includes(candidates.length) && candidates.length >= 2) {
     possibleRounds.push(candidates.length);
   }
-  // 중복/정렬
   possibleRounds.sort((a, b) => a - b);
 
   const mobile = isMobile();

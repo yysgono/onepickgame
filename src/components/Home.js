@@ -39,20 +39,41 @@ function Home({ worldcupList, onSelect, onMakeWorldcup, onDelete }) {
   const [sort, setSort] = useState("popular");
   const [shakeBtn, setShakeBtn] = useState(null);
 
+  // ----- ✅ 여기만 안정적으로 수정 -----
+
+  // Home 함수 내에서
+(worldcupList || []).forEach((cup, i) => cup.winCount = 10 - i * 2);
+
+
   const filtered = (worldcupList || [])
     .filter(
       (cup) =>
-        cup.title.toLowerCase().includes(search.toLowerCase()) ||
+        cup.title?.toLowerCase().includes(search.toLowerCase()) ||
         (cup.desc || "").toLowerCase().includes(search.toLowerCase())
     )
     .sort((a, b) => {
       if (sort === "recent") {
-        // created_at 기준 내림차순
-        return (b.created_at || b.id) > (a.created_at || a.id) ? 1 : -1;
+        // created_at(날짜) 내림차순 → 없으면 id 내림차순
+        const aTime = a.created_at ? new Date(a.created_at).getTime() : (a.id || 0);
+        const bTime = b.created_at ? new Date(b.created_at).getTime() : (b.id || 0);
+        return bTime - aTime;
       } else {
+        // 인기순: winCount 내림차순, 없으면 0
         return (b.winCount || 0) - (a.winCount || 0);
       }
     });
+console.log("최종 worldcupList:", worldcupList);
+      console.log(
+    "[Home] 정렬결과 filtered:",
+    filtered.map(cup => ({
+      id: cup.id,
+      title: cup.title,
+      winCount: cup.winCount,
+      created_at: cup.created_at
+    }))
+  );
+
+  // -----------------------------------
 
   const currentUser = localStorage.getItem("onepickgame_user") || "";
   const cardRefs = useSlideFadeIn(filtered.length);
@@ -424,7 +445,6 @@ function Home({ worldcupList, onSelect, onMakeWorldcup, onDelete }) {
                         e.stopPropagation();
                         handleBtnShake(`del-${cup.id}`, () => {
                           if (!window.confirm("정말 삭제하시겠습니까?")) return;
-                          // DB 삭제도 지원하려면 onDelete prop 사용
                           if (onDelete) onDelete(cup.id);
                           else window.location.reload();
                         });

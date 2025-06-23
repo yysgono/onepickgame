@@ -63,7 +63,13 @@ function truncateNames(candidates, maxWords = 3) {
   });
 }
 
-function Match({ cup, onResult }) {
+/**
+ * @param {object} props
+ * @param {object} props.cup 월드컵 객체
+ * @param {function} props.onResult 결과 콜백
+ * @param {number} [props.selectedCount] 시작할 강(예: 4, 8, 16 등)
+ */
+function Match({ cup, onResult, selectedCount }) {
   const { t } = useTranslation();
   const [bracket, setBracket] = useState([]); // [[c1, c2], ...]
   const [idx, setIdx] = useState(0);
@@ -73,15 +79,19 @@ function Match({ cup, onResult }) {
   const [autoPlaying, setAutoPlaying] = useState(false);
   const currentUser = localStorage.getItem("onepickgame_user") || "guest";
 
-  // 최초 1라운드 준비
+  // 최초 1라운드 준비 (selectedCount만큼만 랜덤 추출)
   useEffect(() => {
-    const { matches, byes } = makeFirstRound(cup.data);
+    let players = cup.data;
+    if (selectedCount && players.length > selectedCount) {
+      players = shuffle([...players]).slice(0, selectedCount);
+    }
+    const { matches, byes } = makeFirstRound(players);
     setBracket(matches);
     setPendingWinners(byes);
     setIdx(0);
     setRoundNum(1);
     setMatchHistory([]);
-  }, [cup]);
+  }, [cup, selectedCount]);
 
   // 라운드 종료 시 → 다음 라운드 준비 또는 우승자
   useEffect(() => {
@@ -105,11 +115,10 @@ function Match({ cup, onResult }) {
       // 다음 라운드: 2의 제곱 bracket, 부전승 없음
       const nextBracket = makeNextRound(nextRoundCandidates);
       setBracket(nextBracket);
-      setPendingWinners([]); // 이제 부전승 없음
+      setPendingWinners([]);
       setIdx(0);
       setRoundNum(r => r + 1);
     }
-    // eslint-disable-next-line
   }, [idx, bracket, matchHistory, pendingWinners, currentUser, cup.id, onResult, roundNum]);
 
   // 현재 경기
