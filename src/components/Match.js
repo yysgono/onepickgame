@@ -3,46 +3,57 @@ import { getYoutubeId, saveWinnerStatsWithUser } from "../utils";
 import { useTranslation } from "react-i18next";
 import MediaRenderer from "./MediaRenderer";
 
-// ✅ "4강/8강 등 선택 라운드만 딱 랜덤으로 추려서 진행" 핵심 수정
-function makeInitialBracket(roundSize, players) {
-  // 후보자가 라운드 크기보다 많으면, roundSize만 랜덤 추출!
-  let arr = [...players];
-  if (arr.length > roundSize) {
-    arr = shuffle(arr).slice(0, roundSize);
+// 1라운드: n명 참가자를 2의 거듭제곱 bracket + 부전승 생성
+function makeFirstRound(players) {
+  const n = players.length;
+  const nextPowerOf2 = 2 ** Math.ceil(Math.log2(n));
+  const numByes = nextPowerOf2 - n;
+
+  const shuffled = shuffle([...players]);
+  const byes = shuffled.slice(0, numByes);
+  const rest = shuffled.slice(numByes);
+
+  const matches = [];
+  for (let i = 0; i < rest.length; i += 2) {
+    matches.push([rest[i], rest[i + 1] || null]);
   }
-  const byes = roundSize - arr.length;
-  if (byes > 0) {
-    arr = arr.concat(Array(byes).fill(null));
-  }
-  return shuffle(arr);
+  return { matches, byes };
 }
 
+// 2라운드 이상: 무조건 2의 제곱 bracket
+function makeNextRound(winners) {
+  const shuffled = shuffle([...winners]);
+  const matches = [];
+  for (let i = 0; i < shuffled.length; i += 2) {
+    matches.push([shuffled[i], shuffled[i + 1] || null]);
+  }
+  return matches;
+}
+
+// Fisher–Yates shuffle
 function shuffle(arr) {
-  return arr
-    .map((a) => [Math.random(), a])
-    .sort((a, b) => a[0] - b[0])
-    .map((a) => a[1]);
+  let m = arr.length, t, i;
+  while (m) {
+    i = Math.floor(Math.random() * m--);
+    t = arr[m];
+    arr[m] = arr[i];
+    arr[i] = t;
+  }
+  return arr;
 }
 
 function getStageLabel(n) {
   if (n === 2) return "결승전";
-  let power = 2;
-  while (power < n) power *= 2;
-  if (n === power) return `${n}강`;
+  if (n === 4) return "4강";
+  if (n === 8) return "8강";
+  if (n === 16) return "16강";
+  if (n === 32) return "32강";
+  if (n === 64) return "64강";
+  if (n === 128) return "128강";
   return `${n}강`;
 }
 
-function getTotalRemainMatchCount(currentCandidates, idx) {
-  let remain = Math.floor(currentCandidates.length / 2) - idx;
-  let total = remain;
-  let next = Math.floor(currentCandidates.length / 2);
-  while (next > 1) {
-    next = Math.floor(next / 2);
-    total += next;
-  }
-  return total;
-}
-
+// 후보 이름 3단어로 줄여서 예쁘게
 function truncateNames(candidates, maxWords = 3) {
   return candidates.map(c => {
     if (!c?.name) return "?";
@@ -52,111 +63,99 @@ function truncateNames(candidates, maxWords = 3) {
   });
 }
 
-function Match({ cup, round, onResult }) {
+function Match({ cup, onResult }) {
   const { t } = useTranslation();
-  const [brackets, setBrackets] = useState(() => [
-    makeInitialBracket(round, cup.data)
-  ]);
+  const [bracket, setBracket] = useState([]); // [[c1, c2], ...]
   const [idx, setIdx] = useState(0);
-  const [winners, setWinners] = useState([]);
+  const [roundNum, setRoundNum] = useState(1);
+  const [pendingWinners, setPendingWinners] = useState([]); // 1라운드 부전승
   const [matchHistory, setMatchHistory] = useState([]);
   const [autoPlaying, setAutoPlaying] = useState(false);
   const currentUser = localStorage.getItem("onepickgame_user") || "guest";
 
-  const candidates = brackets[brackets.length - 1];
-
+  // 최초 1라운드 준비
   useEffect(() => {
-    if (!candidates || candidates.length < 2) return;
-    if (idx >= Math.floor(candidates.length / 2) && winners.length > 0) {
-      if (winners.length === 1) {
-        const realMatches = matchHistory.filter(x => x.c1 && x.c2 && x.winnerId);
-        saveWinnerStatsWithUser(currentUser, cup.id, winners[0], realMatches);
-        onResult(winners[0], realMatches);
+    const { matches, byes } = makeFirstRound(cup.data);
+    setBracket(matches);
+    setPendingWinners(byes);
+    setIdx(0);
+    setRoundNum(1);
+    setMatchHistory([]);
+  }, [cup]);
+
+  // 라운드 종료 시 → 다음 라운드 준비 또는 우승자
+  useEffect(() => {
+    if (idx === bracket.length && bracket.length > 0) {
+      // 직전 라운드의 경기 승자들
+      const matchWinners = matchHistory
+        .slice(-bracket.length)
+        .map(m => m.winner)
+        .filter(Boolean);
+
+      // 다음 라운드 출전: (1라운드일 때만) 부전승 + 경기승자
+      const nextRoundCandidates =
+        roundNum === 1 ? [...pendingWinners, ...matchWinners] : matchWinners;
+
+      // 종료: 1명 남으면 끝!
+      if (nextRoundCandidates.length === 1) {
+        saveWinnerStatsWithUser(currentUser, cup.id, nextRoundCandidates[0], matchHistory);
+        onResult(nextRoundCandidates[0], matchHistory);
         return;
       }
-      const nextRoundSize = winners.length;
-      setBrackets(prev => [...prev, makeInitialBracket(nextRoundSize, winners)]);
-      setWinners([]);
+      // 다음 라운드: 2의 제곱 bracket, 부전승 없음
+      const nextBracket = makeNextRound(nextRoundCandidates);
+      setBracket(nextBracket);
+      setPendingWinners([]); // 이제 부전승 없음
       setIdx(0);
+      setRoundNum(r => r + 1);
     }
-  }, [idx, candidates, winners, cup.id, currentUser, matchHistory, onResult]);
+    // eslint-disable-next-line
+  }, [idx, bracket, matchHistory, pendingWinners, currentUser, cup.id, onResult, roundNum]);
 
+  // 현재 경기
+  const currentMatch = bracket[idx] || [];
+  const [c1, c2] = currentMatch;
+
+  // 부전승 매치 자동 처리
   useEffect(() => {
-    if (!candidates || candidates.length < 2) return;
-    if (idx >= Math.floor(candidates.length / 2)) return;
-    const c1 = candidates[idx * 2];
-    const c2 = candidates[idx * 2 + 1];
-    if (c1 && c2) {
-      setAutoPlaying(false);
-      return;
+    if (!c1 || !c2) {
+      if (c1 || c2) {
+        setTimeout(() => {
+          handlePick(c1 ? 0 : 1);
+        }, 300);
+      }
     }
-    setAutoPlaying(true);
-    setTimeout(() => {
-      if (c1 && !c2) handleAutoPick(0);
-      else if (!c1 && c2) handleAutoPick(1);
-      else if (!c1 && !c2) handleAutoPick(null);
-    }, 250);
-  }, [idx, candidates]);
+    // eslint-disable-next-line
+  }, [idx, bracket]);
 
   function handlePick(winnerIdx) {
     if (autoPlaying) return;
-    const c1 = candidates[idx * 2];
-    const c2 = candidates[idx * 2 + 1];
-    if (!c1 || !c2) return;
-
     const winner = winnerIdx === 0 ? c1 : c2;
-    const newHistory = [...matchHistory, { c1, c2, winnerId: winner.id }];
-    const newWinners = [...winners, winner];
-
-    setMatchHistory(newHistory);
-    setWinners(newWinners);
+    setMatchHistory([
+      ...matchHistory,
+      { round: roundNum, c1, c2, winner },
+    ]);
     setIdx(idx + 1);
   }
 
-  function handleAutoPick(winnerIdx) {
-    const c1 = candidates[idx * 2];
-    const c2 = candidates[idx * 2 + 1];
-    let winner = null;
-    if (winnerIdx === 0) winner = c1;
-    else if (winnerIdx === 1) winner = c2;
-
-    let newHistory = matchHistory;
-    let newWinners = winners;
-    if (winner) {
-      newHistory = [...matchHistory, { c1, c2, winnerId: winner.id }];
-      newWinners = [...winners, winner];
-    }
-    setMatchHistory(newHistory);
-    setWinners(newWinners);
-    setIdx(idx + 1);
-    setAutoPlaying(false);
-  }
-
-  const c1 = candidates ? candidates[idx * 2] : null;
-  const c2 = candidates ? candidates[idx * 2 + 1] : null;
-  const isFinal = candidates && Math.floor(candidates.length / 2) === 1;
-  const totalRemainMatches = candidates
-    ? getTotalRemainMatchCount(candidates, idx)
-    : 0;
-
-  const nextIdx = idx + 1;
-  const nextRoundCandidates =
-    candidates && nextIdx < Math.floor(candidates.length / 2)
-      ? [candidates[nextIdx * 2], candidates[nextIdx * 2 + 1]].filter(Boolean)
-      : [];
-
+  // 뷰 사이즈
   const vw = typeof window !== "undefined" ? Math.min(window.innerWidth, 900) : 900;
   const isMobile = vw < 700;
-
   const TITLE_SIZE = isMobile ? 66 : 100;
   const STAGE_SIZE = isMobile ? 15 : 20;
   const NAME_FONT_SIZE = isMobile ? 22 : 46;
   const NAME_HEIGHT = isMobile ? `${1.18 * 22 * 4}px` : `${1.18 * 46 * 4}px`;
 
+  // 다음 대진 예고
+  const nextIdx = idx + 1;
+  const nextRoundCandidates =
+    bracket && nextIdx < bracket.length
+      ? [bracket[nextIdx][0], bracket[nextIdx][1]].filter(Boolean)
+      : [];
+
   function CandidateBox({ c, onClick, disabled }) {
     const ytid = getYoutubeId(c?.image);
     const isYoutube = !!ytid;
-
     return (
       <div
         style={{
@@ -245,7 +244,7 @@ function Match({ cup, round, onResult }) {
     );
   }
 
-  if (!candidates || candidates.length < 2) {
+  if (!bracket || bracket.length === 0) {
     return <div>{t("notEnoughCandidates")}</div>;
   }
 
@@ -282,21 +281,10 @@ function Match({ cup, round, onResult }) {
           color: "#194893",
         }}
       >
-        {getStageLabel(candidates.length)}{" "}
-        {isFinal ? "" : `${idx + 1} / ${Math.floor(candidates.length / 2)}`}
-        <span
-          style={{
-            fontSize: STAGE_SIZE - 2,
-            fontWeight: 700,
-            color: "#194893",
-            marginLeft: 11,
-            verticalAlign: "middle",
-          }}
-        >
-          (남은 대결 {totalRemainMatches}개)
-        </span>
+        {getStageLabel(bracket.length * 2)}{" "}
+        {bracket.length === 1 ? "" : `${idx + 1} / ${bracket.length}`}
       </div>
-      {!isFinal && nextRoundCandidates.length === 2 && (
+      {bracket.length > 1 && nextRoundCandidates.length === 2 && (
         <div
           style={{
             background: "linear-gradient(90deg,#fafdff 80%,#e3f0fb 100%)",

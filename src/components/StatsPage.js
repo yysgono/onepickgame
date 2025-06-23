@@ -4,7 +4,7 @@ import { getYoutubeId, isValidImageUrl, getWinnerStats } from "../utils";
 import { useTranslation } from "react-i18next";
 
 import COLORS from "../styles/theme";
-import { mainButtonStyle, grayButtonStyle } from "../styles/common";
+import { mainButtonStyle } from "../styles/common";
 
 function getThumb(image) {
   const youtubeId = getYoutubeId(image);
@@ -43,21 +43,32 @@ function StatsPage({ selectedCup, showOnlyWinner }) {
   const [isMobile, setIsMobile] = useState(window.innerWidth < 800);
 
   useEffect(() => {
-    const raw = getWinnerStats(selectedCup.id, period) || {};
-    const statsArr = selectedCup.data.map((item) => {
-      const s = raw[item.id] || {};
-      return {
-        id: item.id,
-        name: item.name,
-        image: item.image,
-        winCount: s.winCount || 0,
-        matchWins: s.matchWins || 0,
-        matchCount: s.matchCount || 0,
-        totalGames: s.totalGames || 0,
-        createdAt: item.createdAt || 0,
-      };
-    });
-    setStats(statsArr);
+    // 반드시 비동기 처리!
+    async function fetchStats() {
+      // period별 처리: period !== "all"이면 로컬에서 처리, "all"이면 DB에서 fetch
+      let raw = {};
+      if (period === "all") {
+        raw = await getWinnerStats(selectedCup.id); // Supabase에서 직접 fetch (DB)
+      } else {
+        // 로컬 통계 (원하는 방식으로 구현)
+        raw = await getWinnerStats(selectedCup.id, period);
+      }
+      const statsArr = selectedCup.data.map((item) => {
+        const s = raw[item.id] || {};
+        return {
+          id: item.id,
+          name: item.name,
+          image: item.image,
+          winCount: s.winCount || 0,
+          matchWins: s.matchWins || 0,
+          matchCount: s.matchCount || 0,
+          totalGames: s.totalGames || 0,
+          createdAt: item.createdAt || 0,
+        };
+      });
+      setStats(statsArr);
+    }
+    fetchStats();
   }, [selectedCup, period]);
 
   useEffect(() => {
@@ -311,7 +322,6 @@ function StatsPage({ selectedCup, showOnlyWinner }) {
             </table>
           </div>
         </div>
-
         {/* 댓글 */}
         {!showOnlyWinner && (
           <div

@@ -33,18 +33,19 @@ export function getYoutubeEmbed(url = "") {
 
 // ===== 통계, 기록 관련 =====
 
-// 유저별 저장 및 전체 통계 저장 (월드컵 종료시 호출)
+// 월드컵 종료시 통계 저장 (전체/유저별/기간 로그)
 export function saveWinnerStatsWithUser(userId, cupId, winner, matchHistory) {
+  // 1. 유저별 이전 기록 제거
   const userStatsAll = JSON.parse(localStorage.getItem("userWinnerStats") || "{}");
   if (!userStatsAll[userId]) userStatsAll[userId] = {};
   const prevStats = userStatsAll[userId][cupId] || {};
 
-  // 전체 통계 불러오기
+  // 2. 전체 통계 불러오기
   const statsAll = JSON.parse(localStorage.getItem("winnerStats") || "{}");
   if (!statsAll[cupId]) statsAll[cupId] = {};
   const stats = statsAll[cupId];
 
-  // 이전 기록 빼기 (기존 데이터 제거)
+  // 3. 이전 기록 빼기 (중복X)
   Object.keys(prevStats).forEach(itemId => {
     const prev = prevStats[itemId];
     if (!stats[itemId]) return;
@@ -57,24 +58,27 @@ export function saveWinnerStatsWithUser(userId, cupId, winner, matchHistory) {
     });
   });
 
-  // 새 기록 계산
+  // 4. 새 기록 계산
   const newStats = {};
-  matchHistory.forEach(({ c1, c2, winnerId }) => {
+  matchHistory.forEach(({ c1, c2, winner }) => {
     [c1, c2].forEach(c => {
+      if (!c) return;
       if (!newStats[c.id]) newStats[c.id] = { winCount: 0, matchWins: 0, matchCount: 0, totalGames: 0 };
       newStats[c.id].matchCount++;
     });
-    if (!newStats[winnerId]) newStats[winnerId] = { winCount: 0, matchWins: 0, matchCount: 0, totalGames: 0 };
-    newStats[winnerId].matchWins++;
+    if (winner && !newStats[winner.id]) newStats[winner.id] = { winCount: 0, matchWins: 0, matchCount: 0, totalGames: 0 };
+    if (winner) newStats[winner.id].matchWins++;
   });
-  if (!newStats[winner.id]) newStats[winner.id] = { winCount: 0, matchWins: 0, matchCount: 0, totalGames: 0 };
-  newStats[winner.id].winCount = 1;
-  newStats[winner.id].totalGames = 1;
-  Object.keys(newStats).forEach(id => {
-    if (id !== winner.id) newStats[id].totalGames = 1;
-  });
+  if (winner && !newStats[winner.id]) newStats[winner.id] = { winCount: 0, matchWins: 0, matchCount: 0, totalGames: 0 };
+  if (winner) {
+    newStats[winner.id].winCount = 1;
+    newStats[winner.id].totalGames = 1;
+    Object.keys(newStats).forEach(id => {
+      if (id !== winner.id) newStats[id].totalGames = 1;
+    });
+  }
 
-  // 새 기록 전체통계에 더하기
+  // 5. 전체통계에 더하기
   Object.keys(newStats).forEach(itemId => {
     if (!stats[itemId]) stats[itemId] = { winCount: 0, matchWins: 0, matchCount: 0, totalGames: 0 };
     stats[itemId].winCount += newStats[itemId].winCount;
@@ -83,45 +87,28 @@ export function saveWinnerStatsWithUser(userId, cupId, winner, matchHistory) {
     stats[itemId].totalGames += newStats[itemId].totalGames;
   });
 
-  // 저장
+  // 6. 저장
   userStatsAll[userId][cupId] = newStats;
   statsAll[cupId] = stats;
   localStorage.setItem("userWinnerStats", JSON.stringify(userStatsAll));
   localStorage.setItem("winnerStats", JSON.stringify(statsAll));
 
-  // 기간별 랭킹 로그 기록 (이전 동일 userId, cupId 로그는 삭제 후 새로 기록)
+  // 7. 기간별 로그 (삭제 후 추가)
   const now = Date.now();
   let allLogs = JSON.parse(localStorage.getItem("winnerStatsLog") || "[]");
   allLogs = allLogs.filter(log => !(log.userId === userId && log.cupId === cupId));
-
-  const statsArr = {};
-  matchHistory.forEach(({ c1, c2, winnerId }) => {
-    [c1, c2].forEach(c => {
-      if (!statsArr[c.id]) statsArr[c.id] = { winCount: 0, matchWins: 0, matchCount: 0, totalGames: 0 };
-      statsArr[c.id].matchCount++;
-    });
-    if (!statsArr[winnerId]) statsArr[winnerId] = { winCount: 0, matchWins: 0, matchCount: 0, totalGames: 0 };
-    statsArr[winnerId].matchWins++;
-  });
-  if (!statsArr[winner.id]) statsArr[winner.id] = { winCount: 0, matchWins: 0, matchCount: 0, totalGames: 0 };
-  statsArr[winner.id].winCount = 1;
-  statsArr[winner.id].totalGames = 1;
-  Object.keys(statsArr).forEach(id => {
-    if (id !== winner.id) statsArr[id].totalGames = 1;
-  });
-
   allLogs.push({
     cupId,
     userId,
     date: now,
-    itemStats: statsArr
+    itemStats: newStats
   });
   localStorage.setItem("winnerStatsLog", JSON.stringify(allLogs));
 }
 
 // 전체 기간 or 기간별 집계용 통계 가져오기
 export function getWinnerStats(cupId, period = "all") {
-  const all = JSON.parse(localStorage.getItem("winnerStatsLog") || "[]"); // [{cupId, itemStats, date}, ...]
+  const all = JSON.parse(localStorage.getItem("winnerStatsLog") || "[]");
   let from = 0;
   const now = Date.now();
   if (period === "1w") from = now - 7 * 24 * 60 * 60 * 1000;
@@ -147,7 +134,7 @@ export function getWinnerStats(cupId, period = "all") {
   return stats;
 }
 
-// "최다 우승 후보" 반환 (Home 카드용)
+// "최다 우승 후보" 반환
 export function getMostWinner(cupId, cupData) {
   const stats = getWinnerStats(cupId, "all");
   if (!stats) return null;
