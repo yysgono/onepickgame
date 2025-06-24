@@ -4,9 +4,9 @@ import { hasBadword } from "../badwords-multilang";
 
 function LoginBox() {
   const { t, i18n } = useTranslation();
-
   const [user, setUser] = useState(() => localStorage.getItem("onepickgame_user") || "");
-  const [nickname, setNickname] = useState("");
+  const [userId, setUserId] = useState("");
+  const [password, setPassword] = useState("");
 
   useEffect(() => {
     const saved = localStorage.getItem("onepickgame_user");
@@ -14,16 +14,27 @@ function LoginBox() {
     // eslint-disable-next-line
   }, []);
 
-  function handleLogin() {
-    const nick = nickname.trim();
-    if (!nick) return alert(t("comment.inputNickname"));
-    if (hasBadword(nick, i18n.language)) {
-      return alert(t("badword_warning") || "비속어/금지어가 포함되어 있습니다.");
+  function handleLogin(e) {
+    e.preventDefault();
+    if (!userId || !password) {
+      alert("아이디와 비밀번호를 모두 입력하세요.");
+      return;
     }
-    localStorage.setItem("onepickgame_user", nick);
-    setUser(nick);
-    setNickname("");
-    if (nick === "admin") {
+    const userList = JSON.parse(localStorage.getItem("userList") || "[]");
+    const userObj = userList.find(u => u.userId === userId && u.password === password);
+    if (!userObj) {
+      alert("아이디 또는 비밀번호가 일치하지 않습니다.");
+      return;
+    }
+    if (hasBadword(userObj.nickname, i18n.language)) {
+      alert(t("badword_warning") || "비속어/금지어가 포함되어 있습니다.");
+      return;
+    }
+    localStorage.setItem("onepickgame_user", userObj.nickname);
+    setUser(userObj.nickname);
+    setUserId("");
+    setPassword("");
+    if (userObj.nickname === "admin") {
       window.location.href = "/manage";
     } else {
       window.location.reload();
@@ -33,28 +44,9 @@ function LoginBox() {
   function handleLogout() {
     localStorage.removeItem("onepickgame_user");
     setUser("");
-    setNickname("");
+    setUserId("");
+    setPassword("");
     window.location.reload();
-  }
-
-  // 12바이트 엄격 제한, 한글/중국어/일본어 등 2바이트, 영어 등 1바이트
-  function handleNicknameChange(e) {
-    const val = e.target.value;
-    let bytes = 0;
-    let cutIndex = val.length;
-
-    for (let i = 0; i < val.length; i++) {
-      const code = val.charCodeAt(i);
-      const charBytes = code > 127 ? 2 : 1;
-      if (bytes + charBytes > 12) {
-        cutIndex = i;
-        break;
-      }
-      bytes += charBytes;
-    }
-
-    const newVal = val.slice(0, cutIndex);
-    setNickname(newVal);
   }
 
   return (
@@ -88,23 +80,35 @@ function LoginBox() {
         </>
       ) : (
         <>
-          <div style={{ display: "flex", gap: 8 }}>
+          <form style={{ display: "flex", gap: 8 }} onSubmit={handleLogin}>
             <input
               type="text"
-              value={nickname}
-              onChange={handleNicknameChange}
-              placeholder={t("comment.nickname")}
+              value={userId}
+              onChange={e => setUserId(e.target.value)}
+              placeholder="아이디"
               style={{
-                width: 110,
+                width: 100,
                 padding: 8,
                 borderRadius: 8,
                 border: "1px solid #bbb"
               }}
-              autoComplete="off"
-              spellCheck={false}
+              autoComplete="username"
+            />
+            <input
+              type="password"
+              value={password}
+              onChange={e => setPassword(e.target.value)}
+              placeholder="비밀번호"
+              style={{
+                width: 100,
+                padding: 8,
+                borderRadius: 8,
+                border: "1px solid #bbb"
+              }}
+              autoComplete="current-password"
             />
             <button
-              onClick={handleLogin}
+              type="submit"
               style={{
                 background: "#1976ed",
                 color: "#fff",
@@ -117,7 +121,7 @@ function LoginBox() {
             >
               {t("login")}
             </button>
-          </div>
+          </form>
           {/* 회원가입/아이디 찾기/비밀번호 찾기 */}
           <div style={{ display: "flex", gap: 10, marginTop: 8 }}>
             <button

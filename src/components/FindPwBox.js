@@ -1,4 +1,12 @@
+// src/components/FindPwBox.jsx
 import React, { useState } from "react";
+import { createClient } from "@supabase/supabase-js";
+
+// 본인 프로젝트 정보로 수정!
+const supabase = createClient(
+  "https://irfyuvuazhujtlgpkfci.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlyZnl1dnVhemh1anRsZ3BrZmNpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTA1NDY0MTAsImV4cCI6MjA2NjEyMjQxMH0.q4s3G9mGnCbX7Urtks6_63XOSD8Ry2_GcmGM1wE7TBE"
+);
 
 function getByteLength(str) {
   let len = 0;
@@ -23,10 +31,11 @@ function sliceByByte(str, maxBytes) {
 }
 
 function FindPwBox() {
-  const [userId, setUserId] = useState("");
+  const [userId, setUserId] = useState(""); // 이메일(아이디)
   const [nickname, setNickname] = useState("");
-  const [foundPw, setFoundPw] = useState("");
+  const [successMsg, setSuccessMsg] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   function handleNicknameChange(e) {
     const val = e.target.value;
@@ -34,25 +43,57 @@ function FindPwBox() {
     setNickname(sliced);
   }
 
-  function handleFindPw(e) {
+  async function handleFindPw(e) {
     e.preventDefault();
-    setFoundPw("");
+    setSuccessMsg("");
     setError("");
     if (!userId || !nickname) {
-      setError("아이디와 닉네임을 모두 입력하세요.");
+      setError("이메일(아이디)와 닉네임을 모두 입력하세요.");
       return;
     }
     if (getByteLength(nickname) > 12) {
       setError("닉네임은 최대 12바이트까지 가능합니다.");
       return;
     }
-    const userList = JSON.parse(localStorage.getItem("userList") || "[]");
-    const user = userList.find(u => u.userId === userId && u.nickname === nickname);
-    if (!user) {
-      setError("일치하는 정보가 없습니다.");
-      return;
+    setLoading(true);
+
+    try {
+      // 1. 닉네임과 이메일로 profiles + users_view 확인
+      const { data: profile, error: pErr } = await supabase
+        .from("profiles")
+        .select("id")
+        .eq("nickname", nickname)
+        .single();
+      if (pErr || !profile) {
+        setError("일치하는 정보가 없습니다.");
+        setLoading(false);
+        return;
+      }
+
+      const { data: userData, error: uErr } = await supabase
+        .from("users_view")
+        .select("email")
+        .eq("id", profile.id)
+        .single();
+      if (uErr || !userData || userData.email !== userId) {
+        setError("일치하는 정보가 없습니다.");
+        setLoading(false);
+        return;
+      }
+
+      // 2. Supabase의 resetPasswordForEmail 기능
+      const { error: resetErr } = await supabase.auth.resetPasswordForEmail(userId, {
+        redirectTo: window.location.origin + "/reset-password" // (선택) 완료 후 이동할 페이지
+      });
+      if (resetErr) {
+        setError("비밀번호 재설정 메일 발송에 실패했습니다.");
+      } else {
+        setSuccessMsg("비밀번호 재설정 메일을 발송했습니다! 이메일을 확인하세요.");
+      }
+    } catch (e) {
+      setError("일시적인 오류가 발생했습니다.");
     }
-    setFoundPw(`비밀번호: ${user.password}`);
+    setLoading(false);
   }
 
   return (
@@ -61,12 +102,13 @@ function FindPwBox() {
       <form onSubmit={handleFindPw}>
         <div style={{ marginBottom: 12 }}>
           <input
-            type="text"
+            type="email"
             value={userId}
             onChange={e => setUserId(e.target.value)}
-            placeholder="아이디"
+            placeholder="이메일(아이디)"
             style={{ width: "100%", padding: 10, borderRadius: 7, border: "1.2px solid #bbb", fontSize: 16 }}
-            maxLength={18}
+            maxLength={50}
+            disabled={loading}
           />
         </div>
         <div style={{ marginBottom: 12 }}>
@@ -78,6 +120,7 @@ function FindPwBox() {
             style={{ width: "100%", padding: 10, borderRadius: 7, border: "1.2px solid #bbb", fontSize: 16 }}
             autoComplete="off"
             spellCheck={false}
+            disabled={loading}
           />
         </div>
         <button
@@ -87,9 +130,10 @@ function FindPwBox() {
             background: "#1976ed", color: "#fff", fontWeight: 800, border: "none",
             borderRadius: 9, fontSize: 19, padding: "11px 0", marginBottom: 8, cursor: "pointer"
           }}
-        >비밀번호 찾기</button>
+          disabled={loading}
+        >{loading ? "처리 중..." : "비밀번호 찾기"}</button>
       </form>
-      {foundPw && <div style={{ color: "#1976ed", marginTop: 12, textAlign: "center" }}>{foundPw}</div>}
+      {successMsg && <div style={{ color: "#1976ed", marginTop: 12, textAlign: "center" }}>{successMsg}</div>}
       {error && <div style={{ color: "red", marginTop: 12, textAlign: "center" }}>{error}</div>}
     </div>
   );

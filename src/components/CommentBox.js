@@ -30,7 +30,6 @@ function getNow(t) {
   );
 }
 
-// 바이트 계산 함수
 function getByteLength(str) {
   let len = 0;
   for (let i=0; i < str.length; i++) {
@@ -38,20 +37,6 @@ function getByteLength(str) {
     len += code > 127 ? 2 : 1;
   }
   return len;
-}
-// 바이트 기준 자르기
-function sliceByByte(str, maxBytes) {
-  let bytes = 0;
-  let result = "";
-  for (let i=0; i < str.length; i++) {
-    const char = str[i];
-    const code = str.charCodeAt(i);
-    const charBytes = code > 127 ? 2 : 1;
-    if (bytes + charBytes > maxBytes) break;
-    result += char;
-    bytes += charBytes;
-  }
-  return result;
 }
 
 function isSpam(newComment, cupId, comments) {
@@ -79,7 +64,6 @@ export default function CommentBox({ cupId }) {
   const { t, i18n } = useTranslation();
   const currentUser = localStorage.getItem("onepickgame_user") || "";
   const isAdmin = currentUser === "admin";
-  const [nickname, setNickname] = useState(currentUser || "");
   const [content, setContent] = useState("");
   const [comments, setComments] = useState([]);
   const [error, setError] = useState("");
@@ -96,11 +80,10 @@ export default function CommentBox({ cupId }) {
   const handleSubmit = (e) => {
     e.preventDefault();
     setError("");
-    const nick = (currentUser || nickname).trim();
+    const nick = currentUser;
     const text = content.trim();
 
-    if (!currentUser) return setError(t("comment.needLogin"));
-    if (!nick) return setError(t("comment.inputNickname"));
+    if (!nick) return setError(t("comment.needLogin"));
     if (!text) return setError(t("comment.inputContent"));
     if (text.length > 80) return setError(t("comment.limit80"));
     if (text.split("\n").length > 5) return setError(t("comment.limitLines"));
@@ -142,7 +125,7 @@ export default function CommentBox({ cupId }) {
   };
 
   const handleVote = (commentId, type) => {
-    const nick = (currentUser || nickname).trim() || t("anonymous");
+    const nick = currentUser || t("anonymous");
     const all = JSON.parse(localStorage.getItem(COMMENT_KEY) || "{}");
     const list = all[cupId] || [];
     const idx = list.findIndex((c) => c.id === commentId);
@@ -190,13 +173,6 @@ export default function CommentBox({ cupId }) {
     setComments(newComments);
   };
 
-  // 닉네임 입력 변경시 12바이트 제한 적용
-  function handleNicknameChange(e) {
-    const val = e.target.value;
-    const sliced = sliceByByte(val, 12);
-    setNickname(sliced);
-  }
-
   return (
     <div
       style={{
@@ -234,24 +210,23 @@ export default function CommentBox({ cupId }) {
           flexWrap: "wrap",
         }}
       >
-        <input
-          value={nickname}
-          onChange={handleNicknameChange}
-          placeholder={t("comment.nickname")}
-          maxLength={12}
-          disabled={!!currentUser}
+        {/* 닉네임 입력란 삭제 */}
+        <div
           style={{
-            width: 120,
-            padding: 10,
-            borderRadius: 9,
-            border: `1.2px solid ${COLORS.border}`,
-            textAlign: "center",
-            fontSize: 15.5,
-            background: currentUser ? "#eee" : "#fff",
-            fontWeight: 600,
-            color: COLORS.gray,
+            fontWeight: 700,
+            color: COLORS.main,
+            fontSize: 16,
+            background: "#f3f9fe",
+            borderRadius: 8,
+            padding: "7px 14px",
+            border: `1.1px solid ${COLORS.border}`,
+            minWidth: 80,
+            textAlign: "center"
           }}
-        />
+          title={currentUser}
+        >
+          {currentUser || "?"}
+        </div>
         <textarea
           value={content}
           onChange={(e) => setContent(e.target.value.slice(0, 80))}

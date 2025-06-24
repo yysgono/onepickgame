@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+// src/components/WorldcupMaker.jsx
+import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import CandidateInput from "./CandidateInput";
 import COLORS from "../styles/theme";
 import { mainButtonStyle, grayButtonStyle } from "../styles/common";
 import { addWorldcupGame } from "../utils/supabaseWorldcupApi";
 import { uploadCandidateImage } from "../utils/supabaseImageUpload";
+import { supabase } from "../utils/supabaseClient"; // 꼭 import!
 
 function isMobile() {
   if (typeof window !== "undefined") {
@@ -23,13 +25,34 @@ function WorldcupMaker({ onCreate, onCancel }) {
   ]);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const user = localStorage.getItem("onepickgame_user");
+
+  // 추가: 로그인 유저/닉네임 state
+  const [user, setUser] = useState(null);         // supabase.auth.user()
+  const [nickname, setNickname] = useState("");   // profiles.nickname
   const mobile = isMobile();
+
+  // 유저 인증 정보 불러오기
+  useEffect(() => {
+    async function fetchUser() {
+      const { data: { user } } = await supabase.auth.getUser();
+      setUser(user);
+      if (user) {
+        // 닉네임은 별도 쿼리
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("nickname")
+          .eq("id", user.id)
+          .single();
+        setNickname(profile?.nickname || "");
+      }
+    }
+    fetchUser();
+  }, []);
 
   if (!user) {
     return (
       <div style={{ padding: 60, textAlign: "center" }}>
-        <h2>{t("loginRequired")}</h2>
+        <h2>{t("loginRequired") || "로그인 후 이용 가능합니다."}</h2>
       </div>
     );
   }
@@ -60,8 +83,8 @@ function WorldcupMaker({ onCreate, onCancel }) {
       }))
       .filter((c) => c.name && c.image);
 
-    if (!title.trim()) return setError(t("enterWorldcupTitle"));
-    if (list.length < 2) return setError(t("enterAtLeast2Candidates"));
+    if (!title.trim()) return setError(t("enterWorldcupTitle") || "제목을 입력하세요.");
+    if (list.length < 2) return setError(t("enterAtLeast2Candidates") || "후보를 2개 이상 입력하세요.");
 
     setLoading(true);
 
@@ -73,7 +96,7 @@ function WorldcupMaker({ onCreate, onCancel }) {
             const file = await fetch(c.image).then(r => r.blob());
             const url = await uploadCandidateImage(
               new File([file], `${c.name}.png`, { type: file.type }),
-              user
+              nickname
             );
             return { ...c, image: url };
           }
@@ -90,12 +113,13 @@ function WorldcupMaker({ onCreate, onCancel }) {
           name: c.name,
           image: c.image,
         })),
-        creator: user,
-        owner: user,
-        created_at: new Date().toISOString(), // ← 여기!
+        creator_id: user.id,          // 실제 유저 id
+        creator_email: user.email,    // 이메일
+        creator_nickname: nickname,   // 닉네임 (별도 쿼리)
+        created_at: new Date().toISOString(),
       };
       const id = await addWorldcupGame(newCup);
-      alert("월드컵이 Supabase에 저장되었습니다!\nID: " + id);
+      alert("월드컵이 저장되었습니다!\nID: " + id);
 
       if (onCreate) {
         onCreate({

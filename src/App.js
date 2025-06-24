@@ -3,10 +3,10 @@ import "./App.css";
 import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route, useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-
 import Header from "./components/Header";
 import Home from "./components/Home";
 import SelectRoundPage from "./components/SelectRoundPage";
+import AuthBox from "./components/AuthBox";
 import MatchPage from "./components/MatchPage";
 import ResultPage from "./components/ResultPage";
 import StatsPage from "./components/StatsPage";
@@ -20,16 +20,33 @@ import AdminStatsPage from "./components/AdminStatsPage";
 import SignupBox from "./components/SignupBox";
 import FindIdBox from "./components/FindIdBox";
 import FindPwBox from "./components/FindPwBox";
-
-import { getWorldcupGames, deleteWorldcupGame } from "./utils/supabaseWorldcupApi"; // ← deleteWorldcupGame import 추가
+import { getWorldcupGames, deleteWorldcupGame } from "./utils/supabaseWorldcupApi";
+import { supabase } from "./utils/supabaseClient";
 
 function App() {
   const [worldcupList, setWorldcupList] = useState([]);
   const { i18n } = useTranslation();
-  const currentUser = localStorage.getItem("onepickgame_user") || "";
-  const isAdmin = currentUser === "admin";
+  const [user, setUser] = useState(null);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [nickname, setNickname] = useState("");
 
-  // DB에서 월드컵 리스트 불러오기
+  // 유저 확인 (로그인상태 감지)
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data }) => setUser(data?.user || null));
+  }, []);
+  useEffect(() => {
+    // 닉네임 읽기
+    if (user) {
+      supabase.from("profiles").select("nickname").eq("id", user.id).single().then(({ data }) => {
+        setNickname(data?.nickname || "");
+        setIsAdmin(data?.nickname === "admin"); // 예: 닉네임이 admin이면 관리자
+      });
+    } else {
+      setNickname("");
+      setIsAdmin(false);
+    }
+  }, [user]);
+
   const fetchWorldcups = async () => {
     try {
       const list = await getWorldcupGames();
@@ -38,26 +55,7 @@ function App() {
       setWorldcupList([]);
     }
   };
-
-  useEffect(() => {
-    fetchWorldcups();
-  }, []);
-
-  useEffect(() => {
-    const today = new Date().toISOString().slice(0, 10);
-    let userId = localStorage.getItem("onepickgame_user");
-    if (!userId) {
-      userId = localStorage.getItem("onepickgame_guest_id");
-      if (!userId) {
-        userId = "guest-" + Date.now() + "-" + Math.floor(Math.random() * 1000000);
-        localStorage.setItem("onepickgame_guest_id", userId);
-      }
-    }
-    let logs = JSON.parse(localStorage.getItem("visitLogs") || "{}");
-    if (!logs[today]) logs[today] = [];
-    if (!logs[today].includes(userId)) logs[today].push(userId);
-    localStorage.setItem("visitLogs", JSON.stringify(logs));
-  }, []);
+  useEffect(() => { fetchWorldcups(); }, []);
 
   useEffect(() => {
     const savedLang = localStorage.getItem("onepickgame_lang");
@@ -90,7 +88,7 @@ function App() {
       try {
         const data = JSON.parse(ev.target.result);
         if (!Array.isArray(data)) throw new Error("형식 오류");
-        setWorldcupList(data); // 단순 프론트 복구
+        setWorldcupList(data);
         alert("복구 성공! (프론트에만 적용, DB 반영은 별도)");
       } catch {
         alert("복구 실패!");
@@ -101,15 +99,13 @@ function App() {
   }
 
   function handleMakeWorldcup() {
-    const currentUser = localStorage.getItem("onepickgame_user") || "";
-    if (!currentUser) {
+    if (!user) {
       alert("로그인이 필요합니다.");
       return;
     }
     window.location.href = "/worldcup-maker";
   }
 
-  // HomeWrapper에서 삭제 반영!
   function HomeWrapper() {
     const navigate = useNavigate();
     return (
@@ -120,8 +116,8 @@ function App() {
         onMakeWorldcup={handleMakeWorldcup}
         onDelete={async id => {
           try {
-            await deleteWorldcupGame(id); // DB 삭제
-            setWorldcupList(list => list.filter(cup => cup.id !== id)); // 프론트에서도 삭제
+            await deleteWorldcupGame(id);
+            setWorldcupList(list => list.filter(cup => cup.id !== id));
           } catch (e) {
             alert("삭제 실패! " + (e.message || e));
           }
@@ -157,10 +153,10 @@ function App() {
     return (
       <WorldcupMaker
         fetchWorldcups={fetchWorldcups}
-        onCreate={() => {
-          window.location.href = "/";
-        }}
+        onCreate={() => { window.location.href = "/"; }}
         onCancel={() => navigate("/")}
+        user={user}
+        nickname={nickname}
       />
     );
   }
@@ -168,7 +164,7 @@ function App() {
   function ManageWorldcupWrapper() {
     return (
       <ManageWorldcup
-        user={currentUser}
+        user={user}
         isAdmin={isAdmin}
         worldcupList={worldcupList}
         setWorldcupList={setWorldcupList}
@@ -183,6 +179,8 @@ function App() {
         worldcupList={worldcupList}
         fetchWorldcups={fetchWorldcups}
         cupId={id}
+        user={user}
+        nickname={nickname}
       />
     );
   }
@@ -197,10 +195,7 @@ function App() {
     }
     return (
       <>
-        <AdminBar onLogout={() => {
-          localStorage.removeItem("onepickgame_user");
-          window.location.reload();
-        }} />
+        <AdminBar onLogout={() => { supabase.auth.signOut().then(() => window.location.reload()); }} />
         <AdminDashboard />
       </>
     );
@@ -215,10 +210,7 @@ function App() {
     }
     return (
       <>
-        <AdminBar onLogout={() => {
-          localStorage.removeItem("onepickgame_user");
-          window.location.reload();
-        }} />
+        <AdminBar onLogout={() => { supabase.auth.signOut().then(() => window.location.reload()); }} />
         <AdminStatsPage />
       </>
     );
@@ -256,5 +248,4 @@ function App() {
     </div>
   );
 }
-
 export default App;

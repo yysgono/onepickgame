@@ -1,7 +1,10 @@
-import React, { useState, useRef } from "react";
+// src/components/EditWorldcupPage.jsx
+
+import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { updateWorldcupGame } from "../utils/supabaseWorldcupApi";
 import { uploadCandidateImage } from "../utils/supabaseImageUpload";
+import { supabase } from "../utils/supabaseClient";
 
 const COLORS = {
   main: "#1976ed",
@@ -27,21 +30,61 @@ function getYoutubeThumb(url) {
 
 function EditWorldcupPage({ worldcupList, fetchWorldcups, cupId }) {
   const navigate = useNavigate();
-  const currentUser = localStorage.getItem("onepickgame_user") || "";
 
-  const originalCup = worldcupList.find(cup => String(cup.id) === String(cupId));
-  const [title, setTitle] = useState(originalCup?.title || "");
-  const [desc, setDesc] = useState(originalCup?.desc || "");
-  const [data, setData] = useState(originalCup?.data ? [...originalCup.data] : []);
+  // supabase 유저 인증
+  const [user, setUser] = useState(null);
+  const [nickname, setNickname] = useState("");
+
+  // 월드컵 원본
+  const [originalCup, setOriginalCup] = useState(null);
+
+  // 폼 state
+  const [title, setTitle] = useState("");
+  const [desc, setDesc] = useState("");
+  const [data, setData] = useState([]);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-
   const fileInputRefs = useRef([]);
 
+  // 1. 유저 정보 & 닉네임 로드
+  useEffect(() => {
+    async function fetchUser() {
+      const { data: { user } } = await supabase.auth.getUser();
+      setUser(user);
+      if (user) {
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("nickname")
+          .eq("id", user.id)
+          .single();
+        setNickname(profile?.nickname || "");
+      }
+    }
+    fetchUser();
+  }, []);
+
+  // 2. 월드컵 불러오기
+  useEffect(() => {
+    const cup = worldcupList.find(cup => String(cup.id) === String(cupId));
+    setOriginalCup(cup || null);
+    setTitle(cup?.title || "");
+    setDesc(cup?.desc || "");
+    setData(cup?.data ? [...cup.data] : []);
+  }, [worldcupList, cupId]);
+
+  // 3. 권한체크: creator_id(또는 owner)가 현재 로그인 유저와 다르면 NO
+  if (!user) {
+    return <div style={{ padding: 80 }}>로그인이 필요합니다.</div>;
+  }
   if (!originalCup) {
     return <div style={{ padding: 80 }}>월드컵을 찾을 수 없습니다.</div>;
   }
-  if (originalCup.owner !== currentUser) {
+  if (
+    !(
+      (originalCup.creator_id && originalCup.creator_id === user.id) ||
+      (originalCup.owner && originalCup.owner === user.email) // 구버전 호환
+    )
+  ) {
     return <div style={{ padding: 80 }}>수정 권한이 없습니다.</div>;
   }
 
@@ -85,7 +128,7 @@ function EditWorldcupPage({ worldcupList, fetchWorldcups, cupId }) {
             const file = await fetch(imageUrl).then(r => r.blob());
             const url = await uploadCandidateImage(
               new File([file], `${item.name}.png`, { type: file.type }),
-              currentUser
+              nickname
             );
             imageUrl = url;
           }

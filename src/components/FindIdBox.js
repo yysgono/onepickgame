@@ -1,4 +1,12 @@
+// src/components/FindIdBox.jsx
 import React, { useState } from "react";
+import { createClient } from "@supabase/supabase-js";
+
+// 프로젝트 환경에 맞게 설정!
+const supabase = createClient(
+  "https://irfyuvuazhujtlgpkfci.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlyZnl1dnVhemh1anRsZ3BrZmNpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTA1NDY0MTAsImV4cCI6MjA2NjEyMjQxMH0.q4s3G9mGnCbX7Urtks6_63XOSD8Ry2_GcmGM1wE7TBE"
+);
 
 function getByteLength(str) {
   let len = 0;
@@ -26,6 +34,7 @@ function FindIdBox() {
   const [nickname, setNickname] = useState("");
   const [foundId, setFoundId] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   function handleNicknameChange(e) {
     const val = e.target.value;
@@ -33,7 +42,7 @@ function FindIdBox() {
     setNickname(sliced);
   }
 
-  function handleFindId(e) {
+  async function handleFindId(e) {
     e.preventDefault();
     setFoundId("");
     setError("");
@@ -45,13 +54,37 @@ function FindIdBox() {
       setError("닉네임은 최대 12바이트까지 가능합니다.");
       return;
     }
-    const userList = JSON.parse(localStorage.getItem("userList") || "[]");
-    const user = userList.find(u => u.nickname === nickname);
-    if (!user) {
-      setError("해당 닉네임으로 가입된 아이디가 없습니다.");
-      return;
+    setLoading(true);
+    // profiles 테이블에서 닉네임으로 검색 → user의 email(=아이디) 찾기
+    try {
+      // 1. 닉네임으로 profiles 조회
+      const { data: profile, error: pErr } = await supabase
+        .from("profiles")
+        .select("id")
+        .eq("nickname", nickname)
+        .single();
+
+      if (pErr || !profile) {
+        setError("해당 닉네임으로 가입된 아이디가 없습니다.");
+        setLoading(false);
+        return;
+      }
+      // 2. id값으로 auth.users에서 이메일 찾기
+      const { data: userData, error: uErr } = await supabase
+        .from("users_view") // ← supabase 기본 테이블 users는 select 불가, view를 써야 함
+        .select("email")
+        .eq("id", profile.id)
+        .single();
+
+      if (uErr || !userData) {
+        setError("해당 닉네임으로 가입된 아이디가 없습니다.");
+      } else {
+        setFoundId(`아이디(이메일): ${userData.email}`);
+      }
+    } catch (e) {
+      setError("일시적인 오류가 발생했습니다.");
     }
-    setFoundId(`아이디: ${user.userId}`);
+    setLoading(false);
   }
 
   return (
@@ -67,6 +100,7 @@ function FindIdBox() {
             style={{ width: "100%", padding: 10, borderRadius: 7, border: "1.2px solid #bbb", fontSize: 16 }}
             autoComplete="off"
             spellCheck={false}
+            disabled={loading}
           />
         </div>
         <button
@@ -76,7 +110,8 @@ function FindIdBox() {
             background: "#1976ed", color: "#fff", fontWeight: 800, border: "none",
             borderRadius: 9, fontSize: 19, padding: "11px 0", marginBottom: 8, cursor: "pointer"
           }}
-        >아이디 찾기</button>
+          disabled={loading}
+        >{loading ? "검색 중..." : "아이디 찾기"}</button>
       </form>
       {foundId && <div style={{ color: "#1976ed", marginTop: 12, textAlign: "center" }}>{foundId}</div>}
       {error && <div style={{ color: "red", marginTop: 12, textAlign: "center" }}>{error}</div>}
