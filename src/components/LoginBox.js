@@ -1,150 +1,143 @@
-import React, { useState, useEffect } from "react";
-import { useTranslation } from "react-i18next";
+import React, { useState } from "react";
 import { supabase } from "../utils/supabaseClient";
+import { useNavigate } from "react-router-dom";
 
 function LoginBox() {
-  const { t } = useTranslation();
-  const [user, setUser] = useState(null);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
-  // 로그인 유저 체크 (마운트 시)
-  useEffect(() => {
-    supabase.auth.getUser().then(({ data }) => {
-      setUser(data.user || null);
-    });
-
-    // 실시간 로그인/로그아웃 감지
-    const { data: listener } = supabase.auth.onAuthStateChange(
-      (event, session) => {
-        setUser(session?.user || null);
-      }
-    );
-    return () => { listener?.subscription.unsubscribe(); }
-  }, []);
-
-  // 로그인 핸들러
   async function handleLogin(e) {
     e.preventDefault();
     setError("");
     setLoading(true);
-    const { error } = await supabase.auth.signInWithPassword({
+
+    // supabase 이메일+비밀번호 로그인
+    const { error: loginError } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
-    setLoading(false);
-    if (error) {
-      setError(error.message);
-    } else {
-      setEmail("");
-      setPassword("");
-      window.location.reload(); // 또는 라우팅 이동
-    }
-  }
 
-  // 로그아웃
-  async function handleLogout() {
-    await supabase.auth.signOut();
-    setUser(null);
+    setLoading(false);
+
+    if (loginError) {
+      setError(loginError.message || "로그인 실패");
+      return;
+    }
+    setEmail("");
+    setPassword("");
+    // 로그인 성공시 홈으로 이동 및 새로고침
+    navigate("/");
     window.location.reload();
   }
 
   return (
-    <div style={{
-      display: "flex", flexDirection: "column", gap: 8,
-      alignItems: "flex-end", marginBottom: 20, justifyContent: "flex-end"
-    }}>
-      {user ? (
-        <>
-          <b style={{ fontSize: 16 }}>{user.email}</b>
-          <button
-            onClick={handleLogout}
+    <div
+      style={{
+        maxWidth: 360,
+        margin: "60px auto",
+        background: "#fff",
+        borderRadius: 14,
+        boxShadow: "0 2px 12px #0001",
+        padding: 30
+      }}
+    >
+      <h2 style={{ textAlign: "center", marginBottom: 18 }}>로그인</h2>
+      <form onSubmit={handleLogin}>
+        <div style={{ marginBottom: 12 }}>
+          <input
+            type="email"
+            value={email}
+            onChange={e => setEmail(e.target.value)}
+            placeholder="이메일"
             style={{
-              background: "#ddd", color: "#333", border: "none",
-              borderRadius: 7, padding: "4px 18px", fontWeight: 700,
-              cursor: "pointer"
+              width: "100%",
+              padding: 10,
+              borderRadius: 7,
+              border: "1.2px solid #bbb",
+              fontSize: 16
             }}
-          >
-            {t("logout")}
-          </button>
-        </>
-      ) : (
-        <>
-          <form style={{ display: "flex", gap: 8 }} onSubmit={handleLogin}>
-            <input
-              type="email"
-              value={email}
-              onChange={e => setEmail(e.target.value)}
-              placeholder="이메일"
-              style={{
-                width: 140, padding: 8, borderRadius: 8, border: "1px solid #bbb"
-              }}
-              autoComplete="username"
-            />
-            <input
-              type="password"
-              value={password}
-              onChange={e => setPassword(e.target.value)}
-              placeholder="비밀번호"
-              style={{
-                width: 100, padding: 8, borderRadius: 8, border: "1px solid #bbb"
-              }}
-              autoComplete="current-password"
-            />
-            <button
-              type="submit"
-              disabled={loading}
-              style={{
-                background: "#1976ed", color: "#fff", border: "none",
-                borderRadius: 7, padding: "4px 18px", fontWeight: 700,
-                cursor: "pointer"
-              }}
-            >
-              {loading ? "로그인 중..." : t("login")}
-            </button>
-          </form>
-          <div style={{ display: "flex", gap: 10, marginTop: 8 }}>
-            <button
-              style={{
-                background: "none", border: "none", color: "#1976ed",
-                textDecoration: "underline", cursor: "pointer",
-                fontSize: 14, fontWeight: 700, padding: 0
-              }}
-              onClick={() => window.location.href = "/signup"}
-              type="button"
-            >
-              회원가입
-            </button>
-            <button
-              style={{
-                background: "none", border: "none", color: "#1976ed",
-                textDecoration: "underline", cursor: "pointer",
-                fontSize: 14, fontWeight: 700, padding: 0
-              }}
-              onClick={() => window.location.href = "/find-id"}
-              type="button"
-            >
-              아이디 찾기
-            </button>
-            <button
-              style={{
-                background: "none", border: "none", color: "#1976ed",
-                textDecoration: "underline", cursor: "pointer",
-                fontSize: 14, fontWeight: 700, padding: 0
-              }}
-              onClick={() => window.location.href = "/find-pw"}
-              type="button"
-            >
-              비밀번호 찾기
-            </button>
-          </div>
-          {error && (
-            <div style={{ color: "#d33", marginTop: 8 }}>{error}</div>
-          )}
-        </>
+            autoComplete="username"
+            required
+          />
+        </div>
+        <div style={{ marginBottom: 12 }}>
+          <input
+            type="password"
+            value={password}
+            onChange={e => setPassword(e.target.value)}
+            placeholder="비밀번호"
+            style={{
+              width: "100%",
+              padding: 10,
+              borderRadius: 7,
+              border: "1.2px solid #bbb",
+              fontSize: 16
+            }}
+            autoComplete="current-password"
+            required
+          />
+        </div>
+        <button
+          type="submit"
+          disabled={loading}
+          style={{
+            width: "100%",
+            background: "#1976ed",
+            color: "#fff",
+            fontWeight: 800,
+            border: "none",
+            borderRadius: 9,
+            fontSize: 19,
+            padding: "11px 0",
+            marginBottom: 8,
+            cursor: loading ? "not-allowed" : "pointer"
+          }}
+        >
+          {loading ? "로그인 중..." : "로그인"}
+        </button>
+      </form>
+      {error && (
+        <div style={{ color: "red", marginTop: 12, textAlign: "center" }}>
+          {error}
+        </div>
       )}
+      <div style={{ marginTop: 18, textAlign: "center" }}>
+        <a
+          href="/signup"
+          style={{
+            color: "#1976ed",
+            textDecoration: "underline",
+            fontWeight: 700,
+            marginRight: 15
+          }}
+        >
+          회원가입
+        </a>
+        <a
+          href="/find-id"
+          style={{
+            color: "#1976ed",
+            textDecoration: "underline",
+            fontWeight: 700,
+            marginRight: 15
+          }}
+        >
+          아이디 찾기
+        </a>
+        <a
+          href="/find-pw"
+          style={{
+            color: "#1976ed",
+            textDecoration: "underline",
+            fontWeight: 700
+          }}
+        >
+          비밀번호 찾기
+        </a>
+      </div>
     </div>
   );
 }

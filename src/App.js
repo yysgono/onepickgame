@@ -18,6 +18,7 @@ import AdminBar from "./components/AdminBar";
 import AdminDashboard from "./components/AdminDashboard";
 import AdminStatsPage from "./components/AdminStatsPage";
 import SignupBox from "./components/SignupBox";
+import LoginBox from "./components/LoginBox";        // <--- 로그인 박스 import 추가!
 import FindIdBox from "./components/FindIdBox";
 import FindPwBox from "./components/FindPwBox";
 import { getWorldcupGames, deleteWorldcupGame } from "./utils/supabaseWorldcupApi";
@@ -39,7 +40,7 @@ function App() {
     if (user) {
       supabase.from("profiles").select("nickname").eq("id", user.id).single().then(({ data }) => {
         setNickname(data?.nickname || "");
-        setIsAdmin(data?.nickname === "admin"); // 예: 닉네임이 admin이면 관리자
+        setIsAdmin(data?.nickname === "admin");
       });
     } else {
       setNickname("");
@@ -239,7 +240,9 @@ function App() {
             <Route path="/edit-worldcup/:id" element={<EditWorldcupPageWrapper />} />
             <Route path="/admin" element={<AdminRoute />} />
             <Route path="/admin-stats" element={<AdminStatsRoute />} />
+            {/* ▼▼▼ 회원가입/로그인/찾기 라우트들 ▼▼▼ */}
             <Route path="/signup" element={<SignupBox />} />
+            <Route path="/login" element={<LoginBox />} />       {/* <-- ★ 추가됨 ★ */}
             <Route path="/find-id" element={<FindIdBox />} />
             <Route path="/find-pw" element={<FindPwBox />} />
           </Routes>
