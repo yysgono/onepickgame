@@ -30,6 +30,16 @@ import FindPwBox from "./components/FindPwBox";
 import { getWorldcupGames, deleteWorldcupGame } from "./utils/supabaseWorldcupApi";
 import { supabase } from "./utils/supabaseClient";
 
+// 👇👇👇 추가
+function ResetPwRedirect() {
+  const navigate = useNavigate();
+  useEffect(() => {
+    navigate("/"); // 홈으로 자동 이동
+  }, [navigate]);
+  return null;
+}
+// 👆👆👆 추가
+
 function App() {
   const [worldcupList, setWorldcupList] = useState([]);
   const { i18n } = useTranslation();
@@ -287,6 +297,9 @@ function App() {
             <Route path="/login" element={<LoginBox />} />
             <Route path="/find-id" element={<FindIdBox />} />
             <Route path="/find-pw" element={<FindPwBox />} />
+            {/* 👇👇👇 추가 */}
+            <Route path="/reset-password" element={<ResetPwRedirect />} />
+            {/* 👆👆👆 추가 */}
           </Routes>
         </div>
       </>
