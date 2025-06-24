@@ -1,77 +1,69 @@
 import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { hasBadword } from "../badwords-multilang";
+import { supabase } from "../utils/supabaseClient";
 
 function LoginBox() {
-  const { t, i18n } = useTranslation();
-  const [user, setUser] = useState(() => localStorage.getItem("onepickgame_user") || "");
-  const [userId, setUserId] = useState("");
+  const { t } = useTranslation();
+  const [user, setUser] = useState(null);
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
+  // 로그인 유저 체크 (마운트 시)
   useEffect(() => {
-    const saved = localStorage.getItem("onepickgame_user");
-    if (saved !== user) setUser(saved || "");
-    // eslint-disable-next-line
+    supabase.auth.getUser().then(({ data }) => {
+      setUser(data.user || null);
+    });
+
+    // 실시간 로그인/로그아웃 감지
+    const { data: listener } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        setUser(session?.user || null);
+      }
+    );
+    return () => { listener?.subscription.unsubscribe(); }
   }, []);
 
-  function handleLogin(e) {
+  // 로그인 핸들러
+  async function handleLogin(e) {
     e.preventDefault();
-    if (!userId || !password) {
-      alert("아이디와 비밀번호를 모두 입력하세요.");
-      return;
-    }
-    const userList = JSON.parse(localStorage.getItem("userList") || "[]");
-    const userObj = userList.find(u => u.userId === userId && u.password === password);
-    if (!userObj) {
-      alert("아이디 또는 비밀번호가 일치하지 않습니다.");
-      return;
-    }
-    if (hasBadword(userObj.nickname, i18n.language)) {
-      alert(t("badword_warning") || "비속어/금지어가 포함되어 있습니다.");
-      return;
-    }
-    localStorage.setItem("onepickgame_user", userObj.nickname);
-    setUser(userObj.nickname);
-    setUserId("");
-    setPassword("");
-    if (userObj.nickname === "admin") {
-      window.location.href = "/manage";
+    setError("");
+    setLoading(true);
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+    setLoading(false);
+    if (error) {
+      setError(error.message);
     } else {
-      window.location.reload();
+      setEmail("");
+      setPassword("");
+      window.location.reload(); // 또는 라우팅 이동
     }
   }
 
-  function handleLogout() {
-    localStorage.removeItem("onepickgame_user");
-    setUser("");
-    setUserId("");
-    setPassword("");
+  // 로그아웃
+  async function handleLogout() {
+    await supabase.auth.signOut();
+    setUser(null);
     window.location.reload();
   }
 
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        gap: 8,
-        alignItems: "flex-end",
-        marginBottom: 20,
-        justifyContent: "flex-end"
-      }}
-    >
+    <div style={{
+      display: "flex", flexDirection: "column", gap: 8,
+      alignItems: "flex-end", marginBottom: 20, justifyContent: "flex-end"
+    }}>
       {user ? (
         <>
-          <b style={{ fontSize: 16 }}>{user}</b>
+          <b style={{ fontSize: 16 }}>{user.email}</b>
           <button
             onClick={handleLogout}
             style={{
-              background: "#ddd",
-              color: "#333",
-              border: "none",
-              borderRadius: 7,
-              padding: "4px 18px",
-              fontWeight: 700,
+              background: "#ddd", color: "#333", border: "none",
+              borderRadius: 7, padding: "4px 18px", fontWeight: 700,
               cursor: "pointer"
             }}
           >
@@ -82,15 +74,12 @@ function LoginBox() {
         <>
           <form style={{ display: "flex", gap: 8 }} onSubmit={handleLogin}>
             <input
-              type="text"
-              value={userId}
-              onChange={e => setUserId(e.target.value)}
-              placeholder="아이디"
+              type="email"
+              value={email}
+              onChange={e => setEmail(e.target.value)}
+              placeholder="이메일"
               style={{
-                width: 100,
-                padding: 8,
-                borderRadius: 8,
-                border: "1px solid #bbb"
+                width: 140, padding: 8, borderRadius: 8, border: "1px solid #bbb"
               }}
               autoComplete="username"
             />
@@ -100,40 +89,28 @@ function LoginBox() {
               onChange={e => setPassword(e.target.value)}
               placeholder="비밀번호"
               style={{
-                width: 100,
-                padding: 8,
-                borderRadius: 8,
-                border: "1px solid #bbb"
+                width: 100, padding: 8, borderRadius: 8, border: "1px solid #bbb"
               }}
               autoComplete="current-password"
             />
             <button
               type="submit"
+              disabled={loading}
               style={{
-                background: "#1976ed",
-                color: "#fff",
-                border: "none",
-                borderRadius: 7,
-                padding: "4px 18px",
-                fontWeight: 700,
+                background: "#1976ed", color: "#fff", border: "none",
+                borderRadius: 7, padding: "4px 18px", fontWeight: 700,
                 cursor: "pointer"
               }}
             >
-              {t("login")}
+              {loading ? "로그인 중..." : t("login")}
             </button>
           </form>
-          {/* 회원가입/아이디 찾기/비밀번호 찾기 */}
           <div style={{ display: "flex", gap: 10, marginTop: 8 }}>
             <button
               style={{
-                background: "none",
-                border: "none",
-                color: "#1976ed",
-                textDecoration: "underline",
-                cursor: "pointer",
-                fontSize: 14,
-                fontWeight: 700,
-                padding: 0
+                background: "none", border: "none", color: "#1976ed",
+                textDecoration: "underline", cursor: "pointer",
+                fontSize: 14, fontWeight: 700, padding: 0
               }}
               onClick={() => window.location.href = "/signup"}
               type="button"
@@ -142,14 +119,9 @@ function LoginBox() {
             </button>
             <button
               style={{
-                background: "none",
-                border: "none",
-                color: "#1976ed",
-                textDecoration: "underline",
-                cursor: "pointer",
-                fontSize: 14,
-                fontWeight: 700,
-                padding: 0
+                background: "none", border: "none", color: "#1976ed",
+                textDecoration: "underline", cursor: "pointer",
+                fontSize: 14, fontWeight: 700, padding: 0
               }}
               onClick={() => window.location.href = "/find-id"}
               type="button"
@@ -158,14 +130,9 @@ function LoginBox() {
             </button>
             <button
               style={{
-                background: "none",
-                border: "none",
-                color: "#1976ed",
-                textDecoration: "underline",
-                cursor: "pointer",
-                fontSize: 14,
-                fontWeight: 700,
-                padding: 0
+                background: "none", border: "none", color: "#1976ed",
+                textDecoration: "underline", cursor: "pointer",
+                fontSize: 14, fontWeight: 700, padding: 0
               }}
               onClick={() => window.location.href = "/find-pw"}
               type="button"
@@ -173,6 +140,9 @@ function LoginBox() {
               비밀번호 찾기
             </button>
           </div>
+          {error && (
+            <div style={{ color: "#d33", marginTop: 8 }}>{error}</div>
+          )}
         </>
       )}
     </div>
