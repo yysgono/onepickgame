@@ -2,6 +2,16 @@ import React, { useState } from "react";
 import { supabase } from "../utils/supabaseClient";
 import { useNavigate } from "react-router-dom";
 
+// 닉네임 유효성 검사 함수
+function isValidNickname(nickname) {
+  if (!nickname) return false;
+  const regex = /^[\uAC00-\uD7A3\w-]+$/;
+  if (!regex.test(nickname)) return false;
+  if (nickname.replace(/[\uAC00-\uD7A3]/g, "**").length < 3) return false; // 최소 3바이트
+  return true;
+}
+
+// 바이트 계산
 function getByteLength(str) {
   let len = 0;
   for (let i = 0; i < str.length; i++) {
@@ -45,6 +55,10 @@ function SignupBox() {
       setError("모든 항목을 입력하세요.");
       return;
     }
+    if (!isValidNickname(nickname.trim())) {
+      setError("닉네임은 한글, 영문, 숫자, -, _ 만 사용, 3~12바이트(공백/특수문자 불가)");
+      return;
+    }
     if (getByteLength(nickname) > 12) {
       setError("닉네임은 최대 12바이트까지 가능합니다.");
       return;
@@ -72,6 +86,15 @@ function SignupBox() {
       }
       setLoading(false);
       return;
+    }
+
+    // 3. 회원가입 성공 시 profiles에 upsert (닉네임, 이메일 저장)
+    if (data?.user?.id && data?.user?.email) {
+      await supabase
+        .from("profiles")
+        .upsert([
+          { id: data.user.id, nickname: nickname.trim(), email: data.user.email }
+        ]);
     }
 
     setSuccess("회원가입 성공! 이메일 인증 후 로그인 하세요.");
@@ -111,6 +134,7 @@ function SignupBox() {
             }}
             autoComplete="off"
             spellCheck={false}
+            maxLength={12}
           />
         </div>
         <div style={{ marginBottom: 12 }}>

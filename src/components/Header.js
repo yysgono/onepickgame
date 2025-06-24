@@ -3,6 +3,16 @@ import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../utils/supabaseClient";
 
+// 닉네임 유효성 검사 함수
+function isValidNickname(nickname) {
+  // 한글, 영문, 숫자, 언더스코어, 하이픈만 허용. (공백, 특수문자 불가)
+  if (!nickname) return false;
+  const regex = /^[\uAC00-\uD7A3\w-]+$/;
+  if (!regex.test(nickname)) return false;
+  if (nickname.replace(/[\uAC00-\uD7A3]/g, "**").length < 3) return false; // 최소 3바이트
+  return true;
+}
+
 const languages = [
   { code: "ko", label: "한국어" },
   { code: "en", label: "English" },
@@ -37,12 +47,15 @@ export default function Header({
   const [editError, setEditError] = useState("");
   const [editLoading, setEditLoading] = useState(false);
 
-  // 닉네임 prop이 바뀌면 editNickname도 맞춰줌
+  // 회원탈퇴용 비밀번호 입력
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [deletePw, setDeletePw] = useState("");
+  const [deleteLoading, setDeleteLoading] = useState(false);
+
   React.useEffect(() => {
     setEditNickname(nickname || "");
   }, [nickname]);
 
-  // 로그아웃
   function handleLogout() {
     supabase.auth.signOut().then(() => {
       setUser(null);
@@ -84,8 +97,9 @@ export default function Header({
   // 닉네임 변경
   async function handleNicknameChange() {
     setEditError("");
-    if (!editNickname.trim()) {
-      setEditError("닉네임을 입력하세요.");
+    const trimName = editNickname.trim();
+    if (!isValidNickname(trimName)) {
+      setEditError("닉네임은 한글, 영문, 숫자, -, _ 만 사용, 3~12바이트(공백/특수문자 불가)");
       return;
     }
     setEditLoading(true);
@@ -98,19 +112,19 @@ export default function Header({
     if (exist) {
       ({ error } = await supabase
         .from("profiles")
-        .update({ nickname: editNickname.trim() })
+        .update({ nickname: trimName })
         .eq("id", user.id));
     } else {
       ({ error } = await supabase
         .from("profiles")
-        .insert([{ id: user.id, nickname: editNickname.trim() }]));
+        .insert([{ id: user.id, nickname: trimName }]));
     }
     setEditLoading(false);
     if (error) {
       setEditError(error.message || "닉네임 변경 실패");
       return;
     }
-    setNickname(editNickname.trim());
+    setNickname(trimName);
     setShowProfile(false);
     alert("닉네임이 변경되었습니다!");
   }
@@ -134,10 +148,21 @@ export default function Header({
 
   // 회원탈퇴
   async function handleDeleteAccount() {
-    if (!window.confirm("정말로 회원탈퇴 하시겠습니까? (되돌릴 수 없습니다)")) return;
-    setEditLoading(true);
+    setEditError("");
+    setDeleteLoading(true);
+    // 1. 비밀번호 재입력 -> 현재 세션 이메일로 인증
+    const { error: loginError } = await supabase.auth.signInWithPassword({
+      email: user.email,
+      password: deletePw,
+    });
+    if (loginError) {
+      setDeleteLoading(false);
+      setEditError("비밀번호가 올바르지 않습니다.");
+      return;
+    }
+    // 2. 인증 성공하면 삭제 함수 호출
     const { error } = await supabase.functions.invoke("delete-user", { body: { id: user.id } });
-    setEditLoading(false);
+    setDeleteLoading(false);
     if (error) {
       setEditError(error.message || "회원탈퇴 실패");
       return;
@@ -148,6 +173,8 @@ export default function Header({
       setNickname("");
       setShowProfile(false);
       setShowLogin(false);
+      setShowDeleteConfirm(false);
+      setDeletePw("");
     });
   }
 
@@ -265,7 +292,7 @@ export default function Header({
                     </button>
                     <button
                       style={modalDeleteButtonStyle}
-                      onClick={handleDeleteAccount}
+                      onClick={() => setShowDeleteConfirm(true)}
                       disabled={editLoading}
                     >
                       회원탈퇴
@@ -283,6 +310,41 @@ export default function Header({
                       닫기
                     </button>
                   </div>
+                  {/* 탈퇴 비밀번호 입력 모달 */}
+                  {showDeleteConfirm && (
+                    <div style={deleteModalOverlayStyle}>
+                      <div style={deleteModalContentStyle}>
+                        <div style={{ fontWeight: 700, fontSize: 17, marginBottom: 12 }}>
+                          정말로 회원탈퇴 하시겠습니까?<br />비밀번호를 한 번 더 입력하세요.
+                        </div>
+                        <input
+                          type="password"
+                          value={deletePw}
+                          onChange={e => setDeletePw(e.target.value)}
+                          placeholder="비밀번호"
+                          style={modalInputStyle}
+                          disabled={deleteLoading}
+                        />
+                        <button
+                          style={modalDeleteButtonStyle}
+                          onClick={handleDeleteAccount}
+                          disabled={deleteLoading || !deletePw}
+                        >
+                          {deleteLoading ? "탈퇴 중..." : "회원탈퇴"}
+                        </button>
+                        <button
+                          style={modalCloseButtonStyle}
+                          onClick={() => {
+                            setShowDeleteConfirm(false);
+                            setDeletePw("");
+                          }}
+                          disabled={deleteLoading}
+                        >
+                          취소
+                        </button>
+                      </div>
+                    </div>
+                  )}
                 </div>
               )}
             </>
@@ -437,6 +499,32 @@ const modalContentStyle = {
   alignItems: "center",
   boxSizing: "border-box",
   margin: 0,
+};
+const deleteModalOverlayStyle = {
+  position: "fixed",
+  left: 0,
+  top: 0,
+  width: "100vw",
+  height: "100vh",
+  background: "rgba(0,0,0,0.4)",
+  zIndex: 10000,
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+};
+const deleteModalContentStyle = {
+  background: "#fff",
+  borderRadius: 12,
+  padding: "28px 24px",
+  minWidth: 320,
+  maxWidth: 360,
+  width: "100%",
+  boxShadow: "0 4px 24px rgba(0,0,0,0.22)",
+  display: "flex",
+  flexDirection: "column",
+  gap: 10,
+  alignItems: "center",
+  boxSizing: "border-box",
 };
 const modalInputStyle = {
   width: "100%",

@@ -1,4 +1,3 @@
-// src/components/FindPwBox.jsx
 import React, { useState } from "react";
 import { createClient } from "@supabase/supabase-js";
 
@@ -10,7 +9,7 @@ const supabase = createClient(
 
 function getByteLength(str) {
   let len = 0;
-  for (let i=0; i < str.length; i++) {
+  for (let i = 0; i < str.length; i++) {
     const code = str.charCodeAt(i);
     len += code > 127 ? 2 : 1;
   }
@@ -19,7 +18,7 @@ function getByteLength(str) {
 function sliceByByte(str, maxBytes) {
   let bytes = 0;
   let result = "";
-  for (let i=0; i < str.length; i++) {
+  for (let i = 0; i < str.length; i++) {
     const char = str[i];
     const code = str.charCodeAt(i);
     const charBytes = code > 127 ? 2 : 1;
@@ -58,32 +57,23 @@ function FindPwBox() {
     setLoading(true);
 
     try {
-      // 1. 닉네임과 이메일로 profiles + users_view 확인
+      // profiles에서 닉네임/이메일 동시 조회
       const { data: profile, error: pErr } = await supabase
         .from("profiles")
-        .select("id")
-        .eq("nickname", nickname)
-        .single();
-      if (pErr || !profile) {
-        setError("일치하는 정보가 없습니다.");
-        setLoading(false);
-        return;
-      }
-
-      const { data: userData, error: uErr } = await supabase
-        .from("users_view")
         .select("email")
-        .eq("id", profile.id)
+        .eq("nickname", nickname.trim())
+        .eq("email", userId.trim())
         .single();
-      if (uErr || !userData || userData.email !== userId) {
+
+      if (pErr || !profile?.email) {
         setError("일치하는 정보가 없습니다.");
         setLoading(false);
         return;
       }
 
-      // 2. Supabase의 resetPasswordForEmail 기능
-      const { error: resetErr } = await supabase.auth.resetPasswordForEmail(userId, {
-        redirectTo: window.location.origin + "/reset-password" // (선택) 완료 후 이동할 페이지
+      // Supabase resetPasswordForEmail
+      const { error: resetErr } = await supabase.auth.resetPasswordForEmail(userId.trim(), {
+        redirectTo: window.location.origin + "/reset-password"
       });
       if (resetErr) {
         setError("비밀번호 재설정 메일 발송에 실패했습니다.");

@@ -1,8 +1,7 @@
-// src/components/FindIdBox.jsx
 import React, { useState } from "react";
 import { createClient } from "@supabase/supabase-js";
 
-// 프로젝트 환경에 맞게 설정!
+// 본인 프로젝트 정보로 수정!
 const supabase = createClient(
   "https://irfyuvuazhujtlgpkfci.supabase.co",
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlyZnl1dnVhemh1anRsZ3BrZmNpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTA1NDY0MTAsImV4cCI6MjA2NjEyMjQxMH0.q4s3G9mGnCbX7Urtks6_63XOSD8Ry2_GcmGM1wE7TBE"
@@ -10,7 +9,7 @@ const supabase = createClient(
 
 function getByteLength(str) {
   let len = 0;
-  for (let i=0; i < str.length; i++) {
+  for (let i = 0; i < str.length; i++) {
     const code = str.charCodeAt(i);
     len += code > 127 ? 2 : 1;
   }
@@ -19,7 +18,7 @@ function getByteLength(str) {
 function sliceByByte(str, maxBytes) {
   let bytes = 0;
   let result = "";
-  for (let i=0; i < str.length; i++) {
+  for (let i = 0; i < str.length; i++) {
     const char = str[i];
     const code = str.charCodeAt(i);
     const charBytes = code > 127 ? 2 : 1;
@@ -55,31 +54,19 @@ function FindIdBox() {
       return;
     }
     setLoading(true);
-    // profiles 테이블에서 닉네임으로 검색 → user의 email(=아이디) 찾기
+
     try {
-      // 1. 닉네임으로 profiles 조회
+      // profiles 테이블에서 닉네임으로 이메일 바로 찾기!
       const { data: profile, error: pErr } = await supabase
         .from("profiles")
-        .select("id")
-        .eq("nickname", nickname)
-        .single();
-
-      if (pErr || !profile) {
-        setError("해당 닉네임으로 가입된 아이디가 없습니다.");
-        setLoading(false);
-        return;
-      }
-      // 2. id값으로 auth.users에서 이메일 찾기
-      const { data: userData, error: uErr } = await supabase
-        .from("users_view") // ← supabase 기본 테이블 users는 select 불가, view를 써야 함
         .select("email")
-        .eq("id", profile.id)
+        .eq("nickname", nickname.trim())
         .single();
 
-      if (uErr || !userData) {
-        setError("해당 닉네임으로 가입된 아이디가 없습니다.");
+      if (pErr || !profile?.email) {
+        setError("해당 닉네임으로 가입된 아이디(이메일)가 없습니다.");
       } else {
-        setFoundId(`아이디(이메일): ${userData.email}`);
+        setFoundId(`아이디(이메일): ${profile.email}`);
       }
     } catch (e) {
       setError("일시적인 오류가 발생했습니다.");
