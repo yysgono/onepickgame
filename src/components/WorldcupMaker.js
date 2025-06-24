@@ -1,4 +1,3 @@
-// src/components/WorldcupMaker.jsx
 import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import CandidateInput from "./CandidateInput";
@@ -6,7 +5,7 @@ import COLORS from "../styles/theme";
 import { mainButtonStyle, grayButtonStyle } from "../styles/common";
 import { addWorldcupGame } from "../utils/supabaseWorldcupApi";
 import { uploadCandidateImage } from "../utils/supabaseImageUpload";
-import { supabase } from "../utils/supabaseClient"; // 꼭 import!
+import { supabase } from "../utils/supabaseClient";
 
 function isMobile() {
   if (typeof window !== "undefined") {
@@ -26,9 +25,9 @@ function WorldcupMaker({ onCreate, onCancel }) {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // 추가: 로그인 유저/닉네임 state
-  const [user, setUser] = useState(null);         // supabase.auth.user()
-  const [nickname, setNickname] = useState("");   // profiles.nickname
+  // 로그인 유저/닉네임 state
+  const [user, setUser] = useState(null);
+  const [nickname, setNickname] = useState("");
   const mobile = isMobile();
 
   // 유저 인증 정보 불러오기
@@ -75,6 +74,7 @@ function WorldcupMaker({ onCreate, onCancel }) {
     setError("");
     if (loading) return;
 
+    // 입력값 검사
     const list = candidates
       .map((c) => ({
         ...c,
@@ -83,20 +83,20 @@ function WorldcupMaker({ onCreate, onCancel }) {
       }))
       .filter((c) => c.name && c.image);
 
-    if (!title.trim()) return setError(t("enterWorldcupTitle") || "제목을 입력하세요.");
-    if (list.length < 2) return setError(t("enterAtLeast2Candidates") || "후보를 2개 이상 입력하세요.");
+    if (!title.trim()) return setError("제목을 입력하세요.");
+    if (list.length < 2) return setError("후보를 2개 이상 입력하세요.");
 
     setLoading(true);
 
     try {
-      // base64 → Storage 업로드 후 public url로 변환
+      // base64 이미지 → Storage 업로드 후 url로 변환
       const updatedList = await Promise.all(
         list.map(async (c) => {
           if (c.image.startsWith("data:image")) {
             const file = await fetch(c.image).then(r => r.blob());
             const url = await uploadCandidateImage(
               new File([file], `${c.name}.png`, { type: file.type }),
-              nickname
+              nickname || user.email // 폴더명(닉 or 이메일)
             );
             return { ...c, image: url };
           }
@@ -104,7 +104,7 @@ function WorldcupMaker({ onCreate, onCancel }) {
         })
       );
 
-      // createdAt → created_at로 맞추는 게 supabase에서 좋아요!
+      // supabase worldcups 테이블에 맞춰 새 월드컵 오브젝트 준비
       const newCup = {
         title: title.trim(),
         desc: desc.trim(),
@@ -113,11 +113,11 @@ function WorldcupMaker({ onCreate, onCancel }) {
           name: c.name,
           image: c.image,
         })),
-        creator_id: user.id,          // 실제 유저 id
-        creator_email: user.email,    // 이메일
-        creator_nickname: nickname,   // 닉네임 (별도 쿼리)
         created_at: new Date().toISOString(),
+        owner: user.email,
+        creator: user.id, // 반드시 uuid!
       };
+
       const id = await addWorldcupGame(newCup);
       alert("월드컵이 저장되었습니다!\nID: " + id);
 
@@ -127,8 +127,17 @@ function WorldcupMaker({ onCreate, onCancel }) {
           id,
         });
       }
+
+      // 폼 초기화
+      setTitle("");
+      setDesc("");
+      setCandidates([
+        { id: 1, name: "", image: "" },
+        { id: 2, name: "", image: "" },
+      ]);
     } catch (e) {
       setError("저장 실패! 잠시 후 다시 시도해 주세요.");
+      console.error(e);
     } finally {
       setLoading(false);
     }
@@ -162,7 +171,7 @@ function WorldcupMaker({ onCreate, onCancel }) {
         <input
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          placeholder={t("worldcupTitle")}
+          placeholder={t("worldcupTitle") || "월드컵 제목"}
           maxLength={36}
           style={{
             width: "100%",
@@ -177,7 +186,7 @@ function WorldcupMaker({ onCreate, onCancel }) {
         <textarea
           value={desc}
           onChange={(e) => setDesc(e.target.value)}
-          placeholder={t("descriptionOptional")}
+          placeholder={t("descriptionOptional") || "설명(선택)"}
           maxLength={100}
           rows={2}
           style={{
@@ -192,7 +201,7 @@ function WorldcupMaker({ onCreate, onCancel }) {
         />
         <div style={{ marginBottom: 18 }}>
           <div style={{ fontWeight: 700, marginBottom: 7 }}>
-            {t("candidateList")}
+            {t("candidateList") || "후보 목록"}
           </div>
           {candidates.map((c, i) => (
             <CandidateInput
@@ -216,13 +225,13 @@ function WorldcupMaker({ onCreate, onCancel }) {
             }}
             disabled={loading}
           >
-            + {t("addCandidate")}
+            + {t("addCandidate") || "후보 추가"}
           </button>
         </div>
         {error && (
           <div
             style={{
-              color: COLORS.danger,
+              color: COLORS.danger || "#d33",
               marginBottom: 10,
               textAlign: "center",
             }}
@@ -241,7 +250,7 @@ function WorldcupMaker({ onCreate, onCancel }) {
             }}
             disabled={loading}
           >
-            {loading ? t("saving") || "저장중..." : t("create")}
+            {loading ? t("saving") || "저장중..." : t("create") || "생성"}
           </button>
           <button
             type="button"
@@ -254,7 +263,7 @@ function WorldcupMaker({ onCreate, onCancel }) {
             }}
             disabled={loading}
           >
-            {t("cancel")}
+            {t("cancel") || "취소"}
           </button>
         </div>
       </form>
