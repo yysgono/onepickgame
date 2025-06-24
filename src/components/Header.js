@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../utils/supabaseClient";
@@ -13,16 +13,18 @@ export default function Header({
   onBackup,
   onRestore,
   onMakeWorldcup,
-  isAdmin
+  isAdmin,
+  user,
+  nickname,
+  nicknameLoading,
+  setUser,
+  setNickname,
 }) {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const inputRef = useRef();
   const [showLogin, setShowLogin] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
-  const [user, setUser] = useState(null);
-  const [nickname, setNickname] = useState("");
-  const [nicknameLoading, setNicknameLoading] = useState(false);
 
   // 로그인 폼
   const [loginEmail, setLoginEmail] = useState("");
@@ -31,38 +33,23 @@ export default function Header({
   const [loginLoading, setLoginLoading] = useState(false);
 
   // 내정보수정(닉네임변경)
-  const [editNickname, setEditNickname] = useState("");
+  const [editNickname, setEditNickname] = useState(nickname || "");
   const [editError, setEditError] = useState("");
   const [editLoading, setEditLoading] = useState(false);
 
-  // 유저/닉네임 fetch
-  useEffect(() => {
-    let isMounted = true;
-    setNicknameLoading(true);
-    supabase.auth.getUser().then(async ({ data }) => {
-      if (isMounted) setUser(data?.user || null);
-      if (data?.user) {
-        const { data: profile } = await supabase
-          .from("profiles")
-          .select("nickname")
-          .eq("id", data.user.id)
-          .single();
-        if (isMounted) {
-          setNickname(profile?.nickname || "");
-          setEditNickname(profile?.nickname || "");
-        }
-      } else {
-        setNickname("");
-        setEditNickname("");
-      }
-      setNicknameLoading(false);
-    });
-    return () => { isMounted = false; }
-  }, []);
+  // 닉네임 prop이 바뀌면 editNickname도 맞춰줌
+  React.useEffect(() => {
+    setEditNickname(nickname || "");
+  }, [nickname]);
 
   // 로그아웃
   function handleLogout() {
-    supabase.auth.signOut().then(() => window.location.reload());
+    supabase.auth.signOut().then(() => {
+      setUser(null);
+      setNickname("");
+      setShowProfile(false);
+      setShowLogin(false);
+    });
   }
 
   // 로그인 핸들러
@@ -70,7 +57,7 @@ export default function Header({
     e.preventDefault();
     setLoginError("");
     setLoginLoading(true);
-    const { error: loginError } = await supabase.auth.signInWithPassword({
+    const { data, error: loginError } = await supabase.auth.signInWithPassword({
       email: loginEmail,
       password: loginPassword,
     });
@@ -82,7 +69,16 @@ export default function Header({
     setShowLogin(false);
     setLoginEmail("");
     setLoginPassword("");
-    window.location.reload();
+    setUser(data?.user || null);
+    // 닉네임 새로 fetch
+    if (data?.user) {
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("nickname")
+        .eq("id", data.user.id)
+        .single();
+      setNickname(profile?.nickname || "");
+    }
   }
 
   // 닉네임 변경
@@ -93,10 +89,22 @@ export default function Header({
       return;
     }
     setEditLoading(true);
-    const { error } = await supabase
+    const { data: exist } = await supabase
       .from("profiles")
-      .update({ nickname: editNickname.trim() })
-      .eq("id", user.id);
+      .select("id")
+      .eq("id", user.id)
+      .single();
+    let error;
+    if (exist) {
+      ({ error } = await supabase
+        .from("profiles")
+        .update({ nickname: editNickname.trim() })
+        .eq("id", user.id));
+    } else {
+      ({ error } = await supabase
+        .from("profiles")
+        .insert([{ id: user.id, nickname: editNickname.trim() }]));
+    }
     setEditLoading(false);
     if (error) {
       setEditError(error.message || "닉네임 변경 실패");
@@ -104,7 +112,7 @@ export default function Header({
     }
     setNickname(editNickname.trim());
     setShowProfile(false);
-    window.location.reload();
+    alert("닉네임이 변경되었습니다!");
   }
 
   // 비밀번호 변경(메일 전송)
@@ -121,7 +129,7 @@ export default function Header({
       setEditError(error.message || "비밀번호 변경 메일 전송 실패");
       return;
     }
-    setEditError("비밀번호 변경 메일을 전송했습니다.");
+    alert("비밀번호 변경 메일을 전송했습니다.");
   }
 
   // 회원탈퇴
@@ -135,11 +143,16 @@ export default function Header({
       return;
     }
     alert("탈퇴 완료");
-    supabase.auth.signOut().then(() => window.location.reload());
+    supabase.auth.signOut().then(() => {
+      setUser(null);
+      setNickname("");
+      setShowProfile(false);
+      setShowLogin(false);
+    });
   }
 
   function handleLogoClick() {
-    window.location.href = "/";
+    navigate("/");
   }
 
   return (
@@ -207,6 +220,73 @@ export default function Header({
           <select value={i18n.language} onChange={e => { i18n.changeLanguage(e.target.value); if (onLangChange) onLangChange(e.target.value); }} style={selectStyle}>
             {languages.map((lang) => (<option key={lang.code} value={lang.code}>{lang.label}</option>))}
           </select>
+          {user && (
+            <>
+              <span style={{
+                fontWeight: 700,
+                color: "#1976ed",
+                marginRight: 6,
+                whiteSpace: "nowrap",
+                userSelect: "none",
+              }}>
+                {nicknameLoading ? "닉네임 불러오는 중..." : (nickname ? nickname : "닉네임 없음")}
+              </span>
+              <button style={myInfoButtonStyle} onClick={() => setShowProfile(true)}>
+                내정보수정
+              </button>
+              <button style={logoutButtonStyle} onClick={handleLogout}>{t("logout")}</button>
+              {showProfile && (
+                <div style={modalOverlayStyle}>
+                  <div style={modalContentStyle} onClick={e => e.stopPropagation()}>
+                    <div style={{ fontWeight: 800, fontSize: 21, marginBottom: 18, textAlign: "center" }}>
+                      내 정보 수정
+                    </div>
+                    <input
+                      type="text"
+                      value={editNickname}
+                      onChange={e => setEditNickname(e.target.value)}
+                      placeholder="닉네임"
+                      style={modalInputStyle}
+                      disabled={editLoading}
+                    />
+                    <button
+                      style={modalProfileButtonStyle}
+                      onClick={handleNicknameChange}
+                      disabled={editLoading}
+                    >
+                      {editLoading ? "변경 중..." : "닉네임 변경"}
+                    </button>
+                    <button
+                      style={modalGrayButtonStyle}
+                      onClick={handlePasswordChange}
+                      disabled={editLoading}
+                    >
+                      비밀번호 변경(메일 전송)
+                    </button>
+                    <button
+                      style={modalDeleteButtonStyle}
+                      onClick={handleDeleteAccount}
+                      disabled={editLoading}
+                    >
+                      회원탈퇴
+                    </button>
+                    {editError && (
+                      <div style={{ color: "red", fontSize: 15, textAlign: "center", marginTop: 7 }}>
+                        {editError}
+                      </div>
+                    )}
+                    <button
+                      style={modalCloseButtonStyle}
+                      onClick={() => setShowProfile(false)}
+                      disabled={editLoading}
+                    >
+                      닫기
+                    </button>
+                  </div>
+                </div>
+              )}
+            </>
+          )}
           {!user && (
             <>
               <button style={primaryButtonStyle} onClick={() => setShowLogin(true)}>{t("login")}</button>
@@ -270,80 +350,13 @@ export default function Header({
               )}
             </>
           )}
-          {user && (
-            <>
-              <span
-                style={{
-                  fontWeight: 700,
-                  color: "#1976ed",
-                  marginRight: 10,
-                  whiteSpace: "nowrap",
-                  cursor: "pointer",
-                }}
-                onClick={() => setShowProfile(true)}
-                title="내 정보 수정"
-              >
-                {nicknameLoading ? "닉네임 불러오는 중..." : (nickname ? nickname : "닉네임 없음")}
-              </span>
-              <button style={logoutButtonStyle} onClick={handleLogout}>{t("logout")}</button>
-              {/* 내정보수정 모달 */}
-              {showProfile && (
-                <div style={modalOverlayStyle}>
-                  <div style={modalContentStyle} onClick={e => e.stopPropagation()}>
-                    <div style={{ fontWeight: 800, fontSize: 21, marginBottom: 18, textAlign: "center" }}>
-                      내 정보 수정
-                    </div>
-                    <input
-                      type="text"
-                      value={editNickname}
-                      onChange={e => setEditNickname(e.target.value)}
-                      placeholder="닉네임"
-                      style={modalInputStyle}
-                    />
-                    <button
-                      style={modalProfileButtonStyle}
-                      onClick={handleNicknameChange}
-                      disabled={editLoading}
-                    >
-                      닉네임 변경
-                    </button>
-                    <button
-                      style={modalGrayButtonStyle}
-                      onClick={handlePasswordChange}
-                      disabled={editLoading}
-                    >
-                      비밀번호 변경(메일 전송)
-                    </button>
-                    <button
-                      style={modalDeleteButtonStyle}
-                      onClick={handleDeleteAccount}
-                      disabled={editLoading}
-                    >
-                      회원탈퇴
-                    </button>
-                    {editError && (
-                      <div style={{ color: "red", fontSize: 15, textAlign: "center", marginTop: 7 }}>
-                        {editError}
-                      </div>
-                    )}
-                    <button
-                      style={modalCloseButtonStyle}
-                      onClick={() => setShowProfile(false)}
-                    >
-                      닫기
-                    </button>
-                  </div>
-                </div>
-              )}
-            </>
-          )}
         </div>
       </div>
     </header>
   );
 }
 
-// 스타일
+// 스타일 (동일, 생략 가능: 기존 것 그대로 붙여넣으면 됨)
 const adminButtonStyle = (bgColor, color = "#fff") => ({
   background: bgColor,
   color: color,
@@ -369,6 +382,21 @@ const primaryButtonStyle = {
   userSelect: "none",
   whiteSpace: "nowrap",
   transition: "background-color 0.2s ease",
+};
+const myInfoButtonStyle = {
+  background: "#e7eefd",
+  color: "#1976ed",
+  border: "none",
+  borderRadius: 8,
+  fontWeight: 700,
+  padding: "7px 10px",
+  fontSize: 15,
+  cursor: "pointer",
+  userSelect: "none",
+  marginRight: 3,
+  whiteSpace: "nowrap",
+  transition: "background-color 0.2s ease",
+  outline: "none",
 };
 const selectStyle = {
   padding: "6px 10px",
