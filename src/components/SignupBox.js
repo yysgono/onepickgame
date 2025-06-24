@@ -1,6 +1,7 @@
 // src/components/SignupBox.jsx
+
 import React, { useState } from "react";
-import { supabase } from "../utils/supabaseClient"; // 꼭 생성!
+import { supabase } from "../utils/supabaseClient"; // 반드시 supabaseClient.js 경로 확인!
 import { useNavigate } from "react-router-dom";
 
 function getByteLength(str) {
@@ -35,8 +36,7 @@ function SignupBox() {
   const navigate = useNavigate();
 
   function handleNicknameChange(e) {
-    const val = e.target.value;
-    setNickname(sliceByByte(val, 12));
+    setNickname(sliceByByte(e.target.value, 12));
   }
 
   async function handleSignup(e) {
@@ -53,7 +53,7 @@ function SignupBox() {
     }
     setLoading(true);
 
-    // 1. 회원가입 (Auth)
+    // 1. 회원가입 (Supabase Auth)
     const { data, error: authErr } = await supabase.auth.signUp({
       email,
       password,
@@ -65,10 +65,10 @@ function SignupBox() {
       return;
     }
 
-    // 2. 닉네임 profiles 테이블에 저장
-    if (data.user) {
+    // 2. 닉네임 profiles 테이블에 저장 (이메일 인증 전에도 가능)
+    if (data?.user?.id) {
       const { error: profileErr } = await supabase.from("profiles").insert([
-        { id: data.user.id, nickname },
+        { id: data.user.id, nickname }
       ]);
       if (profileErr) {
         setError("닉네임 저장 실패: " + profileErr.message);
@@ -84,14 +84,18 @@ function SignupBox() {
     setLoading(false);
 
     setTimeout(() => {
-      navigate("/"); // 자동 이동(옵션)
-    }, 1500);
+      navigate("/"); // 성공시 홈으로 이동
+    }, 2000);
   }
 
   return (
     <div style={{
-      maxWidth: 360, margin: "60px auto", background: "#fff",
-      borderRadius: 14, boxShadow: "0 2px 12px #0001", padding: 30
+      maxWidth: 360,
+      margin: "60px auto",
+      background: "#fff",
+      borderRadius: 14,
+      boxShadow: "0 2px 12px #0001",
+      padding: 30
     }}>
       <h2 style={{ textAlign: "center", marginBottom: 18 }}>회원가입</h2>
       <form onSubmit={handleSignup}>
@@ -102,8 +106,11 @@ function SignupBox() {
             onChange={handleNicknameChange}
             placeholder="닉네임 (최대 12바이트)"
             style={{
-              width: "100%", padding: 10, borderRadius: 7,
-              border: "1.2px solid #bbb", fontSize: 16
+              width: "100%",
+              padding: 10,
+              borderRadius: 7,
+              border: "1.2px solid #bbb",
+              fontSize: 16
             }}
             autoComplete="off"
             spellCheck={false}
@@ -116,8 +123,11 @@ function SignupBox() {
             onChange={e => setEmail(e.target.value)}
             placeholder="이메일"
             style={{
-              width: "100%", padding: 10, borderRadius: 7,
-              border: "1.2px solid #bbb", fontSize: 16
+              width: "100%",
+              padding: 10,
+              borderRadius: 7,
+              border: "1.2px solid #bbb",
+              fontSize: 16
             }}
             autoComplete="off"
             required
@@ -130,8 +140,11 @@ function SignupBox() {
             onChange={e => setPassword(e.target.value)}
             placeholder="비밀번호"
             style={{
-              width: "100%", padding: 10, borderRadius: 7,
-              border: "1.2px solid #bbb", fontSize: 16
+              width: "100%",
+              padding: 10,
+              borderRadius: 7,
+              border: "1.2px solid #bbb",
+              fontSize: 16
             }}
             maxLength={20}
             required
@@ -142,10 +155,19 @@ function SignupBox() {
           disabled={loading}
           style={{
             width: "100%",
-            background: "#1976ed", color: "#fff", fontWeight: 800, border: "none",
-            borderRadius: 9, fontSize: 19, padding: "11px 0", marginBottom: 8, cursor: "pointer"
+            background: "#1976ed",
+            color: "#fff",
+            fontWeight: 800,
+            border: "none",
+            borderRadius: 9,
+            fontSize: 19,
+            padding: "11px 0",
+            marginBottom: 8,
+            cursor: loading ? "not-allowed" : "pointer"
           }}
-        >{loading ? "가입중..." : "가입하기"}</button>
+        >
+          {loading ? "가입중..." : "가입하기"}
+        </button>
       </form>
       {success && <div style={{ color: "green", marginTop: 12, textAlign: "center" }}>{success}</div>}
       {error && <div style={{ color: "red", marginTop: 12, textAlign: "center" }}>{error}</div>}

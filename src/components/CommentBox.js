@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
+import { supabase } from "../utils/supabaseClient";
 import { hasBadword } from "../badwords-multilang";
 
 const COLORS = {
@@ -14,8 +15,6 @@ const COLORS = {
   soft: "#f5f7fa",
 };
 
-const COMMENT_KEY = "comments";
-
 // 시간 포맷
 function getNow(t) {
   const d = new Date(t || Date.now());
@@ -29,149 +28,124 @@ function getNow(t) {
     d.toTimeString().slice(0, 5)
   );
 }
-
 function getByteLength(str) {
   let len = 0;
-  for (let i=0; i < str.length; i++) {
+  for (let i = 0; i < str.length; i++) {
     const code = str.charCodeAt(i);
     len += code > 127 ? 2 : 1;
   }
   return len;
 }
 
-function isSpam(newComment, cupId, comments) {
-  const now = Date.now();
-  const list = comments[cupId] || [];
-  return list.some(
-    (c) =>
-      c.nickname === newComment.nickname &&
-      c.content === newComment.content &&
-      now - c.time < 60 * 1000
-  );
-}
-
-function isTripleRepeatNickname(nickname, cupId, comments) {
-  const list = comments[cupId] || [];
-  if (list.length < 3) return false;
-  return (
-    list[0].nickname === nickname &&
-    list[1].nickname === nickname &&
-    list[2].nickname === nickname
-  );
-}
-
 export default function CommentBox({ cupId }) {
   const { t, i18n } = useTranslation();
-  const currentUser = localStorage.getItem("onepickgame_user") || "";
-  const isAdmin = currentUser === "admin";
-  const [content, setContent] = useState("");
+  const [user, setUser] = useState(null);
+  const [nickname, setNickname] = useState("");
   const [comments, setComments] = useState([]);
+  const [content, setContent] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
+  // 유저/닉네임 가져오기
   useEffect(() => {
-    const all = JSON.parse(localStorage.getItem(COMMENT_KEY) || "{}");
-    setComments((all[cupId] || []).sort((a, b) => b.time - a.time));
+    async function fetchUser() {
+      const { data } = await supabase.auth.getUser();
+      if (data?.user) {
+        setUser(data.user);
+        // 프로필 닉네임
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("nickname")
+          .eq("id", data.user.id)
+          .single();
+        setNickname(profile?.nickname || "");
+      }
+    }
+    fetchUser();
+  }, []);
+
+  // 댓글 목록
+  useEffect(() => {
+    async function fetchComments() {
+      const { data } = await supabase
+        .from("comments")
+        .select("*")
+        .eq("cup_id", cupId)
+        .order("created_at", { ascending: false });
+      setComments(data || []);
+    }
+    if (cupId) fetchComments();
   }, [cupId]);
 
   function containsBadword(str) {
     return hasBadword(str, i18n.language);
   }
 
-  const handleSubmit = (e) => {
+  async function handleSubmit(e) {
     e.preventDefault();
     setError("");
-    const nick = currentUser;
+    if (!user || !nickname) {
+      setError(t("comment.needLogin") || "로그인이 필요합니다.");
+      return;
+    }
     const text = content.trim();
-
-    if (!nick) return setError(t("comment.needLogin"));
     if (!text) return setError(t("comment.inputContent"));
     if (text.length > 80) return setError(t("comment.limit80"));
     if (text.split("\n").length > 5) return setError(t("comment.limitLines"));
-    if (containsBadword(nick))
-      return setError(
-        t("comment.badwordNickname") || "닉네임에 부적절한 단어가 포함되어 있습니다."
-      );
+    if (containsBadword(nickname))
+      return setError(t("comment.badwordNickname") || "닉네임에 부적절한 단어가 포함되어 있습니다.");
     if (containsBadword(text))
-      return setError(
-        t("comment.badwordComment") || "댓글에 부적절한 단어가 포함되어 있습니다."
-      );
-    if (getByteLength(nick) > 12)
+      return setError(t("comment.badwordComment") || "댓글에 부적절한 단어가 포함되어 있습니다.");
+    if (getByteLength(nickname) > 12)
       return setError(t("comment.limitNicknameByte") || "닉네임은 최대 12바이트까지 가능합니다.");
 
-    const all = JSON.parse(localStorage.getItem(COMMENT_KEY) || "{}");
-    if (isSpam({ nickname: nick, content: text }, cupId, all))
-      return setError(
-        t("spam_warning") || "You can't post the same comment too frequently. (1 min)"
-      );
-    if (isTripleRepeatNickname(nick, cupId, all))
-      return setError(
-        t("triple_warning") || "You can't post 4 consecutive comments with the same nickname."
-      );
+    setLoading(true);
+    // 댓글 등록 (user_id 포함)
+    const { error: insertErr } = await supabase.from("comments").insert([
+      {
+        cup_id: cupId,
+        nickname,
+        content: text,
+        user_id: user.id,
+      }
+    ]);
+    setLoading(false);
 
-    const newComment = {
-      id: Date.now() + Math.random(),
-      nickname: nick,
-      content: text,
-      time: Date.now(),
-      like: 0,
-      dislike: 0,
-      likedUsers: [],
-      dislikedUsers: [],
-    };
-    all[cupId] = [newComment, ...(all[cupId] || [])].slice(0, 50); // 최대 50개
-    localStorage.setItem(COMMENT_KEY, JSON.stringify(all));
-    setComments(all[cupId]);
+    if (insertErr) {
+      setError(insertErr.message || "댓글 저장 실패");
+      return;
+    }
     setContent("");
-  };
+    // 등록 후 새로고침
+    const { data } = await supabase
+      .from("comments")
+      .select("*")
+      .eq("cup_id", cupId)
+      .order("created_at", { ascending: false });
+    setComments(data || []);
+  }
 
-  const handleVote = (commentId, type) => {
-    const nick = currentUser || t("anonymous");
-    const all = JSON.parse(localStorage.getItem(COMMENT_KEY) || "{}");
-    const list = all[cupId] || [];
-    const idx = list.findIndex((c) => c.id === commentId);
-    if (idx === -1) return;
-    const c = list[idx];
-    if (type === "like") {
-      if (c.likedUsers.includes(nick)) {
-        c.like = Math.max(0, c.like - 1);
-        c.likedUsers = c.likedUsers.filter((u) => u !== nick);
-      } else {
-        c.like += 1;
-        c.likedUsers.push(nick);
-        c.dislikedUsers = c.dislikedUsers.filter((u) => u !== nick);
-        c.dislike = c.dislikedUsers.length;
-      }
-    } else {
-      if (c.dislikedUsers.includes(nick)) {
-        c.dislike = Math.max(0, c.dislike - 1);
-        c.dislikedUsers = c.dislikedUsers.filter((u) => u !== nick);
-      } else {
-        c.dislike += 1;
-        c.dislikedUsers.push(nick);
-        c.likedUsers = c.likedUsers.filter((u) => u !== nick);
-        c.like = c.likedUsers.length;
-      }
+  // 댓글 삭제 (본인 or admin)
+  async function handleDelete(commentId, commentUserId) {
+    if (!user) return;
+    const isAdmin = nickname === "admin";
+    if (!isAdmin && commentUserId !== user.id) {
+      setError("본인 또는 관리자만 삭제할 수 있습니다.");
+      return;
     }
-    all[cupId] = list;
-    localStorage.setItem(COMMENT_KEY, JSON.stringify(all));
-    setComments([...list]);
-  };
-
-  // 관리자: 모든 댓글 삭제 가능, 일반: 자기 것만 삭제 가능
-  const handleDelete = (commentId) => {
-    const all = JSON.parse(localStorage.getItem(COMMENT_KEY) || "{}");
-    let newComments;
-    if (isAdmin) {
-      newComments = (all[cupId] || []).filter((c) => c.id !== commentId);
-    } else {
-      newComments = (all[cupId] || []).filter(
-        (c) => !(c.id === commentId && c.nickname === currentUser)
-      );
-    }
-    all[cupId] = newComments;
-    localStorage.setItem(COMMENT_KEY, JSON.stringify(all));
-    setComments(newComments);
-  };
+    const { error: deleteErr } = await supabase
+      .from("comments")
+      .delete()
+      .eq("id", commentId);
+    if (deleteErr) setError(deleteErr.message);
+    // 새로고침
+    const { data } = await supabase
+      .from("comments")
+      .select("*")
+      .eq("cup_id", cupId)
+      .order("created_at", { ascending: false });
+    setComments(data || []);
+  }
 
   return (
     <div
@@ -210,7 +184,6 @@ export default function CommentBox({ cupId }) {
           flexWrap: "wrap",
         }}
       >
-        {/* 닉네임 입력란 삭제 */}
         <div
           style={{
             fontWeight: 700,
@@ -223,18 +196,18 @@ export default function CommentBox({ cupId }) {
             minWidth: 80,
             textAlign: "center"
           }}
-          title={currentUser}
+          title={nickname}
         >
-          {currentUser || "?"}
+          {nickname || "?"}
         </div>
         <textarea
           value={content}
           onChange={(e) => setContent(e.target.value.slice(0, 80))}
           placeholder={
-            currentUser ? t("comment.placeholder") : t("comment.loginRequired")
+            user ? t("comment.placeholder") : t("comment.loginRequired")
           }
           rows={2}
-          disabled={!currentUser}
+          disabled={!user}
           style={{
             flex: 1,
             minWidth: 0,
@@ -243,7 +216,7 @@ export default function CommentBox({ cupId }) {
             border: `1.2px solid ${COLORS.border}`,
             fontSize: 15.5,
             resize: "none",
-            background: currentUser ? "#fff" : COLORS.soft,
+            background: user ? "#fff" : COLORS.soft,
             fontWeight: 600,
             color: COLORS.text,
           }}
@@ -251,26 +224,26 @@ export default function CommentBox({ cupId }) {
         />
         <button
           type="submit"
-          disabled={!currentUser}
+          disabled={!user || loading}
           style={{
             padding: "10px 22px",
             borderRadius: 999,
-            background: currentUser
+            background: user
               ? `linear-gradient(90deg, ${COLORS.main} 65%, ${COLORS.sub} 100%)`
               : "#bbb",
             color: "#fff",
             fontWeight: 800,
             fontSize: 16,
             border: "none",
-            cursor: currentUser ? "pointer" : "not-allowed",
-            boxShadow: currentUser ? "0 1px 8px #1976ed23" : "none",
+            cursor: user ? "pointer" : "not-allowed",
+            boxShadow: user ? "0 1px 8px #1976ed23" : "none",
             letterSpacing: -0.5,
           }}
         >
-          {t("comment.submit")}
+          {loading ? t("comment.loading") || "등록중..." : t("comment.submit")}
         </button>
       </form>
-      {!currentUser && (
+      {!user && (
         <div
           style={{
             color: COLORS.main,
@@ -360,7 +333,7 @@ export default function CommentBox({ cupId }) {
                   letterSpacing: 0.1,
                 }}
               >
-                {getNow(c.time)}
+                {getNow(c.created_at)}
               </span>
             </div>
             <div
@@ -389,63 +362,24 @@ export default function CommentBox({ cupId }) {
                 alignItems: "center",
               }}
             >
-              <button
-                style={{
-                  color: COLORS.like,
-                  border: "none",
-                  background: "none",
-                  fontWeight: 800,
-                  cursor: "pointer",
-                  fontSize: 14.7,
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 3,
-                  padding: 0,
-                }}
-                onClick={() => handleVote(c.id, "like")}
-                title={t("comment.like")}
-                disabled={!currentUser}
-              >
-                👍 {c.like || 0}
-              </button>
-              <button
-                style={{
-                  color: COLORS.danger,
-                  border: "none",
-                  background: "none",
-                  fontWeight: 800,
-                  cursor: "pointer",
-                  fontSize: 14.7,
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 3,
-                  padding: 0,
-                }}
-                onClick={() => handleVote(c.id, "dislike")}
-                title={t("comment.report")}
-                disabled={!currentUser}
-              >
-                🚩 {c.dislike || 0}
-              </button>
-              <button
-                style={{
-                  color: "#888",
-                  border: "none",
-                  background: "none",
-                  fontWeight: 700,
-                  cursor: "pointer",
-                  fontSize: 14,
-                  marginLeft: 3,
-                  padding: 0,
-                }}
-                onClick={() => handleDelete(c.id)}
-                title={t("comment.delete")}
-                disabled={
-                  !(currentUser && (isAdmin || c.nickname === currentUser))
-                }
-              >
-                삭제
-              </button>
+              {(user && (nickname === "admin" || c.user_id === user.id)) && (
+                <button
+                  style={{
+                    color: "#888",
+                    border: "none",
+                    background: "none",
+                    fontWeight: 700,
+                    cursor: "pointer",
+                    fontSize: 14,
+                    marginLeft: 3,
+                    padding: 0,
+                  }}
+                  onClick={() => handleDelete(c.id, c.user_id)}
+                  title={t("comment.delete")}
+                >
+                  삭제
+                </button>
+              )}
             </div>
           </div>
         ))}
