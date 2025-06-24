@@ -1,5 +1,3 @@
-// src/components/SignupBox.jsx
-
 import React, { useState } from "react";
 import { supabase } from "../utils/supabaseClient";
 import { useNavigate } from "react-router-dom";
@@ -59,22 +57,32 @@ function SignupBox() {
       password,
     });
 
+    // 2. 에러 처리
     if (authErr) {
-      setError(authErr.message);
+      // 이메일 중복에 대한 메시지 개선
+      if (
+        authErr.message.includes("User already registered") ||
+        authErr.message.includes("already registered") ||
+        authErr.message.includes("already exists") ||
+        authErr.message.includes("이미 가입")
+      ) {
+        setError("이미 가입된 이메일입니다.");
+      } else {
+        setError(authErr.message);
+      }
       setLoading(false);
       return;
     }
 
-    // 2. 회원가입 성공 → 이메일 인증 안내 (프로필 저장은 로그인 후에!)
-    setSuccess("회원가입 성공! 이메일 인증 후 로그인 하세요.\n로그인 후 닉네임을 입력하시면 저장됩니다.");
+    setSuccess("회원가입 성공! 이메일 인증 후 로그인 하세요.");
     setEmail("");
     setPassword("");
     setNickname("");
     setLoading(false);
 
     setTimeout(() => {
-      navigate("/login"); // 홈 or 로그인 페이지로 이동
-    }, 2500);
+      navigate("/"); // 성공시 홈으로 이동
+    }, 2000);
   }
 
   return (
@@ -158,7 +166,7 @@ function SignupBox() {
           {loading ? "가입중..." : "가입하기"}
         </button>
       </form>
-      {success && <div style={{ color: "green", marginTop: 12, textAlign: "center", whiteSpace: "pre-line" }}>{success}</div>}
+      {success && <div style={{ color: "green", marginTop: 12, textAlign: "center" }}>{success}</div>}
       {error && <div style={{ color: "red", marginTop: 12, textAlign: "center" }}>{error}</div>}
     </div>
   );
