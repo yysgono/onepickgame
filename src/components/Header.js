@@ -22,28 +22,31 @@ export default function Header({ onLangChange, onBackup, onRestore, onMakeWorldc
   const [loginError, setLoginError] = useState("");
   const [loginLoading, setLoginLoading] = useState(false);
 
+  // 유저 및 닉네임 fetch
   useEffect(() => {
-    supabase.auth.getUser().then(({ data }) => setUser(data?.user || null));
+    let isMounted = true;
+    supabase.auth.getUser().then(async ({ data }) => {
+      if (isMounted) setUser(data?.user || null);
+      if (data?.user) {
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("nickname")
+          .eq("id", data.user.id)
+          .single();
+        if (isMounted) setNickname(profile?.nickname || "");
+      } else {
+        setNickname("");
+      }
+    });
+    return () => { isMounted = false; }
   }, []);
-  useEffect(() => {
-    if (user) {
-      supabase
-        .from("profiles")
-        .select("nickname")
-        .eq("id", user.id)
-        .single()
-        .then(({ data }) => {
-          setNickname(data?.nickname || "");
-        });
-    } else {
-      setNickname("");
-    }
-  }, [user]);
 
+  // 로그아웃
   function handleLogout() {
     supabase.auth.signOut().then(() => window.location.reload());
   }
 
+  // 라우팅
   function openSignup() {
     setShowLogin(false);
     navigate("/signup");
@@ -75,6 +78,10 @@ export default function Header({ onLangChange, onBackup, onRestore, onMakeWorldc
     setLoginEmail("");
     setLoginPassword("");
     window.location.reload();
+  }
+
+  function handleLogoClick() {
+    window.location.href = "/";
   }
 
   return (
@@ -115,7 +122,7 @@ export default function Header({ onLangChange, onBackup, onRestore, onMakeWorldc
             flexShrink: 0,
             whiteSpace: "nowrap",
           }}
-          onClick={() => (window.location.href = "/")}
+          onClick={handleLogoClick}
         >
           OnePickGame
         </div>
@@ -146,9 +153,9 @@ export default function Header({ onLangChange, onBackup, onRestore, onMakeWorldc
             <>
               <button style={primaryButtonStyle} onClick={() => setShowLogin(true)}>{t("login")}</button>
               {showLogin && (
-                <div style={modalOverlayStyle} onClick={() => setShowLogin(false)}>
+                <div style={modalOverlayStyle}>
                   <div style={modalContentStyle} onClick={e => e.stopPropagation()}>
-                    <div style={{ fontWeight: 800, fontSize: 22, marginBottom: 14, textAlign: "center" }}>{t("로그인")}</div>
+                    <div style={{ fontWeight: 800, fontSize: 22, marginBottom: 12, textAlign: "center" }}>{t("로그인")}</div>
                     <form style={{ width: "100%" }} onSubmit={handleLogin}>
                       <input
                         type="email"
@@ -192,13 +199,13 @@ export default function Header({ onLangChange, onBackup, onRestore, onMakeWorldc
                         </div>
                       )}
                     </form>
-                    <div style={{ marginTop: 14 }}>
+                    <div style={{ marginTop: 14, width: "100%", textAlign: "center" }}>
                       <a href="/signup" style={{ color: "#1976ed", marginBottom: 7, display: "block" }}>회원가입</a>
                       <a href="/find-id" style={{ color: "#555", marginBottom: 5, display: "block" }}>아이디 찾기</a>
                       <a href="/find-pw" style={{ color: "#555", display: "block" }}>비밀번호 찾기</a>
                     </div>
                     <button style={modalCloseButtonStyle} onClick={() => setShowLogin(false)}>
-                      close
+                      닫기
                     </button>
                   </div>
                 </div>
@@ -208,7 +215,7 @@ export default function Header({ onLangChange, onBackup, onRestore, onMakeWorldc
           {user && (
             <>
               <span style={{ fontWeight: 700, color: "#1976ed", marginRight: 10, whiteSpace: "nowrap" }}>
-                {nickname || user.email}
+                {nickname || (user.email ?? "")}
               </span>
               <button style={logoutButtonStyle} onClick={handleLogout}>{t("logout")}</button>
             </>
