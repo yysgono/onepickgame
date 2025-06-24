@@ -1,0 +1,163 @@
+import React, { useEffect, useState } from "react";
+import { supabase } from "../utils/supabaseClient";
+
+export default function MyProfileBox() {
+  const [user, setUser] = useState(null);
+  const [nickname, setNickname] = useState("");
+  const [newNickname, setNewNickname] = useState("");
+  const [password, setPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [mode, setMode] = useState(""); // '', 'nickname', 'password', 'withdraw'
+  const [msg, setMsg] = useState("");
+
+  useEffect(() => {
+    async function fetchUser() {
+      const { data } = await supabase.auth.getUser();
+      if (data?.user) {
+        setUser(data.user);
+        // 닉네임 가져오기
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("nickname")
+          .eq("id", data.user.id)
+          .single();
+        setNickname(profile?.nickname || "");
+      }
+    }
+    fetchUser();
+  }, []);
+
+  // 닉네임 변경
+  async function handleChangeNickname(e) {
+    e.preventDefault();
+    setMsg("");
+    if (!newNickname) return setMsg("새 닉네임을 입력하세요.");
+    // 중복체크
+    const { data: exist } = await supabase.from("profiles").select("id").eq("nickname", newNickname).maybeSingle();
+    if (exist) return setMsg("이미 사용중인 닉네임입니다.");
+    const { error } = await supabase.from("profiles").update({ nickname: newNickname }).eq("id", user.id);
+    if (error) return setMsg("닉네임 변경 실패: " + error.message);
+    setNickname(newNickname);
+    setNewNickname("");
+    setMode("");
+    setMsg("닉네임이 변경되었습니다.");
+  }
+
+  // 비밀번호 변경 (Supabase는 reset 방식)
+  async function handleChangePassword(e) {
+    e.preventDefault();
+    setMsg("");
+    if (!newPassword) return setMsg("새 비밀번호를 입력하세요.");
+    const { error } = await supabase.auth.updateUser({ password: newPassword });
+    if (error) return setMsg("비밀번호 변경 실패: " + error.message);
+    setNewPassword("");
+    setMode("");
+    setMsg("비밀번호가 변경되었습니다.");
+  }
+
+  // 회원탈퇴
+  async function handleWithdraw() {
+    if (!window.confirm("정말 탈퇴하시겠습니까? (복구 불가)")) return;
+    setMsg("탈퇴 기능은 관리자 또는 서버에서 직접 삭제해야 합니다. (클라이언트에서는 불가)");
+    // 실제로는 Edge function/관리자 대시보드에서 삭제 필요
+  }
+
+  if (!user) return <div style={{ padding: 40, textAlign: "center" }}>로그인이 필요합니다.</div>;
+
+  return (
+    <div style={{
+      maxWidth: 420,
+      margin: "60px auto",
+      background: "#fff",
+      borderRadius: 14,
+      boxShadow: "0 2px 12px #0001",
+      padding: 32
+    }}>
+      <h2 style={{ textAlign: "center", marginBottom: 18 }}>내 정보</h2>
+      <div style={{ marginBottom: 14, fontWeight: 700 }}>이메일: {user.email}</div>
+      <div style={{ marginBottom: 14, fontWeight: 700 }}>닉네임: {nickname || "없음"}</div>
+      <div style={{ display: "flex", flexDirection: "column", gap: 11 }}>
+        <button style={menuBtnStyle} onClick={() => setMode("nickname")}>닉네임 변경</button>
+        <button style={menuBtnStyle} onClick={() => setMode("password")}>비밀번호 변경</button>
+        <button style={menuBtnStyleDanger} onClick={() => setMode("withdraw")}>회원탈퇴</button>
+      </div>
+
+      {/* 닉네임 변경 */}
+      {mode === "nickname" && (
+        <form style={{ marginTop: 18 }} onSubmit={handleChangeNickname}>
+          <input
+            type="text"
+            value={newNickname}
+            onChange={e => setNewNickname(e.target.value)}
+            placeholder="새 닉네임"
+            style={inputStyle}
+            maxLength={12}
+          />
+          <button style={submitBtnStyle} type="submit">변경</button>
+        </form>
+      )}
+
+      {/* 비밀번호 변경 */}
+      {mode === "password" && (
+        <form style={{ marginTop: 18 }} onSubmit={handleChangePassword}>
+          <input
+            type="password"
+            value={newPassword}
+            onChange={e => setNewPassword(e.target.value)}
+            placeholder="새 비밀번호"
+            style={inputStyle}
+            maxLength={32}
+          />
+          <button style={submitBtnStyle} type="submit">변경</button>
+        </form>
+      )}
+
+      {/* 회원탈퇴 */}
+      {mode === "withdraw" && (
+        <div style={{ marginTop: 20 }}>
+          <button style={submitBtnStyleDanger} onClick={handleWithdraw}>
+            정말 탈퇴하기
+          </button>
+        </div>
+      )}
+
+      {msg && <div style={{ color: msg.includes("실패") ? "red" : "green", marginTop: 16, textAlign: "center" }}>{msg}</div>}
+    </div>
+  );
+}
+
+const menuBtnStyle = {
+  background: "#1976ed",
+  color: "#fff",
+  border: "none",
+  borderRadius: 8,
+  fontWeight: 700,
+  padding: "11px 0",
+  fontSize: 16,
+  marginBottom: 0,
+  marginTop: 0,
+  cursor: "pointer"
+};
+const menuBtnStyleDanger = { ...menuBtnStyle, background: "#c41a1a" };
+const submitBtnStyle = {
+  background: "#1976ed",
+  color: "#fff",
+  border: "none",
+  borderRadius: 8,
+  fontWeight: 700,
+  padding: "10px 0",
+  fontSize: 15,
+  marginTop: 10,
+  width: "100%",
+  cursor: "pointer"
+};
+const submitBtnStyleDanger = { ...submitBtnStyle, background: "#c41a1a" };
+const inputStyle = {
+  width: "100%",
+  padding: 11,
+  borderRadius: 7,
+  border: "1.2px solid #bbb",
+  fontSize: 16,
+  marginBottom: 7,
+};
+

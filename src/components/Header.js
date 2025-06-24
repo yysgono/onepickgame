@@ -8,13 +8,21 @@ const languages = [
   { code: "en", label: "English" },
 ];
 
-export default function Header({ onLangChange, onBackup, onRestore, onMakeWorldcup, isAdmin }) {
+export default function Header({
+  onLangChange,
+  onBackup,
+  onRestore,
+  onMakeWorldcup,
+  isAdmin
+}) {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const inputRef = useRef();
   const [showLogin, setShowLogin] = useState(false);
+  const [showProfile, setShowProfile] = useState(false);
   const [user, setUser] = useState(null);
   const [nickname, setNickname] = useState("");
+  const [nicknameLoading, setNicknameLoading] = useState(false);
 
   // 로그인 폼
   const [loginEmail, setLoginEmail] = useState("");
@@ -22,9 +30,15 @@ export default function Header({ onLangChange, onBackup, onRestore, onMakeWorldc
   const [loginError, setLoginError] = useState("");
   const [loginLoading, setLoginLoading] = useState(false);
 
-  // 유저 및 닉네임 fetch
+  // 내정보수정(닉네임변경)
+  const [editNickname, setEditNickname] = useState("");
+  const [editError, setEditError] = useState("");
+  const [editLoading, setEditLoading] = useState(false);
+
+  // 유저/닉네임 fetch
   useEffect(() => {
     let isMounted = true;
+    setNicknameLoading(true);
     supabase.auth.getUser().then(async ({ data }) => {
       if (isMounted) setUser(data?.user || null);
       if (data?.user) {
@@ -33,10 +47,15 @@ export default function Header({ onLangChange, onBackup, onRestore, onMakeWorldc
           .select("nickname")
           .eq("id", data.user.id)
           .single();
-        if (isMounted) setNickname(profile?.nickname || "");
+        if (isMounted) {
+          setNickname(profile?.nickname || "");
+          setEditNickname(profile?.nickname || "");
+        }
       } else {
         setNickname("");
+        setEditNickname("");
       }
+      setNicknameLoading(false);
     });
     return () => { isMounted = false; }
   }, []);
@@ -44,20 +63,6 @@ export default function Header({ onLangChange, onBackup, onRestore, onMakeWorldc
   // 로그아웃
   function handleLogout() {
     supabase.auth.signOut().then(() => window.location.reload());
-  }
-
-  // 라우팅
-  function openSignup() {
-    setShowLogin(false);
-    navigate("/signup");
-  }
-  function openFindId() {
-    setShowLogin(false);
-    navigate("/find-id");
-  }
-  function openFindPw() {
-    setShowLogin(false);
-    navigate("/find-pw");
   }
 
   // 로그인 핸들러
@@ -78,6 +83,59 @@ export default function Header({ onLangChange, onBackup, onRestore, onMakeWorldc
     setLoginEmail("");
     setLoginPassword("");
     window.location.reload();
+  }
+
+  // 닉네임 변경
+  async function handleNicknameChange() {
+    setEditError("");
+    if (!editNickname.trim()) {
+      setEditError("닉네임을 입력하세요.");
+      return;
+    }
+    setEditLoading(true);
+    const { error } = await supabase
+      .from("profiles")
+      .update({ nickname: editNickname.trim() })
+      .eq("id", user.id);
+    setEditLoading(false);
+    if (error) {
+      setEditError(error.message || "닉네임 변경 실패");
+      return;
+    }
+    setNickname(editNickname.trim());
+    setShowProfile(false);
+    window.location.reload();
+  }
+
+  // 비밀번호 변경(메일 전송)
+  async function handlePasswordChange() {
+    setEditError("");
+    if (!user?.email) {
+      setEditError("이메일 정보가 없습니다.");
+      return;
+    }
+    setEditLoading(true);
+    const { error } = await supabase.auth.resetPasswordForEmail(user.email);
+    setEditLoading(false);
+    if (error) {
+      setEditError(error.message || "비밀번호 변경 메일 전송 실패");
+      return;
+    }
+    setEditError("비밀번호 변경 메일을 전송했습니다.");
+  }
+
+  // 회원탈퇴
+  async function handleDeleteAccount() {
+    if (!window.confirm("정말로 회원탈퇴 하시겠습니까? (되돌릴 수 없습니다)")) return;
+    setEditLoading(true);
+    const { error } = await supabase.functions.invoke("delete-user", { body: { id: user.id } });
+    setEditLoading(false);
+    if (error) {
+      setEditError(error.message || "회원탈퇴 실패");
+      return;
+    }
+    alert("탈퇴 완료");
+    supabase.auth.signOut().then(() => window.location.reload());
   }
 
   function handleLogoClick() {
@@ -214,10 +272,69 @@ export default function Header({ onLangChange, onBackup, onRestore, onMakeWorldc
           )}
           {user && (
             <>
-              <span style={{ fontWeight: 700, color: "#1976ed", marginRight: 10, whiteSpace: "nowrap" }}>
-                {nickname || (user.email ?? "")}
+              <span
+                style={{
+                  fontWeight: 700,
+                  color: "#1976ed",
+                  marginRight: 10,
+                  whiteSpace: "nowrap",
+                  cursor: "pointer",
+                }}
+                onClick={() => setShowProfile(true)}
+                title="내 정보 수정"
+              >
+                {nicknameLoading ? "닉네임 불러오는 중..." : (nickname ? nickname : "닉네임 없음")}
               </span>
               <button style={logoutButtonStyle} onClick={handleLogout}>{t("logout")}</button>
+              {/* 내정보수정 모달 */}
+              {showProfile && (
+                <div style={modalOverlayStyle}>
+                  <div style={modalContentStyle} onClick={e => e.stopPropagation()}>
+                    <div style={{ fontWeight: 800, fontSize: 21, marginBottom: 18, textAlign: "center" }}>
+                      내 정보 수정
+                    </div>
+                    <input
+                      type="text"
+                      value={editNickname}
+                      onChange={e => setEditNickname(e.target.value)}
+                      placeholder="닉네임"
+                      style={modalInputStyle}
+                    />
+                    <button
+                      style={modalProfileButtonStyle}
+                      onClick={handleNicknameChange}
+                      disabled={editLoading}
+                    >
+                      닉네임 변경
+                    </button>
+                    <button
+                      style={modalGrayButtonStyle}
+                      onClick={handlePasswordChange}
+                      disabled={editLoading}
+                    >
+                      비밀번호 변경(메일 전송)
+                    </button>
+                    <button
+                      style={modalDeleteButtonStyle}
+                      onClick={handleDeleteAccount}
+                      disabled={editLoading}
+                    >
+                      회원탈퇴
+                    </button>
+                    {editError && (
+                      <div style={{ color: "red", fontSize: 15, textAlign: "center", marginTop: 7 }}>
+                        {editError}
+                      </div>
+                    )}
+                    <button
+                      style={modalCloseButtonStyle}
+                      onClick={() => setShowProfile(false)}
+                    >
+                      닫기
+                    </button>
+                  </div>
+                </div>
+              )}
             </>
           )}
         </div>
@@ -226,6 +343,7 @@ export default function Header({ onLangChange, onBackup, onRestore, onMakeWorldc
   );
 }
 
+// 스타일
 const adminButtonStyle = (bgColor, color = "#fff") => ({
   background: bgColor,
   color: color,
@@ -273,7 +391,9 @@ const modalOverlayStyle = {
   zIndex: 9999,
   display: "flex",
   alignItems: "center",
-  justifyContent: "center"
+  justifyContent: "center",
+  margin: 0,
+  padding: 0,
 };
 const modalContentStyle = {
   background: "#fff",
@@ -288,6 +408,7 @@ const modalContentStyle = {
   gap: 14,
   alignItems: "center",
   boxSizing: "border-box",
+  margin: 0,
 };
 const modalInputStyle = {
   width: "100%",
@@ -319,4 +440,40 @@ const logoutButtonStyle = {
   padding: "5px 11px",
   cursor: "pointer",
   userSelect: "none",
+};
+const modalProfileButtonStyle = {
+  width: "100%",
+  background: "#1976ed",
+  color: "#fff",
+  border: "none",
+  borderRadius: 8,
+  fontWeight: 800,
+  fontSize: 16,
+  padding: "10px 0",
+  margin: "7px 0 0",
+  cursor: "pointer",
+};
+const modalGrayButtonStyle = {
+  width: "100%",
+  background: "#bbb",
+  color: "#fff",
+  border: "none",
+  borderRadius: 8,
+  fontWeight: 700,
+  fontSize: 15,
+  padding: "8px 0",
+  margin: "10px 0 0",
+  cursor: "pointer",
+};
+const modalDeleteButtonStyle = {
+  width: "100%",
+  background: "#e14444",
+  color: "#fff",
+  border: "none",
+  borderRadius: 8,
+  fontWeight: 700,
+  fontSize: 15,
+  padding: "10px 0",
+  margin: "14px 0 0",
+  cursor: "pointer",
 };
