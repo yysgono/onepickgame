@@ -60,40 +60,21 @@ function SignupBox() {
     });
 
     if (authErr) {
-      if (
-        authErr.message?.toLowerCase().includes("already registered") ||
-        authErr.message?.toLowerCase().includes("user already exists") ||
-        authErr.message?.toLowerCase().includes("duplicate key value")
-      ) {
-        setError("이미 가입된 이메일입니다. 로그인 해주세요.");
-      } else {
-        setError(authErr.message);
-      }
+      setError(authErr.message);
       setLoading(false);
       return;
     }
 
-    // 2. 닉네임 profiles 테이블에 저장 (이메일 인증 전에도 가능)
-    if (data?.user?.id) {
-      const { error: profileErr } = await supabase.from("profiles").insert([
-        { id: data.user.id, nickname }
-      ]);
-      if (profileErr) {
-        setError("닉네임 저장 실패: " + profileErr.message);
-        setLoading(false);
-        return;
-      }
-    }
-
-    setSuccess("회원가입 성공! 이메일 인증 후 로그인 하세요.");
+    // 2. 회원가입 성공 → 이메일 인증 안내 (프로필 저장은 로그인 후에!)
+    setSuccess("회원가입 성공! 이메일 인증 후 로그인 하세요.\n로그인 후 닉네임을 입력하시면 저장됩니다.");
     setEmail("");
     setPassword("");
     setNickname("");
     setLoading(false);
 
     setTimeout(() => {
-      navigate("/"); // 성공시 홈으로 이동
-    }, 2000);
+      navigate("/login"); // 홈 or 로그인 페이지로 이동
+    }, 2500);
   }
 
   return (
@@ -177,7 +158,7 @@ function SignupBox() {
           {loading ? "가입중..." : "가입하기"}
         </button>
       </form>
-      {success && <div style={{ color: "green", marginTop: 12, textAlign: "center" }}>{success}</div>}
+      {success && <div style={{ color: "green", marginTop: 12, textAlign: "center", whiteSpace: "pre-line" }}>{success}</div>}
       {error && <div style={{ color: "red", marginTop: 12, textAlign: "center" }}>{error}</div>}
     </div>
   );
