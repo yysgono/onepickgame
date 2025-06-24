@@ -16,15 +16,25 @@ export default function Header({ onLangChange, onBackup, onRestore, onMakeWorldc
   const [user, setUser] = useState(null);
   const [nickname, setNickname] = useState("");
 
+  // 로그인 폼
+  const [loginEmail, setLoginEmail] = useState("");
+  const [loginPassword, setLoginPassword] = useState("");
+  const [loginError, setLoginError] = useState("");
+  const [loginLoading, setLoginLoading] = useState(false);
+
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => setUser(data?.user || null));
   }, []);
   useEffect(() => {
-    // 닉네임 읽기
     if (user) {
-      supabase.from("profiles").select("nickname").eq("id", user.id).single().then(({ data }) => {
-        setNickname(data?.nickname || "");
-      });
+      supabase
+        .from("profiles")
+        .select("nickname")
+        .eq("id", user.id)
+        .single()
+        .then(({ data }) => {
+          setNickname(data?.nickname || "");
+        });
     } else {
       setNickname("");
     }
@@ -45,6 +55,26 @@ export default function Header({ onLangChange, onBackup, onRestore, onMakeWorldc
   function openFindPw() {
     setShowLogin(false);
     navigate("/find-pw");
+  }
+
+  // 로그인 핸들러
+  async function handleLogin(e) {
+    e.preventDefault();
+    setLoginError("");
+    setLoginLoading(true);
+    const { error: loginError } = await supabase.auth.signInWithPassword({
+      email: loginEmail,
+      password: loginPassword,
+    });
+    setLoginLoading(false);
+    if (loginError) {
+      setLoginError(loginError.message || "로그인 실패");
+      return;
+    }
+    setShowLogin(false);
+    setLoginEmail("");
+    setLoginPassword("");
+    window.location.reload();
   }
 
   return (
@@ -118,12 +148,58 @@ export default function Header({ onLangChange, onBackup, onRestore, onMakeWorldc
               {showLogin && (
                 <div style={modalOverlayStyle} onClick={() => setShowLogin(false)}>
                   <div style={modalContentStyle} onClick={e => e.stopPropagation()}>
-                    <div style={{ fontWeight: 800, fontSize: 20, marginBottom: 12 }}>{t("login")}</div>
-                    {/* AuthBox 등으로 대체 */}
-                    <a href="/signup" style={{ display: "block", color: "#1976ed", marginBottom: 10 }}>회원가입</a>
-                    <a href="/find-id" style={{ display: "block", color: "#555", marginBottom: 5 }}>아이디 찾기</a>
-                    <a href="/find-pw" style={{ display: "block", color: "#555", marginBottom: 5 }}>비밀번호 찾기</a>
-                    <button style={modalCloseButtonStyle} onClick={() => setShowLogin(false)}>{t("close")}</button>
+                    <div style={{ fontWeight: 800, fontSize: 22, marginBottom: 14, textAlign: "center" }}>{t("로그인")}</div>
+                    <form style={{ width: "100%" }} onSubmit={handleLogin}>
+                      <input
+                        type="email"
+                        value={loginEmail}
+                        onChange={e => setLoginEmail(e.target.value)}
+                        placeholder="이메일"
+                        style={modalInputStyle}
+                        autoComplete="username"
+                        required
+                      />
+                      <input
+                        type="password"
+                        value={loginPassword}
+                        onChange={e => setLoginPassword(e.target.value)}
+                        placeholder="비밀번호"
+                        style={modalInputStyle}
+                        autoComplete="current-password"
+                        required
+                      />
+                      <button
+                        type="submit"
+                        disabled={loginLoading}
+                        style={{
+                          width: "100%",
+                          background: "#1976ed",
+                          color: "#fff",
+                          fontWeight: 800,
+                          border: "none",
+                          borderRadius: 8,
+                          fontSize: 17,
+                          padding: "11px 0",
+                          margin: "14px 0 0",
+                          cursor: loginLoading ? "not-allowed" : "pointer"
+                        }}
+                      >
+                        {loginLoading ? "로그인 중..." : "로그인"}
+                      </button>
+                      {loginError && (
+                        <div style={{ color: "red", marginTop: 8, fontSize: 15, textAlign: "center" }}>
+                          {loginError}
+                        </div>
+                      )}
+                    </form>
+                    <div style={{ marginTop: 14 }}>
+                      <a href="/signup" style={{ color: "#1976ed", marginBottom: 7, display: "block" }}>회원가입</a>
+                      <a href="/find-id" style={{ color: "#555", marginBottom: 5, display: "block" }}>아이디 찾기</a>
+                      <a href="/find-pw" style={{ color: "#555", display: "block" }}>비밀번호 찾기</a>
+                    </div>
+                    <button style={modalCloseButtonStyle} onClick={() => setShowLogin(false)}>
+                      close
+                    </button>
                   </div>
                 </div>
               )}
@@ -190,18 +266,30 @@ const modalOverlayStyle = {
   zIndex: 9999,
   display: "flex",
   alignItems: "center",
-  justifyContent: "center",
+  justifyContent: "center"
 };
 const modalContentStyle = {
   background: "#fff",
   borderRadius: 12,
-  padding: 32,
-  minWidth: 260,
+  padding: "32px 28px",
+  minWidth: 330,
+  maxWidth: 380,
+  width: "100%",
   boxShadow: "0 4px 24px rgba(0,0,0,0.15)",
   display: "flex",
   flexDirection: "column",
-  gap: 16,
+  gap: 14,
   alignItems: "center",
+  boxSizing: "border-box",
+};
+const modalInputStyle = {
+  width: "100%",
+  padding: "10px 11px",
+  borderRadius: 7,
+  border: "1.2px solid #bbb",
+  fontSize: 16,
+  marginBottom: 9,
+  boxSizing: "border-box"
 };
 const modalCloseButtonStyle = {
   background: "#eee",
@@ -212,7 +300,7 @@ const modalCloseButtonStyle = {
   fontWeight: 600,
   cursor: "pointer",
   width: 180,
-  marginTop: 6,
+  marginTop: 10,
   userSelect: "none",
 };
 const logoutButtonStyle = {

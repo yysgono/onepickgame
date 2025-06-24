@@ -1,8 +1,10 @@
+// src/components/LoginBox.jsx
+
 import React, { useState } from "react";
 import { supabase } from "../utils/supabaseClient";
 import { useNavigate } from "react-router-dom";
 
-function LoginBox() {
+function LoginBox({ onLoginSuccess }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -14,7 +16,6 @@ function LoginBox() {
     setError("");
     setLoading(true);
 
-    // supabase 이메일+비밀번호 로그인
     const { error: loginError } = await supabase.auth.signInWithPassword({
       email,
       password,
@@ -28,7 +29,7 @@ function LoginBox() {
     }
     setEmail("");
     setPassword("");
-    // 로그인 성공시 홈으로 이동 및 새로고침
+    if (onLoginSuccess) onLoginSuccess();
     navigate("/");
     window.location.reload();
   }
@@ -36,12 +37,12 @@ function LoginBox() {
   return (
     <div
       style={{
-        maxWidth: 360,
-        margin: "60px auto",
+        maxWidth: 320,
+        margin: "0 auto",
         background: "#fff",
         borderRadius: 14,
         boxShadow: "0 2px 12px #0001",
-        padding: 30
+        padding: 20
       }}
     >
       <h2 style={{ textAlign: "center", marginBottom: 18 }}>로그인</h2>
@@ -104,40 +105,7 @@ function LoginBox() {
           {error}
         </div>
       )}
-      <div style={{ marginTop: 18, textAlign: "center" }}>
-        <a
-          href="/signup"
-          style={{
-            color: "#1976ed",
-            textDecoration: "underline",
-            fontWeight: 700,
-            marginRight: 15
-          }}
-        >
-          회원가입
-        </a>
-        <a
-          href="/find-id"
-          style={{
-            color: "#1976ed",
-            textDecoration: "underline",
-            fontWeight: 700,
-            marginRight: 15
-          }}
-        >
-          아이디 찾기
-        </a>
-        <a
-          href="/find-pw"
-          style={{
-            color: "#1976ed",
-            textDecoration: "underline",
-            fontWeight: 700
-          }}
-        >
-          비밀번호 찾기
-        </a>
-      </div>
+      {/* 여기서 회원가입 링크 부분을 제거 */}
     </div>
   );
 }
