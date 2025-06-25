@@ -63,23 +63,16 @@ function truncateNames(candidates, maxWords = 3) {
   });
 }
 
-/**
- * @param {object} props
- * @param {object} props.cup 월드컵 객체
- * @param {function} props.onResult 결과 콜백
- * @param {number} [props.selectedCount] 시작할 강(예: 4, 8, 16 등)
- */
 function Match({ cup, onResult, selectedCount }) {
   const { t } = useTranslation();
-  const [bracket, setBracket] = useState([]); // [[c1, c2], ...]
+  const [bracket, setBracket] = useState([]);
   const [idx, setIdx] = useState(0);
   const [roundNum, setRoundNum] = useState(1);
-  const [pendingWinners, setPendingWinners] = useState([]); // 1라운드 부전승
+  const [pendingWinners, setPendingWinners] = useState([]);
   const [matchHistory, setMatchHistory] = useState([]);
   const [autoPlaying, setAutoPlaying] = useState(false);
-  const currentUser = localStorage.getItem("onepickgame_user") || "guest";
 
-  // 최초 1라운드 준비 (selectedCount만큼만 랜덤 추출)
+  // 최초 1라운드 준비
   useEffect(() => {
     let players = cup.data;
     if (selectedCount && players.length > selectedCount) {
@@ -96,19 +89,21 @@ function Match({ cup, onResult, selectedCount }) {
   // 라운드 종료 시 → 다음 라운드 준비 또는 우승자
   useEffect(() => {
     if (idx === bracket.length && bracket.length > 0) {
-      // 직전 라운드의 경기 승자들
       const matchWinners = matchHistory
         .slice(-bracket.length)
         .map(m => m.winner)
         .filter(Boolean);
 
-      // 다음 라운드 출전: (1라운드일 때만) 부전승 + 경기승자
       const nextRoundCandidates =
         roundNum === 1 ? [...pendingWinners, ...matchWinners] : matchWinners;
 
       // 종료: 1명 남으면 끝!
       if (nextRoundCandidates.length === 1) {
-        saveWinnerStatsWithUser(currentUser, cup.id, nextRoundCandidates[0], matchHistory);
+        saveWinnerStatsWithUser(
+          cup.id,
+          nextRoundCandidates[0],
+          matchHistory
+        );
         onResult(nextRoundCandidates[0], matchHistory);
         return;
       }
@@ -119,7 +114,7 @@ function Match({ cup, onResult, selectedCount }) {
       setIdx(0);
       setRoundNum(r => r + 1);
     }
-  }, [idx, bracket, matchHistory, pendingWinners, currentUser, cup.id, onResult, roundNum]);
+  }, [idx, bracket, matchHistory, pendingWinners, cup.id, onResult, roundNum]);
 
   // 현재 경기
   const currentMatch = bracket[idx] || [];
@@ -147,7 +142,7 @@ function Match({ cup, onResult, selectedCount }) {
     setIdx(idx + 1);
   }
 
-  // 뷰 사이즈
+  // --- UI (기존과 동일하게)
   const vw = typeof window !== "undefined" ? Math.min(window.innerWidth, 900) : 900;
   const isMobile = vw < 700;
   const TITLE_SIZE = isMobile ? 66 : 100;
@@ -155,7 +150,6 @@ function Match({ cup, onResult, selectedCount }) {
   const NAME_FONT_SIZE = isMobile ? 22 : 46;
   const NAME_HEIGHT = isMobile ? `${1.18 * 22 * 4}px` : `${1.18 * 46 * 4}px`;
 
-  // 다음 대진 예고
   const nextIdx = idx + 1;
   const nextRoundCandidates =
     bracket && nextIdx < bracket.length
@@ -216,7 +210,7 @@ function Match({ cup, onResult, selectedCount }) {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            cursor: !isYoutube && c ? "pointer" : "default",
+            cursor: !isYoutube && c ? onClick : "default",
             boxSizing: "border-box",
             opacity: c ? 1 : 0.25,
           }}

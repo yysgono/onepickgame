@@ -1,5 +1,3 @@
-// src/utils.js
-
 import { supabase } from "./utils/supabaseClient";
 
 // ===== 유튜브 관련 =====
@@ -35,11 +33,14 @@ export function getYoutubeEmbed(url = "") {
 
 // ===== 통계, 기록 관련 (supabase 연동 버전) =====
 
-// 월드컵 종료시 통계 저장 (DB에 저장, 중복 저장 안 남!)
+// 월드컵 종료시 통계 저장 (DB에 저장, 중복 저장 안 남게 upsert)
 export async function saveWinnerStatsWithUser(cupId, winner, matchHistory) {
+  // matchHistory가 배열이 아닐 수 있으니 방어코드
+  const safeHistory = Array.isArray(matchHistory) ? matchHistory : [];
+
   // 후보별 새 기록 계산
   const candidateStats = {};
-  matchHistory.forEach(({ c1, c2, winner }) => {
+  safeHistory.forEach(({ c1, c2, winner }) => {
     [c1, c2].forEach(c => {
       if (!c) return;
       if (!candidateStats[c.id]) candidateStats[c.id] = { win_count: 0, match_wins: 0, match_count: 0, total_games: 0, name: c.name, image: c.image };

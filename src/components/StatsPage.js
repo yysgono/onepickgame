@@ -23,7 +23,7 @@ function percent(n, d) {
 }
 
 const PERIODS = [
-  { key: "all", i18n: "all" } // DB 버전에서는 기간 구분 생략. 필요하면 추가 구현
+  { key: "all", i18n: "all" }
 ];
 
 function StatsPage({ selectedCup, showOnlyWinner }) {
@@ -34,13 +34,11 @@ function StatsPage({ selectedCup, showOnlyWinner }) {
   const [search, setSearch] = useState("");
   const [isMobile, setIsMobile] = useState(window.innerWidth < 800);
 
-  // ✨✨ DB에서 통계 불러오기 (최신화) ✨✨
   useEffect(() => {
     async function fetchStats() {
       const dbStatsArr = await getWinnerStats(selectedCup.id);
-      // candidate_id와 local 데이터 id 맞춰서 매칭
       const statsArr = selectedCup.data.map((item) => {
-        const dbRow = dbStatsArr.find(s => s.candidate_id === item.id);
+        const dbRow = dbStatsArr.find(s => String(s.candidate_id) === String(item.id));
         return {
           id: item.id,
           name: item.name,
