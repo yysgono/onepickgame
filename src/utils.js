@@ -4,7 +4,6 @@ import { supabase } from "./utils/supabaseClient";
 
 // ===== 유튜브 관련 =====
 
-// 유튜브 ID 추출
 export function getYoutubeId(url = "") {
   if (!url) return "";
   const reg = /(?:youtube\.com\/.*[?&]v=|youtube\.com\/(?:v|embed)\/|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
@@ -12,7 +11,6 @@ export function getYoutubeId(url = "") {
   return match ? match[1] : "";
 }
 
-// 유튜브 썸네일 URL 또는 이미지 URL 반환
 export function getThumbnail(url = "") {
   const ytid = getYoutubeId(url);
   if (ytid) {
@@ -21,12 +19,10 @@ export function getThumbnail(url = "") {
   return url || "";
 }
 
-// 이미지 URL 유효성 검사 (확장자 기준, 유튜브 URL 제외)
 export function isValidImageUrl(url = "") {
   return /\.(jpeg|jpg|png|gif|webp)$/i.test(url) && !getYoutubeId(url);
 }
 
-// 유튜브 임베드 URL 반환
 export function getYoutubeEmbed(url = "") {
   const ytid = getYoutubeId(url);
   if (ytid) return `https://www.youtube.com/embed/${ytid}?autoplay=0&mute=1`;
@@ -35,32 +31,47 @@ export function getYoutubeEmbed(url = "") {
 
 // ===== 통계, 기록 관련 (supabase 연동 버전) =====
 
-// 월드컵 종료시 통계 저장 (DB에 저장)
+// 월드컵 통계 저장: 이전 기록 삭제 후, 새로 저장
 export async function saveWinnerStatsWithUser(userId, cupId, winner, matchHistory) {
-  // 단순 예시: 우승자 정보만 저장
-  const win_count = 1;
-  const match_wins = matchHistory.length;
-  const match_count = matchHistory.length;
-  const total_games = 1;
+  // 1. 이전 기록 삭제
+  await supabase
+    .from('winner_stats')
+    .delete()
+    .eq('cup_id', cupId);
 
-  const { error } = await supabase.from('winner_stats').upsert([
-    {
-      cup_id: String(cupId),
-      candidate_id: String(winner.id),
-      name: winner.name,
-      image: winner.image,
-      win_count,
-      match_wins,
-      match_count,
-      total_games,
-      updated_at: new Date().toISOString()
-    }
-  ], {
-    onConflict: ['cup_id', 'candidate_id'],
+  // 2. 후보별 새 기록 계산
+  const candidateStats = {};
+  matchHistory.forEach(({ c1, c2, winner }) => {
+    [c1, c2].forEach(c => {
+      if (!c) return;
+      if (!candidateStats[c.id]) candidateStats[c.id] = { win_count: 0, match_wins: 0, match_count: 0, total_games: 0, name: c.name, image: c.image };
+      candidateStats[c.id].match_count++;
+    });
+    if (winner && !candidateStats[winner.id]) candidateStats[winner.id] = { win_count: 0, match_wins: 0, match_count: 0, total_games: 0, name: winner.name, image: winner.image };
+    if (winner) candidateStats[winner.id].match_wins++;
   });
 
-  if (error) {
-    alert("DB 저장 실패: " + error.message);
+  if (winner && candidateStats[winner.id]) {
+    candidateStats[winner.id].win_count = 1;
+    candidateStats[winner.id].total_games = 1;
+  }
+  Object.keys(candidateStats).forEach(id => {
+    if (id !== winner.id) candidateStats[id].total_games = 1;
+  });
+
+  // 3. DB에 새로 저장 (bulk insert)
+  const statsArr = Object.entries(candidateStats).map(([candidate_id, stats]) => ({
+    cup_id: String(cupId),
+    candidate_id: String(candidate_id),
+    ...stats,
+    updated_at: new Date().toISOString(),
+  }));
+
+  if (statsArr.length > 0) {
+    const { error } = await supabase.from('winner_stats').insert(statsArr);
+    if (error) {
+      alert("DB 저장 실패: " + error.message);
+    }
   }
 }
 
