@@ -2,7 +2,7 @@
 
 import React, { useState, useRef, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-// import { getMostWinner } from "../utils";  // <- 주석 또는 삭제!
+import { getMostWinner } from "../utils";
 import COLORS from "../styles/theme";
 import {
   cardBoxStyle,
@@ -237,8 +237,10 @@ function Home({
           </div>
         )}
         {filtered.map((cup, idx) => {
-          // DB 버전: 최다우승 후보 구하는 코드 제거!
-          const thumbnail = cup.data[0]?.image || "";
+          const topCandidate = getMostWinner(cup.id, cup.data);
+          const thumbnail = topCandidate
+            ? topCandidate.image
+            : cup.data[0]?.image || "";
 
           // owner, creator, creator_id를 user.id, user.email로 비교
           const isMine =
@@ -300,7 +302,24 @@ function Home({
                     }}
                   />
                 )}
-                {/* 최다우승 뱃지/텍스트 제거! */}
+                {topCandidate && (
+                  <div
+                    style={{
+                      position: "absolute",
+                      top: 6,
+                      left: 8,
+                      background: "#ffd700ee",
+                      color: "#333",
+                      fontWeight: 800,
+                      fontSize: isMobile ? 12 : 15,
+                      padding: "2px 8px",
+                      borderRadius: 14,
+                      boxShadow: "0 1px 4px #0001",
+                    }}
+                  >
+                    🥇 최다우승
+                  </div>
+                )}
               </div>
               <div
                 style={{

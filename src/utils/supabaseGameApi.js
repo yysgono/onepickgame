@@ -1,6 +1,6 @@
 // src/utils/supabaseGameApi.js
 
-import { supabase } from "../utils/supabaseClient";
+import { supabase } from "./supabaseClient";
 
 // 월드컵 전체 목록
 export async function getWorldcupGames() {

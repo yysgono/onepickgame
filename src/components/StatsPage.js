@@ -2,16 +2,18 @@ import React, { useState, useEffect } from "react";
 import CommentBox from "./CommentBox";
 import { getYoutubeId, isValidImageUrl, getWinnerStats } from "../utils";
 import { useTranslation } from "react-i18next";
+
 import COLORS from "../styles/theme";
-import { mainButtonStyle } from "../styles/common";
+import { mainButtonStyle, grayButtonStyle } from "../styles/common";
 
 function getThumb(image) {
   const youtubeId = getYoutubeId(image);
   const ext = image?.split('.').pop().toLowerCase();
   const isVideo = ext === "mp4" || ext === "webm" || ext === "ogg";
   const isGif = ext === "gif";
+
   if (youtubeId) return `https://img.youtube.com/vi/${youtubeId}/mqdefault.jpg`;
-  if (isVideo || isGif) return image;
+  if (isVideo || isGif) return image;  // 영상/움짤은 원본 url 반환
   if (typeof image === "string" && image.startsWith("data:image/")) return image;
   if (isValidImageUrl(image)) return image;
   return "";
@@ -23,6 +25,11 @@ function percent(n, d) {
 }
 
 const PERIODS = [
+  { key: "1w", i18n: "1week" },
+  { key: "1m", i18n: "1month" },
+  { key: "3m", i18n: "3months" },
+  { key: "6m", i18n: "6months" },
+  { key: "1y", i18n: "1year" },
   { key: "all", i18n: "all" }
 ];
 
@@ -31,29 +38,27 @@ function StatsPage({ selectedCup, showOnlyWinner }) {
   const [stats, setStats] = useState([]);
   const [sortKey, setSortKey] = useState("winCount");
   const [sortDesc, setSortDesc] = useState(true);
+  const [period, setPeriod] = useState("all");
   const [search, setSearch] = useState("");
   const [isMobile, setIsMobile] = useState(window.innerWidth < 800);
 
   useEffect(() => {
-    async function fetchStats() {
-      const dbStatsArr = await getWinnerStats(selectedCup.id);
-      const statsArr = selectedCup.data.map((item) => {
-        const dbRow = dbStatsArr.find(s => String(s.candidate_id) === String(item.id));
-        return {
-          id: item.id,
-          name: item.name,
-          image: item.image,
-          winCount: dbRow ? dbRow.win_count : 0,
-          matchWins: dbRow ? dbRow.match_wins : 0,
-          matchCount: dbRow ? dbRow.match_count : 0,
-          totalGames: dbRow ? dbRow.total_games : 0,
-          createdAt: item.createdAt || 0,
-        };
-      });
-      setStats(statsArr);
-    }
-    fetchStats();
-  }, [selectedCup]);
+   const raw = getWinnerStats(selectedCup.id, period) || {};
+const statsArr = selectedCup.data.map((item) => {
+  const s = raw[item.id] || {};
+  return {
+    id: item.id,
+    name: item.name,
+    image: item.image,
+    winCount: s.winCount || 0,
+    matchWins: s.matchWins || 0,
+    matchCount: s.matchCount || 0,
+    totalGames: s.totalGames || 0,
+    createdAt: item.createdAt || 0,
+  };
+});
+    setStats(statsArr);
+  }, [selectedCup, period]);
 
   useEffect(() => {
     const onResize = () => setIsMobile(window.innerWidth < 800);
@@ -81,6 +86,7 @@ function StatsPage({ selectedCup, showOnlyWinner }) {
     if (rank === 3) return { color: "#e26464", fontWeight: 700 };
     return {};
   }
+
   const nameTdStyle = {
     maxWidth: isMobile ? 90 : 120,
     wordBreak: "break-word",
@@ -117,6 +123,7 @@ function StatsPage({ selectedCup, showOnlyWinner }) {
           justifyContent: isMobile ? "center" : undefined,
         }}
       >
+        {/* 통계 표 */}
         <div
           style={{
             flex: 1.2,
@@ -125,6 +132,7 @@ function StatsPage({ selectedCup, showOnlyWinner }) {
             margin: isMobile ? "0 auto 32px auto" : undefined,
           }}
         >
+          {/* 기간/검색 버튼 */}
           <div
             style={{
               marginBottom: 12,
@@ -136,20 +144,18 @@ function StatsPage({ selectedCup, showOnlyWinner }) {
             {PERIODS.map((p) => (
               <button
                 key={p.key}
-                onClick={() => {}}
+                onClick={() => setPeriod(p.key)}
                 style={{
-                  ...mainButtonStyle(true),
-                  background: COLORS.main,
-                  color: "#fff",
+                  ...mainButtonStyle(period === p.key),
+                  background: period === p.key ? COLORS.main : "#eee",
+                  color: period === p.key ? "#fff" : "#333",
                   fontWeight: 700,
                   padding: isMobile ? "7px 12px" : "7px 18px",
                   marginRight: 4,
                   fontSize: isMobile ? 13 : 16,
                   borderRadius: 8,
                   border: "none",
-                  opacity: 0.5 // 기간 버튼은 일단 비활성화
                 }}
-                disabled
               >
                 {t(p.i18n)}
               </button>
@@ -305,6 +311,8 @@ function StatsPage({ selectedCup, showOnlyWinner }) {
             </table>
           </div>
         </div>
+
+        {/* 댓글 */}
         {!showOnlyWinner && (
           <div
             style={{

@@ -1,4 +1,4 @@
-import { supabase } from "../utils/supabaseClient";
+import { supabase } from "./supabaseClient";
 
 function safeString(str) {
   return String(str).replace(/[^\w.-]+/g, '-').toLowerCase();
