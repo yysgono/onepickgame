@@ -1,8 +1,6 @@
 import { supabase } from "./utils/supabaseClient";
 
 // ===== 유튜브 관련 =====
-
-// 유튜브 ID 추출
 export function getYoutubeId(url = "") {
   if (!url) return "";
   const reg = /(?:youtube\.com\/.*[?&]v=|youtube\.com\/(?:v|embed)\/|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
@@ -10,7 +8,6 @@ export function getYoutubeId(url = "") {
   return match ? match[1] : "";
 }
 
-// 유튜브 썸네일 URL 또는 이미지 URL 반환
 export function getThumbnail(url = "") {
   const ytid = getYoutubeId(url);
   if (ytid) {
@@ -19,23 +16,33 @@ export function getThumbnail(url = "") {
   return url || "";
 }
 
-// 이미지 URL 유효성 검사 (확장자 기준, 유튜브 URL 제외)
 export function isValidImageUrl(url = "") {
   return /\.(jpeg|jpg|png|gif|webp)$/i.test(url) && !getYoutubeId(url);
 }
 
-// 유튜브 임베드 URL 반환
 export function getYoutubeEmbed(url = "") {
   const ytid = getYoutubeId(url);
   if (ytid) return `https://www.youtube.com/embed/${ytid}?autoplay=0&mute=1`;
   return "";
 }
 
-// ===== 통계, 기록 관련 (supabase 연동 버전) =====
+// ===== 통계, 기록 관련 =====
 
-// 월드컵 종료시 통계 저장 (DB에 저장, 중복 저장 안 남게 upsert)
-export async function saveWinnerStatsWithUser(cupId, winner, matchHistory) {
-  // matchHistory가 배열이 아닐 수 있으니 방어코드
+/**
+ * 월드컵 종료시 통계 저장 (user별로 upsert, 중복 저장 방지)
+ * @param {string|number} cupId
+ * @param {object} winner
+ * @param {Array} matchHistory
+ * @param {string} [userId]  // userId 인자를 받거나, localStorage에서 꺼냄
+ */
+export async function saveWinnerStatsWithUser(cupId, winner, matchHistory, userId) {
+  // userId 미지정 시 localStorage에서
+  let uid = userId;
+  if (!uid) {
+    uid = localStorage.getItem("onepickgame_user") || "guest";
+  }
+
+  // 방어코드
   const safeHistory = Array.isArray(matchHistory) ? matchHistory : [];
 
   // 후보별 새 기록 계산
@@ -58,17 +65,18 @@ export async function saveWinnerStatsWithUser(cupId, winner, matchHistory) {
     if (id !== winner.id) candidateStats[id].total_games = 1;
   });
 
-  // DB에 새로 저장 (upsert)
+  // DB에 새로 저장 (upsert, 유저구분 추가)
   const statsArr = Object.entries(candidateStats).map(([candidate_id, stats]) => ({
     cup_id: String(cupId),
     candidate_id: String(candidate_id),
     ...stats,
     updated_at: new Date().toISOString(),
+    user_id: uid,
   }));
 
   if (statsArr.length > 0) {
     const { error } = await supabase.from('winner_stats').upsert(statsArr, {
-      onConflict: ['cup_id', 'candidate_id']
+      onConflict: ['cup_id', 'candidate_id', 'user_id'] // ★★★ 유저까지 3개로 묶기
     });
     if (error) {
       alert("DB 저장 실패: " + error.message);
@@ -76,20 +84,43 @@ export async function saveWinnerStatsWithUser(cupId, winner, matchHistory) {
   }
 }
 
-// DB에서 전체 통계 불러오기
+/**
+ * 통계 가져오기 (모든 유저 합계 반환)
+ */
 export async function getWinnerStats(cupId) {
+  // user_id별로 다 가져와 합산
   const { data, error } = await supabase
     .from('winner_stats')
     .select('*')
     .eq('cup_id', String(cupId));
+
   if (error) {
     alert("통계 불러오기 실패: " + error.message);
     return [];
   }
-  return Array.isArray(data) ? data : [];
+
+  // 후보별 합산
+  const merged = {};
+  for (const row of Array.isArray(data) ? data : []) {
+    const cid = String(row.candidate_id);
+    if (!merged[cid]) {
+      merged[cid] = { ...row };
+      merged[cid].user_count = 1;
+    } else {
+      // 누적합
+      merged[cid].win_count += row.win_count;
+      merged[cid].match_wins += row.match_wins;
+      merged[cid].match_count += row.match_count;
+      merged[cid].total_games += row.total_games;
+      merged[cid].user_count += 1;
+    }
+  }
+  return Object.values(merged);
 }
 
-// "최다 우승 후보" 반환
+/**
+ * 최다 우승 후보 반환
+ */
 export async function getMostWinner(cupId, cupData) {
   const statsArr = await getWinnerStats(cupId);
   let maxWin = -1;
