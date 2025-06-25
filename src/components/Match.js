@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { getYoutubeId, saveWinnerStatsWithUserSupabase } from "../utils";
+import { getYoutubeId, saveWinnerStatsWithUser } from "../utils";
 import { useTranslation } from "react-i18next";
 import MediaRenderer from "./MediaRenderer";
 
@@ -70,11 +70,6 @@ function truncateNames(candidates, maxWords = 3) {
  * @param {number} [props.selectedCount] 시작할 강(예: 4, 8, 16 등)
  */
 function Match({ cup, onResult, selectedCount }) {
-  // cup이 없는 경우 안전하게 early return!
-  if (!cup || !cup.data || !Array.isArray(cup.data)) {
-    return <div style={{ padding: 80, color: '#888', textAlign: 'center' }}>월드컵 정보를 찾을 수 없습니다.</div>;
-  }
-
   const { t } = useTranslation();
   const [bracket, setBracket] = useState([]); // [[c1, c2], ...]
   const [idx, setIdx] = useState(0);
@@ -82,6 +77,7 @@ function Match({ cup, onResult, selectedCount }) {
   const [pendingWinners, setPendingWinners] = useState([]); // 1라운드 부전승
   const [matchHistory, setMatchHistory] = useState([]);
   const [autoPlaying, setAutoPlaying] = useState(false);
+  const currentUser = localStorage.getItem("onepickgame_user") || "guest";
 
   // 최초 1라운드 준비 (selectedCount만큼만 랜덤 추출)
   useEffect(() => {
@@ -112,12 +108,7 @@ function Match({ cup, onResult, selectedCount }) {
 
       // 종료: 1명 남으면 끝!
       if (nextRoundCandidates.length === 1) {
-        saveWinnerStatsWithUserSupabase(
-          cup.id,
-          nextRoundCandidates[0],
-          matchHistory,
-          cup.data
-        );
+        saveWinnerStatsWithUser(currentUser, cup.id, nextRoundCandidates[0], matchHistory);
         onResult(nextRoundCandidates[0], matchHistory);
         return;
       }
@@ -128,7 +119,7 @@ function Match({ cup, onResult, selectedCount }) {
       setIdx(0);
       setRoundNum(r => r + 1);
     }
-  }, [idx, bracket, matchHistory, pendingWinners, cup, onResult, roundNum]);
+  }, [idx, bracket, matchHistory, pendingWinners, currentUser, cup.id, onResult, roundNum]);
 
   // 현재 경기
   const currentMatch = bracket[idx] || [];
