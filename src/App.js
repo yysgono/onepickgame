@@ -1,3 +1,5 @@
+// src/App.js
+
 import "./i18n";
 import "./App.css";
 import React, { useState, useEffect } from "react";
@@ -30,7 +32,7 @@ import FindPwBox from "./components/FindPwBox";
 import { getWorldcupGames, deleteWorldcupGame } from "./utils/supabaseWorldcupApi";
 import { supabase } from "./utils/supabaseClient";
 
-// 👇👇👇 추가
+// 👇 비밀번호 재설정 리다이렉트 라우트
 function ResetPwRedirect() {
   const navigate = useNavigate();
   useEffect(() => {
@@ -38,7 +40,6 @@ function ResetPwRedirect() {
   }, [navigate]);
   return null;
 }
-// 👆👆👆 추가
 
 function App() {
   const [worldcupList, setWorldcupList] = useState([]);
@@ -163,6 +164,10 @@ function App() {
               alert("삭제 실패! " + (e.message || e));
             }
           }}
+          // 👇 user/nickname/isAdmin 꼭 넘겨줌!
+          user={user}
+          nickname={nickname}
+          isAdmin={isAdmin}
         />
       );
     }
@@ -297,9 +302,8 @@ function App() {
             <Route path="/login" element={<LoginBox />} />
             <Route path="/find-id" element={<FindIdBox />} />
             <Route path="/find-pw" element={<FindPwBox />} />
-            {/* 👇👇👇 추가 */}
+            {/* 👇 비밀번호 재설정 리다이렉트 */}
             <Route path="/reset-password" element={<ResetPwRedirect />} />
-            {/* 👆👆👆 추가 */}
           </Routes>
         </div>
       </>

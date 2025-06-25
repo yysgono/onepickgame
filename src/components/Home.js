@@ -34,7 +34,15 @@ const useSlideFadeIn = (length) => {
   return refs;
 };
 
-function Home({ worldcupList, onSelect, onMakeWorldcup, onDelete }) {
+function Home({
+  worldcupList,
+  onSelect,
+  onMakeWorldcup,
+  onDelete,
+  user,
+  nickname,
+  isAdmin,
+}) {
   const { t } = useTranslation();
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState("popular");
@@ -54,8 +62,9 @@ function Home({ worldcupList, onSelect, onMakeWorldcup, onDelete }) {
       }
     });
 
-  // currentUser: email, id, 닉네임 등 실제로 owner와 맞게 저장!
-  const currentUser = localStorage.getItem("onepickgame_user") || "";
+  // user 정보(id, email 등) 받아서 owner/creator와 비교
+  const currentUserId = user?.id || "";
+  const currentUserEmail = user?.email || "";
   const cardRefs = useSlideFadeIn(filtered.length);
 
   // 버튼 흔들림
@@ -233,12 +242,15 @@ function Home({ worldcupList, onSelect, onMakeWorldcup, onDelete }) {
             ? topCandidate.image
             : cup.data[0]?.image || "";
 
-          // (여기!) owner/creator/creator_id 전부 currentUser랑 비교
+          // owner, creator, creator_id를 user.id, user.email로 비교
           const isMine =
-            currentUser === "admin" ||
-            cup.owner === currentUser ||
-            cup.creator === currentUser ||
-            cup.creator_id === currentUser;
+            isAdmin ||
+            cup.owner === currentUserId ||
+            cup.creator === currentUserId ||
+            cup.creator_id === currentUserId ||
+            cup.owner === currentUserEmail ||
+            cup.creator === currentUserEmail ||
+            cup.creator_id === currentUserEmail;
 
           return (
             <div
