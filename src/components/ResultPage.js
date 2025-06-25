@@ -3,7 +3,7 @@ import { useParams, useLocation, useNavigate } from "react-router-dom";
 import StatsPage from "./StatsPage";
 import CommentBox from "./CommentBox";
 import { getYoutubeId, getThumbnail, saveWinnerStatsWithUser } from "../utils";
-import MediaRenderer from "./MediaRenderer";  // 추가
+import MediaRenderer from "./MediaRenderer";
 import { useTranslation } from "react-i18next";
 
 // 모바일 체크 커스텀훅 (window undefined 안전)
@@ -20,29 +20,45 @@ function useIsMobile(breakpoint = 800) {
   return isMobile;
 }
 
+// userId를 localStorage에서 안전하게 추출
+function getUserIdFromLocalStorage() {
+  if (typeof window === "undefined") return "guest";
+  const raw = localStorage.getItem("onepickgame_user");
+  if (!raw) return "guest";
+  try {
+    if (raw.startsWith("{")) {
+      const user = JSON.parse(raw);
+      return user.userid || user.id || user.nickname || "guest";
+    }
+    return raw;
+  } catch {
+    return raw || "guest";
+  }
+}
+
 function ResultPage({ worldcupList }) {
   const { id } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
   const { t } = useTranslation();
   const winner = location.state?.winner;
+
   // ** 경고 해결: useMemo로 memoization **
   const matchHistory = useMemo(
     () => location.state?.matchHistory || [],
     [location.state]
   );
   const cup = worldcupList.find(c => String(c.id) === id);
-  const currentUser = typeof window !== "undefined"
-    ? localStorage.getItem("onepickgame_user") || "guest"
-    : "guest";
+  const userId = getUserIdFromLocalStorage();
   const isMobile = useIsMobile(800);
 
   // 저장 effect
   useEffect(() => {
     if (cup && winner && matchHistory.length) {
-      saveWinnerStatsWithUser(currentUser, cup.id, winner, matchHistory);
+      // 반드시 userId를 4번째 인자로 넘김
+      saveWinnerStatsWithUser(cup.id, winner, matchHistory, userId);
     }
-  }, [cup, winner, matchHistory, currentUser]);
+  }, [cup, winner, matchHistory, userId]);
 
   if (!cup || !winner)
     return <div style={{ padding: 80 }}>{t("cannotShowResult")}</div>;

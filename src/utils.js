@@ -36,10 +36,23 @@ export function getYoutubeEmbed(url = "") {
  * @param {string} [userId]  // userId 인자를 받거나, localStorage에서 꺼냄
  */
 export async function saveWinnerStatsWithUser(cupId, winner, matchHistory, userId) {
-  // userId 미지정 시 localStorage에서
+  // userId 미지정 시 localStorage에서 최대한 파싱해서 추출
   let uid = userId;
   if (!uid) {
-    uid = localStorage.getItem("onepickgame_user") || "guest";
+    try {
+      const userRaw = localStorage.getItem("onepickgame_user");
+      if (userRaw) {
+        if (userRaw.startsWith("{")) {
+          // json 형식
+          const user = JSON.parse(userRaw);
+          uid = user.userid || user.id || user.nickname || "guest";
+        } else {
+          uid = userRaw;
+        }
+      }
+    } catch {
+      uid = "guest";
+    }
   }
 
   // 방어코드
@@ -76,7 +89,7 @@ export async function saveWinnerStatsWithUser(cupId, winner, matchHistory, userI
 
   if (statsArr.length > 0) {
     const { error } = await supabase.from('winner_stats').upsert(statsArr, {
-      onConflict: ['cup_id', 'candidate_id', 'user_id'] // ★★★ 유저까지 3개로 묶기
+      onConflict: ['cup_id', 'candidate_id', 'user_id']
     });
     if (error) {
       alert("DB 저장 실패: " + error.message);
