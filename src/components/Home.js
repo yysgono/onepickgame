@@ -14,6 +14,7 @@ import {
 } from "../styles/common";
 import MediaRenderer from "./MediaRenderer";
 
+// 카드 슬라이드 애니메이션 훅
 const useSlideFadeIn = (length) => {
   const refs = useRef([]);
   useEffect(() => {
@@ -47,16 +48,17 @@ function Home({ worldcupList, onSelect, onMakeWorldcup, onDelete }) {
     )
     .sort((a, b) => {
       if (sort === "recent") {
-        // created_at 기준 내림차순
         return (b.created_at || b.id) > (a.created_at || a.id) ? 1 : -1;
       } else {
         return (b.winCount || 0) - (a.winCount || 0);
       }
     });
 
+  // currentUser: email, id, 닉네임 등 실제로 owner와 맞게 저장!
   const currentUser = localStorage.getItem("onepickgame_user") || "";
   const cardRefs = useSlideFadeIn(filtered.length);
 
+  // 버튼 흔들림
   const handleBtnShake = (btnId, callback) => {
     setShakeBtn(btnId);
     setTimeout(() => {
@@ -93,7 +95,6 @@ function Home({ worldcupList, onSelect, onMakeWorldcup, onDelete }) {
           flexWrap: "wrap",
         }}
       >
-        {/* 인기순, 최신순 버튼 */}
         <button
           style={{
             background:
@@ -231,6 +232,13 @@ function Home({ worldcupList, onSelect, onMakeWorldcup, onDelete }) {
           const thumbnail = topCandidate
             ? topCandidate.image
             : cup.data[0]?.image || "";
+
+          // (여기!) owner/creator/creator_id 전부 currentUser랑 비교
+          const isMine =
+            currentUser === "admin" ||
+            cup.owner === currentUser ||
+            cup.creator === currentUser ||
+            cup.creator_id === currentUser;
 
           return (
             <div
@@ -403,37 +411,36 @@ function Home({ worldcupList, onSelect, onMakeWorldcup, onDelete }) {
                   >
                     공유
                   </button>
-                  {cup.owner === currentUser && (
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleBtnShake(
-                          `edit-${cup.id}`,
-                          () => (window.location.href = `/edit-worldcup/${cup.id}`)
-                        );
-                      }}
-                      className={shakeBtn === `edit-${cup.id}` ? "shake-anim" : ""}
-                      style={editButtonStyle(isMobile)}
-                    >
-                      수정
-                    </button>
-                  )}
-                  {(currentUser === "admin" || cup.owner === currentUser) && (
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleBtnShake(`del-${cup.id}`, () => {
-                          if (!window.confirm("정말 삭제하시겠습니까?")) return;
-                          // DB 삭제도 지원하려면 onDelete prop 사용
-                          if (onDelete) onDelete(cup.id);
-                          else window.location.reload();
-                        });
-                      }}
-                      className={shakeBtn === `del-${cup.id}` ? "shake-anim" : ""}
-                      style={delButtonStyle(isMobile)}
-                    >
-                      삭제
-                    </button>
+                  {isMine && (
+                    <>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleBtnShake(
+                            `edit-${cup.id}`,
+                            () => (window.location.href = `/edit-worldcup/${cup.id}`)
+                          );
+                        }}
+                        className={shakeBtn === `edit-${cup.id}` ? "shake-anim" : ""}
+                        style={editButtonStyle(isMobile)}
+                      >
+                        수정
+                      </button>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleBtnShake(`del-${cup.id}`, () => {
+                            if (!window.confirm("정말 삭제하시겠습니까?")) return;
+                            if (onDelete) onDelete(cup.id);
+                            else window.location.reload();
+                          });
+                        }}
+                        className={shakeBtn === `del-${cup.id}` ? "shake-anim" : ""}
+                        style={delButtonStyle(isMobile)}
+                      >
+                        삭제
+                      </button>
+                    </>
                   )}
                 </div>
               </div>
