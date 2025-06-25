@@ -1,3 +1,4 @@
+// src/components/Match.js
 import React, { useState, useEffect } from "react";
 import { getYoutubeId, saveWinnerStatsWithUser } from "../utils";
 import { useTranslation } from "react-i18next";
@@ -53,7 +54,6 @@ function getStageLabel(n) {
   return `${n}강`;
 }
 
-// 후보 이름 3단어로 줄여서 예쁘게
 function truncateNames(candidates, maxWords = 3) {
   return candidates.map(c => {
     if (!c?.name) return "?";
@@ -72,7 +72,6 @@ function Match({ cup, onResult, selectedCount }) {
   const [matchHistory, setMatchHistory] = useState([]);
   const [autoPlaying, setAutoPlaying] = useState(false);
 
-  // 최초 1라운드 준비
   useEffect(() => {
     let players = cup.data;
     if (selectedCount && players.length > selectedCount) {
@@ -86,7 +85,6 @@ function Match({ cup, onResult, selectedCount }) {
     setMatchHistory([]);
   }, [cup, selectedCount]);
 
-  // 라운드 종료 시 → 다음 라운드 준비 또는 우승자
   useEffect(() => {
     if (idx === bracket.length && bracket.length > 0) {
       const matchWinners = matchHistory
@@ -97,7 +95,6 @@ function Match({ cup, onResult, selectedCount }) {
       const nextRoundCandidates =
         roundNum === 1 ? [...pendingWinners, ...matchWinners] : matchWinners;
 
-      // 종료: 1명 남으면 끝!
       if (nextRoundCandidates.length === 1) {
         saveWinnerStatsWithUser(
           cup.id,
@@ -107,7 +104,6 @@ function Match({ cup, onResult, selectedCount }) {
         onResult(nextRoundCandidates[0], matchHistory);
         return;
       }
-      // 다음 라운드: 2의 제곱 bracket, 부전승 없음
       const nextBracket = makeNextRound(nextRoundCandidates);
       setBracket(nextBracket);
       setPendingWinners([]);
@@ -116,11 +112,9 @@ function Match({ cup, onResult, selectedCount }) {
     }
   }, [idx, bracket, matchHistory, pendingWinners, cup.id, onResult, roundNum]);
 
-  // 현재 경기
   const currentMatch = bracket[idx] || [];
   const [c1, c2] = currentMatch;
 
-  // 부전승 매치 자동 처리
   useEffect(() => {
     if (!c1 || !c2) {
       if (c1 || c2) {
@@ -142,7 +136,6 @@ function Match({ cup, onResult, selectedCount }) {
     setIdx(idx + 1);
   }
 
-  // --- UI (기존과 동일하게)
   const vw = typeof window !== "undefined" ? Math.min(window.innerWidth, 900) : 900;
   const isMobile = vw < 700;
   const TITLE_SIZE = isMobile ? 66 : 100;

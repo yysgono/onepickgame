@@ -1,4 +1,6 @@
+// src/utils.js
 import { supabase } from "./utils/supabaseClient";
+import { getOrCreateUserId } from "./utils/userId";
 
 // ===== 유튜브 관련 =====
 export function getYoutubeId(url = "") {
@@ -26,34 +28,17 @@ export function getYoutubeEmbed(url = "") {
   return "";
 }
 
-// ===== 통계, 기록 관련 =====
+// ===== 월드컵 통계 관련 =====
 
 /**
  * 월드컵 종료시 통계 저장 (user별로 upsert, 중복 저장 방지)
  * @param {string|number} cupId
  * @param {object} winner
  * @param {Array} matchHistory
- * @param {string} [userId]  // userId 인자를 받거나, localStorage에서 꺼냄
+ * @param {string} [userId]
  */
 export async function saveWinnerStatsWithUser(cupId, winner, matchHistory, userId) {
-  // userId 미지정 시 localStorage에서 최대한 파싱해서 추출
-  let uid = userId;
-  if (!uid) {
-    try {
-      const userRaw = localStorage.getItem("onepickgame_user");
-      if (userRaw) {
-        if (userRaw.startsWith("{")) {
-          // json 형식
-          const user = JSON.parse(userRaw);
-          uid = user.userid || user.id || user.nickname || "guest";
-        } else {
-          uid = userRaw;
-        }
-      }
-    } catch {
-      uid = "guest";
-    }
-  }
+  let uid = userId || getOrCreateUserId();
 
   // 방어코드
   const safeHistory = Array.isArray(matchHistory) ? matchHistory : [];
@@ -101,7 +86,6 @@ export async function saveWinnerStatsWithUser(cupId, winner, matchHistory, userI
  * 통계 가져오기 (모든 유저 합계 반환)
  */
 export async function getWinnerStats(cupId) {
-  // user_id별로 다 가져와 합산
   const { data, error } = await supabase
     .from('winner_stats')
     .select('*')
@@ -120,7 +104,6 @@ export async function getWinnerStats(cupId) {
       merged[cid] = { ...row };
       merged[cid].user_count = 1;
     } else {
-      // 누적합
       merged[cid].win_count += row.win_count;
       merged[cid].match_wins += row.match_wins;
       merged[cid].match_count += row.match_count;

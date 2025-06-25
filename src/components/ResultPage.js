@@ -1,3 +1,4 @@
+// src/components/ResultPage.js
 import React, { useMemo, useEffect } from "react";
 import { useParams, useLocation, useNavigate } from "react-router-dom";
 import StatsPage from "./StatsPage";
@@ -5,36 +6,7 @@ import CommentBox from "./CommentBox";
 import { getYoutubeId, getThumbnail, saveWinnerStatsWithUser } from "../utils";
 import MediaRenderer from "./MediaRenderer";
 import { useTranslation } from "react-i18next";
-
-// 모바일 체크 커스텀훅 (window undefined 안전)
-function useIsMobile(breakpoint = 800) {
-  const [isMobile, setIsMobile] = React.useState(
-    typeof window !== "undefined" ? window.innerWidth < breakpoint : false
-  );
-  React.useEffect(() => {
-    if (typeof window === "undefined") return;
-    const onResize = () => setIsMobile(window.innerWidth < breakpoint);
-    window.addEventListener("resize", onResize);
-    return () => window.removeEventListener("resize", onResize);
-  }, [breakpoint]);
-  return isMobile;
-}
-
-// userId를 localStorage에서 안전하게 추출
-function getUserIdFromLocalStorage() {
-  if (typeof window === "undefined") return "guest";
-  const raw = localStorage.getItem("onepickgame_user");
-  if (!raw) return "guest";
-  try {
-    if (raw.startsWith("{")) {
-      const user = JSON.parse(raw);
-      return user.userid || user.id || user.nickname || "guest";
-    }
-    return raw;
-  } catch {
-    return raw || "guest";
-  }
-}
+import { getOrCreateUserId } from "../utils/userId";
 
 function ResultPage({ worldcupList }) {
   const { id } = useParams();
@@ -43,22 +15,14 @@ function ResultPage({ worldcupList }) {
   const { t } = useTranslation();
   const winner = location.state?.winner;
 
-  // ** 경고 해결: useMemo로 memoization **
   const matchHistory = useMemo(
     () => location.state?.matchHistory || [],
     [location.state]
   );
   const cup = worldcupList.find(c => String(c.id) === id);
-  const userId = getUserIdFromLocalStorage();
-  const isMobile = useIsMobile(800);
+  const userId = getOrCreateUserId();
+  const isMobile = typeof window !== "undefined" ? window.innerWidth < 800 : false;
 
-  // 저장 effect
-  useEffect(() => {
-    if (cup && winner && matchHistory.length) {
-      // 반드시 userId를 4번째 인자로 넘김
-      saveWinnerStatsWithUser(cup.id, winner, matchHistory, userId);
-    }
-  }, [cup, winner, matchHistory, userId]);
 
   if (!cup || !winner)
     return <div style={{ padding: 80 }}>{t("cannotShowResult")}</div>;
@@ -66,7 +30,6 @@ function ResultPage({ worldcupList }) {
   const youtubeId = getYoutubeId(winner.image);
   const imgSrc = youtubeId ? getThumbnail(winner.image) : winner.image;
 
-  // --- 우승자 이름 스타일 변수화 ---
   const winnerNameStyle = {
     fontSize: isMobile ? 23 : 28,
     fontWeight: 600,
@@ -83,7 +46,6 @@ function ResultPage({ worldcupList }) {
     textAlign: "center",
   };
 
-  // --- 모바일 버전 ---
   if (isMobile) {
     return (
       <div style={{
@@ -109,7 +71,7 @@ function ResultPage({ worldcupList }) {
               width: 180,
               height: 180,
               borderRadius: 14,
-              margin: "0 auto 12px auto",  // 수평 가운데 정렬
+              margin: "0 auto 12px auto",
               background: "#eee",
               border: "3px solid #1976ed",
               overflow: "hidden",
@@ -117,7 +79,6 @@ function ResultPage({ worldcupList }) {
           >
             <MediaRenderer url={winner.image} alt={winner.name} />
           </div>
-          {/* 👇 우승자 이름 줄바꿈 + 2줄 ... */}
           <div style={winnerNameStyle}>
             {winner.name}
           </div>
@@ -189,7 +150,6 @@ function ResultPage({ worldcupList }) {
     );
   }
 
-  // --- 데스크탑 버전 ---
   return (
     <div
       style={{
@@ -224,7 +184,7 @@ function ResultPage({ worldcupList }) {
             width: 180,
             height: 180,
             borderRadius: 14,
-            margin: "0 auto 12px auto", // 수평 가운데 정렬
+            margin: "0 auto 12px auto",
             background: "#eee",
             border: "3px solid #1976ed",
             overflow: "hidden",
@@ -232,7 +192,6 @@ function ResultPage({ worldcupList }) {
         >
           <MediaRenderer url={winner.image} alt={winner.name} />
         </div>
-        {/* 👇 우승자 이름 줄바꿈 + 2줄 ... */}
         <div style={winnerNameStyle}>
           {winner.name}
         </div>

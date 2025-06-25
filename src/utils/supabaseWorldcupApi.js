@@ -1,4 +1,4 @@
-import { supabase } from "./supabaseClient";
+import { supabase } from "../utils/supabaseClient";
 
 // 월드컵 전체
 export async function getWorldcupGames() {
