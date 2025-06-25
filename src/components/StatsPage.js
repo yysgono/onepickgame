@@ -1,311 +1,346 @@
 import React, { useState, useEffect } from "react";
-import CommentBox from "./CommentBox";
-import { getYoutubeId, isValidImageUrl, getWinnerStatsSupabase } from "../utils";
+import { getYoutubeId, saveWinnerStatsWithUserSupabase } from "../utils";
 import { useTranslation } from "react-i18next";
-import COLORS from "../styles/theme";
-import { mainButtonStyle } from "../styles/common";
+import MediaRenderer from "./MediaRenderer";
 
-function getThumb(image) {
-  const youtubeId = getYoutubeId(image);
-  const ext = image?.split('.').pop().toLowerCase();
-  const isVideo = ext === "mp4" || ext === "webm" || ext === "ogg";
-  const isGif = ext === "gif";
-  if (youtubeId) return `https://img.youtube.com/vi/${youtubeId}/mqdefault.jpg`;
-  if (isVideo || isGif) return image;
-  if (typeof image === "string" && image.startsWith("data:image/")) return image;
-  if (isValidImageUrl(image)) return image;
-  return "";
-}
-function percent(n, d) {
-  if (!d) return "-";
-  return Math.round((n / d) * 100) + "%";
-}
-const PERIODS = [
-  { key: "all", i18n: "all" }
-];
+// 1라운드: n명 참가자를 2의 거듭제곱 bracket + 부전승 생성
+function makeFirstRound(players) {
+  const n = players.length;
+  const nextPowerOf2 = 2 ** Math.ceil(Math.log2(n));
+  const numByes = nextPowerOf2 - n;
+  const shuffled = shuffle([...players]);
+  const byes = shuffled.slice(0, numByes);
+  const rest = shuffled.slice(numByes);
 
-function StatsPage({ selectedCup, showOnlyWinner }) {
+  const matches = [];
+  for (let i = 0; i < rest.length; i += 2) {
+    matches.push([rest[i], rest[i + 1] || null]);
+  }
+  return { matches, byes };
+}
+
+function makeNextRound(winners) {
+  const shuffled = shuffle([...winners]);
+  const matches = [];
+  for (let i = 0; i < shuffled.length; i += 2) {
+    matches.push([shuffled[i], shuffled[i + 1] || null]);
+  }
+  return matches;
+}
+
+function shuffle(arr) {
+  let m = arr.length, t, i;
+  while (m) {
+    i = Math.floor(Math.random() * m--);
+    t = arr[m];
+    arr[m] = arr[i];
+    arr[i] = t;
+  }
+  return arr;
+}
+
+function getStageLabel(n) {
+  if (n === 2) return "결승전";
+  if (n === 4) return "4강";
+  if (n === 8) return "8강";
+  if (n === 16) return "16강";
+  if (n === 32) return "32강";
+  if (n === 64) return "64강";
+  if (n === 128) return "128강";
+  return `${n}강`;
+}
+
+function truncateNames(candidates, maxWords = 3) {
+  return candidates.map(c => {
+    if (!c?.name) return "?";
+    const words = c.name.split(/\s+/);
+    if (words.length <= maxWords) return c.name;
+    return words.slice(0, maxWords).join(" ") + "…";
+  });
+}
+
+function Match({ cup, onResult, selectedCount }) {
   const { t } = useTranslation();
-  const [stats, setStats] = useState([]);
-  const [sortKey, setSortKey] = useState("winCount");
-  const [sortDesc, setSortDesc] = useState(true);
-  const [search, setSearch] = useState("");
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 800);
+  const [bracket, setBracket] = useState([]);
+  const [idx, setIdx] = useState(0);
+  const [roundNum, setRoundNum] = useState(1);
+  const [pendingWinners, setPendingWinners] = useState([]);
+  const [matchHistory, setMatchHistory] = useState([]);
+  const [autoPlaying, setAutoPlaying] = useState(false);
+  const currentUser = localStorage.getItem("onepickgame_user") || "guest";
 
   useEffect(() => {
-    const fetchStats = async () => {
-      const raw = await getWinnerStatsSupabase(selectedCup.id) || {};
-      const statsArr = selectedCup.data.map((item) => {
-        const s = raw[item.id] || {};
-        return {
-          id: item.id,
-          name: item.name,
-          image: item.image,
-          winCount: s.winCount || 0,
-          matchWins: s.matchWins || 0,
-          matchCount: s.matchCount || 0,
-          totalGames: s.totalGames || 0,
-          createdAt: item.createdAt || 0,
-        };
-      });
-      setStats(statsArr);
-    };
-    fetchStats();
-  }, [selectedCup]);
+    let players = cup.data;
+    if (selectedCount && players.length > selectedCount) {
+      players = shuffle([...players]).slice(0, selectedCount);
+    }
+    const { matches, byes } = makeFirstRound(players);
+    setBracket(matches);
+    setPendingWinners(byes);
+    setIdx(0);
+    setRoundNum(1);
+    setMatchHistory([]);
+  }, [cup, selectedCount]);
 
   useEffect(() => {
-    const onResize = () => setIsMobile(window.innerWidth < 800);
-    window.addEventListener("resize", onResize);
-    return () => window.removeEventListener("resize", onResize);
-  }, []);
+    if (idx === bracket.length && bracket.length > 0) {
+      const matchWinners = matchHistory
+        .slice(-bracket.length)
+        .map(m => m.winner)
+        .filter(Boolean);
 
-  const filteredStats = [...stats]
-    .filter(row => row.name.toLowerCase().includes(search.toLowerCase()))
-    .sort((a, b) =>
-      sortDesc
-        ? (b[sortKey] ?? 0) - (a[sortKey] ?? 0)
-        : (a[sortKey] ?? 0) - (b[sortKey] ?? 0)
+      const nextRoundCandidates =
+        roundNum === 1 ? [...pendingWinners, ...matchWinners] : matchWinners;
+
+      if (nextRoundCandidates.length === 1) {
+        saveWinnerStatsWithUserSupabase(currentUser, cup.id, nextRoundCandidates[0], matchHistory, cup.data);
+        onResult(nextRoundCandidates[0], matchHistory);
+        return;
+      }
+      const nextBracket = makeNextRound(nextRoundCandidates);
+      setBracket(nextBracket);
+      setPendingWinners([]);
+      setIdx(0);
+      setRoundNum(r => r + 1);
+    }
+  }, [idx, bracket, matchHistory, pendingWinners, currentUser, cup.id, onResult, roundNum, cup.data]);
+
+  const currentMatch = bracket[idx] || [];
+  const [c1, c2] = currentMatch;
+
+  useEffect(() => {
+    if (!c1 || !c2) {
+      if (c1 || c2) {
+        setTimeout(() => {
+          handlePick(c1 ? 0 : 1);
+        }, 300);
+      }
+    }
+    // eslint-disable-next-line
+  }, [idx, bracket]);
+
+  function handlePick(winnerIdx) {
+    if (autoPlaying) return;
+    const winner = winnerIdx === 0 ? c1 : c2;
+    setMatchHistory([
+      ...matchHistory,
+      { round: roundNum, c1, c2, winner },
+    ]);
+    setIdx(idx + 1);
+  }
+
+  const vw = typeof window !== "undefined" ? Math.min(window.innerWidth, 900) : 900;
+  const isMobile = vw < 700;
+  const TITLE_SIZE = isMobile ? 66 : 100;
+  const STAGE_SIZE = isMobile ? 15 : 20;
+  const NAME_FONT_SIZE = isMobile ? 22 : 46;
+  const NAME_HEIGHT = isMobile ? `${1.18 * 22 * 4}px` : `${1.18 * 46 * 4}px`;
+
+  const nextIdx = idx + 1;
+  const nextRoundCandidates =
+    bracket && nextIdx < bracket.length
+      ? [bracket[nextIdx][0], bracket[nextIdx][1]].filter(Boolean)
+      : [];
+
+  function CandidateBox({ c, onClick, disabled }) {
+    const ytid = getYoutubeId(c?.image);
+    const isYoutube = !!ytid;
+    return (
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          margin: isMobile ? "0" : "0 8px 0 8px",
+          flex: 1,
+          minWidth: isMobile ? "0" : 340,
+          maxWidth: isMobile ? "100vw" : 700,
+          width: isMobile ? "50vw" : 340,
+          boxSizing: "border-box",
+          opacity: c ? 1 : 0.25,
+          cursor: !isYoutube && c ? "pointer" : "default",
+        }}
+      >
+        <button
+          onClick={c ? onClick : undefined}
+          disabled={!c || disabled}
+          style={{
+            width: "80%",
+            padding: isMobile ? "9px 0" : "14px 0",
+            background: "linear-gradient(90deg, #1976ed 65%, #45b7fa 100%)",
+            color: "#fff",
+            border: "none",
+            borderRadius: 15,
+            fontWeight: 900,
+            fontSize: isMobile ? 15 : 22,
+            boxShadow: "0 2px 10px #1976ed13",
+            letterSpacing: "-0.5px",
+            marginBottom: isMobile ? 5 : 9,
+            cursor: c ? "pointer" : "default",
+            opacity: c ? 1 : 0.25,
+          }}
+        >
+          {c ? t("select") : t("bye") || "부전승"}
+        </button>
+        <div
+          style={{
+            width: "100%",
+            aspectRatio: "1/1",
+            maxWidth: isMobile ? "100vw" : 700,
+            minWidth: isMobile ? "0" : 340,
+            borderRadius: 22,
+            boxShadow: "0 4px 24px #1976ed22, 0 2px 12px #b4c4e4",
+            overflow: "hidden",
+            background: "#e7f3fd",
+            marginBottom: isMobile ? 3 : 10,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            cursor: !isYoutube && c ? "pointer" : "default",
+            boxSizing: "border-box",
+            opacity: c ? 1 : 0.25,
+          }}
+          onClick={!isYoutube && c ? onClick : undefined}
+        >
+          {c ? (
+            <MediaRenderer url={c.image} alt={c.name} />
+          ) : (
+            <span style={{ fontSize: isMobile ? 19 : 32, color: "#bbb" }}>
+              {t("bye") || "BYE"}
+            </span>
+          )}
+        </div>
+        <div
+          style={{
+            fontWeight: 900,
+            fontSize: NAME_FONT_SIZE,
+            color: "#194893",
+            textAlign: "center",
+            wordBreak: "break-all",
+            lineHeight: 1.18,
+            height: NAME_HEIGHT,
+            overflow: "hidden",
+            display: "-webkit-box",
+            WebkitLineClamp: 4,
+            WebkitBoxOrient: "vertical",
+            textOverflow: "ellipsis",
+            whiteSpace: "normal",
+          }}
+        >
+          {c?.name}
+        </div>
+      </div>
     );
+  }
 
-  function getRowStyle(rank) {
-    if (rank === 1) return { background: "#fff9dd" };
-    if (rank === 2) return { background: "#e9f3ff" };
-    if (rank === 3) return { background: "#ffe9ea" };
-    return {};
+  if (!bracket || bracket.length === 0) {
+    return <div>{t("notEnoughCandidates")}</div>;
   }
-  function getNameTextStyle(rank) {
-    if (rank === 1) return { color: "#e0af19", fontWeight: 700 };
-    if (rank === 2) return { color: "#4286f4", fontWeight: 700 };
-    if (rank === 3) return { color: "#e26464", fontWeight: 700 };
-    return {};
-  }
-  const nameTdStyle = {
-    maxWidth: isMobile ? 90 : 120,
-    wordBreak: "break-word",
-    overflow: "hidden",
-    textOverflow: "ellipsis",
-    display: "-webkit-box",
-    WebkitLineClamp: 2,
-    WebkitBoxOrient: "vertical",
-    whiteSpace: "normal",
-    fontWeight: 700,
-    fontSize: isMobile ? 13 : 15,
-    lineHeight: 1.18,
-    textAlign: "left",
-    verticalAlign: "middle"
-  };
 
   return (
     <div
       style={{
-        width: "100%",
-        maxWidth: 1200,
-        margin: "0 auto",
-        padding: isMobile ? "0 0 24px 0" : "0 0 32px 0",
-        boxSizing: "border-box"
+        textAlign: "center",
+        padding: isMobile ? "10px 0 0 0" : "12px 0 0 0",
+        minHeight: "75vh",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        fontFamily:
+          "'Noto Sans', 'Apple SD Gothic Neo', 'Malgun Gothic', Arial, sans-serif",
       }}
     >
       <div
         style={{
-          display: "flex",
-          flexDirection: isMobile ? "column" : "row",
-          alignItems: "flex-start",
-          gap: 32,
-          width: "100%",
-          justifyContent: isMobile ? "center" : undefined,
+          fontSize: TITLE_SIZE,
+          fontWeight: 900,
+          color: "#1976ed",
+          margin: isMobile ? "5px 0 0 0" : "13px 0 0 0",
+          letterSpacing: "-1.5px",
+          lineHeight: 1.1,
         }}
       >
-        {/* 통계 표 */}
+        {cup.title}
+      </div>
+      <div
+        style={{
+          fontSize: STAGE_SIZE,
+          fontWeight: 800,
+          marginBottom: isMobile ? 5 : 11,
+          color: "#194893",
+        }}
+      >
+        {getStageLabel(bracket.length * 2)}{" "}
+        {bracket.length === 1 ? "" : `${idx + 1} / ${bracket.length}`}
+      </div>
+      {bracket.length > 1 && nextRoundCandidates.length === 2 && (
         <div
           style={{
-            flex: 1.2,
-            minWidth: 340,
-            maxWidth: isMobile ? 700 : 700,
-            margin: isMobile ? "0 auto 32px auto" : undefined,
+            background: "linear-gradient(90deg,#fafdff 80%,#e3f0fb 100%)",
+            borderRadius: 11,
+            boxShadow: "0 1px 6px #1976ed18",
+            padding: isMobile ? "3px 6px" : "9px 20px",
+            margin: isMobile ? "2px 0 6px 0" : "2px 0 11px 0",
+            display: "inline-flex",
+            alignItems: "center",
+            fontSize: STAGE_SIZE,
+            color: "#1976ed",
+            gap: 6,
+            maxWidth: isMobile ? "90vw" : 600,
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            justifyContent: "center",
+            userSelect: "text",
           }}
+          title={`다음 라운드: ${nextRoundCandidates[0]?.name || ""} vs ${nextRoundCandidates[1]?.name || ""}`}
         >
-          {/* 검색 */}
-          <div
-            style={{
-              marginBottom: 12,
-              display: "flex",
-              alignItems: "center",
-              flexWrap: "wrap",
-            }}
-          >
-            <input
-              value={search}
-              onChange={e => setSearch(e.target.value)}
-              placeholder={t("search")}
-              style={{
-                width: 140,
-                padding: "7px 13px",
-                borderRadius: 8,
-                border: "1.5px solid #bbb",
-                fontSize: 14
-              }}
-            />
-          </div>
-          <div style={{ width: "100%", overflowX: "auto" }}>
-            <table
-              style={{
-                width: "100%",
-                borderCollapse: "collapse",
-                background: "#fff",
-                borderRadius: "12px",
-                textAlign: "center",
-                fontSize: isMobile ? 13 : 17,
-                tableLayout: "fixed",
-                wordBreak: "break-word",
-                overflowWrap: "break-word",
-              }}
-            >
-              <thead>
-                <tr style={{ background: "#f7f7f7" }}>
-                  <th style={{ padding: "10px 0" }}>{t("rank")}</th>
-                  <th style={{ padding: "10px 0" }}>{t("image")}</th>
-                  <th style={{ padding: "10px 0" }}>{t("name")}</th>
-                  <th
-                    style={{ padding: "10px 0", cursor: "pointer" }}
-                    onClick={() => {
-                      setSortKey("winCount");
-                      setSortDesc(k => !k);
-                    }}
-                  >
-                    {t("win_count")} {sortKey === "winCount" ? (sortDesc ? "▼" : "▲") : ""}
-                  </th>
-                  <th style={{ padding: "10px 0" }}>{t("win_rate")}</th>
-                  <th
-                    style={{ padding: "10px 0", cursor: "pointer" }}
-                    onClick={() => {
-                      setSortKey("matchWins");
-                      setSortDesc(k => !k);
-                    }}
-                  >
-                    {t("match_wins")} {sortKey === "matchWins" ? (sortDesc ? "▼" : "▲") : ""}
-                  </th>
-                  <th
-                    style={{ padding: "10px 0", cursor: "pointer" }}
-                    onClick={() => {
-                      setSortKey("matchCount");
-                      setSortDesc(k => !k);
-                    }}
-                  >
-                    {t("duel_count")} {sortKey === "matchCount" ? (sortDesc ? "▼" : "▲") : ""}
-                  </th>
-                  <th style={{ padding: "10px 0" }}>{t("match_win_rate")}</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredStats.map((row, i) => (
-                  <tr
-                    key={row.id}
-                    style={{
-                      ...getRowStyle(i + 1),
-                      textAlign: "center",
-                      fontWeight: i + 1 <= 3 ? 700 : 400
-                    }}
-                  >
-                    <td
-                      style={{
-                        padding: "7px 0",
-                        fontSize: isMobile ? 15 : 19,
-                        ...getNameTextStyle(i + 1)
-                      }}
-                    >
-                      {i + 1 <= 3 ? (
-                        <span>
-                          <span style={{ fontSize: 18, verticalAlign: "middle" }}>👑</span>{" "}
-                          {i + 1}
-                        </span>
-                      ) : i + 1}
-                    </td>
-                    <td style={{ padding: "7px 0" }}>
-                      {row.image && (
-                        row.image.endsWith(".mp4") || row.image.endsWith(".webm") || row.image.endsWith(".ogg") ? (
-                          <video
-                            src={row.image}
-                            style={{
-                              width: isMobile ? 30 : 44,
-                              height: isMobile ? 30 : 44,
-                              borderRadius: 9,
-                              objectFit: "cover"
-                            }}
-                            muted
-                            autoPlay
-                            loop
-                            playsInline
-                          />
-                        ) : (
-                          <img
-                            src={getThumb(row.image)}
-                            alt={row.name}
-                            style={{
-                              width: isMobile ? 30 : 44,
-                              height: isMobile ? 30 : 44,
-                              borderRadius: 9,
-                              objectFit: "cover"
-                            }}
-                          />
-                        )
-                      )}
-                    </td>
-                    <td
-                      style={{
-                        padding: "7px 0",
-                        ...getNameTextStyle(i + 1),
-                        ...nameTdStyle,
-                      }}
-                    >
-                      {row.name}
-                    </td>
-                    <td style={{ padding: "7px 0", ...getNameTextStyle(i + 1) }}>
-                      {row.winCount}
-                    </td>
-                    <td style={{ padding: "7px 0", ...getNameTextStyle(i + 1) }}>
-                      {row.totalGames ? percent(row.winCount, row.totalGames) : "-"}
-                    </td>
-                    <td style={{ padding: "7px 0" }}>{row.matchWins}</td>
-                    <td style={{ padding: "7px 0" }}>{row.matchCount}</td>
-                    <td style={{ padding: "7px 0" }}>
-                      {row.matchCount ? percent(row.matchWins, row.matchCount) : "-"}
-                    </td>
-                  </tr>
-                ))}
-                {filteredStats.length === 0 && (
-                  <tr>
-                    <td colSpan={8} style={{ padding: 24, color: "#888" }}>
-                      {t("cannotShowResult")}
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
+          <b>다음 라운드:</b>{" "}
+          {truncateNames(nextRoundCandidates).map((name, i) => (
+            <React.Fragment key={i}>
+              <span
+                style={{
+                  fontWeight: 700,
+                  margin: "0 4px",
+                  maxWidth: 140,
+                  display: "inline-block",
+                  textOverflow: "ellipsis",
+                  overflow: "hidden",
+                  whiteSpace: "nowrap",
+                }}
+              >
+                {name}
+              </span>
+              {i === 0 && (
+                <span
+                  style={{
+                    fontWeight: 400,
+                    fontSize: STAGE_SIZE * 0.9,
+                  }}
+                >
+                  vs
+                </span>
+              )}
+            </React.Fragment>
+          ))}
         </div>
-        {/* 댓글 */}
-        {!showOnlyWinner && (
-          <div
-            style={{
-              flex: 1,
-              minWidth: 300,
-              maxWidth: 480,
-              background: "#fff",
-              borderRadius: 16,
-              boxShadow: "0 2px 12px #0001",
-              padding: 24,
-              marginTop: isMobile ? 0 : 0,
-              width: isMobile ? "100%" : undefined,
-              marginLeft: isMobile ? "auto" : undefined,
-              marginRight: isMobile ? "auto" : undefined,
-            }}
-          >
-            <CommentBox cupId={selectedCup.id} />
-          </div>
-        )}
+      )}
+      <div
+        style={{
+          width: "100%",
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "stretch",
+          justifyContent: "center",
+          gap: isMobile ? 0 : 27,
+          margin: isMobile ? "2vw 0" : "10px 0 6px 0",
+        }}
+      >
+        <CandidateBox c={c1} onClick={() => handlePick(0)} disabled={autoPlaying} />
+        <CandidateBox c={c2} onClick={() => handlePick(1)} disabled={autoPlaying} />
       </div>
     </div>
   );
 }
 
-export default StatsPage;
+export default Match;

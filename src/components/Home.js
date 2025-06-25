@@ -1,8 +1,6 @@
-// src/components/Home.jsx
-
 import React, { useState, useRef, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { getMostWinner } from "../utils";
+import { getMostWinner, getWinnerStatsSupabase } from "../utils";
 import COLORS from "../styles/theme";
 import {
   cardBoxStyle,
@@ -48,6 +46,31 @@ function Home({
   const [sort, setSort] = useState("popular");
   const [shakeBtn, setShakeBtn] = useState(null);
 
+  // 월드컵별 통계 저장
+  const [cupStats, setCupStats] = useState({}); // { [cup.id]: stats }
+
+  // 월드컵별 통계 fetch
+  useEffect(() => {
+    async function fetchStats() {
+      if (!worldcupList) return;
+      const promises = worldcupList.map(async (cup) => {
+        try {
+          const stats = await getWinnerStatsSupabase(cup.id);
+          return [cup.id, stats];
+        } catch {
+          return [cup.id, null];
+        }
+      });
+      const results = await Promise.all(promises);
+      const statObj = {};
+      results.forEach(([id, stats]) => {
+        statObj[id] = stats;
+      });
+      setCupStats(statObj);
+    }
+    fetchStats();
+  }, [worldcupList]);
+
   const filtered = (worldcupList || [])
     .filter(
       (cup) =>
@@ -58,11 +81,15 @@ function Home({
       if (sort === "recent") {
         return (b.created_at || b.id) > (a.created_at || a.id) ? 1 : -1;
       } else {
-        return (b.winCount || 0) - (a.winCount || 0);
+        // 인기순: 통계 win_count 기준으로 내림차순
+        const statsA = cupStats[a.id] || {};
+        const statsB = cupStats[b.id] || {};
+        const winCountA = Object.values(statsA).reduce((acc, s) => acc + (s?.win_count || 0), 0);
+        const winCountB = Object.values(statsB).reduce((acc, s) => acc + (s?.win_count || 0), 0);
+        return winCountB - winCountA;
       }
     });
 
-  // user 정보(id, email 등) 받아서 owner/creator와 비교
   const currentUserId = user?.id || "";
   const currentUserEmail = user?.email || "";
   const cardRefs = useSlideFadeIn(filtered.length);
@@ -237,7 +264,8 @@ function Home({
           </div>
         )}
         {filtered.map((cup, idx) => {
-          const topCandidate = getMostWinner(cup.id, cup.data);
+          const stats = cupStats[cup.id] || {};
+          const topCandidate = getMostWinner(cup.id, cup.data, stats);
           const thumbnail = topCandidate
             ? topCandidate.image
             : cup.data[0]?.image || "";
