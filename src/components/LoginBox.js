@@ -16,7 +16,8 @@ function LoginBox({ onLoginSuccess }) {
     setError("");
     setLoading(true);
 
-    const { error: loginError } = await supabase.auth.signInWithPassword({
+    // 로그인 요청
+    const { data, error: loginError } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
@@ -27,6 +28,16 @@ function LoginBox({ onLoginSuccess }) {
       setError(loginError.message || "로그인 실패");
       return;
     }
+
+    // 로그인 성공 시 유저 이메일 localStorage에 저장!
+    if (data?.user?.email) {
+      localStorage.setItem("onepickgame_user", data.user.email);
+    }
+    // 만약 id 비교용이면 아래도 저장 (선택)
+    // if (data?.user?.id) {
+    //   localStorage.setItem("onepickgame_user_id", data.user.id);
+    // }
+
     setEmail("");
     setPassword("");
     if (onLoginSuccess) onLoginSuccess();
@@ -105,7 +116,6 @@ function LoginBox({ onLoginSuccess }) {
           {error}
         </div>
       )}
-      {/* 여기서 회원가입 링크 부분을 제거 */}
     </div>
   );
 }
