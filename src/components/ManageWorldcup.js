@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { deleteWorldcupGame } from "../utils/supabaseGameApi"; // 반드시 import!
 
 // 파일 다운로드 유틸
 function downloadJson(filename, jsonObj) {
@@ -12,6 +13,7 @@ function downloadJson(filename, jsonObj) {
 }
 
 function ManageWorldcup({ user, isAdmin, worldcupList, setWorldcupList }) {
+  // 운영자면 전체, 아니면 내 월드컵만
   const myWorldcups = isAdmin ? worldcupList : worldcupList.filter(w => w.creator === user);
   const [backupText, setBackupText] = useState("");
 
@@ -58,6 +60,19 @@ function ManageWorldcup({ user, isAdmin, worldcupList, setWorldcupList }) {
   function handleCopyBackup() {
     if (!backupText) return;
     navigator.clipboard.writeText(backupText).then(() => alert("클립보드에 복사됨!"));
+  }
+
+  // ✅ 삭제 핸들러 (DB + 상태 동시 삭제)
+  async function handleDelete(cup) {
+    if (!window.confirm("정말 삭제할까요?")) return;
+    try {
+      await deleteWorldcupGame(cup.id); // DB 삭제
+      const newList = worldcupList.filter(w => w.id !== cup.id);
+      setWorldcupList(newList);
+      // localStorage는 이제 안 써도 됨 (DB 기준이면)
+    } catch (e) {
+      alert("삭제 실패! 다시 시도해 주세요.");
+    }
   }
 
   return (
@@ -131,14 +146,7 @@ function ManageWorldcup({ user, isAdmin, worldcupList, setWorldcupList }) {
                 <b style={{ fontSize: 17 }}>{cup.title}</b>
                 <span style={{ color: "#888", fontSize: 14 }}>{cup.desc}</span>
                 <button
-                  onClick={() => {
-                    if (window.confirm("정말 삭제할까요?")) {
-                      const newList = worldcupList.filter(w => w.id !== cup.id);
-                      setWorldcupList(newList);
-                      localStorage.setItem("onepickgame_worldcupList", JSON.stringify(newList));
-                      // window.location.reload();  // setState로만 처리 (리로드 없음)
-                    }
-                  }}
+                  onClick={() => handleDelete(cup)}
                   style={{
                     background: "#d33", color: "#fff", border: "none",
                     borderRadius: 8, fontWeight: 700, fontSize: 14, padding: "6px 14px"

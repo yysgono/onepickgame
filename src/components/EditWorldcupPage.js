@@ -1,5 +1,3 @@
-// src/components/EditWorldcupPage.jsx
-
 import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { updateWorldcupGame } from "../utils/supabaseWorldcupApi";
@@ -28,17 +26,13 @@ function getYoutubeThumb(url) {
   return null;
 }
 
-function EditWorldcupPage({ worldcupList, fetchWorldcups, cupId }) {
+// isAdmin 추가!
+function EditWorldcupPage({ worldcupList, fetchWorldcups, cupId, isAdmin }) {
   const navigate = useNavigate();
 
-  // supabase 유저 인증
   const [user, setUser] = useState(null);
   const [nickname, setNickname] = useState("");
-
-  // 월드컵 원본
   const [originalCup, setOriginalCup] = useState(null);
-
-  // 폼 state
   const [title, setTitle] = useState("");
   const [desc, setDesc] = useState("");
   const [data, setData] = useState([]);
@@ -72,7 +66,7 @@ function EditWorldcupPage({ worldcupList, fetchWorldcups, cupId }) {
     setData(cup?.data ? [...cup.data] : []);
   }, [worldcupList, cupId]);
 
-  // 3. 권한체크: creator_id(또는 owner)가 현재 로그인 유저와 다르면 NO
+  // 3. 권한체크: 운영자 or (creator_id === 내 id or owner === 내 이메일)
   if (!user) {
     return <div style={{ padding: 80 }}>로그인이 필요합니다.</div>;
   }
@@ -80,9 +74,10 @@ function EditWorldcupPage({ worldcupList, fetchWorldcups, cupId }) {
     return <div style={{ padding: 80 }}>월드컵을 찾을 수 없습니다.</div>;
   }
   if (
+    !isAdmin && // 운영자가 아니고
     !(
       (originalCup.creator_id && originalCup.creator_id === user.id) ||
-      (originalCup.owner && originalCup.owner === user.email) // 구버전 호환
+      (originalCup.owner && originalCup.owner === user.email)
     )
   ) {
     return <div style={{ padding: 80 }}>수정 권한이 없습니다.</div>;
@@ -227,7 +222,6 @@ function EditWorldcupPage({ worldcupList, fetchWorldcups, cupId }) {
           const isVideoFile = ext === "mp4" || ext === "mov" || ext === "webm" || ext === "ogg";
           const youtubeThumb = getYoutubeThumb(item.image);
 
-          // 썸네일
           const thumb = youtubeThumb
             ? youtubeThumb
             : !isVideoFile && item.image?.startsWith("data:image")
