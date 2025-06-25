@@ -1,8 +1,8 @@
-// utils.js
+// src/utils.js
 
-// ===== 유튜브 관련 =====
+import { supabase } from "./utils/supabaseClient";
 
-// 유튜브 ID 추출
+// ========== 유튜브 관련 ==========
 export function getYoutubeId(url = "") {
   if (!url) return "";
   const reg = /(?:youtube\.com\/.*[?&]v=|youtube\.com\/(?:v|embed)\/|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
@@ -10,7 +10,6 @@ export function getYoutubeId(url = "") {
   return match ? match[1] : "";
 }
 
-// 유튜브 썸네일 URL 또는 이미지 URL 반환
 export function getThumbnail(url = "") {
   const ytid = getYoutubeId(url);
   if (ytid) {
@@ -19,131 +18,152 @@ export function getThumbnail(url = "") {
   return url || "";
 }
 
-// 이미지 URL 유효성 검사 (확장자 기준, 유튜브 URL 제외)
 export function isValidImageUrl(url = "") {
   return /\.(jpeg|jpg|png|gif|webp)$/i.test(url) && !getYoutubeId(url);
 }
 
-// 유튜브 임베드 URL 반환
 export function getYoutubeEmbed(url = "") {
   const ytid = getYoutubeId(url);
   if (ytid) return `https://www.youtube.com/embed/${ytid}?autoplay=0&mute=1`;
   return "";
 }
 
-// ===== 통계, 기록 관련 =====
-
-// 월드컵 종료시 통계 저장 (전체/유저별/기간 로그)
-export function saveWinnerStatsWithUser(userId, cupId, winner, matchHistory) {
-  // 1. 유저별 이전 기록 제거
-  const userStatsAll = JSON.parse(localStorage.getItem("userWinnerStats") || "{}");
-  if (!userStatsAll[userId]) userStatsAll[userId] = {};
-  const prevStats = userStatsAll[userId][cupId] || {};
-
-  // 2. 전체 통계 불러오기
-  const statsAll = JSON.parse(localStorage.getItem("winnerStats") || "{}");
-  if (!statsAll[cupId]) statsAll[cupId] = {};
-  const stats = statsAll[cupId];
-
-  // 3. 이전 기록 빼기 (중복X)
-  Object.keys(prevStats).forEach(itemId => {
-    const prev = prevStats[itemId];
-    if (!stats[itemId]) return;
-    stats[itemId].winCount -= prev.winCount || 0;
-    stats[itemId].matchWins -= prev.matchWins || 0;
-    stats[itemId].matchCount -= prev.matchCount || 0;
-    stats[itemId].totalGames -= prev.totalGames || 0;
-    Object.keys(stats[itemId]).forEach(k => {
-      if (stats[itemId][k] < 0) stats[itemId][k] = 0;
-    });
-  });
-
-  // 4. 새 기록 계산
-  const newStats = {};
-  matchHistory.forEach(({ c1, c2, winner }) => {
-    [c1, c2].forEach(c => {
-      if (!c) return;
-      if (!newStats[c.id]) newStats[c.id] = { winCount: 0, matchWins: 0, matchCount: 0, totalGames: 0 };
-      newStats[c.id].matchCount++;
-    });
-    if (winner && !newStats[winner.id]) newStats[winner.id] = { winCount: 0, matchWins: 0, matchCount: 0, totalGames: 0 };
-    if (winner) newStats[winner.id].matchWins++;
-  });
-  if (winner && !newStats[winner.id]) newStats[winner.id] = { winCount: 0, matchWins: 0, matchCount: 0, totalGames: 0 };
-  if (winner) {
-    newStats[winner.id].winCount = 1;
-    newStats[winner.id].totalGames = 1;
-    Object.keys(newStats).forEach(id => {
-      if (id !== winner.id) newStats[id].totalGames = 1;
-    });
-  }
-
-  // 5. 전체통계에 더하기
-  Object.keys(newStats).forEach(itemId => {
-    if (!stats[itemId]) stats[itemId] = { winCount: 0, matchWins: 0, matchCount: 0, totalGames: 0 };
-    stats[itemId].winCount += newStats[itemId].winCount;
-    stats[itemId].matchWins += newStats[itemId].matchWins;
-    stats[itemId].matchCount += newStats[itemId].matchCount;
-    stats[itemId].totalGames += newStats[itemId].totalGames;
-  });
-
-  // 6. 저장
-  userStatsAll[userId][cupId] = newStats;
-  statsAll[cupId] = stats;
-  localStorage.setItem("userWinnerStats", JSON.stringify(userStatsAll));
-  localStorage.setItem("winnerStats", JSON.stringify(statsAll));
-
-  // 7. 기간별 로그 (삭제 후 추가)
-  const now = Date.now();
-  let allLogs = JSON.parse(localStorage.getItem("winnerStatsLog") || "[]");
-  allLogs = allLogs.filter(log => !(log.userId === userId && log.cupId === cupId));
-  allLogs.push({
-    cupId,
-    userId,
-    date: now,
-    itemStats: newStats
-  });
-  localStorage.setItem("winnerStatsLog", JSON.stringify(allLogs));
+// ========== 월드컵 게임 관련 (supabase) ==========
+export async function getWorldcupGames() {
+  const { data, error } = await supabase
+    .from("worldcups")
+    .select("*")
+    .order("created_at", { ascending: false });
+  if (error) throw error;
+  return data;
 }
 
-// 전체 기간 or 기간별 집계용 통계 가져오기
-export function getWinnerStats(cupId, period = "all") {
-  const all = JSON.parse(localStorage.getItem("winnerStatsLog") || "[]");
-  let from = 0;
-  const now = Date.now();
-  if (period === "1w") from = now - 7 * 24 * 60 * 60 * 1000;
-  else if (period === "1m") from = now - 30 * 24 * 60 * 60 * 1000;
-  else if (period === "3m") from = now - 90 * 24 * 60 * 60 * 1000;
-  else if (period === "6m") from = now - 180 * 24 * 60 * 60 * 1000;
-  else if (period === "1y") from = now - 365 * 24 * 60 * 60 * 1000;
+export async function getWorldcupGame(id) {
+  const { data, error } = await supabase
+    .from("worldcups")
+    .select("*")
+    .eq("id", id)
+    .single();
+  if (error) throw error;
+  return data;
+}
 
-  const filtered = all.filter(
-    log => log.cupId === cupId && (period === "all" || log.date >= from)
-  );
+export async function addWorldcupGame(cup) {
+  const { data, error } = await supabase
+    .from("worldcups")
+    .insert([cup])
+    .select("id")
+    .single();
+  if (error) throw error;
+  return data.id;
+}
 
-  // 아이템별 합산 집계
+export async function updateWorldcupGame(id, updates) {
+  const { error } = await supabase
+    .from("worldcups")
+    .update(updates)
+    .eq("id", id);
+  if (error) throw error;
+  return true;
+}
+
+export async function deleteWorldcupGame(id) {
+  const { error } = await supabase
+    .from("worldcups")
+    .delete()
+    .eq("id", id);
+  if (error) throw error;
+  return true;
+}
+
+// ========== 통계 관련 (supabase) ==========
+
+// 기록 저장 (insert or update)
+export async function saveWinnerStatsWithUserSupabase(cupId, matchWinner, matchHistory, candidateData) {
+  // matchWinner: { id, name, image }
+  // matchHistory: [{ c1: {}, c2: {}, winner: {} }, ...]
+  // candidateData: [{ id, name, image }, ...]
+  // === 후보별 집계 ===
   const stats = {};
-  filtered.forEach(log => {
-    Object.entries(log.itemStats).forEach(([id, val]) => {
-      if (!stats[id]) stats[id] = { winCount: 0, matchWins: 0, matchCount: 0, totalGames: 0 };
-      Object.keys(stats[id]).forEach(k => {
-        stats[id][k] += val[k] || 0;
-      });
-    });
+  candidateData.forEach((c) => {
+    stats[c.id] = {
+      win_count: 0,
+      match_wins: 0,
+      match_count: 0,
+      total_games: 0,
+      name: c.name,
+      image: c.image,
+    };
+  });
+
+  matchHistory.forEach(({ c1, c2, winner }) => {
+    if (c1 && stats[c1.id]) stats[c1.id].match_count++;
+    if (c2 && stats[c2.id]) stats[c2.id].match_count++;
+    if (winner && stats[winner.id]) stats[winner.id].match_wins++;
+  });
+
+  if (matchWinner && stats[matchWinner.id]) {
+    stats[matchWinner.id].win_count = 1;
+    stats[matchWinner.id].total_games = 1;
+  }
+  Object.keys(stats).forEach((id) => {
+    if (id !== matchWinner.id) stats[id].total_games = 1;
+  });
+
+  // === upsert 통계 ===
+  const rows = Object.entries(stats).map(([candidate_id, stat]) => ({
+    cup_id: cupId,
+    candidate_id,
+    win_count: stat.win_count,
+    match_wins: stat.match_wins,
+    match_count: stat.match_count,
+    total_games: stat.total_games,
+    name: stat.name,
+    image: stat.image,
+    updated_at: new Date().toISOString(),
+  }));
+
+  const { error } = await supabase
+    .from("winner_stats")
+    .upsert(rows, { onConflict: ["cup_id", "candidate_id"] });
+
+  if (error) throw error;
+  return true;
+}
+
+// 통계 조회
+export async function getWinnerStatsSupabase(cupId) {
+  const { data, error } = await supabase
+    .from("winner_stats")
+    .select("*")
+    .eq("cup_id", cupId);
+
+  if (error) throw error;
+
+  // { [candidate_id]: { ... } } 형태로 변환
+  const stats = {};
+  data.forEach((row) => {
+    stats[row.candidate_id] = {
+      win_count: row.win_count,
+      match_wins: row.match_wins,
+      match_count: row.match_count,
+      total_games: row.total_games,
+      name: row.name,
+      image: row.image,
+    };
   });
   return stats;
 }
 
-// "최다 우승 후보" 반환
-export function getMostWinner(cupId, cupData) {
-  const stats = getWinnerStats(cupId, "all");
+// 최다 우승 후보 반환
+export function getMostWinner(cupId, candidateData, stats) {
   if (!stats) return null;
   let maxWin = -1;
   let mostWinner = null;
-  for (const c of cupData) {
+  for (const c of candidateData) {
     const stat = stats[c.id] || {};
-    if ((stat.winCount || 0) > maxWin) {
-      maxWin = stat.winCount || 0;
+    if ((stat.win_count || 0) > maxWin) {
+      maxWin = stat.win_count || 0;
       mostWinner = c;
     }
   }

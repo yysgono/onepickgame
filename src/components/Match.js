@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { getYoutubeId, saveWinnerStatsWithUser } from "../utils";
+import { getYoutubeId, saveWinnerStatsWithUserSupabase } from "../utils";
 import { useTranslation } from "react-i18next";
 import MediaRenderer from "./MediaRenderer";
 
@@ -108,7 +108,7 @@ function Match({ cup, onResult, selectedCount }) {
 
       // 종료: 1명 남으면 끝!
       if (nextRoundCandidates.length === 1) {
-        saveWinnerStatsWithUser(currentUser, cup.id, nextRoundCandidates[0], matchHistory);
+        saveWinnerStatsWithUserSupabase(currentUser, cup.id, nextRoundCandidates[0], matchHistory);
         onResult(nextRoundCandidates[0], matchHistory);
         return;
       }
