@@ -2,7 +2,17 @@ import React, { useState, useEffect } from "react";
 import { fetchWinnerStatsFromDB } from "../utils";
 import { useTranslation } from "react-i18next";
 import MediaRenderer from "./MediaRenderer";
+import COLORS from "../styles/theme";
 import CommentBox from "./CommentBox";
+
+// 이미지 썸네일 처리
+function getThumb(image) {
+  if (!image) return "";
+  if (image.endsWith(".mp4") || image.endsWith(".webm") || image.endsWith(".ogg")) return image;
+  if (image.startsWith("data:image/")) return image;
+  if (image.startsWith("http")) return image;
+  return "";
+}
 
 function percent(n, d) {
   if (!d) return "-";
@@ -12,16 +22,31 @@ function percent(n, d) {
 function StatsPage({ selectedCup, showCommentBox = true }) {
   const { t } = useTranslation();
   const [stats, setStats] = useState([]);
-  const [sortKey, setSortKey] = useState("win_count");
+  const [sortKey, setSortKey] = useState("winCount");
   const [sortDesc, setSortDesc] = useState(true);
   const [search, setSearch] = useState("");
-  const [isMobile, setIsMobile] = useState(typeof window !== "undefined" ? window.innerWidth < 800 : false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 800);
 
   useEffect(() => {
     async function fetchStats() {
       if (!selectedCup?.id) return setStats([]);
       const dbStats = await fetchWinnerStatsFromDB(selectedCup.id);
-      setStats(dbStats);
+
+      // 후보 목록과 통계 조인(매칭)
+      const statsArr = (selectedCup.data || []).map(item => {
+        const s = dbStats.find(row => String(row.candidate_id) === String(item.id)) || {};
+        return {
+          id: item.id,
+          name: item.name,
+          image: item.image,
+          winCount: s.win_count || 0,
+          matchWins: s.match_wins || 0,
+          matchCount: s.match_count || 0,
+          totalGames: s.total_games || 0,
+          createdAt: item.createdAt || 0,
+        };
+      });
+      setStats(statsArr);
     }
     fetchStats();
   }, [selectedCup]);
@@ -32,7 +57,7 @@ function StatsPage({ selectedCup, showCommentBox = true }) {
     return () => window.removeEventListener("resize", onResize);
   }, []);
 
-  const filteredStats = stats
+  const filteredStats = [...stats]
     .filter(row => row.name?.toLowerCase().includes(search.toLowerCase()))
     .sort((a, b) =>
       sortDesc
@@ -142,30 +167,30 @@ function StatsPage({ selectedCup, showCommentBox = true }) {
                   <th
                     style={{ padding: "10px 0", cursor: "pointer" }}
                     onClick={() => {
-                      setSortKey("win_count");
+                      setSortKey("winCount");
                       setSortDesc(k => !k);
                     }}
                   >
-                    {t("win_count")} {sortKey === "win_count" ? (sortDesc ? "▼" : "▲") : ""}
+                    {t("win_count")} {sortKey === "winCount" ? (sortDesc ? "▼" : "▲") : ""}
                   </th>
                   <th style={{ padding: "10px 0" }}>{t("win_rate")}</th>
                   <th
                     style={{ padding: "10px 0", cursor: "pointer" }}
                     onClick={() => {
-                      setSortKey("match_wins");
+                      setSortKey("matchWins");
                       setSortDesc(k => !k);
                     }}
                   >
-                    {t("match_wins")} {sortKey === "match_wins" ? (sortDesc ? "▼" : "▲") : ""}
+                    {t("match_wins")} {sortKey === "matchWins" ? (sortDesc ? "▼" : "▲") : ""}
                   </th>
                   <th
                     style={{ padding: "10px 0", cursor: "pointer" }}
                     onClick={() => {
-                      setSortKey("match_count");
+                      setSortKey("matchCount");
                       setSortDesc(k => !k);
                     }}
                   >
-                    {t("duel_count")} {sortKey === "match_count" ? (sortDesc ? "▼" : "▲") : ""}
+                    {t("duel_count")} {sortKey === "matchCount" ? (sortDesc ? "▼" : "▲") : ""}
                   </th>
                   <th style={{ padding: "10px 0" }}>{t("match_win_rate")}</th>
                 </tr>
@@ -173,7 +198,7 @@ function StatsPage({ selectedCup, showCommentBox = true }) {
               <tbody>
                 {filteredStats.map((row, i) => (
                   <tr
-                    key={row.candidate_id || row.id}
+                    key={row.id}
                     style={{
                       ...getRowStyle(i + 1),
                       textAlign: "center",
@@ -212,7 +237,7 @@ function StatsPage({ selectedCup, showCommentBox = true }) {
                           />
                         ) : (
                           <img
-                            src={row.image}
+                            src={getThumb(row.image)}
                             alt={row.name}
                             style={{
                               width: isMobile ? 30 : 44,
@@ -228,33 +253,21 @@ function StatsPage({ selectedCup, showCommentBox = true }) {
                       style={{
                         padding: "7px 0",
                         ...getNameTextStyle(i + 1),
-                        maxWidth: isMobile ? 90 : 120,
-                        wordBreak: "break-word",
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                        display: "-webkit-box",
-                        WebkitLineClamp: 2,
-                        WebkitBoxOrient: "vertical",
-                        whiteSpace: "normal",
-                        fontWeight: 700,
-                        fontSize: isMobile ? 13 : 15,
-                        lineHeight: 1.18,
-                        textAlign: "left",
-                        verticalAlign: "middle"
+                        ...nameTdStyle,
                       }}
                     >
                       {row.name}
                     </td>
                     <td style={{ padding: "7px 0", ...getNameTextStyle(i + 1) }}>
-                      {row.win_count}
+                      {row.winCount}
                     </td>
                     <td style={{ padding: "7px 0", ...getNameTextStyle(i + 1) }}>
-                      {row.total_games ? percent(row.win_count, row.total_games) : "-"}
+                      {row.totalGames ? percent(row.winCount, row.totalGames) : "-"}
                     </td>
-                    <td style={{ padding: "7px 0" }}>{row.match_wins}</td>
-                    <td style={{ padding: "7px 0" }}>{row.match_count}</td>
+                    <td style={{ padding: "7px 0" }}>{row.matchWins}</td>
+                    <td style={{ padding: "7px 0" }}>{row.matchCount}</td>
                     <td style={{ padding: "7px 0" }}>
-                      {row.match_count ? percent(row.match_wins, row.match_count) : "-"}
+                      {row.matchCount ? percent(row.matchWins, row.matchCount) : "-"}
                     </td>
                   </tr>
                 ))}

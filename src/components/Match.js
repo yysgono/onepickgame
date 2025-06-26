@@ -1,27 +1,10 @@
+// Match.js
 import React, { useState, useEffect } from "react";
-import {
-  getYoutubeId,
-  getOrCreateGuestId,
-  upsertWinnerLog,
-  calcStatsFromMatchHistory,
-  saveWinnerStatsToDB,
-} from "../utils";
+import { getYoutubeId, saveWinnerStatsToDB, calcStatsFromMatchHistory, getOrCreateGuestId, insertWinnerLog } from "../utils";
 import { useTranslation } from "react-i18next";
 import MediaRenderer from "./MediaRenderer";
 
-function shuffle(arr) {
-  let m = arr.length,
-    t,
-    i;
-  while (m) {
-    i = Math.floor(Math.random() * m--);
-    t = arr[m];
-    arr[m] = arr[i];
-    arr[i] = t;
-  }
-  return arr;
-}
-
+// --- bracket 생성 함수 (동일)
 function makeFirstRound(players) {
   const n = players.length;
   const nextPowerOf2 = 2 ** Math.ceil(Math.log2(n));
@@ -35,7 +18,6 @@ function makeFirstRound(players) {
   }
   return { matches, byes };
 }
-
 function makeNextRound(winners) {
   const shuffled = shuffle([...winners]);
   const matches = [];
@@ -44,7 +26,16 @@ function makeNextRound(winners) {
   }
   return matches;
 }
-
+function shuffle(arr) {
+  let m = arr.length, t, i;
+  while (m) {
+    i = Math.floor(Math.random() * m--);
+    t = arr[m];
+    arr[m] = arr[i];
+    arr[i] = t;
+  }
+  return arr;
+}
 function getStageLabel(n) {
   if (n === 2) return "결승전";
   if (n === 4) return "4강";
@@ -55,9 +46,8 @@ function getStageLabel(n) {
   if (n === 128) return "128강";
   return `${n}강`;
 }
-
 function truncateNames(candidates, maxWords = 3) {
-  return candidates.map((c) => {
+  return candidates.map(c => {
     if (!c?.name) return "?";
     const words = c.name.split(/\s+/);
     if (words.length <= maxWords) return c.name;
@@ -89,46 +79,44 @@ function Match({ cup, onResult, selectedCount }) {
 
   useEffect(() => {
     if (idx === bracket.length && bracket.length > 0) {
-      const matchWinners = matchHistory.slice(-bracket.length).map((m) => m.winner).filter(Boolean);
-      const nextRoundCandidates = roundNum === 1 ? [...pendingWinners, ...matchWinners] : matchWinners;
-
+      const matchWinners = matchHistory
+        .slice(-bracket.length)
+        .map(m => m.winner)
+        .filter(Boolean);
+      const nextRoundCandidates =
+        roundNum === 1 ? [...pendingWinners, ...matchWinners] : matchWinners;
       if (nextRoundCandidates.length === 1) {
+        // ----------- 경기 끝, 통계 저장 1인 1회만 ----------
+        // 1. 유저/비회원 구분
         let userId = null;
         try {
-          const u = localStorage.getItem("onepickgame_userid");
-          if (u && u.length === 36) userId = u;
-        } catch {
-          userId = null;
-        }
+          const u = localStorage.getItem("onepickgame_user");
+          if (u) userId = JSON.parse(u)?.id || null;
+        } catch (e) { userId = null; }
+        const guestId = !userId ? getOrCreateGuestId() : null;
 
-        let guestId = !userId ? getOrCreateGuestId() : null;
-        if (guestId?.startsWith("guest_")) {
-          guestId = guestId.slice(6);
-        }
-
-        console.log("Saving winner log:", { cupId: cup.id, userId, guestId, winnerId: nextRoundCandidates[0].id });
-
-        upsertWinnerLog(cup.id, userId, guestId, nextRoundCandidates[0].id).then(async (isNew) => {
-          if (isNew) {
+        // 2. winner_logs 테이블에 insert (중복방지)
+        insertWinnerLog(cup.id, userId, guestId).then(async (canSave) => {
+          if (canSave) {
+            // 3. 통계 upsert (누적)
             const statsArr = calcStatsFromMatchHistory(cup.data, nextRoundCandidates[0], matchHistory);
             await saveWinnerStatsToDB(cup.id, statsArr);
           }
+          // 4. 결과로 이동(항상 호출)
           onResult(nextRoundCandidates[0], matchHistory);
         });
         return;
       }
-
       const nextBracket = makeNextRound(nextRoundCandidates);
       setBracket(nextBracket);
       setPendingWinners([]);
       setIdx(0);
-      setRoundNum((r) => r + 1);
+      setRoundNum(r => r + 1);
     }
   }, [idx, bracket, matchHistory, pendingWinners, cup, onResult, roundNum]);
 
   const currentMatch = bracket[idx] || [];
   const [c1, c2] = currentMatch;
-
   useEffect(() => {
     if (!c1 || !c2) {
       if (c1 || c2) {
@@ -137,15 +125,18 @@ function Match({ cup, onResult, selectedCount }) {
         }, 300);
       }
     }
+    // eslint-disable-next-line
   }, [idx, bracket]);
-
   function handlePick(winnerIdx) {
     if (autoPlaying) return;
     const winner = winnerIdx === 0 ? c1 : c2;
-    setMatchHistory([...matchHistory, { round: roundNum, c1, c2, winner }]);
+    setMatchHistory([
+      ...matchHistory,
+      { round: roundNum, c1, c2, winner },
+    ]);
     setIdx(idx + 1);
   }
-
+  // --- UI part (동일)
   const vw = typeof window !== "undefined" ? Math.min(window.innerWidth, 900) : 900;
   const isMobile = vw < 700;
   const TITLE_SIZE = isMobile ? 66 : 100;
@@ -157,7 +148,6 @@ function Match({ cup, onResult, selectedCount }) {
     bracket && nextIdx < bracket.length
       ? [bracket[nextIdx][0], bracket[nextIdx][1]].filter(Boolean)
       : [];
-
   function CandidateBox({ c, onClick, disabled }) {
     const ytid = getYoutubeId(c?.image);
     const isYoutube = !!ytid;
@@ -167,7 +157,7 @@ function Match({ cup, onResult, selectedCount }) {
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          margin: isMobile ? "0" : "0 8px",
+          margin: isMobile ? "0" : "0 8px 0 8px",
           flex: 1,
           minWidth: isMobile ? "0" : 340,
           maxWidth: isMobile ? "100vw" : 700,
@@ -212,13 +202,19 @@ function Match({ cup, onResult, selectedCount }) {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            cursor: !isYoutube && c ? onClick : undefined,
+            cursor: !isYoutube && c ? "pointer" : "default",
             boxSizing: "border-box",
             opacity: c ? 1 : 0.25,
           }}
           onClick={!isYoutube && c ? onClick : undefined}
         >
-          {c ? <MediaRenderer url={c.image} alt={c.name} /> : <span style={{ fontSize: isMobile ? 19 : 32, color: "#bbb" }}>{t("bye") || "BYE"}</span>}
+          {c ? (
+            <MediaRenderer url={c.image} alt={c.name} />
+          ) : (
+            <span style={{ fontSize: isMobile ? 19 : 32, color: "#bbb" }}>
+              {t("bye") || "BYE"}
+            </span>
+          )}
         </div>
         <div
           style={{
@@ -242,11 +238,9 @@ function Match({ cup, onResult, selectedCount }) {
       </div>
     );
   }
-
   if (!bracket || bracket.length === 0) {
     return <div>{t("notEnoughCandidates")}</div>;
   }
-
   return (
     <div
       style={{
@@ -256,7 +250,8 @@ function Match({ cup, onResult, selectedCount }) {
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        fontFamily: "'Noto Sans', 'Apple SD Gothic Neo', 'Malgun Gothic', Arial, sans-serif",
+        fontFamily:
+          "'Noto Sans', 'Apple SD Gothic Neo', 'Malgun Gothic', Arial, sans-serif",
       }}
     >
       <div
@@ -279,7 +274,8 @@ function Match({ cup, onResult, selectedCount }) {
           color: "#194893",
         }}
       >
-        {getStageLabel(bracket.length * 2)} {bracket.length === 1 ? "" : `${idx + 1} / ${bracket.length}`}
+        {getStageLabel(bracket.length * 2)}{" "}
+        {bracket.length === 1 ? "" : `${idx + 1} / ${bracket.length}`}
       </div>
       {bracket.length > 1 && nextRoundCandidates.length === 2 && (
         <div

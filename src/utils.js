@@ -1,13 +1,13 @@
+// utils.js
 import { supabase } from "./utils/supabaseClient";
 
-// ===== 유튜브 관련 함수 =====
+// ===== 유튜브 관련 =====
 export function getYoutubeId(url = "") {
   if (!url) return "";
   const reg = /(?:youtube\.com\/.*[?&]v=|youtube\.com\/(?:v|embed)\/|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
   const match = url.match(reg);
   return match ? match[1] : "";
 }
-
 export function getThumbnail(url = "") {
   const ytid = getYoutubeId(url);
   if (ytid) {
@@ -15,20 +15,63 @@ export function getThumbnail(url = "") {
   }
   return url || "";
 }
-
 export function isValidImageUrl(url = "") {
   return /\.(jpeg|jpg|png|gif|webp)$/i.test(url) && !getYoutubeId(url);
 }
-
 export function getYoutubeEmbed(url = "") {
   const ytid = getYoutubeId(url);
   if (ytid) return `https://www.youtube.com/embed/${ytid}?autoplay=0&mute=1`;
   return "";
 }
 
-// ===== DB 통계 함수 =====
+// ======= 비회원 guest_id 발급 (localStorage) =======
+export function getOrCreateGuestId() {
+  let guestId = localStorage.getItem("guest_id");
+  if (!guestId) {
+    guestId = (crypto.randomUUID?.() || Math.random().toString(36).slice(2) + Date.now());
+    localStorage.setItem("guest_id", guestId);
+  }
+  return guestId;
+}
+
+/**
+ * winner_logs 테이블에 insert로 1회 중복 체크
+ * @param {string} cupId
+ * @param {string|null} userId
+ * @param {string|null} guestId
+ * @returns {Promise<boolean>} true=첫참여, false=중복
+ */
+export async function insertWinnerLog(cupId, userId, guestId) {
+  const { error } = await supabase
+    .from("winner_logs")
+    .insert([{
+      cup_id: cupId,
+      user_id: userId || null,
+      guest_id: guestId || null,
+    }]);
+  if (error) {
+    // 유니크 위반(이미 참여)
+    if (error.code === "23505" || error.message?.includes("duplicate") || error.message?.includes("unique")) {
+      return false;
+    }
+    console.error("winner_logs insert error:", error);
+    return false;
+  }
+  return true;
+}
+
+// ========== DB 통계 (winner_stats) ==========
+
+/**
+ * winner_stats 테이블에서 통계 가져오기
+ * @param {string|number} cupId
+ * @returns {Promise<Array>} [{candidate_id, win_count, match_wins, match_count, total_games}]
+ */
 export async function fetchWinnerStatsFromDB(cupId) {
-  const { data, error } = await supabase.from("winner_stats").select("*").eq("cup_id", cupId);
+  const { data, error } = await supabase
+    .from("winner_stats")
+    .select("*")
+    .eq("cup_id", cupId);
 
   if (error) {
     console.error("DB fetch error", error);
@@ -37,19 +80,36 @@ export async function fetchWinnerStatsFromDB(cupId) {
   return data || [];
 }
 
+/**
+ * winner_stats 테이블에 통계 저장/업데이트 (DB upsert, 누적합)
+ * @param {string|number} cupId
+ * @param {Array} statsArr [{candidate_id, name, image, win_count, match_wins, match_count, total_games}]
+ */
 export async function saveWinnerStatsToDB(cupId, statsArr) {
-  const rows = statsArr.map((row) => ({
-    ...row,
-    cup_id: cupId,
-    win_count: row.win_count || 0,
-    match_wins: row.match_wins || 0,
-    match_count: row.match_count || 0,
-    total_games: row.total_games || 0,
-    name: row.name || "",
-    image: row.image || "",
-  }));
+  // 누적 방식
+  const prevStats = await fetchWinnerStatsFromDB(cupId);
+  const prevStatsMap = {};
+  prevStats.forEach(row => {
+    prevStatsMap[row.candidate_id] = row;
+  });
 
-  const { error } = await supabase.from("winner_stats").upsert(rows, { onConflict: ["cup_id", "candidate_id"] });
+  const rows = statsArr.map(row => {
+    const prev = prevStatsMap[row.candidate_id] || {};
+    return {
+      ...row,
+      cup_id: cupId,
+      win_count: (prev.win_count || 0) + (row.win_count || 0),
+      match_wins: (prev.match_wins || 0) + (row.match_wins || 0),
+      match_count: (prev.match_count || 0) + (row.match_count || 0),
+      total_games: (prev.total_games || 0) + (row.total_games || 0),
+      name: row.name || prev.name || "",
+      image: row.image || prev.image || "",
+    };
+  });
+
+  const { error } = await supabase
+    .from("winner_stats")
+    .upsert(rows, { onConflict: ['cup_id', 'candidate_id'] });
 
   if (error) {
     console.error("DB save error", error);
@@ -58,9 +118,10 @@ export async function saveWinnerStatsToDB(cupId, statsArr) {
   return true;
 }
 
+// === 후보별 통계 배열 만들기 (매치 히스토리→집계) ===
 export function calcStatsFromMatchHistory(candidates, winner, matchHistory) {
   const statsMap = {};
-  candidates.forEach((c) => {
+  candidates.forEach(c => {
     statsMap[c.id] = {
       candidate_id: c.id,
       name: c.name,
@@ -79,13 +140,14 @@ export function calcStatsFromMatchHistory(candidates, winner, matchHistory) {
   if (winner) {
     statsMap[winner.id].win_count = 1;
     statsMap[winner.id].total_games = 1;
-    Object.keys(statsMap).forEach((id) => {
+    Object.keys(statsMap).forEach(id => {
       if (id !== winner.id) statsMap[id].total_games = 1;
     });
   }
   return Object.values(statsMap);
 }
 
+// =========== 최다 우승자 반환 (DB 버전) ===========
 export function getMostWinnerFromDB(statsArr, cupData) {
   if (!statsArr || !Array.isArray(statsArr)) return null;
   let maxWin = -1;
@@ -93,51 +155,8 @@ export function getMostWinnerFromDB(statsArr, cupData) {
   for (const stat of statsArr) {
     if ((stat.win_count || 0) > maxWin) {
       maxWin = stat.win_count || 0;
-      mostWinner = cupData.find((c) => String(c.id) === String(stat.candidate_id));
+      mostWinner = cupData.find(c => String(c.id) === String(stat.candidate_id));
     }
   }
   return mostWinner;
-}
-
-// ===== 비회원 guest_id =====
-export function getOrCreateGuestId() {
-  let guestId = localStorage.getItem("guest_id");
-  if (!guestId) {
-    guestId = (crypto.randomUUID?.() || Math.random().toString(36).slice(2) + Date.now());
-    localStorage.setItem("guest_id", guestId);
-  }
-  return guestId;
-}
-
-// ===== winner_logs upsert =====
-export async function upsertWinnerLog(cupId, userId, guestId, winnerId) {
-  const match = { cup_id: cupId };
-  if (userId) match.user_id = userId;
-  else match.guest_id = guestId;
-
-  try {
-    // 기존 기록 찾기
-    const { data, error } = await supabase.from("winner_logs").select("id").match(match).maybeSingle();
-
-    if (error) {
-      console.error("winner_logs select error", error);
-      return false;
-    }
-
-    if (data?.id) {
-      // 기존 기록 있으면 업데이트
-      await supabase
-        .from("winner_logs")
-        .update({ winner_id: winnerId, created_at: new Date().toISOString() })
-        .eq("id", data.id);
-      return false;
-    } else {
-      // 기존 기록 없으면 새로 인서트
-      await supabase.from("winner_logs").insert([{ ...match, winner_id: winnerId }]);
-      return true;
-    }
-  } catch (error) {
-    console.error("winner_logs upsert error", error);
-    return false;
-  }
 }
