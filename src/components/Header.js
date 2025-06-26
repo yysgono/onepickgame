@@ -146,11 +146,12 @@ export default function Header({
     alert("비밀번호 변경 메일을 전송했습니다.");
   }
 
-  // 회원탈퇴
+  // 회원탈퇴 - 수정된 부분: API 라우트 호출
   async function handleDeleteAccount() {
     setEditError("");
     setDeleteLoading(true);
-    // 1. 비밀번호 재입력 -> 현재 세션 이메일로 인증
+
+    // 1. 비밀번호 재인증
     const { error: loginError } = await supabase.auth.signInWithPassword({
       email: user.email,
       password: deletePw,
@@ -160,30 +161,40 @@ export default function Header({
       setEditError("비밀번호가 올바르지 않습니다.");
       return;
     }
-    // 2. 인증 성공하면 삭제 함수 호출
-    const { error } = await supabase.functions.invoke("delete-user", { body: { id: user.id } });
-    setDeleteLoading(false);
-    if (error) {
-      setEditError(error.message || "회원탈퇴 실패");
-      return;
-    }
-    alert("탈퇴 완료");
-    supabase.auth.signOut().then(() => {
+
+    try {
+      // 2. 서버 API 호출로 삭제 요청
+      const res = await fetch("/api/deleteUser", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: user.id }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || "회원탈퇴 실패");
+      }
+
+      alert("탈퇴 완료");
+      await supabase.auth.signOut();
       setUser(null);
       setNickname("");
-      // 모든 모달 상태를 한 번에 닫기!
       setShowProfile(false);
       setShowLogin(false);
       setShowDeleteConfirm(false);
       setDeletePw("");
-    });
+    } catch (err) {
+      setEditError(err.message);
+    } finally {
+      setDeleteLoading(false);
+    }
   }
 
   function handleLogoClick() {
     navigate("/");
   }
 
-  // 모달/오버레이 클릭시 닫기 (내정보수정)
+  // 모달/오버레이 클릭시 닫기 (내정보수정 및 탈퇴 모달)
   function handleOverlayClick(e) {
     if (e.target === e.currentTarget) {
       setShowProfile(false);
@@ -432,7 +443,7 @@ export default function Header({
   );
 }
 
-// 스타일(동일, 생략)
+// 스타일(생략)
 const adminButtonStyle = (bgColor, color = "#fff") => ({
   background: bgColor,
   color: color,
