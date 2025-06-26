@@ -44,8 +44,7 @@ function SignupBox() {
       return;
     }
 
-    // 3. 회원가입 성공 시 프로필은 DB 트리거에서 자동 생성하므로 별도 처리 없음
-
+    // 3. 회원가입 성공 시 프로필은 DB 트리거에서 자동 생성 (랜덤 닉네임도 자동 생성)
     setSuccess("회원가입 성공! 이메일 인증 후 로그인 하세요.");
     setEmail("");
     setPassword("");
@@ -69,7 +68,6 @@ function SignupBox() {
     >
       <h2 style={{ textAlign: "center", marginBottom: 18 }}>회원가입</h2>
       <form onSubmit={handleSignup}>
-        {/* 닉네임 입력란 제거 */}
         <div style={{ marginBottom: 12 }}>
           <input
             type="email"

@@ -171,6 +171,7 @@ export default function Header({
     supabase.auth.signOut().then(() => {
       setUser(null);
       setNickname("");
+      // 모든 모달 상태를 한 번에 닫기!
       setShowProfile(false);
       setShowLogin(false);
       setShowDeleteConfirm(false);
@@ -180,6 +181,22 @@ export default function Header({
 
   function handleLogoClick() {
     navigate("/");
+  }
+
+  // 모달/오버레이 클릭시 닫기 (내정보수정)
+  function handleOverlayClick(e) {
+    if (e.target === e.currentTarget) {
+      setShowProfile(false);
+      setShowDeleteConfirm(false);
+      setDeletePw("");
+    }
+  }
+
+  // 탈퇴 모달 취소 버튼에서도 모두 닫기
+  function handleWithdrawCancel() {
+    setShowDeleteConfirm(false);
+    setDeletePw("");
+    setShowProfile(false);
   }
 
   return (
@@ -263,7 +280,7 @@ export default function Header({
               </button>
               <button style={logoutButtonStyle} onClick={handleLogout}>{t("logout")}</button>
               {showProfile && (
-                <div style={modalOverlayStyle}>
+                <div style={modalOverlayStyle} onClick={handleOverlayClick}>
                   <div style={modalContentStyle} onClick={e => e.stopPropagation()}>
                     <div style={{ fontWeight: 800, fontSize: 21, marginBottom: 18, textAlign: "center" }}>
                       내 정보 수정
@@ -312,8 +329,8 @@ export default function Header({
                   </div>
                   {/* 탈퇴 비밀번호 입력 모달 */}
                   {showDeleteConfirm && (
-                    <div style={deleteModalOverlayStyle}>
-                      <div style={deleteModalContentStyle}>
+                    <div style={deleteModalOverlayStyle} onClick={handleOverlayClick}>
+                      <div style={deleteModalContentStyle} onClick={e => e.stopPropagation()}>
                         <div style={{ fontWeight: 700, fontSize: 17, marginBottom: 12 }}>
                           정말로 회원탈퇴 하시겠습니까?<br />비밀번호를 한 번 더 입력하세요.
                         </div>
@@ -334,10 +351,7 @@ export default function Header({
                         </button>
                         <button
                           style={modalCloseButtonStyle}
-                          onClick={() => {
-                            setShowDeleteConfirm(false);
-                            setDeletePw("");
-                          }}
+                          onClick={handleWithdrawCancel}
                           disabled={deleteLoading}
                         >
                           취소
@@ -353,7 +367,7 @@ export default function Header({
             <>
               <button style={primaryButtonStyle} onClick={() => setShowLogin(true)}>{t("login")}</button>
               {showLogin && (
-                <div style={modalOverlayStyle}>
+                <div style={modalOverlayStyle} onClick={() => setShowLogin(false)}>
                   <div style={modalContentStyle} onClick={e => e.stopPropagation()}>
                     <div style={{ fontWeight: 800, fontSize: 22, marginBottom: 12, textAlign: "center" }}>{t("로그인")}</div>
                     <form style={{ width: "100%" }} onSubmit={handleLogin}>
@@ -418,7 +432,7 @@ export default function Header({
   );
 }
 
-// 스타일 (동일, 생략 가능: 기존 것 그대로 붙여넣으면 됨)
+// 스타일(동일, 생략)
 const adminButtonStyle = (bgColor, color = "#fff") => ({
   background: bgColor,
   color: color,
