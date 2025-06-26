@@ -1,7 +1,5 @@
-// Match.js
-
 import React, { useState, useEffect } from "react";
-import { getYoutubeId, saveWinnerStatsToDB, calcStatsFromMatchHistory } from "../utils";
+import { getYoutubeId, saveWinnerStatsToDB, calcStatsFromMatchHistory, getOrCreateGuestId, insertWinnerLog } from "../utils";
 import { useTranslation } from "react-i18next";
 import MediaRenderer from "./MediaRenderer";
 
@@ -87,11 +85,25 @@ function Match({ cup, onResult, selectedCount }) {
       const nextRoundCandidates =
         roundNum === 1 ? [...pendingWinners, ...matchWinners] : matchWinners;
       if (nextRoundCandidates.length === 1) {
-        // ----------- 경기 끝, 통계 저장 -----------
-        // 꼭 name/image 포함되도록 candidates 그대로 전달!
-        const statsArr = calcStatsFromMatchHistory(cup.data, nextRoundCandidates[0], matchHistory);
-        saveWinnerStatsToDB(cup.id, statsArr);
-        onResult(nextRoundCandidates[0], matchHistory);
+        // ----------- 경기 끝, 통계 저장 1인 1회만 ----------
+        // 1. 유저/비회원 구분
+        let userId = null;
+        try {
+          const u = localStorage.getItem("onepickgame_user");
+          if (u) userId = JSON.parse(u)?.id || null;
+        } catch (e) { userId = null; }
+        const guestId = !userId ? getOrCreateGuestId() : null;
+
+        // 2. winner_logs 테이블에 insert (중복방지)
+        insertWinnerLog(cup.id, userId, guestId).then(async (canSave) => {
+          if (canSave) {
+            // 3. 통계 upsert (누적)
+            const statsArr = calcStatsFromMatchHistory(cup.data, nextRoundCandidates[0], matchHistory);
+            await saveWinnerStatsToDB(cup.id, statsArr);
+          }
+          // 4. 결과로 이동(항상 호출)
+          onResult(nextRoundCandidates[0], matchHistory);
+        });
         return;
       }
       const nextBracket = makeNextRound(nextRoundCandidates);

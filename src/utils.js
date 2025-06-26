@@ -1,9 +1,6 @@
-// utils.js
-
 import { supabase } from "./utils/supabaseClient";
 
 // ===== 유튜브 관련 =====
-
 export function getYoutubeId(url = "") {
   if (!url) return "";
   const reg = /(?:youtube\.com\/.*[?&]v=|youtube\.com\/(?:v|embed)\/|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
@@ -47,13 +44,12 @@ export async function fetchWinnerStatsFromDB(cupId) {
 }
 
 /**
- * winner_stats 테이블에 통계 저장/업데이트 (DB upsert)
- * **누적 방식으로 작동 (덮어쓰기X, +로 더해줌)**
+ * winner_stats 테이블에 통계 저장/업데이트 (DB upsert, 누적합)
  * @param {string|number} cupId
  * @param {Array} statsArr [{candidate_id, name, image, win_count, match_wins, match_count, total_games}]
  */
 export async function saveWinnerStatsToDB(cupId, statsArr) {
-  // 우선 현재 DB값을 불러와야 누적합 연산 가능
+  // 누적 방식
   const prevStats = await fetchWinnerStatsFromDB(cupId);
   const prevStatsMap = {};
   prevStats.forEach(row => {
@@ -62,7 +58,6 @@ export async function saveWinnerStatsToDB(cupId, statsArr) {
 
   const rows = statsArr.map(row => {
     const prev = prevStatsMap[row.candidate_id] || {};
-    // 숫자항목은 이전값 + 이번값(없으면 0)
     return {
       ...row,
       cup_id: cupId,
@@ -70,7 +65,6 @@ export async function saveWinnerStatsToDB(cupId, statsArr) {
       match_wins: (prev.match_wins || 0) + (row.match_wins || 0),
       match_count: (prev.match_count || 0) + (row.match_count || 0),
       total_games: (prev.total_games || 0) + (row.total_games || 0),
-      // name/image 등은 항상 최신 값 기록(또는 이전 값 유지)
       name: row.name || prev.name || "",
       image: row.image || prev.image || "",
     };
@@ -117,9 +111,6 @@ export function calcStatsFromMatchHistory(candidates, winner, matchHistory) {
 }
 
 // =========== 최다 우승자 반환 (DB 버전) ===========
-/**
- * 후보 데이터(cup.data)와 DB 통계(statsArr)로 최다 우승 후보 1명 반환
- */
 export function getMostWinnerFromDB(statsArr, cupData) {
   if (!statsArr || !Array.isArray(statsArr)) return null;
   let maxWin = -1;
@@ -131,4 +122,39 @@ export function getMostWinnerFromDB(statsArr, cupData) {
     }
   }
   return mostWinner;
+}
+
+// ======= 비회원 guest_id 발급 (localStorage) =======
+export function getOrCreateGuestId() {
+  let guestId = localStorage.getItem("guest_id");
+  if (!guestId) {
+    guestId = (crypto.randomUUID?.() || Math.random().toString(36).slice(2) + Date.now());
+    localStorage.setItem("guest_id", guestId);
+  }
+  return guestId;
+}
+
+/**
+ * winner_logs 테이블에 insert로 1회 중복 체크
+ * @param {string} cupId
+ * @param {string|null} userId
+ * @param {string|null} guestId
+ * @returns {Promise<boolean>} true=첫참여, false=중복
+ */
+export async function insertWinnerLog(cupId, userId, guestId) {
+  const { error } = await supabase
+    .from("winner_logs")
+    .insert([{
+      cup_id: cupId,
+      user_id: userId || null,
+      guest_id: guestId || null,
+    }]);
+  if (error) {
+    if (error.code === "23505" || error.message.includes("duplicate") || error.message.includes("unique")) {
+      return false; // 이미 참여한 적 있음
+    }
+    console.error("winner_logs insert error:", error);
+    return false;
+  }
+  return true;
 }
