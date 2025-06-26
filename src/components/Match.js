@@ -102,6 +102,9 @@ function Match({ cup, onResult, selectedCount }) {
         }
         const guestId = !userId ? getOrCreateGuestId() : null;
 
+        console.log("Saving winner log:", { cupId: cup.id, userId, guestId, winnerId: nextRoundCandidates[0].id });
+
+
         upsertWinnerLog(cup.id, userId, guestId, nextRoundCandidates[0].id).then(async (isNew) => {
           if (isNew) {
             const statsArr = calcStatsFromMatchHistory(cup.data, nextRoundCandidates[0], matchHistory);
