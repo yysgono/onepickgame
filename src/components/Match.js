@@ -95,8 +95,8 @@ function Match({ cup, onResult, selectedCount }) {
       if (nextRoundCandidates.length === 1) {
         let userId = null;
         try {
-          const u = localStorage.getItem("onepickgame_user");
-          if (u) userId = JSON.parse(u)?.id || null;
+          const u = localStorage.getItem("onepickgame_userid");
+          if (u) userId = u;
         } catch {
           userId = null;
         }
