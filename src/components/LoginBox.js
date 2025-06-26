@@ -1,5 +1,3 @@
-// src/components/LoginBox.jsx
-
 import React, { useState } from "react";
 import { supabase } from "../utils/supabaseClient";
 import { useNavigate } from "react-router-dom";
@@ -16,7 +14,6 @@ function LoginBox({ onLoginSuccess }) {
     setError("");
     setLoading(true);
 
-    // 로그인 요청
     const { data, error: loginError } = await supabase.auth.signInWithPassword({
       email,
       password,
@@ -29,14 +26,9 @@ function LoginBox({ onLoginSuccess }) {
       return;
     }
 
-    // 로그인 성공 시 유저 이메일 localStorage에 저장!
     if (data?.user?.email) {
       localStorage.setItem("onepickgame_user", data.user.email);
     }
-    // 만약 id 비교용이면 아래도 저장 (선택)
-    // if (data?.user?.id) {
-    //   localStorage.setItem("onepickgame_user_id", data.user.id);
-    // }
 
     setEmail("");
     setPassword("");
@@ -53,7 +45,7 @@ function LoginBox({ onLoginSuccess }) {
         background: "#fff",
         borderRadius: 14,
         boxShadow: "0 2px 12px #0001",
-        padding: 20
+        padding: 20,
       }}
     >
       <h2 style={{ textAlign: "center", marginBottom: 18 }}>로그인</h2>
@@ -62,14 +54,14 @@ function LoginBox({ onLoginSuccess }) {
           <input
             type="email"
             value={email}
-            onChange={e => setEmail(e.target.value)}
+            onChange={(e) => setEmail(e.target.value)}
             placeholder="이메일"
             style={{
               width: "100%",
               padding: 10,
               borderRadius: 7,
               border: "1.2px solid #bbb",
-              fontSize: 16
+              fontSize: 16,
             }}
             autoComplete="username"
             required
@@ -79,14 +71,14 @@ function LoginBox({ onLoginSuccess }) {
           <input
             type="password"
             value={password}
-            onChange={e => setPassword(e.target.value)}
+            onChange={(e) => setPassword(e.target.value)}
             placeholder="비밀번호"
             style={{
               width: "100%",
               padding: 10,
               borderRadius: 7,
               border: "1.2px solid #bbb",
-              fontSize: 16
+              fontSize: 16,
             }}
             autoComplete="current-password"
             required
@@ -105,7 +97,7 @@ function LoginBox({ onLoginSuccess }) {
             fontSize: 19,
             padding: "11px 0",
             marginBottom: 8,
-            cursor: loading ? "not-allowed" : "pointer"
+            cursor: loading ? "not-allowed" : "pointer",
           }}
         >
           {loading ? "로그인 중..." : "로그인"}
