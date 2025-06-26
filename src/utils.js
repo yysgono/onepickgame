@@ -1,6 +1,9 @@
+// utils.js
+
 import { supabase } from "./utils/supabaseClient";
 
 // ===== 유튜브 관련 =====
+
 export function getYoutubeId(url = "") {
   if (!url) return "";
   const reg = /(?:youtube\.com\/.*[?&]v=|youtube\.com\/(?:v|embed)\/|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
@@ -23,12 +26,12 @@ export function getYoutubeEmbed(url = "") {
   return "";
 }
 
-// ====== DB 통계 ======
+// ========== DB 통계 (winner_stats) ==========
 
 /**
  * winner_stats 테이블에서 통계 가져오기
  * @param {string|number} cupId
- * @returns {Promise<Array>} 각 후보별 [{candidate_id, win_count, match_wins, match_count, total_games}]
+ * @returns {Promise<Array>} [{candidate_id, win_count, match_wins, match_count, total_games}]
  */
 export async function fetchWinnerStatsFromDB(cupId) {
   const { data, error } = await supabase
@@ -44,9 +47,8 @@ export async function fetchWinnerStatsFromDB(cupId) {
 }
 
 /**
- * winner_stats 테이블에 통계 저장/업데이트 (승리/경기 결과)
- * (DB에 upsert로 candidate별로 추가/업데이트)
- * @param {string} cupId
+ * winner_stats 테이블에 통계 저장/업데이트 (DB upsert)
+ * @param {string|number} cupId
  * @param {Array} statsArr [{candidate_id, win_count, match_wins, match_count, total_games}]
  */
 export async function saveWinnerStatsToDB(cupId, statsArr) {
@@ -55,7 +57,7 @@ export async function saveWinnerStatsToDB(cupId, statsArr) {
     ...row,
     cup_id: cupId,
   }));
-  const { data, error } = await supabase
+  const { error } = await supabase
     .from("winner_stats")
     .upsert(rows, { onConflict: ['cup_id', 'candidate_id'] });
   if (error) {
@@ -65,23 +67,40 @@ export async function saveWinnerStatsToDB(cupId, statsArr) {
   return true;
 }
 
+// === 후보별 통계 배열 만들기 (매치 히스토리→집계) ===
+export function calcStatsFromMatchHistory(candidates, winner, matchHistory) {
+  const statsMap = {};
+  candidates.forEach(c => {
+    statsMap[c.id] = { candidate_id: c.id, win_count: 0, match_wins: 0, match_count: 0, total_games: 0 };
+  });
+  matchHistory.forEach(({ c1, c2, winner }) => {
+    if (c1) statsMap[c1.id].match_count++;
+    if (c2) statsMap[c2.id].match_count++;
+    if (winner) statsMap[winner.id].match_wins++;
+  });
+  if (winner) {
+    statsMap[winner.id].win_count = 1;
+    statsMap[winner.id].total_games = 1;
+    Object.keys(statsMap).forEach(id => {
+      if (id !== winner.id) statsMap[id].total_games = 1;
+    });
+  }
+  return Object.values(statsMap);
+}
+
+// =========== 최다 우승자 반환 (DB 버전) ===========
 /**
- * DB에서 해당 월드컵의 '최다 우승 후보' 객체를 반환 (비동기)
- * @param {string|number} cupId
- * @param {Array} cupData 후보목록
- * @returns 후보 객체 or null
+ * 후보 데이터(cup.data)와 DB 통계(statsArr)로 최다 우승 후보 1명 반환
  */
-export async function getMostWinner(cupId, cupData) {
-  const statsArr = await fetchWinnerStatsFromDB(cupId);
+export function getMostWinnerFromDB(statsArr, cupData) {
+  if (!statsArr || !Array.isArray(statsArr)) return null;
   let maxWin = -1;
   let mostWinner = null;
-  (cupData || []).forEach((c) => {
-    const stat = statsArr.find((s) => String(s.candidate_id) === String(c.id));
-    const win = stat ? stat.win_count || 0 : 0;
-    if (win > maxWin) {
-      maxWin = win;
-      mostWinner = c;
+  for (const stat of statsArr) {
+    if ((stat.win_count || 0) > maxWin) {
+      maxWin = stat.win_count || 0;
+      mostWinner = cupData.find(c => String(c.id) === String(stat.candidate_id));
     }
-  });
+  }
   return mostWinner;
 }

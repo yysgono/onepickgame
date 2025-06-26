@@ -3,7 +3,6 @@ import { fetchWinnerStatsFromDB } from "../utils";
 import { useTranslation } from "react-i18next";
 import MediaRenderer from "./MediaRenderer";
 import COLORS from "../styles/theme";
-import { mainButtonStyle, grayButtonStyle } from "../styles/common";
 import CommentBox from "./CommentBox";
 
 // 이미지 썸네일 처리
@@ -20,7 +19,7 @@ function percent(n, d) {
   return Math.round((n / d) * 100) + "%";
 }
 
-function StatsPage({ selectedCup, showOnlyWinner }) {
+function StatsPage({ selectedCup, showCommentBox = true }) {
   const { t } = useTranslation();
   const [stats, setStats] = useState([]);
   const [sortKey, setSortKey] = useState("winCount");
@@ -28,7 +27,6 @@ function StatsPage({ selectedCup, showOnlyWinner }) {
   const [search, setSearch] = useState("");
   const [isMobile, setIsMobile] = useState(window.innerWidth < 800);
 
-  // DB에서 winner_stats 불러오기
   useEffect(() => {
     async function fetchStats() {
       if (!selectedCup?.id) return setStats([]);
@@ -284,8 +282,8 @@ function StatsPage({ selectedCup, showOnlyWinner }) {
             </table>
           </div>
         </div>
-        {/* 댓글 */}
-        {!showOnlyWinner && (
+        {/* 댓글: showCommentBox가 true일 때만 노출 */}
+        {showCommentBox && (
           <div
             style={{
               flex: 1,
@@ -295,10 +293,10 @@ function StatsPage({ selectedCup, showOnlyWinner }) {
               borderRadius: 16,
               boxShadow: "0 2px 12px #0001",
               padding: 24,
-              marginTop: isMobile ? 0 : 0,
-              width: isMobile ? "100%" : undefined,
-              marginLeft: isMobile ? "auto" : undefined,
-              marginRight: isMobile ? "auto" : undefined,
+              marginTop: 0,
+              width: "100%",
+              marginLeft: "auto",
+              marginRight: "auto",
             }}
           >
             <CommentBox cupId={selectedCup.id} />

@@ -1,14 +1,10 @@
-// ResultPage.jsx
-
-import React, { useMemo } from "react";
+import React from "react";
 import { useParams, useLocation, useNavigate } from "react-router-dom";
 import StatsPage from "./StatsPage";
 import CommentBox from "./CommentBox";
-import { getYoutubeId, getThumbnail } from "../utils";
 import MediaRenderer from "./MediaRenderer";
 import { useTranslation } from "react-i18next";
 
-// 모바일 체크
 function useIsMobile(breakpoint = 800) {
   const [isMobile, setIsMobile] = React.useState(
     typeof window !== "undefined" ? window.innerWidth < breakpoint : false
@@ -27,36 +23,15 @@ function ResultPage({ worldcupList }) {
   const location = useLocation();
   const navigate = useNavigate();
   const { t } = useTranslation();
+
   const winner = location.state?.winner;
-  const matchHistory = useMemo(
-    () => location.state?.matchHistory || [],
-    [location.state]
-  );
   const cup = worldcupList.find(c => String(c.id) === id);
   const isMobile = useIsMobile(800);
 
   if (!cup || !winner)
     return <div style={{ padding: 80 }}>{t("cannotShowResult")}</div>;
 
-  const youtubeId = getYoutubeId(winner.image);
-  const imgSrc = youtubeId ? getThumbnail(winner.image) : winner.image;
-
-  const winnerNameStyle = {
-    fontSize: isMobile ? 23 : 28,
-    fontWeight: 600,
-    margin: "0 auto 12px auto",
-    maxWidth: isMobile ? 170 : 260,
-    wordBreak: "break-all",
-    overflow: "hidden",
-    textOverflow: "ellipsis",
-    display: "-webkit-box",
-    WebkitLineClamp: 2,
-    WebkitBoxOrient: "vertical",
-    whiteSpace: "normal",
-    lineHeight: 1.18,
-    textAlign: "center",
-  };
-
+  // 모바일: 결과, 통계, 댓글 1컬럼
   if (isMobile) {
     return (
       <div style={{
@@ -64,33 +39,44 @@ function ResultPage({ worldcupList }) {
         minHeight: "100vh",
         background: "#f5f7fa",
       }}>
-        <div
-          style={{
-            maxWidth: "96vw",
-            margin: "0 auto",
-            background: "#fff",
-            borderRadius: 18,
-            padding: "24px 3vw 12px 3vw",
-            textAlign: "center"
-          }}
-        >
+        <div style={{
+          maxWidth: "96vw",
+          margin: "0 auto",
+          background: "#fff",
+          borderRadius: 18,
+          padding: "24px 3vw 12px 3vw",
+          textAlign: "center"
+        }}>
+          {/* 결과 */}
           <h2 style={{ fontWeight: 700, fontSize: 32, marginBottom: 10 }}>
             🥇 {t("winner")}
           </h2>
-          <div
-            style={{
-              width: 180,
-              height: 180,
-              borderRadius: 14,
-              margin: "0 auto 12px auto",
-              background: "#eee",
-              border: "3px solid #1976ed",
-              overflow: "hidden",
-            }}
-          >
+          <div style={{
+            width: 180,
+            height: 180,
+            borderRadius: 14,
+            margin: "0 auto 12px auto",
+            background: "#eee",
+            border: "3px solid #1976ed",
+            overflow: "hidden",
+          }}>
             <MediaRenderer url={winner.image} alt={winner.name} />
           </div>
-          <div style={winnerNameStyle}>
+          <div style={{
+            fontSize: 23,
+            fontWeight: 600,
+            margin: "0 auto 12px auto",
+            maxWidth: 170,
+            wordBreak: "break-all",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            display: "-webkit-box",
+            WebkitLineClamp: 2,
+            WebkitBoxOrient: "vertical",
+            whiteSpace: "normal",
+            lineHeight: 1.18,
+            textAlign: "center",
+          }}>
             {winner.name}
           </div>
           <div className="page-title" style={{
@@ -139,14 +125,16 @@ function ResultPage({ worldcupList }) {
               홈
             </button>
           </div>
+          {/* 통계 */}
           <div style={{
             margin: "30px auto 0",
             maxWidth: 700,
             width: "100%",
             overflowX: "auto"
           }}>
-            <StatsPage selectedCup={cup} showOnlyWinner={true} />
+            <StatsPage selectedCup={cup} showCommentBox={false} />
           </div>
+          {/* 댓글 */}
           <div style={{
             maxWidth: "96vw",
             margin: "16px auto 0 auto",
@@ -161,6 +149,7 @@ function ResultPage({ worldcupList }) {
     );
   }
 
+  // 데스크탑: 왼쪽 결과/통계, 오른쪽 댓글 (두 컬럼)
   return (
     <div
       style={{
@@ -177,6 +166,7 @@ function ResultPage({ worldcupList }) {
         background: "#f5f7fa"
       }}
     >
+      {/* 왼쪽: 결과 + 통계 */}
       <div style={{
         flex: 1,
         maxWidth: 650,
@@ -190,20 +180,32 @@ function ResultPage({ worldcupList }) {
         <h2 style={{ fontWeight: 700, fontSize: 32, marginBottom: 10 }}>
           🥇 {t("winner")}
         </h2>
-        <div
-          style={{
-            width: 180,
-            height: 180,
-            borderRadius: 14,
-            margin: "0 auto 12px auto",
-            background: "#eee",
-            border: "3px solid #1976ed",
-            overflow: "hidden",
-          }}
-        >
+        <div style={{
+          width: 180,
+          height: 180,
+          borderRadius: 14,
+          margin: "0 auto 12px auto",
+          background: "#eee",
+          border: "3px solid #1976ed",
+          overflow: "hidden",
+        }}>
           <MediaRenderer url={winner.image} alt={winner.name} />
         </div>
-        <div style={winnerNameStyle}>
+        <div style={{
+          fontSize: 28,
+          fontWeight: 600,
+          margin: "0 auto 12px auto",
+          maxWidth: 260,
+          wordBreak: "break-all",
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+          display: "-webkit-box",
+          WebkitLineClamp: 2,
+          WebkitBoxOrient: "vertical",
+          whiteSpace: "normal",
+          lineHeight: 1.18,
+          textAlign: "center",
+        }}>
           {winner.name}
         </div>
         <div className="page-title" style={{
@@ -252,15 +254,17 @@ function ResultPage({ worldcupList }) {
             홈
           </button>
         </div>
+        {/* 통계 */}
         <div style={{
           margin: "30px auto 0",
           maxWidth: 840,
           width: "100%",
           overflowX: "auto"
         }}>
-          <StatsPage selectedCup={cup} showOnlyWinner={true} />
+          <StatsPage selectedCup={cup} showCommentBox={false} />
         </div>
       </div>
+      {/* 오른쪽: 댓글창 */}
       <div style={{
         flex: 1,
         maxWidth: 650,

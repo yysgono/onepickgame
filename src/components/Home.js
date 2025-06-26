@@ -1,6 +1,8 @@
+// Home.jsx
+
 import React, { useState, useRef, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { getMostWinner } from "../utils";
+import { fetchWinnerStatsFromDB, getMostWinnerFromDB } from "../utils";
 import COLORS from "../styles/theme";
 import {
   cardBoxStyle,
@@ -46,8 +48,8 @@ function Home({
   const [sort, setSort] = useState("popular");
   const [shakeBtn, setShakeBtn] = useState(null);
 
-  // 최다우승 후보 비동기 map
-  const [mostWinners, setMostWinners] = useState({});
+  // cupId별 통계 저장
+  const [winnerStats, setWinnerStats] = useState({});
   const filtered = (worldcupList || [])
     .filter(
       (cup) =>
@@ -62,17 +64,17 @@ function Home({
       }
     });
 
-  // 최다우승 후보들 비동기로 한번에 불러오기
+  // cupId별로 통계 fetch → 최다우승자 계산
   useEffect(() => {
     let mounted = true;
-    async function fetchAllMostWinners() {
-      const result = {};
+    async function fetchAllStats() {
+      const obj = {};
       for (const cup of filtered) {
-        result[cup.id] = await getMostWinner(cup.id, cup.data);
+        obj[cup.id] = await fetchWinnerStatsFromDB(cup.id);
       }
-      if (mounted) setMostWinners(result);
+      if (mounted) setWinnerStats(obj);
     }
-    fetchAllMostWinners();
+    fetchAllStats();
     return () => { mounted = false; };
     // eslint-disable-next-line
   }, [filtered.map(c => c.id).join(",")]);
@@ -252,7 +254,8 @@ function Home({
           </div>
         )}
         {filtered.map((cup, idx) => {
-          const topCandidate = mostWinners[cup.id];
+          const statsArr = winnerStats[cup.id] || [];
+          const topCandidate = getMostWinnerFromDB(statsArr, cup.data);
           const thumbnail = topCandidate
             ? topCandidate.image
             : cup.data[0]?.image || "";
