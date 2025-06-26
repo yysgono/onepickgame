@@ -1,4 +1,3 @@
-// utils.js
 import { supabase } from "./utils/supabaseClient";
 
 // ===== 유튜브 관련 =====
@@ -58,6 +57,21 @@ export async function insertWinnerLog(cupId, userId, guestId) {
     return false;
   }
   return true;
+}
+
+// === 기존 기록 삭제 함수(덮어쓰기) ===
+export async function deleteOldWinnerLogAndStats(cupId, userId, guestId) {
+  // winner_logs에서 이전 기록 삭제
+  await supabase
+    .from("winner_logs")
+    .delete()
+    .match({
+      cup_id: cupId,
+      ...(userId ? { user_id: userId } : { guest_id: guestId }),
+    });
+
+  // winner_stats에서 해당 유저/비회원이 올린 통계도 (필요시) 지우고 싶으면 아래 활성화
+  // await supabase.from("winner_stats").delete().match({ cup_id: cupId, ...(userId ? { user_id: userId } : { guest_id: guestId }) });
 }
 
 // ========== DB 통계 (winner_stats) ==========

@@ -1,6 +1,12 @@
-// Match.js
 import React, { useState, useEffect } from "react";
-import { getYoutubeId, saveWinnerStatsToDB, calcStatsFromMatchHistory, getOrCreateGuestId, insertWinnerLog } from "../utils";
+import {
+  getYoutubeId,
+  saveWinnerStatsToDB,
+  calcStatsFromMatchHistory,
+  getOrCreateGuestId,
+  insertWinnerLog,
+  deleteOldWinnerLogAndStats, // 추가
+} from "../utils";
 import { useTranslation } from "react-i18next";
 import MediaRenderer from "./MediaRenderer";
 
@@ -69,6 +75,15 @@ function Match({ cup, onResult, selectedCount }) {
     if (selectedCount && players.length > selectedCount) {
       players = shuffle([...players]).slice(0, selectedCount);
     }
+    // 👇 게임 시작 전 기존 기록 삭제 (덮어쓰기)
+    let userId = null;
+    try {
+      const u = localStorage.getItem("onepickgame_user");
+      if (u) userId = JSON.parse(u)?.id || null;
+    } catch (e) { userId = null; }
+    const guestId = !userId ? getOrCreateGuestId() : null;
+    deleteOldWinnerLogAndStats(cup.id, userId, guestId);
+
     const { matches, byes } = makeFirstRound(players);
     setBracket(matches);
     setPendingWinners(byes);
