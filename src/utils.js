@@ -1,3 +1,4 @@
+// utils.js
 import { supabase } from "./utils/supabaseClient";
 
 // ===== 유튜브 관련 =====
@@ -21,6 +22,42 @@ export function getYoutubeEmbed(url = "") {
   const ytid = getYoutubeId(url);
   if (ytid) return `https://www.youtube.com/embed/${ytid}?autoplay=0&mute=1`;
   return "";
+}
+
+// ======= 비회원 guest_id 발급 (localStorage) =======
+export function getOrCreateGuestId() {
+  let guestId = localStorage.getItem("guest_id");
+  if (!guestId) {
+    guestId = (crypto.randomUUID?.() || Math.random().toString(36).slice(2) + Date.now());
+    localStorage.setItem("guest_id", guestId);
+  }
+  return guestId;
+}
+
+/**
+ * winner_logs 테이블에 insert로 1회 중복 체크
+ * @param {string} cupId
+ * @param {string|null} userId
+ * @param {string|null} guestId
+ * @returns {Promise<boolean>} true=첫참여, false=중복
+ */
+export async function insertWinnerLog(cupId, userId, guestId) {
+  const { error } = await supabase
+    .from("winner_logs")
+    .insert([{
+      cup_id: cupId,
+      user_id: userId || null,
+      guest_id: guestId || null,
+    }]);
+  if (error) {
+    // 유니크 위반(이미 참여)
+    if (error.code === "23505" || error.message?.includes("duplicate") || error.message?.includes("unique")) {
+      return false;
+    }
+    console.error("winner_logs insert error:", error);
+    return false;
+  }
+  return true;
 }
 
 // ========== DB 통계 (winner_stats) ==========
@@ -122,39 +159,4 @@ export function getMostWinnerFromDB(statsArr, cupData) {
     }
   }
   return mostWinner;
-}
-
-// ======= 비회원 guest_id 발급 (localStorage) =======
-export function getOrCreateGuestId() {
-  let guestId = localStorage.getItem("guest_id");
-  if (!guestId) {
-    guestId = (crypto.randomUUID?.() || Math.random().toString(36).slice(2) + Date.now());
-    localStorage.setItem("guest_id", guestId);
-  }
-  return guestId;
-}
-
-/**
- * winner_logs 테이블에 insert로 1회 중복 체크
- * @param {string} cupId
- * @param {string|null} userId
- * @param {string|null} guestId
- * @returns {Promise<boolean>} true=첫참여, false=중복
- */
-export async function insertWinnerLog(cupId, userId, guestId) {
-  const { error } = await supabase
-    .from("winner_logs")
-    .insert([{
-      cup_id: cupId,
-      user_id: userId || null,
-      guest_id: guestId || null,
-    }]);
-  if (error) {
-    if (error.code === "23505" || error.message.includes("duplicate") || error.message.includes("unique")) {
-      return false; // 이미 참여한 적 있음
-    }
-    console.error("winner_logs insert error:", error);
-    return false;
-  }
-  return true;
 }
