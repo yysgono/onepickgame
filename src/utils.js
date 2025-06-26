@@ -48,20 +48,38 @@ export async function fetchWinnerStatsFromDB(cupId) {
 
 /**
  * winner_stats 테이블에 통계 저장/업데이트 (DB upsert)
+ * **누적 방식으로 작동 (덮어쓰기X, +로 더해줌)**
  * @param {string|number} cupId
  * @param {Array} statsArr [{candidate_id, name, image, win_count, match_wins, match_count, total_games}]
  */
 export async function saveWinnerStatsToDB(cupId, statsArr) {
-  // statsArr의 각 항목에 cup_id 추가
-  const rows = statsArr.map(row => ({
-    ...row,
-    cup_id: cupId,
-  }));
-  // 디버깅용 (필요시 확인)
-  // console.log("saveWinnerStatsToDB rows", rows);
+  // 우선 현재 DB값을 불러와야 누적합 연산 가능
+  const prevStats = await fetchWinnerStatsFromDB(cupId);
+  const prevStatsMap = {};
+  prevStats.forEach(row => {
+    prevStatsMap[row.candidate_id] = row;
+  });
+
+  const rows = statsArr.map(row => {
+    const prev = prevStatsMap[row.candidate_id] || {};
+    // 숫자항목은 이전값 + 이번값(없으면 0)
+    return {
+      ...row,
+      cup_id: cupId,
+      win_count: (prev.win_count || 0) + (row.win_count || 0),
+      match_wins: (prev.match_wins || 0) + (row.match_wins || 0),
+      match_count: (prev.match_count || 0) + (row.match_count || 0),
+      total_games: (prev.total_games || 0) + (row.total_games || 0),
+      // name/image 등은 항상 최신 값 기록(또는 이전 값 유지)
+      name: row.name || prev.name || "",
+      image: row.image || prev.image || "",
+    };
+  });
+
   const { error } = await supabase
     .from("winner_stats")
     .upsert(rows, { onConflict: ['cup_id', 'candidate_id'] });
+
   if (error) {
     console.error("DB save error", error);
     return false;
@@ -73,7 +91,6 @@ export async function saveWinnerStatsToDB(cupId, statsArr) {
 export function calcStatsFromMatchHistory(candidates, winner, matchHistory) {
   const statsMap = {};
   candidates.forEach(c => {
-    // name, image를 반드시 포함!
     statsMap[c.id] = {
       candidate_id: c.id,
       name: c.name,
