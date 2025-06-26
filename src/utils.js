@@ -126,7 +126,10 @@ export async function upsertWinnerLog(cupId, userId, guestId, winnerId) {
 
     if (data?.id) {
       // 기존 기록 있으면 업데이트
-      await supabase.from("winner_logs").update({ winner_id: winnerId, created_at: new Date().toISOString() }).eq("id", data.id);
+      await supabase
+        .from("winner_logs")
+        .update({ winner_id: winnerId, created_at: new Date().toISOString() })
+        .eq("id", data.id);
       return false;
     } else {
       // 기존 기록 없으면 새로 인서트

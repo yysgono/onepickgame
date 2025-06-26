@@ -96,14 +96,17 @@ function Match({ cup, onResult, selectedCount }) {
         let userId = null;
         try {
           const u = localStorage.getItem("onepickgame_userid");
-          if (u) userId = u;
+          if (u && u.length === 36) userId = u;
         } catch {
           userId = null;
         }
-        const guestId = !userId ? getOrCreateGuestId() : null;
+
+        let guestId = !userId ? getOrCreateGuestId() : null;
+        if (guestId?.startsWith("guest_")) {
+          guestId = guestId.slice(6);
+        }
 
         console.log("Saving winner log:", { cupId: cup.id, userId, guestId, winnerId: nextRoundCandidates[0].id });
-
 
         upsertWinnerLog(cup.id, userId, guestId, nextRoundCandidates[0].id).then(async (isNew) => {
           if (isNew) {
