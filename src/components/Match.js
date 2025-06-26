@@ -4,11 +4,17 @@ import {
   saveWinnerStatsToDB,
   calcStatsFromMatchHistory,
   getOrCreateGuestId,
-  upsertWinnerLog
+  upsertWinnerLog,
 } from "../utils";
 import { useTranslation } from "react-i18next";
 import MediaRenderer from "./MediaRenderer";
 
+/**
+ * 첫 라운드 매치 생성
+ * 플레이어 수에 맞게 짝 맞추고 부전승 처리
+ * @param {Array} players 
+ * @returns {{matches: Array, byes: Array}}
+ */
 function makeFirstRound(players) {
   const n = players.length;
   const nextPowerOf2 = 2 ** Math.ceil(Math.log2(n));
@@ -22,6 +28,12 @@ function makeFirstRound(players) {
   }
   return { matches, byes };
 }
+
+/**
+ * 다음 라운드 매치 생성 (승자 기반)
+ * @param {Array} winners 
+ * @returns {Array}
+ */
 function makeNextRound(winners) {
   const shuffled = shuffle([...winners]);
   const matches = [];
@@ -30,6 +42,12 @@ function makeNextRound(winners) {
   }
   return matches;
 }
+
+/**
+ * 배열 셔플 (Fisher-Yates)
+ * @param {Array} arr 
+ * @returns {Array}
+ */
 function shuffle(arr) {
   let m = arr.length, t, i;
   while (m) {
@@ -40,6 +58,12 @@ function shuffle(arr) {
   }
   return arr;
 }
+
+/**
+ * 라운드 라벨 (16강, 8강, 결승 등)
+ * @param {number} n 
+ * @returns {string}
+ */
 function getStageLabel(n) {
   if (n === 2) return "결승전";
   if (n === 4) return "4강";
@@ -50,8 +74,15 @@ function getStageLabel(n) {
   if (n === 128) return "128강";
   return `${n}강`;
 }
+
+/**
+ * 이름 줄임 (3단어 이상 자름)
+ * @param {Array} candidates 
+ * @param {number} maxWords 
+ * @returns {Array}
+ */
 function truncateNames(candidates, maxWords = 3) {
-  return candidates.map(c => {
+  return candidates.map((c) => {
     if (!c?.name) return "?";
     const words = c.name.split(/\s+/);
     if (words.length <= maxWords) return c.name;
@@ -68,6 +99,7 @@ function Match({ cup, onResult, selectedCount }) {
   const [matchHistory, setMatchHistory] = useState([]);
   const [autoPlaying, setAutoPlaying] = useState(false);
 
+  // 초기 또는 컵/선택 인원 변경 시 첫 라운드 생성
   useEffect(() => {
     let players = cup.data;
     if (selectedCount && players.length > selectedCount) {
@@ -81,40 +113,62 @@ function Match({ cup, onResult, selectedCount }) {
     setMatchHistory([]);
   }, [cup, selectedCount]);
 
+  // 현재 라운드 진행 중일 때 idx가 매치 수에 도달하면 다음 라운드 처리
   useEffect(() => {
     if (idx === bracket.length && bracket.length > 0) {
+      // 이번 라운드에서 승자들 모음
       const matchWinners = matchHistory
         .slice(-bracket.length)
-        .map(m => m.winner)
+        .map((m) => m.winner)
         .filter(Boolean);
+
+      // 다음 라운드 후보
       const nextRoundCandidates =
         roundNum === 1 ? [...pendingWinners, ...matchWinners] : matchWinners;
+
+      // 우승자 한 명 나왔으면 결과 처리
       if (nextRoundCandidates.length === 1) {
+        // 유저 또는 게스트 ID 획득
         let userId = null;
         try {
           const u = localStorage.getItem("onepickgame_user");
           if (u) userId = JSON.parse(u)?.id || null;
-        } catch (e) { userId = null; }
+        } catch {
+          userId = null;
+        }
         const guestId = !userId ? getOrCreateGuestId() : null;
-        const winnerId = nextRoundCandidates[0]?.id;
 
-        upsertWinnerLog(cup.id, userId, guestId, winnerId).then(async () => {
-          const statsArr = calcStatsFromMatchHistory(cup.data, nextRoundCandidates[0], matchHistory);
-          await saveWinnerStatsToDB(cup.id, statsArr);
+        // winner_logs에 기록 또는 업데이트
+        upsertWinnerLog(cup.id, userId, guestId, nextRoundCandidates[0].id).then(async (isNew) => {
+          if (isNew) {
+            // 새로운 기록일 때만 통계 저장 (덮어쓰기)
+            const statsArr = calcStatsFromMatchHistory(
+              cup.data,
+              nextRoundCandidates[0],
+              matchHistory
+            );
+            await saveWinnerStatsToDB(cup.id, statsArr);
+          }
+          // 결과 콜백 호출
           onResult(nextRoundCandidates[0], matchHistory);
         });
         return;
       }
+
+      // 다음 라운드 생성 및 초기화
       const nextBracket = makeNextRound(nextRoundCandidates);
       setBracket(nextBracket);
       setPendingWinners([]);
       setIdx(0);
-      setRoundNum(r => r + 1);
+      setRoundNum((r) => r + 1);
     }
   }, [idx, bracket, matchHistory, pendingWinners, cup, onResult, roundNum]);
 
+  // 현재 매치 (두 후보)
   const currentMatch = bracket[idx] || [];
   const [c1, c2] = currentMatch;
+
+  // 부전승 자동 진행
   useEffect(() => {
     if (!c1 || !c2) {
       if (c1 || c2) {
@@ -125,6 +179,7 @@ function Match({ cup, onResult, selectedCount }) {
     }
     // eslint-disable-next-line
   }, [idx, bracket]);
+
   function handlePick(winnerIdx) {
     if (autoPlaying) return;
     const winner = winnerIdx === 0 ? c1 : c2;
@@ -135,7 +190,7 @@ function Match({ cup, onResult, selectedCount }) {
     setIdx(idx + 1);
   }
 
-  // ---- UI 영역 ----
+  // UI 변수 계산
   const vw = typeof window !== "undefined" ? Math.min(window.innerWidth, 900) : 900;
   const isMobile = vw < 700;
   const TITLE_SIZE = isMobile ? 66 : 100;
@@ -147,6 +202,8 @@ function Match({ cup, onResult, selectedCount }) {
     bracket && nextIdx < bracket.length
       ? [bracket[nextIdx][0], bracket[nextIdx][1]].filter(Boolean)
       : [];
+
+  // 후보 박스 컴포넌트
   function CandidateBox({ c, onClick, disabled }) {
     const ytid = getYoutubeId(c?.image);
     const isYoutube = !!ytid;
@@ -156,7 +213,7 @@ function Match({ cup, onResult, selectedCount }) {
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          margin: isMobile ? "0" : "0 8px 0 8px",
+          margin: isMobile ? "0" : "0 8px",
           flex: 1,
           minWidth: isMobile ? "0" : 340,
           maxWidth: isMobile ? "100vw" : 700,
@@ -201,7 +258,7 @@ function Match({ cup, onResult, selectedCount }) {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            cursor: !isYoutube && c ? "pointer" : "default",
+            cursor: !isYoutube && c ? onClick : undefined,
             boxSizing: "border-box",
             opacity: c ? 1 : 0.25,
           }}
@@ -237,9 +294,11 @@ function Match({ cup, onResult, selectedCount }) {
       </div>
     );
   }
+
   if (!bracket || bracket.length === 0) {
     return <div>{t("notEnoughCandidates")}</div>;
   }
+
   return (
     <div
       style={{
@@ -296,7 +355,9 @@ function Match({ cup, onResult, selectedCount }) {
             justifyContent: "center",
             userSelect: "text",
           }}
-          title={`다음 라운드: ${nextRoundCandidates[0]?.name || ""} vs ${nextRoundCandidates[1]?.name || ""}`}
+          title={`다음 라운드: ${nextRoundCandidates[0]?.name || ""} vs ${
+            nextRoundCandidates[1]?.name || ""
+          }`}
         >
           <b>다음 라운드:</b>{" "}
           {truncateNames(nextRoundCandidates).map((name, i) => (

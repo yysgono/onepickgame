@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { fetchWinnerStatsFromDB } from "../utils";
 import { useTranslation } from "react-i18next";
 import MediaRenderer from "./MediaRenderer";
-import COLORS from "../styles/theme";
 import CommentBox from "./CommentBox";
 
 function percent(n, d) {
@@ -16,12 +15,13 @@ function StatsPage({ selectedCup, showCommentBox = true }) {
   const [sortKey, setSortKey] = useState("win_count");
   const [sortDesc, setSortDesc] = useState(true);
   const [search, setSearch] = useState("");
-  const [isMobile, setIsMobile] = useState(typeof window !== "undefined" ? window.innerWidth < 800 : false);
+  const [isMobile, setIsMobile] = useState(
+    typeof window !== "undefined" ? window.innerWidth < 800 : false
+  );
 
   useEffect(() => {
     async function fetchStats() {
       if (!selectedCup?.id) return setStats([]);
-      // winner_stats만 불러와서 바로 사용
       const dbStats = await fetchWinnerStatsFromDB(selectedCup.id);
       setStats(dbStats);
     }
@@ -29,13 +29,16 @@ function StatsPage({ selectedCup, showCommentBox = true }) {
   }, [selectedCup]);
 
   useEffect(() => {
-    const onResize = () => setIsMobile(window.innerWidth < 800);
+    function onResize() {
+      setIsMobile(window.innerWidth < 800);
+    }
     window.addEventListener("resize", onResize);
     return () => window.removeEventListener("resize", onResize);
   }, []);
 
+  // 검색 + 정렬 적용
   const filteredStats = stats
-    .filter(row => row.name?.toLowerCase().includes(search.toLowerCase()))
+    .filter((row) => row.name?.toLowerCase().includes(search.toLowerCase()))
     .sort((a, b) =>
       sortDesc
         ? (b[sortKey] ?? 0) - (a[sortKey] ?? 0)
@@ -68,7 +71,7 @@ function StatsPage({ selectedCup, showCommentBox = true }) {
     fontSize: isMobile ? 13 : 15,
     lineHeight: 1.18,
     textAlign: "left",
-    verticalAlign: "middle"
+    verticalAlign: "middle",
   };
 
   return (
@@ -78,7 +81,7 @@ function StatsPage({ selectedCup, showCommentBox = true }) {
         maxWidth: 1200,
         margin: "0 auto",
         padding: isMobile ? "0 0 24px 0" : "0 0 32px 0",
-        boxSizing: "border-box"
+        boxSizing: "border-box",
       }}
     >
       <div
@@ -111,14 +114,14 @@ function StatsPage({ selectedCup, showCommentBox = true }) {
           >
             <input
               value={search}
-              onChange={e => setSearch(e.target.value)}
+              onChange={(e) => setSearch(e.target.value)}
               placeholder={t("search")}
               style={{
                 width: 140,
                 padding: "7px 13px",
                 borderRadius: 8,
                 border: "1.5px solid #bbb",
-                fontSize: 14
+                fontSize: 14,
               }}
             />
           </div>
@@ -145,29 +148,32 @@ function StatsPage({ selectedCup, showCommentBox = true }) {
                     style={{ padding: "10px 0", cursor: "pointer" }}
                     onClick={() => {
                       setSortKey("win_count");
-                      setSortDesc(k => !k);
+                      setSortDesc((k) => !k);
                     }}
                   >
-                    {t("win_count")} {sortKey === "win_count" ? (sortDesc ? "▼" : "▲") : ""}
+                    {t("win_count")}{" "}
+                    {sortKey === "win_count" ? (sortDesc ? "▼" : "▲") : ""}
                   </th>
                   <th style={{ padding: "10px 0" }}>{t("win_rate")}</th>
                   <th
                     style={{ padding: "10px 0", cursor: "pointer" }}
                     onClick={() => {
                       setSortKey("match_wins");
-                      setSortDesc(k => !k);
+                      setSortDesc((k) => !k);
                     }}
                   >
-                    {t("match_wins")} {sortKey === "match_wins" ? (sortDesc ? "▼" : "▲") : ""}
+                    {t("match_wins")}{" "}
+                    {sortKey === "match_wins" ? (sortDesc ? "▼" : "▲") : ""}
                   </th>
                   <th
                     style={{ padding: "10px 0", cursor: "pointer" }}
                     onClick={() => {
                       setSortKey("match_count");
-                      setSortDesc(k => !k);
+                      setSortDesc((k) => !k);
                     }}
                   >
-                    {t("duel_count")} {sortKey === "match_count" ? (sortDesc ? "▼" : "▲") : ""}
+                    {t("duel_count")}{" "}
+                    {sortKey === "match_count" ? (sortDesc ? "▼" : "▲") : ""}
                   </th>
                   <th style={{ padding: "10px 0" }}>{t("match_win_rate")}</th>
                 </tr>
@@ -179,33 +185,41 @@ function StatsPage({ selectedCup, showCommentBox = true }) {
                     style={{
                       ...getRowStyle(i + 1),
                       textAlign: "center",
-                      fontWeight: i + 1 <= 3 ? 700 : 400
+                      fontWeight: i + 1 <= 3 ? 700 : 400,
                     }}
                   >
                     <td
                       style={{
                         padding: "7px 0",
                         fontSize: isMobile ? 15 : 19,
-                        ...getNameTextStyle(i + 1)
+                        ...getNameTextStyle(i + 1),
                       }}
                     >
                       {i + 1 <= 3 ? (
                         <span>
-                          <span style={{ fontSize: 18, verticalAlign: "middle" }}>👑</span>{" "}
+                          <span
+                            style={{ fontSize: 18, verticalAlign: "middle" }}
+                          >
+                            👑
+                          </span>{" "}
                           {i + 1}
                         </span>
-                      ) : i + 1}
+                      ) : (
+                        i + 1
+                      )}
                     </td>
                     <td style={{ padding: "7px 0" }}>
                       {row.image && (
-                        row.image.endsWith(".mp4") || row.image.endsWith(".webm") || row.image.endsWith(".ogg") ? (
+                        row.image.endsWith(".mp4") ||
+                        row.image.endsWith(".webm") ||
+                        row.image.endsWith(".ogg") ? (
                           <video
                             src={row.image}
                             style={{
                               width: isMobile ? 30 : 44,
                               height: isMobile ? 30 : 44,
                               borderRadius: 9,
-                              objectFit: "cover"
+                              objectFit: "cover",
                             }}
                             muted
                             autoPlay
@@ -220,7 +234,7 @@ function StatsPage({ selectedCup, showCommentBox = true }) {
                               width: isMobile ? 30 : 44,
                               height: isMobile ? 30 : 44,
                               borderRadius: 9,
-                              objectFit: "cover"
+                              objectFit: "cover",
                             }}
                           />
                         )
@@ -259,7 +273,7 @@ function StatsPage({ selectedCup, showCommentBox = true }) {
             </table>
           </div>
         </div>
-        {/* 댓글: showCommentBox가 true일 때만 노출 */}
+        {/* 댓글박스 */}
         {showCommentBox && (
           <div
             style={{
