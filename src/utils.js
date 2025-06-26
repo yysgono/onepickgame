@@ -115,22 +115,15 @@ export function getOrCreateGuestId() {
 }
 
 export async function upsertWinnerLog(cupId, userId, guestId, winnerId) {
-  const query = supabase.from("winner_logs");
   const match = { cup_id: cupId };
   if (userId) match.user_id = userId;
   else match.guest_id = guestId;
 
-  const { data, error } = await query.select("id").match(match).maybeSingle();
-  if (error) {
-    console.error("winner_logs select error", error);
-    return false;
-  }
-
-  if (data?.id) {
-    await query.update({ winner_id: winnerId, created_at: new Date().toISOString() }).eq("id", data.id);
-    return false;
-  } else {
-    await query.insert([{ ...match, winner_id: winnerId }]);
+  try {
+    await supabase.from("winner_logs").insert([{ ...match, winner_id: winnerId }]);
     return true;
+  } catch (error) {
+    console.error("winner_logs insert error", error);
+    return false;
   }
 }
