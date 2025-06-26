@@ -1,5 +1,3 @@
-// src/components/Home.jsx
-
 import React, { useState, useRef, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { getMostWinner } from "../utils";
@@ -48,6 +46,8 @@ function Home({
   const [sort, setSort] = useState("popular");
   const [shakeBtn, setShakeBtn] = useState(null);
 
+  // 최다우승 후보 비동기 map
+  const [mostWinners, setMostWinners] = useState({});
   const filtered = (worldcupList || [])
     .filter(
       (cup) =>
@@ -61,6 +61,21 @@ function Home({
         return (b.winCount || 0) - (a.winCount || 0);
       }
     });
+
+  // 최다우승 후보들 비동기로 한번에 불러오기
+  useEffect(() => {
+    let mounted = true;
+    async function fetchAllMostWinners() {
+      const result = {};
+      for (const cup of filtered) {
+        result[cup.id] = await getMostWinner(cup.id, cup.data);
+      }
+      if (mounted) setMostWinners(result);
+    }
+    fetchAllMostWinners();
+    return () => { mounted = false; };
+    // eslint-disable-next-line
+  }, [filtered.map(c => c.id).join(",")]);
 
   // user 정보(id, email 등) 받아서 owner/creator와 비교
   const currentUserId = user?.id || "";
@@ -237,7 +252,7 @@ function Home({
           </div>
         )}
         {filtered.map((cup, idx) => {
-          const topCandidate = getMostWinner(cup.id, cup.data);
+          const topCandidate = mostWinners[cup.id];
           const thumbnail = topCandidate
             ? topCandidate.image
             : cup.data[0]?.image || "";

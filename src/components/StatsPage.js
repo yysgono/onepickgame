@@ -1,21 +1,17 @@
 import React, { useState, useEffect } from "react";
-import CommentBox from "./CommentBox";
-import { getYoutubeId, isValidImageUrl, getWinnerStats } from "../utils";
+import { fetchWinnerStatsFromDB } from "../utils";
 import { useTranslation } from "react-i18next";
-
+import MediaRenderer from "./MediaRenderer";
 import COLORS from "../styles/theme";
 import { mainButtonStyle, grayButtonStyle } from "../styles/common";
+import CommentBox from "./CommentBox";
 
+// 이미지 썸네일 처리
 function getThumb(image) {
-  const youtubeId = getYoutubeId(image);
-  const ext = image?.split('.').pop().toLowerCase();
-  const isVideo = ext === "mp4" || ext === "webm" || ext === "ogg";
-  const isGif = ext === "gif";
-
-  if (youtubeId) return `https://img.youtube.com/vi/${youtubeId}/mqdefault.jpg`;
-  if (isVideo || isGif) return image;  // 영상/움짤은 원본 url 반환
-  if (typeof image === "string" && image.startsWith("data:image/")) return image;
-  if (isValidImageUrl(image)) return image;
+  if (!image) return "";
+  if (image.endsWith(".mp4") || image.endsWith(".webm") || image.endsWith(".ogg")) return image;
+  if (image.startsWith("data:image/")) return image;
+  if (image.startsWith("http")) return image;
   return "";
 }
 
@@ -24,41 +20,38 @@ function percent(n, d) {
   return Math.round((n / d) * 100) + "%";
 }
 
-const PERIODS = [
-  { key: "1w", i18n: "1week" },
-  { key: "1m", i18n: "1month" },
-  { key: "3m", i18n: "3months" },
-  { key: "6m", i18n: "6months" },
-  { key: "1y", i18n: "1year" },
-  { key: "all", i18n: "all" }
-];
-
 function StatsPage({ selectedCup, showOnlyWinner }) {
   const { t } = useTranslation();
   const [stats, setStats] = useState([]);
   const [sortKey, setSortKey] = useState("winCount");
   const [sortDesc, setSortDesc] = useState(true);
-  const [period, setPeriod] = useState("all");
   const [search, setSearch] = useState("");
   const [isMobile, setIsMobile] = useState(window.innerWidth < 800);
 
+  // DB에서 winner_stats 불러오기
   useEffect(() => {
-   const raw = getWinnerStats(selectedCup.id, period) || {};
-const statsArr = selectedCup.data.map((item) => {
-  const s = raw[item.id] || {};
-  return {
-    id: item.id,
-    name: item.name,
-    image: item.image,
-    winCount: s.winCount || 0,
-    matchWins: s.matchWins || 0,
-    matchCount: s.matchCount || 0,
-    totalGames: s.totalGames || 0,
-    createdAt: item.createdAt || 0,
-  };
-});
-    setStats(statsArr);
-  }, [selectedCup, period]);
+    async function fetchStats() {
+      if (!selectedCup?.id) return setStats([]);
+      const dbStats = await fetchWinnerStatsFromDB(selectedCup.id);
+
+      // 후보 목록과 통계 조인(매칭)
+      const statsArr = (selectedCup.data || []).map(item => {
+        const s = dbStats.find(row => String(row.candidate_id) === String(item.id)) || {};
+        return {
+          id: item.id,
+          name: item.name,
+          image: item.image,
+          winCount: s.win_count || 0,
+          matchWins: s.match_wins || 0,
+          matchCount: s.match_count || 0,
+          totalGames: s.total_games || 0,
+          createdAt: item.createdAt || 0,
+        };
+      });
+      setStats(statsArr);
+    }
+    fetchStats();
+  }, [selectedCup]);
 
   useEffect(() => {
     const onResize = () => setIsMobile(window.innerWidth < 800);
@@ -67,7 +60,7 @@ const statsArr = selectedCup.data.map((item) => {
   }, []);
 
   const filteredStats = [...stats]
-    .filter(row => row.name.toLowerCase().includes(search.toLowerCase()))
+    .filter(row => row.name?.toLowerCase().includes(search.toLowerCase()))
     .sort((a, b) =>
       sortDesc
         ? (b[sortKey] ?? 0) - (a[sortKey] ?? 0)
@@ -132,7 +125,7 @@ const statsArr = selectedCup.data.map((item) => {
             margin: isMobile ? "0 auto 32px auto" : undefined,
           }}
         >
-          {/* 기간/검색 버튼 */}
+          {/* 검색창 */}
           <div
             style={{
               marginBottom: 12,
@@ -141,31 +134,11 @@ const statsArr = selectedCup.data.map((item) => {
               flexWrap: "wrap",
             }}
           >
-            {PERIODS.map((p) => (
-              <button
-                key={p.key}
-                onClick={() => setPeriod(p.key)}
-                style={{
-                  ...mainButtonStyle(period === p.key),
-                  background: period === p.key ? COLORS.main : "#eee",
-                  color: period === p.key ? "#fff" : "#333",
-                  fontWeight: 700,
-                  padding: isMobile ? "7px 12px" : "7px 18px",
-                  marginRight: 4,
-                  fontSize: isMobile ? 13 : 16,
-                  borderRadius: 8,
-                  border: "none",
-                }}
-              >
-                {t(p.i18n)}
-              </button>
-            ))}
             <input
               value={search}
               onChange={e => setSearch(e.target.value)}
               placeholder={t("search")}
               style={{
-                marginLeft: 16,
                 width: 140,
                 padding: "7px 13px",
                 borderRadius: 8,
@@ -311,7 +284,6 @@ const statsArr = selectedCup.data.map((item) => {
             </table>
           </div>
         </div>
-
         {/* 댓글 */}
         {!showOnlyWinner && (
           <div

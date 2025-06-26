@@ -1,26 +1,25 @@
+// Match.js
+
 import React, { useState, useEffect } from "react";
-import { getYoutubeId, saveWinnerStatsWithUser } from "../utils";
+import { getYoutubeId, saveWinnerStatsToDB } from "../utils";
 import { useTranslation } from "react-i18next";
 import MediaRenderer from "./MediaRenderer";
 
-// 1라운드: n명 참가자를 2의 거듭제곱 bracket + 부전승 생성
+// ... (기존 대진표 생성/섞기 함수는 동일)
+
 function makeFirstRound(players) {
   const n = players.length;
   const nextPowerOf2 = 2 ** Math.ceil(Math.log2(n));
   const numByes = nextPowerOf2 - n;
-
   const shuffled = shuffle([...players]);
   const byes = shuffled.slice(0, numByes);
   const rest = shuffled.slice(numByes);
-
   const matches = [];
   for (let i = 0; i < rest.length; i += 2) {
     matches.push([rest[i], rest[i + 1] || null]);
   }
   return { matches, byes };
 }
-
-// 2라운드 이상: 무조건 2의 제곱 bracket
 function makeNextRound(winners) {
   const shuffled = shuffle([...winners]);
   const matches = [];
@@ -29,8 +28,6 @@ function makeNextRound(winners) {
   }
   return matches;
 }
-
-// Fisher–Yates shuffle
 function shuffle(arr) {
   let m = arr.length, t, i;
   while (m) {
@@ -41,7 +38,6 @@ function shuffle(arr) {
   }
   return arr;
 }
-
 function getStageLabel(n) {
   if (n === 2) return "결승전";
   if (n === 4) return "4강";
@@ -52,8 +48,6 @@ function getStageLabel(n) {
   if (n === 128) return "128강";
   return `${n}강`;
 }
-
-// 후보 이름 3단어로 줄여서 예쁘게
 function truncateNames(candidates, maxWords = 3) {
   return candidates.map(c => {
     if (!c?.name) return "?";
@@ -63,23 +57,43 @@ function truncateNames(candidates, maxWords = 3) {
   });
 }
 
-/**
- * @param {object} props
- * @param {object} props.cup 월드컵 객체
- * @param {function} props.onResult 결과 콜백
- * @param {number} [props.selectedCount] 시작할 강(예: 4, 8, 16 등)
- */
+function calculateStats(cup, winner, matchHistory) {
+  // 후보별 통계 누적(1게임 기준)
+  // 모든 후보 id 모으기
+  const ids = cup.data.map(c => String(c.id));
+  // 후보별 초기값
+  const stats = {};
+  ids.forEach(id => {
+    stats[id] = { candidate_id: id, win_count: 0, match_wins: 0, match_count: 0, total_games: 0 };
+  });
+  matchHistory.forEach(({ c1, c2, winner }) => {
+    [c1, c2].forEach(c => {
+      if (!c) return;
+      stats[c.id].match_count++;
+    });
+    if (winner) stats[winner.id].match_wins++;
+  });
+  if (winner) {
+    stats[winner.id].win_count = 1;
+    stats[winner.id].total_games = 1;
+    // 나머지 참가자들도 total_games만 올려주기
+    Object.keys(stats).forEach(id => {
+      if (id !== winner.id) stats[id].total_games = 1;
+    });
+  }
+  // return: 후보별 array
+  return Object.values(stats);
+}
+
 function Match({ cup, onResult, selectedCount }) {
   const { t } = useTranslation();
-  const [bracket, setBracket] = useState([]); // [[c1, c2], ...]
+  const [bracket, setBracket] = useState([]);
   const [idx, setIdx] = useState(0);
   const [roundNum, setRoundNum] = useState(1);
-  const [pendingWinners, setPendingWinners] = useState([]); // 1라운드 부전승
+  const [pendingWinners, setPendingWinners] = useState([]);
   const [matchHistory, setMatchHistory] = useState([]);
   const [autoPlaying, setAutoPlaying] = useState(false);
-  const currentUser = localStorage.getItem("onepickgame_user") || "guest";
 
-  // 최초 1라운드 준비 (selectedCount만큼만 랜덤 추출)
   useEffect(() => {
     let players = cup.data;
     if (selectedCount && players.length > selectedCount) {
@@ -93,39 +107,31 @@ function Match({ cup, onResult, selectedCount }) {
     setMatchHistory([]);
   }, [cup, selectedCount]);
 
-  // 라운드 종료 시 → 다음 라운드 준비 또는 우승자
   useEffect(() => {
     if (idx === bracket.length && bracket.length > 0) {
-      // 직전 라운드의 경기 승자들
       const matchWinners = matchHistory
         .slice(-bracket.length)
         .map(m => m.winner)
         .filter(Boolean);
-
-      // 다음 라운드 출전: (1라운드일 때만) 부전승 + 경기승자
       const nextRoundCandidates =
         roundNum === 1 ? [...pendingWinners, ...matchWinners] : matchWinners;
-
-      // 종료: 1명 남으면 끝!
       if (nextRoundCandidates.length === 1) {
-        saveWinnerStatsWithUser(currentUser, cup.id, nextRoundCandidates[0], matchHistory);
+        // ---------- 여기가 경기 끝! 통계 DB 저장 ----------
+        const statsArr = calculateStats(cup, nextRoundCandidates[0], matchHistory);
+        saveWinnerStatsToDB(cup.id, statsArr);
         onResult(nextRoundCandidates[0], matchHistory);
         return;
       }
-      // 다음 라운드: 2의 제곱 bracket, 부전승 없음
       const nextBracket = makeNextRound(nextRoundCandidates);
       setBracket(nextBracket);
       setPendingWinners([]);
       setIdx(0);
       setRoundNum(r => r + 1);
     }
-  }, [idx, bracket, matchHistory, pendingWinners, currentUser, cup.id, onResult, roundNum]);
+  }, [idx, bracket, matchHistory, pendingWinners, cup, onResult, roundNum]);
 
-  // 현재 경기
   const currentMatch = bracket[idx] || [];
   const [c1, c2] = currentMatch;
-
-  // 부전승 매치 자동 처리
   useEffect(() => {
     if (!c1 || !c2) {
       if (c1 || c2) {
@@ -136,7 +142,6 @@ function Match({ cup, onResult, selectedCount }) {
     }
     // eslint-disable-next-line
   }, [idx, bracket]);
-
   function handlePick(winnerIdx) {
     if (autoPlaying) return;
     const winner = winnerIdx === 0 ? c1 : c2;
@@ -146,22 +151,18 @@ function Match({ cup, onResult, selectedCount }) {
     ]);
     setIdx(idx + 1);
   }
-
-  // 뷰 사이즈
+  // (나머지 UI 코드는 기존과 동일. 생략X)
   const vw = typeof window !== "undefined" ? Math.min(window.innerWidth, 900) : 900;
   const isMobile = vw < 700;
   const TITLE_SIZE = isMobile ? 66 : 100;
   const STAGE_SIZE = isMobile ? 15 : 20;
   const NAME_FONT_SIZE = isMobile ? 22 : 46;
   const NAME_HEIGHT = isMobile ? `${1.18 * 22 * 4}px` : `${1.18 * 46 * 4}px`;
-
-  // 다음 대진 예고
   const nextIdx = idx + 1;
   const nextRoundCandidates =
     bracket && nextIdx < bracket.length
       ? [bracket[nextIdx][0], bracket[nextIdx][1]].filter(Boolean)
       : [];
-
   function CandidateBox({ c, onClick, disabled }) {
     const ytid = getYoutubeId(c?.image);
     const isYoutube = !!ytid;
@@ -252,11 +253,9 @@ function Match({ cup, onResult, selectedCount }) {
       </div>
     );
   }
-
   if (!bracket || bracket.length === 0) {
     return <div>{t("notEnoughCandidates")}</div>;
   }
-
   return (
     <div
       style={{
@@ -362,5 +361,4 @@ function Match({ cup, onResult, selectedCount }) {
     </div>
   );
 }
-
 export default Match;
