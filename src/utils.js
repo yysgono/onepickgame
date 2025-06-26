@@ -1,7 +1,7 @@
-// utils.js
 import { supabase } from "./utils/supabaseClient";
 
 // ===== 유튜브 관련 =====
+
 export function getYoutubeId(url = "") {
   if (!url) return "";
   const reg = /(?:youtube\.com\/.*[?&]v=|youtube\.com\/(?:v|embed)\/|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
@@ -22,42 +22,6 @@ export function getYoutubeEmbed(url = "") {
   const ytid = getYoutubeId(url);
   if (ytid) return `https://www.youtube.com/embed/${ytid}?autoplay=0&mute=1`;
   return "";
-}
-
-// ======= 비회원 guest_id 발급 (localStorage) =======
-export function getOrCreateGuestId() {
-  let guestId = localStorage.getItem("guest_id");
-  if (!guestId) {
-    guestId = (crypto.randomUUID?.() || Math.random().toString(36).slice(2) + Date.now());
-    localStorage.setItem("guest_id", guestId);
-  }
-  return guestId;
-}
-
-/**
- * winner_logs 테이블에 insert로 1회 중복 체크
- * @param {string} cupId
- * @param {string|null} userId
- * @param {string|null} guestId
- * @returns {Promise<boolean>} true=첫참여, false=중복
- */
-export async function insertWinnerLog(cupId, userId, guestId) {
-  const { error } = await supabase
-    .from("winner_logs")
-    .insert([{
-      cup_id: cupId,
-      user_id: userId || null,
-      guest_id: guestId || null,
-    }]);
-  if (error) {
-    // 유니크 위반(이미 참여)
-    if (error.code === "23505" || error.message?.includes("duplicate") || error.message?.includes("unique")) {
-      return false;
-    }
-    console.error("winner_logs insert error:", error);
-    return false;
-  }
-  return true;
 }
 
 // ========== DB 통계 (winner_stats) ==========
@@ -81,31 +45,21 @@ export async function fetchWinnerStatsFromDB(cupId) {
 }
 
 /**
- * winner_stats 테이블에 통계 저장/업데이트 (DB upsert, 누적합)
+ * winner_stats 테이블에 통계 저장/업데이트 (덮어쓰기: 마지막 결과로 저장)
  * @param {string|number} cupId
  * @param {Array} statsArr [{candidate_id, name, image, win_count, match_wins, match_count, total_games}]
  */
 export async function saveWinnerStatsToDB(cupId, statsArr) {
-  // 누적 방식
-  const prevStats = await fetchWinnerStatsFromDB(cupId);
-  const prevStatsMap = {};
-  prevStats.forEach(row => {
-    prevStatsMap[row.candidate_id] = row;
-  });
-
-  const rows = statsArr.map(row => {
-    const prev = prevStatsMap[row.candidate_id] || {};
-    return {
-      ...row,
-      cup_id: cupId,
-      win_count: (prev.win_count || 0) + (row.win_count || 0),
-      match_wins: (prev.match_wins || 0) + (row.match_wins || 0),
-      match_count: (prev.match_count || 0) + (row.match_count || 0),
-      total_games: (prev.total_games || 0) + (row.total_games || 0),
-      name: row.name || prev.name || "",
-      image: row.image || prev.image || "",
-    };
-  });
+  const rows = statsArr.map(row => ({
+    ...row,
+    cup_id: cupId,
+    win_count: row.win_count || 0,
+    match_wins: row.match_wins || 0,
+    match_count: row.match_count || 0,
+    total_games: row.total_games || 0,
+    name: row.name || "",
+    image: row.image || "",
+  }));
 
   const { error } = await supabase
     .from("winner_stats")
@@ -159,4 +113,46 @@ export function getMostWinnerFromDB(statsArr, cupData) {
     }
   }
   return mostWinner;
+}
+
+// ======= 비회원 guest_id 발급 (localStorage) =======
+export function getOrCreateGuestId() {
+  let guestId = localStorage.getItem("guest_id");
+  if (!guestId) {
+    guestId = (crypto.randomUUID?.() || Math.random().toString(36).slice(2) + Date.now());
+    localStorage.setItem("guest_id", guestId);
+  }
+  return guestId;
+}
+
+/**
+ * winner_logs 테이블에 insert로 1회 중복 체크
+ * "다시하기"를 하면 기존 row의 winner_id만 update
+ * @param {string} cupId
+ * @param {string|null} userId
+ * @param {string|null} guestId
+ * @param {string} winnerId
+ * @returns {Promise<boolean>} true=처음, false=업데이트
+ */
+export async function upsertWinnerLog(cupId, userId, guestId, winnerId) {
+  let query = supabase.from("winner_logs");
+  let match = { cup_id: cupId };
+  if (userId) match.user_id = userId;
+  else match.guest_id = guestId;
+
+  // 1. row 있는지 확인
+  const { data, error } = await query.select("id").match(match).maybeSingle();
+  if (error) {
+    console.error("winner_logs select error", error);
+    return false;
+  }
+  if (data?.id) {
+    // 있으면 winner_id만 update
+    await query.update({ winner_id: winnerId, created_at: new Date().toISOString() }).eq("id", data.id);
+    return false;
+  } else {
+    // 없으면 insert
+    await query.insert([{ ...match, winner_id: winnerId }]);
+    return true;
+  }
 }

@@ -5,15 +5,6 @@ import MediaRenderer from "./MediaRenderer";
 import COLORS from "../styles/theme";
 import CommentBox from "./CommentBox";
 
-// 이미지 썸네일 처리
-function getThumb(image) {
-  if (!image) return "";
-  if (image.endsWith(".mp4") || image.endsWith(".webm") || image.endsWith(".ogg")) return image;
-  if (image.startsWith("data:image/")) return image;
-  if (image.startsWith("http")) return image;
-  return "";
-}
-
 function percent(n, d) {
   if (!d) return "-";
   return Math.round((n / d) * 100) + "%";
@@ -22,31 +13,17 @@ function percent(n, d) {
 function StatsPage({ selectedCup, showCommentBox = true }) {
   const { t } = useTranslation();
   const [stats, setStats] = useState([]);
-  const [sortKey, setSortKey] = useState("winCount");
+  const [sortKey, setSortKey] = useState("win_count");
   const [sortDesc, setSortDesc] = useState(true);
   const [search, setSearch] = useState("");
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 800);
+  const [isMobile, setIsMobile] = useState(typeof window !== "undefined" ? window.innerWidth < 800 : false);
 
   useEffect(() => {
     async function fetchStats() {
       if (!selectedCup?.id) return setStats([]);
+      // winner_stats만 불러와서 바로 사용
       const dbStats = await fetchWinnerStatsFromDB(selectedCup.id);
-
-      // 후보 목록과 통계 조인(매칭)
-      const statsArr = (selectedCup.data || []).map(item => {
-        const s = dbStats.find(row => String(row.candidate_id) === String(item.id)) || {};
-        return {
-          id: item.id,
-          name: item.name,
-          image: item.image,
-          winCount: s.win_count || 0,
-          matchWins: s.match_wins || 0,
-          matchCount: s.match_count || 0,
-          totalGames: s.total_games || 0,
-          createdAt: item.createdAt || 0,
-        };
-      });
-      setStats(statsArr);
+      setStats(dbStats);
     }
     fetchStats();
   }, [selectedCup]);
@@ -57,7 +34,7 @@ function StatsPage({ selectedCup, showCommentBox = true }) {
     return () => window.removeEventListener("resize", onResize);
   }, []);
 
-  const filteredStats = [...stats]
+  const filteredStats = stats
     .filter(row => row.name?.toLowerCase().includes(search.toLowerCase()))
     .sort((a, b) =>
       sortDesc
@@ -167,30 +144,30 @@ function StatsPage({ selectedCup, showCommentBox = true }) {
                   <th
                     style={{ padding: "10px 0", cursor: "pointer" }}
                     onClick={() => {
-                      setSortKey("winCount");
+                      setSortKey("win_count");
                       setSortDesc(k => !k);
                     }}
                   >
-                    {t("win_count")} {sortKey === "winCount" ? (sortDesc ? "▼" : "▲") : ""}
+                    {t("win_count")} {sortKey === "win_count" ? (sortDesc ? "▼" : "▲") : ""}
                   </th>
                   <th style={{ padding: "10px 0" }}>{t("win_rate")}</th>
                   <th
                     style={{ padding: "10px 0", cursor: "pointer" }}
                     onClick={() => {
-                      setSortKey("matchWins");
+                      setSortKey("match_wins");
                       setSortDesc(k => !k);
                     }}
                   >
-                    {t("match_wins")} {sortKey === "matchWins" ? (sortDesc ? "▼" : "▲") : ""}
+                    {t("match_wins")} {sortKey === "match_wins" ? (sortDesc ? "▼" : "▲") : ""}
                   </th>
                   <th
                     style={{ padding: "10px 0", cursor: "pointer" }}
                     onClick={() => {
-                      setSortKey("matchCount");
+                      setSortKey("match_count");
                       setSortDesc(k => !k);
                     }}
                   >
-                    {t("duel_count")} {sortKey === "matchCount" ? (sortDesc ? "▼" : "▲") : ""}
+                    {t("duel_count")} {sortKey === "match_count" ? (sortDesc ? "▼" : "▲") : ""}
                   </th>
                   <th style={{ padding: "10px 0" }}>{t("match_win_rate")}</th>
                 </tr>
@@ -198,7 +175,7 @@ function StatsPage({ selectedCup, showCommentBox = true }) {
               <tbody>
                 {filteredStats.map((row, i) => (
                   <tr
-                    key={row.id}
+                    key={row.candidate_id || row.id}
                     style={{
                       ...getRowStyle(i + 1),
                       textAlign: "center",
@@ -237,7 +214,7 @@ function StatsPage({ selectedCup, showCommentBox = true }) {
                           />
                         ) : (
                           <img
-                            src={getThumb(row.image)}
+                            src={row.image}
                             alt={row.name}
                             style={{
                               width: isMobile ? 30 : 44,
@@ -259,15 +236,15 @@ function StatsPage({ selectedCup, showCommentBox = true }) {
                       {row.name}
                     </td>
                     <td style={{ padding: "7px 0", ...getNameTextStyle(i + 1) }}>
-                      {row.winCount}
+                      {row.win_count}
                     </td>
                     <td style={{ padding: "7px 0", ...getNameTextStyle(i + 1) }}>
-                      {row.totalGames ? percent(row.winCount, row.totalGames) : "-"}
+                      {row.total_games ? percent(row.win_count, row.total_games) : "-"}
                     </td>
-                    <td style={{ padding: "7px 0" }}>{row.matchWins}</td>
-                    <td style={{ padding: "7px 0" }}>{row.matchCount}</td>
+                    <td style={{ padding: "7px 0" }}>{row.match_wins}</td>
+                    <td style={{ padding: "7px 0" }}>{row.match_count}</td>
                     <td style={{ padding: "7px 0" }}>
-                      {row.matchCount ? percent(row.matchWins, row.matchCount) : "-"}
+                      {row.match_count ? percent(row.match_wins, row.match_count) : "-"}
                     </td>
                   </tr>
                 ))}

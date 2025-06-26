@@ -1,10 +1,14 @@
-// Match.js
 import React, { useState, useEffect } from "react";
-import { getYoutubeId, saveWinnerStatsToDB, calcStatsFromMatchHistory, getOrCreateGuestId, insertWinnerLog } from "../utils";
+import {
+  getYoutubeId,
+  saveWinnerStatsToDB,
+  calcStatsFromMatchHistory,
+  getOrCreateGuestId,
+  upsertWinnerLog
+} from "../utils";
 import { useTranslation } from "react-i18next";
 import MediaRenderer from "./MediaRenderer";
 
-// --- bracket 생성 함수 (동일)
 function makeFirstRound(players) {
   const n = players.length;
   const nextPowerOf2 = 2 ** Math.ceil(Math.log2(n));
@@ -86,23 +90,17 @@ function Match({ cup, onResult, selectedCount }) {
       const nextRoundCandidates =
         roundNum === 1 ? [...pendingWinners, ...matchWinners] : matchWinners;
       if (nextRoundCandidates.length === 1) {
-        // ----------- 경기 끝, 통계 저장 1인 1회만 ----------
-        // 1. 유저/비회원 구분
         let userId = null;
         try {
           const u = localStorage.getItem("onepickgame_user");
           if (u) userId = JSON.parse(u)?.id || null;
         } catch (e) { userId = null; }
         const guestId = !userId ? getOrCreateGuestId() : null;
+        const winnerId = nextRoundCandidates[0]?.id;
 
-        // 2. winner_logs 테이블에 insert (중복방지)
-        insertWinnerLog(cup.id, userId, guestId).then(async (canSave) => {
-          if (canSave) {
-            // 3. 통계 upsert (누적)
-            const statsArr = calcStatsFromMatchHistory(cup.data, nextRoundCandidates[0], matchHistory);
-            await saveWinnerStatsToDB(cup.id, statsArr);
-          }
-          // 4. 결과로 이동(항상 호출)
+        upsertWinnerLog(cup.id, userId, guestId, winnerId).then(async () => {
+          const statsArr = calcStatsFromMatchHistory(cup.data, nextRoundCandidates[0], matchHistory);
+          await saveWinnerStatsToDB(cup.id, statsArr);
           onResult(nextRoundCandidates[0], matchHistory);
         });
         return;
@@ -136,7 +134,8 @@ function Match({ cup, onResult, selectedCount }) {
     ]);
     setIdx(idx + 1);
   }
-  // --- UI part (동일)
+
+  // ---- UI 영역 ----
   const vw = typeof window !== "undefined" ? Math.min(window.innerWidth, 900) : 900;
   const isMobile = vw < 700;
   const TITLE_SIZE = isMobile ? 66 : 100;
