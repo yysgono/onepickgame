@@ -1,10 +1,18 @@
 import React, { useState, useEffect } from "react";
-import { getYoutubeId, getOrCreateGuestId, upsertWinnerLog, calcStatsFromMatchHistory, saveWinnerStatsToDB } from "../utils";
+import {
+  getYoutubeId,
+  getOrCreateGuestId,
+  upsertWinnerLog,
+  calcStatsFromMatchHistory,
+  saveWinnerStatsToDB,
+} from "../utils";
 import { useTranslation } from "react-i18next";
 import MediaRenderer from "./MediaRenderer";
 
 function shuffle(arr) {
-  let m = arr.length, t, i;
+  let m = arr.length,
+    t,
+    i;
   while (m) {
     i = Math.floor(Math.random() * m--);
     t = arr[m];
@@ -81,7 +89,7 @@ function Match({ cup, onResult, selectedCount }) {
 
   useEffect(() => {
     if (idx === bracket.length && bracket.length > 0) {
-      const matchWinners = matchHistory.slice(-bracket.length).map(m => m.winner).filter(Boolean);
+      const matchWinners = matchHistory.slice(-bracket.length).map((m) => m.winner).filter(Boolean);
       const nextRoundCandidates = roundNum === 1 ? [...pendingWinners, ...matchWinners] : matchWinners;
 
       if (nextRoundCandidates.length === 1) {
@@ -108,7 +116,7 @@ function Match({ cup, onResult, selectedCount }) {
       setBracket(nextBracket);
       setPendingWinners([]);
       setIdx(0);
-      setRoundNum(r => r + 1);
+      setRoundNum((r) => r + 1);
     }
   }, [idx, bracket, matchHistory, pendingWinners, cup, onResult, roundNum]);
 
@@ -204,13 +212,7 @@ function Match({ cup, onResult, selectedCount }) {
           }}
           onClick={!isYoutube && c ? onClick : undefined}
         >
-          {c ? (
-            <MediaRenderer url={c.image} alt={c.name} />
-          ) : (
-            <span style={{ fontSize: isMobile ? 19 : 32, color: "#bbb" }}>
-              {t("bye") || "BYE"}
-            </span>
-          )}
+          {c ? <MediaRenderer url={c.image} alt={c.name} /> : <span style={{ fontSize: isMobile ? 19 : 32, color: "#bbb" }}>{t("bye") || "BYE"}</span>}
         </div>
         <div
           style={{
@@ -248,8 +250,7 @@ function Match({ cup, onResult, selectedCount }) {
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        fontFamily:
-          "'Noto Sans', 'Apple SD Gothic Neo', 'Malgun Gothic', Arial, sans-serif",
+        fontFamily: "'Noto Sans', 'Apple SD Gothic Neo', 'Malgun Gothic', Arial, sans-serif",
       }}
     >
       <div
@@ -272,8 +273,7 @@ function Match({ cup, onResult, selectedCount }) {
           color: "#194893",
         }}
       >
-        {getStageLabel(bracket.length * 2)}{" "}
-        {bracket.length === 1 ? "" : `${idx + 1} / ${bracket.length}`}
+        {getStageLabel(bracket.length * 2)} {bracket.length === 1 ? "" : `${idx + 1} / ${bracket.length}`}
       </div>
       {bracket.length > 1 && nextRoundCandidates.length === 2 && (
         <div
@@ -295,9 +295,7 @@ function Match({ cup, onResult, selectedCount }) {
             justifyContent: "center",
             userSelect: "text",
           }}
-          title={`다음 라운드: ${nextRoundCandidates[0]?.name || ""} vs ${
-            nextRoundCandidates[1]?.name || ""
-          }`}
+          title={`다음 라운드: ${nextRoundCandidates[0]?.name || ""} vs ${nextRoundCandidates[1]?.name || ""}`}
         >
           <b>다음 라운드:</b>{" "}
           {truncateNames(nextRoundCandidates).map((name, i) => (

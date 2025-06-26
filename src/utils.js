@@ -28,10 +28,7 @@ export function getYoutubeEmbed(url = "") {
 
 // ===== DB 통계 함수 =====
 export async function fetchWinnerStatsFromDB(cupId) {
-  const { data, error } = await supabase
-    .from("winner_stats")
-    .select("*")
-    .eq("cup_id", cupId);
+  const { data, error } = await supabase.from("winner_stats").select("*").eq("cup_id", cupId);
 
   if (error) {
     console.error("DB fetch error", error);
@@ -41,7 +38,7 @@ export async function fetchWinnerStatsFromDB(cupId) {
 }
 
 export async function saveWinnerStatsToDB(cupId, statsArr) {
-  const rows = statsArr.map(row => ({
+  const rows = statsArr.map((row) => ({
     ...row,
     cup_id: cupId,
     win_count: row.win_count || 0,
@@ -52,9 +49,7 @@ export async function saveWinnerStatsToDB(cupId, statsArr) {
     image: row.image || "",
   }));
 
-  const { error } = await supabase
-    .from("winner_stats")
-    .upsert(rows, { onConflict: ['cup_id', 'candidate_id'] });
+  const { error } = await supabase.from("winner_stats").upsert(rows, { onConflict: ["cup_id", "candidate_id"] });
 
   if (error) {
     console.error("DB save error", error);
@@ -65,7 +60,7 @@ export async function saveWinnerStatsToDB(cupId, statsArr) {
 
 export function calcStatsFromMatchHistory(candidates, winner, matchHistory) {
   const statsMap = {};
-  candidates.forEach(c => {
+  candidates.forEach((c) => {
     statsMap[c.id] = {
       candidate_id: c.id,
       name: c.name,
@@ -84,7 +79,7 @@ export function calcStatsFromMatchHistory(candidates, winner, matchHistory) {
   if (winner) {
     statsMap[winner.id].win_count = 1;
     statsMap[winner.id].total_games = 1;
-    Object.keys(statsMap).forEach(id => {
+    Object.keys(statsMap).forEach((id) => {
       if (id !== winner.id) statsMap[id].total_games = 1;
     });
   }
@@ -98,7 +93,7 @@ export function getMostWinnerFromDB(statsArr, cupData) {
   for (const stat of statsArr) {
     if ((stat.win_count || 0) > maxWin) {
       maxWin = stat.win_count || 0;
-      mostWinner = cupData.find(c => String(c.id) === String(stat.candidate_id));
+      mostWinner = cupData.find((c) => String(c.id) === String(stat.candidate_id));
     }
   }
   return mostWinner;
@@ -114,16 +109,32 @@ export function getOrCreateGuestId() {
   return guestId;
 }
 
+// ===== winner_logs upsert =====
 export async function upsertWinnerLog(cupId, userId, guestId, winnerId) {
   const match = { cup_id: cupId };
   if (userId) match.user_id = userId;
   else match.guest_id = guestId;
 
   try {
-    await supabase.from("winner_logs").insert([{ ...match, winner_id: winnerId }]);
-    return true;
+    // 기존 기록 찾기
+    const { data, error } = await supabase.from("winner_logs").select("id").match(match).maybeSingle();
+
+    if (error) {
+      console.error("winner_logs select error", error);
+      return false;
+    }
+
+    if (data?.id) {
+      // 기존 기록 있으면 업데이트
+      await supabase.from("winner_logs").update({ winner_id: winnerId, created_at: new Date().toISOString() }).eq("id", data.id);
+      return false;
+    } else {
+      // 기존 기록 없으면 새로 인서트
+      await supabase.from("winner_logs").insert([{ ...match, winner_id: winnerId }]);
+      return true;
+    }
   } catch (error) {
-    console.error("winner_logs insert error", error);
+    console.error("winner_logs upsert error", error);
     return false;
   }
 }
