@@ -49,7 +49,7 @@ export async function fetchWinnerStatsFromDB(cupId) {
 /**
  * winner_stats 테이블에 통계 저장/업데이트 (DB upsert)
  * @param {string|number} cupId
- * @param {Array} statsArr [{candidate_id, win_count, match_wins, match_count, total_games}]
+ * @param {Array} statsArr [{candidate_id, name, image, win_count, match_wins, match_count, total_games}]
  */
 export async function saveWinnerStatsToDB(cupId, statsArr) {
   // statsArr의 각 항목에 cup_id 추가
@@ -57,6 +57,8 @@ export async function saveWinnerStatsToDB(cupId, statsArr) {
     ...row,
     cup_id: cupId,
   }));
+  // 디버깅용 (필요시 확인)
+  // console.log("saveWinnerStatsToDB rows", rows);
   const { error } = await supabase
     .from("winner_stats")
     .upsert(rows, { onConflict: ['cup_id', 'candidate_id'] });
@@ -71,7 +73,16 @@ export async function saveWinnerStatsToDB(cupId, statsArr) {
 export function calcStatsFromMatchHistory(candidates, winner, matchHistory) {
   const statsMap = {};
   candidates.forEach(c => {
-    statsMap[c.id] = { candidate_id: c.id, win_count: 0, match_wins: 0, match_count: 0, total_games: 0 };
+    // name, image를 반드시 포함!
+    statsMap[c.id] = {
+      candidate_id: c.id,
+      name: c.name,
+      image: c.image,
+      win_count: 0,
+      match_wins: 0,
+      match_count: 0,
+      total_games: 0,
+    };
   });
   matchHistory.forEach(({ c1, c2, winner }) => {
     if (c1) statsMap[c1.id].match_count++;

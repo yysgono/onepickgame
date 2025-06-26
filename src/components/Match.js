@@ -1,12 +1,11 @@
 // Match.js
 
 import React, { useState, useEffect } from "react";
-import { getYoutubeId, saveWinnerStatsToDB } from "../utils";
+import { getYoutubeId, saveWinnerStatsToDB, calcStatsFromMatchHistory } from "../utils";
 import { useTranslation } from "react-i18next";
 import MediaRenderer from "./MediaRenderer";
 
-// ... (기존 대진표 생성/섞기 함수는 동일)
-
+// --- bracket 생성 함수 (동일)
 function makeFirstRound(players) {
   const n = players.length;
   const nextPowerOf2 = 2 ** Math.ceil(Math.log2(n));
@@ -57,34 +56,6 @@ function truncateNames(candidates, maxWords = 3) {
   });
 }
 
-function calculateStats(cup, winner, matchHistory) {
-  // 후보별 통계 누적(1게임 기준)
-  // 모든 후보 id 모으기
-  const ids = cup.data.map(c => String(c.id));
-  // 후보별 초기값
-  const stats = {};
-  ids.forEach(id => {
-    stats[id] = { candidate_id: id, win_count: 0, match_wins: 0, match_count: 0, total_games: 0 };
-  });
-  matchHistory.forEach(({ c1, c2, winner }) => {
-    [c1, c2].forEach(c => {
-      if (!c) return;
-      stats[c.id].match_count++;
-    });
-    if (winner) stats[winner.id].match_wins++;
-  });
-  if (winner) {
-    stats[winner.id].win_count = 1;
-    stats[winner.id].total_games = 1;
-    // 나머지 참가자들도 total_games만 올려주기
-    Object.keys(stats).forEach(id => {
-      if (id !== winner.id) stats[id].total_games = 1;
-    });
-  }
-  // return: 후보별 array
-  return Object.values(stats);
-}
-
 function Match({ cup, onResult, selectedCount }) {
   const { t } = useTranslation();
   const [bracket, setBracket] = useState([]);
@@ -116,8 +87,9 @@ function Match({ cup, onResult, selectedCount }) {
       const nextRoundCandidates =
         roundNum === 1 ? [...pendingWinners, ...matchWinners] : matchWinners;
       if (nextRoundCandidates.length === 1) {
-        // ---------- 여기가 경기 끝! 통계 DB 저장 ----------
-        const statsArr = calculateStats(cup, nextRoundCandidates[0], matchHistory);
+        // ----------- 경기 끝, 통계 저장 -----------
+        // 꼭 name/image 포함되도록 candidates 그대로 전달!
+        const statsArr = calcStatsFromMatchHistory(cup.data, nextRoundCandidates[0], matchHistory);
         saveWinnerStatsToDB(cup.id, statsArr);
         onResult(nextRoundCandidates[0], matchHistory);
         return;
@@ -151,7 +123,7 @@ function Match({ cup, onResult, selectedCount }) {
     ]);
     setIdx(idx + 1);
   }
-  // (나머지 UI 코드는 기존과 동일. 생략X)
+  // --- UI part (동일)
   const vw = typeof window !== "undefined" ? Math.min(window.innerWidth, 900) : 900;
   const isMobile = vw < 700;
   const TITLE_SIZE = isMobile ? 66 : 100;
@@ -361,4 +333,5 @@ function Match({ cup, onResult, selectedCount }) {
     </div>
   );
 }
+
 export default Match;
