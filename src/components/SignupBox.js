@@ -1,6 +1,8 @@
+// src/components/SignupBox.js
 import React, { useState } from "react";
-import { supabase } from "../utils/supabaseClient";
 import { useNavigate } from "react-router-dom";
+import { signupUser } from "../utils/supabaseUserApi";
+import { generateRandomNickname } from "../utils/randomNickname";
 
 function SignupBox() {
   const [email, setEmail] = useState("");
@@ -22,36 +24,34 @@ function SignupBox() {
 
     setLoading(true);
 
-    // 1. 회원가입 (Supabase Auth)
-    const { data, error: authErr } = await supabase.auth.signUp({
-      email,
-      password,
-    });
+    // 1. 랜덤 닉네임 생성!
+    const nickname = generateRandomNickname();
 
-    // 2. 에러 처리
-    if (authErr) {
+    // 2. 회원가입 + 프로필 row insert
+    const { user, error: signupErr } = await signupUser(email, password, nickname);
+
+    if (signupErr) {
       if (
-        authErr.message.includes("User already registered") ||
-        authErr.message.includes("already registered") ||
-        authErr.message.includes("already exists") ||
-        authErr.message.includes("이미 가입")
+        signupErr.message.includes("User already registered") ||
+        signupErr.message.includes("already registered") ||
+        signupErr.message.includes("already exists") ||
+        signupErr.message.includes("이미 가입")
       ) {
         setError("이미 가입된 이메일입니다.");
       } else {
-        setError(authErr.message);
+        setError(signupErr.message || "회원가입 실패");
       }
       setLoading(false);
       return;
     }
 
-    // 3. 회원가입 성공 시 프로필은 DB 트리거에서 자동 생성 (랜덤 닉네임도 자동 생성)
     setSuccess("회원가입 성공! 이메일 인증 후 로그인 하세요.");
     setEmail("");
     setPassword("");
     setLoading(false);
 
     setTimeout(() => {
-      navigate("/"); // 성공시 홈으로 이동
+      navigate("/");
     }, 2000);
   }
 
@@ -136,21 +136,3 @@ function SignupBox() {
 }
 
 export default SignupBox;
-// src/components/SignupBox.js
-import { generateRandomNickname } from '../utils/randomNickname';
-
-// handleSignup 함수(예시)
-const handleSignup = async (e) => {
-  e.preventDefault();
-  // 이메일/비번 등 입력값 받기
-  // ...
-
-  // 랜덤 닉네임 생성
-  const nickname = generateRandomNickname();
-
-  // supabase에 회원가입 요청 보낼 때 nickname도 같이 전달
-  // 예시: signupUser(email, password, nickname)
-  const { user, error } = await signupUser(email, password, nickname);
-
-  // ... 나머지 처리
-}
