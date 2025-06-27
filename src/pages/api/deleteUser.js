@@ -35,7 +35,7 @@ export default async function handler(req, res) {
     }
 
     // 4) 유저 삭제
-    const { error } = await supabaseAdmin.auth.admin.deleteUser(id);
+    const { error } = await supabaseAdmin.auth.admin.deleteuser(id);
     if (error) {
       return res.status(500).json({ error: error.message });
     }
