@@ -164,7 +164,7 @@ export default function Header({
       const accessToken = session?.access_token;
 
       // 3. API 호출 시 Authorization 헤더에 토큰 포함
-      const res = await fetch("/api/deleteuser", {
+      const res = await fetch("/api/deleteUser", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
