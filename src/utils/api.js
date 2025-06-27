@@ -1,8 +1,11 @@
-export async function deleteUser(id) {
-  const response = await fetch("/api/deleteuser", {  // api 경로도 소문자 맞추기
+export async function deleteUser(id, token) {
+  const response = await fetch("/api/deleteuser", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ id }),  // 서버에서 기대하는 key 이름(id)로 맞춤
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${token}`,
+    },
+    body: JSON.stringify({ id }),
   });
 
   if (!response.ok) {
