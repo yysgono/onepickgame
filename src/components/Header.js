@@ -48,7 +48,7 @@ export default function Header({
 
   // 회원탈퇴 상태
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-  const [deletePw, setDeletePw] = useState("");
+  const [deletePw, setDeletePw] = useState(""); // 지금은 사용 안 함
   const [deleteLoading, setDeleteLoading] = useState(false);
 
   React.useEffect(() => {
@@ -142,60 +142,33 @@ export default function Header({
     alert("비밀번호 변경 메일을 전송했습니다.");
   }
 
-  // ⭐️ 회원탈퇴(Edge Function 호출) ⭐️
-async function handleDeleteAccount() {
-  setEditError("");
-  setDeleteLoading(true);
-
-  // 1. 비밀번호 재인증
-  const { error: loginError } = await supabase.auth.signInWithPassword({
-    email: user.email,
-    password: deletePw,
-  });
-  if (loginError) {
-    setDeleteLoading(false);
-    setEditError("비밀번호가 올바르지 않습니다.");
-    return;
-  }
-
-  try {
-    // access_token 가져오기
-    const { data: { session } } = await supabase.auth.getSession();
-    const accessToken = session?.access_token;
-
-    // Edge Function 호출
-    const res = await fetch(
-      "https://irfyuvuazhujtlgpkfci.supabase.co/functions/v1/hyper-endpoint",
-      {
-        method: "POST",
-        headers: { 
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${accessToken}`
-        },
-        body: JSON.stringify({ id: user.id }),
+  // ⭐️ 회원탈퇴(공식 API로 정말 간단!) ⭐️
+  async function handleDeleteAccount() {
+    setEditError("");
+    setDeleteLoading(true);
+    try {
+      // 공식 Supabase API 한 줄이면 끝!
+      const { error } = await supabase.auth.deleteUser();
+      if (error) {
+        setEditError(error.message || "회원탈퇴 실패");
+        setDeleteLoading(false);
+        return;
       }
-    );
-    const data = await res.json();
-    if (!res.ok) {
-      setEditError(data.error || "회원탈퇴 실패");
-      setDeleteLoading(false);
-      return;
-    }
 
-    alert("탈퇴 완료");
-    await supabase.auth.signOut();
-    setUser(null);
-    setNickname("");
-    setShowProfile(false);
-    setShowLogin(false);
-    setShowDeleteConfirm(false);
-    setDeletePw("");
-  } catch (err) {
-    setEditError(err.message);
-  } finally {
-    setDeleteLoading(false);
+      alert("정상적으로 탈퇴되었습니다!");
+      await supabase.auth.signOut();
+      setUser(null);
+      setNickname("");
+      setShowProfile(false);
+      setShowLogin(false);
+      setShowDeleteConfirm(false);
+      setDeletePw("");
+    } catch (err) {
+      setEditError(err.message);
+    } finally {
+      setDeleteLoading(false);
+    }
   }
-}
 
   function handleLogoClick() {
     navigate("/");
@@ -340,20 +313,13 @@ async function handleDeleteAccount() {
                     <div style={deleteModalOverlayStyle} onClick={handleOverlayClick}>
                       <div style={deleteModalContentStyle} onClick={e => e.stopPropagation()}>
                         <div style={{ fontWeight: 700, fontSize: 17, marginBottom: 12 }}>
-                          정말로 회원탈퇴 하시겠습니까?<br />비밀번호를 한 번 더 입력하세요.
+                          정말로 회원탈퇴 하시겠습니까?
                         </div>
-                        <input
-                          type="password"
-                          value={deletePw}
-                          onChange={e => setDeletePw(e.target.value)}
-                          placeholder="비밀번호"
-                          style={modalInputStyle}
-                          disabled={deleteLoading}
-                        />
+                        {/* 비밀번호 재입력 없이 회원탈퇴 */}
                         <button
                           style={modalDeleteButtonStyle}
                           onClick={handleDeleteAccount}
-                          disabled={deleteLoading || !deletePw}
+                          disabled={deleteLoading}
                         >
                           {deleteLoading ? "탈퇴 중..." : "회원탈퇴"}
                         </button>
