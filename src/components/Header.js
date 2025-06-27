@@ -5,11 +5,10 @@ import { supabase } from "../utils/supabaseClient";
 
 // 닉네임 유효성 검사 함수
 function isValidNickname(nickname) {
-  // 한글, 영문, 숫자, 언더스코어, 하이픈만 허용. (공백, 특수문자 불가)
   if (!nickname) return false;
   const regex = /^[\uAC00-\uD7A3\w-]+$/;
   if (!regex.test(nickname)) return false;
-  if (nickname.replace(/[\uAC00-\uD7A3]/g, "**").length < 3) return false; // 최소 3바이트
+  if (nickname.replace(/[\uAC00-\uD7A3]/g, "**").length < 3) return false;
   return true;
 }
 
@@ -36,18 +35,18 @@ export default function Header({
   const [showLogin, setShowLogin] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
 
-  // 로그인 폼
+  // 로그인 폼 상태
   const [loginEmail, setLoginEmail] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
   const [loginError, setLoginError] = useState("");
   const [loginLoading, setLoginLoading] = useState(false);
 
-  // 내정보수정(닉네임변경)
+  // 내정보 수정 상태
   const [editNickname, setEditNickname] = useState(nickname || "");
   const [editError, setEditError] = useState("");
   const [editLoading, setEditLoading] = useState(false);
 
-  // 회원탈퇴용 비밀번호 입력
+  // 회원탈퇴 상태
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [deletePw, setDeletePw] = useState("");
   const [deleteLoading, setDeleteLoading] = useState(false);
@@ -65,7 +64,6 @@ export default function Header({
     });
   }
 
-  // 로그인 핸들러
   async function handleLogin(e) {
     e.preventDefault();
     setLoginError("");
@@ -83,7 +81,7 @@ export default function Header({
     setLoginEmail("");
     setLoginPassword("");
     setUser(data?.user || null);
-    // 닉네임 새로 fetch
+
     if (data?.user) {
       const { data: profile } = await supabase
         .from("profiles")
@@ -94,7 +92,6 @@ export default function Header({
     }
   }
 
-  // 닉네임 변경
   async function handleNicknameChange() {
     setEditError("");
     const trimName = editNickname.trim();
@@ -129,7 +126,6 @@ export default function Header({
     alert("닉네임이 변경되었습니다!");
   }
 
-  // 비밀번호 변경(메일 전송)
   async function handlePasswordChange() {
     setEditError("");
     if (!user?.email) {
@@ -146,7 +142,6 @@ export default function Header({
     alert("비밀번호 변경 메일을 전송했습니다.");
   }
 
-  // 회원탈퇴 - 수정된 부분: API 라우트 호출
   async function handleDeleteAccount() {
     setEditError("");
     setDeleteLoading(true);
@@ -194,7 +189,6 @@ export default function Header({
     navigate("/");
   }
 
-  // 모달/오버레이 클릭시 닫기 (내정보수정 및 탈퇴 모달)
   function handleOverlayClick(e) {
     if (e.target === e.currentTarget) {
       setShowProfile(false);
@@ -203,7 +197,6 @@ export default function Header({
     }
   }
 
-  // 탈퇴 모달 취소 버튼에서도 모두 닫기
   function handleWithdrawCancel() {
     setShowDeleteConfirm(false);
     setDeletePw("");
@@ -284,11 +277,9 @@ export default function Header({
                 whiteSpace: "nowrap",
                 userSelect: "none",
               }}>
-                {nicknameLoading ? "닉네임 불러오는 중..." : (nickname ? nickname : "닉네임 없음")}
+                {nicknameLoading ? "닉네임 불러오는 중..." : (nickname || "닉네임 없음")}
               </span>
-              <button style={myInfoButtonStyle} onClick={() => setShowProfile(true)}>
-                내정보수정
-              </button>
+              <button style={myInfoButtonStyle} onClick={() => setShowProfile(true)}>내정보수정</button>
               <button style={logoutButtonStyle} onClick={handleLogout}>{t("logout")}</button>
               {showProfile && (
                 <div style={modalOverlayStyle} onClick={handleOverlayClick}>
@@ -304,25 +295,13 @@ export default function Header({
                       style={modalInputStyle}
                       disabled={editLoading}
                     />
-                    <button
-                      style={modalProfileButtonStyle}
-                      onClick={handleNicknameChange}
-                      disabled={editLoading}
-                    >
+                    <button style={modalProfileButtonStyle} onClick={handleNicknameChange} disabled={editLoading}>
                       {editLoading ? "변경 중..." : "닉네임 변경"}
                     </button>
-                    <button
-                      style={modalGrayButtonStyle}
-                      onClick={handlePasswordChange}
-                      disabled={editLoading}
-                    >
+                    <button style={modalGrayButtonStyle} onClick={handlePasswordChange} disabled={editLoading}>
                       비밀번호 변경(메일 전송)
                     </button>
-                    <button
-                      style={modalDeleteButtonStyle}
-                      onClick={() => setShowDeleteConfirm(true)}
-                      disabled={editLoading}
-                    >
+                    <button style={modalDeleteButtonStyle} onClick={() => setShowDeleteConfirm(true)} disabled={editLoading}>
                       회원탈퇴
                     </button>
                     {editError && (
@@ -330,15 +309,10 @@ export default function Header({
                         {editError}
                       </div>
                     )}
-                    <button
-                      style={modalCloseButtonStyle}
-                      onClick={() => setShowProfile(false)}
-                      disabled={editLoading}
-                    >
+                    <button style={modalCloseButtonStyle} onClick={() => setShowProfile(false)} disabled={editLoading}>
                       닫기
                     </button>
                   </div>
-                  {/* 탈퇴 비밀번호 입력 모달 */}
                   {showDeleteConfirm && (
                     <div style={deleteModalOverlayStyle} onClick={handleOverlayClick}>
                       <div style={deleteModalContentStyle} onClick={e => e.stopPropagation()}>
@@ -353,18 +327,10 @@ export default function Header({
                           style={modalInputStyle}
                           disabled={deleteLoading}
                         />
-                        <button
-                          style={modalDeleteButtonStyle}
-                          onClick={handleDeleteAccount}
-                          disabled={deleteLoading || !deletePw}
-                        >
+                        <button style={modalDeleteButtonStyle} onClick={handleDeleteAccount} disabled={deleteLoading || !deletePw}>
                           {deleteLoading ? "탈퇴 중..." : "회원탈퇴"}
                         </button>
-                        <button
-                          style={modalCloseButtonStyle}
-                          onClick={handleWithdrawCancel}
-                          disabled={deleteLoading}
-                        >
+                        <button style={modalCloseButtonStyle} onClick={handleWithdrawCancel} disabled={deleteLoading}>
                           취소
                         </button>
                       </div>
