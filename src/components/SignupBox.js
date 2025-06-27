@@ -136,3 +136,21 @@ function SignupBox() {
 }
 
 export default SignupBox;
+// src/components/SignupBox.js
+import { generateRandomNickname } from '../utils/randomNickname';
+
+// handleSignup 함수(예시)
+const handleSignup = async (e) => {
+  e.preventDefault();
+  // 이메일/비번 등 입력값 받기
+  // ...
+
+  // 랜덤 닉네임 생성
+  const nickname = generateRandomNickname();
+
+  // supabase에 회원가입 요청 보낼 때 nickname도 같이 전달
+  // 예시: signupUser(email, password, nickname)
+  const { user, error } = await signupUser(email, password, nickname);
+
+  // ... 나머지 처리
+}
