@@ -143,52 +143,59 @@ export default function Header({
   }
 
   // ⭐️ 회원탈퇴(Edge Function 호출) ⭐️
-  async function handleDeleteAccount() {
-    setEditError("");
-    setDeleteLoading(true);
+async function handleDeleteAccount() {
+  setEditError("");
+  setDeleteLoading(true);
 
-    // 1. 비밀번호 재인증
-    const { error: loginError } = await supabase.auth.signInWithPassword({
-      email: user.email,
-      password: deletePw,
-    });
-    if (loginError) {
+  // 1. 비밀번호 재인증
+  const { error: loginError } = await supabase.auth.signInWithPassword({
+    email: user.email,
+    password: deletePw,
+  });
+  if (loginError) {
+    setDeleteLoading(false);
+    setEditError("비밀번호가 올바르지 않습니다.");
+    return;
+  }
+
+  try {
+    // access_token 가져오기
+    const { data: { session } } = await supabase.auth.getSession();
+    const accessToken = session?.access_token;
+
+    // Edge Function 호출
+    const res = await fetch(
+      "https://irfyuvuazhujtlgpkfci.supabase.co/functions/v1/hyper-endpoint",
+      {
+        method: "POST",
+        headers: { 
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${accessToken}`
+        },
+        body: JSON.stringify({ id: user.id }),
+      }
+    );
+    const data = await res.json();
+    if (!res.ok) {
+      setEditError(data.error || "회원탈퇴 실패");
       setDeleteLoading(false);
-      setEditError("비밀번호가 올바르지 않습니다.");
       return;
     }
 
-    try {
-      // 2. Edge Function 호출
-      const res = await fetch(
-        "https://irfyuvuazhujtlgpkfci.supabase.co/functions/v1/hyper-endpoint",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ id: user.id }),
-        }
-      );
-      const data = await res.json();
-      if (!res.ok) {
-        setEditError(data.error || "회원탈퇴 실패");
-        setDeleteLoading(false);
-        return;
-      }
-
-      alert("탈퇴 완료");
-      await supabase.auth.signOut();
-      setUser(null);
-      setNickname("");
-      setShowProfile(false);
-      setShowLogin(false);
-      setShowDeleteConfirm(false);
-      setDeletePw("");
-    } catch (err) {
-      setEditError(err.message);
-    } finally {
-      setDeleteLoading(false);
-    }
+    alert("탈퇴 완료");
+    await supabase.auth.signOut();
+    setUser(null);
+    setNickname("");
+    setShowProfile(false);
+    setShowLogin(false);
+    setShowDeleteConfirm(false);
+    setDeletePw("");
+  } catch (err) {
+    setEditError(err.message);
+  } finally {
+    setDeleteLoading(false);
   }
+}
 
   function handleLogoClick() {
     navigate("/");
