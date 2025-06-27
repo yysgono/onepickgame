@@ -142,6 +142,7 @@ export default function Header({
     alert("비밀번호 변경 메일을 전송했습니다.");
   }
 
+  // 회원탈퇴: JWT 토큰 포함하여 API 호출
   async function handleDeleteAccount() {
     setEditError("");
     setDeleteLoading(true);
@@ -158,10 +159,17 @@ export default function Header({
     }
 
     try {
-      // 2. 서버 API 호출로 삭제 요청
+      // 2. 세션에서 토큰 가져오기
+      const { data: { session } } = await supabase.auth.getSession();
+      const accessToken = session?.access_token;
+
+      // 3. API 호출 시 Authorization 헤더에 토큰 포함
       const res = await fetch("/api/deleteUser", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${accessToken}`,
+        },
         body: JSON.stringify({ id: user.id }),
       });
 
@@ -265,18 +273,29 @@ export default function Header({
             </>
           )}
           <button style={primaryButtonStyle} onClick={onMakeWorldcup}>{t("makeWorldcup")}</button>
-          <select value={i18n.language} onChange={e => { i18n.changeLanguage(e.target.value); if (onLangChange) onLangChange(e.target.value); }} style={selectStyle}>
-            {languages.map((lang) => (<option key={lang.code} value={lang.code}>{lang.label}</option>))}
+          <select
+            value={i18n.language}
+            onChange={e => {
+              i18n.changeLanguage(e.target.value);
+              if (onLangChange) onLangChange(e.target.value);
+            }}
+            style={selectStyle}
+          >
+            {languages.map((lang) => (
+              <option key={lang.code} value={lang.code}>{lang.label}</option>
+            ))}
           </select>
           {user && (
             <>
-              <span style={{
-                fontWeight: 700,
-                color: "#1976ed",
-                marginRight: 6,
-                whiteSpace: "nowrap",
-                userSelect: "none",
-              }}>
+              <span
+                style={{
+                  fontWeight: 700,
+                  color: "#1976ed",
+                  marginRight: 6,
+                  whiteSpace: "nowrap",
+                  userSelect: "none",
+                }}
+              >
                 {nicknameLoading ? "닉네임 불러오는 중..." : (nickname || "닉네임 없음")}
               </span>
               <button style={myInfoButtonStyle} onClick={() => setShowProfile(true)}>내정보수정</button>
@@ -327,7 +346,11 @@ export default function Header({
                           style={modalInputStyle}
                           disabled={deleteLoading}
                         />
-                        <button style={modalDeleteButtonStyle} onClick={handleDeleteAccount} disabled={deleteLoading || !deletePw}>
+                        <button
+                          style={modalDeleteButtonStyle}
+                          onClick={handleDeleteAccount}
+                          disabled={deleteLoading || !deletePw}
+                        >
                           {deleteLoading ? "탈퇴 중..." : "회원탈퇴"}
                         </button>
                         <button style={modalCloseButtonStyle} onClick={handleWithdrawCancel} disabled={deleteLoading}>
@@ -412,7 +435,7 @@ export default function Header({
 // 스타일(생략)
 const adminButtonStyle = (bgColor, color = "#fff") => ({
   background: bgColor,
-  color: color,
+  color,
   borderRadius: 7,
   fontWeight: 700,
   padding: "7px 14px",
@@ -524,7 +547,7 @@ const modalInputStyle = {
   border: "1.2px solid #bbb",
   fontSize: 16,
   marginBottom: 9,
-  boxSizing: "border-box"
+  boxSizing: "border-box",
 };
 const modalCloseButtonStyle = {
   background: "#eee",
