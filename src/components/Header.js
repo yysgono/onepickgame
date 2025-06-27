@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../utils/supabaseClient";
@@ -32,6 +32,8 @@ export default function Header({
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const inputRef = useRef();
+
+  // 프로필, 모달, 상태값
   const [showLogin, setShowLogin] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
 
@@ -46,14 +48,23 @@ export default function Header({
   const [editError, setEditError] = useState("");
   const [editLoading, setEditLoading] = useState(false);
 
-  // 회원탈퇴 상태
-  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-  const [deletePw, setDeletePw] = useState(""); // 지금은 사용 안 함
-  const [deleteLoading, setDeleteLoading] = useState(false);
+  // 탈퇴신청/취소 상태
+  const [profile, setProfile] = useState(null);
+  const [profileLoading, setProfileLoading] = useState(false);
+  const [withdrawLoading, setWithdrawLoading] = useState(false);
+  const [cancelLoading, setCancelLoading] = useState(false);
 
-  React.useEffect(() => {
-    setEditNickname(nickname || "");
-  }, [nickname]);
+  useEffect(() => { setEditNickname(nickname || ""); }, [nickname]);
+
+  // 프로필 정보 가져오기 (탈퇴신청 여부 확인용)
+  useEffect(() => {
+    if (!user) return setProfile(null);
+    setProfileLoading(true);
+    supabase.from("profiles").select("*").eq("id", user.id).single().then(({ data }) => {
+      setProfile(data || null);
+      setProfileLoading(false);
+    });
+  }, [user, showProfile]);
 
   function handleLogout() {
     supabase.auth.signOut().then(() => {
@@ -142,49 +153,42 @@ export default function Header({
     alert("비밀번호 변경 메일을 전송했습니다.");
   }
 
-  // ⭐️ 회원탈퇴(공식 API로 정말 간단!) ⭐️
-  async function handleDeleteAccount() {
-    setEditError("");
-    setDeleteLoading(true);
-    try {
-      // 공식 Supabase API 한 줄이면 끝!
-      const { error } = await supabase.auth.deleteUser();
-      if (error) {
-        setEditError(error.message || "회원탈퇴 실패");
-        setDeleteLoading(false);
-        return;
-      }
-
-      alert("정상적으로 탈퇴되었습니다!");
-      await supabase.auth.signOut();
-      setUser(null);
-      setNickname("");
-      setShowProfile(false);
-      setShowLogin(false);
-      setShowDeleteConfirm(false);
-      setDeletePw("");
-    } catch (err) {
-      setEditError(err.message);
-    } finally {
-      setDeleteLoading(false);
-    }
+  // 탈퇴신청
+  async function handleWithdrawalRequest() {
+    setEditError(""); setWithdrawLoading(true);
+    const { error } = await supabase
+      .from("profiles")
+      .update({ withdrawal_requested_at: new Date().toISOString() })
+      .eq("id", user.id);
+    setWithdrawLoading(false);
+    if (error) return setEditError("탈퇴 신청 실패: " + error.message);
+    alert("탈퇴 신청이 접수되었습니다!\n일주일 이내 처리 예정입니다.");
+    setProfile((prev) => ({ ...prev, withdrawal_requested_at: new Date().toISOString() }));
+    setShowProfile(false);
   }
 
-  function handleLogoClick() {
-    navigate("/");
+  // 탈퇴취소
+  async function handleCancelWithdrawal() {
+    setEditError(""); setCancelLoading(true);
+    const { error } = await supabase
+      .from("profiles")
+      .update({ withdrawal_requested_at: null })
+      .eq("id", user.id);
+    setCancelLoading(false);
+    if (error) return setEditError("취소 실패: " + error.message);
+    alert("탈퇴 신청이 취소되었습니다!");
+    setProfile((prev) => ({ ...prev, withdrawal_requested_at: null }));
+    setShowProfile(false);
   }
 
+  function handleLogoClick() { navigate("/"); }
   function handleOverlayClick(e) {
     if (e.target === e.currentTarget) {
       setShowProfile(false);
-      setShowDeleteConfirm(false);
-      setDeletePw("");
     }
   }
 
   function handleWithdrawCancel() {
-    setShowDeleteConfirm(false);
-    setDeletePw("");
     setShowProfile(false);
   }
 
@@ -297,38 +301,49 @@ export default function Header({
                     <button style={modalGrayButtonStyle} onClick={handlePasswordChange} disabled={editLoading}>
                       비밀번호 변경(메일 전송)
                     </button>
-                    <button style={modalDeleteButtonStyle} onClick={() => setShowDeleteConfirm(true)} disabled={editLoading}>
-                      회원탈퇴
-                    </button>
+                    {/* --- 탈퇴신청 & 취소 --- */}
+                    {profile?.withdrawal_requested_at ? (
+                      <div style={{ width: "100%" }}>
+                        <div style={{ color: "#e14444", fontSize: 15, textAlign: "center", margin: "8px 0" }}>
+                          탈퇴 신청 상태입니다.<br />
+                          신청일: {profile.withdrawal_requested_at && new Date(profile.withdrawal_requested_at).toLocaleString()}<br />
+                          탈퇴 신청을 취소하려면 아래 버튼을 눌러주세요.
+                        </div>
+                        <button
+                          style={modalDeleteButtonStyle}
+                          onClick={handleCancelWithdrawal}
+                          disabled={cancelLoading}
+                        >
+                          {cancelLoading ? "취소 중..." : "탈퇴 신청 취소"}
+                        </button>
+                        <div style={{ color: "#888", fontSize: 13, textAlign: "center", marginTop: 10 }}>
+                          탈퇴는 일주일 이내 처리됩니다.<br />언제든 취소 가능합니다.
+                        </div>
+                      </div>
+                    ) : (
+                      <div style={{ width: "100%" }}>
+                        <button
+                          style={modalDeleteButtonStyle}
+                          onClick={handleWithdrawalRequest}
+                          disabled={withdrawLoading}
+                        >
+                          {withdrawLoading ? "신청 중..." : "회원탈퇴 신청"}
+                        </button>
+                        <div style={{ color: "#888", fontSize: 13, textAlign: "center", marginTop: 10 }}>
+                          탈퇴 신청 후 7일 이내 처리됩니다.<br />
+                          그동안 언제든 취소할 수 있습니다.
+                        </div>
+                      </div>
+                    )}
                     {editError && (
                       <div style={{ color: "red", fontSize: 15, textAlign: "center", marginTop: 7 }}>
                         {editError}
                       </div>
                     )}
-                    <button style={modalCloseButtonStyle} onClick={() => setShowProfile(false)} disabled={editLoading}>
+                    <button style={modalCloseButtonStyle} onClick={handleWithdrawCancel}>
                       닫기
                     </button>
                   </div>
-                  {showDeleteConfirm && (
-                    <div style={deleteModalOverlayStyle} onClick={handleOverlayClick}>
-                      <div style={deleteModalContentStyle} onClick={e => e.stopPropagation()}>
-                        <div style={{ fontWeight: 700, fontSize: 17, marginBottom: 12 }}>
-                          정말로 회원탈퇴 하시겠습니까?
-                        </div>
-                        {/* 비밀번호 재입력 없이 회원탈퇴 */}
-                        <button
-                          style={modalDeleteButtonStyle}
-                          onClick={handleDeleteAccount}
-                          disabled={deleteLoading}
-                        >
-                          {deleteLoading ? "탈퇴 중..." : "회원탈퇴"}
-                        </button>
-                        <button style={modalCloseButtonStyle} onClick={handleWithdrawCancel} disabled={deleteLoading}>
-                          취소
-                        </button>
-                      </div>
-                    </div>
-                  )}
                 </div>
               )}
             </>
@@ -402,7 +417,7 @@ export default function Header({
   );
 }
 
-// 스타일(생략)
+// ======= 스타일 (원래 코드 그대로) =======
 const adminButtonStyle = (bgColor, color = "#fff") => ({
   background: bgColor,
   color,
@@ -484,32 +499,6 @@ const modalContentStyle = {
   boxSizing: "border-box",
   margin: 0,
 };
-const deleteModalOverlayStyle = {
-  position: "fixed",
-  left: 0,
-  top: 0,
-  width: "100vw",
-  height: "100vh",
-  background: "rgba(0,0,0,0.4)",
-  zIndex: 10000,
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-};
-const deleteModalContentStyle = {
-  background: "#fff",
-  borderRadius: 12,
-  padding: "28px 24px",
-  minWidth: 320,
-  maxWidth: 360,
-  width: "100%",
-  boxShadow: "0 4px 24px rgba(0,0,0,0.22)",
-  display: "flex",
-  flexDirection: "column",
-  gap: 10,
-  alignItems: "center",
-  boxSizing: "border-box",
-};
 const modalInputStyle = {
   width: "100%",
   padding: "10px 11px",
@@ -518,28 +507,6 @@ const modalInputStyle = {
   fontSize: 16,
   marginBottom: 9,
   boxSizing: "border-box",
-};
-const modalCloseButtonStyle = {
-  background: "#eee",
-  color: "#222",
-  border: "none",
-  borderRadius: 8,
-  padding: "7px 0",
-  fontWeight: 600,
-  cursor: "pointer",
-  width: 180,
-  marginTop: 10,
-  userSelect: "none",
-};
-const logoutButtonStyle = {
-  fontSize: 13,
-  fontWeight: 500,
-  background: "#eee",
-  border: "none",
-  borderRadius: 7,
-  padding: "5px 11px",
-  cursor: "pointer",
-  userSelect: "none",
 };
 const modalProfileButtonStyle = {
   width: "100%",
@@ -576,4 +543,26 @@ const modalDeleteButtonStyle = {
   padding: "10px 0",
   margin: "14px 0 0",
   cursor: "pointer",
+};
+const modalCloseButtonStyle = {
+  background: "#eee",
+  color: "#222",
+  border: "none",
+  borderRadius: 8,
+  padding: "7px 0",
+  fontWeight: 600,
+  cursor: "pointer",
+  width: 180,
+  marginTop: 10,
+  userSelect: "none",
+};
+const logoutButtonStyle = {
+  fontSize: 13,
+  fontWeight: 500,
+  background: "#eee",
+  border: "none",
+  borderRadius: 7,
+  padding: "5px 11px",
+  cursor: "pointer",
+  userSelect: "none",
 };
