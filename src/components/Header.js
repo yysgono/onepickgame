@@ -142,7 +142,7 @@ export default function Header({
     alert("비밀번호 변경 메일을 전송했습니다.");
   }
 
-  // 회원탈퇴: JWT 토큰 포함하여 API 호출
+  // ⭐️ 회원탈퇴(Edge Function 호출) ⭐️
   async function handleDeleteAccount() {
     setEditError("");
     setDeleteLoading(true);
@@ -159,23 +159,20 @@ export default function Header({
     }
 
     try {
-      // 2. 세션에서 토큰 가져오기
-      const { data: { session } } = await supabase.auth.getSession();
-      const accessToken = session?.access_token;
-
-      // 3. API 호출 시 Authorization 헤더에 토큰 포함
-      const res = await fetch("/api/deleteuser", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${accessToken}`,
-        },
-        body: JSON.stringify({ id: user.id }),
-      });
-
+      // 2. Edge Function 호출
+      const res = await fetch(
+        "https://irfyuvuazhujtlgpkfci.supabase.co/functions/v1/hyper-endpoint",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ id: user.id }),
+        }
+      );
       const data = await res.json();
       if (!res.ok) {
-        throw new Error(data.error || "회원탈퇴 실패");
+        setEditError(data.error || "회원탈퇴 실패");
+        setDeleteLoading(false);
+        return;
       }
 
       alert("탈퇴 완료");
