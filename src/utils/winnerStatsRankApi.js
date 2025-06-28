@@ -1,40 +1,43 @@
-import { supabase } from "./supabaseClient";
-
-/**
- * 월드컵 내 후보별 '매치 승률' 순 랭킹
- * (match_wins / match_count, match_count가 0이면 승률 0%)
- * @param {string} cup_id - 월드컵 ID
- * @param {number} limit - TOP N명까지 (기본 3)
- * @returns {Array} [{candidate_id, name, image, match_wins, match_count, win_rate}, ...]
- */
-export async function getTopWinRateOfCup(cup_id, limit = 3) {
-  const { data, error } = await supabase
-    .from("winner_stats")
-    .select("candidate_id, name, image, match_wins, match_count")
-    .eq("cup_id", cup_id);
-
-  if (error) throw error;
-
-  // 후보별 match_wins, match_count 합산 + 승률 계산
-  const grouped = {};
-  data.forEach(row => {
-    if (!grouped[row.candidate_id]) {
-      grouped[row.candidate_id] = { ...row, match_wins: 0, match_count: 0 };
-    }
-    grouped[row.candidate_id].match_wins += row.match_wins || 0;
-    grouped[row.candidate_id].match_count += row.match_count || 0;
+// 통계 집계, 순위 변환 등 확장 함수 필요시 여기에!
+export function calcStatsFromMatchHistory(candidates, winner, matchHistory) {
+  const statsMap = {};
+  candidates.forEach(c => {
+    statsMap[c.id] = {
+      candidate_id: c.id,
+      name: c.name,
+      image: c.image,
+      win_count: 0,
+      match_wins: 0,
+      match_count: 0,
+      total_games: 0,
+    };
   });
+  matchHistory.forEach(({ c1, c2, winner }) => {
+    if (c1) statsMap[c1.id].match_count++;
+    if (c2) statsMap[c2.id].match_count++;
+    if (winner) statsMap[winner.id].match_wins++;
+  });
+  if (winner) {
+    statsMap[winner.id].win_count = 1;
+    statsMap[winner.id].total_games = 1;
+    Object.keys(statsMap).forEach(id => {
+      if (id !== winner.id) statsMap[id].total_games = 1;
+    });
+  }
+  return Object.values(statsMap);
+}
 
-  // 승률 계산 및 정렬
-  const withWinRate = Object.values(grouped).map(row => ({
-    ...row,
-    win_rate:
-      row.match_count > 0
-        ? Math.round((row.match_wins / row.match_count) * 10000) / 100 // 소수점 2자리(%)
-        : 0,
-  }));
+// =========== 최다 우승자 반환 (DB 버전) ===========
 
-  return withWinRate
-    .sort((a, b) => (b.win_rate || 0) - (a.win_rate || 0))
-    .slice(0, limit);
+export function getMostWinnerFromDB(statsArr, cupData) {
+  if (!statsArr || !Array.isArray(statsArr)) return null;
+  let maxWin = -1;
+  let mostWinner = null;
+  for (const stat of statsArr) {
+    if ((stat.win_count || 0) > maxWin) {
+      maxWin = stat.win_count || 0;
+      mostWinner = cupData.find(c => String(c.id) === String(stat.candidate_id));
+    }
+  }
+  return mostWinner;
 }

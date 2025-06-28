@@ -1,5 +1,3 @@
-// src/utils/supabaseWinnerApi.js
-
 import { supabase } from "./supabaseClient";
 
 // ✅ winner_stats 전체/조건 조회
@@ -33,20 +31,18 @@ export async function addWinnerStat({
 }) {
   const { data, error } = await supabase
     .from("winner_stats")
-    .upsert([
-      {
-        user_id,
-        guest_id,
-        cup_id,
-        candidate_id,
-        win_count,
-        match_wins,
-        total_games,
-        name,
-        image,
-        match_count,
-      },
-    ], { onConflict: ["user_id", "cup_id", "candidate_id"] })
+    .upsert([{
+      user_id,
+      guest_id,
+      cup_id,
+      candidate_id,
+      win_count,
+      match_wins,
+      total_games,
+      name,
+      image,
+      match_count,
+    }], { onConflict: ["user_id", "guest_id", "cup_id", "candidate_id"] })
     .select()
     .single();
 
@@ -87,6 +83,7 @@ export async function deleteWinnerStat(id) {
   return true;
 }
 
+// ✅ 후보별 통계 누적 저장 (누적 합산)
 export async function saveWinnerStatsToDB(cup_id, statsArr) {
   for (const s of statsArr) {
     const { candidate_id, win_count, match_wins, match_count, total_games, name, image, user_id, guest_id } = s;

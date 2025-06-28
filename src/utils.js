@@ -69,13 +69,11 @@ export async function deleteOldWinnerLogAndStats(cupId, userId, guestId) {
       cup_id: cupId,
       ...(userId ? { user_id: userId } : { guest_id: guestId }),
     });
-
   // winner_stats에서 해당 유저/비회원이 올린 통계도 (필요시) 지우고 싶으면 아래 활성화
   // await supabase.from("winner_stats").delete().match({ cup_id: cupId, ...(userId ? { user_id: userId } : { guest_id: guestId }) });
 }
 
 // ========== DB 통계 (winner_stats) ==========
-
 /**
  * winner_stats 테이블에서 통계 가져오기
  * @param {string|number} cupId
@@ -118,12 +116,14 @@ export async function saveWinnerStatsToDB(cupId, statsArr) {
       total_games: (prev.total_games || 0) + (row.total_games || 0),
       name: row.name || prev.name || "",
       image: row.image || prev.image || "",
+      user_id: row.user_id || prev.user_id || null,
+      guest_id: row.guest_id || prev.guest_id || null,
     };
   });
 
   const { error } = await supabase
     .from("winner_stats")
-    .upsert(rows, { onConflict: ['cup_id', 'candidate_id'] });
+    .upsert(rows, { onConflict: ['cup_id', 'candidate_id', 'user_id', 'guest_id'] });  // ★수정!★
 
   if (error) {
     console.error("DB save error", error);
