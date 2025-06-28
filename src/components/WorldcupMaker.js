@@ -28,18 +28,15 @@ function WorldcupMaker({ onCreate, onCancel }) {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // 로그인 유저/닉네임 state
   const [user, setUser] = useState(null);
   const [nickname, setNickname] = useState("");
   const mobile = isMobile();
 
-  // 유저 인증 정보 불러오기
   useEffect(() => {
     async function fetchUser() {
       const { data: { user } } = await supabase.auth.getUser();
       setUser(user);
       if (user) {
-        // 닉네임은 별도 쿼리
         const { data: profile } = await supabase
           .from("profiles")
           .select("nickname")
@@ -77,13 +74,12 @@ function WorldcupMaker({ onCreate, onCancel }) {
     setError("");
     if (loading) return;
 
-    // 입력값 검사
     const list = candidates
       .map((c) => ({
         ...c,
         name: c.name.trim(),
         image: c.image.trim(),
-        id: c.id || uuidv4(), // 혹시 id 누락시 uuid 생성
+        id: c.id || uuidv4(),
       }))
       .filter((c) => c.name && c.image);
 
@@ -93,14 +89,16 @@ function WorldcupMaker({ onCreate, onCancel }) {
     setLoading(true);
 
     try {
-      // base64 이미지 → Storage 업로드 후 url로 변환
+      const { data: { user: currentUser } } = await supabase.auth.getUser();
+      if (!currentUser?.id) throw new Error("로그인 정보 없음");
+
       const updatedList = await Promise.all(
         list.map(async (c) => {
           if (c.image.startsWith("data:image")) {
             const file = await fetch(c.image).then(r => r.blob());
             const url = await uploadCandidateImage(
               new File([file], `${c.name}.png`, { type: file.type }),
-              nickname || user.email // 폴더명(닉 or 이메일)
+              nickname || currentUser.id
             );
             return { ...c, image: url };
           }
@@ -108,14 +106,13 @@ function WorldcupMaker({ onCreate, onCancel }) {
         })
       );
 
-      // supabase worldcups 테이블에 맞춰 새 월드컵 오브젝트 준비
       const newCup = {
         title: title.trim(),
         description: desc.trim(),
         data: updatedList,
         created_at: new Date().toISOString(),
-        owner: user.email,
-        creator: user.id, // 반드시 uuid!
+        owner: currentUser.id,
+        creator: currentUser.id,
       };
 
       const id = await addWorldcupGame(newCup);
@@ -128,7 +125,6 @@ function WorldcupMaker({ onCreate, onCancel }) {
         });
       }
 
-      // 폼 초기화
       setTitle("");
       setDesc("");
       setCandidates([

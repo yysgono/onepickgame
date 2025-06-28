@@ -36,13 +36,13 @@ function EditWorldcupPage({ worldcupList, fetchWorldcups, cupId, isAdmin }) {
   const [nickname, setNickname] = useState("");
   const [originalCup, setOriginalCup] = useState(null);
   const [title, setTitle] = useState("");
-  const [desc, setDesc] = useState("");
+  const [description, setDescription] = useState("");
   const [data, setData] = useState([]);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const fileInputRefs = useRef([]);
 
-  // 1. 유저 정보 & 닉네임 로드
+  // 유저 정보 & 닉네임 로드
   useEffect(() => {
     async function fetchUser() {
       const { data: { user } } = await supabase.auth.getUser();
@@ -59,12 +59,12 @@ function EditWorldcupPage({ worldcupList, fetchWorldcups, cupId, isAdmin }) {
     fetchUser();
   }, []);
 
-  // 2. 월드컵 불러오기
+  // 월드컵 불러오기
   useEffect(() => {
     const cup = worldcupList.find(cup => String(cup.id) === String(cupId));
     setOriginalCup(cup || null);
     setTitle(cup?.title || "");
-    setDesc(cup?.desc || "");
+    setDescription(cup?.description || "");
     setData(
       (cup?.data ? cup.data.map(c =>
         ({ ...c, id: c.id || uuidv4() })
@@ -72,7 +72,7 @@ function EditWorldcupPage({ worldcupList, fetchWorldcups, cupId, isAdmin }) {
     );
   }, [worldcupList, cupId]);
 
-  // 3. 권한체크: 운영자 or (creator_id === 내 id or owner === 내 이메일)
+  // 권한 체크: 운영자 or creator/owner(uuid)가 내 id
   if (!user) {
     return <div style={{ padding: 80 }}>로그인이 필요합니다.</div>;
   }
@@ -82,8 +82,8 @@ function EditWorldcupPage({ worldcupList, fetchWorldcups, cupId, isAdmin }) {
   if (
     !isAdmin && // 운영자가 아니고
     !(
-      (originalCup.creator_id && originalCup.creator_id === user.id) ||
-      (originalCup.owner && originalCup.owner === user.email)
+      (originalCup.creator && originalCup.creator === user.id) ||
+      (originalCup.owner && originalCup.owner === user.id)
     )
   ) {
     return <div style={{ padding: 80 }}>수정 권한이 없습니다.</div>;
@@ -121,7 +121,7 @@ function EditWorldcupPage({ worldcupList, fetchWorldcups, cupId, isAdmin }) {
     setLoading(true);
 
     try {
-      // base64 이미지라면 Storage에 업로드 후 public url로 변경
+      // base64 이미지 → 업로드 후 url
       const updatedData = await Promise.all(
         data.map(async item => {
           let imageUrl = item.image;
@@ -129,11 +129,10 @@ function EditWorldcupPage({ worldcupList, fetchWorldcups, cupId, isAdmin }) {
             const file = await fetch(imageUrl).then(r => r.blob());
             const url = await uploadCandidateImage(
               new File([file], `${item.name}.png`, { type: file.type }),
-              nickname
+              nickname || user.id
             );
             imageUrl = url;
           }
-          // id가 없으면 uuid 생성
           return {
             ...item,
             id: item.id || uuidv4(),
@@ -145,7 +144,7 @@ function EditWorldcupPage({ worldcupList, fetchWorldcups, cupId, isAdmin }) {
       const updatedCup = {
         ...originalCup,
         title: title.trim(),
-        desc: desc.trim(),
+        description: description.trim(),
         data: updatedData,
       };
       await updateWorldcupGame(originalCup.id, updatedCup);
@@ -204,8 +203,8 @@ function EditWorldcupPage({ worldcupList, fetchWorldcups, cupId, isAdmin }) {
         <label style={{ fontWeight: 700, fontSize: 17, color: "#223" }}>
           설명
           <textarea
-            value={desc}
-            onChange={e => setDesc(e.target.value)}
+            value={description}
+            onChange={e => setDescription(e.target.value)}
             style={{
               width: "100%", padding: 12, borderRadius: 9,
               border: `1.7px solid ${COLORS.main}22`, fontSize: 16,

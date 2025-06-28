@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import { v4 as uuidv4 } from "uuid";
 import { uploadCandidateImage } from "../utils/supabaseImageUpload";
 import { addWorldcupGame } from "../utils/supabaseGameApi";
+import { supabase } from "../utils/supabaseClient";
 
 function getYoutubeThumb(url) {
   const match = url.match(
@@ -58,7 +59,11 @@ export default function MakeWorldcup({ worldcupList, setWorldcupList, onClose })
     setLoading(true);
 
     try {
-      // base64 이미지라면 Storage에 업로드 후 public url로 변경
+      // 로그인 유저 uuid 가져오기
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user?.id) throw new Error("로그인 정보 없음");
+
+      // base64 이미지 업로드
       const updatedCandidates = await Promise.all(
         candidates.map(async c => {
           let imageUrl = c.image?.trim();
@@ -66,23 +71,21 @@ export default function MakeWorldcup({ worldcupList, setWorldcupList, onClose })
             const file = await fetch(imageUrl).then(r => r.blob());
             const url = await uploadCandidateImage(
               new File([file], `${c.name}.png`, { type: file.type }),
-              localStorage.getItem("onepickgame_user") || "guest"
+              user.id
             );
             imageUrl = url;
           }
-          // 후보 id가 없다면 새로 생성
           return { ...c, id: c.id || uuidv4(), image: imageUrl, name: c.name.trim() };
         })
       );
 
-      const owner = localStorage.getItem("onepickgame_user") || "";
       const newCup = {
         title: title.trim(),
         description: desc.trim(),
         data: updatedCandidates,
         created_at: new Date().toISOString(),
-        owner,
-        creator: owner,
+        owner: user.id,
+        creator: user.id,
       };
 
       await addWorldcupGame(newCup);
@@ -186,13 +189,11 @@ export default function MakeWorldcup({ worldcupList, setWorldcupList, onClose })
                   onChange={e => {
                     const file = e.target.files[0];
                     if (!file) return;
-
                     const allowed = /\.(jpe?g|png)$/i;
                     if (!allowed.test(file.name)) {
                       alert("jpg, jpeg, png 파일만 업로드 가능합니다.");
                       return;
                     }
-
                     const reader = new FileReader();
                     reader.onload = ev => updateCandidate(idx, "image", ev.target.result);
                     reader.readAsDataURL(file);
