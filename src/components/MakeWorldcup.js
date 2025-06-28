@@ -78,7 +78,7 @@ export default function MakeWorldcup({ worldcupList, setWorldcupList, onClose })
       const owner = localStorage.getItem("onepickgame_user") || "";
       const newCup = {
         title: title.trim(),
-        desc: desc.trim(),
+        description: desc.trim(),
         data: updatedCandidates,
         created_at: new Date().toISOString(),
         owner,

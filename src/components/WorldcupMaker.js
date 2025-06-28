@@ -111,7 +111,7 @@ function WorldcupMaker({ onCreate, onCancel }) {
       // supabase worldcups 테이블에 맞춰 새 월드컵 오브젝트 준비
       const newCup = {
         title: title.trim(),
-        desc: desc.trim(),
+        description: desc.trim(),
         data: updatedList,
         created_at: new Date().toISOString(),
         owner: user.email,
