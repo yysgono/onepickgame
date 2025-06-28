@@ -15,7 +15,6 @@ const COLORS = {
   soft: "#f5f7fa",
 };
 
-// 시간 포맷
 function getNow(t) {
   const d = new Date(t || Date.now());
   return (
@@ -46,13 +45,11 @@ export default function CommentBox({ cupId }) {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // 유저/닉네임 가져오기
   useEffect(() => {
     async function fetchUser() {
       const { data } = await supabase.auth.getUser();
       if (data?.user) {
         setUser(data.user);
-        // 프로필 닉네임
         const { data: profile } = await supabase
           .from("profiles")
           .select("nickname")
@@ -64,18 +61,19 @@ export default function CommentBox({ cupId }) {
     fetchUser();
   }, []);
 
-  // 댓글 목록
   useEffect(() => {
-    async function fetchComments() {
-      const { data } = await supabase
-        .from("comments")
-        .select("*")
-        .eq("cup_id", cupId)
-        .order("created_at", { ascending: false });
-      setComments(data || []);
-    }
-    if (cupId) fetchComments();
+    fetchComments();
+    // eslint-disable-next-line
   }, [cupId]);
+
+  async function fetchComments() {
+    const { data } = await supabase
+      .from("comments")
+      .select("*")
+      .eq("cup_id", cupId)
+      .order("created_at", { ascending: false });
+    setComments(data || []);
+  }
 
   function containsBadword(str) {
     return hasBadword(str, i18n.language);
@@ -100,13 +98,14 @@ export default function CommentBox({ cupId }) {
       return setError(t("comment.limitNicknameByte") || "닉네임은 최대 12바이트까지 가능합니다.");
 
     setLoading(true);
-    // 댓글 등록 (user_id 포함)
     const { error: insertErr } = await supabase.from("comments").insert([
       {
         cup_id: cupId,
         nickname,
         content: text,
         user_id: user.id,
+        upvotes: 0,
+        downvotes: 0,
       }
     ]);
     setLoading(false);
@@ -116,16 +115,9 @@ export default function CommentBox({ cupId }) {
       return;
     }
     setContent("");
-    // 등록 후 새로고침
-    const { data } = await supabase
-      .from("comments")
-      .select("*")
-      .eq("cup_id", cupId)
-      .order("created_at", { ascending: false });
-    setComments(data || []);
+    fetchComments();
   }
 
-  // 댓글 삭제 (본인 or admin)
   async function handleDelete(commentId, commentUserId) {
     if (!user) return;
     const isAdmin = nickname === "admin";
@@ -138,13 +130,19 @@ export default function CommentBox({ cupId }) {
       .delete()
       .eq("id", commentId);
     if (deleteErr) setError(deleteErr.message);
-    // 새로고침
-    const { data } = await supabase
-      .from("comments")
-      .select("*")
-      .eq("cup_id", cupId)
-      .order("created_at", { ascending: false });
-    setComments(data || []);
+    fetchComments();
+  }
+
+  // 👍 추천
+  async function handleUpvote(commentId) {
+    // 안전하게 DB에서 +1
+    await supabase.rpc('increment_comment_upvotes', { comment_id: commentId });
+    fetchComments();
+  }
+  // 👎 비추천
+  async function handleDownvote(commentId) {
+    await supabase.rpc('increment_comment_downvotes', { comment_id: commentId });
+    fetchComments();
   }
 
   return (
@@ -351,7 +349,13 @@ export default function CommentBox({ cupId }) {
                 letterSpacing: 0.1,
               }}
             >
-              {c.content}
+              {(c.downvotes >= 3 && c.downvotes >= (c.upvotes * 2)) ? (
+                <span style={{ color: "#aaa", fontStyle: "italic" }}>
+                  🚫 블라인드 처리된 댓글입니다
+                </span>
+              ) : (
+                c.content
+              )}
             </div>
             <div
               style={{
@@ -362,6 +366,36 @@ export default function CommentBox({ cupId }) {
                 alignItems: "center",
               }}
             >
+              <button
+                style={{
+                  color: COLORS.like,
+                  border: "none",
+                  background: "none",
+                  fontWeight: 700,
+                  cursor: "pointer",
+                  fontSize: 15,
+                  padding: 0,
+                }}
+                onClick={() => handleUpvote(c.id)}
+                title="추천"
+              >
+                👍 추천 {c.upvotes || 0}
+              </button>
+              <button
+                style={{
+                  color: COLORS.danger,
+                  border: "none",
+                  background: "none",
+                  fontWeight: 700,
+                  cursor: "pointer",
+                  fontSize: 15,
+                  padding: 0,
+                }}
+                onClick={() => handleDownvote(c.id)}
+                title="비추천"
+              >
+                👎 비추천 {c.downvotes || 0}
+              </button>
               {(user && (nickname === "admin" || c.user_id === user.id)) && (
                 <button
                   style={{

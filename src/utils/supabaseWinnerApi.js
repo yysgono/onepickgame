@@ -86,3 +86,30 @@ export async function deleteWinnerStat(id) {
   }
   return true;
 }
+
+export async function saveWinnerStatsToDB(cup_id, statsArr) {
+  for (const s of statsArr) {
+    const { candidate_id, win_count, match_wins, match_count, total_games, name, image, user_id, guest_id } = s;
+    // 1. 기존 데이터 불러오기
+    const prevArr = await getWinnerStats({ cup_id, candidate_id, user_id, guest_id });
+    const prev = prevArr && prevArr.length > 0 ? prevArr[0] : {};
+    // 2. 누적 합산
+    const newWinCount = (prev.win_count || 0) + (win_count || 0);
+    const newMatchWins = (prev.match_wins || 0) + (match_wins || 0);
+    const newMatchCount = (prev.match_count || 0) + (match_count || 0);
+    const newTotalGames = (prev.total_games || 0) + (total_games || 0);
+    // 3. upsert
+    await addWinnerStat({
+      cup_id,
+      candidate_id,
+      user_id,
+      guest_id,
+      win_count: newWinCount,
+      match_wins: newMatchWins,
+      match_count: newMatchCount,
+      total_games: newTotalGames,
+      name,
+      image
+    });
+  }
+}

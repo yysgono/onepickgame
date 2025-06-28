@@ -10,7 +10,7 @@ import {
 import { useTranslation } from "react-i18next";
 import MediaRenderer from "./MediaRenderer";
 
-// --- bracket 생성 함수 (동일)
+// --- bracket 생성 함수
 function makeFirstRound(players) {
   const n = players.length;
   const nextPowerOf2 = 2 ** Math.ceil(Math.log2(n));
@@ -42,8 +42,8 @@ function shuffle(arr) {
   }
   return arr;
 }
-function getStageLabel(n) {
-  if (n === 2) return "결승전";
+function getStageLabel(n, totalCandidates) {
+  if (n === 2 && totalCandidates > 2) return "결승전";
   if (n === 4) return "4강";
   if (n === 8) return "8강";
   if (n === 16) return "16강";
@@ -289,7 +289,7 @@ function Match({ cup, onResult, selectedCount }) {
           color: "#194893",
         }}
       >
-        {getStageLabel(bracket.length * 2)}{" "}
+        {getStageLabel(bracket.length * 2, cup.data.length)}{" "}
         {bracket.length === 1 ? "" : `${idx + 1} / ${bracket.length}`}
       </div>
       {bracket.length > 1 && nextRoundCandidates.length === 2 && (
