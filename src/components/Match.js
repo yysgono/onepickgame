@@ -5,25 +5,51 @@ import {
   calcStatsFromMatchHistory,
   getOrCreateGuestId,
   insertWinnerLog,
-  deleteOldWinnerLogAndStats, // 추가
+  deleteOldWinnerLogAndStats,
 } from "../utils";
 import { useTranslation } from "react-i18next";
 import MediaRenderer from "./MediaRenderer";
 
-// --- bracket 생성 함수
+// n: 남은 참가자, isFirst: 첫 라운드
+function getStageLabel(n, isFirst = false) {
+  if (isFirst) return `${n}강`;
+  if (n === 2) return "결승전";
+  if (n === 4) return "4강";
+  if (n === 8) return "8강";
+  if (n === 16) return "16강";
+  if (n === 32) return "32강";
+  if (n === 64) return "64강";
+  if (n === 128) return "128강";
+  return `${n}강`;
+}
+
+// 2의 제곱수 중 n 이상인 가장 작은 값
+function nextPowerOfTwo(n) {
+  let k = 1;
+  while (k < n) k *= 2;
+  return k;
+}
+
+// 첫 라운드는 여러 명 부전승
 function makeFirstRound(players) {
-  const n = players.length;
-  const nextPowerOf2 = 2 ** Math.ceil(Math.log2(n));
-  const numByes = nextPowerOf2 - n;
   const shuffled = shuffle([...players]);
-  const byes = shuffled.slice(0, numByes);
-  const rest = shuffled.slice(numByes);
+  const pow2 = nextPowerOfTwo(players.length);
+  const byesCount = pow2 - players.length;
   const matches = [];
-  for (let i = 0; i < rest.length; i += 2) {
-    matches.push([rest[i], rest[i + 1] || null]);
+  const byes = [];
+  let idx = 0;
+  for (let i = 0; i < players.length; ) {
+    if (byes.length < byesCount) {
+      byes.push(shuffled[i]);
+      i += 1;
+    } else {
+      matches.push([shuffled[i], shuffled[i + 1] || null]);
+      i += 2;
+    }
   }
   return { matches, byes };
 }
+
 function makeNextRound(winners) {
   const shuffled = shuffle([...winners]);
   const matches = [];
@@ -32,6 +58,7 @@ function makeNextRound(winners) {
   }
   return matches;
 }
+
 function shuffle(arr) {
   let m = arr.length, t, i;
   while (m) {
@@ -42,16 +69,7 @@ function shuffle(arr) {
   }
   return arr;
 }
-function getStageLabel(n, totalCandidates) {
-  if (n === 2 && totalCandidates > 2) return "결승전";
-  if (n === 4) return "4강";
-  if (n === 8) return "8강";
-  if (n === 16) return "16강";
-  if (n === 32) return "32강";
-  if (n === 64) return "64강";
-  if (n === 128) return "128강";
-  return `${n}강`;
-}
+
 function truncateNames(candidates, maxWords = 3) {
   return candidates.map(c => {
     if (!c?.name) return "?";
@@ -69,13 +87,14 @@ function Match({ cup, onResult, selectedCount }) {
   const [pendingWinners, setPendingWinners] = useState([]);
   const [matchHistory, setMatchHistory] = useState([]);
   const [autoPlaying, setAutoPlaying] = useState(false);
+  const [firstRoundCount, setFirstRoundCount] = useState(0); // 첫 라운드 참가자 저장
 
   useEffect(() => {
     let players = cup.data;
     if (selectedCount && players.length > selectedCount) {
       players = shuffle([...players]).slice(0, selectedCount);
     }
-    // 👇 게임 시작 전 기존 기록 삭제 (덮어쓰기)
+    // 👇 기존 기록 삭제
     let userId = null;
     try {
       const u = localStorage.getItem("onepickgame_user");
@@ -90,6 +109,7 @@ function Match({ cup, onResult, selectedCount }) {
     setIdx(0);
     setRoundNum(1);
     setMatchHistory([]);
+    setFirstRoundCount(players.length); // 첫 라운드 참가자 기억
   }, [cup, selectedCount]);
 
   useEffect(() => {
@@ -101,23 +121,19 @@ function Match({ cup, onResult, selectedCount }) {
       const nextRoundCandidates =
         roundNum === 1 ? [...pendingWinners, ...matchWinners] : matchWinners;
       if (nextRoundCandidates.length === 1) {
-        // ----------- 경기 끝, 통계 저장 1인 1회만 ----------
-        // 1. 유저/비회원 구분
+        // ----------- 경기 끝, 통계 저장 ----------
         let userId = null;
         try {
           const u = localStorage.getItem("onepickgame_user");
           if (u) userId = JSON.parse(u)?.id || null;
         } catch (e) { userId = null; }
         const guestId = !userId ? getOrCreateGuestId() : null;
-
-        // 2. winner_logs 테이블에 insert (중복방지)
         insertWinnerLog(cup.id, userId, guestId).then(async (canSave) => {
           if (canSave) {
-            // 3. 통계 upsert (누적)
             const statsArr = calcStatsFromMatchHistory(cup.data, nextRoundCandidates[0], matchHistory);
+            console.log("[saveWinnerStatsToDB]", { cupId: cup.id, userId, guestId, statsArr });
             await saveWinnerStatsToDB(cup.id, statsArr);
           }
-          // 4. 결과로 이동(항상 호출)
           onResult(nextRoundCandidates[0], matchHistory);
         });
         return;
@@ -132,6 +148,7 @@ function Match({ cup, onResult, selectedCount }) {
 
   const currentMatch = bracket[idx] || [];
   const [c1, c2] = currentMatch;
+
   useEffect(() => {
     if (!c1 || !c2) {
       if (c1 || c2) {
@@ -142,6 +159,7 @@ function Match({ cup, onResult, selectedCount }) {
     }
     // eslint-disable-next-line
   }, [idx, bracket]);
+
   function handlePick(winnerIdx) {
     if (autoPlaying) return;
     const winner = winnerIdx === 0 ? c1 : c2;
@@ -151,7 +169,7 @@ function Match({ cup, onResult, selectedCount }) {
     ]);
     setIdx(idx + 1);
   }
-  // --- UI part (동일)
+
   const vw = typeof window !== "undefined" ? Math.min(window.innerWidth, 900) : 900;
   const isMobile = vw < 700;
   const TITLE_SIZE = isMobile ? 66 : 100;
@@ -289,9 +307,18 @@ function Match({ cup, onResult, selectedCount }) {
           color: "#194893",
         }}
       >
-        {getStageLabel(bracket.length * 2, cup.data.length)}{" "}
+        {getStageLabel(
+          bracket.length * 2 + pendingWinners.length,
+          roundNum === 1
+        )}{" "}
         {bracket.length === 1 ? "" : `${idx + 1} / ${bracket.length}`}
       </div>
+      {/* 부전승 안내 */}
+      {roundNum === 1 && pendingWinners.length > 0 && (
+        <div style={{ color: "#888", margin: "7px 0 15px 0" }}>
+          {pendingWinners.length}명은 부전승으로 다음 라운드 자동 진출!
+        </div>
+      )}
       {bracket.length > 1 && nextRoundCandidates.length === 2 && (
         <div
           style={{

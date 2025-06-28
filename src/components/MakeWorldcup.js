@@ -2,6 +2,7 @@
 
 import React, { useState, useRef } from "react";
 import { useTranslation } from "react-i18next";
+import { v4 as uuidv4 } from "uuid";
 import { uploadCandidateImage } from "../utils/supabaseImageUpload";
 import { addWorldcupGame } from "../utils/supabaseGameApi";
 
@@ -25,8 +26,8 @@ export default function MakeWorldcup({ worldcupList, setWorldcupList, onClose })
   const [title, setTitle] = useState("");
   const [desc, setDesc] = useState("");
   const [candidates, setCandidates] = useState([
-    { name: "", image: "" },
-    { name: "", image: "" },
+    { id: uuidv4(), name: "", image: "" },
+    { id: uuidv4(), name: "", image: "" },
   ]);
   const [error, setError] = useState("");
   const [ok, setOk] = useState("");
@@ -34,7 +35,7 @@ export default function MakeWorldcup({ worldcupList, setWorldcupList, onClose })
   const fileInputRefs = useRef([]);
 
   function addCandidate() {
-    setCandidates(arr => [...arr, { name: "", image: "" }]);
+    setCandidates(arr => [...arr, { id: uuidv4(), name: "", image: "" }]);
   }
   function removeCandidate(idx) {
     setCandidates(arr => arr.filter((_, i) => i !== idx));
@@ -57,6 +58,7 @@ export default function MakeWorldcup({ worldcupList, setWorldcupList, onClose })
     setLoading(true);
 
     try {
+      // base64 이미지라면 Storage에 업로드 후 public url로 변경
       const updatedCandidates = await Promise.all(
         candidates.map(async c => {
           let imageUrl = c.image?.trim();
@@ -68,7 +70,8 @@ export default function MakeWorldcup({ worldcupList, setWorldcupList, onClose })
             );
             imageUrl = url;
           }
-          return { ...c, image: imageUrl };
+          // 후보 id가 없다면 새로 생성
+          return { ...c, id: c.id || uuidv4(), image: imageUrl, name: c.name.trim() };
         })
       );
 
@@ -76,11 +79,7 @@ export default function MakeWorldcup({ worldcupList, setWorldcupList, onClose })
       const newCup = {
         title: title.trim(),
         desc: desc.trim(),
-        data: updatedCandidates.map((c, i) => ({
-          id: String(i + 1),
-          name: c.name.trim(),
-          image: c.image,
-        })),
+        data: updatedCandidates,
         created_at: new Date().toISOString(),
         owner,
         creator: owner,
@@ -89,7 +88,10 @@ export default function MakeWorldcup({ worldcupList, setWorldcupList, onClose })
       await addWorldcupGame(newCup);
       setOk("월드컵이 생성되었습니다!");
       setTitle(""); setDesc("");
-      setCandidates([{ name: "", image: "" }, { name: "", image: "" }]);
+      setCandidates([
+        { id: uuidv4(), name: "", image: "" },
+        { id: uuidv4(), name: "", image: "" },
+      ]);
       if (setWorldcupList) setWorldcupList([...worldcupList, newCup]);
       if (onClose) onClose();
     } catch (e) {
@@ -147,7 +149,7 @@ export default function MakeWorldcup({ worldcupList, setWorldcupList, onClose })
                   : null;
 
             return (
-              <div key={idx} style={{ display: "flex", gap: 8, marginBottom: 7, alignItems: "center" }}>
+              <div key={c.id} style={{ display: "flex", gap: 8, marginBottom: 7, alignItems: "center" }}>
                 <input
                   value={c.name}
                   onChange={e => updateCandidate(idx, "name", e.target.value)}
@@ -165,7 +167,7 @@ export default function MakeWorldcup({ worldcupList, setWorldcupList, onClose })
                 />
                 <button
                   type="button"
-                  onClick={() => fileInputRefs.current[idx].click()}
+                  onClick={() => fileInputRefs.current[idx]?.click()}
                   style={{
                     background: "linear-gradient(90deg, #1976ed 70%, #45b7fa 100%)",
                     color: "#fff", border: "none", borderRadius: 7,
@@ -206,6 +208,16 @@ export default function MakeWorldcup({ worldcupList, setWorldcupList, onClose })
                   >
                     삭제
                   </button>
+                )}
+                {thumb && (
+                  <img
+                    src={thumb}
+                    alt=""
+                    style={{
+                      width: 32, height: 32, objectFit: "cover", borderRadius: 8, background: "#f2f2f2",
+                      boxShadow: "0 2px 8px #0001", border: "1.2px solid #eee", marginLeft: 8,
+                    }}
+                  />
                 )}
               </div>
             );

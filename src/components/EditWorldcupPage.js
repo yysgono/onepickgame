@@ -1,5 +1,8 @@
+// src/components/EditWorldcupPage.jsx
+
 import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { v4 as uuidv4 } from "uuid";
 import { updateWorldcupGame } from "../utils/supabaseWorldcupApi";
 import { uploadCandidateImage } from "../utils/supabaseImageUpload";
 import { supabase } from "../utils/supabaseClient";
@@ -26,7 +29,6 @@ function getYoutubeThumb(url) {
   return null;
 }
 
-// isAdmin 추가!
 function EditWorldcupPage({ worldcupList, fetchWorldcups, cupId, isAdmin }) {
   const navigate = useNavigate();
 
@@ -63,7 +65,11 @@ function EditWorldcupPage({ worldcupList, fetchWorldcups, cupId, isAdmin }) {
     setOriginalCup(cup || null);
     setTitle(cup?.title || "");
     setDesc(cup?.desc || "");
-    setData(cup?.data ? [...cup.data] : []);
+    setData(
+      (cup?.data ? cup.data.map(c =>
+        ({ ...c, id: c.id || uuidv4() })
+      ) : [])
+    );
   }, [worldcupList, cupId]);
 
   // 3. 권한체크: 운영자 or (creator_id === 내 id or owner === 내 이메일)
@@ -84,7 +90,7 @@ function EditWorldcupPage({ worldcupList, fetchWorldcups, cupId, isAdmin }) {
   }
 
   function handleAddCandidate() {
-    setData(d => [...d, { id: Date.now() + Math.random(), name: "", image: "" }]);
+    setData(d => [...d, { id: uuidv4(), name: "", image: "" }]);
   }
   function handleDeleteCandidate(idx) {
     setData(d => d.filter((_, i) => i !== idx));
@@ -127,8 +133,10 @@ function EditWorldcupPage({ worldcupList, fetchWorldcups, cupId, isAdmin }) {
             );
             imageUrl = url;
           }
+          // id가 없으면 uuid 생성
           return {
             ...item,
+            id: item.id || uuidv4(),
             name: item.name.trim(),
             image: imageUrl?.trim() || "",
           };

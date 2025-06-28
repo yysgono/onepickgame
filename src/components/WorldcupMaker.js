@@ -1,4 +1,7 @@
+// src/components/WorldcupMaker.jsx
+
 import React, { useState, useEffect } from "react";
+import { v4 as uuidv4 } from "uuid";
 import { useTranslation } from "react-i18next";
 import CandidateInput from "./CandidateInput";
 import COLORS from "../styles/theme";
@@ -19,8 +22,8 @@ function WorldcupMaker({ onCreate, onCancel }) {
   const [title, setTitle] = useState("");
   const [desc, setDesc] = useState("");
   const [candidates, setCandidates] = useState([
-    { id: 1, name: "", image: "" },
-    { id: 2, name: "", image: "" },
+    { id: uuidv4(), name: "", image: "" },
+    { id: uuidv4(), name: "", image: "" },
   ]);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -59,7 +62,7 @@ function WorldcupMaker({ onCreate, onCancel }) {
   function addCandidate() {
     setCandidates((candidates) => [
       ...candidates,
-      { id: Date.now(), name: "", image: "" },
+      { id: uuidv4(), name: "", image: "" },
     ]);
   }
   function updateCandidate(idx, val) {
@@ -80,6 +83,7 @@ function WorldcupMaker({ onCreate, onCancel }) {
         ...c,
         name: c.name.trim(),
         image: c.image.trim(),
+        id: c.id || uuidv4(), // 혹시 id 누락시 uuid 생성
       }))
       .filter((c) => c.name && c.image);
 
@@ -108,11 +112,7 @@ function WorldcupMaker({ onCreate, onCancel }) {
       const newCup = {
         title: title.trim(),
         desc: desc.trim(),
-        data: updatedList.map((c, i) => ({
-          id: String(i + 1),
-          name: c.name,
-          image: c.image,
-        })),
+        data: updatedList,
         created_at: new Date().toISOString(),
         owner: user.email,
         creator: user.id, // 반드시 uuid!
@@ -132,8 +132,8 @@ function WorldcupMaker({ onCreate, onCancel }) {
       setTitle("");
       setDesc("");
       setCandidates([
-        { id: 1, name: "", image: "" },
-        { id: 2, name: "", image: "" },
+        { id: uuidv4(), name: "", image: "" },
+        { id: uuidv4(), name: "", image: "" },
       ]);
     } catch (e) {
       setError("저장 실패! 잠시 후 다시 시도해 주세요.");
