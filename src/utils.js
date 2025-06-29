@@ -1,3 +1,5 @@
+// src/utils/utils.js
+
 import { supabase } from "./utils/supabaseClient";
 
 // ===== 유튜브 관련 =====
@@ -33,6 +35,21 @@ export function getOrCreateGuestId() {
   return guestId;
 }
 
+// 유저 or 비회원 ID 구분 (항상 이 함수만 부르면 됨)
+export async function getUserOrGuestId() {
+  const { data } = await supabase.auth.getUser();
+  if (data?.user?.id) {
+    return { user_id: data.user.id, guest_id: null };
+  } else {
+    let guest_id = localStorage.getItem("guest_id");
+    if (!guest_id) {
+      guest_id = crypto.randomUUID();
+      localStorage.setItem("guest_id", guest_id);
+    }
+    return { user_id: null, guest_id };
+  }
+}
+
 /**
  * winner_logs 테이블에 insert로 1회 중복 체크
  * @param {string} cupId
@@ -59,7 +76,7 @@ export async function insertWinnerLog(cupId, userId, guestId) {
   return true;
 }
 
-// === 기존 기록 삭제 함수(덮어쓰기) ===
+// 기존 기록 삭제 함수(덮어쓰기)
 export async function deleteOldWinnerLogAndStats(cupId, userId, guestId) {
   // winner_logs에서 이전 기록 삭제
   await supabase
@@ -69,16 +86,12 @@ export async function deleteOldWinnerLogAndStats(cupId, userId, guestId) {
       cup_id: cupId,
       ...(userId ? { user_id: userId } : { guest_id: guestId }),
     });
+
   // winner_stats에서 해당 유저/비회원이 올린 통계도 (필요시) 지우고 싶으면 아래 활성화
   // await supabase.from("winner_stats").delete().match({ cup_id: cupId, ...(userId ? { user_id: userId } : { guest_id: guestId }) });
 }
 
-// ========== DB 통계 (winner_stats) ==========
-/**
- * winner_stats 테이블에서 통계 가져오기
- * @param {string|number} cupId
- * @returns {Promise<Array>} [{candidate_id, win_count, match_wins, match_count, total_games}]
- */
+// winner_stats 테이블에서 통계 가져오기
 export async function fetchWinnerStatsFromDB(cupId) {
   const { data, error } = await supabase
     .from("winner_stats")
@@ -123,7 +136,7 @@ export async function saveWinnerStatsToDB(cupId, statsArr) {
 
   const { error } = await supabase
     .from("winner_stats")
-    .upsert(rows, { onConflict: ['cup_id', 'candidate_id', 'user_id', 'guest_id'] });  // ★수정!★
+    .upsert(rows, { onConflict: ['user_id', 'guest_id', 'cup_id', 'candidate_id'] });
 
   if (error) {
     console.error("DB save error", error);
@@ -132,7 +145,7 @@ export async function saveWinnerStatsToDB(cupId, statsArr) {
   return true;
 }
 
-// === 후보별 통계 배열 만들기 (매치 히스토리→집계) ===
+// 후보별 통계 배열 만들기 (매치 히스토리→집계)
 export function calcStatsFromMatchHistory(candidates, winner, matchHistory) {
   const statsMap = {};
   candidates.forEach(c => {
@@ -161,7 +174,7 @@ export function calcStatsFromMatchHistory(candidates, winner, matchHistory) {
   return Object.values(statsMap);
 }
 
-// =========== 최다 우승자 반환 (DB 버전) ===========
+// 최다 우승자 반환 (DB 버전)
 export function getMostWinnerFromDB(statsArr, cupData) {
   if (!statsArr || !Array.isArray(statsArr)) return null;
   let maxWin = -1;

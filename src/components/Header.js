@@ -1,3 +1,5 @@
+// src/components/Header.js
+
 import React, { useRef, useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
@@ -182,12 +184,6 @@ export default function Header({
   }
 
   function handleLogoClick() { navigate("/"); }
-  function handleOverlayClick(e) {
-    if (e.target === e.currentTarget) {
-      setShowProfile(false);
-    }
-  }
-
   function handleWithdrawCancel() {
     setShowProfile(false);
   }
@@ -282,7 +278,7 @@ export default function Header({
               <button style={myInfoButtonStyle} onClick={() => setShowProfile(true)}>내정보수정</button>
               <button style={logoutButtonStyle} onClick={handleLogout}>{t("logout")}</button>
               {showProfile && (
-                <div style={modalOverlayStyle} onClick={handleOverlayClick}>
+                <div style={modalOverlayStyle}>
                   <div style={modalContentStyle} onClick={e => e.stopPropagation()}>
                     <div style={{ fontWeight: 800, fontSize: 21, marginBottom: 18, textAlign: "center" }}>
                       내 정보 수정
@@ -352,7 +348,7 @@ export default function Header({
             <>
               <button style={primaryButtonStyle} onClick={() => setShowLogin(true)}>{t("login")}</button>
               {showLogin && (
-                <div style={modalOverlayStyle} onClick={() => setShowLogin(false)}>
+                <div style={modalOverlayStyle}>
                   <div style={modalContentStyle} onClick={e => e.stopPropagation()}>
                     <div style={{ fontWeight: 800, fontSize: 22, marginBottom: 12, textAlign: "center" }}>{t("로그인")}</div>
                     <form style={{ width: "100%" }} onSubmit={handleLogin}>
