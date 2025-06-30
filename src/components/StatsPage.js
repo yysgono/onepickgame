@@ -1,18 +1,10 @@
+// src/components/StatsPage.jsx
 import React, { useState, useEffect } from "react";
 import { fetchWinnerStatsFromDB } from "../utils";
 import { useTranslation } from "react-i18next";
 import MediaRenderer from "./MediaRenderer";
 import COLORS from "../styles/theme";
 import CommentBox from "./CommentBox";
-
-// 이미지 썸네일 처리
-function getThumb(image) {
-  if (!image) return "";
-  if (image.endsWith(".mp4") || image.endsWith(".webm") || image.endsWith(".ogg")) return image;
-  if (image.startsWith("data:image/")) return image;
-  if (image.startsWith("http")) return image;
-  return "";
-}
 
 function percent(n, d) {
   if (!d) return "-";
@@ -220,34 +212,15 @@ function StatsPage({ selectedCup, showCommentBox = true }) {
                       ) : i + 1}
                     </td>
                     <td style={{ padding: "7px 0" }}>
-                      {row.image && (
-                        row.image.endsWith(".mp4") || row.image.endsWith(".webm") || row.image.endsWith(".ogg") ? (
-                          <video
-                            src={row.image}
-                            style={{
-                              width: isMobile ? 30 : 44,
-                              height: isMobile ? 30 : 44,
-                              borderRadius: 9,
-                              objectFit: "cover"
-                            }}
-                            muted
-                            autoPlay
-                            loop
-                            playsInline
-                          />
-                        ) : (
-                          <img
-                            src={getThumb(row.image)}
-                            alt={row.name}
-                            style={{
-                              width: isMobile ? 30 : 44,
-                              height: isMobile ? 30 : 44,
-                              borderRadius: 9,
-                              objectFit: "cover"
-                            }}
-                          />
-                        )
-                      )}
+                      <div style={{
+                        width: isMobile ? 30 : 44,
+                        height: isMobile ? 30 : 44,
+                        borderRadius: 9,
+                        overflow: "hidden",
+                        margin: "0 auto"
+                      }}>
+                        <MediaRenderer url={row.image} alt={row.name} />
+                      </div>
                     </td>
                     <td
                       style={{

@@ -1,6 +1,9 @@
+// src/components/WorldcupDetail.jsx
 import React from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { mainButtonStyle, grayButtonStyle } from "../styles/common"; // 공통 버튼 스타일 import
+
+const DEFAULT_IMAGE = "/default-thumb.png";
 
 function WorldcupDetail({ worldcupList }) {
   const { id } = useParams();
@@ -41,7 +44,7 @@ function WorldcupDetail({ worldcupList }) {
         {cup.data.map(item => (
           <div key={item.id} style={{ width: isMobile ? 74 : 120, textAlign: "center" }}>
             <img
-              src={item.image}
+              src={item.image || DEFAULT_IMAGE}
               alt={item.name}
               style={{
                 width: isMobile ? 74 : 120,
@@ -50,6 +53,7 @@ function WorldcupDetail({ worldcupList }) {
                 borderRadius: 10,
                 marginBottom: 6
               }}
+              onError={e => { e.target.onerror = null; e.target.src = DEFAULT_IMAGE; }}
             />
             <div style={{ fontSize: isMobile ? 12 : 16 }}>{item.name}</div>
           </div>

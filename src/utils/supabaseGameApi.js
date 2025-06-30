@@ -31,9 +31,12 @@ export async function upsertWinnerLog({ cup_id, winner_id }) {
   await deleteQuery;
 
   // 2. 새 로그 추가 (insert)
+  const payload = { user_id, guest_id, cup_id, winner_id };
+  console.log("insert payload (winner_logs):", payload);
+
   const { data, error } = await supabase
     .from("winner_logs")
-    .insert([{ user_id, guest_id, cup_id, winner_id }])
+    .insert([payload])
     .select()
     .single();
   if (error) throw error;
@@ -67,23 +70,25 @@ export async function upsertMyWinnerStat({
   match_count = 0,
 }) {
   const { user_id, guest_id } = await getUserOrGuestId();
+
+  const payload = {
+    user_id,
+    guest_id,
+    cup_id,
+    candidate_id,
+    win_count,
+    match_wins,
+    total_games,
+    name,
+    image,
+    match_count,
+  };
+  console.log("insert payload (winner_stats):", payload);
+
   const { data, error } = await supabase
     .from("winner_stats")
     .upsert(
-      [
-        {
-          user_id,
-          guest_id,
-          cup_id,
-          candidate_id,
-          win_count,
-          match_wins,
-          total_games,
-          name,
-          image,
-          match_count,
-        },
-      ],
+      [payload],
       { onConflict: ["user_id", "guest_id", "cup_id", "candidate_id"] }
     )
     .select()

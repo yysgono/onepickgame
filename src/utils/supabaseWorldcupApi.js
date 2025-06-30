@@ -1,6 +1,6 @@
 import { supabase } from "./supabaseClient";
 
-// 월드컵 전체
+// 월드컵 전체 조회
 export async function getWorldcupGames() {
   const { data, error } = await supabase
     .from("worldcups")
@@ -10,7 +10,7 @@ export async function getWorldcupGames() {
   return data;
 }
 
-// 월드컵 1개
+// 월드컵 단일 조회
 export async function getWorldcupGame(id) {
   const { data, error } = await supabase
     .from("worldcups")
@@ -18,10 +18,11 @@ export async function getWorldcupGame(id) {
     .eq("id", id)
     .single();
   if (error) throw error;
+  if (!data) throw new Error("월드컵 데이터를 찾을 수 없습니다.");
   return data;
 }
 
-// 추가
+// 월드컵 추가
 export async function addWorldcupGame(cup) {
   const { data, error } = await supabase
     .from("worldcups")
@@ -32,7 +33,7 @@ export async function addWorldcupGame(cup) {
   return data.id;
 }
 
-// 수정
+// 월드컵 수정
 export async function updateWorldcupGame(id, updates) {
   const { error } = await supabase
     .from("worldcups")
@@ -42,7 +43,8 @@ export async function updateWorldcupGame(id, updates) {
   return true;
 }
 
-// 삭제
+// 월드컵 삭제
+// ---- 여기 함수만 남기고, 중복 함수는 전부 이 파일 import해서 쓰기!
 export async function deleteWorldcupGame(id) {
   const { error } = await supabase
     .from("worldcups")

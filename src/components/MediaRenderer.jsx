@@ -1,12 +1,26 @@
-// MediaRenderer.js
-import React from "react";
+// src/components/MediaRenderer.js
+import React, { useState } from "react";
 import { getYoutubeId } from "../utils";
 
+// fallback 기본 이미지 경로
+const DEFAULT_IMAGE = "/default-thumb.png";
+
 function MediaRenderer({ url, alt = "" }) {
-  if (!url) return null;
+  const [imgError, setImgError] = useState(false);
+
+  if (!url && !imgError) {
+    // url 없을 때 fallback
+    return (
+      <img
+        src={DEFAULT_IMAGE}
+        alt={alt || "기본 이미지"}
+        style={{ width: "100%", height: "100%", objectFit: "cover" }}
+      />
+    );
+  }
 
   const youtubeId = getYoutubeId(url);
-  const ext = url.split(".").pop().toLowerCase();
+  const ext = url ? url.split(".").pop().toLowerCase() : "";
   const isVideo = ext === "mp4" || ext === "webm" || ext === "ogg";
   const isGif = ext === "gif";
 
@@ -32,22 +46,22 @@ function MediaRenderer({ url, alt = "" }) {
         autoPlay
         playsInline
         controls={false}
-      />
-    );
-  } else if (isGif) {
-    return (
-      <img
-        src={url}
-        alt={alt || "gif"}
-        style={{ width: "100%", height: "100%", objectFit: "cover" }}
+        onError={e => {
+          e.target.onerror = null;
+          e.target.poster = DEFAULT_IMAGE;
+        }}
       />
     );
   } else {
+    // 이미지(jpg/png/gif 등) + fallback
     return (
       <img
-        src={url}
+        src={imgError || !url ? DEFAULT_IMAGE : url}
         alt={alt}
         style={{ width: "100%", height: "100%", objectFit: "cover" }}
+        onError={e => {
+          if (!imgError) setImgError(true);
+        }}
       />
     );
   }
