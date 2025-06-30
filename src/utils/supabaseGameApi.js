@@ -69,33 +69,29 @@ export async function upsertMyWinnerStat({
   image = "",
   match_count = 0,
 }) {
-  const { user_id, guest_id } = await getUserOrGuestId();
+const { user_id, guest_id } = await getUserOrGuestId();
+const participant_id = user_id || guest_id;
 
-  const payload = {
-    user_id,
-    guest_id,
-    cup_id,
-    candidate_id,
-    win_count,
-    match_wins,
-    total_games,
-    name,
-    image,
-    match_count,
-  };
-  console.log("insert payload (winner_stats):", payload);
+const payload = {
+  participant_id,
+  cup_id,
+  candidate_id,
+  win_count,
+  match_wins,
+  total_games,
+  name,
+  image,
+  match_count,
+};
 
-  const { data, error } = await supabase
-    .from("winner_stats")
-    .upsert(
-      [payload],
-      { onConflict: ["user_id", "guest_id", "cup_id", "candidate_id"] }
-    )
-    .select()
-    .single();
-
-  if (error) throw error;
-  return data;
+const { data, error } = await supabase
+  .from("winner_stats")
+  .upsert(
+    [payload],
+    { onConflict: ["participant_id", "cup_id", "candidate_id"] }
+  )
+  .select()
+  .single();
 }
 
 // 내 승자 통계만 조회
