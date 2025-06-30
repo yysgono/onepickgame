@@ -135,7 +135,7 @@ export async function saveWinnerStatsToDB(cupId, statsArr) {
 
   const { error } = await supabase
     .from("winner_stats")
-    .upsert(rows, { onConflict: ['user_id', 'guest_id', 'cup_id', 'candidate_id'] });
+    .upsert(rows, { onConflict: ['participant_id', 'cup_id', 'candidate_id'] })
 
   if (error) {
     console.error("DB save error", error);
