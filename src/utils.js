@@ -1,4 +1,4 @@
-import { supabase } from "./utils/supabaseClient.js";
+import { supabase } from "./utils/supabaseClient";
 
 // ===== 유튜브 관련 =====
 export function getYoutubeId(url = "") {
@@ -56,7 +56,7 @@ export async function getUserOrGuestId() {
  * @returns {Promise<boolean>} true=첫참여, false=중복
  */
 export async function insertWinnerLog(cupId, userId, guestId) {
-  console.log("[insertWinnerLog] userId:", userId, "guestId:", guestId, "cupId:", cupId);
+  console.log("insertWinnerLog", { cupId, userId, guestId }); // 확인용
   const { error } = await supabase
     .from("winner_logs")
     .insert([{
@@ -77,7 +77,6 @@ export async function insertWinnerLog(cupId, userId, guestId) {
 
 // 기존 기록 삭제 함수(덮어쓰기)
 export async function deleteOldWinnerLogAndStats(cupId, userId, guestId) {
-  console.log("[deleteOldWinnerLogAndStats] userId:", userId, "guestId:", guestId, "cupId:", cupId);
   // winner_logs에서 이전 기록 삭제
   await supabase
     .from("winner_logs")
@@ -87,7 +86,8 @@ export async function deleteOldWinnerLogAndStats(cupId, userId, guestId) {
       ...(userId ? { user_id: userId } : { guest_id: guestId }),
     });
 
-  // 필요시 winner_stats도 삭제하는 로직이 있다면 여기에 추가 가능
+  // winner_stats에서 해당 유저/비회원이 올린 통계도 (필요시) 지우고 싶으면 아래 활성화
+  // await supabase.from("winner_stats").delete().match({ cup_id: cupId, ...(userId ? { user_id: userId } : { guest_id: guestId }) });
 }
 
 // winner_stats 테이블에서 통계 가져오기
@@ -110,8 +110,6 @@ export async function fetchWinnerStatsFromDB(cupId) {
  * @param {Array} statsArr [{candidate_id, name, image, win_count, match_wins, match_count, total_games}]
  */
 export async function saveWinnerStatsToDB(cupId, statsArr) {
-  console.log("[saveWinnerStatsToDB] cupId:", cupId, "statsArr:", statsArr);
-  
   // 누적 방식
   const prevStats = await fetchWinnerStatsFromDB(cupId);
   const prevStatsMap = {};

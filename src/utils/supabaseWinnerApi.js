@@ -29,20 +29,26 @@ export async function addWinnerStat({
   image = "",
   match_count = 0,
 }) {
+  // 👇 participant_id로 통일!
+  const participant_id = user_id || guest_id;
+
+  const payload = {
+    participant_id,
+    user_id,
+    guest_id,
+    cup_id,
+    candidate_id,
+    win_count,
+    match_wins,
+    total_games,
+    name,
+    image,
+    match_count,
+  };
+
   const { data, error } = await supabase
     .from("winner_stats")
-    .upsert([{
-      user_id,
-      guest_id,
-      cup_id,
-      candidate_id,
-      win_count,
-      match_wins,
-      total_games,
-      name,
-      image,
-      match_count,
-    }], { onConflict: ["user_id", "guest_id", "cup_id", "candidate_id"] })
+    .upsert([payload], { onConflict: ["participant_id", "cup_id", "candidate_id"] })
     .select()
     .single();
 
@@ -84,9 +90,11 @@ export async function deleteWinnerStat(id) {
 }
 
 // ✅ 후보별 통계 누적 저장 (누적 합산)
-export async function saveWinnerStatsToDB(cup_id, statsArr) {
+export async function saveWinnerStatsToDB(cup_id, statsArr, user_id = null, guest_id = null) {
+  // 👉 user_id, guest_id를 외부에서 받아오거나 필요에 따라 계산
   for (const s of statsArr) {
-    const { candidate_id, win_count, match_wins, match_count, total_games, name, image, user_id, guest_id } = s;
+    const participant_id = user_id || guest_id;
+    const { candidate_id, win_count, match_wins, match_count, total_games, name, image } = s;
     // 1. 기존 데이터 불러오기
     const prevArr = await getWinnerStats({ cup_id, candidate_id, user_id, guest_id });
     const prev = prevArr && prevArr.length > 0 ? prevArr[0] : {};
@@ -97,16 +105,42 @@ export async function saveWinnerStatsToDB(cup_id, statsArr) {
     const newTotalGames = (prev.total_games || 0) + (total_games || 0);
     // 3. upsert
     await addWinnerStat({
-      cup_id,
-      candidate_id,
+      participant_id,
       user_id,
       guest_id,
+      cup_id,
+      candidate_id,
       win_count: newWinCount,
       match_wins: newMatchWins,
       match_count: newMatchCount,
       total_games: newTotalGames,
       name,
-      image
+      image,
     });
   }
+}
+
+// 통계 집계, 순위 변환 등 확장 함수 필요시 여기에!
+export function calcStatsFromMatchHistory(candidates, winner, matchHistory) {
+  const statsMap = {};
+  candidates.forEach(c => {
+    statsMap[c.id] = {
+      candidate_id: c.id,
+      name: c.name,
+      image: c.image,
+      win_count: 0,
+      match_wins: 0,
+      match_count: 0,
+      total_games: 1,
+    };
+  });
+  matchHistory.forEach(({ c1, c2, winner }) => {
+    if (c1) statsMap[c1.id].match_count++;
+    if (c2) statsMap[c2.id].match_count++;
+    if (winner) statsMap[winner.id].match_wins++;
+  });
+  if (winner) {
+    statsMap[winner.id].win_count = 1;
+  }
+  return Object.values(statsMap);
 }
