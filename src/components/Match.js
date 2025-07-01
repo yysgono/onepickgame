@@ -9,7 +9,6 @@ import {
 import { useTranslation } from "react-i18next";
 import MediaRenderer from "./MediaRenderer";
 
-// n: 남은 참가자, isFirst: 첫 라운드
 function getStageLabel(n, isFirst = false) {
   if (isFirst) return `${n}강`;
   if (n === 2) return "결승전";
