@@ -1,4 +1,3 @@
-// src/utils.js
 import { supabase } from "./utils/supabaseClient";
 
 // ==== 유튜브 관련 ====
@@ -22,7 +21,7 @@ export function getYoutubeEmbed(url = "") {
   return "";
 }
 
-// ==== guest_id 발급 & participant_id 반환 ====
+// ==== 게스트/유저 ID 관리 ====
 export function getOrCreateGuestId() {
   let guestId = localStorage.getItem("guest_id");
   if (!guestId) {
@@ -31,158 +30,174 @@ export function getOrCreateGuestId() {
   }
   return guestId;
 }
-// 항상 participant_id만 반환
-export async function getParticipantId() {
+export async function getUserOrGuestId() {
   const { data } = await supabase.auth.getUser();
-  if (data?.user?.id) return data.user.id;
-  return getOrCreateGuestId();
+  if (data?.user?.id) return { user_id: data.user.id, guest_id: null };
+  else return { user_id: null, guest_id: getOrCreateGuestId() };
 }
 
-/* ------------ winner_logs ------------ */
-
-// 기존 기록 삭제 (내 participant_id & cup_id 기준)
-export async function deleteOldWinnerLogAndStats(cupId) {
-  const participant_id = await getParticipantId();
-  await supabase.from("winner_logs").delete().match({ cup_id: cupId, participant_id });
-  // winner_stats도 지우려면 아래 주석 해제
-  // await supabase.from("winner_stats").delete().match({ cup_id: cupId, participant_id });
+// ==== 월드컵 ====
+export async function getWorldcupGames() {
+  const { data, error } = await supabase
+    .from("worldcups")
+    .select("*")
+    .order("created_at", { ascending: false });
+  if (error) throw error;
+  return data;
+}
+export async function getWorldcupGame(id) {
+  const { data, error } = await supabase
+    .from("worldcups")
+    .select("*")
+    .eq("id", id)
+    .single();
+  if (error) throw error;
+  return data;
+}
+export async function addWorldcupGame(cup) {
+  const { data, error } = await supabase
+    .from("worldcups")
+    .insert([cup])
+    .select("id")
+    .single();
+  if (error) throw error;
+  return data.id;
+}
+export async function updateWorldcupGame(id, updates) {
+  const { error } = await supabase
+    .from("worldcups")
+    .update(updates)
+    .eq("id", id);
+  if (error) throw error;
+  return true;
+}
+export async function deleteWorldcupGame(id) {
+  const { error } = await supabase
+    .from("worldcups")
+    .delete()
+    .eq("id", id);
+  if (error) throw error;
+  return true;
 }
 
-// winner_logs에 insert (유니크 위반시 false)
-export async function insertWinnerLog(cupId) {
-  const participant_id = await getParticipantId();
+// ==== winner_logs ====
+export async function deleteOldWinnerLogAndStats(cup_id) {
+  const { user_id, guest_id } = await getUserOrGuestId();
+  let deleteQuery = supabase.from("winner_logs").delete().eq("cup_id", cup_id);
+  if (user_id) deleteQuery = deleteQuery.eq("user_id", user_id);
+  if (guest_id) deleteQuery = deleteQuery.eq("guest_id", guest_id);
+  await deleteQuery;
+}
+export async function insertWinnerLog(cup_id, winner_id = null) {
+  const { user_id, guest_id } = await getUserOrGuestId();
   const { error } = await supabase
     .from("winner_logs")
-    .insert([{ cup_id: cupId, participant_id }]);
+    .insert([{ user_id, guest_id, cup_id, winner_id }]);
   if (error) {
-    if (error.code === "23505" || error.message?.includes("duplicate") || error.message?.includes("unique")) {
-      return false;
-    }
+    if (error.code === "23505" || error.message?.includes("duplicate")) return false;
     console.error("winner_logs insert error:", error);
     return false;
   }
   return true;
 }
-
-// 내 winner_logs 기록만 조회 (내 participant_id만)
 export async function getMyWinnerLogs({ cup_id } = {}) {
-  const participant_id = await getParticipantId();
-  let query = supabase.from("winner_logs").select("*").eq("participant_id", participant_id);
+  const { user_id, guest_id } = await getUserOrGuestId();
+  let query = supabase.from("winner_logs").select("*");
+  if (user_id) query = query.eq("user_id", user_id);
+  if (guest_id) query = query.eq("guest_id", guest_id);
   if (cup_id) query = query.eq("cup_id", cup_id);
   const { data, error } = await query.order("created_at", { ascending: false });
   if (error) throw error;
   return data;
 }
 
-/* ------------ winner_stats ------------ */
-
-// 내 승자 통계 upsert (있으면 수정, 없으면 추가)
+// ==== winner_stats ====
 export async function upsertMyWinnerStat({
-  cup_id,
-  candidate_id,
-  win_count = 0,
-  match_wins = 0,
-  total_games = 0,
-  name = "",
-  image = "",
-  match_count = 0,
+  cup_id, candidate_id, win_count = 0, match_wins = 0, total_games = 0,
+  name = "", image = "", match_count = 0,
+  user_id = null, guest_id = null
 }) {
-  const participant_id = await getParticipantId();
+  // 파라미터에 user_id, guest_id 있으면 우선 사용, 없으면 getUserOrGuestId()
+  let ids = { user_id, guest_id };
+  if (!user_id && !guest_id) {
+    ids = await getUserOrGuestId();
+  }
   const payload = {
-    participant_id,
-    cup_id,
-    candidate_id,
-    win_count,
-    match_wins,
-    total_games,
-    name,
-    image,
-    match_count,
+    cup_id, candidate_id, win_count, match_wins, total_games,
+    name, image, match_count, user_id: ids.user_id, guest_id: ids.guest_id
   };
   const { data, error } = await supabase
     .from("winner_stats")
-    .upsert(
-      [payload],
-      { onConflict: ["participant_id", "cup_id", "candidate_id"] }
-    )
+    .upsert([payload], { onConflict: ["cup_id", "candidate_id", "user_id", "guest_id"] })
     .select()
     .single();
   if (error) throw error;
   return data;
 }
-
-// 내 승자 통계만 조회
 export async function getMyWinnerStats({ cup_id } = {}) {
-  const participant_id = await getParticipantId();
-  let query = supabase.from("winner_stats").select("*").eq("participant_id", participant_id);
+  const { user_id, guest_id } = await getUserOrGuestId();
+  let query = supabase.from("winner_stats").select("*");
+  if (user_id) query = query.eq("user_id", user_id);
+  if (guest_id) query = query.eq("guest_id", guest_id);
   if (cup_id) query = query.eq("cup_id", cup_id);
   const { data, error } = await query.order("created_at", { ascending: false });
   if (error) throw error;
   return data;
 }
 
-// winner_stats 전체 조회 (특정 cup에서만)
-export async function fetchWinnerStatsFromDB(cupId) {
+// 후보별 누적 통계 합산 반환
+export async function fetchWinnerStatsFromDB(cup_id) {
   const { data, error } = await supabase
     .from("winner_stats")
     .select("*")
-    .eq("cup_id", cupId);
-  if (error) {
-    console.error("DB fetch error", error);
-    return [];
+    .eq("cup_id", cup_id);
+  if (error) throw error;
+  // 후보별 합산
+  const statsMap = {};
+  for (const row of data) {
+    const id = row.candidate_id;
+    if (!statsMap[id]) {
+      statsMap[id] = {
+        candidate_id: id, name: row.name, image: row.image,
+        win_count: 0, match_wins: 0, match_count: 0, total_games: 0,
+      };
+    }
+    statsMap[id].win_count += row.win_count || 0;
+    statsMap[id].match_wins += row.match_wins || 0;
+    statsMap[id].match_count += row.match_count || 0;
+    statsMap[id].total_games += row.total_games || 0;
   }
-  return data || [];
+  return Object.values(statsMap);
 }
 
-// winner_stats에 통계 누적 저장 (배열 전체 upsert)
+// winner_stats에 통계 누적 저장 (전체 upsert, user/guest)
 export async function saveWinnerStatsToDB(cupId, statsArr) {
-  const participant_id = await getParticipantId();
-  // 기존 내 통계 가져오기
-  const prevStats = await supabase
-    .from("winner_stats")
-    .select("*")
-    .eq("participant_id", participant_id)
-    .eq("cup_id", cupId);
-  const prevStatsMap = {};
-  (prevStats.data || []).forEach(row => {
-    prevStatsMap[row.candidate_id] = row;
-  });
-  const rows = statsArr.map(row => {
-    const prev = prevStatsMap[row.candidate_id] || {};
-    return {
-      ...row,
-      participant_id,
+  const { user_id, guest_id } = await getUserOrGuestId();
+  for (const row of statsArr) {
+    const payload = {
       cup_id: cupId,
-      win_count: (prev.win_count || 0) + (row.win_count || 0),
-      match_wins: (prev.match_wins || 0) + (row.match_wins || 0),
-      match_count: (prev.match_count || 0) + (row.match_count || 0),
-      total_games: (prev.total_games || 0) + (row.total_games || 0),
-      name: row.name || prev.name || "",
-      image: row.image || prev.image || "",
+      candidate_id: row.candidate_id,
+      win_count: row.win_count || 0,
+      match_wins: row.match_wins || 0,
+      match_count: row.match_count || 0,
+      total_games: row.total_games || 0,
+      name: row.name,
+      image: row.image,
+      user_id,
+      guest_id,
     };
-  });
-  const { error } = await supabase
-    .from("winner_stats")
-    .upsert(rows, { onConflict: ["participant_id", "cup_id", "candidate_id"] });
-  if (error) {
-    console.error("DB save error", error);
-    return false;
+    await upsertMyWinnerStat(payload);
   }
   return true;
 }
 
-// 후보별 통계 집계
+// 통계 계산
 export function calcStatsFromMatchHistory(candidates, winner, matchHistory) {
   const statsMap = {};
   candidates.forEach(c => {
     statsMap[c.id] = {
-      candidate_id: c.id,
-      name: c.name,
-      image: c.image,
-      win_count: 0,
-      match_wins: 0,
-      match_count: 0,
-      total_games: 0,
+      candidate_id: c.id, name: c.name, image: c.image,
+      win_count: 0, match_wins: 0, match_count: 0, total_games: 0,
     };
   });
   matchHistory.forEach(({ c1, c2, winner }) => {
@@ -212,14 +227,4 @@ export function getMostWinnerFromDB(statsArr, cupData) {
     }
   }
   return mostWinner;
-}
-
-// 월드컵 삭제 함수
-export async function deleteWorldcupGame(id) {
-  const { error } = await supabase
-    .from("worldcups")
-    .delete()
-    .eq("id", id);
-  if (error) throw error;
-  return true;
 }

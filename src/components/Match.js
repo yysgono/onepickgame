@@ -1,13 +1,19 @@
 import React, { useState, useEffect } from "react";
+// ⬇️ import 경로/함수 수정!
 import {
-  getYoutubeId,
-  saveWinnerStatsToDB,
-  calcStatsFromMatchHistory,
   insertWinnerLog,
+  getMyWinnerLogs,
+  calcStatsFromMatchHistory,
   deleteOldWinnerLogAndStats,
-} from "../utils";
+  saveWinnerStatsToDB, // 누락 시 추가
+} from '../utils';
+
 import { useTranslation } from "react-i18next";
 import MediaRenderer from "./MediaRenderer";
+
+// 이하 코드는 동일
+// ...
+
 
 // n: 남은 참가자, isFirst: 첫 라운드
 function getStageLabel(n, isFirst = false) {
@@ -85,7 +91,7 @@ function Match({ cup, onResult, selectedCount }) {
     if (selectedCount && players.length > selectedCount) {
       players = shuffle([...players]).slice(0, selectedCount);
     }
-    // 👇 기존 기록 삭제
+    // 👇 기존 기록 삭제 (user/guest)
     deleteOldWinnerLogAndStats(cup.id);
 
     const { matches, byes } = makeFirstRound(players);
@@ -159,8 +165,6 @@ function Match({ cup, onResult, selectedCount }) {
       ? [bracket[nextIdx][0], bracket[nextIdx][1]].filter(Boolean)
       : [];
   function CandidateBox({ c, onClick, disabled }) {
-    const ytid = getYoutubeId(c?.image);
-    const isYoutube = !!ytid;
     return (
       <div
         style={{
@@ -174,7 +178,7 @@ function Match({ cup, onResult, selectedCount }) {
           width: isMobile ? "50vw" : 340,
           boxSizing: "border-box",
           opacity: c ? 1 : 0.25,
-          cursor: !isYoutube && c ? "pointer" : "default",
+          cursor: c ? "pointer" : "default",
         }}
       >
         <button
@@ -212,11 +216,11 @@ function Match({ cup, onResult, selectedCount }) {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            cursor: !isYoutube && c ? "pointer" : "default",
+            cursor: c ? "pointer" : "default",
             boxSizing: "border-box",
             opacity: c ? 1 : 0.25,
           }}
-          onClick={!isYoutube && c ? onClick : undefined}
+          onClick={c ? onClick : undefined}
         >
           {c ? (
             <MediaRenderer url={c.image} alt={c.name} />

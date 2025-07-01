@@ -31,7 +31,6 @@ function ResultPage({ worldcupList }) {
   if (!cup || !winner)
     return <div style={{ padding: 80 }}>{t("cannotShowResult")}</div>;
 
-  // 모바일: 결과, 통계, 댓글 1컬럼
   if (isMobile) {
     return (
       <div style={{
