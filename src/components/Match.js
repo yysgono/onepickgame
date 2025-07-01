@@ -3,7 +3,6 @@ import {
   getYoutubeId,
   saveWinnerStatsToDB,
   calcStatsFromMatchHistory,
-  getOrCreateGuestId,
   insertWinnerLog,
   deleteOldWinnerLogAndStats,
 } from "../utils";
@@ -22,15 +21,11 @@ function getStageLabel(n, isFirst = false) {
   if (n === 128) return "128강";
   return `${n}강`;
 }
-
-// 2의 제곱수 중 n 이상인 가장 작은 값
 function nextPowerOfTwo(n) {
   let k = 1;
   while (k < n) k *= 2;
   return k;
 }
-
-// 첫 라운드는 여러 명 부전승
 function makeFirstRound(players) {
   const shuffled = shuffle([...players]);
   const pow2 = nextPowerOfTwo(players.length);
@@ -49,7 +44,6 @@ function makeFirstRound(players) {
   }
   return { matches, byes };
 }
-
 function makeNextRound(winners) {
   const shuffled = shuffle([...winners]);
   const matches = [];
@@ -58,7 +52,6 @@ function makeNextRound(winners) {
   }
   return matches;
 }
-
 function shuffle(arr) {
   let m = arr.length, t, i;
   while (m) {
@@ -69,7 +62,6 @@ function shuffle(arr) {
   }
   return arr;
 }
-
 function truncateNames(candidates, maxWords = 3) {
   return candidates.map(c => {
     if (!c?.name) return "?";
@@ -87,7 +79,6 @@ function Match({ cup, onResult, selectedCount }) {
   const [pendingWinners, setPendingWinners] = useState([]);
   const [matchHistory, setMatchHistory] = useState([]);
   const [autoPlaying, setAutoPlaying] = useState(false);
-  const [firstRoundCount, setFirstRoundCount] = useState(0); // 첫 라운드 참가자 저장
 
   useEffect(() => {
     let players = cup.data;
@@ -95,13 +86,7 @@ function Match({ cup, onResult, selectedCount }) {
       players = shuffle([...players]).slice(0, selectedCount);
     }
     // 👇 기존 기록 삭제
-    let userId = null;
-    try {
-      const u = localStorage.getItem("onepickgame_user");
-      if (u) userId = JSON.parse(u)?.id || null;
-    } catch (e) { userId = null; }
-    const guestId = !userId ? getOrCreateGuestId() : null;
-    deleteOldWinnerLogAndStats(cup.id, userId, guestId);
+    deleteOldWinnerLogAndStats(cup.id);
 
     const { matches, byes } = makeFirstRound(players);
     setBracket(matches);
@@ -109,7 +94,6 @@ function Match({ cup, onResult, selectedCount }) {
     setIdx(0);
     setRoundNum(1);
     setMatchHistory([]);
-    setFirstRoundCount(players.length); // 첫 라운드 참가자 기억
   }, [cup, selectedCount]);
 
   useEffect(() => {
@@ -122,16 +106,9 @@ function Match({ cup, onResult, selectedCount }) {
         roundNum === 1 ? [...pendingWinners, ...matchWinners] : matchWinners;
       if (nextRoundCandidates.length === 1) {
         // ----------- 경기 끝, 통계 저장 ----------
-        let userId = null;
-        try {
-          const u = localStorage.getItem("onepickgame_user");
-          if (u) userId = JSON.parse(u)?.id || null;
-        } catch (e) { userId = null; }
-        const guestId = !userId ? getOrCreateGuestId() : null;
-        insertWinnerLog(cup.id, userId, guestId).then(async (canSave) => {
+        insertWinnerLog(cup.id).then(async (canSave) => {
           if (canSave) {
             const statsArr = calcStatsFromMatchHistory(cup.data, nextRoundCandidates[0], matchHistory);
-            console.log("[saveWinnerStatsToDB]", { cupId: cup.id, userId, guestId, statsArr });
             await saveWinnerStatsToDB(cup.id, statsArr);
           }
           onResult(nextRoundCandidates[0], matchHistory);
@@ -313,7 +290,6 @@ function Match({ cup, onResult, selectedCount }) {
         )}{" "}
         {bracket.length === 1 ? "" : `${idx + 1} / ${bracket.length}`}
       </div>
-      {/* 부전승 안내 */}
       {roundNum === 1 && pendingWinners.length > 0 && (
         <div style={{ color: "#888", margin: "7px 0 15px 0" }}>
           {pendingWinners.length}명은 부전승으로 다음 라운드 자동 진출!
