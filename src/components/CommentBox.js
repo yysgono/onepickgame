@@ -3,16 +3,6 @@ import { useTranslation } from "react-i18next";
 import { supabase } from "../utils/supabaseClient";
 import { hasBadword } from "../badwords-multilang";
 
-// ==== 비회원 닉네임/guest_id 관리 ====
-function getOrCreateGuestId() {
-  let guestId = localStorage.getItem("guest_id");
-  if (!guestId) {
-    guestId = (crypto.randomUUID?.() || Math.random().toString(36).slice(2) + Date.now());
-    localStorage.setItem("guest_id", guestId);
-  }
-  return guestId;
-}
-
 const COLORS = {
   main: "#1976ed",
   danger: "#d33",
@@ -55,7 +45,6 @@ export default function CommentBox({ cupId }) {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // 비회원용 닉네임(로컬에 저장)
   useEffect(() => {
     async function fetchUser() {
       const { data } = await supabase.auth.getUser();
@@ -67,10 +56,6 @@ export default function CommentBox({ cupId }) {
           .eq("id", data.user.id)
           .single();
         setNickname(profile?.nickname || "");
-      } else {
-        // guest: 닉네임 저장
-        const guestNickname = localStorage.getItem("guest_nickname") || "";
-        setNickname(guestNickname);
       }
     }
     fetchUser();
@@ -97,9 +82,8 @@ export default function CommentBox({ cupId }) {
   async function handleSubmit(e) {
     e.preventDefault();
     setError("");
-    // 회원/비회원 모두 닉네임 필요
-    if (!nickname.trim()) {
-      setError(t("comment.needNickname") || "닉네임을 입력하세요.");
+    if (!user || !nickname) {
+      setError(t("comment.needLogin") || "로그인이 필요합니다.");
       return;
     }
     const text = content.trim();
@@ -114,23 +98,12 @@ export default function CommentBox({ cupId }) {
       return setError(t("comment.limitNicknameByte") || "닉네임은 최대 12바이트까지 가능합니다.");
 
     setLoading(true);
-
-    let user_id = null, guest_id = null;
-    if (user && user.id) {
-      user_id = user.id;
-    } else {
-      guest_id = getOrCreateGuestId();
-      // 비회원 닉네임 로컬 저장
-      localStorage.setItem("guest_nickname", nickname);
-    }
-
     const { error: insertErr } = await supabase.from("comments").insert([
       {
         cup_id: cupId,
         nickname,
         content: text,
-        user_id,
-        guest_id,
+        user_id: user.id,
         upvotes: 0,
         downvotes: 0,
       }
@@ -145,12 +118,10 @@ export default function CommentBox({ cupId }) {
     fetchComments();
   }
 
-  async function handleDelete(commentId, commentUserId, commentGuestId) {
-    let isMine = false;
-    if (user && commentUserId && user.id === commentUserId) isMine = true;
-    if (!user && commentGuestId && getOrCreateGuestId() === commentGuestId) isMine = true;
+  async function handleDelete(commentId, commentUserId) {
+    if (!user) return;
     const isAdmin = nickname === "admin";
-    if (!isAdmin && !isMine) {
+    if (!isAdmin && commentUserId !== user.id) {
       setError("본인 또는 관리자만 삭제할 수 있습니다.");
       return;
     }
@@ -164,6 +135,7 @@ export default function CommentBox({ cupId }) {
 
   // 👍 추천
   async function handleUpvote(commentId) {
+    // 안전하게 DB에서 +1
     await supabase.rpc('increment_comment_upvotes', { comment_id: commentId });
     fetchComments();
   }
@@ -210,11 +182,7 @@ export default function CommentBox({ cupId }) {
           flexWrap: "wrap",
         }}
       >
-        <input
-          value={nickname}
-          onChange={e => setNickname(e.target.value.slice(0, 12))}
-          placeholder={t("comment.nicknamePlaceholder") || "닉네임"}
-          disabled={!!user}
+        <div
           style={{
             fontWeight: 700,
             color: COLORS.main,
@@ -227,12 +195,17 @@ export default function CommentBox({ cupId }) {
             textAlign: "center"
           }}
           title={nickname}
-        />
+        >
+          {nickname || "?"}
+        </div>
         <textarea
           value={content}
           onChange={(e) => setContent(e.target.value.slice(0, 80))}
-          placeholder={user ? t("comment.placeholder") : t("comment.placeholder") || "댓글을 입력하세요"}
+          placeholder={
+            user ? t("comment.placeholder") : t("comment.loginRequired")
+          }
           rows={2}
+          disabled={!user}
           style={{
             flex: 1,
             minWidth: 0,
@@ -241,7 +214,7 @@ export default function CommentBox({ cupId }) {
             border: `1.2px solid ${COLORS.border}`,
             fontSize: 15.5,
             resize: "none",
-            background: "#fff",
+            background: user ? "#fff" : COLORS.soft,
             fontWeight: 600,
             color: COLORS.text,
           }}
@@ -249,23 +222,38 @@ export default function CommentBox({ cupId }) {
         />
         <button
           type="submit"
-          disabled={loading}
+          disabled={!user || loading}
           style={{
             padding: "10px 22px",
             borderRadius: 999,
-            background: `linear-gradient(90deg, ${COLORS.main} 65%, ${COLORS.sub} 100%)`,
+            background: user
+              ? `linear-gradient(90deg, ${COLORS.main} 65%, ${COLORS.sub} 100%)`
+              : "#bbb",
             color: "#fff",
             fontWeight: 800,
             fontSize: 16,
             border: "none",
-            cursor: loading ? "not-allowed" : "pointer",
-            boxShadow: "0 1px 8px #1976ed23",
+            cursor: user ? "pointer" : "not-allowed",
+            boxShadow: user ? "0 1px 8px #1976ed23" : "none",
             letterSpacing: -0.5,
           }}
         >
           {loading ? t("comment.loading") || "등록중..." : t("comment.submit")}
         </button>
       </form>
+      {!user && (
+        <div
+          style={{
+            color: COLORS.main,
+            textAlign: "center",
+            marginBottom: 10,
+            fontWeight: 700,
+            fontSize: 15,
+          }}
+        >
+          {t("comment.loginRequired")}
+        </div>
+      )}
       {error && (
         <div
           style={{
@@ -408,9 +396,7 @@ export default function CommentBox({ cupId }) {
               >
                 👎 비추천 {c.downvotes || 0}
               </button>
-              {((user && c.user_id === user.id) ||
-                (!user && c.guest_id && getOrCreateGuestId() === c.guest_id) ||
-                nickname === "admin") && (
+              {(user && (nickname === "admin" || c.user_id === user.id)) && (
                 <button
                   style={{
                     color: "#888",
@@ -422,7 +408,7 @@ export default function CommentBox({ cupId }) {
                     marginLeft: 3,
                     padding: 0,
                   }}
-                  onClick={() => handleDelete(c.id, c.user_id, c.guest_id)}
+                  onClick={() => handleDelete(c.id, c.user_id)}
                   title={t("comment.delete")}
                 >
                   삭제

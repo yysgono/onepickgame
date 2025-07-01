@@ -1,3 +1,4 @@
+// src/utils.js
 import { supabase } from "./utils/supabaseClient";
 
 // ==== 유튜브 관련 ====
@@ -44,13 +45,12 @@ export async function deleteOldWinnerLogAndStats(cupId) {
   const participant_id = await getParticipantId();
   await supabase.from("winner_logs").delete().match({ cup_id: cupId, participant_id });
   // winner_stats도 지우려면 아래 주석 해제
-  await supabase.from("winner_stats").delete().match({ cup_id: cupId, participant_id });
+  // await supabase.from("winner_stats").delete().match({ cup_id: cupId, participant_id });
 }
 
 // winner_logs에 insert (유니크 위반시 false)
 export async function insertWinnerLog(cupId) {
   const participant_id = await getParticipantId();
-  console.log("[insertWinnerLog] participant_id:", participant_id); // 추가!
   const { error } = await supabase
     .from("winner_logs")
     .insert([{ cup_id: cupId, participant_id }]);
