@@ -1,6 +1,6 @@
 import { supabase } from "./utils/supabaseClient";
 
-// ==== 유튜브 관련 ====
+// 유튜브 등 부가함수
 export function getYoutubeId(url = "") {
   if (!url) return "";
   const reg = /(?:youtube\.com\/.*[?&]v=|youtube\.com\/(?:v|embed)\/|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
@@ -21,7 +21,7 @@ export function getYoutubeEmbed(url = "") {
   return "";
 }
 
-// ==== 게스트/유저 ID 관리 ====
+// 게스트/유저 ID 관리
 export function getOrCreateGuestId() {
   let guestId = localStorage.getItem("guest_id");
   if (!guestId) {
@@ -36,7 +36,7 @@ export async function getUserOrGuestId() {
   else return { user_id: null, guest_id: getOrCreateGuestId() };
 }
 
-// ==== 월드컵 ====
+// 월드컵 함수
 export async function getWorldcupGames() {
   const { data, error } = await supabase
     .from("worldcups")
@@ -80,14 +80,20 @@ export async function deleteWorldcupGame(id) {
   return true;
 }
 
-// ==== winner_logs ====
+// winner_logs, winner_stats 삭제 (시작/다시하기 시 사용)
 export async function deleteOldWinnerLogAndStats(cup_id) {
   const { user_id, guest_id } = await getUserOrGuestId();
   let deleteQuery = supabase.from("winner_logs").delete().eq("cup_id", cup_id);
   if (user_id) deleteQuery = deleteQuery.eq("user_id", user_id);
   if (guest_id) deleteQuery = deleteQuery.eq("guest_id", guest_id);
   await deleteQuery;
+  let statsDelete = supabase.from("winner_stats").delete().eq("cup_id", cup_id);
+  if (user_id) statsDelete = statsDelete.eq("user_id", user_id);
+  if (guest_id) statsDelete = statsDelete.eq("guest_id", guest_id);
+  await statsDelete;
 }
+
+// winner_logs 기록
 export async function insertWinnerLog(cup_id, winner_id = null) {
   const { user_id, guest_id } = await getUserOrGuestId();
   const { error } = await supabase
@@ -95,45 +101,44 @@ export async function insertWinnerLog(cup_id, winner_id = null) {
     .insert([{ user_id, guest_id, cup_id, winner_id }]);
   if (error) {
     if (error.code === "23505" || error.message?.includes("duplicate")) return false;
-    console.error("winner_logs insert error:", error);
     return false;
   }
   return true;
 }
-export async function getMyWinnerLogs({ cup_id } = {}) {
-  const { user_id, guest_id } = await getUserOrGuestId();
-  let query = supabase.from("winner_logs").select("*");
-  if (user_id) query = query.eq("user_id", user_id);
-  if (guest_id) query = query.eq("guest_id", guest_id);
-  if (cup_id) query = query.eq("cup_id", cup_id);
-  const { data, error } = await query.order("created_at", { ascending: false });
-  if (error) throw error;
-  return data;
-}
 
-// ==== winner_stats ====
+// winner_stats upsert
 export async function upsertMyWinnerStat({
-  cup_id, candidate_id, win_count = 0, match_wins = 0, total_games = 0,
-  name = "", image = "", match_count = 0,
-  user_id = null, guest_id = null
+  cup_id,
+  candidate_id,
+  win_count = 0,
+  match_wins = 0,
+  total_games = 0,
+  name = "",
+  image = "",
+  match_count = 0,
 }) {
-  // 파라미터에 user_id, guest_id 있으면 우선 사용, 없으면 getUserOrGuestId()
-  let ids = { user_id, guest_id };
-  if (!user_id && !guest_id) {
-    ids = await getUserOrGuestId();
-  }
+  const { user_id, guest_id } = await getUserOrGuestId();
   const payload = {
-    cup_id, candidate_id, win_count, match_wins, total_games,
-    name, image, match_count, user_id: ids.user_id, guest_id: ids.guest_id
+    cup_id,
+    candidate_id,
+    win_count,
+    match_wins,
+    total_games,
+    name,
+    image,
+    match_count,
+    user_id,
+    guest_id,
   };
   const { data, error } = await supabase
     .from("winner_stats")
-    .upsert([payload], { onConflict: ["cup_id", "candidate_id", "user_id", "guest_id"] })
+    .upsert([payload], { onConflict: ["user_id", "guest_id", "cup_id", "candidate_id"] })
     .select()
     .single();
   if (error) throw error;
   return data;
 }
+
 export async function getMyWinnerStats({ cup_id } = {}) {
   const { user_id, guest_id } = await getUserOrGuestId();
   let query = supabase.from("winner_stats").select("*");
@@ -145,7 +150,7 @@ export async function getMyWinnerStats({ cup_id } = {}) {
   return data;
 }
 
-// 후보별 누적 통계 합산 반환
+// 후보별 누적 통계 (전체, 회원, 비회원 통합) 가져오기
 export async function fetchWinnerStatsFromDB(cup_id) {
   const { data, error } = await supabase
     .from("winner_stats")
@@ -158,37 +163,23 @@ export async function fetchWinnerStatsFromDB(cup_id) {
     const id = row.candidate_id;
     if (!statsMap[id]) {
       statsMap[id] = {
-        candidate_id: id, name: row.name, image: row.image,
-        win_count: 0, match_wins: 0, match_count: 0, total_games: 0,
+        candidate_id: id,
+        name: row.name,
+        image: row.image,
+        win_count: 0,
+        match_wins: 0,
+        match_count: 0,
+        total_games: 0,
+        user_win_count: 0, // 회원전용 통계
       };
     }
     statsMap[id].win_count += row.win_count || 0;
     statsMap[id].match_wins += row.match_wins || 0;
     statsMap[id].match_count += row.match_count || 0;
     statsMap[id].total_games += row.total_games || 0;
+    if (row.user_id) statsMap[id].user_win_count += row.win_count || 0;
   }
   return Object.values(statsMap);
-}
-
-// winner_stats에 통계 누적 저장 (전체 upsert, user/guest)
-export async function saveWinnerStatsToDB(cupId, statsArr) {
-  const { user_id, guest_id } = await getUserOrGuestId();
-  for (const row of statsArr) {
-    const payload = {
-      cup_id: cupId,
-      candidate_id: row.candidate_id,
-      win_count: row.win_count || 0,
-      match_wins: row.match_wins || 0,
-      match_count: row.match_count || 0,
-      total_games: row.total_games || 0,
-      name: row.name,
-      image: row.image,
-      user_id,
-      guest_id,
-    };
-    await upsertMyWinnerStat(payload);
-  }
-  return true;
 }
 
 // 통계 계산
@@ -196,8 +187,13 @@ export function calcStatsFromMatchHistory(candidates, winner, matchHistory) {
   const statsMap = {};
   candidates.forEach(c => {
     statsMap[c.id] = {
-      candidate_id: c.id, name: c.name, image: c.image,
-      win_count: 0, match_wins: 0, match_count: 0, total_games: 0,
+      candidate_id: c.id,
+      name: c.name,
+      image: c.image,
+      win_count: 0,
+      match_wins: 0,
+      match_count: 0,
+      total_games: 0,
     };
   });
   matchHistory.forEach(({ c1, c2, winner }) => {
