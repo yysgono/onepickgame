@@ -9,6 +9,9 @@ import { mainButtonStyle, grayButtonStyle } from "../styles/common";
 import { addWorldcupGame } from "../utils/supabaseWorldcupApi";
 import { uploadCandidateImage } from "../utils/supabaseImageUpload";
 import { supabase } from "../utils/supabaseClient";
+import useBanCheck from "../hooks/useBanCheck";
+
+const DEFAULT_THUMB_URL = "/default-thumb.png";
 
 function isMobile() {
   if (typeof window !== "undefined") {
@@ -48,10 +51,27 @@ function WorldcupMaker({ onCreate, onCancel }) {
     fetchUser();
   }, []);
 
+  // === 정지 체크 (user 변경시 자동) ===
+  const { isBanned, banInfo } = useBanCheck(user);
+
   if (!user) {
     return (
       <div style={{ padding: 60, textAlign: "center" }}>
         <h2>{t("loginRequired") || "로그인 후 이용 가능합니다."}</h2>
+      </div>
+    );
+  }
+  if (isBanned) {
+    return (
+      <div style={{ padding: 60, textAlign: "center", color: "#d33", fontWeight: 700 }}>
+        🚫 정지된 유저는 월드컵 생성이 불가합니다.
+        <br />
+        {banInfo && banInfo.expires_at && (
+          <div>정지 해제일: {banInfo.expires_at.replace("T", " ").slice(0, 16)}</div>
+        )}
+        {banInfo && banInfo.reason && (
+          <div>사유: {banInfo.reason}</div>
+        )}
       </div>
     );
   }
@@ -81,7 +101,7 @@ function WorldcupMaker({ onCreate, onCancel }) {
         image: c.image.trim(),
         id: c.id || uuidv4(),
       }))
-      .filter((c) => c.name && c.image);
+      .filter((c) => c.name);
 
     if (!title.trim()) return setError("제목을 입력하세요.");
     if (list.length < 2) return setError("후보를 2개 이상 입력하세요.");
@@ -94,15 +114,16 @@ function WorldcupMaker({ onCreate, onCancel }) {
 
       const updatedList = await Promise.all(
         list.map(async (c) => {
-          if (c.image.startsWith("data:image")) {
-            const file = await fetch(c.image).then(r => r.blob());
-            const url = await uploadCandidateImage(
+          let imageUrl = c.image;
+          if (imageUrl && imageUrl.startsWith("data:image")) {
+            const file = await fetch(imageUrl).then(r => r.blob());
+            imageUrl = await uploadCandidateImage(
               new File([file], `${c.name}.png`, { type: file.type }),
               nickname || currentUser.id
             );
-            return { ...c, image: url };
           }
-          return c;
+          if (!imageUrl) imageUrl = DEFAULT_THUMB_URL;
+          return { ...c, image: imageUrl };
         })
       );
 

@@ -1,7 +1,50 @@
+// src/components/CommentBox.jsx
+
 import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { supabase } from "../utils/supabaseClient";
 import { hasBadword } from "../badwords-multilang";
+import useBanCheck from "../hooks/useBanCheck";
+
+// === [신고 버튼 재활용] ===
+function ReportButton({ type, targetId }) {
+  const [show, setShow] = useState(false);
+  const [reason, setReason] = useState("");
+  const [ok, setOk] = useState("");
+  const [error, setError] = useState("");
+  async function handleReport() {
+    setError(""); setOk("");
+    const { data } = await supabase.auth.getUser();
+    if (!data?.user?.id) return setError("로그인 필요");
+    const { error } = await supabase.from("reports").insert([{
+      type,
+      target_id: targetId,
+      reporter_id: data.user.id,
+      reason
+    }]);
+    if (error) setError(error.message);
+    else setOk("신고가 접수되었습니다. 감사합니다.");
+  }
+  return (
+    <>
+      <button onClick={() => setShow(true)} style={{ color: "#d33", background: "none", border: "none", fontWeight: 700, cursor: "pointer", marginLeft: 5 }}>🚩 신고</button>
+      {show && (
+        <div style={{ position: "fixed", left: 0, top: 0, width: "100vw", height: "100vh", background: "#0006", zIndex: 9999, display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <div style={{ background: "#fff", borderRadius: 14, padding: 22, minWidth: 270 }}>
+            <b>신고 사유</b>
+            <textarea value={reason} onChange={e => setReason(e.target.value)} style={{ width: "95%", minHeight: 60, marginTop: 12 }} placeholder="신고 사유를 입력하세요 (선택)" />
+            <div style={{ marginTop: 12 }}>
+              <button onClick={handleReport} style={{ marginRight: 10 }}>신고하기</button>
+              <button onClick={() => setShow(false)}>닫기</button>
+            </div>
+            {ok && <div style={{ color: "#1976ed", marginTop: 7 }}>{ok}</div>}
+            {error && <div style={{ color: "#d33", marginTop: 7 }}>{error}</div>}
+          </div>
+        </div>
+      )}
+    </>
+  );
+}
 
 const COLORS = {
   main: "#1976ed",
@@ -61,6 +104,9 @@ export default function CommentBox({ cupId }) {
     fetchUser();
   }, []);
 
+  // === 정지여부 훅 (user 변경시 자동 체크) ===
+  const { isBanned, banInfo } = useBanCheck(user);
+
   useEffect(() => {
     fetchComments();
     // eslint-disable-next-line
@@ -84,6 +130,10 @@ export default function CommentBox({ cupId }) {
     setError("");
     if (!user || !nickname) {
       setError(t("comment.needLogin") || "로그인이 필요합니다.");
+      return;
+    }
+    if (isBanned) {
+      setError("정지된 유저는 댓글 작성이 제한됩니다.");
       return;
     }
     const text = content.trim();
@@ -133,13 +183,10 @@ export default function CommentBox({ cupId }) {
     fetchComments();
   }
 
-  // 👍 추천
   async function handleUpvote(commentId) {
-    // 안전하게 DB에서 +1
     await supabase.rpc('increment_comment_upvotes', { comment_id: commentId });
     fetchComments();
   }
-  // 👎 비추천
   async function handleDownvote(commentId) {
     await supabase.rpc('increment_comment_downvotes', { comment_id: commentId });
     fetchComments();
@@ -202,10 +249,10 @@ export default function CommentBox({ cupId }) {
           value={content}
           onChange={(e) => setContent(e.target.value.slice(0, 80))}
           placeholder={
-            user ? t("comment.placeholder") : t("comment.loginRequired")
+            user ? (isBanned ? "정지된 유저는 댓글 작성이 제한됩니다." : t("comment.placeholder")) : t("comment.loginRequired")
           }
           rows={2}
-          disabled={!user}
+          disabled={!user || isBanned}
           style={{
             flex: 1,
             minWidth: 0,
@@ -214,7 +261,7 @@ export default function CommentBox({ cupId }) {
             border: `1.2px solid ${COLORS.border}`,
             fontSize: 15.5,
             resize: "none",
-            background: user ? "#fff" : COLORS.soft,
+            background: (!user || isBanned) ? COLORS.soft : "#fff",
             fontWeight: 600,
             color: COLORS.text,
           }}
@@ -222,25 +269,40 @@ export default function CommentBox({ cupId }) {
         />
         <button
           type="submit"
-          disabled={!user || loading}
+          disabled={!user || loading || isBanned}
           style={{
             padding: "10px 22px",
             borderRadius: 999,
-            background: user
-              ? `linear-gradient(90deg, ${COLORS.main} 65%, ${COLORS.sub} 100%)`
-              : "#bbb",
+            background: (!user || isBanned)
+              ? "#bbb"
+              : `linear-gradient(90deg, ${COLORS.main} 65%, ${COLORS.sub} 100%)`,
             color: "#fff",
             fontWeight: 800,
             fontSize: 16,
             border: "none",
-            cursor: user ? "pointer" : "not-allowed",
-            boxShadow: user ? "0 1px 8px #1976ed23" : "none",
+            cursor: (!user || isBanned) ? "not-allowed" : "pointer",
+            boxShadow: (!user || isBanned) ? "none" : "0 1px 8px #1976ed23",
             letterSpacing: -0.5,
           }}
         >
           {loading ? t("comment.loading") || "등록중..." : t("comment.submit")}
         </button>
       </form>
+      {isBanned && (
+        <div style={{
+          color: COLORS.danger,
+          textAlign: "center",
+          marginBottom: 10,
+          fontWeight: 700,
+          fontSize: 15,
+        }}>
+          🚫 정지된 유저는 댓글 작성이 제한됩니다.
+          {banInfo && banInfo.expires_at && (
+            <div>정지 해제일: {banInfo.expires_at.replace("T", " ").slice(0, 16)}</div>
+          )}
+          {banInfo && banInfo.reason && <div>사유: {banInfo.reason}</div>}
+        </div>
+      )}
       {!user && (
         <div
           style={{
@@ -396,6 +458,7 @@ export default function CommentBox({ cupId }) {
               >
                 👎 비추천 {c.downvotes || 0}
               </button>
+              <ReportButton type="comment" targetId={c.id} />
               {(user && (nickname === "admin" || c.user_id === user.id)) && (
                 <button
                   style={{

@@ -164,7 +164,6 @@ function App() {
               alert("삭제 실패! " + (e.message || e));
             }
           }}
-          // 👇 user/nickname/isAdmin 꼭 넘겨줌!
           user={user}
           nickname={nickname}
           isAdmin={isAdmin}
@@ -190,6 +189,7 @@ function App() {
       );
     }
 
+    // ✅ [수정] 통계(StatsPage)에서 showCommentBox를 true로 전달!
     function StatsPageWrapper() {
       const { id } = useParams();
       const cup = worldcupList.find(c => String(c.id) === id);
@@ -197,7 +197,8 @@ function App() {
         return (
           <div style={{ padding: 80 }}>월드컵 정보를 찾을 수 없습니다.</div>
         );
-      return <StatsPage selectedCup={cup} />;
+      // 댓글창 함께 보이게!
+      return <StatsPage selectedCup={cup} showCommentBox={true} />;
     }
 
     function WorldcupMakerWrapper() {
@@ -318,4 +319,5 @@ function App() {
     </div>
   );
 }
+
 export default App;

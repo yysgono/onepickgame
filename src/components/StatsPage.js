@@ -1,32 +1,96 @@
+// src/components/StatsPage.jsx
+
 import React, { useState, useEffect } from "react";
 import { fetchWinnerStatsFromDB } from "../utils";
 import { useTranslation } from "react-i18next";
 import MediaRenderer from "./MediaRenderer";
+import CommentBox from "./CommentBox";
+import { supabase } from "../utils/supabaseClient";
+
+function ReportButton({ cupId }) {
+  const [show, setShow] = useState(false);
+  const [reason, setReason] = useState("");
+  const [ok, setOk] = useState("");
+  const [error, setError] = useState("");
+  async function handleReport() {
+    setError(""); setOk("");
+    const { data } = await supabase.auth.getUser();
+    if (!data?.user?.id) return setError("로그인 필요");
+    const { error } = await supabase.from("reports").insert([{
+      type: "worldcup",
+      target_id: cupId,
+      reporter_id: data.user.id,
+      reason
+    }]);
+    if (error) setError(error.message);
+    else setOk("신고가 접수되었습니다. 감사합니다.");
+  }
+  return (
+    <>
+      <button onClick={() => setShow(true)} style={{
+        color: "#d33", background: "#fff4f4", border: "1.5px solid #f6c8c8", borderRadius: 8,
+        padding: "5px 15px", marginLeft: 8, fontWeight: 700, cursor: "pointer"
+      }}>🚩 신고</button>
+      {show && (
+        <div style={{
+          position: "fixed", left: 0, top: 0, width: "100vw", height: "100vh",
+          background: "#0006", zIndex: 9999, display: "flex", alignItems: "center", justifyContent: "center"
+        }}>
+          <div style={{ background: "#fff", borderRadius: 14, padding: 22, minWidth: 270 }}>
+            <b>신고 사유</b>
+            <textarea value={reason} onChange={e => setReason(e.target.value)} style={{ width: "95%", minHeight: 60, marginTop: 12 }} placeholder="신고 사유를 입력하세요 (선택)" />
+            <div style={{ marginTop: 12 }}>
+              <button onClick={handleReport} style={{ marginRight: 10 }}>신고하기</button>
+              <button onClick={() => setShow(false)}>닫기</button>
+            </div>
+            {ok && <div style={{ color: "#1976ed", marginTop: 7 }}>{ok}</div>}
+            {error && <div style={{ color: "#d33", marginTop: 7 }}>{error}</div>}
+          </div>
+        </div>
+      )}
+    </>
+  );
+}
 
 function percent(n, d) {
   if (!d) return "-";
   return Math.round((n / d) * 100) + "%";
 }
+const PERIODS = [
+  { label: "1주일", value: 7 },
+  { label: "1개월", value: 30 },
+  { label: "3개월", value: 90 },
+  { label: "6개월", value: 180 },
+  { label: "1년", value: 365 },
+  { label: "전체", value: null }
+];
+function getSinceDate(days) {
+  if (!days) return null;
+  const date = new Date();
+  date.setDate(date.getDate() - days);
+  return date.toISOString();
+}
 
-function StatsPage({ selectedCup }) {
+function StatsPage({ selectedCup, showCommentBox = false }) {
   const { t } = useTranslation();
   const [stats, setStats] = useState([]);
   const [sortKey, setSortKey] = useState("win_count");
   const [sortDesc, setSortDesc] = useState(true);
   const [search, setSearch] = useState("");
   const [isMobile, setIsMobile] = useState(window.innerWidth < 800);
-
-  // 전체/회원만
   const [userOnly, setUserOnly] = useState(false);
+
+  const [period, setPeriod] = useState(7);
 
   useEffect(() => {
     async function fetchStats() {
       if (!selectedCup?.id) return setStats([]);
-      const statsArr = await fetchWinnerStatsFromDB(selectedCup.id);
+      let since = getSinceDate(period);
+      const statsArr = await fetchWinnerStatsFromDB(selectedCup.id, since);
       setStats(statsArr);
     }
     fetchStats();
-  }, [selectedCup]);
+  }, [selectedCup, period]);
 
   useEffect(() => {
     const onResize = () => setIsMobile(window.innerWidth < 800);
@@ -34,19 +98,16 @@ function StatsPage({ selectedCup }) {
     return () => window.removeEventListener("resize", onResize);
   }, []);
 
-  // **필터링 & 정렬**
+  // === 🔴 이 부분만 변경 ===
   let filteredStats = [...stats]
     .filter(row => row.name?.toLowerCase().includes(search.toLowerCase()));
   if (userOnly) {
-    // 회원만 보기 - 회원 데이터가 없는 row는 필터링
-    filteredStats = filteredStats
-      .filter(row => row.user_win_count > 0)
-      .map(row => ({
-        ...row,
-        win_count: row.user_win_count || 0,
-      }));
+    // 모든 후보를 보여주되 win_count만 user_win_count로 덮어쓰기
+    filteredStats = filteredStats.map(row => ({
+      ...row,
+      win_count: row.user_win_count || 0,
+    }));
   }
-
   filteredStats = filteredStats.sort((a, b) =>
     sortDesc
       ? (b[sortKey] ?? 0) - (a[sortKey] ?? 0)
@@ -65,7 +126,6 @@ function StatsPage({ selectedCup }) {
     if (rank === 3) return { color: "#e26464", fontWeight: 700 };
     return {};
   }
-
   const nameTdStyle = {
     maxWidth: isMobile ? 90 : 120,
     wordBreak: "break-word",
@@ -81,8 +141,6 @@ function StatsPage({ selectedCup }) {
     textAlign: "left",
     verticalAlign: "middle"
   };
-
-  // **스타일 구분 함수**
   function tabBtnStyle(selected) {
     return {
       padding: "8px 19px",
@@ -100,6 +158,23 @@ function StatsPage({ selectedCup }) {
       boxShadow: selected ? "0 2px 7px #1976ed22" : undefined
     };
   }
+  function periodBtnStyle(selected) {
+    return {
+      padding: "7px 15px",
+      marginRight: 7,
+      marginBottom: 6,
+      borderRadius: 8,
+      border: selected
+        ? "2.5px solid #1976ed"
+        : "1.5px solid #ccc",
+      background: selected ? "#e8f2fe" : "#fff",
+      color: selected ? "#1976ed" : "#555",
+      fontWeight: 700,
+      fontSize: 15,
+      cursor: "pointer",
+      transition: "all 0.15s"
+    };
+  }
 
   return (
     <div
@@ -111,7 +186,22 @@ function StatsPage({ selectedCup }) {
         boxSizing: "border-box"
       }}
     >
-      <div style={{ display: "flex", alignItems: "center", marginBottom: 16 }}>
+      {/* === 신고 버튼 상단에 노출 === */}
+      <div style={{ display: "flex", alignItems: "center", marginBottom: 12 }}>
+        <h2 style={{ fontWeight: 900, color: "#222", margin: 0, fontSize: 24 }}>통계</h2>
+        {selectedCup?.id && <ReportButton cupId={selectedCup.id} />}
+      </div>
+      <div style={{ marginBottom: 16, display: "flex", alignItems: "center", flexWrap: "wrap" }}>
+        {PERIODS.map((p) => (
+          <button
+            key={p.value ?? "all"}
+            onClick={() => setPeriod(p.value)}
+            style={periodBtnStyle(period === p.value)}
+          >
+            {p.label}
+          </button>
+        ))}
+        <div style={{ width: 18 }} />
         <button
           style={tabBtnStyle(!userOnly)}
           onClick={() => setUserOnly(false)}
@@ -255,6 +345,18 @@ function StatsPage({ selectedCup }) {
           </tbody>
         </table>
       </div>
+      {/* === 댓글창도 같이 보이게 === */}
+      {showCommentBox && (
+        <div style={{
+          marginTop: 36,
+          background: "#fff",
+          borderRadius: 18,
+          boxShadow: "0 2px 18px #1976ed09, 0 1px 8px #1976ed11",
+          padding: "8px 0 24px 0"
+        }}>
+          <CommentBox cupId={selectedCup?.id} />
+        </div>
+      )}
     </div>
   );
 }

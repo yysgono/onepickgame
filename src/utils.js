@@ -151,13 +151,19 @@ export async function getMyWinnerStats({ cup_id } = {}) {
 }
 
 // 후보별 누적 통계 (전체, 회원, 비회원 통합) 가져오기
-export async function fetchWinnerStatsFromDB(cup_id) {
-  const { data, error } = await supabase
+export async function fetchWinnerStatsFromDB(cup_id, since) {
+  let query = supabase
     .from("winner_stats")
     .select("*")
     .eq("cup_id", cup_id);
+
+  if (since) query = query.gte("created_at", since);
+
+  const { data, error } = await query;
   if (error) throw error;
-  // 후보별 합산
+
+  // ...후보별 합산 로직(원래 있던 것)
+  // 그대로 두면 됨!
   const statsMap = {};
   for (const row of data) {
     const id = row.candidate_id;
