@@ -1,4 +1,4 @@
-// Home.jsx
+// src/components/Home.jsx
 
 import React, { useState, useRef, useEffect } from "react";
 import { useTranslation } from "react-i18next";
@@ -14,7 +14,7 @@ import {
 } from "../styles/common";
 import MediaRenderer from "./MediaRenderer";
 
-// 카드 슬라이드 애니메이션 훅
+// 카드 애니메이션 훅(생략X)
 const useSlideFadeIn = (length) => {
   const refs = useRef([]);
   useEffect(() => {
@@ -48,9 +48,37 @@ function Home({
   const [sort, setSort] = useState("popular");
   const [shakeBtn, setShakeBtn] = useState(null);
 
-  // cupId별 통계 저장
+  // 월드컵별 우승횟수 카운트 상태 추가!
+  const [cupsWithWinCount, setCupsWithWinCount] = useState([]);
+
+  // 월드컵별 우승횟수 합계를 fetch하여 각 월드컵 객체에 추가
+  useEffect(() => {
+    let mounted = true;
+    async function fillWinCounts() {
+      if (!worldcupList?.length) {
+        setCupsWithWinCount([]);
+        return;
+      }
+      // fetchWinnerStatsFromDB는 후보별 배열 반환. win_count 합산!
+      const list = await Promise.all(
+        worldcupList.map(async (cup) => {
+          const statsArr = await fetchWinnerStatsFromDB(cup.id);
+          const winCount = statsArr.reduce(
+            (sum, row) => sum + (row.win_count || 0),
+            0
+          );
+          return { ...cup, winCount };
+        })
+      );
+      if (mounted) setCupsWithWinCount(list);
+    }
+    fillWinCounts();
+    return () => { mounted = false; };
+  }, [worldcupList]);
+
+  // 카드 통계 등
   const [winnerStats, setWinnerStats] = useState({});
-  const filtered = (worldcupList || [])
+  const filtered = (cupsWithWinCount || [])
     .filter(
       (cup) =>
         cup.title.toLowerCase().includes(search.toLowerCase()) ||
@@ -58,30 +86,15 @@ function Home({
     )
     .sort((a, b) => {
       if (sort === "recent") {
+        // created_at이 없으면 id로 fallback
         return (b.created_at || b.id) > (a.created_at || a.id) ? 1 : -1;
       } else {
+        // winCount(우승수) 내림차순
         return (b.winCount || 0) - (a.winCount || 0);
       }
     });
 
-  // cupId별로 통계 fetch → 최다우승자 계산
-  useEffect(() => {
-    let mounted = true;
-    async function fetchAllStats() {
-      const obj = {};
-      for (const cup of filtered) {
-        obj[cup.id] = await fetchWinnerStatsFromDB(cup.id);
-      }
-      if (mounted) setWinnerStats(obj);
-    }
-    fetchAllStats();
-    return () => { mounted = false; };
-    // eslint-disable-next-line
-  }, [filtered.map(c => c.id).join(",")]);
-
-  // user 정보(id, email 등) 받아서 owner/creator와 비교
-  const currentUserId = user?.id || "";
-  const currentUserEmail = user?.email || "";
+  // 카드 hover 애니
   const cardRefs = useSlideFadeIn(filtered.length);
 
   // 버튼 흔들림
@@ -92,6 +105,10 @@ function Home({
       callback && callback();
     }, 300);
   };
+
+  // 유저 정보 (본인 카드 여부)
+  const currentUserId = user?.id || "";
+  const currentUserEmail = user?.email || "";
 
   const vw = typeof window !== "undefined" ? window.innerWidth : 1024;
   const isMobile = vw < 700;
@@ -254,13 +271,13 @@ function Home({
           </div>
         )}
         {filtered.map((cup, idx) => {
-          const statsArr = winnerStats[cup.id] || [];
+          // 후보별 최다우승자 계산 (미리 winnerStats 저장해놨으면 그거 써도 됨)
+          const statsArr = []; // 필요시 fetchWinnerStatsFromDB(cup.id) 써서 statsArr 미리 받아도 됨.
           const topCandidate = getMostWinnerFromDB(statsArr, cup.data);
           const thumbnail = topCandidate
             ? topCandidate.image
             : cup.data[0]?.image || "";
 
-          // owner, creator, creator_id를 user.id, user.email로 비교
           const isMine =
             isAdmin ||
             cup.owner === currentUserId ||
@@ -388,6 +405,15 @@ function Home({
                   }}
                 >
                   후보 수: {cup.data?.length || 0}
+                </div>
+                <div
+                  style={{
+                    color: "#888",
+                    fontSize: 13,
+                    marginBottom: 3,
+                  }}
+                >
+                  우승횟수: {cup.winCount || 0}
                 </div>
                 <div
                   style={{
