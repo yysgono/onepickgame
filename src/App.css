@@ -39,7 +39,7 @@ body {
   margin: 0 auto !important;
   padding: 0 !important;
   background: none;
-    margin-top: 0 !important;
+  margin-top: 0 !important;
   margin-bottom: 0 !important;
   padding-top: 0 !important;
   padding-bottom: 0 !important;
@@ -230,6 +230,8 @@ body {
     min-width: 0 !important;
   }
 }
+
+/* ----------- ★ 모바일에서 광고 작게 강제 ----------- */
 @media (max-width: 700px) {
   .main-content-box {
     padding: 10px 0vw;
@@ -249,10 +251,20 @@ body {
     width: 98vw !important;
     font-size: 1em !important;
   }
+  .ad-banner.top img,
+  .ad-banner.bottom img {
+    max-width: 320px !important;
+    max-height: 90px !important;
+    width: 100% !important;
+    height: auto !important;
+    border-radius: 12px !important;
+  }
   .ad-banner.top,
   .ad-banner.bottom {
-    min-width: 160px;
-    max-width: 99vw;
+    min-width: 160px !important;
+    max-width: 99vw !important;
+    padding: 0 !important;
+    border-radius: 12px !important;
   }
 }
 
@@ -305,8 +317,8 @@ code {
     monospace;
 }
 
-/* 2400px 이하에서 양옆 광고 안보이게 */
-@media (max-width: 2400px) {
+/* 2200px 이하에서 양옆 광고 안보이게 */
+@media (max-width: 2200px) {
   .ad-banner.left,
   .ad-banner.right {
     display: none !important;

@@ -49,6 +49,19 @@ function useAdBannerHeight() {
   return [ref, height];
 }
 
+// 모바일 판별
+function useIsMobile() {
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 700);
+  useEffect(() => {
+    function onResize() {
+      setIsMobile(window.innerWidth <= 700);
+    }
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
+  return isMobile;
+}
+
 // 비밀번호 재설정 리다이렉트 라우트
 function ResetPwRedirect() {
   const navigate = useNavigate();
@@ -61,6 +74,7 @@ function ResetPwRedirect() {
 function App() {
   // 광고 높이 자동 계산
   const [adRef, adHeight] = useAdBannerHeight();
+  const isMobile = useIsMobile();
 
   const [worldcupList, setWorldcupList] = useState([]);
   const { i18n } = useTranslation();
@@ -351,8 +365,24 @@ function App() {
   // 하단 광고 노출
   function BottomAdConditional() {
     const { showBig, showSmall } = useShowBottomAd();
+    // 모바일이면 무조건 작은 광고!
+    if (isMobile) {
+      return (
+        <AdBanner
+          position="bottom"
+          img="ad2.png"
+          width={320}
+          height={90}
+          style={{
+            left: "50%",
+            transform: "translateX(-50%)",
+            bottom: "0px",
+          }}
+        />
+      );
+    }
     if (showBig) {
-      // 경기선택/매치에서는 큰 광고
+      // PC: 경기선택/매치에서는 큰 광고
       return (
         <AdBanner
           position="bottom"
@@ -368,7 +398,7 @@ function App() {
       );
     }
     if (showSmall) {
-      // 결과창에서는 작은 광고
+      // PC: 결과창에서는 작은 광고
       return (
         <AdBanner
           position="bottom"
