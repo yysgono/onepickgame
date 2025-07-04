@@ -1,3 +1,5 @@
+// src/components/SelectRoundPage.js
+
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import COLORS from "../styles/theme";
@@ -27,14 +29,25 @@ function SelectRoundPage({ cup, maxRound, candidates, onSelect }) {
   const mobile = isMobile();
   const hasBye = candidates.length < selectedRound;
 
+  // **버튼/셀렉트 스타일 크게**
   const startBtnStyle = {
     ...mainButtonStyle(),
-    padding: mobile ? "6px 10px" : "12px 34px",
-    borderRadius: mobile ? 7 : 11,
+    padding: mobile ? "12px 24px" : "20px 60px",
+    borderRadius: mobile ? 10 : 15,
+    fontWeight: 900,
+    fontSize: mobile ? 20 : 30,
+    marginLeft: 10,
+    minWidth: mobile ? 120 : 180,
+  };
+
+  const selectBoxStyle = {
+    ...selectStyle,
+    fontSize: mobile ? 18 : 26,
+    padding: mobile ? "12px 20px" : "18px 34px",
+    borderRadius: mobile ? 9 : 15,
+    marginRight: mobile ? 8 : 16,
+    minWidth: mobile ? 100 : 130,
     fontWeight: 800,
-    fontSize: mobile ? 14.4 : 25.2,
-    marginLeft: 6,
-    minWidth: mobile ? 63 : 108,
   };
 
   const gridColumn = mobile
@@ -45,7 +58,7 @@ function SelectRoundPage({ cup, maxRound, candidates, onSelect }) {
   const cardGap = mobile ? 7 : 36;
   const cardRadius = mobile ? 9 : 18;
   const cardWidth = mobile ? "40vw" : "186px";
-  const titleSize = mobile ? 23 : 91;
+  const titleSize = mobile ? 23 : 48;
   const cardMargin = mobile ? 4 : 8;
   const nameMargin = mobile ? 4 : 7;
 
@@ -76,24 +89,19 @@ function SelectRoundPage({ cup, maxRound, candidates, onSelect }) {
 
       <div
         style={{
-          marginBottom: mobile ? 12 : 38,
+          marginBottom: mobile ? 18 : 48,
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          gap: 8,
+          gap: 10,
         }}
       >
-        <div>
+        {/* --- 여기 버튼/셀렉트 박스 --- */}
+        <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: 10 }}>
           <select
             value={selectedRound}
             onChange={(e) => setSelectedRound(Number(e.target.value))}
-            style={{
-              ...selectStyle,
-              fontSize: mobile ? 13 : 22,
-              padding: mobile ? "6px 12px" : "12px 30px",
-              borderRadius: mobile ? 8 : 16,
-              marginRight: mobile ? 5 : 12,
-            }}
+            style={selectBoxStyle}
           >
             {possibleRounds.map((r) => (
               <option key={r} value={r}>
@@ -107,7 +115,7 @@ function SelectRoundPage({ cup, maxRound, candidates, onSelect }) {
         </div>
         <div
           style={{
-            fontSize: mobile ? 12 : 20,
+            fontSize: mobile ? 13 : 20,
             fontWeight: 600,
             color: hasBye ? "#d9534f" : "#555",
             marginTop: 8,

@@ -7,7 +7,7 @@ import MediaRenderer from "./MediaRenderer";
 import CommentBox from "./CommentBox";
 import { supabase } from "../utils/supabaseClient";
 
-// --- 신고 버튼 컴포넌트 ---
+// --- 신고 버튼 컴포넌트 (생략해도 되지만 원본 유지) ---
 function ReportButton({ cupId }) {
   const [show, setShow] = useState(false);
   const [reason, setReason] = useState("");
@@ -53,13 +53,12 @@ function ReportButton({ cupId }) {
   );
 }
 
-// --- 퍼센트 계산 유틸 ---
 function percent(n, d) {
   if (!d) return "-";
   return Math.round((n / d) * 100) + "%";
 }
 
-// --- 기간 버튼 정보 ---
+// --- 기간 버튼 목록 ---
 const PERIODS = [
   { label: "1주일", value: 7 },
   { label: "1개월", value: 30 },
@@ -75,7 +74,6 @@ function getSinceDate(days) {
   return date.toISOString();
 }
 
-// --- StatsPage 컴포넌트 ---
 function StatsPage({ selectedCup, showCommentBox = false }) {
   const { t } = useTranslation();
   const [stats, setStats] = useState([]);
@@ -160,7 +158,8 @@ function StatsPage({ selectedCup, showCommentBox = false }) {
       fontSize: 15,
       cursor: "pointer",
       transition: "all 0.15s",
-      boxShadow: selected ? "0 2px 7px #1976ed22" : undefined
+      boxShadow: selected ? "0 2px 7px #1976ed22" : undefined,
+      marginBottom: 7,
     };
   }
   function periodBtnStyle(selected) {
@@ -196,17 +195,10 @@ function StatsPage({ selectedCup, showCommentBox = false }) {
         <h2 style={{ fontWeight: 900, color: "#222", margin: 0, fontSize: 24 }}>통계</h2>
         {selectedCup?.id && <ReportButton cupId={selectedCup.id} />}
       </div>
-      <div style={{ marginBottom: 16, display: "flex", alignItems: "center", flexWrap: "wrap" }}>
-        {PERIODS.map((p) => (
-          <button
-            key={p.value ?? "all"}
-            onClick={() => setPeriod(p.value)}
-            style={periodBtnStyle(period === p.value)}
-          >
-            {p.label}
-          </button>
-        ))}
-        <div style={{ width: 18 }} />
+      {/* 전체/회원만 탭 먼저 노출 */}
+      <div style={{
+        display: "flex", justifyContent: "center", gap: 8, marginBottom: 6
+      }}>
         <button
           style={tabBtnStyle(!userOnly)}
           onClick={() => setUserOnly(false)}
@@ -219,12 +211,32 @@ function StatsPage({ selectedCup, showCommentBox = false }) {
         >
           회원만
         </button>
+      </div>
+      {/* 기간 버튼 줄바꿈 노출 */}
+      <div style={{
+        display: "flex",
+        flexWrap: "wrap",
+        gap: 0,
+        justifyContent: "center",
+        marginBottom: 12
+      }}>
+        {PERIODS.map((p) => (
+          <button
+            key={p.value ?? "all"}
+            onClick={() => setPeriod(p.value)}
+            style={periodBtnStyle(period === p.value)}
+          >
+            {p.label}
+          </button>
+        ))}
+      </div>
+      {/* 검색창 */}
+      <div style={{ display: "flex", justifyContent: "center", marginBottom: 12 }}>
         <input
           value={search}
           onChange={e => setSearch(e.target.value)}
           placeholder={t("search")}
           style={{
-            marginLeft: 18,
             width: 140,
             padding: "7px 13px",
             borderRadius: 8,
@@ -233,6 +245,7 @@ function StatsPage({ selectedCup, showCommentBox = false }) {
           }}
         />
       </div>
+      {/* 테이블 */}
       <div style={{ width: "100%", overflowX: "auto" }}>
         <table
           style={{
