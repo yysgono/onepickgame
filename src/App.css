@@ -6,7 +6,6 @@ html, body {
   min-height: 100vh;
   background: #f6f8fa;
 }
-
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
@@ -14,7 +13,6 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-
 #root {
   margin: 0 !important;
   padding: 0 !important;
@@ -22,7 +20,6 @@ body {
   min-height: 100vh;
   background: #f6f8fa;
 }
-
 .app-main-wrapper {
   min-height: 100vh;
   width: 100%;
@@ -32,32 +29,43 @@ body {
   padding: 0 !important;
   background: #f6f8fa;
 }
-
 .header-wrapper {
   width: 100%;
   max-width: 1800px;
   margin: 0 auto !important;
   padding: 0 !important;
   background: none;
-  margin-top: 0 !important;
-  margin-bottom: 0 !important;
-  padding-top: 0 !important;
-  padding-bottom: 0 !important;
 }
 
-/* 상단 광고 (헤더 아래, 스크롤 따라오지 않음) */
-.ad-banner-top-static-wrap {
-  width: 100%;
+/* ===== 광고 ===== */
+.ad-banner.left, .ad-banner.right {
+  position: fixed;
+  z-index: 1000;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 300px !important;
+  min-width: 300px !important;
+  max-width: 300px !important;
+  height: 600px !important;
+  min-height: 600px !important;
+  max-height: 600px !important;
   display: flex;
+  align-items: center;
   justify-content: center;
-  align-items: flex-start;
-  position: relative;
-  z-index: 1001;
-  min-height: 0;
-  margin: 0 !important;
-  padding: 0 !important;
   background: none;
+  pointer-events: none;
 }
+.ad-banner.left img, .ad-banner.right img {
+  width: 300px !important;
+  height: 600px !important;
+  object-fit: cover;
+  border-radius: 16px;
+  display: block;
+  pointer-events: auto;
+}
+.ad-banner.left { left: 24px; }
+.ad-banner.right { right: 24px; }
+
 .ad-banner.top {
   position: static;
   margin: 0 auto;
@@ -75,43 +83,12 @@ body {
   height: auto;
 }
 .ad-banner.top img {
+  width: 100%;
   max-width: 1200px;
   max-height: 140px;
-  width: auto;
-  height: auto;
   display: block;
   border-radius: 14px;
 }
-
-/* 좌/우 광고 */
-.ad-banner.left, .ad-banner.right {
-  position: fixed;
-  z-index: 1000;
-  top: 50%;
-  transform: translateY(-50%);
-  width: auto;
-  max-width: 360px;
-  min-width: 120px;
-  max-height: 95vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: none;
-  pointer-events: none;
-}
-.ad-banner.left img, .ad-banner.right img {
-  width: 100%;
-  max-width: 360px;
-  max-height: 95vh;
-  min-width: 120px;
-  border-radius: 16px;
-  display: block;
-  pointer-events: auto;
-}
-.ad-banner.left { left: 24px; }
-.ad-banner.right { right: 24px; }
-
-/* 하단 광고 */
 .ad-banner.bottom {
   position: fixed;
   left: 50%;
@@ -128,14 +105,15 @@ body {
   background: none;
 }
 .ad-banner.bottom img {
-  max-width: 970px;
-  width: 100%;
-  max-height: 160px;
+  width: 970px !important;
+  max-width: 970px !important;
+  height: 90px !important;
+  max-height: 160px !important;
   border-radius: 18px;
   display: block;
 }
 
-/* 본문(본문 내용은 광고 높이만큼 내려감) */
+/* ===== 본문 ===== */
 .main-content-outer {
   display: flex;
   flex-direction: column;
@@ -144,18 +122,16 @@ body {
   justify-content: flex-start;
   margin: 0 !important;
   padding: 0 !important;
-  /* padding-top은 App.js에서 동적으로 조정! */
   transition: padding-top 0.2s;
   width: 100%;
 }
-
 .main-content-box {
   background: #fff;
   border-radius: 20px;
   box-shadow: 0 2px 16px #0001;
   margin: 0 auto 0 auto;
   padding: 48px 40px 70px 40px;
-  max-width: 1800px;
+  max-width: 1200px;
   min-width: 340px;
   width: 100%;
   position: relative;
@@ -163,7 +139,7 @@ body {
   box-sizing: border-box;
 }
 
-/* 홈 - 월드컵 카드 그리드 최대 공간 활용 */
+/* ===== 월드컵 카드 등 (생략 가능) ===== */
 .candidate-list {
   display: flex;
   flex-wrap: wrap;
@@ -203,7 +179,13 @@ body {
   font-size: 1.07em;
 }
 
-/* ===== 반응형 미디어 쿼리 ===== */
+/* ===== 반응형 ===== */
+@media (max-width: 2200px) {
+  .ad-banner.left,
+  .ad-banner.right {
+    display: none !important;
+  }
+}
 @media (max-width: 1400px) {
   .main-content-box {
     max-width: 98vw;
@@ -229,9 +211,11 @@ body {
     width: 95vw !important;
     min-width: 0 !important;
   }
+  .ad-banner.left, .ad-banner.right {
+    display: none !important;
+  }
 }
-
-/* ----------- ★ 모바일에서 광고 작게 강제 ----------- */
+/* 모바일 */
 @media (max-width: 700px) {
   .main-content-box {
     padding: 10px 0vw;
@@ -251,6 +235,9 @@ body {
     width: 98vw !important;
     font-size: 1em !important;
   }
+  .ad-banner.left, .ad-banner.right {
+    display: none !important;
+  }
   .ad-banner.top img,
   .ad-banner.bottom img {
     max-width: 320px !important;
@@ -268,7 +255,7 @@ body {
   }
 }
 
-/* 페이지 타이틀, 기타 디자인 */
+/* 기타 UI */
 .page-title {
   font-weight: 800;
   font-size: 1.5em;
@@ -311,20 +298,12 @@ body {
   line-height: 1.3;
   word-break: break-all;
 }
-
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
 
-/* 2200px 이하에서 양옆 광고 안보이게 */
-@media (max-width: 2200px) {
-  .ad-banner.left,
-  .ad-banner.right {
-    display: none !important;
-  }
-}
-
+/* Skeleton animation */
 @keyframes skeleton-pulse {
   0% { opacity: 0.72; }
   100% { opacity: 1; }

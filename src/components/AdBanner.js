@@ -1,10 +1,12 @@
+// src/components/AdBanner.js
+
 import React from 'react';
 
 const AdBanner = ({
   position,
   img,
   width = 300,
-  height = 250,
+  height = 600, // 사이드 기본 300x600
   style = {},
 }) => {
   let posStyle = {};
@@ -17,17 +19,22 @@ const AdBanner = ({
   };
 
   if (position === 'top') {
-    // 상단 배너는 static, 크기 제한은 css에서!
     isFixed = false;
     posStyle = {};
+    width = '100%';
+    height = 'auto';
   } else if (position === 'bottom') {
     posStyle = { position: 'fixed', left: '50%', bottom: 0, transform: 'translateX(-50%)' };
+    width = 970;
+    height = 90;
   } else if (position === 'left') {
     posStyle = { position: 'fixed', top: '50%', left: 24, transform: 'translateY(-50%)' };
-    localStyle = { ...localStyle, width, maxWidth: 360, minWidth: 120, maxHeight: '95vh' };
+    width = 300;
+    height = 600;
   } else if (position === 'right') {
     posStyle = { position: 'fixed', top: '50%', right: 24, transform: 'translateY(-50%)' };
-    localStyle = { ...localStyle, width, maxWidth: 360, minWidth: 120, maxHeight: '95vh' };
+    width = 300;
+    height = 600;
   }
 
   return (
@@ -37,20 +44,26 @@ const AdBanner = ({
         ...(isFixed ? { position: 'fixed', zIndex: 1000 } : { position: 'static' }),
         ...localStyle,
         ...posStyle,
+        width: position === "top" ? "100%" : width,
+        height: position === "top" ? "auto" : height,
+        minWidth: position === "top" ? undefined : width,
+        minHeight: position === "top" ? undefined : height,
+        maxWidth: position === "top" ? undefined : width,
+        maxHeight: position === "top" ? undefined : height,
+        pointerEvents: position === "left" || position === "right" ? "none" : "auto",
       }}
     >
       <img
         src={img}
         alt="banner"
         style={{
-          width: position === 'top' ? '100%' : '100%',
-          height: position === 'top' ? 'auto' : '100%',
+          width: width,
+          height: height,
           objectFit: 'cover',
-          borderRadius: position === 'top' ? 14 : 13,
+          borderRadius: 16,
           boxShadow: '0 2px 18px #0002',
-          maxWidth: position === 'top' ? 1200 : undefined,
-          maxHeight: position === 'top' ? 140 : undefined,
-          minWidth: position === 'top' ? 320 : undefined,
+          display: "block",
+          pointerEvents: position === "left" || position === "right" ? "auto" : "auto",
         }}
       />
     </div>
