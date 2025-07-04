@@ -324,3 +324,8 @@ code {
     display: none !important;
   }
 }
+
+@keyframes skeleton-pulse {
+  0% { opacity: 0.72; }
+  100% { opacity: 1; }
+}

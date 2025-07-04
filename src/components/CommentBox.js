@@ -1,12 +1,57 @@
-// src/components/CommentBox.jsx
-
 import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { supabase } from "../utils/supabaseClient";
 import { hasBadword } from "../badwords-multilang";
 import useBanCheck from "../hooks/useBanCheck";
 
-// === [신고 버튼 재활용] ===
+// === 스켈레톤 컴포넌트 ===
+function CommentSkeleton() {
+  return (
+    <div style={{
+      maxWidth: 540,
+      width: "100%",
+      margin: "38px auto",
+      background: "#fff",
+      borderRadius: 18,
+      boxShadow: "0 4px 18px #1976ed11, 0 1px 6px #1976ed13",
+      padding: "30px 22px",
+      border: `1.3px solid #e3f0fb`,
+      boxSizing: "border-box",
+      opacity: 0.78,
+    }}>
+      <div style={{ height: 28, background: "#f2f5fa", borderRadius: 7, width: 130, margin: "0 auto 22px auto" }} />
+      <div style={{ display: "flex", gap: 10, marginBottom: 18 }}>
+        <div style={{ width: 80, height: 38, borderRadius: 8, background: "#e7f3fd" }} />
+        <div style={{ flex: 1, height: 38, borderRadius: 9, background: "#f3f3f3" }} />
+        <div style={{ width: 78, height: 38, borderRadius: 20, background: "#e3f0fb" }} />
+      </div>
+      <div>
+        {[1, 2, 3].map(i => (
+          <div key={i} style={{
+            borderBottom: "1.5px solid #f1f3f7",
+            padding: "13px 0 9px 0",
+            marginBottom: 9,
+            borderRadius: 10,
+            background: "#fafdff"
+          }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 7, marginBottom: 6 }}>
+              <div style={{ width: 58, height: 18, background: "#e3f0fb", borderRadius: 8 }} />
+              <div style={{ width: 26, height: 13, background: "#f0f2f7", borderRadius: 7 }} />
+              <div style={{ width: 55, height: 13, background: "#f0f2f7", borderRadius: 7 }} />
+            </div>
+            <div style={{ width: "90%", height: 17, background: "#f3f3f3", borderRadius: 7, marginLeft: 4, marginBottom: 2 }} />
+            <div style={{ display: "flex", gap: 10, marginTop: 6 }}>
+              <div style={{ width: 48, height: 15, background: "#f0f2f7", borderRadius: 7 }} />
+              <div style={{ width: 48, height: 15, background: "#f0f2f7", borderRadius: 7 }} />
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// === [신고 버튼] ===
 function ReportButton({ type, targetId }) {
   const [show, setShow] = useState(false);
   const [reason, setReason] = useState("");
@@ -86,7 +131,7 @@ export default function CommentBox({ cupId }) {
   const [comments, setComments] = useState([]);
   const [content, setContent] = useState("");
   const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function fetchUser() {
@@ -113,12 +158,14 @@ export default function CommentBox({ cupId }) {
   }, [cupId]);
 
   async function fetchComments() {
+    setLoading(true);
     const { data } = await supabase
       .from("comments")
       .select("*")
       .eq("cup_id", cupId)
       .order("created_at", { ascending: false });
     setComments(data || []);
+    setLoading(false);
   }
 
   function containsBadword(str) {
@@ -191,6 +238,9 @@ export default function CommentBox({ cupId }) {
     await supabase.rpc('increment_comment_downvotes', { comment_id: commentId });
     fetchComments();
   }
+
+  // === 스켈레톤 노출 ===
+  if (loading) return <CommentSkeleton />;
 
   return (
     <div

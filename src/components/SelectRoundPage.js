@@ -62,6 +62,10 @@ function SelectRoundPage({ cup, maxRound, candidates, onSelect }) {
   const cardMargin = mobile ? 4 : 8;
   const nameMargin = mobile ? 4 : 7;
 
+  // --- onSelect를 "즉시" 실행하는 게 UX에 제일 빠름!
+  // (여기서는 비동기 처리, 로딩 처리 없이 바로 실행)
+  // 만약 onSelect가 async라면, navigate만 제일 먼저 실행!
+
   return (
     <div
       style={{
@@ -109,7 +113,13 @@ function SelectRoundPage({ cup, maxRound, candidates, onSelect }) {
               </option>
             ))}
           </select>
-          <button style={startBtnStyle} onClick={() => onSelect(selectedRound)}>
+          <button
+            style={startBtnStyle}
+            onClick={() => {
+              // 💡 여기서 onSelect를 바로 실행!
+              onSelect(selectedRound);
+            }}
+          >
             {t("start")}
           </button>
         </div>

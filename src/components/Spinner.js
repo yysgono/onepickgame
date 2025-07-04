@@ -1,25 +1,28 @@
 // src/components/Spinner.js
 import React from "react";
 
-const Spinner = () => (
+const Spinner = ({ size = 60 }) => (
   <div style={{
-    display: "flex", justifyContent: "center", alignItems: "center", height: 140
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    height: size + 24,
+    margin: "50px 0"
   }}>
-    <div className="loader"></div>
+    <div style={{
+      width: size,
+      height: size,
+      border: `${size / 10}px solid #e3f0fb`,
+      borderTop: `${size / 10}px solid #1976ed`,
+      borderRadius: "50%",
+      animation: "spin 1.1s linear infinite"
+    }} />
     <style>
       {`
-      .loader {
-        border: 8px solid #f3f3f3;
-        border-top: 8px solid #1976ed;
-        border-radius: 50%;
-        width: 50px;
-        height: 50px;
-        animation: spin 1s linear infinite;
-      }
-      @keyframes spin {
-        0% { transform: rotate(0deg);}
-        100% { transform: rotate(360deg);}
-      }
+        @keyframes spin {
+          0% { transform: rotate(0deg);}
+          100% { transform: rotate(360deg);}
+        }
       `}
     </style>
   </div>

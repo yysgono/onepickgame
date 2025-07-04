@@ -1,9 +1,33 @@
+// src/components/ResultPage.jsx
+
 import React from "react";
 import { useParams, useLocation, useNavigate } from "react-router-dom";
 import StatsPage from "./StatsPage";
 import CommentBox from "./CommentBox";
 import MediaRenderer from "./MediaRenderer";
 import { useTranslation } from "react-i18next";
+
+// === 결과 스켈레톤 ===
+function ResultSkeleton({ isMobile }) {
+  return (
+    <div style={{
+      width: isMobile ? "96vw" : 650,
+      minHeight: isMobile ? "60vh" : 400,
+      margin: "40px auto",
+      padding: isMobile ? 30 : 60,
+      background: "#fff",
+      borderRadius: 18,
+      boxShadow: "0 3px 16px #0002",
+      textAlign: "center",
+      opacity: 0.6
+    }}>
+      <div style={{ width: 180, height: 180, borderRadius: 14, margin: "0 auto 18px", background: "#e7ecf7" }} />
+      <div style={{ height: 38, background: "#e3f0fb", width: 140, borderRadius: 10, margin: "0 auto 22px" }} />
+      <div style={{ height: 26, background: "#f3f3f3", width: 220, borderRadius: 8, margin: "0 auto 18px" }} />
+      <div style={{ height: 22, background: "#f0f2f7", width: 180, borderRadius: 8, margin: "0 auto 24px" }} />
+    </div>
+  );
+}
 
 function useIsMobile(breakpoint = 800) {
   const [isMobile, setIsMobile] = React.useState(
@@ -28,9 +52,11 @@ function ResultPage({ worldcupList }) {
   const cup = worldcupList.find(c => String(c.id) === id);
   const isMobile = useIsMobile(800);
 
+  // === 결과/통계/댓글 로딩시 스켈레톤 ===
   if (!cup || !winner)
-    return <div style={{ padding: 80 }}>{t("cannotShowResult")}</div>;
+    return <ResultSkeleton isMobile={isMobile} />;
 
+  // 모바일
   if (isMobile) {
     return (
       <div style={{

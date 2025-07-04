@@ -150,20 +150,26 @@ export async function getMyWinnerStats({ cup_id } = {}) {
   return data;
 }
 
-// 후보별 누적 통계 (전체, 회원, 비회원 통합) 가져오기
+// 후보별 누적 통계 (전체, 회원, 비회원 통합) 가져오기 (기간설정 지원!)
 export async function fetchWinnerStatsFromDB(cup_id, since) {
   let query = supabase
     .from("winner_stats")
     .select("*")
     .eq("cup_id", cup_id);
 
-  if (since) query = query.gte("created_at", since);
+  // 기간 직접(from, to) 설정 지원
+  if (since && typeof since === "object" && since.from && since.to) {
+    query = query.gte("created_at", since.from).lte("created_at", since.to);
+  } else if (since) {
+    // 단일 날짜(24h, 7d 등)
+    query = query.gte("created_at", since);
+  }
+  // 전체(필터 없음)
 
   const { data, error } = await query;
   if (error) throw error;
 
-  // ...후보별 합산 로직(원래 있던 것)
-  // 그대로 두면 됨!
+  // ...후보별 합산 로직
   const statsMap = {};
   for (const row of data) {
     const id = row.candidate_id;

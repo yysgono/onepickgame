@@ -8,6 +8,36 @@ import {
 import MediaRenderer from "./MediaRenderer";
 import { useTranslation } from "react-i18next";
 
+// ---- Spinner 컴포넌트 ----
+function Spinner({ size = 60 }) {
+  return (
+    <div style={{
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      height: size + 24,
+      margin: "48px 0"
+    }}>
+      <div style={{
+        width: size,
+        height: size,
+        border: `${size / 10}px solid #e3f0fb`,
+        borderTop: `${size / 10}px solid #1976ed`,
+        borderRadius: "50%",
+        animation: "spin-fancy 1s linear infinite"
+      }} />
+      <style>
+        {`
+          @keyframes spin-fancy {
+            0% { transform: rotate(0deg);}
+            100% { transform: rotate(360deg);}
+          }
+        `}
+      </style>
+    </div>
+  );
+}
+
 function getStageLabel(n, isFirst = false) {
   if (isFirst) return `${n}강`;
   if (n === 2) return "결승전";
@@ -110,6 +140,10 @@ function Match({ cup, onResult, selectedCount }) {
       const nextRoundCandidates =
         roundNum === 1 ? [...pendingWinners, ...matchWinners] : matchWinners;
       if (nextRoundCandidates.length === 1) {
+        // 🟢 결과페이지 먼저 이동!
+        onResult(nextRoundCandidates[0], matchHistory);
+
+        // 🟡 DB저장은 느긋하게~ (사용자는 기다릴 필요 없음)
         insertWinnerLog(cup.id, nextRoundCandidates[0]?.id).then(async (canSave) => {
           if (canSave) {
             const statsArr = calcStatsFromMatchHistory(
@@ -130,7 +164,6 @@ function Match({ cup, onResult, selectedCount }) {
               });
             }
           }
-          onResult(nextRoundCandidates[0], matchHistory);
         });
         return;
       }
@@ -267,7 +300,8 @@ function Match({ cup, onResult, selectedCount }) {
     );
   }
 
-  if (loading) return <div>로딩중...</div>;
+  // 👉 여기에서 Spinner 적용!
+  if (loading) return <Spinner size={70} />;
   if (!bracket || bracket.length === 0) return <div>{t("notEnoughCandidates")}</div>;
 
   return (
