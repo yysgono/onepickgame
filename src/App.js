@@ -1,4 +1,3 @@
-// src/App.js
 import "./i18n";
 import "./App.css";
 import React, { useState, useEffect, useRef } from "react";
@@ -302,7 +301,8 @@ function App() {
 
     return (
       <>
-        <div className="header-wrapper">
+        {/* 헤더를 반드시 맨 위에 배치! */}
+        <div className="header-wrapper" style={{ margin: 0, padding: 0, marginBottom: 0 }}>
           <Header
             onLangChange={handleLangChange}
             onBackup={handleBackup}
@@ -316,6 +316,14 @@ function App() {
             setNickname={updateNickname}
           />
         </div>
+        {/* 헤더 바로 아래에 상단 광고! */}
+        <div ref={adRef} className="ad-banner-top-static-wrap" style={{ marginTop: 0, paddingTop: 0 }}>
+          <AdBanner
+            position="top"
+            img="ad2.png"
+          />
+        </div>
+        {/* 본문 */}
         <div className="main-content-box">
           <Routes>
             <Route path="/" element={<HomeWrapper />} />
@@ -379,14 +387,7 @@ function App() {
   }
 
   return (
-    <div className="app-main-wrapper">
-      {/* 상단 광고: fixed 대신 "static" 으로 배치(스크롤 안따라옴) */}
-      <div ref={adRef} className="ad-banner-top-static-wrap">
-        <AdBanner
-          position="top"
-          img="ad2.png"
-        />
-      </div>
+    <div className="app-main-wrapper" style={{ margin: 0, padding: 0 }}>
       {/* 좌/우 광고: fixed (변경 없음) */}
       <AdBanner
         position="left"
@@ -410,8 +411,8 @@ function App() {
           width: "300px",
         }}
       />
-      {/* 컨텐츠 전체는 광고 높이만큼 내려가서 겹치지 않게! */}
-      <div className="main-content-outer" style={{ paddingTop: adHeight ? adHeight + 32 : 190 }}>
+      {/* 본문 전체는 상단 광고 높이만큼 자동 내림 */}
+      <div className="main-content-outer" style={{ paddingTop: adHeight ? adHeight + 32 : 190, margin: 0 }}>
         <Router>
           <AppRoutes />
           <BottomAdConditional />

@@ -1,48 +1,89 @@
-.app-main-wrapper {
+html, body {
+  margin: 0 !important;
+  padding: 0 !important;
+  box-sizing: border-box;
+  width: 100%;
   min-height: 100vh;
   background: #f6f8fa;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#root {
+  margin: 0 !important;
+  padding: 0 !important;
+  width: 100%;
+  min-height: 100vh;
+  background: #f6f8fa;
+}
+
+.app-main-wrapper {
+  min-height: 100vh;
   width: 100%;
   overflow-x: hidden;
   box-sizing: border-box;
-  padding: 0;
+  margin: 0 !important;
+  padding: 0 !important;
+  background: #f6f8fa;
 }
 
-/* ===== 광고 ===== */
+.header-wrapper {
+  width: 100%;
+  max-width: 1800px;
+  margin: 0 auto !important;
+  padding: 0 !important;
+  background: none;
+    margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
 
-/* 상단 광고: 스크롤 따라오지 않음! (static/relative) */
+/* 상단 광고 (헤더 아래, 스크롤 따라오지 않음) */
 .ad-banner-top-static-wrap {
   width: 100%;
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  background: none;
   position: relative;
   z-index: 1001;
   min-height: 0;
+  margin: 0 !important;
+  padding: 0 !important;
+  background: none;
 }
 .ad-banner.top {
-  /* static by default */
+  position: static;
+  margin: 0 auto;
+  max-width: 1200px;
+  width: 100%;
+  min-width: 320px;
+  max-height: 140px;
   display: flex;
   align-items: center;
   justify-content: center;
   background: #fff;
   box-shadow: 0 6px 30px #0002;
-  padding: 0;
-  width: auto;
-  min-width: 320px;
-  max-width: 98vw;
+  border-radius: 18px;
+  overflow: hidden;
   height: auto;
 }
 .ad-banner.top img {
-  max-width: 98vw;
-  max-height: 180px;
+  max-width: 1200px;
+  max-height: 140px;
   width: auto;
   height: auto;
   display: block;
-  border-radius: 18px;
+  border-radius: 14px;
 }
 
-/* 좌/우 광고: 커도 자동, 최대한 공간 남김 */
+/* 좌/우 광고 */
 .ad-banner.left, .ad-banner.right {
   position: fixed;
   z-index: 1000;
@@ -70,7 +111,7 @@
 .ad-banner.left { left: 24px; }
 .ad-banner.right { right: 24px; }
 
-/* 하단 광고: 고정, 항상 가운데 */
+/* 하단 광고 */
 .ad-banner.bottom {
   position: fixed;
   left: 50%;
@@ -94,25 +135,20 @@
   display: block;
 }
 
-/* ===== 레이아웃 ===== */
-
-/* 상단 배너 높이만큼 전체 본문 내림 (JS에서 광고높이 자동계산) */
+/* 본문(본문 내용은 광고 높이만큼 내려감) */
 .main-content-outer {
   display: flex;
   flex-direction: column;
   align-items: center;
   min-height: 100vh;
   justify-content: flex-start;
-  /* padding-top은 App.js에서 동적으로 넣어줍니다! */
-}
-
-.header-wrapper {
+  margin: 0 !important;
+  padding: 0 !important;
+  /* padding-top은 App.js에서 동적으로 조정! */
+  transition: padding-top 0.2s;
   width: 100%;
-  max-width: 1800px;
-  margin: 0 auto;
 }
 
-/* 본문 내용 박스 */
 .main-content-box {
   background: #fff;
   border-radius: 20px;
@@ -135,7 +171,6 @@
   margin: 24px 0 8px 0;
   justify-content: center;
 }
-
 .candidate-card {
   background: #f8fafd;
   border-radius: 18px;
@@ -158,7 +193,6 @@
   background: #eef2f5;
   box-shadow: 0 0 0 1px #dce3eb;
 }
-
 .comment-box {
   width: 680px;
   margin: 32px auto 0 auto;
@@ -174,6 +208,10 @@
   .main-content-box {
     max-width: 98vw;
     padding: 28px 2vw 48px 2vw;
+  }
+  .ad-banner.top, .ad-banner.top img {
+    max-width: 98vw;
+    min-width: 160px;
   }
 }
 @media (max-width: 1000px) {
@@ -262,15 +300,6 @@
   word-break: break-all;
 }
 
-/* 본문용 기본 */
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;

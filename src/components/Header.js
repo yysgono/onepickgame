@@ -197,7 +197,7 @@ export default function Header({
         position: "sticky",
         top: 0,
         zIndex: 1000,
-        marginBottom: 24,
+        marginBottom: 0,
         minHeight: 68,
         fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
       }}
