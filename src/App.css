@@ -180,7 +180,7 @@ body {
 }
 
 /* ===== 반응형 ===== */
-@media (max-width: 2200px) {
+@media (max-width: 1800px) {
   .ad-banner.left,
   .ad-banner.right {
     display: none !important;
