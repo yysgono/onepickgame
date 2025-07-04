@@ -183,7 +183,7 @@ body {
 }
 
 /* ===== 반응형 ===== */
-@media (max-width: 1850px) {
+@media (max-width: 1700px) {
   .ad-banner.left,
   .ad-banner.right {
     display: none !important;
