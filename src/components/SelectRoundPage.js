@@ -17,14 +17,22 @@ function SelectRoundPage({ cup, maxRound, candidates, onSelect }) {
   const { t } = useTranslation();
   const [selectedRound, setSelectedRound] = useState(maxRound);
 
-  const possibleRounds = [];
-  for (let n = 2; n <= maxRound; n *= 2) {
-    possibleRounds.push(n);
+  // ===== 여기만 변경! =====
+  const maxPossibleRound = Math.min(candidates.length, 1024);
+
+  let possibleRounds = [];
+  for (let n = 1; Math.pow(2, n) <= maxPossibleRound; n++) {
+    possibleRounds.push(Math.pow(2, n));
   }
-  if (!possibleRounds.includes(candidates.length) && candidates.length >= 2) {
+  if (
+    candidates.length >= 2 &&
+    candidates.length <= 1024 &&
+    !possibleRounds.includes(candidates.length)
+  ) {
     possibleRounds.push(candidates.length);
   }
-  possibleRounds.sort((a, b) => a - b);
+  possibleRounds = possibleRounds.sort((a, b) => a - b);
+  // =====================
 
   const mobile = isMobile();
   const hasBye = candidates.length < selectedRound;
@@ -61,10 +69,6 @@ function SelectRoundPage({ cup, maxRound, candidates, onSelect }) {
   const titleSize = mobile ? 23 : 48;
   const cardMargin = mobile ? 4 : 8;
   const nameMargin = mobile ? 4 : 7;
-
-  // --- onSelect를 "즉시" 실행하는 게 UX에 제일 빠름!
-  // (여기서는 비동기 처리, 로딩 처리 없이 바로 실행)
-  // 만약 onSelect가 async라면, navigate만 제일 먼저 실행!
 
   return (
     <div
@@ -116,7 +120,6 @@ function SelectRoundPage({ cup, maxRound, candidates, onSelect }) {
           <button
             style={startBtnStyle}
             onClick={() => {
-              // 💡 여기서 onSelect를 바로 실행!
               onSelect(selectedRound);
             }}
           >
