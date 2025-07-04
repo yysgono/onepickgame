@@ -4,12 +4,10 @@ import {
   deleteOldWinnerLogAndStats,
   upsertMyWinnerStat,
   calcStatsFromMatchHistory,
-  getUserOrGuestId,
 } from "../utils";
 import MediaRenderer from "./MediaRenderer";
 import { useTranslation } from "react-i18next";
 
-// 스테이지 라벨 한글
 function getStageLabel(n, isFirst = false) {
   if (isFirst) return `${n}강`;
   if (n === 2) return "결승전";
@@ -54,12 +52,12 @@ function makeFirstRound(players) {
   return { matches, byes };
 }
 function makeNextRound(winners) {
-  const shuffled = shuffle([...winners]);
-  const matches = [];
-  for (let i = 0; i < shuffled.length; i += 2) {
-    matches.push([shuffled[i], shuffled[i + 1] || null]);
+  // 두 번째 라운드부터는 셔플 안함 (첫 라운드만 섞고 이후 고정 진행)
+  const pairs = [];
+  for (let i = 0; i < winners.length; i += 2) {
+    pairs.push([winners[i], winners[i + 1] || null]);
   }
-  return matches;
+  return pairs;
 }
 function truncateNames(candidates, maxWords = 3) {
   return candidates.map(c => {
@@ -77,8 +75,8 @@ function Match({ cup, onResult, selectedCount }) {
   const [roundNum, setRoundNum] = useState(1);
   const [pendingWinners, setPendingWinners] = useState([]);
   const [matchHistory, setMatchHistory] = useState([]);
-  const [autoPlaying, setAutoPlaying] = useState(false);
-  const [loading, setLoading] = useState(true); // 추가
+  const [autoPlaying] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   // 초기화 (시작/다시하기/홈에서 시작 시)
   useEffect(() => {
@@ -152,7 +150,7 @@ function Match({ cup, onResult, selectedCount }) {
       if (c1 || c2) {
         setTimeout(() => {
           handlePick(c1 ? 0 : 1);
-        }, 300);
+        }, 150); // 300→150ms로 조정
       }
     }
     // eslint-disable-next-line
@@ -161,8 +159,8 @@ function Match({ cup, onResult, selectedCount }) {
   function handlePick(winnerIdx) {
     if (autoPlaying) return;
     const winner = winnerIdx === 0 ? c1 : c2;
-    setMatchHistory([
-      ...matchHistory,
+    setMatchHistory((prev) => [
+      ...prev,
       { round: roundNum, c1, c2, winner },
     ]);
     setIdx(idx + 1);
@@ -269,11 +267,9 @@ function Match({ cup, onResult, selectedCount }) {
     );
   }
 
-  if (loading) return <div>로딩중...</div>; // <<< 추가!
+  if (loading) return <div>로딩중...</div>;
+  if (!bracket || bracket.length === 0) return <div>{t("notEnoughCandidates")}</div>;
 
-  if (!bracket || bracket.length === 0) {
-    return <div>{t("notEnoughCandidates")}</div>;
-  }
   return (
     <div
       style={{
@@ -307,10 +303,7 @@ function Match({ cup, onResult, selectedCount }) {
           color: "#194893",
         }}
       >
-        {getStageLabel(
-          bracket.length * 2 + pendingWinners.length,
-          roundNum === 1
-        )}{" "}
+        {getStageLabel(bracket.length * 2 + pendingWinners.length, roundNum === 1)}{" "}
         {bracket.length === 1 ? "" : `${idx + 1} / ${bracket.length}`}
       </div>
       {roundNum === 1 && pendingWinners.length > 0 && (

@@ -7,6 +7,7 @@ import MediaRenderer from "./MediaRenderer";
 import CommentBox from "./CommentBox";
 import { supabase } from "../utils/supabaseClient";
 
+// --- 신고 버튼 컴포넌트 ---
 function ReportButton({ cupId }) {
   const [show, setShow] = useState(false);
   const [reason, setReason] = useState("");
@@ -52,10 +53,13 @@ function ReportButton({ cupId }) {
   );
 }
 
+// --- 퍼센트 계산 유틸 ---
 function percent(n, d) {
   if (!d) return "-";
   return Math.round((n / d) * 100) + "%";
 }
+
+// --- 기간 버튼 정보 ---
 const PERIODS = [
   { label: "1주일", value: 7 },
   { label: "1개월", value: 30 },
@@ -71,6 +75,7 @@ function getSinceDate(days) {
   return date.toISOString();
 }
 
+// --- StatsPage 컴포넌트 ---
 function StatsPage({ selectedCup, showCommentBox = false }) {
   const { t } = useTranslation();
   const [stats, setStats] = useState([]);
@@ -98,11 +103,10 @@ function StatsPage({ selectedCup, showCommentBox = false }) {
     return () => window.removeEventListener("resize", onResize);
   }, []);
 
-  // === 🔴 이 부분만 변경 ===
+  // --- 정렬/검색/필터 ---
   let filteredStats = [...stats]
     .filter(row => row.name?.toLowerCase().includes(search.toLowerCase()));
   if (userOnly) {
-    // 모든 후보를 보여주되 win_count만 user_win_count로 덮어쓰기
     filteredStats = filteredStats.map(row => ({
       ...row,
       win_count: row.user_win_count || 0,
@@ -114,6 +118,7 @@ function StatsPage({ selectedCup, showCommentBox = false }) {
       : (a[sortKey] ?? 0) - (b[sortKey] ?? 0)
   );
 
+  // --- 스타일 함수 ---
   function getRowStyle(rank) {
     if (rank === 1) return { background: "#fff9dd" };
     if (rank === 2) return { background: "#e9f3ff" };
@@ -345,7 +350,7 @@ function StatsPage({ selectedCup, showCommentBox = false }) {
           </tbody>
         </table>
       </div>
-      {/* === 댓글창도 같이 보이게 === */}
+      {/* 댓글 */}
       {showCommentBox && (
         <div style={{
           marginTop: 36,

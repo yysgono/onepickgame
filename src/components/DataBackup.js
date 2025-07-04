@@ -1,6 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 
-// 색상 정의
 const COLORS = {
   main: "#1976ed",
   danger: "#d33",
@@ -12,43 +11,67 @@ const COLORS = {
 
 function DataBackup() {
   const [backupText, setBackupText] = useState("");
+  const textareaRef = useRef();
 
   // 백업
   function handleBackup() {
     const worldcups = localStorage.getItem("onepickgame_worldcupList");
     const stats = localStorage.getItem("winnerStats");
     const comments = localStorage.getItem("comments");
-    setBackupText(
-      JSON.stringify(
-        {
-          worldcups: worldcups ? JSON.parse(worldcups) : [],
-          stats: stats ? JSON.parse(stats) : {},
-          comments: comments ? JSON.parse(comments) : {},
-        },
-        null,
-        2
-      )
+    const json = JSON.stringify(
+      {
+        worldcups: worldcups ? JSON.parse(worldcups) : [],
+        stats: stats ? JSON.parse(stats) : {},
+        comments: comments ? JSON.parse(comments) : {},
+      },
+      null,
+      2
     );
+    setBackupText(json);
+
+    // 백업시 textarea 자동 선택
+    setTimeout(() => {
+      textareaRef.current?.focus();
+      textareaRef.current?.select();
+    }, 50);
   }
 
   // 복구
   function handleRestore() {
     if (!backupText) return;
+    if (!window.confirm("복구시 기존 데이터가 모두 삭제됩니다. 진행할까요?")) return;
     try {
       const parsed = JSON.parse(backupText);
-      if (parsed.worldcups)
-        localStorage.setItem(
-          "onepickgame_worldcupList",
-          JSON.stringify(parsed.worldcups)
-        );
-      if (parsed.stats)
-        localStorage.setItem("winnerStats", JSON.stringify(parsed.stats));
-      if (parsed.comments)
-        localStorage.setItem("comments", JSON.stringify(parsed.comments));
+      // 데이터 구조 체크
+      if (
+        !Array.isArray(parsed.worldcups) ||
+        typeof parsed.stats !== "object" ||
+        typeof parsed.comments !== "object"
+      ) {
+        alert("복구 실패: 잘못된 데이터 구조입니다.");
+        return;
+      }
+      localStorage.setItem("onepickgame_worldcupList", JSON.stringify(parsed.worldcups));
+      localStorage.setItem("winnerStats", JSON.stringify(parsed.stats));
+      localStorage.setItem("comments", JSON.stringify(parsed.comments));
       alert("복구 완료! 새로고침 해주세요.");
     } catch (e) {
       alert("복구 실패: 잘못된 데이터입니다.");
     }
+  }
+
+  // 백업 파일 저장(선택적)
+  function handleDownload() {
+    if (!backupText) return;
+    const blob = new Blob([backupText], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "onepickgame_backup.json";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
   }
 
   return (
@@ -125,8 +148,27 @@ function DataBackup() {
         >
           복구하기
         </button>
+        <button
+          onClick={handleDownload}
+          style={{
+            padding: "9px 18px",
+            borderRadius: 999,
+            border: "none",
+            background: "#666",
+            color: "#fff",
+            fontWeight: 700,
+            fontSize: 14.5,
+            boxShadow: "0 1.5px 6px #8882",
+            cursor: "pointer",
+            letterSpacing: -0.5,
+            transition: "background 0.15s",
+          }}
+        >
+          파일로 저장
+        </button>
       </div>
       <textarea
+        ref={textareaRef}
         value={backupText}
         onChange={(e) => setBackupText(e.target.value)}
         placeholder="여기에 백업 데이터를 붙여넣기 하세요"
@@ -148,7 +190,8 @@ function DataBackup() {
       />
       <div style={{ color: "#aaa", fontSize: 13, marginTop: 12 }}>
         <b>Tip:</b> <span style={{ color: COLORS.main }}>백업 후</span> 텍스트를 복사해서 안전한 곳에 저장하세요.<br />
-        <b>복구는</b> 백업 내용을 붙여넣고 <b>복구하기</b>를 누르세요.
+        <b>복구는</b> 백업 내용을 붙여넣고 <b>복구하기</b>를 누르세요.<br />
+        <span style={{ color: "#888" }}>(다운로드: 파일로 저장 버튼)</span>
       </div>
     </div>
   );

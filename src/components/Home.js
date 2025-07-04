@@ -1,5 +1,3 @@
-// src/components/Home.jsx
-
 import React, { useState, useRef, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { fetchWinnerStatsFromDB, getMostWinnerFromDB } from "../utils";
@@ -14,7 +12,6 @@ import {
 } from "../styles/common";
 import MediaRenderer from "./MediaRenderer";
 
-// 카드 애니메이션 훅(생략X)
 const useSlideFadeIn = (length) => {
   const refs = useRef([]);
   useEffect(() => {
@@ -46,12 +43,10 @@ function Home({
   const { t } = useTranslation();
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState("popular");
-  const [shakeBtn, setShakeBtn] = useState(null);
 
-  // 월드컵별 우승횟수 카운트 상태 추가!
+  // 월드컵별 우승횟수 카운트 상태
   const [cupsWithWinCount, setCupsWithWinCount] = useState([]);
 
-  // 월드컵별 우승횟수 합계를 fetch하여 각 월드컵 객체에 추가
   useEffect(() => {
     let mounted = true;
     async function fillWinCounts() {
@@ -59,7 +54,6 @@ function Home({
         setCupsWithWinCount([]);
         return;
       }
-      // fetchWinnerStatsFromDB는 후보별 배열 반환. win_count 합산!
       const list = await Promise.all(
         worldcupList.map(async (cup) => {
           const statsArr = await fetchWinnerStatsFromDB(cup.id);
@@ -67,7 +61,7 @@ function Home({
             (sum, row) => sum + (row.win_count || 0),
             0
           );
-          return { ...cup, winCount };
+          return { ...cup, winCount, winStats: statsArr };
         })
       );
       if (mounted) setCupsWithWinCount(list);
@@ -76,37 +70,22 @@ function Home({
     return () => { mounted = false; };
   }, [worldcupList]);
 
-  // 카드 통계 등
-  const [winnerStats, setWinnerStats] = useState({});
   const filtered = (cupsWithWinCount || [])
     .filter(
       (cup) =>
         cup.title.toLowerCase().includes(search.toLowerCase()) ||
-        (cup.desc || "").toLowerCase().includes(search.toLowerCase())
+        (cup.description || cup.desc || "").toLowerCase().includes(search.toLowerCase())
     )
     .sort((a, b) => {
       if (sort === "recent") {
-        // created_at이 없으면 id로 fallback
         return (b.created_at || b.id) > (a.created_at || a.id) ? 1 : -1;
       } else {
-        // winCount(우승수) 내림차순
         return (b.winCount || 0) - (a.winCount || 0);
       }
     });
 
-  // 카드 hover 애니
   const cardRefs = useSlideFadeIn(filtered.length);
 
-  // 버튼 흔들림
-  const handleBtnShake = (btnId, callback) => {
-    setShakeBtn(btnId);
-    setTimeout(() => {
-      setShakeBtn(null);
-      callback && callback();
-    }, 300);
-  };
-
-  // 유저 정보 (본인 카드 여부)
   const currentUserId = user?.id || "";
   const currentUserEmail = user?.email || "";
 
@@ -117,11 +96,11 @@ function Home({
     <div
       style={{
         width: "100%",
-        maxWidth: 2100,
+        maxWidth: 2200,   // 메인 영역 여유 있게
         margin: "0 auto",
         padding: isMobile
           ? "24px 4vw 80px 4vw"
-          : "38px 100px 90px 100px",
+          : "38px 60px 90px 60px",
         minHeight: "70vh",
         background: `linear-gradient(150deg, #fafdff 80%, #e3f0fb 100%)`,
         overflowX: "hidden",
@@ -248,10 +227,10 @@ function Home({
           display: "grid",
           gridTemplateColumns: isMobile
             ? "repeat(auto-fit, minmax(160px, 1fr))"
-            : "repeat(auto-fit, minmax(180px, 1fr))",
-          gap: isMobile ? 17 : 32,
+            : "repeat(5, minmax(0, 1fr))",   // ⭐️ 한 줄 5개, 양쪽 다 채움!
+          gap: isMobile ? 17 : 36,
           width: "100%",
-          maxWidth: 1200,
+          maxWidth: "100%",
           margin: "0 auto",
           boxSizing: "border-box",
           justifyContent: "center",
@@ -271,9 +250,7 @@ function Home({
           </div>
         )}
         {filtered.map((cup, idx) => {
-          // 후보별 최다우승자 계산 (미리 winnerStats 저장해놨으면 그거 써도 됨)
-          const statsArr = []; // 필요시 fetchWinnerStatsFromDB(cup.id) 써서 statsArr 미리 받아도 됨.
-          const topCandidate = getMostWinnerFromDB(statsArr, cup.data);
+          const topCandidate = getMostWinnerFromDB(cup.winStats || [], cup.data);
           const thumbnail = topCandidate
             ? topCandidate.image
             : cup.data[0]?.image || "";
@@ -293,8 +270,12 @@ function Home({
               ref={(el) => (cardRefs.current[idx] = el)}
               style={{
                 ...cardBoxStyle,
-                maxWidth: 300,
+                width: "100%",        // 👈 칸을 100% 채움!
                 margin: "0 auto",
+                cursor: "pointer",
+                transition: "all 0.18s cubic-bezier(.35,1,.4,1)",
+                display: "flex",
+                flexDirection: "column",
               }}
               onClick={(e) => {
                 if (e.target.tagName !== "BUTTON") onSelect && onSelect(cup);
@@ -395,7 +376,7 @@ function Home({
                     whiteSpace: "nowrap",
                   }}
                 >
-                  {cup.desc}
+                  {cup.description || cup.desc}
                 </div>
                 <div
                   style={{
@@ -426,11 +407,8 @@ function Home({
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
-                      handleBtnShake(`start-${cup.id}`, () =>
-                        onSelect && onSelect(cup)
-                      );
+                      onSelect && onSelect(cup);
                     }}
-                    className={shakeBtn === `start-${cup.id}` ? "shake-anim" : ""}
                     style={mainButtonStyle(isMobile)}
                   >
                     시작
@@ -438,11 +416,8 @@ function Home({
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
-                      handleBtnShake(`stats-${cup.id}`, () =>
-                        (window.location.href = `/stats/${cup.id}`)
-                      );
+                      window.location.href = `/stats/${cup.id}`;
                     }}
-                    className={shakeBtn === `stats-${cup.id}` ? "shake-anim" : ""}
                     style={subButtonStyle(isMobile)}
                   >
                     통계
@@ -454,15 +429,12 @@ function Home({
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
-                      handleBtnShake(`share-${cup.id}`, () => {
-                        const url = `${window.location.origin}/select-round/${cup.id}`;
-                        navigator.clipboard.writeText(url);
-                        window?.toast?.success
-                          ? window.toast.success("링크가 복사되었습니다!")
-                          : alert("링크가 복사되었습니다!");
-                      });
+                      const url = `${window.location.origin}/select-round/${cup.id}`;
+                      navigator.clipboard.writeText(url);
+                      window?.toast?.success
+                        ? window.toast.success("링크가 복사되었습니다!")
+                        : alert("링크가 복사되었습니다!");
                     }}
-                    className={shakeBtn === `share-${cup.id}` ? "shake-anim" : ""}
                     style={grayButtonStyle(isMobile)}
                   >
                     공유
@@ -472,12 +444,8 @@ function Home({
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
-                          handleBtnShake(
-                            `edit-${cup.id}`,
-                            () => (window.location.href = `/edit-worldcup/${cup.id}`)
-                          );
+                          window.location.href = `/edit-worldcup/${cup.id}`;
                         }}
-                        className={shakeBtn === `edit-${cup.id}` ? "shake-anim" : ""}
                         style={editButtonStyle(isMobile)}
                       >
                         수정
@@ -485,13 +453,10 @@ function Home({
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
-                          handleBtnShake(`del-${cup.id}`, () => {
-                            if (!window.confirm("정말 삭제하시겠습니까?")) return;
-                            if (onDelete) onDelete(cup.id);
-                            else window.location.reload();
-                          });
+                          if (!window.confirm("정말 삭제하시겠습니까?")) return;
+                          if (onDelete) onDelete(cup.id);
+                          else window.location.reload();
                         }}
-                        className={shakeBtn === `del-${cup.id}` ? "shake-anim" : ""}
                         style={delButtonStyle(isMobile)}
                       >
                         삭제
@@ -504,19 +469,6 @@ function Home({
           );
         })}
       </div>
-      <style>
-        {`
-        .shake-anim {
-          animation: shakeX 0.32s cubic-bezier(.36,.07,.19,.97) both;
-        }
-        @keyframes shakeX {
-          10%, 90% { transform: translateX(-2px); }
-          20%, 80% { transform: translateX(4px); }
-          30%, 50%, 70% { transform: translateX(-6px);}
-          40%, 60% { transform: translateX(6px);}
-        }
-        `}
-      </style>
     </div>
   );
 }

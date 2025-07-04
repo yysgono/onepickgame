@@ -1,14 +1,14 @@
 // src/App.js
-
 import "./i18n";
 import "./App.css";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   BrowserRouter as Router,
   Routes,
   Route,
   useNavigate,
-  useParams
+  useParams,
+  useLocation
 } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import Header from "./components/Header";
@@ -31,17 +31,38 @@ import FindIdBox from "./components/FindIdBox";
 import FindPwBox from "./components/FindPwBox";
 import { getWorldcupGames, deleteWorldcupGame } from "./utils/supabaseWorldcupApi";
 import { supabase } from "./utils/supabaseClient";
+import AdBanner from "./components/AdBanner";
 
-// 👇 비밀번호 재설정 리다이렉트 라우트
+// 상단 광고 높이 자동 인식
+function useAdBannerHeight() {
+  const [height, setHeight] = useState(0);
+  const ref = useRef(null);
+  useEffect(() => {
+    function update() {
+      if (ref.current) {
+        setHeight(ref.current.offsetHeight || 0);
+      }
+    }
+    update();
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
+  }, []);
+  return [ref, height];
+}
+
+// 비밀번호 재설정 리다이렉트 라우트
 function ResetPwRedirect() {
   const navigate = useNavigate();
   useEffect(() => {
-    navigate("/"); // 홈으로 자동 이동
+    navigate("/");
   }, [navigate]);
   return null;
 }
 
 function App() {
+  // 광고 높이 자동 계산
+  const [adRef, adHeight] = useAdBannerHeight();
+
   const [worldcupList, setWorldcupList] = useState([]);
   const { i18n } = useTranslation();
   const [user, setUser] = useState(null);
@@ -49,7 +70,7 @@ function App() {
   const [nickname, setNickname] = useState("");
   const [nicknameLoading, setNicknameLoading] = useState(false);
 
-  // 1. 유저 감지 및 닉네임 fetch (최초 1번만)
+  // 유저 및 프로필 정보
   useEffect(() => {
     let isMounted = true;
     async function fetchUserAndProfile() {
@@ -76,7 +97,6 @@ function App() {
     return () => { isMounted = false; }
   }, []);
 
-  // 2. 닉네임만 바뀔 때 리렌더링 (닉네임 변경 직후에)
   function updateNickname(nick) {
     setNickname(nick);
     setIsAdmin(nick === "admin");
@@ -136,7 +156,18 @@ function App() {
     e.target.value = "";
   }
 
-  // onMakeWorldcup은 navigate 사용을 위해 래퍼에서 전달
+  // 경기선택/진행/결과 페이지만 하단 광고 O
+  function useShowBottomAd() {
+    const location = useLocation();
+    return {
+      showBig:
+        /^\/select-round\//.test(location.pathname) ||
+        /^\/match\//.test(location.pathname),
+      showSmall: /^\/result\//.test(location.pathname),
+    };
+  }
+
+  // AppRoutes 분리
   function AppRoutes() {
     const navigate = useNavigate();
 
@@ -145,7 +176,7 @@ function App() {
         alert("로그인이 필요합니다.");
         return;
       }
-      navigate("/worldcup-maker"); // 새로고침 없이 이동
+      navigate("/worldcup-maker");
     }
 
     function HomeWrapper() {
@@ -189,7 +220,6 @@ function App() {
       );
     }
 
-    // ✅ [수정] 통계(StatsPage)에서 showCommentBox를 true로 전달!
     function StatsPageWrapper() {
       const { id } = useParams();
       const cup = worldcupList.find(c => String(c.id) === id);
@@ -197,7 +227,6 @@ function App() {
         return (
           <div style={{ padding: 80 }}>월드컵 정보를 찾을 수 없습니다.</div>
         );
-      // 댓글창 함께 보이게!
       return <StatsPage selectedCup={cup} showCommentBox={true} />;
     }
 
@@ -273,19 +302,21 @@ function App() {
 
     return (
       <>
-        <Header
-          onLangChange={handleLangChange}
-          onBackup={handleBackup}
-          onRestore={handleRestore}
-          onMakeWorldcup={handleMakeWorldcup}
-          isAdmin={isAdmin}
-          user={user}
-          nickname={nickname}
-          nicknameLoading={nicknameLoading}
-          setUser={setUser}
-          setNickname={updateNickname}
-        />
-        <div className="main-content-box" style={{ overflowX: "hidden" }}>
+        <div className="header-wrapper">
+          <Header
+            onLangChange={handleLangChange}
+            onBackup={handleBackup}
+            onRestore={handleRestore}
+            onMakeWorldcup={handleMakeWorldcup}
+            isAdmin={isAdmin}
+            user={user}
+            nickname={nickname}
+            nicknameLoading={nicknameLoading}
+            setUser={setUser}
+            setNickname={updateNickname}
+          />
+        </div>
+        <div className="main-content-box">
           <Routes>
             <Route path="/" element={<HomeWrapper />} />
             <Route path="/select-round/:id" element={<SelectRoundPageWrapper />} />
@@ -298,12 +329,10 @@ function App() {
             <Route path="/edit-worldcup/:id" element={<EditWorldcupPageWrapper />} />
             <Route path="/admin" element={<AdminRoute />} />
             <Route path="/admin-stats" element={<AdminStatsRoute />} />
-            {/* ▼▼▼ 회원가입/로그인/찾기 라우트들 ▼▼▼ */}
             <Route path="/signup" element={<SignupBox />} />
             <Route path="/login" element={<LoginBox />} />
             <Route path="/find-id" element={<FindIdBox />} />
             <Route path="/find-pw" element={<FindPwBox />} />
-            {/* 👇 비밀번호 재설정 리다이렉트 */}
             <Route path="/reset-password" element={<ResetPwRedirect />} />
           </Routes>
         </div>
@@ -311,11 +340,83 @@ function App() {
     );
   }
 
+  // 하단 광고 노출
+  function BottomAdConditional() {
+    const { showBig, showSmall } = useShowBottomAd();
+    if (showBig) {
+      // 경기선택/매치에서는 큰 광고
+      return (
+        <AdBanner
+          position="bottom"
+          img="ad3.png"
+          width={1200}
+          height={160}
+          style={{
+            left: "50%",
+            transform: "translateX(-50%)",
+            bottom: "0px",
+          }}
+        />
+      );
+    }
+    if (showSmall) {
+      // 결과창에서는 작은 광고
+      return (
+        <AdBanner
+          position="bottom"
+          img="ad2.png"
+          width={970}
+          height={90}
+          style={{
+            left: "50%",
+            transform: "translateX(-50%)",
+            bottom: "0px",
+          }}
+        />
+      );
+    }
+    return null;
+  }
+
   return (
-    <div className="app-main-wrapper" style={{ overflowX: "hidden" }}>
-      <Router>
-        <AppRoutes />
-      </Router>
+    <div className="app-main-wrapper">
+      {/* 상단 광고: fixed 대신 "static" 으로 배치(스크롤 안따라옴) */}
+      <div ref={adRef} className="ad-banner-top-static-wrap">
+        <AdBanner
+          position="top"
+          img="ad2.png"
+        />
+      </div>
+      {/* 좌/우 광고: fixed (변경 없음) */}
+      <AdBanner
+        position="left"
+        img="ad1.png"
+        style={{
+          top: "50%",
+          left: 24,
+          transform: "translateY(-50%)",
+          maxHeight: "95vh",
+          width: "300px",
+        }}
+      />
+      <AdBanner
+        position="right"
+        img="ad1.png"
+        style={{
+          top: "50%",
+          right: 24,
+          transform: "translateY(-50%)",
+          maxHeight: "95vh",
+          width: "300px",
+        }}
+      />
+      {/* 컨텐츠 전체는 광고 높이만큼 내려가서 겹치지 않게! */}
+      <div className="main-content-outer" style={{ paddingTop: adHeight ? adHeight + 32 : 190 }}>
+        <Router>
+          <AppRoutes />
+          <BottomAdConditional />
+        </Router>
+      </div>
     </div>
   );
 }

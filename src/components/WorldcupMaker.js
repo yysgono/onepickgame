@@ -86,6 +86,7 @@ function WorldcupMaker({ onCreate, onCancel }) {
     setCandidates((cands) => cands.map((c, i) => (i === idx ? val : c)));
   }
   function removeCandidate(idx) {
+    if (candidates.length <= 2) return; // 2개 이하일 때 삭제 막기
     setCandidates((cands) => cands.filter((_, i) => i !== idx));
   }
 
@@ -137,6 +138,8 @@ function WorldcupMaker({ onCreate, onCancel }) {
       };
 
       const id = await addWorldcupGame(newCup);
+      // ✅ 추천: 토스트 사용 → alert 대신!
+      // ex) setToast("월드컵이 저장되었습니다!");
       alert("월드컵이 저장되었습니다!\nID: " + id);
 
       if (onCreate) {
@@ -218,7 +221,10 @@ function WorldcupMaker({ onCreate, onCancel }) {
         />
         <div style={{ marginBottom: 18 }}>
           <div style={{ fontWeight: 700, marginBottom: 7 }}>
-            {t("candidateList") || "후보 목록"}
+            {t("candidateList") || "후보 목록"}{" "}
+            <span style={{ color: "#888", fontWeight: 400, fontSize: mobile ? 13 : 15 }}>
+              ({candidates.length} / 32)
+            </span>
           </div>
           {candidates.map((c, i) => (
             <CandidateInput
@@ -227,6 +233,7 @@ function WorldcupMaker({ onCreate, onCancel }) {
               onChange={(val) => updateCandidate(i, val)}
               onRemove={() => removeCandidate(i)}
               disabled={loading}
+              minCandidates={candidates.length <= 2}
             />
           ))}
           <button

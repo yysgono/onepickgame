@@ -34,7 +34,7 @@ function LoginBox({ onLoginSuccess }) {
     setPassword("");
     if (onLoginSuccess) onLoginSuccess();
     navigate("/");
-    window.location.reload();
+    // window.location.reload(); // 새로고침 필요없으면 이 줄 주석
   }
 
   return (

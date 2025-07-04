@@ -15,15 +15,26 @@ function CandidateUploader({ onUpload, preview }) {
   function handleFile(e) {
     const file = e.target.files[0];
     if (!file) return;
+
+    // 2MB 용량 제한
+    if (file.size > 2 * 1024 * 1024) {
+      alert("이미지 파일은 최대 2MB까지 업로드할 수 있습니다.");
+      e.target.value = "";
+      return;
+    }
+
     if (!isAllowedImage(file)) {
       alert("jpg, jpeg, png 파일만 업로드할 수 있습니다.\n(webp, gif, 기타 확장자는 불가)");
       e.target.value = "";
       return;
     }
+
     const reader = new FileReader();
     reader.onload = ev => {
       setImg(ev.target.result);
       onUpload && onUpload(ev.target.result);
+      // 파일 input 초기화(같은 파일 재업로드 가능하게)
+      if (ref.current) ref.current.value = "";
     };
     reader.readAsDataURL(file);
   }
@@ -82,4 +93,5 @@ function CandidateUploader({ onUpload, preview }) {
     </div>
   );
 }
+
 export default CandidateUploader;

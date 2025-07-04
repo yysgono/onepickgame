@@ -80,7 +80,7 @@ function EditWorldcupPage({ worldcupList, fetchWorldcups, cupId, isAdmin }) {
     return <div style={{ padding: 80 }}>월드컵을 찾을 수 없습니다.</div>;
   }
   if (
-    !isAdmin && // 운영자가 아니고
+    !isAdmin &&
     !(
       (originalCup.creator && originalCup.creator === user.id) ||
       (originalCup.owner && originalCup.owner === user.id)
@@ -103,13 +103,22 @@ function EditWorldcupPage({ worldcupList, fetchWorldcups, cupId, isAdmin }) {
   function handleFileChange(idx, e) {
     const file = e.target.files[0];
     if (!file) return;
+    if (file.size > 2 * 1024 * 1024) {
+      alert("이미지 파일은 최대 2MB까지 업로드 가능합니다.");
+      if (fileInputRefs.current[idx]) fileInputRefs.current[idx].value = "";
+      return;
+    }
     const allowed = /\.(jpe?g|png)$/i;
     if (!allowed.test(file.name)) {
       alert("jpg, jpeg, png 파일만 업로드 가능합니다.");
+      if (fileInputRefs.current[idx]) fileInputRefs.current[idx].value = "";
       return;
     }
     const reader = new FileReader();
-    reader.onload = ev => handleCandidateChange(idx, "image", ev.target.result);
+    reader.onload = ev => {
+      handleCandidateChange(idx, "image", ev.target.result);
+      if (fileInputRefs.current[idx]) fileInputRefs.current[idx].value = "";
+    };
     reader.readAsDataURL(file);
   }
 
@@ -118,6 +127,11 @@ function EditWorldcupPage({ worldcupList, fetchWorldcups, cupId, isAdmin }) {
     if (!title.trim()) return setError("제목을 입력하세요.");
     if (data.length < 2) return setError("후보가 2개 이상이어야 합니다.");
     if (data.some(item => !item.name.trim())) return setError("모든 후보에 이름을 입력하세요.");
+    // 후보 이름 중복 체크
+    const names = data.map(item => item.name.trim());
+    if (new Set(names).size !== names.length)
+      return setError("후보 이름이 중복됩니다.");
+
     setLoading(true);
 
     try {

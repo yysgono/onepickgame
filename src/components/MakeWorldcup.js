@@ -1,6 +1,4 @@
-// src/components/MakeWorldcup.jsx
-
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { v4 as uuidv4 } from "uuid";
 import { uploadCandidateImage } from "../utils/supabaseImageUpload";
@@ -14,7 +12,6 @@ function getYoutubeThumb(url) {
   if (match) return `https://img.youtube.com/vi/${match[1]}/mqdefault.jpg`;
   return null;
 }
-
 function getFileExtension(url) {
   if (!url) return "";
   const parts = url.split("?")[0].split("/").pop().split(".");
@@ -34,6 +31,11 @@ export default function MakeWorldcup({ worldcupList, setWorldcupList, onClose })
   const [ok, setOk] = useState("");
   const [loading, setLoading] = useState(false);
   const fileInputRefs = useRef([]);
+
+  // candidates 길이가 바뀔 때 ref도 맞춰줌
+  useEffect(() => {
+    fileInputRefs.current = fileInputRefs.current.slice(0, candidates.length);
+  }, [candidates.length]);
 
   function addCandidate() {
     setCandidates(arr => [...arr, { id: uuidv4(), name: "", image: "" }]);
@@ -59,11 +61,10 @@ export default function MakeWorldcup({ worldcupList, setWorldcupList, onClose })
     setLoading(true);
 
     try {
-      // 로그인 유저 uuid 가져오기
       const { data: { user } } = await supabase.auth.getUser();
       if (!user?.id) throw new Error("로그인 정보 없음");
 
-      // base64 이미지 업로드
+      // base64 이미지 → url 변환(업로드)
       const updatedCandidates = await Promise.all(
         candidates.map(async c => {
           let imageUrl = c.image?.trim();
@@ -95,8 +96,8 @@ export default function MakeWorldcup({ worldcupList, setWorldcupList, onClose })
         { id: uuidv4(), name: "", image: "" },
         { id: uuidv4(), name: "", image: "" },
       ]);
-      if (setWorldcupList) setWorldcupList([...worldcupList, newCup]);
-      if (onClose) onClose();
+      if (setWorldcupList) setWorldcupList([...(worldcupList || []), newCup]);
+      if (onClose) setTimeout(onClose, 600); // 0.6초 후 닫기 (성공 메시지 보이기)
     } catch (e) {
       setError("저장 실패! 잠시 후 다시 시도해 주세요.");
       console.error(e);

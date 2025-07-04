@@ -22,7 +22,7 @@ export async function getWorldcupGame(id) {
   return data;
 }
 
-// 월드컵 추가
+// 월드컵 추가 (id만 반환)
 export async function addWorldcupGame(cup) {
   const { data, error } = await supabase
     .from("worldcups")
@@ -43,8 +43,7 @@ export async function updateWorldcupGame(id, updates) {
   return true;
 }
 
-// 월드컵 삭제
-// ---- 여기 함수만 남기고, 중복 함수는 전부 이 파일 import해서 쓰기!
+// 월드컵 삭제 (이 함수만 남기고 나머지는 import해서 통일)
 export async function deleteWorldcupGame(id) {
   const { error } = await supabase
     .from("worldcups")

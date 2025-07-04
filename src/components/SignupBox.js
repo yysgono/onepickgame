@@ -12,16 +12,29 @@ function SignupBox() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
+  // 이메일/비밀번호 기본 검증 함수
+  function validate() {
+    if (!email || !password) {
+      setError("이메일과 비밀번호를 모두 입력하세요.");
+      return false;
+    }
+    if (!/^[\w.-]+@[a-zA-Z\d.-]+\.[a-zA-Z]{2,}$/.test(email)) {
+      setError("올바른 이메일 형식을 입력하세요.");
+      return false;
+    }
+    if (password.length < 6) {
+      setError("비밀번호는 최소 6자리 이상이어야 합니다.");
+      return false;
+    }
+    return true;
+  }
+
   async function handleSignup(e) {
     e.preventDefault();
     setError("");
     setSuccess("");
 
-    if (!email || !password) {
-      setError("이메일과 비밀번호를 모두 입력하세요.");
-      return;
-    }
-
+    if (!validate()) return;
     setLoading(true);
 
     // 1. 랜덤 닉네임 생성!
@@ -74,6 +87,8 @@ function SignupBox() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="이메일"
+            autoCapitalize="none"
+            autoComplete="off"
             style={{
               width: "100%",
               padding: 10,
@@ -81,7 +96,6 @@ function SignupBox() {
               border: "1.2px solid #bbb",
               fontSize: 16,
             }}
-            autoComplete="off"
             required
           />
         </div>

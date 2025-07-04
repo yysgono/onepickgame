@@ -1,14 +1,14 @@
-// src/components/WorldcupDetail.jsx
 import React from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { mainButtonStyle, grayButtonStyle } from "../styles/common"; // 공통 버튼 스타일 import
+import { mainButtonStyle, grayButtonStyle } from "../styles/common";
+import MediaRenderer from "./MediaRenderer";
 
 const DEFAULT_IMAGE = "/default-thumb.png";
 
 function WorldcupDetail({ worldcupList }) {
   const { id } = useParams();
   const navigate = useNavigate();
-  const cup = worldcupList.find(c => String(c.id) === id);
+  const cup = worldcupList?.find(c => String(c.id) === id);
   if (!cup) return <div style={{ padding: 40 }}>월드컵을 찾을 수 없습니다.</div>;
 
   const shareUrl = `${window.location.origin}/worldcup/${cup.id}`;
@@ -43,18 +43,21 @@ function WorldcupDetail({ worldcupList }) {
       >
         {cup.data.map(item => (
           <div key={item.id} style={{ width: isMobile ? 74 : 120, textAlign: "center" }}>
-            <img
-              src={item.image || DEFAULT_IMAGE}
-              alt={item.name}
+            <div
               style={{
                 width: isMobile ? 74 : 120,
                 height: isMobile ? 56 : 90,
-                objectFit: "cover",
                 borderRadius: 10,
-                marginBottom: 6
+                marginBottom: 6,
+                overflow: "hidden",
+                background: "#f8f8fa"
               }}
-              onError={e => { e.target.onerror = null; e.target.src = DEFAULT_IMAGE; }}
-            />
+            >
+              <MediaRenderer
+                url={item.image || DEFAULT_IMAGE}
+                alt={item.name}
+              />
+            </div>
             <div style={{ fontSize: isMobile ? 12 : 16 }}>{item.name}</div>
           </div>
         ))}
@@ -88,6 +91,7 @@ function WorldcupDetail({ worldcupList }) {
         <input
           value={shareUrl}
           readOnly
+          onFocus={e => e.target.select()}
           style={{
             width: isMobile ? 180 : 320,
             border: "1px solid #eee",
