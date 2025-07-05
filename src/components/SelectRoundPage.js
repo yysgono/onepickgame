@@ -1,5 +1,3 @@
-// src/components/SelectRoundPage.js
-
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import COLORS from "../styles/theme";
@@ -37,25 +35,27 @@ function SelectRoundPage({ cup, maxRound, candidates, onSelect }) {
   const mobile = isMobile();
   const hasBye = candidates.length < selectedRound;
 
-  // **버튼/셀렉트 스타일 크게**
+  // 버튼/셀렉트 스타일 줄임
   const startBtnStyle = {
     ...mainButtonStyle(),
-    padding: mobile ? "12px 24px" : "20px 60px",
-    borderRadius: mobile ? 10 : 15,
+    padding: mobile ? "7px 18px" : "12px 32px",
+    borderRadius: mobile ? 8 : 10,
     fontWeight: 900,
-    fontSize: mobile ? 20 : 30,
-    marginLeft: 10,
-    minWidth: mobile ? 120 : 180,
+    fontSize: mobile ? 15 : 18,
+    marginLeft: 7,
+    minWidth: mobile ? 70 : 100,
+    height: mobile ? 38 : 48,
   };
 
   const selectBoxStyle = {
     ...selectStyle,
-    fontSize: mobile ? 18 : 26,
-    padding: mobile ? "12px 20px" : "18px 34px",
-    borderRadius: mobile ? 9 : 15,
-    marginRight: mobile ? 8 : 16,
-    minWidth: mobile ? 100 : 130,
+    fontSize: mobile ? 14 : 18,
+    padding: mobile ? "7px 15px" : "12px 28px",
+    borderRadius: mobile ? 8 : 10,
+    marginRight: mobile ? 6 : 10,
+    minWidth: mobile ? 54 : 75,
     fontWeight: 800,
+    height: mobile ? 38 : 48,
   };
 
   const gridColumn = mobile
@@ -104,8 +104,8 @@ function SelectRoundPage({ cup, maxRound, candidates, onSelect }) {
           gap: 10,
         }}
       >
-        {/* --- 여기 버튼/셀렉트 박스 --- */}
-        <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: 10 }}>
+        {/* --- 버튼/셀렉트 박스 --- */}
+        <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: 6 }}>
           <select
             value={selectedRound}
             onChange={(e) => setSelectedRound(Number(e.target.value))}

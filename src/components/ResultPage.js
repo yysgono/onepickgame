@@ -1,31 +1,54 @@
-// src/components/ResultPage.jsx
-
 import React from "react";
 import { useParams, useLocation, useNavigate } from "react-router-dom";
 import StatsPage from "./StatsPage";
 import CommentBox from "./CommentBox";
 import MediaRenderer from "./MediaRenderer";
 import { useTranslation } from "react-i18next";
+import { supabase } from "../utils/supabaseClient";
 
-// === 결과 스켈레톤 ===
-function ResultSkeleton({ isMobile }) {
+function ReportButton({ cupId, size = "md" }) {
+  // size: "sm" | "md"
+  const [show, setShow] = React.useState(false);
+  const [reason, setReason] = React.useState("");
+  const [ok, setOk] = React.useState("");
+  const [error, setError] = React.useState("");
+  const style = size === "sm"
+    ? { color: "#d33", background: "#fff4f4", border: "1.2px solid #f6c8c8", borderRadius: 8, padding: "3px 11px", fontSize: 15, fontWeight: 700, cursor: "pointer", minWidth: 50 }
+    : { color: "#d33", background: "#fff4f4", border: "1.5px solid #f6c8c8", borderRadius: 8, padding: "6px 18px", fontSize: 17, fontWeight: 700, cursor: "pointer", minWidth: 60 };
+  async function handleReport() {
+    setError(""); setOk("");
+    const { data } = await supabase.auth.getUser();
+    if (!data?.user?.id) return setError("로그인 필요");
+    const { error } = await supabase.from("reports").insert([{
+      type: "worldcup",
+      target_id: cupId,
+      reporter_id: data.user.id,
+      reason
+    }]);
+    if (error) setError(error.message);
+    else setOk("신고가 접수되었습니다. 감사합니다.");
+  }
   return (
-    <div style={{
-      width: isMobile ? "96vw" : 650,
-      minHeight: isMobile ? "60vh" : 400,
-      margin: "40px auto",
-      padding: isMobile ? 30 : 60,
-      background: "#fff",
-      borderRadius: 18,
-      boxShadow: "0 3px 16px #0002",
-      textAlign: "center",
-      opacity: 0.6
-    }}>
-      <div style={{ width: 180, height: 180, borderRadius: 14, margin: "0 auto 18px", background: "#e7ecf7" }} />
-      <div style={{ height: 38, background: "#e3f0fb", width: 140, borderRadius: 10, margin: "0 auto 22px" }} />
-      <div style={{ height: 26, background: "#f3f3f3", width: 220, borderRadius: 8, margin: "0 auto 18px" }} />
-      <div style={{ height: 22, background: "#f0f2f7", width: 180, borderRadius: 8, margin: "0 auto 24px" }} />
-    </div>
+    <>
+      <button onClick={() => setShow(true)} style={style}>🚩 신고</button>
+      {show && (
+        <div style={{
+          position: "fixed", left: 0, top: 0, width: "100vw", height: "100vh",
+          background: "#0006", zIndex: 9999, display: "flex", alignItems: "center", justifyContent: "center"
+        }}>
+          <div style={{ background: "#fff", borderRadius: 14, padding: 22, minWidth: 270 }}>
+            <b>신고 사유</b>
+            <textarea value={reason} onChange={e => setReason(e.target.value)} style={{ width: "95%", minHeight: 60, marginTop: 12 }} placeholder="신고 사유를 입력하세요 (선택)" />
+            <div style={{ marginTop: 12 }}>
+              <button onClick={handleReport} style={{ marginRight: 10 }}>신고하기</button>
+              <button onClick={() => setShow(false)}>닫기</button>
+            </div>
+            {ok && <div style={{ color: "#1976ed", marginTop: 7 }}>{ok}</div>}
+            {error && <div style={{ color: "#d33", marginTop: 7 }}>{error}</div>}
+          </div>
+        </div>
+      )}
+    </>
   );
 }
 
@@ -42,7 +65,7 @@ function useIsMobile(breakpoint = 800) {
   return isMobile;
 }
 
-function ResultPage({ worldcupList }) {
+export default function ResultPage({ worldcupList }) {
   const { id } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
@@ -52,258 +75,151 @@ function ResultPage({ worldcupList }) {
   const cup = worldcupList.find(c => String(c.id) === id);
   const isMobile = useIsMobile(800);
 
-  // === 결과/통계/댓글 로딩시 스켈레톤 ===
   if (!cup || !winner)
-    return <ResultSkeleton isMobile={isMobile} />;
-
-  // 모바일
-  if (isMobile) {
     return (
       <div style={{
-        width: "100vw",
-        minHeight: "100vh",
-        background: "#f5f7fa",
-      }}>
-        <div style={{
-          maxWidth: "96vw",
-          margin: "0 auto",
-          background: "#fff",
-          borderRadius: 18,
-          padding: "24px 3vw 12px 3vw",
-          textAlign: "center"
-        }}>
-          {/* 결과 */}
-          <h2 style={{ fontWeight: 700, fontSize: 32, marginBottom: 10 }}>
-            🥇 {t("winner")}
-          </h2>
-          <div style={{
-            width: 180,
-            height: 180,
-            borderRadius: 14,
-            margin: "0 auto 12px auto",
-            background: "#eee",
-            border: "3px solid #1976ed",
-            overflow: "hidden",
-          }}>
-            <MediaRenderer url={winner.image} alt={winner.name} />
-          </div>
-          <div style={{
-            fontSize: 23,
-            fontWeight: 600,
-            margin: "0 auto 12px auto",
-            maxWidth: 170,
-            wordBreak: "break-all",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            display: "-webkit-box",
-            WebkitLineClamp: 2,
-            WebkitBoxOrient: "vertical",
-            whiteSpace: "normal",
-            lineHeight: 1.18,
-            textAlign: "center",
-          }}>
-            {winner.name}
-          </div>
-          <div className="page-title" style={{
-            fontWeight: 800,
-            fontSize: "1.62em",
-            marginBottom: 16,
-            wordBreak: "break-all"
-          }}>
-            {cup.title}
-          </div>
-          <div style={{
-            display: "flex",
-            justifyContent: "center",
-            gap: 14,
-            marginBottom: 18,
-            flexWrap: "wrap"
-          }}>
-            <button
-              style={{
-                padding: "10px 32px",
-                borderRadius: 10,
-                background: "#1976ed",
-                color: "#fff",
-                fontWeight: 700,
-                border: "none",
-                fontSize: 18,
-                marginTop: 8
-              }}
-              onClick={() => navigate(`/select-round/${cup.id}`)}
-            >
-              {t("retry")}
-            </button>
-            <button
-              style={{
-                padding: "10px 28px",
-                borderRadius: 10,
-                background: "#ddd",
-                color: "#333",
-                fontWeight: 700,
-                border: "none",
-                fontSize: 17,
-                marginTop: 8
-              }}
-              onClick={() => navigate("/")}
-            >
-              홈
-            </button>
-          </div>
-          {/* 통계 */}
-          <div style={{
-            margin: "30px auto 0",
-            maxWidth: 700,
-            width: "100%",
-            overflowX: "auto"
-          }}>
-            <StatsPage selectedCup={cup} showCommentBox={false} />
-          </div>
-          {/* 댓글 */}
-          <div style={{
-            maxWidth: "96vw",
-            margin: "16px auto 0 auto",
-            background: "#fff",
-            borderRadius: 18,
-            padding: "18px 0 26px 0",
-          }}>
-            <CommentBox cupId={cup.id} />
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  // 데스크탑: 왼쪽 결과/통계, 오른쪽 댓글 (두 컬럼)
-  return (
-    <div
-      style={{
-        width: "100%",
-        maxWidth: 1500,
-        margin: "0 auto",
-        display: "flex",
-        flexDirection: "row",
-        alignItems: "flex-start",
-        justifyContent: "center",
-        gap: 44,
-        padding: "60px 0",
-        boxSizing: "border-box",
-        background: "#f5f7fa"
-      }}
-    >
-      {/* 왼쪽: 결과 + 통계 */}
-      <div style={{
-        flex: 1,
-        maxWidth: 650,
-        minWidth: 400,
+        width: isMobile ? "96vw" : 650,
+        minHeight: isMobile ? "60vh" : 400,
+        margin: "40px auto",
+        padding: isMobile ? 30 : 60,
         background: "#fff",
         borderRadius: 18,
         boxShadow: "0 3px 16px #0002",
-        padding: "36px 40px",
-        textAlign: "center"
+        textAlign: "center",
+        opacity: 0.6
       }}>
-        <h2 style={{ fontWeight: 700, fontSize: 32, marginBottom: 10 }}>
-          🥇 {t("winner")}
-        </h2>
+        <div style={{ width: 180, height: 180, borderRadius: 14, margin: "0 auto 18px", background: "#e7ecf7" }} />
+        <div style={{ height: 38, background: "#e3f0fb", width: 140, borderRadius: 10, margin: "0 auto 22px" }} />
+        <div style={{ height: 26, background: "#f3f3f3", width: 220, borderRadius: 8, margin: "0 auto 18px" }} />
+        <div style={{ height: 22, background: "#f0f2f7", width: 180, borderRadius: 8, margin: "0 auto 24px" }} />
+      </div>
+    );
+
+  return (
+    <div style={{
+      width: "100%",
+      maxWidth: 1200,
+      margin: "0 auto",
+      padding: isMobile ? "0 0 28px 0" : "0 0 44px 0",
+      background: "#f5f7fa",
+      minHeight: "100vh",
+      boxSizing: "border-box"
+    }}>
+      {/* 상단: 통계 타이틀/우승자/재도전/홈/신고/공유 */}
+      <div style={{
+        display: "flex", flexDirection: "column", alignItems: "center",
+        justifyContent: "center", margin: "0 auto 28px auto", width: "100%"
+      }}>
+        <h2 style={{
+          fontWeight: 900,
+          color: "#222",
+          fontSize: isMobile ? 35 : 48,   // 더 큼!
+          margin: "32px 0 6px 0",
+          letterSpacing: -2,
+          lineHeight: 1.08
+        }}>통계</h2>
+        <div style={{ fontSize: isMobile ? 24 : 29, fontWeight: 700, margin: "8px 0 3px 0" }}>🥇 {t("winner")}</div>
         <div style={{
-          width: 180,
-          height: 180,
-          borderRadius: 14,
-          margin: "0 auto 12px auto",
+          width: isMobile ? 135 : 170,
+          height: isMobile ? 135 : 170,
+          borderRadius: 18,
+          margin: "0 auto 0px auto",
           background: "#eee",
-          border: "3px solid #1976ed",
+          border: "3.5px solid #1976ed",
           overflow: "hidden",
+          display: "flex", alignItems: "center", justifyContent: "center"
         }}>
           <MediaRenderer url={winner.image} alt={winner.name} />
         </div>
         <div style={{
-          fontSize: 28,
-          fontWeight: 600,
-          margin: "0 auto 12px auto",
-          maxWidth: 260,
-          wordBreak: "break-all",
-          overflow: "hidden",
-          textOverflow: "ellipsis",
-          display: "-webkit-box",
-          WebkitLineClamp: 2,
-          WebkitBoxOrient: "vertical",
-          whiteSpace: "normal",
-          lineHeight: 1.18,
+          fontSize: isMobile ? 26 : 32,
+          fontWeight: 700,
+          margin: "14px auto 6px auto",
           textAlign: "center",
+          wordBreak: "break-all",
+          maxWidth: 260,
+          lineHeight: 1.13,
         }}>
           {winner.name}
         </div>
-        <div className="page-title" style={{
-          fontWeight: 800,
-          fontSize: "2.34em",
-          marginBottom: 16,
-          wordBreak: "break-all"
-        }}>
-          {cup.title}
-        </div>
+        {/* 버튼들 한줄 정렬 */}
         <div style={{
           display: "flex",
+          flexDirection: "row",
           justifyContent: "center",
-          gap: 14,
-          marginBottom: 18,
-          flexWrap: "wrap"
+          alignItems: "center",
+          gap: 10,
+          margin: "18px auto 0 auto"
         }}>
           <button
             style={{
-              padding: "10px 32px",
+              padding: isMobile ? "11px 26px" : "12px 32px",
               borderRadius: 10,
               background: "#1976ed",
               color: "#fff",
               fontWeight: 700,
               border: "none",
-              fontSize: 20,
-              marginTop: 8
+              fontSize: isMobile ? 17 : 20,
             }}
             onClick={() => navigate(`/select-round/${cup.id}`)}
-          >
-            {t("retry")}
-          </button>
+          >{t("retry")}</button>
           <button
             style={{
-              padding: "10px 28px",
+              padding: isMobile ? "11px 24px" : "12px 28px",
               borderRadius: 10,
-              background: "#ddd",
+              background: "#eee",
               color: "#333",
               fontWeight: 700,
               border: "none",
-              fontSize: 19,
-              marginTop: 8
+              fontSize: isMobile ? 16 : 20,
             }}
             onClick={() => navigate("/")}
-          >
-            홈
-          </button>
+          >홈</button>
         </div>
-        {/* 통계 */}
+        {/* 신고/공유 아래쪽! */}
         <div style={{
-          margin: "30px auto 0",
-          maxWidth: 840,
-          width: "100%",
-          overflowX: "auto"
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "center",
+          alignItems: "center",
+          gap: 8,
+          margin: "13px auto 0 auto"
         }}>
-          <StatsPage selectedCup={cup} showCommentBox={false} />
+          <ReportButton cupId={cup.id} size="sm" />
+          <button
+            onClick={() => {
+              const url = window.location.href;
+              navigator.clipboard.writeText(url);
+              window?.toast?.success
+                ? window.toast.success("링크가 복사되었습니다!")
+                : alert("링크가 복사되었습니다!");
+            }}
+            style={{
+              color: "#1976ed",
+              background: "#e8f2fe",
+              border: "1.2px solid #b8dafe",
+              borderRadius: 8,
+              padding: "4px 14px",
+              fontWeight: 700,
+              cursor: "pointer",
+              fontSize: 15,
+              minWidth: 60,
+            }}
+          >📢 월드컵 공유하기</button>
         </div>
       </div>
-      {/* 오른쪽: 댓글창 */}
-      <div style={{
-        flex: 1,
-        maxWidth: 650,
-        minWidth: 400,
-        background: "#fff",
-        borderRadius: 18,
-        boxShadow: "0 3px 16px #0002",
-        padding: "36px 40px",
-        alignSelf: "flex-start"
-      }}>
+      {/* 통계표 */}
+      <div style={{ margin: "0 auto 0 auto", maxWidth: 1200, width: "100%" }}>
+        <StatsPage
+          selectedCup={cup}
+          showCommentBox={false}
+          highlightCandidateId={winner.candidate_id}
+        />
+      </div>
+      {/* 댓글창 */}
+      <div style={{ margin: "0 auto 0 auto", maxWidth: 1200, width: "100%" }}>
         <CommentBox cupId={cup.id} />
       </div>
     </div>
   );
 }
-
-export default ResultPage;

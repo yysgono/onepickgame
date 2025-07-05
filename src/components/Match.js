@@ -300,8 +300,21 @@ function Match({ cup, onResult, selectedCount }) {
     );
   }
 
-  // 👉 여기에서 Spinner 적용!
-  if (loading) return <Spinner size={70} />;
+  // 👉 여기에서 Spinner와 문구 적용!
+  if (loading) return (
+    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", marginTop: 24 }}>
+      <Spinner size={70} />
+      <div style={{
+        marginTop: 6,
+        fontSize: 20,
+        color: "#1976ed",
+        fontWeight: 700,
+        letterSpacing: "-1px"
+      }}>
+        후보들을 섞는 중...
+      </div>
+    </div>
+  );
   if (!bracket || bracket.length === 0) return <div>{t("notEnoughCandidates")}</div>;
 
   return (

@@ -4,33 +4,30 @@ import { supabase } from "../utils/supabaseClient";
 import { hasBadword } from "../badwords-multilang";
 import useBanCheck from "../hooks/useBanCheck";
 
-// === 스켈레톤 컴포넌트 ===
 function CommentSkeleton() {
   return (
     <div style={{
-      maxWidth: 540,
       width: "100%",
-      margin: "38px auto",
-      background: "#fff",
-      borderRadius: 18,
-      boxShadow: "0 4px 18px #1976ed11, 0 1px 6px #1976ed13",
-      padding: "30px 22px",
-      border: `1.3px solid #e3f0fb`,
-      boxSizing: "border-box",
-      opacity: 0.78,
+      maxWidth: 1200,
+      margin: "36px auto",
+      background: "none",
+      borderRadius: 0,
+      boxShadow: "none",
+      padding: "0 0 50px 0",
+      opacity: 0.55,
     }}>
-      <div style={{ height: 28, background: "#f2f5fa", borderRadius: 7, width: 130, margin: "0 auto 22px auto" }} />
-      <div style={{ display: "flex", gap: 10, marginBottom: 18 }}>
-        <div style={{ width: 80, height: 38, borderRadius: 8, background: "#e7f3fd" }} />
-        <div style={{ flex: 1, height: 38, borderRadius: 9, background: "#f3f3f3" }} />
-        <div style={{ width: 78, height: 38, borderRadius: 20, background: "#e3f0fb" }} />
+      <div style={{ height: 32, background: "#f2f5fa", borderRadius: 7, width: 160, margin: "0 auto 26px auto" }} />
+      <div style={{ display: "flex", gap: 10, marginBottom: 22, justifyContent: "center" }}>
+        <div style={{ width: 92, height: 38, borderRadius: 8, background: "#e7f3fd" }} />
+        <div style={{ flex: 1, height: 48, borderRadius: 11, background: "#f3f3f3" }} />
+        <div style={{ width: 120, height: 38, borderRadius: 14, background: "#e3f0fb" }} />
       </div>
-      <div>
+      <div style={{ maxWidth: 900, margin: "0 auto" }}>
         {[1, 2, 3].map(i => (
           <div key={i} style={{
             borderBottom: "1.5px solid #f1f3f7",
             padding: "13px 0 9px 0",
-            marginBottom: 9,
+            marginBottom: 14,
             borderRadius: 10,
             background: "#fafdff"
           }}>
@@ -48,46 +45,6 @@ function CommentSkeleton() {
         ))}
       </div>
     </div>
-  );
-}
-
-// === [신고 버튼] ===
-function ReportButton({ type, targetId }) {
-  const [show, setShow] = useState(false);
-  const [reason, setReason] = useState("");
-  const [ok, setOk] = useState("");
-  const [error, setError] = useState("");
-  async function handleReport() {
-    setError(""); setOk("");
-    const { data } = await supabase.auth.getUser();
-    if (!data?.user?.id) return setError("로그인 필요");
-    const { error } = await supabase.from("reports").insert([{
-      type,
-      target_id: targetId,
-      reporter_id: data.user.id,
-      reason
-    }]);
-    if (error) setError(error.message);
-    else setOk("신고가 접수되었습니다. 감사합니다.");
-  }
-  return (
-    <>
-      <button onClick={() => setShow(true)} style={{ color: "#d33", background: "none", border: "none", fontWeight: 700, cursor: "pointer", marginLeft: 5 }}>🚩 신고</button>
-      {show && (
-        <div style={{ position: "fixed", left: 0, top: 0, width: "100vw", height: "100vh", background: "#0006", zIndex: 9999, display: "flex", alignItems: "center", justifyContent: "center" }}>
-          <div style={{ background: "#fff", borderRadius: 14, padding: 22, minWidth: 270 }}>
-            <b>신고 사유</b>
-            <textarea value={reason} onChange={e => setReason(e.target.value)} style={{ width: "95%", minHeight: 60, marginTop: 12 }} placeholder="신고 사유를 입력하세요 (선택)" />
-            <div style={{ marginTop: 12 }}>
-              <button onClick={handleReport} style={{ marginRight: 10 }}>신고하기</button>
-              <button onClick={() => setShow(false)}>닫기</button>
-            </div>
-            {ok && <div style={{ color: "#1976ed", marginTop: 7 }}>{ok}</div>}
-            {error && <div style={{ color: "#d33", marginTop: 7 }}>{error}</div>}
-          </div>
-        </div>
-      )}
-    </>
   );
 }
 
@@ -149,7 +106,6 @@ export default function CommentBox({ cupId }) {
     fetchUser();
   }, []);
 
-  // === 정지여부 훅 (user 변경시 자동 체크) ===
   const { isBanned, banInfo } = useBanCheck(user);
 
   useEffect(() => {
@@ -239,31 +195,30 @@ export default function CommentBox({ cupId }) {
     fetchComments();
   }
 
-  // === 스켈레톤 노출 ===
   if (loading) return <CommentSkeleton />;
 
   return (
     <div
       style={{
-        maxWidth: 540,
         width: "100%",
-        margin: "38px auto",
-        background: "#fff",
-        borderRadius: 18,
-        boxShadow: "0 4px 18px #1976ed11, 0 1px 6px #1976ed13",
-        padding: "30px 22px",
-        border: `1.3px solid ${COLORS.border}`,
-        boxSizing: "border-box",
+        maxWidth: 1200,
+        margin: "0 auto 36px auto",
+        background: "none",
+        borderRadius: 0,
+        boxShadow: "none",
+        border: "none",
+        padding: "0 0 32px 0",
+        boxSizing: "border-box"
       }}
     >
       <h3
         style={{
           textAlign: "center",
           fontWeight: 800,
-          marginBottom: 18,
+          margin: "0 0 18px 0",
           color: COLORS.main,
           letterSpacing: -1,
-          fontSize: 22,
+          fontSize: 23,
         }}
       >
         💬 {t("comment.comments")}
@@ -272,11 +227,10 @@ export default function CommentBox({ cupId }) {
         onSubmit={handleSubmit}
         style={{
           display: "flex",
-          gap: 10,
-          justifyContent: "center",
           alignItems: "center",
+          gap: 12,
           marginBottom: 18,
-          flexWrap: "wrap",
+          flexWrap: "wrap"
         }}
       >
         <div
@@ -286,10 +240,11 @@ export default function CommentBox({ cupId }) {
             fontSize: 16,
             background: "#f3f9fe",
             borderRadius: 8,
-            padding: "7px 14px",
+            padding: "9px 14px",
             border: `1.1px solid ${COLORS.border}`,
-            minWidth: 80,
-            textAlign: "center"
+            minWidth: 72,
+            textAlign: "center",
+            width: "fit-content"
           }}
           title={nickname}
         >
@@ -301,19 +256,23 @@ export default function CommentBox({ cupId }) {
           placeholder={
             user ? (isBanned ? "정지된 유저는 댓글 작성이 제한됩니다." : t("comment.placeholder")) : t("comment.loginRequired")
           }
-          rows={2}
+          rows={3}
           disabled={!user || isBanned}
           style={{
             flex: 1,
             minWidth: 0,
-            padding: 10,
-            borderRadius: 9,
+            minHeight: 44,
+            maxHeight: 120,
+            padding: "14px 14px",
+            borderRadius: 11,
             border: `1.2px solid ${COLORS.border}`,
-            fontSize: 15.5,
-            resize: "none",
+            fontSize: 16,
+            resize: "vertical",
             background: (!user || isBanned) ? COLORS.soft : "#fff",
             fontWeight: 600,
             color: COLORS.text,
+            lineHeight: 1.5,
+            boxSizing: "border-box"
           }}
           maxLength={80}
         />
@@ -321,16 +280,21 @@ export default function CommentBox({ cupId }) {
           type="submit"
           disabled={!user || loading || isBanned}
           style={{
-            padding: "10px 22px",
-            borderRadius: 999,
+            padding: "12px 29px",
+            borderRadius: 11,
             background: (!user || isBanned)
               ? "#bbb"
               : `linear-gradient(90deg, ${COLORS.main} 65%, ${COLORS.sub} 100%)`,
             color: "#fff",
             fontWeight: 800,
-            fontSize: 16,
+            fontSize: 17,
             border: "none",
             cursor: (!user || isBanned) ? "not-allowed" : "pointer",
+            marginLeft: 0,
+            marginTop: 0,
+            height: 44,
+            display: "flex",
+            alignItems: "center",
             boxShadow: (!user || isBanned) ? "none" : "0 1px 8px #1976ed23",
             letterSpacing: -0.5,
           }}
@@ -341,7 +305,7 @@ export default function CommentBox({ cupId }) {
       {isBanned && (
         <div style={{
           color: COLORS.danger,
-          textAlign: "center",
+          textAlign: "left",
           marginBottom: 10,
           fontWeight: 700,
           fontSize: 15,
@@ -357,7 +321,7 @@ export default function CommentBox({ cupId }) {
         <div
           style={{
             color: COLORS.main,
-            textAlign: "center",
+            textAlign: "left",
             marginBottom: 10,
             fontWeight: 700,
             fontSize: 15,
@@ -371,14 +335,14 @@ export default function CommentBox({ cupId }) {
           style={{
             color: COLORS.danger,
             marginBottom: 13,
-            textAlign: "center",
+            textAlign: "left",
             fontWeight: 600,
           }}
         >
           {error}
         </div>
       )}
-      <div>
+      <div style={{ maxWidth: 900, margin: "0 auto" }}>
         {comments.length === 0 && (
           <div
             style={{
@@ -401,7 +365,7 @@ export default function CommentBox({ cupId }) {
               background: "#fafdff",
               borderRadius: 10,
               marginBottom: 13,
-              boxShadow: "0 1.5px 4px #e3f0fb12",
+              boxShadow: "none",
               transition: "box-shadow 0.15s",
             }}
           >
@@ -508,7 +472,6 @@ export default function CommentBox({ cupId }) {
               >
                 👎 비추천 {c.downvotes || 0}
               </button>
-              <ReportButton type="comment" targetId={c.id} />
               {(user && (nickname === "admin" || c.user_id === user.id)) && (
                 <button
                   style={{
