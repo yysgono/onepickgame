@@ -31,6 +31,9 @@ import FindPwBox from "./components/FindPwBox";
 import { getWorldcupGames, deleteWorldcupGame } from "./utils/supabaseWorldcupApi";
 import { supabase } from "./utils/supabaseClient";
 import AdBanner from "./components/AdBanner";
+import PrivacyPolicy from "./components/PrivacyPolicy";
+import TermsOfService from "./components/TermsOfService";
+import Footer from "./components/Footer"; // << 추가
 
 function useAdBannerHeight() {
   const [height, setHeight] = useState(0);
@@ -211,7 +214,6 @@ function App() {
       const { id } = useParams();
       const navigate = useNavigate();
       const cup = worldcupList.find(c => String(c.id) === id);
-      // 월드컵 정보 없으면 아무것도 렌더링하지 않음
       if (!cup) return null;
       return (
         <SelectRoundPage
@@ -226,7 +228,6 @@ function App() {
     function StatsPageWrapper() {
       const { id } = useParams();
       const cup = worldcupList.find(c => String(c.id) === id);
-      // 월드컵 정보 없으면 아무것도 렌더링하지 않음
       if (!cup) return null;
       return <StatsPage selectedCup={cup} showCommentBox={true} />;
     }
@@ -341,6 +342,8 @@ function App() {
             <Route path="/find-id" element={<FindIdBox />} />
             <Route path="/find-pw" element={<FindPwBox />} />
             <Route path="/reset-password" element={<ResetPwRedirect />} />
+            <Route path="/privacy-policy" element={<PrivacyPolicy />} />    {/* 개인정보처리방침 */}
+            <Route path="/terms-of-service" element={<TermsOfService />} /> {/* 이용약관 */}
           </Routes>
         </div>
       </>
@@ -425,6 +428,7 @@ function App() {
         <Router>
           <AppRoutes />
           <BottomAdConditional />
+          <Footer /> {/* 푸터 추가 */}
         </Router>
       </div>
     </div>
