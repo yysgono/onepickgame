@@ -1,6 +1,6 @@
 // ResultPage.js
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useParams, useLocation, useNavigate } from "react-router-dom";
 import StatsPage from "./StatsPage";
 import CommentBox from "./CommentBox";
@@ -8,11 +8,12 @@ import MediaRenderer from "./MediaRenderer";
 import { useTranslation } from "react-i18next";
 import { supabase } from "../utils/supabaseClient";
 
+// 신고버튼(동일)
 function ReportButton({ cupId, size = "md" }) {
-  const [show, setShow] = React.useState(false);
-  const [reason, setReason] = React.useState("");
-  const [ok, setOk] = React.useState("");
-  const [error, setError] = React.useState("");
+  const [show, setShow] = useState(false);
+  const [reason, setReason] = useState("");
+  const [ok, setOk] = useState("");
+  const [error, setError] = useState("");
   const style =
     size === "sm"
       ? {
@@ -122,11 +123,84 @@ export default function ResultPage({ worldcupList }) {
   const navigate = useNavigate();
   const { t } = useTranslation();
 
-  const winner = location.state?.winner;
-  const cup = worldcupList.find((c) => String(c.id) === id);
+  // ====== DB fetch용 추가 상태 ======
+  const [cup, setCup] = useState(null);
+  const [winner, setWinner] = useState(null);
+  const [loading, setLoading] = useState(true);
+
   const isMobile = useIsMobile(800);
 
-  if (!cup || !winner)
+  // location.state로 온 데이터(있을 때만)
+  const locationCup =
+    location.state?.cup ||
+    (worldcupList && worldcupList.find((c) => String(c.id) === id));
+  const locationWinner = location.state?.winner;
+
+  // URL 파라미터에서 round도 있으면 사용
+  const url = new URL(window.location.href);
+  const round = url.pathname.split("/")[3] || null;
+
+  // 데이터 불러오기 (location.state 없으면 DB에서)
+  useEffect(() => {
+    let mounted = true;
+    async function fetchData() {
+      setLoading(true);
+
+      let thisCup = locationCup;
+      let thisWinner = locationWinner;
+
+      // 월드컵 데이터 없으면 DB에서
+      if (!thisCup) {
+        // 월드컵 본체
+        const { data: cupData } = await supabase
+          .from("worldcups")
+          .select("*")
+          .eq("id", id)
+          .single();
+        thisCup = cupData;
+      }
+
+      // 우승자도 없으면 월드컵에서 계산 (winner가 있으면 바로, 없으면 서버에서 우승자 fetch)
+      if (!thisWinner && thisCup) {
+        // 우승자 추정 로직: 가장 많이 이긴 후보? (아니면 stats 따로 있으면 그걸 fetch)
+        // 여기서는 worldcup 테이블에 winner_id 저장했다고 가정
+        let winnerObj = null;
+        if (thisCup.winner_id) {
+          // winner_id가 있으면 후보 중에서 찾기
+          if (thisCup.data) {
+            winnerObj =
+              thisCup.data.find((item) => String(item.id) === String(thisCup.winner_id)) ||
+              null;
+          } else {
+            // candidates 별도 테이블에서 찾아오기
+            const { data: candidate } = await supabase
+              .from("candidates")
+              .select("*")
+              .eq("id", thisCup.winner_id)
+              .single();
+            winnerObj = candidate;
+          }
+        }
+        // winner_id가 없거나 못 찾으면 첫번째 후보로 fallback
+        if (!winnerObj && thisCup?.data?.length > 0) winnerObj = thisCup.data[0];
+        thisWinner = winnerObj;
+      }
+
+      if (mounted) {
+        setCup(thisCup);
+        setWinner(thisWinner);
+        setLoading(false);
+      }
+    }
+    fetchData();
+    return () => {
+      mounted = false;
+    };
+    // eslint-disable-next-line
+  }, [id, locationCup, locationWinner]);
+
+  // 로딩/에러 처리
+  if (loading || !cup || !winner)
     return (
       <div
         style={{
@@ -180,6 +254,7 @@ export default function ResultPage({ worldcupList }) {
       </div>
     );
 
+  // ==== 실제 결과화면 ====
   return (
     <div
       style={{
@@ -332,7 +407,7 @@ export default function ResultPage({ worldcupList }) {
       <div style={{ margin: "0 auto 0 auto", maxWidth: 1200, width: "100%" }}>
         <StatsPage
           selectedCup={cup}
-          showCommentBox={false} // 여기 false 넣고 댓글은 토글버튼으로 켜고 끔
+          showCommentBox={false}
           winner={winner}
         />
       </div>
