@@ -10,7 +10,7 @@ export default function Footer() {
         <a href="/privacy-policy" style={{color: "#1976ed"}}>개인정보처리방침</a>
       </div>
       <div style={{marginTop: 7}}>
-        &copy; {new Date().getFullYear()} YourSiteName
+        &copy; {new Date().getFullYear()} OnePickGame
       </div>
     </footer>
   );

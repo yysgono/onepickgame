@@ -342,8 +342,8 @@ function App() {
             <Route path="/find-id" element={<FindIdBox />} />
             <Route path="/find-pw" element={<FindPwBox />} />
             <Route path="/reset-password" element={<ResetPwRedirect />} />
-            <Route path="/privacy-policy" element={<PrivacyPolicy />} />    {/* 개인정보처리방침 */}
-            <Route path="/terms-of-service" element={<TermsOfService />} /> {/* 이용약관 */}
+            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+            <Route path="/terms-of-service" element={<TermsOfService />} />
           </Routes>
         </div>
       </>
@@ -428,7 +428,7 @@ function App() {
         <Router>
           <AppRoutes />
           <BottomAdConditional />
-          <Footer /> {/* 푸터 추가 */}
+          <Footer />
         </Router>
       </div>
     </div>

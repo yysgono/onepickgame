@@ -22,8 +22,7 @@ export default function PrivacyPolicy() {
         </li>
       </ul>
       <p>
-        궁금한 점은 <a href="yysgono@email.com">your@email.com</a> 으로 문의해 주세요.<br/>
-        (Contact: your@email.com)
+        궁금한 점은 yysgono@gmail.com 으로 문의해주세요 .<br/>
       </p>
     </div>
   );

@@ -3,6 +3,7 @@ import { fetchWinnerStatsFromDB } from "../utils";
 import { useTranslation } from "react-i18next";
 import MediaRenderer from "./MediaRenderer";
 import { supabase } from "../utils/supabaseClient";
+import CommentBox from "./CommentBox";
 
 const PERIODS = [
   { label: "전체", value: null },
@@ -49,10 +50,16 @@ function StatsSkeleton({ isMobile = false }) {
           <tr style={{ background: "#f7f7f7" }}>
             {["순위", "이미지", "이름", "우승", "우승률", "승리", "대결", "승률"].map((h, i) => (
               <th key={i} style={{ padding: "10px 0" }}>
-                <div style={{
-                  width: 60, height: 18, margin: "0 auto",
-                  background: "#e7f1fb", borderRadius: 7, animation: "skeleton-loading 1.2s infinite linear"
-                }} />
+                <div
+                  style={{
+                    width: 60,
+                    height: 18,
+                    margin: "0 auto",
+                    background: "#e7f1fb",
+                    borderRadius: 7,
+                    animation: "skeleton-loading 1.2s infinite linear",
+                  }}
+                />
               </th>
             ))}
           </tr>
@@ -62,13 +69,16 @@ function StatsSkeleton({ isMobile = false }) {
             <tr key={i}>
               {[...Array(8)].map((_, j) => (
                 <td key={j} style={{ padding: "13px 0" }}>
-                  <div style={{
-                    height: 18, width: (j === 1 ? (isMobile ? 30 : 44) : (isMobile ? 38 : 70)),
-                    margin: "0 auto",
-                    background: "#e7f1fb",
-                    borderRadius: 7,
-                    animation: "skeleton-loading 1.2s infinite linear"
-                  }} />
+                  <div
+                    style={{
+                      height: 18,
+                      width: j === 1 ? (isMobile ? 30 : 44) : isMobile ? 38 : 70,
+                      margin: "0 auto",
+                      background: "#e7f1fb",
+                      borderRadius: 7,
+                      animation: "skeleton-loading 1.2s infinite linear",
+                    }}
+                  />
                 </td>
               ))}
             </tr>
@@ -86,13 +96,12 @@ function StatsSkeleton({ isMobile = false }) {
   );
 }
 
-function StatsPage({ selectedCup, showCommentBox = false, winner }) {
+export default function StatsPage({ selectedCup, showCommentBox = false, winner }) {
   const { t } = useTranslation();
   const [stats, setStats] = useState([]);
   const [sortKey, setSortKey] = useState("win_count");
   const [sortDesc, setSortDesc] = useState(true);
   const [search, setSearch] = useState("");
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 800);
   const [userOnly, setUserOnly] = useState(false);
   const [itemsPerPage, setItemsPerPage] = useState(25);
   const [period, setPeriod] = useState(null);
@@ -100,13 +109,20 @@ function StatsPage({ selectedCup, showCommentBox = false, winner }) {
   const [customFrom, setCustomFrom] = useState("");
   const [customTo, setCustomTo] = useState("");
   const [loading, setLoading] = useState(true);
-  // 페이지네이션 추가!
   const [currentPage, setCurrentPage] = useState(1);
-
-  // ★ 유저 정보 가져오기(비회원 안내 문구용)
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 800);
   const [user, setUser] = useState(null);
+
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => setUser(data?.user || null));
+  }, []);
+
+  useEffect(() => {
+    function onResize() {
+      setIsMobile(window.innerWidth < 800);
+    }
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
   }, []);
 
   useEffect(() => {
@@ -132,13 +148,6 @@ function StatsPage({ selectedCup, showCommentBox = false, winner }) {
     fetchStats();
   }, [selectedCup, period, customMode, customFrom, customTo]);
 
-  useEffect(() => {
-    const onResize = () => setIsMobile(window.innerWidth < 800);
-    window.addEventListener("resize", onResize);
-    return () => window.removeEventListener("resize", onResize);
-  }, []);
-
-  // ★ 검색 결과는 정렬/필터만 (원본 순위가 아니라 실제로 랭킹 다시 매김)
   let filteredStats = [...stats].filter(row => row.name?.toLowerCase().includes(search.toLowerCase()));
   if (userOnly) {
     filteredStats = filteredStats.map(row => ({
@@ -152,23 +161,11 @@ function StatsPage({ selectedCup, showCommentBox = false, winner }) {
       : (a[sortKey] ?? 0) - (b[sortKey] ?? 0)
   );
 
-  // 페이지네이션 적용
   const totalStats = filteredStats.length;
   const totalPages = Math.max(1, Math.ceil(totalStats / itemsPerPage));
   const pagedStats = filteredStats.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
-  // 검색하거나 페이지당개수 바뀌면 1페이지로
   useEffect(() => { setCurrentPage(1); }, [search, itemsPerPage, stats]);
-
-  function handleCustomApply() {
-    if (customFrom && customTo) setCustomMode(true);
-  }
-  function handleCustomCancel() {
-    setCustomMode(false);
-    setCustomFrom("");
-    setCustomTo("");
-    setPeriod(null);
-  }
 
   function getRowStyle(rank) {
     if (rank === 1) return { background: "#fff9dd" };
@@ -236,7 +233,6 @@ function StatsPage({ selectedCup, showCommentBox = false, winner }) {
     };
   }
 
-  // 페이지네이션 컴포넌트
   function Pagination() {
     if (totalPages <= 1) return null;
     let pages = [];
@@ -306,38 +302,30 @@ function StatsPage({ selectedCup, showCommentBox = false, winner }) {
   }
 
   return (
-    <div style={{
-      width: "100%",
-      maxWidth: 1200,
-      margin: "0 auto",
-      padding: "0 0 32px 0",
-      boxSizing: "border-box"
-    }}>
-      {/* --- 필터, 기간, 보기 개수 --- */}
-      <div style={{
-        display: "flex", justifyContent: "center", gap: 8, marginBottom: 6
-      }}>
-        <button
-          style={tabBtnStyle(!userOnly)}
-          onClick={() => setUserOnly(false)}
-        >
-          전체
-        </button>
-        <button
-          style={{ ...tabBtnStyle(userOnly), marginRight: 0 }}
-          onClick={() => setUserOnly(true)}
-        >
-          회원만
-        </button>
+    <div
+      style={{
+        width: "100%",
+        maxWidth: 1200,
+        margin: "0 auto",
+        padding: "0 0 32px 0",
+        boxSizing: "border-box"
+      }}
+    >
+      <div style={{ display: "flex", justifyContent: "center", gap: 8, marginBottom: 6 }}>
+        <button style={tabBtnStyle(!userOnly)} onClick={() => setUserOnly(false)}>전체</button>
+        <button style={{ ...tabBtnStyle(userOnly), marginRight: 0 }} onClick={() => setUserOnly(true)}>회원만</button>
       </div>
-      <div style={{
-        display: "flex",
-        flexWrap: "wrap",
-        gap: 0,
-        justifyContent: "center",
-        marginBottom: 12
-      }}>
-        {PERIODS.map((p) => (
+
+      <div
+        style={{
+          display: "flex",
+          flexWrap: "wrap",
+          gap: 0,
+          justifyContent: "center",
+          marginBottom: 12,
+        }}
+      >
+        {PERIODS.map(p => (
           <button
             key={p.value === null ? "all" : p.value}
             onClick={() => {
@@ -353,7 +341,7 @@ function StatsPage({ selectedCup, showCommentBox = false, winner }) {
           style={{
             ...periodBtnStyle(customMode),
             marginRight: 0,
-            background: customMode ? "#e7f7f6" : "#fff"
+            background: customMode ? "#e7f7f6" : "#fff",
           }}
           onClick={() => {
             setCustomMode(true);
@@ -389,11 +377,15 @@ function StatsPage({ selectedCup, showCommentBox = false, winner }) {
                 fontWeight: 700,
                 fontSize: 15,
                 cursor: "pointer",
-                marginRight: 0
+                marginRight: 0,
               }}
-              onClick={handleCustomApply}
+              onClick={() => {
+                if (customFrom && customTo) setCustomMode(true);
+              }}
               disabled={!customFrom || !customTo}
-            >적용</button>
+            >
+              적용
+            </button>
             <button
               style={{
                 padding: "7px 13px",
@@ -403,58 +395,112 @@ function StatsPage({ selectedCup, showCommentBox = false, winner }) {
                 color: "#666",
                 fontWeight: 700,
                 fontSize: 15,
-                cursor: "pointer"
+                cursor: "pointer",
               }}
-              onClick={handleCustomCancel}
-            >취소</button>
+              onClick={() => {
+                setCustomMode(false);
+                setCustomFrom("");
+                setCustomTo("");
+                setPeriod(null);
+              }}
+            >
+              취소
+            </button>
           </>
         )}
       </div>
-      <div style={{
-        display: "flex", justifyContent: "center", marginBottom: 12, gap: 8
-      }}>
-        <input
-          value={search}
-          onChange={e => setSearch(e.target.value)}
-          placeholder={t("search")}
+
+      {/* PC: 검색창 + 보기개수 같이 / 모바일: 분리 */}
+      {!isMobile ? (
+        <div
           style={{
-            width: 140,
-            padding: "7px 13px",
-            borderRadius: 8,
-            border: "1.5px solid #bbb",
-            fontSize: 14
+            display: "flex",
+            justifyContent: "center",
+            marginBottom: 12,
+            gap: 8,
           }}
-        />
-        {[10, 25, 50, 100].map(num => (
-          <button
-            key={num}
+        >
+          <input
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            placeholder={t("search")}
             style={{
+              width: 140,
               padding: "7px 13px",
               borderRadius: 8,
-              border: itemsPerPage === num ? "2.5px solid #1976ed" : "1.5px solid #ccc",
-              background: itemsPerPage === num ? "#e8f2fe" : "#fff",
-              color: itemsPerPage === num ? "#1976ed" : "#555",
-              fontWeight: 700,
-              fontSize: 15,
-              cursor: "pointer"
+              border: "1.5px solid #bbb",
+              fontSize: 14,
             }}
-            onClick={() => setItemsPerPage(num)}
-          >
-            {num}개씩 보기
-          </button>
-        ))}
-      </div>
-
-      {/* ---- 비회원 안내 문구 ---- */}
-      {!user && (
-        <div style={{
-          textAlign: "center",
-          color: "#888",
-          fontSize: 15,
-          marginBottom: 12,
-        }}>
-          ※ 비회원의 경우 통계 결과가 즉시 반영되지 않을 수 있습니다.
+          />
+          {[10, 25, 50, 100].map(num => (
+            <button
+              key={num}
+              style={{
+                padding: "7px 13px",
+                borderRadius: 8,
+                border: itemsPerPage === num ? "2.5px solid #1976ed" : "1.5px solid #ccc",
+                background: itemsPerPage === num ? "#e8f2fe" : "#fff",
+                color: itemsPerPage === num ? "#1976ed" : "#555",
+                fontWeight: 700,
+                fontSize: 15,
+                cursor: "pointer",
+              }}
+              onClick={() => setItemsPerPage(num)}
+            >
+              {num}개씩 보기
+            </button>
+          ))}
         </div>
+      ) : (
+        <>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              marginBottom: 8,
+              gap: 8,
+            }}
+          >
+            {[10, 25, 50, 100].map(num => (
+              <button
+                key={num}
+                style={{
+                  padding: "7px 13px",
+                  borderRadius: 8,
+                  border: itemsPerPage === num ? "2.5px solid #1976ed" : "1.5px solid #ccc",
+                  background: itemsPerPage === num ? "#e8f2fe" : "#fff",
+                  color: itemsPerPage === num ? "#1976ed" : "#555",
+                  fontWeight: 700,
+                  fontSize: 15,
+                  cursor: "pointer",
+                }}
+                onClick={() => setItemsPerPage(num)}
+              >
+                {num}개씩 보기
+              </button>
+            ))}
+          </div>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              marginBottom: 12,
+            }}
+          >
+            <input
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+              placeholder={t("search")}
+              style={{
+                width: 140,
+                padding: "7px 13px",
+                borderRadius: 8,
+                border: "1.5px solid #bbb",
+                fontSize: 14,
+              }}
+            />
+          </div>
+        </>
       )}
 
       {loading ? (
@@ -518,14 +564,14 @@ function StatsPage({ selectedCup, showCommentBox = false, winner }) {
                     style={{
                       ...getRowStyle((currentPage - 1) * itemsPerPage + i + 1),
                       textAlign: "center",
-                      fontWeight: (currentPage - 1) * itemsPerPage + i + 1 <= 3 ? 700 : 400
+                      fontWeight: (currentPage - 1) * itemsPerPage + i + 1 <= 3 ? 700 : 400,
                     }}
                   >
                     <td
                       style={{
                         padding: "7px 0",
                         fontSize: isMobile ? 15 : 19,
-                        ...getNameTextStyle((currentPage - 1) * itemsPerPage + i + 1)
+                        ...getNameTextStyle((currentPage - 1) * itemsPerPage + i + 1),
                       }}
                     >
                       {(currentPage - 1) * itemsPerPage + i + 1 <= 3 ? (
@@ -533,16 +579,20 @@ function StatsPage({ selectedCup, showCommentBox = false, winner }) {
                           <span style={{ fontSize: 18, verticalAlign: "middle" }}>👑</span>{" "}
                           {(currentPage - 1) * itemsPerPage + i + 1}
                         </span>
-                      ) : (currentPage - 1) * itemsPerPage + i + 1}
+                      ) : (
+                        (currentPage - 1) * itemsPerPage + i + 1
+                      )}
                     </td>
                     <td style={{ padding: "7px 0" }}>
-                      <div style={{
-                        width: isMobile ? 30 : 44,
-                        height: isMobile ? 30 : 44,
-                        borderRadius: 9,
-                        overflow: "hidden",
-                        margin: "0 auto"
-                      }}>
+                      <div
+                        style={{
+                          width: isMobile ? 30 : 44,
+                          height: isMobile ? 30 : 44,
+                          borderRadius: 9,
+                          overflow: "hidden",
+                          margin: "0 auto",
+                        }}
+                      >
                         <MediaRenderer url={row.image} alt={row.name} />
                       </div>
                     </td>
@@ -579,10 +629,9 @@ function StatsPage({ selectedCup, showCommentBox = false, winner }) {
             </table>
           </div>
           <Pagination />
+          <CommentBox cupId={selectedCup.id} />
         </>
       )}
     </div>
   );
 }
-
-export default StatsPage;
