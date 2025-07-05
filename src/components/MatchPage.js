@@ -9,14 +9,13 @@ function MatchPage({ worldcupList }) {
   const cup = worldcupList.find(c => String(c.id) === id);
   const roundNum = Number(round) || (cup ? cup.data.length : 4);
 
-  if (!cup) {
-    return <div style={{ padding: 80 }}>월드컵 정보를 찾을 수 없습니다.</div>;
-  }
+  // 월드컵 정보 없으면 아무것도 렌더링하지 않음
+  if (!cup) return null;
 
   return (
     <Match
       cup={cup}
-      selectedCount={roundNum} // ★ 핵심: selectedCount로 넘김
+      selectedCount={roundNum}
       onResult={(winner, matchHistory) => {
         navigate(`/result/${cup.id}/${roundNum}`, {
           state: { winner, matchHistory }

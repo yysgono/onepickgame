@@ -326,21 +326,7 @@ function Home({
             <SkeletonCard key={i} isMobile={isMobile} />
           ))}
 
-        {/* 로딩 끝, 데이터도 없음: "등록된 월드컵이 없습니다" */}
-        {!loading && filtered.length === 0 && (
-          <div
-            style={{
-              gridColumn: "1 / -1",
-              color: "#aaa",
-              fontSize: 22,
-              textAlign: "center",
-              marginTop: 64,
-            }}
-          >
-            등록된 월드컵이 없습니다.
-          </div>
-        )}
-
+    
         {/* 데이터 있으면 카드 */}
         {!loading && filtered.length > 0 &&
           filtered.map((cup, idx) => {

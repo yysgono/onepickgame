@@ -32,7 +32,6 @@ import { getWorldcupGames, deleteWorldcupGame } from "./utils/supabaseWorldcupAp
 import { supabase } from "./utils/supabaseClient";
 import AdBanner from "./components/AdBanner";
 
-// 상단 광고 높이 자동 인식
 function useAdBannerHeight() {
   const [height, setHeight] = useState(0);
   const ref = useRef(null);
@@ -49,7 +48,6 @@ function useAdBannerHeight() {
   return [ref, height];
 }
 
-// 모바일 판별
 function useIsMobile() {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 700);
   useEffect(() => {
@@ -62,7 +60,6 @@ function useIsMobile() {
   return isMobile;
 }
 
-// 비밀번호 재설정 리다이렉트 라우트
 function ResetPwRedirect() {
   const navigate = useNavigate();
   useEffect(() => {
@@ -72,7 +69,6 @@ function ResetPwRedirect() {
 }
 
 function App() {
-  // 광고 높이 자동 계산
   const [adRef, adHeight] = useAdBannerHeight();
   const isMobile = useIsMobile();
 
@@ -83,7 +79,6 @@ function App() {
   const [nickname, setNickname] = useState("");
   const [nicknameLoading, setNicknameLoading] = useState(false);
 
-  // 유저 및 프로필 정보
   useEffect(() => {
     let isMounted = true;
     async function fetchUserAndProfile() {
@@ -115,7 +110,6 @@ function App() {
     setIsAdmin(nick === "admin");
   }
 
-  // 월드컵 목록
   const fetchWorldcups = async () => {
     try {
       const list = await getWorldcupGames();
@@ -169,7 +163,6 @@ function App() {
     e.target.value = "";
   }
 
-  // 경기선택/진행/결과 페이지만 하단 광고 O
   function useShowBottomAd() {
     const location = useLocation();
     return {
@@ -180,7 +173,6 @@ function App() {
     };
   }
 
-  // AppRoutes 분리
   function AppRoutes() {
     const navigate = useNavigate();
 
@@ -219,10 +211,8 @@ function App() {
       const { id } = useParams();
       const navigate = useNavigate();
       const cup = worldcupList.find(c => String(c.id) === id);
-      if (!cup)
-        return (
-          <div style={{ padding: 80 }}>월드컵 정보를 찾을 수 없습니다.</div>
-        );
+      // 월드컵 정보 없으면 아무것도 렌더링하지 않음
+      if (!cup) return null;
       return (
         <SelectRoundPage
           cup={cup}
@@ -236,10 +226,8 @@ function App() {
     function StatsPageWrapper() {
       const { id } = useParams();
       const cup = worldcupList.find(c => String(c.id) === id);
-      if (!cup)
-        return (
-          <div style={{ padding: 80 }}>월드컵 정보를 찾을 수 없습니다.</div>
-        );
+      // 월드컵 정보 없으면 아무것도 렌더링하지 않음
+      if (!cup) return null;
       return <StatsPage selectedCup={cup} showCommentBox={true} />;
     }
 
@@ -315,7 +303,6 @@ function App() {
 
     return (
       <>
-        {/* 헤더를 반드시 맨 위에 배치! */}
         <div className="header-wrapper" style={{ margin: 0, padding: 0, marginBottom: 0 }}>
           <Header
             onLangChange={handleLangChange}
@@ -330,14 +317,12 @@ function App() {
             setNickname={updateNickname}
           />
         </div>
-        {/* 헤더 바로 아래에 상단 광고! */}
         <div ref={adRef} className="ad-banner-top-static-wrap" style={{ marginTop: 0, paddingTop: 0 }}>
           <AdBanner
             position="top"
             img="ad2.png"
           />
         </div>
-        {/* 본문 */}
         <div className="main-content-box">
           <Routes>
             <Route path="/" element={<HomeWrapper />} />
@@ -362,10 +347,8 @@ function App() {
     );
   }
 
-  // 하단 광고 노출
   function BottomAdConditional() {
     const { showBig, showSmall } = useShowBottomAd();
-    // 모바일이면 무조건 작은 광고!
     if (isMobile) {
       return (
         <AdBanner
@@ -382,7 +365,6 @@ function App() {
       );
     }
     if (showBig) {
-      // PC: 경기선택/매치에서는 큰 광고
       return (
         <AdBanner
           position="bottom"
@@ -398,7 +380,6 @@ function App() {
       );
     }
     if (showSmall) {
-      // PC: 결과창에서는 작은 광고
       return (
         <AdBanner
           position="bottom"
@@ -418,7 +399,6 @@ function App() {
 
   return (
     <div className="app-main-wrapper" style={{ margin: 0, padding: 0 }}>
-      {/* 좌/우 광고: fixed (변경 없음) */}
       <AdBanner
         position="left"
         img="ad1.png"
@@ -441,7 +421,6 @@ function App() {
           width: "300px",
         }}
       />
-      {/* 본문 전체는 상단 광고 높이만큼 자동 내림 */}
       <div className="main-content-outer" style={{ paddingTop: adHeight ? adHeight + 32 : 190, margin: 0 }}>
         <Router>
           <AppRoutes />

@@ -223,6 +223,20 @@ export default function CommentBox({ cupId }) {
       >
         💬 {t("comment.comments")}
       </h3>
+      {/* 로그인 필요 메시지 - 입력창 위에 1번만 표시 */}
+      {!user && (
+        <div
+          style={{
+            color: COLORS.main,
+            textAlign: "left",
+            margin: "0 0 8px 2px",
+            fontWeight: 700,
+            fontSize: 15,
+          }}
+        >
+          {t("comment.loginRequired") || "댓글을 작성하려면 로그인해야 합니다."}
+        </div>
+      )}
       <form
         onSubmit={handleSubmit}
         style={{
@@ -254,7 +268,7 @@ export default function CommentBox({ cupId }) {
           value={content}
           onChange={(e) => setContent(e.target.value.slice(0, 80))}
           placeholder={
-            user ? (isBanned ? "정지된 유저는 댓글 작성이 제한됩니다." : t("comment.placeholder")) : t("comment.loginRequired")
+            user ? (isBanned ? "정지된 유저는 댓글 작성이 제한됩니다." : t("comment.placeholder")) : ""
           }
           rows={3}
           disabled={!user || isBanned}
@@ -315,19 +329,6 @@ export default function CommentBox({ cupId }) {
             <div>정지 해제일: {banInfo.expires_at.replace("T", " ").slice(0, 16)}</div>
           )}
           {banInfo && banInfo.reason && <div>사유: {banInfo.reason}</div>}
-        </div>
-      )}
-      {!user && (
-        <div
-          style={{
-            color: COLORS.main,
-            textAlign: "left",
-            marginBottom: 10,
-            fontWeight: 700,
-            fontSize: 15,
-          }}
-        >
-          {t("comment.loginRequired")}
         </div>
       )}
       {error && (
