@@ -1,3 +1,5 @@
+// Home.js
+
 import React, { useState, useRef, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { fetchWinnerStatsFromDB, getMostWinnerFromDB } from "../utils";
@@ -21,7 +23,7 @@ function SkeletonCard({ isMobile }) {
         background: "#e7f1fb",
         border: "none",
         boxShadow: "0 2px 14px #b2b8c566",
-        minHeight: isMobile ? 116 : 178, // 5% 증가
+        minHeight: isMobile ? 120 : 178,
         animation: "skeleton-loading 1.2s infinite linear",
       }}
     >
@@ -29,8 +31,8 @@ function SkeletonCard({ isMobile }) {
         style={{
           width: "100%",
           aspectRatio: "1 / 1",
-          borderTopLeftRadius: isMobile ? 14 : 16.8, // 5% 증가
-          borderTopRightRadius: isMobile ? 14 : 16.8,
+          borderTopLeftRadius: isMobile ? 13 : 17,
+          borderTopRightRadius: isMobile ? 13 : 17,
           overflow: "hidden",
           background: "#dbe6f2",
           marginBottom: 0,
@@ -38,44 +40,44 @@ function SkeletonCard({ isMobile }) {
       />
       <div
         style={{
-          padding: isMobile ? "6.3px 8.4px 8.4px 8.4px" : "10.5px 12.6px 8.4px 12.6px",
+          padding: isMobile ? "7px 9px 9px 9px" : "11px 13px 9px 13px",
           flex: 1,
         }}
       >
         <div
           style={{
-            width: "89.25%",
-            height: 17.85,
+            width: "88%",
+            height: 18,
             background: "#dde7f1",
-            borderRadius: 7.35,
-            margin: "4.2px auto 6.3px auto",
+            borderRadius: 7,
+            margin: "4px auto 7px auto",
           }}
         />
         <div
           style={{
-            width: "65.1%",
-            height: 10.5,
+            width: "65%",
+            height: 11,
             background: "#e8eef8",
-            borderRadius: 7.35,
-            margin: "5.25px auto",
+            borderRadius: 7,
+            margin: "6px auto",
           }}
         />
         <div
           style={{
-            width: "36.75%",
-            height: 8.4,
+            width: "36%",
+            height: 9,
             background: "#e8eef8",
-            borderRadius: 7.35,
-            margin: "4.2px auto",
+            borderRadius: 7,
+            margin: "4px auto",
           }}
         />
         <div
           style={{
-            width: "39.9%",
-            height: 9.45,
+            width: "39%",
+            height: 9,
             background: "#e8eef8",
-            borderRadius: 7.35,
-            margin: "4.2px auto 0 auto",
+            borderRadius: 7,
+            margin: "4px auto 0 auto",
           }}
         />
       </div>
@@ -90,13 +92,13 @@ const useSlideFadeIn = (length) => {
     refs.current.forEach((ref, i) => {
       if (ref) {
         ref.style.opacity = "0";
-        ref.style.transform = "translateY(18.9px) scale(0.97)";
+        ref.style.transform = "translateY(20px) scale(0.97)";
         setTimeout(() => {
           ref.style.transition =
             "opacity 0.5s cubic-bezier(.35,1,.4,1), transform 0.48s cubic-bezier(.35,1,.4,1)";
           ref.style.opacity = "1";
           ref.style.transform = "translateY(0) scale(1)";
-        }, 50 + 36.75 * i);
+        }, 50 + 30 * i);
       }
     });
   }, [length]);
@@ -174,18 +176,18 @@ function Home({
   const isMobile = vw < 700;
   const SKELETON_COUNT = isMobile ? 6 : 8;
 
-  // 카드 크기 조정
-  const CARD_MAX_WIDTH = isMobile ? 168 : 194; // 5% 증가
-  const CARD_MIN_HEIGHT = isMobile ? 178 : 220; // 5% 증가
-  const CARD_RADIUS = isMobile ? 14 : 17; // 5% 증가
+  // 모바일/PC 카드 크기
+  const CARD_MAX_WIDTH = isMobile ? 152 : 194;  // 모바일에서 2개씩 맞추기
+  const CARD_MIN_HEIGHT = isMobile ? 175 : 220;
+  const CARD_RADIUS = isMobile ? 13 : 17;
 
   return (
     <div
       style={{
         width: "100%",
-        maxWidth: 1207, // 1150 * 1.05
+        maxWidth: 1207,
         margin: "0 auto",
-        padding: isMobile ? "4.2px 2.1vw 42px 2.1vw" : "14.7px 21px 44px 21px",
+        padding: isMobile ? "4px 2vw 42px 2vw" : "14px 21px 44px 21px",
         minHeight: "70vh",
         background: "none",
         overflowX: "hidden",
@@ -195,10 +197,10 @@ function Home({
       {/* --- 정렬/검색 --- */}
       <div
         style={{
-          margin: "0 0 11.5px 0",
+          margin: "0 0 12px 0",
           display: "flex",
           alignItems: "center",
-          gap: 9.5,
+          gap: 10,
           flexWrap: "wrap",
         }}
       >
@@ -212,8 +214,8 @@ function Home({
             fontWeight: 700,
             border: "none",
             borderRadius: 999,
-            padding: isMobile ? "5.25px 14.7px" : "7.35px 19.95px",
-            fontSize: isMobile ? 13.65 : 14.7,
+            padding: isMobile ? "5px 14px" : "8px 20px",
+            fontSize: isMobile ? 13 : 15,
             boxShadow: sort === "popular" ? "0 2px 6px #1976ed16" : "none",
             cursor: "pointer",
             transition: "all 0.14s",
@@ -232,8 +234,8 @@ function Home({
             fontWeight: 700,
             border: "none",
             borderRadius: 999,
-            padding: isMobile ? "5.25px 14.7px" : "7.35px 19.95px",
-            fontSize: isMobile ? 13.65 : 14.7,
+            padding: isMobile ? "5px 14px" : "8px 20px",
+            fontSize: isMobile ? 13 : 15,
             boxShadow: sort === "recent" ? "0 2px 6px #1976ed16" : "none",
             cursor: "pointer",
             transition: "all 0.14s",
@@ -249,21 +251,21 @@ function Home({
             display: "flex",
             alignItems: "center",
             position: "relative",
-            width: isMobile ? 126 : 231, // 5% 증가
-            minHeight: isMobile ? 31.5 : 36.75,
+            width: isMobile ? 124 : 231,
+            minHeight: isMobile ? 32 : 37,
             maxWidth: "100%",
             background: COLORS.lightGray,
             borderRadius: 999,
-            border: "1.26px solid #b4c4e4",
+            border: "1.2px solid #b4c4e4",
             boxShadow: "0 1px 4px #1976ed0c",
           }}
         >
           <svg
-            width="15.75"
-            height="15.75"
+            width="15"
+            height="15"
             style={{
               position: "absolute",
-              left: 11.55,
+              left: 11,
               top: "50%",
               transform: "translateY(-50%)",
               opacity: 0.4,
@@ -271,18 +273,18 @@ function Home({
             }}
           >
             <circle
-              cx="7.35"
-              cy="7.35"
-              r="6.3"
+              cx="7"
+              cy="7"
+              r="6"
               stroke={COLORS.main}
               strokeWidth="2"
               fill="none"
             />
             <line
-              x1="11.55"
-              y1="11.55"
-              x2="15.75"
-              y2="15.75"
+              x1="11"
+              y1="11"
+              x2="15"
+              y2="15"
               stroke={COLORS.main}
               strokeWidth="2"
             />
@@ -296,8 +298,8 @@ function Home({
               border: "none",
               outline: "none",
               background: "transparent",
-              padding: isMobile ? "6.3px 6.3px 6.3px 31.5px" : "8.4px 12.6px 8.4px 31.5px",
-              fontSize: isMobile ? 12.6 : 13.65,
+              padding: isMobile ? "7px 7px 7px 30px" : "10px 14px 10px 30px",
+              fontSize: isMobile ? 12 : 14,
               borderRadius: 999,
             }}
           />
@@ -309,10 +311,9 @@ function Home({
         style={{
           display: "grid",
           gridTemplateColumns: isMobile
-            ? "repeat(auto-fit, minmax(141px, 1fr))"
-            : "repeat(5, minmax(0, 1fr))",
-          // 여기 가로 간격을 PC에서만 32px로 넓힘!
-          gap: isMobile ? "12px" : "32px 18px",  // "가로 세로" 순서
+            ? "repeat(2, 1fr)" // 모바일에서는 2개씩
+            : "repeat(5, minmax(0, 1fr))", // PC 5개
+          gap: isMobile ? 13 : 18, // 모바일 간격 더 넉넉히
           width: "100%",
           maxWidth: "100%",
           margin: "0 auto",
@@ -358,8 +359,9 @@ function Home({
                   transition: "all 0.14s cubic-bezier(.35,1,.4,1)",
                   display: "flex",
                   flexDirection: "column",
-                  fontSize: isMobile ? 12.6 : 13.65,
+                  fontSize: isMobile ? 12 : 13.5,
                   padding: isMobile ? "0" : "0",
+                  background: "#fff",
                 }}
                 onClick={(e) => {
                   if (e.target.tagName !== "BUTTON") onSelect && onSelect(cup);
@@ -368,7 +370,7 @@ function Home({
                   e.currentTarget.style.boxShadow =
                     "0 7px 28px #1976ed26, 0 3px 10px #45b7fa18";
                   e.currentTarget.style.transform =
-                    "translateY(-6.3px) scale(1.032)";
+                    "translateY(-6px) scale(1.032)";
                 }}
                 onMouseOut={(e) => {
                   e.currentTarget.style.boxShadow =
@@ -406,14 +408,14 @@ function Home({
                     <div
                       style={{
                         position: "absolute",
-                        top: 4.2,
-                        left: 5.25,
+                        top: 4,
+                        left: 6,
                         background: "#ffd700ee",
                         color: "#333",
                         fontWeight: 800,
-                        fontSize: isMobile ? 10.5 : 12.6,
-                        padding: "1.05px 5.25px",
-                        borderRadius: 10.5,
+                        fontSize: isMobile ? 10 : 12,
+                        padding: "1px 6px",
+                        borderRadius: 10,
                         boxShadow: "0 1px 3px #0001",
                       }}
                     >
@@ -424,8 +426,8 @@ function Home({
                 <div
                   style={{
                     padding: isMobile
-                      ? "8.4px 6.3px 6.3px 6.3px"
-                      : "13.65px 13.65px 8.4px 13.65px",
+                      ? "9px 7px 7px 7px"
+                      : "13px 14px 9px 14px",
                     flex: 1,
                     display: "flex",
                     flexDirection: "column",
@@ -435,8 +437,8 @@ function Home({
                   <div
                     style={{
                       fontWeight: 800,
-                      fontSize: isMobile ? 14.7 : 15.75,
-                      marginBottom: 4.2,
+                      fontSize: isMobile ? 14 : 16,
+                      marginBottom: 4,
                       color: COLORS.darkText,
                       textOverflow: "ellipsis",
                       overflow: "hidden",
@@ -444,7 +446,7 @@ function Home({
                       wordBreak: "break-all",
                       whiteSpace: "normal",
                       lineHeight: 1.18,
-                      minHeight: isMobile ? 17.85 : 24.15,
+                      minHeight: isMobile ? 18 : 25,
                     }}
                   >
                     {cup.title}
@@ -452,9 +454,9 @@ function Home({
                   <div
                     style={{
                       color: "#5a6988",
-                      fontSize: isMobile ? 11.55 : 12.6,
-                      marginBottom: 3.15,
-                      minHeight: 15.75,
+                      fontSize: isMobile ? 11 : 13,
+                      marginBottom: 3,
+                      minHeight: 15,
                       overflow: "hidden",
                       textOverflow: "ellipsis",
                       whiteSpace: "nowrap",
@@ -465,8 +467,8 @@ function Home({
                   <div
                     style={{
                       color: "#99b",
-                      fontSize: isMobile ? 10.5 : 11.55,
-                      marginBottom: 2.1,
+                      fontSize: isMobile ? 10 : 11,
+                      marginBottom: 2,
                     }}
                   >
                     후보 수: {cup.data?.length || 0}
@@ -474,8 +476,8 @@ function Home({
                   <div
                     style={{
                       display: "flex",
-                      gap: 7.35,
-                      margin: isMobile ? "3.15px 0 2.1px 0" : "7.35px 0 4.2px 0",
+                      gap: 7,
+                      margin: isMobile ? "3px 0 2px 0" : "7px 0 4px 0",
                       justifyContent: "center",
                     }}
                   >
@@ -486,17 +488,17 @@ function Home({
                       }}
                       style={{
                         ...subButtonStyle(isMobile),
-                        fontSize: isMobile ? 12.6 : 13.65,
-                        padding: isMobile ? "6.3px 10.5px" : "7.35px 13.65px",
+                        fontSize: isMobile ? 12 : 14,
+                        padding: isMobile ? "6px 10px" : "7px 14px",
                         minWidth: 0,
-                        borderRadius: 8.4,
+                        borderRadius: 8,
                       }}
                     >
                       통계/댓글
                     </button>
                   </div>
                   <div
-                    style={{ display: "flex", gap: 5.25, justifyContent: "center" }}
+                    style={{ display: "flex", gap: 5, justifyContent: "center" }}
                   >
                     {isMine && (
                       <>
