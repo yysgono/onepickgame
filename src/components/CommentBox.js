@@ -81,6 +81,19 @@ function getByteLength(str) {
   return len;
 }
 
+function useIsMobile() {
+  const [isMobile, setIsMobile] = useState(
+    typeof window !== "undefined" ? window.innerWidth < 700 : false
+  );
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const onResize = () => setIsMobile(window.innerWidth < 700);
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
+  return isMobile;
+}
+
 export default function CommentBox({ cupId }) {
   const { t, i18n } = useTranslation();
   const [user, setUser] = useState(null);
@@ -89,6 +102,7 @@ export default function CommentBox({ cupId }) {
   const [content, setContent] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     async function fetchUser() {
@@ -237,12 +251,14 @@ export default function CommentBox({ cupId }) {
           {t("comment.loginRequired") || "댓글을 작성하려면 로그인해야 합니다."}
         </div>
       )}
+      {/* ===== 입력창(PC: 가로, 모바일: 세로) ===== */}
       <form
         onSubmit={handleSubmit}
         style={{
           display: "flex",
-          alignItems: "center",
-          gap: 12,
+          flexDirection: isMobile ? "column" : "row",
+          alignItems: isMobile ? "stretch" : "center",
+          gap: isMobile ? 8 : 12,
           marginBottom: 18,
           flexWrap: "wrap"
         }}
@@ -258,7 +274,7 @@ export default function CommentBox({ cupId }) {
             border: `1.1px solid ${COLORS.border}`,
             minWidth: 72,
             textAlign: "center",
-            width: "fit-content"
+            width: isMobile ? "100%" : "fit-content"
           }}
           title={nickname}
         >
@@ -286,7 +302,8 @@ export default function CommentBox({ cupId }) {
             fontWeight: 600,
             color: COLORS.text,
             lineHeight: 1.5,
-            boxSizing: "border-box"
+            boxSizing: "border-box",
+            width: isMobile ? "100%" : undefined,
           }}
           maxLength={80}
         />
@@ -305,12 +322,13 @@ export default function CommentBox({ cupId }) {
             border: "none",
             cursor: (!user || isBanned) ? "not-allowed" : "pointer",
             marginLeft: 0,
-            marginTop: 0,
+            marginTop: isMobile ? 0 : 0,
             height: 44,
             display: "flex",
             alignItems: "center",
             boxShadow: (!user || isBanned) ? "none" : "0 1px 8px #1976ed23",
             letterSpacing: -0.5,
+            width: isMobile ? "100%" : undefined,
           }}
         >
           {loading ? t("comment.loading") || "등록중..." : t("comment.submit")}
