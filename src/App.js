@@ -33,7 +33,7 @@ import { supabase } from "./utils/supabaseClient";
 import AdBanner from "./components/AdBanner";
 import PrivacyPolicy from "./components/PrivacyPolicy";
 import TermsOfService from "./components/TermsOfService";
-import Footer from "./components/Footer"; // << 추가
+import Footer from "./components/Footer";
 
 function useAdBannerHeight() {
   const [height, setHeight] = useState(0);
@@ -329,6 +329,9 @@ function App() {
             <Route path="/" element={<HomeWrapper />} />
             <Route path="/select-round/:id" element={<SelectRoundPageWrapper />} />
             <Route path="/match/:id/:round" element={<MatchPage worldcupList={worldcupList} />} />
+            {/* ★★★ 핵심 추가 부분 ★★★ */}
+            <Route path="/result/:id" element={<ResultPage worldcupList={worldcupList} />} />
+            {/* 기존 라우트 */}
             <Route path="/result/:id/:round" element={<ResultPage worldcupList={worldcupList} />} />
             <Route path="/stats/:id" element={<StatsPageWrapper />} />
             <Route path="/worldcup-maker" element={<WorldcupMakerWrapper />} />

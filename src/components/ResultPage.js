@@ -123,7 +123,7 @@ export default function ResultPage({ worldcupList }) {
   const navigate = useNavigate();
   const { t } = useTranslation();
 
-  // ====== DB fetch용 추가 상태 ======
+  // ====== DB fetch용 상태 ======
   const [cup, setCup] = useState(null);
   const [winner, setWinner] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -136,9 +136,9 @@ export default function ResultPage({ worldcupList }) {
     (worldcupList && worldcupList.find((c) => String(c.id) === id));
   const locationWinner = location.state?.winner;
 
-  // URL 파라미터에서 round도 있으면 사용
-  const url = new URL(window.location.href);
-  const round = url.pathname.split("/")[3] || null;
+  // URL 파라미터에서 round도 있으면 사용 (아래는 필요 없으면 삭제)
+  // const url = new URL(window.location.href);
+  // const round = url.pathname.split("/")[3] || null;
 
   // 데이터 불러오기 (location.state 없으면 DB에서)
   useEffect(() => {
@@ -151,7 +151,6 @@ export default function ResultPage({ worldcupList }) {
 
       // 월드컵 데이터 없으면 DB에서
       if (!thisCup) {
-        // 월드컵 본체
         const { data: cupData } = await supabase
           .from("worldcups")
           .select("*")
@@ -162,11 +161,8 @@ export default function ResultPage({ worldcupList }) {
 
       // 우승자도 없으면 월드컵에서 계산 (winner가 있으면 바로, 없으면 서버에서 우승자 fetch)
       if (!thisWinner && thisCup) {
-        // 우승자 추정 로직: 가장 많이 이긴 후보? (아니면 stats 따로 있으면 그걸 fetch)
-        // 여기서는 worldcup 테이블에 winner_id 저장했다고 가정
         let winnerObj = null;
         if (thisCup.winner_id) {
-          // winner_id가 있으면 후보 중에서 찾기
           if (thisCup.data) {
             winnerObj =
               thisCup.data.find((item) => String(item.id) === String(thisCup.winner_id)) ||
@@ -181,7 +177,6 @@ export default function ResultPage({ worldcupList }) {
             winnerObj = candidate;
           }
         }
-        // winner_id가 없거나 못 찾으면 첫번째 후보로 fallback
         if (!winnerObj && thisCup?.data?.length > 0) winnerObj = thisCup.data[0];
         thisWinner = winnerObj;
       }
@@ -199,8 +194,8 @@ export default function ResultPage({ worldcupList }) {
     // eslint-disable-next-line
   }, [id, locationCup, locationWinner]);
 
-  // 로딩/에러 처리
-  if (loading || !cup || !winner)
+  // 1. 로딩 중
+  if (loading)
     return (
       <div
         style={{
@@ -251,10 +246,27 @@ export default function ResultPage({ worldcupList }) {
             margin: "0 auto 24px",
           }}
         />
+        <div style={{ fontSize: 17, marginTop: 32, color: "#aaa" }}>
+          로딩 중입니다...
+        </div>
       </div>
     );
 
-  // ==== 실제 결과화면 ====
+  // 2. 데이터 없는 경우
+  if (!cup || !winner)
+    return (
+      <div style={{
+        textAlign: "center", padding: 60, color: "#d33", minHeight: "60vh"
+      }}>
+        월드컵 정보 또는 우승자 데이터를 불러올 수 없습니다.
+        <br />
+        <button onClick={() => window.location.reload()}>다시 시도</button>
+        <br /><br />
+        <a href="/" style={{ color: "#1976ed", textDecoration: "underline" }}>홈으로</a>
+      </div>
+    );
+
+  // ==== 실제 결과/통계 화면 ====
   return (
     <div
       style={{

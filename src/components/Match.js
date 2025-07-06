@@ -7,8 +7,9 @@ import {
 } from "../utils";
 import MediaRenderer from "./MediaRenderer";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom"; // navigate 추가
 
-// AdaptiveTitle 컴포넌트(파일 분리 X, 내부에서 바로 선언)
+// AdaptiveTitle (파일 분리 안 하면 이 안에 그냥 두세요)
 function AdaptiveTitle({ title, isMobile }) {
   const ref = useRef();
   const [fontSize, setFontSize] = useState(isMobile ? 54 : 100);
@@ -18,7 +19,6 @@ function AdaptiveTitle({ title, isMobile }) {
     const boxHeight = isMobile ? 65 : 130; // 2줄 기준 (px)
     let size = isMobile ? 54 : 100;
     ref.current.style.fontSize = size + "px";
-    // 폰트 사이즈를 줄여가며 2줄에 맞추기
     while (ref.current.scrollHeight > boxHeight && size > (isMobile ? 22 : 38)) {
       size -= 2;
       ref.current.style.fontSize = size + "px";
@@ -151,6 +151,9 @@ function Match({ cup, onResult, selectedCount }) {
   const [autoPlaying] = useState(false);
   const [loading, setLoading] = useState(true);
 
+  const [saving, setSaving] = useState(false); // 저장 중 상태 추가
+  const navigate = useNavigate(); // 추가
+
   useEffect(() => {
     async function init() {
       setLoading(true);
@@ -180,29 +183,8 @@ function Match({ cup, onResult, selectedCount }) {
       const nextRoundCandidates =
         roundNum === 1 ? [...pendingWinners, ...matchWinners] : matchWinners;
       if (nextRoundCandidates.length === 1) {
-        onResult(nextRoundCandidates[0], matchHistory);
-
-        insertWinnerLog(cup.id, nextRoundCandidates[0]?.id).then(async (canSave) => {
-          if (canSave) {
-            const statsArr = calcStatsFromMatchHistory(
-              cup.data,
-              nextRoundCandidates[0],
-              matchHistory
-            );
-            for (const stat of statsArr) {
-              await upsertMyWinnerStat({
-                cup_id: cup.id,
-                candidate_id: stat.candidate_id,
-                win_count: stat.win_count,
-                match_wins: stat.match_wins,
-                match_count: stat.match_count,
-                total_games: stat.total_games,
-                name: stat.name,
-                image: stat.image,
-              });
-            }
-          }
-        });
+        // 최종 결과
+        handleFinish(nextRoundCandidates[0], matchHistory);
         return;
       }
       const nextBracket = makeNextRound(nextRoundCandidates);
@@ -211,7 +193,34 @@ function Match({ cup, onResult, selectedCount }) {
       setIdx(0);
       setRoundNum(r => r + 1);
     }
-  }, [idx, bracket, matchHistory, pendingWinners, cup, onResult, roundNum]);
+    // eslint-disable-next-line
+  }, [idx, bracket, matchHistory, pendingWinners, cup, roundNum]);
+
+  // 저장 후 이동 함수!
+  async function handleFinish(winner, matchHistory) {
+    setSaving(true); // 저장중 스피너
+    await insertWinnerLog(cup.id, winner.id);
+    const statsArr = calcStatsFromMatchHistory(
+      cup.data,
+      winner,
+      matchHistory
+    );
+    for (const stat of statsArr) {
+      await upsertMyWinnerStat({
+        cup_id: cup.id,
+        candidate_id: stat.candidate_id,
+        win_count: stat.win_count,
+        match_wins: stat.match_wins,
+        match_count: stat.match_count,
+        total_games: stat.total_games,
+        name: stat.name,
+        image: stat.image,
+      });
+    }
+    setSaving(false);
+    // 저장이 모두 끝난 뒤 ResultPage로 이동
+    navigate(`/result/${cup.id}`, { state: { cup, winner } });
+  }
 
   const currentMatch = bracket[idx] || [];
   const [c1, c2] = currentMatch;
@@ -350,6 +359,30 @@ function Match({ cup, onResult, selectedCount }) {
       </div>
     </div>
   );
+
+  // 저장 중일 때
+  if (saving) return (
+    <div style={{
+      minHeight: "60vh",
+      display: "flex",
+      flexDirection: "column",
+      justifyContent: "center",
+      alignItems: "center",
+      textAlign: "center"
+    }}>
+      <Spinner size={70} />
+      <div style={{
+        marginTop: 18,
+        fontSize: 22,
+        color: "#1976ed",
+        fontWeight: 900,
+        letterSpacing: "-1px"
+      }}>
+        두구두구두구..
+      </div>
+    </div>
+  );
+
   if (!bracket || bracket.length === 0) return <div>{t("notEnoughCandidates")}</div>;
 
   return (
@@ -365,9 +398,7 @@ function Match({ cup, onResult, selectedCount }) {
           "'Noto Sans', 'Apple SD Gothic Neo', 'Malgun Gothic', Arial, sans-serif",
       }}
     >
-      {/* AdaptiveTitle 적용 */}
       <AdaptiveTitle title={cup.title} isMobile={isMobile} />
-
       <div
         style={{
           fontSize: STAGE_SIZE,

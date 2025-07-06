@@ -223,7 +223,7 @@ function WorldcupMaker({ onCreate, onCancel }) {
           <div style={{ fontWeight: 700, marginBottom: 7 }}>
             {t("candidateList") || "후보 목록"}{" "}
             <span style={{ color: "#888", fontWeight: 400, fontSize: mobile ? 13 : 15 }}>
-              ({candidates.length} / 32)
+              ({candidates.length} / 1024)
             </span>
           </div>
           {candidates.map((c, i) => (
