@@ -9,7 +9,6 @@ function MatchPage({ worldcupList }) {
   const cup = worldcupList.find(c => String(c.id) === id);
   const roundNum = Number(round) || (cup ? cup.data.length : 4);
 
-  // 월드컵 정보 없으면 아무것도 렌더링하지 않음
   if (!cup) return null;
 
   return (

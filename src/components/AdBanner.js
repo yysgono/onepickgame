@@ -1,6 +1,4 @@
-// src/components/AdBanner.js
-
-import React from 'react';
+import React from "react";
 
 const AdBanner = ({
   position,
@@ -8,46 +6,44 @@ const AdBanner = ({
   width,
   height,
   style = {},
+  dynamic = false,
+  visible = true,
 }) => {
-  // 사이드 배너는 항상 고정값
-  if (position === 'left' || position === 'right') {
-    width = 300;
-    height = 600;
-  }
+  // width/height 강제 고정 (dynamic 옵션 무시, 요청시만 적용)
+  let w = width, h = height;
+
+  if (!visible) return null;
 
   let posStyle = {};
   let isFixed = true;
 
-  if (position === 'left') {
-    posStyle = { left: 24, top: '50%', transform: 'translateY(-50%)' };
-  } else if (position === 'right') {
-    posStyle = { right: 24, top: '50%', transform: 'translateY(-50%)' };
-  } else if (position === 'top') {
+  if (position === "left") {
+    posStyle = { left: 24, top: "50%", transform: "translateY(-50%)" };
+  } else if (position === "right") {
+    posStyle = { right: 24, top: "50%", transform: "translateY(-50%)" };
+  } else if (position === "top") {
     isFixed = false;
-  } else if (position === 'bottom') {
-    posStyle = { left: '50%', bottom: 0, transform: 'translateX(-50%)' };
+  } else if (position === "bottom") {
+    posStyle = { left: "50%", bottom: 0, transform: "translateX(-50%)" };
   }
-
-  // 사이드 배너만 픽셀 고정
-  const fixedSize = (position === 'left' || position === 'right')
-    ? {
-        width: 300,
-        height: 600,
-        minWidth: 300,
-        minHeight: 600,
-        maxWidth: 300,
-        maxHeight: 600,
-      }
-    : {};
 
   return (
     <div
       className={`ad-banner ${position}`}
       style={{
-        position: isFixed ? 'fixed' : 'static',
+        position: isFixed ? "fixed" : "static",
         zIndex: 1000,
-        pointerEvents: (position === 'left' || position === 'right') ? 'none' : 'auto',
-        ...fixedSize,
+        width: w,
+        height: h,
+        minWidth: w,
+        minHeight: h,
+        maxWidth: w,
+        maxHeight: h,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        pointerEvents:
+          position === "left" || position === "right" ? "none" : "auto",
         ...posStyle,
         ...style,
       }}
@@ -56,12 +52,12 @@ const AdBanner = ({
         src={img}
         alt="ad"
         style={{
-          width: (position === 'left' || position === 'right') ? 300 : width || "100%",
-          height: (position === 'left' || position === 'right') ? 600 : height || "auto",
-          objectFit: 'cover',
+          width: w,
+          height: h,
+          objectFit: "cover",
           borderRadius: 16,
-          pointerEvents: 'auto',
-          display: 'block',
+          pointerEvents: "auto",
+          display: "block",
         }}
       />
     </div>

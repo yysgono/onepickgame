@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   insertWinnerLog,
   deleteOldWinnerLogAndStats,
@@ -8,7 +8,51 @@ import {
 import MediaRenderer from "./MediaRenderer";
 import { useTranslation } from "react-i18next";
 
-// ---- Spinner 컴포넌트 ----
+// AdaptiveTitle 컴포넌트(파일 분리 X, 내부에서 바로 선언)
+function AdaptiveTitle({ title, isMobile }) {
+  const ref = useRef();
+  const [fontSize, setFontSize] = useState(isMobile ? 54 : 100);
+
+  useEffect(() => {
+    if (!ref.current) return;
+    const boxHeight = isMobile ? 65 : 130; // 2줄 기준 (px)
+    let size = isMobile ? 54 : 100;
+    ref.current.style.fontSize = size + "px";
+    // 폰트 사이즈를 줄여가며 2줄에 맞추기
+    while (ref.current.scrollHeight > boxHeight && size > (isMobile ? 22 : 38)) {
+      size -= 2;
+      ref.current.style.fontSize = size + "px";
+    }
+    setFontSize(size);
+  }, [title, isMobile]);
+
+  return (
+    <div
+      ref={ref}
+      style={{
+        height: isMobile ? 65 : 130,
+        fontWeight: 900,
+        color: "#1976ed",
+        letterSpacing: "-1.5px",
+        lineHeight: 1.1,
+        wordBreak: "break-all",
+        textAlign: "center",
+        display: "-webkit-box",
+        WebkitLineClamp: 2,
+        WebkitBoxOrient: "vertical",
+        overflow: "hidden",
+        fontSize: fontSize,
+        maxWidth: isMobile ? "92vw" : 900,
+        margin: isMobile ? "5px auto 0" : "13px auto 0",
+        userSelect: "text",
+      }}
+      title={title}
+    >
+      {title}
+    </div>
+  );
+}
+
 function Spinner({ size = 60 }) {
   return (
     <div style={{
@@ -82,7 +126,6 @@ function makeFirstRound(players) {
   return { matches, byes };
 }
 function makeNextRound(winners) {
-  // 두 번째 라운드부터는 셔플 안함 (첫 라운드만 섞고 이후 고정 진행)
   const pairs = [];
   for (let i = 0; i < winners.length; i += 2) {
     pairs.push([winners[i], winners[i + 1] || null]);
@@ -108,7 +151,6 @@ function Match({ cup, onResult, selectedCount }) {
   const [autoPlaying] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  // 초기화 (시작/다시하기/홈에서 시작 시)
   useEffect(() => {
     async function init() {
       setLoading(true);
@@ -117,7 +159,6 @@ function Match({ cup, onResult, selectedCount }) {
         players = shuffle([...players]).slice(0, selectedCount);
       }
       await deleteOldWinnerLogAndStats(cup.id);
-
       const { matches, byes } = makeFirstRound(players);
       setBracket(matches);
       setPendingWinners(byes);
@@ -130,7 +171,6 @@ function Match({ cup, onResult, selectedCount }) {
     // eslint-disable-next-line
   }, [cup, selectedCount]);
 
-  // 라운드 끝나면 다음 라운드/최종 결과 저장
   useEffect(() => {
     if (idx === bracket.length && bracket.length > 0) {
       const matchWinners = matchHistory
@@ -140,10 +180,8 @@ function Match({ cup, onResult, selectedCount }) {
       const nextRoundCandidates =
         roundNum === 1 ? [...pendingWinners, ...matchWinners] : matchWinners;
       if (nextRoundCandidates.length === 1) {
-        // 🟢 결과페이지 먼저 이동!
         onResult(nextRoundCandidates[0], matchHistory);
 
-        // 🟡 DB저장은 느긋하게~ (사용자는 기다릴 필요 없음)
         insertWinnerLog(cup.id, nextRoundCandidates[0]?.id).then(async (canSave) => {
           if (canSave) {
             const statsArr = calcStatsFromMatchHistory(
@@ -175,7 +213,6 @@ function Match({ cup, onResult, selectedCount }) {
     }
   }, [idx, bracket, matchHistory, pendingWinners, cup, onResult, roundNum]);
 
-  // 부전승 처리
   const currentMatch = bracket[idx] || [];
   const [c1, c2] = currentMatch;
   useEffect(() => {
@@ -183,7 +220,7 @@ function Match({ cup, onResult, selectedCount }) {
       if (c1 || c2) {
         setTimeout(() => {
           handlePick(c1 ? 0 : 1);
-        }, 150); // 300→150ms로 조정
+        }, 150);
       }
     }
     // eslint-disable-next-line
@@ -201,7 +238,6 @@ function Match({ cup, onResult, selectedCount }) {
 
   const vw = typeof window !== "undefined" ? Math.min(window.innerWidth, 900) : 900;
   const isMobile = vw < 700;
-  const TITLE_SIZE = isMobile ? 66 : 100;
   const STAGE_SIZE = isMobile ? 15 : 20;
   const NAME_FONT_SIZE = isMobile ? 22 : 46;
   const NAME_HEIGHT = isMobile ? `${1.18 * 22 * 4}px` : `${1.18 * 46 * 4}px`;
@@ -300,7 +336,6 @@ function Match({ cup, onResult, selectedCount }) {
     );
   }
 
-  // 👉 여기에서 Spinner와 문구 적용!
   if (loading) return (
     <div style={{ display: "flex", flexDirection: "column", alignItems: "center", marginTop: 24 }}>
       <Spinner size={70} />
@@ -330,18 +365,9 @@ function Match({ cup, onResult, selectedCount }) {
           "'Noto Sans', 'Apple SD Gothic Neo', 'Malgun Gothic', Arial, sans-serif",
       }}
     >
-      <div
-        style={{
-          fontSize: TITLE_SIZE,
-          fontWeight: 900,
-          color: "#1976ed",
-          margin: isMobile ? "5px 0 0 0" : "13px 0 0 0",
-          letterSpacing: "-1.5px",
-          lineHeight: 1.1,
-        }}
-      >
-        {cup.title}
-      </div>
+      {/* AdaptiveTitle 적용 */}
+      <AdaptiveTitle title={cup.title} isMobile={isMobile} />
+
       <div
         style={{
           fontSize: STAGE_SIZE,
