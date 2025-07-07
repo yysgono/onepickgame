@@ -10,8 +10,30 @@ import {
 } from "../styles/common";
 import MediaRenderer from "./MediaRenderer";
 import AdBanner from "./AdBanner";
+import { useNavigate } from "react-router-dom";
+import FixedCupSection from "./FixedCupSection";
+import { supabase } from "../utils/supabaseClient";
 
-// Skeleton Card
+// 카드 애니메이션 hook
+const useSlideFadeIn = (length) => {
+  const refs = useRef([]);
+  useEffect(() => {
+    refs.current.forEach((ref, i) => {
+      if (ref) {
+        ref.style.opacity = "0";
+        ref.style.transform = "translateY(20px) scale(0.97)";
+        setTimeout(() => {
+          ref.style.transition = "opacity 0.5s cubic-bezier(.35,1,.4,1), transform 0.48s cubic-bezier(.35,1,.4,1)";
+          ref.style.opacity = "1";
+          ref.style.transform = "translateY(0) scale(1)";
+        }, 60 + 18 * i);
+      }
+    });
+  }, [length]);
+  return refs;
+};
+
+// SkeletonCard 컴포넌트
 function SkeletonCard({ cardMinWidth, cardMaxWidth, cardMinHeight, cardRadius }) {
   return (
     <div
@@ -49,67 +71,47 @@ function SkeletonCard({ cardMinWidth, cardMaxWidth, cardMinHeight, cardRadius })
   );
 }
 
-const useSlideFadeIn = (length) => {
-  const refs = useRef([]);
-  useEffect(() => {
-    refs.current.forEach((ref, i) => {
-      if (ref) {
-        ref.style.opacity = "0";
-        ref.style.transform = "translateY(20px) scale(0.97)";
-        setTimeout(() => {
-          ref.style.transition = "opacity 0.5s cubic-bezier(.35,1,.4,1), transform 0.48s cubic-bezier(.35,1,.4,1)";
-          ref.style.opacity = "1";
-          ref.style.transform = "translateY(0) scale(1)";
-        }, 60 + 18 * i);
-      }
-    });
-  }, [length]);
-  return refs;
-};
-
+// Home 메인
 function Home({
   worldcupList,
+  fetchWorldcups,
   onSelect,
   onMakeWorldcup,
   onDelete,
   user,
   nickname,
   isAdmin,
+  fixedWorldcups,
+  showFixedWorldcups = true,
 }) {
   const { t } = useTranslation();
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState("popular");
   const [loading, setLoading] = useState(true);
   const [cupsWithWinCount, setCupsWithWinCount] = useState(null);
-
-  // 브라우저 width에 따라 자동계산 (반응형/배너 제외)
   const [vw, setVw] = useState(window.innerWidth);
+
   useEffect(() => {
     const onResize = () => setVw(window.innerWidth);
     window.addEventListener("resize", onResize);
     return () => window.removeEventListener("resize", onResize);
   }, []);
   const isMobile = vw < 700;
-
-  // ==== 사이드 배너/카드 그리드 width 세팅 ====
-  // 배너 실제 크기와 반드시 일치시켜야함
-  const SIDE_BANNER_WIDTH = isMobile ? 0 : 280; // ← 280으로 변경
+  const SIDE_BANNER_WIDTH = isMobile ? 0 : 280;
   const GRID_MARGIN = isMobile ? 0 : 24;
-  const MAX_GRID_WIDTH = 1200; // 카드 그리드 최대폭(px)
-  // "브라우저 전체폭 - 배너2개 - margin" vs 최대폭 중 작은 것
+  const MAX_GRID_WIDTH = 1200;
   const gridMaxWidth = isMobile
     ? "100vw"
     : `${Math.min(vw - SIDE_BANNER_WIDTH * 2 - GRID_MARGIN * 2, MAX_GRID_WIDTH)}px`;
 
-  // 카드 세팅
   const CARD_MIN_WIDTH = isMobile ? 110 : 160;
   const CARD_MAX_WIDTH = isMobile ? 170 : 200;
   const CARD_RADIUS = isMobile ? 12 : 14;
-  const CARD_GAP = 0; // 딱 붙게
+  const CARD_GAP = 0;
   const CARD_MIN_HEIGHT = isMobile ? 86 : 126;
   const SKELETON_COUNT = isMobile ? 6 : 10;
 
-  // 데이터 로딩
+  // 승수 fetch
   useEffect(() => {
     let mounted = true;
     async function fillWinCounts() {
@@ -171,7 +173,12 @@ function Home({
       overflowX: "hidden",
       position: "relative",
     }}>
-      {/* ---- 배너는 fixed, 겹침 완전 방지 ---- */}
+      {/* === ⭐️ 추천 월드컵 (DB 연동) === */}
+      {showFixedWorldcups !== false && (
+        <FixedCupSection worldcupList={fixedWorldcups || []} />
+      )}
+
+      {/* ---- 배너는 fixed, 겹침 방지 ---- */}
       {!isMobile && (
         <>
           <AdBanner
@@ -187,7 +194,7 @@ function Home({
               zIndex: 1000,
               width: SIDE_BANNER_WIDTH,
               height: 600,
-              pointerEvents: "none", // 반드시 필요!
+              pointerEvents: "none",
             }}
           />
           <AdBanner
@@ -203,13 +210,13 @@ function Home({
               zIndex: 1000,
               width: SIDE_BANNER_WIDTH,
               height: 600,
-              pointerEvents: "none", // 반드시 필요!
+              pointerEvents: "none",
             }}
           />
         </>
       )}
 
-      {/* ---- 카드 그리드 영역 (항상 중앙, 배너 안 겹침) ---- */}
+      {/* ---- 카드 그리드 영역 ---- */}
       <div
         style={{
           width: "100%",
@@ -277,13 +284,14 @@ function Home({
               display: "flex",
               alignItems: "center",
               position: "relative",
-              width: isMobile ? 110 : 200,
+              width: isMobile ? "100%" : 430,
               minHeight: isMobile ? 28 : 36,
               maxWidth: "100%",
               background: COLORS.lightGray,
               borderRadius: 999,
               border: "1.2px solid #b4c4e4",
               boxShadow: "0 1px 4px #1976ed0c",
+              marginRight: 0,
             }}
           >
             <svg
@@ -378,7 +386,6 @@ function Home({
                   key={cup.id}
                   ref={(el) => (cardRefs.current[idx] = el)}
                   onClick={(e) => {
-                    // ★ 반드시 필요: 버튼이 아닌 부분만 클릭시 onSelect 호출
                     if (e.target.tagName !== "BUTTON") onSelect && onSelect(cup);
                   }}
                   style={{
@@ -398,10 +405,19 @@ function Home({
                     margin: 0,
                     boxSizing: "border-box",
                     position: "relative",
-                    cursor: "pointer", // UX 개선
+                    cursor: "pointer",
+                    transition: "transform .17s cubic-bezier(.2,.8,.3,1), box-shadow .17s",
+                  }}
+                  onMouseEnter={e => {
+                    e.currentTarget.style.transform = "translateY(-9px) scale(1.04)";
+                    e.currentTarget.style.boxShadow = "0 10px 22px #1976ed25";
+                  }}
+                  onMouseLeave={e => {
+                    e.currentTarget.style.transform = "none";
+                    e.currentTarget.style.boxShadow = "0 2px 12px #b2b8c533";
                   }}
                 >
-                  {/* 썸네일 */}
+                  {/* 썸네일 (홈/카드 목록에서는 playable false!) */}
                   <div
                     style={{
                       width: "100%",
@@ -416,7 +432,7 @@ function Home({
                     }}
                   >
                     {thumbnail ? (
-                      <MediaRenderer url={thumbnail} alt={cup.title} />
+                      <MediaRenderer url={cup.data?.[0]?.image} alt={cup.title} playable={false} />
                     ) : (
                       <div
                         style={{

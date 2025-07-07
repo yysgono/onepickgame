@@ -1,5 +1,3 @@
-// src/components/Header.js
-
 import React, { useRef, useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
@@ -188,6 +186,14 @@ export default function Header({
     setShowProfile(false);
   }
 
+  // === 여기서 버튼 추가 ===
+  function handleMyWorldcup() {
+    navigate("/my-worldcups");
+  }
+  function handleRecentWorldcup() {
+    navigate("/recent-worldcups");
+  }
+
   return (
     <header
       style={{
@@ -250,6 +256,14 @@ export default function Header({
             </>
           )}
           <button style={primaryButtonStyle} onClick={onMakeWorldcup}>{t("makeWorldcup")}</button>
+          {/* === 추가버튼 시작 === */}
+          {user && (
+            <>
+              <button style={myInfoButtonStyle} onClick={handleMyWorldcup}>내가 만든 월드컵</button>
+              <button style={myInfoButtonStyle} onClick={handleRecentWorldcup}>최근에 본 월드컵</button>
+            </>
+          )}
+          {/* === 추가버튼 끝 === */}
           <select
             value={i18n.language}
             onChange={e => {

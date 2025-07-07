@@ -7,7 +7,7 @@ import {
 } from "../utils";
 import MediaRenderer from "./MediaRenderer";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom"; // navigate 추가
+import { useNavigate } from "react-router-dom";
 
 // AdaptiveTitle (파일 분리 안 하면 이 안에 그냥 두세요)
 function AdaptiveTitle({ title, isMobile }) {
@@ -16,7 +16,7 @@ function AdaptiveTitle({ title, isMobile }) {
 
   useEffect(() => {
     if (!ref.current) return;
-    const boxHeight = isMobile ? 65 : 130; // 2줄 기준 (px)
+    const boxHeight = isMobile ? 65 : 130;
     let size = isMobile ? 54 : 100;
     ref.current.style.fontSize = size + "px";
     while (ref.current.scrollHeight > boxHeight && size > (isMobile ? 22 : 38)) {
@@ -151,8 +151,8 @@ function Match({ cup, onResult, selectedCount }) {
   const [autoPlaying] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  const [saving, setSaving] = useState(false); // 저장 중 상태 추가
-  const navigate = useNavigate(); // 추가
+  const [saving, setSaving] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     async function init() {
@@ -183,7 +183,6 @@ function Match({ cup, onResult, selectedCount }) {
       const nextRoundCandidates =
         roundNum === 1 ? [...pendingWinners, ...matchWinners] : matchWinners;
       if (nextRoundCandidates.length === 1) {
-        // 최종 결과
         handleFinish(nextRoundCandidates[0], matchHistory);
         return;
       }
@@ -196,9 +195,8 @@ function Match({ cup, onResult, selectedCount }) {
     // eslint-disable-next-line
   }, [idx, bracket, matchHistory, pendingWinners, cup, roundNum]);
 
-  // 저장 후 이동 함수!
   async function handleFinish(winner, matchHistory) {
-    setSaving(true); // 저장중 스피너
+    setSaving(true);
     await insertWinnerLog(cup.id, winner.id);
     const statsArr = calcStatsFromMatchHistory(
       cup.data,
@@ -218,7 +216,6 @@ function Match({ cup, onResult, selectedCount }) {
       });
     }
     setSaving(false);
-    // 저장이 모두 끝난 뒤 ResultPage로 이동
     navigate(`/result/${cup.id}`, { state: { cup, winner } });
   }
 
@@ -315,7 +312,7 @@ function Match({ cup, onResult, selectedCount }) {
           onClick={c ? onClick : undefined}
         >
           {c ? (
-            <MediaRenderer url={c.image} alt={c.name} />
+            <MediaRenderer url={c.image} alt={c.name} playable />
           ) : (
             <span style={{ fontSize: isMobile ? 19 : 32, color: "#bbb" }}>
               {t("bye") || "BYE"}
@@ -360,7 +357,6 @@ function Match({ cup, onResult, selectedCount }) {
     </div>
   );
 
-  // 저장 중일 때
   if (saving) return (
     <div style={{
       minHeight: "60vh",

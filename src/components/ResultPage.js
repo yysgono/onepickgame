@@ -1,14 +1,11 @@
-// ResultPage.js
-
 import React, { useEffect, useState } from "react";
 import { useParams, useLocation, useNavigate } from "react-router-dom";
 import StatsPage from "./StatsPage";
-import CommentBox from "./CommentBox";
 import MediaRenderer from "./MediaRenderer";
 import { useTranslation } from "react-i18next";
 import { supabase } from "../utils/supabaseClient";
 
-// 신고버튼(동일)
+// 신고버튼
 function ReportButton({ cupId, size = "md" }) {
   const [show, setShow] = useState(false);
   const [reason, setReason] = useState("");
@@ -136,10 +133,6 @@ export default function ResultPage({ worldcupList }) {
     (worldcupList && worldcupList.find((c) => String(c.id) === id));
   const locationWinner = location.state?.winner;
 
-  // URL 파라미터에서 round도 있으면 사용 (아래는 필요 없으면 삭제)
-  // const url = new URL(window.location.href);
-  // const round = url.pathname.split("/")[3] || null;
-
   // 데이터 불러오기 (location.state 없으면 DB에서)
   useEffect(() => {
     let mounted = true;
@@ -149,7 +142,6 @@ export default function ResultPage({ worldcupList }) {
       let thisCup = locationCup;
       let thisWinner = locationWinner;
 
-      // 월드컵 데이터 없으면 DB에서
       if (!thisCup) {
         const { data: cupData } = await supabase
           .from("worldcups")
@@ -159,7 +151,6 @@ export default function ResultPage({ worldcupList }) {
         thisCup = cupData;
       }
 
-      // 우승자도 없으면 월드컵에서 계산 (winner가 있으면 바로, 없으면 서버에서 우승자 fetch)
       if (!thisWinner && thisCup) {
         let winnerObj = null;
         if (thisCup.winner_id) {
@@ -191,7 +182,6 @@ export default function ResultPage({ worldcupList }) {
     return () => {
       mounted = false;
     };
-    // eslint-disable-next-line
   }, [id, locationCup, locationWinner]);
 
   // 1. 로딩 중

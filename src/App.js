@@ -1,3 +1,4 @@
+// src/App.js
 import "./i18n";
 import "./App.css";
 import React, { useState, useEffect, useRef } from "react";
@@ -7,7 +8,7 @@ import {
   Route,
   useNavigate,
   useParams,
-  useLocation
+  useLocation,
 } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import Header from "./components/Header";
@@ -82,6 +83,10 @@ function App() {
   const [nickname, setNickname] = useState("");
   const [nicknameLoading, setNicknameLoading] = useState(false);
 
+  // === 고정 월드컵용 ===
+  const [fixedWorldcupIds, setFixedWorldcupIds] = useState([]); // id만 저장
+  const [fixedWorldcups, setFixedWorldcups] = useState([]); // 객체 전체
+
   useEffect(() => {
     let isMounted = true;
     async function fetchUserAndProfile() {
@@ -113,6 +118,7 @@ function App() {
     setIsAdmin(nick === "admin");
   }
 
+  // 월드컵 전체 목록
   const fetchWorldcups = async () => {
     try {
       const list = await getWorldcupGames();
@@ -124,6 +130,39 @@ function App() {
   useEffect(() => {
     fetchWorldcups();
   }, []);
+
+  // === 고정 월드컵 DB fetch ===
+  useEffect(() => {
+    async function fetchFixedWorldcups() {
+      let { data, error } = await supabase
+        .from("fixed_worldcups")
+        .select("worldcup_id")
+        .order("id", { ascending: true });
+      if (!error && Array.isArray(data)) {
+        setFixedWorldcupIds(data.map(d => String(d.worldcup_id)));
+      } else {
+        setFixedWorldcupIds([]);
+      }
+    }
+    fetchFixedWorldcups();
+  }, []);
+
+  // === worldcupList와 fixedWorldcupIds로 실제 고정월드컵 객체 생성
+  useEffect(() => {
+    if (!worldcupList.length || !fixedWorldcupIds.length) {
+      setFixedWorldcups([]);
+      return;
+    }
+    // id 순서 맞춰서 배열로
+    const fixeds = fixedWorldcupIds
+      .map(id => worldcupList.find(cup => String(cup.id) === String(id)))
+      .filter(Boolean);
+    setFixedWorldcups(fixeds);
+    // 디버깅 콘솔
+    console.log("[App] worldcupList", worldcupList);
+    console.log("[App] fixedWorldcupIds", fixedWorldcupIds);
+    console.log("[App] 고정매칭", fixeds);
+  }, [worldcupList, fixedWorldcupIds]);
 
   useEffect(() => {
     const savedLang = localStorage.getItem("onepickgame_lang");
@@ -176,6 +215,43 @@ function App() {
     };
   }
 
+  function MyWorldcupsWrapper() {
+    const myId = user?.id;
+    const myList = worldcupList.filter(w => w.owner === myId || w.creator === myId || w.creator_id === myId);
+    return (
+      <Home
+        worldcupList={myList}
+        fetchWorldcups={fetchWorldcups}
+        onSelect={cup => window.location.href = `/select-round/${cup.id}`}
+        user={user}
+        nickname={nickname}
+        isAdmin={isAdmin}
+        showFixedWorldcups={false}
+      />
+    );
+  }
+  function RecentWorldcupsWrapper() {
+    let recents = [];
+    try {
+      recents = JSON.parse(localStorage.getItem("onepickgame_recentWorldcups") || "[]");
+    } catch {}
+    recents = recents.reverse().filter((id, i, arr) => arr.indexOf(id) === i);
+    const recentCups = recents
+      .map(id => worldcupList.find(w => String(w.id) === String(id)))
+      .filter(Boolean);
+    return (
+      <Home
+        worldcupList={recentCups}
+        fetchWorldcups={fetchWorldcups}
+        onSelect={cup => window.location.href = `/select-round/${cup.id}`}
+        user={user}
+        nickname={nickname}
+        isAdmin={isAdmin}
+        showFixedWorldcups={false}
+      />
+    );
+  }
+
   function AppRoutes() {
     const navigate = useNavigate();
 
@@ -193,7 +269,14 @@ function App() {
         <Home
           worldcupList={worldcupList}
           fetchWorldcups={fetchWorldcups}
-          onSelect={cup => navigate(`/select-round/${cup.id}`)}
+          onSelect={cup => {
+            let recent = [];
+            try { recent = JSON.parse(localStorage.getItem("onepickgame_recentWorldcups") || "[]"); } catch {}
+            localStorage.setItem("onepickgame_recentWorldcups",
+              JSON.stringify([cup.id, ...recent.filter(id => id !== cup.id)].slice(0, 30))
+            );
+            navigate(`/select-round/${cup.id}`);
+          }}
           onMakeWorldcup={handleMakeWorldcup}
           onDelete={async id => {
             try {
@@ -206,6 +289,7 @@ function App() {
           user={user}
           nickname={nickname}
           isAdmin={isAdmin}
+          fixedWorldcups={fixedWorldcups}
         />
       );
     }
@@ -237,9 +321,7 @@ function App() {
       return (
         <WorldcupMaker
           fetchWorldcups={fetchWorldcups}
-          onCreate={() => {
-            window.location.href = "/";
-          }}
+          onCreate={() => { window.location.href = "/"; }}
           onCancel={() => navigate("/")}
           user={user}
           nickname={nickname}
@@ -319,19 +401,16 @@ function App() {
           />
         </div>
         <div ref={adRef} className="ad-banner-top-static-wrap" style={{ marginTop: 0, paddingTop: 0 }}>
-          <AdBanner
-            position="top"
-            img="ad2.png"
-          />
+          <AdBanner position="top" img="ad2.png" />
         </div>
         <div className="main-content-box">
           <Routes>
             <Route path="/" element={<HomeWrapper />} />
+            <Route path="/my-worldcups" element={<MyWorldcupsWrapper />} />
+            <Route path="/recent-worldcups" element={<RecentWorldcupsWrapper />} />
             <Route path="/select-round/:id" element={<SelectRoundPageWrapper />} />
             <Route path="/match/:id/:round" element={<MatchPage worldcupList={worldcupList} />} />
-            {/* ★★★ 핵심 추가 부분 ★★★ */}
             <Route path="/result/:id" element={<ResultPage worldcupList={worldcupList} />} />
-            {/* 기존 라우트 */}
             <Route path="/result/:id/:round" element={<ResultPage worldcupList={worldcupList} />} />
             <Route path="/stats/:id" element={<StatsPageWrapper />} />
             <Route path="/worldcup-maker" element={<WorldcupMakerWrapper />} />
@@ -405,28 +484,8 @@ function App() {
 
   return (
     <div className="app-main-wrapper" style={{ margin: 0, padding: 0 }}>
-      <AdBanner
-        position="left"
-        img="ad1.png"
-        style={{
-          top: "50%",
-          left: 24,
-          transform: "translateY(-50%)",
-          maxHeight: "95vh",
-          width: "300px",
-        }}
-      />
-      <AdBanner
-        position="right"
-        img="ad1.png"
-        style={{
-          top: "50%",
-          right: 24,
-          transform: "translateY(-50%)",
-          maxHeight: "95vh",
-          width: "300px",
-        }}
-      />
+      <AdBanner position="left" img="ad1.png" style={{ top: "50%", left: 24, transform: "translateY(-50%)", maxHeight: "95vh", width: "300px" }} />
+      <AdBanner position="right" img="ad1.png" style={{ top: "50%", right: 24, transform: "translateY(-50%)", maxHeight: "95vh", width: "300px" }} />
       <div className="main-content-outer" style={{ paddingTop: adHeight ? adHeight + 32 : 190, margin: 0 }}>
         <Router>
           <AppRoutes />
