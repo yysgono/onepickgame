@@ -5,6 +5,102 @@ import MediaRenderer from "./MediaRenderer";
 import { supabase } from "../utils/supabaseClient";
 import CommentBox from "./CommentBox";
 
+// ---- 신고버튼 (동일) ----
+function ReportButton({ cupId, size = "md" }) {
+  const [show, setShow] = useState(false);
+  const [reason, setReason] = useState("");
+  const [ok, setOk] = useState("");
+  const [error, setError] = useState("");
+  const style =
+    size === "sm"
+      ? {
+          color: "#d33",
+          background: "#fff4f4",
+          border: "1.2px solid #f6c8c8",
+          borderRadius: 8,
+          padding: "3px 11px",
+          fontSize: 15,
+          fontWeight: 700,
+          cursor: "pointer",
+          minWidth: 50,
+        }
+      : {
+          color: "#d33",
+          background: "#fff4f4",
+          border: "1.5px solid #f6c8c8",
+          borderRadius: 8,
+          padding: "6px 18px",
+          fontSize: 17,
+          fontWeight: 700,
+          cursor: "pointer",
+          minWidth: 60,
+        };
+  async function handleReport() {
+    setError("");
+    setOk("");
+    const { data } = await supabase.auth.getUser();
+    if (!data?.user?.id) return setError("로그인 필요");
+    const { error } = await supabase.from("reports").insert([
+      {
+        type: "worldcup",
+        target_id: cupId,
+        reporter_id: data.user.id,
+        reason,
+      },
+    ]);
+    if (error) setError(error.message);
+    else setOk("신고가 접수되었습니다. 감사합니다.");
+  }
+  return (
+    <>
+      <button onClick={() => setShow(true)} style={style}>
+        🚩 신고
+      </button>
+      {show && (
+        <div
+          style={{
+            position: "fixed",
+            left: 0,
+            top: 0,
+            width: "100vw",
+            height: "100vh",
+            background: "#0006",
+            zIndex: 9999,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <div
+            style={{
+              background: "#fff",
+              borderRadius: 14,
+              padding: 22,
+              minWidth: 270,
+            }}
+          >
+            <b>신고 사유</b>
+            <textarea
+              value={reason}
+              onChange={(e) => setReason(e.target.value)}
+              style={{ width: "95%", minHeight: 60, marginTop: 12 }}
+              placeholder="신고 사유를 입력하세요 (선택)"
+            />
+            <div style={{ marginTop: 12 }}>
+              <button onClick={handleReport} style={{ marginRight: 10 }}>
+                신고하기
+              </button>
+              <button onClick={() => setShow(false)}>닫기</button>
+            </div>
+            {ok && <div style={{ color: "#1976ed", marginTop: 7 }}>{ok}</div>}
+            {error && <div style={{ color: "#d33", marginTop: 7 }}>{error}</div>}
+          </div>
+        </div>
+      )}
+    </>
+  );
+}
+
 const PERIODS = [
   { label: "전체", value: null },
   { label: "1주일", value: 7 },
@@ -96,7 +192,7 @@ function StatsSkeleton({ isMobile = false }) {
   );
 }
 
-export default function StatsPage({ selectedCup, showCommentBox = false, winner }) {
+export default function StatsPage({ selectedCup, showCommentBox = false }) {
   const { t } = useTranslation();
   const [stats, setStats] = useState([]);
   const [sortKey, setSortKey] = useState("win_count");
@@ -301,6 +397,44 @@ export default function StatsPage({ selectedCup, showCommentBox = false, winner 
     );
   }
 
+  // 공유/신고 항상 노출
+  function ShareAndReportBar() {
+    if (!selectedCup?.id) return null;
+    const shareUrl = `${window.location.origin}/select-round/${selectedCup.id}`;
+    return (
+      <div style={{
+        display: "flex",
+        justifyContent: "center",
+        gap: 8,
+        marginBottom: 18,
+        marginTop: 0,
+      }}>
+        <ReportButton cupId={selectedCup.id} size="sm" />
+        <button
+          onClick={() => {
+            navigator.clipboard.writeText(shareUrl);
+            window?.toast?.success
+              ? window.toast.success("월드컵 시작 링크가 복사되었습니다!")
+              : alert("월드컵 시작 링크가 복사되었습니다!");
+          }}
+          style={{
+            color: "#1976ed",
+            background: "#e8f2fe",
+            border: "1.2px solid #b8dafe",
+            borderRadius: 8,
+            padding: "4px 14px",
+            fontWeight: 700,
+            cursor: "pointer",
+            fontSize: 15,
+            minWidth: 60,
+          }}
+        >
+          📢 월드컵 공유하기
+        </button>
+      </div>
+    );
+  }
+
   return (
     <div
       style={{
@@ -311,6 +445,9 @@ export default function StatsPage({ selectedCup, showCommentBox = false, winner 
         boxSizing: "border-box"
       }}
     >
+      {/* 공유/신고 항상 상단에 노출 */}
+      <ShareAndReportBar />
+
       <div style={{ display: "flex", justifyContent: "center", gap: 8, marginBottom: 6 }}>
         <button style={tabBtnStyle(!userOnly)} onClick={() => setUserOnly(false)}>전체</button>
         <button style={{ ...tabBtnStyle(userOnly), marginRight: 0 }} onClick={() => setUserOnly(true)}>회원만</button>
@@ -629,7 +766,7 @@ export default function StatsPage({ selectedCup, showCommentBox = false, winner 
             </table>
           </div>
           <Pagination />
-          <CommentBox cupId={selectedCup.id} />
+          {showCommentBox && <CommentBox cupId={selectedCup.id} />}
         </>
       )}
     </div>

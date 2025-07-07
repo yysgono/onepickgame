@@ -269,7 +269,7 @@ export default function ResultPage({ worldcupList }) {
         boxSizing: "border-box",
       }}
     >
-      {/* 상단: 통계 타이틀/우승자/재도전/홈/신고/공유 */}
+      {/* 상단: 통계 타이틀/우승자/재도전/홈 */}
       <div
         style={{
           display: "flex",
@@ -369,40 +369,6 @@ export default function ResultPage({ worldcupList }) {
             홈
           </button>
         </div>
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "center",
-            alignItems: "center",
-            gap: 8,
-            margin: "13px auto 0 auto",
-          }}
-        >
-          <ReportButton cupId={cup.id} size="sm" />
-          <button
-            onClick={() => {
-              const url = window.location.href;
-              navigator.clipboard.writeText(url);
-              window?.toast?.success
-                ? window.toast.success("링크가 복사되었습니다!")
-                : alert("링크가 복사되었습니다!");
-            }}
-            style={{
-              color: "#1976ed",
-              background: "#e8f2fe",
-              border: "1.2px solid #b8dafe",
-              borderRadius: 8,
-              padding: "4px 14px",
-              fontWeight: 700,
-              cursor: "pointer",
-              fontSize: 15,
-              minWidth: 60,
-            }}
-          >
-            📢 월드컵 공유하기
-          </button>
-        </div>
       </div>
 
       {/* 통계표 + 댓글토글 포함 */}
@@ -411,6 +377,7 @@ export default function ResultPage({ worldcupList }) {
           selectedCup={cup}
           showCommentBox={false}
           winner={winner}
+          showShareAndReport={true}
         />
       </div>
     </div>
