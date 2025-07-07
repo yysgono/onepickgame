@@ -16,7 +16,19 @@ function FixedCupSection({ worldcupList }) {
   const isMobile = vw < 700;
   const perRow = isMobile ? 6 : 12;
   const maxCount = 24;
-  const cups = worldcupList ? worldcupList.slice(0, maxCount) : [];
+
+  // ✅ order 컬럼으로 정렬!
+  const cups = Array.isArray(worldcupList)
+    ? [...worldcupList]
+        .sort((a, b) => {
+          if (a.order == null && b.order == null) return 0;
+          if (a.order == null) return 1;
+          if (b.order == null) return -1;
+          return a.order - b.order;
+        })
+        .slice(0, maxCount)
+    : [];
+
   const rows = [];
   for (let i = 0; i < cups.length; i += perRow) {
     rows.push(cups.slice(i, i + perRow));
