@@ -9,17 +9,17 @@ import MediaRenderer from "./MediaRenderer";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 
-// AdaptiveTitle (파일 분리 안 하면 이 안에 그냥 두세요)
+// AdaptiveTitle: 제목 크기 자동 축소 + 높이 축소
 function AdaptiveTitle({ title, isMobile }) {
   const ref = useRef();
-  const [fontSize, setFontSize] = useState(isMobile ? 54 : 100);
+  const [fontSize, setFontSize] = useState(isMobile ? 38 : 62);
 
   useEffect(() => {
     if (!ref.current) return;
-    const boxHeight = isMobile ? 65 : 130;
-    let size = isMobile ? 54 : 100;
+    const boxHeight = isMobile ? 48 : 85; // 더 작게
+    let size = isMobile ? 38 : 62;
     ref.current.style.fontSize = size + "px";
-    while (ref.current.scrollHeight > boxHeight && size > (isMobile ? 22 : 38)) {
+    while (ref.current.scrollHeight > boxHeight && size > (isMobile ? 20 : 30)) {
       size -= 2;
       ref.current.style.fontSize = size + "px";
     }
@@ -30,7 +30,7 @@ function AdaptiveTitle({ title, isMobile }) {
     <div
       ref={ref}
       style={{
-        height: isMobile ? 65 : 130,
+        height: isMobile ? 48 : 85,
         fontWeight: 900,
         color: "#1976ed",
         letterSpacing: "-1.5px",
@@ -245,14 +245,15 @@ function Match({ cup, onResult, selectedCount }) {
   const vw = typeof window !== "undefined" ? Math.min(window.innerWidth, 900) : 900;
   const isMobile = vw < 700;
   const STAGE_SIZE = isMobile ? 15 : 20;
-  const NAME_FONT_SIZE = isMobile ? 22 : 46;
-  const NAME_HEIGHT = isMobile ? `${1.18 * 22 * 4}px` : `${1.18 * 46 * 4}px`;
+  const NAME_FONT_SIZE = isMobile ? 18 : 32;
+  const NAME_HEIGHT = isMobile ? 26 : 40;
   const nextIdx = idx + 1;
   const nextRoundCandidates =
     bracket && nextIdx < bracket.length
       ? [bracket[nextIdx][0], bracket[nextIdx][1]].filter(Boolean)
       : [];
 
+  // CandidateBox: 버튼/썸네일/이름을 배너~아래까지 딱 맞게 꽉 차게
   function CandidateBox({ c, onClick, disabled }) {
     return (
       <div
@@ -260,48 +261,49 @@ function Match({ cup, onResult, selectedCount }) {
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          margin: isMobile ? "0" : "0 8px 0 8px",
+          margin: 0,
           flex: 1,
-          minWidth: isMobile ? "0" : 340,
-          maxWidth: isMobile ? "100vw" : 700,
-          width: isMobile ? "50vw" : 340,
+          minWidth: 0,
+          maxWidth: "none",
+          width: "100%",
           boxSizing: "border-box",
           opacity: c ? 1 : 0.25,
           cursor: c ? "pointer" : "default",
         }}
       >
+        {/* 선택 버튼 */}
         <button
           onClick={c ? onClick : undefined}
           disabled={!c || disabled}
           style={{
-            width: "80%",
-            padding: isMobile ? "9px 0" : "14px 0",
+            width: "100%",
+            padding: isMobile ? "8px 0" : "12px 0",
             background: "linear-gradient(90deg, #1976ed 65%, #45b7fa 100%)",
             color: "#fff",
             border: "none",
             borderRadius: 15,
             fontWeight: 900,
-            fontSize: isMobile ? 15 : 22,
+            fontSize: isMobile ? 15 : 21,
             boxShadow: "0 2px 10px #1976ed13",
             letterSpacing: "-0.5px",
-            marginBottom: isMobile ? 5 : 9,
+            marginBottom: 0,
+            marginTop: 0,
             cursor: c ? "pointer" : "default",
             opacity: c ? 1 : 0.25,
           }}
         >
-          {c ? t("select") : t("bye") || "부전승"}
+          {c ? "선택" : "부전승"}
         </button>
+        {/* 썸네일 */}
         <div
           style={{
             width: "100%",
             aspectRatio: "1/1",
-            maxWidth: isMobile ? "100vw" : 700,
-            minWidth: isMobile ? "0" : 340,
             borderRadius: 22,
             boxShadow: "0 4px 24px #1976ed22, 0 2px 12px #b4c4e4",
             overflow: "hidden",
             background: "#e7f3fd",
-            marginBottom: isMobile ? 3 : 10,
+            margin: 0,
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
@@ -315,10 +317,11 @@ function Match({ cup, onResult, selectedCount }) {
             <MediaRenderer url={c.image} alt={c.name} playable />
           ) : (
             <span style={{ fontSize: isMobile ? 19 : 32, color: "#bbb" }}>
-              {t("bye") || "BYE"}
+              부전승
             </span>
           )}
         </div>
+        {/* 이름 */}
         <div
           style={{
             fontWeight: 900,
@@ -330,10 +333,11 @@ function Match({ cup, onResult, selectedCount }) {
             height: NAME_HEIGHT,
             overflow: "hidden",
             display: "-webkit-box",
-            WebkitLineClamp: 4,
+            WebkitLineClamp: 1,
             WebkitBoxOrient: "vertical",
             textOverflow: "ellipsis",
             whiteSpace: "normal",
+            marginTop: isMobile ? 4 : 8,
           }}
         >
           {c?.name}
@@ -470,7 +474,7 @@ function Match({ cup, onResult, selectedCount }) {
           flexDirection: "row",
           alignItems: "stretch",
           justifyContent: "center",
-          gap: isMobile ? 0 : 27,
+          gap: 0, // gap 0으로!
           margin: isMobile ? "2vw 0" : "10px 0 6px 0",
         }}
       >

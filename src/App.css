@@ -44,9 +44,9 @@ body {
   z-index: 1000;
   top: 50%;
   transform: translateY(-50%);
-  width: 280px !important;
-  min-width: 280px !important;
-  max-width: 280px !important;
+  width: 20px !important;
+  min-width: 260px !important;
+  max-width: 260px !important;
   height: 600px !important;
   min-height: 600px !important;
   max-height: 600px !important;
@@ -59,7 +59,7 @@ body {
 }
 .ad-banner.left img,
 .ad-banner.right img {
-  width: 280px !important;
+  width: 260px !important;
   height: 600px !important;
   object-fit: cover;
   border-radius: 16px;

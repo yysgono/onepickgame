@@ -258,12 +258,11 @@ export default function Header({
           <button style={primaryButtonStyle} onClick={onMakeWorldcup}>{t("makeWorldcup")}</button>
           {/* === 추가버튼 시작 === */}
           {user && (
-            <>
-              <button style={myInfoButtonStyle} onClick={handleMyWorldcup}>내가 만든 월드컵</button>
-              <button style={myInfoButtonStyle} onClick={handleRecentWorldcup}>최근에 본 월드컵</button>
-            </>
+            <button style={myInfoButtonStyle} onClick={handleMyWorldcup}>내가 만든 월드컵</button>
           )}
-          {/* === 추가버튼 끝 === */}
+          {/* ↓↓↓↓↓↓ 여기가 변경된 부분 (비회원도 항상 보임) ↓↓↓↓↓↓ */}
+          <button style={myInfoButtonStyle} onClick={handleRecentWorldcup}>최근에 본 월드컵</button>
+          {/* ↑↑↑↑↑↑ */}
           <select
             value={i18n.language}
             onChange={e => {
