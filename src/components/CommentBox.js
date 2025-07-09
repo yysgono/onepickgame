@@ -280,33 +280,57 @@ export default function CommentBox({ cupId }) {
         >
           {nickname || "?"}
         </div>
-        <textarea
-          value={content}
-          onChange={(e) => setContent(e.target.value.slice(0, 80))}
-          placeholder={
-            user ? (isBanned ? "정지된 유저는 댓글 작성이 제한됩니다." : t("comment.placeholder")) : ""
-          }
-          rows={3}
-          disabled={!user || isBanned}
-          style={{
-            flex: 1,
-            minWidth: 0,
-            minHeight: 44,
-            maxHeight: 120,
-            padding: "14px 14px",
-            borderRadius: 11,
-            border: `1.2px solid ${COLORS.border}`,
-            fontSize: 16,
-            resize: "vertical",
-            background: (!user || isBanned) ? COLORS.soft : "#fff",
-            fontWeight: 600,
-            color: COLORS.text,
-            lineHeight: 1.5,
-            boxSizing: "border-box",
-            width: isMobile ? "100%" : undefined,
-          }}
-          maxLength={80}
-        />
+        {/* 비회원은 안내문구만 노출 */}
+        {!user ? (
+          <div
+            style={{
+              flex: 1,
+              minHeight: 44,
+              display: "flex",
+              alignItems: "center",
+              color: "#888",
+              background: COLORS.soft,
+              fontWeight: 600,
+              fontSize: 16,
+              borderRadius: 11,
+              border: `1.2px solid ${COLORS.border}`,
+              padding: "0 14px",
+              width: isMobile ? "100%" : undefined,
+            }}
+          >
+            로그인해야 댓글을 작성할 수 있습니다.
+          </div>
+        ) : (
+          <textarea
+            value={content}
+            onChange={(e) => setContent(e.target.value.slice(0, 80))}
+            placeholder={
+              isBanned
+                ? "정지된 유저는 댓글 작성이 제한됩니다."
+                : t("comment.placeholder")
+            }
+            rows={3}
+            disabled={!user || isBanned}
+            style={{
+              flex: 1,
+              minWidth: 0,
+              minHeight: 44,
+              maxHeight: 120,
+              padding: "14px 14px",
+              borderRadius: 11,
+              border: `1.2px solid ${COLORS.border}`,
+              fontSize: 16,
+              resize: "vertical",
+              background: (!user || isBanned) ? COLORS.soft : "#fff",
+              fontWeight: 600,
+              color: COLORS.text,
+              lineHeight: 1.5,
+              boxSizing: "border-box",
+              width: isMobile ? "100%" : undefined,
+            }}
+            maxLength={80}
+          />
+        )}
         <button
           type="submit"
           disabled={!user || loading || isBanned}
