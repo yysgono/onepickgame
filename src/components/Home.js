@@ -91,7 +91,6 @@ function Home({
         MAX_GRID_WIDTH
       )}px`;
 
-  // 카드 높이/간격 등 (하단 버튼이 더 아래에 붙게끔)
   const CARD_HEIGHT = isMobile ? 240 : 265;
   const CARD_GAP = isMobile ? 10 : 20;
   const SKELETON_COUNT = isMobile ? 3 : 6;
@@ -182,7 +181,7 @@ function Home({
   const mainDark = "#171C27";
   const blueLine = "#1976ed";
 
-  // 버튼, 제목 배경 동일하게!
+  // 버튼/제목 배경 통일
   const buttonStyle = {
     background: mainDark,
     color: "#fff",
@@ -208,6 +207,31 @@ function Home({
     padding: isMobile ? "7px 13px" : "8px 16px",
     fontSize: isMobile ? 13 : 14,
   };
+
+  // ★★ [추가: 검색/정렬 UI] ★★
+  const sortButton = (label, value) => (
+    <button
+      type="button"
+      style={{
+        background: sort === value ? "#1976ed" : "#222c3d",
+        color: "#fff",
+        fontWeight: 800,
+        border: "none",
+        borderRadius: 7,
+        fontSize: isMobile ? 14 : 15,
+        padding: isMobile ? "7px 18px" : "8px 22px",
+        marginRight: 6,
+        marginLeft: 0,
+        cursor: "pointer",
+        boxShadow: sort === value ? "0 2px 14px #1976ed55" : "none",
+        outline: sort === value ? "2px solid #22c1ff99" : "none",
+        transition: "background .15s, box-shadow .13s",
+      }}
+      onClick={() => setSort(value)}
+    >
+      {label}
+    </button>
+  );
 
   return (
     <div
@@ -244,7 +268,52 @@ function Home({
           zIndex: 2,
         }}
       >
-        {/* 카드 그리드 */}
+        {/* === [검색/정렬 영역] === */}
+        <div
+          style={{
+            display: "flex",
+            flexDirection: isMobile ? "column" : "row",
+            justifyContent: "space-between",
+            alignItems: isMobile ? "stretch" : "center",
+            gap: isMobile ? 9 : 0,
+            width: "100%",
+            margin: isMobile ? "12px 0 8px" : "22px 0 14px",
+            padding: isMobile ? "0 8px" : "0 12px",
+            boxSizing: "border-box",
+            zIndex: 5,
+          }}
+        >
+          {/* 정렬 버튼 */}
+          <div style={{ display: "flex", alignItems: "center" }}>
+            {sortButton("인기순", "popular")}
+            {sortButton("최신순", "recent")}
+          </div>
+          {/* 검색창 */}
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <input
+  type="text"
+  placeholder="검색어 입력..."
+  value={search}
+  onChange={e => setSearch(e.target.value)}
+  style={{
+    background: "#fff",                 // 배경 흰색
+    color: "#1b2236",                   // 글씨 어둡게
+    border: "2px solid #fff",           // 테두리 흰색
+    borderRadius: 8,
+    padding: isMobile ? "9px 13px" : "13px 20px",
+    fontSize: isMobile ? 16 : 17,
+    minWidth: isMobile ? 0 : 200,
+    outline: "none",
+    fontWeight: 700,
+    marginLeft: isMobile ? 0 : 10,
+    boxShadow: "0 2px 12px #fff5",
+    transition: "border .14s, box-shadow .14s",
+    letterSpacing: ".1px",
+  }}
+/>
+          </div>
+        </div>
+        {/* === 카드 그리드 === */}
         <div
           style={{
             display: "grid",
@@ -297,7 +366,6 @@ function Home({
                     backdropFilter: "blur(3px)",
                     willChange: "transform",
                   }}
-                  // 카드 붕뜨는 효과
                   onMouseEnter={e => {
                     e.currentTarget.style.transform = "translateY(-7px) scale(1.018)";
                     e.currentTarget.style.boxShadow = "0 8px 24px 0 #1976ed55, 0 1.5px 6px #1976ed66";

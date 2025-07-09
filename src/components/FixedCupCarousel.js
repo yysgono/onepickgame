@@ -39,7 +39,7 @@ function FixedCupCarousel({ worldcupList }) {
   const cardW = vw < 540 ? "96vw" : vw < 780 ? 212 : 270;
   const cardH = vw < 540 ? 120 : vw < 780 ? 136 : 158;
   const titleH = 34;
-  const titleBg = "#171C27"; // 완전 같은 배경색
+  const titleBg = "#171C27"; // 카드와 동일한 배경
 
   const pageCups = cups.slice(page * perPage, page * perPage + perPage);
 
@@ -69,9 +69,9 @@ function FixedCupCarousel({ worldcupList }) {
       <div
         style={{
           fontWeight: 900,
-          fontSize: vw < 600 ? 19 : 24,
+          fontSize: vw < 600 ? 21 : 26, // 10% 증가 (19→21, 24→26)
           marginBottom: vw < 600 ? 3 : 5,
-          color: "#1976ed",
+          color: "#fff", // 흰색
           letterSpacing: "-0.5px",
           textAlign: "center",
           width: "100%",
@@ -241,7 +241,7 @@ function FixedCupCarousel({ worldcupList }) {
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  background: titleBg, // <---- 여기
+                  background: titleBg,
                   fontWeight: 800,
                   fontSize: vw < 600 ? 14 : 16,
                   color: "#fff",

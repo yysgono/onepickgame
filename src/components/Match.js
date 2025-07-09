@@ -9,7 +9,7 @@ import MediaRenderer from "./MediaRenderer";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 
-// AdaptiveTitle 동일
+// AdaptiveTitle (타이틀 흰색으로 변경)
 function AdaptiveTitle({ title, isMobile }) {
   const ref = useRef();
   const [fontSize, setFontSize] = useState(isMobile ? 54 : 100);
@@ -30,7 +30,7 @@ function AdaptiveTitle({ title, isMobile }) {
       style={{
         height: isMobile ? 65 : 130,
         fontWeight: 900,
-        color: "#1976ed",
+        color: "#fff", // ★ 타이틀 흰색
         letterSpacing: "-1.5px",
         lineHeight: 1.1,
         wordBreak: "break-all",
@@ -80,7 +80,7 @@ function Spinner({ size = 60 }) {
   );
 }
 
-// 유틸 동일
+// 유틸 함수 동일
 function getStageLabel(n, isFirst = false) {
   if (isFirst) return `${n}강`;
   if (n === 2) return "결승전";
@@ -140,7 +140,7 @@ function truncateNames(candidates, maxWords = 3) {
   });
 }
 
-// ★ 핵심 Match 컴포넌트
+// Match 컴포넌트
 function Match({ cup, onResult, selectedCount }) {
   const { t } = useTranslation();
   const [bracket, setBracket] = useState([]);
@@ -150,7 +150,6 @@ function Match({ cup, onResult, selectedCount }) {
   const [matchHistory, setMatchHistory] = useState([]);
   const [autoPlaying] = useState(false);
   const [loading, setLoading] = useState(true);
-
   const [saving, setSaving] = useState(false);
   const navigate = useNavigate();
 
@@ -242,24 +241,23 @@ function Match({ cup, onResult, selectedCount }) {
     setIdx(idx + 1);
   }
 
-  // 배너+여백 한쪽 284px (260+24)
   const vw = typeof window !== "undefined" ? window.innerWidth : 1200;
-  const isMobile = vw < 1000; // 광고 배너 사라지는 breakpoint는 css에 맞춤
-  const BANNER_SPACE = 284; // 260px(배너)+24px(여백)
+  const isMobile = vw < 1000;
+  const BANNER_SPACE = 284;
   const CAND_WIDTH = isMobile
     ? "98vw"
     : `calc((100vw - ${BANNER_SPACE * 2}px) / 2)`;
 
   const STAGE_SIZE = isMobile ? 15 : 20;
-  const NAME_FONT_SIZE = isMobile ? 20 : 32;
-  const NAME_HEIGHT = isMobile ? "2.5em" : "2.8em";
+  // const NAME_FONT_SIZE = isMobile ? 20 : 32;
+  // const NAME_HEIGHT = isMobile ? "2.5em" : "2.8em";
   const nextIdx = idx + 1;
   const nextRoundCandidates =
     bracket && nextIdx < bracket.length
       ? [bracket[nextIdx][0], bracket[nextIdx][1]].filter(Boolean)
       : [];
 
-  // 후보 박스
+  // 후보 박스 (버튼에 후보 이름, 썸네일 아래 이름 표시 div 제거)
   function CandidateBox({ c, onClick, disabled, idx }) {
     return (
       <div
@@ -292,7 +290,7 @@ function Match({ cup, onResult, selectedCount }) {
             opacity: c ? 1 : 0.25,
           }}
         >
-          {c ? t("select") : t("bye") || "부전승"}
+          {c ? c.name : t("bye") || "부전승"}
         </button>
         <div
           style={{
@@ -318,38 +316,7 @@ function Match({ cup, onResult, selectedCount }) {
             </span>
           )}
         </div>
-        <div
-          style={{
-            fontWeight: 900,
-            fontSize: NAME_FONT_SIZE,
-            color: "#194893",
-            textAlign: "center",
-            wordBreak: "break-all",
-            lineHeight: 1.18,
-            margin: "2px 0 0 0",
-            height: NAME_HEIGHT,
-            overflow: "hidden",
-            display: "-webkit-box",
-            WebkitLineClamp: 2,
-            WebkitBoxOrient: "vertical",
-            textOverflow: "ellipsis",
-            whiteSpace: "normal",
-          }}
-        >
-          {c?.name}
-        </div>
-        {/* 번호 등 필요시
-        <div
-          style={{
-            fontWeight: 800,
-            color: "#184499",
-            fontSize: isMobile ? 20 : 28,
-            margin: isMobile ? "5px 0 0 0" : "8px 0 0 0",
-          }}
-        >
-          {idx + 1}
-        </div>
-        */}
+        {/* 후보 이름 표시 div 삭제됨 */}
       </div>
     );
   }
@@ -410,7 +377,7 @@ function Match({ cup, onResult, selectedCount }) {
           fontSize: STAGE_SIZE,
           fontWeight: 800,
           marginBottom: isMobile ? 5 : 11,
-          color: "#194893",
+          color: "#fff", // ★ 몇강도 흰색
         }}
       >
         {getStageLabel(bracket.length * 2 + pendingWinners.length, roundNum === 1)}{" "}
