@@ -234,8 +234,9 @@ export default function SelectRoundPage({ cup, maxRound, candidates, onSelect })
               boxShadow: "0 3px 14px #171c2755",
               border: "1.2px solid #222941",
               transition: "box-shadow .18s, transform .18s",
-              padding: isMobile ? 6 : 10,
+              padding: 0,
               margin: "0 auto",
+              overflow: "hidden", // 카드도 넘침 숨김
             }}
             onClick={() => onSelect && onSelect(c)}
             onMouseEnter={e => {
@@ -251,7 +252,7 @@ export default function SelectRoundPage({ cup, maxRound, candidates, onSelect })
               style={{
                 width: getCardSize(),
                 height: getCardSize(),
-                borderRadius: isMobile ? 10 : 15,
+                borderRadius: 0,
                 overflow: "hidden",
                 background: "#222b3d",
                 marginBottom: isMobile ? 8 : 12,
@@ -261,7 +262,15 @@ export default function SelectRoundPage({ cup, maxRound, candidates, onSelect })
                 justifyContent: "center",
               }}
             >
-              <MediaRenderer url={c.image} alt={c.name} />
+              <MediaRenderer
+                url={c.image}
+                alt={c.name}
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "cover",
+                }}
+              />
             </div>
             <div
               style={{
