@@ -9,28 +9,26 @@ import MediaRenderer from "./MediaRenderer";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 
-// AdaptiveTitle: 제목 크기 자동 축소 + 높이 축소
+// AdaptiveTitle 동일
 function AdaptiveTitle({ title, isMobile }) {
   const ref = useRef();
-  const [fontSize, setFontSize] = useState(isMobile ? 38 : 62);
-
+  const [fontSize, setFontSize] = useState(isMobile ? 54 : 100);
   useEffect(() => {
     if (!ref.current) return;
-    const boxHeight = isMobile ? 48 : 85; // 더 작게
-    let size = isMobile ? 38 : 62;
+    const boxHeight = isMobile ? 65 : 130;
+    let size = isMobile ? 54 : 100;
     ref.current.style.fontSize = size + "px";
-    while (ref.current.scrollHeight > boxHeight && size > (isMobile ? 20 : 30)) {
+    while (ref.current.scrollHeight > boxHeight && size > (isMobile ? 22 : 38)) {
       size -= 2;
       ref.current.style.fontSize = size + "px";
     }
     setFontSize(size);
   }, [title, isMobile]);
-
   return (
     <div
       ref={ref}
       style={{
-        height: isMobile ? 48 : 85,
+        height: isMobile ? 65 : 130,
         fontWeight: 900,
         color: "#1976ed",
         letterSpacing: "-1.5px",
@@ -82,6 +80,7 @@ function Spinner({ size = 60 }) {
   );
 }
 
+// 유틸 동일
 function getStageLabel(n, isFirst = false) {
   if (isFirst) return `${n}강`;
   if (n === 2) return "결승전";
@@ -141,6 +140,7 @@ function truncateNames(candidates, maxWords = 3) {
   });
 }
 
+// ★ 핵심 Match 컴포넌트
 function Match({ cup, onResult, selectedCount }) {
   const { t } = useTranslation();
   const [bracket, setBracket] = useState([]);
@@ -242,86 +242,82 @@ function Match({ cup, onResult, selectedCount }) {
     setIdx(idx + 1);
   }
 
-  const vw = typeof window !== "undefined" ? Math.min(window.innerWidth, 900) : 900;
-  const isMobile = vw < 700;
+  // 배너+여백 한쪽 284px (260+24)
+  const vw = typeof window !== "undefined" ? window.innerWidth : 1200;
+  const isMobile = vw < 1000; // 광고 배너 사라지는 breakpoint는 css에 맞춤
+  const BANNER_SPACE = 284; // 260px(배너)+24px(여백)
+  const CAND_WIDTH = isMobile
+    ? "98vw"
+    : `calc((100vw - ${BANNER_SPACE * 2}px) / 2)`;
+
   const STAGE_SIZE = isMobile ? 15 : 20;
-  const NAME_FONT_SIZE = isMobile ? 18 : 32;
-  const NAME_HEIGHT = isMobile ? 26 : 40;
+  const NAME_FONT_SIZE = isMobile ? 20 : 32;
+  const NAME_HEIGHT = isMobile ? "2.5em" : "2.8em";
   const nextIdx = idx + 1;
   const nextRoundCandidates =
     bracket && nextIdx < bracket.length
       ? [bracket[nextIdx][0], bracket[nextIdx][1]].filter(Boolean)
       : [];
 
-  // CandidateBox: 버튼/썸네일/이름을 배너~아래까지 딱 맞게 꽉 차게
-  function CandidateBox({ c, onClick, disabled }) {
+  // 후보 박스
+  function CandidateBox({ c, onClick, disabled, idx }) {
     return (
       <div
         style={{
+          width: CAND_WIDTH,
+          maxWidth: isMobile ? "98vw" : 540,
+          minWidth: 0,
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          margin: 0,
-          flex: 1,
-          minWidth: 0,
-          maxWidth: "none",
-          width: "100%",
           boxSizing: "border-box",
-          opacity: c ? 1 : 0.25,
-          cursor: c ? "pointer" : "default",
         }}
       >
-        {/* 선택 버튼 */}
         <button
           onClick={c ? onClick : undefined}
           disabled={!c || disabled}
           style={{
-            width: "100%",
-            padding: isMobile ? "8px 0" : "12px 0",
+            width: "92%",
+            padding: isMobile ? "11px 0" : "15px 0",
             background: "linear-gradient(90deg, #1976ed 65%, #45b7fa 100%)",
             color: "#fff",
             border: "none",
-            borderRadius: 15,
+            borderRadius: 22,
             fontWeight: 900,
-            fontSize: isMobile ? 15 : 21,
-            boxShadow: "0 2px 10px #1976ed13",
-            letterSpacing: "-0.5px",
-            marginBottom: 0,
-            marginTop: 0,
+            fontSize: isMobile ? 15 : 22,
+            boxShadow: "0 2px 12px #1976ed12",
+            letterSpacing: "-1px",
+            margin: "7px 0 6px 0",
             cursor: c ? "pointer" : "default",
             opacity: c ? 1 : 0.25,
           }}
         >
-          {c ? "선택" : "부전승"}
+          {c ? t("select") : t("bye") || "부전승"}
         </button>
-        {/* 썸네일 */}
         <div
           style={{
-            width: "100%",
+            width: "92%",
             aspectRatio: "1/1",
-            borderRadius: 22,
-            boxShadow: "0 4px 24px #1976ed22, 0 2px 12px #b4c4e4",
+            borderRadius: 32,
+            boxShadow: "0 4px 28px #1976ed18",
             overflow: "hidden",
             background: "#e7f3fd",
-            margin: 0,
+            marginBottom: 8,
+            marginTop: 4,
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            cursor: c ? "pointer" : "default",
-            boxSizing: "border-box",
-            opacity: c ? 1 : 0.25,
           }}
           onClick={c ? onClick : undefined}
         >
           {c ? (
             <MediaRenderer url={c.image} alt={c.name} playable />
           ) : (
-            <span style={{ fontSize: isMobile ? 19 : 32, color: "#bbb" }}>
-              부전승
+            <span style={{ fontSize: isMobile ? 21 : 34, color: "#bbb" }}>
+              {t("bye") || "BYE"}
             </span>
           )}
         </div>
-        {/* 이름 */}
         <div
           style={{
             fontWeight: 900,
@@ -330,18 +326,30 @@ function Match({ cup, onResult, selectedCount }) {
             textAlign: "center",
             wordBreak: "break-all",
             lineHeight: 1.18,
+            margin: "2px 0 0 0",
             height: NAME_HEIGHT,
             overflow: "hidden",
             display: "-webkit-box",
-            WebkitLineClamp: 1,
+            WebkitLineClamp: 2,
             WebkitBoxOrient: "vertical",
             textOverflow: "ellipsis",
             whiteSpace: "normal",
-            marginTop: isMobile ? 4 : 8,
           }}
         >
           {c?.name}
         </div>
+        {/* 번호 등 필요시
+        <div
+          style={{
+            fontWeight: 800,
+            color: "#184499",
+            fontSize: isMobile ? 20 : 28,
+            margin: isMobile ? "5px 0 0 0" : "8px 0 0 0",
+          }}
+        >
+          {idx + 1}
+        </div>
+        */}
       </div>
     );
   }
@@ -360,7 +368,6 @@ function Match({ cup, onResult, selectedCount }) {
       </div>
     </div>
   );
-
   if (saving) return (
     <div style={{
       minHeight: "60vh",
@@ -382,7 +389,6 @@ function Match({ cup, onResult, selectedCount }) {
       </div>
     </div>
   );
-
   if (!bracket || bracket.length === 0) return <div>{t("notEnoughCandidates")}</div>;
 
   return (
@@ -467,19 +473,25 @@ function Match({ cup, onResult, selectedCount }) {
           ))}
         </div>
       )}
+      {/* 후보 썸네일 */}
       <div
         style={{
-          width: "100%",
+          width: "100vw",
           display: "flex",
           flexDirection: "row",
-          alignItems: "stretch",
           justifyContent: "center",
-          gap: 0, // gap 0으로!
-          margin: isMobile ? "2vw 0" : "10px 0 6px 0",
+          alignItems: "stretch",
+          gap: 0,
+          margin: 0,
+          padding: 0,
+          boxSizing: "border-box",
+          position: "relative",
+          left: "50%",
+          transform: "translateX(-50%)",
         }}
       >
-        <CandidateBox c={c1} onClick={() => handlePick(0)} disabled={autoPlaying} />
-        <CandidateBox c={c2} onClick={() => handlePick(1)} disabled={autoPlaying} />
+        <CandidateBox c={c1} onClick={() => handlePick(0)} disabled={autoPlaying} idx={0} />
+        <CandidateBox c={c2} onClick={() => handlePick(1)} disabled={autoPlaying} idx={1} />
       </div>
     </div>
   );

@@ -315,3 +315,91 @@ code {
   0% { opacity: 0.72; }
   100% { opacity: 1; }
 }
+
+html, body {
+  background-color: #f6f8fa !important; /* 포켓몬 사이트 느낌의 밝은 톤 */
+  background-image:
+    linear-gradient(0deg, #e8e8ef 1px, transparent 1px),
+    linear-gradient(90deg, #e8e8ef 1px, transparent 1px);
+  background-size: 24px 24px; /* 체크 크기 조절 */
+}
+
+
+.game-card {
+  position: relative;
+  border: 3px solid #a653fb;
+  background: #18172a;
+  box-shadow: 0 8px 30px rgba(166,83,251,0.15);
+  overflow: hidden;
+  display: flex;
+  flex-direction: row;
+  transition: box-shadow 0.18s, transform 0.16s;
+  cursor: pointer;
+  clip-path: polygon(
+    12% 0%, 100% 0%, 100% 88%, 88% 100%, 0% 100%, 0% 12%
+  );
+}
+.game-card:hover {
+  box-shadow: 0 0 32px 2px #a653fb88, 0 8px 30px #a653fb22;
+}
+.game-card-bar {
+  width: 40px;
+  height: 100%;
+  background: linear-gradient(180deg,#a653fb 60%,#51298c 100%);
+  color: #fff;
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  letter-spacing: 2px;
+  box-shadow: 2px 0 12px #a653fb55;
+  user-select: none;
+  font-size: 16px;
+}
+.neon-btn {
+  background: rgba(24,24,44,0.72);
+  color: #fff;
+  font-weight: 900;
+  border: none;
+  outline: none;
+  border-radius: 999px;
+  font-size: 16px;
+  padding: 7px 22px;
+  cursor: pointer;
+  font-family: 'Orbitron', 'Pretendard', sans-serif;
+  box-shadow: none;
+  transition: background 0.16s;
+}
+.neon-btn:focus, .neon-btn:active, .neon-btn:hover {
+  outline: none;
+  box-shadow: none;
+  background: rgba(40, 54, 104, 0.84);
+}
+
+/* 카드 전체 사각형 처리 */
+.candidate-card,
+.game-card {
+  border-radius: 0 !important;
+}
+
+/* 카드 내 이미지도 사각형 */
+.candidate-card img,
+.game-card img {
+  border-radius: 0 !important;
+}
+
+/* 썸네일 박스(상단 이미지 영역)도 사각형 */
+.candidate-card > div:first-child,
+.game-card > div:first-child {
+  border-top-left-radius: 0 !important;
+  border-top-right-radius: 0 !important;
+}
+
+/* 혹시 모를 다른 카드/이미지도 한 번에 처리 */
+.card,
+.card img,
+.card .thumb {
+  border-radius: 0 !important;
+}

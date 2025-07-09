@@ -1,25 +1,23 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import MediaRenderer from "./MediaRenderer";
 
-function getTop2Winners(winStats, cupData) {
-  if (!winStats?.length) return [cupData?.[0] || null, cupData?.[1] || null];
-  const sorted = [...winStats].sort(
-    (a, b) => (b.win_count || 0) - (a.win_count || 0)
+function MediaRenderer({ url, alt }) {
+  return (
+    <img
+      src={url}
+      alt={alt}
+      style={{
+        width: "100%",
+        height: "100%",
+        objectFit: "cover",
+        background: "#222",
+        display: "block",
+      }}
+      draggable={false}
+    />
   );
-  const first =
-    cupData?.find((c) => c.id === sorted[0]?.candidate_id) ||
-    cupData?.[0] ||
-    null;
-  const second =
-    cupData?.find((c) => c.id === sorted[1]?.candidate_id) ||
-    cupData?.[1] ||
-    null;
-  return [first, second];
 }
 
 function FixedCupCarousel({ worldcupList }) {
-  const navigate = useNavigate();
   const [vw, setVw] = useState(window.innerWidth);
 
   useEffect(() => {
@@ -38,11 +36,10 @@ function FixedCupCarousel({ worldcupList }) {
   const totalPage = Math.ceil(cups.length / perPage);
   const [page, setPage] = useState(0);
 
-  // 카드 크기
   const cardW = vw < 540 ? "96vw" : vw < 780 ? 212 : 270;
   const cardH = vw < 540 ? 120 : vw < 780 ? 136 : 158;
-  // 제목 높이
-  const titleH = 18; // 줄인 높이
+  const titleH = 34;
+  const titleBg = "#171C27"; // 완전 같은 배경색
 
   const pageCups = cups.slice(page * perPage, page * perPage + perPage);
 
@@ -69,7 +66,6 @@ function FixedCupCarousel({ worldcupList }) {
         userSelect: "none",
       }}
     >
-      {/* 추천(가운데) */}
       <div
         style={{
           fontWeight: 900,
@@ -83,7 +79,6 @@ function FixedCupCarousel({ worldcupList }) {
       >
         추천
       </div>
-
       <div
         style={{
           width: "100%",
@@ -94,7 +89,6 @@ function FixedCupCarousel({ worldcupList }) {
           minHeight: typeof cardH === "number" ? cardH + 38 : 158,
         }}
       >
-        {/* 왼쪽 화살표 */}
         <button
           aria-label="이전"
           onClick={goPrev}
@@ -121,7 +115,6 @@ function FixedCupCarousel({ worldcupList }) {
         >
           &#60;
         </button>
-        {/* 카드 row */}
         <div
           style={{
             display: "flex",
@@ -135,145 +128,141 @@ function FixedCupCarousel({ worldcupList }) {
             padding: "0 0",
           }}
         >
-          {pageCups.map((cup) => {
-            const [first, second] = getTop2Winners(cup.winStats, cup.data);
-            return (
+          {pageCups.map((cup, idx) => (
+            <div
+              key={cup.id}
+              style={{
+                width: cardW,
+                height: cardH,
+                background: "#fafdff",
+                borderRadius: 15,
+                boxShadow: "0 1.5px 8px #1976ed13",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "flex-start",
+                cursor: "pointer",
+                overflow: "hidden",
+                border: "none",
+                margin: "0 1px",
+                position: "relative",
+                transition: "transform .14s, box-shadow .14s",
+              }}
+              onClick={() => window.location.href = `/select-round/${cup.id}`}
+              onMouseEnter={e => {
+                e.currentTarget.style.transform = "translateY(-2px) scale(1.024)";
+                e.currentTarget.style.boxShadow = "0 7px 20px #1976ed18";
+              }}
+              onMouseLeave={e => {
+                e.currentTarget.style.transform = "none";
+                e.currentTarget.style.boxShadow = "0 1.5px 8px #1976ed13";
+              }}
+              title={cup.title}
+            >
               <div
-                key={cup.id}
-                onClick={() => navigate(`/select-round/${cup.id}`)}
                 style={{
-                  width: cardW,
-                  height: cardH,
-                  background: "#fafdff",
-                  borderRadius: 15,
-                  boxShadow: "0 1.5px 8px #1976ed13",
+                  width: "100%",
+                  height: `calc(100% - ${titleH}px)`,
+                  minHeight: 64,
                   display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  justifyContent: "flex-start",
-                  cursor: "pointer",
+                  flexDirection: "row",
+                  background: "linear-gradient(90deg, #F2F8FF 50%, #EDF7FF 100%)",
+                  borderTopLeftRadius: 15,
+                  borderTopRightRadius: 15,
+                  borderBottom: "none",
                   overflow: "hidden",
-                  border: "2px solid #e2ecfa",
-                  margin: "0 1px",
                   position: "relative",
-                  transition: "transform .14s, box-shadow .14s",
                 }}
-                onMouseEnter={e => {
-                  e.currentTarget.style.transform = "translateY(-2px) scale(1.024)";
-                  e.currentTarget.style.boxShadow = "0 7px 20px #1976ed18";
-                }}
-                onMouseLeave={e => {
-                  e.currentTarget.style.transform = "none";
-                  e.currentTarget.style.boxShadow = "0 1.5px 8px #1976ed13";
-                }}
-                title={cup.title}
               >
-                {/* 1,2위 VS */}
                 <div
                   style={{
-                    width: "100%",
-                    height: "72%",
-                    minHeight: 64,
-                    display: "flex",
-                    flexDirection: "row",
-                    background: "linear-gradient(90deg, #F2F8FF 50%, #EDF7FF 100%)",
+                    width: "50%",
+                    height: "100%",
                     borderTopLeftRadius: 15,
-                    borderTopRightRadius: 15,
-                    borderBottom: "1.2px solid #e7ecf6",
                     overflow: "hidden",
-                    position: "relative",
+                    background: "#eaf3fb",
                   }}
                 >
-                  <div
-                    style={{
-                      width: "50%",
-                      height: "100%",
-                      borderTopLeftRadius: 15,
-                      overflow: "hidden",
-                      background: "#eaf3fb",
-                    }}
-                  >
-                    {first?.image ? (
-                      <MediaRenderer url={first.image} alt="1위" playable={false} />
-                    ) : (
-                      <div style={{ width: "100%", height: "100%", background: "#eee" }} />
-                    )}
-                  </div>
-                  <div
-                    style={{
-                      width: "50%",
-                      height: "100%",
-                      borderTopRightRadius: 15,
-                      overflow: "hidden",
-                      background: "#eaf3fb",
-                    }}
-                  >
-                    {second?.image ? (
-                      <MediaRenderer url={second.image} alt="2위" playable={false} />
-                    ) : (
-                      <div style={{ width: "100%", height: "100%", background: "#eee" }} />
-                    )}
-                  </div>
-                  {/* VS.png - 더 크게 */}
-                  <div
-                    style={{
-                      position: "absolute",
-                      top: "50%",
-                      left: "50%",
-                      transform: "translate(-50%, -56%)",
-                      zIndex: 5,
-                      pointerEvents: "none",
-                      width: vw < 540 ? 45 : 54,
-                      height: vw < 540 ? 45 : 54,
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                  >
-                    <img
-                      src="/vs.png"
-                      alt="vs"
-                      style={{
-                        width: "100%",
-                        height: "100%",
-                        objectFit: "contain",
-                        filter: "drop-shadow(0 1.2px 2.5px #2227b38c)",
-                      }}
-                    />
-                  </div>
+                  {cup.data?.[0]?.image ? (
+                    <MediaRenderer url={cup.data[0].image} alt="1위" />
+                  ) : (
+                    <div style={{ width: "100%", height: "100%", background: "#eee" }} />
+                  )}
                 </div>
-                {/* 제목 (아래로 내리고, 높이 줄이고, 중앙 정렬!) */}
                 <div
                   style={{
-                    width: "100%",
-                    height: titleH,
-                    minHeight: titleH,
-                    maxHeight: titleH,
+                    width: "50%",
+                    height: "100%",
+                    borderTopRightRadius: 15,
+                    overflow: "hidden",
+                    background: "#eaf3fb",
+                  }}
+                >
+                  {cup.data?.[1]?.image ? (
+                    <MediaRenderer url={cup.data[1].image} alt="2위" />
+                  ) : (
+                    <div style={{ width: "100%", height: "100%", background: "#eee" }} />
+                  )}
+                </div>
+                <div
+                  style={{
+                    position: "absolute",
+                    top: "50%",
+                    left: "50%",
+                    transform: "translate(-50%, -56%)",
+                    zIndex: 5,
+                    pointerEvents: "none",
+                    width: vw < 540 ? 45 : 54,
+                    height: vw < 540 ? 45 : 54,
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    padding: "8px 10px 0 10px", // ↑ 위쪽 패딩 늘려서 아래로
-                    fontWeight: 800,
-                    fontSize: vw < 600 ? 14 : 16.5,
-                    color: "#1841a7",
-                    textAlign: "center",
-                    wordBreak: "break-all",
-                    letterSpacing: "-0.1px",
-                    lineHeight: 1.18,
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                    whiteSpace: "nowrap",
-                    background: "#fafdff",
                   }}
-                  title={cup.title}
                 >
-                  {cup.title.length > 36 ? cup.title.slice(0, 36) + "..." : cup.title}
+                  <img
+                    src="/vs.png"
+                    alt="vs"
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "contain",
+                      filter: "drop-shadow(0 1.2px 2.5px #2227b38c)",
+                    }}
+                  />
                 </div>
               </div>
-            );
-          })}
+              {/* 제목 (카드와 완전히 동일한 배경색) */}
+              <div
+                style={{
+                  width: "100%",
+                  height: titleH,
+                  minHeight: titleH,
+                  maxHeight: titleH * 1.1,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  background: titleBg, // <---- 여기
+                  fontWeight: 800,
+                  fontSize: vw < 600 ? 14 : 16,
+                  color: "#fff",
+                  textAlign: "center",
+                  letterSpacing: "-0.1px",
+                  lineHeight: 1.25,
+                  overflow: "hidden",
+                  padding: "0 10px",
+                  whiteSpace: "nowrap",
+                  textOverflow: "ellipsis",
+                  wordBreak: "keep-all",
+                  borderBottomLeftRadius: 13,
+                  borderBottomRightRadius: 13,
+                }}
+                title={cup.title}
+              >
+                {cup.title}
+              </div>
+            </div>
+          ))}
         </div>
-        {/* 오른쪽 화살표 */}
         <button
           aria-label="다음"
           onClick={goNext}
@@ -301,7 +290,6 @@ function FixedCupCarousel({ worldcupList }) {
           &#62;
         </button>
       </div>
-      {/* 페이지 표시 (하단 중앙) */}
       <div
         style={{
           marginTop: 7,

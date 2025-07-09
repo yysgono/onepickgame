@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../utils/supabaseClient";
 
-// 닉네임 유효성 검사 함수
+// 닉네임 유효성 검사
 function isValidNickname(nickname) {
   if (!nickname) return false;
   const regex = /^[\uAC00-\uD7A3\w-]+$/;
@@ -33,30 +33,21 @@ export default function Header({
   const navigate = useNavigate();
   const inputRef = useRef();
 
-  // 프로필, 모달, 상태값
   const [showLogin, setShowLogin] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
-
-  // 로그인 폼 상태
   const [loginEmail, setLoginEmail] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
   const [loginError, setLoginError] = useState("");
   const [loginLoading, setLoginLoading] = useState(false);
-
-  // 내정보 수정 상태
   const [editNickname, setEditNickname] = useState(nickname || "");
   const [editError, setEditError] = useState("");
   const [editLoading, setEditLoading] = useState(false);
-
-  // 탈퇴신청/취소 상태
   const [profile, setProfile] = useState(null);
   const [profileLoading, setProfileLoading] = useState(false);
   const [withdrawLoading, setWithdrawLoading] = useState(false);
   const [cancelLoading, setCancelLoading] = useState(false);
 
   useEffect(() => { setEditNickname(nickname || ""); }, [nickname]);
-
-  // 프로필 정보 가져오기 (탈퇴신청 여부 확인용)
   useEffect(() => {
     if (!user) return setProfile(null);
     setProfileLoading(true);
@@ -74,7 +65,6 @@ export default function Header({
       setShowLogin(false);
     });
   }
-
   async function handleLogin(e) {
     e.preventDefault();
     setLoginError("");
@@ -92,7 +82,6 @@ export default function Header({
     setLoginEmail("");
     setLoginPassword("");
     setUser(data?.user || null);
-
     if (data?.user) {
       const { data: profile } = await supabase
         .from("profiles")
@@ -102,7 +91,6 @@ export default function Header({
       setNickname(profile?.nickname || "");
     }
   }
-
   async function handleNicknameChange() {
     setEditError("");
     const trimName = editNickname.trim();
@@ -136,7 +124,6 @@ export default function Header({
     setShowProfile(false);
     alert("닉네임이 변경되었습니다!");
   }
-
   async function handlePasswordChange() {
     setEditError("");
     if (!user?.email) {
@@ -152,8 +139,6 @@ export default function Header({
     }
     alert("비밀번호 변경 메일을 전송했습니다.");
   }
-
-  // 탈퇴신청
   async function handleWithdrawalRequest() {
     setEditError(""); setWithdrawLoading(true);
     const { error } = await supabase
@@ -166,8 +151,6 @@ export default function Header({
     setProfile((prev) => ({ ...prev, withdrawal_requested_at: new Date().toISOString() }));
     setShowProfile(false);
   }
-
-  // 탈퇴취소
   async function handleCancelWithdrawal() {
     setEditError(""); setCancelLoading(true);
     const { error } = await supabase
@@ -180,67 +163,94 @@ export default function Header({
     setProfile((prev) => ({ ...prev, withdrawal_requested_at: null }));
     setShowProfile(false);
   }
-
   function handleLogoClick() { navigate("/"); }
-  function handleWithdrawCancel() {
-    setShowProfile(false);
-  }
+  function handleWithdrawCancel() { setShowProfile(false); }
+  function handleMyWorldcup() { navigate("/my-worldcups"); }
+  function handleRecentWorldcup() { navigate("/recent-worldcups"); }
 
-  // === 여기서 버튼 추가 ===
-  function handleMyWorldcup() {
-    navigate("/my-worldcups");
-  }
-  function handleRecentWorldcup() {
-    navigate("/recent-worldcups");
-  }
+  // 이미지 경로
+  const logoImgUrl = "/onepick2.png"; // 반드시 public 폴더에
+  const headerBgUrl = "/onepick3.png"; // public 폴더에
 
   return (
     <header
       style={{
         width: "100%",
-        background: "#fff",
-        boxShadow: "0 2px 12px rgba(0,0,0,0.08)",
+        minHeight: 78,
         position: "sticky",
         top: 0,
         zIndex: 1000,
-        marginBottom: 0,
-        minHeight: 68,
-        fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
+        padding: 0,
+        margin: 0,
+        background: `linear-gradient(90deg,rgba(20,23,32,0.92) 80%,rgba(20,26,44,0.82)),url('${headerBgUrl}') center/cover no-repeat`,
+        boxShadow: "0 2px 22px #000a, 0 1.5px 6px #1e2242cc",
+        backdropFilter: "blur(2.5px)",
+        WebkitBackdropFilter: "blur(2.5px)",
+        borderBottom: "4px solid #1976ed",
       }}
     >
       <div
         style={{
           maxWidth: 1800,
           margin: "0 auto",
-          padding: "0 28px",
+          padding: "0 26px",
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
-          minHeight: 64,
-          flexWrap: "wrap",
-          gap: 12,
+          minHeight: 78,
+          gap: 14,
         }}
       >
-        <div
-          style={{
-            fontWeight: 900,
-            fontSize: 28,
-            letterSpacing: 0.2,
-            color: "#1976ed",
-            cursor: "pointer",
-            userSelect: "none",
-            flexShrink: 0,
-            whiteSpace: "nowrap",
-          }}
-          onClick={handleLogoClick}
-        >
-          OnePickGame
-        </div>
+        {/* ----- 로고+텍스트 ----- */}
         <div
           style={{
             display: "flex",
             alignItems: "center",
-            gap: 10,
+            gap: 13,
+            cursor: "pointer",
+            userSelect: "none",
+            minWidth: 150,
+          }}
+          onClick={handleLogoClick}
+        >
+          <img
+            src={logoImgUrl}
+            alt="OnePick Logo"
+            style={{
+              width: 49,
+              height: 49,
+              filter: "drop-shadow(0 0 10px #00c8ffbb) drop-shadow(0 0 2.5px #fff)",
+              borderRadius: "50%",
+              background: "rgba(24,29,42,0.9)",
+              border: "2.4px solid #1976ed",
+              marginRight: 5,
+              transition: "box-shadow .18s",
+            }}
+            draggable={false}
+          />
+          <span
+            style={{
+              fontWeight: 900,
+              fontSize: 29,
+              fontFamily: "'Orbitron', 'Pretendard', 'Montserrat', sans-serif",
+              letterSpacing: "1.3px",
+              color: "#fff",
+              textShadow: "0 2px 16px #157be9cc, 0 0.5px 2.5px #fff",
+              marginTop: 2,
+              transition: "color .16s",
+              whiteSpace: "nowrap",
+              lineHeight: 1.13,
+            }}
+          >
+            OnePickGame
+          </span>
+        </div>
+        {/* ----- 우측 메뉴/버튼 ----- */}
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 11,
             flexWrap: "wrap",
             justifyContent: "flex-end",
             flexGrow: 1,
@@ -256,13 +266,10 @@ export default function Header({
             </>
           )}
           <button style={primaryButtonStyle} onClick={onMakeWorldcup}>{t("makeWorldcup")}</button>
-          {/* === 추가버튼 시작 === */}
           {user && (
             <button style={myInfoButtonStyle} onClick={handleMyWorldcup}>내가 만든 월드컵</button>
           )}
-          {/* ↓↓↓↓↓↓ 여기가 변경된 부분 (비회원도 항상 보임) ↓↓↓↓↓↓ */}
           <button style={myInfoButtonStyle} onClick={handleRecentWorldcup}>최근에 본 월드컵</button>
-          {/* ↑↑↑↑↑↑ */}
           <select
             value={i18n.language}
             onChange={e => {
@@ -280,10 +287,12 @@ export default function Header({
               <span
                 style={{
                   fontWeight: 700,
-                  color: "#1976ed",
+                  color: "#22dcff",
                   marginRight: 6,
                   whiteSpace: "nowrap",
                   userSelect: "none",
+                  textShadow: "0 0 6px #00e5ff88, 0 0.5px 2.5px #fff",
+                  fontFamily: "'Pretendard','Orbitron',sans-serif"
                 }}
               >
                 {nicknameLoading ? "닉네임 불러오는 중..." : (nickname || "닉네임 없음")}
@@ -422,11 +431,24 @@ export default function Header({
           )}
         </div>
       </div>
+      {/* 네온 효과, 폰트, 애니 추가 */}
+      <style>
+        {`
+          @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&display=swap');
+          header {
+            animation: headerNeonIn 1.1s cubic-bezier(.35,1,.4,1) 0s 1;
+          }
+          @keyframes headerNeonIn {
+            from { opacity: 0; filter: blur(9px); }
+            to { opacity: 1; filter: blur(0); }
+          }
+        `}
+      </style>
     </header>
   );
 }
 
-// ======= 스타일 (원래 코드 그대로) =======
+// ------ 스타일
 const adminButtonStyle = (bgColor, color = "#fff") => ({
   background: bgColor,
   color,
@@ -441,7 +463,7 @@ const adminButtonStyle = (bgColor, color = "#fff") => ({
   fontSize: 14,
 });
 const primaryButtonStyle = {
-  background: "#1976ed",
+  background: "linear-gradient(90deg,#2999ff,#236de8 100%)",
   color: "#fff",
   border: "none",
   borderRadius: 8,
@@ -451,11 +473,12 @@ const primaryButtonStyle = {
   cursor: "pointer",
   userSelect: "none",
   whiteSpace: "nowrap",
-  transition: "background-color 0.2s ease",
+  boxShadow: "0 0 18px #2999ff12, 0 1.5px 6px #1976ed30",
+  transition: "background-color 0.2s,box-shadow .14s",
 };
 const myInfoButtonStyle = {
-  background: "#e7eefd",
-  color: "#1976ed",
+  background: "rgba(22, 34, 69, 0.92)",
+  color: "#22dcff",
   border: "none",
   borderRadius: 8,
   fontWeight: 700,
@@ -465,7 +488,8 @@ const myInfoButtonStyle = {
   userSelect: "none",
   marginRight: 3,
   whiteSpace: "nowrap",
-  transition: "background-color 0.2s ease",
+  boxShadow: "0 0 8px #15d1ff1a",
+  transition: "background-color 0.18s,box-shadow .14s",
   outline: "none",
 };
 const selectStyle = {
@@ -474,10 +498,27 @@ const selectStyle = {
   fontWeight: 600,
   fontSize: 15,
   minWidth: 100,
-  background: "#f5f6fa",
-  border: "1px solid #e5e5e5",
+  background: "#222f45",
+  color: "#fff",
+  border: "1px solid #1258cc",
   cursor: "pointer",
   userSelect: "none",
+  outline: "none",
+  boxShadow: "0 0 7px #157be94a",
+};
+const logoutButtonStyle = {
+  fontSize: 13,
+  fontWeight: 600,
+  background: "#232c40",
+  color: "#18ffff",
+  border: "none",
+  borderRadius: 8,
+  padding: "6px 12px",
+  cursor: "pointer",
+  userSelect: "none",
+  boxShadow: "0 0 10px #11ccff22",
+  transition: "background .15s",
+  outline: "none",
 };
 const modalOverlayStyle = {
   position: "fixed",
@@ -485,7 +526,7 @@ const modalOverlayStyle = {
   top: 0,
   width: "100vw",
   height: "100vh",
-  background: "rgba(0,0,0,0.3)",
+  background: "rgba(0,0,0,0.32)",
   zIndex: 9999,
   display: "flex",
   alignItems: "center",
@@ -563,15 +604,5 @@ const modalCloseButtonStyle = {
   cursor: "pointer",
   width: 180,
   marginTop: 10,
-  userSelect: "none",
-};
-const logoutButtonStyle = {
-  fontSize: 13,
-  fontWeight: 500,
-  background: "#eee",
-  border: "none",
-  borderRadius: 7,
-  padding: "5px 11px",
-  cursor: "pointer",
   userSelect: "none",
 };

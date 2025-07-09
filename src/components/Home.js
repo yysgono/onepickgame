@@ -3,7 +3,6 @@ import { useTranslation } from "react-i18next";
 import { fetchWinnerStatsFromDB } from "../utils";
 import COLORS from "../styles/theme";
 import MediaRenderer from "./MediaRenderer";
-import AdBanner from "./AdBanner";
 import FixedCupSection from "./FixedCupCarousel";
 
 // 카드 fade-in 효과
@@ -26,17 +25,15 @@ const useSlideFadeIn = (length) => {
   return refs;
 };
 
-function SkeletonCard({ cardHeight, cardRadius, thumbHeight }) {
+function SkeletonCard({ cardHeight, thumbHeight }) {
   return (
     <div
       style={{
         width: "100%",
         height: cardHeight,
-        background: "#e7f1fb",
+        background: "rgba(24,27,34,0.66)",
         border: "none",
-        boxShadow: "0 2px 14px #b2b8c566",
-        animation: "skeleton-loading 1.2s infinite linear",
-        borderRadius: cardRadius,
+        borderRadius: 0,
         margin: 0,
         padding: 0,
         display: "flex",
@@ -44,42 +41,17 @@ function SkeletonCard({ cardHeight, cardRadius, thumbHeight }) {
         alignItems: "center",
         justifyContent: "center",
         gap: 0,
+        backdropFilter: "blur(2.5px)",
       }}
     >
       <div
         style={{
           width: "100%",
           height: thumbHeight,
-          display: "flex",
-          flexDirection: "row",
-          borderTopLeftRadius: cardRadius,
-          borderTopRightRadius: cardRadius,
-          overflow: "hidden",
+          borderTopLeftRadius: 0,
+          borderTopRightRadius: 0,
         }}
-      >
-        <div style={{ width: "50%", height: "100%", background: "#dbe6f2" }} />
-        <div style={{ width: "50%", height: "100%", background: "#dbe6f2" }} />
-      </div>
-      <div style={{ padding: "30px 0 0 0", width: "80%" }}>
-        <div
-          style={{
-            width: "80%",
-            height: 22,
-            background: "#dde7f1",
-            borderRadius: 7,
-            margin: "5px auto",
-          }}
-        />
-        <div
-          style={{
-            width: "50%",
-            height: 14,
-            background: "#e8eef8",
-            borderRadius: 7,
-            margin: "12px auto",
-          }}
-        />
-      </div>
+      />
     </div>
   );
 }
@@ -119,8 +91,8 @@ function Home({
         MAX_GRID_WIDTH
       )}px`;
 
-  const CARD_RADIUS = isMobile ? 13 : 20;
-  const CARD_HEIGHT = isMobile ? 270 : 300;
+  // 카드 높이/간격 등 (하단 버튼이 더 아래에 붙게끔)
+  const CARD_HEIGHT = isMobile ? 240 : 265;
   const CARD_GAP = isMobile ? 10 : 20;
   const SKELETON_COUNT = isMobile ? 3 : 6;
   const THUMB_HEIGHT = isMobile ? 168 : 168 * 1.2;
@@ -206,41 +178,57 @@ function Home({
     );
   }
 
+  const NEON_FONT = "'Orbitron', 'Pretendard', sans-serif";
+  const mainDark = "#171C27";
+  const blueLine = "#1976ed";
+
+  // 버튼, 제목 배경 동일하게!
   const buttonStyle = {
-    background: "#fff",
-    color: "#1976ed",
-    fontWeight: 700,
+    background: mainDark,
+    color: "#fff",
+    fontWeight: 900,
     border: "none",
-    borderRadius: 999,
-    fontSize: isMobile ? 15 : 16,
-    padding: isMobile ? "5px 14px" : "7px 17px",
+    borderRadius: 8,
+    fontSize: isMobile ? 14 : 15,
+    padding: isMobile ? "8px 22px" : "10px 28px",
     outline: "none",
     cursor: "pointer",
-    boxShadow: "0 2px 6px #1976ed16",
-    letterSpacing: "-0.2px",
-    fontFamily: "inherit",
-    transition: "background .14s, color .14s",
+    letterSpacing: "0.6px",
+    fontFamily: NEON_FONT,
+    margin: "0 3px",
+    boxShadow: "none",
+    transition: "background 0.15s",
+    marginTop: 0,
+    marginBottom: 0,
     display: "inline-block",
-    lineHeight: 1.15,
   };
 
   const smallButtonStyle = {
     ...buttonStyle,
-    padding: isMobile ? "5px 10px" : "7px 11px",
-    fontSize: isMobile ? 14 : 15,
+    padding: isMobile ? "7px 13px" : "8px 16px",
+    fontSize: isMobile ? 13 : 14,
   };
 
   return (
     <div
       style={{
         width: "100vw",
-        minHeight: "70vh",
-        background: "none",
-        boxSizing: "border-box",
-        overflowX: "hidden",
+        minHeight: "100vh",
+        background: `url('/83243377_1669883362558_1_600x600.jpg') center center / cover no-repeat fixed`,
         position: "relative",
       }}
     >
+      <div
+        style={{
+          position: "fixed",
+          inset: 0,
+          width: "100vw",
+          height: "100vh",
+          zIndex: 0,
+          pointerEvents: "none",
+          background: "rgba(0,0,0,0.0)",
+        }}
+      />
       {showFixedWorldcups !== false && (
         <FixedCupSection worldcupList={fixedWorldcups || []} />
       )}
@@ -253,150 +241,9 @@ function Home({
           padding: 0,
           boxSizing: "border-box",
           position: "relative",
+          zIndex: 2,
         }}
       >
-        {/* 검색/정렬 영역 */}
-        <div
-          style={{
-            margin: "0 0 14px 0",
-            display: "flex",
-            alignItems: "center",
-            width: "100%",
-            justifyContent: "center",
-            gap: 0,
-            flexWrap: "wrap",
-            position: "relative",
-          }}
-        >
-          {/* 왼쪽: 정렬 버튼 */}
-          <div
-            style={{
-              display: "flex",
-              gap: 9,
-              flexShrink: 0,
-              minWidth: isMobile ? 130 : 150,
-            }}
-          >
-            <button
-              style={{
-                background:
-                  sort === "popular"
-                    ? `linear-gradient(90deg, #68a5f8 70%, #9fd5f9 100%)`
-                    : "#f3f6fa",
-                color: sort === "popular" ? "#fff" : "#297ACF",
-                fontWeight: 700,
-                border: "none",
-                borderRadius: 999,
-                padding: isMobile ? "6px 13px" : "8px 16px",
-                fontSize: isMobile ? 13 : 15,
-                boxShadow: sort === "popular" ? "0 2px 6px #1976ed16" : "none",
-                cursor: "pointer",
-                transition: "all 0.14s",
-              }}
-              onClick={() => setSort("popular")}
-            >
-              인기순
-            </button>
-            <button
-              style={{
-                background:
-                  sort === "recent"
-                    ? `linear-gradient(90deg, #68a5f8 70%, #9fd5f9 100%)`
-                    : "#f3f6fa",
-                color: sort === "recent" ? "#fff" : "#297ACF",
-                fontWeight: 700,
-                border: "none",
-                borderRadius: 999,
-                padding: isMobile ? "6px 13px" : "8px 16px",
-                fontSize: isMobile ? 13 : 15,
-                boxShadow: sort === "recent" ? "0 2px 6px #1976ed16" : "none",
-                cursor: "pointer",
-                transition: "all 0.14s",
-              }}
-              onClick={() => setSort("recent")}
-            >
-              최신순
-            </button>
-          </div>
-          {/* 가운데: 검색창 */}
-          <div
-            style={{
-              flex: "1 1 0px",
-              display: "flex",
-              justifyContent: "center",
-              minWidth: 220,
-            }}
-          >
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                position: "relative",
-                width: isMobile ? "100%" : 430,
-                minHeight: isMobile ? 28 : 36,
-                maxWidth: "100%",
-                background: "#e9f4ff",
-                borderRadius: 999,
-                border: "1.2px solid #b4c4e4",
-                boxShadow: "0 1px 4px #1976ed0c",
-                margin: "0 auto",
-              }}
-            >
-              <svg
-                width="14"
-                height="14"
-                style={{
-                  position: "absolute",
-                  left: 8,
-                  top: "50%",
-                  transform: "translateY(-50%)",
-                  opacity: 0.4,
-                  pointerEvents: "none",
-                }}
-              >
-                <circle
-                  cx="7"
-                  cy="7"
-                  r="6"
-                  stroke="#1976ed"
-                  strokeWidth="2"
-                  fill="none"
-                />
-                <line
-                  x1="11"
-                  y1="11"
-                  x2="14"
-                  y2="14"
-                  stroke="#1976ed"
-                  strokeWidth="2"
-                />
-              </svg>
-              <input
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                placeholder="검색"
-                style={{
-                  width: "100%",
-                  border: "none",
-                  outline: "none",
-                  background: "transparent",
-                  padding: isMobile ? "6px 6px 6px 22px" : "8px 12px 8px 26px",
-                  fontSize: isMobile ? 12 : 13,
-                  borderRadius: 999,
-                }}
-              />
-            </div>
-          </div>
-          {/* 오른쪽(빈 공간, 버튼 높이 맞춤) */}
-          <div
-            style={{
-              minWidth: isMobile ? 130 : 150,
-              height: 1,
-              flexShrink: 0,
-            }}
-          />
-        </div>
-
         {/* 카드 그리드 */}
         <div
           style={{
@@ -414,6 +261,7 @@ function Home({
             boxSizing: "border-box",
             justifyContent: "start",
             alignItems: "start",
+            zIndex: 2,
           }}
         >
           {loading &&
@@ -421,7 +269,6 @@ function Home({
               <SkeletonCard
                 key={i}
                 cardHeight={CARD_HEIGHT}
-                cardRadius={CARD_RADIUS}
                 thumbHeight={THUMB_HEIGHT}
               />
             ))}
@@ -436,10 +283,10 @@ function Home({
                   style={{
                     width: "100%",
                     height: CARD_HEIGHT,
-                    borderRadius: CARD_RADIUS,
-                    background: "#fff",
-                    boxShadow: "0 4px 16px #a1c8f826",
-                    border: "1.5px solid #e1eafd",
+                    borderRadius: 0,
+                    background: "#16234a",
+                    boxShadow: "none",
+                    border: "none",
                     display: "flex",
                     flexDirection: "column",
                     position: "relative",
@@ -447,6 +294,17 @@ function Home({
                     transition: "box-shadow 0.18s, transform 0.16s",
                     marginBottom: 0,
                     cursor: "pointer",
+                    backdropFilter: "blur(3px)",
+                    willChange: "transform",
+                  }}
+                  // 카드 붕뜨는 효과
+                  onMouseEnter={e => {
+                    e.currentTarget.style.transform = "translateY(-7px) scale(1.018)";
+                    e.currentTarget.style.boxShadow = "0 8px 24px 0 #1976ed55, 0 1.5px 6px #1976ed66";
+                  }}
+                  onMouseLeave={e => {
+                    e.currentTarget.style.transform = "";
+                    e.currentTarget.style.boxShadow = "";
                   }}
                   onClick={() => {
                     if (onSelect) onSelect(cup);
@@ -459,27 +317,28 @@ function Home({
                       height: THUMB_HEIGHT,
                       display: "flex",
                       flexDirection: "row",
-                      background: "linear-gradient(90deg, #F2F8FF 50%, #EDF7FF 100%)",
-                      borderTopLeftRadius: CARD_RADIUS,
-                      borderTopRightRadius: CARD_RADIUS,
+                      background: "linear-gradient(90deg, #14224a 0%, #283a65 100%)",
+                      borderTopLeftRadius: 0,
+                      borderTopRightRadius: 0,
                       overflow: "hidden",
+                      position: "relative",
                     }}
                   >
                     <div
                       style={{
                         width: "50%",
                         height: "100%",
-                        borderTopLeftRadius: CARD_RADIUS,
+                        background: "#192145",
+                        borderTopLeftRadius: 0,
                         borderTopRightRadius: 0,
                         overflow: "hidden",
-                        background: "#eaf3fb",
                       }}
                     >
                       {first?.image ? (
                         <MediaRenderer url={first.image} alt="1위" playable={false} />
                       ) : (
                         <div
-                          style={{ width: "100%", height: "100%", background: "#eee" }}
+                          style={{ width: "100%", height: "100%", background: "#222" }}
                         />
                       )}
                     </div>
@@ -487,21 +346,17 @@ function Home({
                       style={{
                         width: "50%",
                         height: "100%",
+                        background: "#1f2540",
                         borderTopLeftRadius: 0,
-                        borderTopRightRadius: CARD_RADIUS,
+                        borderTopRightRadius: 0,
                         overflow: "hidden",
-                        background: "#eaf3fb",
                       }}
                     >
                       {second?.image ? (
-                        <MediaRenderer
-                          url={second.image}
-                          alt="2위"
-                          playable={false}
-                        />
+                        <MediaRenderer url={second.image} alt="2위" playable={false} />
                       ) : (
                         <div
-                          style={{ width: "100%", height: "100%", background: "#eee" }}
+                          style={{ width: "100%", height: "100%", background: "#15182b" }}
                         />
                       )}
                     </div>
@@ -510,11 +365,11 @@ function Home({
                         position: "absolute",
                         top: "50%",
                         left: "50%",
-                        transform: "translate(-50%, -55%)",
+                        transform: "translate(-50%,-55%)",
                         zIndex: 5,
                         pointerEvents: "none",
-                        width: 80,
-                        height: 80,
+                        width: isMobile ? 63.58 : 84.15,
+                        height: isMobile ? 63.58 : 84.15,
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
@@ -527,7 +382,10 @@ function Home({
                           width: "100%",
                           height: "100%",
                           objectFit: "contain",
+                          userSelect: "none",
+                          pointerEvents: "none",
                         }}
+                        draggable={false}
                       />
                     </div>
                   </div>
@@ -536,27 +394,29 @@ function Home({
                     style={{
                       width: "100%",
                       maxWidth: "100%",
-                      minHeight: 32,
-                      maxHeight: 64,
+                      minHeight: isMobile ? 32 : 38,
+                      maxHeight: isMobile ? 38 : 45,
                       overflow: "hidden",
-                      textOverflow: "ellipsis",
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
                       padding: isMobile
-                        ? "8px 11px 6px 11px"
-                        : "13px 16px 7px 16px",
+                        ? "4px 10px 0px 10px"
+                        : "6px 18px 2px 18px",
                       fontWeight: 900,
                       fontSize: isMobile ? 17 : 20,
-                      color: "#1863A3",
+                      color: "#fff",
+                      fontFamily: NEON_FONT,
                       textAlign: "center",
                       wordBreak: "break-all",
-                      lineHeight: 1.16,
-                      letterSpacing: "-0.2px",
+                      lineHeight: 1.17,
+                      letterSpacing: "0.4px",
                       boxSizing: "border-box",
+                      background: mainDark,
                       margin: 0,
                       marginBottom: 0,
                       whiteSpace: "normal",
+                      textShadow: "0 1.5px 8px #191b25cc",
                     }}
                     title={cup.title}
                   >
@@ -572,12 +432,16 @@ function Home({
                         lineHeight: 1.18,
                         margin: 0,
                         padding: 0,
+                        whiteSpace: "normal",
+                        wordBreak: "keep-all",
+                        fontFamily: NEON_FONT,
+                        fontWeight: 900,
                       }}
                     >
                       {cup.title}
                     </span>
                   </div>
-                  {/* 하단 버튼 strip */}
+                  {/* 하단 버튼 (파란선 바로 위에!) */}
                   <div
                     style={{
                       width: "100%",
@@ -585,84 +449,74 @@ function Home({
                       alignItems: "center",
                       justifyContent: "space-between",
                       padding: isMobile
-                        ? "8px 13px 8px 13px"
-                        : "11px 22px 11px 22px",
-                      minHeight: 38,
-                      background: "#fff",
+                        ? "7px 10px 10px 10px"
+                        : "11px 18px 13px 18px",
+                      minHeight: 36,
+                      background: mainDark,
                       boxSizing: "border-box",
-                      marginTop: 0,
+                      marginTop: "auto",
+                      borderTop: "none",
+                      borderBottom: `2.6px solid ${blueLine}`,
+                      borderRadius: 0,
+                      gap: 0,
                     }}
                   >
-                    {/* 시작 */}
                     <button
-                      onClick={(e) => {
+                      onClick={e => {
                         e.stopPropagation();
                         if (onSelect) onSelect(cup);
                       }}
                       style={buttonStyle}
-                      className="mainpick-btn"
-                    >
-                      시작
-                    </button>
-                    {/* 수정/삭제 */}
+                      onMouseOver={e => (e.currentTarget.style.background = "#1c2232")}
+                      onMouseOut={e => (e.currentTarget.style.background = mainDark)}
+                    >시작</button>
                     {isMine(cup) ? (
-                      <div style={{ display: "flex", gap: 8 }}>
+                      <div style={{ display: "flex", gap: 5 }}>
                         <button
-                          onClick={(e) => {
+                          onClick={e => {
                             e.stopPropagation();
                             window.location.href = `/edit-worldcup/${cup.id}`;
                           }}
                           style={smallButtonStyle}
-                          className="mainpick-btn"
-                        >
-                          수정
-                        </button>
+                          onMouseOver={e => (e.currentTarget.style.background = "#1c2232")}
+                          onMouseOut={e => (e.currentTarget.style.background = mainDark)}
+                        >수정</button>
                         <button
-                          onClick={(e) => {
+                          onClick={e => {
                             e.stopPropagation();
                             if (!window.confirm("정말 삭제하시겠습니까?")) return;
                             if (onDelete) onDelete(cup.id);
                             else window.location.reload();
                           }}
                           style={smallButtonStyle}
-                          className="mainpick-btn"
-                        >
-                          삭제
-                        </button>
+                          onMouseOver={e => (e.currentTarget.style.background = "#1c2232")}
+                          onMouseOut={e => (e.currentTarget.style.background = mainDark)}
+                        >삭제</button>
                       </div>
                     ) : (
-                      <div style={{ width: isMobile ? 43 : 51 }} />
+                      <div style={{ width: isMobile ? 39 : 49 }} />
                     )}
-                    {/* 통계/댓글 */}
                     <button
-                      onClick={(e) => {
+                      onClick={e => {
                         e.stopPropagation();
                         window.location.href = `/stats/${cup.id}`;
                       }}
                       style={buttonStyle}
-                      className="mainpick-btn"
-                    >
-                      통계/댓글
-                    </button>
+                      onMouseOver={e => (e.currentTarget.style.background = "#1c2232")}
+                      onMouseOut={e => (e.currentTarget.style.background = mainDark)}
+                    >통계/댓글</button>
                   </div>
                 </div>
               );
             })}
         </div>
+        {/* 폰트 import */}
         <style>
           {`
-            @keyframes skeleton-loading {
-              0% { background-color: #e7f1fb; }
-              50% { background-color: #e4ebf3; }
-              100% { background-color: #e7f1fb; }
-            }
-            .mainpick-btn:hover {
-              background: #f2f8ff;
-              color: #1451b8;
-            }
-            .mainpick-btn:active {
-              background: #e4eefb;
-              color: #1451b8;
+            @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&display=swap');
+            button:focus, button:active {
+              outline: none !important;
+              box-shadow: none !important;
             }
           `}
         </style>

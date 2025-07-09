@@ -37,7 +37,6 @@ export default function SelectRoundPage({ cup, maxRound, candidates, onSelect })
   const { t } = useTranslation();
   const [selectedRound, setSelectedRound] = useState(maxRound);
 
-  // 라운드 설정
   const maxPossibleRound = Math.min(candidates.length, 1024);
   let possibleRounds = [];
   for (let n = 1; Math.pow(2, n) <= maxPossibleRound; n++) {
@@ -55,7 +54,6 @@ export default function SelectRoundPage({ cup, maxRound, candidates, onSelect })
   const isMobile = useIsMobile();
   const hasBye = candidates.length < selectedRound;
 
-  // 💡 카드 그리드 세팅
   const count = candidates.length;
   const { columns, size, max } = getGridSettings(count, isMobile);
 
@@ -74,13 +72,19 @@ export default function SelectRoundPage({ cup, maxRound, candidates, onSelect })
         <div
           style={{
             fontWeight: 900,
-            fontSize: isMobile ? 23 : 48,
+            fontSize: isMobile ? 23 : 32,
             color: COLORS.main,
             marginBottom: isMobile ? 7 : 30,
             letterSpacing: "-1.2px",
-            lineHeight: 1.13,
+            lineHeight: 1.18,
             textAlign: "center",
+            maxWidth: isMobile ? "92vw" : 700,
+            marginLeft: "auto",
+            marginRight: "auto",
+            whiteSpace: "normal",
+            wordBreak: "break-all",
           }}
+          title={cup.title}
         >
           {cup.title}
         </div>
@@ -206,13 +210,12 @@ export default function SelectRoundPage({ cup, maxRound, candidates, onSelect })
                 fontSize: isMobile ? 13.5 : 16,
                 color: "#223",
                 textAlign: "center",
+                // 자연스러운 줄바꿈만!
+                whiteSpace: "normal",
                 wordBreak: "break-all",
-                overflow: "hidden",
-                textOverflow: "ellipsis",
                 lineHeight: 1.18,
-                WebkitLineClamp: 2,
-                WebkitBoxOrient: "vertical",
-                display: "-webkit-box",
+                padding: 0,
+                margin: 0,
               }}
             >
               {c.name}

@@ -118,7 +118,6 @@ function App() {
     setIsAdmin(nick === "admin");
   }
 
-  // 월드컵 전체 목록
   const fetchWorldcups = async () => {
     try {
       const list = await getWorldcupGames();
@@ -131,7 +130,6 @@ function App() {
     fetchWorldcups();
   }, []);
 
-  // === 고정 월드컵 DB fetch ===
   useEffect(() => {
     async function fetchFixedWorldcups() {
       let { data, error } = await supabase
@@ -147,21 +145,15 @@ function App() {
     fetchFixedWorldcups();
   }, []);
 
-  // === worldcupList와 fixedWorldcupIds로 실제 고정월드컵 객체 생성
   useEffect(() => {
     if (!worldcupList.length || !fixedWorldcupIds.length) {
       setFixedWorldcups([]);
       return;
     }
-    // id 순서 맞춰서 배열로
     const fixeds = fixedWorldcupIds
       .map(id => worldcupList.find(cup => String(cup.id) === String(id)))
       .filter(Boolean);
     setFixedWorldcups(fixeds);
-    // 디버깅 콘솔
-    console.log("[App] worldcupList", worldcupList);
-    console.log("[App] fixedWorldcupIds", fixedWorldcupIds);
-    console.log("[App] 고정매칭", fixeds);
   }, [worldcupList, fixedWorldcupIds]);
 
   useEffect(() => {
@@ -482,16 +474,43 @@ function App() {
     return null;
   }
 
+  // ===== [여기부터 전체 배경 적용!] =====
   return (
-    <div className="app-main-wrapper" style={{ margin: 0, padding: 0 }}>
-      <AdBanner position="left" img="ad1.png" style={{ top: "50%", left: 24, transform: "translateY(-50%)", maxHeight: "95vh", width: "300px" }} />
-      <AdBanner position="right" img="ad1.png" style={{ top: "50%", right: 24, transform: "translateY(-50%)", maxHeight: "95vh", width: "300px" }} />
-      <div className="main-content-outer" style={{ paddingTop: adHeight ? adHeight + 32 : 190, margin: 0 }}>
-        <Router>
-          <AppRoutes />
-          <BottomAdConditional />
-          <Footer />
-        </Router>
+    <div className="app-main-wrapper" style={{ margin: 0, padding: 0, minHeight: "100vh", position: "relative" }}>
+      {/* 배경이미지 + 오버레이 */}
+      <div
+        style={{
+          position: "fixed",
+          inset: 0,
+          width: "100vw",
+          height: "100vh",
+          zIndex: 0,
+          pointerEvents: "none",
+          background: `url("/onepick.png") center center / cover no-repeat fixed`,
+        }}
+      />
+      <div
+        style={{
+          position: "fixed",
+          inset: 0,
+          width: "100vw",
+          height: "100vh",
+          zIndex: 1,
+          pointerEvents: "none",
+          background: "rgba(0,0,0,0.0)", // 오버레이 투명도 조정
+        }}
+      />
+      {/* 기존 컨텐츠 zIndex=2~로 띄우기 */}
+      <div style={{ position: "relative", zIndex: 2 }}>
+        <AdBanner position="left" img="ad1.png" style={{ top: "50%", left: 24, transform: "translateY(-50%)", maxHeight: "95vh", width: "300px" }} />
+        <AdBanner position="right" img="ad1.png" style={{ top: "50%", right: 24, transform: "translateY(-50%)", maxHeight: "95vh", width: "300px" }} />
+        <div className="main-content-outer" style={{ paddingTop: adHeight ? adHeight + 32 : 190, margin: 0 }}>
+          <Router>
+            <AppRoutes />
+            <BottomAdConditional />
+            <Footer />
+          </Router>
+        </div>
       </div>
     </div>
   );

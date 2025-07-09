@@ -5,6 +5,28 @@ import MediaRenderer from "./MediaRenderer";
 import { supabase } from "../utils/supabaseClient";
 import CommentBox from "./CommentBox";
 
+// 2줄 20글자씩 제목, 41자 이상 ... 처리 함수
+function twoLineTitle(title) {
+  if (!title) return "";
+  if (title.length <= 20) return title;
+  if (title.length <= 40)
+    return (
+      <>
+        {title.slice(0, 20)}
+        <br />
+        {title.slice(20)}
+      </>
+    );
+  // 41자 이상
+  return (
+    <>
+      {title.slice(0, 20)}
+      <br />
+      {title.slice(20, 40) + "..."}
+    </>
+  );
+}
+
 // ---- 신고버튼 (동일) ----
 function ReportButton({ cupId, size = "md" }) {
   const [show, setShow] = useState(false);
@@ -445,6 +467,45 @@ export default function StatsPage({ selectedCup, showCommentBox = false }) {
         boxSizing: "border-box"
       }}
     >
+      {/* === 월드컵 제목 (맨 위 중앙) 2줄 & ... 처리 === */}
+<div style={{
+  width: "100%",
+  display: "flex",
+  justifyContent: "center",
+  margin: "28px 0 22px 0",
+}}>
+  <h1
+    style={{
+      fontWeight: 900,
+      fontSize: isMobile ? 20 : 28,
+      color: "#1841a7",
+      background: "#fafdffcc",
+      padding: isMobile ? "8px 16px" : "14px 36px",
+      borderRadius: 15,
+      letterSpacing: "-1px",
+      boxShadow: "0 2px 12px #1976ed18",
+      lineHeight: 1.18,
+      maxWidth: isMobile ? "98vw" : "650px",
+      minWidth: 0,
+      textShadow: "0 1.5px 5px #e2ecfa77",
+      overflow: "hidden",
+      textOverflow: "ellipsis",
+      whiteSpace: "normal",
+      display: "-webkit-box",
+      WebkitBoxOrient: "vertical",
+      WebkitLineClamp: 2, // 2줄까지만
+      wordBreak: "break-all",
+      textAlign: "center",
+      margin: "0 auto",       // **중앙정렬 보장**
+    }}
+    title={selectedCup.title}
+  >
+    {twoLineTitle(selectedCup.title)}
+  </h1>
+</div>
+
+      {/* === 제목 추가 끝 === */}
+
       {/* 공유/신고 항상 상단에 노출 */}
       <ShareAndReportBar />
 
