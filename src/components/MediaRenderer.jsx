@@ -1,10 +1,19 @@
 import React, { useState } from "react";
-import { getYoutubeId } from "../utils";
 
-// 유튜브 썸네일 fallback
-const DEFAULT_IMAGE = "/default-thumb.png";
+// 유튜브 id 추출 함수
+function getYoutubeId(url) {
+  if (!url) return null;
+  // youtu.be/xxxx, youtube.com/watch?v=xxxx, /embed/xxxx 등 지원
+  const yt =
+    url.match(/youtu\.be\/([^/?&]+)/) ||
+    url.match(/youtube\.com.*[?&]v=([^&]+)/) ||
+    url.match(/youtube\.com\/embed\/([^/?&]+)/);
+  return yt ? yt[1] : null;
+}
 
-// 파일 확장자
+const DEFAULT_IMAGE = "/default-thumb.png"; // public 폴더에 넣으세요!
+
+// 확장자 구하기
 function getFileExtension(url) {
   if (!url) return "";
   const clean = url.split("?")[0];
@@ -14,34 +23,22 @@ function getFileExtension(url) {
   return ext;
 }
 
-// 플레이 가능 여부: 게임에서는 playable, 홈/고정월드컵은 playable false로 전달해야 함
+// 메인 컴포넌트
 function MediaRenderer({
   url,
   alt = "",
-  playable = false, // key! (Match에서만 true, 나머지 false)
+  playable = false, // 홈/추천: false, 경기(실제재생): true
   style = {},
-  onPlay, // 유튜브 클릭시 재생 콜백(선택)
+  onPlay // optional
 }) {
   const [imgError, setImgError] = useState(false);
   const [youtubePlaying, setYoutubePlaying] = useState(false);
 
-  if (!url || imgError) {
-    return (
-      <img
-        src={DEFAULT_IMAGE}
-        alt={alt || "기본 이미지"}
-        style={{ width: "100%", height: "100%", objectFit: "cover", ...style }}
-        draggable={false}
-      />
-    );
-  }
-
+  // ===== 유튜브 영상 처리 =====
   const youtubeId = getYoutubeId(url);
-  const ext = getFileExtension(url);
-  const isVideo = ["mp4", "webm", "ogg", "mov"].includes(ext);
 
-  // 게임중(=playable=true) && 유튜브면: 클릭시 재생(iframe), 아니면 정지(썸네일)
   if (youtubeId) {
+    // 재생 모드 (경기)일 때만 클릭시 실제 유튜브 영상 보여줌
     if (playable) {
       return (
         <div
@@ -50,11 +47,10 @@ function MediaRenderer({
             height: "100%",
             position: "relative",
             background: "#111",
-            cursor: "pointer",
+            cursor: youtubePlaying ? "default" : "pointer",
             ...style,
           }}
           onClick={e => {
-            e.stopPropagation();
             if (!youtubePlaying) {
               setYoutubePlaying(true);
               if (onPlay) onPlay();
@@ -66,7 +62,13 @@ function MediaRenderer({
               <img
                 src={`https://img.youtube.com/vi/${youtubeId}/mqdefault.jpg`}
                 alt={alt || "YouTube thumbnail"}
-                style={{ width: "100%", height: "100%", objectFit: "cover", border: 0 }}
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "cover",
+                  border: 0,
+                  display: "block"
+                }}
                 draggable={false}
                 onError={() => setImgError(true)}
               />
@@ -75,13 +77,13 @@ function MediaRenderer({
                   position: "absolute",
                   top: 0, left: 0, width: "100%", height: "100%",
                   display: "flex", alignItems: "center", justifyContent: "center",
-                  background: "rgba(0,0,0,0.25)",
+                  background: "rgba(0,0,0,0.21)",
                   pointerEvents: "none",
                 }}
               >
-                <svg width="48" height="48" viewBox="0 0 48 48">
-                  <circle cx="24" cy="24" r="23" fill="#000" opacity="0.25"/>
-                  <polygon points="18,15 36,24 18,33" fill="#fff" />
+                <svg width="46" height="46" viewBox="0 0 48 48">
+                  <circle cx="24" cy="24" r="22" fill="#000" opacity="0.27"/>
+                  <polygon points="19,15 36,24 19,33" fill="#fff" />
                 </svg>
               </div>
             </>
@@ -100,51 +102,115 @@ function MediaRenderer({
         </div>
       );
     }
-    // 홈/고정월드컵 등: 썸네일만
+    // 썸네일 모드(추천/홈): 무조건 유튜브 썸네일 (엑박 대비 onError fallback)
     return (
       <img
         src={`https://img.youtube.com/vi/${youtubeId}/mqdefault.jpg`}
         alt={alt || "YouTube thumbnail"}
-        style={{ width: "100%", height: "100%", objectFit: "cover", ...style }}
+        style={{
+          width: "100%",
+          height: "100%",
+          objectFit: "cover",
+          background: "#222",
+          display: "block",
+          ...style
+        }}
         draggable={false}
         onError={() => setImgError(true)}
       />
     );
   }
 
+  // ===== 동영상(mp4/webm/ogg/mov) 지원(경기/재생만, 나머지는 썸네일/기본) =====
+  const ext = getFileExtension(url);
+  const isVideo = ["mp4", "webm", "ogg", "mov"].includes(ext);
+
   if (isVideo) {
-    // 게임 화면만 지원. (썸네일 따로 필요시 분리)
-    return playable ? (
-      <video
-        style={{ width: "100%", height: "100%", objectFit: "cover", ...style }}
-        src={url}
-        muted
-        loop
-        autoPlay
-        playsInline
-        controls={false}
-        poster={DEFAULT_IMAGE}
-        onError={e => { if (!imgError) setImgError(true); }}
-      />
-    ) : (
+    if (playable) {
+      // 경기에서는 영상 재생(썸네일 미리보기가 필요하면 추가)
+      return (
+        <video
+          style={{ width: "100%", height: "100%", objectFit: "cover", ...style }}
+          src={url}
+          muted
+          loop
+          autoPlay
+          playsInline
+          controls={false}
+          poster={DEFAULT_IMAGE}
+          onError={e => { if (!imgError) setImgError(true); }}
+        />
+      );
+    }
+    // 홈/추천에서는 동영상 그냥 이미지 fallback (썸네일은 별도 로직 추가 가능)
+    return (
       <img
         src={DEFAULT_IMAGE}
         alt={alt}
         style={{ width: "100%", height: "100%", objectFit: "cover", ...style }}
         draggable={false}
+      />
+    );
+  }
+
+  // ===== 이미지(jpg/png/gif/webp/bmp) =====
+  if (
+    url &&
+    !imgError &&
+    url.match(/\.(jpeg|jpg|gif|png|webp|bmp)$/i)
+  ) {
+    return (
+      <img
+        src={url}
+        alt={alt}
+        style={{
+          width: "100%",
+          height: "100%",
+          objectFit: "cover",
+          background: "#222",
+          display: "block",
+          ...style
+        }}
+        draggable={false}
         onError={() => setImgError(true)}
       />
     );
   }
 
-  // 이미지(jpg/png/gif/webp 등)
+  // ===== 엑박, 빈값, 모르는 타입 등 fallback =====
+  if (imgError || !url) {
+    return (
+      <img
+        src={DEFAULT_IMAGE}
+        alt="기본 이미지"
+        style={{
+          width: "100%",
+          height: "100%",
+          objectFit: "cover",
+          background: "#222",
+          display: "block",
+          ...style
+        }}
+        draggable={false}
+      />
+    );
+  }
+
+  // ===== 기타(그냥 시도, 실패하면 fallback) =====
   return (
     <img
       src={url}
       alt={alt}
-      style={{ width: "100%", height: "100%", objectFit: "cover", ...style }}
-      onError={() => { if (!imgError) setImgError(true); }}
+      style={{
+        width: "100%",
+        height: "100%",
+        objectFit: "cover",
+        background: "#222",
+        display: "block",
+        ...style
+      }}
       draggable={false}
+      onError={() => setImgError(true)}
     />
   );
 }

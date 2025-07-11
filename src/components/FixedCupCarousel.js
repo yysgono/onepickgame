@@ -1,21 +1,5 @@
 import React, { useState, useEffect } from "react";
-
-function MediaRenderer({ url, alt }) {
-  return (
-    <img
-      src={url}
-      alt={alt}
-      style={{
-        width: "100%",
-        height: "100%",
-        objectFit: "cover",
-        background: "#222",
-        display: "block",
-      }}
-      draggable={false}
-    />
-  );
-}
+import MediaRenderer from "./MediaRenderer";
 
 function FixedCupCarousel({ worldcupList }) {
   const [vw, setVw] = useState(window.innerWidth);
@@ -39,7 +23,7 @@ function FixedCupCarousel({ worldcupList }) {
   const cardW = vw < 540 ? "96vw" : vw < 780 ? 212 : 270;
   const cardH = vw < 540 ? 120 : vw < 780 ? 136 : 158;
   const titleH = 34;
-  const titleBg = "#171C27"; // 카드와 동일한 배경
+  const titleBg = "#171C27";
 
   const pageCups = cups.slice(page * perPage, page * perPage + perPage);
 
@@ -69,9 +53,9 @@ function FixedCupCarousel({ worldcupList }) {
       <div
         style={{
           fontWeight: 900,
-          fontSize: vw < 600 ? 21 : 26, // 10% 증가 (19→21, 24→26)
+          fontSize: vw < 600 ? 21 : 26,
           marginBottom: vw < 600 ? 3 : 5,
-          color: "#fff", // 흰색
+          color: "#fff",
           letterSpacing: "-0.5px",
           textAlign: "center",
           width: "100%",
@@ -231,7 +215,6 @@ function FixedCupCarousel({ worldcupList }) {
                   />
                 </div>
               </div>
-              {/* 제목 (카드와 완전히 동일한 배경색) */}
               <div
                 style={{
                   width: "100%",

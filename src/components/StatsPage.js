@@ -125,7 +125,6 @@ function ReportButton({ cupId, size = "md" }) {
 
 const PERIODS = [
   { label: "전체", value: null },
-  { label: "1주일", value: 7 },
   { label: "1개월", value: 30 },
   { label: "3개월", value: 90 },
   { label: "6개월", value: 180 },

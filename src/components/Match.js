@@ -9,7 +9,7 @@ import MediaRenderer from "./MediaRenderer";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 
-// AdaptiveTitle (타이틀 흰색으로 변경)
+// 제목 (텍스트만, 박스X)
 function AdaptiveTitle({ title, isMobile }) {
   const ref = useRef();
   const [fontSize, setFontSize] = useState(isMobile ? 54 : 100);
@@ -28,9 +28,8 @@ function AdaptiveTitle({ title, isMobile }) {
     <div
       ref={ref}
       style={{
-        height: isMobile ? 65 : 130,
         fontWeight: 900,
-        color: "#fff", // ★ 타이틀 흰색
+        color: "#fff",
         letterSpacing: "-1.5px",
         lineHeight: 1.1,
         wordBreak: "break-all",
@@ -51,6 +50,7 @@ function AdaptiveTitle({ title, isMobile }) {
   );
 }
 
+// Spinner (로딩)
 function Spinner({ size = 60 }) {
   return (
     <div style={{
@@ -80,7 +80,172 @@ function Spinner({ size = 60 }) {
   );
 }
 
-// 유틸 함수 동일
+// [카드만 변경] 더 크게 + 사이드배너와 겹치지 않게!
+function CandidateBox({ c, onClick, disabled, idx }) {
+  const [hover, setHover] = useState(false);
+  const vw = typeof window !== "undefined" ? window.innerWidth : 1200;
+  const isMobile = vw < 1000;
+
+  // 카드 사이드 공간 확보 (좌우 배너 폭 약 200px씩, gap 40px씩 여유!)
+  const SIDE_BANNER = vw > 1400 ? 200 : 110;
+  const CARD_MAX_WIDTH = 520; // 카드 최대폭 (원하면 더 키워도됨)
+  const CARD_WIDTH = isMobile
+    ? "97vw"
+    : `min(${CARD_MAX_WIDTH}px, calc((100vw - ${SIDE_BANNER * 2 + 80}px)/2))`;
+const CARD_HEIGHT = isMobile ? 380 : 560;       // 높이 크게!
+const THUMB_HEIGHT = isMobile ? 280 : 480;      // 썸네일도 확장!
+
+  const NEON_FONT = "'Orbitron', 'Pretendard', sans-serif";
+  const mainDark = "#171C27";
+  const blueLine = "#1976ed";
+
+  return (
+    <div
+      style={{
+        width: CARD_WIDTH,
+        height: CARD_HEIGHT,
+        maxWidth: CARD_WIDTH,
+        minWidth: 0,
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        background: "rgba(17,27,55,0.82)",
+        borderRadius: 22,
+        boxShadow: hover && !isMobile
+          ? "0 13px 46px 0 #fff5, 0 16px 48px 0 #1976ed22"
+          : "0 8px 38px 0 #fff3, 0 2px 12px #1976ed18",
+        border: "1.5px solid #223a74",
+        transition: "box-shadow 0.22s, transform 0.20s cubic-bezier(.23,1.05,.32,1)",
+        margin: isMobile ? "2vw 0" : "32px 0",
+        cursor: c ? "pointer" : "default",
+        backdropFilter: "blur(11px) brightness(1.06)",
+        WebkitBackdropFilter: "blur(11px) brightness(1.06)",
+        willChange: "transform",
+        position: "relative",
+        zIndex: hover && !isMobile ? 8 : 1,
+        transform: hover && !isMobile ? "translateY(-10px) scale(1.025)" : "",
+        overflow: "hidden"
+      }}
+      onMouseEnter={() => !isMobile && setHover(true)}
+      onMouseLeave={() => !isMobile && setHover(false)}
+      onClick={c ? onClick : undefined}
+    >
+      {/* 은은한 glow */}
+      <div style={{
+        position: "absolute",
+        top: "-35%",
+        left: "-14%",
+        width: "150%",
+        height: "190%",
+        zIndex: 0,
+        background:
+          "radial-gradient(circle at 50% 60%, #fff 0%, #fff0 92%)",
+        filter: "blur(38px)",
+        opacity: 0.13,
+        pointerEvents: "none",
+      }} />
+      {/* 썸네일 */}
+      <div
+        style={{
+          width: "100%",
+          height: THUMB_HEIGHT,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          background: "linear-gradient(90deg, #172847 0%, #263b64 100%)",
+          borderTopLeftRadius: 22,
+          borderTopRightRadius: 22,
+          overflow: "hidden",
+          zIndex: 2,
+        }}
+      >
+        {c ? (
+          <MediaRenderer url={c.image} alt={c.name} playable />
+        ) : (
+          <div style={{ width: "100%", height: "100%", background: "#222" }} />
+        )}
+      </div>
+      {/* 이름/버튼 */}
+      <div
+        style={{
+          width: "100%",
+          minHeight: isMobile ? 38 : 54,
+          maxHeight: isMobile ? 44 : 70,
+          padding: isMobile ? "4px 10px 0 10px" : "13px 18px 7px 18px",
+          fontWeight: 900,
+          fontSize: isMobile ? 18 : 26,
+          color: "#fff",
+          fontFamily: NEON_FONT,
+          textAlign: "center",
+          wordBreak: "break-all",
+          lineHeight: 1.16,
+          letterSpacing: "0.4px",
+          boxSizing: "border-box",
+          background: mainDark,
+          borderBottom: `1.3px solid #1976ed66`
+        }}
+        title={c?.name || ""}
+      >
+        <span
+          style={{
+            display: "-webkit-box",
+            WebkitBoxOrient: "vertical",
+            WebkitLineClamp: 2,
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            textAlign: "center",
+            lineHeight: 1.15,
+            margin: 0,
+            padding: 0,
+            whiteSpace: "normal",
+            wordBreak: "keep-all",
+            fontFamily: NEON_FONT,
+            fontWeight: 900,
+          }}
+        >
+          {c ? c.name : "부전승"}
+        </span>
+      </div>
+      <div
+        style={{
+          width: "100%",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          padding: isMobile ? "8px 11px" : "17px 0 18px 0",
+          background: mainDark,
+          borderTop: "none",
+          borderBottom: `2.5px solid ${blueLine}`,
+          borderRadius: 0,
+          marginTop: "auto",
+        }}
+      >
+        <button
+          style={{
+            background: blueLine,
+            color: "#fff",
+            fontWeight: 900,
+            border: "none",
+            borderRadius: 13,
+            fontSize: isMobile ? 15 : 20,
+            padding: isMobile ? "8px 21px" : "14px 44px",
+            outline: "none",
+            cursor: c ? "pointer" : "default",
+            letterSpacing: "0.5px",
+            fontFamily: NEON_FONT,
+            margin: "0 auto",
+            boxShadow: "0 2px 12px #1976ed22",
+            transition: "background 0.15s",
+            opacity: c ? 1 : 0.3
+          }}
+          onClick={c ? onClick : undefined}
+        >선택</button>
+      </div>
+    </div>
+  );
+}
+
+// 아래는 모두 기존과 동일
 function getStageLabel(n, isFirst = false) {
   if (isFirst) return `${n}강`;
   if (n === 2) return "결승전";
@@ -92,11 +257,13 @@ function getStageLabel(n, isFirst = false) {
   if (n === 128) return "128강";
   return `${n}강`;
 }
+
 function nextPowerOfTwo(n) {
   let k = 1;
   while (k < n) k *= 2;
   return k;
 }
+
 function shuffle(arr) {
   let m = arr.length, t, i;
   while (m) {
@@ -107,6 +274,7 @@ function shuffle(arr) {
   }
   return arr;
 }
+
 function makeFirstRound(players) {
   const shuffled = shuffle([...players]);
   const pow2 = nextPowerOfTwo(players.length);
@@ -124,6 +292,7 @@ function makeFirstRound(players) {
   }
   return { matches, byes };
 }
+
 function makeNextRound(winners) {
   const pairs = [];
   for (let i = 0; i < winners.length; i += 2) {
@@ -131,6 +300,7 @@ function makeNextRound(winners) {
   }
   return pairs;
 }
+
 function truncateNames(candidates, maxWords = 3) {
   return candidates.map(c => {
     if (!c?.name) return "?";
@@ -140,7 +310,6 @@ function truncateNames(candidates, maxWords = 3) {
   });
 }
 
-// Match 컴포넌트
 function Match({ cup, onResult, selectedCount }) {
   const { t } = useTranslation();
   const [bracket, setBracket] = useState([]);
@@ -243,83 +412,12 @@ function Match({ cup, onResult, selectedCount }) {
 
   const vw = typeof window !== "undefined" ? window.innerWidth : 1200;
   const isMobile = vw < 1000;
-  const BANNER_SPACE = 284;
-  const CAND_WIDTH = isMobile
-    ? "98vw"
-    : `calc((100vw - ${BANNER_SPACE * 2}px) / 2)`;
-
   const STAGE_SIZE = isMobile ? 15 : 20;
-  // const NAME_FONT_SIZE = isMobile ? 20 : 32;
-  // const NAME_HEIGHT = isMobile ? "2.5em" : "2.8em";
   const nextIdx = idx + 1;
   const nextRoundCandidates =
     bracket && nextIdx < bracket.length
       ? [bracket[nextIdx][0], bracket[nextIdx][1]].filter(Boolean)
       : [];
-
-  // 후보 박스 (버튼에 후보 이름, 썸네일 아래 이름 표시 div 제거)
-  function CandidateBox({ c, onClick, disabled, idx }) {
-    return (
-      <div
-        style={{
-          width: CAND_WIDTH,
-          maxWidth: isMobile ? "98vw" : 540,
-          minWidth: 0,
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          boxSizing: "border-box",
-        }}
-      >
-        <button
-          onClick={c ? onClick : undefined}
-          disabled={!c || disabled}
-          style={{
-            width: "92%",
-            padding: isMobile ? "11px 0" : "15px 0",
-            background: "linear-gradient(90deg, #1976ed 65%, #45b7fa 100%)",
-            color: "#fff",
-            border: "none",
-            borderRadius: 22,
-            fontWeight: 900,
-            fontSize: isMobile ? 15 : 22,
-            boxShadow: "0 2px 12px #1976ed12",
-            letterSpacing: "-1px",
-            margin: "7px 0 6px 0",
-            cursor: c ? "pointer" : "default",
-            opacity: c ? 1 : 0.25,
-          }}
-        >
-          {c ? c.name : t("bye") || "부전승"}
-        </button>
-        <div
-          style={{
-            width: "92%",
-            aspectRatio: "1/1",
-            borderRadius: 32,
-            boxShadow: "0 4px 28px #1976ed18",
-            overflow: "hidden",
-            background: "#e7f3fd",
-            marginBottom: 8,
-            marginTop: 4,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-          onClick={c ? onClick : undefined}
-        >
-          {c ? (
-            <MediaRenderer url={c.image} alt={c.name} playable />
-          ) : (
-            <span style={{ fontSize: isMobile ? 21 : 34, color: "#bbb" }}>
-              {t("bye") || "BYE"}
-            </span>
-          )}
-        </div>
-        {/* 후보 이름 표시 div 삭제됨 */}
-      </div>
-    );
-  }
 
   if (loading) return (
     <div style={{ display: "flex", flexDirection: "column", alignItems: "center", marginTop: 24 }}>
@@ -377,7 +475,7 @@ function Match({ cup, onResult, selectedCount }) {
           fontSize: STAGE_SIZE,
           fontWeight: 800,
           marginBottom: isMobile ? 5 : 11,
-          color: "#fff", // ★ 몇강도 흰색
+          color: "#fff",
         }}
       >
         {getStageLabel(bracket.length * 2 + pendingWinners.length, roundNum === 1)}{" "}
@@ -440,7 +538,7 @@ function Match({ cup, onResult, selectedCount }) {
           ))}
         </div>
       )}
-      {/* 후보 썸네일 */}
+      {/* 카드 영역 (gap 조절 필요하면 여기!) */}
       <div
         style={{
           width: "100vw",
@@ -448,18 +546,24 @@ function Match({ cup, onResult, selectedCount }) {
           flexDirection: "row",
           justifyContent: "center",
           alignItems: "stretch",
-          gap: 0,
+          gap: isMobile ? 11 : 44, // 여백 넉넉히!
           margin: 0,
           padding: 0,
           boxSizing: "border-box",
           position: "relative",
           left: "50%",
           transform: "translateX(-50%)",
+          zIndex: 1,
         }}
       >
         <CandidateBox c={c1} onClick={() => handlePick(0)} disabled={autoPlaying} idx={0} />
         <CandidateBox c={c2} onClick={() => handlePick(1)} disabled={autoPlaying} idx={1} />
       </div>
+      <style>
+        {`
+          @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&display=swap');
+        `}
+      </style>
     </div>
   );
 }
