@@ -276,7 +276,7 @@ export default function ResultPage({ worldcupList }) {
           height: "100vh",
           zIndex: 0,
           pointerEvents: "none",
-          background: "rgba(0,0,0,0.0)" // <- 여기서 진하기 조절!
+          background: "rgba(0,0,0,0.4)" // <- 여기서 진하기 조절!
         }}
       />
       {/* 실제 컨텐츠 */}

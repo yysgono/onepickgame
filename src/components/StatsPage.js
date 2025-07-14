@@ -5,7 +5,7 @@ import MediaRenderer from "./MediaRenderer";
 import { supabase } from "../utils/supabaseClient";
 import CommentBox from "./CommentBox";
 
-// 2줄 20글자씩 제목, 41자 이상 ... 처리 함수
+// 타이틀 2줄 20글자, 41자 이상 ... 처리
 function twoLineTitle(title) {
   if (!title) return "";
   if (title.length <= 20) return title;
@@ -17,7 +17,6 @@ function twoLineTitle(title) {
         {title.slice(20)}
       </>
     );
-  // 41자 이상
   return (
     <>
       {title.slice(0, 20)}
@@ -27,7 +26,7 @@ function twoLineTitle(title) {
   );
 }
 
-// ---- 신고버튼 (동일) ----
+// 신고 버튼
 function ReportButton({ cupId, size = "md" }) {
   const [show, setShow] = useState(false);
   const [reason, setReason] = useState("");
@@ -115,7 +114,9 @@ function ReportButton({ cupId, size = "md" }) {
               <button onClick={() => setShow(false)}>닫기</button>
             </div>
             {ok && <div style={{ color: "#1976ed", marginTop: 7 }}>{ok}</div>}
-            {error && <div style={{ color: "#d33", marginTop: 7 }}>{error}</div>}
+            {error && (
+              <div style={{ color: "#d33", marginTop: 7 }}>{error}</div>
+            )}
           </div>
         </div>
       )}
@@ -123,6 +124,7 @@ function ReportButton({ cupId, size = "md" }) {
   );
 }
 
+// 기간 선택
 const PERIODS = [
   { label: "전체", value: null },
   { label: "1개월", value: 30 },
@@ -131,6 +133,7 @@ const PERIODS = [
   { label: "1년", value: 365 },
 ];
 
+// 퍼센트 표시
 function percent(n, d) {
   if (!d) return "-";
   return Math.round((n / d) * 100) + "%";
@@ -148,6 +151,110 @@ function getCustomSinceDate(from, to) {
   return { from: fromIso, to: toIso };
 }
 
+// 1~3위 카드
+function RankCard({
+  rank,
+  name,
+  image,
+  win_count,
+  win_rate,
+  match_wins,
+  match_count,
+  match_win_rate,
+  isMobile,
+}) {
+  const medals = [
+    { emoji: "🥇", color: "#f8c800", shadow: "#ecd95d44", text: "#bb9800" },
+    { emoji: "🥈", color: "#ff9700", shadow: "#faad4433", text: "#a9812e" },
+    { emoji: "🥉", color: "#ef5b7b", shadow: "#f77e8b19", text: "#e26464" },
+  ];
+  const medal = medals[rank - 1] || medals[2];
+  const bg = ["#fcf5cd", "#eef3fa", "#fff3f3"][rank - 1];
+  return (
+    <div
+      style={{
+        background: bg,
+        borderRadius: 26,
+        boxShadow: "0 8px 36px #1114, 0 2px 12px #eee4",
+        padding: isMobile ? 19 : 32,
+        minWidth: isMobile ? 210 : 270,
+        maxWidth: 340,
+        margin: "32px 15px 18px 15px",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        position: "relative",
+        minHeight: isMobile ? 200 : 300,
+        border: "2.2px solid #faf7ee",
+        zIndex: 2,
+      }}
+    >
+      {/* 큰 메달! */}
+      <div
+        style={{
+          position: "absolute",
+          left: "50%",
+          top: -47,
+          transform: "translateX(-50%)",
+          fontSize: 56,
+          fontWeight: 900,
+          textShadow: `0 2px 24px ${medal.shadow}`,
+          color: medal.color,
+          background: "#fffde8",
+          borderRadius: "50%",
+          width: 70,
+          height: 70,
+          border: `5px solid ${medal.color}`,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          zIndex: 5,
+        }}
+      >
+        {medal.emoji}
+      </div>
+      <div
+        style={{
+          width: isMobile ? 92 : 116,
+          height: isMobile ? 92 : 116,
+          borderRadius: "50%",
+          overflow: "hidden",
+          margin: "60px auto 20px auto",
+          boxShadow: "0 2px 16px #8883, 0 0px 0px #fff8",
+          background: "#fff",
+        }}
+      >
+        <MediaRenderer url={image} alt={name} />
+      </div>
+      <div style={{ fontWeight: 800, fontSize: isMobile ? 29 : 34, margin: "0 0 8px 0", color: medal.text }}>
+        {rank}
+      </div>
+      <div
+        style={{
+          fontWeight: 900,
+          fontSize: isMobile ? 18 : 23,
+          color: "#716500",
+          marginBottom: 8,
+        }}
+      >
+        우승 {win_count} | <span style={{ color: "#9d8703" }}>우승률 {win_rate}</span>
+      </div>
+      <div
+        style={{
+          fontSize: isMobile ? 15 : 17,
+          color: "#9098a6",
+          fontWeight: 600,
+          letterSpacing: "-0.2px",
+          marginBottom: 4,
+        }}
+      >
+        승리 {match_wins} | 대결 {match_count} | 승률 {match_win_rate}
+      </div>
+    </div>
+  );
+}
+
+// 통계 테이블 로딩
 function StatsSkeleton({ isMobile = false }) {
   const dummyRows = Array(7).fill(0);
   return (
@@ -213,7 +320,12 @@ function StatsSkeleton({ isMobile = false }) {
   );
 }
 
-export default function StatsPage({ selectedCup, showCommentBox = false }) {
+// ---- 메인 컴포넌트 ----
+export default function StatsPage({
+  selectedCup,
+  showCommentBox = false,
+  highlightCandidateId,
+}) {
   const { t } = useTranslation();
   const [stats, setStats] = useState([]);
   const [sortKey, setSortKey] = useState("win_count");
@@ -228,11 +340,6 @@ export default function StatsPage({ selectedCup, showCommentBox = false }) {
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 800);
-  const [user, setUser] = useState(null);
-
-  useEffect(() => {
-    supabase.auth.getUser().then(({ data }) => setUser(data?.user || null));
-  }, []);
 
   useEffect(() => {
     function onResize() {
@@ -272,84 +379,58 @@ export default function StatsPage({ selectedCup, showCommentBox = false }) {
       win_count: row.user_win_count || 0,
     }));
   }
-  filteredStats = filteredStats.sort((a, b) =>
-    sortDesc
-      ? (b[sortKey] ?? 0) - (a[sortKey] ?? 0)
-      : (a[sortKey] ?? 0) - (b[sortKey] ?? 0)
-  );
 
+  // 정렬(각 칼럼 오름/내림차순, win_rate, match_win_rate 계산 포함)
+  filteredStats = filteredStats
+    .map((row, i) => ({ ...row, _originIdx: i }))
+    .sort((a, b) => {
+      let av = a[sortKey], bv = b[sortKey];
+      if (sortKey === "win_rate")
+        av = a.total_games ? a.win_count / a.total_games : 0,
+        bv = b.total_games ? b.win_count / b.total_games : 0;
+      if (sortKey === "match_win_rate")
+        av = a.match_count ? a.match_wins / a.match_count : 0,
+        bv = b.match_count ? b.match_wins / b.match_count : 0;
+      if (typeof av === "string") av = av.toLowerCase();
+      if (typeof bv === "string") bv = bv.toLowerCase();
+      if (av < bv) return sortDesc ? 1 : -1;
+      if (av > bv) return sortDesc ? -1 : 1;
+      return a._originIdx - b._originIdx;
+    });
+
+  // 랭킹부여
+  filteredStats.forEach((row, i) => { row.rank = i + 1; });
   const totalStats = filteredStats.length;
   const totalPages = Math.max(1, Math.ceil(totalStats / itemsPerPage));
   const pagedStats = filteredStats.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
-
   useEffect(() => { setCurrentPage(1); }, [search, itemsPerPage, stats]);
 
-  function getRowStyle(rank) {
-    if (rank === 1) return { background: "#fff9dd" };
-    if (rank === 2) return { background: "#e9f3ff" };
-    if (rank === 3) return { background: "#ffe9ea" };
-    return {};
-  }
-  function getNameTextStyle(rank) {
-    if (rank === 1) return { color: "#e0af19", fontWeight: 700 };
-    if (rank === 2) return { color: "#4286f4", fontWeight: 700 };
-    if (rank === 3) return { color: "#e26464", fontWeight: 700 };
-    return {};
-  }
-  const nameTdStyle = {
-    maxWidth: isMobile ? 90 : 120,
-    wordBreak: "break-word",
-    overflow: "hidden",
-    textOverflow: "ellipsis",
-    display: "-webkit-box",
-    WebkitLineClamp: 2,
-    WebkitBoxOrient: "vertical",
-    whiteSpace: "normal",
-    fontWeight: 700,
-    fontSize: isMobile ? 13 : 15,
-    lineHeight: 1.18,
-    textAlign: "center",
-    verticalAlign: "middle",
-    position: "relative",
-    top: 0,
+  // 카드 고정(우승 기준 1~3위)
+  const top3 = [...stats]
+    .sort((a, b) => (b.win_count ?? 0) - (a.win_count ?? 0))
+    .slice(0, 3);
+
+  // 표 스타일
+  const ivoryCell = {
+    background: "#fcf5cd",
+    fontWeight: 800,
+    color: "#998314",
+    fontSize: isMobile ? 15 : 18,
+    border: 0
   };
 
-  function tabBtnStyle(selected) {
-    return {
-      padding: "8px 19px",
-      marginRight: 8,
-      borderRadius: 8,
-      border: selected
-        ? "2.5px solid #1976ed"
-        : "1.5px solid #ccc",
-      background: selected ? "#e8f2fe" : "#fff",
-      color: selected ? "#1976ed" : "#555",
-      fontWeight: 700,
-      fontSize: 15,
-      cursor: "pointer",
-      transition: "all 0.15s",
-      boxShadow: selected ? "0 2px 7px #1976ed22" : undefined,
-      marginBottom: 7,
-    };
-  }
-  function periodBtnStyle(selected) {
-    return {
-      padding: "7px 15px",
-      marginRight: 7,
-      marginBottom: 6,
-      borderRadius: 8,
-      border: selected
-        ? "2.5px solid #1976ed"
-        : "1.5px solid #ccc",
-      background: selected ? "#e8f2fe" : "#fff",
-      color: selected ? "#1976ed" : "#555",
-      fontWeight: 700,
-      fontSize: 15,
-      cursor: "pointer",
-      transition: "all 0.15s"
-    };
-  }
+  const sortableCols = [
+    { key: "rank", label: t("rank"), isIvory: true },
+    { key: "image", label: t("image") },
+    { key: "name", label: t("name") },
+    { key: "win_count", label: t("win_count") },
+    { key: "win_rate", label: t("win_rate"), isIvory: true },
+    { key: "match_wins", label: t("match_wins") },
+    { key: "match_count", label: t("duel_count") },
+    { key: "match_win_rate", label: t("match_win_rate"), isIvory: true },
+  ];
 
+  // 페이지네이션
   function Pagination() {
     if (totalPages <= 1) return null;
     let pages = [];
@@ -418,7 +499,7 @@ export default function StatsPage({ selectedCup, showCommentBox = false }) {
     );
   }
 
-  // 공유/신고 항상 노출
+  // 공유/신고
   function ShareAndReportBar() {
     if (!selectedCup?.id) return null;
     const shareUrl = `${window.location.origin}/select-round/${selectedCup.id}`;
@@ -456,6 +537,7 @@ export default function StatsPage({ selectedCup, showCommentBox = false }) {
     );
   }
 
+  // ------ Render ------
   return (
     <div
       style={{
@@ -463,63 +545,102 @@ export default function StatsPage({ selectedCup, showCommentBox = false }) {
         maxWidth: 1200,
         margin: "0 auto",
         padding: "0 0 32px 0",
-        boxSizing: "border-box"
+        boxSizing: "border-box",
       }}
     >
-      {/* === 월드컵 제목 (맨 위 중앙) 2줄 & ... 처리 === */}
-<div style={{
-  width: "100%",
-  display: "flex",
-  justifyContent: "center",
-  margin: "28px 0 22px 0",
-}}>
-  <h1
-    style={{
-      fontWeight: 900,
-      fontSize: isMobile ? 20 : 28,
-      color: "#1841a7",
-      background: "#fafdffcc",
-      padding: isMobile ? "8px 16px" : "14px 36px",
-      borderRadius: 15,
-      letterSpacing: "-1px",
-      boxShadow: "0 2px 12px #1976ed18",
-      lineHeight: 1.18,
-      maxWidth: isMobile ? "98vw" : "650px",
-      minWidth: 0,
-      textShadow: "0 1.5px 5px #e2ecfa77",
-      overflow: "hidden",
-      textOverflow: "ellipsis",
-      whiteSpace: "normal",
-      display: "-webkit-box",
-      WebkitBoxOrient: "vertical",
-      WebkitLineClamp: 2, // 2줄까지만
-      wordBreak: "break-all",
-      textAlign: "center",
-      margin: "0 auto",       // **중앙정렬 보장**
-    }}
-    title={selectedCup.title}
-  >
-    {twoLineTitle(selectedCup.title)}
-  </h1>
-</div>
-
-      {/* === 제목 추가 끝 === */}
-
-      {/* 공유/신고 항상 상단에 노출 */}
+      {/* 상단 타이틀 */}
+      <div style={{
+        width: "100%",
+        display: "flex",
+        justifyContent: "center",
+        margin: "34px 0 19px 0",
+      }}>
+        <div
+          style={{
+            fontWeight: 900,
+            fontSize: isMobile ? 22 : 36,
+            color: "#fff",
+            background: "linear-gradient(135deg, #1947e5 22%, #0e1e36 92%)",
+            boxShadow: "0 4px 24px 0 #1976ed26, 0 1px 12px #18317899, 0 0px 0px #111b2522",
+            borderRadius: 18,
+            padding: isMobile ? "11px 14px" : "22px 54px",
+            border: "2px solid #1976ed66",
+            textShadow: "0 2px 12px #1976ed44, 0 1px 8px #111b2599",
+            fontFamily: "'Orbitron', 'Pretendard', sans-serif",
+            letterSpacing: "-1.5px",
+            lineHeight: 1.15,
+            maxWidth: isMobile ? "96vw" : 700,
+            minWidth: 0,
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "normal",
+            display: "-webkit-box",
+            WebkitBoxOrient: "vertical",
+            WebkitLineClamp: 2,
+            wordBreak: "break-all",
+            textAlign: "center",
+            margin: "0 auto",
+            userSelect: "text",
+          }}
+          title={selectedCup.title}
+        >
+          {twoLineTitle(selectedCup.title)}
+        </div>
+      </div>
+      <style>
+        {`@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&display=swap');`}
+      </style>
       <ShareAndReportBar />
 
-      <div style={{ display: "flex", justifyContent: "center", gap: 8, marginBottom: 6 }}>
+      {/* 1~3등 카드형 */}
+      <div style={{
+        display: "flex",
+        flexDirection: isMobile ? "column" : "row",
+        justifyContent: "center",
+        alignItems: "flex-end",
+        margin: "0 auto 18px auto",
+        width: "100%",
+        gap: isMobile ? 0 : 0,
+        overflowX: "auto"
+      }}>
+        {top3.map((row, i) =>
+          row ? (
+            <RankCard
+              key={row.candidate_id}
+              rank={i + 1}
+              name={row.name}
+              image={row.image}
+              win_count={row.win_count}
+              win_rate={row.total_games ? percent(row.win_count, row.total_games) : "-"}
+              match_wins={row.match_wins}
+              match_count={row.match_count}
+              match_win_rate={row.match_count ? percent(row.match_wins, row.match_count) : "-"}
+              isMobile={isMobile}
+            />
+          ) : null
+        )}
+      </div>
+
+      {/* 전체/회원만 버튼 */}
+      <div style={{
+        display: "flex",
+        justifyContent: "center",
+        gap: 8,
+        marginBottom: 10,
+        marginTop: 4,
+      }}>
         <button style={tabBtnStyle(!userOnly)} onClick={() => setUserOnly(false)}>전체</button>
         <button style={{ ...tabBtnStyle(userOnly), marginRight: 0 }} onClick={() => setUserOnly(true)}>회원만</button>
       </div>
 
+      {/* 기간 버튼 */}
       <div
         style={{
           display: "flex",
           flexWrap: "wrap",
           gap: 0,
           justifyContent: "center",
-          marginBottom: 12,
+          marginBottom: 10,
         }}
       >
         {PERIODS.map(p => (
@@ -607,228 +728,222 @@ export default function StatsPage({ selectedCup, showCommentBox = false }) {
         )}
       </div>
 
-      {/* PC: 검색창 + 보기개수 같이 / 모바일: 분리 */}
-      {!isMobile ? (
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            marginBottom: 12,
-            gap: 8,
-          }}
-        >
-          <input
-            value={search}
-            onChange={e => setSearch(e.target.value)}
-            placeholder={t("search")}
+      {/* 페이지 개수 선택 */}
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          marginBottom: 8,
+          gap: 8,
+        }}
+      >
+        {[10, 25, 50, 100].map(num => (
+          <button
+            key={num}
             style={{
-              width: 140,
               padding: "7px 13px",
               borderRadius: 8,
-              border: "1.5px solid #bbb",
-              fontSize: 14,
+              border: itemsPerPage === num ? "2.5px solid #1976ed" : "1.5px solid #ccc",
+              background: itemsPerPage === num ? "#e8f2fe" : "#fff",
+              color: itemsPerPage === num ? "#1976ed" : "#555",
+              fontWeight: 700,
+              fontSize: 15,
+              cursor: "pointer",
             }}
-          />
-          {[10, 25, 50, 100].map(num => (
-            <button
-              key={num}
-              style={{
-                padding: "7px 13px",
-                borderRadius: 8,
-                border: itemsPerPage === num ? "2.5px solid #1976ed" : "1.5px solid #ccc",
-                background: itemsPerPage === num ? "#e8f2fe" : "#fff",
-                color: itemsPerPage === num ? "#1976ed" : "#555",
-                fontWeight: 700,
-                fontSize: 15,
-                cursor: "pointer",
-              }}
-              onClick={() => setItemsPerPage(num)}
-            >
-              {num}개씩 보기
-            </button>
-          ))}
-        </div>
-      ) : (
-        <>
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              marginBottom: 8,
-              gap: 8,
-            }}
+            onClick={() => setItemsPerPage(num)}
           >
-            {[10, 25, 50, 100].map(num => (
-              <button
-                key={num}
-                style={{
-                  padding: "7px 13px",
-                  borderRadius: 8,
-                  border: itemsPerPage === num ? "2.5px solid #1976ed" : "1.5px solid #ccc",
-                  background: itemsPerPage === num ? "#e8f2fe" : "#fff",
-                  color: itemsPerPage === num ? "#1976ed" : "#555",
-                  fontWeight: 700,
-                  fontSize: 15,
-                  cursor: "pointer",
-                }}
-                onClick={() => setItemsPerPage(num)}
-              >
-                {num}개씩 보기
-              </button>
-            ))}
-          </div>
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              marginBottom: 12,
-            }}
-          >
-            <input
-              value={search}
-              onChange={e => setSearch(e.target.value)}
-              placeholder={t("search")}
-              style={{
-                width: 140,
-                padding: "7px 13px",
-                borderRadius: 8,
-                border: "1.5px solid #bbb",
-                fontSize: 14,
-              }}
-            />
-          </div>
-        </>
-      )}
+            {num}개씩 보기
+          </button>
+        ))}
+      </div>
 
-      {loading ? (
-        <StatsSkeleton isMobile={isMobile} />
-      ) : (
-        <>
-          <div style={{ width: "100%", overflowX: "auto", marginBottom: 12 }}>
-            <table
-              style={{
-                width: "100%",
-                borderCollapse: "collapse",
-                background: "#fff",
-                borderRadius: "12px",
-                textAlign: "center",
-                fontSize: isMobile ? 13 : 17,
-                tableLayout: "fixed",
-                wordBreak: "break-word",
-                overflowWrap: "break-word",
-              }}
-            >
-              <thead>
-                <tr style={{ background: "#f7f7f7" }}>
-                  <th style={{ padding: "10px 0" }}>{t("rank")}</th>
-                  <th style={{ padding: "10px 0" }}>{t("image")}</th>
-                  <th style={{ padding: "10px 0" }}>{t("name")}</th>
-                  <th
-                    style={{ padding: "10px 0", cursor: "pointer" }}
-                    onClick={() => {
-                      setSortKey("win_count");
-                      setSortDesc(k => !k);
-                    }}
-                  >
-                    {t("win_count")} {sortKey === "win_count" ? (sortDesc ? "▼" : "▲") : ""}
-                  </th>
-                  <th style={{ padding: "10px 0" }}>{t("win_rate")}</th>
-                  <th
-                    style={{ padding: "10px 0", cursor: "pointer" }}
-                    onClick={() => {
-                      setSortKey("match_wins");
-                      setSortDesc(k => !k);
-                    }}
-                  >
-                    {t("match_wins")} {sortKey === "match_wins" ? (sortDesc ? "▼" : "▲") : ""}
-                  </th>
-                  <th
-                    style={{ padding: "10px 0", cursor: "pointer" }}
-                    onClick={() => {
-                      setSortKey("match_count");
-                      setSortDesc(k => !k);
-                    }}
-                  >
-                    {t("duel_count")} {sortKey === "match_count" ? (sortDesc ? "▼" : "▲") : ""}
-                  </th>
-                  <th style={{ padding: "10px 0" }}>{t("match_win_rate")}</th>
+      {/* 검색창 */}
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          marginBottom: 16,
+          marginTop: 0,
+        }}
+      >
+        <input
+          value={search}
+          onChange={e => setSearch(e.target.value)}
+          placeholder={t("search")}
+          style={{
+            width: 180,
+            padding: "9px 17px",
+            borderRadius: 10,
+            border: "1.5px solid #bbb",
+            fontSize: 15,
+          }}
+        />
+      </div>
+
+      {/* --- 통계 테이블 --- */}
+      <div style={{ width: "100%", overflowX: "auto", marginBottom: 12 }}>
+        <table
+          style={{
+            width: "100%",
+            borderCollapse: "collapse",
+            background: "#fff",
+            borderRadius: "12px",
+            textAlign: "center",
+            fontSize: isMobile ? 13 : 16,
+            tableLayout: "fixed",
+            wordBreak: "break-word",
+            overflowWrap: "break-word",
+            margin: "0 auto",
+            boxShadow: "0 2px 22px #21374a13",
+          }}
+        >
+          <thead>
+            <tr>
+              {sortableCols.map(col => (
+                <th
+                  key={col.key}
+                  style={{
+                    padding: "8px 0",
+                    cursor: ["image"].includes(col.key) ? undefined : "pointer",
+                    ...(col.isIvory ? ivoryCell : { background: "#fff", fontWeight: 700 }),
+                    userSelect: "none"
+                  }}
+                  onClick={
+                    ["image"].includes(col.key)
+                      ? undefined
+                      : () => {
+                          if (sortKey === col.key) setSortDesc(desc => !desc);
+                          else { setSortKey(col.key); setSortDesc(true); }
+                        }
+                  }
+                >
+                  <span>
+                    {col.label}
+                    {sortKey === col.key &&
+                      (sortDesc ? " ▼" : " ▲")
+                    }
+                  </span>
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {pagedStats.length === 0 && (
+              <tr>
+                <td colSpan={sortableCols.length} style={{ padding: 22, color: "#888" }}>
+                  {t("cannotShowResult")}
+                </td>
+              </tr>
+            )}
+            {pagedStats.map((row, idx) => {
+              const isHighlighted = highlightCandidateId && row.candidate_id === highlightCandidateId;
+              const highlightStyle = isHighlighted
+                ? {
+                    background: "linear-gradient(90deg,#f9e7ff 0%,#f3fbff 80%)",
+                    boxShadow: "0 2px 12px #d489ec15",
+                    fontWeight: 800,
+                    borderLeft: "6px solid #d489ec",
+                    color: "#7114b5",
+                    fontSize: isMobile ? 15 : 17,
+                    transition: "all 0.12s"
+                  }
+                : { background: (idx % 2 === 0) ? "#fafdff" : "#fff" };
+              return (
+                <tr key={row.candidate_id} style={highlightStyle}>
+                  {/* rank */}
+                  <td style={ivoryCell}>{row.rank}</td>
+                  {/* image */}
+                  <td style={{
+                    padding: "7px 0",
+                    background: "#fff"
+                  }}>
+                    <div
+                      style={{
+                        width: isMobile ? 30 : 38,
+                        height: isMobile ? 30 : 38,
+                        borderRadius: 7,
+                        overflow: "hidden",
+                        margin: "0 auto",
+                        background: "#f8f9fa",
+                        border: "1.5px solid #e7f1fb"
+                      }}
+                    >
+                      <MediaRenderer url={row.image} alt={row.name} />
+                    </div>
+                  </td>
+                  {/* 이름 */}
+                  <td style={{
+                    padding: "7px 0",
+                    background: "#fff",
+                    fontWeight: 700,
+                    fontSize: isMobile ? 13 : 15,
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap",
+                    maxWidth: isMobile ? 90 : 120,
+                  }}>
+                    {row.name}
+                  </td>
+                  {/* win_count */}
+                  <td style={{ padding: "7px 0", background: "#fff" }}>{row.win_count}</td>
+                  {/* win_rate */}
+                  <td style={ivoryCell}>
+                    {row.total_games ? percent(row.win_count, row.total_games) : "-"}
+                  </td>
+                  {/* match_wins */}
+                  <td style={{ padding: "7px 0", background: "#fff" }}>{row.match_wins}</td>
+                  {/* duel_count */}
+                  <td style={{ padding: "7px 0", background: "#fff" }}>{row.match_count}</td>
+                  {/* match_win_rate */}
+                  <td style={ivoryCell}>
+                    {row.match_count ? percent(row.match_wins, row.match_count) : "-"}
+                  </td>
                 </tr>
-              </thead>
-              <tbody>
-                {pagedStats.map((row, i) => (
-                  <tr
-                    key={row.candidate_id}
-                    style={{
-                      ...getRowStyle((currentPage - 1) * itemsPerPage + i + 1),
-                      textAlign: "center",
-                      fontWeight: (currentPage - 1) * itemsPerPage + i + 1 <= 3 ? 700 : 400,
-                    }}
-                  >
-                    <td
-                      style={{
-                        padding: "7px 0",
-                        fontSize: isMobile ? 15 : 19,
-                        ...getNameTextStyle((currentPage - 1) * itemsPerPage + i + 1),
-                      }}
-                    >
-                      {(currentPage - 1) * itemsPerPage + i + 1 <= 3 ? (
-                        <span>
-                          <span style={{ fontSize: 18, verticalAlign: "middle" }}>👑</span>{" "}
-                          {(currentPage - 1) * itemsPerPage + i + 1}
-                        </span>
-                      ) : (
-                        (currentPage - 1) * itemsPerPage + i + 1
-                      )}
-                    </td>
-                    <td style={{ padding: "7px 0" }}>
-                      <div
-                        style={{
-                          width: isMobile ? 30 : 44,
-                          height: isMobile ? 30 : 44,
-                          borderRadius: 9,
-                          overflow: "hidden",
-                          margin: "0 auto",
-                        }}
-                      >
-                        <MediaRenderer url={row.image} alt={row.name} />
-                      </div>
-                    </td>
-                    <td
-                      style={{
-                        padding: "7px 0",
-                        ...getNameTextStyle((currentPage - 1) * itemsPerPage + i + 1),
-                        ...nameTdStyle,
-                      }}
-                    >
-                      {row.name}
-                    </td>
-                    <td style={{ padding: "7px 0", ...getNameTextStyle((currentPage - 1) * itemsPerPage + i + 1) }}>
-                      {row.win_count}
-                    </td>
-                    <td style={{ padding: "7px 0", ...getNameTextStyle((currentPage - 1) * itemsPerPage + i + 1) }}>
-                      {row.total_games ? percent(row.win_count, row.total_games) : "-"}
-                    </td>
-                    <td style={{ padding: "7px 0" }}>{row.match_wins}</td>
-                    <td style={{ padding: "7px 0" }}>{row.match_count}</td>
-                    <td style={{ padding: "7px 0" }}>
-                      {row.match_count ? percent(row.match_wins, row.match_count) : "-"}
-                    </td>
-                  </tr>
-                ))}
-                {pagedStats.length === 0 && (
-                  <tr>
-                    <td colSpan={8} style={{ padding: 24, color: "#888" }}>
-                      {t("cannotShowResult")}
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
-          <Pagination />
-          {showCommentBox && <CommentBox cupId={selectedCup.id} />}
-        </>
-      )}
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+      <Pagination />
+      {showCommentBox && <CommentBox cupId={selectedCup.id} />}
     </div>
   );
+}
+
+// 탭버튼 스타일
+function tabBtnStyle(selected) {
+  return {
+    padding: "8px 19px",
+    marginRight: 8,
+    borderRadius: 8,
+    border: selected
+      ? "2.5px solid #1976ed"
+      : "1.5px solid #ccc",
+    background: selected ? "#e8f2fe" : "#fff",
+    color: selected ? "#1976ed" : "#555",
+    fontWeight: 700,
+    fontSize: 15,
+    cursor: "pointer",
+    transition: "all 0.15s",
+    boxShadow: selected ? "0 2px 7px #1976ed22" : undefined,
+    marginBottom: 7,
+  };
+}
+// 기간버튼 스타일
+function periodBtnStyle(selected) {
+  return {
+    padding: "7px 15px",
+    marginRight: 7,
+    marginBottom: 6,
+    borderRadius: 8,
+    border: selected
+      ? "2.5px solid #1976ed"
+      : "1.5px solid #ccc",
+    background: selected ? "#e8f2fe" : "#fff",
+    color: selected ? "#1976ed" : "#555",
+    fontWeight: 700,
+    fontSize: 15,
+    cursor: "pointer",
+    transition: "all 0.15s"
+  };
 }

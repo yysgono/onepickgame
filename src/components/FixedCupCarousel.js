@@ -1,8 +1,37 @@
 import React, { useState, useEffect } from "react";
 import MediaRenderer from "./MediaRenderer";
 
+// 새로운 버튼 스타일
+const navBtnStyle = (hover = false) => ({
+  background: hover
+    ? "linear-gradient(135deg, #ecf6ff 30%, #e6eefe 90%)"
+    : "rgba(255,255,255,0.78)",
+  border: "none",
+  outline: "none",
+  borderRadius: "50%",
+  width: 42,
+  height: 42,
+  fontSize: 23,
+  color: "#1976ed",
+  fontWeight: 900,
+  boxShadow: hover
+    ? "0 4px 18px #1976ed26, 0 1.5px 8px #9ebff425"
+    : "0 2.5px 10px #b7d8ff1c",
+  cursor: "pointer",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  opacity: hover ? 1 : 0.92,
+  position: "relative",
+  transition: "all .14s cubic-bezier(.2,.95,.58,1.06)",
+  zIndex: 10,
+  userSelect: "none",
+});
+
 function FixedCupCarousel({ worldcupList }) {
   const [vw, setVw] = useState(window.innerWidth);
+  const [hoverPrev, setHoverPrev] = useState(false);
+  const [hoverNext, setHoverNext] = useState(false);
 
   useEffect(() => {
     const onResize = () => setVw(window.innerWidth);
@@ -73,40 +102,34 @@ function FixedCupCarousel({ worldcupList }) {
           minHeight: typeof cardH === "number" ? cardH + 38 : 158,
         }}
       >
+        {/* Prev Button */}
         <button
           aria-label="이전"
           onClick={goPrev}
-          style={{
-            background: "#fff",
-            border: "none",
-            borderRadius: "50%",
-            width: 36,
-            height: 36,
-            fontSize: 21,
-            color: "#1976ed",
-            fontWeight: 900,
-            boxShadow: "0 2px 7px #1976ed22",
-            cursor: "pointer",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            opacity: 0.95,
-            position: "relative",
-            left: 0,
-            marginRight: 5,
-            zIndex: 10,
-          }}
+          onMouseEnter={() => setHoverPrev(true)}
+          onMouseLeave={() => setHoverPrev(false)}
+          style={navBtnStyle(hoverPrev)}
         >
-          &#60;
+          <span
+            style={{
+              display: "inline-block",
+              transform: hoverPrev ? "translateX(-2px) scale(1.09)" : "none",
+              transition: "all .18s",
+            }}
+          >
+            &#60;
+          </span>
         </button>
+
+        {/* Cards */}
         <div
           style={{
             display: "flex",
-            gap: 6,
+            gap: 8,
             justifyContent: "center",
             alignItems: "flex-end",
             width: "100%",
-            maxWidth: perPage * (typeof cardW === "number" ? cardW : 270) + (perPage - 1) * 6,
+            maxWidth: perPage * (typeof cardW === "number" ? cardW : 270) + (perPage - 1) * 8,
             minHeight: cardH,
             position: "relative",
             padding: "0 0",
@@ -119,8 +142,8 @@ function FixedCupCarousel({ worldcupList }) {
                 width: cardW,
                 height: cardH,
                 background: "#fafdff",
-                borderRadius: 15,
-                boxShadow: "0 1.5px 8px #1976ed13",
+                borderRadius: 17,
+                boxShadow: "0 2px 14px #1976ed17, 0 1.5px 8px #b2d1fa12",
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
@@ -128,18 +151,18 @@ function FixedCupCarousel({ worldcupList }) {
                 cursor: "pointer",
                 overflow: "hidden",
                 border: "none",
-                margin: "0 1px",
+                margin: "0 2px",
                 position: "relative",
-                transition: "transform .14s, box-shadow .14s",
+                transition: "transform .13s, box-shadow .14s",
               }}
               onClick={() => window.location.href = `/select-round/${cup.id}`}
               onMouseEnter={e => {
-                e.currentTarget.style.transform = "translateY(-2px) scale(1.024)";
-                e.currentTarget.style.boxShadow = "0 7px 20px #1976ed18";
+                e.currentTarget.style.transform = "translateY(-2.5px) scale(1.03)";
+                e.currentTarget.style.boxShadow = "0 9px 28px #1976ed20, 0 1.5px 8px #1976ed13";
               }}
               onMouseLeave={e => {
                 e.currentTarget.style.transform = "none";
-                e.currentTarget.style.boxShadow = "0 1.5px 8px #1976ed13";
+                e.currentTarget.style.boxShadow = "0 2px 14px #1976ed17, 0 1.5px 8px #b2d1fa12";
               }}
               title={cup.title}
             >
@@ -151,8 +174,8 @@ function FixedCupCarousel({ worldcupList }) {
                   display: "flex",
                   flexDirection: "row",
                   background: "linear-gradient(90deg, #F2F8FF 50%, #EDF7FF 100%)",
-                  borderTopLeftRadius: 15,
-                  borderTopRightRadius: 15,
+                  borderTopLeftRadius: 17,
+                  borderTopRightRadius: 17,
                   borderBottom: "none",
                   overflow: "hidden",
                   position: "relative",
@@ -162,7 +185,7 @@ function FixedCupCarousel({ worldcupList }) {
                   style={{
                     width: "50%",
                     height: "100%",
-                    borderTopLeftRadius: 15,
+                    borderTopLeftRadius: 17,
                     overflow: "hidden",
                     background: "#eaf3fb",
                   }}
@@ -177,7 +200,7 @@ function FixedCupCarousel({ worldcupList }) {
                   style={{
                     width: "50%",
                     height: "100%",
-                    borderTopRightRadius: 15,
+                    borderTopRightRadius: 17,
                     overflow: "hidden",
                     background: "#eaf3fb",
                   }}
@@ -246,55 +269,61 @@ function FixedCupCarousel({ worldcupList }) {
             </div>
           ))}
         </div>
+
+        {/* Next Button */}
         <button
           aria-label="다음"
           onClick={goNext}
-          style={{
-            background: "#fff",
-            border: "none",
-            borderRadius: "50%",
-            width: 36,
-            height: 36,
-            fontSize: 21,
-            color: "#1976ed",
-            fontWeight: 900,
-            boxShadow: "0 2px 7px #1976ed22",
-            cursor: "pointer",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            opacity: 0.95,
-            position: "relative",
-            right: 0,
-            marginLeft: 5,
-            zIndex: 10,
-          }}
+          onMouseEnter={() => setHoverNext(true)}
+          onMouseLeave={() => setHoverNext(false)}
+          style={navBtnStyle(hoverNext)}
         >
-          &#62;
+          <span
+            style={{
+              display: "inline-block",
+              transform: hoverNext ? "translateX(2px) scale(1.09)" : "none",
+              transition: "all .18s",
+            }}
+          >
+            &#62;
+          </span>
         </button>
       </div>
+
+      {/* 페이지네이션 */}
       <div
         style={{
-          marginTop: 7,
+          marginTop: 11,
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-          gap: 8,
+          gap: 11,
         }}
       >
         {Array.from({ length: totalPage }).map((_, i) => (
           <div
             key={i}
             onClick={() => setPage(i)}
+            tabIndex={0}
+            role="button"
+            aria-label={`${i + 1} 페이지`}
             style={{
-              width: 10,
-              height: 10,
+              width: page === i ? 14 : 10,
+              height: page === i ? 14 : 10,
               borderRadius: "50%",
-              background: page === i ? "#1976ed" : "#e2ecfa",
-              border: "1.3px solid #e4edfb",
+              background: page === i
+                ? "radial-gradient(circle, #1976ed 55%, #b6e2ff 100%)"
+                : "linear-gradient(135deg, #e4edfa 40%, #eaf3ff 100%)",
+              border: page === i ? "2.2px solid #1976ed" : "1.1px solid #d9e8fb",
+              boxShadow: page === i ? "0 2px 9px #1976ed27" : "0 1px 4px #b7d8ff1a",
               cursor: "pointer",
-              transition: "background 0.13s",
-              boxShadow: page === i ? "0 2px 7px #1976ed22" : "none",
+              transition: "all .18s cubic-bezier(.29,.95,.58,1.08)",
+              outline: "none",
+              marginTop: page === i ? -1 : 0,
+              marginBottom: page === i ? 1 : 0,
+            }}
+            onKeyDown={e => {
+              if (e.key === "Enter" || e.key === " ") setPage(i);
             }}
           />
         ))}
