@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import MediaRenderer from "./MediaRenderer";
 
 // 모바일 체크
 function useIsMobile() {
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 700);
-  useEffect(() => {
+  const [isMobile, setIsMobile] = React.useState(window.innerWidth < 700);
+  React.useEffect(() => {
     const onResize = () => setIsMobile(window.innerWidth < 700);
     window.addEventListener("resize", onResize);
     return () => window.removeEventListener("resize", onResize);
@@ -38,7 +38,7 @@ function splitTitle(title = "") {
   return lines;
 }
 
-export default function SelectRoundPage({ cup, maxRound, candidates, onSelect }) {
+export default function SelectRoundPage({ cup, maxRound, candidates, onSelect, onResult }) {
   const { t } = useTranslation();
   const [selectedRound, setSelectedRound] = useState(maxRound);
 
@@ -64,105 +64,7 @@ export default function SelectRoundPage({ cup, maxRound, candidates, onSelect })
   const getCardSize = () => (typeof size === "string" ? `min(${size}, ${max}px)` : Math.min(size, max));
   const buttonHeight = isMobile ? 48 : 60;
 
-  // 스타일 정의
-  const wrapStyle = {
-    textAlign: "center",
-    padding: isMobile ? 12 : 38,
-    maxWidth: isMobile ? "100%" : 880,
-    margin: "0 auto",
-    background: "rgba(20, 24, 37, 0.95)",
-    borderRadius: isMobile ? 0 : 23,
-    boxShadow: isMobile ? "none" : "0 4px 44px #171c2747",
-    marginTop: 26,
-  };
-  const titleStyle = {
-    fontWeight: 900,
-    fontSize: isMobile ? 23 : 31,
-    color: "#fff",
-    marginBottom: 9,
-    letterSpacing: "-1.2px",
-    lineHeight: 1.18,
-    textAlign: "center",
-    background: "#171C27",
-    borderRadius: 14,
-    padding: isMobile ? "12px 0 8px 0" : "18px 0 9px 0",
-    marginLeft: "auto",
-    marginRight: "auto",
-    whiteSpace: "pre-line",
-    wordBreak: "break-all",
-    maxWidth: isMobile ? "98vw" : 710,
-    boxShadow: "0 2px 16px #1976ed18",
-  };
-  const descStyle = {
-    fontWeight: 400,
-    fontSize: isMobile ? 16 : 20,
-    color: "#b9d3ff",
-    textAlign: "center",
-    background: "rgba(30,45,70,0.93)",
-    borderRadius: 9,
-    padding: isMobile ? "7px 6px 4px 6px" : "11px 18px 6px 18px",
-    marginBottom: isMobile ? 9 : 17,
-    marginLeft: "auto",
-    marginRight: "auto",
-    maxWidth: isMobile ? "95vw" : 590,
-    lineHeight: 1.45,
-    minHeight: 24,
-    whiteSpace: "pre-line",
-    wordBreak: "break-word",
-  };
-
-  // 여기서 가운데 정렬 "row" → column
-  const roundWrapStyle = {
-    marginBottom: isMobile ? 16 : 24,
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: isMobile ? 9 : 16,
-  };
-  // 가운데 한줄로 (셀렉트, 시작, n명) 가로 배치
-  const roundRowStyle = {
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: isMobile ? 8 : 16,
-    width: "100%",
-  };
-  const selectWrap = { position: "relative", display: "inline-block", minWidth: 130, textAlign: "center" };
-
-  // ---- 여기 수정! ----
-  const selectStyle = {
-    fontSize: isMobile ? 19 : 25,
-    padding: isMobile ? "10px 17px" : "12px 33px",
-    borderRadius: isMobile ? 9 : 12,
-    minWidth: isMobile ? 85 : 130,
-    fontWeight: 900,
-    background: "#16213a",
-    color: "#fff",
-    border: "2px solid #1976ed",
-    height: buttonHeight,
-    textAlign: "left",   // ← 버튼 안 "32강" 왼쪽 정렬!
-    boxSizing: "border-box",
-    appearance: "none",
-    margin: "0 auto",
-    display: "block",
-    cursor: "pointer",
-    backgroundImage: "none",
-    direction: "ltr" // 혹시나해서 추가
-  };
-  // ---- 여기까지 ----
-
-  const selectArrowStyle = {
-    position: "absolute",
-    right: isMobile ? 16 : 25,
-    top: "50%",
-    transform: "translateY(-50%)",
-    pointerEvents: "none",
-    color: "#fff",
-    fontSize: isMobile ? 19 : 26,
-    zIndex: 1
-  };
+  // ---- 버튼 스타일 ----
   const mainBtn = {
     background: "linear-gradient(90deg, #1976ed 80%, #45b7fa 100%)",
     color: "#fff",
@@ -182,6 +84,35 @@ export default function SelectRoundPage({ cup, maxRound, candidates, onSelect })
     alignItems: "center",
     justifyContent: "center"
   };
+  const selectBtnStyle = {
+    fontSize: isMobile ? 19 : 25,
+    padding: isMobile ? "10px 17px" : "12px 33px",
+    borderRadius: isMobile ? 9 : 12,
+    minWidth: isMobile ? 85 : 130,
+    fontWeight: 900,
+    background: "#16213a",
+    color: "#fff",
+    border: "2px solid #1976ed",
+    height: buttonHeight,
+    textAlign: "left",
+    boxSizing: "border-box",
+    appearance: "none",
+    margin: "0 auto",
+    display: "block",
+    cursor: "pointer",
+    backgroundImage: "none",
+    direction: "ltr"
+  };
+  const selectArrowStyle = {
+    position: "absolute",
+    right: isMobile ? 16 : 25,
+    top: "50%",
+    transform: "translateY(-50%)",
+    pointerEvents: "none",
+    color: "#fff",
+    fontSize: isMobile ? 19 : 26,
+    zIndex: 1
+  };
   const candidateCountText = {
     fontSize: isMobile ? 15 : 19,
     fontWeight: 800,
@@ -199,102 +130,143 @@ export default function SelectRoundPage({ cup, maxRound, candidates, onSelect })
     boxSizing: "border-box",
     border: "1.5px solid #1976ed33"
   };
-  const gridStyle = {
-    display: "grid",
-    gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))`,
-    gap: isMobile ? 10 : 22,
-    justifyContent: "center",
-    alignItems: "center",
-    width: "100%",
-    maxWidth: 1100,
-    margin: "0 auto",
-    marginTop: isMobile ? 10 : 22,
-    marginBottom: 0,
-  };
-  const cardStyle = {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    cursor: "pointer",
-    background: "#21283a",
-    borderRadius: isMobile ? 10 : 13,
-    boxShadow: "0 2px 12px #1976ed13",
-    border: "1.2px solid #1976ed18",
-    transition: "box-shadow .14s, transform .15s",
-    padding: 0,
-    margin: "0 auto",
-    willChange: "transform",
-    overflow: "hidden"
-  };
-  const cardTitleStyle = {
-    width: getCardSize(),
-    minHeight: 18,
-    fontWeight: 900,
-    fontSize: isMobile ? 13.5 : 16,
+  const resultBtn = {
+    position: "absolute",
+    top: isMobile ? 11 : 23,
+    right: isMobile ? 11 : 26,
+    zIndex: 10,
+    background: "linear-gradient(90deg, #13e67e 80%, #23d6a0 100%)",
     color: "#fff",
-    textAlign: "center",
-    whiteSpace: "normal",
-    wordBreak: "break-all",
-    lineHeight: 1.15,
-    padding: "0 2px",
-    margin: 0,
-    textShadow: "0 1px 6px #1976ed44",
-    letterSpacing: "0.01em",
-    background: "transparent"
+    fontWeight: 900,
+    border: "none",
+    borderRadius: 11,
+    fontSize: isMobile ? 15 : 17,
+    padding: isMobile ? "8px 19px" : "10px 30px",
+    minWidth: isMobile ? 72 : 110,
+    cursor: "pointer",
+    boxShadow: "0 1px 11px #23e6ad22",
+    outline: "none",
+    height: isMobile ? 38 : 44,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center"
   };
 
+  // --- UI ---
   return (
-    <div style={wrapStyle}>
+    <div
+      style={{
+        position: "relative",
+        textAlign: "center",
+        padding: isMobile ? 12 : 38,
+        maxWidth: isMobile ? "100%" : 880,
+        margin: "0 auto",
+        background: "rgba(20, 24, 37, 0.95)",
+        borderRadius: isMobile ? 0 : 23,
+        boxShadow: isMobile ? "none" : "0 4px 44px #171c2747",
+        marginTop: 26,
+      }}
+    >
+      {/* 오른쪽 상단 결과보기 버튼만 이동 */}
+      <button
+        style={resultBtn}
+        onClick={() => {
+          if (onResult) onResult();
+          else if (cup?.id) window.location.href = `/stats/${cup.id}`;
+        }}
+      >
+        결과보기
+      </button>
       {cup && (
         <>
-          <div style={titleStyle} title={cup.title}>
+          <div style={{
+            fontWeight: 900,
+            fontSize: isMobile ? 23 : 31,
+            color: "#fff",
+            marginBottom: 9,
+            letterSpacing: "-1.2px",
+            lineHeight: 1.18,
+            textAlign: "center",
+            background: "#171C27",
+            borderRadius: 14,
+            padding: isMobile ? "12px 0 8px 0" : "18px 0 9px 0",
+            marginLeft: "auto",
+            marginRight: "auto",
+            whiteSpace: "pre-line",
+            wordBreak: "break-all",
+            maxWidth: isMobile ? "98vw" : 710,
+            boxShadow: "0 2px 16px #1976ed18",
+          }} title={cup.title}>
             {splitTitle(cup.title).join("\n")}
           </div>
           {cup.desc || cup.description ? (
-            <div style={descStyle}>
+            <div style={{
+              fontWeight: 400,
+              fontSize: isMobile ? 16 : 20,
+              color: "#b9d3ff",
+              textAlign: "center",
+              background: "rgba(30,45,70,0.93)",
+              borderRadius: 9,
+              padding: isMobile ? "7px 6px 4px 6px" : "11px 18px 6px 18px",
+              marginBottom: isMobile ? 9 : 17,
+              marginLeft: "auto",
+              marginRight: "auto",
+              maxWidth: isMobile ? "95vw" : 590,
+              lineHeight: 1.45,
+              minHeight: 24,
+              whiteSpace: "pre-line",
+              wordBreak: "break-word",
+            }}>
               {(cup.desc || cup.description)}
             </div>
           ) : null}
         </>
       )}
-      <div style={roundWrapStyle}>
-        <div style={roundRowStyle}>
-          <span style={selectWrap}>
-            <select
-              value={selectedRound}
-              onChange={(e) => setSelectedRound(Number(e.target.value))}
-              style={selectStyle}
-            >
-              {possibleRounds.map((r) => (
-                <option key={r} value={r} style={{ fontSize: isMobile ? 21 : 27 }}>
-                  {r}강
-                </option>
-              ))}
-            </select>
-            <span style={selectArrowStyle}>▼</span>
-          </span>
-          <button
-            style={mainBtn}
-            onClick={() => onSelect(selectedRound)}
+      {/* ---- 버튼 영역 ---- */}
+      <div style={{
+        marginBottom: isMobile ? 16 : 24,
+        display: "flex",
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "center",
+        gap: isMobile ? 8 : 16,
+        width: "100%",
+      }}>
+        <span style={{ position: "relative", display: "inline-block", minWidth: 130, textAlign: "center" }}>
+          <select
+            value={selectedRound}
+            onChange={(e) => setSelectedRound(Number(e.target.value))}
+            style={selectBtnStyle}
           >
-            {t("start") || "시작"}
-          </button>
-          <span style={candidateCountText}>
-            후보 {candidates.length}명
-            {hasBye && (
-              <span style={{
-                marginLeft: 7,
-                color: "#FFD740",
-                fontSize: isMobile ? 12 : 15,
-                fontWeight: 700
-              }}>
-                ⚠️ 부전승 발생
-              </span>
-            )}
-          </span>
-        </div>
+            {possibleRounds.map((r) => (
+              <option key={r} value={r} style={{ fontSize: isMobile ? 21 : 27 }}>
+                {r}강
+              </option>
+            ))}
+          </select>
+          <span style={selectArrowStyle}>▼</span>
+        </span>
+        <button
+          style={mainBtn}
+          onClick={() => onSelect(selectedRound)}
+        >
+          {t("start") || "시작"}
+        </button>
+        <span style={candidateCountText}>
+          후보 {candidates.length}명
+          {hasBye && (
+            <span style={{
+              marginLeft: 7,
+              color: "#FFD740",
+              fontSize: isMobile ? 12 : 15,
+              fontWeight: 700
+            }}>
+              ⚠️ 부전승 발생
+            </span>
+          )}
+        </span>
       </div>
-      {/* 부전승 안내 노란 박스 (좀 더 강조) */}
+      {/* 부전승 안내 */}
       {hasBye && (
         <div style={{
           margin: "6px auto 8px auto",
@@ -312,11 +284,36 @@ export default function SelectRoundPage({ cup, maxRound, candidates, onSelect })
           ⚠️ 인원수가 {selectedRound}명에 맞지 않아 부전승이 자동 처리됩니다.
         </div>
       )}
-      <div style={gridStyle}>
+      <div style={{
+        display: "grid",
+        gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))`,
+        gap: isMobile ? 10 : 22,
+        justifyContent: "center",
+        alignItems: "center",
+        width: "100%",
+        maxWidth: 1100,
+        margin: "0 auto",
+        marginTop: isMobile ? 10 : 22,
+        marginBottom: 0,
+      }}>
         {candidates.map((c) => (
           <div
             key={c.id}
-            style={cardStyle}
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              cursor: "pointer",
+              background: "#21283a",
+              borderRadius: isMobile ? 10 : 13,
+              boxShadow: "0 2px 12px #1976ed13",
+              border: "1.2px solid #1976ed18",
+              transition: "box-shadow .14s, transform .15s",
+              padding: 0,
+              margin: "0 auto",
+              willChange: "transform",
+              overflow: "hidden"
+            }}
             title={c.name}
             tabIndex={0}
             onClick={() => onSelect && onSelect(c)}
@@ -356,7 +353,22 @@ export default function SelectRoundPage({ cup, maxRound, candidates, onSelect })
                 }}
               />
             </div>
-            <div style={cardTitleStyle}>
+            <div style={{
+              width: getCardSize(),
+              minHeight: 18,
+              fontWeight: 900,
+              fontSize: isMobile ? 13.5 : 16,
+              color: "#fff",
+              textAlign: "center",
+              whiteSpace: "normal",
+              wordBreak: "break-all",
+              lineHeight: 1.15,
+              padding: "0 2px",
+              margin: 0,
+              textShadow: "0 1px 6px #1976ed44",
+              letterSpacing: "0.01em",
+              background: "transparent"
+            }}>
               {c.name}
             </div>
           </div>

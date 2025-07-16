@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import {
   insertWinnerLog,
   deleteOldWinnerLogAndStats,
-  upsertMyWinnerStat,
+  upsertMyWinnerStat_parallel,
   calcStatsFromMatchHistory,
 } from "../utils";
 import MediaRenderer from "./MediaRenderer";
@@ -86,14 +86,13 @@ function CandidateBox({ c, onClick, disabled, idx }) {
   const vw = typeof window !== "undefined" ? window.innerWidth : 1200;
   const isMobile = vw < 1000;
 
-  // 카드 사이드 공간 확보 (좌우 배너 폭 약 200px씩, gap 40px씩 여유!)
   const SIDE_BANNER = vw > 1400 ? 200 : 110;
-  const CARD_MAX_WIDTH = 520; // 카드 최대폭 (원하면 더 키워도됨)
+  const CARD_MAX_WIDTH = 520;
   const CARD_WIDTH = isMobile
     ? "97vw"
     : `min(${CARD_MAX_WIDTH}px, calc((100vw - ${SIDE_BANNER * 2 + 80}px)/2))`;
-const CARD_HEIGHT = isMobile ? 380 : 560;       // 높이 크게!
-const THUMB_HEIGHT = isMobile ? 280 : 480;      // 썸네일도 확장!
+  const CARD_HEIGHT = isMobile ? 380 : 560;
+  const THUMB_HEIGHT = isMobile ? 280 : 480;
 
   const NEON_FONT = "'Orbitron', 'Pretendard', sans-serif";
   const mainDark = "#171C27";
@@ -130,7 +129,6 @@ const THUMB_HEIGHT = isMobile ? 280 : 480;      // 썸네일도 확장!
       onMouseLeave={() => !isMobile && setHover(false)}
       onClick={c ? onClick : undefined}
     >
-      {/* 은은한 glow */}
       <div style={{
         position: "absolute",
         top: "-35%",
@@ -144,7 +142,6 @@ const THUMB_HEIGHT = isMobile ? 280 : 480;      // 썸네일도 확장!
         opacity: 0.13,
         pointerEvents: "none",
       }} />
-      {/* 썸네일 */}
       <div
         style={{
           width: "100%",
@@ -165,7 +162,6 @@ const THUMB_HEIGHT = isMobile ? 280 : 480;      // 썸네일도 확장!
           <div style={{ width: "100%", height: "100%", background: "#222" }} />
         )}
       </div>
-      {/* 이름/버튼 */}
       <div
         style={{
           width: "100%",
@@ -245,7 +241,6 @@ const THUMB_HEIGHT = isMobile ? 280 : 480;      // 썸네일도 확장!
   );
 }
 
-// 아래는 모두 기존과 동일
 function getStageLabel(n, isFirst = false) {
   if (isFirst) return `${n}강`;
   if (n === 2) return "결승전";
@@ -371,18 +366,7 @@ function Match({ cup, onResult, selectedCount }) {
       winner,
       matchHistory
     );
-    for (const stat of statsArr) {
-      await upsertMyWinnerStat({
-        cup_id: cup.id,
-        candidate_id: stat.candidate_id,
-        win_count: stat.win_count,
-        match_wins: stat.match_wins,
-        match_count: stat.match_count,
-        total_games: stat.total_games,
-        name: stat.name,
-        image: stat.image,
-      });
-    }
+    await upsertMyWinnerStat_parallel(statsArr, cup.id); // <== 여기!
     setSaving(false);
     navigate(`/result/${cup.id}`, { state: { cup, winner } });
   }
@@ -450,7 +434,8 @@ function Match({ cup, onResult, selectedCount }) {
         fontWeight: 900,
         letterSpacing: "-1px"
       }}>
-        두구두구두구..
+        두구두구두구.. 기다려주세요!
+                후보가 많으면 시간이 조금 걸릴수 있어요
       </div>
     </div>
   );
@@ -538,7 +523,6 @@ function Match({ cup, onResult, selectedCount }) {
           ))}
         </div>
       )}
-      {/* 카드 영역 (gap 조절 필요하면 여기!) */}
       <div
         style={{
           width: "100vw",
@@ -546,7 +530,7 @@ function Match({ cup, onResult, selectedCount }) {
           flexDirection: "row",
           justifyContent: "center",
           alignItems: "stretch",
-          gap: isMobile ? 11 : 44, // 여백 넉넉히!
+          gap: isMobile ? 11 : 44,
           margin: 0,
           padding: 0,
           boxSizing: "border-box",

@@ -1,9 +1,9 @@
+// src/components/Header.js
 import React, { useRef, useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
-import { supabase } from "../utils/supabaseClient";
+import { supabase } from "../utils/supabaseClient"; // 경로 맞춰주세요!
 
-// 닉네임 유효성 검사
 function isValidNickname(nickname) {
   if (!nickname) return false;
   const regex = /^[\uAC00-\uD7A3\w-]+$/;
@@ -33,27 +33,19 @@ export default function Header({
   const navigate = useNavigate();
   const inputRef = useRef();
 
-  const [showLogin, setShowLogin] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
-  const [loginEmail, setLoginEmail] = useState("");
-  const [loginPassword, setLoginPassword] = useState("");
-  const [loginError, setLoginError] = useState("");
-  const [loginLoading, setLoginLoading] = useState(false);
   const [editNickname, setEditNickname] = useState(nickname || "");
   const [editError, setEditError] = useState("");
   const [editLoading, setEditLoading] = useState(false);
   const [profile, setProfile] = useState(null);
-  const [profileLoading, setProfileLoading] = useState(false);
   const [withdrawLoading, setWithdrawLoading] = useState(false);
   const [cancelLoading, setCancelLoading] = useState(false);
 
   useEffect(() => { setEditNickname(nickname || ""); }, [nickname]);
   useEffect(() => {
     if (!user) return setProfile(null);
-    setProfileLoading(true);
     supabase.from("profiles").select("*").eq("id", user.id).single().then(({ data }) => {
       setProfile(data || null);
-      setProfileLoading(false);
     });
   }, [user, showProfile]);
 
@@ -62,34 +54,7 @@ export default function Header({
       setUser(null);
       setNickname("");
       setShowProfile(false);
-      setShowLogin(false);
     });
-  }
-  async function handleLogin(e) {
-    e.preventDefault();
-    setLoginError("");
-    setLoginLoading(true);
-    const { data, error: loginError } = await supabase.auth.signInWithPassword({
-      email: loginEmail,
-      password: loginPassword,
-    });
-    setLoginLoading(false);
-    if (loginError) {
-      setLoginError(loginError.message || "로그인 실패");
-      return;
-    }
-    setShowLogin(false);
-    setLoginEmail("");
-    setLoginPassword("");
-    setUser(data?.user || null);
-    if (data?.user) {
-      const { data: profile } = await supabase
-        .from("profiles")
-        .select("nickname")
-        .eq("id", data.user.id)
-        .single();
-      setNickname(profile?.nickname || "");
-    }
   }
   async function handleNicknameChange() {
     setEditError("");
@@ -164,7 +129,6 @@ export default function Header({
     setShowProfile(false);
   }
   function handleLogoClick() { navigate("/"); }
-  function handleWithdrawCancel() { setShowProfile(false); }
   function handleMyWorldcup() { navigate("/my-worldcups"); }
   function handleRecentWorldcup() { navigate("/recent-worldcups"); }
 
@@ -172,13 +136,12 @@ export default function Header({
   const logoImgUrl = "/onepick2.png";
   const headerBgUrl = "/onepick3.png";
 
-  // ------ 스타일 정의 ------
+  // 스타일 정의
   const darkBlue = "#171C27";
   const blueMain = "#1976ed";
   const blueGradient = "linear-gradient(90deg,#2999ff,#236de8 100%)";
   const blueNeon = "0 0 16px #2999ff88, 0 2px 12px #1976ed33";
   const gold = "#ffbe3b";
-
   const adminButtonStyle = (bgColor = darkBlue, color = "#fff") => ({
     background: bgColor,
     color,
@@ -194,7 +157,6 @@ export default function Header({
     letterSpacing: "-0.2px",
     outline: "none",
   });
-
   const statButtonStyle = {
     background: gold,
     color: "#222",
@@ -208,7 +170,6 @@ export default function Header({
     outline: "none",
     letterSpacing: "-0.1px",
   };
-
   const mainButtonStyle = {
     background: blueGradient,
     color: "#fff",
@@ -224,7 +185,6 @@ export default function Header({
     whiteSpace: "nowrap",
     outline: "none",
   };
-
   const infoButtonStyle = {
     background: "rgba(30,43,82,0.94)",
     color: "#fff",
@@ -239,7 +199,6 @@ export default function Header({
     marginRight: 3,
     whiteSpace: "nowrap",
   };
-
   const logoutButtonStyle = {
     background: "#232c40",
     color: "#fff",
@@ -253,7 +212,6 @@ export default function Header({
     outline: "none",
     transition: "background .12s, color .13s",
   };
-
   const selectStyle = {
     padding: "7px 13px",
     borderRadius: 8,
@@ -268,7 +226,6 @@ export default function Header({
     outline: "none",
     boxShadow: "0 0 7px #157be94a",
   };
-
   // ---- Modal Styles ----
   const modalOverlayStyle = {
     position: "fixed",
@@ -284,6 +241,7 @@ export default function Header({
     margin: 0,
     padding: 0,
   };
+  // 위치: top 110px, translateX만 (translateY X)
   const modalContentStyle = {
     background: "#fff",
     borderRadius: 12,
@@ -298,6 +256,11 @@ export default function Header({
     alignItems: "center",
     boxSizing: "border-box",
     margin: 0,
+    position: "fixed",
+    top: "110px",
+    left: "50%",
+    transform: "translateX(-50%)",
+    zIndex: 10001,
   };
   const modalInputStyle = {
     width: "100%",
@@ -372,7 +335,7 @@ export default function Header({
         WebkitBackdropFilter: "blur(2.5px)",
       }}
     >
-      {/* ----- 로고+텍스트 (항상 맨 위, 중앙 정렬) ----- */}
+      {/* 로고/텍스트 영역 */}
       <div style={{
         width: "100%",
         display: "flex",
@@ -414,8 +377,7 @@ export default function Header({
           OnePickGame
         </span>
       </div>
-
-      {/* ----- 버튼/메뉴 가로 나열 ----- */}
+      {/* 버튼/메뉴 */}
       <div
         style={{
           width: "100%",
@@ -456,7 +418,7 @@ export default function Header({
             <option key={lang.code} value={lang.code}>{lang.label}</option>
           ))}
         </select>
-        {user && (
+        {user ? (
           <>
             <span
               style={{
@@ -474,161 +436,89 @@ export default function Header({
             </span>
             <button style={infoButtonStyle} onClick={() => setShowProfile(true)}>내정보수정</button>
             <button style={logoutButtonStyle} onClick={handleLogout}>{t("logout")}</button>
-            {/* 프로필 모달 */}
             {showProfile && (
               <div style={modalOverlayStyle}>
                 <div style={modalContentStyle} onClick={e => e.stopPropagation()}>
                   <div style={{ fontWeight: 800, fontSize: 21, marginBottom: 18, textAlign: "center" }}>
                     내 정보 수정
                   </div>
-                  <input
-                    type="text"
-                    value={editNickname}
-                    onChange={e => setEditNickname(e.target.value)}
-                    placeholder="닉네임"
-                    style={modalInputStyle}
-                    disabled={editLoading}
-                  />
-                  <button style={modalProfileButtonStyle} onClick={handleNicknameChange} disabled={editLoading}>
-                    {editLoading ? "변경 중..." : "닉네임 변경"}
-                  </button>
-                  <button style={modalGrayButtonStyle} onClick={handlePasswordChange} disabled={editLoading}>
-                    비밀번호 변경(메일 전송)
-                  </button>
-                  {/* --- 탈퇴신청 & 취소 --- */}
-                  {profile?.withdrawal_requested_at ? (
-                    <div style={{ width: "100%" }}>
-                      <div style={{ color: "#e14444", fontSize: 15, textAlign: "center", margin: "8px 0" }}>
-                        탈퇴 신청 상태입니다.<br />
-                        신청일: {profile.withdrawal_requested_at && new Date(profile.withdrawal_requested_at).toLocaleString()}<br />
-                        탈퇴 신청을 취소하려면 아래 버튼을 눌러주세요.
-                      </div>
+                  <div style={{ width: "100%" }}>
+                    <div style={{ marginBottom: 10, fontSize: 15 }}>
+                      <b>이메일:</b> {user.email}
+                    </div>
+                    <div style={{ marginBottom: 10, fontSize: 15 }}>
+                      <b>닉네임:</b>
+                      <input
+                        type="text"
+                        value={editNickname}
+                        onChange={e => setEditNickname(e.target.value)}
+                        style={modalInputStyle}
+                        placeholder="닉네임"
+                        maxLength={20}
+                        disabled={editLoading}
+                      />
                       <button
-                        style={modalDeleteButtonStyle}
+                        style={modalProfileButtonStyle}
+                        onClick={handleNicknameChange}
+                        disabled={editLoading}
+                      >{editLoading ? "변경중..." : "닉네임 변경"}</button>
+                    </div>
+                    <button
+                      style={modalGrayButtonStyle}
+                      onClick={handlePasswordChange}
+                      disabled={editLoading}
+                    >비밀번호 변경 메일 발송</button>
+                    {profile?.withdrawal_requested_at ? (
+                      <button
+                        style={modalGrayButtonStyle}
                         onClick={handleCancelWithdrawal}
                         disabled={cancelLoading}
-                      >
-                        {cancelLoading ? "취소 중..." : "탈퇴 신청 취소"}
-                      </button>
-                      <div style={{ color: "#888", fontSize: 13, textAlign: "center", marginTop: 10 }}>
-                        탈퇴는 일주일 이내 처리됩니다.<br />언제든 취소 가능합니다.
-                      </div>
-                    </div>
-                  ) : (
-                    <div style={{ width: "100%" }}>
+                      >{cancelLoading ? "취소 중..." : "탈퇴 신청 취소"}</button>
+                    ) : (
                       <button
                         style={modalDeleteButtonStyle}
                         onClick={handleWithdrawalRequest}
                         disabled={withdrawLoading}
-                      >
-                        {withdrawLoading ? "신청 중..." : "회원탈퇴 신청"}
-                      </button>
-                      <div style={{ color: "#888", fontSize: 13, textAlign: "center", marginTop: 10 }}>
-                        탈퇴 신청 후 7일 이내 처리됩니다.<br />
-                        그동안 언제든 취소할 수 있습니다.
-                      </div>
-                    </div>
-                  )}
-                  {editError && (
-                    <div style={{ color: "red", fontSize: 15, textAlign: "center", marginTop: 7 }}>
-                      {editError}
-                    </div>
-                  )}
-                  <button style={modalCloseButtonStyle} onClick={handleWithdrawCancel}>
-                    닫기
-                  </button>
-                </div>
-              </div>
-            )}
-          </>
-        )}
-        {!user && (
-          <>
-            <button style={mainButtonStyle} onClick={() => setShowLogin(true)}>{t("login")}</button>
-            {showLogin && (
-              <div style={modalOverlayStyle}>
-                <div style={modalContentStyle} onClick={e => e.stopPropagation()}>
-                  <div style={{ fontWeight: 800, fontSize: 22, marginBottom: 12, textAlign: "center" }}>{t("로그인")}</div>
-                  <form style={{ width: "100%" }} onSubmit={handleLogin}>
-                    <input
-                      type="email"
-                      value={loginEmail}
-                      onChange={e => setLoginEmail(e.target.value)}
-                      placeholder="이메일"
-                      style={modalInputStyle}
-                      autoComplete="username"
-                      required
-                    />
-                    <input
-                      type="password"
-                      value={loginPassword}
-                      onChange={e => setLoginPassword(e.target.value)}
-                      placeholder="비밀번호"
-                      style={modalInputStyle}
-                      autoComplete="current-password"
-                      required
-                    />
-                    <button
-                      type="submit"
-                      disabled={loginLoading}
-                      style={{
-                        width: "100%",
-                        background: blueMain,
-                        color: "#fff",
-                        fontWeight: 800,
-                        border: "none",
-                        borderRadius: 8,
-                        fontSize: 17,
-                        padding: "11px 0",
-                        margin: "14px 0 0",
-                        cursor: loginLoading ? "not-allowed" : "pointer"
-                      }}
-                    >
-                      {loginLoading ? "로그인 중..." : "로그인"}
-                    </button>
-                    {loginError && (
-                      <div style={{ color: "red", marginTop: 8, fontSize: 15, textAlign: "center" }}>
-                        {loginError}
+                      >{withdrawLoading ? "신청 중..." : "탈퇴 신청"}</button>
+                    )}
+                    {editError && (
+                      <div style={{ color: "red", marginTop: 7, fontSize: 14, textAlign: "center" }}>
+                        {editError}
                       </div>
                     )}
-                  </form>
-                  <div style={{ marginTop: 14, width: "100%", textAlign: "center" }}>
-                    <a href="/signup" style={{ color: blueMain, marginBottom: 7, display: "block" }}>회원가입</a>
-                    <a href="/find-id" style={{ color: "#555", marginBottom: 5, display: "block" }}>아이디 찾기</a>
-                    <a href="/find-pw" style={{ color: "#555", display: "block" }}>비밀번호 찾기</a>
                   </div>
-                  <button style={modalCloseButtonStyle} onClick={() => setShowLogin(false)}>
-                    닫기
+                  <button style={modalCloseButtonStyle} onClick={() => setShowProfile(false)}>닫기</button>
+                  <button
+                    style={{
+                      position: "absolute",
+                      top: 10,
+                      right: 10,
+                      width: 32,
+                      height: 32,
+                      background: "transparent",
+                      border: "none",
+                      color: "#555",
+                      fontSize: 28,
+                      cursor: "pointer",
+                      zIndex: 10,
+                    }}
+                    aria-label="닫기"
+                    tabIndex={0}
+                    onClick={() => setShowProfile(false)}
+                  >
+                    <svg width="22" height="22" viewBox="0 0 22 22">
+                      <line x1="4" y1="4" x2="18" y2="18" stroke="#333" strokeWidth="2.2" strokeLinecap="round" />
+                      <line x1="18" y1="4" x2="4" y2="18" stroke="#333" strokeWidth="2.2" strokeLinecap="round" />
+                    </svg>
                   </button>
                 </div>
               </div>
             )}
           </>
+        ) : (
+          <button style={mainButtonStyle} onClick={() => navigate("/login")}>{t("login")}</button>
         )}
       </div>
-      {/* 네온 효과, 폰트, 애니 추가 */}
-      <style>
-        {`
-          @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&display=swap');
-          header {
-            animation: headerNeonIn 1.1s cubic-bezier(.35,1,.4,1) 0s 1;
-          }
-          @keyframes headerNeonIn {
-            from { opacity: 0; filter: blur(9px);}
-            to { opacity: 1; filter: blur(0);}
-          }
-          button:hover {
-            filter: brightness(1.16);
-            background: #2999ff !important;
-            color: #fff !important;
-            box-shadow: 0 2px 12px #2999ff55;
-          }
-          button:focus {
-            outline: 2px solid #18ffff99 !important;
-            box-shadow: 0 0 0 2px #1976ed55;
-          }
-        `}
-      </style>
     </header>
   );
 }

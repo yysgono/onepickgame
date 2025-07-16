@@ -84,8 +84,8 @@ function App() {
   const [nicknameLoading, setNicknameLoading] = useState(false);
 
   // === 고정 월드컵용 ===
-  const [fixedWorldcupIds, setFixedWorldcupIds] = useState([]); // id만 저장
-  const [fixedWorldcups, setFixedWorldcups] = useState([]); // 객체 전체
+  const [fixedWorldcupIds, setFixedWorldcupIds] = useState([]);
+  const [fixedWorldcups, setFixedWorldcups] = useState([]);
 
   useEffect(() => {
     let isMounted = true;
@@ -226,7 +226,7 @@ function App() {
     let recents = [];
     try {
       recents = JSON.parse(localStorage.getItem("onepickgame_recentWorldcups") || "[]");
-    } catch {}
+    } catch { }
     recents = recents.reverse().filter((id, i, arr) => arr.indexOf(id) === i);
     const recentCups = recents
       .map(id => worldcupList.find(w => String(w.id) === String(id)))
@@ -263,7 +263,7 @@ function App() {
           fetchWorldcups={fetchWorldcups}
           onSelect={cup => {
             let recent = [];
-            try { recent = JSON.parse(localStorage.getItem("onepickgame_recentWorldcups") || "[]"); } catch {}
+            try { recent = JSON.parse(localStorage.getItem("onepickgame_recentWorldcups") || "[]"); } catch { }
             localStorage.setItem("onepickgame_recentWorldcups",
               JSON.stringify([cup.id, ...recent.filter(id => id !== cup.id)].slice(0, 30))
             );
@@ -412,7 +412,8 @@ function App() {
             <Route path="/admin" element={<AdminRoute />} />
             <Route path="/admin-stats" element={<AdminStatsRoute />} />
             <Route path="/signup" element={<SignupBox />} />
-            <Route path="/login" element={<LoginBox />} />
+            {/* 여기만 수정 */}
+            <Route path="/login" element={<LoginBox setUser={setUser} setNickname={updateNickname} />} />
             <Route path="/find-id" element={<FindIdBox />} />
             <Route path="/find-pw" element={<FindPwBox />} />
             <Route path="/reset-password" element={<ResetPwRedirect />} />
@@ -497,7 +498,7 @@ function App() {
           height: "100vh",
           zIndex: 1,
           pointerEvents: "none",
-          background: "rgba(0,0,0,0.0)", // 오버레이 투명도 조정
+          background: "rgba(0,0,0,0.0)",
         }}
       />
       {/* 기존 컨텐츠 zIndex=2~로 띄우기 */}

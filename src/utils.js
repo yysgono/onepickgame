@@ -13,7 +13,7 @@ export function getThumbnail(url = "") {
   return url || "";
 }
 export function isValidImageUrl(url = "") {
-  return /\.(jpeg|jpg|png|gif|webp)$/i.test(url) && !getYoutubeId(url);
+  return /\.(jpeg|jpg|png|gif|webp|svg)$/i.test(url) && !getYoutubeId(url);
 }
 export function getYoutubeEmbed(url = "") {
   const ytid = getYoutubeId(url);
@@ -139,6 +139,16 @@ export async function upsertMyWinnerStat({
   return data;
 }
 
+// === 병렬 처리 (빠른 통계 기록용!) ===
+export async function upsertMyWinnerStat_parallel(statsArr, cup_id) {
+  if (!Array.isArray(statsArr)) throw new Error("statsArr required");
+  await Promise.all(
+    statsArr.map(stat =>
+      upsertMyWinnerStat({ ...stat, cup_id })
+    )
+  );
+}
+
 export async function getMyWinnerStats({ cup_id } = {}) {
   const { user_id, guest_id } = await getUserOrGuestId();
   let query = supabase.from("winner_stats").select("*");
@@ -157,19 +167,15 @@ export async function fetchWinnerStatsFromDB(cup_id, since) {
     .select("*")
     .eq("cup_id", cup_id);
 
-  // 기간 직접(from, to) 설정 지원
   if (since && typeof since === "object" && since.from && since.to) {
     query = query.gte("created_at", since.from).lte("created_at", since.to);
   } else if (since) {
-    // 단일 날짜(24h, 7d 등)
     query = query.gte("created_at", since);
   }
-  // 전체(필터 없음)
 
   const { data, error } = await query;
   if (error) throw error;
 
-  // ...후보별 합산 로직
   const statsMap = {};
   for (const row of data) {
     const id = row.candidate_id;
@@ -223,7 +229,6 @@ export function calcStatsFromMatchHistory(candidates, winner, matchHistory) {
   return Object.values(statsMap);
 }
 
-// 최다 우승자 반환
 export function getMostWinnerFromDB(statsArr, cupData) {
   if (!statsArr || !Array.isArray(statsArr)) return null;
   let maxWin = -1;
