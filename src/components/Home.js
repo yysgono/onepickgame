@@ -78,7 +78,7 @@ function Home({
   const [cupsWithWinCount, setCupsWithWinCount] = useState(null);
   const [vw, setVw] = useState(window.innerWidth);
 
-  // 추가: 몇 개까지 보여줄지 상태
+  // 몇 개까지 보여줄지 상태
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
 
   useEffect(() => {
@@ -102,6 +102,7 @@ function Home({
   const SKELETON_COUNT = isMobile ? 3 : 6;
   const THUMB_HEIGHT = isMobile ? 168 : 168 * 1.2;
 
+  // 일반 월드컵 목록
   useEffect(() => {
     let mounted = true;
     async function fillWinCounts() {
@@ -132,6 +133,30 @@ function Home({
     };
   }, [worldcupList]);
 
+  // "추천" 고정 월드컵용 winStats 포함
+  const [fixedCupsWithStats, setFixedCupsWithStats] = useState([]);
+  useEffect(() => {
+    let mounted = true;
+    async function fillFixedStats() {
+      if (!fixedWorldcups || !fixedWorldcups.length) {
+        setFixedCupsWithStats([]);
+        return;
+      }
+      const list = await Promise.all(
+        fixedWorldcups.map(async (cup) => {
+          // 이미 winStats 있으면 그대로, 아니면 fetch
+          if (Array.isArray(cup.winStats) && cup.winStats.length > 0) return cup;
+          const statsArr = await fetchWinnerStatsFromDB(cup.id);
+          return { ...cup, winStats: statsArr };
+        })
+      );
+      if (mounted) setFixedCupsWithStats(list);
+    }
+    fillFixedStats();
+    return () => { mounted = false; };
+  }, [fixedWorldcups]);
+
+  // 필터/정렬
   const filtered = Array.isArray(cupsWithWinCount)
     ? (cupsWithWinCount || [])
         .filter(
@@ -150,7 +175,7 @@ function Home({
         })
     : [];
 
-  // 보여줄 리스트 제한!
+  // 보여줄 리스트 제한
   const visibleList = filtered.slice(0, visibleCount);
 
   const cardRefs = useSlideFadeIn(visibleList.length);
@@ -160,6 +185,7 @@ function Home({
 
   function getTop2Winners(winStats, cupData) {
     if (!winStats?.length) return [cupData?.[0] || null, cupData?.[1] || null];
+    // winStats를 win_count 기준으로 내림차순 정렬
     const sorted = [...winStats].sort(
       (a, b) => (b.win_count || 0) - (a.win_count || 0)
     );
@@ -190,15 +216,14 @@ function Home({
   const mainDark = "#171C27";
   const blueLine = "#1976ed";
 
-  // 버튼/제목 배경 통일
   const buttonStyle = {
     background: mainDark,
     color: "#fff",
     fontWeight: 900,
     border: "none",
     borderRadius: 8,
-    fontSize: isMobile ? 13 : 14, // ↓ 더 작게
-    padding: isMobile ? "5px 12px" : "7px 17px", // ↓ 더 슬림하게
+    fontSize: isMobile ? 13 : 14,
+    padding: isMobile ? "5px 12px" : "7px 17px",
     outline: "none",
     cursor: "pointer",
     letterSpacing: "0.5px",
@@ -217,7 +242,6 @@ function Home({
     fontSize: isMobile ? 12 : 13,
   };
 
-  // ★★ [추가: 검색/정렬 UI] ★★
   const sortButton = (label, value) => (
     <button
       type="button"
@@ -268,9 +292,8 @@ function Home({
         }}
       />
       {showFixedWorldcups !== false && (
-        <FixedCupSection worldcupList={fixedWorldcups || []} />
+        <FixedCupSection worldcupList={fixedCupsWithStats || []} />
       )}
-
       <div
         style={{
           width: "100%",
@@ -282,7 +305,6 @@ function Home({
           zIndex: 2,
         }}
       >
-        {/* === [검색/정렬 영역] === */}
         <div
           style={{
             display: "flex",
@@ -297,12 +319,10 @@ function Home({
             zIndex: 5,
           }}
         >
-          {/* 정렬 버튼 */}
           <div style={{ display: "flex", alignItems: "center" }}>
             {sortButton("인기순", "popular")}
             {sortButton("최신순", "recent")}
           </div>
-          {/* 검색창 */}
           <div style={{ display: "flex", alignItems: "center" }}>
             <input
               type="text"
@@ -310,9 +330,9 @@ function Home({
               value={search}
               onChange={e => setSearch(e.target.value)}
               style={{
-                background: "#fff",                 
-                color: "#1b2236",                   
-                border: "2px solid #fff",           
+                background: "#fff",
+                color: "#1b2236",
+                border: "2px solid #fff",
                 borderRadius: 8,
                 padding: isMobile ? "9px 13px" : "13px 20px",
                 fontSize: isMobile ? 16 : 17,
@@ -327,7 +347,6 @@ function Home({
             />
           </div>
         </div>
-        {/* === 카드 그리드 === */}
         <div
           style={{
             display: "grid",
@@ -393,7 +412,6 @@ function Home({
                     if (onSelect) onSelect(cup);
                   }}
                 >
-                  {/* 카드 뒤 glow+blue layer */}
                   <div style={{
                     position: "absolute",
                     top: "-33%",
@@ -407,7 +425,6 @@ function Home({
                     opacity: 0.92,
                     pointerEvents: "none",
                   }} />
-                  {/* 썸네일 */}
                   <div
                     style={{
                       width: "100%",
@@ -485,7 +502,6 @@ function Home({
                       />
                     </div>
                   </div>
-                  {/* 제목 */}
                   <div
                     style={{
                       width: "100%",
@@ -538,7 +554,6 @@ function Home({
                       {cup.title}
                     </span>
                   </div>
-                  {/* 하단 버튼 (파란선 바로 위에!) */}
                   <div
                     style={{
                       width: "100%",
@@ -546,9 +561,9 @@ function Home({
                       alignItems: "center",
                       justifyContent: "space-between",
                       padding: isMobile
-                        ? "3px 8px 6px 8px"    // 더 슬림하게
+                        ? "3px 8px 6px 8px"
                         : "6px 16px 7px 16px",
-                      minHeight: isMobile ? 23 : 27,  // 슬림
+                      minHeight: isMobile ? 23 : 27,
                       background: mainDark,
                       boxSizing: "border-box",
                       marginTop: "auto",
@@ -607,8 +622,6 @@ function Home({
               );
             })}
         </div>
-
-        {/* ★ 더보기 버튼 (더 보여줄 게 있으면) */}
         {!loading && visibleCount < filtered.length && (
           <div style={{ textAlign: "center", margin: "38px 0 60px 0" }}>
             <button
@@ -630,8 +643,6 @@ function Home({
             </button>
           </div>
         )}
-
-        {/* 폰트 import */}
         <style>
           {`
             @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&display=swap');
