@@ -135,7 +135,7 @@ const PERIODS = [
 
 // 퍼센트 표시
 function percent(n, d) {
-  if (!d) return "0%";
+  if (!d) return "-";
   return Math.round((n / d) * 100) + "%";
 }
 function getSinceDate(days) {
@@ -189,7 +189,6 @@ function RankCard({
         zIndex: 2,
       }}
     >
-      {/* 큰 메달! */}
       <div
         style={{
           position: "absolute",
@@ -254,6 +253,39 @@ function RankCard({
   );
 }
 
+// ---- Skeleton Row ----
+function SkeletonTableRow({ colCount = 8 }) {
+  return (
+    <tr>
+      {Array.from({ length: colCount }).map((_, i) => (
+        <td key={i}>
+          <div
+            style={{
+              height: 28,
+              background: "#f3f4f9",
+              borderRadius: 6,
+              margin: "3px 0",
+              width: "90%",
+              marginLeft: "auto",
+              marginRight: "auto",
+              animation: "skeleton-blink 1.2s infinite alternate",
+            }}
+          />
+        </td>
+      ))}
+      <style>
+        {`
+          @keyframes skeleton-blink {
+            0% { opacity: 0.6; }
+            100% { opacity: 1; }
+          }
+        `}
+      </style>
+    </tr>
+  );
+}
+
+// ---- 메인 컴포넌트 ----
 export default function StatsPage({
   selectedCup,
   showCommentBox = false,
@@ -305,18 +337,6 @@ export default function StatsPage({
     fetchStats();
   }, [selectedCup, period, customMode, customFrom, customTo]);
 
-  // *** 정렬 ***
-  // rank 헤더 클릭시 실제로 win_count 정렬을 함!
-  const handleHeaderClick = (colKey) => {
-    if (colKey === "rank") {
-      if (sortKey === "win_count") setSortDesc(d => !d);
-      else { setSortKey("win_count"); setSortDesc(true); }
-    } else if (!["image"].includes(colKey)) {
-      if (sortKey === colKey) setSortDesc(d => !d);
-      else { setSortKey(colKey); setSortDesc(true); }
-    }
-  };
-
   let filteredStats = [...stats].filter(row => row.name?.toLowerCase().includes(search.toLowerCase()));
   if (userOnly) {
     filteredStats = filteredStats.map(row => ({
@@ -325,12 +345,11 @@ export default function StatsPage({
     }));
   }
 
-  // 소트 로직 (win_count/duel 등)
+  // *** 정렬(우승수 같으면 match_wins 많은 순) ***
   filteredStats = filteredStats
     .map((row, i) => ({ ...row, _originIdx: i }))
     .sort((a, b) => {
       let av = a[sortKey], bv = b[sortKey];
-
       if (sortKey === "win_rate") {
         av = a.total_games ? a.win_count / a.total_games : 0;
         bv = b.total_games ? b.win_count / b.total_games : 0;
@@ -339,16 +358,13 @@ export default function StatsPage({
         av = a.match_count ? a.match_wins / a.match_count : 0;
         bv = b.match_count ? b.match_wins / b.match_count : 0;
       }
-
-      // rank 컬럼도 win_count로 동작해야 함!
-      if (sortKey === "win_count" || sortKey === "user_win_count" || sortKey === "rank") {
+      if (sortKey === "win_count" || sortKey === "user_win_count") {
         if (a.win_count > b.win_count) return sortDesc ? -1 : 1;
         if (a.win_count < b.win_count) return sortDesc ? 1 : -1;
         if (a.match_wins > b.match_wins) return -1;
         if (a.match_wins < b.match_wins) return 1;
         return a._originIdx - b._originIdx;
       }
-
       if (typeof av === "string") av = av.toLowerCase();
       if (typeof bv === "string") bv = bv.toLowerCase();
       if (av < bv) return sortDesc ? 1 : -1;
@@ -356,16 +372,14 @@ export default function StatsPage({
       return a._originIdx - b._originIdx;
     });
 
-  // 표의 rank(순위) 숫자 출력
-  function getTableRank(idx) {
-    // 정렬 방향에 따라 index→역순 번호
-    if (sortKey === "win_count" && !sortDesc) {
-      return filteredStats.length - idx;
-    }
-    return idx + 1;
-  }
+  // *** rank 부여: 정렬된 순서로 부여 ***
+  filteredStats.forEach((row, i) => { row.rank = i + 1; });
+  const totalStats = filteredStats.length;
+  const totalPages = Math.max(1, Math.ceil(totalStats / itemsPerPage));
+  const pagedStats = filteredStats.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+  useEffect(() => { setCurrentPage(1); }, [search, itemsPerPage, stats]);
 
-  // *** 1~3위 카드 고정(이 부분은 데이터의 실제 순위와 무관하게, win_count 내림차순으로만 표시!) ***
+  // *** 1~3위 카드 고정(우승 기준 같으면 match_wins로) ***
   const top3 = [...stats]
     .map((row, i) => ({ ...row, _originIdx: i }))
     .sort((a, b) => {
@@ -377,6 +391,7 @@ export default function StatsPage({
     })
     .slice(0, 3);
 
+  // 표 스타일
   const ivoryCell = {
     background: "#fcf5cd",
     fontWeight: 800,
@@ -395,12 +410,6 @@ export default function StatsPage({
     { key: "match_count", label: t("duel_count") },
     { key: "match_win_rate", label: t("match_win_rate"), isIvory: true },
   ];
-
-  // 페이지네이션
-  const totalStats = filteredStats.length;
-  const totalPages = Math.max(1, Math.ceil(totalStats / itemsPerPage));
-  const pagedStats = filteredStats.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
-  useEffect(() => { setCurrentPage(1); }, [search, itemsPerPage, stats]);
 
   function Pagination() {
     if (totalPages <= 1) return null;
@@ -470,7 +479,6 @@ export default function StatsPage({
     );
   }
 
-  // 공유/신고
   function ShareAndReportBar() {
     if (!selectedCup?.id) return null;
     const shareUrl = `${window.location.origin}/select-round/${selectedCup.id}`;
@@ -508,7 +516,6 @@ export default function StatsPage({
     );
   }
 
-  // ------ Render ------
   return (
     <div
       style={{
@@ -779,12 +786,18 @@ export default function StatsPage({
                     ...(col.isIvory ? ivoryCell : { background: "#fff", fontWeight: 700 }),
                     userSelect: "none"
                   }}
-                  onClick={() => handleHeaderClick(col.key)}
+                  onClick={
+                    ["image"].includes(col.key)
+                      ? undefined
+                      : () => {
+                          if (sortKey === col.key) setSortDesc(desc => !desc);
+                          else { setSortKey(col.key); setSortDesc(true); }
+                        }
+                  }
                 >
                   <span>
                     {col.label}
-                    {/* rank 정렬 시에만 화살표 표시 */}
-                    {((col.key === "rank" && sortKey === "win_count") || sortKey === col.key) &&
+                    {sortKey === col.key &&
                       (sortDesc ? " ▼" : " ▲")
                     }
                   </span>
@@ -793,79 +806,86 @@ export default function StatsPage({
             </tr>
           </thead>
           <tbody>
-            {pagedStats.length === 0 && (
-              <tr>
-                <td colSpan={sortableCols.length} style={{ padding: 22, color: "#888" }}>
-                  {t("cannotShowResult")}
-                </td>
-              </tr>
-            )}
-            {pagedStats.map((row, idx) => {
-              const isHighlighted = highlightCandidateId && row.candidate_id === highlightCandidateId;
-              const highlightStyle = isHighlighted
-                ? {
-                    background: "linear-gradient(90deg,#f9e7ff 0%,#f3fbff 80%)",
-                    boxShadow: "0 2px 12px #d489ec15",
-                    fontWeight: 800,
-                    borderLeft: "6px solid #d489ec",
-                    color: "#7114b5",
-                    fontSize: isMobile ? 15 : 17,
-                    transition: "all 0.12s"
-                  }
-                : { background: (idx % 2 === 0) ? "#fafdff" : "#fff" };
-              return (
-                <tr key={row.candidate_id} style={highlightStyle}>
-                  {/* rank */}
-                  <td style={ivoryCell}>{getTableRank(idx + (currentPage - 1) * itemsPerPage)}</td>
-                  {/* image */}
-                  <td style={{
-                    padding: "7px 0",
-                    background: "#fff"
-                  }}>
-                    <div
-                      style={{
-                        width: isMobile ? 30 : 38,
-                        height: isMobile ? 30 : 38,
-                        borderRadius: 7,
-                        overflow: "hidden",
-                        margin: "0 auto",
-                        background: "#f8f9fa",
-                        border: "1.5px solid #e7f1fb"
-                      }}
-                    >
-                      <MediaRenderer url={row.image} alt={row.name} />
-                    </div>
-                  </td>
-                  {/* 이름 */}
-                  <td style={{
-                    padding: "7px 0",
-                    background: "#fff",
-                    fontWeight: 700,
-                    fontSize: isMobile ? 13 : 15,
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                    whiteSpace: "nowrap",
-                    maxWidth: isMobile ? 90 : 120,
-                  }}>
-                    {row.name}
-                  </td>
-                  {/* win_count */}
-                  <td style={{ padding: "7px 0", background: "#fff" }}>{row.win_count}</td>
-                  {/* win_rate */}
-                  <td style={ivoryCell}>
-                    {row.total_games ? percent(row.win_count, row.total_games) : "0%"}
-                  </td>
-                  {/* match_wins */}
-                  <td style={{ padding: "7px 0", background: "#fff" }}>{row.match_wins}</td>
-                  {/* duel_count */}
-                  <td style={{ padding: "7px 0", background: "#fff" }}>{row.match_count}</td>
-                  {/* match_win_rate */}
-                  <td style={ivoryCell}>
-                    {row.match_count ? percent(row.match_wins, row.match_count) : "0%"}
+            {loading
+              ? Array.from({ length: 5 }).map((_, i) => (
+                  <SkeletonTableRow key={i} colCount={sortableCols.length} />
+                ))
+              : pagedStats.length === 0
+              ? (
+                <tr>
+                  <td colSpan={sortableCols.length} style={{ padding: 22, color: "#888" }}>
+                    {t("cannotShowResult")}
                   </td>
                 </tr>
-              );
-            })}
+              ) : (
+                pagedStats.map((row, idx) => {
+                  const isHighlighted = highlightCandidateId && row.candidate_id === highlightCandidateId;
+                  const highlightStyle = isHighlighted
+                    ? {
+                        background: "linear-gradient(90deg,#f9e7ff 0%,#f3fbff 80%)",
+                        boxShadow: "0 2px 12px #d489ec15",
+                        fontWeight: 800,
+                        borderLeft: "6px solid #d489ec",
+                        color: "#7114b5",
+                        fontSize: isMobile ? 15 : 17,
+                        transition: "all 0.12s"
+                      }
+                    : { background: (idx % 2 === 0) ? "#fafdff" : "#fff" };
+                  return (
+                    <tr key={row.candidate_id} style={highlightStyle}>
+                      {/* rank */}
+                      <td style={ivoryCell}>{row.rank}</td>
+                      {/* image */}
+                      <td style={{
+                        padding: "7px 0",
+                        background: "#fff"
+                      }}>
+                        <div
+                          style={{
+                            width: isMobile ? 30 : 38,
+                            height: isMobile ? 30 : 38,
+                            borderRadius: 7,
+                            overflow: "hidden",
+                            margin: "0 auto",
+                            background: "#f8f9fa",
+                            border: "1.5px solid #e7f1fb"
+                          }}
+                        >
+                          <MediaRenderer url={row.image} alt={row.name} />
+                        </div>
+                      </td>
+                      {/* 이름 */}
+                      <td style={{
+                        padding: "7px 0",
+                        background: "#fff",
+                        fontWeight: 700,
+                        fontSize: isMobile ? 13 : 15,
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        whiteSpace: "nowrap",
+                        maxWidth: isMobile ? 90 : 120,
+                      }}>
+                        {row.name}
+                      </td>
+                      {/* win_count */}
+                      <td style={{ padding: "7px 0", background: "#fff" }}>{row.win_count}</td>
+                      {/* win_rate */}
+                      <td style={ivoryCell}>
+                        {row.total_games ? percent(row.win_count, row.total_games) : "-"}
+                      </td>
+                      {/* match_wins */}
+                      <td style={{ padding: "7px 0", background: "#fff" }}>{row.match_wins}</td>
+                      {/* duel_count */}
+                      <td style={{ padding: "7px 0", background: "#fff" }}>{row.match_count}</td>
+                      {/* match_win_rate */}
+                      <td style={ivoryCell}>
+                        {row.match_count ? percent(row.match_wins, row.match_count) : "-"}
+                      </td>
+                    </tr>
+                  );
+                })
+              )
+            }
           </tbody>
         </table>
       </div>
