@@ -1,10 +1,12 @@
 import React, { useState, useEffect, useRef } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { useTranslation } from "react-i18next";
-import { supabase } from "../utils/supabaseClient";
-import { uploadCandidateImage } from "../utils/supabaseImageUpload";
+import CandidateInput from "./CandidateInput";
 import COLORS from "../styles/theme";
 import { mainButtonStyle, grayButtonStyle } from "../styles/common";
+import { addWorldcupGame } from "../utils/supabaseWorldcupApi";
+import { uploadCandidateImage } from "../utils/supabaseImageUpload";
+import { supabase } from "../utils/supabaseClient";
 import useBanCheck from "../hooks/useBanCheck";
 
 const DEFAULT_THUMB_URL = "/default-thumb.png";
@@ -14,54 +16,6 @@ function isMobile() {
     return window.innerWidth <= 700;
   }
   return false;
-}
-
-// 미리보기: SVG 포함, data url/object 방식 모두
-function MediaRenderer({ url, alt, size = 40 }) {
-  if (!url) return (
-    <div style={{
-      width: size, height: size, background: "#f3f3f3",
-      borderRadius: 8, display: "inline-block"
-    }} />
-  );
-
-  // svg data url or 확장자 .svg인 경우 object/embed로
-  if (
-    typeof url === "string" &&
-    (url.startsWith("data:image/svg") || url.endsWith(".svg"))
-  ) {
-    return (
-      <object
-        data={url}
-        type="image/svg+xml"
-        aria-label={alt}
-        style={{
-          width: size, height: size, borderRadius: 8,
-          display: "inline-block", verticalAlign: "middle"
-        }}
-      >
-        <img src={url} alt={alt} style={{ width: size, height: size }} />
-      </object>
-    );
-  }
-
-  // 기본 이미지 출력
-  return (
-    <img
-      src={url}
-      alt={alt}
-      style={{
-        width: size, height: size, objectFit: "cover",
-        borderRadius: 8, background: "#f3f3f3", verticalAlign: "middle"
-      }}
-      onError={e => {
-        // svg가 img에서 에러난 경우
-        if (url.startsWith("data:image/svg")) {
-          e.target.outerHTML = `<span style="font-size:22px;vertical-align:middle;">🖼️</span>`;
-        }
-      }}
-    />
-  );
 }
 
 function WorldcupMaker({ onCreate, onCancel }) {
@@ -74,10 +28,15 @@ function WorldcupMaker({ onCreate, onCancel }) {
   ]);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+
   const [user, setUser] = useState(null);
   const [nickname, setNickname] = useState("");
   const mobile = isMobile();
+
   const fileInputRef = useRef();
+
+  // 드래그 중 표시 상태
+  const [dragActive, setDragActive] = useState(false);
 
   useEffect(() => {
     async function fetchUser() {
@@ -95,7 +54,7 @@ function WorldcupMaker({ onCreate, onCancel }) {
     fetchUser();
   }, []);
 
-  // 정지 체크
+  // === 정지 체크 (user 변경시 자동) ===
   const { isBanned, banInfo } = useBanCheck(user);
 
   if (!user) {
@@ -130,14 +89,14 @@ function WorldcupMaker({ onCreate, onCancel }) {
     setCandidates((cands) => cands.map((c, i) => (i === idx ? val : c)));
   }
   function removeCandidate(idx) {
-    if (candidates.length <= 2) return;
+    if (candidates.length <= 2) return; // 2개 이하일 때 삭제 막기
     setCandidates((cands) => cands.filter((_, i) => i !== idx));
   }
 
-  // SVG, gif, png, jpg 업로드 지원
+  // 이미지 여러개 드래그&드롭/클릭 업로드 (svg/gif 포함)
   async function handleFiles(fileList) {
     const files = Array.from(fileList).filter(file =>
-      /\.(jpe?g|png|gif|svg)$/i.test(file.name)
+      /\.(jpe?g|png|gif|svg)$/i.test(file.name)    // svg/gif 포함
     );
     if (files.length === 0) return;
 
@@ -145,6 +104,7 @@ function WorldcupMaker({ onCreate, onCancel }) {
       files.map(file => new Promise(res => {
         const reader = new FileReader();
         reader.onload = e => {
+          // 파일명에서 확장자 제거, _나 -는 공백으로 변환
           const cleanName = file.name
             .replace(/\.[^/.]+$/, "")
             .replace(/[_\-]+/g, " ")
@@ -155,22 +115,35 @@ function WorldcupMaker({ onCreate, onCancel }) {
             image: e.target.result,
           });
         };
-        reader.readAsDataURL(file); // svg 포함
+        reader.readAsDataURL(file);
       }))
     );
     setCandidates(cands => {
       const updated = [...cands];
       let idx = 0;
+      // 빈 칸부터 채우기
       for (let i = 0; i < updated.length && idx < fileCandidates.length; i++) {
         if (!updated[i].image && !updated[i].name) {
           updated[i] = fileCandidates[idx++];
         }
       }
+      // 남는 파일은 추가
       while (idx < fileCandidates.length) {
         updated.push(fileCandidates[idx++]);
       }
       return updated;
     });
+  }
+
+  // 드래그 상태
+  function handleDrag(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.type === "dragenter" || e.type === "dragover") {
+      setDragActive(true);
+    } else if (e.type === "dragleave") {
+      setDragActive(false);
+    }
   }
 
   async function handleSubmit(e) {
@@ -201,7 +174,7 @@ function WorldcupMaker({ onCreate, onCancel }) {
           let imageUrl = c.image;
           if (imageUrl && imageUrl.startsWith("data:image")) {
             const file = await fetch(imageUrl).then(r => r.blob());
-            // 확장자 판별
+            // 파일 확장자 추출
             let ext = "png";
             if (imageUrl.startsWith("data:image/gif")) ext = "gif";
             else if (imageUrl.startsWith("data:image/svg")) ext = "svg";
@@ -227,19 +200,13 @@ function WorldcupMaker({ onCreate, onCancel }) {
         creator: currentUser.id,
       };
 
-      // supabase insert 함수 호출
-      const { data, error: cupErr } = await supabase
-        .from("worldcups")
-        .insert([newCup])
-        .select("id")
-        .single();
-      if (cupErr) throw cupErr;
-      alert("월드컵이 저장되었습니다!\nID: " + data.id);
+      const id = await addWorldcupGame(newCup);
+      alert("월드컵이 저장되었습니다!\nID: " + id);
 
       if (onCreate) {
         onCreate({
           ...newCup,
-          id: data.id,
+          id,
         });
       }
 
@@ -282,39 +249,56 @@ function WorldcupMaker({ onCreate, onCancel }) {
         {t("createWorldcup")}
       </h2>
       <form onSubmit={handleSubmit}>
-        {/* ===== 이미지 드래그/클릭 업로드 구간 ===== */}
+        {/* ===== 더 큰 업로드 박스 ===== */}
         <div
           onDrop={e => {
             e.preventDefault();
+            setDragActive(false);
             handleFiles(e.dataTransfer.files);
           }}
-          onDragOver={e => e.preventDefault()}
+          onDragOver={handleDrag}
+          onDragEnter={handleDrag}
+          onDragLeave={handleDrag}
           style={{
-            border: "2px dashed #7caeff",
-            borderRadius: 12,
-            padding: 22,
-            marginBottom: 16,
+            border: "2.5px dashed #3caeff",
+            borderRadius: 18,
+            padding: mobile ? "38px 12px" : "46px 32px",
+            marginBottom: 24,
             textAlign: "center",
-            background: "#fafbff",
-            cursor: "pointer"
+            background: dragActive ? "#d3eafdcc" : "#f3f9ff",
+            cursor: "pointer",
+            fontSize: mobile ? 18 : 22,
+            fontWeight: 700,
+            color: "#1677ed",
+            letterSpacing: "-0.5px",
+            minHeight: mobile ? 90 : 120,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            transition: "background 0.18s, border-color 0.18s"
           }}
           onClick={() => fileInputRef.current.click()}
         >
           <input
             ref={fileInputRef}
             type="file"
-            accept=".jpg,.jpeg,.png,.gif,.svg,image/*"
+            accept=".jpg,.jpeg,.png,.gif,.svg"
             multiple
             style={{ display: "none" }}
             onChange={e => handleFiles(e.target.files)}
             disabled={loading}
           />
-          <span style={{ color: "#3186e6", fontWeight: 700 }}>
-            이 박스에 여러 이미지를 드래그하거나 클릭해서 업로드!<br />
-            (jpg, png, gif, svg 전부 지원)
+          <span>
+            <span style={{ fontSize: mobile ? 20 : 26 }}>📁</span>
+            <br />
+            이 칸에 드래그해서 여러 파일 업로드도 가능합니다.
+            <br />
+            <span style={{ color: "#2488ec", fontWeight: 500, fontSize: mobile ? 13 : 16 }}>
+              (jpg, png, gif, svg 지원)
+            </span>
           </span>
         </div>
-
+        {/* ======================================== */}
         <input
           value={title}
           onChange={(e) => setTitle(e.target.value)}
@@ -354,31 +338,14 @@ function WorldcupMaker({ onCreate, onCancel }) {
             </span>
           </div>
           {candidates.map((c, i) => (
-            <div key={c.id} style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8 }}>
-              <input
-                value={c.name}
-                onChange={e => updateCandidate(i, { ...c, name: e.target.value })}
-                placeholder="이름"
-                maxLength={22}
-                style={{
-                  width: mobile ? 86 : 130, fontSize: 15, padding: 7, borderRadius: 7,
-                  border: "1.1px solid #bbb"
-                }}
-                disabled={loading}
-              />
-              <MediaRenderer url={c.image} alt={c.name} size={36} />
-              <button
-                type="button"
-                onClick={() => removeCandidate(i)}
-                style={{
-                  background: "#f5f5f5", color: "#d33", border: "none",
-                  borderRadius: 7, padding: "5px 11px", fontWeight: 700, marginLeft: 2
-                }}
-                disabled={loading || candidates.length <= 2}
-              >
-                삭제
-              </button>
-            </div>
+            <CandidateInput
+              key={c.id}
+              value={c}
+              onChange={(val) => updateCandidate(i, val)}
+              onRemove={() => removeCandidate(i)}
+              disabled={loading}
+              minCandidates={candidates.length <= 2}
+            />
           ))}
           <button
             type="button"

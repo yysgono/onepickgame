@@ -1,62 +1,112 @@
-import React, { useRef } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { hasBadword } from "../badwords-multilang";
-import { uploadCandidateImage } from "../utils/supabaseImageUpload"; // supabase 전용
 
 function getYoutubeThumb(url) {
-  const match = url.match(
+  const match = url?.match(
     /(?:youtu\.be\/|youtube\.com\/(?:embed\/|watch\?v=))([\w-]{11})/
   );
   if (match) return `https://img.youtube.com/vi/${match[1]}/mqdefault.jpg`;
   return null;
 }
 
-function getFileExtension(url) {
+function getFileExtension(url = "", file = null) {
+  if (file && file.name) {
+    return file.name.split('.').pop().toLowerCase();
+  }
   if (!url) return "";
   const parts = url.split("?")[0].split("/").pop().split(".");
   if (parts.length === 1) return "";
   return parts[parts.length - 1].toLowerCase();
 }
 
+const DEFAULT_IMAGE = "/default-thumb.png";
+
+// gif의 첫 프레임만 추출 (정지 썸네일)
+function GifThumbnail({ fileOrUrl, style }) {
+  const canvasRef = useRef();
+
+  useEffect(() => {
+    let url;
+    if (fileOrUrl instanceof File) {
+      url = URL.createObjectURL(fileOrUrl);
+    } else if (typeof fileOrUrl === "string") {
+      url = fileOrUrl;
+    } else {
+      return;
+    }
+
+    // gif 썸네일을 img로 불러서 첫 프레임만 drawImage
+    const img = new window.Image();
+    img.onload = () => {
+      const cvs = canvasRef.current;
+      if (!cvs) return;
+      cvs.width = img.width;
+      cvs.height = img.height;
+      const ctx = cvs.getContext("2d");
+      ctx.drawImage(img, 0, 0);
+    };
+    img.src = url;
+
+    return () => {
+      if (fileOrUrl instanceof File) URL.revokeObjectURL(url);
+    };
+  }, [fileOrUrl]);
+
+  return (
+    <canvas
+      ref={canvasRef}
+      style={{
+        width: "100%",
+        height: "100%",
+        background: "#e3f0fb",
+        objectFit: "cover",
+        ...style
+      }}
+    />
+  );
+}
+
 function CandidateInput({ value, onChange, onRemove, disabled }) {
   const { t, i18n } = useTranslation();
   const fileInputRef = useRef();
+  const [previewUrl, setPreviewUrl] = useState("");
 
-  // 썸네일 미리보기
+  // 미리보기: file이면 objectURL, 아니면 value.image(string)
+  useEffect(() => {
+    if (value.file instanceof File) {
+      const url = URL.createObjectURL(value.file);
+      setPreviewUrl(url);
+      return () => URL.revokeObjectURL(url);
+    } else if (typeof value.image === "string") {
+      setPreviewUrl(value.image);
+    } else {
+      setPreviewUrl("");
+    }
+  }, [value.file, value.image]);
+
+  // 썸네일 결정
+  let thumb = "";
   const youtubeThumb = getYoutubeThumb(value.image);
-  const ext = getFileExtension(value.image);
-  const isVideoFile = ext === "mp4" || ext === "webm" || ext === "ogg";
+  const ext = getFileExtension(
+    value.image || (value.file && value.file.name),
+    value.file
+  );
+  const isVideoFile =
+    ext === "mp4" || ext === "webm" || ext === "ogg" || ext === "mov";
+  const isGif =
+    ext === "gif" ||
+    (value.file && value.file.type === "image/gif") ||
+    (value.image && value.image.startsWith("data:image/gif"));
 
-  const thumb = youtubeThumb
-    ? youtubeThumb
-    : !isVideoFile && value.image?.startsWith("http")
-    ? value.image
-    : null;
-
-  // supabase storage에 업로드
-  async function handleFileChange(e) {
-    const file = e.target.files[0];
-    if (!file) return;
-    const allowed = /\.(jpe?g|png)$/i;
-    const disallowed = /\.(gif|webp)$/i;
-    const fileName = file.name || "";
-
-    if (!allowed.test(fileName)) {
-      alert("jpg, jpeg, png 파일만 업로드 가능합니다.");
-      return;
-    }
-    if (disallowed.test(fileName)) {
-      alert("gif, webp 파일은 업로드할 수 없습니다.");
-      return;
-    }
-
-    try {
-      const user = localStorage.getItem("onepickgame_user") || "guest";
-      const url = await uploadCandidateImage(file, user);
-      onChange({ ...value, image: url });
-    } catch (err) {
-      alert("이미지 업로드 실패: " + err.message);
-    }
+  if (youtubeThumb) {
+    thumb = youtubeThumb;
+  } else if (value.file instanceof File) {
+    thumb = previewUrl;
+  } else if (value.image?.startsWith("http")) {
+    thumb = value.image;
+  } else if (value.image?.startsWith("data:image")) {
+    thumb = value.image;
   }
 
   function handleNameChange(e) {
@@ -66,6 +116,27 @@ function CandidateInput({ value, onChange, onRemove, disabled }) {
       return;
     }
     onChange({ ...value, name });
+  }
+
+  function handleImageUrlChange(e) {
+    // url입력 시 file정보 리셋
+    onChange({ ...value, image: e.target.value, file: undefined });
+  }
+
+  async function handleFileChange(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    // 확장자 필터: jpg, png, gif, svg만
+    const allowed = /\.(jpe?g|png|gif|svg)$/i;
+    if (!allowed.test(file.name)) {
+      alert("jpg, png, gif, svg 파일만 업로드 가능합니다.");
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      alert("5MB 이하의 이미지만 업로드 가능합니다.");
+      return;
+    }
+    onChange({ ...value, file, image: "", fileName: file.name });
   }
 
   return (
@@ -100,16 +171,28 @@ function CandidateInput({ value, onChange, onRemove, disabled }) {
           flexShrink: 0,
         }}
       >
-        {thumb ? (
+        {youtubeThumb ? (
           <img
-            src={thumb}
-            alt="thumb"
+            src={youtubeThumb}
+            alt="yt"
             style={{ width: "100%", height: "100%", objectFit: "cover" }}
           />
+        ) : isGif && (value.file || value.image) ? (
+          <GifThumbnail fileOrUrl={value.file || value.image} />
+        ) : thumb ? (
+          // svg 파일이면 object, 그 외 img
+          ext === "svg" || (value.file && value.file.type === "image/svg+xml") ? (
+            <object data={thumb} type="image/svg+xml" style={{ width: "100%", height: "100%" }} />
+          ) : (
+            <img
+              src={thumb}
+              alt="thumb"
+              style={{ width: "100%", height: "100%", objectFit: "cover" }}
+              onError={e => { e.target.src = DEFAULT_IMAGE; }}
+            />
+          )
         ) : isVideoFile ? (
-          <span role="img" aria-label="video">
-            🎥
-          </span>
+          <span role="img" aria-label="video">🎥</span>
         ) : (
           <span style={{ color: "#b3d3fc", fontSize: 26 }}>?</span>
         )}
@@ -133,11 +216,11 @@ function CandidateInput({ value, onChange, onRemove, disabled }) {
         }}
         disabled={disabled}
       />
-      {/* 이미지 URL */}
+      {/* 이미지 URL/유튜브 */}
       <input
         type="text"
         value={value.image}
-        onChange={(e) => onChange({ ...value, image: e.target.value })}
+        onChange={handleImageUrlChange}
         placeholder={t("imageUrlOrYoutube") || "이미지 URL / 유튜브"}
         style={{
           flex: 1,
@@ -169,8 +252,8 @@ function CandidateInput({ value, onChange, onRemove, disabled }) {
           whiteSpace: "nowrap",
           marginRight: 6,
         }}
-        onMouseOver={(e) => (e.currentTarget.style.background = "#45b7fa")}
-        onMouseOut={(e) =>
+        onMouseOver={e => (e.currentTarget.style.background = "#45b7fa")}
+        onMouseOut={e =>
           (e.currentTarget.style.background =
             "linear-gradient(90deg, #1976ed 70%, #45b7fa 100%)")
         }
@@ -181,7 +264,7 @@ function CandidateInput({ value, onChange, onRemove, disabled }) {
       <input
         ref={fileInputRef}
         type="file"
-        accept=".jpg,.jpeg,.png"
+        accept=".jpg,.jpeg,.png,.gif,.svg"
         onChange={handleFileChange}
         style={{ display: "none" }}
         disabled={disabled}
