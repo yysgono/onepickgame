@@ -9,7 +9,15 @@ import MediaRenderer from "./MediaRenderer";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 
-// 제목 (텍스트만, 박스X)
+function getFileExtension(url = "") {
+  if (!url) return "";
+  const clean = url.split("?")[0];
+  const parts = clean.split("/");
+  const last = parts.pop();
+  const ext = last?.split(".").pop()?.toLowerCase();
+  return ext;
+}
+
 function AdaptiveTitle({ title, isMobile }) {
   const ref = useRef();
   const [fontSize, setFontSize] = useState(isMobile ? 54 : 100);
@@ -50,7 +58,6 @@ function AdaptiveTitle({ title, isMobile }) {
   );
 }
 
-// Spinner (로딩)
 function Spinner({ size = 60 }) {
   return (
     <div style={{
@@ -80,7 +87,7 @@ function Spinner({ size = 60 }) {
   );
 }
 
-// [카드만 변경] 더 크게 + 사이드배너와 겹치지 않게!
+// ★ 카드 컴포넌트 (이미지 contain & background/padding)
 function CandidateBox({ c, onClick, disabled, idx }) {
   const [hover, setHover] = useState(false);
   const vw = typeof window !== "undefined" ? window.innerWidth : 1200;
@@ -157,7 +164,19 @@ function CandidateBox({ c, onClick, disabled, idx }) {
         }}
       >
         {c ? (
-          <MediaRenderer url={c.image} alt={c.name} playable />
+          <MediaRenderer
+            url={c.image}
+            alt={c.name}
+            playable
+            style={{
+              objectFit: "contain",
+              width: "100%",
+              height: "100%",
+              background: "#21283a",
+              padding: isMobile ? 8 : 20,
+              boxSizing: "border-box"
+            }}
+          />
         ) : (
           <div style={{ width: "100%", height: "100%", background: "#222" }} />
         )}
@@ -366,7 +385,7 @@ function Match({ cup, onResult, selectedCount }) {
       winner,
       matchHistory
     );
-    await upsertMyWinnerStat_parallel(statsArr, cup.id); // <== 여기!
+    await upsertMyWinnerStat_parallel(statsArr, cup.id);
     setSaving(false);
     navigate(`/result/${cup.id}`, { state: { cup, winner } });
   }
@@ -435,7 +454,7 @@ function Match({ cup, onResult, selectedCount }) {
         letterSpacing: "-1px"
       }}>
         두구두구두구.. 기다려주세요!
-                후보가 많으면 시간이 조금 걸릴수 있어요
+        후보가 많으면 시간이 조금 걸릴수 있어요
       </div>
     </div>
   );

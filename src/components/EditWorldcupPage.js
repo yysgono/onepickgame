@@ -1,5 +1,3 @@
-// src/components/EditWorldcupPage.jsx
-
 import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
@@ -14,7 +12,10 @@ const COLORS = {
   gray: "#888",
 };
 
-function getFileExtension(url) {
+function getFileExtension(url = "", file = null) {
+  if (file && file.name) {
+    return file.name.split('.').pop().toLowerCase();
+  }
   if (!url) return "";
   const parts = url.split("?")[0].split("/").pop().split(".");
   if (parts.length === 1) return "";
@@ -22,7 +23,7 @@ function getFileExtension(url) {
 }
 
 function getYoutubeThumb(url) {
-  const match = url.match(
+  const match = url?.match(
     /(?:youtu\.be\/|youtube\.com\/(?:embed\/|watch\?v=))([\w-]{11})/
   );
   if (match) return `https://img.youtube.com/vi/${match[1]}/mqdefault.jpg`;
@@ -40,7 +41,8 @@ function EditWorldcupPage({ worldcupList, fetchWorldcups, cupId, isAdmin }) {
   const [data, setData] = useState([]);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const fileInputRefs = useRef([]);
+  const fileInputRef = useRef();
+  const [dragActive, setDragActive] = useState(false);
 
   // 유저 정보 & 닉네임 로드
   useEffect(() => {
@@ -72,23 +74,18 @@ function EditWorldcupPage({ worldcupList, fetchWorldcups, cupId, isAdmin }) {
     );
   }, [worldcupList, cupId]);
 
-  // 권한 체크: 운영자 or creator/owner(uuid)가 내 id
-  if (!user) {
-    return <div style={{ padding: 80 }}>로그인이 필요합니다.</div>;
-  }
-  if (!originalCup) {
-    return <div style={{ padding: 80 }}>월드컵을 찾을 수 없습니다.</div>;
-  }
+  // 권한 체크
+  if (!user) return <div style={{ padding: 80 }}>로그인이 필요합니다.</div>;
+  if (!originalCup) return <div style={{ padding: 80 }}>월드컵을 찾을 수 없습니다.</div>;
   if (
     !isAdmin &&
     !(
       (originalCup.creator && originalCup.creator === user.id) ||
       (originalCup.owner && originalCup.owner === user.id)
     )
-  ) {
-    return <div style={{ padding: 80 }}>수정 권한이 없습니다.</div>;
-  }
+  ) return <div style={{ padding: 80 }}>수정 권한이 없습니다.</div>;
 
+  // 후보 추가/삭제/변경
   function handleAddCandidate() {
     setData(d => [...d, { id: uuidv4(), name: "", image: "" }]);
   }
@@ -100,26 +97,75 @@ function EditWorldcupPage({ worldcupList, fetchWorldcups, cupId, isAdmin }) {
       i === idx ? { ...item, [key]: value } : item
     ));
   }
+
+  // 1개 파일 업로드 (svg/gif 지원)
   function handleFileChange(idx, e) {
     const file = e.target.files[0];
     if (!file) return;
-    if (file.size > 2 * 1024 * 1024) {
-      alert("이미지 파일은 최대 2MB까지 업로드 가능합니다.");
-      if (fileInputRefs.current[idx]) fileInputRefs.current[idx].value = "";
+    if (file.size > 5 * 1024 * 1024) {
+      alert("이미지 파일은 최대 5MB까지 업로드 가능합니다.");
       return;
     }
-    const allowed = /\.(jpe?g|png)$/i;
+    const allowed = /\.(jpe?g|png|gif|svg)$/i;
     if (!allowed.test(file.name)) {
-      alert("jpg, jpeg, png 파일만 업로드 가능합니다.");
-      if (fileInputRefs.current[idx]) fileInputRefs.current[idx].value = "";
+      alert("jpg, png, gif, svg 파일만 업로드 가능합니다.");
       return;
     }
     const reader = new FileReader();
     reader.onload = ev => {
       handleCandidateChange(idx, "image", ev.target.result);
-      if (fileInputRefs.current[idx]) fileInputRefs.current[idx].value = "";
     };
     reader.readAsDataURL(file);
+  }
+
+  // 여러 파일 드래그 & 드롭 업로드 (svg/gif 지원)
+  async function handleFiles(fileList) {
+    const files = Array.from(fileList).filter(file =>
+      /\.(jpe?g|png|gif|svg)$/i.test(file.name)
+    );
+    if (files.length === 0) return;
+
+    const fileCandidates = await Promise.all(
+      files.map(file => new Promise(res => {
+        const reader = new FileReader();
+        reader.onload = e => {
+          // 파일명에서 확장자 제거, _나 -는 공백으로 변환
+          const cleanName = file.name
+            .replace(/\.[^/.]+$/, "")
+            .replace(/[_\-]+/g, " ")
+            .trim();
+          res({
+            id: uuidv4(),
+            name: cleanName,
+            image: e.target.result,
+          });
+        };
+        reader.readAsDataURL(file);
+      }))
+    );
+    setData(d => {
+      const updated = [...d];
+      let idx = 0;
+      // 빈 칸부터 채우기
+      for (let i = 0; i < updated.length && idx < fileCandidates.length; i++) {
+        if (!updated[i].image && !updated[i].name) {
+          updated[i] = fileCandidates[idx++];
+        }
+      }
+      // 남는 파일은 추가
+      while (idx < fileCandidates.length) {
+        updated.push(fileCandidates[idx++]);
+      }
+      return updated;
+    });
+  }
+
+  // 드래그 상태
+  function handleDrag(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.type === "dragenter" || e.type === "dragover") setDragActive(true);
+    else if (e.type === "dragleave") setDragActive(false);
   }
 
   async function handleSave() {
@@ -127,11 +173,9 @@ function EditWorldcupPage({ worldcupList, fetchWorldcups, cupId, isAdmin }) {
     if (!title.trim()) return setError("제목을 입력하세요.");
     if (data.length < 2) return setError("후보가 2개 이상이어야 합니다.");
     if (data.some(item => !item.name.trim())) return setError("모든 후보에 이름을 입력하세요.");
-    // 후보 이름 중복 체크
     const names = data.map(item => item.name.trim());
     if (new Set(names).size !== names.length)
       return setError("후보 이름이 중복됩니다.");
-
     setLoading(true);
 
     try {
@@ -141,11 +185,17 @@ function EditWorldcupPage({ worldcupList, fetchWorldcups, cupId, isAdmin }) {
           let imageUrl = item.image;
           if (imageUrl && imageUrl.startsWith("data:image")) {
             const file = await fetch(imageUrl).then(r => r.blob());
-            const url = await uploadCandidateImage(
-              new File([file], `${item.name}.png`, { type: file.type }),
+            // 확장자 결정
+            let ext = "png";
+            if (imageUrl.startsWith("data:image/gif")) ext = "gif";
+            else if (imageUrl.startsWith("data:image/svg")) ext = "svg";
+            else if (imageUrl.startsWith("data:image/jpeg")) ext = "jpg";
+            else if (imageUrl.startsWith("data:image/jpg")) ext = "jpg";
+            else if (imageUrl.startsWith("data:image/png")) ext = "png";
+            imageUrl = await uploadCandidateImage(
+              new File([file], `${item.name}.${ext}`, { type: file.type }),
               nickname || user.id
             );
-            imageUrl = url;
           }
           return {
             ...item,
@@ -238,18 +288,60 @@ function EditWorldcupPage({ worldcupList, fetchWorldcups, cupId, isAdmin }) {
         }}>
           후보 목록 <span style={{ color: COLORS.gray, fontSize: 14 }}>({data.length}개)</span>
         </div>
+        {/* ===== 더 큰 업로드 박스 ===== */}
+        <div
+          onDrop={e => {
+            e.preventDefault();
+            setDragActive(false);
+            handleFiles(e.dataTransfer.files);
+          }}
+          onDragOver={handleDrag}
+          onDragEnter={handleDrag}
+          onDragLeave={handleDrag}
+          style={{
+            border: "2.5px dashed #3caeff",
+            borderRadius: 18,
+            padding: isMobile ? "24px 6px" : "30px 14px",
+            marginBottom: 20,
+            textAlign: "center",
+            background: dragActive ? "#d3eafdcc" : "#f3f9ff",
+            cursor: "pointer",
+            fontSize: isMobile ? 16 : 20,
+            fontWeight: 700,
+            color: "#1677ed",
+            letterSpacing: "-0.5px",
+            minHeight: isMobile ? 40 : 66,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            transition: "background 0.18s, border-color 0.18s"
+          }}
+          onClick={() => fileInputRef.current.click()}
+        >
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept=".jpg,.jpeg,.png,.gif,.svg"
+            multiple
+            style={{ display: "none" }}
+            onChange={e => handleFiles(e.target.files)}
+            disabled={loading}
+          />
+          <span>
+            <span style={{ fontSize: isMobile ? 18 : 23 }}>📁</span>
+            <br />
+            이 칸에 드래그하면 여러 이미지 추가 가능 (jpg, png, gif, svg 지원)
+          </span>
+        </div>
+        {/* ======================================== */}
         {data.map((item, i) => {
           const ext = getFileExtension(item.image);
-          const isVideoFile = ext === "mp4" || ext === "mov" || ext === "webm" || ext === "ogg";
           const youtubeThumb = getYoutubeThumb(item.image);
-
           const thumb = youtubeThumb
             ? youtubeThumb
-            : !isVideoFile && item.image?.startsWith("data:image")
+            : item.image?.startsWith("data:image")
               ? item.image
-              : !isVideoFile
-                ? item.image
-                : null;
+              : item.image;
 
           return (
             <div key={item.id} style={{
@@ -281,7 +373,7 @@ function EditWorldcupPage({ worldcupList, fetchWorldcups, cupId, isAdmin }) {
               />
               <button
                 type="button"
-                onClick={() => fileInputRefs.current[i]?.click()}
+                onClick={() => document.getElementById(`file-${i}`).click()}
                 style={{
                   background: COLORS.main,
                   color: "#fff",
@@ -299,45 +391,44 @@ function EditWorldcupPage({ worldcupList, fetchWorldcups, cupId, isAdmin }) {
                 파일
               </button>
               <input
+                id={`file-${i}`}
                 type="file"
-                accept=".jpg,.jpeg,.png"
+                accept=".jpg,.jpeg,.png,.gif,.svg"
                 style={{ display: "none" }}
-                ref={el => (fileInputRefs.current[i] = el)}
                 onChange={e => handleFileChange(i, e)}
                 disabled={loading}
               />
               {thumb ? (
-                <img
-                  src={thumb}
-                  alt=""
-                  style={{
-                    width: isMobile ? 32 : 44, height: isMobile ? 32 : 44,
-                    objectFit: "cover", borderRadius: 8, background: "#f2f2f2",
-                    boxShadow: "0 2px 8px #0001", border: "1.2px solid #eee",
-                    marginLeft: 8,
-                  }}
-                />
-              ) : isVideoFile ? (
-                <span
-                  style={{
-                    display: "inline-block",
-                    width: isMobile ? 32 : 44,
-                    height: isMobile ? 32 : 44,
-                    lineHeight: isMobile ? "32px" : "44px",
-                    textAlign: "center",
-                    fontSize: isMobile ? 24 : 32,
-                    borderRadius: 8,
-                    background: "#f2f2f2",
-                    color: "#1976ed",
-                    boxShadow: "0 2px 8px #0001",
-                    border: "1.2px solid #eee",
-                    userSelect: "none",
-                  }}
-                  role="img"
-                  aria-label="video file"
-                >
-                  🎥
-                </span>
+                ext === "svg" ? (
+                  <object
+                    data={thumb}
+                    type="image/svg+xml"
+                    style={{
+                      width: isMobile ? 32 : 44,
+                      height: isMobile ? 32 : 44,
+                      background: "#f2f2f2",
+                      borderRadius: 8,
+                      boxShadow: "0 2px 8px #0001",
+                      border: "1.2px solid #eee",
+                      marginLeft: 8,
+                    }}
+                  />
+                ) : (
+                  <img
+                    src={thumb}
+                    alt=""
+                    style={{
+                      width: isMobile ? 32 : 44,
+                      height: isMobile ? 32 : 44,
+                      objectFit: "cover",
+                      borderRadius: 8,
+                      background: "#f2f2f2",
+                      boxShadow: "0 2px 8px #0001",
+                      border: "1.2px solid #eee",
+                      marginLeft: 8,
+                    }}
+                  />
+                )
               ) : null}
               <button
                 onClick={() => handleDeleteCandidate(i)}

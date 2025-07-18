@@ -166,7 +166,7 @@ function MediaRenderer({
         style={{
           width: "100%",
           height: "100%",
-          objectFit: "cover",
+          objectFit: style.objectFit || "cover",  // style.objectFit 우선 적용
           background: "#222",
           display: "block",
           ...style
@@ -204,7 +204,7 @@ function MediaRenderer({
       style={{
         width: "100%",
         height: "100%",
-        objectFit: "cover",
+        objectFit: style.objectFit || "cover",
         background: "#222",
         display: "block",
         ...style
