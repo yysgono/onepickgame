@@ -1,7 +1,8 @@
 import React from "react";
 import { Helmet } from "react-helmet";
+import Home from "../../components/Home";
 
-export default function ViPage() {
+export default function ViPage(props) {
   return (
     <>
       <Helmet>
@@ -15,7 +16,7 @@ export default function ViPage() {
         <meta property="og:image" content="https://onepickgame.com/ogimg.png" />
         <meta property="og:url" content="https://onepickgame.com/vi" />
       </Helmet>
-      {/* Nội dung trang */}
+      <Home {...props} />
     </>
   );
 }

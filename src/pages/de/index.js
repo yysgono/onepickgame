@@ -1,7 +1,8 @@
 import React from "react";
 import { Helmet } from "react-helmet";
+import Home from "../../components/Home";
 
-export default function DePage() {
+export default function DePage(props) {
   return (
     <>
       <Helmet>
@@ -15,7 +16,7 @@ export default function DePage() {
         <meta property="og:image" content="https://onepickgame.com/ogimg.png" />
         <meta property="og:url" content="https://onepickgame.com/de" />
       </Helmet>
-      {/* Seiteninhalt */}
+      <Home {...props} />
     </>
   );
 }

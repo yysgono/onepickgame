@@ -1,7 +1,8 @@
 import React from "react";
 import { Helmet } from "react-helmet";
+import Home from "../../components/Home";
 
-export default function EsPage() {
+export default function EsPage(props) {
   return (
     <>
       <Helmet>
@@ -15,7 +16,7 @@ export default function EsPage() {
         <meta property="og:image" content="https://onepickgame.com/ogimg.png" />
         <meta property="og:url" content="https://onepickgame.com/es" />
       </Helmet>
-      {/* Contenido de la página */}
+      <Home {...props} />
     </>
   );
 }

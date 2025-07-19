@@ -1,7 +1,8 @@
 import React from "react";
 import { Helmet } from "react-helmet";
+import Home from "../../components/Home";
 
-export default function KoPage() {
+export default function KoPage(props) { // ★ props 꼭 받아야 함
   return (
     <>
       <Helmet>
@@ -15,7 +16,7 @@ export default function KoPage() {
         <meta property="og:image" content="https://onepickgame.com/ogimg.png" />
         <meta property="og:url" content="https://onepickgame.com/ko" />
       </Helmet>
-      {/* 실제 페이지 내용 */}
+      <Home {...props} /> {/* ★ 이 줄이 꼭 필요! */}
     </>
   );
 }
