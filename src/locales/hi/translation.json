@@ -205,5 +205,6 @@
     "nextRound": "अगला दौर",
     "nextRoundTitle": "{{a}} बनाम {{b}}"
   },
-  "recommended_worldcups": "सिफारिश की गई वर्ल्डकप"
+  "recommended_worldcups": "सिफारिश की गई वर्ल्डकप",
+  "dragDropUpTo50": "आप इस बॉक्स में एक बार में अधिकतम 50 चित्र खींचकर छोड़ सकते हैं।"
 }

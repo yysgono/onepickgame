@@ -205,5 +205,6 @@
     "nextRound": "Tour suivant",
     "nextRoundTitle": "{{a}} contre {{b}}"
   },
-  "recommended_worldcups": "Worldcups recommandés"
+  "recommended_worldcups": "Worldcups recommandés",
+  "dragDropUpTo50": "Vous pouvez faire glisser et déposer jusqu'à 50 images à la fois dans cette boîte."
 }

@@ -30,14 +30,6 @@ function getGridSettings(count, isMobile) {
   }
 }
 
-// 타이틀 줄바꿈 함수 (언어별)
-function splitTitle(title = "") {
-  if (!title) return [""];
-  const lines = [];
-  for (let i = 0; i < title.length; i += 20) lines.push(title.slice(i, i + 20));
-  return lines;
-}
-
 export default function SelectRoundPage({ cup, maxRound, candidates, onSelect, onResult }) {
   const { t, i18n } = useTranslation();
   const [selectedRound, setSelectedRound] = useState(maxRound);
@@ -197,7 +189,7 @@ export default function SelectRoundPage({ cup, maxRound, candidates, onSelect, o
             }}
             title={cup.title}
           >
-            {splitTitle(cup.title).join("\n")}
+            {cup.title}
           </div>
           {(cup.desc || cup.description) && (
             <div
@@ -324,7 +316,8 @@ export default function SelectRoundPage({ cup, maxRound, candidates, onSelect, o
               transition: "box-shadow .14s, transform .15s",
               margin: "0 auto",
               willChange: "transform",
-              overflow: "hidden"
+              overflow: "hidden",
+              minWidth: 0, // <- grid 내 ellipsis 문제 해결 (중요)
             }}
             title={c.name}
             tabIndex={0}
@@ -374,8 +367,9 @@ export default function SelectRoundPage({ cup, maxRound, candidates, onSelect, o
                 fontSize: isMobile ? 13.5 : 16,
                 color: "#fff",
                 textAlign: "center",
-                whiteSpace: "normal",
-                wordBreak: "break-all",
+                whiteSpace: "nowrap",     // 말줄임 처리
+                overflow: "hidden",       // 말줄임 처리
+                textOverflow: "ellipsis", // 말줄임 처리
                 lineHeight: 1.15,
                 padding: "0 2px",
                 margin: 0,

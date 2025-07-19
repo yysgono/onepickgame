@@ -1,6 +1,7 @@
 import { supabase } from "./utils/supabaseClient";
 
-// 유튜브 등 부가함수
+// ... (중간 생략 없음, 전체 공개) ...
+
 export function getYoutubeId(url = "") {
   if (!url) return "";
   const reg = /(?:youtube\.com\/.*[?&]v=|youtube\.com\/(?:v|embed)\/|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
@@ -139,14 +140,16 @@ export async function upsertMyWinnerStat({
   return data;
 }
 
-// === 병렬 처리 (빠른 통계 기록용!) ===
+// === 병렬 제한 (chunk 처리, 빠른 통계 기록용!) ===
 export async function upsertMyWinnerStat_parallel(statsArr, cup_id) {
   if (!Array.isArray(statsArr)) throw new Error("statsArr required");
-  await Promise.all(
-    statsArr.map(stat =>
-      upsertMyWinnerStat({ ...stat, cup_id })
-    )
-  );
+  // 병렬 제한, 한 번에 16개씩
+  const CHUNK_SIZE = 16;
+  for (let i = 0; i < statsArr.length; i += CHUNK_SIZE) {
+    const chunk = statsArr.slice(i, i + CHUNK_SIZE)
+      .map(stat => upsertMyWinnerStat({ ...stat, cup_id }));
+    await Promise.all(chunk);
+  }
 }
 
 export async function getMyWinnerStats({ cup_id } = {}) {

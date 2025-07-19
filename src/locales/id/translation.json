@@ -205,5 +205,6 @@
     "nextRound": "Babak Selanjutnya",
     "nextRoundTitle": "{{a}} vs {{b}}"
   },
-  "recommended_worldcups": "Worldcup Rekomendasi"
+  "recommended_worldcups": "Worldcup Rekomendasi",
+  "dragDropUpTo50": "Anda dapat menyeret & menjatuhkan hingga 50 gambar sekaligus ke kotak ini."
 }

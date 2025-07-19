@@ -176,11 +176,18 @@ function Home({
   const currentUserId = user?.id || "";
   const currentUserEmail = user?.email || "";
 
+  // ==== 여기 수정! 통계 기준과 완전히 동일하게 정렬 ====
   function getTop2Winners(winStats, cupData) {
     if (!winStats?.length) return [cupData?.[0] || null, cupData?.[1] || null];
-    const sorted = [...winStats].sort(
-      (a, b) => (b.win_count || 0) - (a.win_count || 0)
-    );
+    const sorted = [...winStats]
+      .map((row, i) => ({ ...row, _originIdx: i }))
+      .sort((a, b) => {
+        if ((b.win_count || 0) !== (a.win_count || 0))
+          return (b.win_count || 0) - (a.win_count || 0);
+        if ((b.match_wins || 0) !== (a.match_wins || 0))
+          return (b.match_wins || 0) - (a.match_wins || 0);
+        return a._originIdx - b._originIdx;
+      });
     const first =
       cupData?.find((c) => c.id === sorted[0]?.candidate_id) ||
       cupData?.[0] ||
@@ -191,6 +198,7 @@ function Home({
       null;
     return [first, second];
   }
+  // ==== 여기까지! ====
 
   function isMine(cup) {
     return (

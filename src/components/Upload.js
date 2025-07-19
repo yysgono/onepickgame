@@ -12,9 +12,9 @@ function UploadCup({ onChange }) {
     const file = e.target.files[0];
     if (!file) return;
 
-    // 용량 체크 (3MB 제한)
-    if (file.size > 3 * 1024 * 1024) {
-      alert(t("only_images_under_3mb")); // "이미지 파일은 3MB 이하만 가능합니다."
+    // 용량 체크 (10MB 제한)
+    if (file.size > 10 * 1024 * 1024) {
+      alert(t("only_images_under_10mb")); // "이미지 파일은 3MB 이하만 가능합니다."
       return;
     }
 

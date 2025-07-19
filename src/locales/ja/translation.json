@@ -203,9 +203,8 @@
     "saveError": "保存エラー。",
     "bye": "{{count}} 名の候補者が不戦勝！",
     "nextRound": "次のラウンド",
-    "nextRoundTitle": "{{a}} vs {{b}}",
-    "terms_of_service": "利用規約",
-    "privacy_policy": "プライバシーポリシー",
-    "recommended_worldcups": "おすすめのワールドカップ"
-  }
+    "nextRoundTitle": "{{a}} vs {{b}}"
+  },
+  "recommended_worldcups": "おすすめのワールドカップ",
+  "dragDropUpTo50": "このボックスに一度に最大50枚の画像をドラッグ＆ドロップできます。"
 }

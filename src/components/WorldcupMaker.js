@@ -10,6 +10,7 @@ import { supabase } from "../utils/supabaseClient";
 import useBanCheck from "../hooks/useBanCheck";
 
 const DEFAULT_THUMB_URL = "/default-thumb.png";
+const MAX_UPLOAD = 50; // 최대 업로드 개수
 
 function isMobile() {
   if (typeof window !== "undefined") {
@@ -23,8 +24,8 @@ function WorldcupMaker({ onCreate, onCancel }) {
   const [title, setTitle] = useState("");
   const [desc, setDesc] = useState("");
   const [candidates, setCandidates] = useState([
-    { id: uuidv4(), name: "", image: "" },
-    { id: uuidv4(), name: "", image: "" },
+    { id: uuidv4(), name: "", image: "", file: null }, // 👈 file 속성 추가
+    { id: uuidv4(), name: "", image: "", file: null }, // 👈 file 속성 추가
   ]);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -35,7 +36,6 @@ function WorldcupMaker({ onCreate, onCancel }) {
 
   const fileInputRef = useRef();
 
-  // 드래그 중 표시 상태
   const [dragActive, setDragActive] = useState(false);
 
   useEffect(() => {
@@ -53,6 +53,19 @@ function WorldcupMaker({ onCreate, onCancel }) {
     }
     fetchUser();
   }, []);
+
+  // 👈 [추가] 메모리 누수 방지를 위한 useEffect
+  // 컴포넌트가 언마운트되거나 후보 목록이 바뀔 때, 기존에 생성된 blob URL을 메모리에서 해제합니다.
+  useEffect(() => {
+    return () => {
+      candidates.forEach(candidate => {
+        if (candidate.image && candidate.image.startsWith('blob:')) {
+          URL.revokeObjectURL(candidate.image);
+        }
+      });
+    };
+  }, [candidates]);
+
 
   // === 정지 체크 (user 변경시 자동) ===
   const { isBanned, banInfo } = useBanCheck(user);
@@ -86,52 +99,62 @@ function WorldcupMaker({ onCreate, onCancel }) {
   function addCandidate() {
     setCandidates((candidates) => [
       ...candidates,
-      { id: uuidv4(), name: "", image: "" },
+      { id: uuidv4(), name: "", image: "", file: null }, // 👈 file 속성 추가
     ]);
   }
   function updateCandidate(idx, val) {
     setCandidates((cands) => cands.map((c, i) => (i === idx ? val : c)));
   }
   function removeCandidate(idx) {
-    if (candidates.length <= 2) return; // 2개 이하일 때 삭제 막기
+    if (candidates.length <= 2) return;
+    
+    // 👈 [수정] 삭제 시에도 blob URL 해제
+    const candidateToRemove = candidates[idx];
+    if (candidateToRemove.image && candidateToRemove.image.startsWith('blob:')) {
+        URL.revokeObjectURL(candidateToRemove.image);
+    }
+
     setCandidates((cands) => cands.filter((_, i) => i !== idx));
   }
 
-  // 이미지 여러개 드래그&드롭/클릭 업로드 (svg/gif 포함)
+  // 👈 [수정] 이미지 여러개 드래그&드롭/클릭 업로드 (Base64 대신 URL.createObjectURL 사용)
   async function handleFiles(fileList) {
+    if (fileList.length > MAX_UPLOAD) {
+      alert(t("maxUploadLimit", { count: MAX_UPLOAD }));
+      return;
+    }
     const files = Array.from(fileList).filter(file =>
-      /\.(jpe?g|png|gif|svg)$/i.test(file.name)    // svg/gif 포함
+      /\.(jpe?g|png|gif|svg)$/i.test(file.name)
     );
     if (files.length === 0) return;
 
-    const fileCandidates = await Promise.all(
-      files.map(file => new Promise(res => {
-        const reader = new FileReader();
-        reader.onload = e => {
-          // 파일명에서 확장자 제거, _나 -는 공백으로 변환
-          const cleanName = file.name
-            .replace(/\.[^/.]+$/, "")
-            .replace(/[_\-]+/g, " ")
-            .trim();
-          res({
-            id: uuidv4(),
-            name: cleanName,
-            image: e.target.result,
-          });
-        };
-        reader.readAsDataURL(file);
-      }))
-    );
+    const fileCandidates = files.map(file => {
+      const cleanName = file.name
+        .replace(/\.[^/.]+$/, "")
+        .replace(/[_\-]+/g, " ")
+        .trim();
+      return {
+        id: uuidv4(),
+        name: cleanName,
+        image: URL.createObjectURL(file), // 미리보기용 URL
+        file: file, // 업로드할 실제 File 객체
+      };
+    });
+
     setCandidates(cands => {
+      // 기존 blob URL들을 해제하기 위해 복사본을 만듭니다.
+      const oldCandidates = [...cands];
       const updated = [...cands];
       let idx = 0;
-      // 빈 칸부터 채우기
       for (let i = 0; i < updated.length && idx < fileCandidates.length; i++) {
         if (!updated[i].image && !updated[i].name) {
+          // 기존에 blob URL이 있었다면 해제
+          if (oldCandidates[i]?.image.startsWith('blob:')) {
+            URL.revokeObjectURL(oldCandidates[i].image);
+          }
           updated[i] = fileCandidates[idx++];
         }
       }
-      // 남는 파일은 추가
       while (idx < fileCandidates.length) {
         updated.push(fileCandidates[idx++]);
       }
@@ -139,7 +162,7 @@ function WorldcupMaker({ onCreate, onCancel }) {
     });
   }
 
-  // 드래그 상태
+
   function handleDrag(e) {
     e.preventDefault();
     e.stopPropagation();
@@ -173,25 +196,20 @@ function WorldcupMaker({ onCreate, onCancel }) {
       const { data: { user: currentUser } } = await supabase.auth.getUser();
       if (!currentUser?.id) throw new Error("로그인 정보 없음");
 
+      // 👈 [수정] 업로드 로직: File 객체를 직접 업로드
       const updatedList = await Promise.all(
         list.map(async (c) => {
           let imageUrl = c.image;
-          if (imageUrl && imageUrl.startsWith("data:image")) {
-            const file = await fetch(imageUrl).then(r => r.blob());
-            // 파일 확장자 추출
-            let ext = "png";
-            if (imageUrl.startsWith("data:image/gif")) ext = "gif";
-            else if (imageUrl.startsWith("data:image/svg")) ext = "svg";
-            else if (imageUrl.startsWith("data:image/jpeg")) ext = "jpg";
-            else if (imageUrl.startsWith("data:image/jpg")) ext = "jpg";
-            else if (imageUrl.startsWith("data:image/png")) ext = "png";
+          // c.file 객체가 있으면 새로운 로컬 파일이므로 업로드합니다.
+          if (c.file) { 
             imageUrl = await uploadCandidateImage(
-              new File([file], `${c.name}.${ext}`, { type: file.type }),
+              c.file, // 저장해둔 File 객체를 바로 업로드
               nickname || currentUser.id
             );
           }
           if (!imageUrl) imageUrl = DEFAULT_THUMB_URL;
-          return { ...c, image: imageUrl };
+          // DB에 저장할 최종 데이터에는 file 객체를 제외합니다.
+          return { id: c.id, name: c.name, image: imageUrl }; 
         })
       );
 
@@ -217,8 +235,8 @@ function WorldcupMaker({ onCreate, onCancel }) {
       setTitle("");
       setDesc("");
       setCandidates([
-        { id: uuidv4(), name: "", image: "" },
-        { id: uuidv4(), name: "", image: "" },
+        { id: uuidv4(), name: "", image: "", file: null },
+        { id: uuidv4(), name: "", image: "", file: null },
       ]);
     } catch (e) {
       setError(t("saveFail"));
@@ -253,7 +271,7 @@ function WorldcupMaker({ onCreate, onCancel }) {
         {t("createWorldcup")}
       </h2>
       <form onSubmit={handleSubmit}>
-        {/* ===== 더 큰 업로드 박스 ===== */}
+        {/* ===== 업로드 박스 ===== */}
         <div
           onDrop={e => {
             e.preventDefault();
@@ -296,6 +314,16 @@ function WorldcupMaker({ onCreate, onCancel }) {
             <span style={{ fontSize: mobile ? 20 : 26 }}>📁</span>
             <br />
             {t("uploadZone")}
+            <br />
+            <span style={{
+              fontSize: mobile ? 14 : 16,
+              color: "#888",
+              fontWeight: 400,
+              display: "block",
+              marginTop: 8
+            }}>
+              {t("dragDropUpTo50")}
+            </span>
           </span>
         </div>
         {/* ======================================== */}

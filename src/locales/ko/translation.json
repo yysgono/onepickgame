@@ -205,5 +205,6 @@
     "nextRound": "다음 라운드",
     "nextRoundTitle": "{{a}} 대 {{b}}"
   },
-  "recommended_worldcups": "추천 월드컵"
+  "recommended_worldcups": "추천 월드컵",
+  "dragDropUpTo50": "이 박스에 한 번에 최대 50장까지 이미지를 드래그&드롭할 수 있습니다."
 }

@@ -205,5 +205,6 @@
     "nextRound": "Nächste Runde",
     "nextRoundTitle": "{{a}} gegen {{b}}"
   },
-  "recommended_worldcups": "Empfohlene Worldcups"
+  "recommended_worldcups": "Empfohlene Worldcups",
+  "dragDropUpTo50": "Sie können bis zu 50 Bilder gleichzeitig in dieses Feld ziehen und ablegen."
 }

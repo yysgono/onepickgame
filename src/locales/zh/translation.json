@@ -205,7 +205,8 @@
     "nextRound": "下一轮",
     "nextRoundTitle": "{{a}} 对 {{b}}",
     "terms_of_service": "服务条款",
-    "privacy_policy": "隐私政策",
-    "recommended_worldcups": "推荐世界杯"
-  }
+    "privacy_policy": "隐私政策"
+      },
+    "recommended_worldcups": "推荐世界杯",
+    "dragDropUpTo50": "您可以一次性将最多50张图片拖放到此框中。"
 }
