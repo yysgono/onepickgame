@@ -12,6 +12,8 @@ export default function RuPage() {
         />
         <meta property="og:title" content="OnePickGame - Брэкеты" />
         <meta property="og:description" content="OnePickGame — это сайт для игры в брэкет. Создавайте свои турниры и играйте с пользователями со всего мира!" />
+        <meta property="og:image" content="https://onepickgame.com/ogimg.png" />
+        <meta property="og:url" content="https://onepickgame.com/ru" />
       </Helmet>
       {/* Содержимое страницы */}
     </>
