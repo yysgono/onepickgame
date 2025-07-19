@@ -1,20 +1,18 @@
 import React from "react";
 import { Helmet } from "react-helmet";
+import Home from "../../components/Home";
 
-export default function IdPage() {
+export default function IdPage(props) {
   return (
     <>
       <Helmet>
-        <title>OnePickGame - Situs Game Bracket</title>
+        <title>OnePickGame - Game Bracket</title>
         <meta
           name="description"
           content="OnePickGame adalah situs game bracket. Buat turnamen bracketmu sendiri dan mainkan bersama pengguna dari seluruh dunia!"
         />
       </Helmet>
-      <div>
-        <h1>Halaman Bahasa Indonesia.</h1>
-        {/* 실제 페이지 컴포넌트 내용 */}
-      </div>
+      <Home {...props} />
     </>
   );
 }

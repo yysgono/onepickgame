@@ -1,7 +1,8 @@
 import React from "react";
 import { Helmet } from "react-helmet";
+import Home from "../../components/Home";
 
-export default function EnPage() {
+export default function EnPage(props) {
   return (
     <>
       <Helmet>
@@ -11,10 +12,7 @@ export default function EnPage() {
           content="Bracket game site OnePickGame. Create your own tournament bracket, enjoy fun matchups, and play with users around the world!"
         />
       </Helmet>
-      <div>
-        <h1>This is the English page.</h1>
-        {/* 실제 페이지 컴포넌트 내용 */}
-      </div>
+      <Home {...props} />
     </>
   );
 }

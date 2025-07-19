@@ -1,20 +1,18 @@
 import React from "react";
 import { Helmet } from "react-helmet";
+import Home from "../../components/Home";
 
-export default function DePage() {
+export default function DePage(props) {
   return (
     <>
       <Helmet>
-        <title>OnePickGame - Bracket-Spielseite</title>
+        <title>OnePickGame - Bracket-Spiel</title>
         <meta
           name="description"
           content="OnePickGame ist eine Bracket-Spielseite. Erstelle dein eigenes Turnier und spiele mit Nutzern aus aller Welt!"
         />
       </Helmet>
-      <div>
-        <h1>Deutsche Seite.</h1>
-        {/* 실제 페이지 컴포넌트 내용 */}
-      </div>
+      <Home {...props} />
     </>
   );
 }

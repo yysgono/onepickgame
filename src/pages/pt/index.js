@@ -1,7 +1,8 @@
 import React from "react";
 import { Helmet } from "react-helmet";
+import Home from "../../components/Home";
 
-export default function PtPage() {
+export default function PtPage(props) {
   return (
     <>
       <Helmet>
@@ -11,10 +12,7 @@ export default function PtPage() {
           content="OnePickGame é um site de jogo de brackets. Crie seu próprio torneio eliminatório e jogue com pessoas do mundo todo!"
         />
       </Helmet>
-      <div>
-        <h1>Página em Português.</h1>
-        {/* 실제 페이지 컴포넌트 내용 */}
-      </div>
+      <Home {...props} />
     </>
   );
 }

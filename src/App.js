@@ -86,14 +86,15 @@ function ResetPwRedirect() {
   return null;
 }
 
-// 언어 경로에 따른 페이지 렌더링 컴포넌트
-function LanguageWrapper() {
+function LanguageWrapper(props) {
   const { lang } = useParams();
   const { i18n } = useTranslation();
   const navigate = useNavigate();
 
   useEffect(() => {
-    const supportedLangs = ["ko", "en", "ru", "ja", "zh", "pt", "es", "fr", "id", "hi", "de", "vi"];
+    const supportedLangs = [
+      "ko", "en", "ru", "ja", "zh", "pt", "es", "fr", "id", "hi", "de", "vi"
+    ];
     if (!supportedLangs.includes(lang)) {
       navigate("/", { replace: true });
       return;
@@ -104,19 +105,19 @@ function LanguageWrapper() {
   }, [lang, i18n, navigate]);
 
   switch (lang) {
-    case "ru":
-      return <RuPage />;
-    case "ja":
-      return <JaPage />;
-    case "en":
-      return <EnPage />;
-    case "id":
-      return <IdPage />;
-    case "zh":
-      return <ZhPage />;
-    // 추가 언어 페이지는 여기 추가
-    default:
-      return <HomeWrapper />;
+    case "ko": return <KoPage {...props} />;
+    case "en": return <EnPage {...props} />;
+    case "ru": return <RuPage {...props} />;
+    case "ja": return <JaPage {...props} />;
+    case "zh": return <ZhPage {...props} />;
+    case "pt": return <PtPage {...props} />;
+    case "es": return <EsPage {...props} />;
+    case "fr": return <FrPage {...props} />;
+    case "id": return <IdPage {...props} />;
+    case "hi": return <HiPage {...props} />;
+    case "de": return <DePage {...props} />;
+    case "vi": return <ViPage {...props} />;
+    default: return <Home {...props} />;
   }
 }
 
@@ -131,7 +132,6 @@ function App() {
   const [nickname, setNickname] = useState("");
   const [nicknameLoading, setNicknameLoading] = useState(false);
 
-  // 고정 월드컵 관련 상태
   const [fixedWorldcupIds, setFixedWorldcupIds] = useState([]);
   const [fixedWorldcups, setFixedWorldcups] = useState([]);
 
@@ -273,6 +273,7 @@ function App() {
       />
     );
   }
+
   function RecentWorldcupsWrapper() {
     let recents = [];
     try {
@@ -431,6 +432,7 @@ function App() {
         </>
       );
     }
+
     function AdminStatsRoute() {
       if (!isAdmin) {
         return (
@@ -482,7 +484,19 @@ function App() {
         <div className="main-content-box">
           <Routes>
             {/* 언어 경로 별 페이지 렌더링 */}
-            <Route path="/:lang" element={<LanguageWrapper />} />
+            <Route
+              path="/:lang"
+              element={
+                <LanguageWrapper
+                  worldcupList={worldcupList}
+                  fetchWorldcups={fetchWorldcups}
+                  user={user}
+                  nickname={nickname}
+                  isAdmin={isAdmin}
+                  fixedWorldcups={fixedWorldcups}
+                />
+              }
+            />
 
             <Route path="/" element={<HomeWrapper />} />
             <Route path="/my-worldcups" element={<MyWorldcupsWrapper />} />
