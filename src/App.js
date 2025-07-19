@@ -1,4 +1,3 @@
-// src/App.js
 import "./i18n";
 import "./App.css";
 import React, { useState, useEffect, useRef } from "react";
@@ -72,6 +71,31 @@ function ResetPwRedirect() {
   return null;
 }
 
+// 언어 경로 접속 시 언어 변경 후 홈(/)으로 리다이렉트하는 컴포넌트
+function LanguageRedirect() {
+  const { i18n } = useTranslation();
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const pathParts = location.pathname.split("/");
+    const lang = pathParts[1]; // /ko, /en 등 첫번째 경로
+    const supportedLangs = ["ko", "en", "ru", "ja", "zh", "pt", "es", "fr", "id", "hi", "de", "vi"];
+
+    if (supportedLangs.includes(lang)) {
+      if (i18n.language !== lang) {
+        i18n.changeLanguage(lang);
+      }
+      navigate("/", { replace: true });
+    } else {
+      // 미지원 언어 경로면 그냥 홈으로 리다이렉트
+      navigate("/", { replace: true });
+    }
+  }, [location, i18n, navigate]);
+
+  return null;
+}
+
 function App() {
   const [adRef, adHeight] = useAdBannerHeight();
   const isMobile = useIsMobile();
@@ -110,7 +134,9 @@ function App() {
       setNicknameLoading(false);
     }
     fetchUserAndProfile();
-    return () => { isMounted = false; };
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   function updateNickname(nick) {
@@ -137,7 +163,7 @@ function App() {
         .select("worldcup_id")
         .order("id", { ascending: true });
       if (!error && Array.isArray(data)) {
-        setFixedWorldcupIds(data.map(d => String(d.worldcup_id)));
+        setFixedWorldcupIds(data.map((d) => String(d.worldcup_id)));
       } else {
         setFixedWorldcupIds([]);
       }
@@ -151,7 +177,7 @@ function App() {
       return;
     }
     const fixeds = fixedWorldcupIds
-      .map(id => worldcupList.find(cup => String(cup.id) === String(id)))
+      .map((id) => worldcupList.find((cup) => String(cup.id) === String(id)))
       .filter(Boolean);
     setFixedWorldcups(fixeds);
   }, [worldcupList, fixedWorldcupIds]);
@@ -209,12 +235,14 @@ function App() {
 
   function MyWorldcupsWrapper() {
     const myId = user?.id;
-    const myList = worldcupList.filter(w => w.owner === myId || w.creator === myId || w.creator_id === myId);
+    const myList = worldcupList.filter(
+      (w) => w.owner === myId || w.creator === myId || w.creator_id === myId
+    );
     return (
       <Home
         worldcupList={myList}
         fetchWorldcups={fetchWorldcups}
-        onSelect={cup => window.location.href = `/select-round/${cup.id}`}
+        onSelect={(cup) => (window.location.href = `/select-round/${cup.id}`)}
         user={user}
         nickname={nickname}
         isAdmin={isAdmin}
@@ -226,16 +254,18 @@ function App() {
     let recents = [];
     try {
       recents = JSON.parse(localStorage.getItem("onepickgame_recentWorldcups") || "[]");
-    } catch { }
-    recents = recents.reverse().filter((id, i, arr) => arr.indexOf(id) === i);
+    } catch {}
+    recents = recents
+      .reverse()
+      .filter((id, i, arr) => arr.indexOf(id) === i);
     const recentCups = recents
-      .map(id => worldcupList.find(w => String(w.id) === String(id)))
+      .map((id) => worldcupList.find((w) => String(w.id) === String(id)))
       .filter(Boolean);
     return (
       <Home
         worldcupList={recentCups}
         fetchWorldcups={fetchWorldcups}
-        onSelect={cup => window.location.href = `/select-round/${cup.id}`}
+        onSelect={(cup) => (window.location.href = `/select-round/${cup.id}`)}
         user={user}
         nickname={nickname}
         isAdmin={isAdmin}
@@ -261,19 +291,22 @@ function App() {
         <Home
           worldcupList={worldcupList}
           fetchWorldcups={fetchWorldcups}
-          onSelect={cup => {
+          onSelect={(cup) => {
             let recent = [];
-            try { recent = JSON.parse(localStorage.getItem("onepickgame_recentWorldcups") || "[]"); } catch { }
-            localStorage.setItem("onepickgame_recentWorldcups",
-              JSON.stringify([cup.id, ...recent.filter(id => id !== cup.id)].slice(0, 30))
+            try {
+              recent = JSON.parse(localStorage.getItem("onepickgame_recentWorldcups") || "[]");
+            } catch {}
+            localStorage.setItem(
+              "onepickgame_recentWorldcups",
+              JSON.stringify([cup.id, ...recent.filter((id) => id !== cup.id)].slice(0, 30))
             );
             navigate(`/select-round/${cup.id}`);
           }}
           onMakeWorldcup={handleMakeWorldcup}
-          onDelete={async id => {
+          onDelete={async (id) => {
             try {
               await deleteWorldcupGame(id);
-              setWorldcupList(list => list.filter(cup => cup.id !== id));
+              setWorldcupList((list) => list.filter((cup) => cup.id !== id));
             } catch (e) {
               alert((t("delete_failed") || "삭제 실패!") + " " + (e.message || e));
             }
@@ -289,21 +322,21 @@ function App() {
     function SelectRoundPageWrapper() {
       const { id } = useParams();
       const navigate = useNavigate();
-      const cup = worldcupList.find(c => String(c.id) === id);
+      const cup = worldcupList.find((c) => String(c.id) === id);
       if (!cup) return null;
       return (
         <SelectRoundPage
           cup={cup}
           maxRound={cup.data.length}
           candidates={cup.data}
-          onSelect={round => navigate(`/match/${id}/${round}`)}
+          onSelect={(round) => navigate(`/match/${id}/${round}`)}
         />
       );
     }
 
     function StatsPageWrapper() {
       const { id } = useParams();
-      const cup = worldcupList.find(c => String(c.id) === id);
+      const cup = worldcupList.find((c) => String(c.id) === id);
       if (!cup) return null;
       return <StatsPage selectedCup={cup} showCommentBox={true} />;
     }
@@ -313,7 +346,9 @@ function App() {
       return (
         <WorldcupMaker
           fetchWorldcups={fetchWorldcups}
-          onCreate={() => { window.location.href = "/"; }}
+          onCreate={() => {
+            window.location.href = "/";
+          }}
           onCancel={() => navigate("/")}
           user={user}
           nickname={nickname}
@@ -348,14 +383,27 @@ function App() {
     function AdminRoute() {
       if (!isAdmin) {
         return (
-          <div style={{ padding: 60, textAlign: "center", fontWeight: 700, fontSize: 22 }}>
-            {t("admin_only") || "관리자만 접근할 수 있습니다."}<br />{t("login_with_admin") || "아이디에 admin으로 로그인하세요."}
+          <div
+            style={{
+              padding: 60,
+              textAlign: "center",
+              fontWeight: 700,
+              fontSize: 22,
+            }}
+          >
+            {t("admin_only") || "관리자만 접근할 수 있습니다."}
+            <br />
+            {t("login_with_admin") || "아이디에 admin으로 로그인하세요."}
           </div>
         );
       }
       return (
         <>
-          <AdminBar onLogout={() => { supabase.auth.signOut().then(() => window.location.reload()); }} />
+          <AdminBar
+            onLogout={() => {
+              supabase.auth.signOut().then(() => window.location.reload());
+            }}
+          />
           <AdminDashboard />
         </>
       );
@@ -363,14 +411,27 @@ function App() {
     function AdminStatsRoute() {
       if (!isAdmin) {
         return (
-          <div style={{ padding: 60, textAlign: "center", fontWeight: 700, fontSize: 22 }}>
-            {t("admin_only") || "관리자만 접근할 수 있습니다."}<br />{t("login_with_admin") || "아이디에 admin으로 로그인하세요."}
+          <div
+            style={{
+              padding: 60,
+              textAlign: "center",
+              fontWeight: 700,
+              fontSize: 22,
+            }}
+          >
+            {t("admin_only") || "관리자만 접근할 수 있습니다."}
+            <br />
+            {t("login_with_admin") || "아이디에 admin으로 로그인하세요."}
           </div>
         );
       }
       return (
         <>
-          <AdminBar onLogout={() => { supabase.auth.signOut().then(() => window.location.reload()); }} />
+          <AdminBar
+            onLogout={() => {
+              supabase.auth.signOut().then(() => window.location.reload());
+            }}
+          />
           <AdminStatsPage />
         </>
       );
@@ -394,12 +455,19 @@ function App() {
           />
         </div>
         {/* 상단 광고 영역 */}
-        <div ref={adRef} className="ad-banner-top-static-wrap" style={{ marginTop: 0, paddingTop: 0 }}>
+        <div
+          ref={adRef}
+          className="ad-banner-top-static-wrap"
+          style={{ marginTop: 0, paddingTop: 0 }}
+        >
           <AdBanner position="top" img="ad2.png" />
         </div>
         {/* 메인 컨텐츠 박스 */}
         <div className="main-content-box">
           <Routes>
+            {/* 언어 경로 접속 시 언어 변경 후 홈으로 리다이렉트 */}
+            <Route path="/:lang" element={<LanguageRedirect />} />
+
             <Route path="/" element={<HomeWrapper />} />
             <Route path="/my-worldcups" element={<MyWorldcupsWrapper />} />
             <Route path="/recent-worldcups" element={<RecentWorldcupsWrapper />} />
@@ -410,7 +478,10 @@ function App() {
             <Route path="/stats/:id" element={<StatsPageWrapper />} />
             <Route path="/worldcup-maker" element={<WorldcupMakerWrapper />} />
             <Route path="/manage" element={<ManageWorldcupWrapper />} />
-            <Route path="/backup" element={<BackupPage worldcupList={worldcupList} setWorldcupList={setWorldcupList} />} />
+            <Route
+              path="/backup"
+              element={<BackupPage worldcupList={worldcupList} setWorldcupList={setWorldcupList} />}
+            />
             <Route path="/edit-worldcup/:id" element={<EditWorldcupPageWrapper />} />
             <Route path="/admin" element={<AdminRoute />} />
             <Route path="/admin-stats" element={<AdminStatsRoute />} />
