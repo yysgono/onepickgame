@@ -1,3 +1,4 @@
+// src/App.js
 import "./i18n";
 import "./App.css";
 import React, { useState, useEffect, useRef } from "react";
@@ -28,18 +29,6 @@ import SignupBox from "./components/SignupBox";
 import LoginBox from "./components/LoginBox";
 import FindIdBox from "./components/FindIdBox";
 import FindPwBox from "./components/FindPwBox";
-import DePage from "./pages/de/index";
-import EnPage from "./pages/en/index";
-import EsPage from "./pages/es/index";
-import FrPage from "./pages/fr/index";
-import HiPage from "./pages/hi/index";
-import IdPage from "./pages/id/index";
-import JaPage from "./pages/ja/index";
-import KoPage from "./pages/ko/index";
-import PtPage from "./pages/pt/index";
-import RuPage from "./pages/ru/index";
-import ViPage from "./pages/vi/index";
-import ZhPage from "./pages/zh/index";
 import { getWorldcupGames, deleteWorldcupGame } from "./utils/supabaseWorldcupApi";
 import { supabase } from "./utils/supabaseClient";
 import AdBanner from "./components/AdBanner";
@@ -81,6 +70,27 @@ function ResetPwRedirect() {
     navigate("/");
   }, [navigate]);
   return null;
+}
+
+// 언어 경로 접속 시 언어 변경하고 해당 언어 Home 보여주는 컴포넌트
+function LanguageWrapper() {
+  const { i18n } = useTranslation();
+  const location = useLocation();
+
+  useEffect(() => {
+    const pathParts = location.pathname.split("/");
+    const lang = pathParts[1]; // /ko, /en, /zh 등
+    const supportedLangs = ["ko", "en", "ru", "ja", "zh", "pt", "es", "fr", "id", "hi", "de", "vi"];
+
+    if (supportedLangs.includes(lang)) {
+      if (i18n.language !== lang) {
+        i18n.changeLanguage(lang);
+        localStorage.setItem("onepickgame_lang", lang);
+      }
+    }
+  }, [location, i18n]);
+
+  return <HomeWrapper lang={location.pathname.split("/")[1]} />;
 }
 
 function App() {
@@ -179,12 +189,6 @@ function App() {
   function handleLangChange(lng) {
     i18n.changeLanguage(lng);
     localStorage.setItem("onepickgame_lang", lng);
-    // 언어 변경 시 URL도 함께 변경
-    if (window.location.pathname.startsWith("/" + lng)) {
-      // 이미 해당 언어 경로라면 변경하지 않음
-      return;
-    }
-    window.history.replaceState(null, "", "/" + lng);
   }
 
   function handleBackup() {
@@ -278,8 +282,10 @@ function App() {
       navigate("/worldcup-maker");
     }
 
-    function HomeWrapper() {
+    // HomeWrapper에 lang prop 추가
+    function HomeWrapper({ lang }) {
       const navigate = useNavigate();
+
       return (
         <Home
           worldcupList={worldcupList}
@@ -308,6 +314,7 @@ function App() {
           nickname={nickname}
           isAdmin={isAdmin}
           fixedWorldcups={fixedWorldcups}
+          lang={lang} // lang 전달
         />
       );
     }
@@ -458,14 +465,13 @@ function App() {
         {/* 메인 컨텐츠 박스 */}
         <div className="main-content-box">
           <Routes>
-            {/* 언어별 페이지 경로 */}
-            <Route path="/ja" element={<JaPage />} />
-            <Route path="/en" element={<EnPage />} />
-            <Route path="/id" element={<IdPage />} />
-            {/* 필요시 나머지 언어 페이지도 추가 */}
+            {/* 언어 경로 접속 시 언어 변경 후 해당 언어 홈 보여줌 */}
+            <Route path="/:lang" element={<LanguageWrapper />} />
 
-            {/* 기존 루트 및 기타 경로 */}
+            {/* 기본 홈 */}
             <Route path="/" element={<HomeWrapper />} />
+
+            {/* 기타 라우트 */}
             <Route path="/my-worldcups" element={<MyWorldcupsWrapper />} />
             <Route path="/recent-worldcups" element={<RecentWorldcupsWrapper />} />
             <Route path="/select-round/:id" element={<SelectRoundPageWrapper />} />
