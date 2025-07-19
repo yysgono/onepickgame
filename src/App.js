@@ -11,10 +11,10 @@ import {
   useLocation,
 } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+
 import Header from "./components/Header";
 import Home from "./components/Home";
 import SelectRoundPage from "./components/SelectRoundPage";
-import AuthBox from "./components/AuthBox";
 import MatchPage from "./components/MatchPage";
 import ResultPage from "./components/ResultPage";
 import StatsPage from "./components/StatsPage";
@@ -29,12 +29,26 @@ import SignupBox from "./components/SignupBox";
 import LoginBox from "./components/LoginBox";
 import FindIdBox from "./components/FindIdBox";
 import FindPwBox from "./components/FindPwBox";
-import { getWorldcupGames, deleteWorldcupGame } from "./utils/supabaseWorldcupApi";
-import { supabase } from "./utils/supabaseClient";
-import AdBanner from "./components/AdBanner";
 import PrivacyPolicy from "./components/PrivacyPolicy";
 import TermsOfService from "./components/TermsOfService";
 import Footer from "./components/Footer";
+import AdBanner from "./components/AdBanner";
+
+import DePage from "./pages/de/index";
+import EnPage from "./pages/en/index";
+import EsPage from "./pages/es/index";
+import FrPage from "./pages/fr/index";
+import HiPage from "./pages/hi/index";
+import IdPage from "./pages/id/index";
+import JaPage from "./pages/ja/index";
+import KoPage from "./pages/ko/index";
+import PtPage from "./pages/pt/index";
+import RuPage from "./pages/ru/index";
+import ViPage from "./pages/vi/index";
+import ZhPage from "./pages/zh/index";
+
+import { getWorldcupGames, deleteWorldcupGame } from "./utils/supabaseWorldcupApi";
+import { supabase } from "./utils/supabaseClient";
 
 function useAdBannerHeight() {
   const [height, setHeight] = useState(0);
@@ -72,25 +86,38 @@ function ResetPwRedirect() {
   return null;
 }
 
-// 언어 경로 접속 시 언어 변경하고 해당 언어 Home 보여주는 컴포넌트
+// 언어 경로에 따른 페이지 렌더링 컴포넌트
 function LanguageWrapper() {
+  const { lang } = useParams();
   const { i18n } = useTranslation();
-  const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const pathParts = location.pathname.split("/");
-    const lang = pathParts[1]; // /ko, /en, /zh 등
     const supportedLangs = ["ko", "en", "ru", "ja", "zh", "pt", "es", "fr", "id", "hi", "de", "vi"];
-
-    if (supportedLangs.includes(lang)) {
-      if (i18n.language !== lang) {
-        i18n.changeLanguage(lang);
-        localStorage.setItem("onepickgame_lang", lang);
-      }
+    if (!supportedLangs.includes(lang)) {
+      navigate("/", { replace: true });
+      return;
     }
-  }, [location, i18n]);
+    if (i18n.language !== lang) {
+      i18n.changeLanguage(lang);
+    }
+  }, [lang, i18n, navigate]);
 
-  return <HomeWrapper lang={location.pathname.split("/")[1]} />;
+  switch (lang) {
+    case "ru":
+      return <RuPage />;
+    case "ja":
+      return <JaPage />;
+    case "en":
+      return <EnPage />;
+    case "id":
+      return <IdPage />;
+    case "zh":
+      return <ZhPage />;
+    // 추가 언어 페이지는 여기 추가
+    default:
+      return <HomeWrapper />;
+  }
 }
 
 function App() {
@@ -104,7 +131,7 @@ function App() {
   const [nickname, setNickname] = useState("");
   const [nicknameLoading, setNicknameLoading] = useState(false);
 
-  // 고정 월드컵 관련
+  // 고정 월드컵 관련 상태
   const [fixedWorldcupIds, setFixedWorldcupIds] = useState([]);
   const [fixedWorldcups, setFixedWorldcups] = useState([]);
 
@@ -131,9 +158,7 @@ function App() {
       setNicknameLoading(false);
     }
     fetchUserAndProfile();
-    return () => {
-      isMounted = false;
-    };
+    return () => { isMounted = false; };
   }, []);
 
   function updateNickname(nick) {
@@ -145,10 +170,11 @@ function App() {
     try {
       const list = await getWorldcupGames();
       setWorldcupList(list);
-    } catch (e) {
+    } catch {
       setWorldcupList([]);
     }
   };
+
   useEffect(() => {
     fetchWorldcups();
   }, []);
@@ -282,10 +308,8 @@ function App() {
       navigate("/worldcup-maker");
     }
 
-    // HomeWrapper에 lang prop 추가
-    function HomeWrapper({ lang }) {
+    function HomeWrapper() {
       const navigate = useNavigate();
-
       return (
         <Home
           worldcupList={worldcupList}
@@ -314,7 +338,6 @@ function App() {
           nickname={nickname}
           isAdmin={isAdmin}
           fixedWorldcups={fixedWorldcups}
-          lang={lang} // lang 전달
         />
       );
     }
@@ -439,7 +462,6 @@ function App() {
 
     return (
       <>
-        {/* 헤더 래퍼 - margin, padding 0으로 조정 */}
         <div className="header-wrapper" style={{ margin: 0, padding: 0 }}>
           <Header
             onLangChange={handleLangChange}
@@ -454,24 +476,15 @@ function App() {
             setNickname={updateNickname}
           />
         </div>
-        {/* 상단 광고 영역 */}
-        <div
-          ref={adRef}
-          className="ad-banner-top-static-wrap"
-          style={{ marginTop: 0, paddingTop: 0 }}
-        >
+        <div ref={adRef} className="ad-banner-top-static-wrap" style={{ marginTop: 0, paddingTop: 0 }}>
           <AdBanner position="top" img="ad2.png" />
         </div>
-        {/* 메인 컨텐츠 박스 */}
         <div className="main-content-box">
           <Routes>
-            {/* 언어 경로 접속 시 언어 변경 후 해당 언어 홈 보여줌 */}
+            {/* 언어 경로 별 페이지 렌더링 */}
             <Route path="/:lang" element={<LanguageWrapper />} />
 
-            {/* 기본 홈 */}
             <Route path="/" element={<HomeWrapper />} />
-
-            {/* 기타 라우트 */}
             <Route path="/my-worldcups" element={<MyWorldcupsWrapper />} />
             <Route path="/recent-worldcups" element={<RecentWorldcupsWrapper />} />
             <Route path="/select-round/:id" element={<SelectRoundPageWrapper />} />
@@ -481,10 +494,7 @@ function App() {
             <Route path="/stats/:id" element={<StatsPageWrapper />} />
             <Route path="/worldcup-maker" element={<WorldcupMakerWrapper />} />
             <Route path="/manage" element={<ManageWorldcupWrapper />} />
-            <Route
-              path="/backup"
-              element={<BackupPage worldcupList={worldcupList} setWorldcupList={setWorldcupList} />}
-            />
+            <Route path="/backup" element={<BackupPage worldcupList={worldcupList} setWorldcupList={setWorldcupList} />} />
             <Route path="/edit-worldcup/:id" element={<EditWorldcupPageWrapper />} />
             <Route path="/admin" element={<AdminRoute />} />
             <Route path="/admin-stats" element={<AdminStatsRoute />} />
@@ -561,7 +571,6 @@ function App() {
         position: "relative",
       }}
     >
-      {/* 배경이미지 + 오버레이 */}
       <div
         style={{
           position: "fixed",
@@ -584,7 +593,6 @@ function App() {
           background: "rgba(0,0,0,0.0)",
         }}
       />
-      {/* 기존 컨텐츠 zIndex=2~로 띄우기 */}
       <div style={{ position: "relative", zIndex: 2 }}>
         <AdBanner
           position="left"
