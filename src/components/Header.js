@@ -413,12 +413,15 @@ export default function Header({
           <button style={infoButtonStyle} onClick={handleMyWorldcup}>{t("my_worldcups")}</button>
         )}
         <button style={infoButtonStyle} onClick={handleRecentWorldcup}>{t("recent_worldcups")}</button>
+        {/* ----------- 이 부분이 핵심! ----------- */}
         <select
           value={i18n.language}
           onChange={e => {
-            i18n.changeLanguage(e.target.value);
-            if (onLangChange) onLangChange(e.target.value);
-            localStorage.setItem("onepickgame_lang", e.target.value);
+            const lng = e.target.value;
+            i18n.changeLanguage(lng);
+            if (onLangChange) onLangChange(lng);
+            localStorage.setItem("onepickgame_lang", lng);
+            window.location.href = "/"; // ← 언어 바꿀 때 무조건 메인 홈으로 이동!
           }}
           style={selectStyle}
         >
@@ -426,6 +429,7 @@ export default function Header({
             <option key={lang.code} value={lang.code}>{lang.label}</option>
           ))}
         </select>
+        {/* ----------- 여기까지! ----------- */}
         {user ? (
           <>
             <span
