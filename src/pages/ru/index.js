@@ -1,8 +1,7 @@
 import React from "react";
 import { Helmet } from "react-helmet";
-import Home from "../../components/Home";
 
-export default function RuPage(props) {
+export default function RuPage() {
   return (
     <>
       <Helmet>
@@ -11,8 +10,10 @@ export default function RuPage(props) {
           name="description"
           content="OnePickGame — это сайт для игры в брэкет. Создавайте свои турниры и играйте с пользователями со всего мира!"
         />
+        <meta property="og:title" content="OnePickGame - Брэкеты" />
+        <meta property="og:description" content="OnePickGame — это сайт для игры в брэкет. Создавайте свои турниры и играйте с пользователями со всего мира!" />
       </Helmet>
-      <Home {...props} />
+      {/* Содержимое страницы */}
     </>
   );
 }
