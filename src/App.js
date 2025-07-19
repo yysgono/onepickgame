@@ -83,7 +83,7 @@ function App() {
   const [nickname, setNickname] = useState("");
   const [nicknameLoading, setNicknameLoading] = useState(false);
 
-  // === 고정 월드컵용 ===
+  // 고정 월드컵 관련
   const [fixedWorldcupIds, setFixedWorldcupIds] = useState([]);
   const [fixedWorldcups, setFixedWorldcups] = useState([]);
 
@@ -110,7 +110,7 @@ function App() {
       setNicknameLoading(false);
     }
     fetchUserAndProfile();
-    return () => { isMounted = false; }
+    return () => { isMounted = false; };
   }, []);
 
   function updateNickname(nick) {
@@ -378,7 +378,8 @@ function App() {
 
     return (
       <>
-        <div className="header-wrapper" style={{ margin: 0, padding: 0, marginBottom: 0 }}>
+        {/* 헤더 래퍼 - margin, padding 0으로 조정 */}
+        <div className="header-wrapper" style={{ margin: 0, padding: 0 }}>
           <Header
             onLangChange={handleLangChange}
             onBackup={handleBackup}
@@ -392,9 +393,11 @@ function App() {
             setNickname={updateNickname}
           />
         </div>
+        {/* 상단 광고 영역 */}
         <div ref={adRef} className="ad-banner-top-static-wrap" style={{ marginTop: 0, paddingTop: 0 }}>
           <AdBanner position="top" img="ad2.png" />
         </div>
+        {/* 메인 컨텐츠 박스 */}
         <div className="main-content-box">
           <Routes>
             <Route path="/" element={<HomeWrapper />} />
@@ -412,7 +415,6 @@ function App() {
             <Route path="/admin" element={<AdminRoute />} />
             <Route path="/admin-stats" element={<AdminStatsRoute />} />
             <Route path="/signup" element={<SignupBox />} />
-            {/* 여기만 수정 */}
             <Route path="/login" element={<LoginBox setUser={setUser} setNickname={updateNickname} />} />
             <Route path="/find-id" element={<FindIdBox />} />
             <Route path="/find-pw" element={<FindPwBox />} />
@@ -475,9 +477,16 @@ function App() {
     return null;
   }
 
-  // ===== [여기부터 전체 배경 적용!] =====
   return (
-    <div className="app-main-wrapper" style={{ margin: 0, padding: 0, minHeight: "100vh", position: "relative" }}>
+    <div
+      className="app-main-wrapper"
+      style={{
+        margin: 0,
+        padding: 0,
+        minHeight: "100vh",
+        position: "relative",
+      }}
+    >
       {/* 배경이미지 + 오버레이 */}
       <div
         style={{
@@ -503,9 +512,32 @@ function App() {
       />
       {/* 기존 컨텐츠 zIndex=2~로 띄우기 */}
       <div style={{ position: "relative", zIndex: 2 }}>
-        <AdBanner position="left" img="ad1.png" style={{ top: "50%", left: 24, transform: "translateY(-50%)", maxHeight: "95vh", width: "300px" }} />
-        <AdBanner position="right" img="ad1.png" style={{ top: "50%", right: 24, transform: "translateY(-50%)", maxHeight: "95vh", width: "300px" }} />
-        <div className="main-content-outer" style={{ paddingTop: adHeight ? adHeight + 32 : 190, margin: 0 }}>
+        <AdBanner
+          position="left"
+          img="ad1.png"
+          style={{
+            top: "50%",
+            left: 24,
+            transform: "translateY(-50%)",
+            maxHeight: "95vh",
+            width: "300px",
+          }}
+        />
+        <AdBanner
+          position="right"
+          img="ad1.png"
+          style={{
+            top: "50%",
+            right: 24,
+            transform: "translateY(-50%)",
+            maxHeight: "95vh",
+            width: "300px",
+          }}
+        />
+        <div
+          className="main-content-outer"
+          style={{ paddingTop: adHeight ? adHeight + 32 : 190, margin: 0 }}
+        >
           <Router>
             <AppRoutes />
             <BottomAdConditional />
