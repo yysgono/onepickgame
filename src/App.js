@@ -28,6 +28,18 @@ import SignupBox from "./components/SignupBox";
 import LoginBox from "./components/LoginBox";
 import FindIdBox from "./components/FindIdBox";
 import FindPwBox from "./components/FindPwBox";
+import DePage from "./pages/de/index";
+import EnPage from "./pages/en/index";
+import EsPage from "./pages/es/index";
+import FrPage from "./pages/fr/index";
+import HiPage from "./pages/hi/index";
+import IdPage from "./pages/id/index";
+import JaPage from "./pages/ja/index";
+import KoPage from "./pages/ko/index";
+import PtPage from "./pages/pt/index";
+import RuPage from "./pages/ru/index";
+import ViPage from "./pages/vi/index";
+import ZhPage from "./pages/zh/index";
 import { getWorldcupGames, deleteWorldcupGame } from "./utils/supabaseWorldcupApi";
 import { supabase } from "./utils/supabaseClient";
 import AdBanner from "./components/AdBanner";
@@ -68,31 +80,6 @@ function ResetPwRedirect() {
   useEffect(() => {
     navigate("/");
   }, [navigate]);
-  return null;
-}
-
-// 언어 경로 접속 시 언어 변경 후 홈(/)으로 리다이렉트하는 컴포넌트
-function LanguageRedirect() {
-  const { i18n } = useTranslation();
-  const location = useLocation();
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    const pathParts = location.pathname.split("/");
-    const lang = pathParts[1]; // /ko, /en 등 첫번째 경로
-    const supportedLangs = ["ko", "en", "ru", "ja", "zh", "pt", "es", "fr", "id", "hi", "de", "vi"];
-
-    if (supportedLangs.includes(lang)) {
-      if (i18n.language !== lang) {
-        i18n.changeLanguage(lang);
-      }
-      navigate("/", { replace: true });
-    } else {
-      // 미지원 언어 경로면 그냥 홈으로 리다이렉트
-      navigate("/", { replace: true });
-    }
-  }, [location, i18n, navigate]);
-
   return null;
 }
 
@@ -192,6 +179,12 @@ function App() {
   function handleLangChange(lng) {
     i18n.changeLanguage(lng);
     localStorage.setItem("onepickgame_lang", lng);
+    // 언어 변경 시 URL도 함께 변경
+    if (window.location.pathname.startsWith("/" + lng)) {
+      // 이미 해당 언어 경로라면 변경하지 않음
+      return;
+    }
+    window.history.replaceState(null, "", "/" + lng);
   }
 
   function handleBackup() {
@@ -465,9 +458,13 @@ function App() {
         {/* 메인 컨텐츠 박스 */}
         <div className="main-content-box">
           <Routes>
-            {/* 언어 경로 접속 시 언어 변경 후 홈으로 리다이렉트 */}
-            <Route path="/:lang" element={<LanguageRedirect />} />
+            {/* 언어별 페이지 경로 */}
+            <Route path="/ja" element={<JaPage />} />
+            <Route path="/en" element={<EnPage />} />
+            <Route path="/id" element={<IdPage />} />
+            {/* 필요시 나머지 언어 페이지도 추가 */}
 
+            {/* 기존 루트 및 기타 경로 */}
             <Route path="/" element={<HomeWrapper />} />
             <Route path="/my-worldcups" element={<MyWorldcupsWrapper />} />
             <Route path="/recent-worldcups" element={<RecentWorldcupsWrapper />} />
