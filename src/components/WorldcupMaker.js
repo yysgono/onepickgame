@@ -60,20 +60,24 @@ function WorldcupMaker({ onCreate, onCancel }) {
   if (!user) {
     return (
       <div style={{ padding: 60, textAlign: "center" }}>
-        <h2>{t("loginRequired") || "로그인 후 이용 가능합니다."}</h2>
+        <h2>{t("loginRequired")}</h2>
       </div>
     );
   }
   if (isBanned) {
     return (
       <div style={{ padding: 60, textAlign: "center", color: "#d33", fontWeight: 700 }}>
-        🚫 정지된 유저는 월드컵 생성이 불가합니다.
+        🚫 {t("bannedNoCreate")}
         <br />
         {banInfo && banInfo.expires_at && (
-          <div>정지 해제일: {banInfo.expires_at.replace("T", " ").slice(0, 16)}</div>
+          <div>
+            {t("banExpiresAt")}: {banInfo.expires_at.replace("T", " ").slice(0, 16)}
+          </div>
         )}
         {banInfo && banInfo.reason && (
-          <div>사유: {banInfo.reason}</div>
+          <div>
+            {t("banReason")}: {banInfo.reason}
+          </div>
         )}
       </div>
     );
@@ -160,8 +164,8 @@ function WorldcupMaker({ onCreate, onCancel }) {
       }))
       .filter((c) => c.name);
 
-    if (!title.trim()) return setError("제목을 입력하세요.");
-    if (list.length < 2) return setError("후보를 2개 이상 입력하세요.");
+    if (!title.trim()) return setError(t("requireTitle"));
+    if (list.length < 2) return setError(t("requireCandidates"));
 
     setLoading(true);
 
@@ -201,7 +205,7 @@ function WorldcupMaker({ onCreate, onCancel }) {
       };
 
       const id = await addWorldcupGame(newCup);
-      alert("월드컵이 저장되었습니다!\nID: " + id);
+      alert(t("worldcupSaved") + `\nID: ${id}`);
 
       if (onCreate) {
         onCreate({
@@ -217,7 +221,7 @@ function WorldcupMaker({ onCreate, onCancel }) {
         { id: uuidv4(), name: "", image: "" },
       ]);
     } catch (e) {
-      setError("저장 실패! 잠시 후 다시 시도해 주세요.");
+      setError(t("saveFail"));
       console.error(e);
     } finally {
       setLoading(false);
@@ -291,18 +295,14 @@ function WorldcupMaker({ onCreate, onCancel }) {
           <span>
             <span style={{ fontSize: mobile ? 20 : 26 }}>📁</span>
             <br />
-            이 칸에 드래그해서 여러 파일 업로드도 가능합니다.
-            <br />
-            <span style={{ color: "#2488ec", fontWeight: 500, fontSize: mobile ? 13 : 16 }}>
-              (jpg, png, gif, svg 지원)
-            </span>
+            {t("uploadZone")}
           </span>
         </div>
         {/* ======================================== */}
         <input
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          placeholder={t("worldcupTitle") || "월드컵 제목"}
+          placeholder={t("worldcupTitle")}
           maxLength={36}
           style={{
             width: "100%",
@@ -317,7 +317,7 @@ function WorldcupMaker({ onCreate, onCancel }) {
         <textarea
           value={desc}
           onChange={(e) => setDesc(e.target.value)}
-          placeholder={t("descriptionOptional") || "설명(선택)"}
+          placeholder={t("descriptionOptional")}
           maxLength={100}
           rows={2}
           style={{
@@ -332,7 +332,7 @@ function WorldcupMaker({ onCreate, onCancel }) {
         />
         <div style={{ marginBottom: 18 }}>
           <div style={{ fontWeight: 700, marginBottom: 7 }}>
-            {t("candidateList") || "후보 목록"}{" "}
+            {t("candidateList")}{" "}
             <span style={{ color: "#888", fontWeight: 400, fontSize: mobile ? 13 : 15 }}>
               ({candidates.length} / 1024)
             </span>
@@ -360,7 +360,7 @@ function WorldcupMaker({ onCreate, onCancel }) {
             }}
             disabled={loading}
           >
-            + {t("addCandidate") || "후보 추가"}
+            + {t("addCandidate")}
           </button>
         </div>
         {error && (
@@ -385,7 +385,7 @@ function WorldcupMaker({ onCreate, onCancel }) {
             }}
             disabled={loading}
           >
-            {loading ? t("saving") || "저장중..." : t("create") || "생성"}
+            {loading ? t("saving") : t("create")}
           </button>
           <button
             type="button"
@@ -398,7 +398,7 @@ function WorldcupMaker({ onCreate, onCancel }) {
             }}
             disabled={loading}
           >
-            {t("cancel") || "취소"}
+            {t("cancel")}
           </button>
         </div>
       </form>

@@ -1,4 +1,3 @@
-// src/components/Header.js
 import React, { useRef, useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
@@ -13,8 +12,18 @@ function isValidNickname(nickname) {
 }
 
 const languages = [
-  { code: "ko", label: "한국어" },
   { code: "en", label: "English" },
+  { code: "ko", label: "한국어" },
+  { code: "ja", label: "日本語" },
+  { code: "zh", label: "简体中文" },
+  { code: "es", label: "Español" },
+  { code: "fr", label: "Français" },
+  { code: "vi", label: "Tiếng Việt" },
+  { code: "de", label: "Deutsch" },
+  { code: "ru", label: "Русский" },
+  { code: "id", label: "Bahasa Indonesia" },
+  { code: "pt", label: "Português" },
+  { code: "hi", label: "हिन्दी" },
 ];
 
 export default function Header({
@@ -60,7 +69,7 @@ export default function Header({
     setEditError("");
     const trimName = editNickname.trim();
     if (!isValidNickname(trimName)) {
-      setEditError("닉네임은 한글, 영문, 숫자, -, _ 만 사용, 3~12바이트(공백/특수문자 불가)");
+      setEditError(t("nickname_rule"));
       return;
     }
     setEditLoading(true);
@@ -82,27 +91,27 @@ export default function Header({
     }
     setEditLoading(false);
     if (error) {
-      setEditError(error.message || "닉네임 변경 실패");
+      setEditError(error.message || t("nickname_change_fail"));
       return;
     }
     setNickname(trimName);
     setShowProfile(false);
-    alert("닉네임이 변경되었습니다!");
+    alert(t("nickname_changed"));
   }
   async function handlePasswordChange() {
     setEditError("");
     if (!user?.email) {
-      setEditError("이메일 정보가 없습니다.");
+      setEditError(t("no_email_info"));
       return;
     }
     setEditLoading(true);
     const { error } = await supabase.auth.resetPasswordForEmail(user.email);
     setEditLoading(false);
     if (error) {
-      setEditError(error.message || "비밀번호 변경 메일 전송 실패");
+      setEditError(error.message || t("pw_mail_send_fail"));
       return;
     }
-    alert("비밀번호 변경 메일을 전송했습니다.");
+    alert(t("pw_mail_sent"));
   }
   async function handleWithdrawalRequest() {
     setEditError(""); setWithdrawLoading(true);
@@ -111,8 +120,8 @@ export default function Header({
       .update({ withdrawal_requested_at: new Date().toISOString() })
       .eq("id", user.id);
     setWithdrawLoading(false);
-    if (error) return setEditError("탈퇴 신청 실패: " + error.message);
-    alert("탈퇴 신청이 접수되었습니다!\n일주일 이내 처리 예정입니다.");
+    if (error) return setEditError(`${t("withdraw_fail")}: ${error.message}`);
+    alert(`${t("withdraw_requested")}\n${t("withdraw_in_week")}`);
     setProfile((prev) => ({ ...prev, withdrawal_requested_at: new Date().toISOString() }));
     setShowProfile(false);
   }
@@ -123,8 +132,8 @@ export default function Header({
       .update({ withdrawal_requested_at: null })
       .eq("id", user.id);
     setCancelLoading(false);
-    if (error) return setEditError("취소 실패: " + error.message);
-    alert("탈퇴 신청이 취소되었습니다!");
+    if (error) return setEditError(`${t("cancel_fail")}: ${error.message}`);
+    alert(t("withdraw_canceled"));
     setProfile((prev) => ({ ...prev, withdrawal_requested_at: null }));
     setShowProfile(false);
   }
@@ -132,11 +141,9 @@ export default function Header({
   function handleMyWorldcup() { navigate("/my-worldcups"); }
   function handleRecentWorldcup() { navigate("/recent-worldcups"); }
 
-  // 이미지 경로
   const logoImgUrl = "/onepick2.png";
   const headerBgUrl = "/onepick3.png";
 
-  // 스타일 정의
   const darkBlue = "#171C27";
   const blueMain = "#1976ed";
   const blueGradient = "linear-gradient(90deg,#2999ff,#236de8 100%)";
@@ -226,6 +233,7 @@ export default function Header({
     outline: "none",
     boxShadow: "0 0 7px #157be94a",
   };
+
   // ---- Modal Styles ----
   const modalOverlayStyle = {
     position: "fixed",
@@ -241,7 +249,6 @@ export default function Header({
     margin: 0,
     padding: 0,
   };
-  // 위치: top 110px, translateX만 (translateY X)
   const modalContentStyle = {
     background: "#fff",
     borderRadius: 12,
@@ -394,23 +401,24 @@ export default function Header({
       >
         {isAdmin && (
           <>
-            <button style={adminButtonStyle("#1976ed")} onClick={() => navigate("/admin")}>대시보드</button>
-            <button style={statButtonStyle} onClick={() => navigate("/admin-stats")}>통계</button>
-            <button style={adminButtonStyle()} onClick={onBackup}>{t("backupAll") || "백업"}</button>
-            <button style={adminButtonStyle("#253253")} onClick={() => inputRef.current && inputRef.current.click()}>{t("restore") || "복구"}</button>
+            <button style={adminButtonStyle("#1976ed")} onClick={() => navigate("/admin")}>{t("dashboard")}</button>
+            <button style={statButtonStyle} onClick={() => navigate("/admin-stats")}>{t("stats")}</button>
+            <button style={adminButtonStyle()} onClick={onBackup}>{t("backupAll")}</button>
+            <button style={adminButtonStyle("#253253")} onClick={() => inputRef.current && inputRef.current.click()}>{t("restore")}</button>
             <input ref={inputRef} type="file" accept="application/json" style={{ display: "none" }} onChange={onRestore} />
           </>
         )}
         <button style={mainButtonStyle} onClick={onMakeWorldcup}>{t("makeWorldcup")}</button>
         {user && (
-          <button style={infoButtonStyle} onClick={handleMyWorldcup}>내가 만든 월드컵</button>
+          <button style={infoButtonStyle} onClick={handleMyWorldcup}>{t("my_worldcups")}</button>
         )}
-        <button style={infoButtonStyle} onClick={handleRecentWorldcup}>최근에 본 월드컵</button>
+        <button style={infoButtonStyle} onClick={handleRecentWorldcup}>{t("recent_worldcups")}</button>
         <select
           value={i18n.language}
           onChange={e => {
             i18n.changeLanguage(e.target.value);
             if (onLangChange) onLangChange(e.target.value);
+            localStorage.setItem("onepickgame_lang", e.target.value);
           }}
           style={selectStyle}
         >
@@ -432,28 +440,28 @@ export default function Header({
                 fontSize: 15
               }}
             >
-              {nicknameLoading ? "닉네임 불러오는 중..." : (nickname || "닉네임 없음")}
+              {nicknameLoading ? t("loading_nickname") : (nickname || t("no_nickname"))}
             </span>
-            <button style={infoButtonStyle} onClick={() => setShowProfile(true)}>내정보수정</button>
+            <button style={infoButtonStyle} onClick={() => setShowProfile(true)}>{t("edit_profile")}</button>
             <button style={logoutButtonStyle} onClick={handleLogout}>{t("logout")}</button>
             {showProfile && (
               <div style={modalOverlayStyle}>
                 <div style={modalContentStyle} onClick={e => e.stopPropagation()}>
                   <div style={{ fontWeight: 800, fontSize: 21, marginBottom: 18, textAlign: "center" }}>
-                    내 정보 수정
+                    {t("edit_profile")}
                   </div>
                   <div style={{ width: "100%" }}>
                     <div style={{ marginBottom: 10, fontSize: 15 }}>
-                      <b>이메일:</b> {user.email}
+                      <b>{t("email")}:</b> {user.email}
                     </div>
                     <div style={{ marginBottom: 10, fontSize: 15 }}>
-                      <b>닉네임:</b>
+                      <b>{t("nickname")}:</b>
                       <input
                         type="text"
                         value={editNickname}
                         onChange={e => setEditNickname(e.target.value)}
                         style={modalInputStyle}
-                        placeholder="닉네임"
+                        placeholder={t("nickname")}
                         maxLength={20}
                         disabled={editLoading}
                       />
@@ -461,25 +469,25 @@ export default function Header({
                         style={modalProfileButtonStyle}
                         onClick={handleNicknameChange}
                         disabled={editLoading}
-                      >{editLoading ? "변경중..." : "닉네임 변경"}</button>
+                      >{editLoading ? t("changing") : t("change_nickname")}</button>
                     </div>
                     <button
                       style={modalGrayButtonStyle}
                       onClick={handlePasswordChange}
                       disabled={editLoading}
-                    >비밀번호 변경 메일 발송</button>
+                    >{t("send_pw_reset")}</button>
                     {profile?.withdrawal_requested_at ? (
                       <button
                         style={modalGrayButtonStyle}
                         onClick={handleCancelWithdrawal}
                         disabled={cancelLoading}
-                      >{cancelLoading ? "취소 중..." : "탈퇴 신청 취소"}</button>
+                      >{cancelLoading ? t("canceling") : t("withdraw_cancel")}</button>
                     ) : (
                       <button
                         style={modalDeleteButtonStyle}
                         onClick={handleWithdrawalRequest}
                         disabled={withdrawLoading}
-                      >{withdrawLoading ? "신청 중..." : "탈퇴 신청"}</button>
+                      >{withdrawLoading ? t("changing") : t("withdraw")}</button>
                     )}
                     {editError && (
                       <div style={{ color: "red", marginTop: 7, fontSize: 14, textAlign: "center" }}>
@@ -487,7 +495,7 @@ export default function Header({
                       </div>
                     )}
                   </div>
-                  <button style={modalCloseButtonStyle} onClick={() => setShowProfile(false)}>닫기</button>
+                  <button style={modalCloseButtonStyle} onClick={() => setShowProfile(false)}>{t("close")}</button>
                   <button
                     style={{
                       position: "absolute",
@@ -502,7 +510,7 @@ export default function Header({
                       cursor: "pointer",
                       zIndex: 10,
                     }}
-                    aria-label="닫기"
+                    aria-label={t("close")}
                     tabIndex={0}
                     onClick={() => setShowProfile(false)}
                   >

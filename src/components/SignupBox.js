@@ -1,10 +1,11 @@
-// src/components/SignupBox.js
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { signupUser } from "../utils/supabaseUserApi";
 import { generateRandomNickname } from "../utils/randomNickname";
+import { useTranslation } from "react-i18next";
 
 function SignupBox() {
+  const { t } = useTranslation();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [success, setSuccess] = useState("");
@@ -12,18 +13,17 @@ function SignupBox() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  // 이메일/비밀번호 기본 검증 함수
   function validate() {
     if (!email || !password) {
-      setError("이메일과 비밀번호를 모두 입력하세요.");
+      setError(t("fill_this_field"));
       return false;
     }
     if (!/^[\w.-]+@[a-zA-Z\d.-]+\.[a-zA-Z]{2,}$/.test(email)) {
-      setError("올바른 이메일 형식을 입력하세요.");
+      setError(t("need_at_in_email"));
       return false;
     }
     if (password.length < 6) {
-      setError("비밀번호는 최소 6자리 이상이어야 합니다.");
+      setError(t("pw_min_length"));
       return false;
     }
     return true;
@@ -37,10 +37,10 @@ function SignupBox() {
     if (!validate()) return;
     setLoading(true);
 
-    // 1. 랜덤 닉네임 생성!
+    // 1. 랜덤 닉네임 생성
     const nickname = generateRandomNickname();
 
-    // 2. 회원가입 + 프로필 row insert
+    // 2. 회원가입
     const { user, error: signupErr } = await signupUser(email, password, nickname);
 
     if (signupErr) {
@@ -50,15 +50,15 @@ function SignupBox() {
         signupErr.message.includes("already exists") ||
         signupErr.message.includes("이미 가입")
       ) {
-        setError("이미 가입된 이메일입니다.");
+        setError(t("already_registered_email"));
       } else {
-        setError(signupErr.message || "회원가입 실패");
+        setError(signupErr.message || t("signup_failed"));
       }
       setLoading(false);
       return;
     }
 
-    setSuccess("회원가입 성공! 이메일 인증 후 로그인 하세요.");
+    setSuccess(t("signup_success"));
     setEmail("");
     setPassword("");
     setLoading(false);
@@ -78,17 +78,19 @@ function SignupBox() {
         boxShadow: "0 2px 12px #0001",
         padding: 30,
       }}
+      aria-label={t("signup")}
     >
-      <h2 style={{ textAlign: "center", marginBottom: 18 }}>회원가입</h2>
+      <h2 style={{ textAlign: "center", marginBottom: 18 }}>{t("signup")}</h2>
       <form onSubmit={handleSignup}>
         <div style={{ marginBottom: 12 }}>
           <input
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder="이메일"
+            placeholder={t("email")}
+            aria-label={t("email")}
             autoCapitalize="none"
-            autoComplete="off"
+            autoComplete="email"
             style={{
               width: "100%",
               padding: 10,
@@ -97,6 +99,7 @@ function SignupBox() {
               fontSize: 16,
             }}
             required
+            spellCheck={false}
           />
         </div>
         <div style={{ marginBottom: 12 }}>
@@ -104,7 +107,9 @@ function SignupBox() {
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            placeholder="비밀번호"
+            placeholder={t("password")}
+            aria-label={t("password")}
+            autoComplete="new-password"
             style={{
               width: "100%",
               padding: 10,
@@ -132,7 +137,7 @@ function SignupBox() {
             cursor: loading ? "not-allowed" : "pointer",
           }}
         >
-          {loading ? "가입중..." : "가입하기"}
+          {loading ? t("signing_up") : t("register")}
         </button>
       </form>
       {success && (

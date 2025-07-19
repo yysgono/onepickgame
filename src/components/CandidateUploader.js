@@ -1,7 +1,9 @@
 import React, { useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 
-// ✨ props: onUpload(base64), preview(이미지 url)
+// ✨ props: onUpload(base64), preview(image url)
 function CandidateUploader({ onUpload, preview }) {
+  const { t } = useTranslation();
   const ref = useRef();
   const [img, setImg] = useState(preview || "");
 
@@ -18,13 +20,13 @@ function CandidateUploader({ onUpload, preview }) {
 
     // 2MB 용량 제한
     if (file.size > 2 * 1024 * 1024) {
-      alert("이미지 파일은 최대 2MB까지 업로드할 수 있습니다.");
+      alert(t("image_file_size_limit_2mb") || "2MB 이하 이미지만 업로드 가능합니다.");
       e.target.value = "";
       return;
     }
 
     if (!isAllowedImage(file)) {
-      alert("jpg, jpeg, png 파일만 업로드할 수 있습니다.\n(webp, gif, 기타 확장자는 불가)");
+      alert(t("only_jpg_png") || "jpg, jpeg, png 파일만 업로드 가능합니다.");
       e.target.value = "";
       return;
     }
@@ -69,7 +71,7 @@ function CandidateUploader({ onUpload, preview }) {
         }
         type="button"
       >
-        📷 이미지 업로드
+        📷 {t("upload_image")}
       </button>
       {img && (
         <div
@@ -85,7 +87,7 @@ function CandidateUploader({ onUpload, preview }) {
         >
           <img
             src={img}
-            alt="미리보기"
+            alt={t("preview")}
             style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
           />
         </div>

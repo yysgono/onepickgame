@@ -5,8 +5,9 @@ import MediaRenderer from "./MediaRenderer";
 import { useTranslation } from "react-i18next";
 import { supabase } from "../utils/supabaseClient";
 
-// 신고버튼
+// 신고버튼 컴포넌트
 function ReportButton({ cupId, size = "md" }) {
+  const { t } = useTranslation();
   const [show, setShow] = useState(false);
   const [reason, setReason] = useState("");
   const [ok, setOk] = useState("");
@@ -39,7 +40,7 @@ function ReportButton({ cupId, size = "md" }) {
     setError("");
     setOk("");
     const { data } = await supabase.auth.getUser();
-    if (!data?.user?.id) return setError("로그인 필요");
+    if (!data?.user?.id) return setError(t("need_login"));
     const { error } = await supabase.from("reports").insert([
       {
         type: "worldcup",
@@ -49,12 +50,12 @@ function ReportButton({ cupId, size = "md" }) {
       },
     ]);
     if (error) setError(error.message);
-    else setOk("신고가 접수되었습니다. 감사합니다.");
+    else setOk(t("report_received"));
   }
   return (
     <>
       <button onClick={() => setShow(true)} style={style}>
-        🚩 신고
+        🚩 {t("report")}
       </button>
       {show && (
         <div
@@ -79,18 +80,18 @@ function ReportButton({ cupId, size = "md" }) {
               minWidth: 270,
             }}
           >
-            <b>신고 사유</b>
+            <b>{t("report_reason")}</b>
             <textarea
               value={reason}
               onChange={(e) => setReason(e.target.value)}
               style={{ width: "95%", minHeight: 60, marginTop: 12 }}
-              placeholder="신고 사유를 입력하세요 (선택)"
+              placeholder={t("report_reason_placeholder")}
             />
             <div style={{ marginTop: 12 }}>
               <button onClick={handleReport} style={{ marginRight: 10 }}>
-                신고하기
+                {t("submit_report")}
               </button>
-              <button onClick={() => setShow(false)}>닫기</button>
+              <button onClick={() => setShow(false)}>{t("close")}</button>
             </div>
             {ok && <div style={{ color: "#1976ed", marginTop: 7 }}>{ok}</div>}
             {error && <div style={{ color: "#d33", marginTop: 7 }}>{error}</div>}
@@ -101,6 +102,7 @@ function ReportButton({ cupId, size = "md" }) {
   );
 }
 
+// 모바일 체크 훅
 function useIsMobile(breakpoint = 800) {
   const [isMobile, setIsMobile] = React.useState(
     typeof window !== "undefined" ? window.innerWidth < breakpoint : false
@@ -120,7 +122,7 @@ export default function ResultPage({ worldcupList }) {
   const navigate = useNavigate();
   const { t } = useTranslation();
 
-  // ====== DB fetch용 상태 ======
+  // DB fetch 상태
   const [cup, setCup] = useState(null);
   const [winner, setWinner] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -133,7 +135,7 @@ export default function ResultPage({ worldcupList }) {
     (worldcupList && worldcupList.find((c) => String(c.id) === id));
   const locationWinner = location.state?.winner;
 
-  // 데이터 불러오기 (location.state 없으면 DB에서)
+  // 데이터 불러오기
   useEffect(() => {
     let mounted = true;
     async function fetchData() {
@@ -159,7 +161,6 @@ export default function ResultPage({ worldcupList }) {
               thisCup.data.find((item) => String(item.id) === String(thisCup.winner_id)) ||
               null;
           } else {
-            // candidates 별도 테이블에서 찾아오기
             const { data: candidate } = await supabase
               .from("candidates")
               .select("*")
@@ -237,7 +238,7 @@ export default function ResultPage({ worldcupList }) {
           }}
         />
         <div style={{ fontSize: 17, marginTop: 32, color: "#aaa" }}>
-          로딩 중입니다...
+          {t("loading")}
         </div>
       </div>
     );
@@ -248,11 +249,11 @@ export default function ResultPage({ worldcupList }) {
       <div style={{
         textAlign: "center", padding: 60, color: "#d33", minHeight: "60vh"
       }}>
-        월드컵 정보 또는 우승자 데이터를 불러올 수 없습니다.
+        {t("error_no_data")}
         <br />
-        <button onClick={() => window.location.reload()}>다시 시도</button>
+        <button onClick={() => window.location.reload()}>{t("retry")}</button>
         <br /><br />
-        <a href="/" style={{ color: "#1976ed", textDecoration: "underline" }}>홈으로</a>
+        <a href="/" style={{ color: "#1976ed", textDecoration: "underline" }}>{t("home")}</a>
       </div>
     );
 
@@ -267,7 +268,7 @@ export default function ResultPage({ worldcupList }) {
         boxSizing: "border-box",
       }}
     >
-      {/* 오버레이: 배경 어둡기 조절 */}
+      {/* 오버레이 */}
       <div
         style={{
           position: "fixed",
@@ -276,10 +277,9 @@ export default function ResultPage({ worldcupList }) {
           height: "100vh",
           zIndex: 0,
           pointerEvents: "none",
-          background: "rgba(0,0,0,0.4)" // <- 여기서 진하기 조절!
+          background: "rgba(0,0,0,0.4)"
         }}
       />
-      {/* 실제 컨텐츠 */}
       <div
         style={{
           position: "relative",
@@ -306,15 +306,15 @@ export default function ResultPage({ worldcupList }) {
           <h2
             style={{
               fontWeight: 900,
-              color: "#fff", // 가독성을 위해 흰색!
+              color: "#fff",
               fontSize: isMobile ? 35 : 48,
               margin: "32px 0 6px 0",
               letterSpacing: -2,
               lineHeight: 1.08,
-              textShadow: "0 3px 8px #2228" // 텍스트 그림자
+              textShadow: "0 3px 8px #2228"
             }}
           >
-          
+            {/* 제목 필요시 여기에 추가 */}
           </h2>
           <div
             style={{
@@ -394,8 +394,9 @@ export default function ResultPage({ worldcupList }) {
               }}
               onClick={() => navigate("/")}
             >
-              홈
+              {t("home")}
             </button>
+            <ReportButton cupId={cup.id} size={isMobile ? "sm" : "md"} />
           </div>
         </div>
 

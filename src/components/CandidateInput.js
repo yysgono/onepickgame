@@ -36,7 +36,6 @@ function GifThumbnail({ fileOrUrl, style }) {
       return;
     }
 
-    // gif 썸네일을 img로 불러서 첫 프레임만 drawImage
     const img = new window.Image();
     img.onload = () => {
       const cvs = canvasRef.current;
@@ -129,11 +128,11 @@ function CandidateInput({ value, onChange, onRemove, disabled }) {
     // 확장자 필터: jpg, png, gif, svg만
     const allowed = /\.(jpe?g|png|gif|svg)$/i;
     if (!allowed.test(file.name)) {
-      alert("jpg, png, gif, svg 파일만 업로드 가능합니다.");
+      alert(t("only_image_file") || "jpg, png, gif, svg 파일만 업로드 가능합니다.");
       return;
     }
     if (file.size > 5 * 1024 * 1024) {
-      alert("5MB 이하의 이미지만 업로드 가능합니다.");
+      alert(t("image_file_size_limit") || "5MB 이하의 이미지만 업로드 가능합니다.");
       return;
     }
     onChange({ ...value, file, image: "", fileName: file.name });
@@ -180,7 +179,6 @@ function CandidateInput({ value, onChange, onRemove, disabled }) {
         ) : isGif && (value.file || value.image) ? (
           <GifThumbnail fileOrUrl={value.file || value.image} />
         ) : thumb ? (
-          // svg 파일이면 object, 그 외 img
           ext === "svg" || (value.file && value.file.type === "image/svg+xml") ? (
             <object data={thumb} type="image/svg+xml" style={{ width: "100%", height: "100%" }} />
           ) : (
@@ -221,7 +219,7 @@ function CandidateInput({ value, onChange, onRemove, disabled }) {
         type="text"
         value={value.image}
         onChange={handleImageUrlChange}
-        placeholder={t("imageUrlOrYoutube") || "이미지 URL / 유튜브"}
+        placeholder={t("imageUrlOrYoutube")}
         style={{
           flex: 1,
           minWidth: 0,
@@ -259,7 +257,7 @@ function CandidateInput({ value, onChange, onRemove, disabled }) {
         }
         disabled={disabled}
       >
-        {t("chooseFile") || "파일선택"}
+        {t("chooseFile")}
       </button>
       <input
         ref={fileInputRef}
@@ -287,7 +285,7 @@ function CandidateInput({ value, onChange, onRemove, disabled }) {
         }}
         disabled={disabled}
       >
-        {t("delete") || "삭제"}
+        {t("delete")}
       </button>
     </div>
   );

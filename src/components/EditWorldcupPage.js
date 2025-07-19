@@ -4,6 +4,7 @@ import { v4 as uuidv4 } from "uuid";
 import { updateWorldcupGame } from "../utils/supabaseWorldcupApi";
 import { uploadCandidateImage } from "../utils/supabaseImageUpload";
 import { supabase } from "../utils/supabaseClient";
+import { useTranslation } from "react-i18next";
 
 const COLORS = {
   main: "#1976ed",
@@ -32,6 +33,7 @@ function getYoutubeThumb(url) {
 
 function EditWorldcupPage({ worldcupList, fetchWorldcups, cupId, isAdmin }) {
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const [user, setUser] = useState(null);
   const [nickname, setNickname] = useState("");
@@ -44,7 +46,6 @@ function EditWorldcupPage({ worldcupList, fetchWorldcups, cupId, isAdmin }) {
   const fileInputRef = useRef();
   const [dragActive, setDragActive] = useState(false);
 
-  // 유저 정보 & 닉네임 로드
   useEffect(() => {
     async function fetchUser() {
       const { data: { user } } = await supabase.auth.getUser();
@@ -61,7 +62,6 @@ function EditWorldcupPage({ worldcupList, fetchWorldcups, cupId, isAdmin }) {
     fetchUser();
   }, []);
 
-  // 월드컵 불러오기
   useEffect(() => {
     const cup = worldcupList.find(cup => String(cup.id) === String(cupId));
     setOriginalCup(cup || null);
@@ -74,18 +74,16 @@ function EditWorldcupPage({ worldcupList, fetchWorldcups, cupId, isAdmin }) {
     );
   }, [worldcupList, cupId]);
 
-  // 권한 체크
-  if (!user) return <div style={{ padding: 80 }}>로그인이 필요합니다.</div>;
-  if (!originalCup) return <div style={{ padding: 80 }}>월드컵을 찾을 수 없습니다.</div>;
+  if (!user) return <div style={{ padding: 80 }}>{t("need_login")}</div>;
+  if (!originalCup) return <div style={{ padding: 80 }}>{t("not_found")}</div>;
   if (
     !isAdmin &&
     !(
       (originalCup.creator && originalCup.creator === user.id) ||
       (originalCup.owner && originalCup.owner === user.id)
     )
-  ) return <div style={{ padding: 80 }}>수정 권한이 없습니다.</div>;
+  ) return <div style={{ padding: 80 }}>{t("edit_no_permission")}</div>;
 
-  // 후보 추가/삭제/변경
   function handleAddCandidate() {
     setData(d => [...d, { id: uuidv4(), name: "", image: "" }]);
   }
@@ -97,18 +95,16 @@ function EditWorldcupPage({ worldcupList, fetchWorldcups, cupId, isAdmin }) {
       i === idx ? { ...item, [key]: value } : item
     ));
   }
-
-  // 1개 파일 업로드 (svg/gif 지원)
   function handleFileChange(idx, e) {
     const file = e.target.files[0];
     if (!file) return;
     if (file.size > 5 * 1024 * 1024) {
-      alert("이미지 파일은 최대 5MB까지 업로드 가능합니다.");
+      alert(t("image_file_size_limit"));
       return;
     }
     const allowed = /\.(jpe?g|png|gif|svg)$/i;
     if (!allowed.test(file.name)) {
-      alert("jpg, png, gif, svg 파일만 업로드 가능합니다.");
+      alert(t("only_image_file"));
       return;
     }
     const reader = new FileReader();
@@ -117,8 +113,6 @@ function EditWorldcupPage({ worldcupList, fetchWorldcups, cupId, isAdmin }) {
     };
     reader.readAsDataURL(file);
   }
-
-  // 여러 파일 드래그 & 드롭 업로드 (svg/gif 지원)
   async function handleFiles(fileList) {
     const files = Array.from(fileList).filter(file =>
       /\.(jpe?g|png|gif|svg)$/i.test(file.name)
@@ -129,7 +123,6 @@ function EditWorldcupPage({ worldcupList, fetchWorldcups, cupId, isAdmin }) {
       files.map(file => new Promise(res => {
         const reader = new FileReader();
         reader.onload = e => {
-          // 파일명에서 확장자 제거, _나 -는 공백으로 변환
           const cleanName = file.name
             .replace(/\.[^/.]+$/, "")
             .replace(/[_\-]+/g, " ")
@@ -146,21 +139,17 @@ function EditWorldcupPage({ worldcupList, fetchWorldcups, cupId, isAdmin }) {
     setData(d => {
       const updated = [...d];
       let idx = 0;
-      // 빈 칸부터 채우기
       for (let i = 0; i < updated.length && idx < fileCandidates.length; i++) {
         if (!updated[i].image && !updated[i].name) {
           updated[i] = fileCandidates[idx++];
         }
       }
-      // 남는 파일은 추가
       while (idx < fileCandidates.length) {
         updated.push(fileCandidates[idx++]);
       }
       return updated;
     });
   }
-
-  // 드래그 상태
   function handleDrag(e) {
     e.preventDefault();
     e.stopPropagation();
@@ -170,22 +159,20 @@ function EditWorldcupPage({ worldcupList, fetchWorldcups, cupId, isAdmin }) {
 
   async function handleSave() {
     setError("");
-    if (!title.trim()) return setError("제목을 입력하세요.");
-    if (data.length < 2) return setError("후보가 2개 이상이어야 합니다.");
-    if (data.some(item => !item.name.trim())) return setError("모든 후보에 이름을 입력하세요.");
+    if (!title.trim()) return setError(t("edit_need_title"));
+    if (data.length < 2) return setError(t("edit_need_min_candidates"));
+    if (data.some(item => !item.name.trim())) return setError(t("edit_need_all_names"));
     const names = data.map(item => item.name.trim());
     if (new Set(names).size !== names.length)
-      return setError("후보 이름이 중복됩니다.");
+      return setError(t("edit_candidate_name_duplicate"));
     setLoading(true);
 
     try {
-      // base64 이미지 → 업로드 후 url
       const updatedData = await Promise.all(
         data.map(async item => {
           let imageUrl = item.image;
           if (imageUrl && imageUrl.startsWith("data:image")) {
             const file = await fetch(imageUrl).then(r => r.blob());
-            // 확장자 결정
             let ext = "png";
             if (imageUrl.startsWith("data:image/gif")) ext = "gif";
             else if (imageUrl.startsWith("data:image/svg")) ext = "svg";
@@ -213,10 +200,10 @@ function EditWorldcupPage({ worldcupList, fetchWorldcups, cupId, isAdmin }) {
       };
       await updateWorldcupGame(originalCup.id, updatedCup);
       if (fetchWorldcups) await fetchWorldcups();
-      alert("수정 완료!");
+      alert(t("edit_success"));
       navigate("/");
     } catch (e) {
-      setError("수정 실패! 다시 시도해 주세요.");
+      setError(t("edit_fail"));
     } finally {
       setLoading(false);
     }
@@ -243,11 +230,11 @@ function EditWorldcupPage({ worldcupList, fetchWorldcups, cupId, isAdmin }) {
         marginBottom: 32,
         color: COLORS.main,
       }}>
-        월드컵 수정
+        {t("edit_worldcup")}
       </h2>
       <div style={{ marginBottom: 22 }}>
         <label style={{ fontWeight: 700, fontSize: 17, color: "#223" }}>
-          제목
+          {t("title")}
           <input
             value={title}
             onChange={e => setTitle(e.target.value)}
@@ -258,14 +245,14 @@ function EditWorldcupPage({ worldcupList, fetchWorldcups, cupId, isAdmin }) {
               outlineColor: COLORS.main, transition: "border 0.15s"
             }}
             maxLength={38}
-            placeholder="예시: BTS 이상형 월드컵"
+            placeholder={t("edit_title_placeholder")}
             disabled={loading}
           />
         </label>
       </div>
       <div style={{ marginBottom: 26 }}>
         <label style={{ fontWeight: 700, fontSize: 17, color: "#223" }}>
-          설명
+          {t("description")}
           <textarea
             value={description}
             onChange={e => setDescription(e.target.value)}
@@ -276,7 +263,7 @@ function EditWorldcupPage({ worldcupList, fetchWorldcups, cupId, isAdmin }) {
             }}
             rows={2}
             maxLength={80}
-            placeholder="간단 설명 (선택)"
+            placeholder={t("edit_description_placeholder")}
             disabled={loading}
           />
         </label>
@@ -286,9 +273,8 @@ function EditWorldcupPage({ worldcupList, fetchWorldcups, cupId, isAdmin }) {
         <div style={{
           fontWeight: 800, fontSize: 19, margin: "12px 0 18px 0", color: COLORS.main,
         }}>
-          후보 목록 <span style={{ color: COLORS.gray, fontSize: 14 }}>({data.length}개)</span>
+          {t("candidate_list")} <span style={{ color: COLORS.gray, fontSize: 14 }}>({data.length}{t("count_unit")})</span>
         </div>
-        {/* ===== 더 큰 업로드 박스 ===== */}
         <div
           onDrop={e => {
             e.preventDefault();
@@ -330,10 +316,9 @@ function EditWorldcupPage({ worldcupList, fetchWorldcups, cupId, isAdmin }) {
           <span>
             <span style={{ fontSize: isMobile ? 18 : 23 }}>📁</span>
             <br />
-            이 칸에 드래그하면 여러 이미지 추가 가능 (jpg, png, gif, svg 지원)
+            {t("drag_upload_detail")}
           </span>
         </div>
-        {/* ======================================== */}
         {data.map((item, i) => {
           const ext = getFileExtension(item.image);
           const youtubeThumb = getYoutubeThumb(item.image);
@@ -352,7 +337,7 @@ function EditWorldcupPage({ worldcupList, fetchWorldcups, cupId, isAdmin }) {
               <input
                 value={item.name}
                 onChange={e => handleCandidateChange(i, "name", e.target.value)}
-                placeholder="이름"
+                placeholder={t("name")}
                 style={{
                   width: isMobile ? 78 : 120, minWidth: 50, padding: 9,
                   borderRadius: 8, border: `1.3px solid #bbb`, fontSize: 16
@@ -363,7 +348,7 @@ function EditWorldcupPage({ worldcupList, fetchWorldcups, cupId, isAdmin }) {
               <input
                 value={item.image}
                 onChange={e => handleCandidateChange(i, "image", e.target.value)}
-                placeholder="이미지 URL"
+                placeholder={t("imageUrlOrYoutube")}
                 style={{
                   flex: 1, minWidth: 0, padding: 9,
                   borderRadius: 8, border: `1.3px solid #bbb`, fontSize: 15,
@@ -388,7 +373,7 @@ function EditWorldcupPage({ worldcupList, fetchWorldcups, cupId, isAdmin }) {
                 }}
                 disabled={loading}
               >
-                파일
+                {t("choose_file")}
               </button>
               <input
                 id={`file-${i}`}
@@ -442,7 +427,7 @@ function EditWorldcupPage({ worldcupList, fetchWorldcups, cupId, isAdmin }) {
                 onMouseOut={e => (e.currentTarget.style.background = COLORS.danger)}
                 disabled={loading}
               >
-                삭제
+                {t("delete")}
               </button>
             </div>
           );
@@ -459,7 +444,7 @@ function EditWorldcupPage({ worldcupList, fetchWorldcups, cupId, isAdmin }) {
           onMouseOut={e => (e.currentTarget.style.background = COLORS.main)}
           disabled={loading}
         >
-          + 후보 추가
+          {t("add_candidate")}
         </button>
       </div>
       {error && <div style={{ color: COLORS.danger, marginTop: 17, fontWeight: 700, textAlign: "center" }}>{error}</div>}
@@ -475,7 +460,7 @@ function EditWorldcupPage({ worldcupList, fetchWorldcups, cupId, isAdmin }) {
           onMouseOut={e => (e.currentTarget.style.background = COLORS.main)}
           disabled={loading}
         >
-          {loading ? "저장중..." : "저장"}
+          {loading ? t("saving") : t("save")}
         </button>
         <button
           onClick={() => navigate("/")}
@@ -486,7 +471,7 @@ function EditWorldcupPage({ worldcupList, fetchWorldcups, cupId, isAdmin }) {
           }}
           disabled={loading}
         >
-          취소
+          {t("cancel")}
         </button>
       </div>
     </div>

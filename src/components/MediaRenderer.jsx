@@ -1,9 +1,8 @@
 import React, { useState } from "react";
 
-// 유튜브 id 추출 함수
+// 유튜브 ID 추출
 function getYoutubeId(url) {
   if (!url) return null;
-  // youtu.be/xxxx, youtube.com/watch?v=xxxx, /embed/xxxx 등 지원
   const yt =
     url.match(/youtu\.be\/([^/?&]+)/) ||
     url.match(/youtube\.com.*[?&]v=([^&]+)/) ||
@@ -11,35 +10,32 @@ function getYoutubeId(url) {
   return yt ? yt[1] : null;
 }
 
-const DEFAULT_IMAGE = "/default-thumb.png"; // public 폴더에 넣으세요!
+const DEFAULT_IMAGE = "/default-thumb.png"; // public 폴더에 반드시 위치
 
-// 확장자 구하기
+// 파일 확장자 추출
 function getFileExtension(url) {
   if (!url) return "";
   const clean = url.split("?")[0];
-  const parts = clean.split("/");
-  const last = parts.pop();
-  const ext = last?.split(".").pop()?.toLowerCase();
-  return ext;
+  const last = clean.split("/").pop();
+  return last?.split(".").pop()?.toLowerCase() || "";
 }
 
-// 메인 컴포넌트
+// 메인
 function MediaRenderer({
   url,
   alt = "",
-  playable = false, // 홈/추천: false, 경기(실제재생): true
+  playable = false, // true면 영상재생/false면 썸네일만
   style = {},
-  onPlay // optional
+  onPlay // 클릭(유튜브)시 콜백
 }) {
   const [imgError, setImgError] = useState(false);
   const [youtubePlaying, setYoutubePlaying] = useState(false);
 
-  // ===== 유튜브 영상 처리 =====
+  // ===== 1. 유튜브 영상 =====
   const youtubeId = getYoutubeId(url);
-
   if (youtubeId) {
-    // 재생 모드 (경기)일 때만 클릭시 실제 유튜브 영상 보여줌
     if (playable) {
+      // 클릭하면 재생 (경기화면)
       return (
         <div
           style={{
@@ -50,7 +46,7 @@ function MediaRenderer({
             cursor: youtubePlaying ? "default" : "pointer",
             ...style,
           }}
-          onClick={e => {
+          onClick={() => {
             if (!youtubePlaying) {
               setYoutubePlaying(true);
               if (onPlay) onPlay();
@@ -74,11 +70,9 @@ function MediaRenderer({
               />
               <div
                 style={{
-                  position: "absolute",
-                  top: 0, left: 0, width: "100%", height: "100%",
+                  position: "absolute", top: 0, left: 0, width: "100%", height: "100%",
                   display: "flex", alignItems: "center", justifyContent: "center",
-                  background: "rgba(0,0,0,0.21)",
-                  pointerEvents: "none",
+                  background: "rgba(0,0,0,0.21)", pointerEvents: "none",
                 }}
               >
                 <svg width="46" height="46" viewBox="0 0 48 48">
@@ -102,7 +96,7 @@ function MediaRenderer({
         </div>
       );
     }
-    // 썸네일 모드(추천/홈): 무조건 유튜브 썸네일 (엑박 대비 onError fallback)
+    // 썸네일 모드
     return (
       <img
         src={`https://img.youtube.com/vi/${youtubeId}/mqdefault.jpg`}
@@ -121,13 +115,11 @@ function MediaRenderer({
     );
   }
 
-  // ===== 동영상(mp4/webm/ogg/mov) 지원(경기/재생만, 나머지는 썸네일/기본) =====
+  // ===== 2. 비디오(mp4/webm/ogg/mov) =====
   const ext = getFileExtension(url);
   const isVideo = ["mp4", "webm", "ogg", "mov"].includes(ext);
-
   if (isVideo) {
     if (playable) {
-      // 경기에서는 영상 재생(썸네일 미리보기가 필요하면 추가)
       return (
         <video
           style={{ width: "100%", height: "100%", objectFit: "cover", ...style }}
@@ -138,11 +130,11 @@ function MediaRenderer({
           playsInline
           controls={false}
           poster={DEFAULT_IMAGE}
-          onError={e => { if (!imgError) setImgError(true); }}
+          onError={() => setImgError(true)}
         />
       );
     }
-    // 홈/추천에서는 동영상 그냥 이미지 fallback (썸네일은 별도 로직 추가 가능)
+    // 썸네일: 비디오 미리보기 미지원시 기본 이미지로 fallback
     return (
       <img
         src={DEFAULT_IMAGE}
@@ -153,7 +145,7 @@ function MediaRenderer({
     );
   }
 
-  // ===== 이미지(jpg/png/gif/webp/bmp) =====
+  // ===== 3. 이미지 파일 (jpg/png/gif/webp/bmp) =====
   if (
     url &&
     !imgError &&
@@ -166,7 +158,7 @@ function MediaRenderer({
         style={{
           width: "100%",
           height: "100%",
-          objectFit: style.objectFit || "cover",  // style.objectFit 우선 적용
+          objectFit: style.objectFit || "cover",
           background: "#222",
           display: "block",
           ...style
@@ -177,7 +169,7 @@ function MediaRenderer({
     );
   }
 
-  // ===== 엑박, 빈값, 모르는 타입 등 fallback =====
+  // ===== 4. 기본 fallback (없거나 에러나면) =====
   if (imgError || !url) {
     return (
       <img
@@ -196,7 +188,7 @@ function MediaRenderer({
     );
   }
 
-  // ===== 기타(그냥 시도, 실패하면 fallback) =====
+  // ===== 5. 기타 타입 (혹시 성공하면 보여주고 실패시 fallback) =====
   return (
     <img
       src={url}

@@ -1,5 +1,9 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
+
 export default function Footer() {
+  const { t } = useTranslation();
+
   return (
     <footer style={{
       marginTop: 64,
@@ -17,14 +21,14 @@ export default function Footer() {
           style={{ marginRight: 18, color: "#81b7ff", textDecoration: "underline" }}
           target="_blank" rel="noopener noreferrer"
         >
-          이용약관
+          {t("terms_of_service")}
         </a>
         <a
           href="/privacy-policy"
           style={{ color: "#81b7ff", textDecoration: "underline" }}
           target="_blank" rel="noopener noreferrer"
         >
-          개인정보처리방침
+          {t("privacy_policy")}
         </a>
       </div>
       <div style={{ marginTop: 7, color: "#aacfff", fontSize: 13 }}>

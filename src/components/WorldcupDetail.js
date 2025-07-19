@@ -1,22 +1,26 @@
+// src/components/WorldcupDetail.jsx
+
 import React from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { mainButtonStyle, grayButtonStyle } from "../styles/common";
 import MediaRenderer from "./MediaRenderer";
 
 const DEFAULT_IMAGE = "/default-thumb.png";
 
 function WorldcupDetail({ worldcupList }) {
+  const { t } = useTranslation();
   const { id } = useParams();
   const navigate = useNavigate();
   const cup = worldcupList?.find(c => String(c.id) === id);
-  if (!cup) return <div style={{ padding: 40 }}>월드컵을 찾을 수 없습니다.</div>;
+  if (!cup) return <div style={{ padding: 40 }}>{t("not_found") || "월드컵을 찾을 수 없습니다."}</div>;
 
   const shareUrl = `${window.location.origin}/worldcup/${cup.id}`;
   const isMobile = typeof window !== "undefined" && window.innerWidth < 700;
 
   function handleCopy() {
     navigator.clipboard.writeText(shareUrl);
-    alert("공유 링크가 복사되었습니다!");
+    alert(t("link_copied") || "공유 링크가 복사되었습니다!");  // <-- 번역 적용!
   }
 
   return (
@@ -30,8 +34,12 @@ function WorldcupDetail({ worldcupList }) {
         padding: isMobile ? 18 : 32
       }}
     >
-      <h2 style={{ marginBottom: 10, fontWeight: 800, fontSize: isMobile ? 22 : 30 }}>{cup.title}</h2>
-      <div style={{ color: "#555", marginBottom: 20, fontSize: isMobile ? 15 : 18 }}>{cup.desc}</div>
+      <h2 style={{ marginBottom: 10, fontWeight: 800, fontSize: isMobile ? 22 : 30 }}>
+        {cup.title}
+      </h2>
+      <div style={{ color: "#555", marginBottom: 20, fontSize: isMobile ? 15 : 18 }}>
+        {cup.desc}
+      </div>
       <div
         style={{
           display: "flex",
@@ -72,7 +80,7 @@ function WorldcupDetail({ worldcupList }) {
             minWidth: 80
           }}
         >
-          홈으로
+          {t("home") || "홈으로"}
         </button>
         <button
           onClick={handleCopy}
@@ -83,11 +91,11 @@ function WorldcupDetail({ worldcupList }) {
             minWidth: 110
           }}
         >
-          공유링크 복사
+          {t("copy_share_link") || "공유링크 복사"}
         </button>
       </div>
       <div style={{ marginTop: 20, color: "#888", fontSize: isMobile ? 11 : 13 }}>
-        <b>공유링크: </b>
+        <b>{t("share_link") || "공유링크"}: </b>
         <input
           value={shareUrl}
           readOnly

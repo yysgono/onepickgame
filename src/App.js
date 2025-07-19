@@ -77,7 +77,7 @@ function App() {
   const isMobile = useIsMobile();
 
   const [worldcupList, setWorldcupList] = useState([]);
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [user, setUser] = useState(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [nickname, setNickname] = useState("");
@@ -188,9 +188,9 @@ function App() {
         const data = JSON.parse(ev.target.result);
         if (!Array.isArray(data)) throw new Error("형식 오류");
         setWorldcupList(data);
-        alert("복구 성공! (프론트에만 적용, DB 반영은 별도)");
+        alert(t("restore_success") || "복구 성공! (프론트에만 적용, DB 반영은 별도)");
       } catch {
-        alert("복구 실패!");
+        alert(t("restore_fail") || "복구 실패!");
       }
     };
     reader.readAsText(file);
@@ -249,7 +249,7 @@ function App() {
 
     function handleMakeWorldcup() {
       if (!user) {
-        alert("로그인이 필요합니다.");
+        alert(t("login_required") || "로그인이 필요합니다.");
         return;
       }
       navigate("/worldcup-maker");
@@ -275,7 +275,7 @@ function App() {
               await deleteWorldcupGame(id);
               setWorldcupList(list => list.filter(cup => cup.id !== id));
             } catch (e) {
-              alert("삭제 실패! " + (e.message || e));
+              alert((t("delete_failed") || "삭제 실패!") + " " + (e.message || e));
             }
           }}
           user={user}
@@ -349,7 +349,7 @@ function App() {
       if (!isAdmin) {
         return (
           <div style={{ padding: 60, textAlign: "center", fontWeight: 700, fontSize: 22 }}>
-            관리자만 접근할 수 있습니다.<br />아이디에 <b>admin</b>으로 로그인하세요.
+            {t("admin_only") || "관리자만 접근할 수 있습니다."}<br />{t("login_with_admin") || "아이디에 admin으로 로그인하세요."}
           </div>
         );
       }
@@ -364,7 +364,7 @@ function App() {
       if (!isAdmin) {
         return (
           <div style={{ padding: 60, textAlign: "center", fontWeight: 700, fontSize: 22 }}>
-            관리자만 접근할 수 있습니다.<br />아이디에 <b>admin</b>으로 로그인하세요.
+            {t("admin_only") || "관리자만 접근할 수 있습니다."}<br />{t("login_with_admin") || "아이디에 admin으로 로그인하세요."}
           </div>
         );
       }

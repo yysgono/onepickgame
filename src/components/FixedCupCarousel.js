@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import MediaRenderer from "./MediaRenderer";
+import { useTranslation } from "react-i18next";  // 추가
 
 // 네비게이션 버튼 스타일
 const navBtnStyle = (hover = false) => ({
@@ -46,6 +47,8 @@ function getTop2Winners(winStats, cupData) {
 }
 
 function FixedCupCarousel({ worldcupList }) {
+  const { t } = useTranslation();  // 추가
+
   const [vw, setVw] = useState(window.innerWidth);
   const [hoverPrev, setHoverPrev] = useState(false);
   const [hoverNext, setHoverNext] = useState(false);
@@ -107,7 +110,7 @@ function FixedCupCarousel({ worldcupList }) {
           width: "100%",
         }}
       >
-        추천
+        {t("recommend")} {/* 여기 수정 */}
       </div>
       <div
         style={{
@@ -121,7 +124,7 @@ function FixedCupCarousel({ worldcupList }) {
       >
         {/* Prev Button */}
         <button
-          aria-label="이전"
+          aria-label={t("previous")} /* 이전 버튼도 다국어 가능하면 여기에 */
           onClick={goPrev}
           onMouseEnter={() => setHoverPrev(true)}
           onMouseLeave={() => setHoverPrev(false)}
@@ -293,7 +296,7 @@ function FixedCupCarousel({ worldcupList }) {
         </div>
         {/* Next Button */}
         <button
-          aria-label="다음"
+          aria-label={t("next")}
           onClick={goNext}
           onMouseEnter={() => setHoverNext(true)}
           onMouseLeave={() => setHoverNext(false)}
@@ -326,7 +329,7 @@ function FixedCupCarousel({ worldcupList }) {
             onClick={() => setPage(i)}
             tabIndex={0}
             role="button"
-            aria-label={`${i + 1} 페이지`}
+            aria-label={`${i + 1} ${t("page")}`}
             style={{
               width: page === i ? 14 : 10,
               height: page === i ? 14 : 10,

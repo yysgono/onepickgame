@@ -1,3 +1,4 @@
+// src/components/CommentBox.js
 import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { supabase } from "../utils/supabaseClient";
@@ -146,11 +147,11 @@ export default function CommentBox({ cupId }) {
     e.preventDefault();
     setError("");
     if (!user || !nickname) {
-      setError(t("comment.needLogin") || "로그인이 필요합니다.");
+      setError(t("comment.loginRequired"));
       return;
     }
     if (isBanned) {
-      setError("정지된 유저는 댓글 작성이 제한됩니다.");
+      setError(t("comment.banned"));
       return;
     }
     const text = content.trim();
@@ -158,11 +159,11 @@ export default function CommentBox({ cupId }) {
     if (text.length > 80) return setError(t("comment.limit80"));
     if (text.split("\n").length > 5) return setError(t("comment.limitLines"));
     if (containsBadword(nickname))
-      return setError(t("comment.badwordNickname") || "닉네임에 부적절한 단어가 포함되어 있습니다.");
+      return setError(t("comment.badwordNickname"));
     if (containsBadword(text))
-      return setError(t("comment.badwordComment") || "댓글에 부적절한 단어가 포함되어 있습니다.");
+      return setError(t("comment.badwordComment"));
     if (getByteLength(nickname) > 12)
-      return setError(t("comment.limitNicknameByte") || "닉네임은 최대 12바이트까지 가능합니다.");
+      return setError(t("comment.limitNicknameByte"));
 
     setLoading(true);
     const { error: insertErr } = await supabase.from("comments").insert([
@@ -178,7 +179,7 @@ export default function CommentBox({ cupId }) {
     setLoading(false);
 
     if (insertErr) {
-      setError(insertErr.message || "댓글 저장 실패");
+      setError(insertErr.message || t("comment.saveError"));
       return;
     }
     setContent("");
@@ -189,7 +190,7 @@ export default function CommentBox({ cupId }) {
     if (!user) return;
     const isAdmin = nickname === "admin";
     if (!isAdmin && commentUserId !== user.id) {
-      setError("본인 또는 관리자만 삭제할 수 있습니다.");
+      setError(t("comment.deleteAuth"));
       return;
     }
     const { error: deleteErr } = await supabase
@@ -237,7 +238,6 @@ export default function CommentBox({ cupId }) {
       >
         💬 {t("comment.comments")}
       </h3>
-      {/* 로그인 필요 메시지 - 입력창 위에 1번만 표시 */}
       {!user && (
         <div
           style={{
@@ -248,10 +248,9 @@ export default function CommentBox({ cupId }) {
             fontSize: 15,
           }}
         >
-          {t("comment.loginRequired") || "댓글을 작성하려면 로그인해야 합니다."}
+          {t("comment.loginRequired")}
         </div>
       )}
-      {/* ===== 입력창(PC: 가로, 모바일: 세로) ===== */}
       <form
         onSubmit={handleSubmit}
         style={{
@@ -280,7 +279,6 @@ export default function CommentBox({ cupId }) {
         >
           {nickname || "?"}
         </div>
-        {/* 비회원은 안내문구만 노출 */}
         {!user ? (
           <div
             style={{
@@ -298,7 +296,7 @@ export default function CommentBox({ cupId }) {
               width: isMobile ? "100%" : undefined,
             }}
           >
-            로그인해야 댓글을 작성할 수 있습니다.
+            {t("comment.loginRequired")}
           </div>
         ) : (
           <textarea
@@ -306,7 +304,7 @@ export default function CommentBox({ cupId }) {
             onChange={(e) => setContent(e.target.value.slice(0, 80))}
             placeholder={
               isBanned
-                ? "정지된 유저는 댓글 작성이 제한됩니다."
+                ? t("comment.banned")
                 : t("comment.placeholder")
             }
             rows={3}
@@ -355,7 +353,7 @@ export default function CommentBox({ cupId }) {
             width: isMobile ? "100%" : undefined,
           }}
         >
-          {loading ? t("comment.loading") || "등록중..." : t("comment.submit")}
+          {loading ? t("comment.loading") : t("comment.submit")}
         </button>
       </form>
       {isBanned && (
@@ -366,11 +364,11 @@ export default function CommentBox({ cupId }) {
           fontWeight: 700,
           fontSize: 15,
         }}>
-          🚫 정지된 유저는 댓글 작성이 제한됩니다.
+          🚫 {t("comment.banned")}
           {banInfo && banInfo.expires_at && (
-            <div>정지 해제일: {banInfo.expires_at.replace("T", " ").slice(0, 16)}</div>
+            <div>{t("comment.banExpiresAt")}: {banInfo.expires_at.replace("T", " ").slice(0, 16)}</div>
           )}
-          {banInfo && banInfo.reason && <div>사유: {banInfo.reason}</div>}
+          {banInfo && banInfo.reason && <div>{t("comment.banReason")}: {banInfo.reason}</div>}
         </div>
       )}
       {error && (
@@ -470,7 +468,7 @@ export default function CommentBox({ cupId }) {
             >
               {(c.downvotes >= 3 && c.downvotes >= (c.upvotes * 2)) ? (
                 <span style={{ color: "#aaa", fontStyle: "italic" }}>
-                  🚫 블라인드 처리된 댓글입니다
+                  🚫 {t("comment.blinded")}
                 </span>
               ) : (
                 c.content
@@ -496,9 +494,9 @@ export default function CommentBox({ cupId }) {
                   padding: 0,
                 }}
                 onClick={() => handleUpvote(c.id)}
-                title="추천"
+                title={t("comment.upvote")}
               >
-                👍 추천 {c.upvotes || 0}
+                👍 {t("comment.upvote")} {c.upvotes || 0}
               </button>
               <button
                 style={{
@@ -511,9 +509,9 @@ export default function CommentBox({ cupId }) {
                   padding: 0,
                 }}
                 onClick={() => handleDownvote(c.id)}
-                title="비추천"
+                title={t("comment.downvote")}
               >
-                👎 비추천 {c.downvotes || 0}
+                👎 {t("comment.downvote")} {c.downvotes || 0}
               </button>
               {(user && (nickname === "admin" || c.user_id === user.id)) && (
                 <button
@@ -530,7 +528,7 @@ export default function CommentBox({ cupId }) {
                   onClick={() => handleDelete(c.id, c.user_id)}
                   title={t("comment.delete")}
                 >
-                  삭제
+                  {t("comment.delete")}
                 </button>
               )}
             </div>

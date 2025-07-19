@@ -77,8 +77,6 @@ function Home({
   const [loading, setLoading] = useState(true);
   const [cupsWithWinCount, setCupsWithWinCount] = useState(null);
   const [vw, setVw] = useState(window.innerWidth);
-
-  // 몇 개까지 보여줄지 상태
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
 
   useEffect(() => {
@@ -102,7 +100,6 @@ function Home({
   const SKELETON_COUNT = isMobile ? 3 : 6;
   const THUMB_HEIGHT = isMobile ? 168 : 168 * 1.2;
 
-  // 일반 월드컵 목록
   useEffect(() => {
     let mounted = true;
     async function fillWinCounts() {
@@ -133,7 +130,6 @@ function Home({
     };
   }, [worldcupList]);
 
-  // "추천" 고정 월드컵용 winStats 포함
   const [fixedCupsWithStats, setFixedCupsWithStats] = useState([]);
   useEffect(() => {
     let mounted = true;
@@ -144,7 +140,6 @@ function Home({
       }
       const list = await Promise.all(
         fixedWorldcups.map(async (cup) => {
-          // 이미 winStats 있으면 그대로, 아니면 fetch
           if (Array.isArray(cup.winStats) && cup.winStats.length > 0) return cup;
           const statsArr = await fetchWinnerStatsFromDB(cup.id);
           return { ...cup, winStats: statsArr };
@@ -156,7 +151,6 @@ function Home({
     return () => { mounted = false; };
   }, [fixedWorldcups]);
 
-  // 필터/정렬
   const filtered = Array.isArray(cupsWithWinCount)
     ? (cupsWithWinCount || [])
         .filter(
@@ -175,7 +169,6 @@ function Home({
         })
     : [];
 
-  // 보여줄 리스트 제한
   const visibleList = filtered.slice(0, visibleCount);
 
   const cardRefs = useSlideFadeIn(visibleList.length);
@@ -185,7 +178,6 @@ function Home({
 
   function getTop2Winners(winStats, cupData) {
     if (!winStats?.length) return [cupData?.[0] || null, cupData?.[1] || null];
-    // winStats를 win_count 기준으로 내림차순 정렬
     const sorted = [...winStats].sort(
       (a, b) => (b.win_count || 0) - (a.win_count || 0)
     );
@@ -266,7 +258,6 @@ function Home({
     </button>
   );
 
-  // 더보기 버튼 핸들러
   const handleLoadMore = () => {
     setVisibleCount((prev) => prev + PAGE_SIZE);
   };
@@ -320,13 +311,13 @@ function Home({
           }}
         >
           <div style={{ display: "flex", alignItems: "center" }}>
-            {sortButton("인기순", "popular")}
-            {sortButton("최신순", "recent")}
+            {sortButton(t("popular"), "popular")}
+            {sortButton(t("latest"), "recent")}
           </div>
           <div style={{ display: "flex", alignItems: "center" }}>
             <input
               type="text"
-              placeholder="검색어 입력..."
+              placeholder={t("search_placeholder")}
               value={search}
               onChange={e => setSearch(e.target.value)}
               style={{
@@ -581,7 +572,7 @@ function Home({
                       style={buttonStyle}
                       onMouseOver={e => (e.currentTarget.style.background = "#1c2232")}
                       onMouseOut={e => (e.currentTarget.style.background = mainDark)}
-                    >시작</button>
+                    >{t("start")}</button>
                     {isMine(cup) ? (
                       <div style={{ display: "flex", gap: 5 }}>
                         <button
@@ -592,18 +583,18 @@ function Home({
                           style={smallButtonStyle}
                           onMouseOver={e => (e.currentTarget.style.background = "#1c2232")}
                           onMouseOut={e => (e.currentTarget.style.background = mainDark)}
-                        >수정</button>
+                        >{t("edit")}</button>
                         <button
                           onClick={e => {
                             e.stopPropagation();
-                            if (!window.confirm("정말 삭제하시겠습니까?")) return;
+                            if (!window.confirm(t("delete_confirm") || "정말 삭제하시겠습니까?")) return;
                             if (onDelete) onDelete(cup.id);
                             else window.location.reload();
                           }}
                           style={smallButtonStyle}
                           onMouseOver={e => (e.currentTarget.style.background = "#1c2232")}
                           onMouseOut={e => (e.currentTarget.style.background = mainDark)}
-                        >삭제</button>
+                        >{t("delete")}</button>
                       </div>
                     ) : (
                       <div style={{ width: isMobile ? 29 : 40 }} />
@@ -616,7 +607,7 @@ function Home({
                       style={buttonStyle}
                       onMouseOver={e => (e.currentTarget.style.background = "#1c2232")}
                       onMouseOut={e => (e.currentTarget.style.background = mainDark)}
-                    >통계/댓글</button>
+                    >{t("stats_comment")}</button>
                   </div>
                 </div>
               );
@@ -639,7 +630,7 @@ function Home({
               }}
               onClick={handleLoadMore}
             >
-              더보기
+              {t("load_more")}
             </button>
           </div>
         )}

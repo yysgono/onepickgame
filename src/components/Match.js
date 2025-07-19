@@ -87,12 +87,70 @@ function Spinner({ size = 60 }) {
   );
 }
 
-// ★ 카드 컴포넌트 (이미지 contain & background/padding)
-function CandidateBox({ c, onClick, disabled, idx }) {
+function getStageLabel(n, isFirst = false, t) {
+  if (isFirst) return t("match.round", { n }); // ex: "8강"
+  if (n === 2) return t("match.final");
+  if (n === 4) return t("match.semiFinal");
+  if (n === 8) return t("match.quarterFinal");
+  if (n === 16) return t("match.round16");
+  if (n === 32) return t("match.round32");
+  if (n === 64) return t("match.round64");
+  if (n === 128) return t("match.round128");
+  return t("match.round", { n });
+}
+
+function nextPowerOfTwo(n) {
+  let k = 1;
+  while (k < n) k *= 2;
+  return k;
+}
+function shuffle(arr) {
+  let m = arr.length, t, i;
+  while (m) {
+    i = Math.floor(Math.random() * m--);
+    t = arr[m];
+    arr[m] = arr[i];
+    arr[i] = t;
+  }
+  return arr;
+}
+function makeFirstRound(players) {
+  const shuffled = shuffle([...players]);
+  const pow2 = nextPowerOfTwo(players.length);
+  const byesCount = pow2 - players.length;
+  const matches = [];
+  const byes = [];
+  for (let i = 0; i < players.length;) {
+    if (byes.length < byesCount) {
+      byes.push(shuffled[i]);
+      i += 1;
+    } else {
+      matches.push([shuffled[i], shuffled[i + 1] || null]);
+      i += 2;
+    }
+  }
+  return { matches, byes };
+}
+function makeNextRound(winners) {
+  const pairs = [];
+  for (let i = 0; i < winners.length; i += 2) {
+    pairs.push([winners[i], winners[i + 1] || null]);
+  }
+  return pairs;
+}
+function truncateNames(candidates, maxWords = 3) {
+  return candidates.map(c => {
+    if (!c?.name) return "?";
+    const words = c.name.split(/\s+/);
+    if (words.length <= maxWords) return c.name;
+    return words.slice(0, maxWords).join(" ") + "…";
+  });
+}
+
+function CandidateBox({ c, onClick, disabled, idx, t }) {
   const [hover, setHover] = useState(false);
   const vw = typeof window !== "undefined" ? window.innerWidth : 1200;
   const isMobile = vw < 1000;
-
   const SIDE_BANNER = vw > 1400 ? 200 : 110;
   const CARD_MAX_WIDTH = 520;
   const CARD_WIDTH = isMobile
@@ -100,7 +158,6 @@ function CandidateBox({ c, onClick, disabled, idx }) {
     : `min(${CARD_MAX_WIDTH}px, calc((100vw - ${SIDE_BANNER * 2 + 80}px)/2))`;
   const CARD_HEIGHT = isMobile ? 380 : 560;
   const THUMB_HEIGHT = isMobile ? 280 : 480;
-
   const NEON_FONT = "'Orbitron', 'Pretendard', sans-serif";
   const mainDark = "#171C27";
   const blueLine = "#1976ed";
@@ -110,7 +167,7 @@ function CandidateBox({ c, onClick, disabled, idx }) {
       style={{
         width: CARD_WIDTH,
         height: CARD_HEIGHT,
-        maxWidth: CARD_WIDTH,
+        maxWidth: CARD_MAX_WIDTH,
         minWidth: 0,
         display: "flex",
         flexDirection: "column",
@@ -218,7 +275,7 @@ function CandidateBox({ c, onClick, disabled, idx }) {
             fontWeight: 900,
           }}
         >
-          {c ? c.name : "부전승"}
+          {c ? c.name : t("match.byeCandidate")}
         </span>
       </div>
       <div
@@ -254,74 +311,10 @@ function CandidateBox({ c, onClick, disabled, idx }) {
             opacity: c ? 1 : 0.3
           }}
           onClick={c ? onClick : undefined}
-        >선택</button>
+        >{t("match.choose")}</button>
       </div>
     </div>
   );
-}
-
-function getStageLabel(n, isFirst = false) {
-  if (isFirst) return `${n}강`;
-  if (n === 2) return "결승전";
-  if (n === 4) return "4강";
-  if (n === 8) return "8강";
-  if (n === 16) return "16강";
-  if (n === 32) return "32강";
-  if (n === 64) return "64강";
-  if (n === 128) return "128강";
-  return `${n}강`;
-}
-
-function nextPowerOfTwo(n) {
-  let k = 1;
-  while (k < n) k *= 2;
-  return k;
-}
-
-function shuffle(arr) {
-  let m = arr.length, t, i;
-  while (m) {
-    i = Math.floor(Math.random() * m--);
-    t = arr[m];
-    arr[m] = arr[i];
-    arr[i] = t;
-  }
-  return arr;
-}
-
-function makeFirstRound(players) {
-  const shuffled = shuffle([...players]);
-  const pow2 = nextPowerOfTwo(players.length);
-  const byesCount = pow2 - players.length;
-  const matches = [];
-  const byes = [];
-  for (let i = 0; i < players.length;) {
-    if (byes.length < byesCount) {
-      byes.push(shuffled[i]);
-      i += 1;
-    } else {
-      matches.push([shuffled[i], shuffled[i + 1] || null]);
-      i += 2;
-    }
-  }
-  return { matches, byes };
-}
-
-function makeNextRound(winners) {
-  const pairs = [];
-  for (let i = 0; i < winners.length; i += 2) {
-    pairs.push([winners[i], winners[i + 1] || null]);
-  }
-  return pairs;
-}
-
-function truncateNames(candidates, maxWords = 3) {
-  return candidates.map(c => {
-    if (!c?.name) return "?";
-    const words = c.name.split(/\s+/);
-    if (words.length <= maxWords) return c.name;
-    return words.slice(0, maxWords).join(" ") + "…";
-  });
 }
 
 function Match({ cup, onResult, selectedCount }) {
@@ -334,11 +327,14 @@ function Match({ cup, onResult, selectedCount }) {
   const [autoPlaying] = useState(false);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [error, setError] = useState("");
+  const [shouldRedirect, setShouldRedirect] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
     async function init() {
       setLoading(true);
+      setError("");
       let players = cup.data;
       if (selectedCount && players.length > selectedCount) {
         players = shuffle([...players]).slice(0, selectedCount);
@@ -379,19 +375,35 @@ function Match({ cup, onResult, selectedCount }) {
 
   async function handleFinish(winner, matchHistory) {
     setSaving(true);
-    await insertWinnerLog(cup.id, winner.id);
+    setError("");
     const statsArr = calcStatsFromMatchHistory(
       cup.data,
       winner,
       matchHistory
     );
-    await upsertMyWinnerStat_parallel(statsArr, cup.id);
-    setSaving(false);
-    navigate(`/result/${cup.id}`, { state: { cup, winner } });
+    try {
+      await Promise.all([
+        insertWinnerLog(cup.id, winner.id),
+        upsertMyWinnerStat_parallel(statsArr, cup.id)
+      ]);
+      setSaving(false);
+      setShouldRedirect({ cup, winner });
+    } catch (e) {
+      setSaving(false);
+      setError(t("match.saveError"));
+    }
   }
+
+  useEffect(() => {
+    if (shouldRedirect) {
+      navigate(`/result/${cup.id}`, { state: shouldRedirect });
+    }
+    // eslint-disable-next-line
+  }, [shouldRedirect]);
 
   const currentMatch = bracket[idx] || [];
   const [c1, c2] = currentMatch;
+
   useEffect(() => {
     if (!c1 || !c2) {
       if (c1 || c2) {
@@ -432,10 +444,11 @@ function Match({ cup, onResult, selectedCount }) {
         fontWeight: 700,
         letterSpacing: "-1px"
       }}>
-        후보들을 섞는 중...
+        {t("match.shuffling")}
       </div>
     </div>
   );
+
   if (saving) return (
     <div style={{
       minHeight: "60vh",
@@ -453,12 +466,12 @@ function Match({ cup, onResult, selectedCount }) {
         fontWeight: 900,
         letterSpacing: "-1px"
       }}>
-        두구두구두구.. 기다려주세요!
-        후보가 많으면 시간이 조금 걸릴수 있어요
+        {t("match.saving")}
       </div>
     </div>
   );
-  if (!bracket || bracket.length === 0) return <div>{t("notEnoughCandidates")}</div>;
+
+  if (!bracket || bracket.length === 0) return <div>{t("match.notEnoughCandidates")}</div>;
 
   return (
     <div
@@ -482,12 +495,17 @@ function Match({ cup, onResult, selectedCount }) {
           color: "#fff",
         }}
       >
-        {getStageLabel(bracket.length * 2 + pendingWinners.length, roundNum === 1)}{" "}
+        {getStageLabel(bracket.length * 2 + pendingWinners.length, roundNum === 1, t)}{" "}
         {bracket.length === 1 ? "" : `${idx + 1} / ${bracket.length}`}
       </div>
+      {error && (
+        <div style={{ color: "#d33", fontWeight: 700, marginBottom: 15, fontSize: 18 }}>
+          {error}
+        </div>
+      )}
       {roundNum === 1 && pendingWinners.length > 0 && (
         <div style={{ color: "#888", margin: "7px 0 15px 0" }}>
-          {pendingWinners.length}명은 부전승으로 다음 라운드 자동 진출!
+          {t("match.bye", { count: pendingWinners.length })}
         </div>
       )}
       {bracket.length > 1 && nextRoundCandidates.length === 2 && (
@@ -510,9 +528,12 @@ function Match({ cup, onResult, selectedCount }) {
             justifyContent: "center",
             userSelect: "text",
           }}
-          title={`다음 라운드: ${nextRoundCandidates[0]?.name || ""} vs ${nextRoundCandidates[1]?.name || ""}`}
+          title={t("match.nextRoundTitle", {
+            a: nextRoundCandidates[0]?.name || "",
+            b: nextRoundCandidates[1]?.name || ""
+          })}
         >
-          <b>다음 라운드:</b>{" "}
+          <b>{t("match.nextRound")}</b>{" "}
           {truncateNames(nextRoundCandidates).map((name, i) => (
             <React.Fragment key={i}>
               <span
@@ -559,8 +580,8 @@ function Match({ cup, onResult, selectedCount }) {
           zIndex: 1,
         }}
       >
-        <CandidateBox c={c1} onClick={() => handlePick(0)} disabled={autoPlaying} idx={0} />
-        <CandidateBox c={c2} onClick={() => handlePick(1)} disabled={autoPlaying} idx={1} />
+        <CandidateBox c={c1} onClick={() => handlePick(0)} disabled={autoPlaying} idx={0} t={t} />
+        <CandidateBox c={c2} onClick={() => handlePick(1)} disabled={autoPlaying} idx={1} t={t} />
       </div>
       <style>
         {`

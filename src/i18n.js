@@ -1,8 +1,9 @@
+// src/i18n.js
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
 import LanguageDetector from "i18next-browser-languagedetector";
 
-// 언어별 번역 파일 불러오기
+// 각 언어별 번역 JSON 파일 import
 import translationEN from "./locales/en/translation.json";
 import translationKO from "./locales/ko/translation.json";
 import translationJA from "./locales/ja/translation.json";
@@ -12,6 +13,9 @@ import translationPT from "./locales/pt/translation.json";
 import translationFR from "./locales/fr/translation.json";
 import translationRU from "./locales/ru/translation.json";
 import translationDE from "./locales/de/translation.json";
+import translationVI from "./locales/vi/translation.json";
+import translationID from "./locales/id/translation.json";
+import translationES from "./locales/es/translation.json";
 
 const resources = {
   en: { translation: translationEN },
@@ -23,21 +27,36 @@ const resources = {
   fr: { translation: translationFR },
   ru: { translation: translationRU },
   de: { translation: translationDE },
+  vi: { translation: translationVI },
+  id: { translation: translationID },
+  es: { translation: translationES },
 };
 
 i18n
-  .use(LanguageDetector) // 자동으로 브라우저 언어 감지
-  .use(initReactI18next) // React에 i18next 연결
+  .use(LanguageDetector)        // 브라우저 언어 감지
+  .use(initReactI18next)        // react-i18next 초기화
   .init({
-    resources,
-    fallbackLng: "en", // 기본 언어는 영어
-    debug: false, // 개발시 true로 설정하면 콘솔에 디버그 메시지 출력됨
+    resources,                  // 번역 리소스
+    fallbackLng: "en",          // 기본 언어 (영어)
+    debug: false,
     interpolation: {
-      escapeValue: false, // React는 기본적으로 XSS 방지
+      escapeValue: false,       // React에서 XSS 방지 처리 때문에 false 설정
     },
     detection: {
-      order: ['querystring', 'cookie', 'localStorage', 'navigator', 'htmlTag', 'path', 'subdomain'],
-      caches: ['localStorage', 'cookie'],
+      order: [
+        "querystring",
+        "localStorage",
+        "cookie",
+        "navigator",
+        "htmlTag",
+        "path",
+        "subdomain",
+      ],
+      caches: ["localStorage", "cookie"], // 언어 설정 저장소
+    },
+    saveMissing: false,          // 없는 키를 서버에 저장할지 여부 (개발용)
+    react: {
+      useSuspense: false,        // Suspense 비활성화
     },
   });
 

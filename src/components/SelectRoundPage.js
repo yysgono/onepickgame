@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import MediaRenderer from "./MediaRenderer";
 
-// 모바일 체크
+// 모바일 체크 (훅)
 function useIsMobile() {
   const [isMobile, setIsMobile] = React.useState(window.innerWidth < 700);
   React.useEffect(() => {
@@ -13,6 +13,7 @@ function useIsMobile() {
   return isMobile;
 }
 
+// 그리드 컬럼 및 카드 사이즈 계산
 function getGridSettings(count, isMobile) {
   if (isMobile) {
     if (count <= 2) return { columns: count, size: "68vw", max: 180 };
@@ -29,18 +30,18 @@ function getGridSettings(count, isMobile) {
   }
 }
 
+// 타이틀 줄바꿈 함수 (언어별)
 function splitTitle(title = "") {
-  if (!title) return "";
+  if (!title) return [""];
   const lines = [];
-  for (let i = 0; i < title.length; i += 20) {
-    lines.push(title.slice(i, i + 20));
-  }
+  for (let i = 0; i < title.length; i += 20) lines.push(title.slice(i, i + 20));
   return lines;
 }
 
 export default function SelectRoundPage({ cup, maxRound, candidates, onSelect, onResult }) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [selectedRound, setSelectedRound] = useState(maxRound);
+  const isMobile = useIsMobile();
 
   const maxPossibleRound = Math.min(candidates.length, 1024);
   let possibleRounds = [];
@@ -56,13 +57,11 @@ export default function SelectRoundPage({ cup, maxRound, candidates, onSelect, o
   }
   possibleRounds = possibleRounds.sort((a, b) => a - b);
 
-  const isMobile = useIsMobile();
   const hasBye = candidates.length < selectedRound;
-
   const count = candidates.length;
   const { columns, size, max } = getGridSettings(count, isMobile);
-  const getCardSize = () => (typeof size === "string" ? `min(${size}, ${max}px)` : Math.min(size, max));
-  const buttonHeight = isMobile ? 48 : 60;
+  const getCardSize = () =>
+    typeof size === "string" ? `min(${size}, ${max}px)` : Math.min(size, max);
 
   // ---- 버튼 스타일 ----
   const mainBtn = {
@@ -79,7 +78,7 @@ export default function SelectRoundPage({ cup, maxRound, candidates, onSelect, o
     marginLeft: 4,
     marginRight: 4,
     outline: "none",
-    height: buttonHeight,
+    height: isMobile ? 48 : 60,
     display: "flex",
     alignItems: "center",
     justifyContent: "center"
@@ -93,14 +92,12 @@ export default function SelectRoundPage({ cup, maxRound, candidates, onSelect, o
     background: "#16213a",
     color: "#fff",
     border: "2px solid #1976ed",
-    height: buttonHeight,
+    height: isMobile ? 48 : 60,
     textAlign: "left",
     boxSizing: "border-box",
-    appearance: "none",
     margin: "0 auto",
     display: "block",
     cursor: "pointer",
-    backgroundImage: "none",
     direction: "ltr"
   };
   const selectArrowStyle = {
@@ -121,7 +118,7 @@ export default function SelectRoundPage({ cup, maxRound, candidates, onSelect, o
     borderRadius: 8,
     padding: isMobile ? "6px 16px" : "8px 26px",
     marginLeft: isMobile ? 0 : 8,
-    height: buttonHeight,
+    height: isMobile ? 48 : 60,
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
@@ -152,7 +149,6 @@ export default function SelectRoundPage({ cup, maxRound, candidates, onSelect, o
     justifyContent: "center"
   };
 
-  // --- UI ---
   return (
     <div
       style={{
@@ -167,80 +163,89 @@ export default function SelectRoundPage({ cup, maxRound, candidates, onSelect, o
         marginTop: 26,
       }}
     >
-      {/* 오른쪽 상단 결과보기 버튼만 이동 */}
+      {/* 오른쪽 상단 결과보기 버튼 */}
       <button
         style={resultBtn}
         onClick={() => {
           if (onResult) onResult();
           else if (cup?.id) window.location.href = `/stats/${cup.id}`;
         }}
+        aria-label={t("show_result")}
       >
-        결과보기
+        {t("show_result")}
       </button>
       {cup && (
         <>
-          <div style={{
-            fontWeight: 900,
-            fontSize: isMobile ? 23 : 31,
-            color: "#fff",
-            marginBottom: 9,
-            letterSpacing: "-1.2px",
-            lineHeight: 1.18,
-            textAlign: "center",
-            background: "#171C27",
-            borderRadius: 14,
-            padding: isMobile ? "12px 0 8px 0" : "18px 0 9px 0",
-            marginLeft: "auto",
-            marginRight: "auto",
-            whiteSpace: "pre-line",
-            wordBreak: "break-all",
-            maxWidth: isMobile ? "98vw" : 710,
-            boxShadow: "0 2px 16px #1976ed18",
-          }} title={cup.title}>
-            {splitTitle(cup.title).join("\n")}
-          </div>
-          {cup.desc || cup.description ? (
-            <div style={{
-              fontWeight: 400,
-              fontSize: isMobile ? 16 : 20,
-              color: "#b9d3ff",
+          <div
+            style={{
+              fontWeight: 900,
+              fontSize: isMobile ? 23 : 31,
+              color: "#fff",
+              marginBottom: 9,
+              letterSpacing: "-1.2px",
+              lineHeight: 1.18,
               textAlign: "center",
-              background: "rgba(30,45,70,0.93)",
-              borderRadius: 9,
-              padding: isMobile ? "7px 6px 4px 6px" : "11px 18px 6px 18px",
-              marginBottom: isMobile ? 9 : 17,
+              background: "#171C27",
+              borderRadius: 14,
+              padding: isMobile ? "12px 0 8px 0" : "18px 0 9px 0",
               marginLeft: "auto",
               marginRight: "auto",
-              maxWidth: isMobile ? "95vw" : 590,
-              lineHeight: 1.45,
-              minHeight: 24,
               whiteSpace: "pre-line",
-              wordBreak: "break-word",
-            }}>
-              {(cup.desc || cup.description)}
+              wordBreak: "break-all",
+              maxWidth: isMobile ? "98vw" : 710,
+              boxShadow: "0 2px 16px #1976ed18",
+            }}
+            title={cup.title}
+          >
+            {splitTitle(cup.title).join("\n")}
+          </div>
+          {(cup.desc || cup.description) && (
+            <div
+              style={{
+                fontWeight: 400,
+                fontSize: isMobile ? 16 : 20,
+                color: "#b9d3ff",
+                textAlign: "center",
+                background: "rgba(30,45,70,0.93)",
+                borderRadius: 9,
+                padding: isMobile ? "7px 6px 4px 6px" : "11px 18px 6px 18px",
+                marginBottom: isMobile ? 9 : 17,
+                marginLeft: "auto",
+                marginRight: "auto",
+                maxWidth: isMobile ? "95vw" : 590,
+                lineHeight: 1.45,
+                minHeight: 24,
+                whiteSpace: "pre-line",
+                wordBreak: "break-word",
+              }}
+            >
+              {cup.desc || cup.description}
             </div>
-          ) : null}
+          )}
         </>
       )}
-      {/* ---- 버튼 영역 ---- */}
-      <div style={{
-        marginBottom: isMobile ? 16 : 24,
-        display: "flex",
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "center",
-        gap: isMobile ? 8 : 16,
-        width: "100%",
-      }}>
+      {/* ---- 라운드/시작/후보수 ---- */}
+      <div
+        style={{
+          marginBottom: isMobile ? 16 : 24,
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: isMobile ? 8 : 16,
+          width: "100%",
+        }}
+      >
         <span style={{ position: "relative", display: "inline-block", minWidth: 130, textAlign: "center" }}>
           <select
             value={selectedRound}
             onChange={(e) => setSelectedRound(Number(e.target.value))}
             style={selectBtnStyle}
+            aria-label={t("round_of", { count: selectedRound })}
           >
             {possibleRounds.map((r) => (
-              <option key={r} value={r} style={{ fontSize: isMobile ? 21 : 27 }}>
-                {r}강
+              <option key={r} value={r}>
+                {t("round_of", { count: r })}
               </option>
             ))}
           </select>
@@ -249,53 +254,61 @@ export default function SelectRoundPage({ cup, maxRound, candidates, onSelect, o
         <button
           style={mainBtn}
           onClick={() => onSelect(selectedRound)}
+          aria-label={t("start")}
         >
-          {t("start") || "시작"}
+          {t("start")}
         </button>
         <span style={candidateCountText}>
-          후보 {candidates.length}명
+          {t("candidates_count", { count: candidates.length })}
           {hasBye && (
-            <span style={{
-              marginLeft: 7,
-              color: "#FFD740",
-              fontSize: isMobile ? 12 : 15,
-              fontWeight: 700
-            }}>
-              ⚠️ 부전승 발생
+            <span
+              style={{
+                marginLeft: 7,
+                color: "#FFD740",
+                fontSize: isMobile ? 12 : 15,
+                fontWeight: 700
+              }}
+            >
+              ⚠️ {t("bye_round")}
             </span>
           )}
         </span>
       </div>
-      {/* 부전승 안내 */}
+      {/* 부전승 안내문구 */}
       {hasBye && (
-        <div style={{
-          margin: "6px auto 8px auto",
-          padding: isMobile ? "7px 11px" : "10px 17px",
-          color: "#a85c07",
-          background: "#fffbe5",
-          borderRadius: 7,
-          fontSize: isMobile ? 13 : 15,
-          fontWeight: 900,
-          boxShadow: "0 1px 5px #1976ed09",
-          display: "inline-block",
-          maxWidth: 400,
-          border: "1.1px solid #ffd452",
-        }}>
-          ⚠️ 인원수가 {selectedRound}명에 맞지 않아 부전승이 자동 처리됩니다.
+        <div
+          style={{
+            margin: "6px auto 8px auto",
+            padding: isMobile ? "7px 11px" : "10px 17px",
+            color: "#a85c07",
+            background: "#fffbe5",
+            borderRadius: 7,
+            fontSize: isMobile ? 13 : 15,
+            fontWeight: 900,
+            boxShadow: "0 1px 5px #1976ed09",
+            display: "inline-block",
+            maxWidth: 400,
+            border: "1.1px solid #ffd452",
+          }}
+        >
+          ⚠️ {t("auto_bye_message", { selectedRound })}
         </div>
       )}
-      <div style={{
-        display: "grid",
-        gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))`,
-        gap: isMobile ? 10 : 22,
-        justifyContent: "center",
-        alignItems: "center",
-        width: "100%",
-        maxWidth: 1100,
-        margin: "0 auto",
-        marginTop: isMobile ? 10 : 22,
-        marginBottom: 0,
-      }}>
+      {/* 후보 목록 */}
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))`,
+          gap: isMobile ? 10 : 22,
+          justifyContent: "center",
+          alignItems: "center",
+          width: "100%",
+          maxWidth: 1100,
+          margin: "0 auto",
+          marginTop: isMobile ? 10 : 22,
+          marginBottom: 0,
+        }}
+      >
         {candidates.map((c) => (
           <div
             key={c.id}
@@ -309,14 +322,19 @@ export default function SelectRoundPage({ cup, maxRound, candidates, onSelect, o
               boxShadow: "0 2px 12px #1976ed13",
               border: "1.2px solid #1976ed18",
               transition: "box-shadow .14s, transform .15s",
-              padding: 0,
               margin: "0 auto",
               willChange: "transform",
               overflow: "hidden"
             }}
             title={c.name}
             tabIndex={0}
+            aria-label={c.name}
             onClick={() => onSelect && onSelect(c)}
+            onKeyDown={e => {
+              if (e.key === "Enter" || e.key === " ") {
+                onSelect && onSelect(c);
+              }
+            }}
             onMouseEnter={e => {
               e.currentTarget.style.boxShadow = "0 6px 19px #1976ed45";
               e.currentTarget.style.transform = "scale(1.04)";
@@ -330,11 +348,7 @@ export default function SelectRoundPage({ cup, maxRound, candidates, onSelect, o
               style={{
                 width: "100%",
                 aspectRatio: "1/1",
-                borderRadius: 0,
-                overflow: "hidden",
                 background: "#222b3d",
-                margin: 0,
-                padding: 0,
                 display: "flex",
                 alignItems: "stretch",
                 justifyContent: "stretch",
@@ -347,28 +361,29 @@ export default function SelectRoundPage({ cup, maxRound, candidates, onSelect, o
                   width: "100%",
                   height: "100%",
                   objectFit: "cover",
-                  borderRadius: 0,
                   margin: 0,
                   display: "block"
                 }}
               />
             </div>
-            <div style={{
-              width: getCardSize(),
-              minHeight: 18,
-              fontWeight: 900,
-              fontSize: isMobile ? 13.5 : 16,
-              color: "#fff",
-              textAlign: "center",
-              whiteSpace: "normal",
-              wordBreak: "break-all",
-              lineHeight: 1.15,
-              padding: "0 2px",
-              margin: 0,
-              textShadow: "0 1px 6px #1976ed44",
-              letterSpacing: "0.01em",
-              background: "transparent"
-            }}>
+            <div
+              style={{
+                width: getCardSize(),
+                minHeight: 18,
+                fontWeight: 900,
+                fontSize: isMobile ? 13.5 : 16,
+                color: "#fff",
+                textAlign: "center",
+                whiteSpace: "normal",
+                wordBreak: "break-all",
+                lineHeight: 1.15,
+                padding: "0 2px",
+                margin: 0,
+                textShadow: "0 1px 6px #1976ed44",
+                letterSpacing: "0.01em",
+                background: "transparent"
+              }}
+            >
               {c.name}
             </div>
           </div>

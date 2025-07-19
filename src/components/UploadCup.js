@@ -1,8 +1,9 @@
-// src/components/UploadCup.jsx
 import React, { useRef, useState } from "react";
-import { mainButtonStyle } from "../styles/common"; // 공통 버튼 스타일 import
+import { useTranslation } from "react-i18next";
+import { mainButtonStyle } from "../styles/common";
 
 function UploadCup({ onChange }) {
+  const { t } = useTranslation();
   const fileInput = useRef();
   const [preview, setPreview] = useState(null);
   const isMobile = typeof window !== "undefined" && window.innerWidth <= 700;
@@ -13,13 +14,16 @@ function UploadCup({ onChange }) {
 
     // 용량 체크 (3MB 제한)
     if (file.size > 3 * 1024 * 1024) {
-      alert("3MB 이하 이미지만 업로드 가능합니다.");
+      alert(t("only_images_under_3mb"));
       return;
     }
 
     // 확장자 체크 (jpg, jpeg, png만)
-    if (!/\.(jpe?g|png)$/i.test(file.name)) {
-      alert("JPG, PNG 파일만 업로드 가능합니다.");
+    if (
+      !/\.(jpe?g|png)$/i.test(file.name) ||
+      !["image/jpeg", "image/png"].includes(file.type)
+    ) {
+      alert(t("only_jpg_png"));
       return;
     }
 
@@ -36,7 +40,7 @@ function UploadCup({ onChange }) {
       <input
         ref={fileInput}
         type="file"
-        accept="image/*"
+        accept="image/jpeg,image/png"
         style={{ display: "none" }}
         onChange={handleFile}
       />
@@ -50,12 +54,12 @@ function UploadCup({ onChange }) {
           padding: isMobile ? "8px 17px" : "9px 25px"
         }}
       >
-        이미지 업로드
+        {t("image_upload")}
       </button>
       {preview && (
         <img
           src={preview}
-          alt="미리보기"
+          alt={t("preview")}
           style={{
             width: 50,
             height: 50,
