@@ -9,6 +9,7 @@ import MediaRenderer from "./MediaRenderer";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 
+// ---- 유틸
 function getFileExtension(url = "") {
   if (!url) return "";
   const clean = url.split("?")[0];
@@ -17,88 +18,6 @@ function getFileExtension(url = "") {
   const ext = last?.split(".").pop()?.toLowerCase();
   return ext;
 }
-
-function AdaptiveTitle({ title, isMobile }) {
-  const ref = useRef();
-  const [fontSize, setFontSize] = useState(isMobile ? 54 : 100);
-  useEffect(() => {
-    if (!ref.current) return;
-    const boxHeight = isMobile ? 65 : 130;
-    let size = isMobile ? 54 : 100;
-    ref.current.style.fontSize = size + "px";
-    while (ref.current.scrollHeight > boxHeight && size > (isMobile ? 22 : 38)) {
-      size -= 2;
-      ref.current.style.fontSize = size + "px";
-    }
-    setFontSize(size);
-  }, [title, isMobile]);
-  return (
-    <div
-      ref={ref}
-      style={{
-        fontWeight: 900,
-        color: "#fff",
-        letterSpacing: "-1.5px",
-        lineHeight: 1.1,
-        wordBreak: "break-all",
-        textAlign: "center",
-        display: "-webkit-box",
-        WebkitLineClamp: 2,
-        WebkitBoxOrient: "vertical",
-        overflow: "hidden",
-        fontSize: fontSize,
-        maxWidth: isMobile ? "92vw" : 900,
-        margin: isMobile ? "5px auto 0" : "13px auto 0",
-        userSelect: "text",
-      }}
-      title={title}
-    >
-      {title}
-    </div>
-  );
-}
-
-function Spinner({ size = 60 }) {
-  return (
-    <div style={{
-      display: "flex",
-      justifyContent: "center",
-      alignItems: "center",
-      height: size + 24,
-      margin: "48px 0"
-    }}>
-      <div style={{
-        width: size,
-        height: size,
-        border: `${size / 10}px solid #e3f0fb`,
-        borderTop: `${size / 10}px solid #1976ed`,
-        borderRadius: "50%",
-        animation: "spin-fancy 1s linear infinite"
-      }} />
-      <style>
-        {`
-          @keyframes spin-fancy {
-            0% { transform: rotate(0deg);}
-            100% { transform: rotate(360deg);}
-          }
-        `}
-      </style>
-    </div>
-  );
-}
-
-function getStageLabel(n, isFirst = false, t) {
-  if (isFirst) return t("match.round", { n }); // ex: "8강"
-  if (n === 2) return t("match.final");
-  if (n === 4) return t("match.semiFinal");
-  if (n === 8) return t("match.quarterFinal");
-  if (n === 16) return t("match.round16");
-  if (n === 32) return t("match.round32");
-  if (n === 64) return t("match.round64");
-  if (n === 128) return t("match.round128");
-  return t("match.round", { n });
-}
-
 function nextPowerOfTwo(n) {
   let k = 1;
   while (k < n) k *= 2;
@@ -146,8 +65,164 @@ function truncateNames(candidates, maxWords = 3) {
     return words.slice(0, maxWords).join(" ") + "…";
   });
 }
+function getStageLabel(n, isFirst = false, t) {
+  if (isFirst) return t("match.round", { n });
+  if (n === 2) return t("match.final");
+  if (n === 4) return t("match.semiFinal");
+  if (n === 8) return t("match.quarterFinal");
+  if (n === 16) return t("match.round16");
+  if (n === 32) return t("match.round32");
+  if (n === 64) return t("match.round64");
+  if (n === 128) return t("match.round128");
+  return t("match.round", { n });
+}
 
-function CandidateBox({ c, onClick, disabled, idx, t }) {
+// ---- 컴포넌트
+function AdaptiveTitle({ title, isMobile }) {
+  const ref = useRef();
+  const [fontSize, setFontSize] = useState(isMobile ? 54 : 100);
+  useEffect(() => {
+    if (!ref.current) return;
+    const boxHeight = isMobile ? 65 : 130;
+    let size = isMobile ? 54 : 100;
+    ref.current.style.fontSize = size + "px";
+    while (ref.current.scrollHeight > boxHeight && size > (isMobile ? 22 : 38)) {
+      size -= 2;
+      ref.current.style.fontSize = size + "px";
+    }
+    setFontSize(size);
+  }, [title, isMobile]);
+  return (
+    <div
+      ref={ref}
+      style={{
+        fontWeight: 900,
+        color: "#fff",
+        letterSpacing: "-1.5px",
+        lineHeight: 1.1,
+        wordBreak: "break-all",
+        textAlign: "center",
+        display: "-webkit-box",
+        WebkitLineClamp: 2,
+        WebkitBoxOrient: "vertical",
+        overflow: "hidden",
+        fontSize: fontSize,
+        maxWidth: isMobile ? "92vw" : 900,
+        margin: isMobile ? "5px auto 0" : "13px auto 0",
+        userSelect: "text",
+      }}
+      title={title}
+    >
+      {title}
+    </div>
+  );
+}
+function Spinner({ size = 60 }) {
+  return (
+    <div style={{
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      height: size + 24,
+      margin: "48px 0"
+    }}>
+      <div style={{
+        width: size,
+        height: size,
+        border: `${size / 10}px solid #e3f0fb`,
+        borderTop: `${size / 10}px solid #1976ed`,
+        borderRadius: "50%",
+        animation: "spin-fancy 1s linear infinite"
+      }} />
+      <style>
+        {`
+          @keyframes spin-fancy {
+            0% { transform: rotate(0deg);}
+            100% { transform: rotate(360deg);}
+          }
+        `}
+      </style>
+    </div>
+  );
+}
+function BackArrowButton({ onClick, disabled, style }) {
+  return (
+    <button
+      onClick={onClick}
+      disabled={disabled}
+      aria-label="이전"
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        width: 72,
+        height: 72,
+        borderRadius: "50%",
+        border: "none",
+        outline: "none",
+        cursor: disabled ? "not-allowed" : "pointer",
+        background: "linear-gradient(135deg, #1976ed 35%, #5fd4f3 100%)",
+        boxShadow: disabled
+          ? "0 0 0 transparent"
+          : "0 4px 28px 0 #1976ed60, 0 2px 14px #5fd4f340",
+        filter: disabled
+          ? "grayscale(0.7) brightness(0.75) blur(1px)"
+          : "drop-shadow(0 0 8px #1976ed70)",
+        transition:
+          "background 0.18s, box-shadow 0.20s, transform 0.16s, filter 0.22s",
+        opacity: disabled ? 0.38 : 1,
+        backdropFilter: "blur(2.5px)",
+        position: "relative",
+        ...style,
+      }}
+      tabIndex={disabled ? -1 : 0}
+    >
+      <svg
+        width="48"
+        height="38"
+        viewBox="0 0 48 38"
+        fill="none"
+        style={{
+          display: "block",
+          filter: "drop-shadow(0 0 8px #5fd4f3cc)",
+        }}
+      >
+        <line
+          x1="7"
+          y1="19"
+          x2="41"
+          y2="19"
+          stroke="#fff"
+          strokeWidth="3.8"
+          strokeLinecap="round"
+        />
+        <polyline
+          points="18,7 7,19 18,31"
+          fill="none"
+          stroke="#fff"
+          strokeWidth="3.8"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
+      <style>
+        {`
+          button:active svg line,
+          button:active svg polyline,
+          button:hover:not(:disabled) svg line,
+          button:hover:not(:disabled) svg polyline {
+            stroke: #fff700;
+            filter: drop-shadow(0 0 8px #fff7) drop-shadow(0 0 4px #1976ed99);
+            transition: stroke 0.16s, filter 0.19s;
+          }
+        `}
+      </style>
+    </button>
+  );
+}
+
+// 후보 카드 박스 - 선택시 깜빡임 애니메이션 추가
+function CandidateBox({ c, onClick, disabled, idx, t, selected }) {
   const [hover, setHover] = useState(false);
   const vw = typeof window !== "undefined" ? window.innerWidth : 1200;
   const isMobile = vw < 1000;
@@ -177,21 +252,24 @@ function CandidateBox({ c, onClick, disabled, idx, t }) {
         boxShadow: hover && !isMobile
           ? "0 13px 46px 0 #fff5, 0 16px 48px 0 #1976ed22"
           : "0 8px 38px 0 #fff3, 0 2px 12px #1976ed18",
-        border: "1.5px solid #223a74",
-        transition: "box-shadow 0.22s, transform 0.20s cubic-bezier(.23,1.05,.32,1)",
+        border: selected
+          ? "3.5px solid #5fd4f3"
+          : "1.5px solid #223a74",
+        transform: hover && !isMobile ? "translateY(-10px) scale(1.025)" : "",
+        transition: "all 0.3s ease-in-out",
         margin: isMobile ? "2vw 0" : "32px 0",
-        cursor: c ? "pointer" : "default",
+        cursor: c && !disabled ? "pointer" : "default",
         backdropFilter: "blur(11px) brightness(1.06)",
         WebkitBackdropFilter: "blur(11px) brightness(1.06)",
         willChange: "transform",
         position: "relative",
         zIndex: hover && !isMobile ? 8 : 1,
-        transform: hover && !isMobile ? "translateY(-10px) scale(1.025)" : "",
-        overflow: "hidden"
+        overflow: "hidden",
+        animation: selected ? "fadeBlink 0.18s ease-in-out 2" : "none",
       }}
       onMouseEnter={() => !isMobile && setHover(true)}
       onMouseLeave={() => !isMobile && setHover(false)}
-      onClick={c ? onClick : undefined}
+      onClick={c && !disabled ? onClick : undefined}
     >
       <div style={{
         position: "absolute",
@@ -302,7 +380,7 @@ function CandidateBox({ c, onClick, disabled, idx, t }) {
             fontSize: isMobile ? 15 : 20,
             padding: isMobile ? "8px 21px" : "14px 44px",
             outline: "none",
-            cursor: c ? "pointer" : "default",
+            cursor: c && !disabled ? "pointer" : "default",
             letterSpacing: "0.5px",
             fontFamily: NEON_FONT,
             margin: "0 auto",
@@ -310,9 +388,18 @@ function CandidateBox({ c, onClick, disabled, idx, t }) {
             transition: "background 0.15s",
             opacity: c ? 1 : 0.3
           }}
-          onClick={c ? onClick : undefined}
+          onClick={c && !disabled ? onClick : undefined}
         >{t("match.choose")}</button>
       </div>
+      <style>
+        {`
+          @keyframes fadeBlink {
+            0% { opacity: 1; filter: brightness(1); }
+            50% { opacity: 0.6; filter: brightness(1.3); }
+            100% { opacity: 1; filter: brightness(1); }
+          }
+        `}
+      </style>
     </div>
   );
 }
@@ -329,6 +416,9 @@ function Match({ cup, onResult, selectedCount }) {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const [shouldRedirect, setShouldRedirect] = useState(false);
+  const [historyStack, setHistoryStack] = useState([]);
+  const [selectedIdx, setSelectedIdx] = useState(null);
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -346,7 +436,9 @@ function Match({ cup, onResult, selectedCount }) {
       setIdx(0);
       setRoundNum(1);
       setMatchHistory([]);
+      setHistoryStack([]);
       setLoading(false);
+      setSelectedIdx(null);
     }
     init();
     // eslint-disable-next-line
@@ -369,6 +461,8 @@ function Match({ cup, onResult, selectedCount }) {
       setPendingWinners([]);
       setIdx(0);
       setRoundNum(r => r + 1);
+      setHistoryStack([]);
+      setSelectedIdx(null);
     }
     // eslint-disable-next-line
   }, [idx, bracket, matchHistory, pendingWinners, cup, roundNum]);
@@ -416,13 +510,39 @@ function Match({ cup, onResult, selectedCount }) {
   }, [idx, bracket]);
 
   function handlePick(winnerIdx) {
-    if (autoPlaying) return;
-    const winner = winnerIdx === 0 ? c1 : c2;
-    setMatchHistory((prev) => [
+    if (autoPlaying || selectedIdx !== null) return;
+    setHistoryStack(prev => [
       ...prev,
-      { round: roundNum, c1, c2, winner },
+      {
+        idx,
+        roundNum,
+        bracket: JSON.parse(JSON.stringify(bracket)),
+        pendingWinners: JSON.parse(JSON.stringify(pendingWinners)),
+        matchHistory: JSON.parse(JSON.stringify(matchHistory))
+      }
     ]);
-    setIdx(idx + 1);
+    setSelectedIdx(winnerIdx);
+    setTimeout(() => {
+      const winner = winnerIdx === 0 ? c1 : c2;
+      setMatchHistory((prev) => [
+        ...prev,
+        { round: roundNum, c1, c2, winner },
+      ]);
+      setIdx(idx + 1);
+      setSelectedIdx(null);
+    }, 180);
+  }
+
+  function handleBack() {
+    if (!historyStack.length || selectedIdx !== null) return;
+    const prev = historyStack[historyStack.length - 1];
+    setIdx(prev.idx);
+    setRoundNum(prev.roundNum);
+    setBracket(prev.bracket);
+    setPendingWinners(prev.pendingWinners);
+    setMatchHistory(prev.matchHistory);
+    setHistoryStack(historyStack.slice(0, -1));
+    setSelectedIdx(null);
   }
 
   const vw = typeof window !== "undefined" ? window.innerWidth : 1200;
@@ -484,6 +604,7 @@ function Match({ cup, onResult, selectedCount }) {
         alignItems: "center",
         fontFamily:
           "'Noto Sans', 'Apple SD Gothic Neo', 'Malgun Gothic', Arial, sans-serif",
+        position: "relative"
       }}
     >
       <AdaptiveTitle title={cup.title} isMobile={isMobile} />
@@ -563,6 +684,7 @@ function Match({ cup, onResult, selectedCount }) {
           ))}
         </div>
       )}
+      {/* 카드 & 뒤로가기 버튼 */}
       <div
         style={{
           width: "100vw",
@@ -580,8 +702,37 @@ function Match({ cup, onResult, selectedCount }) {
           zIndex: 1,
         }}
       >
-        <CandidateBox c={c1} onClick={() => handlePick(0)} disabled={autoPlaying} idx={0} t={t} />
-        <CandidateBox c={c2} onClick={() => handlePick(1)} disabled={autoPlaying} idx={1} t={t} />
+        <CandidateBox
+          c={c1}
+          onClick={() => handlePick(0)}
+          disabled={autoPlaying || selectedIdx !== null}
+          idx={0}
+          t={t}
+          selected={selectedIdx === 0}
+        />
+        <CandidateBox
+          c={c2}
+          onClick={() => handlePick(1)}
+          disabled={autoPlaying || selectedIdx !== null}
+          idx={1}
+          t={t}
+          selected={selectedIdx === 1}
+        />
+        {/* 카드 상단 중앙에 뒤로가기 버튼 */}
+        <div
+          style={{
+            position: "absolute",
+            left: "50%",
+            top: isMobile ? "10px" : "22px",
+            transform: "translate(-50%, 0)",
+            zIndex: 99,
+          }}
+        >
+          <BackArrowButton
+            onClick={handleBack}
+            disabled={historyStack.length === 0 || selectedIdx !== null}
+          />
+        </div>
       </div>
       <style>
         {`
