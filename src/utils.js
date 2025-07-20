@@ -1,7 +1,7 @@
+// utils.js
 import { supabase } from "./utils/supabaseClient";
 
-// ... (중간 생략 없음, 전체 공개) ...
-
+// YouTube 관련 유틸
 export function getYoutubeId(url = "") {
   if (!url) return "";
   const reg = /(?:youtube\.com\/.*[?&]v=|youtube\.com\/(?:v|embed)\/|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
@@ -37,7 +37,7 @@ export async function getUserOrGuestId() {
   else return { user_id: null, guest_id: getOrCreateGuestId() };
 }
 
-// 월드컵 함수
+// 월드컵 관련 함수
 export async function getWorldcupGames() {
   const { data, error } = await supabase
     .from("worldcups")
@@ -81,7 +81,7 @@ export async function deleteWorldcupGame(id) {
   return true;
 }
 
-// winner_logs, winner_stats 삭제 (시작/다시하기 시 사용)
+// winner_logs, winner_stats 삭제 (대회 시작/재시작 시)
 export async function deleteOldWinnerLogAndStats(cup_id) {
   const { user_id, guest_id } = await getUserOrGuestId();
   let deleteQuery = supabase.from("winner_logs").delete().eq("cup_id", cup_id);
@@ -94,7 +94,7 @@ export async function deleteOldWinnerLogAndStats(cup_id) {
   await statsDelete;
 }
 
-// winner_logs 기록
+// winner_logs 기록 (중간 저장 옵션 제거, 패자부활전도 포함)
 export async function insertWinnerLog(cup_id, winner_id = null) {
   const { user_id, guest_id } = await getUserOrGuestId();
   const { error } = await supabase
@@ -107,7 +107,7 @@ export async function insertWinnerLog(cup_id, winner_id = null) {
   return true;
 }
 
-// winner_stats upsert
+// winner_stats upsert (개별)
 export async function upsertMyWinnerStat({
   cup_id,
   candidate_id,
@@ -140,18 +140,23 @@ export async function upsertMyWinnerStat({
   return data;
 }
 
-// === 병렬 제한 (chunk 처리, 빠른 통계 기록용!) ===
+// **여기만 최적화! (전체 array를 한 번에 upsert)**
 export async function upsertMyWinnerStat_parallel(statsArr, cup_id) {
-  if (!Array.isArray(statsArr)) throw new Error("statsArr required");
-  // 병렬 제한, 한 번에 16개씩
-  const CHUNK_SIZE = 16;
-  for (let i = 0; i < statsArr.length; i += CHUNK_SIZE) {
-    const chunk = statsArr.slice(i, i + CHUNK_SIZE)
-      .map(stat => upsertMyWinnerStat({ ...stat, cup_id }));
-    await Promise.all(chunk);
-  }
+  const { user_id, guest_id } = await getUserOrGuestId();
+  const rows = statsArr.map(stat => ({
+    ...stat,
+    cup_id,
+    user_id,
+    guest_id,
+  }));
+  // 한 번에 array로 upsert
+  const { error } = await supabase
+    .from("winner_stats")
+    .upsert(rows, { onConflict: ["user_id", "guest_id", "cup_id", "candidate_id"] });
+  if (error) throw error;
 }
 
+// 나의 통계 가져오기
 export async function getMyWinnerStats({ cup_id } = {}) {
   const { user_id, guest_id } = await getUserOrGuestId();
   let query = supabase.from("winner_stats").select("*");
@@ -163,7 +168,7 @@ export async function getMyWinnerStats({ cup_id } = {}) {
   return data;
 }
 
-// 후보별 누적 통계 (전체, 회원, 비회원 통합) 가져오기 (기간설정 지원!)
+// 누적 통계 가져오기 (기간 지정 가능)
 export async function fetchWinnerStatsFromDB(cup_id, since) {
   let query = supabase
     .from("winner_stats")
@@ -191,7 +196,7 @@ export async function fetchWinnerStatsFromDB(cup_id, since) {
         match_wins: 0,
         match_count: 0,
         total_games: 0,
-        user_win_count: 0, // 회원전용 통계
+        user_win_count: 0,
       };
     }
     statsMap[id].win_count += row.win_count || 0;
@@ -203,7 +208,7 @@ export async function fetchWinnerStatsFromDB(cup_id, since) {
   return Object.values(statsMap);
 }
 
-// 통계 계산
+// 통계 계산 함수 (최종 저장용)
 export function calcStatsFromMatchHistory(candidates, winner, matchHistory) {
   const statsMap = {};
   candidates.forEach(c => {
@@ -217,6 +222,7 @@ export function calcStatsFromMatchHistory(candidates, winner, matchHistory) {
       total_games: 0,
     };
   });
+  if (!Array.isArray(matchHistory)) matchHistory = [];
   matchHistory.forEach(({ c1, c2, winner }) => {
     if (c1) statsMap[c1.id].match_count++;
     if (c2) statsMap[c2.id].match_count++;
@@ -232,6 +238,7 @@ export function calcStatsFromMatchHistory(candidates, winner, matchHistory) {
   return Object.values(statsMap);
 }
 
+// 최고 우승자 찾기 (DB 통계 기반)
 export function getMostWinnerFromDB(statsArr, cupData) {
   if (!statsArr || !Array.isArray(statsArr)) return null;
   let maxWin = -1;

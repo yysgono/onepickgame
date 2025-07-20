@@ -206,5 +206,16 @@
     "nextRoundTitle": "{{a}} gegen {{b}}"
   },
   "recommended_worldcups": "Empfohlene Worldcups",
-  "dragDropUpTo50": "Sie können bis zu 50 Bilder gleichzeitig in dieses Feld ziehen und ablegen."
+  "dragDropUpTo50": "Sie können bis zu 50 Bilder gleichzeitig in dieses Feld ziehen und ablegen.",
+  "resurrection": {
+    "title": "Wiederbelebungsrunde",
+    "instruction": "Bitte wählen Sie <b>1~4 Kandidaten zur Wiederbelebung</b> von links und <b>1~4 fortgeschrittene Kandidaten zum Entfernen</b> von rechts aus.\n<b>Die Anzahl der wiederbelebten und entfernten Kandidaten muss gleich sein.</b>\nWenn Sie nicht fortfahren möchten, klicken Sie einfach auf Überspringen.",
+    "note": "(Dies zählt nicht zu den Statistiken. Nur für eine schnelle Ergebnisberechnung.)",
+    "eliminated": "Ausgeschiedene Kandidaten",
+    "advanced": "Fortgeschrittene Kandidaten (Top 16)",
+    "search_placeholder": "Name suchen…",
+    "select_count": "1~4 auswählen ({{selected}}/{{max}})",
+    "skip": "Überspringen",
+    "confirm": "Bestätigen"
+  }
 }

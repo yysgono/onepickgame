@@ -1,3 +1,4 @@
+// MediaRenderer.js
 import React, { useState } from "react";
 
 // 유튜브 ID 추출
@@ -12,7 +13,6 @@ function getYoutubeId(url) {
 
 const DEFAULT_IMAGE = "/default-thumb.png"; // public 폴더에 반드시 위치
 
-// 파일 확장자 추출
 function getFileExtension(url) {
   if (!url) return "";
   const clean = url.split("?")[0];
@@ -20,13 +20,16 @@ function getFileExtension(url) {
   return last?.split(".").pop()?.toLowerCase() || "";
 }
 
-// 메인
+function isImageFile(url) {
+  return /\.(jpeg|jpg|gif|png|webp|bmp)$/i.test(url);
+}
+
 function MediaRenderer({
   url,
   alt = "",
-  playable = false, // true면 영상재생/false면 썸네일만
+  playable = false,
   style = {},
-  onPlay // 클릭(유튜브)시 콜백
+  onPlay
 }) {
   const [imgError, setImgError] = useState(false);
   const [youtubePlaying, setYoutubePlaying] = useState(false);
@@ -35,7 +38,7 @@ function MediaRenderer({
   const youtubeId = getYoutubeId(url);
   if (youtubeId) {
     if (playable) {
-      // 클릭하면 재생 (경기화면)
+      // 클릭하면 유튜브 재생
       return (
         <div
           style={{
@@ -63,7 +66,7 @@ function MediaRenderer({
                   height: "100%",
                   objectFit: "cover",
                   border: 0,
-                  display: "block"
+                  display: "block",
                 }}
                 draggable={false}
                 onError={() => setImgError(true)}
@@ -107,7 +110,7 @@ function MediaRenderer({
           objectFit: "cover",
           background: "#222",
           display: "block",
-          ...style
+          ...style,
         }}
         draggable={false}
         onError={() => setImgError(true)}
@@ -146,11 +149,7 @@ function MediaRenderer({
   }
 
   // ===== 3. 이미지 파일 (jpg/png/gif/webp/bmp) =====
-  if (
-    url &&
-    !imgError &&
-    url.match(/\.(jpeg|jpg|gif|png|webp|bmp)$/i)
-  ) {
+  if (url && !imgError && isImageFile(url)) {
     return (
       <img
         src={url}
@@ -161,7 +160,7 @@ function MediaRenderer({
           objectFit: style.objectFit || "cover",
           background: "#222",
           display: "block",
-          ...style
+          ...style,
         }}
         draggable={false}
         onError={() => setImgError(true)}
@@ -174,14 +173,14 @@ function MediaRenderer({
     return (
       <img
         src={DEFAULT_IMAGE}
-        alt="기본 이미지"
+        alt="Default thumbnail"
         style={{
           width: "100%",
           height: "100%",
           objectFit: "cover",
           background: "#222",
           display: "block",
-          ...style
+          ...style,
         }}
         draggable={false}
       />
@@ -199,7 +198,7 @@ function MediaRenderer({
         objectFit: style.objectFit || "cover",
         background: "#222",
         display: "block",
-        ...style
+        ...style,
       }}
       draggable={false}
       onError={() => setImgError(true)}

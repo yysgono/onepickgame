@@ -5,101 +5,41 @@ import MediaRenderer from "./MediaRenderer";
 import { useTranslation } from "react-i18next";
 import { supabase } from "../utils/supabaseClient";
 
-// 신고버튼 컴포넌트
-function ReportButton({ cupId, size = "md" }) {
-  const { t } = useTranslation();
-  const [show, setShow] = useState(false);
-  const [reason, setReason] = useState("");
-  const [ok, setOk] = useState("");
-  const [error, setError] = useState("");
-  const style =
-    size === "sm"
-      ? {
-          color: "#d33",
-          background: "#fff4f4",
-          border: "1.2px solid #f6c8c8",
-          borderRadius: 8,
-          padding: "3px 11px",
-          fontSize: 15,
-          fontWeight: 700,
-          cursor: "pointer",
-          minWidth: 50,
-        }
-      : {
-          color: "#d33",
-          background: "#fff4f4",
-          border: "1.5px solid #f6c8c8",
-          borderRadius: 8,
-          padding: "6px 18px",
-          fontSize: 17,
-          fontWeight: 700,
-          cursor: "pointer",
-          minWidth: 60,
-        };
-  async function handleReport() {
-    setError("");
-    setOk("");
-    const { data } = await supabase.auth.getUser();
-    if (!data?.user?.id) return setError(t("need_login"));
-    const { error } = await supabase.from("reports").insert([
-      {
-        type: "worldcup",
-        target_id: cupId,
-        reporter_id: data.user.id,
-        reason,
-      },
-    ]);
-    if (error) setError(error.message);
-    else setOk(t("report_received"));
+// 2줄(24*2byte) 초과시 ... 처리
+function truncateToTwoLinesByByte(str, maxBytePerLine = 24) {
+  let lines = [];
+  let line = "";
+  let byteCount = 0;
+  let totalByte = 0;
+  for (let i = 0; i < str.length; i++) {
+    const ch = str[i];
+    const b = ch.charCodeAt(0) > 127 ? 2 : 1;
+    if (byteCount + b > maxBytePerLine) {
+      lines.push(line);
+      line = "";
+      byteCount = 0;
+      if (lines.length === 2) break;
+    }
+    line += ch;
+    byteCount += b;
+    totalByte += b;
   }
-  return (
-    <>
-      <button onClick={() => setShow(true)} style={style}>
-        🚩 {t("report")}
-      </button>
-      {show && (
-        <div
-          style={{
-            position: "fixed",
-            left: 0,
-            top: 0,
-            width: "100vw",
-            height: "100vh",
-            background: "#0006",
-            zIndex: 9999,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <div
-            style={{
-              background: "#fff",
-              borderRadius: 14,
-              padding: 22,
-              minWidth: 270,
-            }}
-          >
-            <b>{t("report_reason")}</b>
-            <textarea
-              value={reason}
-              onChange={(e) => setReason(e.target.value)}
-              style={{ width: "95%", minHeight: 60, marginTop: 12 }}
-              placeholder={t("report_reason_placeholder")}
-            />
-            <div style={{ marginTop: 12 }}>
-              <button onClick={handleReport} style={{ marginRight: 10 }}>
-                {t("submit_report")}
-              </button>
-              <button onClick={() => setShow(false)}>{t("close")}</button>
-            </div>
-            {ok && <div style={{ color: "#1976ed", marginTop: 7 }}>{ok}</div>}
-            {error && <div style={{ color: "#d33", marginTop: 7 }}>{error}</div>}
-          </div>
-        </div>
-      )}
-    </>
-  );
+  if (lines.length < 2 && line) lines.push(line);
+
+  // 2줄 넘는 경우 ... 처리
+  if (totalByte > maxBytePerLine * 2) {
+    let last = lines[1] || "";
+    if (last.length > 0 && !last.endsWith("...")) {
+      let lastByte = 0, j = 0;
+      for (; j < last.length; j++) {
+        lastByte += last.charCodeAt(j) > 127 ? 2 : 1;
+        if (lastByte + 3 > maxBytePerLine) break; // 3은 "..."의 바이트수
+      }
+      last = last.slice(0, j) + "...";
+      lines[1] = last;
+    }
+  }
+  return lines;
 }
 
 // 모바일 체크 훅
@@ -355,8 +295,11 @@ export default function ResultPage({ worldcupList }) {
               color: "#fff",
               textShadow: "0 3px 8px #2228"
             }}
+            title={winner.name}
           >
-            {winner.name}
+            {truncateToTwoLinesByByte(winner.name, 24).map((line, i) => (
+              <span key={i} style={{ display: "block" }}>{line}</span>
+            ))}
           </div>
           <div
             style={{

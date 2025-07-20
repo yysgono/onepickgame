@@ -206,5 +206,16 @@
     "nextRoundTitle": "{{a}} vs {{b}}"
   },
   "recommended_worldcups": "Worldcups recomendados",
-  "dragDropUpTo50": "Você pode arrastar e soltar até 50 imagens de uma vez nesta caixa."
+  "dragDropUpTo50": "Você pode arrastar e soltar até 50 imagens de uma vez nesta caixa.",
+  "resurrection": {
+    "title": "Rodada de Ressurreição",
+    "instruction": "Selecione <b>1~4 candidatos para reviver</b> à esquerda,<br />e <b>1~4 candidatos avançados para remover</b> à direita.<br /><b>O número de revividos e removidos deve ser igual.</b><br />Se não quiser prosseguir, apenas clique em Pular.",
+    "note": "(Isso não será contado para estatísticas. Apenas para cálculo rápido de resultado.)",
+    "eliminated": "Candidatos Eliminados",
+    "advanced": "Candidatos Avançados (Top 16)",
+    "search_placeholder": "Buscar nome…",
+    "select_count": "Selecione 1~4 ({{selected}}/{{max}})",
+    "skip": "Pular",
+    "confirm": "Confirmar"
+  }
 }

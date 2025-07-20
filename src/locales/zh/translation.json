@@ -206,7 +206,18 @@
     "nextRoundTitle": "{{a}} 对 {{b}}",
     "terms_of_service": "服务条款",
     "privacy_policy": "隐私政策"
-      },
-    "recommended_worldcups": "推荐世界杯",
-    "dragDropUpTo50": "您可以一次性将最多50张图片拖放到此框中。"
+  },
+  "recommended_worldcups": "推荐世界杯",
+  "dragDropUpTo50": "您可以一次性将最多50张图片拖放到此框中。",
+  "resurrection": {
+    "title": "复活赛",
+    "instruction": "请在左侧选择<b>1~4名需要复活的候选人</b>，<br/>以及右侧<b>1~4名已晋级但要被替换的候选人</b>。<br/><b>复活与淘汰的人数必须相同。</b><br/>如果不想操作，请直接点击跳过。",
+    "note": "（此操作不计入统计，仅用于快速结果计算。）",
+    "eliminated": "已淘汰候选人",
+    "advanced": "已晋级候选人（前16名）",
+    "search_placeholder": "搜索姓名…",
+    "select_count": "选择1~4（{{selected}}/{{max}}）",
+    "skip": "跳过",
+    "confirm": "确认"
+  }
 }

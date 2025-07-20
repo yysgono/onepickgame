@@ -24,7 +24,24 @@ function Result({ winner, cup, onRestart, onStats }) {
       >
         <MediaRenderer url={winner.image} />
       </div>
-      <div style={{ fontSize: 28, fontWeight: 600, marginBottom: 26 }}>
+      <div
+        style={{
+          fontSize: 28,
+          fontWeight: 600,
+          marginBottom: 26,
+          maxWidth: 380,
+          margin: "0 auto 26px auto",
+          display: "-webkit-box",
+          WebkitLineClamp: 2,
+          WebkitBoxOrient: "vertical",
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+          whiteSpace: "normal",
+          lineHeight: 1.24,
+          wordBreak: "break-all",
+        }}
+        title={winner.name}
+      >
         {winner.name}
       </div>
       <button

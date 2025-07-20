@@ -15,6 +15,10 @@ import translationRU from "./locales/ru/translation.json";
 import translationDE from "./locales/de/translation.json";
 import translationVI from "./locales/vi/translation.json";
 import translationID from "./locales/id/translation.json";
+import translationTR from "./locales/tr/translation.json";
+import translationTH from "./locales/th/translation.json";
+import translationAR from "./locales/ar/translation.json";
+import translationBN from "./locales/bn/translation.json";
 import translationES from "./locales/es/translation.json";
 
 const resources = {
@@ -28,6 +32,10 @@ const resources = {
   ru: { translation: translationRU },
   de: { translation: translationDE },
   vi: { translation: translationVI },
+  tr: { translation: translationTR },
+  th: { translation: translationTH },
+  ar: { translation: translationAR },
+  bn: { translation: translationBN },
   id: { translation: translationID },
   es: { translation: translationES },
 };

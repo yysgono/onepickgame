@@ -206,5 +206,16 @@
     "nextRoundTitle": "{{a}} contre {{b}}"
   },
   "recommended_worldcups": "Worldcups recommandés",
-  "dragDropUpTo50": "Vous pouvez faire glisser et déposer jusqu'à 50 images à la fois dans cette boîte."
+  "dragDropUpTo50": "Vous pouvez faire glisser et déposer jusqu'à 50 images à la fois dans cette boîte.",
+  "resurrection": {
+    "title": "Tour de Résurrection",
+    "instruction": "Veuillez sélectionner <b>1 à 4 candidats à ressusciter</b> à gauche,<br />et <b>1 à 4 candidats avancés à éliminer</b> à droite.<br /><b>Le nombre de ressuscités et d'éliminés doit être égal.</b><br />Si vous ne souhaitez pas continuer, cliquez simplement sur Ignorer.",
+    "note": "(Ceci ne comptera pas pour les statistiques. Juste pour un calcul rapide du résultat.)",
+    "eliminated": "Candidats éliminés",
+    "advanced": "Candidats avancés (Top 16)",
+    "search_placeholder": "Rechercher un nom…",
+    "select_count": "Sélectionnez 1 à 4 ({{selected}}/{{max}})",
+    "skip": "Ignorer",
+    "confirm": "Confirmer"
+  }
 }

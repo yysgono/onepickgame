@@ -206,5 +206,16 @@
     "nextRoundTitle": "{{a}} vs {{b}}"
   },
   "recommended_worldcups": "おすすめのワールドカップ",
-  "dragDropUpTo50": "このボックスに一度に最大50枚の画像をドラッグ＆ドロップできます。"
+  "dragDropUpTo50": "このボックスに一度に最大50枚の画像をドラッグ＆ドロップできます。",
+  "resurrection": {
+    "title": "復活ラウンド",
+    "instruction": "左から<b>1～4名の復活候補</b>を、右から<b>1～4名の進出候補を外す</b>ことができます。<br /><b>復活・除外人数は同じでなければなりません。</b><br />スキップしたい場合は「スキップ」を押してください。",
+    "note": "（この操作は統計には反映されません。素早い結果計算用です。）",
+    "eliminated": "脱落者",
+    "advanced": "進出者（上位16）",
+    "search_placeholder": "名前を検索…",
+    "select_count": "1～4名選択（{{selected}}/{{max}}）",
+    "skip": "スキップ",
+    "confirm": "確定"
+  }
 }

@@ -6,18 +6,45 @@ import {
   calcStatsFromMatchHistory,
 } from "../utils";
 import MediaRenderer from "./MediaRenderer";
-import { useTranslation } from "react-i18next";
+import ResurrectionPage from "./ResurrectionPage";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
-// ---- 유틸
-function getFileExtension(url = "") {
-  if (!url) return "";
-  const clean = url.split("?")[0];
-  const parts = clean.split("/");
-  const last = parts.pop();
-  const ext = last?.split(".").pop()?.toLowerCase();
-  return ext;
+// Spinner
+function Spinner({ size = 60 }) {
+  return (
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        height: size + 24,
+        margin: "48px 0",
+      }}
+    >
+      <div
+        style={{
+          width: size,
+          height: size,
+          border: `${size / 10}px solid #e3f0fb`,
+          borderTop: `${size / 10}px solid #1976ed`,
+          borderRadius: "50%",
+          animation: "spin-fancy 1s linear infinite",
+        }}
+      />
+      <style>
+        {`
+          @keyframes spin-fancy {
+            0% { transform: rotate(0deg);}
+            100% { transform: rotate(360deg);}
+          }
+        `}
+      </style>
+    </div>
+  );
 }
+
+// Utility
 function nextPowerOfTwo(n) {
   let k = 1;
   while (k < n) k *= 2;
@@ -58,15 +85,17 @@ function makeNextRound(winners) {
   return pairs;
 }
 function truncateNames(candidates, maxWords = 3) {
-  return candidates.map(c => {
+  return candidates.map((c) => {
     if (!c?.name) return "?";
     const words = c.name.split(/\s+/);
     if (words.length <= maxWords) return c.name;
     return words.slice(0, maxWords).join(" ") + "…";
   });
 }
-function getStageLabel(n, isFirst = false, t) {
-  if (isFirst) return t("match.round", { n });
+
+// i18n 스테이지라벨
+function getStageLabel(t, n, isFirst = false) {
+  if (isFirst) return t("round_of", { count: n });
   if (n === 2) return t("match.final");
   if (n === 4) return t("match.semiFinal");
   if (n === 8) return t("match.quarterFinal");
@@ -74,10 +103,10 @@ function getStageLabel(n, isFirst = false, t) {
   if (n === 32) return t("match.round32");
   if (n === 64) return t("match.round64");
   if (n === 128) return t("match.round128");
-  return t("match.round", { n });
+  return t("round_of", { count: n });
 }
 
-// ---- 컴포넌트
+// AdaptiveTitle
 function AdaptiveTitle({ title, isMobile }) {
   const ref = useRef();
   const [fontSize, setFontSize] = useState(isMobile ? 54 : 100);
@@ -117,40 +146,14 @@ function AdaptiveTitle({ title, isMobile }) {
     </div>
   );
 }
-function Spinner({ size = 60 }) {
-  return (
-    <div style={{
-      display: "flex",
-      justifyContent: "center",
-      alignItems: "center",
-      height: size + 24,
-      margin: "48px 0"
-    }}>
-      <div style={{
-        width: size,
-        height: size,
-        border: `${size / 10}px solid #e3f0fb`,
-        borderTop: `${size / 10}px solid #1976ed`,
-        borderRadius: "50%",
-        animation: "spin-fancy 1s linear infinite"
-      }} />
-      <style>
-        {`
-          @keyframes spin-fancy {
-            0% { transform: rotate(0deg);}
-            100% { transform: rotate(360deg);}
-          }
-        `}
-      </style>
-    </div>
-  );
-}
+
+// BackArrowButton
 function BackArrowButton({ onClick, disabled, style }) {
   return (
     <button
       onClick={onClick}
       disabled={disabled}
-      aria-label="이전"
+      aria-label="Back"
       style={{
         display: "flex",
         justifyContent: "center",
@@ -221,8 +224,8 @@ function BackArrowButton({ onClick, disabled, style }) {
   );
 }
 
-// 후보 카드 박스 - 선택시 깜빡임 애니메이션 추가
-function CandidateBox({ c, onClick, disabled, idx, t, selected }) {
+// CandidateBox
+function CandidateBox({ c, onClick, disabled, idx, selected, t }) {
   const [hover, setHover] = useState(false);
   const vw = typeof window !== "undefined" ? window.innerWidth : 1200;
   const isMobile = vw < 1000;
@@ -249,12 +252,11 @@ function CandidateBox({ c, onClick, disabled, idx, t, selected }) {
         alignItems: "center",
         background: "rgba(17,27,55,0.82)",
         borderRadius: 22,
-        boxShadow: hover && !isMobile
-          ? "0 13px 46px 0 #fff5, 0 16px 48px 0 #1976ed22"
-          : "0 8px 38px 0 #fff3, 0 2px 12px #1976ed18",
-        border: selected
-          ? "3.5px solid #5fd4f3"
-          : "1.5px solid #223a74",
+        boxShadow:
+          hover && !isMobile
+            ? "0 13px 46px 0 #fff5, 0 16px 48px 0 #1976ed22"
+            : "0 8px 38px 0 #fff3, 0 2px 12px #1976ed18",
+        border: selected ? "3.5px solid #5fd4f3" : "1.5px solid #223a74",
         transform: hover && !isMobile ? "translateY(-10px) scale(1.025)" : "",
         transition: "all 0.3s ease-in-out",
         margin: isMobile ? "2vw 0" : "32px 0",
@@ -271,19 +273,20 @@ function CandidateBox({ c, onClick, disabled, idx, t, selected }) {
       onMouseLeave={() => !isMobile && setHover(false)}
       onClick={c && !disabled ? onClick : undefined}
     >
-      <div style={{
-        position: "absolute",
-        top: "-35%",
-        left: "-14%",
-        width: "150%",
-        height: "190%",
-        zIndex: 0,
-        background:
-          "radial-gradient(circle at 50% 60%, #fff 0%, #fff0 92%)",
-        filter: "blur(38px)",
-        opacity: 0.13,
-        pointerEvents: "none",
-      }} />
+      <div
+        style={{
+          position: "absolute",
+          top: "-35%",
+          left: "-14%",
+          width: "150%",
+          height: "190%",
+          zIndex: 0,
+          background: "radial-gradient(circle at 50% 60%, #fff 0%, #fff0 92%)",
+          filter: "blur(38px)",
+          opacity: 0.13,
+          pointerEvents: "none",
+        }}
+      />
       <div
         style={{
           width: "100%",
@@ -309,7 +312,7 @@ function CandidateBox({ c, onClick, disabled, idx, t, selected }) {
               height: "100%",
               background: "#21283a",
               padding: isMobile ? 8 : 20,
-              boxSizing: "border-box"
+              boxSizing: "border-box",
             }}
           />
         ) : (
@@ -323,7 +326,7 @@ function CandidateBox({ c, onClick, disabled, idx, t, selected }) {
           maxHeight: isMobile ? 44 : 70,
           padding: isMobile ? "4px 10px 0 10px" : "13px 18px 7px 18px",
           fontWeight: 900,
-          fontSize: isMobile ? 18 : 26,
+          fontSize: isMobile ? 19 : 28,
           color: "#fff",
           fontFamily: NEON_FONT,
           textAlign: "center",
@@ -332,7 +335,7 @@ function CandidateBox({ c, onClick, disabled, idx, t, selected }) {
           letterSpacing: "0.4px",
           boxSizing: "border-box",
           background: mainDark,
-          borderBottom: `1.3px solid #1976ed66`
+          borderBottom: `1.3px solid #1976ed66`,
         }}
         title={c?.name || ""}
       >
@@ -353,7 +356,7 @@ function CandidateBox({ c, onClick, disabled, idx, t, selected }) {
             fontWeight: 900,
           }}
         >
-          {c ? c.name : t("match.byeCandidate")}
+          {c ? c.name : t("bye_round")}
         </span>
       </div>
       <div
@@ -386,10 +389,12 @@ function CandidateBox({ c, onClick, disabled, idx, t, selected }) {
             margin: "0 auto",
             boxShadow: "0 2px 12px #1976ed22",
             transition: "background 0.15s",
-            opacity: c ? 1 : 0.3
+            opacity: c ? 1 : 0.3,
           }}
           onClick={c && !disabled ? onClick : undefined}
-        >{t("match.choose")}</button>
+        >
+          {t("select")}
+        </button>
       </div>
       <style>
         {`
@@ -404,8 +409,10 @@ function CandidateBox({ c, onClick, disabled, idx, t, selected }) {
   );
 }
 
+// Main Match Component
 function Match({ cup, onResult, selectedCount }) {
   const { t } = useTranslation();
+
   const [bracket, setBracket] = useState([]);
   const [idx, setIdx] = useState(0);
   const [roundNum, setRoundNum] = useState(1);
@@ -418,6 +425,14 @@ function Match({ cup, onResult, selectedCount }) {
   const [shouldRedirect, setShouldRedirect] = useState(false);
   const [historyStack, setHistoryStack] = useState([]);
   const [selectedIdx, setSelectedIdx] = useState(null);
+
+  // Resurrection states
+  const [showResurrect, setShowResurrect] = useState(false);
+  const [resurrectUsed, setResurrectUsed] = useState(false);
+  const [eliminatedCandidates, setEliminatedCandidates] = useState([]);
+  const [advanceCandidates, setAdvanceCandidates] = useState([]);
+  const [selElim, setSelElim] = useState([]);
+  const [selAdv, setSelAdv] = useState([]);
 
   const navigate = useNavigate();
 
@@ -437,54 +452,108 @@ function Match({ cup, onResult, selectedCount }) {
       setRoundNum(1);
       setMatchHistory([]);
       setHistoryStack([]);
-      setLoading(false);
       setSelectedIdx(null);
+      setShowResurrect(false);
+      setResurrectUsed(false);
+      setEliminatedCandidates([]);
+      setAdvanceCandidates([]);
+      setSaving(false);
+      setSelElim([]);
+      setSelAdv([]);
+      setLoading(false);
     }
     init();
     // eslint-disable-next-line
   }, [cup, selectedCount]);
 
+  // 라운드 진행 및 ResurrectionPage 트리거
   useEffect(() => {
-    if (idx === bracket.length && bracket.length > 0) {
+    if (idx === bracket.length && bracket.length > 0 && !showResurrect) {
       const matchWinners = matchHistory
         .slice(-bracket.length)
-        .map(m => m.winner)
+        .map((m) => m.winner)
         .filter(Boolean);
+
       const nextRoundCandidates =
         roundNum === 1 ? [...pendingWinners, ...matchWinners] : matchWinners;
+
+      // ===[ 패자부활전 정확히 1라운드 종료 후, 16명 남았을 때 ]===
+      if (
+        !resurrectUsed &&
+        cup.data.length >= 32 &&
+        nextRoundCandidates.length === 16 &&
+        roundNum === 1
+      ) {
+        const allIds = new Set(nextRoundCandidates.map((c) => c.id));
+        const eliminated = cup.data.filter((c) => !allIds.has(c.id));
+        setShowResurrect(true);
+        setEliminatedCandidates(eliminated);
+        setAdvanceCandidates(nextRoundCandidates);
+        return;
+      }
+
+      // 우승자 확정
       if (nextRoundCandidates.length === 1) {
         handleFinish(nextRoundCandidates[0], matchHistory);
         return;
       }
+
       const nextBracket = makeNextRound(nextRoundCandidates);
       setBracket(nextBracket);
       setPendingWinners([]);
       setIdx(0);
-      setRoundNum(r => r + 1);
+      setRoundNum((r) => r + 1);
       setHistoryStack([]);
       setSelectedIdx(null);
     }
     // eslint-disable-next-line
-  }, [idx, bracket, matchHistory, pendingWinners, cup, roundNum]);
+  }, [idx, bracket, matchHistory, pendingWinners, cup, roundNum, showResurrect, resurrectUsed]);
 
+  // Resurrection confirm/cancel
+  function handleResurrectCancel() {
+    setShowResurrect(false);
+    setResurrectUsed(true);
+    setBracket(makeNextRound(advanceCandidates));
+    setPendingWinners([]);
+    setIdx(0);
+    setRoundNum((r) => r + 1);
+    setHistoryStack([]);
+    setSelectedIdx(null);
+    setAdvanceCandidates([]);
+    setEliminatedCandidates([]);
+    setSelElim([]);
+    setSelAdv([]);
+  }
+  function handleResurrectConfirm(final16) {
+    setShowResurrect(false);
+    setResurrectUsed(true);
+    setBracket(makeNextRound(final16));
+    setPendingWinners([]);
+    setIdx(0);
+    setRoundNum((r) => r + 1);
+    setHistoryStack([]);
+    setSelectedIdx(null);
+    setAdvanceCandidates([]);
+    setEliminatedCandidates([]);
+    setSelElim([]);
+    setSelAdv([]);
+  }
+
+  // 최종 저장 및 결과화면 이동
   async function handleFinish(winner, matchHistory) {
     setSaving(true);
     setError("");
-    const statsArr = calcStatsFromMatchHistory(
-      cup.data,
-      winner,
-      matchHistory
-    );
     try {
+      const statsArr = calcStatsFromMatchHistory(cup.data, winner, matchHistory);
       await Promise.all([
         insertWinnerLog(cup.id, winner.id),
-        upsertMyWinnerStat_parallel(statsArr, cup.id)
+        upsertMyWinnerStat_parallel(statsArr, cup.id),
       ]);
       setSaving(false);
       setShouldRedirect({ cup, winner });
     } catch (e) {
       setSaving(false);
-      setError(t("match.saveError"));
+      setError(t("error_saving_result"));
     }
   }
 
@@ -498,6 +567,7 @@ function Match({ cup, onResult, selectedCount }) {
   const currentMatch = bracket[idx] || [];
   const [c1, c2] = currentMatch;
 
+  // Bye 자동 진출 처리
   useEffect(() => {
     if (!c1 || !c2) {
       if (c1 || c2) {
@@ -509,31 +579,31 @@ function Match({ cup, onResult, selectedCount }) {
     // eslint-disable-next-line
   }, [idx, bracket]);
 
+  // 승자 선택
   function handlePick(winnerIdx) {
     if (autoPlaying || selectedIdx !== null) return;
-    setHistoryStack(prev => [
+    setHistoryStack((prev) => [
       ...prev,
       {
         idx,
         roundNum,
         bracket: JSON.parse(JSON.stringify(bracket)),
         pendingWinners: JSON.parse(JSON.stringify(pendingWinners)),
-        matchHistory: JSON.parse(JSON.stringify(matchHistory))
-      }
+        matchHistory: JSON.parse(JSON.stringify(matchHistory)),
+      },
     ]);
     setSelectedIdx(winnerIdx);
     setTimeout(() => {
       const winner = winnerIdx === 0 ? c1 : c2;
-      setMatchHistory((prev) => [
-        ...prev,
-        { round: roundNum, c1, c2, winner },
-      ]);
+      setMatchHistory((prev) => [...prev, { round: roundNum, c1, c2, winner }]);
       setIdx(idx + 1);
       setSelectedIdx(null);
     }, 180);
   }
 
+  // Undo (이전으로)
   function handleBack() {
+    if (showResurrect || (resurrectUsed && roundNum === 3 && idx === 0)) return;
     if (!historyStack.length || selectedIdx !== null) return;
     const prev = historyStack[historyStack.length - 1];
     setIdx(prev.idx);
@@ -554,45 +624,81 @@ function Match({ cup, onResult, selectedCount }) {
       ? [bracket[nextIdx][0], bracket[nextIdx][1]].filter(Boolean)
       : [];
 
-  if (loading) return (
-    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", marginTop: 24 }}>
-      <Spinner size={70} />
-      <div style={{
-        marginTop: 6,
-        fontSize: 20,
-        color: "#1976ed",
-        fontWeight: 700,
-        letterSpacing: "-1px"
-      }}>
-        {t("match.shuffling")}
+  if (loading)
+    return (
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          marginTop: 24,
+        }}
+      >
+        <Spinner size={70} />
+        <div
+          style={{
+            marginTop: 6,
+            fontSize: 20,
+            color: "#1976ed",
+            fontWeight: 700,
+            letterSpacing: "-1px",
+          }}
+        >
+          {t("shuffling_candidates")}
+        </div>
       </div>
-    </div>
-  );
+    );
 
-  if (saving) return (
-    <div style={{
-      minHeight: "60vh",
-      display: "flex",
-      flexDirection: "column",
-      justifyContent: "center",
-      alignItems: "center",
-      textAlign: "center"
-    }}>
-      <Spinner size={70} />
-      <div style={{
-        marginTop: 18,
-        fontSize: 22,
-        color: "#1976ed",
-        fontWeight: 900,
-        letterSpacing: "-1px"
-      }}>
-        {t("match.saving")}
+  if (saving)
+    return (
+      <div
+        style={{
+          minHeight: "60vh",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+          textAlign: "center",
+        }}
+      >
+        <Spinner size={70} />
+        <div
+          style={{
+            marginTop: 18,
+            fontSize: 22,
+            color: "#1976ed",
+            fontWeight: 900,
+            letterSpacing: "-1px",
+          }}
+        >
+          {t("saving")}
+        </div>
       </div>
-    </div>
-  );
+    );
 
-  if (!bracket || bracket.length === 0) return <div>{t("match.notEnoughCandidates")}</div>;
+  if (!bracket || bracket.length === 0)
+    return <div>{t("notEnoughCandidates")}</div>;
 
+  // 패자부활전 페이지
+  if (showResurrect)
+    return (
+      <ResurrectionPage
+        eliminated={eliminatedCandidates}
+        advanced={advanceCandidates}
+        maxElim={4}
+        maxAdv={4}
+        selElim={selElim}
+        setSelElim={setSelElim}
+        selAdv={selAdv}
+        setSelAdv={setSelAdv}
+        onConfirm={handleResurrectConfirm}
+        onCancel={handleResurrectCancel}
+        isSaving={saving}
+        saveInProgressMsg={saving ? t("saving") : ""}
+      />
+    );
+
+  // 기본 매치 UI
   return (
     <div
       style={{
@@ -604,7 +710,7 @@ function Match({ cup, onResult, selectedCount }) {
         alignItems: "center",
         fontFamily:
           "'Noto Sans', 'Apple SD Gothic Neo', 'Malgun Gothic', Arial, sans-serif",
-        position: "relative"
+        position: "relative",
       }}
     >
       <AdaptiveTitle title={cup.title} isMobile={isMobile} />
@@ -616,17 +722,19 @@ function Match({ cup, onResult, selectedCount }) {
           color: "#fff",
         }}
       >
-        {getStageLabel(bracket.length * 2 + pendingWinners.length, roundNum === 1, t)}{" "}
+        {getStageLabel(t, bracket.length * 2 + pendingWinners.length, roundNum === 1)}{" "}
         {bracket.length === 1 ? "" : `${idx + 1} / ${bracket.length}`}
       </div>
       {error && (
-        <div style={{ color: "#d33", fontWeight: 700, marginBottom: 15, fontSize: 18 }}>
+        <div
+          style={{ color: "#d33", fontWeight: 700, marginBottom: 15, fontSize: 18 }}
+        >
           {error}
         </div>
       )}
       {roundNum === 1 && pendingWinners.length > 0 && (
         <div style={{ color: "#888", margin: "7px 0 15px 0" }}>
-          {t("match.bye", { count: pendingWinners.length })}
+          {t("auto_bye_message", { selectedRound: bracket.length * 2, count: pendingWinners.length })}
         </div>
       )}
       {bracket.length > 1 && nextRoundCandidates.length === 2 && (
@@ -649,12 +757,14 @@ function Match({ cup, onResult, selectedCount }) {
             justifyContent: "center",
             userSelect: "text",
           }}
-          title={t("match.nextRoundTitle", {
-            a: nextRoundCandidates[0]?.name || "",
-            b: nextRoundCandidates[1]?.name || ""
-          })}
+          title={
+            t("nextRoundTitle", {
+              a: nextRoundCandidates[0]?.name || "",
+              b: nextRoundCandidates[1]?.name || ""
+            })
+          }
         >
-          <b>{t("match.nextRound")}</b>{" "}
+          <b>{t("next_round")}</b>{" "}
           {truncateNames(nextRoundCandidates).map((name, i) => (
             <React.Fragment key={i}>
               <span
@@ -677,14 +787,14 @@ function Match({ cup, onResult, selectedCount }) {
                     fontSize: STAGE_SIZE * 0.9,
                   }}
                 >
-                  vs
+                  {t("vs") || "vs"}
                 </span>
               )}
             </React.Fragment>
           ))}
         </div>
       )}
-      {/* 카드 & 뒤로가기 버튼 */}
+      {/* Match cards and Back button */}
       <div
         style={{
           width: "100vw",
@@ -707,18 +817,18 @@ function Match({ cup, onResult, selectedCount }) {
           onClick={() => handlePick(0)}
           disabled={autoPlaying || selectedIdx !== null}
           idx={0}
-          t={t}
           selected={selectedIdx === 0}
+          t={t}
         />
         <CandidateBox
           c={c2}
           onClick={() => handlePick(1)}
           disabled={autoPlaying || selectedIdx !== null}
           idx={1}
-          t={t}
           selected={selectedIdx === 1}
+          t={t}
         />
-        {/* 카드 상단 중앙에 뒤로가기 버튼 */}
+        {/* Back Button */}
         <div
           style={{
             position: "absolute",
@@ -730,7 +840,12 @@ function Match({ cup, onResult, selectedCount }) {
         >
           <BackArrowButton
             onClick={handleBack}
-            disabled={historyStack.length === 0 || selectedIdx !== null}
+            disabled={
+              showResurrect ||
+              (resurrectUsed && roundNum === 3 && idx === 0) ||
+              historyStack.length === 0 ||
+              selectedIdx !== null
+            }
           />
         </div>
       </div>

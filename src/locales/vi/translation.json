@@ -205,6 +205,17 @@
     "nextRound": "Vòng tiếp theo",
     "nextRoundTitle": "{{a}} đấu với {{b}}"
   },
-   "recommended_worldcups": "Worldcup được đề xuất",
-  "dragDropUpTo50": "Bạn có thể kéo và thả tối đa 50 hình ảnh vào hộp này cùng lúc."
+  "recommended_worldcups": "Worldcup được đề xuất",
+  "dragDropUpTo50": "Bạn có thể kéo và thả tối đa 50 hình ảnh vào hộp này cùng lúc.",
+  "resurrection": {
+    "title": "Vòng hồi sinh",
+    "instruction": "Vui lòng chọn <b>1~4 ứng viên để hồi sinh</b> bên trái,<br />và <b>1~4 ứng viên đi tiếp để loại bỏ</b> bên phải.<br /><b>Số lượng hồi sinh và loại bỏ phải bằng nhau.</b><br />Nếu bạn không muốn tiếp tục, chỉ cần bấm Bỏ qua.",
+    "note": "(Không tính vào thống kê. Chỉ dùng cho tính kết quả nhanh.)",
+    "eliminated": "Ứng viên đã bị loại",
+    "advanced": "Ứng viên đã vượt qua (Top 16)",
+    "search_placeholder": "Tìm tên…",
+    "select_count": "Chọn 1~4 ({{selected}}/{{max}})",
+    "skip": "Bỏ qua",
+    "confirm": "Xác nhận"
+  }
 }

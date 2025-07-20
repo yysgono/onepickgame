@@ -206,5 +206,16 @@
     "nextRoundTitle": "{{a}} 대 {{b}}"
   },
   "recommended_worldcups": "추천 월드컵",
-  "dragDropUpTo50": "이 박스에 한 번에 최대 50장까지 이미지를 드래그&드롭할 수 있습니다."
+  "dragDropUpTo50": "이 박스에 한 번에 최대 50장까지 이미지를 드래그&드롭할 수 있습니다.",
+  "resurrection": {
+    "title": "부활 라운드",
+    "instruction": "왼쪽에서 1~4명의 부활 후보를 선택하고,오른쪽에서 1~4명의 진출 후보를 제외할 수 있습니다.<br />부활 및 제외 인원 수는 동일해야 합니다.<br />진행하지 않으려면 스킵을 눌러주세요.",
+    "note": "(이 기능은 통계에 반영되지 않으며, 빠른 결과 산출용입니다.)",
+    "eliminated": "탈락 후보",
+    "advanced": "진출 후보(상위 16명)",
+    "search_placeholder": "이름 검색…",
+    "select_count": "1~4명 선택 ({{selected}}/{{max}})",
+    "skip": "스킵",
+    "confirm": "확정"
+  }
 }

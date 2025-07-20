@@ -24,6 +24,10 @@ const languages = [
   { code: "id", label: "Bahasa Indonesia" },
   { code: "pt", label: "Português" },
   { code: "hi", label: "हिन्दी" },
+  { code: "tr", label: "Türkçe" },          // 터키어
+  { code: "th", label: "ภาษาไทย" },          // 태국어
+  { code: "ar", label: "العربية" },         // 아랍어
+  { code: "bn", label: "বাংলা" },           // 벵골어(방글라데시)
 ];
 
 export default function Header({
