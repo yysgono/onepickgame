@@ -141,6 +141,28 @@ export default function SelectRoundPage({ cup, maxRound, candidates, onSelect, o
     justifyContent: "center"
   };
 
+  // 공유 버튼 클릭 시 현재 페이지 URL 복사 함수
+  const handleShareClick = () => {
+    const url = window.location.href;
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(url)
+        .then(() => alert(t("link_copied") || "링크가 복사되었습니다!"))
+        .catch(() => alert(t("copy_failed") || "복사에 실패했습니다."));
+    } else {
+      const textarea = document.createElement("textarea");
+      textarea.value = url;
+      document.body.appendChild(textarea);
+      textarea.select();
+      try {
+        document.execCommand("copy");
+        alert(t("link_copied") || "링크가 복사되었습니다!");
+      } catch {
+        alert(t("copy_failed") || "복사에 실패했습니다.");
+      }
+      document.body.removeChild(textarea);
+    }
+  };
+
   return (
     <div
       style={{
@@ -155,6 +177,31 @@ export default function SelectRoundPage({ cup, maxRound, candidates, onSelect, o
         marginTop: 26,
       }}
     >
+      {/* 왼쪽 상단 공유 버튼 추가 */}
+      <button
+        type="button"
+        onClick={handleShareClick}
+        style={{
+          position: "absolute",
+          top: isMobile ? 10 : 20,
+          left: isMobile ? 10 : 20,
+          zIndex: 20,
+          backgroundColor: "#1976ed",
+          color: "#fff",
+          border: "none",
+          borderRadius: 8,
+          padding: isMobile ? "6px 10px" : "8px 14px",
+          fontWeight: "bold",
+          cursor: "pointer",
+          boxShadow: "0 2px 8px #1976ed99",
+          fontSize: isMobile ? 12 : 14,
+          userSelect: "none",
+        }}
+        aria-label={t("share_worldcup") || "월드컵 공유하기"}
+      >
+        {t("share_worldcup") || "공유하기"}
+      </button>
+
       {/* 오른쪽 상단 결과보기 버튼 */}
       <button
         style={resultBtn}
@@ -367,9 +414,9 @@ export default function SelectRoundPage({ cup, maxRound, candidates, onSelect, o
                 fontSize: isMobile ? 13.5 : 16,
                 color: "#fff",
                 textAlign: "center",
-                whiteSpace: "nowrap",     // 말줄임 처리
-                overflow: "hidden",       // 말줄임 처리
-                textOverflow: "ellipsis", // 말줄임 처리
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
                 lineHeight: 1.15,
                 padding: "0 2px",
                 margin: 0,
