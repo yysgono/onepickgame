@@ -31,7 +31,7 @@ function getGridSettings(count, isMobile) {
 }
 
 export default function SelectRoundPage({ cup, maxRound, candidates, onSelect, onResult }) {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const [selectedRound, setSelectedRound] = useState(maxRound);
   const isMobile = useIsMobile();
 
@@ -141,27 +141,34 @@ export default function SelectRoundPage({ cup, maxRound, candidates, onSelect, o
     justifyContent: "center"
   };
 
-  // 공유 버튼 클릭 시 현재 페이지 URL 복사 함수
-  const handleShareClick = () => {
-    const url = window.location.href;
-    if (navigator.clipboard) {
-      navigator.clipboard.writeText(url)
-        .then(() => alert(t("link_copied") || "링크가 복사되었습니다!"))
-        .catch(() => alert(t("copy_failed") || "복사에 실패했습니다."));
-    } else {
-      const textarea = document.createElement("textarea");
-      textarea.value = url;
-      document.body.appendChild(textarea);
-      textarea.select();
-      try {
-        document.execCommand("copy");
-        alert(t("link_copied") || "링크가 복사되었습니다!");
-      } catch {
-        alert(t("copy_failed") || "복사에 실패했습니다.");
-      }
-      document.body.removeChild(textarea);
-    }
+  // --- 공유 버튼 스타일 & 함수 ---
+  const shareBtn = {
+    position: "absolute",
+    top: isMobile ? 11 : 23,
+    left: isMobile ? 11 : 26,
+    zIndex: 10,
+    background: "linear-gradient(90deg, #1976ed 80%, #45b7fa 100%)",
+    color: "#fff",
+    fontWeight: 900,
+    border: "none",
+    borderRadius: 11,
+    fontSize: isMobile ? 15 : 17,
+    padding: isMobile ? "8px 19px" : "10px 30px",
+    minWidth: isMobile ? 72 : 110,
+    cursor: "pointer",
+    boxShadow: "0 1px 11px #1976ed22",
+    outline: "none",
+    height: isMobile ? 38 : 44,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center"
   };
+  const shareUrl = cup?.id ? `${window.location.origin}/select-round/${cup.id}` : window.location.href;
+  function handleShare() {
+    navigator.clipboard.writeText(shareUrl);
+    if (window?.toast?.success) window.toast.success(t("share_link_copied"));
+    else alert(t("share_link_copied"));
+  }
 
   return (
     <div
@@ -174,33 +181,20 @@ export default function SelectRoundPage({ cup, maxRound, candidates, onSelect, o
         background: "rgba(20, 24, 37, 0.95)",
         borderRadius: isMobile ? 0 : 23,
         boxShadow: isMobile ? "none" : "0 4px 44px #171c2747",
-        marginTop: 26,
+        marginTop: 36, // <- 더 내려줌
+        minHeight: isMobile ? 520 : 580, // 충분한 높이 확보 (추가)
       }}
     >
-      {/* 왼쪽 상단 공유 버튼 추가 */}
-      <button
-        type="button"
-        onClick={handleShareClick}
-        style={{
-          position: "absolute",
-          top: isMobile ? 10 : 20,
-          left: isMobile ? 10 : 20,
-          zIndex: 20,
-          backgroundColor: "#1976ed",
-          color: "#fff",
-          border: "none",
-          borderRadius: 8,
-          padding: isMobile ? "6px 10px" : "8px 14px",
-          fontWeight: "bold",
-          cursor: "pointer",
-          boxShadow: "0 2px 8px #1976ed99",
-          fontSize: isMobile ? 12 : 14,
-          userSelect: "none",
-        }}
-        aria-label={t("share_worldcup") || "월드컵 공유하기"}
-      >
-        {t("share_worldcup") || "공유하기"}
-      </button>
+      {/* 왼쪽 상단 월드컵 공유하기 버튼 */}
+      {cup && (
+        <button
+          style={shareBtn}
+          onClick={handleShare}
+          aria-label={t("share_worldcup")}
+        >
+          📢 {t("share_worldcup")}
+        </button>
+      )}
 
       {/* 오른쪽 상단 결과보기 버튼 */}
       <button
@@ -220,7 +214,7 @@ export default function SelectRoundPage({ cup, maxRound, candidates, onSelect, o
               fontWeight: 900,
               fontSize: isMobile ? 23 : 31,
               color: "#fff",
-              marginBottom: 9,
+              marginBottom: isMobile ? 20 : 27, // 제목 아래 여백 넉넉히
               letterSpacing: "-1.2px",
               lineHeight: 1.18,
               textAlign: "center",
@@ -233,6 +227,7 @@ export default function SelectRoundPage({ cup, maxRound, candidates, onSelect, o
               wordBreak: "break-all",
               maxWidth: isMobile ? "98vw" : 710,
               boxShadow: "0 2px 16px #1976ed18",
+              marginTop: isMobile ? 35 : 45, // 버튼과 제목 사이 간격
             }}
             title={cup.title}
           >
@@ -248,7 +243,7 @@ export default function SelectRoundPage({ cup, maxRound, candidates, onSelect, o
                 background: "rgba(30,45,70,0.93)",
                 borderRadius: 9,
                 padding: isMobile ? "7px 6px 4px 6px" : "11px 18px 6px 18px",
-                marginBottom: isMobile ? 9 : 17,
+                marginBottom: isMobile ? 18 : 24,
                 marginLeft: "auto",
                 marginRight: "auto",
                 maxWidth: isMobile ? "95vw" : 590,
@@ -364,7 +359,7 @@ export default function SelectRoundPage({ cup, maxRound, candidates, onSelect, o
               margin: "0 auto",
               willChange: "transform",
               overflow: "hidden",
-              minWidth: 0, // <- grid 내 ellipsis 문제 해결 (중요)
+              minWidth: 0,
             }}
             title={c.name}
             tabIndex={0}

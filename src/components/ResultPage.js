@@ -396,7 +396,7 @@ export default function ResultPage({ worldcupList }) {
             >
               {t("home")}
             </button>
-            <ReportButton cupId={cup.id} size={isMobile ? "sm" : "md"} />
+            {/* <ReportButton cupId={cup.id} size={isMobile ? "sm" : "md"} /> */}
           </div>
         </div>
 

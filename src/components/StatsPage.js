@@ -5,27 +5,6 @@ import MediaRenderer from "./MediaRenderer";
 import { supabase } from "../utils/supabaseClient";
 import CommentBox from "./CommentBox";
 
-// 2줄 타이틀 처리
-function twoLineTitle(title) {
-  if (!title) return "";
-  if (title.length <= 20) return title;
-  if (title.length <= 40)
-    return (
-      <>
-        {title.slice(0, 20)}
-        <br />
-        {title.slice(20)}
-      </>
-    );
-  return (
-    <>
-      {title.slice(0, 20)}
-      <br />
-      {title.slice(20, 40) + "..."}
-    </>
-  );
-}
-
 // 신고 버튼 (i18n 적용)
 function ReportButton({ cupId, size = "md" }) {
   const { t } = useTranslation();
@@ -150,7 +129,7 @@ function getCustomSinceDate(from, to) {
   return { from: fromIso, to: toIso };
 }
 
-// 1~3위 카드
+// 1~3위 카드 (썸네일만 큼직하게!)
 function RankCard(props) {
   const { t } = useTranslation();
   const { rank, name, image, win_count, win_rate, match_wins, match_count, match_win_rate, isMobile } = props;
@@ -161,6 +140,10 @@ function RankCard(props) {
   ];
   const medal = medals[rank - 1] || medals[2];
   const bg = ["#fcf5cd", "#eef3fa", "#fff3f3"][rank - 1];
+
+  // 카드 크기는 그대로, 썸네일만 큼직하게
+  const thumbSize = isMobile ? 120 : 170; // ← 썸네일만 확실히 더 큼직하게!
+
   return (
     <div
       style={{
@@ -205,8 +188,8 @@ function RankCard(props) {
       </div>
       <div
         style={{
-          width: isMobile ? 92 : 116,
-          height: isMobile ? 92 : 116,
+          width: thumbSize,
+          height: thumbSize,
           borderRadius: "50%",
           overflow: "hidden",
           margin: "60px auto 20px auto",
@@ -222,16 +205,17 @@ function RankCard(props) {
       <div
         style={{
           fontWeight: 900,
-          fontSize: isMobile ? 18 : 23,
+          fontSize: isMobile ? 14 : 16,
           color: "#716500",
-          marginBottom: 8,
+          marginBottom: 3,
+          marginTop: -3,
         }}
       >
         {t("win_count") + " " + win_count} | <span style={{ color: "#9d8703" }}>{t("win_rate") + " " + win_rate}</span>
       </div>
       <div
         style={{
-          fontSize: isMobile ? 15 : 17,
+          fontSize: isMobile ? 13 : 15,
           color: "#9098a6",
           fontWeight: 600,
           letterSpacing: "-0.2px",
@@ -276,7 +260,6 @@ function SkeletonTableRow({ colCount = 8 }) {
   );
 }
 
-// ---- 메인 컴포넌트 ----
 export default function StatsPage({
   selectedCup,
   showCommentBox = false,
@@ -375,10 +358,8 @@ export default function StatsPage({
     [filteredStats, currentPage, itemsPerPage]
   );
 
-  // 페이지/검색 등 바뀌면 첫 페이지로
   useEffect(() => { setCurrentPage(1); }, [search, itemsPerPage, stats]);
 
-  // top3
   const top3 = useMemo(() =>
     [...stats]
       .map((row, i) => ({ ...row, _originIdx: i }))
@@ -392,7 +373,6 @@ export default function StatsPage({
       .slice(0, 3), [stats]
   );
 
-  // 표 스타일
   const ivoryCell = {
     background: "#fcf5cd",
     fontWeight: 800,
@@ -412,7 +392,6 @@ export default function StatsPage({
     { key: "match_win_rate", label: t("match_win_rate"), isIvory: true },
   ];
 
-  // 페이지네이션
   function Pagination() {
     if (totalPages <= 1) return null;
     let pages = [];
@@ -482,7 +461,6 @@ export default function StatsPage({
     );
   }
 
-  // 공유/신고바
   function ShareAndReportBar() {
     if (!selectedCup?.id) return null;
     const shareUrl = `${window.location.origin}/select-round/${selectedCup.id}`;
@@ -551,14 +529,12 @@ export default function StatsPage({
             fontFamily: "'Orbitron', 'Pretendard', sans-serif",
             letterSpacing: "-1.5px",
             lineHeight: 1.15,
-            maxWidth: isMobile ? "96vw" : 700,
+            maxWidth: isMobile ? "96vw" : 940,
             minWidth: 0,
             overflow: "hidden",
             textOverflow: "ellipsis",
-            whiteSpace: "normal",
-            display: "-webkit-box",
-            WebkitBoxOrient: "vertical",
-            WebkitLineClamp: 2,
+            whiteSpace: "nowrap",
+            display: "block",
             wordBreak: "break-all",
             textAlign: "center",
             margin: "0 auto",
@@ -566,7 +542,7 @@ export default function StatsPage({
           }}
           title={selectedCup.title}
         >
-          {twoLineTitle(selectedCup.title)}
+          {selectedCup.title}
         </div>
       </div>
       <style>
@@ -579,7 +555,7 @@ export default function StatsPage({
         display: "flex",
         flexDirection: isMobile ? "column" : "row",
         justifyContent: "center",
-        alignItems: "flex-end",
+        alignItems: "center",
         margin: "0 auto 18px auto",
         width: "100%",
         gap: isMobile ? 0 : 0,
@@ -603,7 +579,7 @@ export default function StatsPage({
         )}
       </div>
 
-      {/* 전체/회원만 버튼 */}
+      {/* 이하 동일 */}
       <div style={{
         display: "flex",
         justifyContent: "center",
@@ -615,7 +591,6 @@ export default function StatsPage({
         <button style={{ ...tabBtnStyle(userOnly), marginRight: 0 }} onClick={() => setUserOnly(true)}>{t("members_only")}</button>
       </div>
 
-      {/* 기간 버튼 */}
       <div
         style={{
           display: "flex",
@@ -712,7 +687,6 @@ export default function StatsPage({
         )}
       </div>
 
-      {/* 페이지 개수 선택 */}
       <div
         style={{
           display: "flex",
@@ -741,7 +715,6 @@ export default function StatsPage({
         ))}
       </div>
 
-      {/* 검색창 */}
       <div
         style={{
           display: "flex",
@@ -766,7 +739,6 @@ export default function StatsPage({
         />
       </div>
 
-      {/* --- 통계 테이블 --- */}
       <div style={{ width: "100%", overflowX: "auto", marginBottom: 12 }}>
         <table
           style={{
