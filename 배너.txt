@@ -1,3 +1,73 @@
+import React from "react";
+
+const AdBanner = ({
+  position,
+  img,
+  width,
+  height,
+  style = {},
+  dynamic = false,
+  visible = true,
+}) => {
+  // width/height 강제 고정 (dynamic 옵션 무시, 요청시만 적용)
+  let w = width, h = height;
+
+  if (!visible) return null;
+
+  let posStyle = {};
+  let isFixed = true;
+
+  if (position === "left") {
+    posStyle = { left: 24, top: "50%", transform: "translateY(-50%)" };
+  } else if (position === "right") {
+    posStyle = { right: 24, top: "50%", transform: "translateY(-50%)" };
+  } else if (position === "top") {
+    isFixed = false;
+  } else if (position === "bottom") {
+    posStyle = { left: "50%", bottom: 0, transform: "translateX(-50%)" };
+  }
+
+  return (
+    <div
+      className={`ad-banner ${position}`}
+      style={{
+        position: isFixed ? "fixed" : "static",
+        zIndex: 1000,
+        width: w,
+        height: h,
+        minWidth: w,
+        minHeight: h,
+        maxWidth: w,
+        maxHeight: h,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        pointerEvents:
+          position === "left" || position === "right" ? "none" : "auto",
+        ...posStyle,
+        ...style,
+      }}
+    >
+      <img
+        src={img}
+        alt="ad"
+        style={{
+          width: w,
+          height: h,
+          objectFit: "cover",
+          borderRadius: 16,
+          pointerEvents: "auto",
+          display: "block",
+        }}
+      />
+    </div>
+  );
+};
+
+export default AdBanner;
+
+
+
 // src/App.js
 import "./i18n";
 import "./App.css";
@@ -32,8 +102,7 @@ import FindPwBox from "./components/FindPwBox";
 import PrivacyPolicy from "./components/PrivacyPolicy";
 import TermsOfService from "./components/TermsOfService";
 import Footer from "./components/Footer";
-// AdBanner 컴포넌트 삭제 시 import도 삭제하세요
-// import AdBanner from "./components/AdBanner";
+import AdBanner from "./components/AdBanner";
 
 import DePage from "./pages/de/index";
 import EnPage from "./pages/en/index";
@@ -50,6 +119,22 @@ import ZhPage from "./pages/zh/index";
 
 import { getWorldcupGames, deleteWorldcupGame } from "./utils/supabaseWorldcupApi";
 import { supabase } from "./utils/supabaseClient";
+
+function useAdBannerHeight() {
+  const [height, setHeight] = useState(0);
+  const ref = useRef(null);
+  useEffect(() => {
+    function update() {
+      if (ref.current) {
+        setHeight(ref.current.offsetHeight || 0);
+      }
+    }
+    update();
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
+  }, []);
+  return [ref, height];
+}
 
 function useIsMobile() {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 700);
@@ -107,6 +192,7 @@ function LanguageWrapper(props) {
 }
 
 function App() {
+  const [adRef, adHeight] = useAdBannerHeight();
   const isMobile = useIsMobile();
 
   const [worldcupList, setWorldcupList] = useState([]);
@@ -219,15 +305,25 @@ function App() {
     reader.onload = function (ev) {
       try {
         const data = JSON.parse(ev.target.result);
-        if (!Array.isArray(data)) throw new Error("Invalid format");
+        if (!Array.isArray(data)) throw new Error("형식 오류");
         setWorldcupList(data);
-        alert(t("restore_success") || "Restore successful! (Front-end only, DB not affected)");
+        alert(t("restore_success") || "복구 성공! (프론트에만 적용, DB 반영은 별도)");
       } catch {
-        alert(t("restore_fail") || "Restore failed!");
+        alert(t("restore_fail") || "복구 실패!");
       }
     };
     reader.readAsText(file);
     e.target.value = "";
+  }
+
+  function useShowBottomAd() {
+    const location = useLocation();
+    return {
+      showBig:
+        /^\/select-round\//.test(location.pathname) ||
+        /^\/match\//.test(location.pathname),
+      showSmall: /^\/result\//.test(location.pathname),
+    };
   }
 
   function MyWorldcupsWrapper() {
@@ -277,7 +373,7 @@ function App() {
 
     function handleMakeWorldcup() {
       if (!user) {
-        alert(t("login_required") || "Login required.");
+        alert(t("login_required") || "로그인이 필요합니다.");
         return;
       }
       navigate("/worldcup-maker");
@@ -306,7 +402,7 @@ function App() {
               await deleteWorldcupGame(id);
               setWorldcupList((list) => list.filter((cup) => cup.id !== id));
             } catch (e) {
-              alert((t("delete_failed") || "Delete failed!") + " " + (e.message || e));
+              alert((t("delete_failed") || "삭제 실패!") + " " + (e.message || e));
             }
           }}
           user={user}
@@ -389,9 +485,9 @@ function App() {
               fontSize: 22,
             }}
           >
-            {t("admin_only") || "Admins only."}
+            {t("admin_only") || "관리자만 접근할 수 있습니다."}
             <br />
-            {t("login_with_admin") || "Please log in as admin."}
+            {t("login_with_admin") || "아이디에 admin으로 로그인하세요."}
           </div>
         );
       }
@@ -418,9 +514,9 @@ function App() {
               fontSize: 22,
             }}
           >
-            {t("admin_only") || "Admins only."}
+            {t("admin_only") || "관리자만 접근할 수 있습니다."}
             <br />
-            {t("login_with_admin") || "Please log in as admin."}
+            {t("login_with_admin") || "아이디에 admin으로 로그인하세요."}
           </div>
         );
       }
@@ -452,10 +548,9 @@ function App() {
             setNickname={updateNickname}
           />
         </div>
-        {/* AdBanner 관련 코드 삭제 시 이 부분 제거 또는 주석 처리 */}
-        {/* <div className="ad-banner-top-static-wrap" style={{ marginTop: 0, paddingTop: 0 }}>
+        <div ref={adRef} className="ad-banner-top-static-wrap" style={{ marginTop: 0, paddingTop: 0 }}>
           <AdBanner position="top" img="ad2.png" />
-        </div> */}
+        </div>
         <div className="main-content-box">
           <Routes>
             {/* 언어 경로 별 페이지 렌더링 */}
@@ -500,6 +595,56 @@ function App() {
     );
   }
 
+  function BottomAdConditional() {
+    const { showBig, showSmall } = useShowBottomAd();
+    if (isMobile) {
+      return (
+        <AdBanner
+          position="bottom"
+          img="ad2.png"
+          width={320}
+          height={90}
+          style={{
+            left: "50%",
+            transform: "translateX(-50%)",
+            bottom: "0px",
+          }}
+        />
+      );
+    }
+    if (showBig) {
+      return (
+        <AdBanner
+          position="bottom"
+          img="ad3.png"
+          width={1200}
+          height={160}
+          style={{
+            left: "50%",
+            transform: "translateX(-50%)",
+            bottom: "0px",
+          }}
+        />
+      );
+    }
+    if (showSmall) {
+      return (
+        <AdBanner
+          position="bottom"
+          img="ad2.png"
+          width={970}
+          height={90}
+          style={{
+            left: "50%",
+            transform: "translateX(-50%)",
+            bottom: "0px",
+          }}
+        />
+      );
+    }
+    return null;
+  }
+
   return (
     <div
       className="app-main-wrapper"
@@ -533,8 +678,7 @@ function App() {
         }}
       />
       <div style={{ position: "relative", zIndex: 2 }}>
-        {/* AdBanner 좌우 배너 제거 시 이 부분도 주석/삭제하세요 */}
-        {/* <AdBanner
+        <AdBanner
           position="left"
           img="ad1.png"
           style={{
@@ -555,14 +699,14 @@ function App() {
             maxHeight: "95vh",
             width: "300px",
           }}
-        /> */}
+        />
         <div
           className="main-content-outer"
-          style={{ paddingTop: 190, margin: 0 }}
+          style={{ paddingTop: adHeight ? adHeight + 32 : 190, margin: 0 }}
         >
           <Router>
             <AppRoutes />
-            {/* Footer 항상 보임 */}
+            <BottomAdConditional />
             <Footer />
           </Router>
         </div>
@@ -572,3 +716,4 @@ function App() {
 }
 
 export default App;
+
