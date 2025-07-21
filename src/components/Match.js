@@ -477,12 +477,16 @@ function Match({ cup, onResult, selectedCount }) {
       const nextRoundCandidates =
         roundNum === 1 ? [...pendingWinners, ...matchWinners] : matchWinners;
 
-      // ===[ 패자부활전 정확히 1라운드 종료 후, 16명 남았을 때 ]===
+      // ===== 패자부활전 조건 수정됨 =====
+      console.log("resurrectUsed", resurrectUsed);
+      console.log("cup.data.length", cup.data.length);
+      console.log("nextRoundCandidates.length", nextRoundCandidates.length);
+      console.log("roundNum", roundNum);
+
       if (
         !resurrectUsed &&
         cup.data.length >= 32 &&
-        nextRoundCandidates.length === 16 &&
-        roundNum === 1
+        nextRoundCandidates.length === 16
       ) {
         const allIds = new Set(nextRoundCandidates.map((c) => c.id));
         const eliminated = cup.data.filter((c) => !allIds.has(c.id));
