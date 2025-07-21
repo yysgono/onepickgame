@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import MediaRenderer from "./MediaRenderer";
-import { useTranslation } from "react-i18next";  // 추가
+import { useTranslation } from "react-i18next";
 
 // 네비게이션 버튼 스타일
 const navBtnStyle = (hover = false) => ({
@@ -29,25 +29,31 @@ const navBtnStyle = (hover = false) => ({
   userSelect: "none",
 });
 
-// 1,2위 후보 구하는 함수 (통계 기반)
+// [핵심] 승수(통계) 기반 1, 2위 후보 뽑기 (카드와 완전 동일)
 function getTop2Winners(winStats, cupData) {
   if (!winStats?.length) return [cupData?.[0] || null, cupData?.[1] || null];
-  const sorted = [...winStats].sort(
-    (a, b) => (b.win_count || 0) - (a.win_count || 0)
-  );
+  const sorted = [...winStats]
+    .map((row, i) => ({ ...row, _originIdx: i }))
+    .sort((a, b) => {
+      if ((b.win_count || 0) !== (a.win_count || 0))
+        return (b.win_count || 0) - (a.win_count || 0);
+      if ((b.match_wins || 0) !== (a.match_wins || 0))
+        return (b.match_wins || 0) - (a.match_wins || 0);
+      return a._originIdx - b._originIdx;
+    });
   const first =
-    cupData?.find((c) => String(c.id) === String(sorted[0]?.candidate_id)) ||
+    cupData?.find((c) => c.id === sorted[0]?.candidate_id) ||
     cupData?.[0] ||
     null;
   const second =
-    cupData?.find((c) => String(c.id) === String(sorted[1]?.candidate_id)) ||
+    cupData?.find((c) => c.id === sorted[1]?.candidate_id) ||
     cupData?.[1] ||
     null;
   return [first, second];
 }
 
 function FixedCupCarousel({ worldcupList }) {
-  const { t } = useTranslation();  // 추가
+  const { t } = useTranslation();
 
   const [vw, setVw] = useState(window.innerWidth);
   const [hoverPrev, setHoverPrev] = useState(false);
@@ -110,7 +116,7 @@ function FixedCupCarousel({ worldcupList }) {
           width: "100%",
         }}
       >
-        {t("recommend")} {/* 여기 수정 */}
+        {t("recommend")}
       </div>
       <div
         style={{
@@ -124,7 +130,7 @@ function FixedCupCarousel({ worldcupList }) {
       >
         {/* Prev Button */}
         <button
-          aria-label={t("previous")} /* 이전 버튼도 다국어 가능하면 여기에 */
+          aria-label={t("previous")}
           onClick={goPrev}
           onMouseEnter={() => setHoverPrev(true)}
           onMouseLeave={() => setHoverPrev(false)}
@@ -156,7 +162,7 @@ function FixedCupCarousel({ worldcupList }) {
           }}
         >
           {pageCups.map((cup, idx) => {
-            // 1, 2위 후보(통계기반)로 썸네일 표시
+            // [핵심!] 1, 2위 후보 VS 구조 (실제 승수 기준!)
             const [first, second] = getTop2Winners(cup.winStats, cup.data);
 
             return (
