@@ -307,11 +307,11 @@ function CandidateBox({ c, onClick, disabled, idx, selected, t }) {
             alt={c.name}
             playable
             style={{
-              objectFit: "contain",
+              objectFit: "contain", // 수정됨: 전체 이미지가 보이도록 비율 유지하며 축소
               width: "100%",
               height: "100%",
               background: "#21283a",
-              padding: isMobile ? 8 : 20,
+              padding: 0,
               boxSizing: "border-box",
             }}
           />
