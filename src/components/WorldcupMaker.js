@@ -24,8 +24,8 @@ function WorldcupMaker({ onCreate, onCancel }) {
   const [title, setTitle] = useState("");
   const [desc, setDesc] = useState("");
   const [candidates, setCandidates] = useState([
-    { id: uuidv4(), name: "", image: "", file: null }, // 👈 file 속성 추가
-    { id: uuidv4(), name: "", image: "", file: null }, // 👈 file 속성 추가
+    { id: uuidv4(), name: "", image: "", file: null },
+    { id: uuidv4(), name: "", image: "", file: null },
   ]);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -54,8 +54,6 @@ function WorldcupMaker({ onCreate, onCancel }) {
     fetchUser();
   }, []);
 
-  // 👈 [추가] 메모리 누수 방지를 위한 useEffect
-  // 컴포넌트가 언마운트되거나 후보 목록이 바뀔 때, 기존에 생성된 blob URL을 메모리에서 해제합니다.
   useEffect(() => {
     return () => {
       candidates.forEach(candidate => {
@@ -67,7 +65,6 @@ function WorldcupMaker({ onCreate, onCancel }) {
   }, [candidates]);
 
 
-  // === 정지 체크 (user 변경시 자동) ===
   const { isBanned, banInfo } = useBanCheck(user);
 
   if (!user) {
@@ -99,7 +96,7 @@ function WorldcupMaker({ onCreate, onCancel }) {
   function addCandidate() {
     setCandidates((candidates) => [
       ...candidates,
-      { id: uuidv4(), name: "", image: "", file: null }, // 👈 file 속성 추가
+      { id: uuidv4(), name: "", image: "", file: null },
     ]);
   }
   function updateCandidate(idx, val) {
@@ -107,24 +104,21 @@ function WorldcupMaker({ onCreate, onCancel }) {
   }
   function removeCandidate(idx) {
     if (candidates.length <= 2) return;
-    
-    // 👈 [수정] 삭제 시에도 blob URL 해제
     const candidateToRemove = candidates[idx];
     if (candidateToRemove.image && candidateToRemove.image.startsWith('blob:')) {
         URL.revokeObjectURL(candidateToRemove.image);
     }
-
     setCandidates((cands) => cands.filter((_, i) => i !== idx));
   }
 
-  // 👈 [수정] 이미지 여러개 드래그&드롭/클릭 업로드 (Base64 대신 URL.createObjectURL 사용)
+  // === webp 추가 ===
   async function handleFiles(fileList) {
     if (fileList.length > MAX_UPLOAD) {
       alert(t("maxUploadLimit", { count: MAX_UPLOAD }));
       return;
     }
     const files = Array.from(fileList).filter(file =>
-      /\.(jpe?g|png|gif|svg)$/i.test(file.name)
+      /\.(jpe?g|png|gif|svg|webp)$/i.test(file.name) // ← webp 추가
     );
     if (files.length === 0) return;
 
@@ -136,19 +130,17 @@ function WorldcupMaker({ onCreate, onCancel }) {
       return {
         id: uuidv4(),
         name: cleanName,
-        image: URL.createObjectURL(file), // 미리보기용 URL
-        file: file, // 업로드할 실제 File 객체
+        image: URL.createObjectURL(file),
+        file: file,
       };
     });
 
     setCandidates(cands => {
-      // 기존 blob URL들을 해제하기 위해 복사본을 만듭니다.
       const oldCandidates = [...cands];
       const updated = [...cands];
       let idx = 0;
       for (let i = 0; i < updated.length && idx < fileCandidates.length; i++) {
         if (!updated[i].image && !updated[i].name) {
-          // 기존에 blob URL이 있었다면 해제
           if (oldCandidates[i]?.image.startsWith('blob:')) {
             URL.revokeObjectURL(oldCandidates[i].image);
           }
@@ -161,7 +153,6 @@ function WorldcupMaker({ onCreate, onCancel }) {
       return updated;
     });
   }
-
 
   function handleDrag(e) {
     e.preventDefault();
@@ -196,19 +187,16 @@ function WorldcupMaker({ onCreate, onCancel }) {
       const { data: { user: currentUser } } = await supabase.auth.getUser();
       if (!currentUser?.id) throw new Error("로그인 정보 없음");
 
-      // 👈 [수정] 업로드 로직: File 객체를 직접 업로드
       const updatedList = await Promise.all(
         list.map(async (c) => {
           let imageUrl = c.image;
-          // c.file 객체가 있으면 새로운 로컬 파일이므로 업로드합니다.
           if (c.file) { 
             imageUrl = await uploadCandidateImage(
-              c.file, // 저장해둔 File 객체를 바로 업로드
+              c.file,
               nickname || currentUser.id
             );
           }
           if (!imageUrl) imageUrl = DEFAULT_THUMB_URL;
-          // DB에 저장할 최종 데이터에는 file 객체를 제외합니다.
           return { id: c.id, name: c.name, image: imageUrl }; 
         })
       );
@@ -304,7 +292,7 @@ function WorldcupMaker({ onCreate, onCancel }) {
           <input
             ref={fileInputRef}
             type="file"
-            accept=".jpg,.jpeg,.png,.gif,.svg"
+            accept=".jpg,.jpeg,.png,.gif,.svg,.webp" // ← webp 추가
             multiple
             style={{ display: "none" }}
             onChange={e => handleFiles(e.target.files)}
