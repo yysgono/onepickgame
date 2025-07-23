@@ -40,7 +40,9 @@ function WorldcupMaker({ onCreate, onCancel }) {
 
   useEffect(() => {
     async function fetchUser() {
-      const { data: { user } } = await supabase.auth.getUser();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
       setUser(user);
       if (user) {
         const { data: profile } = await supabase
@@ -56,14 +58,13 @@ function WorldcupMaker({ onCreate, onCancel }) {
 
   useEffect(() => {
     return () => {
-      candidates.forEach(candidate => {
-        if (candidate.image && candidate.image.startsWith('blob:')) {
+      candidates.forEach((candidate) => {
+        if (candidate.image && candidate.image.startsWith("blob:")) {
           URL.revokeObjectURL(candidate.image);
         }
       });
     };
   }, [candidates]);
-
 
   const { isBanned, banInfo } = useBanCheck(user);
 
@@ -76,7 +77,14 @@ function WorldcupMaker({ onCreate, onCancel }) {
   }
   if (isBanned) {
     return (
-      <div style={{ padding: 60, textAlign: "center", color: "#d33", fontWeight: 700 }}>
+      <div
+        style={{
+          padding: 60,
+          textAlign: "center",
+          color: "#d33",
+          fontWeight: 700,
+        }}
+      >
         🚫 {t("bannedNoCreate")}
         <br />
         {banInfo && banInfo.expires_at && (
@@ -105,24 +113,24 @@ function WorldcupMaker({ onCreate, onCancel }) {
   function removeCandidate(idx) {
     if (candidates.length <= 2) return;
     const candidateToRemove = candidates[idx];
-    if (candidateToRemove.image && candidateToRemove.image.startsWith('blob:')) {
-        URL.revokeObjectURL(candidateToRemove.image);
+    if (candidateToRemove.image && candidateToRemove.image.startsWith("blob:")) {
+      URL.revokeObjectURL(candidateToRemove.image);
     }
     setCandidates((cands) => cands.filter((_, i) => i !== idx));
   }
 
-  // === webp 추가 ===
+  // === avif 추가 포함 ===
   async function handleFiles(fileList) {
     if (fileList.length > MAX_UPLOAD) {
       alert(t("maxUploadLimit", { count: MAX_UPLOAD }));
       return;
     }
-    const files = Array.from(fileList).filter(file =>
-      /\.(jpe?g|png|gif|svg|webp)$/i.test(file.name) // ← webp 추가
+    const files = Array.from(fileList).filter((file) =>
+      /\.(jpe?g|png|gif|svg|webp|avif)$/i.test(file.name) // avif 추가
     );
     if (files.length === 0) return;
 
-    const fileCandidates = files.map(file => {
+    const fileCandidates = files.map((file) => {
       const cleanName = file.name
         .replace(/\.[^/.]+$/, "")
         .replace(/[_\-]+/g, " ")
@@ -135,13 +143,13 @@ function WorldcupMaker({ onCreate, onCancel }) {
       };
     });
 
-    setCandidates(cands => {
+    setCandidates((cands) => {
       const oldCandidates = [...cands];
       const updated = [...cands];
       let idx = 0;
       for (let i = 0; i < updated.length && idx < fileCandidates.length; i++) {
         if (!updated[i].image && !updated[i].name) {
-          if (oldCandidates[i]?.image.startsWith('blob:')) {
+          if (oldCandidates[i]?.image.startsWith("blob:")) {
             URL.revokeObjectURL(oldCandidates[i].image);
           }
           updated[i] = fileCandidates[idx++];
@@ -184,20 +192,19 @@ function WorldcupMaker({ onCreate, onCancel }) {
     setLoading(true);
 
     try {
-      const { data: { user: currentUser } } = await supabase.auth.getUser();
+      const {
+        data: { user: currentUser },
+      } = await supabase.auth.getUser();
       if (!currentUser?.id) throw new Error("로그인 정보 없음");
 
       const updatedList = await Promise.all(
         list.map(async (c) => {
           let imageUrl = c.image;
-          if (c.file) { 
-            imageUrl = await uploadCandidateImage(
-              c.file,
-              nickname || currentUser.id
-            );
+          if (c.file) {
+            imageUrl = await uploadCandidateImage(c.file, nickname || currentUser.id);
           }
           if (!imageUrl) imageUrl = DEFAULT_THUMB_URL;
-          return { id: c.id, name: c.name, image: imageUrl }; 
+          return { id: c.id, name: c.name, image: imageUrl };
         })
       );
 
@@ -261,7 +268,7 @@ function WorldcupMaker({ onCreate, onCancel }) {
       <form onSubmit={handleSubmit}>
         {/* ===== 업로드 박스 ===== */}
         <div
-          onDrop={e => {
+          onDrop={(e) => {
             e.preventDefault();
             setDragActive(false);
             handleFiles(e.dataTransfer.files);
@@ -285,17 +292,17 @@ function WorldcupMaker({ onCreate, onCancel }) {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            transition: "background 0.18s, border-color 0.18s"
+            transition: "background 0.18s, border-color 0.18s",
           }}
           onClick={() => fileInputRef.current.click()}
         >
           <input
             ref={fileInputRef}
             type="file"
-            accept=".jpg,.jpeg,.png,.gif,.svg,.webp" // ← webp 추가
+            accept=".jpg,.jpeg,.png,.gif,.svg,.webp,.avif" // avif 추가
             multiple
             style={{ display: "none" }}
-            onChange={e => handleFiles(e.target.files)}
+            onChange={(e) => handleFiles(e.target.files)}
             disabled={loading}
           />
           <span>
@@ -303,13 +310,15 @@ function WorldcupMaker({ onCreate, onCancel }) {
             <br />
             {t("uploadZone")}
             <br />
-            <span style={{
-              fontSize: mobile ? 14 : 16,
-              color: "#888",
-              fontWeight: 400,
-              display: "block",
-              marginTop: 8
-            }}>
+            <span
+              style={{
+                fontSize: mobile ? 14 : 16,
+                color: "#888",
+                fontWeight: 400,
+                display: "block",
+                marginTop: 8,
+              }}
+            >
               {t("dragDropUpTo50")}
             </span>
           </span>
