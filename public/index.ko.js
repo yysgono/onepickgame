@@ -2,7 +2,7 @@ import React from "react";
 import { Helmet } from "react-helmet";
 import Home from "../../components/Home";
 
-export default function Index(props) { // ★ props 꼭 받아야 함
+export default function Index(props) { 
   return (
     <>
       <Helmet>
@@ -16,7 +16,7 @@ export default function Index(props) { // ★ props 꼭 받아야 함
         <meta property="og:image" content="https://onepickgame.com/ogimg.png" />
         <meta property="og:url" content="https://onepickgame.com/ko" />
       </Helmet>
-      <Home {...props} /> {/* ★ 이 줄이 꼭 필요! */}
+      <Home {...props} /> 
     </>
   );
 }

@@ -1,7 +1,5 @@
-// MediaRenderer.js
 import React, { useState } from "react";
 
-// 유튜브 ID 추출
 function getYoutubeId(url) {
   if (!url) return null;
   const yt =
@@ -24,21 +22,14 @@ function isImageFile(url) {
   return /\.(jpeg|jpg|gif|png|webp|bmp)$/i.test(url);
 }
 
-function MediaRenderer({
-  url,
-  alt = "",
-  playable = false,
-  style = {},
-  onPlay
-}) {
+function MediaRenderer({ url, alt = "", playable = false, style = {}, onPlay }) {
   const [imgError, setImgError] = useState(false);
   const [youtubePlaying, setYoutubePlaying] = useState(false);
 
-  // ===== 1. 유튜브 영상 =====
+  // 1. 유튜브 처리
   const youtubeId = getYoutubeId(url);
   if (youtubeId) {
     if (playable) {
-      // 클릭하면 유튜브 재생
       return (
         <div
           style={{
@@ -71,15 +62,39 @@ function MediaRenderer({
                 draggable={false}
                 onError={() => setImgError(true)}
               />
+              {imgError && (
+                <div
+                  style={{
+                    position: "absolute",
+                    inset: 0,
+                    backgroundColor: "#000",
+                    color: "#666",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    fontSize: 14,
+                    userSelect: "none",
+                  }}
+                >
+                  이미지 로딩 실패
+                </div>
+              )}
               <div
                 style={{
-                  position: "absolute", top: 0, left: 0, width: "100%", height: "100%",
-                  display: "flex", alignItems: "center", justifyContent: "center",
-                  background: "rgba(0,0,0,0.21)", pointerEvents: "none",
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  width: "100%",
+                  height: "100%",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  background: "rgba(0,0,0,0.21)",
+                  pointerEvents: "none",
                 }}
               >
                 <svg width="46" height="46" viewBox="0 0 48 48">
-                  <circle cx="24" cy="24" r="22" fill="#000" opacity="0.27"/>
+                  <circle cx="24" cy="24" r="22" fill="#000" opacity="0.27" />
                   <polygon points="19,15 36,24 19,33" fill="#fff" />
                 </svg>
               </div>
@@ -100,7 +115,24 @@ function MediaRenderer({
       );
     }
     // 썸네일 모드
-    return (
+    return imgError ? (
+      <div
+        style={{
+          width: "100%",
+          height: "100%",
+          backgroundColor: "#000",
+          color: "#666",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          fontSize: 14,
+          userSelect: "none",
+          ...style,
+        }}
+      >
+        이미지 로딩 실패
+      </div>
+    ) : (
       <img
         src={`https://img.youtube.com/vi/${youtubeId}/mqdefault.jpg`}
         alt={alt || "YouTube thumbnail"}
@@ -118,7 +150,7 @@ function MediaRenderer({
     );
   }
 
-  // ===== 2. 비디오(mp4/webm/ogg/mov) =====
+  // 2. 비디오 처리
   const ext = getFileExtension(url);
   const isVideo = ["mp4", "webm", "ogg", "mov"].includes(ext);
   if (isVideo) {
@@ -148,7 +180,7 @@ function MediaRenderer({
     );
   }
 
-  // ===== 3. 이미지 파일 (jpg/png/gif/webp/bmp) =====
+  // 3. 이미지 처리
   if (url && !imgError && isImageFile(url)) {
     return (
       <img
@@ -168,7 +200,7 @@ function MediaRenderer({
     );
   }
 
-  // ===== 4. 기본 fallback (없거나 에러나면) =====
+  // 4. 에러 또는 빈 URL fallback
   if (imgError || !url) {
     return (
       <img
@@ -187,7 +219,7 @@ function MediaRenderer({
     );
   }
 
-  // ===== 5. 기타 타입 (혹시 성공하면 보여주고 실패시 fallback) =====
+  // 5. 기타 미디어 (성공하면 보여주고 실패 시 fallback)
   return (
     <img
       src={url}
