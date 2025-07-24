@@ -307,7 +307,7 @@ function CandidateBox({ c, onClick, disabled, idx, selected, t }) {
             alt={c.name}
             playable
             style={{
-              objectFit: "contain", // 수정됨: 전체 이미지가 보이도록 비율 유지하며 축소
+              objectFit: "contain",
               width: "100%",
               height: "100%",
               background: "#21283a",
@@ -478,11 +478,6 @@ function Match({ cup, onResult, selectedCount }) {
         roundNum === 1 ? [...pendingWinners, ...matchWinners] : matchWinners;
 
       // ===== 패자부활전 조건 수정됨 =====
-      console.log("resurrectUsed", resurrectUsed);
-      console.log("cup.data.length", cup.data.length);
-      console.log("nextRoundCandidates.length", nextRoundCandidates.length);
-      console.log("roundNum", roundNum);
-
       if (
         !resurrectUsed &&
         cup.data.length >= 32 &&
@@ -531,7 +526,9 @@ function Match({ cup, onResult, selectedCount }) {
   function handleResurrectConfirm(final16) {
     setShowResurrect(false);
     setResurrectUsed(true);
-    setBracket(makeNextRound(final16));
+    // ===== 여기만 변경됨: 랜덤으로 섞어서 매치 =====
+    const shuffled = shuffle([...final16]);
+    setBracket(makeNextRound(shuffled));
     setPendingWinners([]);
     setIdx(0);
     setRoundNum((r) => r + 1);
