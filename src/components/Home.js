@@ -86,10 +86,9 @@ function Home({
   }, []);
   const isMobile = vw < 600;
   const CARD_WIDTH = isMobile ? 320 : 420;
-  const CARD_HEIGHT = isMobile ? 240 : 265;
+  const CARD_HEIGHT = isMobile ? 265 : 295;
   const CARD_GAP = isMobile ? 7 : 9;
   const SKELETON_COUNT = isMobile ? 3 : 6;
-  // 썸네일 높이 ↓↓ 줄이기!
   const THUMB_HEIGHT = isMobile ? 148 : 168 * 1.05;
 
   useEffect(() => {
@@ -513,20 +512,21 @@ function Home({
                     />
                   </div>
                 </div>
-                {/* 이하 동일... */}
+                {/* ======= 제목 영역 flex:1, maxHeight 더 넉넉히 ======= */}
                 <div
                   style={{
                     width: "100%",
                     maxWidth: "100%",
                     minHeight: isMobile ? 32 : 38,
-                    maxHeight: isMobile ? 38 : 45,
+                    maxHeight: isMobile ? 90 : 105,
                     overflow: "hidden",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
+                    flex: 1,
                     padding: isMobile
-                      ? "4px 10px 0 10px"  // 상단 패딩 0으로 수정
-                      : "6px 18px 2px 18px", // 상단 패딩 2px에서 0으로 수정 가능
+                      ? "4px 10px 0 10px"
+                      : "6px 18px 0 18px",
                     fontWeight: 900,
                     fontSize: isMobile ? 17 : 20,
                     color: "#fff",
@@ -548,24 +548,26 @@ function Home({
                   <span
                     style={{
                       width: "100%",
-                      display: "-webkit-box",
-                      WebkitBoxOrient: "vertical",
-                      WebkitLineClamp: 2,
-                      overflow: "hidden",
-                      textOverflow: "ellipsis",
+                      display: "block",
                       textAlign: "center",
                       lineHeight: 1.18,
                       margin: 0,
                       padding: 0,
-                      whiteSpace: "normal",
+                      whiteSpace: "pre-line",
                       wordBreak: "keep-all",
                       fontFamily: NEON_FONT,
                       fontWeight: 900,
                     }}
                   >
-                    {cup.title}
+                    {(() => {
+                      const title = cup.title || "";
+                      const safeTitle = title.slice(0, 70); // 70자까지 제한
+                      if (safeTitle.length <= 40) return safeTitle;
+                      return safeTitle.slice(0, 40) + "\n" + safeTitle.slice(40);
+                    })()}
                   </span>
                 </div>
+                {/* ======= 버튼 영역 - 하단 고정 ======= */}
                 <div
                   style={{
                     width: "100%",
@@ -578,7 +580,7 @@ function Home({
                     minHeight: isMobile ? 23 : 27,
                     background: mainDark,
                     boxSizing: "border-box",
-                    marginTop: "auto",
+                    marginTop: 0,
                     borderTop: "none",
                     borderBottom: `2.6px solid ${blueLine}`,
                     borderRadius: 0,

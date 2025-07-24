@@ -332,7 +332,7 @@ function WorldcupMaker({ onCreate, onCancel }) {
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           placeholder="Worldcup Title"
-          maxLength={36}
+          maxLength={70}
           style={{
             width: "100%",
             padding: 10,

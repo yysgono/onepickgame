@@ -255,7 +255,7 @@ function EditWorldcupPage({ worldcupList, fetchWorldcups, cupId, isAdmin }) {
               marginBottom: 4, boxSizing: "border-box", background: "#fafdff",
               outlineColor: COLORS.main, transition: "border 0.15s"
             }}
-            maxLength={38}
+            maxLength={80}
             placeholder={t("edit_title_placeholder")}
             disabled={loading}
           />
@@ -273,7 +273,7 @@ function EditWorldcupPage({ worldcupList, fetchWorldcups, cupId, isAdmin }) {
               marginTop: 6, resize: "vertical", minHeight: 36, background: "#fafdff"
             }}
             rows={2}
-            maxLength={80}
+            maxLength={70}
             placeholder={t("edit_description_placeholder")}
             disabled={loading}
           />
