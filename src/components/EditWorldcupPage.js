@@ -162,11 +162,22 @@ function EditWorldcupPage({ worldcupList, fetchWorldcups, cupId, isAdmin }) {
     if (!title.trim()) return setError(t("edit_need_title"));
     if (data.length < 2) return setError(t("edit_need_min_candidates"));
     if (data.some(item => !item.name.trim())) return setError(t("edit_need_all_names"));
-    const names = data.map(item => item.name.trim());
-    if (new Set(names).size !== names.length)
-      return setError(t("edit_candidate_name_duplicate"));
-    setLoading(true);
 
+    // 중복 후보 이름 체크 (대소문자 무시, 중복 이름 구체적으로 알림)
+    const nameMap = {};
+    data.forEach(item => {
+      const lower = item.name.trim().toLowerCase();
+      if (!nameMap[lower]) nameMap[lower] = [];
+      nameMap[lower].push(item.name.trim());
+    });
+    const duplicates = Object.values(nameMap).filter(arr => arr.length > 1);
+
+    if (duplicates.length > 0) {
+      const dupNames = duplicates.map(arr => arr[0]).join(", ");
+      return setError(`Duplicate candidate names: ${dupNames}`);
+    }
+
+    setLoading(true);
     try {
       const updatedData = await Promise.all(
         data.map(async item => {
@@ -294,7 +305,7 @@ function EditWorldcupPage({ worldcupList, fetchWorldcups, cupId, isAdmin }) {
             cursor: "pointer",
             fontSize: isMobile ? 16 : 20,
             fontWeight: 700,
-            color: "#1677ed",
+            color: "#1676ed",
             letterSpacing: "-0.5px",
             minHeight: isMobile ? 40 : 66,
             display: "flex",

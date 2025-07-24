@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
 import { v4 as uuidv4 } from "uuid";
-import { useTranslation } from "react-i18next";
 import CandidateInput from "./CandidateInput";
 import COLORS from "../styles/theme";
 import { mainButtonStyle, grayButtonStyle } from "../styles/common";
@@ -10,7 +9,7 @@ import { supabase } from "../utils/supabaseClient";
 import useBanCheck from "../hooks/useBanCheck";
 
 const DEFAULT_THUMB_URL = "/default-thumb.png";
-const MAX_UPLOAD = 50; // 최대 업로드 개수
+const MAX_UPLOAD = 50;
 
 function isMobile() {
   if (typeof window !== "undefined") {
@@ -20,7 +19,6 @@ function isMobile() {
 }
 
 function WorldcupMaker({ onCreate, onCancel }) {
-  const { t } = useTranslation();
   const [title, setTitle] = useState("");
   const [desc, setDesc] = useState("");
   const [candidates, setCandidates] = useState([
@@ -35,7 +33,6 @@ function WorldcupMaker({ onCreate, onCancel }) {
   const mobile = isMobile();
 
   const fileInputRef = useRef();
-
   const [dragActive, setDragActive] = useState(false);
 
   useEffect(() => {
@@ -71,7 +68,7 @@ function WorldcupMaker({ onCreate, onCancel }) {
   if (!user) {
     return (
       <div style={{ padding: 60, textAlign: "center" }}>
-        <h2>{t("loginRequired")}</h2>
+        <h2>Please log in to create a Worldcup.</h2>
       </div>
     );
   }
@@ -85,18 +82,14 @@ function WorldcupMaker({ onCreate, onCancel }) {
           fontWeight: 700,
         }}
       >
-        🚫 {t("bannedNoCreate")}
+        🚫 You are banned from creating Worldcups.
         <br />
         {banInfo && banInfo.expires_at && (
           <div>
-            {t("banExpiresAt")}: {banInfo.expires_at.replace("T", " ").slice(0, 16)}
+            Ban expires at: {banInfo.expires_at.replace("T", " ").slice(0, 16)}
           </div>
         )}
-        {banInfo && banInfo.reason && (
-          <div>
-            {t("banReason")}: {banInfo.reason}
-          </div>
-        )}
+        {banInfo && banInfo.reason && <div>Reason: {banInfo.reason}</div>}
       </div>
     );
   }
@@ -119,14 +112,13 @@ function WorldcupMaker({ onCreate, onCancel }) {
     setCandidates((cands) => cands.filter((_, i) => i !== idx));
   }
 
-  // === avif 추가 포함 ===
   async function handleFiles(fileList) {
     if (fileList.length > MAX_UPLOAD) {
-      alert(t("maxUploadLimit", { count: MAX_UPLOAD }));
+      alert(`You can upload up to ${MAX_UPLOAD} files.`);
       return;
     }
     const files = Array.from(fileList).filter((file) =>
-      /\.(jpe?g|png|gif|svg|webp|avif)$/i.test(file.name) // avif 추가
+      /\.(jpe?g|png|gif|svg|webp|avif)$/i.test(file.name)
     );
     if (files.length === 0) return;
 
@@ -186,28 +178,32 @@ function WorldcupMaker({ onCreate, onCancel }) {
       }))
       .filter((c) => c.name);
 
-    if (!title.trim()) return setError(t("requireTitle"));
-    if (list.length < 2) return setError(t("requireCandidates"));
+    if (!title.trim()) {
+      setError("Please enter a title.");
+      return;
+    }
+    if (list.length < 2) {
+      setError("Please add at least two candidates.");
+      return;
+    }
 
-    // 중복 후보 이름 체크
-    const nameCount = {};
+    // 중복 체크
+    const nameMap = {};
     list.forEach((c) => {
-      const lowerName = c.name.toLowerCase();
-      nameCount[lowerName] = (nameCount[lowerName] || 0) + 1;
+      const lower = c.name.toLowerCase();
+      if (!nameMap[lower]) nameMap[lower] = [];
+      nameMap[lower].push(c.name);
     });
-    const duplicates = Object.entries(nameCount)
-      .filter(([, count]) => count > 1)
-      .map(([name]) => name);
+
+    const duplicates = Object.values(nameMap).filter((arr) => arr.length > 1);
 
     if (duplicates.length > 0) {
-      // 원본 이름 유지용
-      const dupOriginalNames = duplicates.map((dup) => {
-        const orig = list.find((c) => c.name.toLowerCase() === dup);
-        return orig ? orig.name : dup;
-      });
-      return setError(
-        t("duplicateCandidates", { names: dupOriginalNames.join(", ") })
-      );
+      // 중복된 이름들을 쉼표로 연결해 메시지 생성
+      const dupNames = duplicates
+        .map((arr) => arr[0]) // 원래 이름 중 첫번째만 보여줌
+        .join(", ");
+      setError("Duplicate candidate names: " + dupNames);
+      return;
     }
 
     setLoading(true);
@@ -216,7 +212,7 @@ function WorldcupMaker({ onCreate, onCancel }) {
       const {
         data: { user: currentUser },
       } = await supabase.auth.getUser();
-      if (!currentUser?.id) throw new Error("로그인 정보 없음");
+      if (!currentUser?.id) throw new Error("No login info.");
 
       const updatedList = await Promise.all(
         list.map(async (c) => {
@@ -239,7 +235,7 @@ function WorldcupMaker({ onCreate, onCancel }) {
       };
 
       const id = await addWorldcupGame(newCup);
-      alert(t("worldcupSaved") + `\nID: ${id}`);
+      alert("Worldcup saved!\nID: " + id);
 
       if (onCreate) {
         onCreate({
@@ -255,7 +251,7 @@ function WorldcupMaker({ onCreate, onCancel }) {
         { id: uuidv4(), name: "", image: "", file: null },
       ]);
     } catch (e) {
-      setError(t("saveFail"));
+      setError("Failed to save. Please try again.");
       console.error(e);
     } finally {
       setLoading(false);
@@ -284,10 +280,10 @@ function WorldcupMaker({ onCreate, onCancel }) {
           color: COLORS.main,
         }}
       >
-        {t("createWorldcup")}
+        Create Worldcup
       </h2>
       <form onSubmit={handleSubmit}>
-        {/* ===== 업로드 박스 ===== */}
+        {/* 업로드 박스 */}
         <div
           onDrop={(e) => {
             e.preventDefault();
@@ -320,7 +316,7 @@ function WorldcupMaker({ onCreate, onCancel }) {
           <input
             ref={fileInputRef}
             type="file"
-            accept=".jpg,.jpeg,.png,.gif,.svg,.webp,.avif" // avif 추가
+            accept=".jpg,.jpeg,.png,.gif,.svg,.webp,.avif"
             multiple
             style={{ display: "none" }}
             onChange={(e) => handleFiles(e.target.files)}
@@ -329,26 +325,13 @@ function WorldcupMaker({ onCreate, onCancel }) {
           <span>
             <span style={{ fontSize: mobile ? 20 : 26 }}>📁</span>
             <br />
-            {t("uploadZone")}
-            <br />
-            <span
-              style={{
-                fontSize: mobile ? 14 : 16,
-                color: "#888",
-                fontWeight: 400,
-                display: "block",
-                marginTop: 8,
-              }}
-            >
-              {t("dragDropUpTo50")}
-            </span>
+            Upload images or drag & drop (up to 50)
           </span>
         </div>
-        {/* ======================================== */}
         <input
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          placeholder={t("worldcupTitle")}
+          placeholder="Worldcup Title"
           maxLength={36}
           style={{
             width: "100%",
@@ -363,7 +346,7 @@ function WorldcupMaker({ onCreate, onCancel }) {
         <textarea
           value={desc}
           onChange={(e) => setDesc(e.target.value)}
-          placeholder={t("descriptionOptional")}
+          placeholder="Description (optional)"
           maxLength={100}
           rows={2}
           style={{
@@ -378,7 +361,7 @@ function WorldcupMaker({ onCreate, onCancel }) {
         />
         <div style={{ marginBottom: 18 }}>
           <div style={{ fontWeight: 700, marginBottom: 7 }}>
-            {t("candidateList")}{" "}
+            Candidates{" "}
             <span style={{ color: "#888", fontWeight: 400, fontSize: mobile ? 13 : 15 }}>
               ({candidates.length} / 1024)
             </span>
@@ -406,7 +389,7 @@ function WorldcupMaker({ onCreate, onCancel }) {
             }}
             disabled={loading}
           >
-            + {t("addCandidate")}
+            + Add Candidate
           </button>
         </div>
         {error && (
@@ -431,7 +414,7 @@ function WorldcupMaker({ onCreate, onCancel }) {
             }}
             disabled={loading}
           >
-            {loading ? t("saving") : t("create")}
+            {loading ? "Saving..." : "Save"}
           </button>
           <button
             type="button"
@@ -444,7 +427,7 @@ function WorldcupMaker({ onCreate, onCancel }) {
             }}
             disabled={loading}
           >
-            {t("cancel")}
+            Cancel
           </button>
         </div>
       </form>
