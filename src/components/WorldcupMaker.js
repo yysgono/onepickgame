@@ -189,6 +189,27 @@ function WorldcupMaker({ onCreate, onCancel }) {
     if (!title.trim()) return setError(t("requireTitle"));
     if (list.length < 2) return setError(t("requireCandidates"));
 
+    // 중복 후보 이름 체크
+    const nameCount = {};
+    list.forEach((c) => {
+      const lowerName = c.name.toLowerCase();
+      nameCount[lowerName] = (nameCount[lowerName] || 0) + 1;
+    });
+    const duplicates = Object.entries(nameCount)
+      .filter(([, count]) => count > 1)
+      .map(([name]) => name);
+
+    if (duplicates.length > 0) {
+      // 원본 이름 유지용
+      const dupOriginalNames = duplicates.map((dup) => {
+        const orig = list.find((c) => c.name.toLowerCase() === dup);
+        return orig ? orig.name : dup;
+      });
+      return setError(
+        t("duplicateCandidates", { names: dupOriginalNames.join(", ") })
+      );
+    }
+
     setLoading(true);
 
     try {
