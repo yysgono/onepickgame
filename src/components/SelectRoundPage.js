@@ -264,6 +264,7 @@ export default function SelectRoundPage({ cup, maxRound, candidates, onSelect, o
           marginBottom: isMobile ? 16 : 24,
           display: "flex",
           flexDirection: "row",
+          flexWrap: "wrap", // 이 부분 추가했습니다.
           alignItems: "center",
           justifyContent: "center",
           gap: isMobile ? 8 : 16,
