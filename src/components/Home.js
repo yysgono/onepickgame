@@ -525,8 +525,8 @@ function Home({
                     alignItems: "center",
                     justifyContent: "center",
                     padding: isMobile
-                      ? "4px 10px 0px 10px"
-                      : "6px 18px 2px 18px",
+                      ? "4px 10px 0 10px"  // 상단 패딩 0으로 수정
+                      : "6px 18px 2px 18px", // 상단 패딩 2px에서 0으로 수정 가능
                     fontWeight: 900,
                     fontSize: isMobile ? 17 : 20,
                     color: "#fff",
