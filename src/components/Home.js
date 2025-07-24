@@ -560,10 +560,15 @@ function Home({
                     }}
                   >
                     {(() => {
-                      const title = cup.title || "";
-                      const safeTitle = title.slice(0, 70); // 70자까지 제한
-                      if (safeTitle.length <= 40) return safeTitle;
-                      return safeTitle.slice(0, 40) + "\n" + safeTitle.slice(40);
+                      // 최대 70자, 40자 이내는 그대로, 
+                      // 40자 이후 가장 가까운 공백에서 줄바꿈
+                      const title = (cup.title || "").slice(0, 70);
+                      if (title.length <= 40) return title;
+                      const breakpoint = (() => {
+                        const idx = title.lastIndexOf(" ", 40);
+                        return idx === -1 ? 40 : idx;
+                      })();
+                      return title.slice(0, breakpoint) + "\n" + title.slice(breakpoint + 1);
                     })()}
                   </span>
                 </div>
