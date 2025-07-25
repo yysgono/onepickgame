@@ -217,5 +217,6 @@
     "select_count": "1～4名選択（{{selected}}/{{max}}）",
     "skip": "スキップ",
     "confirm": "確定"
-  }
+  },
+  "footer_description": "トーナメントゲームサイト <b>OnePickGame</b>。自分だけのトーナメントを作成し、楽しい対戦を楽しんで、世界中のユーザーと遊ぼう！"
 }

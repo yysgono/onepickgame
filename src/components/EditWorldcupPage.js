@@ -76,6 +76,8 @@ function EditWorldcupPage({ worldcupList, fetchWorldcups, cupId, isAdmin }) {
 
   if (!user) return <div style={{ padding: 80 }}>{t("need_login")}</div>;
   if (!originalCup) return <div style={{ padding: 80 }}>{t("not_found")}</div>;
+  
+  // 관리자 권한 포함 수정 가능 여부 판단
   if (
     !isAdmin &&
     !(
@@ -102,7 +104,7 @@ function EditWorldcupPage({ worldcupList, fetchWorldcups, cupId, isAdmin }) {
       alert(t("image_file_size_limit"));
       return;
     }
-    const allowed = /\.(jpe?g|png|gif|svg)$/i;
+    const allowed = /\.(jpe?g|png|gif|svg|webp|avif)$/i;
     if (!allowed.test(file.name)) {
       alert(t("only_image_file"));
       return;
@@ -115,7 +117,7 @@ function EditWorldcupPage({ worldcupList, fetchWorldcups, cupId, isAdmin }) {
   }
   async function handleFiles(fileList) {
     const files = Array.from(fileList).filter(file =>
-      /\.(jpe?g|png|gif|svg)$/i.test(file.name)
+      /\.(jpe?g|png|gif|svg|webp|avif)$/i.test(file.name)
     );
     if (files.length === 0) return;
 
@@ -190,6 +192,8 @@ function EditWorldcupPage({ worldcupList, fetchWorldcups, cupId, isAdmin }) {
             else if (imageUrl.startsWith("data:image/jpeg")) ext = "jpg";
             else if (imageUrl.startsWith("data:image/jpg")) ext = "jpg";
             else if (imageUrl.startsWith("data:image/png")) ext = "png";
+            else if (imageUrl.startsWith("data:image/webp")) ext = "webp";
+            else if (imageUrl.startsWith("data:image/avif")) ext = "avif";
             imageUrl = await uploadCandidateImage(
               new File([file], `${item.name}.${ext}`, { type: file.type }),
               nickname || user.id
@@ -318,7 +322,7 @@ function EditWorldcupPage({ worldcupList, fetchWorldcups, cupId, isAdmin }) {
           <input
             ref={fileInputRef}
             type="file"
-            accept=".jpg,.jpeg,.png,.gif,.svg"
+            accept=".jpg,.jpeg,.png,.gif,.svg,.webp,.avif"
             multiple
             style={{ display: "none" }}
             onChange={e => handleFiles(e.target.files)}
@@ -389,7 +393,7 @@ function EditWorldcupPage({ worldcupList, fetchWorldcups, cupId, isAdmin }) {
               <input
                 id={`file-${i}`}
                 type="file"
-                accept=".jpg,.jpeg,.png,.gif,.svg"
+                accept=".jpg,.jpeg,.png,.gif,.svg,.webp,.avif"
                 style={{ display: "none" }}
                 onChange={e => handleFileChange(i, e)}
                 disabled={loading}

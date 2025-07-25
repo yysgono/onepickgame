@@ -203,9 +203,7 @@
     "saveError": "保存错误。",
     "bye": "{{count}} 名候选人轮空！",
     "nextRound": "下一轮",
-    "nextRoundTitle": "{{a}} 对 {{b}}",
-    "terms_of_service": "服务条款",
-    "privacy_policy": "隐私政策"
+    "nextRoundTitle": "{{a}} 对 {{b}}"
   },
   "recommended_worldcups": "推荐世界杯",
   "dragDropUpTo50": "您可以一次性将最多50张图片拖放到此框中。",
@@ -219,5 +217,6 @@
     "select_count": "选择1~4（{{selected}}/{{max}}）",
     "skip": "跳过",
     "confirm": "确认"
-  }
+  },
+  "footer_description": "对战游戏网站 <b>OnePickGame</b>。创建属于你的锦标赛，享受有趣的对决，与全球用户一起畅玩！"
 }

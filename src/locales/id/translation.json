@@ -217,5 +217,6 @@
     "select_count": "Pilih 1~4 ({{selected}}/{{max}})",
     "skip": "Lewati",
     "confirm": "Konfirmasi"
-  }
+  },
+  "footer_description": "Situs permainan turnamen <b>OnePickGame</b>. Buat turnamen Anda sendiri, nikmati pertandingan seru, dan mainkan bersama pengguna di seluruh dunia!"
 }

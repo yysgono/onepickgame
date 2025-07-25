@@ -217,5 +217,6 @@
     "select_count": "Select 1~4 ({{selected}}/{{max}})",
     "skip": "Skip",
     "confirm": "Confirm"
-  }
+  },
+  "footer_description": "Bracket game site <b>OnePickGame</b>. Create your own tournament bracket, enjoy fun matchups, and play with users around the world!"
 }

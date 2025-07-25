@@ -217,5 +217,6 @@
     "select_count": "1~4명 선택 ({{selected}}/{{max}})",
     "skip": "스킵",
     "confirm": "확정"
-  }
+  },
+  "footer_description": "토너먼트 게임 사이트 <b>OnePickGame</b>. 나만의 대진표를 만들고, 재미있는 매치를 즐기고, 전 세계 유저들과 함께 플레이하세요!"
 }

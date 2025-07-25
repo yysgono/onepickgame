@@ -1,14 +1,13 @@
 // src/App.js
 import "./i18n";
 import "./App.css";
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import {
   BrowserRouter as Router,
   Routes,
   Route,
   useNavigate,
   useParams,
-  useLocation,
 } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
@@ -374,6 +373,7 @@ function App() {
           cupId={id}
           user={user}
           nickname={nickname}
+          isAdmin={isAdmin}  // 추가: 관리자 권한 prop 전달
         />
       );
     }

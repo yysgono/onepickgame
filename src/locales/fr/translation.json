@@ -217,5 +217,6 @@
     "select_count": "Sélectionnez 1 à 4 ({{selected}}/{{max}})",
     "skip": "Ignorer",
     "confirm": "Confirmer"
-  }
+  },
+  "footer_description": "Site de jeu de tournoi <b>OnePickGame</b>. Créez votre propre tournoi, amusez-vous avec des matchs passionnants et jouez avec des utilisateurs du monde entier!"
 }

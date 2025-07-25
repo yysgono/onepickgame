@@ -217,5 +217,6 @@
     "select_count": "1~4 seçin ({{selected}}/{{max}})",
     "skip": "Atla",
     "confirm": "Onayla"
-  }
+  },
+  "footer_description": "Turnuva oyunu sitesi <b>OnePickGame</b>. Kendi turnuvanızı oluşturun, eğlenceli eşleşmeler yapın ve dünya çapında kullanıcılarla oynayın!"
 }

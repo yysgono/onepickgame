@@ -217,5 +217,6 @@
     "select_count": "1~4 auswählen ({{selected}}/{{max}})",
     "skip": "Überspringen",
     "confirm": "Bestätigen"
-  }
+  },
+  "footer_description": "Turnierspielseite <b>OnePickGame</b>. Erstelle dein eigenes Turnier, genieße spannende Duelle und spiele mit Nutzern aus aller Welt!"
 }
