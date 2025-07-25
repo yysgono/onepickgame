@@ -30,7 +30,7 @@ export default function Footer() {
         }}
       >
         <Trans i18nKey="footer_description">
-          Bracket game site <b>OnePickGame</b>. Create your own tournament
+          Bracket game site <b>One Pick Game</b>. Create your own tournament
           bracket, enjoy fun matchups, and play with users around the world!
         </Trans>
       </div>
@@ -82,7 +82,7 @@ export default function Footer() {
       </div>
 
       <div style={{ marginTop: 4, color: "#a1cfff", fontSize: 12 }}>
-        &copy; {new Date().getFullYear()} OnePickGame
+        &copy; {new Date().getFullYear()} One Pick Game
       </div>
     </footer>
   );

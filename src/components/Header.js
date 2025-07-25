@@ -385,7 +385,7 @@ export default function Header({
             marginTop: 2
           }}
         >
-          OnePickGame
+          One Pick Game
         </span>
       </div>
       {/* 버튼/메뉴 */}
