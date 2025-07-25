@@ -1,8 +1,9 @@
 import React from "react";
 import { useTranslation, Trans } from "react-i18next";
+import { Link } from "react-router-dom";
 
 export default function Footer() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   return (
     <footer
@@ -33,6 +34,25 @@ export default function Footer() {
           bracket, enjoy fun matchups, and play with users around the world!
         </Trans>
       </div>
+
+      {/* ✅ 건의사항 페이지 링크 */}
+      <div style={{ marginBottom: 10 }}>
+        <Link
+          to="/suggestions"
+          style={{
+            marginRight: 16,
+            color: "#ffda7f",
+            textDecoration: "underline",
+            fontSize: 14,
+            fontWeight: "bold"
+          }}
+        >
+          {t("footer_suggestions_link", {
+            defaultValue: "Ideal Type World Cup Suggestions"
+          })}
+        </Link>
+      </div>
+
       <div>
         <a
           href="/terms-of-service"
@@ -60,6 +80,7 @@ export default function Footer() {
           {t("privacy_policy")}
         </a>
       </div>
+
       <div style={{ marginTop: 4, color: "#a1cfff", fontSize: 12 }}>
         &copy; {new Date().getFullYear()} OnePickGame
       </div>

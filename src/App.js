@@ -31,8 +31,7 @@ import FindPwBox from "./components/FindPwBox";
 import PrivacyPolicy from "./components/PrivacyPolicy";
 import TermsOfService from "./components/TermsOfService";
 import Footer from "./components/Footer";
-// AdBanner 컴포넌트 삭제 시 import도 삭제하세요
-// import AdBanner from "./components/AdBanner";
+import SuggestionsBoard from "./components/SuggestionsBoard"; // ✅ 추가
 
 import DePage from "./pages/de/index";
 import EnPage from "./pages/en/index";
@@ -373,7 +372,7 @@ function App() {
           cupId={id}
           user={user}
           nickname={nickname}
-          isAdmin={isAdmin}  // 추가: 관리자 권한 prop 전달
+          isAdmin={isAdmin}
         />
       );
     }
@@ -452,13 +451,9 @@ function App() {
             setNickname={updateNickname}
           />
         </div>
-        {/* AdBanner 관련 코드 삭제 시 이 부분 제거 또는 주석 처리 */}
-        {/* <div className="ad-banner-top-static-wrap" style={{ marginTop: 0, paddingTop: 0 }}>
-          <AdBanner position="top" img="ad2.png" />
-        </div> */}
+
         <div className="main-content-box">
           <Routes>
-            {/* 언어 경로 별 페이지 렌더링 */}
             <Route
               path="/:lang"
               element={
@@ -472,7 +467,6 @@ function App() {
                 />
               }
             />
-
             <Route path="/" element={<HomeWrapper />} />
             <Route path="/my-worldcups" element={<MyWorldcupsWrapper />} />
             <Route path="/recent-worldcups" element={<RecentWorldcupsWrapper />} />
@@ -494,6 +488,7 @@ function App() {
             <Route path="/reset-password" element={<ResetPwRedirect />} />
             <Route path="/privacy-policy" element={<PrivacyPolicy />} />
             <Route path="/terms-of-service" element={<TermsOfService />} />
+            <Route path="/suggestions" element={<SuggestionsBoard user={user} isAdmin={isAdmin} />} /> {/* ✅ 추가 */}
           </Routes>
         </div>
       </>
@@ -533,36 +528,12 @@ function App() {
         }}
       />
       <div style={{ position: "relative", zIndex: 2 }}>
-        {/* AdBanner 좌우 배너 제거 시 이 부분도 주석/삭제하세요 */}
-        {/* <AdBanner
-          position="left"
-          img="ad1.png"
-          style={{
-            top: "50%",
-            left: 24,
-            transform: "translateY(-50%)",
-            maxHeight: "95vh",
-            width: "300px",
-          }}
-        />
-        <AdBanner
-          position="right"
-          img="ad1.png"
-          style={{
-            top: "50%",
-            right: 24,
-            transform: "translateY(-50%)",
-            maxHeight: "95vh",
-            width: "300px",
-          }}
-        /> */}
         <div
           className="main-content-outer"
           style={{ paddingTop: 190, margin: 0 }}
         >
           <Router>
             <AppRoutes />
-            {/* Footer 항상 보임 */}
             <Footer />
           </Router>
         </div>
