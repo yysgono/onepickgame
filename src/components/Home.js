@@ -260,418 +260,425 @@ function Home({
   };
 
   return (
-    <div
-      style={{
-        width: "100vw",
-        minHeight: "100vh",
-        background: `url('/83243377_1669883362558_1_600x600.jpg') center center / cover no-repeat fixed`,
-        position: "relative",
-      }}
-    >
-      <div
-        style={{
-          position: "fixed",
-          inset: 0,
-          width: "100vw",
-          height: "100vh",
-          zIndex: 0,
-          pointerEvents: "none",
-          background: "rgba(0,0,0,0.0)",
-        }}
-      />
-      {showFixedWorldcups !== false && (
-        <FixedCupSection worldcupList={fixedCupsWithStats || []} />
-      )}
+    <>
+      {/* ✅ 배경 이미지 Preload */}
+      <link rel="preload" as="image" href="/83243377_1669883362558_1_600x600.jpg" />
 
-      {/* 정렬 버튼 + 검색창 모두 중앙 정렬 */}
       <div
         style={{
           width: "100vw",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          gap: isMobile ? 10 : 20,
-          margin: isMobile ? "12px 0 8px" : "22px 0 14px",
-          padding: isMobile ? "0 8px" : "0 12px",
-          flexDirection: isMobile ? "column" : "row",
-          zIndex: 5,
+          minHeight: "100vh",
+          background: `url('/83243377_1669883362558_1_600x600.jpg') center center / cover no-repeat fixed`,
+          position: "relative",
         }}
       >
-        <div style={{
-          display: "flex",
-          alignItems: "center",
-          gap: 6,
-          justifyContent: "center",
-        }}>
-          {sortButton(t("popular"), "popular")}
-          {sortButton(t("latest"), "recent")}
-        </div>
-        <input
-          type="text"
-          placeholder={t("search_placeholder")}
-          value={search}
-          onChange={e => setSearch(e.target.value)}
+        <div
           style={{
-            background: "#fff",
-            color: "#1b2236",
-            border: "2px solid #fff",
-            borderRadius: 8,
-            padding: isMobile ? "9px 13px" : "13px 20px",
-            fontSize: isMobile ? 16 : 17,
-            minWidth: isMobile ? 0 : 220,
-            maxWidth: 400,
-            outline: "none",
-            fontWeight: 700,
-            boxShadow: "0 2px 12px #fff5",
-            transition: "border .14s, box-shadow .14s",
-            letterSpacing: ".1px",
+            position: "fixed",
+            inset: 0,
+            width: "100vw",
+            height: "100vh",
+            zIndex: 0,
+            pointerEvents: "none",
+            background: "rgba(0,0,0,0.0)",
           }}
         />
-      </div>
+        {showFixedWorldcups !== false && (
+          <FixedCupSection worldcupList={fixedCupsWithStats || []} />
+        )}
 
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: `repeat(auto-fit, minmax(${CARD_WIDTH}px, 1fr))`,
-          gap: CARD_GAP,
-          width: "100vw",
-          maxWidth: "100vw",
-          margin: "0 auto",
-          padding: 0,
-          boxSizing: "border-box",
-          justifyItems: "center",
-          alignItems: "start",
-          zIndex: 2,
-        }}
-      >
-        {loading &&
-          Array.from({ length: SKELETON_COUNT }).map((_, i) => (
-            <SkeletonCard
-              key={i}
-              cardHeight={CARD_HEIGHT}
-              thumbHeight={THUMB_HEIGHT}
-            />
-          ))}
-        {!loading &&
-          visibleList.length > 0 &&
-          visibleList.map((cup, idx) => {
-            const [first, second] = getTop2Winners(cup.winStats, cup.data);
-            return (
-              <div
-                key={cup.id}
-                ref={(el) => (cardRefs.current[idx] = el)}
-                style={{
-                  width: "100%",
-                  height: CARD_HEIGHT,
-                  borderRadius: 18,
-                  background: "rgba(17,27,55,0.77)",
-                  boxShadow: "0 8px 38px 0 #1976ed45, 0 2px 12px #1976ed44",
-                  border: "1.5px solid #233a74",
-                  display: "flex",
-                  flexDirection: "column",
-                  position: "relative",
-                  overflow: "hidden",
-                  transition: "box-shadow 0.18s, transform 0.16s",
-                  marginBottom: 0,
-                  cursor: "pointer",
-                  backdropFilter: "blur(13px) brightness(1.04)",
-                  WebkitBackdropFilter: "blur(13px) brightness(1.04)",
-                  willChange: "transform",
-                  maxWidth: CARD_WIDTH,
-                  minWidth: CARD_WIDTH,
-                }}
-                onMouseEnter={e => {
-                  e.currentTarget.style.transform = "translateY(-7px) scale(1.025)";
-                  e.currentTarget.style.boxShadow = "0 12px 50px 0 #1976ed88, 0 2.5px 16px #4abfff77";
-                }}
-                onMouseLeave={e => {
-                  e.currentTarget.style.transform = "";
-                  e.currentTarget.style.boxShadow = "0 8px 38px 0 #1976ed45, 0 2px 12px #1976ed44";
-                }}
-                onClick={() => {
-                  if (onSelect) onSelect(cup);
-                }}
-              >
-                <div style={{
-                  position: "absolute",
-                  top: "-33%",
-                  left: "-12%",
-                  width: "140%",
-                  height: "180%",
-                  zIndex: 0,
-                  background:
-                    "radial-gradient(circle at 50% 60%, #2a8fff33 0%, #11264c00 90%)",
-                  filter: "blur(22px) brightness(1.1)",
-                  opacity: 0.92,
-                  pointerEvents: "none",
-                }} />
+        {/* 정렬 버튼 + 검색창 */}
+        <div
+          style={{
+            width: "100vw",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            gap: isMobile ? 10 : 20,
+            margin: isMobile ? "12px 0 8px" : "22px 0 14px",
+            padding: isMobile ? "0 8px" : "0 12px",
+            flexDirection: isMobile ? "column" : "row",
+            zIndex: 5,
+          }}
+        >
+          <div style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 6,
+            justifyContent: "center",
+          }}>
+            {sortButton(t("popular"), "popular")}
+            {sortButton(t("latest"), "recent")}
+          </div>
+          <input
+            type="text"
+            placeholder={t("search_placeholder")}
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            style={{
+              background: "#fff",
+              color: "#1b2236",
+              border: "2px solid #fff",
+              borderRadius: 8,
+              padding: isMobile ? "9px 13px" : "13px 20px",
+              fontSize: isMobile ? 16 : 17,
+              minWidth: isMobile ? 0 : 220,
+              maxWidth: 400,
+              outline: "none",
+              fontWeight: 700,
+              boxShadow: "0 2px 12px #fff5",
+              transition: "border .14s, box-shadow .14s",
+              letterSpacing: ".1px",
+            }}
+          />
+        </div>
+
+        {/* 카드 리스트 */}
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: `repeat(auto-fit, minmax(${CARD_WIDTH}px, 1fr))`,
+            gap: CARD_GAP,
+            width: "100vw",
+            maxWidth: "100vw",
+            margin: "0 auto",
+            padding: 0,
+            boxSizing: "border-box",
+            justifyItems: "center",
+            alignItems: "start",
+            zIndex: 2,
+          }}
+        >
+          {loading &&
+            Array.from({ length: SKELETON_COUNT }).map((_, i) => (
+              <SkeletonCard
+                key={i}
+                cardHeight={CARD_HEIGHT}
+                thumbHeight={THUMB_HEIGHT}
+              />
+            ))}
+          {!loading &&
+            visibleList.length > 0 &&
+            visibleList.map((cup, idx) => {
+              const [first, second] = getTop2Winners(cup.winStats, cup.data);
+              return (
                 <div
+                  key={cup.id}
+                  ref={(el) => (cardRefs.current[idx] = el)}
                   style={{
                     width: "100%",
-                    height: THUMB_HEIGHT,
+                    height: CARD_HEIGHT,
+                    borderRadius: 18,
+                    background: "rgba(17,27,55,0.77)",
+                    boxShadow: "0 8px 38px 0 #1976ed45, 0 2px 12px #1976ed44",
+                    border: "1.5px solid #233a74",
                     display: "flex",
-                    flexDirection: "row",
-                    background: "linear-gradient(90deg, #162d52 0%, #284176 100%)",
-                    borderTopLeftRadius: 18,
-                    borderTopRightRadius: 18,
-                    overflow: "hidden",
+                    flexDirection: "column",
                     position: "relative",
-                    zIndex: 2,
+                    overflow: "hidden",
+                    transition: "box-shadow 0.18s, transform 0.16s",
+                    marginBottom: 0,
+                    cursor: "pointer",
+                    backdropFilter: "blur(13px) brightness(1.04)",
+                    WebkitBackdropFilter: "blur(13px) brightness(1.04)",
+                    willChange: "transform",
+                    maxWidth: CARD_WIDTH,
+                    minWidth: CARD_WIDTH,
+                  }}
+                  onMouseEnter={e => {
+                    e.currentTarget.style.transform = "translateY(-7px) scale(1.025)";
+                    e.currentTarget.style.boxShadow = "0 12px 50px 0 #1976ed88, 0 2.5px 16px #4abfff77";
+                  }}
+                  onMouseLeave={e => {
+                    e.currentTarget.style.transform = "";
+                    e.currentTarget.style.boxShadow = "0 8px 38px 0 #1976ed45, 0 2px 12px #1976ed44";
+                  }}
+                  onClick={() => {
+                    if (onSelect) onSelect(cup);
                   }}
                 >
+                  <div style={{
+                    position: "absolute",
+                    top: "-33%",
+                    left: "-12%",
+                    width: "140%",
+                    height: "180%",
+                    zIndex: 0,
+                    background:
+                      "radial-gradient(circle at 50% 60%, #2a8fff33 0%, #11264c00 90%)",
+                    filter: "blur(22px) brightness(1.1)",
+                    opacity: 0.92,
+                    pointerEvents: "none",
+                  }} />
                   <div
                     style={{
-                      width: "50%",
-                      height: "100%",
-                      background: "#192145",
-                      borderTopLeftRadius: 18,
-                      overflow: "hidden",
-                      position: "relative",
+                      width: "100%",
+                      height: THUMB_HEIGHT,
                       display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                  >
-                    {first?.image ? (
-                      <MediaRenderer
-                        url={first.image}
-                        alt="1위"
-                        playable={false}
-                        style={{
-                          width: "100%",
-                          height: "100%",
-                          objectFit: "cover",
-                          objectPosition: "center center",
-                          background: "#111"
-                        }}
-                      />
-                    ) : (
-                      <div
-                        style={{ width: "100%", height: "100%", background: "#222" }}
-                      />
-                    )}
-                  </div>
-                  <div
-                    style={{
-                      width: "50%",
-                      height: "100%",
-                      background: "#1f2540",
+                      flexDirection: "row",
+                      background: "linear-gradient(90deg, #162d52 0%, #284176 100%)",
+                      borderTopLeftRadius: 18,
                       borderTopRightRadius: 18,
                       overflow: "hidden",
                       position: "relative",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
+                      zIndex: 2,
                     }}
                   >
-                    {second?.image ? (
-                      <MediaRenderer
-                        url={second.image}
-                        alt="2위"
-                        playable={false}
+                    <div
+                      style={{
+                        width: "50%",
+                        height: "100%",
+                        background: "#192145",
+                        borderTopLeftRadius: 18,
+                        overflow: "hidden",
+                        position: "relative",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      {first?.image ? (
+                        <MediaRenderer
+                          url={first.image}
+                          alt="1위"
+                          playable={false}
+                          style={{
+                            width: "100%",
+                            height: "100%",
+                            objectFit: "cover",
+                            objectPosition: "center center",
+                            background: "#111"
+                          }}
+                        />
+                      ) : (
+                        <div
+                          style={{ width: "100%", height: "100%", background: "#222" }}
+                        />
+                      )}
+                    </div>
+                    <div
+                      style={{
+                        width: "50%",
+                        height: "100%",
+                        background: "#1f2540",
+                        borderTopRightRadius: 18,
+                        overflow: "hidden",
+                        position: "relative",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      {second?.image ? (
+                        <MediaRenderer
+                          url={second.image}
+                          alt="2위"
+                          playable={false}
+                          style={{
+                            width: "100%",
+                            height: "100%",
+                            objectFit: "cover",
+                            objectPosition: "center center",
+                            background: "#111"
+                          }}
+                        />
+                      ) : (
+                        <div
+                          style={{ width: "100%", height: "100%", background: "#15182b" }}
+                        />
+                      )}
+                    </div>
+                    <div
+                      style={{
+                        position: "absolute",
+                        top: "50%",
+                        left: "50%",
+                        transform: "translate(-50%,-55%)",
+                        zIndex: 5,
+                        pointerEvents: "none",
+                        width: isMobile ? 55 : 70,
+                        height: isMobile ? 55 : 70,
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <img
+                        src="/vs.png"
+                        alt="vs"
                         style={{
                           width: "100%",
                           height: "100%",
-                          objectFit: "cover",
-                          objectPosition: "center center",
-                          background: "#111"
+                          objectFit: "contain",
+                          userSelect: "none",
+                          pointerEvents: "none",
                         }}
+                        draggable={false}
                       />
-                    ) : (
-                      <div
-                        style={{ width: "100%", height: "100%", background: "#15182b" }}
-                      />
-                    )}
+                    </div>
                   </div>
+
+                  {/* 제목 */}
                   <div
                     style={{
-                      position: "absolute",
-                      top: "50%",
-                      left: "50%",
-                      transform: "translate(-50%,-55%)",
-                      zIndex: 5,
-                      pointerEvents: "none",
-                      width: isMobile ? 55 : 70,
-                      height: isMobile ? 55 : 70,
+                      width: "100%",
+                      maxWidth: "100%",
+                      minHeight: isMobile ? 32 : 38,
+                      maxHeight: isMobile ? 90 : 105,
+                      overflow: "hidden",
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
+                      flex: 1,
+                      padding: isMobile
+                        ? "4px 10px 0 10px"
+                        : "6px 18px 0 18px",
+                      fontWeight: 900,
+                      fontSize: isMobile ? 17 : 20,
+                      color: "#fff",
+                      fontFamily: NEON_FONT,
+                      textAlign: "center",
+                      wordBreak: "break-all",
+                      lineHeight: 1.17,
+                      letterSpacing: "0.4px",
+                      boxSizing: "border-box",
+                      background: mainDark,
+                      margin: 0,
+                      marginBottom: 0,
+                      whiteSpace: "normal",
+                      textShadow: "0 1.5px 8px #191b25cc",
+                      borderBottom: `1.5px solid #1976ed66`
                     }}
+                    title={cup.title}
                   >
-                    <img
-                      src="/vs.png"
-                      alt="vs"
+                    <span
                       style={{
                         width: "100%",
-                        height: "100%",
-                        objectFit: "contain",
-                        userSelect: "none",
-                        pointerEvents: "none",
+                        display: "block",
+                        textAlign: "center",
+                        lineHeight: 1.18,
+                        margin: 0,
+                        padding: 0,
+                        whiteSpace: "pre-line",
+                        wordBreak: "keep-all",
+                        fontFamily: NEON_FONT,
+                        fontWeight: 900,
                       }}
-                      draggable={false}
-                    />
+                    >
+                      {(() => {
+                        const title = (cup.title || "").slice(0, 70);
+                        if (title.length <= 40) return title;
+                        const breakpoint = (() => {
+                          const idx = title.lastIndexOf(" ", 40);
+                          return idx === -1 ? 40 : idx;
+                        })();
+                        return title.slice(0, breakpoint) + "\n" + title.slice(breakpoint + 1);
+                      })()}
+                    </span>
                   </div>
-                </div>
-                {/* ======= 제목 영역 flex:1, maxHeight 더 넉넉히 ======= */}
-                <div
-                  style={{
-                    width: "100%",
-                    maxWidth: "100%",
-                    minHeight: isMobile ? 32 : 38,
-                    maxHeight: isMobile ? 90 : 105,
-                    overflow: "hidden",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    flex: 1,
-                    padding: isMobile
-                      ? "4px 10px 0 10px"
-                      : "6px 18px 0 18px",
-                    fontWeight: 900,
-                    fontSize: isMobile ? 17 : 20,
-                    color: "#fff",
-                    fontFamily: NEON_FONT,
-                    textAlign: "center",
-                    wordBreak: "break-all",
-                    lineHeight: 1.17,
-                    letterSpacing: "0.4px",
-                    boxSizing: "border-box",
-                    background: mainDark,
-                    margin: 0,
-                    marginBottom: 0,
-                    whiteSpace: "normal",
-                    textShadow: "0 1.5px 8px #191b25cc",
-                    borderBottom: `1.5px solid #1976ed66`
-                  }}
-                  title={cup.title}
-                >
-                  <span
+
+                  {/* 버튼 영역 */}
+                  <div
                     style={{
                       width: "100%",
-                      display: "block",
-                      textAlign: "center",
-                      lineHeight: 1.18,
-                      margin: 0,
-                      padding: 0,
-                      whiteSpace: "pre-line",
-                      wordBreak: "keep-all",
-                      fontFamily: NEON_FONT,
-                      fontWeight: 900,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                      padding: isMobile
+                        ? "3px 8px 6px 8px"
+                        : "6px 16px 7px 16px",
+                      minHeight: isMobile ? 23 : 27,
+                      background: mainDark,
+                      boxSizing: "border-box",
+                      marginTop: 0,
+                      borderTop: "none",
+                      borderBottom: `2.6px solid ${blueLine}`,
+                      borderRadius: 0,
+                      gap: 0,
                     }}
                   >
-                    {(() => {
-                      // 최대 70자, 40자 이내는 그대로, 
-                      // 40자 이후 가장 가까운 공백에서 줄바꿈
-                      const title = (cup.title || "").slice(0, 70);
-                      if (title.length <= 40) return title;
-                      const breakpoint = (() => {
-                        const idx = title.lastIndexOf(" ", 40);
-                        return idx === -1 ? 40 : idx;
-                      })();
-                      return title.slice(0, breakpoint) + "\n" + title.slice(breakpoint + 1);
-                    })()}
-                  </span>
+                    <button
+                      onClick={e => {
+                        e.stopPropagation();
+                        if (onSelect) onSelect(cup);
+                      }}
+                      style={buttonStyle}
+                      onMouseOver={e => (e.currentTarget.style.background = "#1c2232")}
+                      onMouseOut={e => (e.currentTarget.style.background = mainDark)}
+                    >{t("start")}</button>
+                    {isMine(cup) ? (
+                      <div style={{ display: "flex", gap: 5 }}>
+                        <button
+                          onClick={e => {
+                            e.stopPropagation();
+                            window.location.href = `/edit-worldcup/${cup.id}`;
+                          }}
+                          style={smallButtonStyle}
+                          onMouseOver={e => (e.currentTarget.style.background = "#1c2232")}
+                          onMouseOut={e => (e.currentTarget.style.background = mainDark)}
+                        >{t("edit")}</button>
+                        <button
+                          onClick={e => {
+                            e.stopPropagation();
+                            if (!window.confirm(t("delete_confirm") || "정말 삭제하시겠습니까?")) return;
+                            if (onDelete) onDelete(cup.id);
+                            else window.location.reload();
+                          }}
+                          style={smallButtonStyle}
+                          onMouseOver={e => (e.currentTarget.style.background = "#1c2232")}
+                          onMouseOut={e => (e.currentTarget.style.background = mainDark)}
+                        >{t("delete")}</button>
+                      </div>
+                    ) : (
+                      <div style={{ width: isMobile ? 29 : 40 }} />
+                    )}
+                    <button
+                      onClick={e => {
+                        e.stopPropagation();
+                        window.location.href = `/stats/${cup.id}`;
+                      }}
+                      style={buttonStyle}
+                      onMouseOver={e => (e.currentTarget.style.background = "#1c2232")}
+                      onMouseOut={e => (e.currentTarget.style.background = mainDark)}
+                    >{t("stats_comment")}</button>
+                  </div>
                 </div>
-                {/* ======= 버튼 영역 - 하단 고정 ======= */}
-                <div
-                  style={{
-                    width: "100%",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    padding: isMobile
-                      ? "3px 8px 6px 8px"
-                      : "6px 16px 7px 16px",
-                    minHeight: isMobile ? 23 : 27,
-                    background: mainDark,
-                    boxSizing: "border-box",
-                    marginTop: 0,
-                    borderTop: "none",
-                    borderBottom: `2.6px solid ${blueLine}`,
-                    borderRadius: 0,
-                    gap: 0,
-                  }}
-                >
-                  <button
-                    onClick={e => {
-                      e.stopPropagation();
-                      if (onSelect) onSelect(cup);
-                    }}
-                    style={buttonStyle}
-                    onMouseOver={e => (e.currentTarget.style.background = "#1c2232")}
-                    onMouseOut={e => (e.currentTarget.style.background = mainDark)}
-                  >{t("start")}</button>
-                  {isMine(cup) ? (
-                    <div style={{ display: "flex", gap: 5 }}>
-                      <button
-                        onClick={e => {
-                          e.stopPropagation();
-                          window.location.href = `/edit-worldcup/${cup.id}`;
-                        }}
-                        style={smallButtonStyle}
-                        onMouseOver={e => (e.currentTarget.style.background = "#1c2232")}
-                        onMouseOut={e => (e.currentTarget.style.background = mainDark)}
-                      >{t("edit")}</button>
-                      <button
-                        onClick={e => {
-                          e.stopPropagation();
-                          if (!window.confirm(t("delete_confirm") || "정말 삭제하시겠습니까?")) return;
-                          if (onDelete) onDelete(cup.id);
-                          else window.location.reload();
-                        }}
-                        style={smallButtonStyle}
-                        onMouseOver={e => (e.currentTarget.style.background = "#1c2232")}
-                        onMouseOut={e => (e.currentTarget.style.background = mainDark)}
-                      >{t("delete")}</button>
-                    </div>
-                  ) : (
-                    <div style={{ width: isMobile ? 29 : 40 }} />
-                  )}
-                  <button
-                    onClick={e => {
-                      e.stopPropagation();
-                      window.location.href = `/stats/${cup.id}`;
-                    }}
-                    style={buttonStyle}
-                    onMouseOver={e => (e.currentTarget.style.background = "#1c2232")}
-                    onMouseOut={e => (e.currentTarget.style.background = mainDark)}
-                  >{t("stats_comment")}</button>
-                </div>
-              </div>
-            );
-          })}
-      </div>
-      {!loading && visibleCount < filtered.length && (
-        <div style={{ textAlign: "center", margin: "38px 0 60px 0" }}>
-          <button
-            style={{
-              padding: "13px 44px",
-              background: "#1976ed",
-              color: "#fff",
-              fontWeight: 900,
-              borderRadius: 10,
-              border: "none",
-              fontSize: 17,
-              boxShadow: "0 2px 12px #1976ed33",
-              cursor: "pointer",
-              letterSpacing: "0.4px",
-            }}
-            onClick={handleLoadMore}
-          >
-            {t("load_more")}
-          </button>
+              );
+            })}
         </div>
-      )}
-      <style>
-        {`
-          @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&display=swap');
-          button:focus, button:active {
-            outline: none !important;
-            box-shadow: none !important;
-          }
-        `}
-      </style>
-    </div>
+
+        {!loading && visibleCount < filtered.length && (
+          <div style={{ textAlign: "center", margin: "38px 0 60px 0" }}>
+            <button
+              style={{
+                padding: "13px 44px",
+                background: "#1976ed",
+                color: "#fff",
+                fontWeight: 900,
+                borderRadius: 10,
+                border: "none",
+                fontSize: 17,
+                boxShadow: "0 2px 12px #1976ed33",
+                cursor: "pointer",
+                letterSpacing: "0.4px",
+              }}
+              onClick={handleLoadMore}
+            >
+              {t("load_more")}
+            </button>
+          </div>
+        )}
+        <style>
+          {`
+            @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&display=swap');
+            button:focus, button:active {
+              outline: none !important;
+              box-shadow: none !important;
+            }
+          `}
+        </style>
+      </div>
+    </>
   );
 }
 
