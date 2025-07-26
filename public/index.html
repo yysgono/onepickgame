@@ -1,19 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- ✅ Google AdSense -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2906270915716379"
         crossorigin="anonymous"></script>
+
+  <!-- ✅ Meta SEO -->
   <meta name="description" content="Create your own tournament bracket with our tournament bracket generator and maker. Enjoy fun matchups and play with users from around the world!" />
   <meta property="og:title" content="OnePickGame - Tournament Bracket Game Site" />
   <meta property="og:description" content="Create your own tournament bracket with our tournament bracket generator and maker. Enjoy fun matchups and play with users from around the world!" />
   <meta property="og:image" content="https://onepickgame.com/ogimg.png" />
   <meta property="og:url" content="https://onepickgame.com/" />
+
+  <!-- ✅ Charset & Viewport -->
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- ✅ Title -->
   <title>Tournament bracket game | OnePickGame</title> 
+
+  <!-- ✅ Favicon -->
   <link rel="icon" type="image/svg+xml" href="/favicon_auto.svg">
   <link rel="icon" type="image/png" sizes="512x512" href="/favicon_192x192.png">
 
+  <!-- ✅ Schema.org -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -24,10 +34,42 @@
   }
   </script>
 
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&display=swap" rel="stylesheet">
+  <!-- ✅ Preconnect for Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <!-- ✅ Preload Font -->
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&display=swap">
+
+  <!-- ✅ Load Fonts with swap -->
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&display=swap" rel="stylesheet" media="all">
+
+  <!-- ✅ Critical CSS (최소화) -->
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Noto Sans', sans-serif;
+      background: #191930;
+      color: #fff;
+      font-size: 16px;
+    }
+    #root {
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .loading-screen {
+      font-size: 18px;
+      color: #00c8ff;
+      font-weight: bold;
+    }
+  </style>
 </head>
 
-<body style="background: #191930">
-  <div id="root"></div>
+<body>
+  <div id="root">
+    <div class="loading-screen">Loading...</div>
+  </div>
 </body>
 </html>
