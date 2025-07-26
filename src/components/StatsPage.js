@@ -200,7 +200,7 @@ function RankCard(props) {
         <MediaRenderer url={image} alt={name} />
       </div>
       <div style={{ fontWeight: 800, fontSize: isMobile ? 29 : 34, margin: "0 0 8px 0", color: medal.text }}>
-        {rank}
+        {name}
       </div>
       <div
         style={{
@@ -324,29 +324,46 @@ export default function StatsPage({
     result = result
       .map((row, i) => ({ ...row, _originIdx: i }))
       .sort((a, b) => {
-        let av = a[sortKey], bv = b[sortKey];
-        if (sortKey === "win_rate") {
-          av = a.total_games ? a.win_count / a.total_games : 0;
-          bv = b.total_games ? b.win_count / b.total_games : 0;
-        }
-        if (sortKey === "match_win_rate") {
-          av = a.match_count ? a.match_wins / a.match_count : 0;
-          bv = b.match_count ? b.match_wins / b.match_count : 0;
-        }
+        // rank 정렬 처리는 비활성화 했으므로 무시
+        // win_count / user_win_count 정렬 처리
         if (sortKey === "win_count" || sortKey === "user_win_count") {
-          if (a.win_count > b.win_count) return sortDesc ? -1 : 1;
-          if (a.win_count < b.win_count) return sortDesc ? 1 : -1;
-          if (a.match_wins > b.match_wins) return -1;
-          if (a.match_wins < b.match_wins) return 1;
+          if (a.win_count !== b.win_count) {
+            return sortDesc ? (b.win_count - a.win_count) : (a.win_count - b.win_count);
+          }
+          if (a.match_wins !== b.match_wins) {
+            return sortDesc ? (b.match_wins - a.match_wins) : (a.match_wins - b.match_wins);
+          }
           return a._originIdx - b._originIdx;
         }
+
+        // win_rate 정렬
+        if (sortKey === "win_rate") {
+          let av = a.total_games ? a.win_count / a.total_games : 0;
+          let bv = b.total_games ? b.win_count / b.total_games : 0;
+          if (av < bv) return sortDesc ? 1 : -1;
+          if (av > bv) return sortDesc ? -1 : 1;
+          return a._originIdx - b._originIdx;
+        }
+
+        // match_win_rate 정렬
+        if (sortKey === "match_win_rate") {
+          let av = a.match_count ? a.match_wins / a.match_count : 0;
+          let bv = b.match_count ? b.match_wins / b.match_count : 0;
+          if (av < bv) return sortDesc ? 1 : -1;
+          if (av > bv) return sortDesc ? -1 : 1;
+          return a._originIdx - b._originIdx;
+        }
+
+        // 문자열 정렬 (name 등)
+        let av = a[sortKey];
+        let bv = b[sortKey];
         if (typeof av === "string") av = av.toLowerCase();
         if (typeof bv === "string") bv = bv.toLowerCase();
         if (av < bv) return sortDesc ? 1 : -1;
         if (av > bv) return sortDesc ? -1 : 1;
         return a._originIdx - b._originIdx;
       });
-    // 랭크 부여
+    // 랭크 부여 (순서에 따른 1부터 랭크)
     result.forEach((row, i) => { row.rank = i + 1; });
     return result;
   }, [stats, search, userOnly, sortKey, sortDesc]);
@@ -378,7 +395,13 @@ export default function StatsPage({
     fontWeight: 800,
     color: "#998314",
     fontSize: isMobile ? 15 : 18,
-    border: 0
+    border: 0,
+  };
+
+  const normalCell = {
+    background: "#fff",
+    color: "#333",
+    padding: "7px 0",
   };
 
   const sortableCols = [
@@ -465,13 +488,15 @@ export default function StatsPage({
     if (!selectedCup?.id) return null;
     const shareUrl = `${window.location.origin}/select-round/${selectedCup.id}`;
     return (
-      <div style={{
-        display: "flex",
-        justifyContent: "center",
-        gap: 8,
-        marginBottom: 18,
-        marginTop: 0,
-      }}>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          gap: 8,
+          marginBottom: 18,
+          marginTop: 0,
+        }}
+      >
         <ReportButton cupId={selectedCup.id} size="sm" />
         <button
           onClick={() => {
@@ -509,12 +534,14 @@ export default function StatsPage({
       }}
     >
       {/* 상단 타이틀 */}
-      <div style={{
-        width: "100%",
-        display: "flex",
-        justifyContent: "center",
-        margin: "34px 0 19px 0",
-      }}>
+      <div
+        style={{
+          width: "100%",
+          display: "flex",
+          justifyContent: "center",
+          margin: "34px 0 19px 0",
+        }}
+      >
         <div
           style={{
             fontWeight: 900,
@@ -551,16 +578,18 @@ export default function StatsPage({
       <ShareAndReportBar />
 
       {/* 1~3등 카드형 */}
-      <div style={{
-        display: "flex",
-        flexDirection: isMobile ? "column" : "row",
-        justifyContent: "center",
-        alignItems: "center",
-        margin: "0 auto 18px auto",
-        width: "100%",
-        gap: isMobile ? 0 : 0,
-        overflowX: "auto"
-      }}>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: isMobile ? "column" : "row",
+          justifyContent: "center",
+          alignItems: "center",
+          margin: "0 auto 18px auto",
+          width: "100%",
+          gap: isMobile ? 0 : 0,
+          overflowX: "auto",
+        }}
+      >
         {top3.map((row, i) =>
           row ? (
             <RankCard
@@ -580,15 +609,21 @@ export default function StatsPage({
       </div>
 
       {/* 이하 동일 */}
-      <div style={{
-        display: "flex",
-        justifyContent: "center",
-        gap: 8,
-        marginBottom: 10,
-        marginTop: 4,
-      }}>
-        <button style={tabBtnStyle(!userOnly)} onClick={() => setUserOnly(false)}>{t("all")}</button>
-        <button style={{ ...tabBtnStyle(userOnly), marginRight: 0 }} onClick={() => setUserOnly(true)}>{t("members_only")}</button>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          gap: 8,
+          marginBottom: 10,
+          marginTop: 4,
+        }}
+      >
+        <button style={tabBtnStyle(!userOnly)} onClick={() => setUserOnly(false)}>
+          {t("all")}
+        </button>
+        <button style={{ ...tabBtnStyle(userOnly), marginRight: 0 }} onClick={() => setUserOnly(true)}>
+          {t("members_only")}
+        </button>
       </div>
 
       <div
@@ -600,7 +635,7 @@ export default function StatsPage({
           marginBottom: 10,
         }}
       >
-        {PERIODS.map(p => (
+        {PERIODS.map((p) => (
           <button
             key={p.value === null ? "all" : p.value}
             onClick={() => {
@@ -631,7 +666,7 @@ export default function StatsPage({
               type="date"
               value={customFrom}
               max={customTo}
-              onChange={e => setCustomFrom(e.target.value)}
+              onChange={(e) => setCustomFrom(e.target.value)}
               style={{ padding: "6px 11px", borderRadius: 8, border: "1.3px solid #bbb" }}
               aria-label={t("start")}
             />
@@ -640,7 +675,7 @@ export default function StatsPage({
               type="date"
               value={customTo}
               min={customFrom}
-              onChange={e => setCustomTo(e.target.value)}
+              onChange={(e) => setCustomTo(e.target.value)}
               style={{ padding: "6px 11px", borderRadius: 8, border: "1.3px solid #bbb" }}
               aria-label={t("apply")}
             />
@@ -695,7 +730,7 @@ export default function StatsPage({
           gap: 8,
         }}
       >
-        {[10, 25, 50, 100].map(num => (
+        {[10, 25, 50, 100].map((num) => (
           <button
             key={num}
             style={{
@@ -713,30 +748,6 @@ export default function StatsPage({
             {t("view_" + num)}
           </button>
         ))}
-      </div>
-
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          marginBottom: 16,
-          marginTop: 0,
-        }}
-      >
-        <input
-          value={search}
-          onChange={e => setSearch(e.target.value)}
-          placeholder={t("search_placeholder")}
-          style={{
-            width: 180,
-            padding: "9px 17px",
-            borderRadius: 10,
-            border: "1.5px solid #bbb",
-            fontSize: 15,
-          }}
-          aria-label={t("search")}
-          onKeyDown={e => { if (e.key === "Enter") setSearch(e.target.value); }}
-        />
       </div>
 
       <div style={{ width: "100%", overflowX: "auto", marginBottom: 12 }}>
@@ -757,29 +768,30 @@ export default function StatsPage({
         >
           <thead>
             <tr>
-              {sortableCols.map(col => (
+              {sortableCols.map((col) => (
                 <th
                   key={col.key}
                   style={{
                     padding: "8px 0",
-                    cursor: ["image"].includes(col.key) ? undefined : "pointer",
-                    ...(col.isIvory ? ivoryCell : { background: "#fff", fontWeight: 700 }),
-                    userSelect: "none"
+                    cursor: col.key === "rank" || ["image"].includes(col.key) ? undefined : "pointer",
+                    ...(col.isIvory ? ivoryCell : { background: "#fff", fontWeight: 700, color: "#333" }),
+                    userSelect: "none",
                   }}
                   onClick={
-                    ["image"].includes(col.key)
+                    col.key === "rank" || ["image"].includes(col.key)
                       ? undefined
                       : () => {
-                          if (sortKey === col.key) setSortDesc(desc => !desc);
-                          else { setSortKey(col.key); setSortDesc(true); }
+                          if (sortKey === col.key) setSortDesc((desc) => !desc);
+                          else {
+                            setSortKey(col.key);
+                            setSortDesc(true);
+                          }
                         }
                   }
                 >
                   <span>
                     {col.label}
-                    {sortKey === col.key &&
-                      (sortDesc ? " ▼" : " ▲")
-                    }
+                    {sortKey === col.key && col.key !== "rank" && (sortDesc ? " ▼" : " ▲")}
                   </span>
                 </th>
               ))}
@@ -790,82 +802,80 @@ export default function StatsPage({
               ? Array.from({ length: 5 }).map((_, i) => (
                   <SkeletonTableRow key={i} colCount={sortableCols.length} />
                 ))
-              : pagedStats.length === 0
-              ? (
-                <tr>
-                  <td colSpan={sortableCols.length} style={{ padding: 22, color: "#888" }}>
-                    {t("cannot_show_results")}
-                  </td>
-                </tr>
-              ) : (
-                pagedStats.map((row, idx) => {
-                  const isHighlighted = highlightCandidateId && row.candidate_id === highlightCandidateId;
-                  const highlightStyle = isHighlighted
-                    ? {
-                        background: "linear-gradient(90deg,#f9e7ff 0%,#f3fbff 80%)",
-                        boxShadow: "0 2px 12px #d489ec15",
-                        fontWeight: 800,
-                        borderLeft: "6px solid #d489ec",
-                        color: "#7114b5",
-                        fontSize: isMobile ? 15 : 17,
-                        transition: "all 0.12s"
-                      }
-                    : { background: (idx % 2 === 0) ? "#fafdff" : "#fff" };
-                  return (
-                    <tr key={row.candidate_id} style={highlightStyle}>
-                      {/* rank */}
-                      <td style={ivoryCell}>{row.rank}</td>
-                      {/* image */}
-                      <td style={{
-                        padding: "7px 0",
-                        background: "#fff"
-                      }}>
-                        <div
+              : pagedStats.length === 0 ? (
+                  <tr>
+                    <td colSpan={sortableCols.length} style={{ padding: 22, color: "#888" }}>
+                      {t("cannot_show_results")}
+                    </td>
+                  </tr>
+                ) : (
+                  pagedStats.map((row, idx) => {
+                    const isHighlighted = highlightCandidateId && row.candidate_id === highlightCandidateId;
+                    const highlightStyle = isHighlighted
+                      ? {
+                          background: "linear-gradient(90deg,#f9e7ff 0%,#f3fbff 80%)",
+                          boxShadow: "0 2px 12px #d489ec15",
+                          fontWeight: 800,
+                          borderLeft: "6px solid #d489ec",
+                          color: "#7114b5",
+                          fontSize: isMobile ? 15 : 17,
+                          transition: "all 0.12s",
+                        }
+                      : { background: idx % 2 === 0 ? "#fafdff" : "#fff", color: "#333" };
+                    return (
+                      <tr key={row.candidate_id} style={highlightStyle}>
+                        {/* rank */}
+                        <td style={ivoryCell}>{row.rank}</td>
+                        {/* image */}
+                        <td
                           style={{
-                            width: isMobile ? 30 : 38,
-                            height: isMobile ? 30 : 38,
-                            borderRadius: 7,
-                            overflow: "hidden",
-                            margin: "0 auto",
-                            background: "#f8f9fa",
-                            border: "1.5px solid #e7f1fb"
+                            ...normalCell,
+                            padding: "7px 0",
+                            background: "#fff",
                           }}
                         >
-                          <MediaRenderer url={row.image} alt={row.name} />
-                        </div>
-                      </td>
-                      {/* 이름 */}
-                      <td style={{
-                        padding: "7px 0",
-                        background: "#fff",
-                        fontWeight: 700,
-                        fontSize: isMobile ? 13 : 15,
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                        whiteSpace: "nowrap",
-                        maxWidth: isMobile ? 90 : 120,
-                      }}>
-                        {row.name}
-                      </td>
-                      {/* win_count */}
-                      <td style={{ padding: "7px 0", background: "#fff" }}>{row.win_count}</td>
-                      {/* win_rate */}
-                      <td style={ivoryCell}>
-                        {row.total_games ? percent(row.win_count, row.total_games) : "-"}
-                      </td>
-                      {/* match_wins */}
-                      <td style={{ padding: "7px 0", background: "#fff" }}>{row.match_wins}</td>
-                      {/* duel_count */}
-                      <td style={{ padding: "7px 0", background: "#fff" }}>{row.match_count}</td>
-                      {/* match_win_rate */}
-                      <td style={ivoryCell}>
-                        {row.match_count ? percent(row.match_wins, row.match_count) : "-"}
-                      </td>
-                    </tr>
-                  );
-                })
-              )
-            }
+                          <div
+                            style={{
+                              width: isMobile ? 30 : 38,
+                              height: isMobile ? 30 : 38,
+                              borderRadius: 7,
+                              overflow: "hidden",
+                              margin: "0 auto",
+                              background: "#f8f9fa",
+                              border: "1.5px solid #e7f1fb",
+                            }}
+                          >
+                            <MediaRenderer url={row.image} alt={row.name} />
+                          </div>
+                        </td>
+                        {/* 이름 */}
+                        <td
+                          style={{
+                            ...normalCell,
+                            fontWeight: 700,
+                            fontSize: isMobile ? 13 : 15,
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            whiteSpace: "nowrap",
+                            maxWidth: isMobile ? 90 : 120,
+                          }}
+                        >
+                          {row.name}
+                        </td>
+                        {/* win_count */}
+                        <td style={normalCell}>{row.win_count}</td>
+                        {/* win_rate */}
+                        <td style={ivoryCell}>{row.total_games ? percent(row.win_count, row.total_games) : "-"}</td>
+                        {/* match_wins */}
+                        <td style={normalCell}>{row.match_wins}</td>
+                        {/* duel_count */}
+                        <td style={normalCell}>{row.match_count}</td>
+                        {/* match_win_rate */}
+                        <td style={ivoryCell}>{row.match_count ? percent(row.match_wins, row.match_count) : "-"}</td>
+                      </tr>
+                    );
+                  })
+                )}
           </tbody>
         </table>
       </div>
@@ -881,9 +891,7 @@ function tabBtnStyle(selected) {
     padding: "8px 19px",
     marginRight: 8,
     borderRadius: 8,
-    border: selected
-      ? "2.5px solid #1976ed"
-      : "1.5px solid #ccc",
+    border: selected ? "2.5px solid #1976ed" : "1.5px solid #ccc",
     background: selected ? "#e8f2fe" : "#fff",
     color: selected ? "#1976ed" : "#555",
     fontWeight: 700,
@@ -901,14 +909,12 @@ function periodBtnStyle(selected) {
     marginRight: 7,
     marginBottom: 6,
     borderRadius: 8,
-    border: selected
-      ? "2.5px solid #1976ed"
-      : "1.5px solid #ccc",
+    border: selected ? "2.5px solid #1976ed" : "1.5px solid #ccc",
     background: selected ? "#e8f2fe" : "#fff",
     color: selected ? "#1976ed" : "#555",
     fontWeight: 700,
     fontSize: 15,
     cursor: "pointer",
-    transition: "all 0.15s"
+    transition: "all 0.15s",
   };
 }
