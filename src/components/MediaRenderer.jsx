@@ -19,7 +19,7 @@ function getFileExtension(url) {
 }
 
 function isImageFile(url) {
-  return /\.(jpeg|jpg|gif|png|webp|bmp)$/i.test(url);
+  return /\.(jpeg|jpg|gif|png|webp|bmp|avif)$/i.test(url);
 }
 
 function MediaRenderer({ url, alt = "", playable = false, style = {}, onPlay }) {
@@ -61,6 +61,7 @@ function MediaRenderer({ url, alt = "", playable = false, style = {}, onPlay }) 
                 }}
                 draggable={false}
                 onError={() => setImgError(true)}
+                loading="lazy"
               />
               {imgError && (
                 <div
@@ -146,6 +147,7 @@ function MediaRenderer({ url, alt = "", playable = false, style = {}, onPlay }) 
         }}
         draggable={false}
         onError={() => setImgError(true)}
+        loading="lazy"
       />
     );
   }
@@ -176,6 +178,7 @@ function MediaRenderer({ url, alt = "", playable = false, style = {}, onPlay }) 
         alt={alt}
         style={{ width: "100%", height: "100%", objectFit: "cover", ...style }}
         draggable={false}
+        loading="lazy"
       />
     );
   }
@@ -196,6 +199,7 @@ function MediaRenderer({ url, alt = "", playable = false, style = {}, onPlay }) 
         }}
         draggable={false}
         onError={() => setImgError(true)}
+        loading="lazy"
       />
     );
   }
@@ -215,6 +219,7 @@ function MediaRenderer({ url, alt = "", playable = false, style = {}, onPlay }) 
           ...style,
         }}
         draggable={false}
+        loading="lazy"
       />
     );
   }
@@ -234,6 +239,7 @@ function MediaRenderer({ url, alt = "", playable = false, style = {}, onPlay }) 
       }}
       draggable={false}
       onError={() => setImgError(true)}
+      loading="lazy"
     />
   );
 }

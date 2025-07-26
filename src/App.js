@@ -31,7 +31,7 @@ import FindPwBox from "./components/FindPwBox";
 import PrivacyPolicy from "./components/PrivacyPolicy";
 import TermsOfService from "./components/TermsOfService";
 import Footer from "./components/Footer";
-import SuggestionsBoard from "./components/SuggestionsBoard"; // ✅ 추가
+import SuggestionsBoard from "./components/SuggestionsBoard";
 
 import DePage from "./pages/de/index";
 import EnPage from "./pages/en/index";
@@ -488,7 +488,7 @@ function App() {
             <Route path="/reset-password" element={<ResetPwRedirect />} />
             <Route path="/privacy-policy" element={<PrivacyPolicy />} />
             <Route path="/terms-of-service" element={<TermsOfService />} />
-            <Route path="/suggestions" element={<SuggestionsBoard user={user} isAdmin={isAdmin} />} /> {/* ✅ 추가 */}
+            <Route path="/suggestions" element={<SuggestionsBoard user={user} isAdmin={isAdmin} />} />
           </Routes>
         </div>
       </>
@@ -503,19 +503,31 @@ function App() {
         padding: 0,
         minHeight: "100vh",
         position: "relative",
+        overflow: "hidden",
       }}
     >
-      <div
+      {/* ✅ 배경 이미지를 <img>로 표시 */}
+      <img
+        src="/OnePickGame.avif"
+        alt="OnePickGame 배경"
         style={{
           position: "fixed",
           inset: 0,
+          zIndex: 0,
           width: "100vw",
           height: "100vh",
-          zIndex: 0,
+          minHeight: "100vh",
+          minWidth: "100vw",
+          objectFit: "cover",
+          objectPosition: "center",
           pointerEvents: "none",
-          background: `url("/OnePickGame.avif") center center / cover no-repeat fixed`,
-
+          userSelect: "none",
+          opacity: 1,
         }}
+        draggable={false}
+        loading="eager"
+        fetchpriority="high"
+        aria-hidden="true"
       />
       <div
         style={{

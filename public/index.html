@@ -38,17 +38,19 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-  <!-- ✅ Preload Font -->
+  <!-- ✅ Preload Fonts (Orbitron + Noto Sans) -->
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&display=swap">
   <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&display=swap">
 
-  <!-- ✅ Load Fonts with swap -->
+  <!-- ✅ Load Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&display=swap" rel="stylesheet" media="all">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&display=swap" rel="stylesheet" media="all">
 
   <!-- ✅ Critical CSS (최소화) -->
   <style>
     body {
       margin: 0;
-      font-family: 'Noto Sans', sans-serif;
+      font-family: 'Noto Sans', 'Orbitron', sans-serif;
       background: #191930;
       color: #fff;
       font-size: 16px;
