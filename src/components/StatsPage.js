@@ -111,17 +111,19 @@ const PERIODS = [
   { labelKey: "year_1", value: 365 },
 ];
 
-// 퍼센트 표시
+// 퍼센트 표시 함수
 function percent(n, d) {
   if (!d) return "-";
   return Math.round((n / d) * 100) + "%";
 }
+
 function getSinceDate(days) {
   if (!days) return null;
   const date = new Date();
   date.setDate(date.getDate() - days);
   return date.toISOString();
 }
+
 function getCustomSinceDate(from, to) {
   if (!from || !to) return null;
   const fromIso = new Date(from).toISOString();
@@ -129,7 +131,7 @@ function getCustomSinceDate(from, to) {
   return { from: fromIso, to: toIso };
 }
 
-// 1~3위 카드 (썸네일만 큼직하게!)
+// 1~3위 카드 (썸네일 큼직, 이름 중앙 정렬, 카드 크기 동일 + 높이 크게)
 function RankCard(props) {
   const { t } = useTranslation();
   const { rank, name, image, win_count, win_rate, match_wins, match_count, match_win_rate, isMobile } = props;
@@ -139,35 +141,40 @@ function RankCard(props) {
     { emoji: "🥉", color: "#ef5b7b", shadow: "#f77e8b19", text: "#e26464" },
   ];
   const medal = medals[rank - 1] || medals[2];
-  const bg = ["#fcf5cd", "#eef3fa", "#fff3f3"][rank - 1];
+  const bgColors = ["#fcf5cd", "#eef3fa", "#fff3f3"];
 
-  // 카드 크기는 그대로, 썸네일만 큼직하게
-  const thumbSize = isMobile ? 120 : 170; // ← 썸네일만 확실히 더 큼직하게!
+  // 카드 너비 & 높이 크게 설정 (높이 충분히 커서 스크롤 방지)
+  const cardWidth = isMobile ? 270 : 320;
+  const cardHeight = isMobile ? 420 : 480;
+
+  const thumbSize = isMobile ? 140 : 180;
 
   return (
     <div
       style={{
-        background: bg,
+        background: bgColors[rank - 1] || bgColors[2],
         borderRadius: 26,
         boxShadow: "0 8px 36px #1114, 0 2px 12px #eee4",
-        padding: isMobile ? 19 : 32,
-        minWidth: isMobile ? 210 : 270,
-        maxWidth: 340,
+        padding: isMobile ? 20 : 30,
+        width: cardWidth,
+        height: cardHeight,
         margin: "32px 15px 18px 15px",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
         position: "relative",
-        minHeight: isMobile ? 200 : 300,
         border: "2.2px solid #faf7ee",
         zIndex: 2,
+        boxSizing: "border-box",
+        textAlign: "center",
+        justifyContent: "center", // 세로 중앙 정렬
       }}
     >
       <div
         style={{
           position: "absolute",
           left: "50%",
-          top: -47,
+          top: -45,
           transform: "translateX(-50%)",
           fontSize: 56,
           fontWeight: 900,
@@ -195,11 +202,23 @@ function RankCard(props) {
           margin: "60px auto 20px auto",
           boxShadow: "0 2px 16px #8883, 0 0px 0px #fff8",
           background: "#fff",
+          flexShrink: 0,
         }}
       >
         <MediaRenderer url={image} alt={name} />
       </div>
-      <div style={{ fontWeight: 800, fontSize: isMobile ? 29 : 34, margin: "0 0 8px 0", color: medal.text }}>
+      <div
+        style={{
+          fontWeight: 900,
+          fontSize: isMobile ? 20 : 24,
+          color: medal.text,
+          marginBottom: 8,
+          lineHeight: 1.2,
+          wordBreak: "break-word",
+          whiteSpace: "normal",
+          maxWidth: "90%",
+        }}
+      >
         {name}
       </div>
       <div
@@ -207,11 +226,10 @@ function RankCard(props) {
           fontWeight: 900,
           fontSize: isMobile ? 14 : 16,
           color: "#716500",
-          marginBottom: 3,
-          marginTop: -3,
+          marginBottom: 4,
         }}
       >
-        {t("win_count") + " " + win_count} | <span style={{ color: "#9d8703" }}>{t("win_rate") + " " + win_rate}</span>
+        {t("win_count")} {win_count} | {t("win_rate")} {win_rate}
       </div>
       <div
         style={{
@@ -219,7 +237,7 @@ function RankCard(props) {
           color: "#9098a6",
           fontWeight: 600,
           letterSpacing: "-0.2px",
-          marginBottom: 4,
+          marginTop: 0,
         }}
       >
         {t("match_wins")} {match_wins} | {t("duel_count")} {match_count} | {t("match_win_rate")} {match_win_rate}
@@ -228,7 +246,7 @@ function RankCard(props) {
   );
 }
 
-// Skeleton Row
+// Skeleton Row 컴포넌트
 function SkeletonTableRow({ colCount = 8 }) {
   return (
     <tr>
@@ -324,8 +342,6 @@ export default function StatsPage({
     result = result
       .map((row, i) => ({ ...row, _originIdx: i }))
       .sort((a, b) => {
-        // rank 정렬 처리는 비활성화 했으므로 무시
-        // win_count / user_win_count 정렬 처리
         if (sortKey === "win_count" || sortKey === "user_win_count") {
           if (a.win_count !== b.win_count) {
             return sortDesc ? (b.win_count - a.win_count) : (a.win_count - b.win_count);
@@ -336,7 +352,6 @@ export default function StatsPage({
           return a._originIdx - b._originIdx;
         }
 
-        // win_rate 정렬
         if (sortKey === "win_rate") {
           let av = a.total_games ? a.win_count / a.total_games : 0;
           let bv = b.total_games ? b.win_count / b.total_games : 0;
@@ -345,7 +360,6 @@ export default function StatsPage({
           return a._originIdx - b._originIdx;
         }
 
-        // match_win_rate 정렬
         if (sortKey === "match_win_rate") {
           let av = a.match_count ? a.match_wins / a.match_count : 0;
           let bv = b.match_count ? b.match_wins / b.match_count : 0;
@@ -354,7 +368,6 @@ export default function StatsPage({
           return a._originIdx - b._originIdx;
         }
 
-        // 문자열 정렬 (name 등)
         let av = a[sortKey];
         let bv = b[sortKey];
         if (typeof av === "string") av = av.toLowerCase();
@@ -363,7 +376,6 @@ export default function StatsPage({
         if (av > bv) return sortDesc ? -1 : 1;
         return a._originIdx - b._originIdx;
       });
-    // 랭크 부여 (순서에 따른 1부터 랭크)
     result.forEach((row, i) => { row.rank = i + 1; });
     return result;
   }, [stats, search, userOnly, sortKey, sortDesc]);
@@ -824,9 +836,7 @@ export default function StatsPage({
                       : { background: idx % 2 === 0 ? "#fafdff" : "#fff", color: "#333" };
                     return (
                       <tr key={row.candidate_id} style={highlightStyle}>
-                        {/* rank */}
                         <td style={ivoryCell}>{row.rank}</td>
-                        {/* image */}
                         <td
                           style={{
                             ...normalCell,
@@ -848,7 +858,6 @@ export default function StatsPage({
                             <MediaRenderer url={row.image} alt={row.name} />
                           </div>
                         </td>
-                        {/* 이름 */}
                         <td
                           style={{
                             ...normalCell,
@@ -862,15 +871,10 @@ export default function StatsPage({
                         >
                           {row.name}
                         </td>
-                        {/* win_count */}
                         <td style={normalCell}>{row.win_count}</td>
-                        {/* win_rate */}
                         <td style={ivoryCell}>{row.total_games ? percent(row.win_count, row.total_games) : "-"}</td>
-                        {/* match_wins */}
                         <td style={normalCell}>{row.match_wins}</td>
-                        {/* duel_count */}
                         <td style={normalCell}>{row.match_count}</td>
-                        {/* match_win_rate */}
                         <td style={ivoryCell}>{row.match_count ? percent(row.match_wins, row.match_count) : "-"}</td>
                       </tr>
                     );
