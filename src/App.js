@@ -513,7 +513,8 @@ function App() {
           height: "100vh",
           zIndex: 0,
           pointerEvents: "none",
-          background: `url("/onepick.png") center center / cover no-repeat fixed`,
+          background: `url("/OnePickGame.avif") center center / cover no-repeat fixed`,
+
         }}
       />
       <div
