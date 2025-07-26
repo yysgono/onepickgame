@@ -1,16 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- ✅ Google AdSense -->
+  <!-- 🚫 Google AdSense (광고 미적용 시 주석 처리) -->
+  <!--
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2906270915716379"
         crossorigin="anonymous"></script>
+  -->
 
   <!-- ✅ Meta SEO -->
   <meta name="description" content="Create your own tournament bracket with our tournament bracket generator and maker. Enjoy fun matchups and play with users from around the world!" />
   <meta property="og:title" content="OnePickGame - Tournament Bracket Game Site" />
   <meta property="og:description" content="Create your own tournament bracket with our tournament bracket generator and maker. Enjoy fun matchups and play with users from around the world!" />
-  <meta property="og:image" content="https://onepickgame.com/ogimg.png" />
+  <meta property="og:image" content="https://onepickgame.com/ogimg_superwide.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
   <meta property="og:url" content="https://onepickgame.com/" />
+
+  <!-- ✅ Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="OnePickGame - Tournament Bracket Game Site" />
+  <meta name="twitter:description" content="Create your own tournament bracket with our tournament bracket generator and maker. Enjoy fun matchups and play with users from around the world!" />
+  <meta name="twitter:image" content="https://onepickgame.com/ogimg_superwide.png" />
 
   <!-- ✅ Charset & Viewport -->
   <meta charset="UTF-8" />
@@ -38,13 +48,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-  <!-- ✅ Preload Fonts (Orbitron + Noto Sans) -->
-  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&display=swap">
-  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&display=swap">
-
-  <!-- ✅ Load Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&display=swap" rel="stylesheet" media="all">
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&display=swap" rel="stylesheet" media="all">
+  <!-- ✅ Preload & Load Fonts (Orbitron + Noto Sans) -->
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Noto+Sans:wght@400;700&display=swap">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Noto+Sans:wght@400;700&display=swap" rel="stylesheet" />
 
   <!-- ✅ Critical CSS (최소화) -->
   <style>
