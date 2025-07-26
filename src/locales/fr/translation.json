@@ -23,7 +23,9 @@
   "terms_of_service": "Conditions d'utilisation",
   "privacy_policy": "Politique de confidentialité",
   "report": "Signaler",
+  "report_submit_success": "Signalement envoyé avec succès!",
   "share_worldcup": "Partager Worldcup",
+  "share_link_copied": "Lien de partage copié!",
   "winner": "Gagnant",
   "win_rate": "Taux de victoire",
   "victory": "Victoire",
@@ -85,6 +87,7 @@
   "register": "S'inscrire",
   "register_as_member": "S'inscrire en tant que membre",
   "register_short": "Inscription",
+  "enter_title": "Entrez le titre",
   "fill_this_field": "Veuillez remplir ce champ.",
   "need_at_in_email": "L'email doit contenir '@'.",
   "email_missing_part": "Veuillez entrer la partie après '@'.",
@@ -163,6 +166,7 @@
   "match_win_rate": "Taux de victoire",
   "search": "Recherche",
   "retry": "Réessayer",
+  "load_more": "Charger plus",
 
   "comment": {
     "placeholder": "Écrivez un commentaire.",
@@ -213,7 +217,7 @@
 
   "resurrection": {
     "title": "Tour de Résurrection",
-    "instruction": "Veuillez sélectionner <b>1 à 4 candidats à ressusciter</b> à gauche,\net <b>1 à 4 candidats avancés à éliminer</b> à droite.\n<b>Le nombre de ressuscités et d'éliminés doit être égal.</b>\nSi vous ne souhaitez pas continuer, cliquez simplement sur Ignorer.",
+    "instruction": "Veuillez sélectionner <b>1 à 4 candidats à ressusciter</b> à gauche et <b>1 à 4 candidats avancés à éliminer</b> à droite.<br><b>Le nombre de ressuscités et d'éliminés doit être égal.</b><br>Si vous ne souhaitez pas continuer, cliquez sur Ignorer.",
     "note": "(Ceci ne comptera pas pour les statistiques. Juste pour un calcul rapide du résultat.)",
     "eliminated": "Candidats éliminés",
     "advanced": "Candidats avancés (Top 16)",

@@ -67,9 +67,11 @@
   "withdraw_canceled": "Yêu cầu rút khỏi thành viên đã bị hủy!",
   "drag_upload": "Kéo vào đây để tải lên nhiều file cùng lúc.",
   "link_copied": "Đã sao chép liên kết bắt đầu Worldcup!",
+  "share_link_copied": "Đã sao chép liên kết chia sẻ!",
   "report_reason": "Lý do báo cáo",
   "report_reason_placeholder": "Nhập lý do (tùy chọn)",
   "report_submit": "Báo cáo",
+  "report_submit_success": "Báo cáo đã được gửi thành công!",
   "drumroll": "Tiếng trống...",
   "please_wait": "Nếu có nhiều ứng viên, có thể mất chút thời gian, vui lòng chờ!",
   "name": "Tên",
@@ -163,6 +165,8 @@
   "match_win_rate": "Tỷ lệ thắng",
   "search": "Tìm kiếm",
   "retry": "Thử lại",
+  "enter_title": "Nhập tiêu đề",
+  "load_more": "Tải thêm",
 
   "comment": {
     "placeholder": "Nhập bình luận.",

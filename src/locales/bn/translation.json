@@ -70,6 +70,7 @@
   "report_reason": "سبب الإبلاغ",
   "report_reason_placeholder": "أدخل سبب الإبلاغ (اختياري)",
   "report_submit": "إرسال الإبلاغ",
+  "report_submit_success": "تم إرسال الإبلاغ بنجاح!",
   "drumroll": "قرع الطبول...",
   "please_wait": "قد يستغرق الأمر بعض الوقت إذا كان هناك العديد من المتسابقين، الرجاء الانتظار!",
   "name": "الاسم",
@@ -132,6 +133,7 @@
   "home": "الرئيسية",
   "copy_share_link": "تم نسخ رابط المشاركة",
   "share_link": "رابط المشاركة",
+  "share_link_copied": "تم نسخ رابط المشاركة!",
   "auto_bye_message": "عدد المتسابقين لا يطابق {{selectedRound}}، تم تطبيق باي تلقائياً.",
   "show_result": "عرض النتيجة",
   "imageUrlOrYoutube": "رابط صورة / يوتيوب",
@@ -146,6 +148,7 @@
   "createWorldcup": "أنشئ كأس العالم",
   "uploadZone": "منطقة الرفع",
   "worldcupTitle": "عنوان كأس العالم",
+  "enter_title": "أدخل العنوان",
   "descriptionOptional": "الوصف (اختياري)",
   "candidateList": "قائمة المتسابقين",
   "addCandidate": "إضافة متسابق",
@@ -163,6 +166,7 @@
   "match_win_rate": "نسبة الفوز",
   "search": "بحث",
   "retry": "إعادة المحاولة",
+  "load_more": "تحميل المزيد",
 
   "comment": {
     "placeholder": "اكتب تعليقاً",

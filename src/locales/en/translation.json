@@ -228,6 +228,7 @@
   "suggestions_board": "Ideal Type World Cup Suggestions",
   "ideal_type_suggestions": "Ideal Type Worldcup Suggestions",
   "title": "Title",
+  "enter_title": "Enter title",
   "enter_content": "Enter your suggestion...",
   "submit": "Submit",
   "only_logged_in_can_submit": "Only logged-in users can submit suggestions.",
@@ -241,5 +242,9 @@
   "title_limit": "Title can be up to 80 characters.",
   "content_limit": "Content can be up to 1000 characters.",
   "suggestion_sent": "Your suggestion has been submitted successfully!",
-  "date": "Date"
+  "date": "Date",
+
+  "load_more": "Load more",
+  "share_link_copied": "Share link copied!",
+  "report_submit_success": "Report submitted successfully!"
 }

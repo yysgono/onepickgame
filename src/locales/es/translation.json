@@ -23,7 +23,9 @@
   "terms_of_service": "Términos de servicio",
   "privacy_policy": "Política de privacidad",
   "report": "Reportar",
+  "report_submit_success": "¡Reporte enviado con éxito!",
   "share_worldcup": "Compartir Worldcup",
+  "share_link_copied": "¡Enlace para compartir copiado!",
   "winner": "Ganador",
   "win_rate": "Tasa de victoria",
   "victory": "Victoria",
@@ -146,6 +148,7 @@
   "createWorldcup": "Crear Worldcup",
   "uploadZone": "Zona de subida",
   "worldcupTitle": "Título del Worldcup",
+  "enter_title": "Ingrese título",
   "descriptionOptional": "Descripción (Opcional)",
   "candidateList": "Lista de candidatos",
   "addCandidate": "Agregar candidato",
@@ -163,6 +166,7 @@
   "match_win_rate": "Tasa de victoria",
   "search": "Buscar",
   "retry": "Reintentar",
+  "load_more": "Cargar más",
 
   "comment": {
     "placeholder": "Escribe un comentario.",

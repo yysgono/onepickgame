@@ -67,9 +67,11 @@
   "withdraw_canceled": "Çekilme talebi iptal edildi!",
   "drag_upload": "Birden çok dosya yüklemek için buraya sürükleyin.",
   "link_copied": "Dünya Kupası başlangıç bağlantısı kopyalandı!",
+  "share_link_copied": "Paylaşım bağlantısı kopyalandı!",
   "report_reason": "Bildir Sebebi",
   "report_reason_placeholder": "Sebep girin (isteğe bağlı)",
   "report_submit": "Bildirimi Gönder",
+  "report_submit_success": "Bildirim başarıyla gönderildi!",
   "drumroll": "Davul sesi...",
   "please_wait": "Çok sayıda aday varsa biraz sürebilir, lütfen bekleyin!",
   "name": "İsim",
@@ -163,6 +165,8 @@
   "match_win_rate": "Galibiyet Oranı",
   "search": "Ara",
   "retry": "Tekrar Dene",
+  "enter_title": "Başlık girin",
+  "load_more": "Daha fazla yükle",
 
   "comment": {
     "placeholder": "Yorum yaz.",

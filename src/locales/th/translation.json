@@ -67,9 +67,11 @@
   "withdraw_canceled": "ยกเลิกคำขอถอนตัวแล้ว!",
   "drag_upload": "ลากไฟล์มาวางที่นี่เพื่ออัปโหลดหลายไฟล์",
   "link_copied": "คัดลอกลิงก์เริ่มเวิลด์คัพแล้ว!",
+  "share_link_copied": "คัดลอกลิงก์แชร์เรียบร้อย!",
   "report_reason": "เหตุผลในการรายงาน",
   "report_reason_placeholder": "กรอกเหตุผล (ไม่บังคับ)",
   "report_submit": "ส่งรายงาน",
+  "report_submit_success": "ส่งรายงานเรียบร้อย!",
   "drumroll": "ตีกลอง...",
   "please_wait": "หากมีผู้เข้าแข่งขันจำนวนมาก กรุณารอสักครู่!",
   "name": "ชื่อ",
@@ -163,6 +165,8 @@
   "match_win_rate": "อัตราชนะ",
   "search": "ค้นหา",
   "retry": "ลองใหม่",
+  "load_more": "โหลดเพิ่มเติม",
+  "enter_title": "กรอกหัวข้อ",
 
   "comment": {
     "placeholder": "เขียนความคิดเห็น",

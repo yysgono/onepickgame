@@ -67,9 +67,11 @@
   "withdraw_canceled": "注销申请已取消！",
   "drag_upload": "拖动文件至此处可上传多个文件。",
   "link_copied": "世界杯启动链接已复制！",
+  "share_link_copied": "分享链接已复制！",
   "report_reason": "举报原因",
   "report_reason_placeholder": "请输入举报原因（可选）",
-  "report_submit": "举报",
+  "report_submit": "提交举报",
+  "report_submit_success": "举报提交成功！",
   "drumroll": "鼓声响起...",
   "please_wait": "候选人较多时，可能需要等待一会儿！",
   "name": "名称",
@@ -163,6 +165,8 @@
   "match_win_rate": "胜率",
   "search": "搜索",
   "retry": "重试",
+  "enter_title": "请输入标题",
+  "load_more": "加载更多",
 
   "comment": {
     "placeholder": "请输入评论。",

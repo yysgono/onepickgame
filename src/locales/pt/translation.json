@@ -67,9 +67,11 @@
   "withdraw_canceled": "Solicitação cancelada!",
   "drag_upload": "Arraste aqui para enviar vários arquivos.",
   "link_copied": "Link para iniciar o Worldcup copiado!",
+  "share_link_copied": "Link de compartilhamento copiado!",
   "report_reason": "Motivo da denúncia",
   "report_reason_placeholder": "Digite o motivo (opcional)",
   "report_submit": "Denunciar",
+  "report_submit_success": "Denúncia enviada com sucesso!",
   "drumroll": "Rufem os tambores...",
   "please_wait": "Se houver muitos candidatos, isso pode levar um pouco. Aguarde!",
   "name": "Nome",
@@ -163,6 +165,8 @@
   "match_win_rate": "Taxa de vitória",
   "search": "Buscar",
   "retry": "Tentar novamente",
+  "load_more": "Carregar mais",
+  "enter_title": "Digite o título",
 
   "comment": {
     "placeholder": "Escreva um comentário.",
@@ -213,7 +217,7 @@
 
   "resurrection": {
     "title": "Rodada de Ressurreição",
-    "instruction": "Selecione 1~4 candidatos para reviver à esquerda,\ne 1~4 candidatos avançados para remover à direita.\nO número deve ser igual.\nSe não quiser, clique em Pular.",
+    "instruction": "Selecione 1~4 candidatos para reviver à esquerda,<br>e 1~4 candidatos avançados para remover à direita.<br>O número deve ser igual.<br>Se não quiser, clique em Pular.",
     "note": "(Isso não será contado para estatísticas. Apenas para cálculo rápido.)",
     "eliminated": "Candidatos Eliminados",
     "advanced": "Candidatos Avançados (Top 16)",

@@ -23,7 +23,9 @@
   "terms_of_service": "सेवा की शर्तें",
   "privacy_policy": "गोपनीयता नीति",
   "report": "रिपोर्ट करें",
+  "report_submit_success": "रिपोर्ट सफलतापूर्वक सबमिट हुई!",
   "share_worldcup": "वर्ल्डकप साझा करें",
+  "share_link_copied": "शेयर लिंक कॉपी हो गया!",
   "winner": "विजेता",
   "win_rate": "विजय दर",
   "victory": "जीत",
@@ -85,6 +87,7 @@
   "register": "पंजीकरण",
   "register_as_member": "सदस्य के रूप में पंजीकरण करें",
   "register_short": "पंजीकरण",
+  "enter_title": "शीर्षक दर्ज करें",
   "fill_this_field": "कृपया यह फ़ील्ड भरें।",
   "need_at_in_email": "ईमेल में '@' होना चाहिए।",
   "email_missing_part": "'@' के बाद का भाग लिखें।",
@@ -163,6 +166,7 @@
   "match_win_rate": "विजय दर",
   "search": "खोज",
   "retry": "पुनः प्रयास करें",
+  "load_more": "और लोड करें",
 
   "comment": {
     "placeholder": "टिप्पणी लिखें...",

@@ -23,6 +23,7 @@
   "terms_of_service": "Nutzungsbedingungen",
   "privacy_policy": "Datenschutzrichtlinie",
   "report": "Melden",
+  "report_submit_success": "Meldung erfolgreich gesendet!",
   "share_worldcup": "Worldcup teilen",
   "winner": "Gewinner",
   "win_rate": "Siegesquote",
@@ -67,6 +68,7 @@
   "withdraw_canceled": "Rücktrittsantrag storniert!",
   "drag_upload": "Hierher ziehen, um mehrere Dateien hochzuladen.",
   "link_copied": "Link zum Starten des Worldcups wurde kopiert!",
+  "share_link_copied": "Freigabelink wurde kopiert!",
   "report_reason": "Meldegrund",
   "report_reason_placeholder": "Geben Sie den Meldegrund ein (optional)",
   "report_submit": "Melden",
@@ -146,6 +148,7 @@
   "createWorldcup": "Worldcup erstellen",
   "uploadZone": "Upload Bereich",
   "worldcupTitle": "Worldcup Titel",
+  "enter_title": "Titel eingeben",
   "descriptionOptional": "Beschreibung (Optional)",
   "candidateList": "Kandidatenliste",
   "addCandidate": "Kandidat hinzufügen",
@@ -163,6 +166,7 @@
   "match_win_rate": "Siegesquote",
   "search": "Suchen",
   "retry": "Erneut versuchen",
+  "load_more": "Mehr laden",
 
   "comment": {
     "placeholder": "Kommentar schreiben.",
