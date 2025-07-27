@@ -8,7 +8,8 @@ export default function TermsOfServiceEn() {
       padding: 24,
       background: "#fff",
       borderRadius: 13,
-      boxShadow: "0 2px 10px #0001"
+      boxShadow: "0 2px 10px #0001",
+      color: "#222" // 👈 글자색 추가
     }}>
       <h2>Terms of Service</h2>
       <ul style={{ lineHeight: 1.8 }}>
