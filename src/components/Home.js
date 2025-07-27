@@ -57,7 +57,7 @@ function SkeletonCard({ cardHeight, thumbHeight }) {
   );
 }
 
-const PAGE_SIZE = 15;
+const PAGE_SIZE = 21;
 
 function Home({
   worldcupList,
