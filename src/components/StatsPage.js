@@ -734,6 +734,7 @@ export default function StatsPage({
         )}
       </div>
 
+      {/* 보기 개수 버튼 */}
       <div
         style={{
           display: "flex",
@@ -760,6 +761,28 @@ export default function StatsPage({
             {t("view_" + num)}
           </button>
         ))}
+      </div>
+
+      {/* 검색창 (보기 개수 버튼 아래에 추가) */}
+      <div style={{ textAlign: "center", marginBottom: 12 }}>
+        <input
+          type="search"
+          placeholder={t("search_placeholder") || "검색어를 입력하세요"}
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          style={{
+            padding: "8px 12px",
+            fontSize: 15,
+            borderRadius: 8,
+            border: "1.5px solid #ccc",
+            width: isMobile ? "90%" : 300,
+            maxWidth: "100%",
+            boxSizing: "border-box",
+            margin: "0 auto",
+            display: "block",
+          }}
+          aria-label={t("search")}
+        />
       </div>
 
       <div style={{ width: "100%", overflowX: "auto", marginBottom: 12 }}>
