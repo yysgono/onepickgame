@@ -224,6 +224,16 @@ function BackArrowButton({ onClick, disabled, style }) {
   );
 }
 
+// 유튜브 링크 여부 체크 함수
+function isYoutubeUrl(url) {
+  if (!url) return false;
+  return (
+    /youtu\.be\/([^/?&]+)/.test(url) ||
+    /youtube\.com.*[?&]v=([^&]+)/.test(url) ||
+    /youtube\.com\/embed\/([^/?&]+)/.test(url)
+  );
+}
+
 // CandidateBox
 function CandidateBox({ c, onClick, disabled, idx, selected, t }) {
   const [hover, setHover] = useState(false);
@@ -239,6 +249,7 @@ function CandidateBox({ c, onClick, disabled, idx, selected, t }) {
   const NEON_FONT = "'Orbitron', 'Pretendard', sans-serif";
   const mainDark = "#171C27";
   const blueLine = "#1976ed";
+  const isYoutube = c?.image && isYoutubeUrl(c.image);
 
   return (
     <div
@@ -260,7 +271,7 @@ function CandidateBox({ c, onClick, disabled, idx, selected, t }) {
         transform: hover && !isMobile ? "translateY(-10px) scale(1.025)" : "",
         transition: "all 0.3s ease-in-out",
         margin: isMobile ? "2vw 0" : "32px 0",
-        cursor: c && !disabled ? "pointer" : "default",
+        cursor: c && !disabled && !isYoutube ? "pointer" : "default",
         backdropFilter: "blur(11px) brightness(1.06)",
         WebkitBackdropFilter: "blur(11px) brightness(1.06)",
         willChange: "transform",
@@ -271,7 +282,7 @@ function CandidateBox({ c, onClick, disabled, idx, selected, t }) {
       }}
       onMouseEnter={() => !isMobile && setHover(true)}
       onMouseLeave={() => !isMobile && setHover(false)}
-      onClick={c && !disabled ? onClick : undefined}
+      onClick={c && !disabled && !isYoutube ? onClick : undefined}
     >
       <div
         style={{
@@ -814,6 +825,7 @@ function Match({ cup, onResult, selectedCount }) {
         }}
       >
         <CandidateBox
+          key={c1?.id || "c1"} // key 추가!
           c={c1}
           onClick={() => handlePick(0)}
           disabled={autoPlaying || selectedIdx !== null}
@@ -822,6 +834,7 @@ function Match({ cup, onResult, selectedCount }) {
           t={t}
         />
         <CandidateBox
+          key={c2?.id || "c2"} // key 추가!
           c={c2}
           onClick={() => handlePick(1)}
           disabled={autoPlaying || selectedIdx !== null}
