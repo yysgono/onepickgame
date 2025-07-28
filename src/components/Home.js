@@ -71,7 +71,15 @@ function Home({
   fixedWorldcups,
   showFixedWorldcups = true,
 }) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+
+  // 영어 기본 세팅
+  useEffect(() => {
+    if (i18n.language !== "en") {
+      i18n.changeLanguage("en");
+    }
+  }, [i18n]);
+
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState("popular");
   const [loading, setLoading] = useState(true);
@@ -84,7 +92,7 @@ function Home({
     window.addEventListener("resize", onResize);
     return () => window.removeEventListener("resize", onResize);
   }, []);
-  const isMobile = vw < 600;
+  const isMobile = vw < 900;
   const CARD_WIDTH = isMobile ? 320 : 420;
   const CARD_HEIGHT = isMobile ? 265 : 295;
   const CARD_GAP = isMobile ? 7 : 9;
@@ -204,6 +212,9 @@ function Home({
   const NEON_FONT = "'Orbitron', 'Pretendard', sans-serif";
   const mainDark = "#171C27";
   const blueLine = "#1976ed";
+  const CARD_BG = "rgba(17,27,55,0.97)";
+  const CARD_SHADOW = "0 8px 38px 0 #1976ed45, 0 2px 12px #1976ed44";
+  const BOARD_BG = CARD_BG;
 
   const buttonStyle = {
     background: mainDark,
@@ -259,7 +270,12 @@ function Home({
     setVisibleCount((prev) => prev + PAGE_SIZE);
   };
 
-   return (
+  // 상단 박스 넓이/높이 조정
+  const RECOMMEND_WIDTH = isMobile ? "100%" : "64%";
+  const BOARD_WIDTH = isMobile ? "100%" : "34%";
+  const BOX_HEIGHT = isMobile ? 270 : 270;
+
+  return (
     <div
       style={{
         width: "100vw",
@@ -279,11 +295,126 @@ function Home({
           background: "rgba(0,0,0,0.0)",
         }}
       />
-      {showFixedWorldcups !== false && (
-        <FixedCupSection worldcupList={fixedCupsWithStats || []} />
-      )}
 
-      {/* 정렬 버튼 + 검색창 모두 중앙 정렬 */}
+      {/* 상단 2박스 (추천 캐러셀 + 공지/게시판) */}
+      <div
+        style={{
+          display: "flex",
+          flexDirection: isMobile ? "column" : "row",
+          gap: isMobile ? 20 : 38,
+          width: "100%",
+          maxWidth: 1650,
+          margin: "40px auto 22px",
+          justifyContent: "center",
+          alignItems: "stretch",
+        }}
+      >
+        {/* 추천 월드컵 캐러셀 */}
+        <div
+          style={{
+            width: RECOMMEND_WIDTH,
+            minWidth: isMobile ? "90vw" : 450,
+            maxWidth: isMobile ? "98vw" : 980,
+            height: BOX_HEIGHT,
+            background: CARD_BG,
+            borderRadius: 18,
+            boxShadow: CARD_SHADOW,
+            padding: isMobile ? "14px 7px 13px 7px" : "24px 18px 13px 18px",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "flex-start",
+            position: "relative",
+          }}
+        >
+          <div
+            style={{
+              width: "100%",
+              textAlign: "center",
+              fontSize: isMobile ? 20 : 27,
+              fontWeight: 900,
+              color: "#fff",
+              letterSpacing: ".1px",
+              fontFamily: NEON_FONT,
+              marginBottom: 6,
+              marginTop: 0,
+              textShadow: "0 2.5px 18px #11397555",
+            }}
+          >
+            Recommend
+          </div>
+          <div style={{
+            flex: 1,
+            width: "100%",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            minHeight: isMobile ? 98 : 110,
+            height: "100%",
+          }}>
+            <FixedCupSection worldcupList={fixedCupsWithStats || []} hideTitle />
+          </div>
+        </div>
+
+        {/* 공지/게시판 */}
+        <div
+          style={{
+            width: BOARD_WIDTH,
+            minWidth: isMobile ? "90vw" : 340,
+            maxWidth: isMobile ? "98vw" : 520,
+            height: BOX_HEIGHT,
+            background: BOARD_BG,
+            borderRadius: 18,
+            boxShadow: CARD_SHADOW,
+            padding: isMobile ? "13px 9px 10px 9px" : "27px 22px 14px 23px",
+            color: "#fff",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "flex-start",
+            justifyContent: "flex-start",
+            fontFamily: NEON_FONT,
+            fontSize: isMobile ? 15 : 17,
+            position: "relative",
+          }}
+        >
+          <div style={{ fontWeight: 800, fontSize: isMobile ? 16 : 20, marginBottom: 9, color: "#bcdfff", letterSpacing: ".02em" }}>
+            <span style={{ marginRight: 7 }}>
+              <img src="/board_icon.png" alt="" width="21" style={{verticalAlign:"middle",marginRight:6}} />
+              Notice & Latest Posts
+            </span>
+          </div>
+          <ul style={{ listStyle: "none", padding: 0, margin: 0, lineHeight: 1.65 }}>
+            <li style={{ fontWeight: 800, marginBottom: 7, color: "#61b3ff" }}>
+              [Notice] Server maintenance <b style={{color:"#fff", fontWeight:800}}>(2025-07-27)</b>
+            </li>
+            <li style={{ marginBottom: 5, color: "#fff", fontWeight: 400 }}>🔥 New: Worldcup 1st place revealed!</li>
+            <li style={{ marginBottom: 5, color: "#fff", fontWeight: 400 }}>📢 New feature update</li>
+            <li style={{ marginBottom: 5, color: "#fff", fontWeight: 400 }}>🎉 Join the event!</li>
+          </ul>
+          <button
+            style={{
+              position: "absolute",
+              bottom: isMobile ? 10 : 20,
+              right: isMobile ? 13 : 28,
+              padding: isMobile ? "7px 14px" : "11px 24px",
+              background: "#1976ed",
+              color: "#fff",
+              borderRadius: 7,
+              border: "none",
+              fontWeight: 700,
+              fontSize: isMobile ? 13 : 16,
+              cursor: "pointer",
+              letterSpacing: ".02em",
+              boxShadow: "0 2px 12px #1976ed33",
+            }}
+            onClick={() => (window.location.href = "/board")}
+          >
+            More →
+          </button>
+        </div>
+      </div>
+
+      {/* 검색/정렬 */}
       <div
         style={{
           width: "100vw",
@@ -291,7 +422,7 @@ function Home({
           justifyContent: "center",
           alignItems: "center",
           gap: isMobile ? 10 : 20,
-          margin: isMobile ? "12px 0 8px" : "22px 0 14px",
+          margin: isMobile ? "10px 0 8px" : "17px 0 13px",
           padding: isMobile ? "0 8px" : "0 12px",
           flexDirection: isMobile ? "column" : "row",
           zIndex: 5,
@@ -329,6 +460,7 @@ function Home({
         />
       </div>
 
+      {/* 카드 그리드 */}
       <div
         style={{
           display: "grid",
@@ -352,7 +484,7 @@ function Home({
               thumbHeight={THUMB_HEIGHT}
             />
           ))}
-        {!loading &&
+               {!loading &&
           visibleList.length > 0 &&
           visibleList.map((cup, idx) => {
             const [first, second] = getTop2Winners(cup.winStats, cup.data);
@@ -512,7 +644,7 @@ function Home({
                     />
                   </div>
                 </div>
-                {/* ======= 제목 영역 flex:1, maxHeight 더 넉넉히 ======= */}
+                {/* 제목 영역 */}
                 <div
                   style={{
                     width: "100%",
@@ -560,8 +692,6 @@ function Home({
                     }}
                   >
                     {(() => {
-                      // 최대 70자, 40자 이내는 그대로, 
-                      // 40자 이후 가장 가까운 공백에서 줄바꿈
                       const title = (cup.title || "").slice(0, 70);
                       if (title.length <= 40) return title;
                       const breakpoint = (() => {
@@ -572,7 +702,7 @@ function Home({
                     })()}
                   </span>
                 </div>
-                {/* ======= 버튼 영역 - 하단 고정 ======= */}
+                {/* 버튼 */}
                 <div
                   style={{
                     width: "100%",
@@ -615,7 +745,7 @@ function Home({
                       <button
                         onClick={e => {
                           e.stopPropagation();
-                          if (!window.confirm(t("delete_confirm") || "정말 삭제하시겠습니까?")) return;
+                          if (!window.confirm(t("delete_confirm") || "Are you sure you want to delete?")) return;
                           if (onDelete) onDelete(cup.id);
                           else window.location.reload();
                         }}
