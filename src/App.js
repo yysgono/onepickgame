@@ -49,11 +49,6 @@ import ZhPage from "./pages/zh/index";
 import { getWorldcupGames, deleteWorldcupGame } from "./utils/supabaseWorldcupApi";
 import { supabase } from "./utils/supabaseClient";
 
-// ✅ 게시판 관련 컴포넌트 추가
-import BoardPage from "./components/BoardPage";   // 게시판 목록
-import BoardWrite from "./components/BoardWrite"; // 글쓰기
-import BoardView from "./components/BoardView";   // 상세보기
-
 function useIsMobile() {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 700);
   useEffect(() => {
@@ -494,11 +489,6 @@ function App() {
             <Route path="/privacy-policy" element={<PrivacyPolicy />} />
             <Route path="/terms-of-service" element={<TermsOfService />} />
             <Route path="/suggestions" element={<SuggestionsBoard user={user} isAdmin={isAdmin} />} />
-
-            {/* ✅ 게시판 추가 라우팅 */}
-            <Route path="/board" element={<BoardPage />} />
-            <Route path="/board/write" element={<BoardWrite />} />
-            <Route path="/board/view/:id" element={<BoardView />} />
           </Routes>
         </div>
       </>
@@ -516,7 +506,7 @@ function App() {
         overflow: "hidden",
       }}
     >
-      {/* ✅ 배경 이미지 */}
+      {/* ✅ 배경 이미지를 <img>로 표시 */}
       <img
         src="/OnePickGame.avif"
         alt="OnePickGame 배경"
