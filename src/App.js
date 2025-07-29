@@ -250,7 +250,6 @@ function App() {
         worldcupList={myList}
         fetchWorldcups={fetchWorldcups}
         onSelect={(cup) => {
-          // 언어코드 붙여서 이동
           const lang = i18n.language || "ko";
           window.location.href = `/${lang}/select-round/${cup.id}`;
         }}
@@ -294,7 +293,6 @@ function App() {
     const location = useLocation();
     const { i18n } = useTranslation();
 
-    // 현재 URL에서 언어코드 추출
     const langMatch = location.pathname.match(/^\/([a-z]{2})(\/|$)/);
     const lang = langMatch ? langMatch[1] : i18n.language || "ko";
 
@@ -350,13 +348,10 @@ function App() {
           maxRound={cup.data.length}
           candidates={cup.data}
           onSelect={(roundOrCandidate) => {
-            // roundOrCandidate: 라운드(숫자) or 후보객체
             if (typeof roundOrCandidate === "number") {
-              // 라운드 시작
               navigate(`/${lang}/match/${cup.id}/${roundOrCandidate}`);
             } else if (typeof roundOrCandidate === "object" && roundOrCandidate?.id) {
-              // 카드 클릭 시 → 1라운드부터 시작
-              navigate(`/${lang}/match/${cup.id}/${maxRound}`);
+              navigate(`/${lang}/match/${cup.id}/${cup.data.length}`);
             }
           }}
         />
@@ -411,6 +406,9 @@ function App() {
     }
 
     function AdminRoute() {
+      if (nicknameLoading) {
+        return <div style={{ padding: 60, textAlign: "center", fontWeight: 700, fontSize: 22 }}>Loading...</div>;
+      }
       if (!isAdmin) {
         return (
           <div
@@ -430,8 +428,11 @@ function App() {
       return (
         <>
           <AdminBar
+            adminName={nickname}
             onLogout={() => {
-              supabase.auth.signOut().then(() => window.location.reload());
+              supabase.auth.signOut().then(() => {
+                window.location.href = `/${lang}/`;
+              });
             }}
           />
           <AdminDashboard />
@@ -440,6 +441,9 @@ function App() {
     }
 
     function AdminStatsRoute() {
+      if (nicknameLoading) {
+        return <div style={{ padding: 60, textAlign: "center", fontWeight: 700, fontSize: 22 }}>Loading...</div>;
+      }
       if (!isAdmin) {
         return (
           <div
@@ -459,8 +463,11 @@ function App() {
       return (
         <>
           <AdminBar
+            adminName={nickname}
             onLogout={() => {
-              supabase.auth.signOut().then(() => window.location.reload());
+              supabase.auth.signOut().then(() => {
+                window.location.href = `/${lang}/`;
+              });
             }}
           />
           <AdminStatsPage />
@@ -487,7 +494,6 @@ function App() {
 
         <div className="main-content-box">
           <Routes>
-            {/* 언어별 전체 라우팅 */}
             <Route
               path="/:lang"
               element={
@@ -521,11 +527,9 @@ function App() {
             <Route path="/:lang/terms-of-service" element={<TermsOfService />} />
             <Route path="/:lang/suggestions" element={<SuggestionsBoard user={user} isAdmin={isAdmin} />} />
 
-            {/* 기본 루트(언어 없는 홈) */}
             <Route path="/" element={<HomeWrapper />} />
             <Route path="/my-worldcups" element={<MyWorldcupsWrapper />} />
             <Route path="/recent-worldcups" element={<RecentWorldcupsWrapper />} />
-            {/* 없는 주소는 홈으로 */}
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </div>
@@ -544,7 +548,6 @@ function App() {
         overflow: "hidden",
       }}
     >
-      {/* ✅ 배경 이미지를 <img>로 표시 */}
       <img
         src="/OnePickGame.avif"
         alt="OnePickGame 배경"

@@ -1,179 +1,327 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { supabase } from "../utils/supabaseClient";
 
-// 예시로 localStorage에서 winnerStats, comments, visitLogs 가져옴
 export default function AdminStatsPage() {
-  const winnerStats = JSON.parse(localStorage.getItem("winnerStats") || "{}");
-  const comments = JSON.parse(localStorage.getItem("comments") || "{}");
-  const totalComments = Object.values(comments).reduce((a, v) => a + v.length, 0);
+  const navigate = useNavigate();
 
-  // 방문자 통계
-  const visitLogs = JSON.parse(localStorage.getItem("visitLogs") || "{}");
-  const today = new Date().toISOString().slice(0, 10);
-  const todayUsers = visitLogs[today] ? visitLogs[today].length : 0;
+  const [worldcupCount, setWorldcupCount] = useState(0);
+  const [recentComments, setRecentComments] = useState([]);
+  const [visitLogs, setVisitLogs] = useState({});
+  const [todayUsers, setTodayUsers] = useState(0);
+  const [recent7, setRecent7] = useState([]);
+  const [deletingCommentId, setDeletingCommentId] = useState(null);
 
-  // 최근 7일치 날짜/유저수
-  const recent7 = Object.keys(visitLogs)
-    .sort()
-    .slice(-7)
-    .map(date => ({
-      date,
-      count: visitLogs[date].length,
-    }));
+  useEffect(() => {
+    async function fetchStats() {
+      // 월드컵 수 가져오기
+      const { data: wcData, error: wcError, count: wcCount } = await supabase
+        .from("worldcups")
+        .select("id", { count: "exact" });
 
-  // 누적 월드컵 개수 추정: winnerStats에서 id만으로 추산 (혹시 더 정확하게 하려면 worldcupList 개수 사용!)
-  const totalWorldcups = Object.keys(winnerStats).length;
+      if (wcError) {
+        setWorldcupCount(0);
+      } else {
+        setWorldcupCount(wcCount ?? (wcData ? wcData.length : 0));
+      }
 
-  // 그래프를 위한 값
-  const chartMax = Math.max(...recent7.map(r => r.count), 1);
+      // 최근 7일 댓글 30개 가져오기
+      const sevenDaysAgo = new Date();
+      sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+      const isoSevenDaysAgo = sevenDaysAgo.toISOString();
+
+      const { data: commentsData, error: commentError } = await supabase
+        .from("comments")
+        .select("id, content, created_at, cup_id")
+        .gte("created_at", isoSevenDaysAgo)
+        .order("created_at", { ascending: false })
+        .limit(30);
+
+      if (!commentError && commentsData) {
+        setRecentComments(commentsData);
+      } else {
+        setRecentComments([]);
+      }
+
+      // 방문자 로그
+      try {
+        const logs = JSON.parse(localStorage.getItem("visitLogs") || "{}");
+        setVisitLogs(logs);
+
+        const today = new Date().toISOString().slice(0, 10);
+        setTodayUsers(logs[today] ? logs[today].length : 0);
+
+        const recentKeys = Object.keys(logs)
+          .sort()
+          .slice(-7);
+
+        setRecent7(
+          recentKeys.map((date) => ({
+            date,
+            count: logs[date].length,
+          }))
+        );
+      } catch {
+        setVisitLogs({});
+        setTodayUsers(0);
+        setRecent7([]);
+      }
+    }
+
+    fetchStats();
+  }, []);
+
+  async function handleDeleteComment(commentId) {
+    if (!window.confirm("이 댓글을 삭제하시겠습니까?")) return;
+    setDeletingCommentId(commentId);
+
+    const { error } = await supabase
+      .from("comments")
+      .delete()
+      .eq("id", commentId);
+
+    if (error) {
+      alert("댓글 삭제 실패: " + error.message);
+    } else {
+      alert("댓글이 삭제되었습니다.");
+      setRecentComments((prev) => prev.filter((c) => c.id !== commentId));
+    }
+    setDeletingCommentId(null);
+  }
+
+  function handleCommentClick(cupId) {
+    const lang = window.location.pathname.match(/^\/([a-z]{2})(\/|$)/)?.[1] || "ko";
+    navigate(`/${lang}/stats/${cupId}`);
+  }
+
+  const chartMax = Math.max(...recent7.map((r) => r.count), 1);
 
   return (
-    <div style={{
-      maxWidth: 950,
-      margin: "40px auto",
-      background: "#fff",
-      borderRadius: 24,
-      boxShadow: "0 4px 24px #e6ecfa",
-      padding: "40px 16px 56px 16px"
-    }}>
-      <h2 style={{
-        fontWeight: 900,
-        fontSize: 32,
-        color: "#1976ed",
-        marginBottom: 32,
-        letterSpacing: -1,
-        textAlign: "center",
-        textShadow: "0 1px 10px #b1deff30"
-      }}>
+    <div
+      style={{
+        maxWidth: 950,
+        margin: "40px auto",
+        background: "#fff",
+        borderRadius: 24,
+        boxShadow: "0 4px 24px #e6ecfa",
+        padding: "40px 16px 56px 16px",
+      }}
+    >
+      <h2
+        style={{
+          fontWeight: 900,
+          fontSize: 32,
+          color: "#1976ed",
+          marginBottom: 32,
+          letterSpacing: -1,
+          textAlign: "center",
+          textShadow: "0 1px 10px #b1deff30",
+        }}
+      >
         관리자 통계 대시보드
       </h2>
 
-      {/* 카드형 통계 */}
-      <div style={{
-        display: "flex",
-        gap: 30,
-        flexWrap: "wrap",
-        justifyContent: "center",
-        marginBottom: 46
-      }}>
-        {[
-          {
-            label: "누적 월드컵",
-            value: totalWorldcups,
-            icon: "🥇",
-            color: "#1976ed"
-          },
-          {
-            label: "누적 댓글",
-            value: totalComments,
-            icon: "💬",
-            color: "#38b27a"
-          },
-          {
-            label: "오늘 접속자",
-            value: todayUsers,
-            icon: "👥",
-            color: "#f2b518"
-          }
-        ].map(({ label, value, icon, color }) => (
+      <div
+        style={{
+          display: "flex",
+          gap: 30,
+          flexWrap: "wrap",
+          justifyContent: "center",
+          marginBottom: 46,
+        }}
+      >
+        <div
+          style={{
+            background: "linear-gradient(120deg, #fafdff 70%, #e3f0fb 100%)",
+            borderRadius: 20,
+            boxShadow: "0 4px 18px #1976ed13",
+            minWidth: 210,
+            padding: "34px 36px",
+            textAlign: "center",
+            cursor: "default",
+          }}
+        >
+          <div style={{ fontSize: 18, fontWeight: 700, color: "#3b4872", marginBottom: 8 }}>
+            현존하는 월드컵 수
+          </div>
           <div
-            key={label}
             style={{
-              background: "linear-gradient(120deg, #fafdff 70%, #e3f0fb 100%)",
-              borderRadius: 20,
-              boxShadow: "0 4px 18px #1976ed13",
-              minWidth: 210,
-              padding: "34px 36px",
-              textAlign: "center",
-              transition: "box-shadow 0.18s, transform 0.18s",
-              cursor: "pointer"
-            }}
-            onMouseOver={e => {
-              e.currentTarget.style.boxShadow = "0 10px 36px #1976ed33";
-              e.currentTarget.style.transform = "translateY(-5px) scale(1.045)";
-            }}
-            onMouseOut={e => {
-              e.currentTarget.style.boxShadow = "0 4px 18px #1976ed13";
-              e.currentTarget.style.transform = "none";
-            }}
-          >
-            <div style={{ fontSize: 32, marginBottom: 7 }}>{icon}</div>
-            <div style={{ fontSize: 18, fontWeight: 800, color: "#3b4872" }}>{label}</div>
-            <div style={{
               fontSize: 40,
               fontWeight: 900,
-              color,
-              marginTop: 8,
-              textShadow: "0 2px 12px #1976ed13"
-            }}>{value}</div>
+              color: "#1976ed",
+              textShadow: "0 2px 12px #1976ed13",
+            }}
+          >
+            {worldcupCount}
           </div>
-        ))}
+        </div>
+        <div
+          style={{
+            background: "linear-gradient(120deg, #fafdff 70%, #e3f0fb 100%)",
+            borderRadius: 20,
+            boxShadow: "0 4px 18px #38b27a13",
+            minWidth: 210,
+            padding: "34px 36px",
+            textAlign: "center",
+            cursor: "default",
+          }}
+        >
+          <div style={{ fontSize: 18, fontWeight: 700, color: "#3b4872", marginBottom: 8 }}>
+            오늘 접속자 수
+          </div>
+          <div
+            style={{
+              fontSize: 40,
+              fontWeight: 900,
+              color: "#38b27a",
+              textShadow: "0 2px 12px #38b27a33",
+            }}
+          >
+            {todayUsers}
+          </div>
+        </div>
       </div>
 
-      {/* 최근 7일 통계 + 그래프 */}
-      <div style={{
-        background: "#f5f7fb",
-        borderRadius: 16,
-        padding: 28,
-        boxShadow: "0 1px 10px #dde5ef77",
-        marginBottom: 32
-      }}>
-        <h4 style={{
-          fontWeight: 800,
-          marginBottom: 22,
-          fontSize: 20,
-          color: "#26326b"
-        }}>
+      <div
+        style={{
+          background: "#f5f7fb",
+          borderRadius: 16,
+          padding: 28,
+          boxShadow: "0 1px 10px #dde5ef77",
+          marginBottom: 32,
+        }}
+      >
+        <h4
+          style={{
+            fontWeight: 800,
+            marginBottom: 22,
+            fontSize: 20,
+            color: "#26326b",
+          }}
+        >
           최근 7일 접속자 수
         </h4>
-        {/* Bar Chart */}
-        <div style={{
-          display: "flex",
-          alignItems: "flex-end",
-          gap: 19,
-          height: 120,
-          marginBottom: 12
-        }}>
-          {recent7.map(r => (
-            <div key={r.date} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center" }}>
-              <div style={{
-                height: `${(r.count / chartMax) * 80 + 18}px`,
-                width: 21,
-                background: "linear-gradient(180deg, #4ea2f9 70%, #1976ed 100%)",
-                borderRadius: 8,
-                marginBottom: 6,
-                transition: "height 0.25s"
-              }} title={r.count} />
-              <span style={{
-                fontSize: 12,
-                color: "#bbb",
-                letterSpacing: 0,
-                textAlign: "center"
-              }}>{r.date.slice(5).replace("-", "/")}</span>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "flex-end",
+            gap: 19,
+            height: 120,
+            marginBottom: 12,
+          }}
+        >
+          {recent7.map((r) => (
+            <div
+              key={r.date}
+              style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center" }}
+            >
+              <div
+                style={{
+                  height: `${(r.count / chartMax) * 80 + 18}px`,
+                  width: 21,
+                  background: "linear-gradient(180deg, #4ea2f9 70%, #1976ed 100%)",
+                  borderRadius: 8,
+                  marginBottom: 6,
+                  transition: "height 0.25s",
+                }}
+                title={r.count}
+              />
+              <span
+                style={{
+                  fontSize: 12,
+                  color: "#bbb",
+                  letterSpacing: 0,
+                  textAlign: "center",
+                }}
+              >
+                {r.date.slice(5).replace("-", "/")}
+              </span>
             </div>
           ))}
         </div>
-        <table style={{ width: "100%", borderCollapse: "collapse", background: "#f9faff", marginTop: 9 }}>
-          <thead>
-            <tr style={{ background: "#ecf1fa" }}>
-              <th style={{ padding: "10px 0", borderBottom: "2px solid #e4e9f0", fontWeight: 700, fontSize: 15, color: "#26326b" }}>날짜</th>
-              <th style={{ padding: "10px 0", borderBottom: "2px solid #e4e9f0", fontWeight: 700, fontSize: 15, color: "#26326b" }}>접속자 수</th>
-            </tr>
-          </thead>
-          <tbody>
-            {recent7.length === 0 ? (
-              <tr>
-                <td colSpan={2} style={{ textAlign: "center", padding: 22, color: "#aaa" }}>데이터 없음</td>
-              </tr>
-            ) : recent7.map(r => (
-              <tr key={r.date} style={{ borderBottom: "1px solid #f0f0f0" }}>
-                <td style={{ padding: "11px 0", textAlign: "center", fontSize: 15 }}>{r.date}</td>
-                <td style={{ padding: "11px 0", textAlign: "center", fontSize: 15, fontWeight: 700 }}>{r.count}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
       </div>
-      <div style={{ color: "#b6bbd2", textAlign: "center", fontSize: 13, marginTop: 32 }}>
+
+      <div
+        style={{
+          background: "#f9fbff",
+          borderRadius: 16,
+          padding: 28,
+          boxShadow: "0 1px 10px #dde5ef77",
+          marginBottom: 32,
+        }}
+      >
+        <h4
+          style={{
+            fontWeight: 800,
+            marginBottom: 20,
+            fontSize: 20,
+            color: "#26326b",
+            textAlign: "center",
+          }}
+        >
+          최근 댓글 (최근 7일 내 최대 30개)
+        </h4>
+        {recentComments.length === 0 ? (
+          <div style={{ textAlign: "center", color: "#aaa", padding: 20 }}>
+            댓글이 없습니다.
+          </div>
+        ) : (
+          <ul style={{ listStyle: "none", padding: 0, maxHeight: 400, overflowY: "auto", color: "#000" }}>
+            {recentComments.map((comment) => (
+              <li
+                key={comment.id}
+                style={{
+                  padding: "8px 12px",
+                  marginBottom: 10,
+                  background: "#fff",
+                  borderRadius: 10,
+                  boxShadow: "0 1px 4px #ccc",
+                  cursor: "pointer",
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  color: "#000",
+                }}
+              >
+                <div
+                  onClick={() => handleCommentClick(comment.cup_id)}
+                  style={{ flex: 1, marginRight: 10, wordBreak: "break-word" }}
+                  title={comment.content}
+                >
+                  {comment.content.length > 100
+                    ? comment.content.slice(0, 100) + "..."
+                    : comment.content}
+                </div>
+                <button
+                  onClick={() => handleDeleteComment(comment.id)}
+                  disabled={deletingCommentId === comment.id}
+                  style={{
+                    background: "#e14444",
+                    color: "#fff",
+                    border: "none",
+                    borderRadius: 6,
+                    padding: "5px 10px",
+                    cursor: "pointer",
+                    fontWeight: "bold",
+                  }}
+                  title="댓글 삭제"
+                >
+                  {deletingCommentId === comment.id ? "삭제중..." : "삭제"}
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+
+      <div
+        style={{
+          color: "#b6bbd2",
+          textAlign: "center",
+          fontSize: 13,
+          marginTop: 32,
+        }}
+      >
         <span>onepickgame 관리자 통계 © {new Date().getFullYear()}</span>
       </div>
     </div>

@@ -1,7 +1,7 @@
 import React, { useRef, useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
-import { supabase } from "../utils/supabaseClient"; // 경로 맞춰주세요!
+import { supabase } from "../utils/supabaseClient"; // 경로 맞게 조정하세요
 
 function isValidNickname(nickname) {
   if (!nickname) return false;
@@ -24,10 +24,10 @@ const languages = [
   { code: "id", label: "Bahasa Indonesia" },
   { code: "pt", label: "Português" },
   { code: "hi", label: "हिन्दी" },
-  { code: "tr", label: "Türkçe" },          // 터키어
-  { code: "th", label: "ภาษาไทย" },          // 태국어
-  { code: "ar", label: "العربية" },         // 아랍어
-  { code: "bn", label: "বাংলা" },           // 벵골어(방글라데시)
+  { code: "tr", label: "Türkçe" },
+  { code: "th", label: "ภาษาไทย" },
+  { code: "ar", label: "العربية" },
+  { code: "bn", label: "বাংলা" },
 ];
 
 export default function Header({
@@ -54,12 +54,20 @@ export default function Header({
   const [withdrawLoading, setWithdrawLoading] = useState(false);
   const [cancelLoading, setCancelLoading] = useState(false);
 
-  useEffect(() => { setEditNickname(nickname || ""); }, [nickname]);
+  useEffect(() => {
+    setEditNickname(nickname || "");
+  }, [nickname]);
+
   useEffect(() => {
     if (!user) return setProfile(null);
-    supabase.from("profiles").select("*").eq("id", user.id).single().then(({ data }) => {
-      setProfile(data || null);
-    });
+    supabase
+      .from("profiles")
+      .select("*")
+      .eq("id", user.id)
+      .single()
+      .then(({ data }) => {
+        setProfile(data || null);
+      });
   }, [user, showProfile]);
 
   function handleLogout() {
@@ -69,6 +77,7 @@ export default function Header({
       setShowProfile(false);
     });
   }
+
   async function handleNicknameChange() {
     setEditError("");
     const trimName = editNickname.trim();
@@ -102,6 +111,7 @@ export default function Header({
     setShowProfile(false);
     alert(t("nickname_changed"));
   }
+
   async function handlePasswordChange() {
     setEditError("");
     if (!user?.email) {
@@ -117,8 +127,10 @@ export default function Header({
     }
     alert(t("pw_mail_sent"));
   }
+
   async function handleWithdrawalRequest() {
-    setEditError(""); setWithdrawLoading(true);
+    setEditError("");
+    setWithdrawLoading(true);
     const { error } = await supabase
       .from("profiles")
       .update({ withdrawal_requested_at: new Date().toISOString() })
@@ -129,8 +141,10 @@ export default function Header({
     setProfile((prev) => ({ ...prev, withdrawal_requested_at: new Date().toISOString() }));
     setShowProfile(false);
   }
+
   async function handleCancelWithdrawal() {
-    setEditError(""); setCancelLoading(true);
+    setEditError("");
+    setCancelLoading(true);
     const { error } = await supabase
       .from("profiles")
       .update({ withdrawal_requested_at: null })
@@ -141,9 +155,19 @@ export default function Header({
     setProfile((prev) => ({ ...prev, withdrawal_requested_at: null }));
     setShowProfile(false);
   }
-  function handleLogoClick() { navigate("/"); }
-  function handleMyWorldcup() { navigate("/my-worldcups"); }
-  function handleRecentWorldcup() { navigate("/recent-worldcups"); }
+
+  // 현재 선택된 언어코드
+  const currentLang = i18n.language || "ko";
+
+  function handleLogoClick() {
+    navigate(`/${currentLang}`);
+  }
+  function handleMyWorldcup() {
+    navigate(`/${currentLang}/my-worldcups`);
+  }
+  function handleRecentWorldcup() {
+    navigate(`/${currentLang}/recent-worldcups`);
+  }
 
   const logoImgUrl = "/onepick2.png";
   const headerBgUrl = "/onepick3.png";
@@ -153,6 +177,7 @@ export default function Header({
   const blueGradient = "linear-gradient(90deg,#2999ff,#236de8 100%)";
   const blueNeon = "0 0 16px #2999ff88, 0 2px 12px #1976ed33";
   const gold = "#ffbe3b";
+
   const adminButtonStyle = (bgColor = darkBlue, color = "#fff") => ({
     background: bgColor,
     color,
@@ -168,6 +193,7 @@ export default function Header({
     letterSpacing: "-0.2px",
     outline: "none",
   });
+
   const statButtonStyle = {
     background: gold,
     color: "#222",
@@ -181,6 +207,7 @@ export default function Header({
     outline: "none",
     letterSpacing: "-0.1px",
   };
+
   const mainButtonStyle = {
     background: blueGradient,
     color: "#fff",
@@ -196,6 +223,7 @@ export default function Header({
     whiteSpace: "nowrap",
     outline: "none",
   };
+
   const infoButtonStyle = {
     background: "rgba(30,43,82,0.94)",
     color: "#fff",
@@ -210,6 +238,7 @@ export default function Header({
     marginRight: 3,
     whiteSpace: "nowrap",
   };
+
   const logoutButtonStyle = {
     background: "#232c40",
     color: "#fff",
@@ -223,6 +252,7 @@ export default function Header({
     outline: "none",
     transition: "background .12s, color .13s",
   };
+
   const selectStyle = {
     padding: "7px 13px",
     borderRadius: 8,
@@ -347,15 +377,16 @@ export default function Header({
       }}
     >
       {/* 로고/텍스트 영역 */}
-      <div style={{
-        width: "100%",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        padding: "10px 0 7px 0",
-        cursor: "pointer",
-        userSelect: "none",
-      }}
+      <div
+        style={{
+          width: "100%",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          padding: "10px 0 7px 0",
+          cursor: "pointer",
+          userSelect: "none",
+        }}
         onClick={handleLogoClick}
       >
         <img
@@ -369,7 +400,7 @@ export default function Header({
             background: "rgba(24,29,42,0.9)",
             marginRight: 8,
             filter: "drop-shadow(0 0 10px #00c8ffbb)",
-            verticalAlign: "middle"
+            verticalAlign: "middle",
           }}
           draggable={false}
         />
@@ -382,7 +413,7 @@ export default function Header({
             textShadow: "0 2px 16px #157be9cc, 0 0.5px 2.5px #fff",
             letterSpacing: "1.2px",
             lineHeight: 1.13,
-            marginTop: 2
+            marginTop: 2,
           }}
         >
           One Pick Game
@@ -405,32 +436,63 @@ export default function Header({
       >
         {isAdmin && (
           <>
-            <button style={adminButtonStyle("#1976ed")} onClick={() => navigate("/admin")}>{t("dashboard")}</button>
-            <button style={statButtonStyle} onClick={() => navigate("/admin-stats")}>{t("stats")}</button>
-            <button style={adminButtonStyle()} onClick={onBackup}>{t("backupAll")}</button>
-            <button style={adminButtonStyle("#253253")} onClick={() => inputRef.current && inputRef.current.click()}>{t("restore")}</button>
-            <input ref={inputRef} type="file" accept="application/json" style={{ display: "none" }} onChange={onRestore} />
+            <button
+              style={adminButtonStyle("#1976ed")}
+              onClick={() => navigate(`/${currentLang}/admin`)}
+            >
+              {t("dashboard")}
+            </button>
+            <button
+              style={statButtonStyle}
+              onClick={() => navigate(`/${currentLang}/admin-stats`)}
+            >
+              {t("stats")}
+            </button>
+            <button style={adminButtonStyle()} onClick={onBackup}>
+              {t("backupAll")}
+            </button>
+            <button
+              style={adminButtonStyle("#253253")}
+              onClick={() => inputRef.current && inputRef.current.click()}
+            >
+              {t("restore")}
+            </button>
+            <input
+              ref={inputRef}
+              type="file"
+              accept="application/json"
+              style={{ display: "none" }}
+              onChange={onRestore}
+            />
           </>
         )}
-        <button style={mainButtonStyle} onClick={onMakeWorldcup}>{t("makeWorldcup")}</button>
+        <button style={mainButtonStyle} onClick={onMakeWorldcup}>
+          {t("makeWorldcup")}
+        </button>
         {user && (
-          <button style={infoButtonStyle} onClick={handleMyWorldcup}>{t("my_worldcups")}</button>
+          <button style={infoButtonStyle} onClick={handleMyWorldcup}>
+            {t("my_worldcups")}
+          </button>
         )}
-        <button style={infoButtonStyle} onClick={handleRecentWorldcup}>{t("recent_worldcups")}</button>
+        <button style={infoButtonStyle} onClick={handleRecentWorldcup}>
+          {t("recent_worldcups")}
+        </button>
         {/* ----------- 이 부분이 핵심! ----------- */}
         <select
           value={i18n.language}
-          onChange={e => {
+          onChange={(e) => {
             const lng = e.target.value;
             i18n.changeLanguage(lng);
             if (onLangChange) onLangChange(lng);
             localStorage.setItem("onepickgame_lang", lng);
-             window.location.href = `/${lng}`; // ← 언어 바꿀 때 무조건 메인 홈으로 이동!
+            window.location.href = `/${lng}`; // 언어 바꿀 때 무조건 메인 홈으로 이동
           }}
           style={selectStyle}
         >
           {languages.map((lang) => (
-            <option key={lang.code} value={lang.code}>{lang.label}</option>
+            <option key={lang.code} value={lang.code}>
+              {lang.label}
+            </option>
           ))}
         </select>
         {/* ----------- 여기까지! ----------- */}
@@ -445,17 +507,23 @@ export default function Header({
                 userSelect: "none",
                 textShadow: "0 0 6px #00e5ff88, 0 0.5px 2.5px #fff",
                 fontFamily: "'Pretendard','Orbitron',sans-serif",
-                fontSize: 15
+                fontSize: 15,
               }}
             >
-              {nicknameLoading ? t("loading_nickname") : (nickname || t("no_nickname"))}
+              {nicknameLoading ? t("loading_nickname") : nickname || t("no_nickname")}
             </span>
-            <button style={infoButtonStyle} onClick={() => setShowProfile(true)}>{t("edit_profile")}</button>
-            <button style={logoutButtonStyle} onClick={handleLogout}>{t("logout")}</button>
+            <button style={infoButtonStyle} onClick={() => setShowProfile(true)}>
+              {t("edit_profile")}
+            </button>
+            <button style={logoutButtonStyle} onClick={handleLogout}>
+              {t("logout")}
+            </button>
             {showProfile && (
               <div style={modalOverlayStyle}>
-                <div style={modalContentStyle} onClick={e => e.stopPropagation()}>
-                  <div style={{ fontWeight: 800, fontSize: 21, marginBottom: 18, textAlign: "center" }}>
+                <div style={modalContentStyle} onClick={(e) => e.stopPropagation()}>
+                  <div
+                    style={{ fontWeight: 800, fontSize: 21, marginBottom: 18, textAlign: "center" }}
+                  >
                     {t("edit_profile")}
                   </div>
                   <div style={{ width: "100%" }}>
@@ -467,7 +535,7 @@ export default function Header({
                       <input
                         type="text"
                         value={editNickname}
-                        onChange={e => setEditNickname(e.target.value)}
+                        onChange={(e) => setEditNickname(e.target.value)}
                         style={modalInputStyle}
                         placeholder={t("nickname")}
                         maxLength={20}
@@ -477,25 +545,33 @@ export default function Header({
                         style={modalProfileButtonStyle}
                         onClick={handleNicknameChange}
                         disabled={editLoading}
-                      >{editLoading ? t("changing") : t("change_nickname")}</button>
+                      >
+                        {editLoading ? t("changing") : t("change_nickname")}
+                      </button>
                     </div>
                     <button
                       style={modalGrayButtonStyle}
                       onClick={handlePasswordChange}
                       disabled={editLoading}
-                    >{t("send_pw_reset")}</button>
+                    >
+                      {t("send_pw_reset")}
+                    </button>
                     {profile?.withdrawal_requested_at ? (
                       <button
                         style={modalGrayButtonStyle}
                         onClick={handleCancelWithdrawal}
                         disabled={cancelLoading}
-                      >{cancelLoading ? t("canceling") : t("withdraw_cancel")}</button>
+                      >
+                        {cancelLoading ? t("canceling") : t("withdraw_cancel")}
+                      </button>
                     ) : (
                       <button
                         style={modalDeleteButtonStyle}
                         onClick={handleWithdrawalRequest}
                         disabled={withdrawLoading}
-                      >{withdrawLoading ? t("changing") : t("withdraw")}</button>
+                      >
+                        {withdrawLoading ? t("changing") : t("withdraw")}
+                      </button>
                     )}
                     {editError && (
                       <div style={{ color: "red", marginTop: 7, fontSize: 14, textAlign: "center" }}>
@@ -503,7 +579,9 @@ export default function Header({
                       </div>
                     )}
                   </div>
-                  <button style={modalCloseButtonStyle} onClick={() => setShowProfile(false)}>{t("close")}</button>
+                  <button style={modalCloseButtonStyle} onClick={() => setShowProfile(false)}>
+                    {t("close")}
+                  </button>
                   <button
                     style={{
                       position: "absolute",
@@ -523,8 +601,24 @@ export default function Header({
                     onClick={() => setShowProfile(false)}
                   >
                     <svg width="22" height="22" viewBox="0 0 22 22">
-                      <line x1="4" y1="4" x2="18" y2="18" stroke="#333" strokeWidth="2.2" strokeLinecap="round" />
-                      <line x1="18" y1="4" x2="4" y2="18" stroke="#333" strokeWidth="2.2" strokeLinecap="round" />
+                      <line
+                        x1="4"
+                        y1="4"
+                        x2="18"
+                        y2="18"
+                        stroke="#333"
+                        strokeWidth="2.2"
+                        strokeLinecap="round"
+                      />
+                      <line
+                        x1="18"
+                        y1="4"
+                        x2="4"
+                        y2="18"
+                        stroke="#333"
+                        strokeWidth="2.2"
+                        strokeLinecap="round"
+                      />
                     </svg>
                   </button>
                 </div>
@@ -532,7 +626,9 @@ export default function Header({
             )}
           </>
         ) : (
-          <button style={mainButtonStyle} onClick={() => navigate("/login")}>{t("login")}</button>
+          <button style={mainButtonStyle} onClick={() => navigate(`/${currentLang}/login`)}>
+            {t("login")}
+          </button>
         )}
       </div>
     </header>
