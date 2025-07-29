@@ -1,8 +1,18 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Helmet } from "react-helmet";
 import Home from "../../components/Home";
+import { useTranslation } from "react-i18next";
 
 export default function HiPage(props) {
+  const { i18n } = useTranslation();
+
+  useEffect(() => {
+    if (i18n.language !== "hi") {
+      i18n.changeLanguage("hi");
+      localStorage.setItem("onepickgame_lang", "hi");
+    }
+  }, [i18n]);
+
   return (
     <>
       <Helmet>

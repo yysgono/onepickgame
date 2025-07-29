@@ -1,8 +1,18 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Helmet } from "react-helmet";
 import Home from "../../components/Home";
+import { useTranslation } from "react-i18next";
 
 export default function ZhPage(props) {
+  const { i18n } = useTranslation();
+
+  useEffect(() => {
+    if (i18n.language !== "zh") {
+      i18n.changeLanguage("zh");
+      localStorage.setItem("onepickgame_lang", "zh");
+    }
+  }, [i18n]);
+
   return (
     <>
       <Helmet>

@@ -6,7 +6,9 @@ import {
   BrowserRouter as Router,
   Routes,
   Route,
+  Navigate,
   useNavigate,
+  useLocation,
   useParams,
 } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -33,6 +35,7 @@ import TermsOfService from "./components/TermsOfService";
 import Footer from "./components/Footer";
 import SuggestionsBoard from "./components/SuggestionsBoard";
 
+// 언어별 페이지 import
 import DePage from "./pages/de/index";
 import EnPage from "./pages/en/index";
 import EsPage from "./pages/es/index";
@@ -45,8 +48,6 @@ import PtPage from "./pages/pt/index";
 import RuPage from "./pages/ru/index";
 import ViPage from "./pages/vi/index";
 import ZhPage from "./pages/zh/index";
-
-// 🔽 새로 추가한 언어 import
 import ArPage from "./pages/ar/index";
 import BnPage from "./pages/bn/index";
 import ThPage from "./pages/th/index";
@@ -80,7 +81,6 @@ function LanguageWrapper(props) {
   const { i18n } = useTranslation();
   const navigate = useNavigate();
 
-  // 🔽 supportedLangs에 언어 추가
   useEffect(() => {
     const supportedLangs = [
       "ko", "en", "ru", "ja", "zh", "pt", "es", "fr", "id", "hi", "de", "vi",
@@ -95,7 +95,6 @@ function LanguageWrapper(props) {
     }
   }, [lang, i18n, navigate]);
 
-  // 🔽 각 언어에 맞는 page return
   switch (lang) {
     case "ko": return <KoPage {...props} />;
     case "en": return <EnPage {...props} />;
@@ -109,7 +108,6 @@ function LanguageWrapper(props) {
     case "hi": return <HiPage {...props} />;
     case "de": return <DePage {...props} />;
     case "vi": return <ViPage {...props} />;
-    // 🔽 새로 추가된 언어들
     case "ar": return <ArPage {...props} />;
     case "bn": return <BnPage {...props} />;
     case "th": return <ThPage {...props} />;
@@ -251,7 +249,11 @@ function App() {
       <Home
         worldcupList={myList}
         fetchWorldcups={fetchWorldcups}
-        onSelect={(cup) => (window.location.href = `/select-round/${cup.id}`)}
+        onSelect={(cup) => {
+          // 언어코드 붙여서 이동
+          const lang = i18n.language || "ko";
+          window.location.href = `/${lang}/select-round/${cup.id}`;
+        }}
         user={user}
         nickname={nickname}
         isAdmin={isAdmin}
@@ -275,7 +277,10 @@ function App() {
       <Home
         worldcupList={recentCups}
         fetchWorldcups={fetchWorldcups}
-        onSelect={(cup) => (window.location.href = `/select-round/${cup.id}`)}
+        onSelect={(cup) => {
+          const lang = i18n.language || "ko";
+          window.location.href = `/${lang}/select-round/${cup.id}`;
+        }}
         user={user}
         nickname={nickname}
         isAdmin={isAdmin}
@@ -286,17 +291,22 @@ function App() {
 
   function AppRoutes() {
     const navigate = useNavigate();
+    const location = useLocation();
+    const { i18n } = useTranslation();
+
+    // 현재 URL에서 언어코드 추출
+    const langMatch = location.pathname.match(/^\/([a-z]{2})(\/|$)/);
+    const lang = langMatch ? langMatch[1] : i18n.language || "ko";
 
     function handleMakeWorldcup() {
       if (!user) {
         alert(t("login_required") || "Login required.");
         return;
       }
-      navigate("/worldcup-maker");
+      navigate(`/${lang}/worldcup-maker`);
     }
 
     function HomeWrapper() {
-      const navigate = useNavigate();
       return (
         <Home
           worldcupList={worldcupList}
@@ -310,7 +320,7 @@ function App() {
               "onepickgame_recentWorldcups",
               JSON.stringify([cup.id, ...recent.filter((id) => id !== cup.id)].slice(0, 30))
             );
-            navigate(`/select-round/${cup.id}`);
+            navigate(`/${lang}/select-round/${cup.id}`);
           }}
           onMakeWorldcup={handleMakeWorldcup}
           onDelete={async (id) => {
@@ -331,15 +341,24 @@ function App() {
 
     function SelectRoundPageWrapper() {
       const { id } = useParams();
-      const navigate = useNavigate();
       const cup = worldcupList.find((c) => String(c.id) === id);
+      const navigate = useNavigate();
       if (!cup) return null;
       return (
         <SelectRoundPage
           cup={cup}
           maxRound={cup.data.length}
           candidates={cup.data}
-          onSelect={(round) => navigate(`/match/${id}/${round}`)}
+          onSelect={(roundOrCandidate) => {
+            // roundOrCandidate: 라운드(숫자) or 후보객체
+            if (typeof roundOrCandidate === "number") {
+              // 라운드 시작
+              navigate(`/${lang}/match/${cup.id}/${roundOrCandidate}`);
+            } else if (typeof roundOrCandidate === "object" && roundOrCandidate?.id) {
+              // 카드 클릭 시 → 1라운드부터 시작
+              navigate(`/${lang}/match/${cup.id}/${maxRound}`);
+            }
+          }}
         />
       );
     }
@@ -357,9 +376,9 @@ function App() {
         <WorldcupMaker
           fetchWorldcups={fetchWorldcups}
           onCreate={() => {
-            window.location.href = "/";
+            navigate(`/${lang}`);
           }}
-          onCancel={() => navigate("/")}
+          onCancel={() => navigate(`/${lang}`)}
           user={user}
           nickname={nickname}
         />
@@ -468,6 +487,7 @@ function App() {
 
         <div className="main-content-box">
           <Routes>
+            {/* 언어별 전체 라우팅 */}
             <Route
               path="/:lang"
               element={
@@ -481,28 +501,32 @@ function App() {
                 />
               }
             />
+            <Route path="/:lang/select-round/:id" element={<SelectRoundPageWrapper />} />
+            <Route path="/:lang/match/:id/:round" element={<MatchPage worldcupList={worldcupList} />} />
+            <Route path="/:lang/result/:id" element={<ResultPage worldcupList={worldcupList} />} />
+            <Route path="/:lang/result/:id/:round" element={<ResultPage worldcupList={worldcupList} />} />
+            <Route path="/:lang/stats/:id" element={<StatsPageWrapper />} />
+            <Route path="/:lang/worldcup-maker" element={<WorldcupMakerWrapper />} />
+            <Route path="/:lang/manage" element={<ManageWorldcupWrapper />} />
+            <Route path="/:lang/backup" element={<BackupPage worldcupList={worldcupList} setWorldcupList={setWorldcupList} />} />
+            <Route path="/:lang/edit-worldcup/:id" element={<EditWorldcupPageWrapper />} />
+            <Route path="/:lang/admin" element={<AdminRoute />} />
+            <Route path="/:lang/admin-stats" element={<AdminStatsRoute />} />
+            <Route path="/:lang/signup" element={<SignupBox />} />
+            <Route path="/:lang/login" element={<LoginBox setUser={setUser} setNickname={updateNickname} />} />
+            <Route path="/:lang/find-id" element={<FindIdBox />} />
+            <Route path="/:lang/find-pw" element={<FindPwBox />} />
+            <Route path="/:lang/reset-password" element={<ResetPwRedirect />} />
+            <Route path="/:lang/privacy-policy" element={<PrivacyPolicy />} />
+            <Route path="/:lang/terms-of-service" element={<TermsOfService />} />
+            <Route path="/:lang/suggestions" element={<SuggestionsBoard user={user} isAdmin={isAdmin} />} />
+
+            {/* 기본 루트(언어 없는 홈) */}
             <Route path="/" element={<HomeWrapper />} />
             <Route path="/my-worldcups" element={<MyWorldcupsWrapper />} />
             <Route path="/recent-worldcups" element={<RecentWorldcupsWrapper />} />
-            <Route path="/select-round/:id" element={<SelectRoundPageWrapper />} />
-            <Route path="/match/:id/:round" element={<MatchPage worldcupList={worldcupList} />} />
-            <Route path="/result/:id" element={<ResultPage worldcupList={worldcupList} />} />
-            <Route path="/result/:id/:round" element={<ResultPage worldcupList={worldcupList} />} />
-            <Route path="/stats/:id" element={<StatsPageWrapper />} />
-            <Route path="/worldcup-maker" element={<WorldcupMakerWrapper />} />
-            <Route path="/manage" element={<ManageWorldcupWrapper />} />
-            <Route path="/backup" element={<BackupPage worldcupList={worldcupList} setWorldcupList={setWorldcupList} />} />
-            <Route path="/edit-worldcup/:id" element={<EditWorldcupPageWrapper />} />
-            <Route path="/admin" element={<AdminRoute />} />
-            <Route path="/admin-stats" element={<AdminStatsRoute />} />
-            <Route path="/signup" element={<SignupBox />} />
-            <Route path="/login" element={<LoginBox setUser={setUser} setNickname={updateNickname} />} />
-            <Route path="/find-id" element={<FindIdBox />} />
-            <Route path="/find-pw" element={<FindPwBox />} />
-            <Route path="/reset-password" element={<ResetPwRedirect />} />
-            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-            <Route path="/terms-of-service" element={<TermsOfService />} />
-            <Route path="/suggestions" element={<SuggestionsBoard user={user} isAdmin={isAdmin} />} />
+            {/* 없는 주소는 홈으로 */}
+            <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </div>
       </>

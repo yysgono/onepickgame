@@ -425,7 +425,7 @@ export default function Header({
             i18n.changeLanguage(lng);
             if (onLangChange) onLangChange(lng);
             localStorage.setItem("onepickgame_lang", lng);
-            window.location.href = "/"; // ← 언어 바꿀 때 무조건 메인 홈으로 이동!
+             window.location.href = `/${lng}`; // ← 언어 바꿀 때 무조건 메인 홈으로 이동!
           }}
           style={selectStyle}
         >

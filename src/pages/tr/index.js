@@ -1,8 +1,18 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Helmet } from "react-helmet";
 import Home from "../../components/Home";
+import { useTranslation } from "react-i18next";
 
 export default function TrPage(props) {
+  const { i18n } = useTranslation();
+
+  useEffect(() => {
+    if (i18n.language !== "tr") {
+      i18n.changeLanguage("tr");
+      localStorage.setItem("onepickgame_lang", "tr");
+    }
+  }, [i18n]);
+
   return (
     <>
       <Helmet>

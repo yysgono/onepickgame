@@ -1,12 +1,22 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Helmet } from "react-helmet";
 import Home from "../../components/Home";
+import { useTranslation } from "react-i18next";
 
 export default function EnPage(props) {
+  const { i18n } = useTranslation();
+
+  useEffect(() => {
+    if (i18n.language !== "en") {
+      i18n.changeLanguage("en");
+      localStorage.setItem("onepickgame_lang", "en");
+    }
+  }, [i18n]);
+
   return (
     <>
       <Helmet>
-        <title>OnePickGame - Bracket Game Site</title>
+        <title>One Pick Game - Bracket Game Site</title>
         <meta
           name="description"
           content="Bracket game site One Pick Game. Create your own tournament bracket, enjoy fun matchups, and play with users around the world!"

@@ -79,6 +79,14 @@ function Home({
   const [vw, setVw] = useState(window.innerWidth);
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
 
+  // **핵심**: 항상 URL에서 언어코드 추출!
+  const langFromUrl = (() => {
+    const path = window.location.pathname;
+    const match = path.match(/^\/([a-z]{2})(\/|$)/);
+    return match ? match[1] : "ko";
+  })();
+  const lang = langFromUrl || "ko";
+
   useEffect(() => {
     const onResize = () => setVw(window.innerWidth);
     window.addEventListener("resize", onResize);
@@ -259,7 +267,13 @@ function Home({
     setVisibleCount((prev) => prev + PAGE_SIZE);
   };
 
-   return (
+  // 언어별 라우팅을 보장하는 함수 (모든 카드 클릭, 시작, 통계, 수정, 삭제 등)
+  // **반드시 / 슬래시 넣어줘야 함**
+  const getRoute = (base, cupId) => {
+    return `/${lang}${base}/${cupId}`;
+  };
+
+  return (
     <div
       style={{
         width: "100vw",
@@ -389,7 +403,8 @@ function Home({
                   e.currentTarget.style.boxShadow = "0 8px 38px 0 #1976ed45, 0 2px 12px #1976ed44";
                 }}
                 onClick={() => {
-                  if (onSelect) onSelect(cup);
+                  // 카드 전체 클릭
+                  window.location.href = getRoute("/select-round", cup.id);
                 }}
               >
                 <div style={{
@@ -560,8 +575,6 @@ function Home({
                     }}
                   >
                     {(() => {
-                      // 최대 70자, 40자 이내는 그대로, 
-                      // 40자 이후 가장 가까운 공백에서 줄바꿈
                       const title = (cup.title || "").slice(0, 70);
                       if (title.length <= 40) return title;
                       const breakpoint = (() => {
@@ -595,7 +608,8 @@ function Home({
                   <button
                     onClick={e => {
                       e.stopPropagation();
-                      if (onSelect) onSelect(cup);
+                      // 무조건 URL에서 가져온 lang 기준!
+                      window.location.href = getRoute("/select-round", cup.id);
                     }}
                     style={buttonStyle}
                     onMouseOver={e => (e.currentTarget.style.background = "#1c2232")}
@@ -606,7 +620,7 @@ function Home({
                       <button
                         onClick={e => {
                           e.stopPropagation();
-                          window.location.href = `/edit-worldcup/${cup.id}`;
+                          window.location.href = getRoute("/edit-worldcup", cup.id);
                         }}
                         style={smallButtonStyle}
                         onMouseOver={e => (e.currentTarget.style.background = "#1c2232")}
@@ -630,7 +644,7 @@ function Home({
                   <button
                     onClick={e => {
                       e.stopPropagation();
-                      window.location.href = `/stats/${cup.id}`;
+                      window.location.href = getRoute("/stats", cup.id);
                     }}
                     style={buttonStyle}
                     onMouseOver={e => (e.currentTarget.style.background = "#1c2232")}

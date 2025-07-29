@@ -1,8 +1,18 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Helmet } from "react-helmet";
 import Home from "../../components/Home";
+import { useTranslation } from "react-i18next";
 
-export default function KoPage(props) { // ★ props 꼭 받아야 함
+export default function KoPage(props) {
+  const { i18n } = useTranslation();
+
+  useEffect(() => {
+    if (i18n.language !== "ko") {
+      i18n.changeLanguage("ko");
+      localStorage.setItem("onepickgame_lang", "ko");
+    }
+  }, [i18n]);
+
   return (
     <>
       <Helmet>
@@ -16,7 +26,7 @@ export default function KoPage(props) { // ★ props 꼭 받아야 함
         <meta property="og:image" content="https://onepickgame.com/ogimg.png" />
         <meta property="og:url" content="https://onepickgame.com/ko" />
       </Helmet>
-      <Home {...props} /> {/* ★ 이 줄이 꼭 필요! */}
+      <Home {...props} />
     </>
   );
 }
