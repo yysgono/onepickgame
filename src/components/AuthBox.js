@@ -47,7 +47,7 @@ export default function AuthBox({ onLogin }) {
       const { data, error } = await supabase.auth.signInWithPassword({ email, password: pw });
       if (error) setMsg(error.message);
       else {
-        setMsg(t("login_success"));
+        setMsg(t("login_success")); // "로그인 성공!"
         if (onLogin) onLogin(data.user);
         window.location.reload();
       }
@@ -60,17 +60,19 @@ export default function AuthBox({ onLogin }) {
         setLoading(false);
         return;
       }
-      // 닉네임 대소문자 구분 없이 중복 체크 (ilike 사용)
+      // 닉네임 대소문자 무시, 완전일치 중복 체크
       const { data: exists, error: existError } = await supabase
         .from("profiles")
-        .select("id")
+        .select("nickname")
         .ilike("nickname", nickname);
       if (existError) {
         setMsg(existError.message);
         setLoading(false);
         return;
       }
-      if (exists && exists.length > 0) {
+      // JS에서 완전 일치, 대소문자 무시로 체크!
+      const existsExact = exists && exists.some(e => e.nickname.toLowerCase() === nickname.toLowerCase());
+      if (existsExact) {
         setMsg(t("nickname_exists", { defaultValue: "이미 사용 중인 닉네임입니다." }));
         setLoading(false);
         return;
