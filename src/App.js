@@ -527,9 +527,12 @@ function App() {
             <Route path="/:lang/terms-of-service" element={<TermsOfService />} />
             <Route path="/:lang/suggestions" element={<SuggestionsBoard user={user} isAdmin={isAdmin} />} />
 
+            {/* === 여기 추가! === */}
+            <Route path="/:lang/my-worldcups" element={<MyWorldcupsWrapper />} />
+            <Route path="/:lang/recent-worldcups" element={<RecentWorldcupsWrapper />} />
+
+            {/* 기존: 루트 라우트 */}
             <Route path="/" element={<HomeWrapper />} />
-            <Route path="/my-worldcups" element={<MyWorldcupsWrapper />} />
-            <Route path="/recent-worldcups" element={<RecentWorldcupsWrapper />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </div>
