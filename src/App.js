@@ -46,6 +46,12 @@ import RuPage from "./pages/ru/index";
 import ViPage from "./pages/vi/index";
 import ZhPage from "./pages/zh/index";
 
+// 🔽 새로 추가한 언어 import
+import ArPage from "./pages/ar/index";
+import BnPage from "./pages/bn/index";
+import ThPage from "./pages/th/index";
+import TrPage from "./pages/tr/index";
+
 import { getWorldcupGames, deleteWorldcupGame } from "./utils/supabaseWorldcupApi";
 import { supabase } from "./utils/supabaseClient";
 
@@ -74,9 +80,11 @@ function LanguageWrapper(props) {
   const { i18n } = useTranslation();
   const navigate = useNavigate();
 
+  // 🔽 supportedLangs에 언어 추가
   useEffect(() => {
     const supportedLangs = [
-      "ko", "en", "ru", "ja", "zh", "pt", "es", "fr", "id", "hi", "de", "vi"
+      "ko", "en", "ru", "ja", "zh", "pt", "es", "fr", "id", "hi", "de", "vi",
+      "ar", "bn", "th", "tr"
     ];
     if (!supportedLangs.includes(lang)) {
       navigate("/", { replace: true });
@@ -87,6 +95,7 @@ function LanguageWrapper(props) {
     }
   }, [lang, i18n, navigate]);
 
+  // 🔽 각 언어에 맞는 page return
   switch (lang) {
     case "ko": return <KoPage {...props} />;
     case "en": return <EnPage {...props} />;
@@ -100,6 +109,11 @@ function LanguageWrapper(props) {
     case "hi": return <HiPage {...props} />;
     case "de": return <DePage {...props} />;
     case "vi": return <ViPage {...props} />;
+    // 🔽 새로 추가된 언어들
+    case "ar": return <ArPage {...props} />;
+    case "bn": return <BnPage {...props} />;
+    case "th": return <ThPage {...props} />;
+    case "tr": return <TrPage {...props} />;
     default: return <Home {...props} />;
   }
 }
