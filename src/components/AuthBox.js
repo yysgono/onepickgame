@@ -60,19 +60,22 @@ export default function AuthBox({ onLogin }) {
         setLoading(false);
         return;
       }
-      // 닉네임 대소문자 무시, 완전일치 중복 체크
+      // 닉네임 대소문자 무시, 완전일치 중복 체크 (DB는 그대로!)
       const { data: exists, error: existError } = await supabase
         .from("profiles")
         .select("nickname")
-        .ilike("nickname", nickname);
+        .ilike("nickname", nickname); // 부분일치로 다 받아오기
+
       if (existError) {
         setMsg(existError.message);
         setLoading(false);
         return;
       }
-      // JS에서 완전 일치, 대소문자 무시로 체크!
-      const existsExact = exists && exists.some(e => e.nickname.toLowerCase() === nickname.toLowerCase());
-      if (existsExact) {
+      // JS에서 대소문자 무시 완전일치로 체크
+      const isDup = exists && exists.some(row =>
+        row.nickname.toLowerCase() === nickname.toLowerCase()
+      );
+      if (isDup) {
         setMsg(t("nickname_exists", { defaultValue: "이미 사용 중인 닉네임입니다." }));
         setLoading(false);
         return;
