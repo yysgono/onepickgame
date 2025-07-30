@@ -1,6 +1,11 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
 
-export default function TermsOfServiceEn() {
+export default function TermsOfService() {
+  const { i18n } = useTranslation();
+  const lang = i18n.language || "en";
+
   return (
     <div style={{
       maxWidth: 900,
@@ -9,7 +14,7 @@ export default function TermsOfServiceEn() {
       background: "#fff",
       borderRadius: 13,
       boxShadow: "0 2px 10px #0001",
-      color: "#222" // 👈 글자색 추가
+      color: "#222"
     }}>
       <h2>Terms of Service</h2>
       <ul style={{ lineHeight: 1.8 }}>
@@ -29,7 +34,9 @@ export default function TermsOfServiceEn() {
           Third-party ads and cookies may be displayed or used for personalized advertising (for example, Google AdSense).
         </li>
         <li>
-          Please refer to our Privacy Policy for details on personal data.
+          Please refer to our&nbsp;
+          <Link to={`/${lang}/privacy-policy`}>Privacy Policy</Link>
+          &nbsp;for details on personal data.
         </li>
         <li>
           These terms are effective from July 10, 2024.

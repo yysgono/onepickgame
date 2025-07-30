@@ -523,15 +523,16 @@ function App() {
             <Route path="/:lang/find-id" element={<FindIdBox />} />
             <Route path="/:lang/find-pw" element={<FindPwBox />} />
             <Route path="/:lang/reset-password" element={<ResetPwRedirect />} />
+
+            {/* 중요! 약관/정책/건의사항 */}
             <Route path="/:lang/privacy-policy" element={<PrivacyPolicy />} />
             <Route path="/:lang/terms-of-service" element={<TermsOfService />} />
             <Route path="/:lang/suggestions" element={<SuggestionsBoard user={user} isAdmin={isAdmin} />} />
 
-            {/* === 여기 추가! === */}
+            {/* 마이/최근 */}
             <Route path="/:lang/my-worldcups" element={<MyWorldcupsWrapper />} />
             <Route path="/:lang/recent-worldcups" element={<RecentWorldcupsWrapper />} />
 
-            {/* 기존: 루트 라우트 */}
             <Route path="/" element={<HomeWrapper />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>

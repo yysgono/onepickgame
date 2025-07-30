@@ -1,6 +1,11 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
 
 export default function PrivacyPolicy() {
+  const { i18n } = useTranslation();
+  const lang = i18n.language || "en";
+
   return (
     <div style={{
       maxWidth: 900,
@@ -9,7 +14,7 @@ export default function PrivacyPolicy() {
       background: "#fff",
       borderRadius: 13,
       boxShadow: "0 2px 10px #0001",
-      color: "#222" // 👈 글자색 추가
+      color: "#222"
     }}>
       <h2>Privacy Policy</h2>
       <p>
@@ -43,6 +48,11 @@ export default function PrivacyPolicy() {
         <li>
           <b>Your Rights</b><br />
           You may request access, correction, deletion, or restriction of your personal data at any time by contacting us by email.
+        </li>
+        <li>
+          See also our&nbsp;
+          <Link to={`/${lang}/terms-of-service`}>Terms of Service</Link>
+          .
         </li>
       </ul>
       <p>

@@ -1,9 +1,14 @@
+// src/components/Footer.js
 import React from "react";
 import { useTranslation, Trans } from "react-i18next";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 export default function Footer() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const location = useLocation();
+  // 현재 경로에서 언어코드 추출
+  const langMatch = location.pathname.match(/^\/([a-z]{2})(\/|$)/);
+  const lang = langMatch ? langMatch[1] : i18n.language || "ko";
 
   return (
     <footer
@@ -27,7 +32,6 @@ export default function Footer() {
           textAlign: "center",
         }}
       >
-        {/* 메인 소개 */}
         <div
           style={{
             color: "#e7f2ff",
@@ -44,11 +48,9 @@ export default function Footer() {
             bracket, enjoy fun matchups, and play with users around the world!
           </Trans>
         </div>
-
-        {/* 건의사항 링크 */}
         <div style={{ marginBottom: 10 }}>
           <Link
-            to="/suggestions"
+            to={`/${lang}/suggestions`}
             style={{
               color: "#ffd980",
               textDecoration: "underline",
@@ -62,11 +64,9 @@ export default function Footer() {
             })}
           </Link>
         </div>
-
-        {/* 약관/정책 링크 */}
         <div style={{ marginTop: 4 }}>
-          <a
-            href="/terms-of-service"
+          <Link
+            to={`/${lang}/terms-of-service`}
             style={{
               color: "#7fcaff",
               textDecoration: "underline",
@@ -78,9 +78,9 @@ export default function Footer() {
             rel="noopener noreferrer"
           >
             {t("terms_of_service", { defaultValue: "Terms of Service" })}
-          </a>
-          <a
-            href="/privacy-policy"
+          </Link>
+          <Link
+            to={`/${lang}/privacy-policy`}
             style={{
               color: "#7fcaff",
               textDecoration: "underline",
@@ -92,10 +92,8 @@ export default function Footer() {
             rel="noopener noreferrer"
           >
             {t("privacy_policy", { defaultValue: "Privacy Policy" })}
-          </a>
+          </Link>
         </div>
-
-        {/* Copyright */}
         <div
           style={{
             marginTop: 14,
