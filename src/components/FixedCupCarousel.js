@@ -53,11 +53,17 @@ function getTop2Winners(winStats, cupData) {
 }
 
 function FixedCupCarousel({ worldcupList }) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   const [vw, setVw] = useState(window.innerWidth);
   const [hoverPrev, setHoverPrev] = useState(false);
   const [hoverNext, setHoverNext] = useState(false);
+
+  // === 현재 언어코드 추출 ===
+  const langFromUrl = (() => {
+    const match = window.location.pathname.match(/^\/([a-z]{2})(\/|$)/);
+    return match ? match[1] : i18n.language || "ko";
+  })();
 
   useEffect(() => {
     const onResize = () => setVw(window.innerWidth);
@@ -185,7 +191,8 @@ function FixedCupCarousel({ worldcupList }) {
                   position: "relative",
                   transition: "transform .13s, box-shadow .14s",
                 }}
-                onClick={() => window.location.href = `/select-round/${cup.id}`}
+                // === 경로에 언어코드 포함 ===
+                onClick={() => window.location.href = `/${langFromUrl}/select-round/${cup.id}`}
                 onMouseEnter={e => {
                   e.currentTarget.style.transform = "translateY(-2.5px) scale(1.03)";
                   e.currentTarget.style.boxShadow = "0 9px 28px #1976ed20, 0 1.5px 8px #1976ed13";
