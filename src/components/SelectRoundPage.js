@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useNavigate, useLocation, useParams } from "react-router-dom";
 import MediaRenderer from "./MediaRenderer";
 
 // 모바일 체크 (훅)
@@ -34,6 +35,16 @@ export default function SelectRoundPage({ cup, maxRound, candidates, onSelect, o
   const { t } = useTranslation();
   const [selectedRound, setSelectedRound] = useState(maxRound);
   const isMobile = useIsMobile();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { lang: langParam } = useParams();
+
+  // 언어코드 추출
+  let lang = langParam;
+  if (!lang) {
+    const m = location.pathname.match(/^\/([a-z]{2})(\/|$)/);
+    lang = m ? m[1] : "ko";
+  }
 
   const maxPossibleRound = Math.min(candidates.length, 1024);
   let possibleRounds = [];
@@ -163,11 +174,31 @@ export default function SelectRoundPage({ cup, maxRound, candidates, onSelect, o
     alignItems: "center",
     justifyContent: "center"
   };
-  const shareUrl = cup?.id ? `${window.location.origin}/select-round/${cup.id}` : window.location.href;
+  const shareUrl = cup?.id ? `${window.location.origin}/${lang}/select-round/${cup.id}` : window.location.href;
   function handleShare() {
     navigator.clipboard.writeText(shareUrl);
     if (window?.toast?.success) window.toast.success(t("share_link_copied"));
     else alert(t("share_link_copied"));
+  }
+
+  // 통계(결과)로 이동도 항상 /:lang/stats/:id로!
+  function handleShowStats() {
+    if (cup?.id && lang) {
+      navigate(`/${lang}/stats/${cup.id}`);
+    }
+  }
+
+  // 라운드 선택 후 시작 (Match로 이동)
+  function handleStart(selectedRound) {
+    if (onSelect) onSelect(selectedRound);
+    else if (cup?.id && lang) {
+      navigate(`/${lang}/match/${cup.id}/${selectedRound}`);
+    }
+  }
+
+  // 후보 상세(한명 클릭)
+  function handleCandidateSelect(c) {
+    if (onSelect) onSelect(c);
   }
 
   return (
@@ -181,8 +212,8 @@ export default function SelectRoundPage({ cup, maxRound, candidates, onSelect, o
         background: "rgba(20, 24, 37, 0.95)",
         borderRadius: isMobile ? 0 : 23,
         boxShadow: isMobile ? "none" : "0 4px 44px #171c2747",
-        marginTop: 36, // <- 더 내려줌
-        minHeight: isMobile ? 520 : 580, // 충분한 높이 확보 (추가)
+        marginTop: 36,
+        minHeight: isMobile ? 520 : 580,
       }}
     >
       {/* 왼쪽 상단 월드컵 공유하기 버튼 */}
@@ -196,13 +227,10 @@ export default function SelectRoundPage({ cup, maxRound, candidates, onSelect, o
         </button>
       )}
 
-      {/* 오른쪽 상단 결과보기 버튼 */}
+      {/* 오른쪽 상단 결과/통계 보기 버튼 */}
       <button
         style={resultBtn}
-        onClick={() => {
-          if (onResult) onResult();
-          else if (cup?.id) window.location.href = `/stats/${cup.id}`;
-        }}
+        onClick={handleShowStats}
         aria-label={t("show_result")}
       >
         {t("show_result")}
@@ -214,7 +242,7 @@ export default function SelectRoundPage({ cup, maxRound, candidates, onSelect, o
               fontWeight: 900,
               fontSize: isMobile ? 23 : 31,
               color: "#fff",
-              marginBottom: isMobile ? 20 : 27, // 제목 아래 여백 넉넉히
+              marginBottom: isMobile ? 20 : 27,
               letterSpacing: "-1.2px",
               lineHeight: 1.18,
               textAlign: "center",
@@ -227,7 +255,7 @@ export default function SelectRoundPage({ cup, maxRound, candidates, onSelect, o
               wordBreak: "break-all",
               maxWidth: isMobile ? "98vw" : 710,
               boxShadow: "0 2px 16px #1976ed18",
-              marginTop: isMobile ? 35 : 45, // 버튼과 제목 사이 간격
+              marginTop: isMobile ? 35 : 45,
             }}
             title={cup.title}
           >
@@ -264,7 +292,7 @@ export default function SelectRoundPage({ cup, maxRound, candidates, onSelect, o
           marginBottom: isMobile ? 16 : 24,
           display: "flex",
           flexDirection: "row",
-          flexWrap: "wrap", // 이 부분 추가했습니다.
+          flexWrap: "wrap",
           alignItems: "center",
           justifyContent: "center",
           gap: isMobile ? 8 : 16,
@@ -288,7 +316,7 @@ export default function SelectRoundPage({ cup, maxRound, candidates, onSelect, o
         </span>
         <button
           style={mainBtn}
-          onClick={() => onSelect(selectedRound)}
+          onClick={() => handleStart(selectedRound)}
           aria-label={t("start")}
         >
           {t("start")}
@@ -365,10 +393,10 @@ export default function SelectRoundPage({ cup, maxRound, candidates, onSelect, o
             title={c.name}
             tabIndex={0}
             aria-label={c.name}
-            onClick={() => onSelect && onSelect(c)}
+            onClick={() => handleCandidateSelect(c)}
             onKeyDown={e => {
               if (e.key === "Enter" || e.key === " ") {
-                onSelect && onSelect(c);
+                handleCandidateSelect(c);
               }
             }}
             onMouseEnter={e => {
