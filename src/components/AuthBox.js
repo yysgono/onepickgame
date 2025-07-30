@@ -47,7 +47,7 @@ export default function AuthBox({ onLogin }) {
       const { data, error } = await supabase.auth.signInWithPassword({ email, password: pw });
       if (error) setMsg(error.message);
       else {
-        setMsg(t("login_success")); // "로그인 성공!"
+        setMsg(t("login_success"));
         if (onLogin) onLogin(data.user);
         window.location.reload();
       }
@@ -60,26 +60,24 @@ export default function AuthBox({ onLogin }) {
         setLoading(false);
         return;
       }
-      // 닉네임 대소문자 무시, 완전일치 중복 체크 (DB는 그대로!)
-      const { data: exists, error: existError } = await supabase
+      // --- 핵심! 모든 닉네임 받아와서 대소문자 무시 완전일치 체크 ---
+      const { data: allNicks, error: nickError } = await supabase
         .from("profiles")
-        .select("nickname")
-        .ilike("nickname", nickname); // 부분일치로 다 받아오기
-
-      if (existError) {
-        setMsg(existError.message);
+        .select("nickname");
+      if (nickError) {
+        setMsg(nickError.message);
         setLoading(false);
         return;
       }
-      // JS에서 대소문자 무시 완전일치로 체크
-      const isDup = exists && exists.some(row =>
-        row.nickname.toLowerCase() === nickname.toLowerCase()
+      const isDup = allNicks && allNicks.some(
+        row => row.nickname.toLowerCase() === nickname.toLowerCase()
       );
       if (isDup) {
         setMsg(t("nickname_exists", { defaultValue: "이미 사용 중인 닉네임입니다." }));
         setLoading(false);
         return;
       }
+      // -----------------------------------------------------------
       // 회원가입
       const { data, error } = await supabase.auth.signUp({ email, password: pw });
       if (error) setMsg(error.message);
