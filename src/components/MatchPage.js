@@ -1,27 +1,28 @@
 import React from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import Match from "./Match";
 
-// MatchPage: 특정 월드컵에서 N강(라운드) 경기를 시작하는 페이지
 function MatchPage({ worldcupList }) {
   const { id, round } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
 
-  // 현재 월드컵 찾기
   const cup = worldcupList.find(c => String(c.id) === id);
-  // 라운드 숫자 (파라미터 round 없으면 후보 개수로 자동 결정, 예: 8, 16 등)
   const roundNum = Number(round) || (cup ? cup.data.length : 4);
 
-  // 월드컵이 없을 때 null (또는 Not Found 처리)
+  // 언어코드 추출 (라우트 일치용)
+  const langMatch = location.pathname.match(/^\/([a-z]{2})(\/|$)/);
+  const lang = langMatch ? langMatch[1] : "ko";
+
   if (!cup) return null;
 
-  // Match 컴포넌트로 위임, 결과 나오면 /result/:id/:round로 이동 (state에 winner, matchHistory)
   return (
     <Match
       cup={cup}
       selectedCount={roundNum}
       onResult={(winner, matchHistory) => {
-        navigate(`/result/${cup.id}/${roundNum}`, {
+        // 반드시 /:lang/result/:id/:round로 이동해야 함!
+        navigate(`/${lang}/result/${cup.id}/${roundNum}`, {
           state: { winner, matchHistory }
         });
       }}

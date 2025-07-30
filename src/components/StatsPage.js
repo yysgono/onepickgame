@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback, useMemo } from "react";
+import { useParams } from "react-router-dom"; // 추가
 import { fetchWinnerStatsFromDB } from "../utils";
 import { useTranslation } from "react-i18next";
 import MediaRenderer from "./MediaRenderer";
@@ -167,7 +168,7 @@ function RankCard(props) {
         zIndex: 2,
         boxSizing: "border-box",
         textAlign: "center",
-        justifyContent: "center", // 세로 중앙 정렬
+        justifyContent: "center",
       }}
     >
       <div
@@ -284,6 +285,7 @@ export default function StatsPage({
   highlightCandidateId,
 }) {
   const { t } = useTranslation();
+  const { lang } = useParams(); // 추가!
   const [stats, setStats] = useState([]);
   const [sortKey, setSortKey] = useState("win_count");
   const [sortDesc, setSortDesc] = useState(true);
@@ -498,7 +500,8 @@ export default function StatsPage({
 
   function ShareAndReportBar() {
     if (!selectedCup?.id) return null;
-    const shareUrl = `${window.location.origin}/select-round/${selectedCup.id}`;
+    // lang이 포함된 공유 링크!
+    const shareUrl = `${window.location.origin}/${lang}/select-round/${selectedCup.id}`;
     return (
       <div
         style={{

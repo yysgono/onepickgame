@@ -1,4 +1,3 @@
-// src/App.js
 import "./i18n";
 import "./App.css";
 import React, { useState, useEffect } from "react";
@@ -35,7 +34,7 @@ import TermsOfService from "./components/TermsOfService";
 import Footer from "./components/Footer";
 import SuggestionsBoard from "./components/SuggestionsBoard";
 
-// 언어별 페이지 import
+// 언어별 홈 페이지
 import DePage from "./pages/de/index";
 import EnPage from "./pages/en/index";
 import EsPage from "./pages/es/index";
@@ -53,7 +52,7 @@ import BnPage from "./pages/bn/index";
 import ThPage from "./pages/th/index";
 import TrPage from "./pages/tr/index";
 
-import { getWorldcupGames, deleteWorldcupGame } from "./utils/supabaseWorldcupApi";
+import { getWorldcupGames, deleteWorldcupGame, getWorldcupGame } from "./utils/supabaseWorldcupApi";
 import { supabase } from "./utils/supabaseClient";
 
 function useIsMobile() {
@@ -74,6 +73,12 @@ function ResetPwRedirect() {
     navigate("/");
   }, [navigate]);
   return null;
+}
+
+function getLangPath(i18n, path = "") {
+  const lang = i18n.language || "ko";
+  if (path.startsWith("/")) path = path.slice(1);
+  return `/${lang}${path ? "/" + path : ""}`;
 }
 
 function LanguageWrapper(props) {
@@ -250,8 +255,7 @@ function App() {
         worldcupList={myList}
         fetchWorldcups={fetchWorldcups}
         onSelect={(cup) => {
-          const lang = i18n.language || "ko";
-          window.location.href = `/${lang}/select-round/${cup.id}`;
+          window.location.href = getLangPath(i18n, `select-round/${cup.id}`);
         }}
         user={user}
         nickname={nickname}
@@ -277,8 +281,7 @@ function App() {
         worldcupList={recentCups}
         fetchWorldcups={fetchWorldcups}
         onSelect={(cup) => {
-          const lang = i18n.language || "ko";
-          window.location.href = `/${lang}/select-round/${cup.id}`;
+          window.location.href = getLangPath(i18n, `select-round/${cup.id}`);
         }}
         user={user}
         nickname={nickname}
@@ -287,6 +290,49 @@ function App() {
       />
     );
   }
+
+  // ----------- StatsPageWrapper robust ----------
+  function StatsPageWrapper() {
+    const { id } = useParams();
+    const { t } = useTranslation();
+    const [cup, setCup] = useState(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+      let mounted = true;
+      async function fetchCup() {
+        setLoading(true);
+        let found = worldcupList.find((c) => String(c.id) === String(id));
+        if (found) {
+          if (mounted) {
+            setCup(found);
+            setLoading(false);
+          }
+        } else {
+          try {
+            const data = await getWorldcupGame(id);
+            if (mounted) {
+              setCup(data);
+              setLoading(false);
+            }
+          } catch {
+            if (mounted) {
+              setCup(null);
+              setLoading(false);
+            }
+          }
+        }
+      }
+      fetchCup();
+      return () => { mounted = false; };
+    }, [id, worldcupList]);
+
+    if (loading) return <div style={{ padding: 60, textAlign: "center" }}>{t("loading")}</div>;
+    if (!cup) return <div style={{ padding: 60, textAlign: "center", color: "#d33" }}>{t("error_no_data")}</div>;
+
+    return <StatsPage selectedCup={cup} showCommentBox={true} />;
+  }
+  // ----------------------------------------------------------
 
   function AppRoutes() {
     const navigate = useNavigate();
@@ -318,7 +364,7 @@ function App() {
               "onepickgame_recentWorldcups",
               JSON.stringify([cup.id, ...recent.filter((id) => id !== cup.id)].slice(0, 30))
             );
-            navigate(`/${lang}/select-round/${cup.id}`);
+            navigate(getLangPath(i18n, `select-round/${cup.id}`));
           }}
           onMakeWorldcup={handleMakeWorldcup}
           onDelete={async (id) => {
@@ -349,20 +395,13 @@ function App() {
           candidates={cup.data}
           onSelect={(roundOrCandidate) => {
             if (typeof roundOrCandidate === "number") {
-              navigate(`/${lang}/match/${cup.id}/${roundOrCandidate}`);
+              navigate(getLangPath(i18n, `match/${cup.id}/${roundOrCandidate}`));
             } else if (typeof roundOrCandidate === "object" && roundOrCandidate?.id) {
-              navigate(`/${lang}/match/${cup.id}/${cup.data.length}`);
+              navigate(getLangPath(i18n, `match/${cup.id}/${cup.data.length}`));
             }
           }}
         />
       );
-    }
-
-    function StatsPageWrapper() {
-      const { id } = useParams();
-      const cup = worldcupList.find((c) => String(c.id) === id);
-      if (!cup) return null;
-      return <StatsPage selectedCup={cup} showCommentBox={true} />;
     }
 
     function WorldcupMakerWrapper() {
@@ -371,9 +410,9 @@ function App() {
         <WorldcupMaker
           fetchWorldcups={fetchWorldcups}
           onCreate={() => {
-            navigate(`/${lang}`);
+            navigate(getLangPath(i18n));
           }}
-          onCancel={() => navigate(`/${lang}`)}
+          onCancel={() => navigate(getLangPath(i18n))}
           user={user}
           nickname={nickname}
         />
@@ -431,7 +470,7 @@ function App() {
             adminName={nickname}
             onLogout={() => {
               supabase.auth.signOut().then(() => {
-                window.location.href = `/${lang}/`;
+                window.location.href = getLangPath(i18n);
               });
             }}
           />
@@ -466,7 +505,7 @@ function App() {
             adminName={nickname}
             onLogout={() => {
               supabase.auth.signOut().then(() => {
-                window.location.href = `/${lang}/`;
+                window.location.href = getLangPath(i18n);
               });
             }}
           />
@@ -523,16 +562,11 @@ function App() {
             <Route path="/:lang/find-id" element={<FindIdBox />} />
             <Route path="/:lang/find-pw" element={<FindPwBox />} />
             <Route path="/:lang/reset-password" element={<ResetPwRedirect />} />
-
-            {/* 중요! 약관/정책/건의사항 */}
             <Route path="/:lang/privacy-policy" element={<PrivacyPolicy />} />
             <Route path="/:lang/terms-of-service" element={<TermsOfService />} />
             <Route path="/:lang/suggestions" element={<SuggestionsBoard user={user} isAdmin={isAdmin} />} />
-
-            {/* 마이/최근 */}
             <Route path="/:lang/my-worldcups" element={<MyWorldcupsWrapper />} />
             <Route path="/:lang/recent-worldcups" element={<RecentWorldcupsWrapper />} />
-
             <Route path="/" element={<HomeWrapper />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>

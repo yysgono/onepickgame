@@ -11,6 +11,10 @@ function ResultWrapper({ worldcupList }) {
   const winner = location.state?.winner;
   const cup = worldcupList.find(c => String(c.id) === id);
 
+  // 언어코드 추출
+  const langMatch = location.pathname.match(/^\/([a-z]{2})(\/|$)/);
+  const lang = langMatch ? langMatch[1] : "ko";
+
   if (!cup || !winner)
     return <div style={{ padding: 80 }}>{t("cannotShowResult")}</div>;
 
@@ -18,8 +22,8 @@ function ResultWrapper({ worldcupList }) {
     <Result
       winner={winner}
       cup={cup}
-      onRestart={() => navigate(`/match/${cup.id}/${round}`)}
-      onStats={() => navigate(`/stats/${cup.id}`)}
+      onRestart={() => navigate(`/${lang}/match/${cup.id}/${round}`)}
+      onStats={() => navigate(`/${lang}/stats/${cup.id}`)}
     />
   );
 }

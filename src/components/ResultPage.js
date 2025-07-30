@@ -26,14 +26,13 @@ function truncateToTwoLinesByByte(str, maxBytePerLine = 24) {
   }
   if (lines.length < 2 && line) lines.push(line);
 
-  // 2줄 넘는 경우 ... 처리
   if (totalByte > maxBytePerLine * 2) {
     let last = lines[1] || "";
     if (last.length > 0 && !last.endsWith("...")) {
       let lastByte = 0, j = 0;
       for (; j < last.length; j++) {
         lastByte += last.charCodeAt(j) > 127 ? 2 : 1;
-        if (lastByte + 3 > maxBytePerLine) break; // 3은 "..."의 바이트수
+        if (lastByte + 3 > maxBytePerLine) break;
       }
       last = last.slice(0, j) + "...";
       lines[1] = last;
@@ -42,7 +41,6 @@ function truncateToTwoLinesByByte(str, maxBytePerLine = 24) {
   return lines;
 }
 
-// 모바일 체크 훅
 function useIsMobile(breakpoint = 800) {
   const [isMobile, setIsMobile] = React.useState(
     typeof window !== "undefined" ? window.innerWidth < breakpoint : false
@@ -62,20 +60,21 @@ export default function ResultPage({ worldcupList }) {
   const navigate = useNavigate();
   const { t } = useTranslation();
 
-  // DB fetch 상태
+  // === 여기! 언어코드 추출
+  const langMatch = location.pathname.match(/^\/([a-z]{2})(\/|$)/);
+  const lang = langMatch ? langMatch[1] : "ko";
+
   const [cup, setCup] = useState(null);
   const [winner, setWinner] = useState(null);
   const [loading, setLoading] = useState(true);
 
   const isMobile = useIsMobile(800);
 
-  // location.state로 온 데이터(있을 때만)
   const locationCup =
     location.state?.cup ||
     (worldcupList && worldcupList.find((c) => String(c.id) === id));
   const locationWinner = location.state?.winner;
 
-  // 데이터 불러오기
   useEffect(() => {
     let mounted = true;
     async function fetchData() {
@@ -125,7 +124,6 @@ export default function ResultPage({ worldcupList }) {
     };
   }, [id, locationCup, locationWinner]);
 
-  // 1. 로딩 중
   if (loading)
     return (
       <div
@@ -183,7 +181,6 @@ export default function ResultPage({ worldcupList }) {
       </div>
     );
 
-  // 2. 데이터 없는 경우
   if (!cup || !winner)
     return (
       <div style={{
@@ -197,7 +194,6 @@ export default function ResultPage({ worldcupList }) {
       </div>
     );
 
-  // ==== 실제 결과/통계 화면 ====
   return (
     <div
       style={{
@@ -232,7 +228,6 @@ export default function ResultPage({ worldcupList }) {
           boxSizing: "border-box",
         }}
       >
-        {/* 상단: 통계 타이틀/우승자/재도전/홈 */}
         <div
           style={{
             display: "flex",
@@ -253,9 +248,7 @@ export default function ResultPage({ worldcupList }) {
               lineHeight: 1.08,
               textShadow: "0 3px 8px #2228"
             }}
-          >
-            {/* 제목 필요시 여기에 추가 */}
-          </h2>
+          />
           <div
             style={{
               fontSize: isMobile ? 24 : 29,
@@ -321,7 +314,7 @@ export default function ResultPage({ worldcupList }) {
                 border: "none",
                 fontSize: isMobile ? 17 : 20,
               }}
-              onClick={() => navigate(`/select-round/${cup.id}`)}
+              onClick={() => navigate(`/${lang}/select-round/${cup.id}`)}
             >
               {t("retry")}
             </button>
@@ -335,15 +328,12 @@ export default function ResultPage({ worldcupList }) {
                 border: "none",
                 fontSize: isMobile ? 16 : 20,
               }}
-              onClick={() => navigate("/")}
+              onClick={() => navigate(`/${lang}`)}
             >
               {t("home")}
             </button>
-            {/* <ReportButton cupId={cup.id} size={isMobile ? "sm" : "md"} /> */}
           </div>
         </div>
-
-        {/* 통계표 + 댓글토글 포함 */}
         <div style={{ margin: "0 auto 0 auto", maxWidth: 1200, width: "100%" }}>
           <StatsPage
             selectedCup={cup}

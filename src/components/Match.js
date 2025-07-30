@@ -569,9 +569,11 @@ function Match({ cup, onResult, selectedCount }) {
     }
   }
 
-  useEffect(() => {
+    useEffect(() => {
     if (shouldRedirect) {
-      navigate(`/result/${cup.id}`, { state: shouldRedirect });
+      const langMatch = location.pathname.match(/^\/([a-z]{2})(\/|$)/);
+      const lang = langMatch ? langMatch[1] : "ko";
+      navigate(`/${lang}/result/${cup.id}`, { state: shouldRedirect });
     }
     // eslint-disable-next-line
   }, [shouldRedirect]);

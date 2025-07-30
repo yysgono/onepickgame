@@ -1,7 +1,7 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 import StatsPage from "./StatsPage";
-import MediaRenderer from "./MediaRenderer";  // 추가
+import MediaRenderer from "./MediaRenderer";
 
 function Result({ winner, cup, onRestart, onStats }) {
   const { t } = useTranslation();
