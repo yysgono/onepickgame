@@ -3,6 +3,17 @@ import { supabase } from "../utils/supabaseClient";
 import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
+// 반응형 감지 훅 (FixedCupSection과 동일하게 사용)
+function useIsMobile() {
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 900);
+  useEffect(() => {
+    const onResize = () => setIsMobile(window.innerWidth < 900);
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
+  return isMobile;
+}
+
 // Notice array (content is not translated)
 const notices = [
   {
@@ -41,6 +52,7 @@ function NoticeBoard() {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { lang = "en" } = useParams();
+  const isMobile = useIsMobile(); // 반응형 훅 사용
 
   useEffect(() => {
     async function fetchRecent() {
@@ -64,25 +76,27 @@ function NoticeBoard() {
   }, []);
 
   return (
-    <div style={{
-      width: 700,
-      maxWidth: 950,
-      minWidth: 520,
-      borderRadius: 22,
-      background: "linear-gradient(135deg,#181e2a 80%,#1c2335 100%)",
-      boxShadow: "0 6px 28px 0 #12203f77",
-      display: "flex",
-      flexDirection: "column",
-      alignItems: "flex-start",
-      justifyContent: "flex-start",
-      padding: "28px 32px 28px 32px",
-      boxSizing: "border-box",
-      overflow: "hidden"
-    }}>
+    <div
+      style={{
+        width: isMobile ? "98vw" : 700,
+        maxWidth: isMobile ? "99vw" : 950,
+        minWidth: isMobile ? 0 : 520,
+        borderRadius: 22,
+        background: "linear-gradient(135deg,#181e2a 80%,#1c2335 100%)",
+        boxShadow: "0 6px 28px 0 #12203f77",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "flex-start",
+        justifyContent: "flex-start",
+        padding: isMobile ? "18px 2vw 18px 2vw" : "28px 32px 28px 32px",
+        boxSizing: "border-box",
+        overflow: "hidden"
+      }}
+    >
       {/* Title */}
       <div style={{
         fontWeight: 900,
-        fontSize: 27,
+        fontSize: isMobile ? 22 : 27,
         color: "#3faaff",
         letterSpacing: "-1.2px",
         marginBottom: 14,
