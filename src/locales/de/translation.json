@@ -168,6 +168,38 @@
   "retry": "Erneut versuchen",
   "load_more": "Mehr laden",
 
+  "notice_and_comments": "Hinweise & Neueste Kommentare",
+  "see_details": "Klicken, um Details zu sehen",
+  "recent_comments": "Neueste Kommentare",
+  "loading": "Lädt...",
+  "no_comments": "Keine Kommentare",
+
+  "notice_title_notice-1": "Was ist One Pick Game?",
+  "notice_title_notice-2": "Wie erstelle ich meinen eigenen Worldcup?",
+
+  "recommended_worldcups": "Empfohlene Worldcups",
+  "dragDropUpTo50": "Sie können bis zu 50 Bilder gleichzeitig in dieses Feld ziehen und ablegen.",
+
+  "footer_description": "Turnierspielseite One Pick Game. Erstelle dein eigenes Turnier, genieße spannende Duelle und spiele mit Nutzern aus aller Welt!",
+  "footer_suggestions_link": "Vorschlags-Board",
+  "suggestions_board": "Vorschlags-Board",
+  "ideal_type_suggestions": "Idealtyp Worldcup Vorschläge",
+  "title": "Titel",
+  "enter_content": "Geben Sie Ihren Vorschlag ein...",
+  "submit": "Absenden",
+  "only_logged_in_can_submit": "Nur angemeldete Benutzer können Vorschläge einreichen.",
+  "admin_view": "Alle Vorschläge (Admin-Ansicht)",
+  "from": "Von",
+  "your_suggestions": "Ihre Vorschläge",
+  "no_suggestions": "Noch keine Vorschläge vorhanden.",
+  "reply": "Antworten",
+  "reply_placeholder": "Geben Sie Ihre Antwort ein...",
+  "reply_submit": "Antwort absenden",
+  "title_limit": "Titel darf maximal 80 Zeichen lang sein.",
+  "content_limit": "Inhalt darf maximal 1000 Zeichen lang sein.",
+  "suggestion_sent": "Ihr Vorschlag wurde erfolgreich eingereicht!",
+  "date": "Datum",
+
   "comment": {
     "placeholder": "Kommentar schreiben.",
     "submit": "Absenden",
@@ -212,9 +244,6 @@
     "nextRoundTitle": "{{a}} gegen {{b}}"
   },
 
-  "recommended_worldcups": "Empfohlene Worldcups",
-  "dragDropUpTo50": "Sie können bis zu 50 Bilder gleichzeitig in dieses Feld ziehen und ablegen.",
-
   "resurrection": {
     "title": "Wiederbelebungsrunde",
     "instruction": "Bitte wählen Sie <b>1~4 Kandidaten zur Wiederbelebung</b> von links und <b>1~4 fortgeschrittene Kandidaten zum Entfernen</b> von rechts aus.<br><b>Die Anzahl der wiederbelebten und entfernten Kandidaten muss gleich sein.</b><br>Wenn Sie nicht fortfahren möchten, klicken Sie einfach auf Überspringen.",
@@ -225,25 +254,5 @@
     "select_count": "1~4 auswählen ({{selected}}/{{max}})",
     "skip": "Überspringen",
     "confirm": "Bestätigen"
-  },
-
-  "footer_description": "Turnierspielseite One Pick Game. Erstelle dein eigenes Turnier, genieße spannende Duelle und spiele mit Nutzern aus aller Welt!",
-  "footer_suggestions_link": "Vorschlags-Board",
-  "suggestions_board": "Vorschlags-Board",
-  "ideal_type_suggestions": "Idealtyp Worldcup Vorschläge",
-  "title": "Titel",
-  "enter_content": "Geben Sie Ihren Vorschlag ein...",
-  "submit": "Absenden",
-  "only_logged_in_can_submit": "Nur angemeldete Benutzer können Vorschläge einreichen.",
-  "admin_view": "Alle Vorschläge (Admin-Ansicht)",
-  "from": "Von",
-  "your_suggestions": "Ihre Vorschläge",
-  "no_suggestions": "Noch keine Vorschläge vorhanden.",
-  "reply": "Antworten",
-  "reply_placeholder": "Geben Sie Ihre Antwort ein...",
-  "reply_submit": "Antwort absenden",
-  "title_limit": "Titel darf maximal 80 Zeichen lang sein.",
-  "content_limit": "Inhalt darf maximal 1000 Zeichen lang sein.",
-  "suggestion_sent": "Ihr Vorschlag wurde erfolgreich eingereicht!",
-  "date": "Datum"
+  }
 }

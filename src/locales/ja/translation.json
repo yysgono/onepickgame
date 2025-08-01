@@ -23,7 +23,10 @@
   "terms_of_service": "利用規約",
   "privacy_policy": "プライバシーポリシー",
   "report": "通報",
+  "report_submit": "通報する",
+  "report_submit_success": "通報が送信されました",
   "share_worldcup": "ワールドカップを共有",
+  "share_link_copied": "共有リンクがコピーされました",
   "winner": "優勝者",
   "win_rate": "勝率",
   "victory": "勝利",
@@ -69,8 +72,6 @@
   "link_copied": "ワールドカップ開始リンクがコピーされました！",
   "report_reason": "通報理由",
   "report_reason_placeholder": "通報理由を入力してください（任意）",
-  "report_submit": "通報する",
-  "report_submit_success": "通報が送信されました",
   "drumroll": "ドラムロール...",
   "please_wait": "候補者が多いと時間がかかる場合があります。しばらくお待ちください。",
   "name": "名前",
@@ -86,6 +87,7 @@
   "register": "登録",
   "register_as_member": "会員登録",
   "register_short": "登録",
+  "enter_title": "タイトルを入力してください",
   "fill_this_field": "この項目を入力してください。",
   "need_at_in_email": "メールアドレスに「@」を含めてください。",
   "email_missing_part": "「@」の後の部分を入力してください。",
@@ -133,7 +135,6 @@
   "home": "ホーム",
   "copy_share_link": "共有リンクをコピーしました",
   "share_link": "共有リンク",
-  "share_link_copied": "共有リンクがコピーされました",
   "auto_bye_message": "候補者数が {{selectedRound}} 名に満たないため、不戦勝が自動的に適用されます。",
   "show_result": "結果を見る",
   "imageUrlOrYoutube": "画像URL / YouTube",
@@ -166,6 +167,15 @@
   "search": "検索",
   "retry": "再試行",
   "load_more": "さらに読み込む",
+
+  "notice_and_comments": "お知らせ・最新コメント",
+  "see_details": "詳細はこちら",
+  "recent_comments": "最新コメント",
+  "loading": "読み込み中...",
+  "no_comments": "コメントはありません",
+
+  "notice_title_notice-1": "One Pick Gameとは？",
+  "notice_title_notice-2": "自分だけのワールドカップを作る方法",
 
   "comment": {
     "placeholder": "コメントを入力してください。",
@@ -216,7 +226,7 @@
 
   "resurrection": {
     "title": "復活ラウンド",
-    "instruction": "左から1～4名の復活候補を、右から1～4名の進出候補を外すことができます。\n復活・除外人数は同じでなければなりません。\nスキップしたい場合は「スキップ」を押してください。",
+    "instruction": "左から<b>1～4名の復活候補</b>を、右から<b>1～4名の進出候補を除外</b>できます。<br>復活と除外の人数は同じでなければなりません。<br>スキップしたい場合は「スキップ」を押してください。",
     "note": "（この操作は統計には反映されません。素早い結果計算用です。）",
     "eliminated": "脱落者",
     "advanced": "進出者（上位16）",
@@ -231,7 +241,6 @@
   "suggestions_board": "提案ボード",
   "ideal_type_suggestions": "理想のタイプワールドカップ提案",
   "title": "タイトル",
-  "enter_title": "タイトルを入力してください",
   "enter_content": "提案内容を入力してください...",
   "submit": "送信",
   "only_logged_in_can_submit": "ログインユーザーのみ提案できます。",

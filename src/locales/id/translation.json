@@ -168,6 +168,15 @@
   "retry": "Coba lagi",
   "load_more": "Muat Lebih Banyak",
 
+  "notice_and_comments": "Pemberitahuan & Komentar Terbaru",
+  "see_details": "Klik untuk lihat detail",
+  "recent_comments": "Komentar Terbaru",
+  "loading": "Memuat...",
+  "no_comments": "Belum ada komentar",
+
+  "notice_title_notice-1": "Apa itu One Pick Game?",
+  "notice_title_notice-2": "Cara Membuat Worldcup Sendiri",
+
   "comment": {
     "placeholder": "Tulis komentar Anda.",
     "submit": "Kirim",
@@ -217,7 +226,7 @@
 
   "resurrection": {
     "title": "Babak Kebangkitan",
-    "instruction": "Silakan pilih 1~4 kandidat untuk dihidupkan kembali di sebelah kiri,\ndan 1~4 kandidat lolos untuk diganti di sebelah kanan.\nJumlah kandidat yang dihidupkan dan diganti harus sama.\nJika tidak ingin melanjutkan, cukup klik Lewati.",
+    "instruction": "Silakan pilih <b>1~4 kandidat untuk dihidupkan kembali</b> di sebelah kiri, dan <b>1~4 kandidat lolos untuk diganti</b> di sebelah kanan.<br><b>Jumlah kandidat yang dihidupkan dan diganti harus sama.</b><br>Jika tidak ingin melanjutkan, cukup klik Lewati.",
     "note": "(Ini tidak dihitung dalam statistik. Hanya untuk perhitungan hasil cepat.)",
     "eliminated": "Kandidat Tersingkir",
     "advanced": "Kandidat Lolos (Top 16)",

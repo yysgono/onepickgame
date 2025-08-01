@@ -1,35 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import MediaRenderer from "./MediaRenderer";
-import { useTranslation } from "react-i18next";
+import NoticeBoard from "./NoticeBoard";
 
-// 네비게이션 버튼 스타일
-const navBtnStyle = (hover = false) => ({
-  background: hover
-    ? "linear-gradient(135deg, #ecf6ff 30%, #e6eefe 90%)"
-    : "rgba(255,255,255,0.78)",
-  border: "none",
-  outline: "none",
-  borderRadius: "50%",
-  width: 42,
-  height: 42,
-  fontSize: 23,
-  color: "#1976ed",
-  fontWeight: 900,
-  boxShadow: hover
-    ? "0 4px 18px #1976ed26, 0 1.5px 8px #9ebff425"
-    : "0 2.5px 10px #b7d8ff1c",
-  cursor: "pointer",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  opacity: hover ? 1 : 0.92,
-  position: "relative",
-  transition: "all .14s cubic-bezier(.2,.95,.58,1.06)",
-  zIndex: 10,
-  userSelect: "none",
-});
-
-// [핵심] 승수(통계) 기반 1, 2위 후보 뽑기 (카드와 완전 동일)
+// 1,2위 후보 뽑는 함수
 function getTop2Winners(winStats, cupData) {
   if (!winStats?.length) return [cupData?.[0] || null, cupData?.[1] || null];
   const sorted = [...winStats]
@@ -52,320 +25,265 @@ function getTop2Winners(winStats, cupData) {
   return [first, second];
 }
 
-function FixedCupCarousel({ worldcupList }) {
-  const { t, i18n } = useTranslation();
-
-  const [vw, setVw] = useState(window.innerWidth);
-  const [hoverPrev, setHoverPrev] = useState(false);
-  const [hoverNext, setHoverNext] = useState(false);
-
-  // === 현재 언어코드 추출 ===
-  const langFromUrl = (() => {
-    const match = window.location.pathname.match(/^\/([a-z]{2})(\/|$)/);
-    return match ? match[1] : i18n.language || "ko";
-  })();
-
-  useEffect(() => {
-    const onResize = () => setVw(window.innerWidth);
-    window.addEventListener("resize", onResize);
-    return () => window.removeEventListener("resize", onResize);
-  }, []);
-
-  let perPage = 4;
-  if (vw < 1100) perPage = 3;
-  if (vw < 780) perPage = 2;
-  if (vw < 540) perPage = 1;
-
-  const maxCount = 24;
-  const cups = worldcupList ? worldcupList.slice(0, maxCount) : [];
-  const totalPage = Math.ceil(cups.length / perPage);
-  const [page, setPage] = useState(0);
-
-  const cardW = vw < 540 ? "96vw" : vw < 780 ? 212 : 270;
-  const cardH = vw < 540 ? 120 : vw < 780 ? 136 : 158;
-  const titleH = 34;
-  const titleBg = "#171C27";
-
-  const pageCups = cups.slice(page * perPage, page * perPage + perPage);
-
-  if (!cups.length) return null;
-
-  function goPrev() {
-    setPage((p) => (p === 0 ? totalPage - 1 : p - 1));
-  }
-  function goNext() {
-    setPage((p) => (p === totalPage - 1 ? 0 : p + 1));
-  }
-
+// ⭐ 스켈레톤 카드 (로딩중 더미)
+function SkeletonRecommendCard({ isMobile }) {
   return (
     <div
       style={{
-        width: "100%",
-        maxWidth: 1200,
-        margin: "0 auto 10px auto",
-        padding: vw < 600 ? "4px 0 5px 0" : "8px 0 7px 0",
+        flex: 1,
+        minWidth: isMobile ? "90vw" : 340,
+        maxWidth: isMobile ? "98vw" : 440,
+        margin: isMobile ? "0 auto 22px auto" : "0 8px",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
+        borderRadius: 15,
+        background: "#22304c44",
+        boxShadow: "0 2px 18px #16264d22",
+        padding: "0 0 16px 0",
+        opacity: 0.8,
         position: "relative",
-        userSelect: "none",
+        animation: "pulse 1.25s infinite",
       }}
     >
       <div
         style={{
-          fontWeight: 900,
-          fontSize: vw < 600 ? 21 : 26,
-          marginBottom: vw < 600 ? 3 : 5,
-          color: "#fff",
-          letterSpacing: "-0.5px",
-          textAlign: "center",
           width: "100%",
+          height: 168,
+          borderRadius: 13,
+          marginBottom: 18,
+          background: "#283b6144",
         }}
-      >
-        {t("recommend")}
-      </div>
+      />
+      <div
+        style={{
+          width: "90%",
+          height: 38,
+          borderRadius: 8,
+          background: "#26385a33",
+        }}
+      />
+      <style>
+        {`
+          @keyframes pulse {
+            0% { opacity: 0.75 }
+            50% { opacity: 1 }
+            100% { opacity: 0.75 }
+          }
+        `}
+      </style>
+    </div>
+  );
+}
+
+// 반응형 감지 훅
+function useIsMobile() {
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 900);
+  useEffect(() => {
+    const onResize = () => setIsMobile(window.innerWidth < 900);
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
+  return isMobile;
+}
+
+// 메인 추천 월드컵 박스 (좌측)
+function FixedCupSection({ worldcupList }) {
+  const lang = "en";
+  const recommends = worldcupList?.slice(0, 2) || [];
+  const isMobile = useIsMobile();
+
+  function renderRecommendCups() {
+    return (
       <div
         style={{
           width: "100%",
+          minHeight: isMobile ? 180 : 230,
+          borderRadius: 22,
+          background: "linear-gradient(135deg,#181e2a 80%,#1c2335 100%)",
+          boxShadow: "0 8px 36px 0 #12203f55",
           display: "flex",
+          flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          position: "relative",
-          minHeight: typeof cardH === "number" ? cardH + 38 : 158,
+          padding: isMobile ? "18px 6vw 18px 6vw" : "34px 42px 30px 42px",
+          boxSizing: "border-box",
         }}
       >
-        {/* Prev Button */}
-        <button
-          aria-label={t("previous")}
-          onClick={goPrev}
-          onMouseEnter={() => setHoverPrev(true)}
-          onMouseLeave={() => setHoverPrev(false)}
-          style={navBtnStyle(hoverPrev)}
-        >
-          <span
-            style={{
-              display: "inline-block",
-              transform: hoverPrev ? "translateX(-2px) scale(1.09)" : "none",
-              transition: "all .18s",
-            }}
-          >
-            &#60;
-          </span>
-        </button>
-
-        {/* Cards */}
+        {/* 추천 문구는 항상 보여주기 */}
         <div
           style={{
-            display: "flex",
-            gap: 8,
-            justifyContent: "center",
-            alignItems: "flex-end",
+            fontWeight: 900,
+            fontSize: isMobile ? 22 : 33,
+            color: "#3faaff",
+            letterSpacing: "-1.4px",
+            textAlign: "center",
+            marginBottom: isMobile ? 16 : 28,
+            marginTop: -2,
             width: "100%",
-            maxWidth: perPage * (typeof cardW === "number" ? cardW : 270) + (perPage - 1) * 8,
-            minHeight: cardH,
-            position: "relative",
-            padding: "0 0",
           }}
         >
-          {pageCups.map((cup, idx) => {
-            // [핵심!] 1, 2위 후보 VS 구조 (실제 승수 기준!)
-            const [first, second] = getTop2Winners(cup.winStats, cup.data);
-
-            return (
-              <div
-                key={cup.id}
-                style={{
-                  width: cardW,
-                  height: cardH,
-                  background: "#fafdff",
-                  borderRadius: 17,
-                  boxShadow: "0 2px 14px #1976ed17, 0 1.5px 8px #b2d1fa12",
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  justifyContent: "flex-start",
-                  cursor: "pointer",
-                  overflow: "hidden",
-                  border: "none",
-                  margin: "0 2px",
-                  position: "relative",
-                  transition: "transform .13s, box-shadow .14s",
-                }}
-                // === 경로에 언어코드 포함 ===
-                onClick={() => window.location.href = `/${langFromUrl}/select-round/${cup.id}`}
-                onMouseEnter={e => {
-                  e.currentTarget.style.transform = "translateY(-2.5px) scale(1.03)";
-                  e.currentTarget.style.boxShadow = "0 9px 28px #1976ed20, 0 1.5px 8px #1976ed13";
-                }}
-                onMouseLeave={e => {
-                  e.currentTarget.style.transform = "none";
-                  e.currentTarget.style.boxShadow = "0 2px 14px #1976ed17, 0 1.5px 8px #b2d1fa12";
-                }}
-                title={cup.title}
-              >
+          Recommend World Cup
+        </div>
+        <div
+          style={{
+            width: "100%",
+            display: "flex",
+            flexDirection: isMobile ? "column" : "row",
+            gap: isMobile ? 22 : 34,
+            justifyContent: "center",
+            alignItems: "flex-start",
+          }}
+        >
+          {(!recommends || recommends.length === 0 || !recommends[0]?.id) ? (
+            <>
+              <SkeletonRecommendCard isMobile={isMobile} />
+              <SkeletonRecommendCard isMobile={isMobile} />
+            </>
+          ) : (
+            recommends.map((recommend) => {
+              if (!recommend) return null;
+              const [first, second] = getTop2Winners(recommend.winStats, recommend.data);
+              return (
                 <div
+                  key={recommend.id}
                   style={{
-                    width: "100%",
-                    height: `calc(100% - ${titleH}px)`,
-                    minHeight: 64,
+                    flex: 1,
+                    minWidth: isMobile ? "90vw" : 340,
+                    maxWidth: isMobile ? "98vw" : 440,
+                    margin: isMobile ? "0 auto 22px auto" : "0 8px",
                     display: "flex",
-                    flexDirection: "row",
-                    background: "linear-gradient(90deg, #F2F8FF 50%, #EDF7FF 100%)",
-                    borderTopLeftRadius: 17,
-                    borderTopRightRadius: 17,
-                    borderBottom: "none",
-                    overflow: "hidden",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    cursor: "pointer",
+                    borderRadius: 15,
+                    background: "#22304c",
+                    boxShadow: "0 2px 18px #16264d33",
+                    transition: "box-shadow 0.13s, transform 0.13s",
+                    padding: "0 0 16px 0",
                     position: "relative",
                   }}
-                >
-                  <div
-                    style={{
-                      width: "50%",
-                      height: "100%",
-                      borderTopLeftRadius: 17,
-                      overflow: "hidden",
-                      background: "#eaf3fb",
-                    }}
-                  >
-                    {first?.image ? (
-                      <MediaRenderer url={first.image} alt="1위" />
-                    ) : (
-                      <div style={{ width: "100%", height: "100%", background: "#eee" }} />
-                    )}
-                  </div>
-                  <div
-                    style={{
-                      width: "50%",
-                      height: "100%",
-                      borderTopRightRadius: 17,
-                      overflow: "hidden",
-                      background: "#eaf3fb",
-                    }}
-                  >
-                    {second?.image ? (
-                      <MediaRenderer url={second.image} alt="2위" />
-                    ) : (
-                      <div style={{ width: "100%", height: "100%", background: "#eee" }} />
-                    )}
-                  </div>
-                  <div
-                    style={{
-                      position: "absolute",
-                      top: "50%",
-                      left: "50%",
-                      transform: "translate(-50%, -56%)",
-                      zIndex: 5,
-                      pointerEvents: "none",
-                      width: vw < 540 ? 45 : 54,
-                      height: vw < 540 ? 45 : 54,
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                  >
-                    <img
-                      src="/vs.png"
-                      alt="vs"
-                      style={{
-                        width: "100%",
-                        height: "100%",
-                        objectFit: "contain",
-                        filter: "drop-shadow(0 1.2px 2.5px #2227b38c)",
-                      }}
-                    />
-                  </div>
-                </div>
-                <div
-                  style={{
-                    width: "100%",
-                    height: titleH,
-                    minHeight: titleH,
-                    maxHeight: titleH * 1.1,
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    background: titleBg,
-                    fontWeight: 800,
-                    fontSize: vw < 600 ? 14 : 16,
-                    color: "#fff",
-                    textAlign: "center",
-                    letterSpacing: "-0.1px",
-                    lineHeight: 1.25,
-                    overflow: "hidden",
-                    padding: "0 10px",
-                    whiteSpace: "nowrap",
-                    textOverflow: "ellipsis",
-                    wordBreak: "keep-all",
-                    borderBottomLeftRadius: 13,
-                    borderBottomRightRadius: 13,
+                  onClick={() =>
+                    (window.location.href = `/${lang}/select-round/${recommend.id}`)
+                  }
+                  title={recommend.title}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.boxShadow = "0 10px 32px #1976ed77";
+                    e.currentTarget.style.transform = "translateY(-3.5px) scale(1.033)";
                   }}
-                  title={cup.title}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.boxShadow = "0 2px 18px #16264d33";
+                    e.currentTarget.style.transform = "none";
+                  }}
                 >
-                  {cup.title}
+                  {/* 썸네일 크게 */}
+                  <div
+                    style={{
+                      width: "100%",
+                      height: isMobile ? 120 : 168,
+                      display: "flex",
+                      flexDirection: "row",
+                      borderRadius: 13,
+                      overflow: "hidden",
+                      marginBottom: 18,
+                      background: "linear-gradient(90deg, #243151 75%, #344972 100%)",
+                      position: "relative",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    <div style={{ width: "50%", height: "100%", background: "#162147" }}>
+                      {first?.image
+                        ? <MediaRenderer url={first.image} alt="1st place" />
+                        : <div style={{ width: "100%", height: "100%", background: "#283b61" }} />}
+                    </div>
+                    <div style={{ width: "50%", height: "100%", background: "#232b50" }}>
+                      {second?.image
+                        ? <MediaRenderer url={second.image} alt="2nd place" />
+                        : <div style={{ width: "100%", height: "100%", background: "#233" }} />}
+                    </div>
+                    <div
+                      style={{
+                        position: "absolute",
+                        top: "50%",
+                        left: "50%",
+                        transform: "translate(-50%,-50%)",
+                        width: isMobile ? 36 : 61,
+                        height: isMobile ? 36 : 61,
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <img src="/vs.png" alt="vs" style={{ width: "100%", height: "100%", objectFit: "contain" }} />
+                    </div>
+                  </div>
+                  {/* 타이틀 분리 - 아래쪽 */}
+                  <div
+                    style={{
+                      width: "90%",
+                      background: "#26385a",
+                      color: "#fff",
+                      fontWeight: 800,
+                      fontSize: isMobile ? 15 : 21,
+                      borderRadius: 8,
+                      textAlign: "center",
+                      padding: isMobile ? "10px 4px" : "13px 4px 13px 4px",
+                      margin: "0 auto",
+                      letterSpacing: "-0.1px",
+                      overflow: "hidden",
+                      boxShadow: "0 1.5px 6px #1976ed11",
+                    }}
+                  >
+                    {recommend.title}
+                  </div>
                 </div>
-              </div>
-            );
-          })}
+              );
+            })
+          )}
         </div>
-        {/* Next Button */}
-        <button
-          aria-label={t("next")}
-          onClick={goNext}
-          onMouseEnter={() => setHoverNext(true)}
-          onMouseLeave={() => setHoverNext(false)}
-          style={navBtnStyle(hoverNext)}
-        >
-          <span
-            style={{
-              display: "inline-block",
-              transform: hoverNext ? "translateX(2px) scale(1.09)" : "none",
-              transition: "all .18s",
-            }}
-          >
-            &#62;
-          </span>
-        </button>
       </div>
-      {/* 페이지네이션 */}
+    );
+  }
+
+  // 전체 레이아웃 - 반응형
+  return (
+    <div
+      style={{
+        width: "100%",
+        maxWidth: 1160,
+        margin: isMobile ? "18px auto 10px auto" : "38px auto 24px auto",
+        display: "grid",
+        gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr",
+        gap: isMobile ? "22px" : "40px",
+        alignItems: "start",
+        minHeight: 410,
+        justifyContent: "center",
+      }}
+    >
       <div
         style={{
-          marginTop: 11,
+          width: "100%",
           display: "flex",
+          alignItems: "flex-start",
           justifyContent: "center",
-          alignItems: "center",
-          gap: 11,
+          minHeight: 410,
         }}
       >
-        {Array.from({ length: totalPage }).map((_, i) => (
-          <div
-            key={i}
-            onClick={() => setPage(i)}
-            tabIndex={0}
-            role="button"
-            aria-label={`${i + 1} ${t("page")}`}
-            style={{
-              width: page === i ? 14 : 10,
-              height: page === i ? 14 : 10,
-              borderRadius: "50%",
-              background: page === i
-                ? "radial-gradient(circle, #1976ed 55%, #b6e2ff 100%)"
-                : "linear-gradient(135deg, #e4edfa 40%, #eaf3ff 100%)",
-              border: page === i ? "2.2px solid #1976ed" : "1.1px solid #d9e8fb",
-              boxShadow: page === i ? "0 2px 9px #1976ed27" : "0 1px 4px #b7d8ff1a",
-              cursor: "pointer",
-              transition: "all .18s cubic-bezier(.29,.95,.58,1.08)",
-              outline: "none",
-              marginTop: page === i ? -1 : 0,
-              marginBottom: page === i ? 1 : 0,
-            }}
-            onKeyDown={e => {
-              if (e.key === "Enter" || e.key === " ") setPage(i);
-            }}
-          />
-        ))}
+        {renderRecommendCups()}
+      </div>
+      <div
+        style={{
+          width: "100%",
+          minHeight: 410,
+          display: "flex",
+          alignItems: "flex-start",
+        }}
+      >
+        <NoticeBoard />
       </div>
     </div>
   );
 }
 
-export default FixedCupCarousel;
+export default FixedCupSection;

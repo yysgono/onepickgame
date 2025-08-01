@@ -163,6 +163,36 @@
   "match_win_rate": "Win Rate",
   "search": "Search",
   "retry": "Retry",
+  "recommended_worldcups": "Recommended Worldcups",
+  "dragDropUpTo50": "You can drag & drop up to 50 images at once into this box.",
+  "footer_description": "Bracket game site One Pick Game. Create your own tournament bracket, enjoy fun matchups, and play with users around the world!",
+  "footer_suggestions_link": "Ideal Type World Cup Suggestions",
+  "suggestions_board": "Ideal Type World Cup Suggestions",
+  "ideal_type_suggestions": "Ideal Type Worldcup Suggestions",
+  "title": "Title",
+  "enter_title": "Enter title",
+  "enter_content": "Enter your suggestion...",
+  "submit": "Submit",
+  "only_logged_in_can_submit": "Only logged-in users can submit suggestions.",
+  "admin_view": "All Suggestions (Admin View)",
+  "from": "From",
+  "your_suggestions": "Your Suggestions",
+  "no_suggestions": "No suggestions yet.",
+  "reply": "Reply",
+  "reply_placeholder": "Enter your reply...",
+  "reply_submit": "Submit Reply",
+  "title_limit": "Title can be up to 80 characters.",
+  "content_limit": "Content can be up to 1000 characters.",
+  "suggestion_sent": "Your suggestion has been submitted successfully!",
+  "date": "Date",
+  "load_more": "Load more",
+  "share_link_copied": "Share link copied!",
+  "report_submit_success": "Report submitted successfully!",
+  "notice_and_comments": "Notice & Recent Comments",
+  "see_details": "Click to see details",
+  "recent_comments": "Recent Comments",
+  "loading": "Loading...",
+  "no_comments": "No comments",
 
   "comment": {
     "placeholder": "Write a comment.",
@@ -208,9 +238,6 @@
     "nextRoundTitle": "{{a}} vs {{b}}"
   },
 
-  "recommended_worldcups": "Recommended Worldcups",
-  "dragDropUpTo50": "You can drag & drop up to 50 images at once into this box.",
-
   "resurrection": {
     "title": "Resurrection Round",
     "instruction": "Please select <b>1~4 candidates to revive</b> from the left,<br>and <b>1~4 advanced candidates to drop</b> from the right.<br><b>The number of revived and dropped candidates must be equal.</b><br>If you don't want to proceed, just click Skip.",
@@ -223,28 +250,6 @@
     "confirm": "Confirm"
   },
 
-  "footer_description": "Bracket game site One Pick Game. Create your own tournament bracket, enjoy fun matchups, and play with users around the world!",
-  "footer_suggestions_link": "Ideal Type World Cup Suggestions",
-  "suggestions_board": "Ideal Type World Cup Suggestions",
-  "ideal_type_suggestions": "Ideal Type Worldcup Suggestions",
-  "title": "Title",
-  "enter_title": "Enter title",
-  "enter_content": "Enter your suggestion...",
-  "submit": "Submit",
-  "only_logged_in_can_submit": "Only logged-in users can submit suggestions.",
-  "admin_view": "All Suggestions (Admin View)",
-  "from": "From",
-  "your_suggestions": "Your Suggestions",
-  "no_suggestions": "No suggestions yet.",
-  "reply": "Reply",
-  "reply_placeholder": "Enter your reply...",
-  "reply_submit": "Submit Reply",
-  "title_limit": "Title can be up to 80 characters.",
-  "content_limit": "Content can be up to 1000 characters.",
-  "suggestion_sent": "Your suggestion has been submitted successfully!",
-  "date": "Date",
-
-  "load_more": "Load more",
-  "share_link_copied": "Share link copied!",
-  "report_submit_success": "Report submitted successfully!"
+  "notice_title_notice-1": "What is One Pick Game?",
+  "notice_title_notice-2": "How to Create Your Own World Cup"
 }

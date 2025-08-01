@@ -74,18 +74,27 @@ function Home({
   const { t } = useTranslation();
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState("popular");
-  const [loading, setLoading] = useState(true);
-  const [cupsWithWinCount, setCupsWithWinCount] = useState(null);
   const [vw, setVw] = useState(window.innerWidth);
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
 
-  // **핵심**: 항상 URL에서 언어코드 추출!
-  const langFromUrl = (() => {
-    const path = window.location.pathname;
-    const match = path.match(/^\/([a-z]{2})(\/|$)/);
-    return match ? match[1] : "ko";
-  })();
-  const lang = langFromUrl || "ko";
+  // 💡 카드별 winStatsMap 상태(딕셔너리, id->winStats)
+  const [winStatsMap, setWinStatsMap] = useState({});
+
+  // 1. 월드컵 리스트 뜨면 바로 기본카드 렌더
+  // 2. 카드별로 winStats 비동기 fetch (병렬)
+  useEffect(() => {
+    setWinStatsMap({}); // 초기화
+    if (Array.isArray(worldcupList) && worldcupList.length > 0) {
+      worldcupList.forEach((cup) => {
+        fetchWinnerStatsFromDB(cup.id).then((statsArr) => {
+          setWinStatsMap((prev) => ({
+            ...prev,
+            [cup.id]: statsArr,
+          }));
+        });
+      });
+    }
+  }, [worldcupList]);
 
   useEffect(() => {
     const onResize = () => setVw(window.innerWidth);
@@ -99,36 +108,7 @@ function Home({
   const SKELETON_COUNT = isMobile ? 3 : 6;
   const THUMB_HEIGHT = isMobile ? 148 : 168 * 1.05;
 
-  useEffect(() => {
-    let mounted = true;
-    async function fillWinCounts() {
-      setLoading(true);
-      if (!worldcupList?.length) {
-        setCupsWithWinCount([]);
-        setLoading(false);
-        return;
-      }
-      const list = await Promise.all(
-        worldcupList.map(async (cup) => {
-          const statsArr = await fetchWinnerStatsFromDB(cup.id);
-          const winCount = statsArr.reduce(
-            (sum, row) => sum + (row.win_count || 0),
-            0
-          );
-          return { ...cup, winCount, winStats: statsArr };
-        })
-      );
-      if (mounted) {
-        setCupsWithWinCount(list);
-        setLoading(false);
-      }
-    }
-    fillWinCounts();
-    return () => {
-      mounted = false;
-    };
-  }, [worldcupList]);
-
+  // 고정 추천 worldcup (winStats 병합)
   const [fixedCupsWithStats, setFixedCupsWithStats] = useState([]);
   useEffect(() => {
     let mounted = true;
@@ -150,8 +130,9 @@ function Home({
     return () => { mounted = false; };
   }, [fixedWorldcups]);
 
-  const filtered = Array.isArray(cupsWithWinCount)
-    ? (cupsWithWinCount || [])
+  // 검색/정렬은 winStats 없이도 동작
+  const filtered = Array.isArray(worldcupList)
+    ? (worldcupList || [])
         .filter(
           (cup) =>
             cup.title.toLowerCase().includes(search.toLowerCase()) ||
@@ -163,7 +144,10 @@ function Home({
           if (sort === "recent") {
             return (b.created_at || b.id) > (a.created_at || a.id) ? 1 : -1;
           } else {
-            return (b.winCount || 0) - (a.winCount || 0);
+            // 인기순 정렬: winStats 없는건 0으로 간주
+            const aw = winStatsMap[a.id]?.reduce((sum, row) => sum + (row.win_count || 0), 0) || 0;
+            const bw = winStatsMap[b.id]?.reduce((sum, row) => sum + (row.win_count || 0), 0) || 0;
+            return bw - aw;
           }
         })
     : [];
@@ -267,8 +251,12 @@ function Home({
     setVisibleCount((prev) => prev + PAGE_SIZE);
   };
 
-  // 언어별 라우팅을 보장하는 함수 (모든 카드 클릭, 시작, 통계, 수정, 삭제 등)
-  // **반드시 / 슬래시 넣어줘야 함**
+  const langFromUrl = (() => {
+    const path = window.location.pathname;
+    const match = path.match(/^\/([a-z]{2})(\/|$)/);
+    return match ? match[1] : "ko";
+  })();
+  const lang = langFromUrl || "ko";
   const getRoute = (base, cupId) => {
     return `/${lang}${base}/${cupId}`;
   };
@@ -297,7 +285,6 @@ function Home({
         <FixedCupSection worldcupList={fixedCupsWithStats || []} />
       )}
 
-      {/* 정렬 버튼 + 검색창 모두 중앙 정렬 */}
       <div
         style={{
           width: "100vw",
@@ -358,7 +345,7 @@ function Home({
           zIndex: 2,
         }}
       >
-        {loading &&
+        {visibleList.length === 0 &&
           Array.from({ length: SKELETON_COUNT }).map((_, i) => (
             <SkeletonCard
               key={i}
@@ -366,10 +353,10 @@ function Home({
               thumbHeight={THUMB_HEIGHT}
             />
           ))}
-        {!loading &&
-          visibleList.length > 0 &&
+        {visibleList.length > 0 &&
           visibleList.map((cup, idx) => {
-            const [first, second] = getTop2Winners(cup.winStats, cup.data);
+            const winStats = winStatsMap[cup.id] || [];
+            const [first, second] = getTop2Winners(winStats, cup.data);
             return (
               <div
                 key={cup.id}
@@ -403,7 +390,6 @@ function Home({
                   e.currentTarget.style.boxShadow = "0 8px 38px 0 #1976ed45, 0 2px 12px #1976ed44";
                 }}
                 onClick={() => {
-                  // 카드 전체 클릭
                   window.location.href = getRoute("/select-round", cup.id);
                 }}
               >
@@ -608,7 +594,6 @@ function Home({
                   <button
                     onClick={e => {
                       e.stopPropagation();
-                      // 무조건 URL에서 가져온 lang 기준!
                       window.location.href = getRoute("/select-round", cup.id);
                     }}
                     style={buttonStyle}
@@ -655,7 +640,7 @@ function Home({
             );
           })}
       </div>
-      {!loading && visibleCount < filtered.length && (
+      {visibleCount < filtered.length && (
         <div style={{ textAlign: "center", margin: "38px 0 60px 0" }}>
           <button
             style={{

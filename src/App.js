@@ -33,6 +33,8 @@ import PrivacyPolicy from "./components/PrivacyPolicy";
 import TermsOfService from "./components/TermsOfService";
 import Footer from "./components/Footer";
 import SuggestionsBoard from "./components/SuggestionsBoard";
+import NoticePage from "./components/NoticePage";      // 📢 공지사항 페이지
+import NoticeDetail from "./components/NoticeDetail";  // 📢 개별 공지 상세
 
 // 언어별 홈 페이지
 import DePage from "./pages/de/index";
@@ -291,7 +293,6 @@ function App() {
     );
   }
 
-  // ----------- StatsPageWrapper robust ----------
   function StatsPageWrapper() {
     const { id } = useParams();
     const { t } = useTranslation();
@@ -332,7 +333,6 @@ function App() {
 
     return <StatsPage selectedCup={cup} showCommentBox={true} />;
   }
-  // ----------------------------------------------------------
 
   function AppRoutes() {
     const navigate = useNavigate();
@@ -567,6 +567,12 @@ function App() {
             <Route path="/:lang/suggestions" element={<SuggestionsBoard user={user} isAdmin={isAdmin} />} />
             <Route path="/:lang/my-worldcups" element={<MyWorldcupsWrapper />} />
             <Route path="/:lang/recent-worldcups" element={<RecentWorldcupsWrapper />} />
+
+            {/* ----------- 📢 Notice ------------ */}
+            <Route path="/:lang/notice" element={<NoticePage />} />
+            <Route path="/:lang/notice/:id" element={<NoticeDetail />} />
+            {/* ---------------------------------- */}
+
             <Route path="/" element={<HomeWrapper />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>

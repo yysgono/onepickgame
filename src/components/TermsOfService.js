@@ -39,7 +39,7 @@ export default function TermsOfService() {
           &nbsp;for details on personal data.
         </li>
         <li>
-          These terms are effective from July 10, 2024.
+          These terms are effective from July 10, 2025.
         </li>
         <li>
           For any questions, contact: <a href="mailto:yysgono@gmail.com">yysgono@gmail.com</a>

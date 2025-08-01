@@ -59,7 +59,7 @@ export default function PrivacyPolicy() {
         Contact: <a href="mailto:yysgono@gmail.com">yysgono@gmail.com</a>
       </p>
       <p style={{ color: "#777", fontSize: 14, marginTop: 30 }}>
-        This policy is effective from July 10, 2024.
+        This policy is effective from July 10, 2025streamrecorder.
       </p>
     </div>
   );

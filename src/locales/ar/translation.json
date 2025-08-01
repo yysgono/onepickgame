@@ -163,6 +163,40 @@
   "match_win_rate": "نسبة الفوز",
   "search": "بحث",
   "retry": "إعادة المحاولة",
+  "recommended_worldcups": "كؤوس العالم الموصى بها",
+  "dragDropUpTo50": "يمكنك سحب وإسقاط حتى 50 صورة دفعة واحدة هنا.",
+  "footer_description": "موقع الألعاب التنافسية One Pick Game أنشئ بطولتك الخاصة، استمتع بالمواجهات الممتعة، والعب مع مستخدمين من جميع أنحاء العالم!",
+  "footer_suggestions_link": "لوحة الاقتراحات",
+  "suggestions_board": "لوحة الاقتراحات",
+  "ideal_type_suggestions": "اقتراحات كأس العالم للنوع المثالي",
+  "title": "العنوان",
+  "enter_title": "أدخل العنوان",
+  "enter_content": "أدخل اقتراحك...",
+  "submit": "إرسال",
+  "only_logged_in_can_submit": "يمكن للمستخدمين المسجلين فقط إرسال الاقتراحات.",
+  "admin_view": "عرض جميع الاقتراحات (للمسؤول)",
+  "from": "من",
+  "your_suggestions": "اقتراحاتك",
+  "no_suggestions": "لا توجد اقتراحات حتى الآن.",
+  "reply": "رد",
+  "reply_placeholder": "أدخل ردك هنا...",
+  "reply_submit": "إرسال الرد",
+  "title_limit": "العنوان يمكن أن يحتوي على 80 حرفًا كحد أقصى.",
+  "content_limit": "المحتوى يمكن أن يحتوي على 1000 حرف كحد أقصى.",
+  "suggestion_sent": "تم إرسال اقتراحك بنجاح!",
+  "date": "التاريخ",
+  "load_more": "تحميل المزيد",
+  "share_link_copied": "تم نسخ رابط المشاركة!",
+  "report_submit_success": "تم إرسال الإبلاغ بنجاح!",
+
+  "notice_and_comments": "الإشعارات وآخر التعليقات",
+  "see_details": "انقر لرؤية التفاصيل",
+  "recent_comments": "آخر التعليقات",
+  "loading": "جاري التحميل...",
+  "no_comments": "لا توجد تعليقات",
+
+  "notice_title_notice-1": "ما هو لعبة One Pick؟",
+  "notice_title_notice-2": "كيفية إنشاء كأس العالم الخاصة بك",
 
   "comment": {
     "placeholder": "اكتب تعليقاً",
@@ -208,9 +242,6 @@
     "nextRoundTitle": "{{a}} ضد {{b}}"
   },
 
-  "recommended_worldcups": "كؤوس العالم الموصى بها",
-  "dragDropUpTo50": "يمكنك سحب وإسقاط حتى 50 صورة دفعة واحدة هنا.",
-
   "resurrection": {
     "title": "جولة الإحياء",
     "instruction": "يرجى اختيار <b>1~4 متسابقين من اليسار للإحياء</b> و <b>1~4 من اليمين للإقصاء</b>.<br><b>يجب أن يكون عدد المُحيَين والمقصيين متساويًا.</b><br>إذا لم ترغب في المتابعة، فقط اضغط على تخطي.",
@@ -221,30 +252,5 @@
     "select_count": "اختر 1~4 ({{selected}}/{{max}})",
     "skip": "تخطي",
     "confirm": "تأكيد"
-  },
-
-  "footer_description": "موقع الألعاب التنافسية One Pick Game أنشئ بطولتك الخاصة، استمتع بالمواجهات الممتعة، والعب مع مستخدمين من جميع أنحاء العالم!",
-  "footer_suggestions_link": "لوحة الاقتراحات",
-  "suggestions_board": "لوحة الاقتراحات",
-  "ideal_type_suggestions": "اقتراحات كأس العالم للنوع المثالي",
-  "title": "العنوان",
-  "enter_title": "أدخل العنوان",
-  "enter_content": "أدخل اقتراحك...",
-  "submit": "إرسال",
-  "only_logged_in_can_submit": "يمكن للمستخدمين المسجلين فقط إرسال الاقتراحات.",
-  "admin_view": "عرض جميع الاقتراحات (للمسؤول)",
-  "from": "من",
-  "your_suggestions": "اقتراحاتك",
-  "no_suggestions": "لا توجد اقتراحات حتى الآن.",
-  "reply": "رد",
-  "reply_placeholder": "أدخل ردك هنا...",
-  "reply_submit": "إرسال الرد",
-  "title_limit": "العنوان يمكن أن يحتوي على 80 حرفًا كحد أقصى.",
-  "content_limit": "المحتوى يمكن أن يحتوي على 1000 حرف كحد أقصى.",
-  "suggestion_sent": "تم إرسال اقتراحك بنجاح!",
-  "date": "التاريخ",
-
-  "load_more": "تحميل المزيد",
-  "share_link_copied": "تم نسخ رابط المشاركة!",
-  "report_submit_success": "تم إرسال الإبلاغ بنجاح!"
+  }
 }

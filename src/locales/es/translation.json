@@ -168,6 +168,15 @@
   "retry": "Reintentar",
   "load_more": "Cargar más",
 
+  "notice_and_comments": "Avisos y comentarios recientes",
+  "see_details": "Haz clic para ver detalles",
+  "recent_comments": "Comentarios recientes",
+  "loading": "Cargando...",
+  "no_comments": "No hay comentarios",
+
+  "notice_title_notice-1": "¿Qué es One Pick Game?",
+  "notice_title_notice-2": "¿Cómo crear tu propio Worldcup?",
+
   "comment": {
     "placeholder": "Escribe un comentario.",
     "submit": "Enviar",
