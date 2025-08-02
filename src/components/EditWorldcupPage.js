@@ -1,10 +1,12 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 import { updateWorldcupGame } from "../utils/supabaseWorldcupApi";
 import { uploadCandidateImage } from "../utils/supabaseImageUpload";
+import { deleteCandidateImage } from "../utils/supabaseImageDelete";
 import { supabase } from "../utils/supabaseClient";
 import { useTranslation } from "react-i18next";
+import { compressImageFile } from "../utils/imageCompress";
 
 const COLORS = {
   main: "#1976ed",
@@ -77,7 +79,6 @@ function EditWorldcupPage({ worldcupList, fetchWorldcups, cupId, isAdmin }) {
   if (!user) return <div style={{ padding: 80 }}>{t("need_login")}</div>;
   if (!originalCup) return <div style={{ padding: 80 }}>{t("not_found")}</div>;
   
-  // 관리자 권한 포함 수정 가능 여부 판단
   if (
     !isAdmin &&
     !(
@@ -89,15 +90,22 @@ function EditWorldcupPage({ worldcupList, fetchWorldcups, cupId, isAdmin }) {
   function handleAddCandidate() {
     setData(d => [...d, { id: uuidv4(), name: "", image: "" }]);
   }
-  function handleDeleteCandidate(idx) {
+
+  async function handleDeleteCandidate(idx) {
+    const candidate = data[idx];
+    if (candidate?.image && !candidate.image.startsWith("data:image")) {
+      await deleteCandidateImage(candidate.image);
+    }
     setData(d => d.filter((_, i) => i !== idx));
   }
+
   function handleCandidateChange(idx, key, value) {
     setData(d => d.map((item, i) =>
       i === idx ? { ...item, [key]: value } : item
     ));
   }
-  function handleFileChange(idx, e) {
+
+  async function handleFileChange(idx, e) {
     const file = e.target.files[0];
     if (!file) return;
     if (file.size > 5 * 1024 * 1024) {
@@ -109,20 +117,26 @@ function EditWorldcupPage({ worldcupList, fetchWorldcups, cupId, isAdmin }) {
       alert(t("only_image_file"));
       return;
     }
+    const compressedFile = await compressImageFile(file, 1000, 0.5);
     const reader = new FileReader();
     reader.onload = ev => {
       handleCandidateChange(idx, "image", ev.target.result);
     };
-    reader.readAsDataURL(file);
+    reader.readAsDataURL(compressedFile);
   }
+
   async function handleFiles(fileList) {
     const files = Array.from(fileList).filter(file =>
       /\.(jpe?g|png|gif|svg|webp|avif)$/i.test(file.name)
     );
     if (files.length === 0) return;
 
+    const compressedFiles = await Promise.all(
+      files.map(file => compressImageFile(file, 1000, 0.5))
+    );
+
     const fileCandidates = await Promise.all(
-      files.map(file => new Promise(res => {
+      compressedFiles.map(file => new Promise(res => {
         const reader = new FileReader();
         reader.onload = e => {
           const cleanName = file.name
@@ -152,6 +166,7 @@ function EditWorldcupPage({ worldcupList, fetchWorldcups, cupId, isAdmin }) {
       return updated;
     });
   }
+
   function handleDrag(e) {
     e.preventDefault();
     e.stopPropagation();
@@ -165,7 +180,6 @@ function EditWorldcupPage({ worldcupList, fetchWorldcups, cupId, isAdmin }) {
     if (data.length < 2) return setError(t("edit_need_min_candidates"));
     if (data.some(item => !item.name.trim())) return setError(t("edit_need_all_names"));
 
-    // 중복 후보 이름 체크 (대소문자 무시, 중복 이름 구체적으로 알림)
     const nameMap = {};
     data.forEach(item => {
       const lower = item.name.trim().toLowerCase();
