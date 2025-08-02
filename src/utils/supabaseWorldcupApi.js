@@ -43,12 +43,41 @@ export async function updateWorldcupGame(id, updates) {
   return true;
 }
 
-// 월드컵 삭제 (이 함수만 남기고 나머지는 import해서 통일)
+// **월드컵 삭제 (Storage 이미지도 자동 삭제!)**
 export async function deleteWorldcupGame(id) {
+  // 1. 삭제 전, 월드컵 data(jsonb) 가져오기
+  const { data: worldcup, error: fetchError } = await supabase
+    .from("worldcups")
+    .select("data")
+    .eq("id", id)
+    .single();
+
+  if (fetchError) throw fetchError;
+
+  // 2. 후보 이미지 경로 추출 (base64, 외부링크는 스킵)
+  let imagePaths = [];
+  if (worldcup && Array.isArray(worldcup.data)) {
+    imagePaths = worldcup.data
+      .map(c => c.image)
+      .filter(img =>
+        typeof img === "string" &&
+        img &&
+        !img.startsWith("data:image") &&
+        !/^https?:\/\//.test(img)
+      );
+  }
+
+  // 3. Storage에서 이미지 일괄 삭제
+  if (imagePaths.length > 0) {
+    await supabase.storage.from("candidates").remove(imagePaths);
+  }
+
+  // 4. DB에서 월드컵 row 삭제
   const { error } = await supabase
     .from("worldcups")
     .delete()
     .eq("id", id);
   if (error) throw error;
+
   return true;
 }
