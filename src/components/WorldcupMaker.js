@@ -3,9 +3,8 @@ import { v4 as uuidv4 } from "uuid";
 import CandidateInput from "./CandidateInput";
 import COLORS from "../styles/theme";
 import { mainButtonStyle, grayButtonStyle } from "../styles/common";
-import { addWorldcupGame } from "../utils/supabaseWorldcupApi";
+import { addWorldcupGame, deleteWorldcupGameWithImages } from "../utils/supabaseWorldcupApi";
 import { uploadCandidateImage } from "../utils/supabaseImageUpload";
-import { deleteCandidateImage } from "../utils/supabaseImageDelete";
 import { supabase } from "../utils/supabaseClient";
 import useBanCheck from "../hooks/useBanCheck";
 import { compressImageFile } from "../utils/imageCompress";
@@ -107,8 +106,16 @@ function WorldcupMaker({ onCreate, onCancel }) {
     if (candidates.length <= 2) return;
 
     const candidateToRemove = candidates[idx];
-    if (candidateToRemove?.image && !candidateToRemove.image.startsWith("blob:") && !candidateToRemove.image.startsWith("data:image")) {
-      await deleteCandidateImage(candidateToRemove.image);
+    if (
+      candidateToRemove?.image &&
+      !candidateToRemove.image.startsWith("blob:") &&
+      !candidateToRemove.image.startsWith("data:image")
+    ) {
+      try {
+        // 개별 이미지 삭제가 필요하면 여기에 API 호출 (선택)
+      } catch (e) {
+        console.warn("이미지 삭제 실패:", candidateToRemove.image);
+      }
     }
 
     setCandidates((cands) => cands.filter((_, i) => i !== idx));
@@ -260,6 +267,22 @@ function WorldcupMaker({ onCreate, onCancel }) {
       ]);
     } catch (e) {
       setError("Failed to save. Please try again.");
+      console.error(e);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  // 월드컵 삭제 (이미지 포함)
+  async function handleDeleteWorldcup(id) {
+    if (!window.confirm("Are you sure you want to delete this Worldcup?")) return;
+    setLoading(true);
+    try {
+      await deleteWorldcupGameWithImages(id);
+      alert("Worldcup deleted successfully.");
+      if (onCreate) onCreate(); // 부모 컴포넌트에 알림
+    } catch (e) {
+      alert("Failed to delete Worldcup.");
       console.error(e);
     } finally {
       setLoading(false);

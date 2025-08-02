@@ -1,17 +1,45 @@
-// /utils/imageCompress.js
-import imageCompression from "browser-image-compression";
+export async function compressImageFile(file, maxWidth = 1000, quality = 0.5) {
+  return new Promise((resolve, reject) => {
+    const image = new Image();
+    const url = URL.createObjectURL(file);
 
-// file: File 객체
-export async function compressImageFile(file, maxWidth = 1000, maxMB = 0.5) {
-  const options = {
-    maxSizeMB: maxMB,          // 0.5MB 이하로
-    maxWidthOrHeight: maxWidth, // 최대 1000px 이하
-    useWebWorker: true,
-  };
-  try {
-    const compressedFile = await imageCompression(file, options);
-    return compressedFile;
-  } catch (e) {
-    return file; // 실패시 원본
-  }
+    image.onload = () => {
+      let width = image.width;
+      let height = image.height;
+
+      // 가로 최대 크기 제한
+      if (width > maxWidth) {
+        height = (height * maxWidth) / width;
+        width = maxWidth;
+      }
+
+      const canvas = document.createElement("canvas");
+      canvas.width = width;
+      canvas.height = height;
+
+      const ctx = canvas.getContext("2d");
+      ctx.drawImage(image, 0, 0, width, height);
+
+      canvas.toBlob(
+        (blob) => {
+          if (!blob) {
+            reject(new Error("Compression failed"));
+            return;
+          }
+          const compressedFile = new File([blob], file.name, { type: blob.type });
+          resolve(compressedFile);
+          URL.revokeObjectURL(url);
+        },
+        file.type,
+        quality
+      );
+    };
+
+    image.onerror = () => {
+      URL.revokeObjectURL(url);
+      reject(new Error("Image load error"));
+    };
+
+    image.src = url;
+  });
 }
