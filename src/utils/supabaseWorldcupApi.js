@@ -43,7 +43,7 @@ export async function updateWorldcupGame(id, updates) {
   return true;
 }
 
-// **월드컵 삭제 (Storage 이미지도 자동 삭제!)**
+// 월드컵 삭제 (Storage 이미지도 자동 삭제!)
 export async function deleteWorldcupGame(id) {
   // 1. 삭제 전, 월드컵 data(jsonb) 가져오기
   const { data: worldcup, error: fetchError } = await supabase
@@ -54,19 +54,22 @@ export async function deleteWorldcupGame(id) {
 
   if (fetchError) throw fetchError;
 
-  // 2. 후보 이미지 경로 추출 (base64, 외부링크는 스킵)
+  // 2. 후보 이미지 경로 추출 (풀 URL, 상대경로 모두 지원)
   let imagePaths = [];
   if (worldcup && Array.isArray(worldcup.data)) {
     imagePaths = worldcup.data
       .map(c => {
         if (typeof c.image !== "string" || !c.image) return null;
-        // 외부 링크 or base64는 스킵
+        // base64 혹은 외부 링크는 스킵
         if (c.image.startsWith("data:image")) return null;
-        // supabase storage에서만 지우기
-        // URL 형태라면 경로만 추출
-        // 예: https://xxx.supabase.co/storage/v1/object/public/candidates/candidates/폴더/파일명
-        const match = c.image.match(/\/storage\/v1\/object\/public\/(.+)$/);
-        if (match) return match[1]; // candidates/...
+        if (/^https?:\/\//.test(c.image)) {
+          // supabase storage URL만 처리
+          // 예: https://xxx.supabase.co/storage/v1/object/public/candidates/...
+          const match = c.image.match(/\/storage\/v1\/object\/public\/(.+)$/);
+          if (match) return match[1]; // "candidates/..." 형태
+          return null;
+        }
+        // 상대경로로 이미 저장된 경우
         return c.image;
       })
       .filter(Boolean);
