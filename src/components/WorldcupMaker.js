@@ -3,11 +3,10 @@ import { v4 as uuidv4 } from "uuid";
 import CandidateInput from "./CandidateInput";
 import COLORS from "../styles/theme";
 import { mainButtonStyle, grayButtonStyle } from "../styles/common";
-import { addWorldcupGame, deleteWorldcupGameWithImages } from "../utils/supabaseWorldcupApi";
+import { addWorldcupGame } from "../utils/supabaseWorldcupApi";
 import { uploadCandidateImage } from "../utils/supabaseImageUpload";
 import { supabase } from "../utils/supabaseClient";
 import useBanCheck from "../hooks/useBanCheck";
-import { compressImageFile } from "../utils/imageCompress";
 
 const DEFAULT_THUMB_URL = "/default-thumb.png";
 const MAX_UPLOAD = 50;
@@ -101,28 +100,16 @@ function WorldcupMaker({ onCreate, onCancel }) {
       { id: uuidv4(), name: "", image: "", file: null },
     ]);
   }
-
-  async function removeCandidate(idx) {
-    if (candidates.length <= 2) return;
-
-    const candidateToRemove = candidates[idx];
-    if (
-      candidateToRemove?.image &&
-      !candidateToRemove.image.startsWith("blob:") &&
-      !candidateToRemove.image.startsWith("data:image")
-    ) {
-      try {
-        // 개별 이미지 삭제가 필요하면 여기에 API 호출 (선택)
-      } catch (e) {
-        console.warn("이미지 삭제 실패:", candidateToRemove.image);
-      }
-    }
-
-    setCandidates((cands) => cands.filter((_, i) => i !== idx));
-  }
-
   function updateCandidate(idx, val) {
     setCandidates((cands) => cands.map((c, i) => (i === idx ? val : c)));
+  }
+  function removeCandidate(idx) {
+    if (candidates.length <= 2) return;
+    const candidateToRemove = candidates[idx];
+    if (candidateToRemove.image && candidateToRemove.image.startsWith("blob:")) {
+      URL.revokeObjectURL(candidateToRemove.image);
+    }
+    setCandidates((cands) => cands.filter((_, i) => i !== idx));
   }
 
   async function handleFiles(fileList) {
@@ -135,11 +122,7 @@ function WorldcupMaker({ onCreate, onCancel }) {
     );
     if (files.length === 0) return;
 
-    const compressedFiles = await Promise.all(
-      files.map(file => compressImageFile(file, 1000, 0.5))
-    );
-
-    const fileCandidates = compressedFiles.map((file, idx) => {
+    const fileCandidates = files.map((file) => {
       const cleanName = file.name
         .replace(/\.[^/.]+$/, "")
         .replace(/[_\-]+/g, " ")
@@ -204,6 +187,7 @@ function WorldcupMaker({ onCreate, onCancel }) {
       return;
     }
 
+    // 중복 체크
     const nameMap = {};
     list.forEach((c) => {
       const lower = c.name.toLowerCase();
@@ -214,8 +198,9 @@ function WorldcupMaker({ onCreate, onCancel }) {
     const duplicates = Object.values(nameMap).filter((arr) => arr.length > 1);
 
     if (duplicates.length > 0) {
+      // 중복된 이름들을 쉼표로 연결해 메시지 생성
       const dupNames = duplicates
-        .map((arr) => arr[0])
+        .map((arr) => arr[0]) // 원래 이름 중 첫번째만 보여줌
         .join(", ");
       setError("Duplicate candidate names: " + dupNames);
       return;
@@ -273,22 +258,6 @@ function WorldcupMaker({ onCreate, onCancel }) {
     }
   }
 
-  // 월드컵 삭제 (이미지 포함)
-  async function handleDeleteWorldcup(id) {
-    if (!window.confirm("Are you sure you want to delete this Worldcup?")) return;
-    setLoading(true);
-    try {
-      await deleteWorldcupGameWithImages(id);
-      alert("Worldcup deleted successfully.");
-      if (onCreate) onCreate(); // 부모 컴포넌트에 알림
-    } catch (e) {
-      alert("Failed to delete Worldcup.");
-      console.error(e);
-    } finally {
-      setLoading(false);
-    }
-  }
-
   return (
     <div
       style={{
@@ -314,6 +283,7 @@ function WorldcupMaker({ onCreate, onCancel }) {
         Create Worldcup
       </h2>
       <form onSubmit={handleSubmit}>
+        {/* 업로드 박스 */}
         <div
           onDrop={(e) => {
             e.preventDefault();
@@ -390,7 +360,7 @@ function WorldcupMaker({ onCreate, onCancel }) {
           disabled={loading}
         />
         <div style={{ marginBottom: 18 }}>
-          <div style={{ fontWeight: 700, marginBottom: 7, color: "#222" }}>
+          <div style={{ fontWeight: 700, marginBottom: 7 }}>
             Candidates{" "}
             <span style={{ color: "#888", fontWeight: 400, fontSize: mobile ? 13 : 15 }}>
               ({candidates.length} / 1024)

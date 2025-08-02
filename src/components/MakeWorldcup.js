@@ -4,7 +4,6 @@ import { v4 as uuidv4 } from "uuid";
 import { uploadCandidateImage } from "../utils/supabaseImageUpload";
 import { addWorldcupGame } from "../utils/supabaseGameApi";
 import { supabase } from "../utils/supabaseClient";
-import { compressImageFile } from "../utils/imageCompress"; // 추가
 
 function getYoutubeThumb(url) {
   const match = url.match(
@@ -33,6 +32,7 @@ export default function MakeWorldcup({ worldcupList, setWorldcupList, onClose })
   const [loading, setLoading] = useState(false);
   const fileInputRefs = useRef([]);
 
+  // candidates 길이가 바뀔 때 ref도 맞춰줌
   useEffect(() => {
     fileInputRefs.current = fileInputRefs.current.slice(0, candidates.length);
   }, [candidates.length]);
@@ -47,21 +47,6 @@ export default function MakeWorldcup({ worldcupList, setWorldcupList, onClose })
     setCandidates(arr =>
       arr.map((c, i) => (i === idx ? { ...c, [key]: value } : c))
     );
-  }
-
-  async function handleFileChange(idx, e) {
-    const file = e.target.files[0];
-    if (!file) return;
-    const allowed = /\.(jpe?g|png)$/i;
-    if (!allowed.test(file.name)) {
-      alert("jpg, jpeg, png 파일만 업로드 가능합니다.");
-      return;
-    }
-    // *** 압축 추가 ***
-    const compressedFile = await compressImageFile(file, 1000, 0.5);
-    const reader = new FileReader();
-    reader.onload = ev => updateCandidate(idx, "image", ev.target.result);
-    reader.readAsDataURL(compressedFile);
   }
 
   async function handleSubmit(e) {
@@ -112,7 +97,7 @@ export default function MakeWorldcup({ worldcupList, setWorldcupList, onClose })
         { id: uuidv4(), name: "", image: "" },
       ]);
       if (setWorldcupList) setWorldcupList([...(worldcupList || []), newCup]);
-      if (onClose) setTimeout(onClose, 600);
+      if (onClose) setTimeout(onClose, 600); // 0.6초 후 닫기 (성공 메시지 보이기)
     } catch (e) {
       setError("저장 실패! 잠시 후 다시 시도해 주세요.");
       console.error(e);
@@ -202,7 +187,18 @@ export default function MakeWorldcup({ worldcupList, setWorldcupList, onClose })
                   type="file"
                   accept=".jpg,.jpeg,.png"
                   style={{ display: "none" }}
-                  onChange={e => handleFileChange(idx, e)}
+                  onChange={e => {
+                    const file = e.target.files[0];
+                    if (!file) return;
+                    const allowed = /\.(jpe?g|png)$/i;
+                    if (!allowed.test(file.name)) {
+                      alert("jpg, jpeg, png 파일만 업로드 가능합니다.");
+                      return;
+                    }
+                    const reader = new FileReader();
+                    reader.onload = ev => updateCandidate(idx, "image", ev.target.result);
+                    reader.readAsDataURL(file);
+                  }}
                   disabled={loading}
                 />
                 {candidates.length > 2 && (
@@ -220,14 +216,8 @@ export default function MakeWorldcup({ worldcupList, setWorldcupList, onClose })
                     src={thumb}
                     alt=""
                     style={{
-                      width: 32,
-                      height: 32,
-                      objectFit: "cover",
-                      borderRadius: 8,
-                      background: "#f2f2f2",
-                      boxShadow: "0 2px 8px #0001",
-                      border: "1.2px solid #eee",
-                      marginLeft: 8,
+                      width: 32, height: 32, objectFit: "cover", borderRadius: 8, background: "#f2f2f2",
+                      boxShadow: "0 2px 8px #0001", border: "1.2px solid #eee", marginLeft: 8,
                     }}
                   />
                 )}

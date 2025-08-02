@@ -1,7 +1,6 @@
 import React, { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { mainButtonStyle } from "../styles/common";
-import { compressImageFile } from "../utils/imageCompress"; // 추가
 
 function UploadCup({ onChange }) {
   const { t } = useTranslation();
@@ -9,13 +8,13 @@ function UploadCup({ onChange }) {
   const [preview, setPreview] = useState(null);
   const isMobile = typeof window !== "undefined" && window.innerWidth <= 700;
 
-  async function handleFile(e) {
+  function handleFile(e) {
     const file = e.target.files[0];
     if (!file) return;
 
     // 용량 체크 (10MB 제한)
     if (file.size > 10 * 1024 * 1024) {
-      alert(t("only_images_under_10mb"));
+      alert(t("only_images_under_10mb")); // "이미지 파일은 3MB 이하만 가능합니다."
       return;
     }
 
@@ -24,19 +23,16 @@ function UploadCup({ onChange }) {
       !/\.(jpe?g|png)$/i.test(file.name) ||
       !["image/jpeg", "image/png"].includes(file.type)
     ) {
-      alert(t("only_jpg_png"));
+      alert(t("only_jpg_png")); // "JPG, PNG 파일만 업로드할 수 있습니다."
       return;
     }
-
-    // *** 압축 적용 ***
-    const compressedFile = await compressImageFile(file, 1000, 0.5);
 
     const reader = new FileReader();
     reader.onload = ev => {
       setPreview(ev.target.result);
       onChange(ev.target.result);
     };
-    reader.readAsDataURL(compressedFile);
+    reader.readAsDataURL(file);
   }
 
   return (
@@ -58,12 +54,12 @@ function UploadCup({ onChange }) {
           padding: isMobile ? "8px 17px" : "9px 25px"
         }}
       >
-        {t("image_upload")}
+        {t("image_upload")} {/* ex: "이미지 업로드" */}
       </button>
       {preview && (
         <img
           src={preview}
-          alt={t("preview")}
+          alt={t("preview")} // ex: "미리보기"
           style={{
             width: 50,
             height: 50,

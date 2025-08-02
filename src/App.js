@@ -33,8 +33,8 @@ import PrivacyPolicy from "./components/PrivacyPolicy";
 import TermsOfService from "./components/TermsOfService";
 import Footer from "./components/Footer";
 import SuggestionsBoard from "./components/SuggestionsBoard";
-import NoticePage from "./components/NoticePage";
-import NoticeDetail from "./components/NoticeDetail";
+import NoticePage from "./components/NoticePage";      // 📢 공지사항 페이지
+import NoticeDetail from "./components/NoticeDetail";  // 📢 개별 공지 상세
 
 // 언어별 홈 페이지
 import DePage from "./pages/de/index";
@@ -54,12 +54,7 @@ import BnPage from "./pages/bn/index";
 import ThPage from "./pages/th/index";
 import TrPage from "./pages/tr/index";
 
-// 월드컵/스토리지 삭제 최신 함수 import!!
-import {
-  getWorldcupGames,
-  deleteWorldcupGameWithImages, // 반드시 이 함수로!
-  getWorldcupGame,
-} from "./utils/supabaseWorldcupApi";
+import { getWorldcupGames, deleteWorldcupGame, getWorldcupGame } from "./utils/supabaseWorldcupApi";
 import { supabase } from "./utils/supabaseClient";
 
 function useIsMobile() {
@@ -374,8 +369,8 @@ function App() {
           onMakeWorldcup={handleMakeWorldcup}
           onDelete={async (id) => {
             try {
-              await deleteWorldcupGameWithImages(id); // 이미지 포함 완전 삭제!
-              await fetchWorldcups(); // 리스트 최신화
+              await deleteWorldcupGame(id);
+              setWorldcupList((list) => list.filter((cup) => cup.id !== id));
             } catch (e) {
               alert((t("delete_failed") || "Delete failed!") + " " + (e.message || e));
             }
@@ -572,8 +567,12 @@ function App() {
             <Route path="/:lang/suggestions" element={<SuggestionsBoard user={user} isAdmin={isAdmin} />} />
             <Route path="/:lang/my-worldcups" element={<MyWorldcupsWrapper />} />
             <Route path="/:lang/recent-worldcups" element={<RecentWorldcupsWrapper />} />
+
+            {/* ----------- 📢 Notice ------------ */}
             <Route path="/:lang/notice" element={<NoticePage />} />
             <Route path="/:lang/notice/:id" element={<NoticeDetail />} />
+            {/* ---------------------------------- */}
+
             <Route path="/" element={<HomeWrapper />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>

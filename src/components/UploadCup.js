@@ -1,7 +1,6 @@
 import React, { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { mainButtonStyle } from "../styles/common";
-import { compressImageFile } from "../utils/imageCompress"; // 추가!
 
 function UploadCup({ onChange }) {
   const { t } = useTranslation();
@@ -9,7 +8,7 @@ function UploadCup({ onChange }) {
   const [preview, setPreview] = useState(null);
   const isMobile = typeof window !== "undefined" && window.innerWidth <= 700;
 
-  async function handleFile(e) {
+  function handleFile(e) {
     const file = e.target.files[0];
     if (!file) return;
 
@@ -28,16 +27,12 @@ function UploadCup({ onChange }) {
       return;
     }
 
-    // 1. *** 압축/리사이즈 추가 ***
-    const compressedFile = await compressImageFile(file, 1000, 0.5);
-
-    // 2. 미리보기/전달
     const reader = new FileReader();
     reader.onload = ev => {
       setPreview(ev.target.result);
       onChange(ev.target.result);
     };
-    reader.readAsDataURL(compressedFile);
+    reader.readAsDataURL(file);
   }
 
   return (
