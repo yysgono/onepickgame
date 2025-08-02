@@ -1,16 +1,7 @@
+// ManageWorldcup.jsx
 import React, { useState } from "react";
-import { deleteWorldcupGame } from "../utils";
-
-// 파일 다운로드 유틸
-function downloadJson(filename, jsonObj) {
-  const blob = new Blob([JSON.stringify(jsonObj, null, 2)], { type: "application/json" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = filename;
-  a.click();
-  setTimeout(() => URL.revokeObjectURL(url), 1000);
-}
+import { deleteWorldcupGame } from "../utils/supabaseWorldcupApi";
+import { deleteCandidateImage } from "../utils/supabaseImageDelete";
 
 function ManageWorldcup({ user, isAdmin, worldcupList, setWorldcupList }) {
   // user가 object거나 string일 수 있음
@@ -75,13 +66,36 @@ function ManageWorldcup({ user, isAdmin, worldcupList, setWorldcupList }) {
     navigator.clipboard.writeText(backupText).then(() => alert("클립보드에 복사됨!"));
   }
 
+  // 삭제 함수: 월드컵 DB 삭제 + 후보 이미지 스토리지 삭제
   async function handleDelete(cup) {
     if (!window.confirm("정말 삭제하시겠습니까?")) return;
+
     try {
+      // 후보 이미지 삭제 (blob:, data: 는 건너뜀)
+      for (const candidate of cup.data || []) {
+        if (
+          candidate.image &&
+          !candidate.image.startsWith("blob:") &&
+          !candidate.image.startsWith("data:image")
+        ) {
+          try {
+            await deleteCandidateImage(candidate.image);
+          } catch (e) {
+            console.error("이미지 삭제 실패:", candidate.image, e);
+            // 이미지 삭제 실패해도 계속 진행
+          }
+        }
+      }
+
+      // 월드컵 DB 레코드 삭제
       await deleteWorldcupGame(cup.id);
+
+      // 삭제 후 로컬 상태 업데이트
       setWorldcupList((prev) => prev.filter((w) => w.id !== cup.id));
+      alert("월드컵이 삭제되었습니다.");
     } catch (e) {
       alert("삭제 실패! 다시 시도해 주세요.");
+      console.error(e);
     }
   }
 
@@ -227,6 +241,17 @@ function ManageWorldcup({ user, isAdmin, worldcupList, setWorldcupList }) {
       </div>
     </div>
   );
+}
+
+// 파일 다운로드 유틸
+function downloadJson(filename, jsonObj) {
+  const blob = new Blob([JSON.stringify(jsonObj, null, 2)], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 
 export default ManageWorldcup;

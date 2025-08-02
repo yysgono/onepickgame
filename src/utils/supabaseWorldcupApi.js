@@ -1,9 +1,6 @@
 import { supabase } from "./supabaseClient";
 import { deleteCandidateImage } from "./supabaseImageDelete";
 
-// YouTube 등 부가함수 (생략)
-
-// 월드컵 함수
 export async function getWorldcupGames() {
   const { data, error } = await supabase
     .from("worldcups")
@@ -42,7 +39,7 @@ export async function updateWorldcupGame(id, updates) {
   return true;
 }
 
-// 기존 deleteWorldcupGame 함수
+// 기존 월드컵 단순 삭제 함수
 export async function deleteWorldcupGame(id) {
   const { error } = await supabase
     .from("worldcups")
@@ -52,7 +49,7 @@ export async function deleteWorldcupGame(id) {
   return true;
 }
 
-// 이미지 포함 월드컵 삭제 (후보 이미지도 삭제)
+// 후보 이미지 삭제 포함 월드컵 삭제
 export async function deleteWorldcupGameWithImages(id) {
   // 1. 월드컵 후보 이미지 목록 가져오기
   const { data: cup, error: getError } = await supabase
@@ -62,7 +59,7 @@ export async function deleteWorldcupGameWithImages(id) {
     .single();
   if (getError) throw getError;
 
-  // 2. 후보 이미지가 서버에 있으면 삭제
+  // 2. 후보 이미지가 스토리지에 있으면 삭제
   if (cup?.data) {
     for (const candidate of cup.data) {
       if (
@@ -88,5 +85,3 @@ export async function deleteWorldcupGameWithImages(id) {
 
   return true;
 }
-
-// ... 기타 기존 함수들 (winner_logs, stats 등) 생략하지 않고 실제로 존재한다 가정
