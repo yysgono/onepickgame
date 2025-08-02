@@ -1,6 +1,6 @@
 // ManageWorldcup.jsx
 import React, { useState } from "react";
-import { deleteWorldcupGame } from "../utils/supabaseWorldcupApi";
+import { deleteWorldcupGameWithImages } from "../utils/supabaseWorldcupApi";
 import { deleteCandidateImage } from "../utils/supabaseImageDelete";
 
 function ManageWorldcup({ user, isAdmin, worldcupList, setWorldcupList }) {
