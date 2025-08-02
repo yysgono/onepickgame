@@ -1,6 +1,7 @@
 import { supabase } from "./supabaseClient";
 import { deleteCandidateImage } from "./supabaseImageDelete";
 
+// 월드컵 목록 가져오기
 export async function getWorldcupGames() {
   const { data, error } = await supabase
     .from("worldcups")
@@ -10,6 +11,7 @@ export async function getWorldcupGames() {
   return data;
 }
 
+// 단일 월드컵 가져오기
 export async function getWorldcupGame(id) {
   const { data, error } = await supabase
     .from("worldcups")
@@ -20,6 +22,7 @@ export async function getWorldcupGame(id) {
   return data;
 }
 
+// 월드컵 추가
 export async function addWorldcupGame(cup) {
   const { data, error } = await supabase
     .from("worldcups")
@@ -30,6 +33,7 @@ export async function addWorldcupGame(cup) {
   return data.id;
 }
 
+// 월드컵 수정
 export async function updateWorldcupGame(id, updates) {
   const { error } = await supabase
     .from("worldcups")
@@ -39,17 +43,7 @@ export async function updateWorldcupGame(id, updates) {
   return true;
 }
 
-// 기존 월드컵 단순 삭제 함수
-export async function deleteWorldcupGame(id) {
-  const { error } = await supabase
-    .from("worldcups")
-    .delete()
-    .eq("id", id);
-  if (error) throw error;
-  return true;
-}
-
-// 후보 이미지 삭제 포함 월드컵 삭제
+// 월드컵 + 후보 이미지까지 모두 삭제하는 함수 (필수)
 export async function deleteWorldcupGameWithImages(id) {
   // 1. 월드컵 후보 이미지 목록 가져오기
   const { data: cup, error: getError } = await supabase
@@ -59,7 +53,7 @@ export async function deleteWorldcupGameWithImages(id) {
     .single();
   if (getError) throw getError;
 
-  // 2. 후보 이미지가 스토리지에 있으면 삭제
+  // 2. 후보 이미지가 서버에 있으면 삭제
   if (cup?.data) {
     for (const candidate of cup.data) {
       if (

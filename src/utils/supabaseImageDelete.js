@@ -2,7 +2,7 @@ import { supabase } from "./supabaseClient";
 
 /**
  * Supabase Storage에서 후보 이미지 삭제
- * @param {string} imageUrl - 삭제할 이미지 공개 URL
+ * @param {string} imageUrl - 삭제할 이미지의 공개 URL
  * @returns {Promise<boolean>}
  */
 export async function deleteCandidateImage(imageUrl) {
@@ -13,6 +13,7 @@ export async function deleteCandidateImage(imageUrl) {
     const pathIndex = url.pathname.indexOf('/storage/v1/object/public/');
     if (pathIndex === -1) return false;
 
+    // 이미지 경로만 추출
     const filePath = url.pathname.substring(pathIndex + '/storage/v1/object/public/'.length);
 
     const { error } = await supabase.storage.from('candidates').remove([filePath]);
