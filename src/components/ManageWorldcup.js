@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { deleteWorldcupGame } from "../utils";
+import { deleteWorldcupGame } from "../utils/supabaseWorldcupApi"; // 위치 맞춰 import
 
 // 파일 다운로드 유틸
 function downloadJson(filename, jsonObj) {
