@@ -68,14 +68,6 @@ function useIsMobile() {
   return isMobile;
 }
 
-function ResetPwRedirect() {
-  const navigate = useNavigate();
-  useEffect(() => {
-    navigate("/");
-  }, [navigate]);
-  return null;
-}
-
 function getLangPath(i18n, path = "") {
   const lang = i18n.language || "ko";
   if (path.startsWith("/")) path = path.slice(1);
@@ -368,9 +360,9 @@ function App() {
           onMakeWorldcup={handleMakeWorldcup}
           // ===== 여기 수정 =====
           onDelete={async (id) => {
+            console.log("onDelete 호출!", id); // 로그추가
             try {
               await deleteWorldcupGame(id);
-              // 삭제 후 항상 최신 목록 fetch
               const freshList = await getWorldcupGames();
               setWorldcupList(freshList);
             } catch (e) {
@@ -564,18 +556,14 @@ function App() {
             <Route path="/:lang/login" element={<LoginBox setUser={setUser} setNickname={updateNickname} />} />
             <Route path="/:lang/find-id" element={<FindIdBox />} />
             <Route path="/:lang/find-pw" element={<FindPwBox />} />
-            <Route path="/:lang/reset-password" element={<ResetPwRedirect />} />
+            <Route path="/:lang/reset-password" element={<Navigate to="/" />} />
             <Route path="/:lang/privacy-policy" element={<PrivacyPolicy />} />
             <Route path="/:lang/terms-of-service" element={<TermsOfService />} />
             <Route path="/:lang/suggestions" element={<SuggestionsBoard user={user} isAdmin={isAdmin} />} />
             <Route path="/:lang/my-worldcups" element={<MyWorldcupsWrapper />} />
             <Route path="/:lang/recent-worldcups" element={<RecentWorldcupsWrapper />} />
-
-            {/* ----------- 📢 Notice ------------ */}
             <Route path="/:lang/notice" element={<NoticePage />} />
             <Route path="/:lang/notice/:id" element={<NoticeDetail />} />
-            {/* ---------------------------------- */}
-
             <Route path="/" element={<HomeWrapper />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>

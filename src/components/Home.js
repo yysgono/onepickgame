@@ -1,11 +1,11 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { fetchWinnerStatsFromDB } from "../utils";
-import COLORS from "../styles/theme";
 import MediaRenderer from "./MediaRenderer";
 import FixedCupSection from "./FixedCupCarousel";
 
-// 카드 fade-in 효과
+const PAGE_SIZE = 21;
+
 const useSlideFadeIn = (length) => {
   const refs = useRef([]);
   useEffect(() => {
@@ -57,8 +57,6 @@ function SkeletonCard({ cardHeight, thumbHeight }) {
   );
 }
 
-const PAGE_SIZE = 21;
-
 function Home({
   worldcupList,
   fetchWorldcups,
@@ -77,13 +75,10 @@ function Home({
   const [vw, setVw] = useState(window.innerWidth);
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
 
-  // 💡 카드별 winStatsMap 상태(딕셔너리, id->winStats)
   const [winStatsMap, setWinStatsMap] = useState({});
 
-  // 1. 월드컵 리스트 뜨면 바로 기본카드 렌더
-  // 2. 카드별로 winStats 비동기 fetch (병렬)
   useEffect(() => {
-    setWinStatsMap({}); // 초기화
+    setWinStatsMap({});
     if (Array.isArray(worldcupList) && worldcupList.length > 0) {
       worldcupList.forEach((cup) => {
         fetchWinnerStatsFromDB(cup.id).then((statsArr) => {
@@ -108,7 +103,6 @@ function Home({
   const SKELETON_COUNT = isMobile ? 3 : 6;
   const THUMB_HEIGHT = isMobile ? 148 : 168 * 1.05;
 
-  // 고정 추천 worldcup (winStats 병합)
   const [fixedCupsWithStats, setFixedCupsWithStats] = useState([]);
   useEffect(() => {
     let mounted = true;
@@ -130,7 +124,6 @@ function Home({
     return () => { mounted = false; };
   }, [fixedWorldcups]);
 
-  // 검색/정렬은 winStats 없이도 동작
   const filtered = Array.isArray(worldcupList)
     ? (worldcupList || [])
         .filter(
@@ -144,7 +137,6 @@ function Home({
           if (sort === "recent") {
             return (b.created_at || b.id) > (a.created_at || a.id) ? 1 : -1;
           } else {
-            // 인기순 정렬: winStats 없는건 0으로 간주
             const aw = winStatsMap[a.id]?.reduce((sum, row) => sum + (row.win_count || 0), 0) || 0;
             const bw = winStatsMap[b.id]?.reduce((sum, row) => sum + (row.win_count || 0), 0) || 0;
             return bw - aw;
@@ -153,7 +145,6 @@ function Home({
     : [];
 
   const visibleList = filtered.slice(0, visibleCount);
-
   const cardRefs = useSlideFadeIn(visibleList.length);
 
   const currentUserId = user?.id || "";
@@ -193,7 +184,6 @@ function Home({
     );
   }
 
-  const NEON_FONT = "'Orbitron', 'Pretendard', sans-serif";
   const mainDark = "#171C27";
   const blueLine = "#1976ed";
 
@@ -208,7 +198,7 @@ function Home({
     outline: "none",
     cursor: "pointer",
     letterSpacing: "0.5px",
-    fontFamily: NEON_FONT,
+    fontFamily: "'Orbitron', 'Pretendard', sans-serif",
     margin: "0 2px",
     boxShadow: "none",
     transition: "background 0.15s",
@@ -270,17 +260,6 @@ function Home({
         position: "relative",
       }}
     >
-      <div
-        style={{
-          position: "fixed",
-          inset: 0,
-          width: "100vw",
-          height: "100vh",
-          zIndex: 0,
-          pointerEvents: "none",
-          background: "rgba(0,0,0,0.0)",
-        }}
-      />
       {showFixedWorldcups !== false && (
         <FixedCupSection worldcupList={fixedCupsWithStats || []} />
       )}
@@ -513,7 +492,7 @@ function Home({
                     />
                   </div>
                 </div>
-                {/* ======= 제목 영역 flex:1, maxHeight 더 넉넉히 ======= */}
+                {/* 제목 */}
                 <div
                   style={{
                     width: "100%",
@@ -531,7 +510,7 @@ function Home({
                     fontWeight: 900,
                     fontSize: isMobile ? 17 : 20,
                     color: "#fff",
-                    fontFamily: NEON_FONT,
+                    fontFamily: "'Orbitron', 'Pretendard', sans-serif",
                     textAlign: "center",
                     wordBreak: "break-all",
                     lineHeight: 1.17,
@@ -556,7 +535,7 @@ function Home({
                       padding: 0,
                       whiteSpace: "pre-line",
                       wordBreak: "keep-all",
-                      fontFamily: NEON_FONT,
+                      fontFamily: "'Orbitron', 'Pretendard', sans-serif",
                       fontWeight: 900,
                     }}
                   >
@@ -571,7 +550,7 @@ function Home({
                     })()}
                   </span>
                 </div>
-                {/* ======= 버튼 영역 - 하단 고정 ======= */}
+                {/* 버튼영역 */}
                 <div
                   style={{
                     width: "100%",
@@ -614,9 +593,11 @@ function Home({
                       <button
                         onClick={e => {
                           e.stopPropagation();
+                          console.log("삭제 클릭", cup.id); // 로그추가
                           if (!window.confirm(t("delete_confirm") || "정말 삭제하시겠습니까?")) return;
-                          if (onDelete) onDelete(cup.id);
-                          else window.location.reload();
+                          if (onDelete) {
+                            onDelete(cup.id);
+                          } else window.location.reload();
                         }}
                         style={smallButtonStyle}
                         onMouseOver={e => (e.currentTarget.style.background = "#1c2232")}
