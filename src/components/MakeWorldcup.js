@@ -131,7 +131,7 @@ export default function MakeWorldcup({ worldcupList, setWorldcupList, onClose })
             value={desc}
             onChange={e => setDesc(e.target.value)}
             placeholder="설명(선택)"
-            maxLength={60}
+            maxLength={400}
             style={{ width: "100%", fontSize: 16, padding: 8, borderRadius: 8, border: "1.2px solid #bbb" }}
             disabled={loading}
           />

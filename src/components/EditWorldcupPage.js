@@ -277,7 +277,7 @@ function EditWorldcupPage({ worldcupList, fetchWorldcups, cupId, isAdmin }) {
               marginTop: 6, resize: "vertical", minHeight: 36, background: "#fafdff"
             }}
             rows={2}
-            maxLength={70}
+            maxLength={400}
             placeholder={t("edit_description_placeholder")}
             disabled={loading}
           />

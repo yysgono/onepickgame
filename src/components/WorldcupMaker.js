@@ -347,7 +347,7 @@ function WorldcupMaker({ onCreate, onCancel }) {
           value={desc}
           onChange={(e) => setDesc(e.target.value)}
           placeholder="Description (optional)"
-          maxLength={100}
+          maxLength={400}
           rows={2}
           style={{
             width: "100%",
