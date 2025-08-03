@@ -583,8 +583,8 @@ function Home({
                 </div>
                 {/* 설명(내용) */}
                 <div style={cardDescStyle}>
-                  {(cup.description || cup.desc || "").slice(0, 68)}
-                </div>
+  {cup.description || cup.desc || ""}
+</div>
                 {/* 버튼/액션영역 */}
                 <div
                   style={{
