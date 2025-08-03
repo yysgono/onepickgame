@@ -98,8 +98,8 @@ function Home({
   }, []);
   const isMobile = vw < 600;
   const CARD_WIDTH = isMobile ? 320 : 420;
-  const CARD_HEIGHT = isMobile ? 265 : 295;
-  const CARD_GAP = isMobile ? 7 : 9;
+  const CARD_HEIGHT = isMobile ? 325 : 350;
+  const CARD_GAP = isMobile ? 7 : 13;
   const SKELETON_COUNT = isMobile ? 3 : 6;
   const THUMB_HEIGHT = isMobile ? 148 : 168 * 1.05;
 
@@ -251,6 +251,37 @@ function Home({
     return `/${lang}${base}/${cupId}`;
   };
 
+  // --- 카드 설명 스타일 (길이제한/생략/줄바꿈) ---
+  const cardDescStyle = {
+    color: "#b9dafb",
+    fontSize: isMobile ? 14 : 16,
+    lineHeight: 1.33,
+    textAlign: "center",
+    padding: isMobile ? "4px 10px 0 10px" : "8px 18px 0 18px",
+    minHeight: isMobile ? 24 : 33,
+    maxHeight: isMobile ? 36 : 42,
+    display: "-webkit-box",
+    WebkitLineClamp: 2,
+    WebkitBoxOrient: "vertical",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    wordBreak: "keep-all",
+    margin: 0,
+    marginBottom: 3,
+    background: "none"
+  };
+
+  // --- 카드 맨 하단 파란 바 스타일 ---
+  const cardBottomBarStyle = {
+    width: "100%",
+    height: 4,
+    background: "linear-gradient(90deg, #1976ed 45%, #25e5fd 100%)",
+    borderRadius: "0 0 18px 18px",
+    margin: 0,
+    marginTop: "auto",
+    boxShadow: "0 2px 10px #1976ed44",
+  };
+
   return (
     <div
       style={{
@@ -385,6 +416,7 @@ function Home({
                   opacity: 0.92,
                   pointerEvents: "none",
                 }} />
+                {/* 썸네일 */}
                 <div
                   style={{
                     width: "100%",
@@ -521,7 +553,6 @@ function Home({
                     marginBottom: 0,
                     whiteSpace: "normal",
                     textShadow: "0 1.5px 8px #191b25cc",
-                    borderBottom: `1.5px solid #1976ed66`
                   }}
                   title={cup.title}
                 >
@@ -550,7 +581,11 @@ function Home({
                     })()}
                   </span>
                 </div>
-                {/* 버튼영역 */}
+                {/* 설명(내용) */}
+                <div style={cardDescStyle}>
+                  {(cup.description || cup.desc || "").slice(0, 68)}
+                </div>
+                {/* 버튼/액션영역 */}
                 <div
                   style={{
                     width: "100%",
@@ -563,9 +598,9 @@ function Home({
                     minHeight: isMobile ? 23 : 27,
                     background: mainDark,
                     boxSizing: "border-box",
-                    marginTop: 0,
+                    marginTop: "auto",
                     borderTop: "none",
-                    borderBottom: `2.6px solid ${blueLine}`,
+                    borderBottom: "none",
                     borderRadius: 0,
                     gap: 0,
                   }}
@@ -593,11 +628,9 @@ function Home({
                       <button
                         onClick={e => {
                           e.stopPropagation();
-                          console.log("삭제 클릭", cup.id);
                           if (!window.confirm(t("delete_confirm") || "정말 삭제하시겠습니까?")) return;
-                          if (onDelete) {
-                            onDelete(cup.id);
-                          } else window.location.reload();
+                          if (onDelete) onDelete(cup.id);
+                          else window.location.reload();
                         }}
                         style={smallButtonStyle}
                         onMouseOver={e => (e.currentTarget.style.background = "#1c2232")}
@@ -617,6 +650,8 @@ function Home({
                     onMouseOut={e => (e.currentTarget.style.background = mainDark)}
                   >{t("stats_comment")}</button>
                 </div>
+                {/* 맨 하단 파란 밑줄 */}
+                <div style={cardBottomBarStyle}></div>
               </div>
             );
           })}
