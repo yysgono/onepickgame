@@ -1,7 +1,7 @@
 import React, { useRef, useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
-import { supabase } from "../utils/supabaseClient"; // 경로 맞게 조정하세요
+import { supabase } from "../utils/supabaseClient";
 
 function isValidNickname(nickname) {
   if (!nickname) return false;
@@ -156,11 +156,11 @@ export default function Header({
     setShowProfile(false);
   }
 
-  // 현재 선택된 언어코드
   const currentLang = i18n.language || "ko";
 
+  // 로고 클릭 시 무조건 메인
   function handleLogoClick() {
-    navigate(`/${currentLang}`);
+    window.location.href = "https://onepickgame.com";
   }
   function handleMyWorldcup() {
     navigate(`/${currentLang}/my-worldcups`);
@@ -485,7 +485,7 @@ export default function Header({
             i18n.changeLanguage(lng);
             if (onLangChange) onLangChange(lng);
             localStorage.setItem("onepickgame_lang", lng);
-            navigate(`/${lng}`); // *** CSR 내비게이트로 교체 ***
+            navigate(`/${lng}`);
           }}
           style={selectStyle}
         >

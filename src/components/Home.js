@@ -593,7 +593,7 @@ function Home({
                       <button
                         onClick={e => {
                           e.stopPropagation();
-                          console.log("삭제 클릭", cup.id); // 로그추가
+                          console.log("삭제 클릭", cup.id);
                           if (!window.confirm(t("delete_confirm") || "정말 삭제하시겠습니까?")) return;
                           if (onDelete) {
                             onDelete(cup.id);
