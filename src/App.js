@@ -36,22 +36,22 @@ import SuggestionsBoard from "./components/SuggestionsBoard";
 import NoticePage from "./components/NoticePage";
 import NoticeDetail from "./components/NoticeDetail";
 
-import DePage from "./pages/de/index";
-import EnPage from "./pages/en/index";
-import EsPage from "./pages/es/index";
-import FrPage from "./pages/fr/index";
-import HiPage from "./pages/hi/index";
-import IdPage from "./pages/id/index";
-import JaPage from "./pages/ja/index";
-import KoPage from "./pages/ko/index";
-import PtPage from "./pages/pt/index";
-import RuPage from "./pages/ru/index";
-import ViPage from "./pages/vi/index";
-import ZhPage from "./pages/zh/index";
-import ArPage from "./pages/ar/index";
-import BnPage from "./pages/bn/index";
-import ThPage from "./pages/th/index";
-import TrPage from "./pages/tr/index";
+import DePage from "./pages/de";
+import EnPage from "./pages/en";
+import EsPage from "./pages/es";
+import FrPage from "./pages/fr";
+import HiPage from "./pages/hi";
+import IdPage from "./pages/id";
+import JaPage from "./pages/ja";
+import KoPage from "./pages/ko";
+import PtPage from "./pages/pt";
+import RuPage from "./pages/ru";
+import ViPage from "./pages/vi";
+import ZhPage from "./pages/zh";
+import ArPage from "./pages/ar";
+import BnPage from "./pages/bn";
+import ThPage from "./pages/th";
+import TrPage from "./pages/tr";
 
 import { getWorldcupGames, deleteWorldcupGame, getWorldcupGame } from "./utils/supabaseWorldcupApi";
 import { supabase } from "./utils/supabaseClient";
@@ -93,24 +93,27 @@ function LanguageWrapper(props) {
     }
   }, [lang, i18n, navigate]);
 
+  // 모든 props를 Home에 확실히 넘기기!
+  const homeProps = { ...props };
+
   switch (lang) {
-    case "ko": return <KoPage {...props} />;
-    case "en": return <EnPage {...props} />;
-    case "ru": return <RuPage {...props} />;
-    case "ja": return <JaPage {...props} />;
-    case "zh": return <ZhPage {...props} />;
-    case "pt": return <PtPage {...props} />;
-    case "es": return <EsPage {...props} />;
-    case "fr": return <FrPage {...props} />;
-    case "id": return <IdPage {...props} />;
-    case "hi": return <HiPage {...props} />;
-    case "de": return <DePage {...props} />;
-    case "vi": return <ViPage {...props} />;
-    case "ar": return <ArPage {...props} />;
-    case "bn": return <BnPage {...props} />;
-    case "th": return <ThPage {...props} />;
-    case "tr": return <TrPage {...props} />;
-    default: return <Home {...props} />;
+    case "ko": return <KoPage {...homeProps} />;
+    case "en": return <EnPage {...homeProps} />;
+    case "ru": return <RuPage {...homeProps} />;
+    case "ja": return <JaPage {...homeProps} />;
+    case "zh": return <ZhPage {...homeProps} />;
+    case "pt": return <PtPage {...homeProps} />;
+    case "es": return <EsPage {...homeProps} />;
+    case "fr": return <FrPage {...homeProps} />;
+    case "id": return <IdPage {...homeProps} />;
+    case "hi": return <HiPage {...homeProps} />;
+    case "de": return <DePage {...homeProps} />;
+    case "vi": return <ViPage {...homeProps} />;
+    case "ar": return <ArPage {...homeProps} />;
+    case "bn": return <BnPage {...homeProps} />;
+    case "th": return <ThPage {...homeProps} />;
+    case "tr": return <TrPage {...homeProps} />;
+    default: return <Home {...homeProps} />;
   }
 }
 
@@ -254,6 +257,15 @@ function App() {
         nickname={nickname}
         isAdmin={isAdmin}
         showFixedWorldcups={false}
+        onDelete={async (id) => {
+          try {
+            await deleteWorldcupGame(id);
+            const freshList = await getWorldcupGames();
+            setWorldcupList(freshList);
+          } catch (e) {
+            alert((t("delete_failed") || "Delete failed!") + " " + (e.message || e));
+          }
+        }}
       />
     );
   }
@@ -280,6 +292,15 @@ function App() {
         nickname={nickname}
         isAdmin={isAdmin}
         showFixedWorldcups={false}
+        onDelete={async (id) => {
+          try {
+            await deleteWorldcupGame(id);
+            const freshList = await getWorldcupGames();
+            setWorldcupList(freshList);
+          } catch (e) {
+            alert((t("delete_failed") || "Delete failed!") + " " + (e.message || e));
+          }
+        }}
       />
     );
   }
@@ -358,9 +379,7 @@ function App() {
             navigate(getLangPath(i18n, `select-round/${cup.id}`));
           }}
           onMakeWorldcup={handleMakeWorldcup}
-          // ===== 여기 수정 =====
           onDelete={async (id) => {
-            console.log("onDelete 호출!", id); // 로그추가
             try {
               await deleteWorldcupGame(id);
               const freshList = await getWorldcupGames();
@@ -369,7 +388,6 @@ function App() {
               alert((t("delete_failed") || "Delete failed!") + " " + (e.message || e));
             }
           }}
-          // ===================
           user={user}
           nickname={nickname}
           isAdmin={isAdmin}
@@ -509,6 +527,7 @@ function App() {
       );
     }
 
+    // ✨ 언어별 pages index 파일로 HomeProps 모두 넘김!
     return (
       <>
         <div className="header-wrapper" style={{ margin: 0, padding: 0 }}>
@@ -534,6 +553,16 @@ function App() {
                 <LanguageWrapper
                   worldcupList={worldcupList}
                   fetchWorldcups={fetchWorldcups}
+                  onMakeWorldcup={handleMakeWorldcup}
+                  onDelete={async (id) => {
+                    try {
+                      await deleteWorldcupGame(id);
+                      const freshList = await getWorldcupGames();
+                      setWorldcupList(freshList);
+                    } catch (e) {
+                      alert((t("delete_failed") || "Delete failed!") + " " + (e.message || e));
+                    }
+                  }}
                   user={user}
                   nickname={nickname}
                   isAdmin={isAdmin}
