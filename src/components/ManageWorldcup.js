@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { deleteWorldcupGame } from "../utils/supabaseWorldcupApi"; // 위치 맞춰 import
+import { getWorldcupGames, deleteWorldcupGame } from "../utils/supabaseWorldcupApi"; // 위치 맞게 import
 
 // 파일 다운로드 유틸
 function downloadJson(filename, jsonObj) {
@@ -75,15 +75,19 @@ function ManageWorldcup({ user, isAdmin, worldcupList, setWorldcupList }) {
     navigator.clipboard.writeText(backupText).then(() => alert("클립보드에 복사됨!"));
   }
 
+  // ====== 여기 수정 ======
   async function handleDelete(cup) {
     if (!window.confirm("정말 삭제하시겠습니까?")) return;
     try {
       await deleteWorldcupGame(cup.id);
-      setWorldcupList((prev) => prev.filter((w) => w.id !== cup.id));
+      // 삭제 후 DB에서 최신 목록 새로 불러오기!
+      const freshList = await getWorldcupGames();
+      setWorldcupList(freshList);
     } catch (e) {
       alert("삭제 실패! 다시 시도해 주세요.");
     }
   }
+  // ======================
 
   return (
     <div

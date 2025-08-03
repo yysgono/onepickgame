@@ -33,10 +33,9 @@ import PrivacyPolicy from "./components/PrivacyPolicy";
 import TermsOfService from "./components/TermsOfService";
 import Footer from "./components/Footer";
 import SuggestionsBoard from "./components/SuggestionsBoard";
-import NoticePage from "./components/NoticePage";      // 📢 공지사항 페이지
-import NoticeDetail from "./components/NoticeDetail";  // 📢 개별 공지 상세
+import NoticePage from "./components/NoticePage";
+import NoticeDetail from "./components/NoticeDetail";
 
-// 언어별 홈 페이지
 import DePage from "./pages/de/index";
 import EnPage from "./pages/en/index";
 import EsPage from "./pages/es/index";
@@ -367,14 +366,18 @@ function App() {
             navigate(getLangPath(i18n, `select-round/${cup.id}`));
           }}
           onMakeWorldcup={handleMakeWorldcup}
+          // ===== 여기 수정 =====
           onDelete={async (id) => {
             try {
               await deleteWorldcupGame(id);
-              setWorldcupList((list) => list.filter((cup) => cup.id !== id));
+              // 삭제 후 항상 최신 목록 fetch
+              const freshList = await getWorldcupGames();
+              setWorldcupList(freshList);
             } catch (e) {
               alert((t("delete_failed") || "Delete failed!") + " " + (e.message || e));
             }
           }}
+          // ===================
           user={user}
           nickname={nickname}
           isAdmin={isAdmin}
