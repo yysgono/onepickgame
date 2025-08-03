@@ -43,9 +43,9 @@ export async function updateWorldcupGame(id, updates) {
   return true;
 }
 
-// 월드컵 삭제 (Storage 이미지도 자동 삭제!)
+// 월드컵 삭제 (Storage 이미지도 자동 삭제)
 export async function deleteWorldcupGame(id) {
-  // 1. 삭제 전, 월드컵 data(jsonb) 가져오기
+  // 1. 삭제 전, 월드컵 data(jsonb) 불러오기
   const { data: worldcup, error: fetchError } = await supabase
     .from("worldcups")
     .select("data")
@@ -54,30 +54,28 @@ export async function deleteWorldcupGame(id) {
 
   if (fetchError) throw fetchError;
 
-  // 2. 후보 이미지 경로 추출 (풀 URL, 상대경로 모두 지원)
+  // 2. 후보 이미지 경로 추출 (supabase storage url만)
   let imagePaths = [];
   if (worldcup && Array.isArray(worldcup.data)) {
     imagePaths = worldcup.data
       .map(c => {
-        if (typeof c.image !== "string" || !c.image) return null;
-        // base64 혹은 외부 링크는 스킵
-        if (c.image.startsWith("data:image")) return null;
-        if (/^https?:\/\//.test(c.image)) {
-          // supabase storage URL만 처리
-          // 예: https://xxx.supabase.co/storage/v1/object/public/candidates/...
-          const match = c.image.match(/\/storage\/v1\/object\/public\/(.+)$/);
-          if (match) return match[1]; // "candidates/..." 형태
-          return null;
-        }
-        // 상대경로로 이미 저장된 경우
-        return c.image;
+        if (!c?.image || typeof c.image !== "string") return null;
+        if (c.image.startsWith("data:image")) return null; // base64는 삭제 X
+        // supabase storage url 경로 추출
+        const match = c.image.match(/\/storage\/v1\/object\/public\/(.+)$/);
+        if (match) return match[1]; // "candidates/..." 형태
+        // 상대경로로 저장된 경우 (candidates/...) 도 삭제 지원
+        if (c.image.startsWith("candidates/")) return c.image;
+        return null;
       })
       .filter(Boolean);
   }
 
   // 3. Storage에서 이미지 일괄 삭제
   if (imagePaths.length > 0) {
-    await supabase.storage.from("candidates").remove(imagePaths);
+    // unique(중복 제거)
+    const uniqPaths = [...new Set(imagePaths)];
+    await supabase.storage.from("candidates").remove(uniqPaths);
   }
 
   // 4. DB에서 월드컵 row 삭제
