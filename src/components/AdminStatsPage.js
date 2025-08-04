@@ -2,17 +2,55 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../utils/supabaseClient";
 
+// 방문 기록 (하루 1회만 기록)
+async function logVisit() {
+  let anon_id = localStorage.getItem("anon_id");
+  if (!anon_id) {
+    anon_id = Math.random().toString(36).substr(2, 12);
+    localStorage.setItem("anon_id", anon_id);
+  }
+  const today = new Date().toISOString().slice(0, 10);
+  if (localStorage.getItem("visit_logged_" + today)) return;
+  await supabase.from("visit_logs").insert([
+    {
+      anon_id,
+      user_agent: window.navigator.userAgent,
+    },
+  ]);
+  localStorage.setItem("visit_logged_" + today, "1");
+}
+
+// 오늘 방문자 수 (유니크)
+async function getTodayVisitors() {
+  const { data, error } = await supabase.rpc("get_today_visitors");
+  if (error || !data) return 0;
+  return data[0] || 0;
+}
+
+// 최근 7일 방문자 수 (유니크)
+async function getRecent7Visitors() {
+  const { data, error } = await supabase.rpc("get_recent7_visitors");
+  if (error || !data) return [];
+  // Supabase 함수에서 visit_date, unique_visitors로 옴
+  return data.map(row => ({
+    date: row.visit_date,
+    count: row.unique_visitors,
+  }));
+}
+
 export default function AdminStatsPage() {
   const navigate = useNavigate();
 
   const [worldcupCount, setWorldcupCount] = useState(0);
   const [recentComments, setRecentComments] = useState([]);
-  const [visitLogs, setVisitLogs] = useState({});
   const [todayUsers, setTodayUsers] = useState(0);
   const [recent7, setRecent7] = useState([]);
   const [deletingCommentId, setDeletingCommentId] = useState(null);
 
   useEffect(() => {
+    // 방문자 기록 (최초 1회)
+    logVisit();
+
     async function fetchStats() {
       // 월드컵 수 가져오기
       const { data: wcData, error: wcError, count: wcCount } = await supabase
@@ -43,29 +81,9 @@ export default function AdminStatsPage() {
         setRecentComments([]);
       }
 
-      // 방문자 로그
-      try {
-        const logs = JSON.parse(localStorage.getItem("visitLogs") || "{}");
-        setVisitLogs(logs);
-
-        const today = new Date().toISOString().slice(0, 10);
-        setTodayUsers(logs[today] ? logs[today].length : 0);
-
-        const recentKeys = Object.keys(logs)
-          .sort()
-          .slice(-7);
-
-        setRecent7(
-          recentKeys.map((date) => ({
-            date,
-            count: logs[date].length,
-          }))
-        );
-      } catch {
-        setVisitLogs({});
-        setTodayUsers(0);
-        setRecent7([]);
-      }
+      // Supabase 함수로 오늘 방문자수/최근7일 방문자수 불러오기
+      setTodayUsers(await getTodayVisitors());
+      setRecent7(await getRecent7Visitors());
     }
 
     fetchStats();
