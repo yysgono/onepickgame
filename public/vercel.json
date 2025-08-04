@@ -1,0 +1,19 @@
+{
+  "redirects": [
+    {
+      "source": "http://onepickgame.com/:path*",
+      "destination": "https://onepickgame.com/:path*",
+      "permanent": true
+    },
+    {
+      "source": "http://www.onepickgame.com/:path*",
+      "destination": "https://onepickgame.com/:path*",
+      "permanent": true
+    },
+    {
+      "source": "https://www.onepickgame.com/:path*",
+      "destination": "https://onepickgame.com/:path*",
+      "permanent": true
+    }
+  ]
+}
