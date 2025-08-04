@@ -244,6 +244,17 @@ export default function AdminStatsPage() {
                 }}
                 title={r.count}
               />
+              {/* 숫자 표시 */}
+              <span
+                style={{
+                  fontSize: 13,
+                  color: "#222",
+                  fontWeight: 700,
+                  marginBottom: 2,
+                }}
+              >
+                {r.count}
+              </span>
               <span
                 style={{
                   fontSize: 12,

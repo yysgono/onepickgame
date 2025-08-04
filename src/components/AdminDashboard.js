@@ -3,7 +3,6 @@ import { supabase } from "../utils/supabaseClient";
 
 // winner_stats에서 최다 우승 후보 이미지 fetch
 async function getMostWinnerThumbnail(cup_id) {
-  // win_count 가장 많은 후보 1명
   const { data, error } = await supabase
     .from("winner_stats")
     .select("candidate_id, name, image, win_count")
@@ -23,6 +22,14 @@ async function getAllWorldcups() {
     .order("created_at", { ascending: false });
   if (error) return [];
   return data;
+}
+
+// 댓글 총 갯수
+async function getTotalComments() {
+  const { count, error } = await supabase
+    .from("comments")
+    .select("id", { count: "exact", head: true });
+  return error ? 0 : count;
 }
 
 // 고정 월드컵(id만)
@@ -58,33 +65,30 @@ export default function AdminDashboard() {
   const [totalWorldcups, setTotalWorldcups] = useState(0);
   const [totalComments, setTotalComments] = useState(0);
   const [allWorldcups, setAllWorldcups] = useState([]);
-  const [fixedList, setFixedList] = useState([]); // [{id, title, thumb}...]
+  const [fixedList, setFixedList] = useState([]);
   const [addId, setAddId] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // --- 전체 월드컵/댓글 집계 ---
+  // 전체 월드컵/댓글 집계
   useEffect(() => {
     (async () => {
       const worldcups = await getAllWorldcups();
       setAllWorldcups(worldcups);
       setTotalWorldcups(worldcups.length);
 
-      // 댓글 총 갯수(예시, supabase라면 따로 쿼리 필요)
-      // 임시로 0으로
-      setTotalComments(0);
+      // 전체 댓글 실제 개수
+      setTotalComments(await getTotalComments());
     })();
   }, []);
 
-  // --- 고정 월드컵 목록 + 썸네일 fetch ---
+  // 고정 월드컵 목록 + 썸네일 fetch
   async function fetchFixedList() {
     setLoading(true);
     const fixedIds = await getFixedCupIds();
-    // id로 worldcup 정보 찾고, 썸네일(최다우승자) 비동기 fetch
     const cups = [];
     for (const id of fixedIds) {
       const cup = allWorldcups.find(wc => String(wc.id) === String(id));
       if (cup) {
-        // 최다우승자 썸네일 가져오기
         const thumb = await getMostWinnerThumbnail(id) || (cup.data?.[0]?.image ?? "/default-thumb.png");
         cups.push({ id: cup.id, title: cup.title, thumb });
       }
@@ -93,13 +97,13 @@ export default function AdminDashboard() {
     setLoading(false);
   }
 
-  // --- 고정 월드컵 목록 동기화 ---
+  // 고정 월드컵 목록 동기화
   useEffect(() => {
     if (allWorldcups.length > 0) fetchFixedList();
     // eslint-disable-next-line
   }, [allWorldcups]);
 
-  // --- 추가 ---
+  // 추가
   async function handleAddFixedWorldcup(worldcupId) {
     if (fixedList.some(wc => String(wc.id) === String(worldcupId))) {
       alert("이미 추가된 월드컵입니다.");
@@ -112,12 +116,13 @@ export default function AdminDashboard() {
     }
     try {
       await addFixedCupId(found.id);
-      await fetchFixedList(); // 목록 다시 불러오기
+      await fetchFixedList();
     } catch (e) {
       alert("추가 실패: " + e.message);
     }
   }
-  // --- 삭제 ---
+
+  // 삭제
   async function handleRemoveFixedWorldcup(worldcupId) {
     if (!window.confirm("정말 삭제할까요?")) return;
     try {
@@ -127,7 +132,8 @@ export default function AdminDashboard() {
       alert("삭제 실패: " + e.message);
     }
   }
-  // --- 수동 입력 폼 ---
+
+  // 수동 입력 폼
   function handleAddClick(e) {
     e.preventDefault();
     if (!addId.trim()) return;
