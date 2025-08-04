@@ -25,6 +25,8 @@ export default function JaPage(props) {
         <meta property="og:description" content="理想のタイプワールドカップが作れるOne Pick Game。色々なテーマでワールドカップを作成して、世界中のユーザーと楽しもう！" />
         <meta property="og:image" content="https://onepickgame.com/ogimg.png" />
         <meta property="og:url" content="https://onepickgame.com/ja" />
+        {/* ✅ canonical 태그 추가! */}
+        <link rel="canonical" href="https://onepickgame.com/ja/" />
       </Helmet>
       <Home {...props} />
     </>

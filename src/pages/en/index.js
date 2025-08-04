@@ -25,6 +25,8 @@ export default function EnPage(props) {
         <meta property="og:description" content="Bracket game site One Pick Game. Create your own tournament bracket, enjoy fun matchups, and play with users around the world!" />
         <meta property="og:image" content="https://onepickgame.com/ogimg.png" />
         <meta property="og:url" content="https://onepickgame.com/en" />
+        {/* ✅ canonical 태그 추가! */}
+        <link rel="canonical" href="https://onepickgame.com/en/" />
       </Helmet>
       <Home {...props} />
     </>

@@ -25,6 +25,8 @@ export default function ZhPage(props) {
         <meta property="og:description" content="理想型世界杯小游戏网站One Pick Game。创建自己的淘汰赛，与全球用户一起参与有趣的对决！" />
         <meta property="og:image" content="https://onepickgame.com/ogimg.png" />
         <meta property="og:url" content="https://onepickgame.com/zh" />
+        {/* ✅ canonical 태그 추가! */}
+        <link rel="canonical" href="https://onepickgame.com/zh/" />
       </Helmet>
       <Home {...props} />
     </>

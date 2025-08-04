@@ -25,6 +25,8 @@ export default function FrPage(props) {
         <meta property="og:description" content="One Pick Game est un site de jeux de brackets. Créez votre propre tournoi à élimination directe et jouez avec des utilisateurs du monde entier !" />
         <meta property="og:image" content="https://onepickgame.com/ogimg.png" />
         <meta property="og:url" content="https://onepickgame.com/fr" />
+        {/* ✅ canonical 태그 추가! */}
+        <link rel="canonical" href="https://onepickgame.com/fr/" />
       </Helmet>
       <Home {...props} />
     </>

@@ -25,6 +25,8 @@ export default function ThPage(props) {
         <meta property="og:description" content="เว็บไซต์เกมจัดสายการแข่งขัน One Pick Game สร้างทัวร์นาเมนต์ของคุณเอง สนุกกับแมตช์สุดมันส์ และเล่นกับผู้ใช้งานทั่วโลก!" />
         <meta property="og:image" content="https://onepickgame.com/ogimg.png" />
         <meta property="og:url" content="https://onepickgame.com/th" />
+        {/* ✅ canonical 태그 추가! */}
+        <link rel="canonical" href="https://onepickgame.com/th/" />
       </Helmet>
       <Home {...props} />
     </>

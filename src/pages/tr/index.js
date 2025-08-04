@@ -25,6 +25,8 @@ export default function TrPage(props) {
         <meta property="og:description" content="Turnuva oyun sitesi One Pick Game. Kendi turnuva tablonuzu oluşturun, eğlenceli eşleşmelerin tadını çıkarın ve dünyanın her yerinden kullanıcılarla oynayın!" />
         <meta property="og:image" content="https://onepickgame.com/ogimg.png" />
         <meta property="og:url" content="https://onepickgame.com/tr" />
+        {/* ✅ canonical 태그 추가! */}
+        <link rel="canonical" href="https://onepickgame.com/tr/" />
       </Helmet>
       <Home {...props} />
     </>

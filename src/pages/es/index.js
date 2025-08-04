@@ -24,6 +24,7 @@ export default function EsPage(props) {
         <meta property="og:title" content="One Pick Game - Sitio de Juegos de Brackets" />
         <meta property="og:description" content="One Pick Game es un sitio de juegos de brackets. Crea tu propio torneo de eliminatorias y compite con usuarios de todo el mundo." />
         <meta property="og:image" content="https://onepickgame.com/ogimg.png" />
+                <meta property="og:url" content="https://onepickgame.com/es" />
         <meta property="og:url" content="https://onepickgame.com/es" />
       </Helmet>
       <Home {...props} />
