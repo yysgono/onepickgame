@@ -1,6 +1,5 @@
 import React, { useState, useMemo } from "react";
 import { useTranslation, Trans } from "react-i18next";
-import MediaRenderer from "./MediaRenderer";
 
 function ResurrectionPage({
   eliminated = [],
@@ -86,7 +85,7 @@ function ResurrectionPage({
         fontFamily: "Noto Sans, Arial, sans-serif",
       }}
     >
-      {/* Buttons above */}
+      {/* Buttons */}
       <div
         style={{
           width: "100%",
@@ -247,30 +246,18 @@ function ResurrectionPage({
                       : "2.5px solid #182345",
                     borderRadius: 14,
                     cursor: "pointer",
-                    padding: 12,
+                    minHeight: 70,
+                    minWidth: 0,
                     display: "flex",
+                    justifyContent: "center",   // 중앙정렬
+                    alignItems: "center",        // 중앙정렬
                     flexDirection: "column",
-                    alignItems: "center",
                     transition: "all 0.14s",
                     boxShadow: selected
                       ? "0 4px 18px #1976ed66"
                       : "0 1px 8px #1976ed33",
-                    minHeight: 128,
-                    minWidth: 0,
                   }}
                 >
-                  <MediaRenderer
-                    url={c.image}
-                    alt={c.name}
-                    style={{
-                      width: 62,
-                      height: 62,
-                      borderRadius: 8,
-                      marginBottom: 9,
-                      objectFit: "cover",
-                      background: "#202030",
-                    }}
-                  />
                   <span
                     style={{
                       fontWeight: 900,
@@ -364,30 +351,18 @@ function ResurrectionPage({
                       : "2.5px solid #182345",
                     borderRadius: 14,
                     cursor: "pointer",
-                    padding: 12,
+                    minHeight: 70,
+                    minWidth: 0,
                     display: "flex",
+                    justifyContent: "center",   // 중앙정렬
+                    alignItems: "center",        // 중앙정렬
                     flexDirection: "column",
-                    alignItems: "center",
                     transition: "all 0.14s",
                     boxShadow: selected
                       ? "0 4px 18px #1976ed66"
                       : "0 1px 8px #1976ed33",
-                    minHeight: 128,
-                    minWidth: 0,
                   }}
                 >
-                  <MediaRenderer
-                    url={c.image}
-                    alt={c.name}
-                    style={{
-                      width: 62,
-                      height: 62,
-                      borderRadius: 8,
-                      marginBottom: 9,
-                      objectFit: "cover",
-                      background: "#202030",
-                    }}
-                  />
                   <span
                     style={{
                       fontWeight: 900,
