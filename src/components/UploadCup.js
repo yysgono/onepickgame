@@ -1,6 +1,7 @@
 import React, { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { mainButtonStyle } from "../styles/common";
+import imageCompression from "browser-image-compression"; // ★ 추가
 
 function UploadCup({ onChange }) {
   const { t } = useTranslation();
@@ -8,17 +9,16 @@ function UploadCup({ onChange }) {
   const [preview, setPreview] = useState(null);
   const isMobile = typeof window !== "undefined" && window.innerWidth <= 700;
 
-  function handleFile(e) {
+  // ★ 이미지 업로드(webp 변환)
+  async function handleFile(e) {
     const file = e.target.files[0];
     if (!file) return;
 
-    // Image 6MB limit
     if (file.size > 6 * 1024 * 1024) {
       alert(t("only_images_under_6mb") || "Only images under 6MB can be uploaded.");
       return;
     }
 
-    // Extension check (jpg, jpeg, png only)
     if (
       !/\.(jpe?g|png)$/i.test(file.name) ||
       !["image/jpeg", "image/png"].includes(file.type)
@@ -27,12 +27,24 @@ function UploadCup({ onChange }) {
       return;
     }
 
+    let finalFile = file;
+    try {
+      finalFile = await imageCompression(file, {
+        maxSizeMB: 1,
+        maxWidthOrHeight: 1200,
+        useWebWorker: true,
+        fileType: "image/webp",
+      });
+    } catch (e) {
+      finalFile = file;
+    }
+
     const reader = new FileReader();
     reader.onload = ev => {
       setPreview(ev.target.result);
       onChange(ev.target.result);
     };
-    reader.readAsDataURL(file);
+    reader.readAsDataURL(finalFile);
   }
 
   return (

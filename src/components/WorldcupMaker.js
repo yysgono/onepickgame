@@ -8,6 +8,7 @@ import { uploadCandidateImage } from "../utils/supabaseImageUpload";
 import { supabase } from "../utils/supabaseClient";
 import useBanCheck from "../hooks/useBanCheck";
 import { useTranslation } from "react-i18next";
+import imageCompression from "browser-image-compression"; // ★ 추가
 
 const DEFAULT_THUMB_URL = "/default-thumb.png";
 const MAX_UPLOAD = 50;
@@ -115,7 +116,7 @@ function WorldcupMaker({ onCreate, onCancel }) {
     setCandidates((cands) => cands.filter((_, i) => i !== idx));
   }
 
-  // File size limits: image 6MB, video 20MB
+  // ★★★ 파일 업로드: 이미지면 webp로 자동 변환/압축
   async function handleFiles(fileList) {
     if (fileList.length > MAX_UPLOAD) {
       alert(
@@ -129,25 +130,22 @@ function WorldcupMaker({ onCreate, onCancel }) {
     );
     if (files.length === 0) return;
 
-    for (const file of files) {
+    // 이미지 자동 변환 및 fileCandidates 생성
+    const fileCandidates = await Promise.all(files.map(async (file) => {
       const isImage = /\.(jpe?g|png|gif|svg|webp|avif)$/i.test(file.name);
-      const isVideo = /\.(mp4|webm|mov)$/i.test(file.name);
-
-      if (isImage && file.size > 6 * 1024 * 1024) {
-        alert(t("image_file_size_limit") || "Only images up to 6MB can be uploaded.");
-        return;
+      let compressedFile = file;
+      if (isImage) {
+        try {
+          compressedFile = await imageCompression(file, {
+            maxSizeMB: 1,
+            maxWidthOrHeight: 1200,
+            useWebWorker: true,
+            fileType: "image/webp",
+          });
+        } catch (e) {
+          compressedFile = file;
+        }
       }
-      if (isVideo && file.size > 20 * 1024 * 1024) {
-        alert(t("video_file_size_limit") || "Only videos up to 20MB can be uploaded.");
-        return;
-      }
-      if (!isImage && !isVideo) {
-        alert(t("unsupported_file_type") || "Unsupported file type.");
-        return;
-      }
-    }
-
-    const fileCandidates = files.map((file) => {
       const cleanName = file.name
         .replace(/\.[^/.]+$/, "")
         .replace(/[_\-]+/g, " ")
@@ -155,10 +153,10 @@ function WorldcupMaker({ onCreate, onCancel }) {
       return {
         id: uuidv4(),
         name: cleanName,
-        image: URL.createObjectURL(file),
-        file: file,
+        image: URL.createObjectURL(compressedFile),
+        file: compressedFile,
       };
-    });
+    }));
 
     setCandidates((cands) => {
       const oldCandidates = [...cands];

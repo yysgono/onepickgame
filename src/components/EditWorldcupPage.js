@@ -5,6 +5,7 @@ import { updateWorldcupGame } from "../utils/supabaseWorldcupApi";
 import { uploadCandidateImage } from "../utils/supabaseImageUpload";
 import { supabase } from "../utils/supabaseClient";
 import { useTranslation } from "react-i18next";
+import imageCompression from "browser-image-compression"; // ★ 추가
 
 const COLORS = {
   main: "#1976ed",
@@ -97,75 +98,87 @@ function EditWorldcupPage({ worldcupList, fetchWorldcups, cupId, isAdmin }) {
     ));
   }
 
-  // File size check (Image: 6MB, Video: 20MB)
-  function handleFileChange(idx, e) {
+  // ★★★ 이미지 webp 변환 포함 업로드
+  async function handleFileChange(idx, e) {
     const file = e.target.files[0];
     if (!file) return;
     const isImage = /\.(jpe?g|png|gif|svg|webp|avif)$/i.test(file.name);
     const isVideo = /\.(mp4|webm|mov)$/i.test(file.name);
 
-    if (isImage) {
-      if (file.size > 6 * 1024 * 1024) {
-        alert(t("only_images_under_6mb") || "Only images up to 6MB can be uploaded.");
-        return;
-      }
-    } else if (isVideo) {
-      if (file.size > 20 * 1024 * 1024) {
-        alert(t("only_videos_under_20mb") || "Only videos up to 20MB can be uploaded.");
-        return;
-      }
-    } else {
+    if (isImage && file.size > 6 * 1024 * 1024) {
+      alert(t("only_images_under_6mb") || "Only images up to 6MB can be uploaded.");
+      return;
+    }
+    if (isVideo && file.size > 20 * 1024 * 1024) {
+      alert(t("only_videos_under_20mb") || "Only videos up to 20MB can be uploaded.");
+      return;
+    }
+    if (!isImage && !isVideo) {
       alert(t("unsupported_file_type_detail") || "Unsupported file type. (Images: JPG, PNG, GIF, SVG, WEBP, AVIF / Videos: MP4, WEBM, MOV)");
       return;
+    }
+
+    let finalFile = file;
+    if (isImage) {
+      try {
+        finalFile = await imageCompression(file, {
+          maxSizeMB: 1,
+          maxWidthOrHeight: 1200,
+          useWebWorker: true,
+          fileType: "image/webp",
+        });
+      } catch (e) {
+        finalFile = file;
+      }
     }
     const reader = new FileReader();
     reader.onload = ev => {
       handleCandidateChange(idx, "image", ev.target.result);
     };
-    reader.readAsDataURL(file);
+    reader.readAsDataURL(finalFile);
   }
 
+  // ★★★ 파일 여러 개 드래그앤드롭 webp 변환 포함
   async function handleFiles(fileList) {
     const files = Array.from(fileList).filter(file =>
       /\.(jpe?g|png|gif|svg|webp|avif|mp4|webm|mov)$/i.test(file.name)
     );
     if (files.length === 0) return;
 
-    for (const file of files) {
-      const isImage = /\.(jpe?g|png|gif|svg|webp|avif)$/i.test(file.name);
-      const isVideo = /\.(mp4|webm|mov)$/i.test(file.name);
-
-      if (isImage && file.size > 6 * 1024 * 1024) {
-        alert(t("only_images_under_6mb") || "Only images up to 6MB can be uploaded.");
-        return;
-      }
-      if (isVideo && file.size > 20 * 1024 * 1024) {
-        alert(t("only_videos_under_20mb") || "Only videos up to 20MB can be uploaded.");
-        return;
-      }
-      if (!isImage && !isVideo) {
-        alert(t("unsupported_file_type") || "Unsupported file type.");
-        return;
-      }
-    }
-
     const fileCandidates = await Promise.all(
-      files.map(file => new Promise(res => {
-        const reader = new FileReader();
-        reader.onload = e => {
-          const cleanName = file.name
-            .replace(/\.[^/.]+$/, "")
-            .replace(/[_\-]+/g, " ")
-            .trim();
-          res({
-            id: uuidv4(),
-            name: cleanName,
-            image: e.target.result,
-          });
-        };
-        reader.readAsDataURL(file);
-      }))
+      files.map(async (file) => {
+        const isImage = /\.(jpe?g|png|gif|svg|webp|avif)$/i.test(file.name);
+        let compressedFile = file;
+        if (isImage) {
+          try {
+            compressedFile = await imageCompression(file, {
+              maxSizeMB: 1,
+              maxWidthOrHeight: 1200,
+              useWebWorker: true,
+              fileType: "image/webp",
+            });
+          } catch (e) {
+            compressedFile = file;
+          }
+        }
+        return new Promise((res) => {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            const cleanName = file.name
+              .replace(/\.[^/.]+$/, "")
+              .replace(/[_\-]+/g, " ")
+              .trim();
+            res({
+              id: uuidv4(),
+              name: cleanName,
+              image: e.target.result,
+            });
+          };
+          reader.readAsDataURL(compressedFile);
+        });
+      })
     );
+
     setData(d => {
       const updated = [...d];
       let idx = 0;
@@ -215,14 +228,8 @@ function EditWorldcupPage({ worldcupList, fetchWorldcups, cupId, isAdmin }) {
           let imageUrl = item.image;
           if (imageUrl && imageUrl.startsWith("data:image")) {
             const file = await fetch(imageUrl).then(r => r.blob());
-            let ext = "png";
-            if (imageUrl.startsWith("data:image/gif")) ext = "gif";
-            else if (imageUrl.startsWith("data:image/svg")) ext = "svg";
-            else if (imageUrl.startsWith("data:image/jpeg")) ext = "jpg";
-            else if (imageUrl.startsWith("data:image/jpg")) ext = "jpg";
-            else if (imageUrl.startsWith("data:image/png")) ext = "png";
-            else if (imageUrl.startsWith("data:image/webp")) ext = "webp";
-            else if (imageUrl.startsWith("data:image/avif")) ext = "avif";
+            // webp 확장자로 저장 (압축시 타입이 webp)
+            let ext = "webp";
             imageUrl = await uploadCandidateImage(
               new File([file], `${item.name}.${ext}`, { type: file.type }),
               nickname || user.id

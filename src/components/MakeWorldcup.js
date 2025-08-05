@@ -4,6 +4,7 @@ import { v4 as uuidv4 } from "uuid";
 import { uploadCandidateImage } from "../utils/supabaseImageUpload";
 import { addWorldcupGame } from "../utils/supabaseGameApi";
 import { supabase } from "../utils/supabaseClient";
+import imageCompression from "browser-image-compression"; // ★ 추가
 
 // Youtube thumbnail helper
 function getYoutubeThumb(url) {
@@ -33,7 +34,6 @@ export default function MakeWorldcup({ worldcupList, setWorldcupList, onClose })
   const [loading, setLoading] = useState(false);
   const fileInputRefs = useRef([]);
 
-  // Keep file refs in sync with candidates array
   useEffect(() => {
     fileInputRefs.current = fileInputRefs.current.slice(0, candidates.length);
   }, [candidates.length]);
@@ -50,8 +50,8 @@ export default function MakeWorldcup({ worldcupList, setWorldcupList, onClose })
     );
   }
 
-  // Image 6MB, Video 20MB limit
-  function handleFileInput(idx, e) {
+  // ★★★ 이미지 자동 webp 변환/압축 적용!
+  async function handleFileInput(idx, e) {
     const file = e.target.files[0];
     if (!file) return;
 
@@ -70,9 +70,24 @@ export default function MakeWorldcup({ worldcupList, setWorldcupList, onClose })
       alert(t("unsupported_file_type") || "Unsupported file type.");
       return;
     }
+
+    let finalFile = file;
+    if (isImage) {
+      try {
+        finalFile = await imageCompression(file, {
+          maxSizeMB: 1,
+          maxWidthOrHeight: 1200,
+          useWebWorker: true,
+          fileType: "image/webp",
+        });
+      } catch (e) {
+        finalFile = file;
+      }
+    }
+
     const reader = new FileReader();
     reader.onload = ev => updateCandidate(idx, "image", ev.target.result);
-    reader.readAsDataURL(file);
+    reader.readAsDataURL(finalFile);
   }
 
   async function handleSubmit(e) {
@@ -90,13 +105,12 @@ export default function MakeWorldcup({ worldcupList, setWorldcupList, onClose })
       const { data: { user } } = await supabase.auth.getUser();
       if (!user?.id) throw new Error("No login info");
 
-      // base64 or blob image → upload and get url
       const updatedCandidates = await Promise.all(
         candidates.map(async c => {
           let imageUrl = c.image?.trim();
           if (imageUrl && (imageUrl.startsWith("data:") || imageUrl.startsWith("blob:"))) {
             const file = await fetch(imageUrl).then(r => r.blob());
-            const ext = getFileExtension(imageUrl) || "png";
+            const ext = getFileExtension(imageUrl) || "webp"; // webp로 저장!
             const url = await uploadCandidateImage(
               new File([file], `${c.name}.${ext}`, { type: file.type }),
               user.id

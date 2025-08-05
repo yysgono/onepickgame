@@ -1,6 +1,7 @@
 import React, { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { mainButtonStyle } from "../styles/common";
+import imageCompression from "browser-image-compression"; // ★ 추가
 
 function UploadCup({ onChange }) {
   const { t } = useTranslation();
@@ -8,23 +9,34 @@ function UploadCup({ onChange }) {
   const [preview, setPreview] = useState(null);
   const isMobile = typeof window !== "undefined" && window.innerWidth <= 700;
 
-  function handleFile(e) {
+  // ★ 이미지 업로드(webp 변환)
+  async function handleFile(e) {
     const file = e.target.files[0];
     if (!file) return;
 
-    // 이미지 6MB 제한
     if (file.size > 6 * 1024 * 1024) {
-      alert("이미지는 6MB 이하만 업로드할 수 있습니다.");
+      alert(t("only_images_under_6mb") || "Only images under 6MB can be uploaded.");
       return;
     }
 
-    // 확장자 체크 (jpg, jpeg, png만)
     if (
       !/\.(jpe?g|png)$/i.test(file.name) ||
       !["image/jpeg", "image/png"].includes(file.type)
     ) {
-      alert(t("only_jpg_png") || "JPG, PNG 파일만 업로드할 수 있습니다.");
+      alert(t("only_jpg_png") || "Only JPG, PNG files can be uploaded.");
       return;
+    }
+
+    let finalFile = file;
+    try {
+      finalFile = await imageCompression(file, {
+        maxSizeMB: 1,
+        maxWidthOrHeight: 1200,
+        useWebWorker: true,
+        fileType: "image/webp",
+      });
+    } catch (e) {
+      finalFile = file;
     }
 
     const reader = new FileReader();
@@ -32,7 +44,7 @@ function UploadCup({ onChange }) {
       setPreview(ev.target.result);
       onChange(ev.target.result);
     };
-    reader.readAsDataURL(file);
+    reader.readAsDataURL(finalFile);
   }
 
   return (
@@ -54,15 +66,15 @@ function UploadCup({ onChange }) {
           padding: isMobile ? "8px 17px" : "9px 25px"
         }}
       >
-        {t("image_upload") || "이미지 업로드"}
+        {t("image_upload") || "Upload Image"}
       </button>
       <span style={{ color: "#1976ed", fontSize: 14, marginLeft: 10 }}>
-        (6MB 이하만 가능)
+        ({t("image_size_limit_6mb") || "Max 6MB"})
       </span>
       {preview && (
         <img
           src={preview}
-          alt={t("preview") || "미리보기"}
+          alt={t("preview") || "Preview"}
           style={{
             width: 50,
             height: 50,
