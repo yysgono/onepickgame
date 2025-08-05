@@ -1,3 +1,5 @@
+// src/utils/supabaseImageUpload.js
+
 import { supabase } from "./supabaseClient";
 
 // 특수문자, 공백 등 안전하게 변환
@@ -15,10 +17,16 @@ export async function uploadCandidateImage(file, userId = "guest") {
   const safeUserId = safeString(userId); // 폴더 이름 보호
   const safeName = safeString(file.name); // 파일명 보호
   const filePath = `candidates/${safeUserId}/${Date.now()}-${safeName}`; // 시간 중복 방지
+
+  // contentType 지정! (file.type은 변환 결과에 따라 "image/webp" 등으로 자동 부여됨)
   const { data, error } = await supabase
     .storage
     .from("candidates")
-    .upload(filePath, file);
+    .upload(filePath, file, {
+      cacheControl: "3600",
+      upsert: false,
+      contentType: file.type || undefined,  // ★ 여기가 포인트
+    });
 
   if (error) {
     console.error("이미지 업로드 실패:", error);
@@ -26,10 +34,15 @@ export async function uploadCandidateImage(file, userId = "guest") {
   }
 
   // 공개 URL 반환 (실제 파일 접근용)
-  const { data: urlData } = supabase
+  const { data: urlData, error: urlError } = supabase
     .storage
     .from("candidates")
     .getPublicUrl(filePath);
+
+  if (urlError) {
+    console.error("공개 URL 생성 실패:", urlError);
+    throw urlError;
+  }
 
   return urlData.publicUrl;
 }
