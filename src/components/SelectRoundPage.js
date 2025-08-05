@@ -46,14 +46,14 @@ export default function SelectRoundPage({ cup, maxRound, candidates, onSelect, o
     lang = m ? m[1] : "ko";
   }
 
-  const maxPossibleRound = Math.min(candidates.length, 1024);
+  const maxPossibleRound = Math.min(candidates.length, 10000);
   let possibleRounds = [];
   for (let n = 1; Math.pow(2, n) <= maxPossibleRound; n++) {
     possibleRounds.push(Math.pow(2, n));
   }
   if (
     candidates.length >= 2 &&
-    candidates.length <= 1024 &&
+    candidates.length <= 10000 &&
     !possibleRounds.includes(candidates.length)
   ) {
     possibleRounds.push(candidates.length);
