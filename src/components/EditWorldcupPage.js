@@ -76,8 +76,7 @@ function EditWorldcupPage({ worldcupList, fetchWorldcups, cupId, isAdmin }) {
 
   if (!user) return <div style={{ padding: 80 }}>{t("need_login")}</div>;
   if (!originalCup) return <div style={{ padding: 80 }}>{t("not_found")}</div>;
-  
-  // 관리자 권한 포함 수정 가능 여부 판단
+
   if (
     !isAdmin &&
     !(
@@ -97,16 +96,26 @@ function EditWorldcupPage({ worldcupList, fetchWorldcups, cupId, isAdmin }) {
       i === idx ? { ...item, [key]: value } : item
     ));
   }
+
+  // File size check (Image: 6MB, Video: 20MB)
   function handleFileChange(idx, e) {
     const file = e.target.files[0];
     if (!file) return;
-    if (file.size > 5 * 1024 * 1024) {
-      alert(t("image_file_size_limit"));
-      return;
-    }
-    const allowed = /\.(jpe?g|png|gif|svg|webp|avif)$/i;
-    if (!allowed.test(file.name)) {
-      alert(t("only_image_file"));
+    const isImage = /\.(jpe?g|png|gif|svg|webp|avif)$/i.test(file.name);
+    const isVideo = /\.(mp4|webm|mov)$/i.test(file.name);
+
+    if (isImage) {
+      if (file.size > 6 * 1024 * 1024) {
+        alert(t("only_images_under_6mb") || "Only images up to 6MB can be uploaded.");
+        return;
+      }
+    } else if (isVideo) {
+      if (file.size > 20 * 1024 * 1024) {
+        alert(t("only_videos_under_20mb") || "Only videos up to 20MB can be uploaded.");
+        return;
+      }
+    } else {
+      alert(t("unsupported_file_type_detail") || "Unsupported file type. (Images: JPG, PNG, GIF, SVG, WEBP, AVIF / Videos: MP4, WEBM, MOV)");
       return;
     }
     const reader = new FileReader();
@@ -115,11 +124,30 @@ function EditWorldcupPage({ worldcupList, fetchWorldcups, cupId, isAdmin }) {
     };
     reader.readAsDataURL(file);
   }
+
   async function handleFiles(fileList) {
     const files = Array.from(fileList).filter(file =>
-      /\.(jpe?g|png|gif|svg|webp|avif)$/i.test(file.name)
+      /\.(jpe?g|png|gif|svg|webp|avif|mp4|webm|mov)$/i.test(file.name)
     );
     if (files.length === 0) return;
+
+    for (const file of files) {
+      const isImage = /\.(jpe?g|png|gif|svg|webp|avif)$/i.test(file.name);
+      const isVideo = /\.(mp4|webm|mov)$/i.test(file.name);
+
+      if (isImage && file.size > 6 * 1024 * 1024) {
+        alert(t("only_images_under_6mb") || "Only images up to 6MB can be uploaded.");
+        return;
+      }
+      if (isVideo && file.size > 20 * 1024 * 1024) {
+        alert(t("only_videos_under_20mb") || "Only videos up to 20MB can be uploaded.");
+        return;
+      }
+      if (!isImage && !isVideo) {
+        alert(t("unsupported_file_type") || "Unsupported file type.");
+        return;
+      }
+    }
 
     const fileCandidates = await Promise.all(
       files.map(file => new Promise(res => {
@@ -152,11 +180,13 @@ function EditWorldcupPage({ worldcupList, fetchWorldcups, cupId, isAdmin }) {
       return updated;
     });
   }
+
   function handleDrag(e) {
     e.preventDefault();
     e.stopPropagation();
-    if (e.type === "dragenter" || e.type === "dragover") setDragActive(true);
-    else if (e.type === "dragleave") setDragActive(false);
+    if (e.type === "dragenter" || e.type === "dragleave" || e.type === "dragover") {
+      setDragActive(e.type !== "dragleave");
+    }
   }
 
   async function handleSave() {
@@ -165,7 +195,6 @@ function EditWorldcupPage({ worldcupList, fetchWorldcups, cupId, isAdmin }) {
     if (data.length < 2) return setError(t("edit_need_min_candidates"));
     if (data.some(item => !item.name.trim())) return setError(t("edit_need_all_names"));
 
-    // 중복 후보 이름 체크 (대소문자 무시, 중복 이름 구체적으로 알림)
     const nameMap = {};
     data.forEach(item => {
       const lower = item.name.trim().toLowerCase();
@@ -176,7 +205,7 @@ function EditWorldcupPage({ worldcupList, fetchWorldcups, cupId, isAdmin }) {
 
     if (duplicates.length > 0) {
       const dupNames = duplicates.map(arr => arr[0]).join(", ");
-      return setError(`Duplicate candidate names: ${dupNames}`);
+      return setError(t("duplicate_candidate_names", { names: dupNames }) || `Duplicate candidate names: ${dupNames}`);
     }
 
     setLoading(true);
@@ -322,7 +351,7 @@ function EditWorldcupPage({ worldcupList, fetchWorldcups, cupId, isAdmin }) {
           <input
             ref={fileInputRef}
             type="file"
-            accept=".jpg,.jpeg,.png,.gif,.svg,.webp,.avif"
+            accept=".jpg,.jpeg,.png,.gif,.svg,.webp,.avif,.mp4,.webm,.mov"
             multiple
             style={{ display: "none" }}
             onChange={e => handleFiles(e.target.files)}
@@ -331,7 +360,7 @@ function EditWorldcupPage({ worldcupList, fetchWorldcups, cupId, isAdmin }) {
           <span>
             <span style={{ fontSize: isMobile ? 18 : 23 }}>📁</span>
             <br />
-            {t("drag_upload_detail")}
+            {t("drag_upload_detail") || "Drag and drop or click to upload (Images up to 6MB, Videos up to 20MB)."}
           </span>
         </div>
         {data.map((item, i) => {
@@ -352,7 +381,7 @@ function EditWorldcupPage({ worldcupList, fetchWorldcups, cupId, isAdmin }) {
               <input
                 value={item.name}
                 onChange={e => handleCandidateChange(i, "name", e.target.value)}
-                placeholder={t("name")}
+                placeholder={t("name") || "Name"}
                 style={{
                   width: isMobile ? 78 : 120, minWidth: 50, padding: 9,
                   borderRadius: 8, border: `1.3px solid #bbb`, fontSize: 16
@@ -363,7 +392,7 @@ function EditWorldcupPage({ worldcupList, fetchWorldcups, cupId, isAdmin }) {
               <input
                 value={item.image}
                 onChange={e => handleCandidateChange(i, "image", e.target.value)}
-                placeholder={t("imageUrlOrYoutube")}
+                placeholder={t("imageUrlOrYoutube") || "Image/Video URL or Youtube"}
                 style={{
                   flex: 1, minWidth: 0, padding: 9,
                   borderRadius: 8, border: `1.3px solid #bbb`, fontSize: 15,
@@ -388,12 +417,12 @@ function EditWorldcupPage({ worldcupList, fetchWorldcups, cupId, isAdmin }) {
                 }}
                 disabled={loading}
               >
-                {t("choose_file")}
+                {t("choose_file") || "File"}
               </button>
               <input
                 id={`file-${i}`}
                 type="file"
-                accept=".jpg,.jpeg,.png,.gif,.svg,.webp,.avif"
+                accept=".jpg,.jpeg,.png,.gif,.svg,.webp,.avif,.mp4,.webm,.mov"
                 style={{ display: "none" }}
                 onChange={e => handleFileChange(i, e)}
                 disabled={loading}
@@ -442,7 +471,7 @@ function EditWorldcupPage({ worldcupList, fetchWorldcups, cupId, isAdmin }) {
                 onMouseOut={e => (e.currentTarget.style.background = COLORS.danger)}
                 disabled={loading}
               >
-                {t("delete")}
+                {t("delete") || "Delete"}
               </button>
             </div>
           );
@@ -459,7 +488,7 @@ function EditWorldcupPage({ worldcupList, fetchWorldcups, cupId, isAdmin }) {
           onMouseOut={e => (e.currentTarget.style.background = COLORS.main)}
           disabled={loading}
         >
-          {t("add_candidate")}
+          {t("add_candidate") || "Add Candidate"}
         </button>
       </div>
       {error && <div style={{ color: COLORS.danger, marginTop: 17, fontWeight: 700, textAlign: "center" }}>{error}</div>}
@@ -475,7 +504,7 @@ function EditWorldcupPage({ worldcupList, fetchWorldcups, cupId, isAdmin }) {
           onMouseOut={e => (e.currentTarget.style.background = COLORS.main)}
           disabled={loading}
         >
-          {loading ? t("saving") : t("save")}
+          {loading ? t("saving") || "Saving..." : t("save") || "Save"}
         </button>
         <button
           onClick={() => navigate("/")}
@@ -486,7 +515,7 @@ function EditWorldcupPage({ worldcupList, fetchWorldcups, cupId, isAdmin }) {
           }}
           disabled={loading}
         >
-          {t("cancel")}
+          {t("cancel") || "Cancel"}
         </button>
       </div>
     </div>

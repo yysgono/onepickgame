@@ -7,6 +7,7 @@ import { addWorldcupGame } from "../utils/supabaseWorldcupApi";
 import { uploadCandidateImage } from "../utils/supabaseImageUpload";
 import { supabase } from "../utils/supabaseClient";
 import useBanCheck from "../hooks/useBanCheck";
+import { useTranslation } from "react-i18next";
 
 const DEFAULT_THUMB_URL = "/default-thumb.png";
 const MAX_UPLOAD = 50;
@@ -19,6 +20,8 @@ function isMobile() {
 }
 
 function WorldcupMaker({ onCreate, onCancel }) {
+  const { t } = useTranslation();
+
   const [title, setTitle] = useState("");
   const [desc, setDesc] = useState("");
   const [candidates, setCandidates] = useState([
@@ -68,7 +71,7 @@ function WorldcupMaker({ onCreate, onCancel }) {
   if (!user) {
     return (
       <div style={{ padding: 60, textAlign: "center" }}>
-        <h2>Please log in to create a Worldcup.</h2>
+        <h2>{t("login_required_create_worldcup") || "Please log in to create a Worldcup."}</h2>
       </div>
     );
   }
@@ -82,14 +85,14 @@ function WorldcupMaker({ onCreate, onCancel }) {
           fontWeight: 700,
         }}
       >
-        🚫 You are banned from creating Worldcups.
+        🚫 {t("banned_from_creating_worldcups") || "You are banned from creating Worldcups."}
         <br />
         {banInfo && banInfo.expires_at && (
           <div>
-            Ban expires at: {banInfo.expires_at.replace("T", " ").slice(0, 16)}
+            {t("ban_expires_at") || "Ban expires at"}: {banInfo.expires_at.replace("T", " ").slice(0, 16)}
           </div>
         )}
-        {banInfo && banInfo.reason && <div>Reason: {banInfo.reason}</div>}
+        {banInfo && banInfo.reason && <div>{t("ban_reason") || "Reason"}: {banInfo.reason}</div>}
       </div>
     );
   }
@@ -112,15 +115,37 @@ function WorldcupMaker({ onCreate, onCancel }) {
     setCandidates((cands) => cands.filter((_, i) => i !== idx));
   }
 
+  // File size limits: image 6MB, video 20MB
   async function handleFiles(fileList) {
     if (fileList.length > MAX_UPLOAD) {
-      alert(`You can upload up to ${MAX_UPLOAD} files.`);
+      alert(
+        t("max_upload_files", { count: MAX_UPLOAD }) ||
+          `You can upload up to ${MAX_UPLOAD} files.`
+      );
       return;
     }
     const files = Array.from(fileList).filter((file) =>
-      /\.(jpe?g|png|gif|svg|webp|avif)$/i.test(file.name)
+      /\.(jpe?g|png|gif|svg|webp|avif|mp4|webm|mov)$/i.test(file.name)
     );
     if (files.length === 0) return;
+
+    for (const file of files) {
+      const isImage = /\.(jpe?g|png|gif|svg|webp|avif)$/i.test(file.name);
+      const isVideo = /\.(mp4|webm|mov)$/i.test(file.name);
+
+      if (isImage && file.size > 6 * 1024 * 1024) {
+        alert(t("image_file_size_limit") || "Only images up to 6MB can be uploaded.");
+        return;
+      }
+      if (isVideo && file.size > 20 * 1024 * 1024) {
+        alert(t("video_file_size_limit") || "Only videos up to 20MB can be uploaded.");
+        return;
+      }
+      if (!isImage && !isVideo) {
+        alert(t("unsupported_file_type") || "Unsupported file type.");
+        return;
+      }
+    }
 
     const fileCandidates = files.map((file) => {
       const cleanName = file.name
@@ -179,15 +204,15 @@ function WorldcupMaker({ onCreate, onCancel }) {
       .filter((c) => c.name);
 
     if (!title.trim()) {
-      setError("Please enter a title.");
+      setError(t("enter_title") || "Please enter a title.");
       return;
     }
     if (list.length < 2) {
-      setError("Please add at least two candidates.");
+      setError(t("add_at_least_two_candidates") || "Please add at least two candidates.");
       return;
     }
 
-    // 중복 체크
+    // Duplicate name check
     const nameMap = {};
     list.forEach((c) => {
       const lower = c.name.toLowerCase();
@@ -198,11 +223,11 @@ function WorldcupMaker({ onCreate, onCancel }) {
     const duplicates = Object.values(nameMap).filter((arr) => arr.length > 1);
 
     if (duplicates.length > 0) {
-      // 중복된 이름들을 쉼표로 연결해 메시지 생성
-      const dupNames = duplicates
-        .map((arr) => arr[0]) // 원래 이름 중 첫번째만 보여줌
-        .join(", ");
-      setError("Duplicate candidate names: " + dupNames);
+      const dupNames = duplicates.map((arr) => arr[0]).join(", ");
+      setError(
+        t("duplicate_candidate_names", { names: dupNames }) ||
+          "Duplicate candidate names: " + dupNames
+      );
       return;
     }
 
@@ -218,7 +243,10 @@ function WorldcupMaker({ onCreate, onCancel }) {
         list.map(async (c) => {
           let imageUrl = c.image;
           if (c.file) {
-            imageUrl = await uploadCandidateImage(c.file, nickname || currentUser.id);
+            imageUrl = await uploadCandidateImage(
+              c.file,
+              nickname || currentUser.id
+            );
           }
           if (!imageUrl) imageUrl = DEFAULT_THUMB_URL;
           return { id: c.id, name: c.name, image: imageUrl };
@@ -235,7 +263,10 @@ function WorldcupMaker({ onCreate, onCancel }) {
       };
 
       const id = await addWorldcupGame(newCup);
-      alert("Worldcup saved!\nID: " + id);
+      alert(
+        t("worldcup_saved_id", { id }) ||
+          `Worldcup saved!\nID: ${id}`
+      );
 
       if (onCreate) {
         onCreate({
@@ -251,7 +282,9 @@ function WorldcupMaker({ onCreate, onCancel }) {
         { id: uuidv4(), name: "", image: "", file: null },
       ]);
     } catch (e) {
-      setError("Failed to save. Please try again.");
+      setError(
+        t("save_failed_try_again") || "Failed to save. Please try again."
+      );
       console.error(e);
     } finally {
       setLoading(false);
@@ -280,10 +313,10 @@ function WorldcupMaker({ onCreate, onCancel }) {
           color: COLORS.main,
         }}
       >
-        Create Worldcup
+        {t("create_worldcup") || "Create Worldcup"}
       </h2>
       <form onSubmit={handleSubmit}>
-        {/* 업로드 박스 */}
+        {/* Upload box */}
         <div
           onDrop={(e) => {
             e.preventDefault();
@@ -316,7 +349,7 @@ function WorldcupMaker({ onCreate, onCancel }) {
           <input
             ref={fileInputRef}
             type="file"
-            accept=".jpg,.jpeg,.png,.gif,.svg,.webp,.avif"
+            accept=".jpg,.jpeg,.png,.gif,.svg,.webp,.avif,.mp4,.webm,.mov"
             multiple
             style={{ display: "none" }}
             onChange={(e) => handleFiles(e.target.files)}
@@ -325,13 +358,14 @@ function WorldcupMaker({ onCreate, onCancel }) {
           <span>
             <span style={{ fontSize: mobile ? 20 : 26 }}>📁</span>
             <br />
-            Upload images or drag & drop (up to 50)
+            {t("upload_detail") ||
+              "You can upload images (up to 6MB) or videos (up to 20MB). Max 50 files."}
           </span>
         </div>
         <input
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          placeholder="Worldcup Title"
+          placeholder={t("worldcup_title") || "Worldcup Title"}
           maxLength={70}
           style={{
             width: "100%",
@@ -346,7 +380,7 @@ function WorldcupMaker({ onCreate, onCancel }) {
         <textarea
           value={desc}
           onChange={(e) => setDesc(e.target.value)}
-          placeholder="Description (optional)"
+          placeholder={t("description_optional") || "Description (optional)"}
           maxLength={400}
           rows={2}
           style={{
@@ -361,7 +395,7 @@ function WorldcupMaker({ onCreate, onCancel }) {
         />
         <div style={{ marginBottom: 18 }}>
           <div style={{ fontWeight: 700, marginBottom: 7 }}>
-            Candidates{" "}
+            {t("candidates") || "Candidates"}{" "}
             <span style={{ color: "#888", fontWeight: 400, fontSize: mobile ? 13 : 15 }}>
               ({candidates.length} / 1024)
             </span>
@@ -389,7 +423,7 @@ function WorldcupMaker({ onCreate, onCancel }) {
             }}
             disabled={loading}
           >
-            + Add Candidate
+            + {t("add_candidate") || "Add Candidate"}
           </button>
         </div>
         {error && (
@@ -414,7 +448,7 @@ function WorldcupMaker({ onCreate, onCancel }) {
             }}
             disabled={loading}
           >
-            {loading ? "Saving..." : "Save"}
+            {loading ? t("saving") || "Saving..." : t("save") || "Save"}
           </button>
           <button
             type="button"
@@ -427,7 +461,7 @@ function WorldcupMaker({ onCreate, onCancel }) {
             }}
             disabled={loading}
           >
-            Cancel
+            {t("cancel") || "Cancel"}
           </button>
         </div>
       </form>

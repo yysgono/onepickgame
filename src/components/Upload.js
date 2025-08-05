@@ -12,9 +12,9 @@ function UploadCup({ onChange }) {
     const file = e.target.files[0];
     if (!file) return;
 
-    // 용량 체크 (10MB 제한)
-    if (file.size > 10 * 1024 * 1024) {
-      alert(t("only_images_under_10mb")); // "이미지 파일은 3MB 이하만 가능합니다."
+    // 이미지 6MB 제한
+    if (file.size > 6 * 1024 * 1024) {
+      alert("이미지는 6MB 이하만 업로드할 수 있습니다.");
       return;
     }
 
@@ -23,7 +23,7 @@ function UploadCup({ onChange }) {
       !/\.(jpe?g|png)$/i.test(file.name) ||
       !["image/jpeg", "image/png"].includes(file.type)
     ) {
-      alert(t("only_jpg_png")); // "JPG, PNG 파일만 업로드할 수 있습니다."
+      alert(t("only_jpg_png") || "JPG, PNG 파일만 업로드할 수 있습니다.");
       return;
     }
 
@@ -54,12 +54,15 @@ function UploadCup({ onChange }) {
           padding: isMobile ? "8px 17px" : "9px 25px"
         }}
       >
-        {t("image_upload")} {/* ex: "이미지 업로드" */}
+        {t("image_upload") || "이미지 업로드"}
       </button>
+      <span style={{ color: "#1976ed", fontSize: 14, marginLeft: 10 }}>
+        (6MB 이하만 가능)
+      </span>
       {preview && (
         <img
           src={preview}
-          alt={t("preview")} // ex: "미리보기"
+          alt={t("preview") || "미리보기"}
           style={{
             width: 50,
             height: 50,

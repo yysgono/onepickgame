@@ -23,8 +23,10 @@
   "terms_of_service": "Nutzungsbedingungen",
   "privacy_policy": "Datenschutzrichtlinie",
   "report": "Melden",
+  "report_submit": "Melden",
   "report_submit_success": "Meldung erfolgreich gesendet!",
   "share_worldcup": "Worldcup teilen",
+  "share_link_copied": "Freigabelink wurde kopiert!",
   "winner": "Gewinner",
   "win_rate": "Siegesquote",
   "victory": "Sieg",
@@ -68,10 +70,8 @@
   "withdraw_canceled": "Rücktrittsantrag storniert!",
   "drag_upload": "Hierher ziehen, um mehrere Dateien hochzuladen.",
   "link_copied": "Link zum Starten des Worldcups wurde kopiert!",
-  "share_link_copied": "Freigabelink wurde kopiert!",
   "report_reason": "Meldegrund",
   "report_reason_placeholder": "Geben Sie den Meldegrund ein (optional)",
-  "report_submit": "Melden",
   "drumroll": "Trommelwirbel...",
   "please_wait": "Wenn es viele Kandidaten gibt, kann es etwas dauern, bitte warten Sie!",
   "name": "Name",
@@ -166,20 +166,8 @@
   "match_win_rate": "Siegesquote",
   "search": "Suchen",
   "retry": "Erneut versuchen",
-  "load_more": "Mehr laden",
-
-  "notice_and_comments": "Hinweise & Neueste Kommentare",
-  "see_details": "Klicken, um Details zu sehen",
-  "recent_comments": "Neueste Kommentare",
-  "loading": "Lädt...",
-  "no_comments": "Keine Kommentare",
-
-  "notice_title_notice-1": "Was ist One Pick Game?",
-  "notice_title_notice-2": "Wie erstelle ich meinen eigenen Worldcup?",
-
   "recommended_worldcups": "Empfohlene Worldcups",
   "dragDropUpTo50": "Sie können bis zu 50 Bilder gleichzeitig in dieses Feld ziehen und ablegen.",
-
   "footer_description": "Turnierspielseite One Pick Game. Erstelle dein eigenes Turnier, genieße spannende Duelle und spiele mit Nutzern aus aller Welt!",
   "footer_suggestions_link": "Vorschlags-Board",
   "suggestions_board": "Vorschlags-Board",
@@ -199,6 +187,21 @@
   "content_limit": "Inhalt darf maximal 1000 Zeichen lang sein.",
   "suggestion_sent": "Ihr Vorschlag wurde erfolgreich eingereicht!",
   "date": "Datum",
+  "load_more": "Mehr laden",
+  "notice_and_comments": "Hinweise & Neueste Kommentare",
+  "see_details": "Klicken, um Details zu sehen",
+  "recent_comments": "Neueste Kommentare",
+  "loading": "Lädt...",
+  "no_comments": "Keine Kommentare",
+  "edit_need_title": "Bitte geben Sie einen Titel ein.",
+  "edit_need_min_candidates": "Sie benötigen mindestens zwei Kandidaten.",
+  "edit_need_all_names": "Bitte geben Sie für alle Kandidaten einen Namen ein.",
+  "duplicate_candidate_names": "Doppelte Kandidatennamen: {{names}}",
+  "edit_success": "Erfolgreich gespeichert!",
+  "edit_fail": "Speichern fehlgeschlagen! Bitte versuchen Sie es später erneut.",
+  "drag_upload_detail": "Dateien ziehen oder klicken, um hochzuladen (Bilder bis 6MB, Videos bis 20MB).",
+  "saving": "Speichern...",
+  "save": "Speichern",
 
   "comment": {
     "placeholder": "Kommentar schreiben.",
@@ -254,5 +257,8 @@
     "select_count": "1~4 auswählen ({{selected}}/{{max}})",
     "skip": "Überspringen",
     "confirm": "Bestätigen"
-  }
+  },
+
+  "notice_title_notice-1": "Was ist One Pick Game?",
+  "notice_title_notice-2": "Wie erstelle ich meinen eigenen Worldcup?"
 }

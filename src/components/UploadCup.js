@@ -12,18 +12,18 @@ function UploadCup({ onChange }) {
     const file = e.target.files[0];
     if (!file) return;
 
-    // 용량 체크 (10MB 제한)
-    if (file.size > 10 * 1024 * 1024) {
-      alert(t("only_images_under_10mb"));
+    // Image 6MB limit
+    if (file.size > 6 * 1024 * 1024) {
+      alert(t("only_images_under_6mb") || "Only images under 6MB can be uploaded.");
       return;
     }
 
-    // 확장자 체크 (jpg, jpeg, png만)
+    // Extension check (jpg, jpeg, png only)
     if (
       !/\.(jpe?g|png)$/i.test(file.name) ||
       !["image/jpeg", "image/png"].includes(file.type)
     ) {
-      alert(t("only_jpg_png"));
+      alert(t("only_jpg_png") || "Only JPG, PNG files can be uploaded.");
       return;
     }
 
@@ -54,12 +54,15 @@ function UploadCup({ onChange }) {
           padding: isMobile ? "8px 17px" : "9px 25px"
         }}
       >
-        {t("image_upload")}
+        {t("image_upload") || "Upload Image"}
       </button>
+      <span style={{ color: "#1976ed", fontSize: 14, marginLeft: 10 }}>
+        ({t("image_size_limit_6mb") || "Max 6MB"})
+      </span>
       {preview && (
         <img
           src={preview}
-          alt={t("preview")}
+          alt={t("preview") || "Preview"}
           style={{
             width: 50,
             height: 50,

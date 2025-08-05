@@ -23,8 +23,6 @@
   "terms_of_service": "Termos de Serviço",
   "privacy_policy": "Política de Privacidade",
   "report": "Denunciar",
-  "report_reason": "Motivo da denúncia",
-  "report_reason_placeholder": "Digite o motivo (opcional)",
   "report_submit": "Enviar denúncia",
   "report_submit_success": "Denúncia enviada com sucesso!",
   "share_worldcup": "Compartilhar Worldcup",
@@ -72,6 +70,8 @@
   "withdraw_canceled": "Solicitação cancelada!",
   "drag_upload": "Arraste aqui para enviar vários arquivos.",
   "link_copied": "Link para iniciar o Worldcup copiado!",
+  "report_reason": "Motivo da denúncia",
+  "report_reason_placeholder": "Digite o motivo (opcional)",
   "drumroll": "Rufem os tambores...",
   "please_wait": "Se houver muitos candidatos, pode demorar um pouco. Aguarde!",
   "name": "Nome",
@@ -193,6 +193,15 @@
   "recent_comments": "Comentários recentes",
   "loading": "Carregando...",
   "no_comments": "Sem comentários.",
+  "edit_need_title": "Digite o título.",
+  "edit_need_min_candidates": "É necessário pelo menos dois candidatos.",
+  "edit_need_all_names": "Digite o nome de todos os candidatos.",
+  "duplicate_candidate_names": "Nomes duplicados de candidatos: {{names}}",
+  "edit_success": "Salvo com sucesso!",
+  "edit_fail": "Falha ao salvar! Por favor, tente novamente mais tarde.",
+  "drag_upload_detail": "Arraste e solte ou clique para enviar arquivos (Imagens até 6MB, Vídeos até 20MB).",
+  "saving": "Salvando...",
+  "save": "Salvar",
 
   "comment": {
     "placeholder": "Escreva um comentário.",
@@ -219,7 +228,7 @@
   },
 
   "match": {
-    "round": "Rodada {{n}}",
+    "round": "Rodada de {{n}}",
     "final": "Final",
     "semiFinal": "Semifinal",
     "quarterFinal": "Quartas de final",

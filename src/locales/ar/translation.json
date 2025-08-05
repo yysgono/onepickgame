@@ -23,7 +23,10 @@
   "terms_of_service": "شروط الخدمة",
   "privacy_policy": "سياسة الخصوصية",
   "report": "إبلاغ",
+  "report_submit": "إرسال الإبلاغ",
+  "report_submit_success": "تم إرسال الإبلاغ بنجاح!",
   "share_worldcup": "مشاركة كأس العالم",
+  "share_link_copied": "تم نسخ رابط المشاركة!",
   "winner": "الفائز",
   "win_rate": "نسبة الفوز",
   "victory": "انتصار",
@@ -69,7 +72,6 @@
   "link_copied": "تم نسخ رابط بدء كأس العالم!",
   "report_reason": "سبب الإبلاغ",
   "report_reason_placeholder": "أدخل سبب الإبلاغ (اختياري)",
-  "report_submit": "إرسال الإبلاغ",
   "drumroll": "قرع الطبول...",
   "please_wait": "قد يستغرق الأمر بعض الوقت إذا كان هناك العديد من المتسابقين، الرجاء الانتظار!",
   "name": "الاسم",
@@ -186,17 +188,21 @@
   "suggestion_sent": "تم إرسال اقتراحك بنجاح!",
   "date": "التاريخ",
   "load_more": "تحميل المزيد",
-  "share_link_copied": "تم نسخ رابط المشاركة!",
-  "report_submit_success": "تم إرسال الإبلاغ بنجاح!",
-
   "notice_and_comments": "الإشعارات وآخر التعليقات",
   "see_details": "انقر لرؤية التفاصيل",
   "recent_comments": "آخر التعليقات",
   "loading": "جاري التحميل...",
   "no_comments": "لا توجد تعليقات",
 
-  "notice_title_notice-1": "ما هو لعبة One Pick؟",
-  "notice_title_notice-2": "كيفية إنشاء كأس العالم الخاصة بك",
+  "edit_need_title": "يرجى إدخال العنوان.",
+  "edit_need_min_candidates": "يجب أن يكون هناك متسابقان على الأقل.",
+  "edit_need_all_names": "يرجى إدخال اسم لكل متسابق.",
+  "duplicate_candidate_names": "أسماء متسابقين مكررة: {{names}}",
+  "edit_success": "تم الحفظ بنجاح!",
+  "edit_fail": "فشل في الحفظ! يرجى المحاولة مرة أخرى لاحقاً.",
+  "drag_upload_detail": "اسحب الملفات أو انقر لتحميل الملفات (الصور حتى 6 ميجابايت، الفيديوهات حتى 20 ميجابايت).",
+  "saving": "جارٍ الحفظ...",
+  "save": "حفظ",
 
   "comment": {
     "placeholder": "اكتب تعليقاً",
@@ -252,5 +258,8 @@
     "select_count": "اختر 1~4 ({{selected}}/{{max}})",
     "skip": "تخطي",
     "confirm": "تأكيد"
-  }
+  },
+
+  "notice_title_notice-1": "ما هو لعبة One Pick؟",
+  "notice_title_notice-2": "كيفية إنشاء كأس العالم الخاصة بك"
 }
