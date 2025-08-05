@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useMemo } from "react";
-import { useParams } from "react-router-dom"; // 추가
+import { useParams } from "react-router-dom";
 import { fetchWinnerStatsFromDB } from "../utils";
 import { useTranslation } from "react-i18next";
 import MediaRenderer from "./MediaRenderer";
@@ -103,7 +103,6 @@ function ReportButton({ cupId, size = "md" }) {
   );
 }
 
-// 기간 라벨 i18n
 const PERIODS = [
   { labelKey: "all", value: null },
   { labelKey: "month_1", value: 30 },
@@ -112,7 +111,6 @@ const PERIODS = [
   { labelKey: "year_1", value: 365 },
 ];
 
-// 퍼센트 표시 함수
 function percent(n, d) {
   if (!d) return "-";
   return Math.round((n / d) * 100) + "%";
@@ -132,7 +130,6 @@ function getCustomSinceDate(from, to) {
   return { from: fromIso, to: toIso };
 }
 
-// 1~3위 카드 (썸네일 큼직, 이름 중앙 정렬, 카드 크기 동일 + 높이 크게)
 function RankCard(props) {
   const { t } = useTranslation();
   const { rank, name, image, win_count, win_rate, match_wins, match_count, match_win_rate, isMobile } = props;
@@ -143,11 +140,8 @@ function RankCard(props) {
   ];
   const medal = medals[rank - 1] || medals[2];
   const bgColors = ["#fcf5cd", "#eef3fa", "#fff3f3"];
-
-  // 카드 너비 & 높이 크게 설정 (높이 충분히 커서 스크롤 방지)
   const cardWidth = isMobile ? 270 : 320;
   const cardHeight = isMobile ? 420 : 480;
-
   const thumbSize = isMobile ? 140 : 180;
 
   return (
@@ -247,8 +241,7 @@ function RankCard(props) {
   );
 }
 
-// Skeleton Row 컴포넌트
-function SkeletonTableRow({ colCount = 8 }) {
+function SkeletonTableRow({ colCount = 7 }) {
   return (
     <tr>
       {Array.from({ length: colCount }).map((_, i) => (
@@ -285,7 +278,7 @@ export default function StatsPage({
   highlightCandidateId,
 }) {
   const { t } = useTranslation();
-  const { lang } = useParams(); // 추가!
+  const { lang } = useParams();
   const [stats, setStats] = useState([]);
   const [sortKey, setSortKey] = useState("win_count");
   const [sortDesc, setSortDesc] = useState(true);
@@ -300,7 +293,6 @@ export default function StatsPage({
   const [currentPage, setCurrentPage] = useState(1);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 800);
 
-  // 모바일 체크
   useEffect(() => {
     function onResize() {
       setIsMobile(window.innerWidth < 800);
@@ -309,7 +301,6 @@ export default function StatsPage({
     return () => window.removeEventListener("resize", onResize);
   }, []);
 
-  // 데이터 패치
   useEffect(() => {
     async function fetchStats() {
       if (!selectedCup?.id) {
@@ -332,7 +323,6 @@ export default function StatsPage({
     fetchStats();
   }, [selectedCup, period, customMode, customFrom, customTo]);
 
-  // 필터/정렬 메모이제이션
   const filteredStats = useMemo(() => {
     let result = [...stats].filter(row => row.name?.toLowerCase().includes(search.toLowerCase()));
     if (userOnly) {
@@ -353,7 +343,6 @@ export default function StatsPage({
           }
           return a._originIdx - b._originIdx;
         }
-
         if (sortKey === "win_rate") {
           let av = a.total_games ? a.win_count / a.total_games : 0;
           let bv = b.total_games ? b.win_count / b.total_games : 0;
@@ -361,7 +350,6 @@ export default function StatsPage({
           if (av > bv) return sortDesc ? -1 : 1;
           return a._originIdx - b._originIdx;
         }
-
         if (sortKey === "match_win_rate") {
           let av = a.match_count ? a.match_wins / a.match_count : 0;
           let bv = b.match_count ? b.match_wins / b.match_count : 0;
@@ -369,7 +357,6 @@ export default function StatsPage({
           if (av > bv) return sortDesc ? -1 : 1;
           return a._originIdx - b._originIdx;
         }
-
         let av = a[sortKey];
         let bv = b[sortKey];
         if (typeof av === "string") av = av.toLowerCase();
@@ -417,17 +404,6 @@ export default function StatsPage({
     color: "#333",
     padding: "7px 0",
   };
-
-  const sortableCols = [
-    { key: "rank", label: t("rank"), isIvory: true },
-    { key: "image", label: t("image") },
-    { key: "name", label: t("name") },
-    { key: "win_count", label: t("win_count") },
-    { key: "win_rate", label: t("win_rate"), isIvory: true },
-    { key: "match_wins", label: t("match_wins") },
-    { key: "match_count", label: t("duel_count") },
-    { key: "match_win_rate", label: t("match_win_rate"), isIvory: true },
-  ];
 
   function Pagination() {
     if (totalPages <= 1) return null;
@@ -487,7 +463,7 @@ export default function StatsPage({
             padding: "4px 10px",
             borderRadius: 6,
             border: "1.5px solid #bbb",
-            background: currentPage === totalPages ? "#f7f7f7" : "#fff",
+                        background: currentPage === totalPages ? "#f7f7f7" : "#fff",
             cursor: currentPage === totalPages ? "default" : "pointer",
           }}
           onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
@@ -500,7 +476,6 @@ export default function StatsPage({
 
   function ShareAndReportBar() {
     if (!selectedCup?.id) return null;
-    // lang이 포함된 공유 링크!
     const shareUrl = `${window.location.origin}/${lang}/select-round/${selectedCup.id}`;
     return (
       <div
@@ -537,6 +512,18 @@ export default function StatsPage({
       </div>
     );
   }
+
+  // === 썸네일 컬럼 제거됨 ===
+  const sortableCols = [
+    { key: "rank", label: t("rank"), isIvory: true },
+    // { key: "image", label: t("image") },  // 이미지 컬럼 완전 제거
+    { key: "name", label: t("name") },
+    { key: "win_count", label: t("win_count") },
+    { key: "win_rate", label: t("win_rate"), isIvory: true },
+    { key: "match_wins", label: t("match_wins") },
+    { key: "match_count", label: t("duel_count") },
+    { key: "match_win_rate", label: t("match_win_rate"), isIvory: true },
+  ];
 
   return (
     <div
@@ -623,7 +610,7 @@ export default function StatsPage({
         )}
       </div>
 
-      {/* 이하 동일 */}
+      {/* 회원/전체 탭 */}
       <div
         style={{
           display: "flex",
@@ -641,6 +628,7 @@ export default function StatsPage({
         </button>
       </div>
 
+      {/* 기간 필터 */}
       <div
         style={{
           display: "flex",
@@ -766,7 +754,7 @@ export default function StatsPage({
         ))}
       </div>
 
-      {/* ======= 추가된 검색창 ======= */}
+      {/* 검색창 */}
       <div style={{ display: "flex", justifyContent: "center", marginBottom: 10 }}>
         <input
           type="text"
@@ -790,8 +778,8 @@ export default function StatsPage({
           aria-label={t("search") || "Search"}
         />
       </div>
-      {/* =========================== */}
 
+      {/* 통계 테이블 (이미지 컬럼 제거) */}
       <div style={{ width: "100%", overflowX: "auto", marginBottom: 12 }}>
         <table
           style={{
@@ -815,12 +803,12 @@ export default function StatsPage({
                   key={col.key}
                   style={{
                     padding: "8px 0",
-                    cursor: col.key === "rank" || ["image"].includes(col.key) ? undefined : "pointer",
+                    cursor: col.key === "rank" ? undefined : "pointer",
                     ...(col.isIvory ? ivoryCell : { background: "#fff", fontWeight: 700, color: "#333" }),
                     userSelect: "none",
                   }}
                   onClick={
-                    col.key === "rank" || ["image"].includes(col.key)
+                    col.key === "rank"
                       ? undefined
                       : () => {
                           if (sortKey === col.key) setSortDesc((desc) => !desc);
@@ -867,27 +855,7 @@ export default function StatsPage({
                     return (
                       <tr key={row.candidate_id} style={highlightStyle}>
                         <td style={ivoryCell}>{row.rank}</td>
-                        <td
-                          style={{
-                            ...normalCell,
-                            padding: "7px 0",
-                            background: "#fff",
-                          }}
-                        >
-                          <div
-                            style={{
-                              width: isMobile ? 30 : 38,
-                              height: isMobile ? 30 : 38,
-                              borderRadius: 7,
-                              overflow: "hidden",
-                              margin: "0 auto",
-                              background: "#f8f9fa",
-                              border: "1.5px solid #e7f1fb",
-                            }}
-                          >
-                            <MediaRenderer url={row.image} alt={row.name} />
-                          </div>
-                        </td>
+                        {/* 이미지 컬럼 완전 제거 */}
                         <td
                           style={{
                             ...normalCell,

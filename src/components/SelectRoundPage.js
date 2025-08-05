@@ -1,9 +1,8 @@
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useLocation, useParams } from "react-router-dom";
-import MediaRenderer from "./MediaRenderer";
+import StatsPage from "./StatsPage";
 
-// 모바일 체크 (훅)
 function useIsMobile() {
   const [isMobile, setIsMobile] = React.useState(window.innerWidth < 700);
   React.useEffect(() => {
@@ -12,23 +11,6 @@ function useIsMobile() {
     return () => window.removeEventListener("resize", onResize);
   }, []);
   return isMobile;
-}
-
-// 그리드 컬럼 및 카드 사이즈 계산
-function getGridSettings(count, isMobile) {
-  if (isMobile) {
-    if (count <= 2) return { columns: count, size: "68vw", max: 180 };
-    if (count <= 4) return { columns: 2, size: "44vw", max: 115 };
-    if (count <= 6) return { columns: 3, size: "29vw", max: 82 };
-    if (count <= 10) return { columns: 5, size: "17vw", max: 52 };
-    return { columns: 10, size: "8vw", max: 40 };
-  } else {
-    if (count <= 2) return { columns: count, size: 310, max: 250 };
-    if (count <= 4) return { columns: 2, size: 190, max: 150 };
-    if (count <= 6) return { columns: 3, size: 120, max: 105 };
-    if (count <= 10) return { columns: 6, size: 85, max: 95 };
-    return { columns: 10, size: 65, max: 80 };
-  }
 }
 
 export default function SelectRoundPage({ cup, maxRound, candidates, onSelect, onResult }) {
@@ -62,9 +44,6 @@ export default function SelectRoundPage({ cup, maxRound, candidates, onSelect, o
 
   const hasBye = candidates.length < selectedRound;
   const count = candidates.length;
-  const { columns, size, max } = getGridSettings(count, isMobile);
-  const getCardSize = () =>
-    typeof size === "string" ? `min(${size}, ${max}px)` : Math.min(size, max);
 
   // ---- 버튼 스타일 ----
   const mainBtn = {
@@ -181,24 +160,17 @@ export default function SelectRoundPage({ cup, maxRound, candidates, onSelect, o
     else alert(t("share_link_copied"));
   }
 
-  // 통계(결과)로 이동도 항상 /:lang/stats/:id로!
   function handleShowStats() {
     if (cup?.id && lang) {
       navigate(`/${lang}/stats/${cup.id}`);
     }
   }
 
-  // 라운드 선택 후 시작 (Match로 이동)
   function handleStart(selectedRound) {
     if (onSelect) onSelect(selectedRound);
     else if (cup?.id && lang) {
       navigate(`/${lang}/match/${cup.id}/${selectedRound}`);
     }
-  }
-
-  // 후보 상세(한명 클릭)
-  function handleCandidateSelect(c) {
-    if (onSelect) onSelect(c);
   }
 
   return (
@@ -286,6 +258,7 @@ export default function SelectRoundPage({ cup, maxRound, candidates, onSelect, o
           )}
         </>
       )}
+
       {/* ---- 라운드/시작/후보수 ---- */}
       <div
         style={{
@@ -357,103 +330,10 @@ export default function SelectRoundPage({ cup, maxRound, candidates, onSelect, o
           ⚠️ {t("auto_bye_message", { selectedRound })}
         </div>
       )}
-      {/* 후보 목록 */}
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))`,
-          gap: isMobile ? 10 : 22,
-          justifyContent: "center",
-          alignItems: "center",
-          width: "100%",
-          maxWidth: 1100,
-          margin: "0 auto",
-          marginTop: isMobile ? 10 : 22,
-          marginBottom: 0,
-        }}
-      >
-        {candidates.map((c) => (
-          <div
-            key={c.id}
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              cursor: "pointer",
-              background: "#21283a",
-              borderRadius: isMobile ? 10 : 13,
-              boxShadow: "0 2px 12px #1976ed13",
-              border: "1.2px solid #1976ed18",
-              transition: "box-shadow .14s, transform .15s",
-              margin: "0 auto",
-              willChange: "transform",
-              overflow: "hidden",
-              minWidth: 0,
-            }}
-            title={c.name}
-            tabIndex={0}
-            aria-label={c.name}
-            onClick={() => handleCandidateSelect(c)}
-            onKeyDown={e => {
-              if (e.key === "Enter" || e.key === " ") {
-                handleCandidateSelect(c);
-              }
-            }}
-            onMouseEnter={e => {
-              e.currentTarget.style.boxShadow = "0 6px 19px #1976ed45";
-              e.currentTarget.style.transform = "scale(1.04)";
-            }}
-            onMouseLeave={e => {
-              e.currentTarget.style.boxShadow = "0 2px 12px #1976ed13";
-              e.currentTarget.style.transform = "none";
-            }}
-          >
-            <div
-              style={{
-                width: "100%",
-                aspectRatio: "1/1",
-                background: "#222b3d",
-                display: "flex",
-                alignItems: "stretch",
-                justifyContent: "stretch",
-              }}
-            >
-              <MediaRenderer
-                url={c.image}
-                alt={c.name}
-                style={{
-                  width: "100%",
-                  height: "100%",
-                  objectFit: "cover",
-                  margin: 0,
-                  display: "block"
-                }}
-              />
-            </div>
-            <div
-              style={{
-                width: getCardSize(),
-                minHeight: 18,
-                fontWeight: 900,
-                fontSize: isMobile ? 13.5 : 16,
-                color: "#fff",
-                textAlign: "center",
-                whiteSpace: "nowrap",
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-                lineHeight: 1.15,
-                padding: "0 2px",
-                margin: 0,
-                textShadow: "0 1px 6px #1976ed44",
-                letterSpacing: "0.01em",
-                background: "transparent"
-              }}
-            >
-              {c.name}
-            </div>
-          </div>
-        ))}
-      </div>
+
+      {/* 후보 그리드/썸네일/이름 제거 */}
+      {/* 대신 통계표만 출력 */}
+      <StatsPage selectedCup={cup} hideImages={true} hideTop3={true} />
     </div>
   );
 }
