@@ -356,7 +356,7 @@ function WorldcupMaker({ onCreate, onCancel }) {
           <span>
             <span style={{ fontSize: mobile ? 20 : 26 }}>📁</span>
             <br />
-            {t("upload_detail") ||
+            {t("drag_upload_detail") ||
               "You can upload images (up to 6MB) or videos (up to 20MB). Max 50 files."}
           </span>
         </div>
