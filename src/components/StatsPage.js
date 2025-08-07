@@ -6,7 +6,7 @@ import MediaRenderer from "./MediaRenderer";
 import { supabase } from "../utils/supabaseClient";
 import CommentBox from "./CommentBox";
 
-// 신고 버튼 (i18n 적용)
+// 신고 버튼
 function ReportButton({ cupId, size = "md" }) {
   const { t } = useTranslation();
   const [show, setShow] = useState(false);
@@ -276,9 +276,6 @@ export default function StatsPage({
   selectedCup,
   showCommentBox = false,
   highlightCandidateId,
-  hideTop3 = false,
-  hideShareAndReportBar = false,
-  renderBelowTitle, // ⬅️ 여기에 추가!
 }) {
   const { t } = useTranslation();
   const { lang } = useParams();
@@ -478,7 +475,7 @@ export default function StatsPage({
   }
 
   function ShareAndReportBar() {
-    if (hideShareAndReportBar || !selectedCup?.id) return null;
+    if (!selectedCup?.id) return null;
     const shareUrl = `${window.location.origin}/${lang}/select-round/${selectedCup.id}`;
     return (
       <div
@@ -516,7 +513,7 @@ export default function StatsPage({
     );
   }
 
-  // === 썸네일 컬럼 제거됨 ===
+  // 썸네일 컬럼만 숨긴 기본 테이블 (상위 3명 카드 있음)
   const sortableCols = [
     { key: "rank", label: t("rank"), isIvory: true },
     { key: "name", label: t("name") },
@@ -576,46 +573,41 @@ export default function StatsPage({
           {selectedCup.title}
         </div>
       </div>
-      {/* (여기서부터 파란박스 아래 안내문구 삽입) */}
-      {renderBelowTitle}
-
       <style>
         {`@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&display=swap');`}
       </style>
       <ShareAndReportBar />
 
-      {/* 1~3등 카드형 - 옵션 */}
-      {!hideTop3 && (
-        <div
-          style={{
-            display: "flex",
-            flexDirection: isMobile ? "column" : "row",
-            justifyContent: "center",
-            alignItems: "center",
-            margin: "0 auto 18px auto",
-            width: "100%",
-            gap: isMobile ? 0 : 0,
-            overflowX: "auto",
-          }}
-        >
-          {top3.map((row, i) =>
-            row ? (
-              <RankCard
-                key={row.candidate_id}
-                rank={i + 1}
-                name={row.name}
-                image={row.image}
-                win_count={row.win_count}
-                win_rate={row.total_games ? percent(row.win_count, row.total_games) : "-"}
-                match_wins={row.match_wins}
-                match_count={row.match_count}
-                match_win_rate={row.match_count ? percent(row.match_wins, row.match_count) : "-"}
-                isMobile={isMobile}
-              />
-            ) : null
-          )}
-        </div>
-      )}
+      {/* 1~3등 카드형 */}
+      <div
+        style={{
+          display: "flex",
+          flexDirection: isMobile ? "column" : "row",
+          justifyContent: "center",
+          alignItems: "center",
+          margin: "0 auto 18px auto",
+          width: "100%",
+          gap: isMobile ? 0 : 0,
+          overflowX: "auto",
+        }}
+      >
+        {top3.map((row, i) =>
+          row ? (
+            <RankCard
+              key={row.candidate_id}
+              rank={i + 1}
+              name={row.name}
+              image={row.image}
+              win_count={row.win_count}
+              win_rate={row.total_games ? percent(row.win_count, row.total_games) : "-"}
+              match_wins={row.match_wins}
+              match_count={row.match_count}
+              match_win_rate={row.match_count ? percent(row.match_wins, row.match_count) : "-"}
+              isMobile={isMobile}
+            />
+          ) : null
+        )}
+      </div>
 
       {/* 회원/전체 탭 */}
       <div
@@ -786,7 +778,7 @@ export default function StatsPage({
         />
       </div>
 
-      {/* 통계 테이블 */}
+      {/* 통계 테이블 (이미지 컬럼 없음) */}
       <div style={{ width: "100%", overflowX: "auto", marginBottom: 12 }}>
         <table
           style={{
