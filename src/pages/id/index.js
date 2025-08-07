@@ -23,10 +23,10 @@ export default function IdPage(props) {
         />
         <meta property="og:title" content="One Pick Game - Situs Game Bracket" />
         <meta property="og:description" content="One Pick Game adalah situs game bracket. Buat turnamen bracketmu sendiri dan mainkan bersama pengguna dari seluruh dunia!" />
-        <meta property="og:image" content="https://onepickgame.com/ogimg.png" />
-        <meta property="og:url" content="https://onepickgame.com/id" />
+        <meta property="og:image" content="https://www.onepickgame.com/ogimg.png" />
+        <meta property="og:url" content="https://www.onepickgame.com/id" />
         {/* ✅ canonical 태그 추가! */}
-        <link rel="canonical" href="https://onepickgame.com/id/" />
+        <link rel="canonical" href="https://www.onepickgame.com/id/" />
       </Helmet>
       <Home {...props} />
     </>

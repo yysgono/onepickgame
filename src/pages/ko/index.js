@@ -23,10 +23,10 @@ export default function KoPage(props) {
         />
         <meta property="og:title" content="One Pick Game - 이상형 월드컵 사이트" />
         <meta property="og:description" content="이상형 월드컵 사이트 One Pick Game입니다. 다양한 주제의 월드컵 만들기 기능으로 해외 유저들과 함께 즐겨보세요." />
-        <meta property="og:image" content="https://onepickgame.com/ogimg.png" />
-        <meta property="og:url" content="https://onepickgame.com/ko" />
+        <meta property="og:image" content="https://www.onepickgame.com/ogimg.png" />
+        <meta property="og:url" content="https://www.onepickgame.com/ko" />
         {/* ✅ canonical 태그 추가! */}
-        <link rel="canonical" href="https://onepickgame.com/ko/" />
+        <link rel="canonical" href="https://www.onepickgame.com/ko/" />
       </Helmet>
       <Home {...props} />
     </>

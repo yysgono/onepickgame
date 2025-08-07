@@ -160,7 +160,7 @@ export default function Header({
 
   // 로고 클릭 시 무조건 메인
   function handleLogoClick() {
-    window.location.href = "https://onepickgame.com";
+    window.location.href = "https://www.onepickgame.com";
   }
   function handleMyWorldcup() {
     navigate(`/${currentLang}/my-worldcups`);

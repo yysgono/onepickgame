@@ -23,10 +23,10 @@ export default function RuPage(props) {
         />
         <meta property="og:title" content="One Pick Game - Брэкеты" />
         <meta property="og:description" content="One Pick Game — это сайт для игры в брэкет. Создавайте свои турниры и играйте с пользователями со всего мира!" />
-        <meta property="og:image" content="https://onepickgame.com/ogimg.png" />
-        <meta property="og:url" content="https://onepickgame.com/ru" />
+        <meta property="og:image" content="https://www.onepickgame.com/ogimg.png" />
+        <meta property="og:url" content="https://www.onepickgame.com/ru" />
         {/* ✅ canonical 태그 추가! */}
-        <link rel="canonical" href="https://onepickgame.com/ru/" />
+        <link rel="canonical" href="https://www.onepickgame.com/ru/" />
       </Helmet>
       <Home {...props} />
     </>

@@ -23,10 +23,10 @@ export default function BnPage(props) {
         />
         <meta property="og:title" content="One Pick Game - ব্র্যাকেট গেম সাইট" />
         <meta property="og:description" content="ব্র্যাকেট গেম সাইট One Pick Game. নিজের টুর্নামেন্ট ব্র্যাকেট তৈরি করুন, মজার ম্যাচআপ উপভোগ করুন এবং বিশ্বজুড়ে ব্যবহারকারীদের সঙ্গে খেলুন!" />
-        <meta property="og:image" content="https://onepickgame.com/ogimg.png" />
-        <meta property="og:url" content="https://onepickgame.com/bn" />
+        <meta property="og:image" content="https://www.onepickgame.com/ogimg.png" />
+        <meta property="og:url" content="https://www.onepickgame.com/bn" />
         {/* ✅ canonical 태그 추가! */}
-        <link rel="canonical" href="https://onepickgame.com/bn/" />
+        <link rel="canonical" href="https://www.onepickgame.com/bn/" />
       </Helmet>
       <Home {...props} />
     </>

@@ -23,10 +23,10 @@ export default function PtPage(props) {
         />
         <meta property="og:title" content="One Pick Game - Jogo de Brackets" />
         <meta property="og:description" content="One Pick Game é um site de jogo de brackets. Crie seu próprio torneio eliminatório e jogue com pessoas do mundo todo!" />
-        <meta property="og:image" content="https://onepickgame.com/ogimg.png" />
-        <meta property="og:url" content="https://onepickgame.com/pt" />
+        <meta property="og:image" content="https://www.onepickgame.com/ogimg.png" />
+        <meta property="og:url" content="https://www.onepickgame.com/pt" />
         {/* ✅ canonical 태그 추가! */}
-        <link rel="canonical" href="https://onepickgame.com/pt/" />
+        <link rel="canonical" href="https://www.onepickgame.com/pt/" />
       </Helmet>
       <Home {...props} />
     </>
