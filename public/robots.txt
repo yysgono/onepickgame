@@ -2,4 +2,4 @@
 User-agent: *
 Disallow:
 
-Sitemap: https://onepickgame.com/sitemap.xml
+Sitemap: https://www.onepickgame.com/sitemap.xml
