@@ -3,16 +3,16 @@ import { useNavigate } from "react-router-dom";
 import { createClient } from "@supabase/supabase-js";
 import { useTranslation } from "react-i18next";
 
+// 환경 변수에서 Supabase 키와 URL 불러오기!
+const supabaseUrl = process.env.REACT_APP_SUPABASE_URL;
+const supabaseKey = process.env.REACT_APP_SUPABASE_ANON_KEY;
+const supabase = createClient(supabaseUrl, supabaseKey);
+
 function getLangPath(i18n, path = "") {
   const lang = i18n.language || "ko";
   if (path.startsWith("/")) path = path.slice(1);
   return `/${lang}${path ? "/" + path : ""}`;
 }
-
-const supabase = createClient(
-  "https://irfyuvuazhujtlgpkfci.supabase.co",
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlyZnl1dnVhemh1anRsZ3BrZmNpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTA1NDY0MTAsImV4cCI6MjA2NjEyMjQxMH0.q4s3G9mGnCbX7Urtks6_63XOSD8Ry2_GcmGM1wE7TBE"
-);
 
 function getByteLength(str) {
   let len = 0;
@@ -75,7 +75,6 @@ function FindIdBox() {
         setError(t("nickname_not_found"));
       } else {
         setFoundId(t("find_id.result", { email: profile.email }));
-        // 2초 후 언어유지 홈으로 이동
         setTimeout(() => {
           navigate(getLangPath(i18n));
         }, 2000);
