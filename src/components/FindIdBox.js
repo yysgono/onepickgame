@@ -1,7 +1,14 @@
+// src/components/FindIdBox.jsx
+
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { createClient } from "@supabase/supabase-js";
 import { useTranslation } from "react-i18next";
-import { supabase } from "../utils/supabaseClient"; // ✅ 단일 인스턴스만 사용
+
+// 환경 변수에서 Supabase 키와 URL 불러오기!
+const supabaseUrl = process.env.REACT_APP_SUPABASE_URL;
+const supabaseKey = process.env.REACT_APP_SUPABASE_ANON_KEY;
+const supabase = createClient(supabaseUrl, supabaseKey);
 
 function getLangPath(i18n, path = "") {
   const lang = i18n.language || "ko";
@@ -81,7 +88,10 @@ function FindIdBox() {
   }
 
   return (
-    <div style={{ maxWidth: 360, margin: "60px auto", background: "#fff", borderRadius: 14, boxShadow: "0 2px 12px #0001", padding: 30 }}>
+    <div style={{
+      maxWidth: 360, margin: "60px auto", background: "#fff",
+      borderRadius: 14, boxShadow: "0 2px 12px #0001", padding: 30
+    }}>
       <h2 style={{ textAlign: "center", marginBottom: 18 }}>{t("find_id.title")}</h2>
       <form onSubmit={handleFindId}>
         <div style={{ marginBottom: 12 }}>
@@ -90,7 +100,10 @@ function FindIdBox() {
             value={nickname}
             onChange={handleNicknameChange}
             placeholder={t("nickname")}
-            style={{ width: "100%", padding: 10, borderRadius: 7, border: "1.2px solid #bbb", fontSize: 16 }}
+            style={{
+              width: "100%", padding: 10, borderRadius: 7,
+              border: "1.2px solid #bbb", fontSize: 16
+            }}
             autoComplete="off"
             spellCheck={false}
             disabled={loading}

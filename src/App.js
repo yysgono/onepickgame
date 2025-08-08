@@ -1,3 +1,4 @@
+// App.js
 import "./i18n";
 import "./App.css";
 import React, { useState, useEffect } from "react";
@@ -55,7 +56,6 @@ import TrPage from "./pages/tr";
 
 import { getWorldcupGames, deleteWorldcupGame, getWorldcupGame } from "./utils/supabaseWorldcupApi";
 import { supabase } from "./utils/supabaseClient";
-import { generateRandomNickname } from "./utils/randomNickname";
 
 function useIsMobile() {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 700);
@@ -94,7 +94,6 @@ function LanguageWrapper(props) {
     }
   }, [lang, i18n, navigate]);
 
-  // 모든 props를 Home에 확실히 넘기기!
   const homeProps = { ...props };
 
   switch (lang) {
@@ -131,33 +130,8 @@ function App() {
   const [fixedWorldcupIds, setFixedWorldcupIds] = useState([]);
   const [fixedWorldcups, setFixedWorldcups] = useState([]);
 
-  // ✅ 구글 소셜 포함, 모든 로그인/회원가입 → profiles 자동생성
-  useEffect(() => {
-    const { data: authListener } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        if (event === "SIGNED_IN" && session?.user) {
-          const user = session.user;
-          // profiles에 이미 있나 체크
-          const { data: profile } = await supabase
-            .from("profiles")
-            .select("id")
-            .eq("id", user.id)
-            .maybeSingle();
-          // 없으면 자동 생성!
-          if (!profile) {
-            const nickname = generateRandomNickname();
-            await supabase.from("profiles").insert({
-              id: user.id,
-              email: user.email,
-              nickname,
-            });
-          }
-        }
-      }
-    );
-    return () => authListener?.subscription.unsubscribe();
-  }, []);
-
+  // 소셜/구글 로그인시 프로필 자동생성 기능 없음!
+  // 회원 로그인 여부 및 프로필 조회만
   useEffect(() => {
     let isMounted = true;
     async function fetchUserAndProfile() {
@@ -555,7 +529,6 @@ function App() {
       );
     }
 
-    // ✨ 언어별 pages index 파일로 HomeProps 모두 넘김!
     return (
       <>
         <div className="header-wrapper" style={{ margin: 0, padding: 0 }}>

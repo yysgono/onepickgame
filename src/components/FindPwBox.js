@@ -1,13 +1,12 @@
 import React, { useState } from "react";
+import { createClient } from "@supabase/supabase-js";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
-import { supabase } from "../utils/supabaseClient"; // ✅ 단일 인스턴스만 사용
 
-function getLangPath(i18n, path = "") {
-  const lang = i18n.language || "ko";
-  if (path.startsWith("/")) path = path.slice(1);
-  return `/${lang}${path ? "/" + path : ""}`;
-}
+// ⭐️ 새로 받은 anon 키로 설정
+const supabase = createClient(
+  "https://irfyuvuazhujtlgpkfci.supabase.co",
+  "sb_publishable__U91j22eqCETuyJ4-O1wUQ_WMu_Hk5r"
+);
 
 function getByteLength(str) {
   let len = 0;
@@ -32,13 +31,12 @@ function sliceByByte(str, maxBytes) {
 }
 
 function FindPwBox() {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const [userId, setUserId] = useState("");
   const [nickname, setNickname] = useState("");
   const [successMsg, setSuccessMsg] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
 
   function handleNicknameChange(e) {
     const val = e.target.value;
@@ -74,6 +72,7 @@ function FindPwBox() {
         return;
       }
 
+      // Supabase resetPasswordForEmail
       const { error: resetErr } = await supabase.auth.resetPasswordForEmail(userId.trim(), {
         redirectTo: window.location.origin + "/reset-password"
       });
@@ -81,9 +80,6 @@ function FindPwBox() {
         setError(t("pw_reset_send_fail"));
       } else {
         setSuccessMsg(t("pw_reset_send_success"));
-        setTimeout(() => {
-          navigate(getLangPath(i18n));
-        }, 2000);
       }
     } catch (e) {
       setError(t("temporary_error"));
