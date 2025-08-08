@@ -94,6 +94,7 @@ function LanguageWrapper(props) {
     }
   }, [lang, i18n, navigate]);
 
+  // 모든 props를 Home에 확실히 넘기기!
   const homeProps = { ...props };
 
   switch (lang) {
@@ -119,27 +120,30 @@ function LanguageWrapper(props) {
 
 function App() {
   const isMobile = useIsMobile();
-  const { t, i18n } = useTranslation();
-  const [user, setUser] = useState(null);
-  const [nickname, setNickname] = useState("");
-  const [isAdmin, setIsAdmin] = useState(false);
-  const [nicknameLoading, setNicknameLoading] = useState(false);
 
   const [worldcupList, setWorldcupList] = useState([]);
+  const { t, i18n } = useTranslation();
+  const [user, setUser] = useState(null);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [nickname, setNickname] = useState("");
+  const [nicknameLoading, setNicknameLoading] = useState(false);
+
   const [fixedWorldcupIds, setFixedWorldcupIds] = useState([]);
   const [fixedWorldcups, setFixedWorldcups] = useState([]);
 
-  // 최초 로그인/회원가입 시 profiles row 생성만 보장
+  // ✅ 구글 소셜 포함, 모든 로그인/회원가입 → profiles 자동생성
   useEffect(() => {
     const { data: authListener } = supabase.auth.onAuthStateChange(
       async (event, session) => {
         if (event === "SIGNED_IN" && session?.user) {
           const user = session.user;
+          // profiles에 이미 있나 체크
           const { data: profile } = await supabase
             .from("profiles")
             .select("id")
             .eq("id", user.id)
             .maybeSingle();
+          // 없으면 자동 생성!
           if (!profile) {
             const nickname = generateRandomNickname();
             await supabase.from("profiles").insert({
@@ -154,7 +158,6 @@ function App() {
     return () => authListener?.subscription.unsubscribe();
   }, []);
 
-  // 새로고침 시 user/닉네임/관리자 정보만 세팅
   useEffect(() => {
     let isMounted = true;
     async function fetchUserAndProfile() {
@@ -195,7 +198,9 @@ function App() {
     }
   };
 
-  useEffect(() => { fetchWorldcups(); }, []);
+  useEffect(() => {
+    fetchWorldcups();
+  }, []);
 
   useEffect(() => {
     async function fetchFixedWorldcups() {
@@ -372,6 +377,7 @@ function App() {
   function AppRoutes() {
     const navigate = useNavigate();
     const location = useLocation();
+    const { i18n } = useTranslation();
 
     const langMatch = location.pathname.match(/^\/([a-z]{2})(\/|$)/);
     const lang = langMatch ? langMatch[1] : i18n.language || "ko";
@@ -549,6 +555,7 @@ function App() {
       );
     }
 
+    // ✨ 언어별 pages index 파일로 HomeProps 모두 넘김!
     return (
       <>
         <div className="header-wrapper" style={{ margin: 0, padding: 0 }}>

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { supabase } from "../utils/supabaseClient";
+import { supabase } from "../utils/supabaseClient"; // ✅ 단일 인스턴스만 사용
 import { useTranslation } from "react-i18next";
 
 function LoginBox({ setUser, setNickname }) {
@@ -44,6 +44,15 @@ function LoginBox({ setUser, setNickname }) {
     setEmail("");
     setPassword("");
     navigate("/");
+  }
+
+  async function handleGoogleLogin() {
+    setError("");
+    const { error } = await supabase.auth.signInWithOAuth({ provider: "google" });
+    if (error) {
+      console.error("Google login error:", error);
+      setError(t("login_failed") || "Login failed");
+    }
   }
 
   return (
@@ -114,6 +123,43 @@ function LoginBox({ setUser, setNickname }) {
         >
           {loading ? t("logging_in") : t("login")}
         </button>
+        {/* --- 구글 로그인 버튼 --- */}
+        <button
+          type="button"
+          onClick={handleGoogleLogin}
+          style={{
+            width: "100%",
+            background: "#fff",
+            color: "#222",
+            fontWeight: 600,
+            border: "1.5px solid #ccc",
+            borderRadius: 9,
+            fontSize: 16,
+            padding: "10px 0",
+            marginBottom: 12,
+            cursor: "pointer",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 10,
+          }}
+        >
+          <img
+            src="/icons/google.svg"
+            alt="Google"
+            style={{
+              width: 22,
+              height: 22,
+              verticalAlign: "middle",
+              marginRight: 3,
+              display: "inline-block",
+            }}
+            draggable={false}
+            loading="lazy"
+            aria-hidden="true"
+          />
+          {t("Google") || "Google"}
+        </button>
         {error && (
           <div style={{ color: "red", marginTop: 10, textAlign: "center" }}>
             {error}
@@ -121,7 +167,6 @@ function LoginBox({ setUser, setNickname }) {
         )}
       </form>
       <div style={{ marginTop: 14, width: "100%", textAlign: "center" }}>
-        {/* 아래 3개 링크 경로 수정 (언어코드 포함!) */}
         <Link
           to={`/${i18n.language}/signup`}
           style={{ color: "#1976ed", marginBottom: 7, display: "block" }}

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
-import { supabase } from "../utils/supabaseClient";
+import { supabase } from "../utils/supabaseClient"; // ✅ 단일 인스턴스만 사용
 
 function getLangPath(i18n, path = "") {
   const lang = i18n.language || "ko";
@@ -92,14 +92,7 @@ function FindPwBox() {
   }
 
   return (
-    <div style={{
-      maxWidth: 360,
-      margin: "60px auto",
-      background: "#fff",
-      borderRadius: 14,
-      boxShadow: "0 2px 12px #0001",
-      padding: 30
-    }}>
+    <div style={{ maxWidth: 360, margin: "60px auto", background: "#fff", borderRadius: 14, boxShadow: "0 2px 12px #0001", padding: 30 }}>
       <h2 style={{ textAlign: "center", marginBottom: 18 }}>{t("find_pw.title")}</h2>
       <form onSubmit={handleFindPw}>
         <div style={{ marginBottom: 12 }}>
@@ -108,13 +101,7 @@ function FindPwBox() {
             value={userId}
             onChange={e => setUserId(e.target.value)}
             placeholder={t("email_id")}
-            style={{
-              width: "100%",
-              padding: 10,
-              borderRadius: 7,
-              border: "1.2px solid #bbb",
-              fontSize: 16
-            }}
+            style={{ width: "100%", padding: 10, borderRadius: 7, border: "1.2px solid #bbb", fontSize: 16 }}
             maxLength={50}
             disabled={loading}
             autoComplete="username"
@@ -126,13 +113,7 @@ function FindPwBox() {
             value={nickname}
             onChange={handleNicknameChange}
             placeholder={t("nickname")}
-            style={{
-              width: "100%",
-              padding: 10,
-              borderRadius: 7,
-              border: "1.2px solid #bbb",
-              fontSize: 16
-            }}
+            style={{ width: "100%", padding: 10, borderRadius: 7, border: "1.2px solid #bbb", fontSize: 16 }}
             autoComplete="off"
             spellCheck={false}
             disabled={loading}
@@ -142,20 +123,11 @@ function FindPwBox() {
           type="submit"
           style={{
             width: "100%",
-            background: "#1976ed",
-            color: "#fff",
-            fontWeight: 800,
-            border: "none",
-            borderRadius: 9,
-            fontSize: 19,
-            padding: "11px 0",
-            marginBottom: 8,
-            cursor: loading ? "not-allowed" : "pointer"
+            background: "#1976ed", color: "#fff", fontWeight: 800, border: "none",
+            borderRadius: 9, fontSize: 19, padding: "11px 0", marginBottom: 8, cursor: "pointer"
           }}
           disabled={loading}
-        >
-          {loading ? t("find_pw.loading") : t("find_pw.button")}
-        </button>
+        >{loading ? t("find_pw.loading") : t("find_pw.button")}</button>
       </form>
       {successMsg && <div style={{ color: "#1976ed", marginTop: 12, textAlign: "center" }}>{successMsg}</div>}
       {error && <div style={{ color: "red", marginTop: 12, textAlign: "center" }}>{error}</div>}
