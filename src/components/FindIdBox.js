@@ -1,12 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { createClient } from "@supabase/supabase-js";
 import { useTranslation } from "react-i18next";
-
-// 환경 변수에서 Supabase 키와 URL 불러오기!
-const supabaseUrl = process.env.REACT_APP_SUPABASE_URL;
-const supabaseKey = process.env.REACT_APP_SUPABASE_ANON_KEY;
-const supabase = createClient(supabaseUrl, supabaseKey);
+import { supabase } from "../utils/supabaseClient"; // ⭐️ 여기를 이렇게 고쳤어요!
 
 function getLangPath(i18n, path = "") {
   const lang = i18n.language || "ko";
