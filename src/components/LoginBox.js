@@ -152,7 +152,7 @@ function LoginBox({ setUser, setNickname }) {
               height: 22,
               verticalAlign: "middle",
               marginRight: 3,
-              display: "inline-block"
+              display: "inline-block",
             }}
             draggable={false}
             loading="lazy"
@@ -168,13 +168,22 @@ function LoginBox({ setUser, setNickname }) {
       </form>
       <div style={{ marginTop: 14, width: "100%", textAlign: "center" }}>
         {/* 아래 3개 링크 경로 수정 (언어코드 포함!) */}
-        <Link to={`/${i18n.language}/signup`} style={{ color: "#1976ed", marginBottom: 7, display: "block" }}>
+        <Link
+          to={`/${i18n.language}/signup`}
+          style={{ color: "#1976ed", marginBottom: 7, display: "block" }}
+        >
           {t("register_as_member")}
         </Link>
-        <Link to={`/${i18n.language}/find-id`} style={{ color: "#555", marginBottom: 5, display: "block" }}>
+        <Link
+          to={`/${i18n.language}/find-id`}
+          style={{ color: "#555", marginBottom: 5, display: "block" }}
+        >
           {t("find_id")}
         </Link>
-        <Link to={`/${i18n.language}/find-pw`} style={{ color: "#555", display: "block" }}>
+        <Link
+          to={`/${i18n.language}/find-pw`}
+          style={{ color: "#555", display: "block" }}
+        >
           {t("find_pw")}
         </Link>
       </div>
