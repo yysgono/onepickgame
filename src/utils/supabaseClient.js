@@ -7,5 +7,3 @@ console.log("SUPABASE_URL:", supabaseUrl);
 console.log("SUPABASE_KEY:", supabaseKey);
 
 export const supabase = createClient(supabaseUrl, supabaseKey);
-
-window.supabase = supabase;
