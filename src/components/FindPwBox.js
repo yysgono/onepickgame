@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { createClient } from "@supabase/supabase-js";
 import { useTranslation } from "react-i18next";
 
-// ⭐️ 새로 받은 anon 키로 설정
 const supabase = createClient(
   "https://irfyuvuazhujtlgpkfci.supabase.co",
   "sb_publishable__U91j22eqCETuyJ4-O1wUQ_WMu_Hk5r"
@@ -72,7 +71,6 @@ function FindPwBox() {
         return;
       }
 
-      // Supabase resetPasswordForEmail
       const { error: resetErr } = await supabase.auth.resetPasswordForEmail(userId.trim(), {
         redirectTo: window.location.origin + "/reset-password"
       });

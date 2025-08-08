@@ -5,7 +5,7 @@ import { generateRandomNickname } from "../utils/randomNickname";
 import { useTranslation } from "react-i18next";
 
 function getLangPath(i18n, path = "") {
-  const lang = i18n.language || "ko";
+  const lang = i18n.language || "en";
   if (path.startsWith("/")) path = path.slice(1);
   return `/${lang}${path ? "/" + path : ""}`;
 }
@@ -43,10 +43,8 @@ function SignupBox() {
     if (!validate()) return;
     setLoading(true);
 
-    // 1. 랜덤 닉네임 생성
     const nickname = generateRandomNickname();
 
-    // 2. 회원가입
     const { user, error: signupErr } = await signupUser(email, password, nickname);
 
     if (signupErr) {
@@ -70,7 +68,7 @@ function SignupBox() {
     setLoading(false);
 
     setTimeout(() => {
-      navigate(getLangPath(i18n)); // ✅ 언어 유지 홈 이동
+      navigate(getLangPath(i18n)); // always move to "/en" etc.
     }, 2000);
   }
 

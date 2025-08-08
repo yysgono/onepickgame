@@ -70,7 +70,8 @@ function useIsMobile() {
 }
 
 function getLangPath(i18n, path = "") {
-  const lang = i18n.language || "ko";
+  // 기본 언어 영어
+  const lang = i18n.language || "en";
   if (path.startsWith("/")) path = path.slice(1);
   return `/${lang}${path ? "/" + path : ""}`;
 }
@@ -86,7 +87,7 @@ function LanguageWrapper(props) {
       "ar", "bn", "th", "tr"
     ];
     if (!supportedLangs.includes(lang)) {
-      navigate("/", { replace: true });
+      navigate("/en", { replace: true });
       return;
     }
     if (i18n.language !== lang) {
@@ -113,7 +114,7 @@ function LanguageWrapper(props) {
     case "bn": return <BnPage {...homeProps} />;
     case "th": return <ThPage {...homeProps} />;
     case "tr": return <TrPage {...homeProps} />;
-    default: return <Home {...homeProps} />;
+    default: return <EnPage {...homeProps} />;
   }
 }
 
@@ -130,8 +131,6 @@ function App() {
   const [fixedWorldcupIds, setFixedWorldcupIds] = useState([]);
   const [fixedWorldcups, setFixedWorldcups] = useState([]);
 
-  // 소셜/구글 로그인시 프로필 자동생성 기능 없음!
-  // 회원 로그인 여부 및 프로필 조회만
   useEffect(() => {
     let isMounted = true;
     async function fetchUserAndProfile() {
@@ -354,7 +353,7 @@ function App() {
     const { i18n } = useTranslation();
 
     const langMatch = location.pathname.match(/^\/([a-z]{2})(\/|$)/);
-    const lang = langMatch ? langMatch[1] : i18n.language || "ko";
+    const lang = langMatch ? langMatch[1] : (i18n.language || "en");
 
     function handleMakeWorldcup() {
       if (!user) {
@@ -548,6 +547,11 @@ function App() {
 
         <div className="main-content-box">
           <Routes>
+            {/* 언어 없는 경로 진입시 영어로 강제 리다이렉트 */}
+            <Route path="/signup" element={<Navigate to="/en/signup" replace />} />
+            <Route path="/find-id" element={<Navigate to="/en/find-id" replace />} />
+            <Route path="/find-pw" element={<Navigate to="/en/find-pw" replace />} />
+            {/* 각 언어별 경로 */}
             <Route
               path="/:lang"
               element={
@@ -586,7 +590,7 @@ function App() {
             <Route path="/:lang/login" element={<LoginBox setUser={setUser} setNickname={updateNickname} />} />
             <Route path="/:lang/find-id" element={<FindIdBox />} />
             <Route path="/:lang/find-pw" element={<FindPwBox />} />
-            <Route path="/:lang/reset-password" element={<Navigate to="/" />} />
+            <Route path="/:lang/reset-password" element={<Navigate to="/en" />} />
             <Route path="/:lang/privacy-policy" element={<PrivacyPolicy />} />
             <Route path="/:lang/terms-of-service" element={<TermsOfService />} />
             <Route path="/:lang/suggestions" element={<SuggestionsBoard user={user} isAdmin={isAdmin} />} />
@@ -594,8 +598,8 @@ function App() {
             <Route path="/:lang/recent-worldcups" element={<RecentWorldcupsWrapper />} />
             <Route path="/:lang/notice" element={<NoticePage />} />
             <Route path="/:lang/notice/:id" element={<NoticeDetail />} />
-            <Route path="/" element={<HomeWrapper />} />
-            <Route path="*" element={<Navigate to="/" replace />} />
+            <Route path="/" element={<Navigate to="/en" replace />} />
+            <Route path="*" element={<Navigate to="/en" replace />} />
           </Routes>
         </div>
       </>
