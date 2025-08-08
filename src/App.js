@@ -119,74 +119,72 @@ function LanguageWrapper(props) {
 
 function App() {
   const isMobile = useIsMobile();
-
-  const [worldcupList, setWorldcupList] = useState([]);
   const { t, i18n } = useTranslation();
   const [user, setUser] = useState(null);
-  const [isAdmin, setIsAdmin] = useState(false);
   const [nickname, setNickname] = useState("");
+  const [isAdmin, setIsAdmin] = useState(false);
   const [nicknameLoading, setNicknameLoading] = useState(false);
 
+  const [worldcupList, setWorldcupList] = useState([]);
   const [fixedWorldcupIds, setFixedWorldcupIds] = useState([]);
   const [fixedWorldcups, setFixedWorldcups] = useState([]);
 
+  // 최초 로그인/회원가입 시 profiles row 생성만 보장
   useEffect(() => {
-    let mounted = true;
-
     const { data: authListener } = supabase.auth.onAuthStateChange(
       async (event, session) => {
-        if (!mounted) return;
-        setNicknameLoading(true);
-
-        if (session?.user) {
-          setUser(session.user);
-          // profiles에 이미 있나 체크, 없으면 생성!
-          let { data: profile } = await supabase
+        if (event === "SIGNED_IN" && session?.user) {
+          const user = session.user;
+          const { data: profile } = await supabase
             .from("profiles")
-            .select("nickname")
-            .eq("id", session.user.id)
+            .select("id")
+            .eq("id", user.id)
             .maybeSingle();
           if (!profile) {
             const nickname = generateRandomNickname();
             await supabase.from("profiles").insert({
-              id: session.user.id,
-              email: session.user.email,
+              id: user.id,
+              email: user.email,
               nickname,
             });
-            profile = { nickname };
           }
-          setNickname(profile?.nickname || "");
-          setIsAdmin(profile?.nickname === "admin");
-        } else {
-          setUser(null);
-          setNickname("");
-          setIsAdmin(false);
         }
-        setNicknameLoading(false);
       }
     );
+    return () => authListener?.subscription.unsubscribe();
+  }, []);
 
-    (async () => {
+  // 새로고침 시 user/닉네임/관리자 정보만 세팅
+  useEffect(() => {
+    let isMounted = true;
+    async function fetchUserAndProfile() {
       setNicknameLoading(true);
       const { data } = await supabase.auth.getUser();
+      if (isMounted) setUser(data?.user || null);
       if (data?.user) {
-        setUser(data.user);
         const { data: profile } = await supabase
           .from("profiles")
           .select("nickname")
           .eq("id", data.user.id)
           .single();
-        setNickname(profile?.nickname || "");
-        setIsAdmin(profile?.nickname === "admin");
+        if (isMounted) {
+          setNickname(profile?.nickname || "");
+          setIsAdmin(profile?.nickname === "admin");
+        }
+      } else {
+        setNickname("");
+        setIsAdmin(false);
       }
       setNicknameLoading(false);
-    })();
-
-    return () => {
-      mounted = false;
-      authListener?.subscription.unsubscribe();
-    };
+    }
+    fetchUserAndProfile();
+    return () => { isMounted = false; };
   }, []);
+
+  function updateNickname(nick) {
+    setNickname(nick);
+    setIsAdmin(nick === "admin");
+  }
 
   const fetchWorldcups = async () => {
     try {
@@ -197,9 +195,7 @@ function App() {
     }
   };
 
-  useEffect(() => {
-    fetchWorldcups();
-  }, []);
+  useEffect(() => { fetchWorldcups(); }, []);
 
   useEffect(() => {
     async function fetchFixedWorldcups() {
@@ -266,11 +262,6 @@ function App() {
     };
     reader.readAsText(file);
     e.target.value = "";
-  }
-
-  function updateNickname(nick) {
-    setNickname(nick);
-    setIsAdmin(nick === "admin");
   }
 
   function MyWorldcupsWrapper() {
@@ -381,7 +372,6 @@ function App() {
   function AppRoutes() {
     const navigate = useNavigate();
     const location = useLocation();
-    const { i18n } = useTranslation();
 
     const langMatch = location.pathname.match(/^\/([a-z]{2})(\/|$)/);
     const lang = langMatch ? langMatch[1] : i18n.language || "ko";
