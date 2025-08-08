@@ -1,8 +1,14 @@
 import React, { useState } from "react";
 import { createClient } from "@supabase/supabase-js";
-import { useTranslation } from "react-i18next"; // i18n
+import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 
-// 본인 프로젝트 정보로 수정!
+function getLangPath(i18n, path = "") {
+  const lang = i18n.language || "ko";
+  if (path.startsWith("/")) path = path.slice(1);
+  return `/${lang}${path ? "/" + path : ""}`;
+}
+
 const supabase = createClient(
   "https://irfyuvuazhujtlgpkfci.supabase.co",
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlyZnl1dnVhemh1anRsZ3BrZmNpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTA1NDY0MTAsImV4cCI6MjA2NjEyMjQxMH0.q4s3G9mGnCbX7Urtks6_63XOSD8Ry2_GcmGM1wE7TBE"
@@ -31,12 +37,13 @@ function sliceByByte(str, maxBytes) {
 }
 
 function FindPwBox() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [userId, setUserId] = useState("");
   const [nickname, setNickname] = useState("");
   const [successMsg, setSuccessMsg] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   function handleNicknameChange(e) {
     const val = e.target.value;
@@ -80,6 +87,10 @@ function FindPwBox() {
         setError(t("pw_reset_send_fail"));
       } else {
         setSuccessMsg(t("pw_reset_send_success"));
+        // 2초 후 언어유지 홈으로 이동
+        setTimeout(() => {
+          navigate(getLangPath(i18n));
+        }, 2000);
       }
     } catch (e) {
       setError(t("temporary_error"));

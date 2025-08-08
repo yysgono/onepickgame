@@ -1,6 +1,13 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { createClient } from "@supabase/supabase-js";
-import { useTranslation } from "react-i18next"; // i18n 추가
+import { useTranslation } from "react-i18next";
+
+function getLangPath(i18n, path = "") {
+  const lang = i18n.language || "ko";
+  if (path.startsWith("/")) path = path.slice(1);
+  return `/${lang}${path ? "/" + path : ""}`;
+}
 
 const supabase = createClient(
   "https://irfyuvuazhujtlgpkfci.supabase.co",
@@ -30,11 +37,12 @@ function sliceByByte(str, maxBytes) {
 }
 
 function FindIdBox() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [nickname, setNickname] = useState("");
   const [foundId, setFoundId] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   function handleNicknameChange(e) {
     const val = e.target.value;
@@ -67,6 +75,10 @@ function FindIdBox() {
         setError(t("nickname_not_found"));
       } else {
         setFoundId(t("find_id.result", { email: profile.email }));
+        // 2초 후 언어유지 홈으로 이동
+        setTimeout(() => {
+          navigate(getLangPath(i18n));
+        }, 2000);
       }
     } catch (e) {
       setError(t("temporary_error"));

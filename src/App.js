@@ -55,6 +55,7 @@ import TrPage from "./pages/tr";
 
 import { getWorldcupGames, deleteWorldcupGame, getWorldcupGame } from "./utils/supabaseWorldcupApi";
 import { supabase } from "./utils/supabaseClient";
+import { generateRandomNickname } from "./utils/randomNickname";
 
 function useIsMobile() {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 700);
@@ -129,6 +130,33 @@ function App() {
 
   const [fixedWorldcupIds, setFixedWorldcupIds] = useState([]);
   const [fixedWorldcups, setFixedWorldcups] = useState([]);
+
+  // ✅ 구글 소셜 포함, 모든 로그인/회원가입 → profiles 자동생성
+  useEffect(() => {
+    const { data: authListener } = supabase.auth.onAuthStateChange(
+      async (event, session) => {
+        if (event === "SIGNED_IN" && session?.user) {
+          const user = session.user;
+          // profiles에 이미 있나 체크
+          const { data: profile } = await supabase
+            .from("profiles")
+            .select("id")
+            .eq("id", user.id)
+            .maybeSingle();
+          // 없으면 자동 생성!
+          if (!profile) {
+            const nickname = generateRandomNickname();
+            await supabase.from("profiles").insert({
+              id: user.id,
+              email: user.email,
+              nickname,
+            });
+          }
+        }
+      }
+    );
+    return () => authListener?.subscription.unsubscribe();
+  }, []);
 
   useEffect(() => {
     let isMounted = true;

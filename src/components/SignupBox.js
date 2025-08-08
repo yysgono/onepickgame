@@ -4,8 +4,14 @@ import { signupUser } from "../utils/supabaseUserApi";
 import { generateRandomNickname } from "../utils/randomNickname";
 import { useTranslation } from "react-i18next";
 
+function getLangPath(i18n, path = "") {
+  const lang = i18n.language || "ko";
+  if (path.startsWith("/")) path = path.slice(1);
+  return `/${lang}${path ? "/" + path : ""}`;
+}
+
 function SignupBox() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [success, setSuccess] = useState("");
@@ -64,7 +70,7 @@ function SignupBox() {
     setLoading(false);
 
     setTimeout(() => {
-      navigate("/");
+      navigate(getLangPath(i18n)); // ✅ 언어 유지 홈 이동
     }, 2000);
   }
 
