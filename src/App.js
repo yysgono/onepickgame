@@ -550,7 +550,7 @@ function App() {
             adminName={nickname}
             onLogout={() => {
               supabase.auth.signOut().then(() => {
-                              window.location.href = getLangPath(i18n);
+                window.location.href = getLangPath(i18n);
               });
             }}
           />
@@ -559,7 +559,6 @@ function App() {
       );
     }
 
-    // ✨ 언어별 pages index 파일로 HomeProps 모두 넘김!
     return (
       <>
         <div className="header-wrapper" style={{ margin: 0, padding: 0 }}>

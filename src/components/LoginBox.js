@@ -46,15 +46,6 @@ function LoginBox({ setUser, setNickname }) {
     navigate("/");
   }
 
-  async function handleGoogleLogin() {
-    setError("");
-    const { error } = await supabase.auth.signInWithOAuth({ provider: "google" });
-    if (error) {
-      console.error("Google login error:", error);
-      setError(t("login_failed") || "Login failed");
-    }
-  }
-
   return (
     <div
       style={{
@@ -122,43 +113,6 @@ function LoginBox({ setUser, setNickname }) {
           }}
         >
           {loading ? t("logging_in") : t("login")}
-        </button>
-        {/* --- 구글 로그인 버튼 --- */}
-        <button
-          type="button"
-          onClick={handleGoogleLogin}
-          style={{
-            width: "100%",
-            background: "#fff",
-            color: "#222",
-            fontWeight: 600,
-            border: "1.5px solid #ccc",
-            borderRadius: 9,
-            fontSize: 16,
-            padding: "10px 0",
-            marginBottom: 12,
-            cursor: "pointer",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: 10,
-          }}
-        >
-          <img
-            src="/icons/google.svg"
-            alt="Google"
-            style={{
-              width: 22,
-              height: 22,
-              verticalAlign: "middle",
-              marginRight: 3,
-              display: "inline-block",
-            }}
-            draggable={false}
-            loading="lazy"
-            aria-hidden="true"
-          />
-          {t("Google") || "Google"}
         </button>
         {error && (
           <div style={{ color: "red", marginTop: 10, textAlign: "center" }}>
