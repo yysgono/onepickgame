@@ -94,7 +94,6 @@ function LanguageWrapper(props) {
     }
   }, [lang, i18n, navigate]);
 
-  // 모든 props를 Home에 확실히 넘기기!
   const homeProps = { ...props };
 
   switch (lang) {
@@ -131,63 +130,63 @@ function App() {
   const [fixedWorldcupIds, setFixedWorldcupIds] = useState([]);
   const [fixedWorldcups, setFixedWorldcups] = useState([]);
 
-  // ✅ 구글 소셜 포함, 모든 로그인/회원가입 → profiles 자동생성
   useEffect(() => {
+    let mounted = true;
+
     const { data: authListener } = supabase.auth.onAuthStateChange(
       async (event, session) => {
-        if (event === "SIGNED_IN" && session?.user) {
-          const user = session.user;
-          // profiles에 이미 있나 체크
-          const { data: profile } = await supabase
+        if (!mounted) return;
+        setNicknameLoading(true);
+
+        if (session?.user) {
+          setUser(session.user);
+          // profiles에 이미 있나 체크, 없으면 생성!
+          let { data: profile } = await supabase
             .from("profiles")
-            .select("id")
-            .eq("id", user.id)
+            .select("nickname")
+            .eq("id", session.user.id)
             .maybeSingle();
-          // 없으면 자동 생성!
           if (!profile) {
             const nickname = generateRandomNickname();
             await supabase.from("profiles").insert({
-              id: user.id,
-              email: user.email,
+              id: session.user.id,
+              email: session.user.email,
               nickname,
             });
+            profile = { nickname };
           }
+          setNickname(profile?.nickname || "");
+          setIsAdmin(profile?.nickname === "admin");
+        } else {
+          setUser(null);
+          setNickname("");
+          setIsAdmin(false);
         }
+        setNicknameLoading(false);
       }
     );
-    return () => authListener?.subscription.unsubscribe();
-  }, []);
 
-  useEffect(() => {
-    let isMounted = true;
-    async function fetchUserAndProfile() {
+    (async () => {
       setNicknameLoading(true);
       const { data } = await supabase.auth.getUser();
-      if (isMounted) setUser(data?.user || null);
       if (data?.user) {
+        setUser(data.user);
         const { data: profile } = await supabase
           .from("profiles")
           .select("nickname")
           .eq("id", data.user.id)
           .single();
-        if (isMounted) {
-          setNickname(profile?.nickname || "");
-          setIsAdmin(profile?.nickname === "admin");
-        }
-      } else {
-        setNickname("");
-        setIsAdmin(false);
+        setNickname(profile?.nickname || "");
+        setIsAdmin(profile?.nickname === "admin");
       }
       setNicknameLoading(false);
-    }
-    fetchUserAndProfile();
-    return () => { isMounted = false; };
-  }, []);
+    })();
 
-  function updateNickname(nick) {
-    setNickname(nick);
-    setIsAdmin(nick === "admin");
-  }
+    return () => {
+      mounted = false;
+      authListener?.subscription.unsubscribe();
+    };
+  }, []);
 
   const fetchWorldcups = async () => {
     try {
@@ -267,6 +266,11 @@ function App() {
     };
     reader.readAsText(file);
     e.target.value = "";
+  }
+
+  function updateNickname(nick) {
+    setNickname(nick);
+    setIsAdmin(nick === "admin");
   }
 
   function MyWorldcupsWrapper() {
@@ -546,7 +550,7 @@ function App() {
             adminName={nickname}
             onLogout={() => {
               supabase.auth.signOut().then(() => {
-                window.location.href = getLangPath(i18n);
+                              window.location.href = getLangPath(i18n);
               });
             }}
           />
