@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 function getYoutubeId(url) {
   if (!url) return null;
@@ -23,6 +24,7 @@ function isImageFile(url) {
 }
 
 function MediaRenderer({ url, alt = "", playable = false, style = {}, onPlay }) {
+  const { t } = useTranslation();
   const [imgError, setImgError] = useState(false);
   const [youtubePlaying, setYoutubePlaying] = useState(false);
 
@@ -51,7 +53,7 @@ function MediaRenderer({ url, alt = "", playable = false, style = {}, onPlay }) 
             <>
               <img
                 src={`https://img.youtube.com/vi/${youtubeId}/mqdefault.jpg`}
-                alt={alt || "YouTube thumbnail"}
+                alt={alt || t("youtube_thumbnail") || "YouTube thumbnail"}
                 style={{
                   width: "100%",
                   height: "100%",
@@ -77,7 +79,7 @@ function MediaRenderer({ url, alt = "", playable = false, style = {}, onPlay }) 
                     userSelect: "none",
                   }}
                 >
-                  이미지 로딩 실패
+                  {t("image_load_fail") || "Image failed to load"}
                 </div>
               )}
               <div
@@ -105,7 +107,7 @@ function MediaRenderer({ url, alt = "", playable = false, style = {}, onPlay }) 
               width="100%"
               height="100%"
               src={`https://www.youtube.com/embed/${youtubeId}?autoplay=1&mute=0&rel=0`}
-              title="YouTube player"
+              title={t("youtube_player") || "YouTube player"}
               frameBorder="0"
               allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
@@ -131,12 +133,12 @@ function MediaRenderer({ url, alt = "", playable = false, style = {}, onPlay }) 
           ...style,
         }}
       >
-        이미지 로딩 실패
+        {t("image_load_fail") || "Image failed to load"}
       </div>
     ) : (
       <img
         src={`https://img.youtube.com/vi/${youtubeId}/mqdefault.jpg`}
-        alt={alt || "YouTube thumbnail"}
+        alt={alt || t("youtube_thumbnail") || "YouTube thumbnail"}
         style={{
           width: "100%",
           height: "100%",
@@ -175,7 +177,7 @@ function MediaRenderer({ url, alt = "", playable = false, style = {}, onPlay }) 
     return (
       <img
         src={DEFAULT_IMAGE}
-        alt={alt}
+        alt={alt || t("default_thumbnail") || "Default thumbnail"}
         style={{ width: "100%", height: "100%", objectFit: "cover", ...style }}
         draggable={false}
         loading="lazy"
@@ -209,7 +211,7 @@ function MediaRenderer({ url, alt = "", playable = false, style = {}, onPlay }) 
     return (
       <img
         src={DEFAULT_IMAGE}
-        alt="Default thumbnail"
+        alt={t("default_thumbnail") || "Default thumbnail"}
         style={{
           width: "100%",
           height: "100%",

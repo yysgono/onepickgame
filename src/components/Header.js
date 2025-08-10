@@ -391,7 +391,7 @@ export default function Header({
       >
         <img
           src={logoImgUrl}
-          alt="OnePick Logo"
+          alt={t("onepick_logo_alt")}
           style={{
             width: 42,
             height: 42,
@@ -416,7 +416,7 @@ export default function Header({
             marginTop: 2,
           }}
         >
-          One Pick Game
+          {t("site_title")}
         </span>
       </div>
       {/* 버튼/메뉴 */}

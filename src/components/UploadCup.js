@@ -1,7 +1,7 @@
 import React, { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { mainButtonStyle } from "../styles/common";
-import imageCompression from "browser-image-compression"; // ★ 추가
+import imageCompression from "browser-image-compression";
 
 function UploadCup({ onChange }) {
   const { t } = useTranslation();
@@ -9,7 +9,6 @@ function UploadCup({ onChange }) {
   const [preview, setPreview] = useState(null);
   const isMobile = typeof window !== "undefined" && window.innerWidth <= 700;
 
-  // ★ 이미지 업로드(webp 변환)
   async function handleFile(e) {
     const file = e.target.files[0];
     if (!file) return;

@@ -111,7 +111,7 @@ function CandidateInput({ value, onChange, onRemove, disabled }) {
   function handleNameChange(e) {
     const name = e.target.value;
     if (hasBadword(name, i18n.language)) {
-      alert(t("badword_warning") || "비속어/금지어가 포함되어 있습니다.");
+      alert(t("badword_warning") || t("Contains profanity or banned words"));
       return;
     }
     onChange({ ...value, name });
@@ -128,11 +128,11 @@ function CandidateInput({ value, onChange, onRemove, disabled }) {
     // 확장자 필터: jpg, png, gif, svg만
     const allowed = /\.(jpe?g|png|gif|svg)$/i;
     if (!allowed.test(file.name)) {
-      alert(t("only_image_file") || "jpg, png, gif, svg 파일만 업로드 가능합니다.");
+      alert(t("only_image_file") || t("Only jpg, png, gif, svg files can be uploaded."));
       return;
     }
     if (file.size > 5 * 1024 * 1024) {
-      alert(t("image_file_size_limit") || "5MB 이하의 이미지만 업로드 가능합니다.");
+      alert(t("image_file_size_limit") || t("Only images under 5MB can be uploaded."));
       return;
     }
     onChange({ ...value, file, image: "", fileName: file.name });
@@ -173,7 +173,7 @@ function CandidateInput({ value, onChange, onRemove, disabled }) {
         {youtubeThumb ? (
           <img
             src={youtubeThumb}
-            alt="yt"
+            alt={t("yt")}
             style={{ width: "100%", height: "100%", objectFit: "cover" }}
           />
         ) : isGif && (value.file || value.image) ? (
@@ -184,13 +184,13 @@ function CandidateInput({ value, onChange, onRemove, disabled }) {
           ) : (
             <img
               src={thumb}
-              alt="thumb"
+              alt={t("thumb")}
               style={{ width: "100%", height: "100%", objectFit: "cover" }}
               onError={e => { e.target.src = DEFAULT_IMAGE; }}
             />
           )
         ) : isVideoFile ? (
-          <span role="img" aria-label="video">🎥</span>
+          <span role="img" aria-label={t("video")}>🎥</span>
         ) : (
           <span style={{ color: "#b3d3fc", fontSize: 26 }}>?</span>
         )}

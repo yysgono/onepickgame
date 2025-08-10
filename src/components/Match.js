@@ -149,11 +149,12 @@ function AdaptiveTitle({ title, isMobile }) {
 
 // BackArrowButton
 function BackArrowButton({ onClick, disabled, style }) {
+  const { t } = useTranslation();
   return (
     <button
       onClick={onClick}
       disabled={disabled}
-      aria-label="Back"
+      aria-label={t("back")}
       style={{
         display: "flex",
         justifyContent: "center",
@@ -569,7 +570,7 @@ function Match({ cup, onResult, selectedCount }) {
     }
   }
 
-    useEffect(() => {
+  useEffect(() => {
     if (shouldRedirect) {
       const langMatch = location.pathname.match(/^\/([a-z]{2})(\/|$)/);
       const lang = langMatch ? langMatch[1] : "ko";

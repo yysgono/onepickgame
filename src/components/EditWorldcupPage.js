@@ -106,15 +106,18 @@ function EditWorldcupPage({ worldcupList, fetchWorldcups, cupId, isAdmin }) {
     const isVideo = /\.(mp4|webm|mov)$/i.test(file.name);
 
     if (isImage && file.size > 6 * 1024 * 1024) {
-      alert(t("only_images_under_6mb") || "Only images up to 6MB can be uploaded.");
+      alert(t("only_images_under_6mb") || t("Only images up to 6MB can be uploaded."));
       return;
     }
     if (isVideo && file.size > 20 * 1024 * 1024) {
-      alert(t("only_videos_under_20mb") || "Only videos up to 20MB can be uploaded.");
+      alert(t("only_videos_under_20mb") || t("Only videos up to 20MB can be uploaded."));
       return;
     }
     if (!isImage && !isVideo) {
-      alert(t("unsupported_file_type_detail") || "Unsupported file type. (Images: JPG, PNG, GIF, SVG, WEBP, AVIF / Videos: MP4, WEBM, MOV)");
+      alert(
+        t("unsupported_file_type_detail") ||
+        t("Unsupported file type. (Images: JPG, PNG, GIF, SVG, WEBP, AVIF / Videos: MP4, WEBM, MOV)")
+      );
       return;
     }
 
@@ -218,7 +221,10 @@ function EditWorldcupPage({ worldcupList, fetchWorldcups, cupId, isAdmin }) {
 
     if (duplicates.length > 0) {
       const dupNames = duplicates.map(arr => arr[0]).join(", ");
-      return setError(t("duplicate_candidate_names", { names: dupNames }) || `Duplicate candidate names: ${dupNames}`);
+      return setError(
+        t("duplicate_candidate_names", { names: dupNames }) ||
+        t("Duplicate candidate names: {{names}}", { names: dupNames })
+      );
     }
 
     setLoading(true);
@@ -367,7 +373,7 @@ function EditWorldcupPage({ worldcupList, fetchWorldcups, cupId, isAdmin }) {
           <span>
             <span style={{ fontSize: isMobile ? 18 : 23 }}>📁</span>
             <br />
-            {t("drag_upload_detail") || "Drag and drop or click to upload (Images up to 6MB, Videos up to 20MB)."}
+            {t("drag_upload_detail") || t("Drag and drop or click to upload (Images up to 6MB, Videos up to 20MB).")}
           </span>
         </div>
         {data.map((item, i) => {
@@ -388,7 +394,7 @@ function EditWorldcupPage({ worldcupList, fetchWorldcups, cupId, isAdmin }) {
               <input
                 value={item.name}
                 onChange={e => handleCandidateChange(i, "name", e.target.value)}
-                placeholder={t("name") || "Name"}
+                placeholder={t("name") || t("Name")}
                 style={{
                   width: isMobile ? 78 : 120, minWidth: 50, padding: 9,
                   borderRadius: 8, border: `1.3px solid #bbb`, fontSize: 16
@@ -399,7 +405,7 @@ function EditWorldcupPage({ worldcupList, fetchWorldcups, cupId, isAdmin }) {
               <input
                 value={item.image}
                 onChange={e => handleCandidateChange(i, "image", e.target.value)}
-                placeholder={t("imageUrlOrYoutube") || "Image/Video URL or Youtube"}
+                placeholder={t("imageUrlOrYoutube") || t("Image/Video URL or Youtube")}
                 style={{
                   flex: 1, minWidth: 0, padding: 9,
                   borderRadius: 8, border: `1.3px solid #bbb`, fontSize: 15,
@@ -424,7 +430,7 @@ function EditWorldcupPage({ worldcupList, fetchWorldcups, cupId, isAdmin }) {
                 }}
                 disabled={loading}
               >
-                {t("choose_file") || "File"}
+                {t("choose_file") || t("File")}
               </button>
               <input
                 id={`file-${i}`}
@@ -478,7 +484,7 @@ function EditWorldcupPage({ worldcupList, fetchWorldcups, cupId, isAdmin }) {
                 onMouseOut={e => (e.currentTarget.style.background = COLORS.danger)}
                 disabled={loading}
               >
-                {t("delete") || "Delete"}
+                {t("delete") || t("Delete")}
               </button>
             </div>
           );
@@ -495,7 +501,7 @@ function EditWorldcupPage({ worldcupList, fetchWorldcups, cupId, isAdmin }) {
           onMouseOut={e => (e.currentTarget.style.background = COLORS.main)}
           disabled={loading}
         >
-          {t("add_candidate") || "Add Candidate"}
+          {t("add_candidate") || t("Add Candidate")}
         </button>
       </div>
       {error && <div style={{ color: COLORS.danger, marginTop: 17, fontWeight: 700, textAlign: "center" }}>{error}</div>}
@@ -511,7 +517,7 @@ function EditWorldcupPage({ worldcupList, fetchWorldcups, cupId, isAdmin }) {
           onMouseOut={e => (e.currentTarget.style.background = COLORS.main)}
           disabled={loading}
         >
-          {loading ? t("saving") || "Saving..." : t("save") || "Save"}
+          {loading ? (t("saving") || t("Saving...")) : (t("save") || t("Save"))}
         </button>
         <button
           onClick={() => navigate("/")}
@@ -522,7 +528,7 @@ function EditWorldcupPage({ worldcupList, fetchWorldcups, cupId, isAdmin }) {
           }}
           disabled={loading}
         >
-          {t("cancel") || "Cancel"}
+          {t("cancel") || t("Cancel")}
         </button>
       </div>
     </div>

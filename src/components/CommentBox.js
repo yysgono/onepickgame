@@ -277,7 +277,7 @@ export default function CommentBox({ cupId }) {
           }}
           title={nickname}
         >
-          {nickname || "?"}
+          {nickname || t("comment.unknownUser")}
         </div>
         {!user ? (
           <div

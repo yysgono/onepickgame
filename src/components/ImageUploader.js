@@ -1,6 +1,8 @@
 import React, { useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 function ImageUploader({ onUpload }) {
+  const { t } = useTranslation();
   const ref = useRef();
   const [preview, setPreview] = useState(null);
   const [error, setError] = useState("");
@@ -13,12 +15,12 @@ function ImageUploader({ onUpload }) {
     // 파일 확장자 및 크기 체크
     const ext = file.name.split('.').pop().toLowerCase();
     if (!["jpg", "jpeg", "png"].includes(ext)) {
-      setError("jpg, jpeg, png 파일만 업로드 가능합니다.");
+      setError(t("only_jpg_png") || "Only jpg, jpeg, png files can be uploaded.");
       e.target.value = "";
       return;
     }
     if (file.size > 2 * 1024 * 1024) { // 2MB
-      setError("2MB 이하 이미지만 업로드 가능합니다.");
+      setError(t("image_file_size_limit_2mb") || "Only images under 2MB can be uploaded.");
       e.target.value = "";
       return;
     }
@@ -50,8 +52,9 @@ function ImageUploader({ onUpload }) {
           fontWeight: 700,
           cursor: "pointer",
         }}
+        type="button"
       >
-        이미지 업로드
+        {t("upload_image") || "Upload Image"}
       </button>
       {error && (
         <div style={{ color: "red", marginTop: 10, fontSize: 15 }}>
@@ -62,7 +65,7 @@ function ImageUploader({ onUpload }) {
         <div style={{ marginTop: 12 }}>
           <img
             src={preview}
-            alt="미리보기"
+            alt={t("preview") || "Preview"}
             style={{ maxWidth: 160, maxHeight: 100, borderRadius: 9, border: "1px solid #eee" }}
           />
         </div>

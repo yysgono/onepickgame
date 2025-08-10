@@ -193,7 +193,6 @@
   "recent_comments": "آخر التعليقات",
   "loading": "جاري التحميل...",
   "no_comments": "لا توجد تعليقات",
-
   "edit_need_title": "يرجى إدخال العنوان.",
   "edit_need_min_candidates": "يجب أن يكون هناك متسابقان على الأقل.",
   "edit_need_all_names": "يرجى إدخال اسم لكل متسابق.",
@@ -204,31 +203,7 @@
   "saving": "جارٍ الحفظ...",
   "save": "حفظ",
 
-  "comment": {
-    "placeholder": "اكتب تعليقاً",
-    "submit": "إرسال",
-    "comments": "تعليقات",
-    "noComments": "لا يوجد تعليقات.",
-    "needLogin": "سجّل الدخول للتعليق.",
-    "banned": "المستخدمون المحظورون لا يمكنهم التعليق.",
-    "inputContent": "يرجى إدخال محتوى التعليق.",
-    "limit80": "التعليق بحد أقصى 80 حرفاً.",
-    "limitLines": "التعليق بحد أقصى 5 أسطر.",
-    "badwordNickname": "اللقب يحتوي على ألفاظ نابية.",
-    "badwordComment": "التعليق يحتوي على ألفاظ نابية.",
-    "limitNicknameByte": "اللقب حتى 12 بايت.",
-    "saveError": "فشل في حفظ التعليق.",
-    "delete": "حذف",
-    "deleteAuth": "يمكن الحذف فقط للمالك أو المدير.",
-    "upvote": "يوصى به",
-    "downvote": "غير موصى به",
-    "blinded": "تم حجب هذا التعليق.",
-    "loading": "جارٍ التحميل...",
-    "banExpiresAt": "تاريخ انتهاء الحظر",
-    "banReason": "سبب الحظر"
-  },
-
-  "match": {
+  "matchObj": {
     "round": "دور {{n}}",
     "final": "النهائي",
     "semiFinal": "نصف النهائي",
@@ -261,5 +236,41 @@
   },
 
   "notice_title_notice-1": "ما هو لعبة One Pick؟",
-  "notice_title_notice-2": "كيفية إنشاء كأس العالم الخاصة بك"
+  "notice_title_notice-2": "كيفية إنشاء كأس العالم الخاصة بك",
+
+  "limit_select": "يمكنك اختيار حتى {{count}}.",
+  "only_images_under_6mb": "يمكن رفع صور حتى 6 ميجابايت فقط.",
+  "only_videos_under_20mb": "يمكن رفع فيديوهات حتى 20 ميجابايت فقط.",
+  "unsupported_file_type": "نوع ملف غير مدعوم.",
+  "unsupported_file_type_detail": "نوع ملف غير مدعوم. (الصور: JPG, PNG, GIF, SVG, WEBP, AVIF / الفيديو: MP4, WEBM, MOV)",
+  "image_size_limit_6mb": "الحد الأقصى 6 ميجابايت",
+  "edit_no_permission": "ليس لديك صلاحية لتعديل هذا الكأس.",
+  "edit_worldcup": "تعديل كأس العالم",
+  "description": "الوصف",
+  "count_unit": "عنصر",
+  "edit_title_placeholder": "أدخل العنوان",
+  "edit_description_placeholder": "أدخل وصفًا قصيرًا (اختياري)",
+  "worldcup_saved_id": "تم حفظ الكأس!\\nالمعرف: {{id}}",
+  "save_failed_try_again": "فشل الحفظ. يرجى المحاولة مرة أخرى.",
+  "create_worldcup": "إنشاء كأس العالم",
+  "login_required_create_worldcup": "يرجى تسجيل الدخول لإنشاء كأس العالم.",
+  "banned_from_creating_worldcups": "تم حظرك من إنشاء كؤوس العالم.",
+  "ban_expires_at": "ينتهي الحظر في",
+  "ban_reason": "سبب الحظر",
+  "max_upload_files": "يمكنك رفع حتى {{count}} ملفًا.",
+  "add_at_least_two_candidates": "يرجى إضافة متسابقين على الأقل.",
+  "enter_name_for_all_candidates": "يرجى إدخال اسم لكل متسابق.",
+  "worldcup_created": "تم إنشاء كأس العالم!",
+  "image_video_url_optional": "رابط صورة/فيديو (اختياري)",
+  "image_video_upload_limit": "الصور: حتى 6 ميجابايت، الفيديو: حتى 20 ميجابايت.",
+  "image_load_failed": "فشل تحميل الصورة.",
+  "error_no_data": "لا توجد بيانات.",
+  "backupAll": "نسخ احتياطي للجميع",
+  "restore": "استعادة",
+  "worldcup_title": "عنوان كأس العالم",
+  "nickname_rule": "يجب أن يكون اللقب 3 أحرف على الأقل بحروف عربية/لاتينية أو أرقام أو شرطة أو شرطة سفلية.",
+
+  "find_id.enter_nickname": "أدخل لقبك",
+  "find_id.result": "بريدك الإلكتروني (ID) هو {{email}}",
+  "find_id.loading": "جارٍ البحث..."
 }

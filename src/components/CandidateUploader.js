@@ -20,13 +20,13 @@ function CandidateUploader({ onUpload, preview }) {
 
     // 2MB 용량 제한
     if (file.size > 2 * 1024 * 1024) {
-      alert(t("image_file_size_limit_2mb") || "2MB 이하 이미지만 업로드 가능합니다.");
+      alert(t("image_file_size_limit_2mb") || t("Only images under 2MB can be uploaded."));
       e.target.value = "";
       return;
     }
 
     if (!isAllowedImage(file)) {
-      alert(t("only_jpg_png") || "jpg, jpeg, png 파일만 업로드 가능합니다.");
+      alert(t("only_jpg_png") || t("Only jpg, jpeg, png files can be uploaded."));
       e.target.value = "";
       return;
     }

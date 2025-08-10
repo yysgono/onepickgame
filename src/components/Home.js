@@ -447,7 +447,7 @@ function Home({
                     {first?.image ? (
                       <MediaRenderer
                         url={first.image}
-                        alt="1위"
+                        alt={t("first_place")}
                         playable={false}
                         style={{
                           width: "100%",
@@ -479,7 +479,7 @@ function Home({
                     {second?.image ? (
                       <MediaRenderer
                         url={second.image}
-                        alt="2위"
+                        alt={t("second_place")}
                         playable={false}
                         style={{
                           width: "100%",
@@ -512,7 +512,7 @@ function Home({
                   >
                     <img
                       src="/vs.png"
-                      alt="vs"
+                      alt={t("vs")}
                       style={{
                         width: "100%",
                         height: "100%",
@@ -628,7 +628,7 @@ function Home({
                       <button
                         onClick={e => {
                           e.stopPropagation();
-                          if (!window.confirm(t("delete_confirm") || "정말 삭제하시겠습니까?")) return;
+                          if (!window.confirm(t("delete_confirm") || "Are you sure you want to delete?")) return;
                           if (onDelete) onDelete(cup.id);
                           else window.location.reload();
                         }}

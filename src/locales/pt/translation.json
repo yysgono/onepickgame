@@ -202,6 +202,37 @@
   "drag_upload_detail": "Arraste e solte ou clique para enviar arquivos (Imagens até 6MB, Vídeos até 20MB).",
   "saving": "Salvando...",
   "save": "Salvar",
+  "limit_select": "Você pode selecionar até {{count}}.",
+  "only_images_under_6mb": "Apenas imagens de até 6MB podem ser enviadas.",
+  "only_videos_under_20mb": "Apenas vídeos de até 20MB podem ser enviados.",
+  "unsupported_file_type": "Tipo de arquivo não suportado.",
+  "unsupported_file_type_detail": "Tipo de arquivo não suportado. (Imagens: JPG, PNG, GIF, SVG, WEBP, AVIF / Vídeos: MP4, WEBM, MOV)",
+  "image_size_limit_6mb": "Máx 6MB",
+  "edit_no_permission": "Você não tem permissão para editar este Worldcup.",
+  "edit_worldcup": "Editar Worldcup",
+  "description": "Descrição",
+  "count_unit": "itens",
+  "edit_title_placeholder": "Digite o título",
+  "edit_description_placeholder": "Digite uma breve descrição (opcional)",
+  "worldcup_saved_id": "Worldcup salvo!\\nID: {{id}}",
+  "save_failed_try_again": "Falha ao salvar. Por favor, tente novamente.",
+  "create_worldcup": "Criar Worldcup",
+  "login_required_create_worldcup": "Por favor, faça login para criar um Worldcup.",
+  "banned_from_creating_worldcups": "Você está banido de criar Worldcups.",
+  "ban_expires_at": "Banimento expira em",
+  "ban_reason": "Razão",
+  "max_upload_files": "Você pode enviar até {{count}} arquivos.",
+  "add_at_least_two_candidates": "Por favor, adicione pelo menos dois candidatos.",
+  "enter_name_for_all_candidates": "Digite o nome de todos os candidatos.",
+  "worldcup_created": "Worldcup criado!",
+  "image_video_url_optional": "URL da Imagem/Vídeo (opcional)",
+  "image_video_upload_limit": "Imagens: até 6MB, Vídeos: até 20MB.",
+  "image_load_failed": "Falha ao carregar imagem.",
+  "error_no_data": "Sem dados.",
+  "backupAll": "Backup completo",
+  "restore": "Restaurar",
+  "worldcup_title": "Título do Worldcup",
+  "nickname_rule": "O apelido deve ter 3+ caracteres usando letras coreanas, letras, números, hífen ou sublinhado.",
 
   "comment": {
     "placeholder": "Escreva um comentário.",
@@ -227,7 +258,7 @@
     "banReason": "Razão do banimento"
   },
 
-  "match": {
+  "matchObj": {
     "round": "Rodada de {{n}}",
     "final": "Final",
     "semiFinal": "Semifinal",
@@ -260,5 +291,9 @@
   },
 
   "notice_title_notice-1": "O que é o One Pick Game?",
-  "notice_title_notice-2": "Como criar seu próprio Worldcup"
+  "notice_title_notice-2": "Como criar seu próprio Worldcup",
+
+  "find_id.enter_nickname": "Digite seu apelido",
+  "find_id.result": "Seu e-mail (ID) é {{email}}",
+  "find_id.loading": "Procurando..."
 }
