@@ -416,7 +416,7 @@ export default function Header({
             marginTop: 2,
           }}
         >
-          {t("site_title")}
+         {t("One Pick Game")}
         </span>
       </div>
       {/* 버튼/메뉴 */}

@@ -1,8 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
+import { useParams } from "react-router-dom";
+import Seo from "../seo/Seo";
 
 export default function SuggestionsBoard({ user, isAdmin }) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const { lang: paramLang } = useParams();
+  const lang = (paramLang || i18n.language || "en").split("-")[0];
+
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [suggestions, setSuggestions] = useState([]);
@@ -84,137 +89,147 @@ export default function SuggestionsBoard({ user, isAdmin }) {
   };
 
   return (
-    <div style={{ maxWidth: 700, margin: "40px auto", color: "#fff" }}>
-      <h2>{t("suggestions_board") || "Suggestions Board"}</h2>
+    <>
+      <Seo
+        lang={lang}
+        slug="suggestions"
+        title="Suggestions Board"
+        description="Submit suggestions and read admin replies."
+      />
+      <div style={{ maxWidth: 700, margin: "40px auto", color: "#fff" }}>
+        <h2>{t("suggestions_board") || "Suggestions Board"}</h2>
 
-      <form onSubmit={handleSubmit} style={{ marginBottom: 20 }}>
-        <input
-          type="text"
-          placeholder={t("enter_title") || "Enter title"}
-          value={title}
-          maxLength={80}
-          onChange={(e) => setTitle(e.target.value)}
-          style={{ width: "100%", marginBottom: 10, padding: 10 }}
-        />
-        <textarea
-          placeholder={t("enter_content") || "Enter content"}
-          value={content}
-          maxLength={1000}
-          onChange={(e) => setContent(e.target.value)}
-          style={{ width: "100%", height: 120, marginBottom: 10, padding: 10 }}
-        />
-        <button
-          type="submit"
-          disabled={!user}
-          style={{
-            padding: "10px 20px",
-            fontSize: 16,
-            background: "#007bff",
-            color: "#fff",
-            border: "none",
-            cursor: user ? "pointer" : "not-allowed",
-          }}
-        >
-          {t("submit") || "Submit"}
-        </button>
-      </form>
+        <form onSubmit={handleSubmit} style={{ marginBottom: 20 }}>
+          <input
+            type="text"
+            placeholder={t("enter_title") || "Enter title"}
+            value={title}
+            maxLength={80}
+            onChange={(e) => setTitle(e.target.value)}
+            style={{ width: "100%", marginBottom: 10, padding: 10 }}
+          />
+          <textarea
+            placeholder={t("enter_content") || "Enter content"}
+            value={content}
+            maxLength={1000}
+            onChange={(e) => setContent(e.target.value)}
+            style={{ width: "100%", height: 120, marginBottom: 10, padding: 10 }}
+          />
+          <button
+            type="submit"
+            disabled={!user}
+            style={{
+              padding: "10px 20px",
+              fontSize: 16,
+              background: "#007bff",
+              color: "#fff",
+              border: "none",
+              cursor: user ? "pointer" : "not-allowed",
+            }}
+          >
+            {t("submit") || "Submit"}
+          </button>
+        </form>
 
-      {!user && (
-        <p style={{ color: "#f77" }}>
-          * {t("only_logged_in_can_submit") || "Only logged-in users can submit suggestions."}
-        </p>
-      )}
+        {!user && (
+          <p style={{ color: "#f77" }}>
+            * {t("only_logged_in_can_submit") || "Only logged-in users can submit suggestions."}
+          </p>
+        )}
 
-      {/* ✅ 본인 작성 글 표시 */}
-      {user && userSuggestions.length > 0 && (
-        <div style={{ marginTop: 30 }}>
-          <h3>{t("your_suggestions") || "Your Suggestions"}</h3>
-          <ul style={{ listStyle: "none", padding: 0 }}>
-            {userSuggestions.map((s) => (
-              <li
-                key={s.id}
-                style={{
-                  borderBottom: "1px solid #555",
-                  marginBottom: 10,
-                  paddingBottom: 10,
-                }}
-              >
-                <strong>{s.title}</strong>
-                <p>{s.content}</p>
-                <div style={{ fontSize: 12, color: "#aaa" }}>
-                  {t("from") || "From"}: {s.user} | {formatDate(s.createdAt)}
-                </div>
-                {s.reply && (
-                  <div style={{ marginTop: 10, color: "#0f0" }}>
-                    <strong>{t("admin_reply") || "Admin Reply"}:</strong> {s.reply}
+        {/* ✅ 본인 작성 글 표시 */}
+        {user && userSuggestions.length > 0 && (
+          <div style={{ marginTop: 30 }}>
+            <h3>{t("your_suggestions") || "Your Suggestions"}</h3>
+            <ul style={{ listStyle: "none", padding: 0 }}>
+              {userSuggestions.map((s) => (
+                <li
+                  key={s.id}
+                  style={{
+                    borderBottom: "1px solid #555",
+                    marginBottom: 10,
+                    paddingBottom: 10,
+                  }}
+                >
+                  <strong>{s.title}</strong>
+                  <p>{s.content}</p>
+                  <div style={{ fontSize: 12, color: "#aaa" }}>
+                    {t("from") || "From"}: {s.user} | {formatDate(s.createdAt)}
                   </div>
-                )}
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
+                  {s.reply && (
+                    <div style={{ marginTop: 10, color: "#0f0" }}>
+                      <strong>{t("admin_reply") || "Admin Reply"}:</strong> {s.reply}
+                    </div>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
 
-      {/* ✅ 관리자(admin) 전체 글 보기 */}
-      {isAdmin && suggestions.length > 0 && (
-        <div style={{ marginTop: 40 }}>
-          <h3 style={{ color: "#ffcc00" }}>{t("admin_view") || "All Suggestions (Admin View)"}</h3>
-          <ul style={{ listStyle: "none", padding: 0 }}>
-            {suggestions.map((s) => (
-              <li
-                key={s.id}
-                style={{
-                  borderBottom: "1px solid #555",
-                  marginBottom: 20,
-                  paddingBottom: 10,
-                }}
-              >
-                <strong>{s.title}</strong>
-                <p>{s.content}</p>
-                <div style={{ fontSize: 12, color: "#aaa" }}>
-                  {t("from") || "From"}: {s.user} | {formatDate(s.createdAt)}
-                </div>
-
-                {/* ✅ 기존 답글 보여주기 */}
-                {s.reply && (
-                  <div style={{ marginTop: 10, color: "#0f0" }}>
-                    <strong>{t("admin_reply") || "Admin Reply"}:</strong> {s.reply}
+        {/* ✅ 관리자(admin) 전체 글 보기 */}
+        {isAdmin && suggestions.length > 0 && (
+          <div style={{ marginTop: 40 }}>
+            <h3 style={{ color: "#ffcc00" }}>
+              {t("admin_view") || "All Suggestions (Admin View)"}
+            </h3>
+            <ul style={{ listStyle: "none", padding: 0 }}>
+              {suggestions.map((s) => (
+                <li
+                  key={s.id}
+                  style={{
+                    borderBottom: "1px solid #555",
+                    marginBottom: 20,
+                    paddingBottom: 10,
+                  }}
+                >
+                  <strong>{s.title}</strong>
+                  <p>{s.content}</p>
+                  <div style={{ fontSize: 12, color: "#aaa" }}>
+                    {t("from") || "From"}: {s.user} | {formatDate(s.createdAt)}
                   </div>
-                )}
 
-                {/* ✅ 답글 작성 폼 (운영자 전용) */}
-                {isAdmin && (
-                  <div style={{ marginTop: 10 }}>
-                    <textarea
-                      placeholder={t("write_reply") || "Write a reply"}
-                      value={replyContent[s.id] || ""}
-                      onChange={(e) =>
-                        setReplyContent((prev) => ({
-                          ...prev,
-                          [s.id]: e.target.value,
-                        }))
-                      }
-                      style={{ width: "100%", height: 80, marginBottom: 10, padding: 10 }}
-                    />
-                    <button
-                      onClick={() => handleReply(s.id)}
-                      style={{
-                        padding: "6px 12px",
-                        background: "#28a745",
-                        color: "#fff",
-                        border: "none",
-                        cursor: "pointer",
-                      }}
-                    >
-                      {t("submit_reply") || "Submit Reply"}
-                    </button>
-                  </div>
-                )}
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-    </div>
+                  {/* ✅ 기존 답글 보여주기 */}
+                  {s.reply && (
+                    <div style={{ marginTop: 10, color: "#0f0" }}>
+                      <strong>{t("admin_reply") || "Admin Reply"}:</strong> {s.reply}
+                    </div>
+                  )}
+
+                  {/* ✅ 답글 작성 폼 (운영자 전용) */}
+                  {isAdmin && (
+                    <div style={{ marginTop: 10 }}>
+                      <textarea
+                        placeholder={t("write_reply") || "Write a reply"}
+                        value={replyContent[s.id] || ""}
+                        onChange={(e) =>
+                          setReplyContent((prev) => ({
+                            ...prev,
+                            [s.id]: e.target.value,
+                          }))
+                        }
+                        style={{ width: "100%", height: 80, marginBottom: 10, padding: 10 }}
+                      />
+                      <button
+                        onClick={() => handleReply(s.id)}
+                        style={{
+                          padding: "6px 12px",
+                          background: "#28a745",
+                          color: "#fff",
+                          border: "none",
+                          cursor: "pointer",
+                        }}
+                      >
+                        {t("submit_reply") || "Submit Reply"}
+                      </button>
+                    </div>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </div>
+    </>
   );
 }

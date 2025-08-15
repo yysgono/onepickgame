@@ -35,6 +35,7 @@ import TermsOfService from "./components/TermsOfService";
 import Footer from "./components/Footer";
 import SuggestionsBoard from "./components/SuggestionsBoard";
 import NoticePage from "./components/NoticePage";
+import SEOManager from "./seo/SEOManager";
 import NoticeDetail from "./components/NoticeDetail";
 
 import DePage from "./pages/de";
@@ -56,6 +57,9 @@ import TrPage from "./pages/tr";
 
 import { getWorldcupGames, deleteWorldcupGame, getWorldcupGame } from "./utils/supabaseWorldcupApi";
 import { supabase } from "./utils/supabaseClient";
+
+// ⬇️ 홈(:lang)에도 canonical/hreflang용 Seo 사용
+import Seo from "./seo/Seo";
 
 function useIsMobile() {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 700);
@@ -353,14 +357,53 @@ function App() {
     const { i18n } = useTranslation();
 
     const langMatch = location.pathname.match(/^\/([a-z]{2})(\/|$)/);
-    const lang = langMatch ? langMatch[1] : (i18n.language || "en");
+    const currentLang = (langMatch ? langMatch[1] : (i18n.language || "en")).split("-")[0];
+
+    // ⬇️ 홈 타이틀/설명 다국어화 맵
+    const titleMap = {
+      en: "OnePickGame - Create and play worldcups",
+      ko: "원픽게임 - 이상형 월드컵 사이트",
+      ja: "OnePickGame - ワールドカップ作成＆プレイ",
+      fr: "OnePickGame - Créez et jouez aux tournois",
+      es: "OnePickGame - Crea y juega torneos",
+      de: "OnePickGame - Turniere erstellen und spielen",
+      pt: "OnePickGame - Crie e jogue torneios",
+      ru: "OnePickGame — Создавайте и играйте в турниры",
+      id: "OnePickGame - Buat & mainkan turnamen",
+      hi: "OnePickGame - वर्ल्डकप बनाएं और खेलें",
+      vi: "OnePickGame - Tạo & chơi giải đấu",
+      zh: "OnePickGame - 创建并游玩锦标赛",
+      ar: "OnePickGame - أنشئ والعب البطولات",
+      bn: "OnePickGame - টুর্নামেন্ট তৈরি ও খেলুন",
+      th: "OnePickGame - สร้างและเล่นทัวร์นาเมนต์",
+      tr: "OnePickGame - Turnuva oluştur ve oyna"
+    };
+
+    const descMap = {
+      en: "Create and play worldcup-style matches. Community-driven tournaments and stats.",
+      ko: "이상형 월드컵 만들고 플레이하세요. 커뮤니티 기반 토너먼트와 통계를 제공합니다.",
+      ja: "理想のワールドカップを作成してプレイ。コミュニティ主導のトーナメントと統計。",
+      fr: "Créez et jouez à des tournois. Communauté active et statistiques.",
+      es: "Crea y juega torneos. Comunidad activa y estadísticas.",
+      de: "Turniere erstellen und spielen. Community & Statistiken.",
+      pt: "Crie e jogue torneios. Comunidade e estatísticas.",
+      ru: "Создавайте и играйте в турниры. Сообщество и статистика.",
+      id: "Buat dan mainkan turnamen. Komunitas & statistik.",
+      hi: "टूर्नामेंट बनाएं और खेलें। कम्युनिटी और आँकड़े।",
+      vi: "Tạo và chơi giải đấu. Cộng đồng & thống kê.",
+      zh: "创建并游玩锦标赛。拥有社区与统计功能。",
+      ar: "أنشئ والعب البطولات. مجتمع وإحصاءات.",
+      bn: "টুর্নামেন্ট তৈরি ও খেলুন। কমিউনিটি ও পরিসংখ্যান।",
+      th: "สร้างและเล่นทัวร์นาเมนต์ พร้อมชุมชนและสถิติ",
+      tr: "Turnuva oluştur ve oyna. Topluluk ve istatistikler."
+    };
 
     function handleMakeWorldcup() {
       if (!user) {
         alert(t("login_required") || "Login required.");
         return;
       }
-      navigate(`/${lang}/worldcup-maker`);
+      navigate(`/${currentLang}/worldcup-maker`);
     }
 
     function HomeWrapper() {
@@ -530,6 +573,7 @@ function App() {
 
     return (
       <>
+      <SEOManager />
         <div className="header-wrapper" style={{ margin: 0, padding: 0 }}>
           <Header
             onLangChange={handleLangChange}
@@ -551,30 +595,40 @@ function App() {
             <Route path="/signup" element={<Navigate to="/en/signup" replace />} />
             <Route path="/find-id" element={<Navigate to="/en/find-id" replace />} />
             <Route path="/find-pw" element={<Navigate to="/en/find-pw" replace />} />
-            {/* 각 언어별 경로 */}
+
+            {/* 각 언어별 홈 경로 */}
             <Route
               path="/:lang"
               element={
-                <LanguageWrapper
-                  worldcupList={worldcupList}
-                  fetchWorldcups={fetchWorldcups}
-                  onMakeWorldcup={handleMakeWorldcup}
-                  onDelete={async (id) => {
-                    try {
-                      await deleteWorldcupGame(id);
-                      const freshList = await getWorldcupGames();
-                      setWorldcupList(freshList);
-                    } catch (e) {
-                      alert((t("delete_failed") || "Delete failed!") + " " + (e.message || e));
-                    }
-                  }}
-                  user={user}
-                  nickname={nickname}
-                  isAdmin={isAdmin}
-                  fixedWorldcups={fixedWorldcups}
-                />
+                <>
+                  <Seo
+                    lang={currentLang}
+                    slug=""
+                    title={titleMap[currentLang] || titleMap.en}
+                    description={descMap[currentLang] || descMap.en}
+                  />
+                  <LanguageWrapper
+                    worldcupList={worldcupList}
+                    fetchWorldcups={fetchWorldcups}
+                    onMakeWorldcup={handleMakeWorldcup}
+                    onDelete={async (id) => {
+                      try {
+                        await deleteWorldcupGame(id);
+                        const freshList = await getWorldcupGames();
+                        setWorldcupList(freshList);
+                      } catch (e) {
+                        alert((t("delete_failed") || "Delete failed!") + " " + (e.message || e));
+                      }
+                    }}
+                    user={user}
+                    nickname={nickname}
+                    isAdmin={isAdmin}
+                    fixedWorldcups={fixedWorldcups}
+                  />
+                </>
               }
             />
+
             <Route path="/:lang/select-round/:id" element={<SelectRoundPageWrapper />} />
             <Route path="/:lang/match/:id/:round" element={<MatchPage worldcupList={worldcupList} />} />
             <Route path="/:lang/result/:id" element={<ResultPage worldcupList={worldcupList} />} />
@@ -591,13 +645,17 @@ function App() {
             <Route path="/:lang/find-id" element={<FindIdBox />} />
             <Route path="/:lang/find-pw" element={<FindPwBox />} />
             <Route path="/:lang/reset-password" element={<Navigate to="/en" />} />
+
+            {/* 아래 세 페이지는 각 컴포넌트 내부에서 Seo 처리됨 */}
             <Route path="/:lang/privacy-policy" element={<PrivacyPolicy />} />
             <Route path="/:lang/terms-of-service" element={<TermsOfService />} />
             <Route path="/:lang/suggestions" element={<SuggestionsBoard user={user} isAdmin={isAdmin} />} />
+
             <Route path="/:lang/my-worldcups" element={<MyWorldcupsWrapper />} />
             <Route path="/:lang/recent-worldcups" element={<RecentWorldcupsWrapper />} />
             <Route path="/:lang/notice" element={<NoticePage />} />
             <Route path="/:lang/notice/:id" element={<NoticeDetail />} />
+
             <Route path="/" element={<Navigate to="/en" replace />} />
             <Route path="*" element={<Navigate to="/en" replace />} />
           </Routes>

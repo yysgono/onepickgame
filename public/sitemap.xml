@@ -1,43 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://www.onepickgame.com/</loc>
-    <priority>1.0</priority>
-  </url>
-  <url>
-    <loc>https://www.onepickgame.com/ko</loc>
-  </url>
+
+  <!-- ===== HOME ===== -->
   <url>
     <loc>https://www.onepickgame.com/en</loc>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    <lastmod>2025-08-15</lastmod>
   </url>
+
+  <!-- ===== PRIVACY POLICY ===== -->
   <url>
-    <loc>https://www.onepickgame.com/ja</loc>
+    <loc>https://www.onepickgame.com/en/privacy-policy</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+    <lastmod>2025-08-15</lastmod>
   </url>
+
+  <!-- ===== TERMS OF SERVICE ===== -->
   <url>
-    <loc>https://www.onepickgame.com/zh</loc>
+    <loc>https://www.onepickgame.com/en/terms-of-service</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+    <lastmod>2025-08-15</lastmod>
   </url>
+
+  <!-- ===== SUGGESTIONS BOARD ===== -->
   <url>
-    <loc>https://www.onepickgame.com/ru</loc>
+    <loc>https://www.onepickgame.com/en/suggestions-board</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+    <lastmod>2025-08-15</lastmod>
   </url>
-  <url>
-    <loc>https://www.onepickgame.com/pt</loc>
-  </url>
-  <url>
-    <loc>https://www.onepickgame.com/es</loc>
-  </url>
-  <url>
-    <loc>https://www.onepickgame.com/fr</loc>
-  </url>
-  <url>
-    <loc>https://www.onepickgame.com/id</loc>
-  </url>
-  <url>
-    <loc>https://www.onepickgame.com/hi</loc>
-  </url>
-  <url>
-    <loc>https://www.onepickgame.com/de</loc>
-  </url>
-  <url>
-    <loc>https://www.onepickgame.com/vi</loc>
-  </url>
+
 </urlset>
