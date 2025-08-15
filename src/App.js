@@ -37,6 +37,7 @@ import SuggestionsBoard from "./components/SuggestionsBoard";
 import NoticePage from "./components/NoticePage";
 import SEOManager from "./seo/SEOManager";
 import NoticeDetail from "./components/NoticeDetail";
+import AdGuard from "./ads/AdGuard";
 
 import DePage from "./pages/de";
 import EnPage from "./pages/en";
@@ -382,7 +383,7 @@ function App() {
     const descMap = {
       en: "Create and play worldcup-style matches. Community-driven tournaments and stats.",
       ko: "이상형 월드컵 만들고 플레이하세요. 커뮤니티 기반 토너먼트와 통계를 제공합니다.",
-      ja: "理想のワールドカップを作成してプレイ。コミュニティ主導のトーナメントと統計。",
+      ja: "理想のワールドカップを作成してプレイ。コミュニ티主導のトーナメントと統계。",
       fr: "Créez et jouez à des tournois. Communauté active et statistiques.",
       es: "Crea y juega torneos. Comunidad activa y estadísticas.",
       de: "Turniere erstellen und spielen. Community & Statistiken.",
@@ -588,6 +589,9 @@ function App() {
             setNickname={updateNickname}
           />
         </div>
+
+        {/* ✅ 광고 차단 가드: 특정 페이지 & 관리자에서 전역 광고 숨김 */}
+        <AdGuard isAdmin={isAdmin} />
 
         <div className="main-content-box">
           <Routes>

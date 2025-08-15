@@ -156,11 +156,12 @@ export default function Header({
     setShowProfile(false);
   }
 
-  const currentLang = i18n.language || "ko";
+  // ✅ 기본 언어를 'en'으로 통일 (라우팅 기본값과 일치)
+  const currentLang = i18n.language || "en";
 
-  // 로고 클릭 시 무조건 메인
+  // 로고 클릭 시: 전체 새로고침 없이 언어 홈으로 이동 (SPA 내 라우팅)
   function handleLogoClick() {
-    window.location.href = "https://www.onepickgame.com";
+    navigate(`/${currentLang}`);
   }
   function handleMyWorldcup() {
     navigate(`/${currentLang}/my-worldcups`);
