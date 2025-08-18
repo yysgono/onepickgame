@@ -56,7 +56,11 @@ import BnPage from "./pages/bn";
 import ThPage from "./pages/th";
 import TrPage from "./pages/tr";
 
-import { getWorldcupGames, deleteWorldcupGame, getWorldcupGame } from "./utils/supabaseWorldcupApi";
+import {
+  getWorldcupGames,
+  deleteWorldcupGame,
+  getWorldcupGame,
+} from "./utils/supabaseWorldcupApi";
 import { supabase } from "./utils/supabaseClient";
 
 // ⬇️ 홈(:lang)에도 canonical/hreflang용 Seo 사용
@@ -88,8 +92,22 @@ function LanguageWrapper(props) {
 
   useEffect(() => {
     const supportedLangs = [
-      "ko", "en", "ru", "ja", "zh", "pt", "es", "fr", "id", "hi", "de", "vi",
-      "ar", "bn", "th", "tr"
+      "ko",
+      "en",
+      "ru",
+      "ja",
+      "zh",
+      "pt",
+      "es",
+      "fr",
+      "id",
+      "hi",
+      "de",
+      "vi",
+      "ar",
+      "bn",
+      "th",
+      "tr",
     ];
     if (!supportedLangs.includes(lang)) {
       navigate("/en", { replace: true });
@@ -103,29 +121,45 @@ function LanguageWrapper(props) {
   const homeProps = { ...props };
 
   switch (lang) {
-    case "ko": return <KoPage {...homeProps} />;
-    case "en": return <EnPage {...homeProps} />;
-    case "ru": return <RuPage {...homeProps} />;
-    case "ja": return <JaPage {...homeProps} />;
-    case "zh": return <ZhPage {...homeProps} />;
-    case "pt": return <PtPage {...homeProps} />;
-    case "es": return <EsPage {...homeProps} />;
-    case "fr": return <FrPage {...homeProps} />;
-    case "id": return <IdPage {...homeProps} />;
-    case "hi": return <HiPage {...homeProps} />;
-    case "de": return <DePage {...homeProps} />;
-    case "vi": return <ViPage {...homeProps} />;
-    case "ar": return <ArPage {...homeProps} />;
-    case "bn": return <BnPage {...homeProps} />;
-    case "th": return <ThPage {...homeProps} />;
-    case "tr": return <TrPage {...homeProps} />;
-    default: return <EnPage {...homeProps} />;
+    case "ko":
+      return <KoPage {...homeProps} />;
+    case "en":
+      return <EnPage {...homeProps} />;
+    case "ru":
+      return <RuPage {...homeProps} />;
+    case "ja":
+      return <JaPage {...homeProps} />;
+    case "zh":
+      return <ZhPage {...homeProps} />;
+    case "pt":
+      return <PtPage {...homeProps} />;
+    case "es":
+      return <EsPage {...homeProps} />;
+    case "fr":
+      return <FrPage {...homeProps} />;
+    case "id":
+      return <IdPage {...homeProps} />;
+    case "hi":
+      return <HiPage {...homeProps} />;
+    case "de":
+      return <DePage {...homeProps} />;
+    case "vi":
+      return <ViPage {...homeProps} />;
+    case "ar":
+      return <ArPage {...homeProps} />;
+    case "bn":
+      return <BnPage {...homeProps} />;
+    case "th":
+      return <ThPage {...homeProps} />;
+    case "tr":
+      return <TrPage {...homeProps} />;
+    default:
+      return <EnPage {...homeProps} />;
   }
 }
 
 function App() {
-  const isMobile = useIsMobile();
-
+  useIsMobile(); // 필요 시 반응형 값 사용
   const [worldcupList, setWorldcupList] = useState([]);
   const { t, i18n } = useTranslation();
   const [user, setUser] = useState(null);
@@ -159,7 +193,9 @@ function App() {
       setNicknameLoading(false);
     }
     fetchUserAndProfile();
-    return () => { isMounted = false; };
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   function updateNickname(nick) {
@@ -238,7 +274,10 @@ function App() {
         const data = JSON.parse(ev.target.result);
         if (!Array.isArray(data)) throw new Error("Invalid format");
         setWorldcupList(data);
-        alert(t("restore_success") || "Restore successful! (Front-end only, DB not affected)");
+        alert(
+          t("restore_success") ||
+            "Restore successful! (Front-end only, DB not affected)"
+        );
       } catch {
         alert(t("restore_fail") || "Restore failed!");
       }
@@ -247,7 +286,9 @@ function App() {
     e.target.value = "";
   }
 
+  // --------- 래퍼들: navigate 사용으로 SPA 이동 ---------
   function MyWorldcupsWrapper() {
+    const navigate = useNavigate();
     const myId = user?.id;
     const myList = worldcupList.filter(
       (w) => w.owner === myId || w.creator === myId || w.creator_id === myId
@@ -257,7 +298,7 @@ function App() {
         worldcupList={myList}
         fetchWorldcups={fetchWorldcups}
         onSelect={(cup) => {
-          window.location.href = getLangPath(i18n, `select-round/${cup.id}`);
+          navigate(getLangPath(i18n, `select-round/${cup.id}`));
         }}
         user={user}
         nickname={nickname}
@@ -269,7 +310,11 @@ function App() {
             const freshList = await getWorldcupGames();
             setWorldcupList(freshList);
           } catch (e) {
-            alert((t("delete_failed") || "Delete failed!") + " " + (e.message || e));
+            alert(
+              (t("delete_failed") || "Delete failed!") +
+                " " +
+                (e.message || e)
+            );
           }
         }}
       />
@@ -277,13 +322,14 @@ function App() {
   }
 
   function RecentWorldcupsWrapper() {
+    const navigate = useNavigate();
     let recents = [];
     try {
-      recents = JSON.parse(localStorage.getItem("onepickgame_recentWorldcups") || "[]");
+      recents = JSON.parse(
+        localStorage.getItem("onepickgame_recentWorldcups") || "[]"
+      );
     } catch {}
-    recents = recents
-      .reverse()
-      .filter((id, i, arr) => arr.indexOf(id) === i);
+    recents = recents.reverse().filter((id, i, arr) => arr.indexOf(id) === i);
     const recentCups = recents
       .map((id) => worldcupList.find((w) => String(w.id) === String(id)))
       .filter(Boolean);
@@ -292,7 +338,7 @@ function App() {
         worldcupList={recentCups}
         fetchWorldcups={fetchWorldcups}
         onSelect={(cup) => {
-          window.location.href = getLangPath(i18n, `select-round/${cup.id}`);
+          navigate(getLangPath(i18n, `select-round/${cup.id}`));
         }}
         user={user}
         nickname={nickname}
@@ -304,7 +350,11 @@ function App() {
             const freshList = await getWorldcupGames();
             setWorldcupList(freshList);
           } catch (e) {
-            alert((t("delete_failed") || "Delete failed!") + " " + (e.message || e));
+            alert(
+              (t("delete_failed") || "Delete failed!") +
+                " " +
+                (e.message || e)
+            );
           }
         }}
       />
@@ -343,11 +393,19 @@ function App() {
         }
       }
       fetchCup();
-      return () => { mounted = false; };
+      return () => {
+        mounted = false;
+      };
     }, [id, worldcupList]);
 
-    if (loading) return <div style={{ padding: 60, textAlign: "center" }}>{t("loading")}</div>;
-    if (!cup) return <div style={{ padding: 60, textAlign: "center", color: "#d33" }}>{t("error_no_data")}</div>;
+    if (loading)
+      return <div style={{ padding: 60, textAlign: "center" }}>{t("loading")}</div>;
+    if (!cup)
+      return (
+        <div style={{ padding: 60, textAlign: "center", color: "#d33" }}>
+          {t("error_no_data")}
+        </div>
+      );
 
     return <StatsPage selectedCup={cup} showCommentBox={true} />;
   }
@@ -358,7 +416,9 @@ function App() {
     const { i18n } = useTranslation();
 
     const langMatch = location.pathname.match(/^\/([a-z]{2})(\/|$)/);
-    const currentLang = (langMatch ? langMatch[1] : (i18n.language || "en")).split("-")[0];
+    const currentLang = (
+      langMatch ? langMatch[1] : i18n.language || "en"
+    ).split("-")[0];
 
     // ⬇️ 홈 타이틀/설명 다국어화 맵
     const titleMap = {
@@ -377,13 +437,13 @@ function App() {
       ar: "OnePickGame - أنشئ والعب البطولات",
       bn: "OnePickGame - টুর্নামেন্ট তৈরি ও খেলুন",
       th: "OnePickGame - สร้างและเล่นทัวร์นาเมนต์",
-      tr: "OnePickGame - Turnuva oluştur ve oyna"
+      tr: "OnePickGame - Turnuva oluştur ve oyna",
     };
 
     const descMap = {
       en: "Create and play worldcup-style matches. Community-driven tournaments and stats.",
       ko: "이상형 월드컵 만들고 플레이하세요. 커뮤니티 기반 토너먼트와 통계를 제공합니다.",
-      ja: "理想のワールドカップを作成してプレイ。コミュニ티主導のトーナメントと統계。",
+      ja: "理想のワールドカップを作成してプレイ。コミュニティ主導のトーナメントと統計。",
       fr: "Créez et jouez à des tournois. Communauté active et statistiques.",
       es: "Crea y juega torneos. Comunidad activa y estadísticas.",
       de: "Turniere erstellen und spielen. Community & Statistiken.",
@@ -396,14 +456,14 @@ function App() {
       ar: "أنشئ والعب البطولات. مجتمع وإحصاءات.",
       bn: "টুর্নামেন্ট তৈরি ও খেলুন। কমিউনিটি ও পরিসংখ্যান।",
       th: "สร้างและเล่นทัวร์นาเมนต์ พร้อมชุมชนและสถิติ",
-      tr: "Turnuva oluştur ve oyna. Topluluk ve istatistikler."
+      tr: "Turnuva oluştur ve oyna. Topluluk ve istatistikler.",
     };
 
     function handleMakeWorldcup() {
       if (!user) {
         alert(t("login_required") || "Login required.");
         return;
-      }
+        }
       navigate(`/${currentLang}/worldcup-maker`);
     }
 
@@ -415,11 +475,15 @@ function App() {
           onSelect={(cup) => {
             let recent = [];
             try {
-              recent = JSON.parse(localStorage.getItem("onepickgame_recentWorldcups") || "[]");
+              recent = JSON.parse(
+                localStorage.getItem("onepickgame_recentWorldcups") || "[]"
+              );
             } catch {}
             localStorage.setItem(
               "onepickgame_recentWorldcups",
-              JSON.stringify([cup.id, ...recent.filter((id) => id !== cup.id)].slice(0, 30))
+              JSON.stringify(
+                [cup.id, ...recent.filter((id) => id !== cup.id)].slice(0, 30)
+              )
             );
             navigate(getLangPath(i18n, `select-round/${cup.id}`));
           }}
@@ -430,7 +494,11 @@ function App() {
               const freshList = await getWorldcupGames();
               setWorldcupList(freshList);
             } catch (e) {
-              alert((t("delete_failed") || "Delete failed!") + " " + (e.message || e));
+              alert(
+                (t("delete_failed") || "Delete failed!") +
+                  " " +
+                  (e.message || e)
+              );
             }
           }}
           user={user}
@@ -453,8 +521,13 @@ function App() {
           candidates={cup.data}
           onSelect={(roundOrCandidate) => {
             if (typeof roundOrCandidate === "number") {
-              navigate(getLangPath(i18n, `match/${cup.id}/${roundOrCandidate}`));
-            } else if (typeof roundOrCandidate === "object" && roundOrCandidate?.id) {
+              navigate(
+                getLangPath(i18n, `match/${cup.id}/${roundOrCandidate}`)
+              );
+            } else if (
+              typeof roundOrCandidate === "object" &&
+              roundOrCandidate?.id
+            ) {
               navigate(getLangPath(i18n, `match/${cup.id}/${cup.data.length}`));
             }
           }}
@@ -504,7 +577,11 @@ function App() {
 
     function AdminRoute() {
       if (nicknameLoading) {
-        return <div style={{ padding: 60, textAlign: "center", fontWeight: 700, fontSize: 22 }}>Loading...</div>;
+        return (
+          <div style={{ padding: 60, textAlign: "center", fontWeight: 700, fontSize: 22 }}>
+            Loading...
+          </div>
+        );
       }
       if (!isAdmin) {
         return (
@@ -539,7 +616,11 @@ function App() {
 
     function AdminStatsRoute() {
       if (nicknameLoading) {
-        return <div style={{ padding: 60, textAlign: "center", fontWeight: 700, fontSize: 22 }}>Loading...</div>;
+        return (
+          <div style={{ padding: 60, textAlign: "center", fontWeight: 700, fontSize: 22 }}>
+            Loading...
+          </div>
+        );
       }
       if (!isAdmin) {
         return (
@@ -574,7 +655,7 @@ function App() {
 
     return (
       <>
-      <SEOManager />
+        <SEOManager />
         <div className="header-wrapper" style={{ margin: 0, padding: 0 }}>
           <Header
             onLangChange={handleLangChange}
@@ -621,7 +702,11 @@ function App() {
                         const freshList = await getWorldcupGames();
                         setWorldcupList(freshList);
                       } catch (e) {
-                        alert((t("delete_failed") || "Delete failed!") + " " + (e.message || e));
+                        alert(
+                          (t("delete_failed") || "Delete failed!") +
+                            " " +
+                            (e.message || e)
+                        );
                       }
                     }}
                     user={user}
@@ -640,12 +725,25 @@ function App() {
             <Route path="/:lang/stats/:id" element={<StatsPageWrapper />} />
             <Route path="/:lang/worldcup-maker" element={<WorldcupMakerWrapper />} />
             <Route path="/:lang/manage" element={<ManageWorldcupWrapper />} />
-            <Route path="/:lang/backup" element={<BackupPage worldcupList={worldcupList} setWorldcupList={setWorldcupList} />} />
+            <Route
+              path="/:lang/backup"
+              element={
+                <BackupPage
+                  worldcupList={worldcupList}
+                  setWorldcupList={setWorldcupList}
+                />
+              }
+            />
             <Route path="/:lang/edit-worldcup/:id" element={<EditWorldcupPageWrapper />} />
+
             <Route path="/:lang/admin" element={<AdminRoute />} />
             <Route path="/:lang/admin-stats" element={<AdminStatsRoute />} />
+
             <Route path="/:lang/signup" element={<SignupBox />} />
-            <Route path="/:lang/login" element={<LoginBox setUser={setUser} setNickname={updateNickname} />} />
+            <Route
+              path="/:lang/login"
+              element={<LoginBox setUser={setUser} setNickname={updateNickname} />}
+            />
             <Route path="/:lang/find-id" element={<FindIdBox />} />
             <Route path="/:lang/find-pw" element={<FindPwBox />} />
             <Route path="/:lang/reset-password" element={<Navigate to="/en" />} />
@@ -653,13 +751,19 @@ function App() {
             {/* 아래 세 페이지는 각 컴포넌트 내부에서 Seo 처리됨 */}
             <Route path="/:lang/privacy-policy" element={<PrivacyPolicy />} />
             <Route path="/:lang/terms-of-service" element={<TermsOfService />} />
-            <Route path="/:lang/suggestions" element={<SuggestionsBoard user={user} isAdmin={isAdmin} />} />
+            <Route
+              path="/:lang/suggestions"
+              element={<SuggestionsBoard user={user} isAdmin={isAdmin} />}
+            />
 
             <Route path="/:lang/my-worldcups" element={<MyWorldcupsWrapper />} />
             <Route path="/:lang/recent-worldcups" element={<RecentWorldcupsWrapper />} />
+
+            {/* 공지 */}
             <Route path="/:lang/notice" element={<NoticePage />} />
             <Route path="/:lang/notice/:id" element={<NoticeDetail />} />
 
+            {/* 기본 라우팅 */}
             <Route path="/" element={<Navigate to="/en" replace />} />
             <Route path="*" element={<Navigate to="/en" replace />} />
           </Routes>
@@ -713,10 +817,7 @@ function App() {
         }}
       />
       <div style={{ position: "relative", zIndex: 2 }}>
-        <div
-          className="main-content-outer"
-          style={{ paddingTop: 190, margin: 0 }}
-        >
+        <div className="main-content-outer" style={{ paddingTop: 190, margin: 0 }}>
           <Router>
             <AppRoutes />
             <Footer />

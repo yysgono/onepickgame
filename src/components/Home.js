@@ -1,5 +1,7 @@
+// src/components/Home.js
 import React, { useState, useRef, useEffect } from "react";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 import { fetchWinnerStatsFromDB } from "../utils";
 import MediaRenderer from "./MediaRenderer";
 import FixedCupSection from "./FixedCupCarousel";
@@ -69,7 +71,9 @@ function Home({
   fixedWorldcups,
   showFixedWorldcups = true,
 }) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const navigate = useNavigate();
+
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState("popular");
   const [vw, setVw] = useState(window.innerWidth);
@@ -121,7 +125,9 @@ function Home({
       if (mounted) setFixedCupsWithStats(list);
     }
     fillFixedStats();
-    return () => { mounted = false; };
+    return () => {
+      mounted = false;
+    };
   }, [fixedWorldcups]);
 
   const filtered = Array.isArray(worldcupList)
@@ -137,8 +143,16 @@ function Home({
           if (sort === "recent") {
             return (b.created_at || b.id) > (a.created_at || a.id) ? 1 : -1;
           } else {
-            const aw = winStatsMap[a.id]?.reduce((sum, row) => sum + (row.win_count || 0), 0) || 0;
-            const bw = winStatsMap[b.id]?.reduce((sum, row) => sum + (row.win_count || 0), 0) || 0;
+            const aw =
+              winStatsMap[a.id]?.reduce(
+                (sum, row) => sum + (row.win_count || 0),
+                0
+              ) || 0;
+            const bw =
+              winStatsMap[b.id]?.reduce(
+                (sum, row) => sum + (row.win_count || 0),
+                0
+              ) || 0;
             return bw - aw;
           }
         })
@@ -241,17 +255,11 @@ function Home({
     setVisibleCount((prev) => prev + PAGE_SIZE);
   };
 
-  const langFromUrl = (() => {
-    const path = window.location.pathname;
-    const match = path.match(/^\/([a-z]{2})(\/|$)/);
-    return match ? match[1] : "ko";
-  })();
-  const lang = langFromUrl || "ko";
-  const getRoute = (base, cupId) => {
-    return `/${lang}${base}/${cupId}`;
-  };
+  // ✅ 언어는 i18n에서 직접 가져오고, 하이픈 포함 코드는 앞 2글자만 사용
+  const lang = (i18n.language || "en").split("-")[0];
+  const getRoute = (base, cupId) => `/${lang}${base}/${cupId}`;
 
-  // --- 카드 설명 스타일 (길이제한/생략/줄바꿈) ---
+  // --- 카드 설명 스타일 ---
   const cardDescStyle = {
     color: "#b9dafb",
     fontSize: isMobile ? 14 : 16,
@@ -268,10 +276,10 @@ function Home({
     wordBreak: "keep-all",
     margin: 0,
     marginBottom: 3,
-    background: "none"
+    background: "none",
   };
 
-  // --- 카드 맨 하단 파란 바 스타일 ---
+  // --- 카드 하단 바 ---
   const cardBottomBarStyle = {
     width: "100%",
     height: 4,
@@ -308,12 +316,14 @@ function Home({
           zIndex: 5,
         }}
       >
-        <div style={{
-          display: "flex",
-          alignItems: "center",
-          gap: 6,
-          justifyContent: "center",
-        }}>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 6,
+            justifyContent: "center",
+          }}
+        >
           {sortButton(t("popular"), "popular")}
           {sortButton(t("latest"), "recent")}
         </div>
@@ -321,7 +331,7 @@ function Home({
           type="text"
           placeholder={t("search_placeholder")}
           value={search}
-          onChange={e => setSearch(e.target.value)}
+          onChange={(e) => setSearch(e.target.value)}
           style={{
             background: "#fff",
             color: "#1b2236",
@@ -363,6 +373,7 @@ function Home({
               thumbHeight={THUMB_HEIGHT}
             />
           ))}
+
         {visibleList.length > 0 &&
           visibleList.map((cup, idx) => {
             const winStats = winStatsMap[cup.id] || [];
@@ -391,31 +402,36 @@ function Home({
                   maxWidth: CARD_WIDTH,
                   minWidth: CARD_WIDTH,
                 }}
-                onMouseEnter={e => {
-                  e.currentTarget.style.transform = "translateY(-7px) scale(1.025)";
-                  e.currentTarget.style.boxShadow = "0 12px 50px 0 #1976ed88, 0 2.5px 16px #4abfff77";
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform =
+                    "translateY(-7px) scale(1.025)";
+                  e.currentTarget.style.boxShadow =
+                    "0 12px 50px 0 #1976ed88, 0 2.5px 16px #4abfff77";
                 }}
-                onMouseLeave={e => {
+                onMouseLeave={(e) => {
                   e.currentTarget.style.transform = "";
-                  e.currentTarget.style.boxShadow = "0 8px 38px 0 #1976ed45, 0 2px 12px #1976ed44";
+                  e.currentTarget.style.boxShadow =
+                    "0 8px 38px 0 #1976ed45, 0 2px 12px #1976ed44";
                 }}
                 onClick={() => {
-                  window.location.href = getRoute("/select-round", cup.id);
+                  navigate(getRoute("/select-round", cup.id));
                 }}
               >
-                <div style={{
-                  position: "absolute",
-                  top: "-33%",
-                  left: "-12%",
-                  width: "140%",
-                  height: "180%",
-                  zIndex: 0,
-                  background:
-                    "radial-gradient(circle at 50% 60%, #2a8fff33 0%, #11264c00 90%)",
-                  filter: "blur(22px) brightness(1.1)",
-                  opacity: 0.92,
-                  pointerEvents: "none",
-                }} />
+                <div
+                  style={{
+                    position: "absolute",
+                    top: "-33%",
+                    left: "-12%",
+                    width: "140%",
+                    height: "180%",
+                    zIndex: 0,
+                    background:
+                      "radial-gradient(circle at 50% 60%, #2a8fff33 0%, #11264c00 90%)",
+                    filter: "blur(22px) brightness(1.1)",
+                    opacity: 0.92,
+                    pointerEvents: "none",
+                  }}
+                />
                 {/* 썸네일 */}
                 <div
                   style={{
@@ -423,7 +439,8 @@ function Home({
                     height: THUMB_HEIGHT,
                     display: "flex",
                     flexDirection: "row",
-                    background: "linear-gradient(90deg, #162d52 0%, #284176 100%)",
+                    background:
+                      "linear-gradient(90deg, #162d52 0%, #284176 100%)",
                     borderTopLeftRadius: 18,
                     borderTopRightRadius: 18,
                     overflow: "hidden",
@@ -454,7 +471,7 @@ function Home({
                           height: "100%",
                           objectFit: "cover",
                           objectPosition: "center center",
-                          background: "#111"
+                          background: "#111",
                         }}
                       />
                     ) : (
@@ -486,7 +503,7 @@ function Home({
                           height: "100%",
                           objectFit: "cover",
                           objectPosition: "center center",
-                          background: "#111"
+                          background: "#111",
                         }}
                       />
                     ) : (
@@ -524,6 +541,7 @@ function Home({
                     />
                   </div>
                 </div>
+
                 {/* 제목 */}
                 <div
                   style={{
@@ -536,9 +554,7 @@ function Home({
                     alignItems: "center",
                     justifyContent: "center",
                     flex: 1,
-                    padding: isMobile
-                      ? "4px 10px 0 10px"
-                      : "6px 18px 0 18px",
+                    padding: isMobile ? "4px 10px 0 10px" : "6px 18px 0 18px",
                     fontWeight: 900,
                     fontSize: isMobile ? 17 : 20,
                     color: "#fff",
@@ -577,14 +593,20 @@ function Home({
                         const idx = title.lastIndexOf(" ", 40);
                         return idx === -1 ? 40 : idx;
                       })();
-                      return title.slice(0, breakpoint) + "\n" + title.slice(breakpoint + 1);
+                      return (
+                        title.slice(0, breakpoint) +
+                        "\n" +
+                        title.slice(breakpoint + 1)
+                      );
                     })()}
                   </span>
                 </div>
-                {/* 설명(내용) */}
+
+                {/* 설명 */}
                 <div style={cardDescStyle}>
-  {cup.description || cup.desc || ""}
-</div>
+                  {cup.description || cup.desc || ""}
+                </div>
+
                 {/* 버튼/액션영역 */}
                 <div
                   style={{
@@ -592,9 +614,7 @@ function Home({
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "space-between",
-                    padding: isMobile
-                      ? "3px 8px 6px 8px"
-                      : "6px 16px 7px 16px",
+                    padding: isMobile ? "3px 8px 6px 8px" : "6px 16px 7px 16px",
                     minHeight: isMobile ? 23 : 27,
                     background: mainDark,
                     boxSizing: "border-box",
@@ -606,56 +626,90 @@ function Home({
                   }}
                 >
                   <button
-                    onClick={e => {
+                    onClick={(e) => {
                       e.stopPropagation();
-                      window.location.href = getRoute("/select-round", cup.id);
+                      navigate(getRoute("/select-round", cup.id));
                     }}
                     style={buttonStyle}
-                    onMouseOver={e => (e.currentTarget.style.background = "#1c2232")}
-                    onMouseOut={e => (e.currentTarget.style.background = mainDark)}
-                  >{t("start")}</button>
+                    onMouseOver={(e) =>
+                      (e.currentTarget.style.background = "#1c2232")
+                    }
+                    onMouseOut={(e) =>
+                      (e.currentTarget.style.background = mainDark)
+                    }
+                  >
+                    {t("start")}
+                  </button>
+
                   {isMine(cup) ? (
                     <div style={{ display: "flex", gap: 5 }}>
                       <button
-                        onClick={e => {
+                        onClick={(e) => {
                           e.stopPropagation();
-                          window.location.href = getRoute("/edit-worldcup", cup.id);
+                          navigate(getRoute("/edit-worldcup", cup.id));
                         }}
                         style={smallButtonStyle}
-                        onMouseOver={e => (e.currentTarget.style.background = "#1c2232")}
-                        onMouseOut={e => (e.currentTarget.style.background = mainDark)}
-                      >{t("edit")}</button>
+                        onMouseOver={(e) =>
+                          (e.currentTarget.style.background = "#1c2232")
+                        }
+                        onMouseOut={(e) =>
+                          (e.currentTarget.style.background = mainDark)
+                        }
+                      >
+                        {t("edit")}
+                      </button>
                       <button
-                        onClick={e => {
+                        onClick={(e) => {
                           e.stopPropagation();
-                          if (!window.confirm(t("delete_confirm") || "Are you sure you want to delete?")) return;
+                          if (
+                            !window.confirm(
+                              t("delete_confirm") ||
+                                "Are you sure you want to delete?"
+                            )
+                          )
+                            return;
                           if (onDelete) onDelete(cup.id);
                           else window.location.reload();
                         }}
                         style={smallButtonStyle}
-                        onMouseOver={e => (e.currentTarget.style.background = "#1c2232")}
-                        onMouseOut={e => (e.currentTarget.style.background = mainDark)}
-                      >{t("delete")}</button>
+                        onMouseOver={(e) =>
+                          (e.currentTarget.style.background = "#1c2232")
+                        }
+                        onMouseOut={(e) =>
+                          (e.currentTarget.style.background = mainDark)
+                        }
+                      >
+                        {t("delete")}
+                      </button>
                     </div>
                   ) : (
                     <div style={{ width: isMobile ? 29 : 40 }} />
                   )}
+
                   <button
-                    onClick={e => {
+                    onClick={(e) => {
                       e.stopPropagation();
-                      window.location.href = getRoute("/stats", cup.id);
+                      navigate(getRoute("/stats", cup.id));
                     }}
                     style={buttonStyle}
-                    onMouseOver={e => (e.currentTarget.style.background = "#1c2232")}
-                    onMouseOut={e => (e.currentTarget.style.background = mainDark)}
-                  >{t("stats_comment")}</button>
+                    onMouseOver={(e) =>
+                      (e.currentTarget.style.background = "#1c2232")
+                    }
+                    onMouseOut={(e) =>
+                      (e.currentTarget.style.background = mainDark)
+                    }
+                  >
+                    {t("stats_comment")}
+                  </button>
                 </div>
+
                 {/* 맨 하단 파란 밑줄 */}
                 <div style={cardBottomBarStyle}></div>
               </div>
             );
           })}
       </div>
+
       {visibleCount < filtered.length && (
         <div style={{ textAlign: "center", margin: "38px 0 60px 0" }}>
           <button
@@ -677,6 +731,7 @@ function Home({
           </button>
         </div>
       )}
+
       <style>
         {`
           @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&display=swap');

@@ -138,7 +138,10 @@ export default function Header({
     setWithdrawLoading(false);
     if (error) return setEditError(`${t("withdraw_fail")}: ${error.message}`);
     alert(`${t("withdraw_requested")}\n${t("withdraw_in_week")}`);
-    setProfile((prev) => ({ ...prev, withdrawal_requested_at: new Date().toISOString() }));
+    setProfile((prev) => ({
+      ...prev,
+      withdrawal_requested_at: new Date().toISOString(),
+    }));
     setShowProfile(false);
   }
 
@@ -156,8 +159,8 @@ export default function Header({
     setShowProfile(false);
   }
 
-  // ✅ 기본 언어를 'en'으로 통일 (라우팅 기본값과 일치)
-  const currentLang = i18n.language || "en";
+  // ✅ 기본 언어를 'en'으로 통일 + 변형 코드(en-US 등) 안전 처리
+  const currentLang = (i18n.language || "en").split("-")[0];
 
   // 로고 클릭 시: 전체 새로고침 없이 언어 홈으로 이동 (SPA 내 라우팅)
   function handleLogoClick() {
@@ -392,7 +395,7 @@ export default function Header({
       >
         <img
           src={logoImgUrl}
-          alt={t("onepick_logo_alt")}
+          alt={t("onepick_logo_alt", "OnePickGame logo")}
           style={{
             width: 42,
             height: 42,
@@ -417,7 +420,7 @@ export default function Header({
             marginTop: 2,
           }}
         >
-         {t("One Pick Game")}
+          {t("onepick_brand", "One Pick Game")}
         </span>
       </div>
       {/* 버튼/메뉴 */}
@@ -478,9 +481,9 @@ export default function Header({
         <button style={infoButtonStyle} onClick={handleRecentWorldcup}>
           {t("recent_worldcups")}
         </button>
-        {/* ----------- 이 부분이 핵심! ----------- */}
+        {/* ----------- 언어 선택 ----------- */}
         <select
-          value={i18n.language}
+          value={(i18n.language || "en").split("-")[0]}
           onChange={(e) => {
             const lng = e.target.value;
             i18n.changeLanguage(lng);
@@ -489,6 +492,7 @@ export default function Header({
             navigate(`/${lng}`);
           }}
           style={selectStyle}
+          aria-label={t("language_select", "Select language")}
         >
           {languages.map((lang) => (
             <option key={lang.code} value={lang.code}>
@@ -496,7 +500,7 @@ export default function Header({
             </option>
           ))}
         </select>
-        {/* ----------- 여기까지! ----------- */}
+        {/* ----------- 여기까지 ----------- */}
         {user ? (
           <>
             <span

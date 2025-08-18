@@ -22,8 +22,8 @@ export default function AdGuard({ isAdmin = false }) {
     /^\/[a-z]{2}\/admin-stats(?:\/.*)?$/i,
   ];
 
-  const shouldBlock =
-    isAdmin || BLOCK_REGEXES.some((re) => re.test(pathname || "/"));
+  const path = (pathname || "/").toLowerCase();
+  const shouldBlock = isAdmin || BLOCK_REGEXES.some((re) => re.test(path));
 
   if (!shouldBlock) return null;
 
@@ -39,6 +39,7 @@ export default function AdGuard({ isAdmin = false }) {
         iframe[id^="google_ads_iframe_"],
         iframe[src*="googleads"],
         #google_image_div,
+        /* data-* 기반 수동 슬롯도 차단 */
         div[data-ad-client],
         div[data-ad-slot] {
           display: none !important;
@@ -50,7 +51,7 @@ export default function AdGuard({ isAdmin = false }) {
           overflow: hidden !important;
         }
       `}</style>
-      {/* 광고만 숨기고, 페이지 자체는 인덱싱 허용 */}
+      {/* 광고만 숨기고 페이지는 인덱싱 허용 */}
       <meta name="robots" content="index,follow" />
     </Helmet>
   );
