@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+
+  <!-- ===== Home ===== -->
+  <url>
+    <loc>https://www.onepickgame.com/es</loc>
+
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.onepickgame.com/en"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://www.onepickgame.com/ko"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://www.onepickgame.com/ja"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.onepickgame.com/fr"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://www.onepickgame.com/es"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://www.onepickgame.com/de"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://www.onepickgame.com/pt"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://www.onepickgame.com/ru"/>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://www.onepickgame.com/vi"/>
+    <xhtml:link rel="alternate" hreflang="th" href="https://www.onepickgame.com/th"/>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://www.onepickgame.com/tr"/>
+    <xhtml:link rel="alternate" hreflang="id" href="https://www.onepickgame.com/id"/>
+    <xhtml:link rel="alternate" hreflang="hi" href="https://www.onepickgame.com/hi"/>
+    <xhtml:link rel="alternate" hreflang="bn" href="https://www.onepickgame.com/bn"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.onepickgame.com/ar"/>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://www.onepickgame.com/zh"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.onepickgame.com/en"/>
+
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+
+  <!-- ===== Privacy Policy ===== -->
+  <url>
+    <loc>https://www.onepickgame.com/es/privacy-policy</loc>
+
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.onepickgame.com/en/privacy-policy"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://www.onepickgame.com/ko/privacy-policy"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://www.onepickgame.com/ja/privacy-policy"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.onepickgame.com/fr/privacy-policy"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://www.onepickgame.com/es/privacy-policy"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://www.onepickgame.com/de/privacy-policy"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://www.onepickgame.com/pt/privacy-policy"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://www.onepickgame.com/ru/privacy-policy"/>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://www.onepickgame.com/vi/privacy-policy"/>
+    <xhtml:link rel="alternate" hreflang="th" href="https://www.onepickgame.com/th/privacy-policy"/>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://www.onepickgame.com/tr/privacy-policy"/>
+    <xhtml:link rel="alternate" hreflang="id" href="https://www.onepickgame.com/id/privacy-policy"/>
+    <xhtml:link rel="alternate" hreflang="hi" href="https://www.onepickgame.com/hi/privacy-policy"/>
+    <xhtml:link rel="alternate" hreflang="bn" href="https://www.onepickgame.com/bn/privacy-policy"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.onepickgame.com/ar/privacy-policy"/>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://www.onepickgame.com/zh/privacy-policy"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.onepickgame.com/en/privacy-policy"/>
+
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- ===== Terms of Service ===== -->
+  <url>
+    <loc>https://www.onepickgame.com/es/terms-of-service</loc>
+
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.onepickgame.com/en/terms-of-service"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://www.onepickgame.com/ko/terms-of-service"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://www.onepickgame.com/ja/terms-of-service"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.onepickgame.com/fr/terms-of-service"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://www.onepickgame.com/es/terms-of-service"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://www.onepickgame.com/de/terms-of-service"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://www.onepickgame.com/pt/terms-of-service"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://www.onepickgame.com/ru/terms-of-service"/>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://www.onepickgame.com/vi/terms-of-service"/>
+    <xhtml:link rel="alternate" hreflang="th" href="https://www.onepickgame.com/th/terms-of-service"/>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://www.onepickgame.com/tr/terms-of-service"/>
+    <xhtml:link rel="alternate" hreflang="id" href="https://www.onepickgame.com/id/terms-of-service"/>
+    <xhtml:link rel="alternate" hreflang="hi" href="https://www.onepickgame.com/hi/terms-of-service"/>
+    <xhtml:link rel="alternate" hreflang="bn" href="https://www.onepickgame.com/bn/terms-of-service"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.onepickgame.com/ar/terms-of-service"/>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://www.onepickgame.com/zh/terms-of-service"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.onepickgame.com/en/terms-of-service"/>
+
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- ===== Suggestions ===== -->
+  <url>
+    <loc>https://www.onepickgame.com/es/suggestions-board</loc>
+
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.onepickgame.com/en/suggestions-board"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://www.onepickgame.com/ko/suggestions-board"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://www.onepickgame.com/ja/suggestions-board"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.onepickgame.com/fr/suggestions-board"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://www.onepickgame.com/es/suggestions-board"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://www.onepickgame.com/de/suggestions-board"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://www.onepickgame.com/pt/suggestions-board"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://www.onepickgame.com/ru/suggestions-board"/>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://www.onepickgame.com/vi/suggestions-board"/>
+    <xhtml:link rel="alternate" hreflang="th" href="https://www.onepickgame.com/th/suggestions-board"/>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://www.onepickgame.com/tr/suggestions-board"/>
+    <xhtml:link rel="alternate" hreflang="id" href="https://www.onepickgame.com/id/suggestions-board"/>
+    <xhtml:link rel="alternate" hreflang="hi" href="https://www.onepickgame.com/hi/suggestions-board"/>
+    <xhtml:link rel="alternate" hreflang="bn" href="https://www.onepickgame.com/bn/suggestions-board"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.onepickgame.com/ar/suggestions-board"/>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://www.onepickgame.com/zh/suggestions-board"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.onepickgame.com/en/suggestions-board"/>
+
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- ===== Notice ===== -->
+  <url>
+    <loc>https://www.onepickgame.com/es/notice</loc>
+
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.onepickgame.com/en/notice"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://www.onepickgame.com/ko/notice"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://www.onepickgame.com/ja/notice"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.onepickgame.com/fr/notice"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://www.onepickgame.com/es/notice"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://www.onepickgame.com/de/notice"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://www.onepickgame.com/pt/notice"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://www.onepickgame.com/ru/notice"/>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://www.onepickgame.com/vi/notice"/>
+    <xhtml:link rel="alternate" hreflang="th" href="https://www.onepickgame.com/th/notice"/>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://www.onepickgame.com/tr/notice"/>
+    <xhtml:link rel="alternate" hreflang="id" href="https://www.onepickgame.com/id/notice"/>
+    <xhtml:link rel="alternate" hreflang="hi" href="https://www.onepickgame.com/hi/notice"/>
+    <xhtml:link rel="alternate" hreflang="bn" href="https://www.onepickgame.com/bn/notice"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.onepickgame.com/ar/notice"/>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://www.onepickgame.com/zh/notice"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.onepickgame.com/en/notice"/>
+
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+</urlset>
