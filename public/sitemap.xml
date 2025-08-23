@@ -7,6 +7,7 @@
     <loc>https://www.onepickgame.com/en</loc>
     <xhtml:link rel="alternate" hreflang="en" href="https://www.onepickgame.com/en"/>
     <xhtml:link rel="alternate" hreflang="ko" href="https://www.onepickgame.com/ko"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.onepickgame.com/en"/>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
     <lastmod>2025-08-15</lastmod>
@@ -17,6 +18,7 @@
     <loc>https://www.onepickgame.com/en/privacy-policy</loc>
     <xhtml:link rel="alternate" hreflang="en" href="https://www.onepickgame.com/en/privacy-policy"/>
     <xhtml:link rel="alternate" hreflang="ko" href="https://www.onepickgame.com/ko/privacy-policy"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.onepickgame.com/en/privacy-policy"/>
     <changefreq>yearly</changefreq>
     <priority>0.8</priority>
     <lastmod>2025-08-15</lastmod>
@@ -27,16 +29,18 @@
     <loc>https://www.onepickgame.com/en/terms-of-service</loc>
     <xhtml:link rel="alternate" hreflang="en" href="https://www.onepickgame.com/en/terms-of-service"/>
     <xhtml:link rel="alternate" hreflang="ko" href="https://www.onepickgame.com/ko/terms-of-service"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.onepickgame.com/en/terms-of-service"/>
     <changefreq>yearly</changefreq>
     <priority>0.8</priority>
     <lastmod>2025-08-15</lastmod>
   </url>
 
-  <!-- ===== SUGGESTIONS ===== -->
+  <!-- ===== SUGGESTIONS (※ 슬러그 확인) ===== -->
   <url>
     <loc>https://www.onepickgame.com/en/suggestions</loc>
     <xhtml:link rel="alternate" hreflang="en" href="https://www.onepickgame.com/en/suggestions"/>
     <xhtml:link rel="alternate" hreflang="ko" href="https://www.onepickgame.com/ko/suggestions"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.onepickgame.com/en/suggestions"/>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
     <lastmod>2025-08-15</lastmod>
@@ -47,6 +51,7 @@
     <loc>https://www.onepickgame.com/en/notice</loc>
     <xhtml:link rel="alternate" hreflang="en" href="https://www.onepickgame.com/en/notice"/>
     <xhtml:link rel="alternate" hreflang="ko" href="https://www.onepickgame.com/ko/notice"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.onepickgame.com/en/notice"/>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
     <lastmod>2025-08-15</lastmod>
