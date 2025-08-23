@@ -2,7 +2,6 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:xhtml="http://www.w3.org/1999/xhtml">
 
-  <!-- ===== Home ===== -->
   <url>
     <loc>https://www.onepickgame.com/ar</loc>
 
@@ -28,7 +27,6 @@
     <priority>1.0</priority>
   </url>
 
-  <!-- ===== Privacy Policy ===== -->
   <url>
     <loc>https://www.onepickgame.com/ar/privacy-policy</loc>
 
@@ -54,7 +52,6 @@
     <priority>0.8</priority>
   </url>
 
-  <!-- ===== Terms of Service ===== -->
   <url>
     <loc>https://www.onepickgame.com/ar/terms-of-service</loc>
 
@@ -80,7 +77,6 @@
     <priority>0.8</priority>
   </url>
 
-  <!-- ===== Suggestions ===== -->
   <url>
     <loc>https://www.onepickgame.com/ar/suggestions-board</loc>
 
@@ -106,7 +102,6 @@
     <priority>0.7</priority>
   </url>
 
-  <!-- ===== Notice ===== -->
   <url>
     <loc>https://www.onepickgame.com/ar/notice</loc>
 
