@@ -3,13 +3,34 @@
     {
       "source": "/:path*",
       "has": [
-        {
-          "type": "host",
-          "value": "onepickgame.com"
-        }
+        { "type": "host", "value": "onepickgame.com" }
       ],
       "destination": "https://www.onepickgame.com/:path*",
       "permanent": true
     }
-  ]
+  ],
+
+  "headers": [
+    {
+      "source": "/sitemap(_index)?\\.xml",
+      "headers": [
+        { "key": "Content-Type", "value": "application/xml; charset=utf-8" }
+      ]
+    },
+    {
+      "source": "/sitemaps/(.*)\\.xml",
+      "headers": [
+        { "key": "Content-Type", "value": "application/xml; charset=utf-8" }
+      ]
+    },
+    {
+      "source": "/robots\\.txt",
+      "headers": [
+        { "key": "Content-Type", "value": "text/plain; charset=utf-8" }
+      ]
+    }
+  ],
+
+  "trailingSlash": false,
+  "cleanUrls": true
 }
