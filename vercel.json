@@ -2,35 +2,31 @@
   "redirects": [
     {
       "source": "/:path*",
-      "has": [
-        { "type": "host", "value": "onepickgame.com" }
-      ],
+      "has": [{ "type": "host", "value": "onepickgame.com" }],
       "destination": "https://www.onepickgame.com/:path*",
       "permanent": true
     }
   ],
-
   "headers": [
     {
-      "source": "/sitemap(_index)?\\.xml",
-      "headers": [
-        { "key": "Content-Type", "value": "application/xml; charset=utf-8" }
-      ]
+      "source": "/sitemap_index-v2.xml",
+      "headers": [{ "key": "Content-Type", "value": "application/xml; charset=utf-8" }]
     },
     {
       "source": "/sitemaps/(.*)\\.xml",
-      "headers": [
-        { "key": "Content-Type", "value": "application/xml; charset=utf-8" }
-      ]
+      "headers": [{ "key": "Content-Type", "value": "application/xml; charset=utf-8" }]
     },
     {
       "source": "/robots\\.txt",
-      "headers": [
-        { "key": "Content-Type", "value": "text/plain; charset=utf-8" }
-      ]
+      "headers": [{ "key": "Content-Type", "value": "text/plain; charset=utf-8" }]
     }
   ],
-
+  "rewrites": [
+    { "source": "/sitemap_index-v2.xml", "destination": "/sitemap_index-v2.xml" },
+    { "source": "/sitemaps/(.*)", "destination": "/sitemaps/$1" },
+    { "source": "/robots.txt", "destination": "/robots.txt" },
+    { "source": "/(.*)", "destination": "/" }
+  ],
   "trailingSlash": false,
   "cleanUrls": true
 }
