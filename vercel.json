@@ -9,7 +9,7 @@
   ],
   "headers": [
     {
-      "source": "/sitemap_index-v2.xml",
+      "source": "/sitemap_index-v2\\.xml",
       "headers": [{ "key": "Content-Type", "value": "application/xml; charset=utf-8" }]
     },
     {
@@ -23,8 +23,10 @@
   ],
   "rewrites": [
     { "source": "/sitemap_index-v2.xml", "destination": "/sitemap_index-v2.xml" },
-    { "source": "/sitemaps/(.*)", "destination": "/sitemaps/$1" },
+    { "source": "/sitemaps/:file*", "destination": "/sitemaps/:file*" },
     { "source": "/robots.txt", "destination": "/robots.txt" },
+    { "source": "/:all*(png|jpg|jpeg|gif|webp|avif|svg|ico)", "destination": "/:all*" },
+    { "source": "/:all*(js|css|map|json)", "destination": "/:all*" },
     { "source": "/(.*)", "destination": "/" }
   ],
   "trailingSlash": false,
