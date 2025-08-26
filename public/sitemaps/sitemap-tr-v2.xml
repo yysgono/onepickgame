@@ -3,6 +3,6 @@
   <url><loc>https://www.onepickgame.com/tr</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>
   <url><loc>https://www.onepickgame.com/tr/privacy-policy</loc><changefreq>yearly</changefreq><priority>0.8</priority></url>
   <url><loc>https://www.onepickgame.com/tr/terms-of-service</loc><changefreq>yearly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://www.onepickgame.com/tr/suggestions-board</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://www.onepickgame.com/tr/suggestions</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
   <url><loc>https://www.onepickgame.com/tr/notice</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
 </urlset>
