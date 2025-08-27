@@ -1,11 +1,13 @@
 # robots.txt for www.onepickgame.com
 
+# --- Google Ads/Adsense 크롤러는 반드시 허용 ---
 User-agent: AdsBot-Google
 Allow: /
 
 User-agent: AdsBot-Google-Mobile
 Allow: /
 
+# --- 일반 구글/다른 봇: 기본은 허용, 관리자 화면만 차단 ---
 User-agent: Googlebot
 Allow: /ads.txt
 Allow: /*.js$
@@ -24,4 +26,5 @@ Disallow: /*/admin/
 Disallow: /*/admin-stats$
 Disallow: /*/admin-stats/
 
+# --- Sitemap 경로 ---
 Sitemap: https://www.onepickgame.com/sitemap_index-v2.xml
