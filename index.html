@@ -3,6 +3,9 @@
 <head>
   <title>Supabase Auth Example</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+
+  <!-- ✅ AdSense 소유권 확인 메타 태그 -->
+  <meta name="google-adsense-account" content="ca-pub-2906270915716379">
 </head>
 <body>
   <h1>회원가입</h1>
@@ -19,7 +22,6 @@
 
   <!-- *** 스크립트는 body 제일 마지막에! *** -->
   <script>
-    // supabase-js가 먼저 로드된 이후에 실행!
     const SUPABASE_URL = 'https://irfyuvuazhujtlgpkfci.supabase.co';
     const SUPABASE_ANON_KEY = 'sb_publishable__U91j22eqCETuyJ4-O1wUQ_WMu_Hk5r';
 
@@ -29,22 +31,18 @@
       alert("회원가입 버튼이 눌렸어요!");
       const email = document.getElementById('signup-email').value;
       const password = document.getElementById('signup-password').value;
-      let { data, error } = await supabase.auth.signUp({
-        email: email,
-        password: password,
-      });
-      document.getElementById('result').innerText = error ? error.message : '회원가입 성공! 이메일 인증을 확인하세요.';
+      let { data, error } = await supabase.auth.signUp({ email, password });
+      document.getElementById('result').innerText =
+        error ? error.message : '회원가입 성공! 이메일 인증을 확인하세요.';
     }
 
     async function signIn() {
       alert("로그인 버튼이 눌렸어요!");
       const email = document.getElementById('login-email').value;
       const password = document.getElementById('login-password').value;
-      let { data, error } = await supabase.auth.signInWithPassword({
-        email: email,
-        password: password,
-      });
-      document.getElementById('result').innerText = error ? error.message : '로그인 성공!';
+      let { data, error } = await supabase.auth.signInWithPassword({ email, password });
+      document.getElementById('result').innerText =
+        error ? error.message : '로그인 성공!';
     }
   </script>
 </body>
