@@ -1,4 +1,27 @@
+# robots.txt for www.onepickgame.com
+
+User-agent: AdsBot-Google
+Allow: /
+
+User-agent: AdsBot-Google-Mobile
+Allow: /
+
+User-agent: Googlebot
+Allow: /ads.txt
+Allow: /*.js$
+Allow: /*.css$
+Disallow: /*/admin$
+Disallow: /*/admin/
+Disallow: /*/admin-stats$
+Disallow: /*/admin-stats/
+
 User-agent: *
-Disallow:
+Allow: /ads.txt
+Allow: /*.js$
+Allow: /*.css$
+Disallow: /*/admin$
+Disallow: /*/admin/
+Disallow: /*/admin-stats$
+Disallow: /*/admin-stats/
 
 Sitemap: https://www.onepickgame.com/sitemap_index-v2.xml
