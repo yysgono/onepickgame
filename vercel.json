@@ -5,6 +5,16 @@
       "has": [{ "type": "host", "value": "onepickgame.com" }],
       "destination": "https://www.onepickgame.com/:path*",
       "permanent": true
+    },
+    {
+      "source": "/(ar|bn|de|es|fr|hi|id|ja|ko|pt|ru|th|tr|vi|zh)/privacy-policy",
+      "destination": "/en/privacy-policy",
+      "permanent": true
+    },
+    {
+      "source": "/(ar|bn|de|es|fr|hi|id|ja|ko|pt|ru|th|tr|vi|zh)/terms-of-service",
+      "destination": "/en/terms-of-service",
+      "permanent": true
     }
   ],
   "headers": [
@@ -19,12 +29,17 @@
     {
       "source": "/robots\\.txt",
       "headers": [{ "key": "Content-Type", "value": "text/plain; charset=utf-8" }]
+    },
+    {
+      "source": "/ads\\.txt",
+      "headers": [{ "key": "Content-Type", "value": "text/plain; charset=utf-8" }]
     }
   ],
   "rewrites": [
     { "source": "/sitemap_index-v2.xml", "destination": "/sitemap_index-v2.xml" },
     { "source": "/sitemaps/:file*", "destination": "/sitemaps/:file*" },
     { "source": "/robots.txt", "destination": "/robots.txt" },
+    { "source": "/ads.txt", "destination": "/ads.txt" },
     { "source": "/:all*(png|jpg|jpeg|gif|webp|avif|svg|ico)", "destination": "/:all*" },
     { "source": "/:all*(js|css|map|json)", "destination": "/:all*" },
     { "source": "/(.*)", "destination": "/" }
