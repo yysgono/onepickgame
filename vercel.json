@@ -15,6 +15,11 @@
       "source": "/(ar|bn|de|es|fr|hi|id|ja|ko|pt|ru|th|tr|vi|zh)/terms-of-service",
       "destination": "/en/terms-of-service",
       "permanent": true
+    },
+    {
+      "source": "/(ar|bn|de|es|fr|hi|id|ja|ko|pt|ru|th|tr|vi|zh)/suggestions-board",
+      "destination": "/en/suggestions-board",
+      "permanent": true
     }
   ],
   "headers": [
