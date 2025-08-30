@@ -20,6 +20,11 @@
       "source": "/(ar|bn|de|es|fr|hi|id|ja|ko|pt|ru|th|tr|vi|zh)/suggestions-board",
       "destination": "/en/suggestions-board",
       "permanent": true
+    },
+    {
+      "source": "/(ar|bn|de|es|fr|hi|id|ja|ko|pt|ru|th|tr|vi|zh)/notice",
+      "destination": "/en/notice",
+      "permanent": true
     }
   ],
   "headers": [
