@@ -1,6 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useLocation, useParams } from "react-router-dom";
+import MediaRenderer from "./MediaRenderer";
+import { fetchWinnerStatsFromDB } from "../utils"; // ✅ 1·2등 통계용
 
 function useIsMobile() {
   const [isMobile, setIsMobile] = React.useState(window.innerWidth < 700);
@@ -12,13 +14,58 @@ function useIsMobile() {
   return isMobile;
 }
 
+// ✅ 통계 기반 1,2등 계산 (없으면 candidates 앞 2개)
+function pickTop2(cup, candidates, winStats) {
+  const data = Array.isArray(candidates) ? candidates : [];
+  const stats = Array.isArray(winStats) ? winStats : [];
+
+  if (!stats.length) return [data?.[0] || null, data?.[1] || null];
+
+  const sorted = [...stats]
+    .map((row, i) => ({ ...row, _i: i }))
+    .sort((a, b) => {
+      if ((b.win_count || 0) !== (a.win_count || 0))
+        return (b.win_count || 0) - (a.win_count || 0);
+      if ((b.match_wins || 0) !== (a.match_wins || 0))
+        return (b.match_wins || 0) - (a.match_wins || 0);
+      return a._i - b._i;
+    });
+
+  const byId = (id) => data.find((c) => c.id === id) || null;
+  const first = byId(sorted[0]?.candidate_id) || data?.[0] || null;
+  const second = byId(sorted[1]?.candidate_id) || data?.[1] || null;
+  return [first, second];
+}
+
 export default function SelectRoundPage({ cup, maxRound, candidates, onSelect, onResult }) {
   const { t } = useTranslation();
   const [selectedRound, setSelectedRound] = useState(maxRound);
+  const [winStats, setWinStats] = useState([]);
   const isMobile = useIsMobile();
   const navigate = useNavigate();
   const location = useLocation();
   const { lang: langParam } = useParams();
+
+  // ✅ 통계 가져오기 (홈 카드와 동일한 로직)
+  useEffect(() => {
+    let mounted = true;
+    async function run() {
+      try {
+        if (cup?.id) {
+          const statsArr = await fetchWinnerStatsFromDB(cup.id);
+          if (mounted) setWinStats(Array.isArray(statsArr) ? statsArr : []);
+        } else {
+          setWinStats([]);
+        }
+      } catch {
+        if (mounted) setWinStats([]);
+      }
+    }
+    run();
+    return () => {
+      mounted = false;
+    };
+  }, [cup?.id]);
 
   // 언어코드 추출
   let lang = langParam;
@@ -111,7 +158,7 @@ export default function SelectRoundPage({ cup, maxRound, candidates, onSelect, o
     position: "absolute",
     top: isMobile ? 11 : 23,
     right: isMobile ? 11 : 26,
-    zIndex: 10,
+    zIndex: 20, // 버튼 최상단
     background: "linear-gradient(90deg, #13e67e 80%, #23d6a0 100%)",
     color: "#fff",
     fontWeight: 900,
@@ -134,7 +181,7 @@ export default function SelectRoundPage({ cup, maxRound, candidates, onSelect, o
     position: "absolute",
     top: isMobile ? 11 : 23,
     left: isMobile ? 11 : 26,
-    zIndex: 10,
+    zIndex: 20, // 버튼 최상단
     background: "linear-gradient(90deg, #1976ed 80%, #45b7fa 100%)",
     color: "#fff",
     fontWeight: 900,
@@ -174,12 +221,22 @@ export default function SelectRoundPage({ cup, maxRound, candidates, onSelect, o
   // 후보 이름만 unique하게 (혹시 이름이 중복이면 한 번만 보여줌)
   const uniqueNames = Array.from(new Set((candidates || []).map(c => c.name || c.title || c)));
 
+  // ✅ 버튼과 썸네일 겹침 방지용 상단 여백
+  const topSpacerH = isMobile ? 60 : 70;
+
+  // ✅ 썸네일 높이(조절 가능)
+  const thumbH = isMobile ? 150 : 190;
+
+  // ✅ 1등/2등 결정
+  const [first, second] = pickTop2(cup, candidates, winStats);
+
   return (
     <div
       style={{
         position: "relative",
         textAlign: "center",
         padding: isMobile ? 12 : 38,
+        paddingTop: (isMobile ? 12 : 38) + topSpacerH, // 버튼 공간 확보
         maxWidth: isMobile ? "100%" : 880,
         margin: "0 auto",
         background: "rgba(20, 24, 37, 0.95)",
@@ -208,8 +265,88 @@ export default function SelectRoundPage({ cup, maxRound, candidates, onSelect, o
       >
         {t("show_result")}
       </button>
+
       {cup && (
         <>
+          {/* ✅ 제목 위 썸네일 (버튼과 겹치지 않음) */}
+          <div
+            style={{
+              width: "100%",
+              maxWidth: isMobile ? "98vw" : 710,
+              height: thumbH,
+              margin: isMobile ? "4px auto 12px" : "6px auto 16px",
+              borderRadius: 14,
+              overflow: "hidden",
+              position: "relative",
+              display: "flex",
+              boxShadow: "0 8px 28px 0 #1e254877, 0 1.5px 8px #1976ed22",
+              background: "linear-gradient(90deg, #162d52 0%, #284176 100%)",
+              zIndex: 1, // 버튼(zIndex:20)보다 낮음
+            }}
+          >
+            {/* left (1등) */}
+            <div style={{ width: "50%", height: "100%", background: "#192145" }}>
+              {first?.image ? (
+                <MediaRenderer
+                  url={first.image}
+                  alt={t("first_place")}
+                  playable={false}
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
+                    objectPosition: "50% 32%", // 얼굴 짤림 완화
+                    background: "#111",
+                  }}
+                />
+              ) : (
+                <div style={{ width: "100%", height: "100%", background: "#222" }} />
+              )}
+            </div>
+
+            {/* right (2등) */}
+            <div style={{ width: "50%", height: "100%", background: "#1f2540" }}>
+              {second?.image ? (
+                <MediaRenderer
+                  url={second.image}
+                  alt={t("second_place")}
+                  playable={false}
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
+                    objectPosition: "50% 32%",
+                    background: "#111",
+                  }}
+                />
+              ) : (
+                <div style={{ width: "100%", height: "100%", background: "#15182b" }} />
+              )}
+            </div>
+
+            {/* VS 아이콘 */}
+            <div
+              style={{
+                position: "absolute",
+                top: "50%",
+                left: "50%",
+                transform: "translate(-50%, -56%)",
+                width: isMobile ? 56 : 74,
+                height: isMobile ? 56 : 74,
+                pointerEvents: "none",
+                zIndex: 5,
+              }}
+            >
+              <img
+                src="/vs.png"
+                alt={t("vs")}
+                style={{ width: "100%", height: "100%", objectFit: "contain", userSelect: "none" }}
+                draggable={false}
+              />
+            </div>
+          </div>
+
+          {/* 제목 */}
           <div
             style={{
               fontWeight: 900,
@@ -228,12 +365,13 @@ export default function SelectRoundPage({ cup, maxRound, candidates, onSelect, o
               wordBreak: "break-all",
               maxWidth: isMobile ? "98vw" : 710,
               boxShadow: "0 2px 16px #1976ed18",
-              marginTop: isMobile ? 35 : 45,
+              marginTop: isMobile ? 12 : 16,
             }}
             title={cup.title}
           >
             {cup.title}
           </div>
+
           {(cup.desc || cup.description) && (
             <div
               style={{
@@ -311,6 +449,7 @@ export default function SelectRoundPage({ cup, maxRound, candidates, onSelect, o
           )}
         </span>
       </div>
+
       {/* 부전승 안내문구 */}
       {hasBye && (
         <div
@@ -357,7 +496,7 @@ export default function SelectRoundPage({ cup, maxRound, candidates, onSelect, o
             display: "flex",
             flexWrap: "wrap",
             gap: isMobile ? "7px 11px" : "11px 20px",
-            justifyContent: "flex-start",
+            justifyContent: "center", // ✅ 가운데 정렬
           }}
         >
           {uniqueNames.map((name, idx) => (
