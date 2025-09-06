@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { supabase } from "../utils/supabaseClient";
 import Seo from "../seo/Seo";
 
 export default function NoticePage() {
-  const { t, i18n } = useTranslation();
-  const { lang: paramLang } = useParams();
-  const lang = (paramLang || i18n.language || "en").split("-")[0];
+  const { t } = useTranslation();
 
   const [notices, setNotices] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -24,7 +22,6 @@ export default function NoticePage() {
           .order("created_at", { ascending: false });
 
         if (error) {
-          // 콘솔에만 남기고, 화면은 우아하게 처리
           // eslint-disable-next-line no-console
           console.error("Fetch notice error:", error);
         }
@@ -47,10 +44,12 @@ export default function NoticePage() {
   return (
     <>
       <Seo
-        lang={lang}
-        slug="notice"
+        lang="en"
+        slug="notice"                       // 실제 경로: /notice
         title="Notice"
         description="Latest announcements and updates for OnePickGame."
+        langPrefix={false}                  // ✅ /[slug] 형식으로 canonical 생성
+        hreflangLangs={["en"]}              // ✅ 영어 전용 페이지
       />
       <div
         style={{
@@ -85,11 +84,15 @@ export default function NoticePage() {
             >
               <b style={{ fontSize: 19, color: "#23366b" }}>{n.title}</b>
               <span style={{ color: "#aaa", fontSize: 13, marginLeft: 10 }}>
-                {n.created_at ? new Date(n.created_at).toLocaleDateString() : ""}
+                {n.created_at ? new Date(n.created_at).toLocaleDateString("en", {
+                  year: "numeric",
+                  month: "short",
+                  day: "2-digit",
+                }) : ""}
               </span>
               <br />
               <Link
-                to={`/${lang}/notice/${encodeURIComponent(n.id)}`}
+                to={`/notice/${encodeURIComponent(n.id)}`}   // ✅ 언어 프리픽스 제거
                 style={{
                   color: "#1676ed",
                   fontSize: 15,

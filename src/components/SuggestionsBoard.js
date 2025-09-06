@@ -1,28 +1,25 @@
 import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { useParams } from "react-router-dom";
 import Seo from "../seo/Seo";
 
 export default function SuggestionsBoard({ user, isAdmin }) {
-  const { t, i18n } = useTranslation();
-  const { lang: paramLang } = useParams();
-  const lang = (paramLang || i18n.language || "en").split("-")[0];
+  const { t } = useTranslation();
 
-  const storageKey = `onepickgame:suggestions:${lang}`;
+  // 영문 전용 페이지이므로 언어 비의존 스토리지 키로 단순화
+  const storageKey = `onepickgame:suggestions`;
 
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [suggestions, setSuggestions] = useState([]);
   const [replyContent, setReplyContent] = useState({}); // 운영자 답글 입력 상태
 
-  // localStorage에서 데이터 불러오기 (언어별)
+  // localStorage에서 데이터 불러오기
   useEffect(() => {
     try {
       const stored = localStorage.getItem(storageKey);
       if (stored) {
         const parsed = JSON.parse(stored);
-        if (Array.isArray(parsed)) setSuggestions(parsed);
-        else setSuggestions([]);
+        setSuggestions(Array.isArray(parsed) ? parsed : []);
       } else {
         setSuggestions([]);
       }
@@ -103,7 +100,7 @@ export default function SuggestionsBoard({ user, isAdmin }) {
 
   const formatDate = (isoString) => {
     const date = new Date(isoString);
-    return date.toLocaleString(lang || "en", {
+    return date.toLocaleString("en", {
       year: "numeric",
       month: "short",
       day: "2-digit",
@@ -115,10 +112,12 @@ export default function SuggestionsBoard({ user, isAdmin }) {
   return (
     <>
       <Seo
-        lang={lang}
-        slug="suggestions-board"  // ✅ 경로 일관성 수정
+        lang="en"
+        slug="suggestions-board"   // 실제 경로: /suggestions-board
         title="Suggestions Board"
         description="Submit suggestions and read admin replies."
+        langPrefix={false}         // ✅ /[lang]/[slug]가 아닌 /[slug]로 canonical/hreflang 생성
+        hreflangLangs={["en"]}     // ✅ 영어 전용 페이지
       />
       <div style={{ maxWidth: 700, margin: "40px auto", color: "#fff" }}>
         <h2 style={{ fontWeight: 900, marginBottom: 16 }}>

@@ -1,3 +1,4 @@
+// src/components/Header.js
 import React, { useRef, useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
@@ -100,7 +101,7 @@ export default function Header({
     } else {
       ({ error } = await supabase
         .from("profiles")
-        .insert([{ id: user.id, nickname: trimName }]));
+        .insert([{ id: user.id, nickname: trimName }])); // upsert 대체
     }
     setEditLoading(false);
     if (error) {
@@ -159,10 +160,10 @@ export default function Header({
     setShowProfile(false);
   }
 
-  // ✅ 기본 언어를 'en'으로 통일 + 변형 코드(en-US 등) 안전 처리
+  // ✅ 기본 언어 'en' 고정 + 변형코드(en-US 등) 안전 처리
   const currentLang = (i18n.language || "en").split("-")[0];
 
-  // 로고 클릭 시: 전체 새로고침 없이 언어 홈으로 이동 (SPA 내 라우팅)
+  // 로고 클릭: 언어 홈으로 이동 (SPA)
   function handleLogoClick() {
     navigate(`/${currentLang}`);
   }
@@ -423,6 +424,7 @@ export default function Header({
           {t("onepick_brand", "One Pick Game")}
         </span>
       </div>
+
       {/* 버튼/메뉴 */}
       <div
         style={{
@@ -470,17 +472,21 @@ export default function Header({
             />
           </>
         )}
+
         <button style={mainButtonStyle} onClick={onMakeWorldcup}>
           {t("makeWorldcup")}
         </button>
+
         {user && (
           <button style={infoButtonStyle} onClick={handleMyWorldcup}>
             {t("my_worldcups")}
           </button>
         )}
+
         <button style={infoButtonStyle} onClick={handleRecentWorldcup}>
           {t("recent_worldcups")}
         </button>
+
         {/* ----------- 언어 선택 ----------- */}
         <select
           value={(i18n.language || "en").split("-")[0]}
@@ -501,6 +507,7 @@ export default function Header({
           ))}
         </select>
         {/* ----------- 여기까지 ----------- */}
+
         {user ? (
           <>
             <span
@@ -523,18 +530,26 @@ export default function Header({
             <button style={logoutButtonStyle} onClick={handleLogout}>
               {t("logout")}
             </button>
+
             {showProfile && (
-              <div style={modalOverlayStyle}>
+              <div style={modalOverlayStyle} onClick={() => setShowProfile(false)}>
                 <div style={modalContentStyle} onClick={(e) => e.stopPropagation()}>
                   <div
-                    style={{ fontWeight: 800, fontSize: 21, marginBottom: 18, textAlign: "center" }}
+                    style={{
+                      fontWeight: 800,
+                      fontSize: 21,
+                      marginBottom: 18,
+                      textAlign: "center",
+                    }}
                   >
                     {t("edit_profile")}
                   </div>
+
                   <div style={{ width: "100%" }}>
                     <div style={{ marginBottom: 10, fontSize: 15 }}>
                       <b>{t("email")}:</b> {user.email}
                     </div>
+
                     <div style={{ marginBottom: 10, fontSize: 15 }}>
                       <b>{t("nickname")}:</b>
                       <input
@@ -554,6 +569,7 @@ export default function Header({
                         {editLoading ? t("changing") : t("change_nickname")}
                       </button>
                     </div>
+
                     <button
                       style={modalGrayButtonStyle}
                       onClick={handlePasswordChange}
@@ -561,6 +577,7 @@ export default function Header({
                     >
                       {t("send_pw_reset")}
                     </button>
+
                     {profile?.withdrawal_requested_at ? (
                       <button
                         style={modalGrayButtonStyle}
@@ -578,15 +595,28 @@ export default function Header({
                         {withdrawLoading ? t("changing") : t("withdraw")}
                       </button>
                     )}
+
                     {editError && (
-                      <div style={{ color: "red", marginTop: 7, fontSize: 14, textAlign: "center" }}>
+                      <div
+                        style={{
+                          color: "red",
+                          marginTop: 7,
+                          fontSize: 14,
+                          textAlign: "center",
+                        }}
+                      >
                         {editError}
                       </div>
                     )}
                   </div>
-                  <button style={modalCloseButtonStyle} onClick={() => setShowProfile(false)}>
+
+                  <button
+                    style={modalCloseButtonStyle}
+                    onClick={() => setShowProfile(false)}
+                  >
                     {t("close")}
                   </button>
+
                   <button
                     style={{
                       position: "absolute",
@@ -631,7 +661,10 @@ export default function Header({
             )}
           </>
         ) : (
-          <button style={mainButtonStyle} onClick={() => navigate(`/${currentLang}/login`)}>
+          <button
+            style={mainButtonStyle}
+            onClick={() => navigate(`/${currentLang}/login`)}
+          >
             {t("login")}
           </button>
         )}

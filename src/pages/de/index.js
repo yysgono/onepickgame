@@ -13,21 +13,50 @@ export default function DePage(props) {
     }
   }, [i18n]);
 
+  const base = "https://www.onepickgame.com";
+  const self = `${base}/de`; // trailingSlash:false와 일치
+
   return (
     <>
-      <Helmet>
+      <Helmet htmlAttributes={{ lang: "de" }}>
         <title>One Pick Game - Bracket-Spielseite</title>
         <meta
           name="description"
           content="One Pick Game ist eine Bracket-Spielseite. Erstelle dein eigenes Turnier und spiele mit Nutzern aus aller Welt!"
         />
+
+        {/* Canonical & OpenGraph */}
+        <link rel="canonical" href={self} />
         <meta property="og:title" content="One Pick Game - Bracket-Spielseite" />
-        <meta property="og:description" content="One Pick Game ist eine Bracket-Spielseite. Erstelle dein eigenes Turnier und spiele mit Nutzern aus aller Welt!" />
-        <meta property="og:image" content="https://www.onepickgame.com/ogimg.png" />
-        <meta property="og:url" content="https://www.onepickgame.com/de" />
-        {/* ✅ canonical 태그 추가! */}
-        <link rel="canonical" href="https://www.onepickgame.com/de/" />
+        <meta
+          property="og:description"
+          content="One Pick Game ist eine Bracket-Spielseite. Erstelle dein eigenes Turnier und spiele mit Nutzern aus aller Welt!"
+        />
+        <meta property="og:image" content={`${base}/ogimg.png`} />
+        <meta property="og:url" content={self} />
+        <meta property="og:type" content="website" />
+        <meta property="og:locale" content="de_DE" />
+
+        {/* hreflang: 지원하는 모든 언어 */}
+        <link rel="alternate" hrefLang="ar" href={`${base}/ar`} />
+        <link rel="alternate" hrefLang="bn" href={`${base}/bn`} />
+        <link rel="alternate" hrefLang="de" href={`${base}/de`} />
+        <link rel="alternate" hrefLang="en" href={`${base}/en`} />
+        <link rel="alternate" hrefLang="es" href={`${base}/es`} />
+        <link rel="alternate" hrefLang="fr" href={`${base}/fr`} />
+        <link rel="alternate" hrefLang="hi" href={`${base}/hi`} />
+        <link rel="alternate" hrefLang="id" href={`${base}/id`} />
+        <link rel="alternate" hrefLang="ja" href={`${base}/ja`} />
+        <link rel="alternate" hrefLang="ko" href={`${base}/ko`} />
+        <link rel="alternate" hrefLang="pt" href={`${base}/pt`} />
+        <link rel="alternate" hrefLang="ru" href={`${base}/ru`} />
+        <link rel="alternate" hrefLang="th" href={`${base}/th`} />
+        <link rel="alternate" hrefLang="tr" href={`${base}/tr`} />
+        <link rel="alternate" hrefLang="vi" href={`${base}/vi`} />
+        <link rel="alternate" hrefLang="zh" href={`${base}/zh`} />
+        <link rel="alternate" hrefLang="x-default" href={`${base}/en`} />
       </Helmet>
+
       <Home {...props} />
     </>
   );

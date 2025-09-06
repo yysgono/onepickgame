@@ -1,20 +1,17 @@
 import React from "react";
-import { useTranslation } from "react-i18next";
-import { Link, useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import Seo from "../seo/Seo";
 
 export default function TermsOfService() {
-  const { i18n } = useTranslation();
-  const { lang: paramLang } = useParams();
-  const lang = (paramLang || i18n.language || "en").split("-")[0];
-
   return (
     <>
       <Seo
-        lang={lang}
-        slug="terms-of-service"
+        lang="en"
+        slug="terms-of-service" // 실제 경로: /terms-of-service
         title="Terms of Service"
         description="Terms of using the service, user responsibilities, content rules, and advertising policy."
+        langPrefix={false}      // ✅ /[lang]/[slug]가 아닌 /[slug]로 canonical/hreflang 생성
+        hreflangLangs={["en"]}  // ✅ 영어 전용 페이지
       />
       <div
         style={{
@@ -27,8 +24,8 @@ export default function TermsOfService() {
           color: "#222",
         }}
       >
-        <h2>Terms of Service</h2>
-        <ul style={{ lineHeight: 1.8 }}>
+        <h2 style={{ fontWeight: 900, marginBottom: 12 }}>Terms of Service</h2>
+        <ul style={{ lineHeight: 1.8, paddingLeft: 18 }}>
           <li>Anyone can use this service without registration.</li>
           <li>
             Users are responsible for any content they upload or create, including copyrights and legal issues.
@@ -41,13 +38,14 @@ export default function TermsOfService() {
             Third-party ads and cookies may be displayed or used for personalized advertising (for example, Google AdSense).
           </li>
           <li>
-            Please refer to our&nbsp;
-            <Link to={`/${lang}/privacy-policy`}>Privacy Policy</Link>
-            &nbsp;for details on personal data.
+            Please refer to our{" "}
+            <Link to="/privacy-policy">Privacy Policy</Link>
+            {" "}for details on personal data.
           </li>
           <li>These terms are effective from July 10, 2025.</li>
           <li>
-            For any questions, contact: <a href="mailto:yysgono@gmail.com">yysgono@gmail.com</a>
+            For any questions, contact:{" "}
+            <a href="mailto:yysgono@gmail.com">yysgono@gmail.com</a>
           </li>
         </ul>
         <p style={{ marginTop: 28, color: "#777", fontSize: 15 }}>

@@ -6,12 +6,11 @@ const SUPPORTED_LANGS = [
   "en","ko","ja","zh","ru","pt","es","fr","id","hi","de","vi","ar","bn","th","tr"
 ];
 
-// og:locale 매핑 (필수는 아니지만 있으면 좋음)
 const OG_LOCALE_MAP = {
   en: "en_US",
   ko: "ko_KR",
   ja: "ja_JP",
-  zh: "zh_CN",     // 필요시 zh-TW 등 분리 가능
+  zh: "zh_CN",
   ru: "ru_RU",
   pt: "pt_BR",
   es: "es_ES",
@@ -32,15 +31,19 @@ function stripTrailingSlash(s = "") {
 function stripSlashes(s = "") {
   return String(s).replace(/^\/+|\/+$/g, "");
 }
-function normalizeCanonical(base, lang, slug = "") {
-  // base: https://www.onepickgame.com 또는 window.location.origin
+
+function normalizeCanonical(base, lang, slug = "", { langPrefix = true } = {}) {
   const b = stripTrailingSlash(base || "https://www.onepickgame.com");
   const l = String(lang || "en").split("-")[0];
   const s = stripSlashes(slug);
+
+  // langPrefix=false 이면 /privacy-policy 같은 루트 경로 생성
+  if (!langPrefix) return s ? `${b}/${s}` : b;
+
+  // 기본: /{lang}/{slug}
   return s ? `${b}/${l}/${s}` : `${b}/${l}`;
 }
 
-// 절대 URL 보장
 function toAbsoluteUrl(origin, url) {
   if (!url) return "";
   if (/^https?:\/\//i.test(url)) return url;
@@ -51,26 +54,31 @@ function toAbsoluteUrl(origin, url) {
 
 export default function Seo({
   lang = "en",
-  slug = "",            // 예: "", "privacy-policy", "stats/123"
+  slug = "",                 // 예: "", "privacy-policy"
   title = "OnePickGame",
   description = "Create and play worldcup-style tournaments.",
-  image = "/onepick-social.png", // OG/Twitter 카드 이미지
-  // ✅ noindex 페이지라면 hreflang을 생략하기 위한 스위치
+  image = "/onepick-social.png",
   indexable = true,
+
+  // 🔽 새로 추가된 옵션들
+  langPrefix = true,         // false면 /[slug] (언어 prefix 제거)
+  hreflangLangs,             // 지정 시 그 언어만 alternates 생성. 미지정 시 전체 세트
 }) {
   const origin =
     typeof window !== "undefined"
       ? window.location.origin
       : "https://www.onepickgame.com";
 
-  const canonical = normalizeCanonical(origin, lang, slug);
+  const canonical = normalizeCanonical(origin, lang, slug, { langPrefix });
   const absoluteImage = image ? toAbsoluteUrl(origin, image) : "";
 
-  // hreflang 세트 (indexable일 때만 출력)
+  // hreflang 세트: 기본은 전체 언어. 단, langPrefix=false & 영어 전용이면 ["en"]만 권장
+  const langsForHreflang = hreflangLangs ?? SUPPORTED_LANGS;
+
   const hreflangs = indexable
-    ? SUPPORTED_LANGS.map((l) => ({
+    ? langsForHreflang.map((l) => ({
         hreflang: l,
-        href: normalizeCanonical(origin, l, slug),
+        href: normalizeCanonical(origin, l, slug, { langPrefix }),
       }))
     : [];
 
@@ -85,7 +93,7 @@ export default function Seo({
       {/* Canonical */}
       <link rel="canonical" href={canonical} />
 
-      {/* hreflang alternates (indexable일 때만) */}
+      {/* hreflang alternates */}
       {hreflangs.map(({ hreflang, href }) => (
         <link key={hreflang} rel="alternate" hrefLang={hreflang} href={href} />
       ))}
@@ -93,7 +101,7 @@ export default function Seo({
         <link
           rel="alternate"
           hrefLang="x-default"
-          href={normalizeCanonical(origin, "en", slug)}
+          href={normalizeCanonical(origin, "en", slug, { langPrefix })}
         />
       )}
 
@@ -111,8 +119,6 @@ export default function Seo({
       <meta name="twitter:title" content={title} />
       <meta name="twitter:description" content={description} />
       {absoluteImage ? <meta name="twitter:image" content={absoluteImage} /> : null}
-
-      {/* robots는 SEOManager가 통제 (여기선 설정하지 않음) */}
     </Helmet>
   );
 }

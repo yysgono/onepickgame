@@ -6,9 +6,10 @@ import { Link, useLocation } from "react-router-dom";
 export default function Footer() {
   const { t, i18n } = useTranslation();
   const location = useLocation();
-  // 현재 경로에서 언어코드 추출
+
+  // 현재 경로에서 언어코드 추출 (홈/게임 페이지용)
   const langMatch = location.pathname.match(/^\/([a-z]{2})(\/|$)/);
-  const lang = langMatch ? langMatch[1] : i18n.language || "ko";
+  const lang = langMatch ? langMatch[1] : (i18n.language || "en").split("-")[0];
 
   return (
     <footer
@@ -48,9 +49,11 @@ export default function Footer() {
             bracket, enjoy fun matchups, and play with users around the world!
           </Trans>
         </div>
+
+        {/* 제안 게시판: 영어 전용 루트 경로 */}
         <div style={{ marginBottom: 10 }}>
           <Link
-            to={`/${lang}/suggestions`}
+            to={`/suggestions-board`}
             style={{
               color: "#ffd980",
               textDecoration: "underline",
@@ -64,9 +67,11 @@ export default function Footer() {
             })}
           </Link>
         </div>
+
+        {/* 약관/개인정보: 영어 전용 루트 경로 */}
         <div style={{ marginTop: 4 }}>
           <Link
-            to={`/${lang}/terms-of-service`}
+            to={`/terms-of-service`}
             style={{
               color: "#7fcaff",
               textDecoration: "underline",
@@ -74,13 +79,11 @@ export default function Footer() {
               fontWeight: 700,
               margin: "0 14px 0 0",
             }}
-            target="_blank"
-            rel="noopener noreferrer"
           >
             {t("terms_of_service", { defaultValue: "Terms of Service" })}
           </Link>
           <Link
-            to={`/${lang}/privacy-policy`}
+            to={`/privacy-policy`}
             style={{
               color: "#7fcaff",
               textDecoration: "underline",
@@ -88,12 +91,11 @@ export default function Footer() {
               fontWeight: 700,
               margin: "0 0 0 0",
             }}
-            target="_blank"
-            rel="noopener noreferrer"
           >
             {t("privacy_policy", { defaultValue: "Privacy Policy" })}
           </Link>
         </div>
+
         <div
           style={{
             marginTop: 14,

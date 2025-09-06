@@ -1,20 +1,17 @@
 import React from "react";
-import { useTranslation } from "react-i18next";
-import { Link, useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import Seo from "../seo/Seo";
 
 export default function PrivacyPolicy() {
-  const { i18n } = useTranslation();
-  const { lang: paramLang } = useParams();
-  const lang = (paramLang || i18n.language || "en").split("-")[0];
-
   return (
     <>
       <Seo
-        lang={lang}
-        slug="privacy-policy"
+        lang="en"
+        slug="privacy-policy" // 실제 경로: /privacy-policy
         title="Privacy Policy"
         description="How we collect, use, and protect your personal data. Includes Google AdSense information."
+        langPrefix={false}      // ✅ /[lang]/[slug]가 아닌 /[slug]로 canonical/hreflang 생성
+        hreflangLangs={["en"]}  // ✅ 영어 전용 페이지
       />
       <div
         style={{
@@ -66,7 +63,7 @@ export default function PrivacyPolicy() {
           </li>
           <li>
             See also our{" "}
-            <Link to={`/${lang}/terms-of-service`}>Terms of Service</Link>
+            <Link to="/terms-of-service">Terms of Service</Link>
             .
           </li>
         </ul>
