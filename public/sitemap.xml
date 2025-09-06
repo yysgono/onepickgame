@@ -2,59 +2,78 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:xhtml="http://www.w3.org/1999/xhtml">
 
-  <!-- ===== HOME ===== -->
+  <!-- ===== HOME (다국어 제공) ===== -->
   <url>
     <loc>https://www.onepickgame.com/en</loc>
+    <!-- 제공 중인 언어만 유지 -->
     <xhtml:link rel="alternate" hreflang="en" href="https://www.onepickgame.com/en"/>
     <xhtml:link rel="alternate" hreflang="ko" href="https://www.onepickgame.com/ko"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://www.onepickgame.com/ja"/>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://www.onepickgame.com/zh"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://www.onepickgame.com/es"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.onepickgame.com/fr"/>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://www.onepickgame.com/vi"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://www.onepickgame.com/de"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://www.onepickgame.com/ru"/>
+    <xhtml:link rel="alternate" hreflang="id" href="https://www.onepickgame.com/id"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://www.onepickgame.com/pt"/>
+    <xhtml:link rel="alternate" hreflang="hi" href="https://www.onepickgame.com/hi"/>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://www.onepickgame.com/tr"/>
+    <xhtml:link rel="alternate" hreflang="th" href="https://www.onepickgame.com/th"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.onepickgame.com/ar"/>
+    <xhtml:link rel="alternate" hreflang="bn" href="https://www.onepickgame.com/bn"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://www.onepickgame.com/en"/>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
     <lastmod>2025-08-15</lastmod>
   </url>
 
-  <!-- ===== PRIVACY POLICY ===== -->
+  <!-- ===== PRIVACY POLICY (영문 전용 / 루트 경로) ===== -->
   <url>
-    <loc>https://www.onepickgame.com/en/privacy-policy</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://www.onepickgame.com/en/privacy-policy"/>
-    <xhtml:link rel="alternate" hreflang="ko" href="https://www.onepickgame.com/ko/privacy-policy"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.onepickgame.com/en/privacy-policy"/>
+    <loc>https://www.onepickgame.com/privacy-policy</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.onepickgame.com/privacy-policy"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.onepickgame.com/privacy-policy"/>
     <changefreq>yearly</changefreq>
     <priority>0.8</priority>
     <lastmod>2025-08-15</lastmod>
   </url>
 
-  <!-- ===== TERMS OF SERVICE ===== -->
+  <!-- ===== TERMS OF SERVICE (영문 전용 / 루트 경로) ===== -->
   <url>
-    <loc>https://www.onepickgame.com/en/terms-of-service</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://www.onepickgame.com/en/terms-of-service"/>
-    <xhtml:link rel="alternate" hreflang="ko" href="https://www.onepickgame.com/ko/terms-of-service"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.onepickgame.com/en/terms-of-service"/>
+    <loc>https://www.onepickgame.com/terms-of-service</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.onepickgame.com/terms-of-service"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.onepickgame.com/terms-of-service"/>
     <changefreq>yearly</changefreq>
     <priority>0.8</priority>
     <lastmod>2025-08-15</lastmod>
   </url>
 
-  <!-- ===== SUGGESTIONS (※ 슬러그 확인) ===== -->
+  <!-- ===== SUGGESTIONS BOARD (영문 전용 / 루트 경로) ===== -->
   <url>
-    <loc>https://www.onepickgame.com/en/suggestions</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://www.onepickgame.com/en/suggestions"/>
-    <xhtml:link rel="alternate" hreflang="ko" href="https://www.onepickgame.com/ko/suggestions"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.onepickgame.com/en/suggestions"/>
+    <loc>https://www.onepickgame.com/suggestions-board</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.onepickgame.com/suggestions-board"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.onepickgame.com/suggestions-board"/>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
     <lastmod>2025-08-15</lastmod>
   </url>
 
-  <!-- ===== NOTICE LIST ===== -->
+  <!-- ===== NOTICE LIST (영문 전용 / 루트 경로) ===== -->
   <url>
-    <loc>https://www.onepickgame.com/en/notice</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://www.onepickgame.com/en/notice"/>
-    <xhtml:link rel="alternate" hreflang="ko" href="https://www.onepickgame.com/ko/notice"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.onepickgame.com/en/notice"/>
+    <loc>https://www.onepickgame.com/notice</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.onepickgame.com/notice"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.onepickgame.com/notice"/>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
     <lastmod>2025-08-15</lastmod>
   </url>
 
+  <!-- (선택) NOTICE 상세들: 공개 대상만 나열
+  <url>
+    <loc>https://www.onepickgame.com/notice/abc123</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+    <lastmod>2025-08-31</lastmod>
+  </url>
+  -->
 </urlset>
