@@ -1,3 +1,4 @@
+// src/components/Match.js
 import React, { useState, useEffect, useRef } from "react";
 import {
   insertWinnerLog,
@@ -7,8 +8,9 @@ import {
 } from "../utils";
 import MediaRenderer from "./MediaRenderer";
 import ResurrectionPage from "./ResurrectionPage";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import AdSlot from "./AdSlot";
 
 // Spinner
 function Spinner({ size = 60 }) {
@@ -229,9 +231,9 @@ function BackArrowButton({ onClick, disabled, style }) {
 function isYoutubeUrl(url) {
   if (!url) return false;
   return (
-    /youtu\.be\/([^/?&]+)/.test(url) ||
+    /youtu\.be\/([^\/?&]+)/.test(url) ||
     /youtube\.com.*[?&]v=([^&]+)/.test(url) ||
-    /youtube\.com\/embed\/([^/?&]+)/.test(url)
+    /youtube\.com\/embed\/([^\/?&]+)/.test(url)
   );
 }
 
@@ -249,7 +251,6 @@ function CandidateBox({ c, onClick, disabled, idx, selected, t }) {
   const THUMB_HEIGHT = isMobile ? 280 : 480;
   const NEON_FONT = "'Orbitron', 'Pretendard', sans-serif";
   const mainDark = "#171C27";
-  const blueLine = "#1976ed";
   const isYoutube = c?.image && isYoutubeUrl(c.image);
 
   return (
@@ -323,8 +324,6 @@ function CandidateBox({ c, onClick, disabled, idx, selected, t }) {
               width: "100%",
               height: "100%",
               background: "#21283a",
-              padding: 0,
-              boxSizing: "border-box",
             }}
           />
         ) : (
@@ -380,14 +379,14 @@ function CandidateBox({ c, onClick, disabled, idx, selected, t }) {
           padding: isMobile ? "8px 11px" : "17px 0 18px 0",
           background: mainDark,
           borderTop: "none",
-          borderBottom: `2.5px solid ${blueLine}`,
+          borderBottom: `2.5px solid #1976ed`,
           borderRadius: 0,
           marginTop: "auto",
         }}
       >
         <button
           style={{
-            background: blueLine,
+            background: "#1976ed",
             color: "#fff",
             fontWeight: 900,
             border: "none",
@@ -423,7 +422,9 @@ function CandidateBox({ c, onClick, disabled, idx, selected, t }) {
 
 // Main Match Component
 function Match({ cup, onResult, selectedCount }) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const [bracket, setBracket] = useState([]);
   const [idx, setIdx] = useState(0);
@@ -446,7 +447,12 @@ function Match({ cup, onResult, selectedCount }) {
   const [selElim, setSelElim] = useState([]);
   const [selAdv, setSelAdv] = useState([]);
 
-  const navigate = useNavigate();
+  // 뷰포트
+  const vw = typeof window !== "undefined" ? window.innerWidth : 1200;
+  const isMobile = vw < 1000;
+
+  // 광고 프로바이더 (모바일 하단 고정 배너에서만 사용)
+  const provider = (i18n?.language || "en").startsWith("ko") ? "coupang" : "amazon";
 
   useEffect(() => {
     async function init() {
@@ -478,7 +484,6 @@ function Match({ cup, onResult, selectedCount }) {
     // eslint-disable-next-line
   }, [cup, selectedCount]);
 
-  // 라운드 진행 및 ResurrectionPage 트리거
   useEffect(() => {
     if (idx === bracket.length && bracket.length > 0 && !showResurrect) {
       const matchWinners = matchHistory
@@ -489,7 +494,6 @@ function Match({ cup, onResult, selectedCount }) {
       const nextRoundCandidates =
         roundNum === 1 ? [...pendingWinners, ...matchWinners] : matchWinners;
 
-      // ===== 패자부활전 조건 수정됨 =====
       if (
         !resurrectUsed &&
         cup.data.length >= 32 &&
@@ -503,7 +507,6 @@ function Match({ cup, onResult, selectedCount }) {
         return;
       }
 
-      // 우승자 확정
       if (nextRoundCandidates.length === 1) {
         handleFinish(nextRoundCandidates[0], matchHistory);
         return;
@@ -520,7 +523,6 @@ function Match({ cup, onResult, selectedCount }) {
     // eslint-disable-next-line
   }, [idx, bracket, matchHistory, pendingWinners, cup, roundNum, showResurrect, resurrectUsed]);
 
-  // Resurrection confirm/cancel
   function handleResurrectCancel() {
     setShowResurrect(false);
     setResurrectUsed(true);
@@ -538,7 +540,6 @@ function Match({ cup, onResult, selectedCount }) {
   function handleResurrectConfirm(final16) {
     setShowResurrect(false);
     setResurrectUsed(true);
-    // ===== 여기만 변경됨: 랜덤으로 섞어서 매치 =====
     const shuffled = shuffle([...final16]);
     setBracket(makeNextRound(shuffled));
     setPendingWinners([]);
@@ -552,7 +553,6 @@ function Match({ cup, onResult, selectedCount }) {
     setSelAdv([]);
   }
 
-  // 최종 저장 및 결과화면 이동
   async function handleFinish(winner, matchHistory) {
     setSaving(true);
     setError("");
@@ -582,7 +582,6 @@ function Match({ cup, onResult, selectedCount }) {
   const currentMatch = bracket[idx] || [];
   const [c1, c2] = currentMatch;
 
-  // Bye 자동 진출 처리
   useEffect(() => {
     if (!c1 || !c2) {
       if (c1 || c2) {
@@ -594,7 +593,6 @@ function Match({ cup, onResult, selectedCount }) {
     // eslint-disable-next-line
   }, [idx, bracket]);
 
-  // 승자 선택
   function handlePick(winnerIdx) {
     if (autoPlaying || selectedIdx !== null) return;
     setHistoryStack((prev) => [
@@ -616,7 +614,6 @@ function Match({ cup, onResult, selectedCount }) {
     }, 180);
   }
 
-  // Undo (이전으로)
   function handleBack() {
     if (showResurrect || (resurrectUsed && roundNum === 3 && idx === 0)) return;
     if (!historyStack.length || selectedIdx !== null) return;
@@ -630,8 +627,6 @@ function Match({ cup, onResult, selectedCount }) {
     setSelectedIdx(null);
   }
 
-  const vw = typeof window !== "undefined" ? window.innerWidth : 1200;
-  const isMobile = vw < 1000;
   const STAGE_SIZE = isMobile ? 15 : 20;
   const nextIdx = idx + 1;
   const nextRoundCandidates =
@@ -694,7 +689,6 @@ function Match({ cup, onResult, selectedCount }) {
   if (!bracket || bracket.length === 0)
     return <div>{t("notEnoughCandidates")}</div>;
 
-  // 패자부활전 페이지
   if (showResurrect)
     return (
       <ResurrectionPage
@@ -713,7 +707,6 @@ function Match({ cup, onResult, selectedCount }) {
       />
     );
 
-  // 기본 매치 UI
   return (
     <div
       style={{
@@ -728,6 +721,8 @@ function Match({ cup, onResult, selectedCount }) {
         position: "relative",
       }}
     >
+      {/* ⛔ 헤더 바로 밑 배너 제거 (중복 방지: MatchPage 쪽만 사용) */}
+
       <AdaptiveTitle title={cup.title} isMobile={isMobile} />
       <div
         style={{
@@ -809,63 +804,107 @@ function Match({ cup, onResult, selectedCount }) {
           ))}
         </div>
       )}
-      {/* Match cards and Back button */}
+
+      {/* 중앙 매치 카드 (내부 사이드 광고 전부 제거) */}
       <div
         style={{
-          width: "100vw",
+          width: "100%",
+          maxWidth: 1600,
           display: "flex",
-          flexDirection: "row",
           justifyContent: "center",
-          alignItems: "stretch",
-          gap: isMobile ? 11 : 44,
-          margin: 0,
-          padding: 0,
+          alignItems: "flex-start",
+          gap: isMobile ? 8 : 16,
+          marginTop: 6,
+          padding: "0 8px",
           boxSizing: "border-box",
-          position: "relative",
-          left: "50%",
-          transform: "translateX(-50%)",
-          zIndex: 1,
         }}
       >
-        <CandidateBox
-          key={c1?.id || "c1"} // key 추가!
-          c={c1}
-          onClick={() => handlePick(0)}
-          disabled={autoPlaying || selectedIdx !== null}
-          idx={0}
-          selected={selectedIdx === 0}
-          t={t}
-        />
-        <CandidateBox
-          key={c2?.id || "c2"} // key 추가!
-          c={c2}
-          onClick={() => handlePick(1)}
-          disabled={autoPlaying || selectedIdx !== null}
-          idx={1}
-          selected={selectedIdx === 1}
-          t={t}
-        />
-        {/* Back Button */}
-        <div
-          style={{
-            position: "absolute",
-            left: "50%",
-            top: isMobile ? "10px" : "22px",
-            transform: "translate(-50%, 0)",
-            zIndex: 99,
-          }}
-        >
-          <BackArrowButton
-            onClick={handleBack}
-            disabled={
-              showResurrect ||
-              (resurrectUsed && roundNum === 3 && idx === 0) ||
-              historyStack.length === 0 ||
-              selectedIdx !== null
-            }
-          />
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div
+            style={{
+              width: "100vw",
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "center",
+              alignItems: "stretch",
+              gap: isMobile ? 11 : 44,
+              margin: 0,
+              padding: 0,
+              boxSizing: "border-box",
+              position: "relative",
+              left: "50%",
+              transform: "translateX(-50%)",
+              zIndex: 1,
+            }}
+          >
+            <CandidateBox
+              key={c1?.id || "c1"}
+              c={c1}
+              onClick={() => handlePick(0)}
+              disabled={autoPlaying || selectedIdx !== null}
+              idx={0}
+              selected={selectedIdx === 0}
+              t={t}
+            />
+            <CandidateBox
+              key={c2?.id || "c2"}
+              c={c2}
+              onClick={() => handlePick(1)}
+              disabled={autoPlaying || selectedIdx !== null}
+              idx={1}
+              selected={selectedIdx === 1}
+              t={t}
+            />
+            <div
+              style={{
+                position: "absolute",
+                left: "50%",
+                top: isMobile ? "10px" : "22px",
+                transform: "translate(-50%, 0)",
+                zIndex: 99,
+              }}
+            >
+              <BackArrowButton
+                onClick={handleBack}
+                disabled={
+                  showResurrect ||
+                  (resurrectUsed && roundNum === 3 && idx === 0) ||
+                  historyStack.length === 0 ||
+                  selectedIdx !== null
+                }
+              />
+            </div>
+          </div>
         </div>
       </div>
+
+      {/* 모바일 하단 고정 배너(유지) */}
+      {isMobile && (
+        <div
+          style={{
+            position: "fixed",
+            left: 0,
+            right: 0,
+            bottom: 0,
+            zIndex: 50,
+            width: "100%",
+            display: "flex",
+            justifyContent: "center",
+            background: "rgba(10,12,18,0.65)",
+            backdropFilter: "blur(6px)",
+          }}
+        >
+          <div style={{ width: 320, height: 100 }}>
+            <AdSlot
+              id="ad-match-footer-mobile"
+              provider={provider}
+              width={320}
+              height={100}
+            />
+          </div>
+        </div>
+      )}
+
       <style>
         {`
           @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&display=swap');

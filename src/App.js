@@ -67,10 +67,14 @@ import { supabase } from "./utils/supabaseClient";
 import Seo from "./seo/Seo";
 
 function useIsMobile() {
-  const [isMobile, setIsMobile] = useState(window.innerWidth <= 700);
+  const [isMobile, setIsMobile] = useState(
+    typeof window !== "undefined" ? window.innerWidth <= 700 : false
+  );
   useEffect(() => {
     function onResize() {
-      setIsMobile(window.innerWidth <= 700);
+      if (typeof window !== "undefined") {
+        setIsMobile(window.innerWidth <= 700);
+      }
     }
     window.addEventListener("resize", onResize);
     return () => window.removeEventListener("resize", onResize);
@@ -80,7 +84,7 @@ function useIsMobile() {
 
 function getLangPath(i18n, path = "") {
   // 기본 언어 영어
-  const lang = i18n.language || "en";
+  const lang = (i18n.language || "en").split("-")[0];
   if (path.startsWith("/")) path = path.slice(1);
   return `/${lang}${path ? "/" + path : ""}`;
 }
@@ -156,6 +160,25 @@ function LanguageWrapper(props) {
     default:
       return <EnPage {...homeProps} />;
   }
+}
+
+// ✅ 라우트 변경 시 스크롤 최상단으로 초기화
+function ScrollToTopOnRouteChange() {
+  const location = useLocation();
+  useEffect(() => {
+    try {
+      // 브라우저 기본 스크롤 복원 비활성화
+      if ("scrollRestoration" in window.history) {
+        window.history.scrollRestoration = "manual";
+      }
+    } catch {}
+    // 최상단으로 이동
+    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+    // 사파리 호환
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+  }, [location.pathname, location.search, location.hash]);
+  return null;
 }
 
 function App() {
@@ -249,9 +272,13 @@ function App() {
     }
   }, [i18n]);
 
-  function handleLangChange(lng) {
+  // Header가 경로 보존 네비게이션을 수행하므로,
+  // 여기서는 언어 상태와 로컬 스토리지만 갱신해주면 됩니다.
+  // (호환성 위해 options 인자를 받아도 무시하지 않게 서명만 유지)
+  function handleLangChange(lng, _options) {
     i18n.changeLanguage(lng);
     localStorage.setItem("onepickgame_lang", lng);
+    // 네비게이션은 Header에서 처리(현재 경로 유지)
   }
 
   function handleBackup() {
@@ -442,8 +469,8 @@ function App() {
 
     const descMap = {
       en: "Create and play worldcup-style matches. Community-driven tournaments and stats.",
-      ko: "이상형 월드컵 만들고 플레이하세요. 커뮤니티 기반 토너먼트와 통계를 제공합니다.",
-      ja: "理想のワールドカップを作成してプレイ。コミュニティ主導のトーナメントと統計。",
+      ko: "이상형 월드컵 사이트 입니다. 커뮤니티 기반 토너먼트와 통계를 제공합니다.",
+      ja: "理想のワールドカップを作成してプレイ。コミュニ티主导のトーナ먼트と統計。",
       fr: "Créez et jouez à des tournois. Communauté active et statistiques.",
       es: "Crea y juega torneos. Comunidad activa y estadísticas.",
       de: "Turniere erstellen und spielen. Community & Statistiken.",
@@ -463,7 +490,7 @@ function App() {
       if (!user) {
         alert(t("login_required") || "Login required.");
         return;
-        }
+      }
       navigate(`/${currentLang}/worldcup-maker`);
     }
 
@@ -653,6 +680,12 @@ function App() {
       );
     }
 
+    // ✅ 구 경로(/:lang/stats/:id)로 들어오면 결과 페이지로 리다이렉트
+    function RedirectStatsToResult() {
+      const { lang, id } = useParams();
+      return <Navigate to={`/${lang}/result/${id}`} replace />;
+    }
+
     return (
       <>
         <SEOManager />
@@ -722,7 +755,13 @@ function App() {
             <Route path="/:lang/match/:id/:round" element={<MatchPage worldcupList={worldcupList} />} />
             <Route path="/:lang/result/:id" element={<ResultPage worldcupList={worldcupList} />} />
             <Route path="/:lang/result/:id/:round" element={<ResultPage worldcupList={worldcupList} />} />
-            <Route path="/:lang/stats/:id" element={<StatsPageWrapper />} />
+
+            {/* ✅ 구 경로 리다이렉트 */}
+            <Route path="/:lang/stats/:id" element={<RedirectStatsToResult />} />
+
+            {/* 필요시 기존 StatsPageWrapper를 별도 경로로 유지하려면 다른 경로를 쓰세요 */}
+            {/* <Route path="/:lang/stats-legacy/:id" element={<StatsPageWrapper />} /> */}
+
             <Route path="/:lang/worldcup-maker" element={<WorldcupMakerWrapper />} />
             <Route path="/:lang/manage" element={<ManageWorldcupWrapper />} />
             <Route
@@ -819,6 +858,8 @@ function App() {
       <div style={{ position: "relative", zIndex: 2 }}>
         <div className="main-content-outer" style={{ paddingTop: 190, margin: 0 }}>
           <Router>
+            {/* ✅ 라우트 변경 시 스크롤 초기화 */}
+            <ScrollToTopOnRouteChange />
             <AppRoutes />
             <Footer />
           </Router>

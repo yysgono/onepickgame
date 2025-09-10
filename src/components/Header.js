@@ -1,7 +1,7 @@
 // src/components/Header.js
 import React, { useRef, useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { supabase } from "../utils/supabaseClient";
 
 function isValidNickname(nickname) {
@@ -45,6 +45,7 @@ export default function Header({
 }) {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
+  const location = useLocation();
   const inputRef = useRef();
 
   const [showProfile, setShowProfile] = useState(false);
@@ -172,6 +173,29 @@ export default function Header({
   }
   function handleRecentWorldcup() {
     navigate(`/${currentLang}/recent-worldcups`);
+  }
+
+  // ✅ 언어 변경 시 현재 경로 유지
+  function changeLanguageAndKeepPath(lng) {
+    try {
+      i18n.changeLanguage(lng);
+      if (typeof onLangChange === "function") onLangChange(lng);
+      localStorage.setItem("onepickgame_lang", lng);
+
+      const { pathname, search, hash } = location;
+      // 분해해서 선두의 2글자 언어코드가 있으면 교체, 없으면 추가
+      const parts = pathname.split("/").filter(Boolean);
+      if (parts.length > 0 && /^[a-z]{2}$/.test(parts[0])) {
+        parts[0] = lng;
+      } else {
+        parts.unshift(lng);
+      }
+      const newPath = "/" + parts.join("/");
+      navigate(newPath + (search || "") + (hash || ""), { replace: true });
+    } catch {
+      // fallback: 홈으로
+      navigate(`/${lng}`, { replace: true });
+    }
   }
 
   const logoImgUrl = "/onepick2.png";
@@ -487,16 +511,10 @@ export default function Header({
           {t("recent_worldcups")}
         </button>
 
-        {/* ----------- 언어 선택 ----------- */}
+        {/* ----------- 언어 선택 (현재 경로 유지) ----------- */}
         <select
           value={(i18n.language || "en").split("-")[0]}
-          onChange={(e) => {
-            const lng = e.target.value;
-            i18n.changeLanguage(lng);
-            if (onLangChange) onLangChange(lng);
-            localStorage.setItem("onepickgame_lang", lng);
-            navigate(`/${lng}`);
-          }}
+          onChange={(e) => changeLanguageAndKeepPath(e.target.value)}
           style={selectStyle}
           aria-label={t("language_select", "Select language")}
         >

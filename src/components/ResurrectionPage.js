@@ -1,3 +1,4 @@
+// src/components/ResurrectionPage.js
 import React, { useState, useMemo } from "react";
 import { useTranslation, Trans } from "react-i18next";
 
@@ -23,7 +24,7 @@ function ResurrectionPage({
   const filteredElim = useMemo(
     () =>
       eliminated.filter((c) =>
-        c.name.toLowerCase().includes(queryElim.toLowerCase())
+        (c.name || "").toLowerCase().includes(queryElim.toLowerCase())
       ),
     [eliminated, queryElim]
   );
@@ -31,7 +32,7 @@ function ResurrectionPage({
   const filteredAdv = useMemo(
     () =>
       advanced.filter((c) =>
-        c.name.toLowerCase().includes(queryAdv.toLowerCase())
+        (c.name || "").toLowerCase().includes(queryAdv.toLowerCase())
       ),
     [advanced, queryAdv]
   );
@@ -74,7 +75,7 @@ function ResurrectionPage({
   return (
     <div
       style={{
-        width: "100vw",
+        width: "100%",
         minHeight: "80vh",
         display: "flex",
         flexDirection: "column",
@@ -83,9 +84,12 @@ function ResurrectionPage({
         background: "none",
         padding: "44px 0 80px 0",
         fontFamily: "Noto Sans, Arial, sans-serif",
+        maxWidth: 1400,
+        margin: "0 auto",
+        boxSizing: "border-box",
       }}
     >
-      {/* Buttons */}
+      {/* 상단 버튼 */}
       <div
         style={{
           width: "100%",
@@ -116,7 +120,9 @@ function ResurrectionPage({
         </button>
         <button
           onClick={() =>
-            bothReady && !isSaving && onConfirm([
+            bothReady &&
+            !isSaving &&
+            onConfirm([
               ...advanced.filter((c) => !selAdv.some((x) => x.id === c.id)),
               ...selElim,
             ])
@@ -138,27 +144,23 @@ function ResurrectionPage({
         </button>
       </div>
 
-      {/* Saving message */}
+      {/* 저장중 메시지 */}
       {saveInProgressMsg && (
         <div
-          style={{
-            fontSize: 16,
-            fontWeight: 600,
-            color: "#aad",
-            marginBottom: 18,
-          }}
+          style={{ fontSize: 16, fontWeight: 600, color: "#aad", marginBottom: 18 }}
         >
           {saveInProgressMsg}
         </div>
       )}
 
-      {/* Title & instructions */}
+      {/* 타이틀/설명 */}
       <div
         style={{
           fontSize: 30,
           fontWeight: 900,
           margin: "0 0 18px 0",
           color: "#fff",
+          textAlign: "center",
         }}
       >
         {t("resurrection.title")}
@@ -179,18 +181,20 @@ function ResurrectionPage({
         </span>
       </div>
 
+      {/* 좌우 선택 영역 */}
       <div
         style={{
           display: "flex",
-          gap: 34,
+          gap: 24,            // ⬅ 간격 축소
           width: "90vw",
-          maxWidth: 1300,
+          maxWidth: 1100,     // ⬅ 전체 폭 축소
           margin: "0 auto",
           alignItems: "flex-start",
+          justifyContent: "center",
         }}
       >
-        {/* Eliminated Candidates */}
-        <div style={{ flex: 1 }}>
+        {/* 탈락자 목록 */}
+        <div style={{ flex: 1, minWidth: 0 }}>
           <div
             style={{
               fontWeight: 800,
@@ -208,7 +212,7 @@ function ResurrectionPage({
             onChange={(e) => setQueryElim(e.target.value)}
             style={{
               width: "100%",
-              maxWidth: 520,
+              maxWidth: 480,   // ⬅ 검색창 폭 축소
               fontSize: 16,
               marginBottom: 12,
               padding: "8px 12px",
@@ -222,9 +226,9 @@ function ResurrectionPage({
           <div
             style={{
               display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(170px, 1fr))",
-              gap: 14,
-              maxHeight: "54vh",
+              gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))", // ⬅ 카드 최소폭 축소
+              gap: 12,                 // ⬅ 카드 간격 축소
+              maxHeight: "50vh",       // ⬅ 세로 높이 소폭 축소
               overflowY: "auto",
               paddingBottom: 8,
               borderRadius: 12,
@@ -249,8 +253,8 @@ function ResurrectionPage({
                     minHeight: 70,
                     minWidth: 0,
                     display: "flex",
-                    justifyContent: "center",   // 중앙정렬
-                    alignItems: "center",        // 중앙정렬
+                    justifyContent: "center",
+                    alignItems: "center",
                     flexDirection: "column",
                     transition: "all 0.14s",
                     boxShadow: selected
@@ -294,8 +298,8 @@ function ResurrectionPage({
           </div>
         </div>
 
-        {/* Advanced Candidates */}
-        <div style={{ flex: 1 }}>
+        {/* 진출(상위 16명) 목록 */}
+        <div style={{ flex: 1, minWidth: 0 }}>
           <div
             style={{
               fontWeight: 800,
@@ -313,7 +317,7 @@ function ResurrectionPage({
             onChange={(e) => setQueryAdv(e.target.value)}
             style={{
               width: "100%",
-              maxWidth: 520,
+              maxWidth: 480,   // ⬅ 검색창 폭 축소
               fontSize: 16,
               marginBottom: 12,
               padding: "8px 12px",
@@ -327,9 +331,9 @@ function ResurrectionPage({
           <div
             style={{
               display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(170px, 1fr))",
-              gap: 14,
-              maxHeight: "54vh",
+              gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))",
+              gap: 12,
+              maxHeight: "50vh",
               overflowY: "auto",
               paddingBottom: 8,
               borderRadius: 12,
@@ -354,8 +358,8 @@ function ResurrectionPage({
                     minHeight: 70,
                     minWidth: 0,
                     display: "flex",
-                    justifyContent: "center",   // 중앙정렬
-                    alignItems: "center",        // 중앙정렬
+                    justifyContent: "center",
+                    alignItems: "center",
                     flexDirection: "column",
                     transition: "all 0.14s",
                     boxShadow: selected
