@@ -3,10 +3,8 @@ import React, { useEffect, useRef } from "react";
 
 /**
  * 통합 광고 슬롯
- * props:
- *  - id: DOM id
- *  - provider: 'coupang' | 'amazon'
- *  - width, height: 숫자(px)
+ * - provider: 'coupang' | 'amazon'
+ * - width, height: 숫자(px)
  */
 export default function AdSlot({
   id = "ad-slot",
@@ -20,32 +18,37 @@ export default function AdSlot({
   useEffect(() => {
     if (typeof window === "undefined") return;
 
+    // 렌더링 전 기존 내용 비우기
+    if (containerRef.current) containerRef.current.innerHTML = "";
+
     if (provider === "coupang") {
       renderCoupang();
     } else if (provider === "amazon") {
+      // 아직 아마존 연결 전: 플레이스홀더
       renderPlaceholder("Amazon Ads");
     } else {
       renderPlaceholder("Ad");
     }
 
+    // 언마운트 시 정리
     return () => {
       if (containerRef.current) containerRef.current.innerHTML = "";
     };
+    // deps: provider/width/height/id가 바뀔 때만 다시 주입
   }, [provider, width, height, id]);
 
-  // ---------- helpers ----------
-  const renderPlaceholder = (label) => {
+  // -------- helpers --------
+  function renderPlaceholder(label) {
     if (!containerRef.current) return;
-    containerRef.current.innerHTML = "";
     const ph = document.createElement("div");
     ph.style.cssText =
-      "width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#f5f7fb;border:1px dashed #c9d4ee;border-radius:8px;color:#6c7aa6;font-weight:700;";
+      "width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#0f1422;border:1px solid #223355;border-radius:8px;color:#8fa7d9;font-weight:800;";
     ph.textContent = label;
     containerRef.current.appendChild(ph);
-  };
+  }
 
-  // 쿠팡 라이브러리 로더 (전역 싱글톤)
-  const loadCoupangLib = () => {
+  // g.js 로더(전역 싱글톤)
+  function loadCoupangLib() {
     if (window.PartnersCoupang) return Promise.resolve();
     if (window.__coupangLoader) return window.__coupangLoader;
 
@@ -53,44 +56,46 @@ export default function AdSlot({
       const s = document.createElement("script");
       s.src = "https://ads-partners.coupang.com/g.js";
       s.async = true;
-      s.onload = () => {
-        // 라이브러리가 전역에 붙을 때까지 체크
-        const check = () => {
-          if (window.PartnersCoupang) resolve();
-          else setTimeout(check, 30);
-        };
-        check();
-      };
+      s.onload = () => resolve();
       s.onerror = (e) => reject(e);
       document.head.appendChild(s);
     });
-
     return window.__coupangLoader;
-  };
+  }
 
-  const renderCoupang = async () => {
+  async function renderCoupang() {
     try {
       if (!containerRef.current) return;
-      containerRef.current.innerHTML = "";
 
-      // 1) 라이브러리 로드
+      // 1) 라이브러리 로드 보장
       await loadCoupangLib();
 
-      // 2) 광고 실행
-      new window.PartnersCoupang.G({
-        id: "920431",               // 쿠팡 배너 생성기에서 받은 id
-        template: "carousel",
-        trackingCode: "AF6207831", // 쿠팡 파트너스 trackingCode
-        width: String(width),
-        height: String(height),
-        tsource: "",
-        slotId: id,                 // DOM id 지정
-      });
+      // 2) 컨테이너 비우고, 그 안에 inline script를 추가
+      //    쿠팡 위젯은 script의 "삽입 위치" 기준으로 렌더링됩니다.
+      containerRef.current.innerHTML = "";
+      const sc = document.createElement("script");
+      sc.type = "text/javascript";
+      // 배너 생성기 값: id=920431, trackingCode=AF6207831, template="carousel"
+      sc.text = `
+        try {
+          new PartnersCoupang.G({
+            "id":"920431",
+            "template":"carousel",
+            "trackingCode":"AF6207831",
+            "width":"${width}",
+            "height":"${height}",
+            "tsource":""
+          });
+        } catch (e) {
+          console && console.warn && console.warn('Coupang render error', e);
+        }
+      `;
+      containerRef.current.appendChild(sc);
     } catch (e) {
       console.warn("Failed to load Coupang ads:", e);
       renderPlaceholder("Coupang (load failed)");
     }
-  };
+  }
 
   return (
     <div
