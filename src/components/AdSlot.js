@@ -2,106 +2,105 @@
 import React, { useEffect, useRef } from "react";
 
 /**
- * 매우 단순화된 광고 슬롯 컴포넌트
- * - SSR 안전
- * - provider: "amazon" | "coupang"
- * - 중복 스크립트 로딩 방지
- * - 사이즈 박스 보장
- * 실제 광고 SDK 연결 시 이 파일에서 provider별 로더를 확장하세요.
+ * 통합 광고 슬롯
+ * props:
+ *  - id: DOM id
+ *  - provider: 'coupang' | 'amazon'
+ *  - width, height: 숫자(px)
  */
-const loaded = {
-  amazon: false,
-  coupang: false,
-};
-
-export default function AdSlot({ id, provider = "amazon", width = 300, height = 250 }) {
-  const ref = useRef(null);
-
-  // SSR 가드
-  if (typeof window === "undefined") {
-    return null;
-  }
+export default function AdSlot({
+  id = "ad-slot",
+  provider = "coupang",
+  width = 300,
+  height = 250,
+  style = {},
+}) {
+  const containerRef = useRef(null);
 
   useEffect(() => {
-    // provider별 스크립트 로딩(예시: 실제 광고 스크립트로 교체)
-    async function loadScriptOnce(src, key) {
-      if (loaded[key]) return;
-      if (document.querySelector(`script[data-ad-${key}]`)) {
-        loaded[key] = true;
-        return;
-      }
-      return new Promise((resolve) => {
-        const s = document.createElement("script");
-        s.src = src;
-        s.async = true;
-        s.defer = true;
-        s.dataset[`ad-${key}`] = "1";
-        s.onload = () => {
-          loaded[key] = true;
-          resolve();
-        };
-        s.onerror = () => resolve(); // 실패해도 깨지지 않도록
-        document.head.appendChild(s);
-      });
+    if (typeof window === "undefined") return;
+
+    if (provider === "coupang") {
+      renderCoupang();
+    } else if (provider === "amazon") {
+      renderPlaceholder("Amazon Ads");
+    } else {
+      renderPlaceholder("Ad");
     }
 
-    // 데모 스크립트: 실제 상용 스크립트로 교체하세요.
-    if (provider === "amazon") {
-      // e.g., await loadScriptOnce("https://example.com/amazon-ads.js", "amazon");
-      loaded.amazon = true; // 데모에선 바로 OK 처리
-    } else if (provider === "coupang") {
-      // e.g., await loadScriptOnce("https://example.com/coupang-ads.js", "coupang");
-      loaded.coupang = true; // 데모에선 바로 OK 처리
-    }
-
-    // 슬롯 렌더링 (데모: iframe/placeholder)
-    const node = ref.current;
-    if (node) {
-      // 기존 내용 제거
-      while (node.firstChild) node.removeChild(node.firstChild);
-
-      // 실제 광고 SDK가 제공하는 태그 삽입 자리
-      // 여기서는 간단히 provider에 따라 내용만 다르게 표시
-      const border = "1px solid #e5e7eb";
-      const bg = provider === "coupang" ? "#fff8f2" : "#f7fbff";
-      const label = provider === "coupang" ? "Coupang Ads" : "Amazon Ads";
-
-      const frame = document.createElement("div");
-      frame.style.width = `${width}px`;
-      frame.style.height = `${height}px`;
-      frame.style.background = bg;
-      frame.style.border = border;
-      frame.style.borderRadius = "8px";
-      frame.style.display = "flex";
-      frame.style.alignItems = "center";
-      frame.style.justifyContent = "center";
-      frame.style.fontSize = "14px";
-      frame.style.color = "#374151";
-      frame.style.fontWeight = "700";
-      frame.style.boxShadow = "0 1px 8px rgba(0,0,0,0.06)";
-      frame.textContent = `${label} (${width}×${height})`;
-
-      node.appendChild(frame);
-    }
-
-    // cleanup (SDK가 요구하면 detach 작업 추가)
     return () => {
-      const node = ref.current;
-      if (node) {
-        while (node.firstChild) node.removeChild(node.firstChild);
-      }
+      if (containerRef.current) containerRef.current.innerHTML = "";
     };
-  }, [id, provider, width, height]);
+  }, [provider, width, height, id]);
+
+  // ---------- helpers ----------
+  const renderPlaceholder = (label) => {
+    if (!containerRef.current) return;
+    containerRef.current.innerHTML = "";
+    const ph = document.createElement("div");
+    ph.style.cssText =
+      "width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#f5f7fb;border:1px dashed #c9d4ee;border-radius:8px;color:#6c7aa6;font-weight:700;";
+    ph.textContent = label;
+    containerRef.current.appendChild(ph);
+  };
+
+  // 쿠팡 라이브러리 로더 (전역 싱글톤)
+  const loadCoupangLib = () => {
+    if (window.PartnersCoupang) return Promise.resolve();
+    if (window.__coupangLoader) return window.__coupangLoader;
+
+    window.__coupangLoader = new Promise((resolve, reject) => {
+      const s = document.createElement("script");
+      s.src = "https://ads-partners.coupang.com/g.js";
+      s.async = true;
+      s.onload = () => {
+        // 라이브러리가 전역에 붙을 때까지 체크
+        const check = () => {
+          if (window.PartnersCoupang) resolve();
+          else setTimeout(check, 30);
+        };
+        check();
+      };
+      s.onerror = (e) => reject(e);
+      document.head.appendChild(s);
+    });
+
+    return window.__coupangLoader;
+  };
+
+  const renderCoupang = async () => {
+    try {
+      if (!containerRef.current) return;
+      containerRef.current.innerHTML = "";
+
+      // 1) 라이브러리 로드
+      await loadCoupangLib();
+
+      // 2) 광고 실행
+      new window.PartnersCoupang.G({
+        id: "920431",               // 쿠팡 배너 생성기에서 받은 id
+        template: "carousel",
+        trackingCode: "AF6207831", // 쿠팡 파트너스 trackingCode
+        width: String(width),
+        height: String(height),
+        tsource: "",
+        slotId: id,                 // DOM id 지정
+      });
+    } catch (e) {
+      console.warn("Failed to load Coupang ads:", e);
+      renderPlaceholder("Coupang (load failed)");
+    }
+  };
 
   return (
     <div
       id={id}
-      ref={ref}
+      ref={containerRef}
       style={{
         width,
         height,
         overflow: "hidden",
-        display: "block",
+        ...style,
       }}
     />
   );

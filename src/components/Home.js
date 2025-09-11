@@ -310,6 +310,12 @@ function Home({
     (typeof window !== "undefined" && window.APP_COUNTRY === "KR");
   const provider = isKR ? "coupang" : "amazon";
 
+  // ✨ 쿠팡 HTML 생성기 (배너 생성기에서 받은 id/trackingCode 사용)
+  const makeCoupangHtml = (w, h) =>
+    `<script src="https://ads-partners.coupang.com/g.js"></script><script>
+      new PartnersCoupang.G({"id":"920431","template":"carousel","trackingCode":"AF6207831","width":"${w}","height":"${h}","tsource":""});
+    </script>`;
+
   // ✅ 라우팅 직전 즉시 최상단으로 올라가는 헬퍼
   const goto = (url) => {
     window.scrollTo(0, 0);
@@ -347,6 +353,11 @@ function Home({
               provider={provider}
               width={isMobile ? 320 : 728}
               height={isMobile ? 100 : 90}
+              html={
+                provider === "coupang"
+                  ? makeCoupangHtml(isMobile ? 320 : 728, isMobile ? 100 : 90)
+                  : ""
+              }
             />
           )}
         </div>
@@ -440,6 +451,7 @@ function Home({
                         provider={provider}
                         width={300}
                         height={250}
+                        html={provider === "coupang" ? makeCoupangHtml(300, 250) : ""}
                       />
                     )}
                   </div>
@@ -804,6 +816,11 @@ function Home({
               provider={provider}
               width={isMobile ? 320 : 728}
               height={isMobile ? 100 : 90}
+              html={
+                provider === "coupang"
+                  ? makeCoupangHtml(isMobile ? 320 : 728, isMobile ? 100 : 90)
+                  : ""
+              }
             />
           )}
         </div>
