@@ -316,7 +316,7 @@ function Home({
       try { new PartnersCoupang.G({"id":"920431","template":"carousel","trackingCode":"AF6207831","width":"${w}","height":"${h}","tsource":""}); } catch(e){}
     </script>`;
 
-  // 아마존 상단 배너: Xbox Series X (네가 준 링크 사용)
+  // 아마존 상단 배너: Xbox Series X
   const amazonUrl = "https://amzn.to/4peMZCt";
   const amazonCopyByLang = {
     en: "Xbox Series X — 4K gaming, ultra-fast load times, next-gen performance. Check today’s price →",
@@ -345,27 +345,52 @@ function Home({
     navigate(url);
   };
 
-  // 에피데믹 사운드(하단 배너) 텍스트
+  // 에피데믹 사운드 소개 텍스트 (비한국어에서만 사용)
   const referralUrl = "https://www.epidemicsound.com/referral/4u2zqt";
-  const referralCopyByLang = {
-    ko: "에피데믹 사운드 — 무료 저작권 걱정 없는 음악 사용법 · 할인코드 · 무료체험",
-    en: "Epidemic Sound — royalty-free music for creators: how to use, discount tips & free trial",
-    ja: "Epidemic Sound — ロイヤリティフリー音源。使い方・割引情報・無料トライアル",
-    fr: "Epidemic Sound — Musique libre de droits : mode d’emploi, réductions et essai gratuit",
-    es: "Epidemic Sound — Música libre de derechos: cómo usar, descuentos y prueba gratis",
-    de: "Epidemic Sound — GEMA-freie Musik: Nutzung, Rabatte & Gratis-Test",
-    pt: "Epidemic Sound — Música livre de direitos: como usar, descontos e teste grátis",
-    ru: "Epidemic Sound — музыка без авторских отчислений: как пользоваться, скидки и пробный период",
-    id: "Epidemic Sound — Musik bebas lisensi: cara gunakan, diskon & uji coba gratis",
-    hi: "Epidemic Sound — रॉयल्टी-फ्री म्यूज़िक: उपयोग तरीका, डिस्काउंट और फ्री ट्रायल",
-    vi: "Epidemic Sound — Nhạc miễn phí bản quyền: cách dùng, mẹo giảm giá & dùng thử",
-    zh: "Epidemic Sound — 免版税音乐：使用方法、优惠信息与免费试用",
-    ar: "Epidemic Sound — موسيقى بدون حقوق: طريقة الاستخدام والخصومات والتجربة المجانية",
-    bn: "Epidemic Sound — রয়্যালটি-ফ্রি মিউজিক: ব্যবহার পদ্ধতি, ডিসকাউন্ট ও ফ্রি ট্রায়াল",
-    th: "Epidemic Sound — เพลงไร้กังวลลิขสิทธิ์: วิธีใช้, ส่วนลด & ทดลองฟรี",
-    tr: "Epidemic Sound — telifsiz müzik: kullanım, indirimler ve ücretsiz deneme",
-  };
-  const referralCopy = referralCopyByLang[lang] || referralCopyByLang.en;
+  const epiInfo = (() => {
+    const title = "Epidemic Sound";
+    const line1 =
+      {
+        ko: "무료 저작권 걱정 없는 음악 사용법 · 할인코드 · 무료체험",
+        en: "Royalty-free music for creators: how to use, discount tips & free trial",
+        ja: "クリエイター向けロイヤリティフリー音源の使い方・割引情報・無料トライアル",
+        fr: "Musique libre de droits pour créateurs : mode d’emploi, réductions et essai gratuit",
+        es: "Música libre de derechos para creadores: uso, descuentos y prueba gratis",
+        de: "GEMA-freie Musik für Creator: Nutzung, Rabatte & Gratis-Test",
+        pt: "Música livre de direitos para criadores: como usar, descontos e teste grátis",
+        ru: "Музыка без отчислений для авторов: как использовать, скидки и пробный период",
+        id: "Musik bebas lisensi untuk kreator: cara pakai, diskon & uji coba gratis",
+        hi: "क्रिएटर्स के लिए रॉयल्टी-फ्री म्यूज़िक: उपयोग, छूट टिप्स और फ्री ट्रायल",
+        vi: "Nhạc miễn phí bản quyền cho creator: cách dùng, mẹo giảm giá & dùng thử",
+        zh: "面向创作者的免版税音乐：使用方法、优惠与免费试用",
+        ar: "موسيقى بلا حقوق للمنشئين: كيفية الاستخدام، الخصومات، والتجربة المجانية",
+        bn: "ক্রিয়েটরদের জন্য রয়্যালটি-ফ্রি মিউজিক: ব্যবহার, ডিসকাউন্ট ও ফ্রি ট্রায়াল",
+        th: "เพลงไร้ลิขสิทธิ์สำหรับครีเอเตอร์: วิธีใช้ ส่วนลด & ทดลองฟรี",
+        tr: "Üreticiler için telifsiz müzik: kullanım, indirimler ve ücretsiz deneme",
+      }[lang] ||
+      "Royalty-free music for creators: how to use, discount tips & free trial";
+    const line2 =
+      {
+        ko: "유튜브 · 트위치 · 인스타 등에서 저작권 분쟁 없이 안전하게 사용하세요.",
+        en: "Use safely on YouTube, Twitch, Instagram—no copyright strikes.",
+        ja: "YouTube・Twitch・Instagramで著作権トラブルを気にせず安心して利用できます。",
+        fr: "Utilisez-la en toute sécurité sur YouTube, Twitch, Instagram—sans revendications.",
+        es: "Úsala con seguridad en YouTube, Twitch, Instagram—sin reclamaciones de copyright.",
+        de: "Sicher nutzen auf YouTube, Twitch, Instagram—ohne Copyright-Strikes.",
+        pt: "Use com segurança no YouTube, Twitch e Instagram—sem strikes de direitos autorais.",
+        ru: "Безопасно для YouTube, Twitch, Instagram—без страйков по авторским правам.",
+        id: "Aman dipakai di YouTube, Twitch, Instagram—tanpa klaim hak cipta.",
+        hi: "YouTube, Twitch, Instagram पर सुरक्षित—कॉपीराइट स्ट्राइक की चिंता नहीं।",
+        vi: "An toàn trên YouTube, Twitch, Instagram—không lo bản quyền.",
+        zh: "可在 YouTube、Twitch、Instagram 安全使用——无版权警告。",
+        ar: "استخدمها بأمان على YouTube وTwitch وInstagram—من دون إنذارات حقوق نشر.",
+        bn: "YouTube, Twitch, Instagram-এ নিরাপদে ব্যবহার করুন—কপিরাইট স্ট্রাইক নয়।",
+        th: "ปลอดภัยบน YouTube, Twitch, Instagram—ไม่โดนลิขสิทธิ์",
+        tr: "YouTube, Twitch, Instagram’da güvenle kullanın—hak ihlali yok.",
+      }[lang] ||
+      "Use safely on YouTube, Twitch, Instagram—no copyright strikes.";
+    return { title, line1, line2 };
+  })();
 
   return (
     <div
@@ -380,7 +405,7 @@ function Home({
         <FixedCupSection worldcupList={fixedCupsWithStats || []} />
       )}
 
-      {/* 헤더 바로 밑 배너: 한국=쿠팡 / 그 외=아마존(텍스트 배너) */}
+      {/* 헤더 바로 밑 배너: 한국=쿠팡 / 그 외=아마존 */}
       <div style={{ width: "100%", display: "flex", justifyContent: "center" }}>
         <div
           style={{
@@ -439,7 +464,7 @@ function Home({
         </div>
       </div>
 
-      {/* 검색/정렬 */}
+      {/* 검색/정렬 바 */}
       <div
         style={{
           width: "100vw",
@@ -453,7 +478,14 @@ function Home({
           zIndex: 5,
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 6,
+            justifyContent: "center",
+          }}
+        >
           {sortButton(t("popular"), "popular")}
           {sortButton(t("latest"), "recent")}
         </div>
@@ -480,7 +512,7 @@ function Home({
         />
       </div>
 
-      {/* 카드 리스트 */}
+      {/* 카드 그리드 */}
       <div
         style={{
           display: "grid",
@@ -540,6 +572,21 @@ function Home({
                     goto(getRoute("/select-round", cup.id));
                   }}
                 >
+                  <div
+                    style={{
+                      position: "absolute",
+                      top: "-33%",
+                      left: "-12%",
+                      width: "140%",
+                      height: "180%",
+                      zIndex: 0,
+                      background:
+                        "radial-gradient(circle at 50% 60%, #2a8fff33 0%, #11264c00 90%)",
+                      filter: "blur(22px) brightness(1.1)",
+                      opacity: 0.92,
+                      pointerEvents: "none",
+                    }}
+                  />
                   {/* 썸네일 */}
                   <div
                     style={{
@@ -743,6 +790,12 @@ function Home({
                         goto(getRoute("/select-round", cup.id));
                       }}
                       style={buttonStyle}
+                      onMouseOver={(e) =>
+                        (e.currentTarget.style.background = "#1c2232")
+                      }
+                      onMouseOut={(e) =>
+                        (e.currentTarget.style.background = mainDark)
+                      }
                     >
                       {t("start")}
                     </button>
@@ -755,6 +808,12 @@ function Home({
                             goto(getRoute("/edit-worldcup", cup.id));
                           }}
                           style={smallButtonStyle}
+                          onMouseOver={(e) =>
+                            (e.currentTarget.style.background = "#1c2232")
+                          }
+                          onMouseOut={(e) =>
+                            (e.currentTarget.style.background = mainDark)
+                          }
                         >
                           {t("edit")}
                         </button>
@@ -772,6 +831,12 @@ function Home({
                             else window.location.reload();
                           }}
                           style={smallButtonStyle}
+                          onMouseOver={(e) =>
+                            (e.currentTarget.style.background = "#1c2232")
+                          }
+                          onMouseOut={(e) =>
+                            (e.currentTarget.style.background = mainDark)
+                          }
                         >
                           {t("delete")}
                         </button>
@@ -786,6 +851,12 @@ function Home({
                         goto(getRoute("/stats", cup.id));
                       }}
                       style={buttonStyle}
+                      onMouseOver={(e) =>
+                        (e.currentTarget.style.background = "#1c2232")
+                      }
+                      onMouseOut={(e) =>
+                        (e.currentTarget.style.background = mainDark)
+                      }
                     >
                       {t("stats_comment")}
                     </button>
@@ -808,78 +879,99 @@ function Home({
           ))}
       </div>
 
-      {/* 하단: 에피데믹 사운드 래퍼럴 (브랜드 1줄 + 설명 2줄) */}
-      <div style={{ textAlign: "center", margin: "32px 0 20px 0" }}>
-        <a
-          href={referralUrl}
-          target="_blank"
-          rel="noopener sponsored nofollow"
-          style={{ textDecoration: "none" }}
-          aria-label="Epidemic Sound referral"
-        >
+      {/* 🔽 하단 영역:
+          - 한국(ko): 쿠팡 배너 1개 표시
+          - 그 외 언어: 에피데믹 사운드 소개 카드(CTA) 표시
+          (이전의 '두 번째 래퍼럴 배너'는 삭제) */}
+      <div
+        style={{
+          width: "100%",
+          display: "flex",
+          justifyContent: "center",
+          marginTop: isMobile ? 18 : 26,
+          marginBottom: isMobile ? 22 : 28,
+          padding: isMobile ? "0 10px" : 0,
+        }}
+      >
+        {provider === "coupang" ? (
+          <div style={{ width: isMobile ? 320 : 728, height: isMobile ? 100 : 90 }}>
+            {typeof window !== "undefined" && (
+              <AdSlot
+                id="ad-home-footer-kr"
+                provider="coupang"
+                width={isMobile ? 320 : 728}
+                height={isMobile ? 100 : 90}
+                html={makeCoupangHtml(isMobile ? 320 : 728, isMobile ? 100 : 90)}
+              />
+            )}
+          </div>
+        ) : (
           <div
             style={{
-              display: "inline-block",
-              maxWidth: 920,
-              width: "calc(100vw - 40px)",
-              padding: "18px 22px",
+              width: isMobile ? 320 : 728,
+              background: "linear-gradient(135deg, #14213a 10%, #1f2f57 90%)",
+              border: "1.2px solid #1f3c72",
               borderRadius: 14,
-              background:
-                "linear-gradient(180deg, rgba(21,30,50,.9) 0%, rgba(21,30,50,.88) 100%)",
-              boxShadow:
-                "0 10px 28px rgba(25,118,237,.25), 0 2px 10px rgba(25,118,237,.18)",
-              border: "1px solid #2a3f74",
+              boxShadow: "0 8px 28px rgba(25,118,237,0.25)",
+              padding: isMobile ? "14px 14px" : "20px 22px",
               color: "#fff",
               textAlign: "center",
             }}
           >
-            {(() => {
-              const full = referralCopy;
-              const parts = full.split("—"); // em-dash 기준 분리
-              const brand = (parts[0] || full).trim();
-              const rest = parts.slice(1).join("—").trim();
+            {/* 1줄 제목 */}
+            <div
+              style={{
+                fontWeight: 900,
+                fontSize: isMobile ? 18 : 22,
+                letterSpacing: "-0.2px",
+                marginBottom: isMobile ? 6 : 8,
+              }}
+            >
+              {epiInfo.title}
+            </div>
+            {/* 2줄 본문 */}
+            <div
+              style={{
+                fontWeight: 700,
+                fontSize: isMobile ? 13 : 16,
+                lineHeight: 1.35,
+                opacity: 0.98,
+                whiteSpace: "pre-line",
+              }}
+            >
+              {epiInfo.line1 + "\n" + epiInfo.line2}
+            </div>
 
-              return (
-                <div style={{ lineHeight: 1.25 }}>
-                  {/* 1줄: 브랜드 */}
-                  <span
-                    style={{
-                      display: "block",
-                      fontWeight: 900,
-                      fontFamily: "'Orbitron','Pretendard',sans-serif",
-                      fontSize: 18,
-                      marginBottom: 6,
-                      letterSpacing: ".2px",
-                    }}
-                  >
-                    {brand}
-                  </span>
-
-                  {/* 2줄: 설명 (최대 2줄 말줄임) */}
-                  {rest && (
-                    <span
-                      style={{
-                        display: "-webkit-box",
-                        WebkitLineClamp: 2,
-                        WebkitBoxOrient: "vertical",
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                        fontWeight: 700,
-                        fontSize: 16,
-                        color: "#e6f0ff",
-                        lineHeight: 1.35,
-                        wordBreak: "keep-all",
-                        whiteSpace: "normal",
-                      }}
-                    >
-                      {rest}
-                    </span>
-                  )}
-                </div>
-              );
-            })()}
+            {/* CTA 버튼 */}
+            <div style={{ marginTop: isMobile ? 10 : 12 }}>
+              <a
+                href={referralUrl}
+                target="_blank"
+                rel="noopener sponsored nofollow"
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  padding: isMobile ? "9px 14px" : "11px 18px",
+                  borderRadius: 10,
+                  background: "#1976ed",
+                  color: "#fff",
+                  fontWeight: 900,
+                  textDecoration: "none",
+                  border: "1.2px solid #5aa1ff",
+                  boxShadow: "0 2px 10px rgba(25,118,237,0.35)",
+                  fontSize: isMobile ? 14 : 16,
+                }}
+                aria-label="Epidemic Sound free trial referral"
+              >
+                {/* CTA 문구는 짧게 유지 */}
+                {lang === "ko"
+                  ? "무료체험 / 사용법 보기"
+                  : "Free trial & how to use"}
+              </a>
+            </div>
           </div>
-        </a>
+        )}
       </div>
 
       {visibleCount < filtered.length && (
