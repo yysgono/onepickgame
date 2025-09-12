@@ -191,12 +191,6 @@ export default function ResultPage({ worldcupList }) {
       </div>
     );
 
-  // ✨ 쿠팡 HTML
-  const makeCoupangHtml = (w, h) =>
-    `<script src="https://ads-partners.coupang.com/g.js"></script><script>
-      new PartnersCoupang.G({"id":"920431","template":"carousel","trackingCode":"AF6207831","width":"${w}","height":"${h}","tsource":""});
-    </script>`;
-
   return (
     <div
       style={{
@@ -232,8 +226,12 @@ export default function ResultPage({ worldcupList }) {
             zIndex: 10,
           }}
         >
-          <AdSlot id="ad-result-left" provider={provider} width={BANNER} height={600}
-                  html={provider === "coupang" ? makeCoupangHtml(BANNER, 600) : ""}/>
+          <AdSlot
+            id="ad-result-left"
+            provider={provider}
+            width={BANNER}
+            height={600}
+          />
         </div>
       )}
       {canShowSideAds && (
@@ -247,8 +245,12 @@ export default function ResultPage({ worldcupList }) {
             zIndex: 10,
           }}
         >
-          <AdSlot id="ad-result-right" provider={provider} width={BANNER} height={600}
-                  html={provider === "coupang" ? makeCoupangHtml(BANNER, 600) : ""}/>
+          <AdSlot
+            id="ad-result-right"
+            provider={provider}
+            width={BANNER}
+            height={600}
+          />
         </div>
       )}
 
@@ -281,7 +283,7 @@ export default function ResultPage({ worldcupList }) {
               provider={provider}
               width={isMobile ? 320 : 728}
               height={isMobile ? 100 : 90}
-              html={provider === "coupang" ? makeCoupangHtml(isMobile ? 320 : 728, isMobile ? 100 : 90) : ""}
+              mobile={isMobile}
             />
           </div>
         </div>
