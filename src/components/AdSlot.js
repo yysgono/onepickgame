@@ -8,7 +8,6 @@ import { useTranslation } from "react-i18next";
  *  - id: DOM id (광고차단 피하려면 'ad-' 같은 접두어 금지)
  *  - provider: 'coupang' | 'amazon' | 'none'
  *  - width, height: 숫자(px)
- *  - html: (선택) 쿠팡 코드 문자열 (width/height만 반영되어도 됨)
  *  - style: 래퍼 스타일
  *  - mobile: 강제 모바일 폰트/레이아웃 적용 여부
  */
@@ -17,7 +16,6 @@ export default function AdSlot({
   provider = "none",
   width = 300,
   height = 250,
-  html,
   style = {},
   mobile = false,
 }) {
@@ -25,7 +23,7 @@ export default function AdSlot({
   const { i18n } = useTranslation();
   const lang = (i18n.language || "en").split("-")[0];
 
-  // -------- 공통 스타일 --------
+  // ----- 래퍼 스타일 -----
   const wrapperStyle = {
     width,
     height,
@@ -33,11 +31,11 @@ export default function AdSlot({
     ...style,
   };
 
-  // -------- 쿠팡: 스크립트 로더 + 코드 주입 --------
+  // ===== 쿠팡: g.js 로더(싱글톤) + 실행 =====
   const loadCoupangLib = () => {
     if (typeof window === "undefined") return Promise.resolve();
-    if (window.PartnersCoupang) return Promise.resolve();
-    if (window.__coupangLoader) return window.__coupangLoader;
+    if (window.PartnersCoupang) return Promise.resolve(); // 이미 로드됨
+    if (window.__coupangLoader) return window.__coupangLoader; // 로딩 중
 
     window.__coupangLoader = new Promise((resolve, reject) => {
       const s = document.createElement("script");
@@ -52,53 +50,38 @@ export default function AdSlot({
 
   const renderCoupang = async () => {
     try {
-      if (!containerRef.current) return;
-      containerRef.current.innerHTML = "";
-      // 라이브러리 로드
+      const el = containerRef.current;
+      if (!el) return;
+
+      // 컨테이너 초기화
+      el.innerHTML = "";
+
+      // 라이브러리 로드 보장
       await loadCoupangLib();
 
-      // html 우선, 없으면 기본 템플릿
-      const code =
-        html ||
-        `<script>
-          try {
-            new PartnersCoupang.G({
-              "id":"920431",
-              "template":"carousel",
-              "trackingCode":"AF6207831",
-              "width":"${width}",
-              "height":"${height}",
-              "tsource":""
-            });
-          } catch(e){}
-        </script>`;
-
-      // g.js 태그가 없으면 추가
-      const hasLib = [...document.scripts].some((s) =>
-        (s.src || "").includes("ads-partners.coupang.com/g.js")
-      );
-      if (!hasLib) {
-        const lib = document.createElement("script");
-        lib.src = "https://ads-partners.coupang.com/g.js";
-        lib.async = true;
-        document.head.appendChild(lib);
-      }
-
-      // 인라인 스크립트 주입
-      const holder = document.createElement("div");
+      // 인라인 스크립트로 직접 실행 (중첩 <script> 사용 X)
       const inline = document.createElement("script");
       inline.type = "text/javascript";
-      inline.innerHTML = code;
-      holder.appendChild(inline);
-      containerRef.current.appendChild(holder);
+      inline.text = `
+        try {
+          new PartnersCoupang.G({
+            id: "920431",
+            template: "carousel",
+            trackingCode: "AF6207831",
+            width: "${width}",
+            height: "${height}",
+            tsource: ""
+          });
+        } catch (e) { console && console.warn && console.warn('Coupang render error', e); }
+      `;
+      el.appendChild(inline);
     } catch (e) {
-      // 실패 시 플레이스홀더
-      renderPlaceholder("Coupang");
       console.warn("Coupang render failed", e);
+      renderPlaceholder("Coupang");
     }
   };
 
-  // -------- 아마존: 텍스트 배너(앵커) 렌더 --------
+  // ===== 아마존: 텍스트 배너 =====
   const amazonUrl = "https://amzn.to/4peMZCt"; // Xbox Series X
   const amazonCopyByLang = {
     en: "Xbox Series X — 4K gaming, ultra-fast load times, next-gen performance. Check today’s price →",
@@ -120,8 +103,9 @@ export default function AdSlot({
   const amazonCopy = amazonCopyByLang[lang] || amazonCopyByLang.en;
 
   const renderAmazonText = () => {
-    if (!containerRef.current) return;
-    containerRef.current.innerHTML = "";
+    const el = containerRef.current;
+    if (!el) return;
+    el.innerHTML = "";
 
     const a = document.createElement("a");
     a.href = amazonUrl;
@@ -156,13 +140,14 @@ export default function AdSlot({
     });
 
     a.appendChild(text);
-    containerRef.current.appendChild(a);
+    el.appendChild(a);
   };
 
-  // -------- 플레이스홀더 --------
+  // ===== 플레이스홀더 =====
   const renderPlaceholder = (label = "Ad") => {
-    if (!containerRef.current) return;
-    containerRef.current.innerHTML = "";
+    const el = containerRef.current;
+    if (!el) return;
+    el.innerHTML = "";
     const ph = document.createElement("div");
     Object.assign(ph.style, {
       width: "100%",
@@ -177,10 +162,10 @@ export default function AdSlot({
       fontWeight: 700,
     });
     ph.textContent = label;
-    containerRef.current.appendChild(ph);
+    el.appendChild(ph);
   };
 
-  // -------- 마운트/변경 시 렌더 --------
+  // ===== 마운트/변경 시 렌더 =====
   useEffect(() => {
     if (typeof window === "undefined") return;
 
@@ -195,7 +180,7 @@ export default function AdSlot({
     return () => {
       if (containerRef.current) containerRef.current.innerHTML = "";
     };
-  }, [provider, width, height, html, lang, mobile]);
+  }, [provider, width, height, lang, mobile]);
 
   // 광고 차단 회피: id 기본값을 'slot-...'로
   const safeId = id || `slot-${Math.random().toString(36).slice(2, 8)}`;
