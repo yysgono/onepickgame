@@ -6,6 +6,7 @@ import MediaRenderer from "./MediaRenderer";
 import { useTranslation } from "react-i18next";
 import { supabase } from "../utils/supabaseClient";
 import AdSlot from "./AdSlot";
+import ReferralBanner from "./ReferralBanner";
 
 // 2줄(24*2byte) 초과시 ... 처리
 function truncateToTwoLinesByByte(str, maxBytePerLine = 24) {
@@ -190,6 +191,12 @@ export default function ResultPage({ worldcupList }) {
       </div>
     );
 
+  // ✨ 쿠팡 HTML
+  const makeCoupangHtml = (w, h) =>
+    `<script src="https://ads-partners.coupang.com/g.js"></script><script>
+      new PartnersCoupang.G({"id":"920431","template":"carousel","trackingCode":"AF6207831","width":"${w}","height":"${h}","tsource":""});
+    </script>`;
+
   return (
     <div
       style={{
@@ -213,19 +220,20 @@ export default function ResultPage({ worldcupList }) {
         }}
       />
 
-      {/* 좌/우 사이드 배너: 본문과 GAP만큼 떨어져 고정. 본문과 겹치지 않음 */}
+      {/* 좌/우 사이드 배너 */}
       {canShowSideAds && (
         <div
           style={{
             position: "fixed",
             top: 120,
-            left: leftPos,      // calc(50% - (MAIN/2 + GAP + BANNER))
+            left: leftPos,
             width: BANNER,
             height: 600,
             zIndex: 10,
           }}
         >
-          <AdSlot id="ad-result-left" provider={provider} width={BANNER} height={600} />
+          <AdSlot id="ad-result-left" provider={provider} width={BANNER} height={600}
+                  html={provider === "coupang" ? makeCoupangHtml(BANNER, 600) : ""}/>
         </div>
       )}
       {canShowSideAds && (
@@ -233,17 +241,18 @@ export default function ResultPage({ worldcupList }) {
           style={{
             position: "fixed",
             top: 120,
-            right: rightPos,    // calc(50% - (MAIN/2 + GAP + BANNER))
+            right: rightPos,
             width: BANNER,
             height: 600,
             zIndex: 10,
           }}
         >
-          <AdSlot id="ad-result-right" provider={provider} width={BANNER} height={600} />
+          <AdSlot id="ad-result-right" provider={provider} width={BANNER} height={600}
+                  html={provider === "coupang" ? makeCoupangHtml(BANNER, 600) : ""}/>
         </div>
       )}
 
-      {/* 메인 컨텐츠 (본문 폭 MAIN 고정) */}
+      {/* 메인 컨텐츠 */}
       <div
         style={{
           position: "relative",
@@ -272,6 +281,7 @@ export default function ResultPage({ worldcupList }) {
               provider={provider}
               width={isMobile ? 320 : 728}
               height={isMobile ? 100 : 90}
+              html={provider === "coupang" ? makeCoupangHtml(isMobile ? 320 : 728, isMobile ? 100 : 90) : ""}
             />
           </div>
         </div>
@@ -394,6 +404,11 @@ export default function ResultPage({ worldcupList }) {
             winner={winner}
             showShareAndReport={true}
           />
+        </div>
+
+        {/* 🔻 하단: 레퍼럴 배너 (홈은 쿠팡, 여긴 레퍼럴) */}
+        <div style={{ width: "100%", maxWidth: 900, margin: "16px auto 40px" }}>
+          <ReferralBanner lang={(i18n?.language || "en")} />
         </div>
       </div>
     </div>

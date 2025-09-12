@@ -4,6 +4,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import Match from "./Match";
 import AdSlot from "./AdSlot";
+import ReferralBanner from "./ReferralBanner";
 
 function useViewport() {
   const [vw, setVw] = React.useState(
@@ -68,9 +69,15 @@ export default function MatchPage({ worldcupList = [] }) {
     );
   }
 
+  // ✨ 쿠팡 HTML (홈 하단은 쿠팡 유지 / 여기서는 상단·사이드만 기존처럼 노출)
+  const makeCoupangHtml = (w, h) =>
+    `<script src="https://ads-partners.coupang.com/g.js"></script><script>
+      new PartnersCoupang.G({"id":"920431","template":"carousel","trackingCode":"AF6207831","width":"${w}","height":"${h}","tsource":""});
+    </script>`;
+
   return (
     <div style={{ width: "100%", position: "relative" }}>
-      {/* ✅ 헤더 바로 아래 광고: 데스크톱 728×90 / 모바일 320×100  (여기 1개만) */}
+      {/* ✅ 헤더 바로 아래 광고: 데스크톱 728×90 / 모바일 320×100 */}
       <div style={{ display: "flex", justifyContent: "center", marginTop: 12 }}>
         <div
           style={{
@@ -85,6 +92,7 @@ export default function MatchPage({ worldcupList = [] }) {
               provider={provider}
               width={isMobile ? 320 : 728}
               height={isMobile ? 100 : 90}
+              html={provider === "coupang" ? makeCoupangHtml(isMobile ? 320 : 728, isMobile ? 100 : 90) : ""}
             />
           )}
         </div>
@@ -108,7 +116,7 @@ export default function MatchPage({ worldcupList = [] }) {
               minWidth: 300,
               height: 600,
               position: "sticky",
-              top: 100, // 헤더 높이에 맞춘 여백
+              top: 100,
               alignSelf: "flex-start",
             }}
           >
@@ -118,6 +126,7 @@ export default function MatchPage({ worldcupList = [] }) {
                 provider={provider}
                 width={300}
                 height={600}
+                html={provider === "coupang" ? makeCoupangHtml(300, 600) : ""}
               />
             )}
           </div>
@@ -135,7 +144,7 @@ export default function MatchPage({ worldcupList = [] }) {
           {/* 후보 카드 뒤 흰 배경 광고 없음 — Match.js에서 제거되어 있어야 함 */}
           <Match cup={cup} onResult={() => {}} selectedCount={selectedCount} />
 
-          {/* 하단 728×90 (PC에서만) */}
+          {/* 🔻 하단은 “쿠팡/아마존” 대신 래퍼럴 배너로 교체 */}
           {!isMobile && (
             <div
               style={{
@@ -145,15 +154,8 @@ export default function MatchPage({ worldcupList = [] }) {
                 marginBottom: 16,
               }}
             >
-              <div style={{ width: 728, height: 90 }}>
-                {typeof window !== "undefined" && (
-                  <AdSlot
-                    id="ad-match-bottom-pc"
-                    provider={provider}
-                    width={728}
-                    height={90}
-                  />
-                )}
+              <div style={{ width: "100%", maxWidth: 900 }}>
+                <ReferralBanner lang={(i18n.language || "en")} />
               </div>
             </div>
           )}
@@ -177,6 +179,7 @@ export default function MatchPage({ worldcupList = [] }) {
                 provider={provider}
                 width={300}
                 height={600}
+                html={provider === "coupang" ? makeCoupangHtml(300, 600) : ""}
               />
             )}
           </div>

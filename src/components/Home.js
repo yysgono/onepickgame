@@ -75,7 +75,7 @@ function Home({
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
 
-  // ✅ 홈 진입 시 항상 최상단으로 (브라우저 복원 기능도 끔)
+  // 최상단 이동
   useEffect(() => {
     try {
       if ("scrollRestoration" in window.history) {
@@ -269,11 +269,11 @@ function Home({
     setVisibleCount((prev) => prev + PAGE_SIZE);
   };
 
-  // ✅ 언어코드
+  // 언어코드
   const lang = (i18n.language || "en").split("-")[0];
   const getRoute = (base, cupId) => `/${lang}${base}/${cupId}`;
 
-  // --- 카드 설명 스타일 ---
+  // 카드 설명 스타일
   const cardDescStyle = {
     color: "#b9dafb",
     fontSize: isMobile ? 14 : 16,
@@ -293,7 +293,7 @@ function Home({
     background: "none",
   };
 
-  // --- 카드 하단 바 ---
+  // 카드 하단 바
   const cardBottomBarStyle = {
     width: "100%",
     height: 4,
@@ -304,25 +304,68 @@ function Home({
     boxShadow: "0 2px 10px #1976ed44",
   };
 
-  // 🇰🇷 한국이면 쿠팡, 아니면 아마존
+  // 한국 여부 → 한국: 쿠팡 / 그 외: 아마존
   const isKR =
     (i18n.language || "en").startsWith("ko") ||
     (typeof window !== "undefined" && window.APP_COUNTRY === "KR");
   const provider = isKR ? "coupang" : "amazon";
 
-  // ✨ 쿠팡 HTML 생성기 (배너 생성기에서 받은 id/trackingCode 사용)
+  // 쿠팡 배너(캐러셀) HTML
   const makeCoupangHtml = (w, h) =>
     `<script src="https://ads-partners.coupang.com/g.js"></script><script>
-      new PartnersCoupang.G({"id":"920431","template":"carousel","trackingCode":"AF6207831","width":"${w}","height":"${h}","tsource":""});
+      try { new PartnersCoupang.G({"id":"920431","template":"carousel","trackingCode":"AF6207831","width":"${w}","height":"${h}","tsource":""}); } catch(e){}
     </script>`;
 
-  // ✅ 라우팅 직전 즉시 최상단으로 올라가는 헬퍼
+  // 아마존 상단 배너: Xbox Series X (네가 준 링크 사용)
+  const amazonUrl = "https://amzn.to/4peMZCt";
+  const amazonCopyByLang = {
+    en: "Xbox Series X — 4K gaming, ultra-fast load times, next-gen performance. Check today’s price →",
+    ja: "Xbox Series X — 4Kゲーム、超高速ロード、次世代パフォーマンス。今すぐ価格をチェック →",
+    fr: "Xbox Series X — Jeux 4K, chargements ultra-rapides, performances nouvelle génération. Voir le prix →",
+    es: "Xbox Series X — Juegos en 4K, cargas ultrarrápidas, rendimiento next-gen. Ver precio →",
+    de: "Xbox Series X — 4K-Gaming, ultraschnelle Ladezeiten, Next-Gen-Leistung. Preis ansehen →",
+    pt: "Xbox Series X — Jogos em 4K, carregamentos ultra-rápidos, performance next-gen. Ver preço →",
+    ru: "Xbox Series X — 4K-игры, сверхбыстрая загрузка, производительность нового поколения. Цена →",
+    id: "Xbox Series X — Gaming 4K, loading super cepat, performa next-gen. Cek harga →",
+    hi: "Xbox Series X — 4K गेमिंग, बेहद तेज़ लोड, नेक्स्ट-जेन परफ़ॉर्मेंस. कीमत देखें →",
+    vi: "Xbox Series X — Chơi game 4K, tải siêu nhanh, hiệu năng next-gen. Xem giá →",
+    zh: "Xbox Series X — 4K 游戏、超快载入、次世代性能。查看价格 →",
+    ar: "Xbox Series X — ألعاب 4K، تحميل فائق السرعة، أداء من الجيل التالي. اطّلع على السعر →",
+    bn: "Xbox Series X — 4K গেমিং, সুপার ফাস্ট লোড, নেক্সট-জেন পারফরম্যান্স। দাম দেখুন →",
+    th: "Xbox Series X — เกม 4K โหลดไว ประสิทธิภาพยุคใหม่ ดูราคา →",
+    tr: "Xbox Series X — 4K oyun, çok hızlı yükleme, yeni nesil performans. Fiyatı gör →",
+  };
+  const amazonCopy = amazonCopyByLang[lang] || amazonCopyByLang.en;
+
+  // 라우팅 최상단 보정
   const goto = (url) => {
     window.scrollTo(0, 0);
     document.documentElement.scrollTop = 0;
     document.body.scrollTop = 0;
     navigate(url);
   };
+
+  // 에피데믹 사운드(하단 배너) 텍스트
+  const referralUrl = "https://www.epidemicsound.com/referral/4u2zqt";
+  const referralCopyByLang = {
+    ko: "에피데믹 사운드 — 무료 저작권 걱정 없는 음악 사용법 · 할인코드 · 무료체험",
+    en: "Epidemic Sound — royalty-free music for creators: how to use, discount tips & free trial",
+    ja: "Epidemic Sound — ロイヤリティフリー音源。使い方・割引情報・無料トライアル",
+    fr: "Epidemic Sound — Musique libre de droits : mode d’emploi, réductions et essai gratuit",
+    es: "Epidemic Sound — Música libre de derechos: cómo usar, descuentos y prueba gratis",
+    de: "Epidemic Sound — GEMA-freie Musik: Nutzung, Rabatte & Gratis-Test",
+    pt: "Epidemic Sound — Música livre de direitos: como usar, descontos e teste grátis",
+    ru: "Epidemic Sound — музыка без авторских отчислений: как пользоваться, скидки и пробный период",
+    id: "Epidemic Sound — Musik bebas lisensi: cara gunakan, diskon & uji coba gratis",
+    hi: "Epidemic Sound — रॉयल्टी-फ्री म्यूज़िक: उपयोग तरीका, डिस्काउंट और फ्री ट्रायल",
+    vi: "Epidemic Sound — Nhạc miễn phí bản quyền: cách dùng, mẹo giảm giá & dùng thử",
+    zh: "Epidemic Sound — 免版税音乐：使用方法、优惠信息与免费试用",
+    ar: "Epidemic Sound — موسيقى بدون حقوق: طريقة الاستخدام والخصومات والتجربة المجانية",
+    bn: "Epidemic Sound — রয়্যালটি-ফ্রি মিউজিক: ব্যবহার পদ্ধতি, ডিসকাউন্ট ও ফ্রি ট্রায়াল",
+    th: "Epidemic Sound — เพลงไร้กังวลลิขสิทธิ์: วิธีใช้, ส่วนลด & ทดลองฟรี",
+    tr: "Epidemic Sound — telifsiz müzik: kullanım, indirimler ve ücretsiz deneme",
+  };
+  const referralCopy = referralCopyByLang[lang] || referralCopyByLang.en;
 
   return (
     <div
@@ -337,7 +380,7 @@ function Home({
         <FixedCupSection worldcupList={fixedCupsWithStats || []} />
       )}
 
-      {/* ✅ [홈: 헤더 바로 밑 배너] 728x90(PC) / 320x100(모바일) */}
+      {/* 헤더 바로 밑 배너: 한국=쿠팡 / 그 외=아마존(텍스트 배너) */}
       <div style={{ width: "100%", display: "flex", justifyContent: "center" }}>
         <div
           style={{
@@ -347,22 +390,56 @@ function Home({
             marginBottom: 12,
           }}
         >
-          {typeof window !== "undefined" && (
-            <AdSlot
-              id="ad-home-header"
-              provider={provider}
-              width={isMobile ? 320 : 728}
-              height={isMobile ? 100 : 90}
-              html={
-                provider === "coupang"
-                  ? makeCoupangHtml(isMobile ? 320 : 728, isMobile ? 100 : 90)
-                  : ""
-              }
-            />
-          )}
+          {typeof window !== "undefined" &&
+            (provider === "coupang" ? (
+              <AdSlot
+                id="ad-home-header"
+                provider="coupang"
+                width={isMobile ? 320 : 728}
+                height={isMobile ? 100 : 90}
+                html={makeCoupangHtml(isMobile ? 320 : 728, isMobile ? 100 : 90)}
+              />
+            ) : (
+              <a
+                href={amazonUrl}
+                target="_blank"
+                rel="noopener sponsored nofollow"
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  width: "100%",
+                  height: "100%",
+                  borderRadius: 12,
+                  textDecoration: "none",
+                  background:
+                    "linear-gradient(90deg,#0f1626 0%,#22375f 50%,#0f1626 100%)",
+                  boxShadow: "0 8px 28px rgba(25,118,237,0.25)",
+                  border: "1.2px solid #1f3c72",
+                  overflow: "hidden",
+                }}
+                aria-label="Amazon affiliate: Xbox Series X"
+              >
+                <div
+                  style={{
+                    color: "#fff",
+                    fontWeight: 900,
+                    fontSize: isMobile ? 14 : 18,
+                    letterSpacing: isMobile ? 0 : ".2px",
+                    textShadow: "0 1px 8px #0008",
+                    padding: isMobile ? "0 12px" : "0 18px",
+                    lineHeight: 1.25,
+                    textAlign: "center",
+                  }}
+                >
+                  {amazonCopy}
+                </div>
+              </a>
+            ))}
         </div>
       </div>
 
+      {/* 검색/정렬 */}
       <div
         style={{
           width: "100vw",
@@ -376,14 +453,7 @@ function Home({
           zIndex: 5,
         }}
       >
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 6,
-            justifyContent: "center",
-          }}
-        >
+        <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
           {sortButton(t("popular"), "popular")}
           {sortButton(t("latest"), "recent")}
         </div>
@@ -410,6 +480,7 @@ function Home({
         />
       </div>
 
+      {/* 카드 리스트 */}
       <div
         style={{
           display: "grid",
@@ -430,33 +501,8 @@ function Home({
             const winStats = winStatsMap[cup.id] || [];
             const [first, second] = getTop2Winners(winStats, cup.data);
 
-            // ✅ 리스트 중간에 300x250 광고 한 번 삽입 (원하는 인덱스로 조정)
-            const insertMidAd = idx === 12;
-
             return (
               <React.Fragment key={cup.id}>
-                {insertMidAd && (
-                  <div
-                    style={{
-                      width: 300,
-                      height: 250,
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                  >
-                    {typeof window !== "undefined" && (
-                      <AdSlot
-                        id="ad-home-list-mid"
-                        provider={provider}
-                        width={300}
-                        height={250}
-                        html={provider === "coupang" ? makeCoupangHtml(300, 250) : ""}
-                      />
-                    )}
-                  </div>
-                )}
-
                 <div
                   ref={(el) => (cardRefs.current[idx] = el)}
                   style={{
@@ -494,21 +540,6 @@ function Home({
                     goto(getRoute("/select-round", cup.id));
                   }}
                 >
-                  <div
-                    style={{
-                      position: "absolute",
-                      top: "-33%",
-                      left: "-12%",
-                      width: "140%",
-                      height: "180%",
-                      zIndex: 0,
-                      background:
-                        "radial-gradient(circle at 50% 60%, #2a8fff33 0%, #11264c00 90%)",
-                      filter: "blur(22px) brightness(1.1)",
-                      opacity: 0.92,
-                      pointerEvents: "none",
-                    }}
-                  />
                   {/* 썸네일 */}
                   <div
                     style={{
@@ -712,12 +743,6 @@ function Home({
                         goto(getRoute("/select-round", cup.id));
                       }}
                       style={buttonStyle}
-                      onMouseOver={(e) =>
-                        (e.currentTarget.style.background = "#1c2232")
-                      }
-                      onMouseOut={(e) =>
-                        (e.currentTarget.style.background = mainDark)
-                      }
                     >
                       {t("start")}
                     </button>
@@ -730,12 +755,6 @@ function Home({
                             goto(getRoute("/edit-worldcup", cup.id));
                           }}
                           style={smallButtonStyle}
-                          onMouseOver={(e) =>
-                            (e.currentTarget.style.background = "#1c2232")
-                          }
-                          onMouseOut={(e) =>
-                            (e.currentTarget.style.background = mainDark)
-                          }
                         >
                           {t("edit")}
                         </button>
@@ -753,12 +772,6 @@ function Home({
                             else window.location.reload();
                           }}
                           style={smallButtonStyle}
-                          onMouseOver={(e) =>
-                            (e.currentTarget.style.background = "#1c2232")
-                          }
-                          onMouseOut={(e) =>
-                            (e.currentTarget.style.background = mainDark)
-                          }
                         >
                           {t("delete")}
                         </button>
@@ -773,12 +786,6 @@ function Home({
                         goto(getRoute("/stats", cup.id));
                       }}
                       style={buttonStyle}
-                      onMouseOver={(e) =>
-                        (e.currentTarget.style.background = "#1c2232")
-                      }
-                      onMouseOut={(e) =>
-                        (e.currentTarget.style.background = mainDark)
-                      }
                     >
                       {t("stats_comment")}
                     </button>
@@ -801,29 +808,78 @@ function Home({
           ))}
       </div>
 
-      {/* ✅ 홈 하단 배너(푸터 위) */}
+      {/* 하단: 에피데믹 사운드 래퍼럴 (브랜드 1줄 + 설명 2줄) */}
       <div style={{ textAlign: "center", margin: "32px 0 20px 0" }}>
-        <div
-          style={{
-            width: isMobile ? 320 : 728,
-            height: isMobile ? 100 : 90,
-            margin: "0 auto",
-          }}
+        <a
+          href={referralUrl}
+          target="_blank"
+          rel="noopener sponsored nofollow"
+          style={{ textDecoration: "none" }}
+          aria-label="Epidemic Sound referral"
         >
-          {typeof window !== "undefined" && (
-            <AdSlot
-              id="ad-home-footer"
-              provider={provider}
-              width={isMobile ? 320 : 728}
-              height={isMobile ? 100 : 90}
-              html={
-                provider === "coupang"
-                  ? makeCoupangHtml(isMobile ? 320 : 728, isMobile ? 100 : 90)
-                  : ""
-              }
-            />
-          )}
-        </div>
+          <div
+            style={{
+              display: "inline-block",
+              maxWidth: 920,
+              width: "calc(100vw - 40px)",
+              padding: "18px 22px",
+              borderRadius: 14,
+              background:
+                "linear-gradient(180deg, rgba(21,30,50,.9) 0%, rgba(21,30,50,.88) 100%)",
+              boxShadow:
+                "0 10px 28px rgba(25,118,237,.25), 0 2px 10px rgba(25,118,237,.18)",
+              border: "1px solid #2a3f74",
+              color: "#fff",
+              textAlign: "center",
+            }}
+          >
+            {(() => {
+              const full = referralCopy;
+              const parts = full.split("—"); // em-dash 기준 분리
+              const brand = (parts[0] || full).trim();
+              const rest = parts.slice(1).join("—").trim();
+
+              return (
+                <div style={{ lineHeight: 1.25 }}>
+                  {/* 1줄: 브랜드 */}
+                  <span
+                    style={{
+                      display: "block",
+                      fontWeight: 900,
+                      fontFamily: "'Orbitron','Pretendard',sans-serif",
+                      fontSize: 18,
+                      marginBottom: 6,
+                      letterSpacing: ".2px",
+                    }}
+                  >
+                    {brand}
+                  </span>
+
+                  {/* 2줄: 설명 (최대 2줄 말줄임) */}
+                  {rest && (
+                    <span
+                      style={{
+                        display: "-webkit-box",
+                        WebkitLineClamp: 2,
+                        WebkitBoxOrient: "vertical",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        fontWeight: 700,
+                        fontSize: 16,
+                        color: "#e6f0ff",
+                        lineHeight: 1.35,
+                        wordBreak: "keep-all",
+                        whiteSpace: "normal",
+                      }}
+                    >
+                      {rest}
+                    </span>
+                  )}
+                </div>
+              );
+            })()}
+          </div>
+        </a>
       </div>
 
       {visibleCount < filtered.length && (
