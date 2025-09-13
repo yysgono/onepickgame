@@ -1,18 +1,5 @@
 import { supabase } from "./utils/supabaseClient";
 
-// ---------------------- Public constants for recents ----------------------
-export const RECENT_WC_KEY = "onepickgame_recentWorldcups";
-
-// 최근 본 월드컵 기록
-export function pushRecentWorldcup(id) {
-  if (!id || typeof window === "undefined") return;
-  try {
-    const arr = JSON.parse(localStorage.getItem(RECENT_WC_KEY) || "[]");
-    const next = [String(id), ...arr.filter((x) => String(x) !== String(id))].slice(0, 30);
-    localStorage.setItem(RECENT_WC_KEY, JSON.stringify(next));
-  } catch {}
-}
-
 // ---------------------- YouTube 유틸 ----------------------
 export function getYoutubeId(url = "") {
   if (!url) return "";
@@ -181,28 +168,49 @@ export async function getMyWinnerStats({ cup_id } = {}) {
 }
 
 /**
- * 누적 통계 가져오기 (기간 지정 가능)
- * - DB group() 사용 ❌ → 클라이언트에서 안전하게 합산
+ * 누적 통계 가져오기 (기간 지정 가능) — ★ 전체 페이지네이션으로 모두 집계
+ * PostgREST 기본 limit(1000) 때문에 누락되는 레코드가 생기지 않도록
+ * 1,000개 단위로 끝까지 불러와 합산합니다.
  */
 export async function fetchWinnerStatsFromDB(cup_id, since) {
-  let query = supabase
-    .from("winner_stats")
-    .select(
-      "candidate_id,name,image,win_count,match_wins,match_count,total_games,user_id,guest_id,created_at"
-    )
-    .eq("cup_id", cup_id);
+  const PAGE = 1000;
+  let from = 0;
+  let to = PAGE - 1;
+  const allRows = [];
 
-  if (since && typeof since === "object" && since.from && since.to) {
-    query = query.gte("created_at", since.from).lte("created_at", since.to);
-  } else if (typeof since === "string") {
-    query = query.gte("created_at", since);
+  while (true) {
+    let query = supabase
+      .from("winner_stats")
+      .select(
+        "candidate_id,name,image,win_count,match_wins,match_count,total_games,user_id,guest_id,created_at",
+        { count: "exact" }
+      )
+      .eq("cup_id", cup_id)
+      // 최신부터 읽으면 “최근 게임”이 먼저 잡힘
+      .order("created_at", { ascending: false })
+      .range(from, to);
+
+    if (since && typeof since === "object" && since.from && since.to) {
+      query = query.gte("created_at", since.from).lte("created_at", since.to);
+    } else if (typeof since === "string") {
+      query = query.gte("created_at", since);
+    }
+
+    const { data, error } = await query;
+    if (error) throw error;
+
+    allRows.push(...(data || []));
+
+    // 마지막 페이지면 종료
+    if (!data || data.length < PAGE) break;
+
+    from += PAGE;
+    to += PAGE;
   }
 
-  const { data, error } = await query;
-  if (error) throw error;
-
+  // 클라이언트 합산
   const statsMap = {};
-  for (const row of data) {
+  for (const row of allRows) {
     const id = row.candidate_id;
     if (!statsMap[id]) {
       statsMap[id] = {
@@ -213,7 +221,7 @@ export async function fetchWinnerStatsFromDB(cup_id, since) {
         match_wins: 0,
         match_count: 0,
         total_games: 0,
-        user_win_count: 0,
+        user_win_count: 0, // 회원전용 탭용
       };
     }
     statsMap[id].win_count += row.win_count || 0;
@@ -222,6 +230,7 @@ export async function fetchWinnerStatsFromDB(cup_id, since) {
     statsMap[id].total_games += row.total_games || 0;
     if (row.user_id) statsMap[id].user_win_count += row.win_count || 0;
   }
+
   return Object.values(statsMap);
 }
 
