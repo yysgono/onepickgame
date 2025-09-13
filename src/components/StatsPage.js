@@ -1,3 +1,4 @@
+// src/components/StatsPage.js
 import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { useParams } from "react-router-dom";
 import { fetchWinnerStatsFromDB } from "../utils";
@@ -5,7 +6,7 @@ import { useTranslation } from "react-i18next";
 import MediaRenderer from "./MediaRenderer";
 import { supabase } from "../utils/supabaseClient";
 import CommentBox from "./CommentBox";
-import AdSlot from "./AdSlot";   // ✅ 추가 (배너 컴포넌트)
+import AdSlot from "./AdSlot";
 
 // 신고 버튼
 function ReportButton({ cupId, size = "md" }) {
@@ -116,14 +117,12 @@ function percent(n, d) {
   if (!d) return "-";
   return Math.round((n / d) * 100) + "%";
 }
-
 function getSinceDate(days) {
   if (!days) return null;
   const date = new Date();
   date.setDate(date.getDate() - days);
   return date.toISOString();
 }
-
 function getCustomSinceDate(from, to) {
   if (!from || !to) return null;
   const fromIso = new Date(from).toISOString();
@@ -294,7 +293,7 @@ export default function StatsPage({
   const [currentPage, setCurrentPage] = useState(1);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 800);
 
-  // ✅ 광고 공급자 (언어/국가 기준)
+  // 광고 공급자 (언어/국가 기준)
   const isKR =
     (i18n?.language || "en").startsWith("ko") ||
     (typeof window !== "undefined" && window.APP_COUNTRY === "KR");
@@ -321,7 +320,7 @@ export default function StatsPage({
         const range = getCustomSinceDate(customFrom, customTo);
         statsArr = await fetchWinnerStatsFromDB(selectedCup.id, range);
       } else {
-        let since = getSinceDate(period);
+        const since = getSinceDate(period);
         statsArr = await fetchWinnerStatsFromDB(selectedCup.id, since);
       }
       setStats(statsArr);
@@ -332,12 +331,18 @@ export default function StatsPage({
 
   const filteredStats = useMemo(() => {
     let result = [...stats].filter(row => row.name?.toLowerCase().includes(search.toLowerCase()));
+
+    // 👇 회원 전용 보기일 때는 user_* 필드로 완전히 덮어씀
     if (userOnly) {
       result = result.map(row => ({
         ...row,
-        win_count: row.user_win_count || 0,
+        win_count:   row.user_win_count   || 0,
+        match_wins:  row.user_match_wins  || 0,
+        match_count: row.user_match_count || 0,
+        total_games: row.user_total_games || 0,
       }));
     }
+
     result = result
       .map((row, i) => ({ ...row, _originIdx: i }))
       .sort((a, b) => {
@@ -351,15 +356,15 @@ export default function StatsPage({
           return a._originIdx - b._originIdx;
         }
         if (sortKey === "win_rate") {
-          let av = a.total_games ? a.win_count / a.total_games : 0;
-          let bv = b.total_games ? b.win_count / b.total_games : 0;
+          const av = a.total_games ? a.win_count / a.total_games : 0;
+          const bv = b.total_games ? b.win_count / b.total_games : 0;
           if (av < bv) return sortDesc ? 1 : -1;
           if (av > bv) return sortDesc ? -1 : 1;
           return a._originIdx - b._originIdx;
         }
         if (sortKey === "match_win_rate") {
-          let av = a.match_count ? a.match_wins / a.match_count : 0;
-          let bv = b.match_count ? b.match_wins / b.match_count : 0;
+          const av = a.match_count ? a.match_wins / a.match_count : 0;
+          const bv = b.match_count ? b.match_wins / b.match_count : 0;
           if (av < bv) return sortDesc ? 1 : -1;
           if (av > bv) return sortDesc ? -1 : 1;
           return a._originIdx - b._originIdx;
@@ -386,16 +391,15 @@ export default function StatsPage({
   useEffect(() => { setCurrentPage(1); }, [search, itemsPerPage, stats]);
 
   const top3 = useMemo(() =>
-    [...stats]
-      .map((row, i) => ({ ...row, _originIdx: i }))
+    [...filteredStats] // 🔁 탭/기간/검색 반영된 집합에서 상위 뽑기
       .sort((a, b) => {
         if (a.win_count > b.win_count) return -1;
         if (a.win_count < b.win_count) return 1;
         if (a.match_wins > b.match_wins) return -1;
         if (a.match_wins < b.match_wins) return 1;
-        return a._originIdx - b._originIdx;
+        return (a.rank || 0) - (b.rank || 0);
       })
-      .slice(0, 3), [stats]
+      .slice(0, 3), [filteredStats]
   );
 
   const ivoryCell = {
@@ -405,7 +409,6 @@ export default function StatsPage({
     fontSize: isMobile ? 15 : 18,
     border: 0,
   };
-
   const normalCell = {
     background: "#fff",
     color: "#333",
@@ -520,7 +523,6 @@ export default function StatsPage({
     );
   }
 
-  // 썸네일 컬럼만 숨긴 기본 테이블 (상위 3명 카드 있음)
   const sortableCols = [
     { key: "rank", label: t("rank"), isIvory: true },
     { key: "name", label: t("name") },
@@ -785,7 +787,7 @@ export default function StatsPage({
         />
       </div>
 
-      {/* 통계 테이블 (이미지 컬럼 없음) */}
+      {/* 통계 테이블 */}
       <div style={{ width: "100%", overflowX: "auto", marginBottom: 12 }}>
         <table
           style={{
@@ -888,7 +890,7 @@ export default function StatsPage({
       </div>
       <Pagination />
 
-      {/* ✅ 댓글 위 가로 배너 추가 */}
+      {/* 댓글 위 가로 배너 */}
       {showCommentBox && (
         <div
           style={{

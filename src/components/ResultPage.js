@@ -74,13 +74,14 @@ export default function ResultPage({ worldcupList }) {
   const MAIN = 1200;     // 본문 maxWidth
   const BANNER = 300;    // 사이드배너 width
   const GAP = 24;        // 본문과 배너 사이 여백
+  const SAFE = 48;       // 여유 버퍼 (섀도/스크롤바/줌 대비)
 
   // 배너를 겹치지 않고 띄울 수 있는 최소 뷰포트 폭
-  const MIN_VW_FOR_SIDE = MAIN + 2 * (BANNER + GAP);
+  const MIN_VW_FOR_SIDE = MAIN + 2 * (BANNER + GAP) + SAFE;
 
-  // 배너 좌/우 위치(calc) 문자열
-  const leftPos = `calc(50% - ${MAIN / 2 + GAP + BANNER}px)`;
-  const rightPos = `calc(50% - ${MAIN / 2 + GAP + BANNER}px)`;
+  // 배너 좌/우 위치(calc) — 둘 다 left로 통일 (중앙 기준 대칭)
+  const leftPos  = `calc(50% - ${MAIN / 2 + GAP + BANNER}px)`;
+  const rightPos = `calc(50% + ${MAIN / 2 + GAP}px)`;
 
   // 언어코드
   const langMatch = location.pathname.match(/^\/([a-z]{2})(\/|$)/);
@@ -142,8 +143,6 @@ export default function ResultPage({ worldcupList }) {
             winnerObj = candidate || null;
           }
         }
-        // 🔴 여기서 첫 번째 후보를 강제로 우승자로 세팅하던 코드를 제거했습니다.
-        // if (!winnerObj && thisCup?.data?.length > 0) winnerObj = thisCup.data[0];
         thisWinner = winnerObj;
       }
 
@@ -157,7 +156,6 @@ export default function ResultPage({ worldcupList }) {
     return () => {
       mounted = false;
     };
-    // isStatsOnly가 경로에 따라 달라질 수 있으니 의존성에 포함
   }, [id, locationCup, locationWinner, isStatsOnly]);
 
   if (loading)
@@ -208,6 +206,13 @@ export default function ResultPage({ worldcupList }) {
         boxSizing: "border-box",
       }}
     >
+      {/* (선택) 사이드 배너 강제 숨김 미디어쿼리 — 필요 시 주석 해제
+      <style>{`
+        @media (max-width: ${MIN_VW_FOR_SIDE + 100}px) {
+          .side-ad { display: none !important; }
+        }
+      `}</style> */}
+
       {/* 배경 오버레이 */}
       <div
         style={{
@@ -224,6 +229,7 @@ export default function ResultPage({ worldcupList }) {
       {/* 좌/우 사이드 배너 */}
       {canShowSideAds && (
         <div
+          className="side-ad"
           style={{
             position: "fixed",
             top: 120,
@@ -243,10 +249,11 @@ export default function ResultPage({ worldcupList }) {
       )}
       {canShowSideAds && (
         <div
+          className="side-ad"
           style={{
             position: "fixed",
             top: 120,
-            right: rightPos,
+            left: rightPos, // ← right 대신 left 사용
             width: BANNER,
             height: 600,
             zIndex: 10,
@@ -307,17 +314,7 @@ export default function ResultPage({ worldcupList }) {
               width: "100%",
             }}
           >
-            <h2
-              style={{
-                fontWeight: 900,
-                color: "#fff",
-                fontSize: isMobile ? 35 : 48,
-                margin: "32px 0 6px 0",
-                letterSpacing: -2,
-                lineHeight: 1.08,
-                textShadow: "0 3px 8px #2228",
-              }}
-            />
+            {/* 비어있던 h2는 제거 */}
             <div
               style={{
                 fontSize: isMobile ? 24 : 29,
