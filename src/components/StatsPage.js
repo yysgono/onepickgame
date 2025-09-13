@@ -1,3 +1,4 @@
+// src/components/StatsPage.js
 import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { useParams } from "react-router-dom";
 import { fetchWinnerStatsFromDB } from "../utils";
@@ -35,13 +36,14 @@ function getCustomSinceDate(from, to) {
   return { from: fromIso, to: toIso };
 }
 
-// created_at 범위를 항상 명시(ALL 포함)
+// created_at 범위를 항상 명시 (단 All 은 조건 제거 → null 반환)
 function getRangeForAllOrPeriod(period) {
   if (period) {
-    return getSinceDate(period); // 문자열(ISO) -> utils가 gte(created_at, since) 사용
+    // 기간 버튼(1/3/6/12개월)은 "created_at >= since"로 필터
+    return getSinceDate(period); // ISO string
   }
-  // ALL: 1970~현재까지 명시 범위로 고정
-  return { from: "1970-01-01T00:00:00.000Z", to: new Date().toISOString() };
+  // ALL: created_at 조건 자체를 주지 않음(가장 안전)
+  return null;
 }
 
 // 일부 예전 레코드의 match_count/total_games가 과소 저장된 경우 화면에서 보정
@@ -361,7 +363,7 @@ export default function StatsPage({
         const range = getCustomSinceDate(customFrom, customTo);
         statsArr = await fetchWinnerStatsFromDB(selectedCup.id, range);
       } else {
-        const range = getRangeForAllOrPeriod(period); // ← ALL도 명시 범위 사용
+        const range = getRangeForAllOrPeriod(period);
         statsArr = await fetchWinnerStatsFromDB(selectedCup.id, range);
       }
 
@@ -496,9 +498,7 @@ export default function StatsPage({
         </button>
         {pages.map((p, i) =>
           p === "..." ? (
-            <span key={i} style={{ margin: "0 4px" }}>
-              ...
-            </span>
+            <span key={i} style={{ margin: "0 4px" }}>...</span>
           ) : (
             <button
               key={p}
