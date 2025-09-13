@@ -6,15 +6,74 @@ import { useTranslation } from "react-i18next";
 import MediaRenderer from "./MediaRenderer";
 import { supabase } from "../utils/supabaseClient";
 import CommentBox from "./CommentBox";
-import AdSlot from "./AdSlot";
+import AdSlot from "./AdSlot";   // 배너 컴포넌트
 
-// 신고 버튼
+// ---------------------- 공용 유틸 ----------------------
+const PERIODS = [
+  { labelKey: "all", value: null },
+  { labelKey: "month_1", value: 30 },
+  { labelKey: "month_3", value: 90 },
+  { labelKey: "month_6", value: 180 },
+  { labelKey: "year_1", value: 365 },
+];
+
+function percent(n, d) {
+  if (!d) return "-";
+  return Math.round((n / d) * 100) + "%";
+}
+
+function getSinceDate(days) {
+  if (!days) return null;
+  const date = new Date();
+  date.setDate(date.getDate() - days);
+  return date.toISOString();
+}
+
+function getCustomSinceDate(from, to) {
+  if (!from || !to) return null;
+  const fromIso = new Date(from).toISOString();
+  const toIso = new Date(to).toISOString();
+  return { from: fromIso, to: toIso };
+}
+
+// created_at 범위를 항상 명시(ALL 포함)
+function getRangeForAllOrPeriod(period) {
+  if (period) {
+    return getSinceDate(period); // 문자열(ISO) -> utils가 gte(created_at, since) 사용
+  }
+  // ALL: 1970~현재까지 명시 범위로 고정
+  return { from: "1970-01-01T00:00:00.000Z", to: new Date().toISOString() };
+}
+
+// 일부 예전 레코드의 match_count/total_games가 과소 저장된 경우 화면에서 보정
+function normalizeStats(arr) {
+  return (arr || []).map((r) => {
+    const win_count = Number(r.win_count || 0);
+    const match_wins = Number(r.match_wins || 0);
+    const match_count_raw = Number(r.match_count || 0);
+    const total_games_raw = Number(r.total_games || 0);
+
+    const match_count = Math.max(match_count_raw, match_wins, win_count);
+    const total_games = Math.max(total_games_raw, win_count ? 1 : 0);
+
+    return {
+      ...r,
+      win_count,
+      match_wins,
+      match_count,
+      total_games,
+    };
+  });
+}
+
+// ---------------------- 신고 버튼 ----------------------
 function ReportButton({ cupId, size = "md" }) {
   const { t } = useTranslation();
   const [show, setShow] = useState(false);
   const [reason, setReason] = useState("");
   const [ok, setOk] = useState("");
   const [error, setError] = useState("");
+
   const style =
     size === "sm"
       ? {
@@ -39,6 +98,7 @@ function ReportButton({ cupId, size = "md" }) {
           cursor: "pointer",
           minWidth: 60,
         };
+
   const handleReport = useCallback(async () => {
     setError("");
     setOk("");
@@ -55,6 +115,7 @@ function ReportButton({ cupId, size = "md" }) {
     if (error) setError(error.message);
     else setOk(t("report_submit_success") || "신고가 접수되었습니다. 감사합니다.");
   }, [cupId, reason, t]);
+
   return (
     <>
       <button onClick={() => setShow(true)} style={style} aria-label={t("report")}>
@@ -105,31 +166,7 @@ function ReportButton({ cupId, size = "md" }) {
   );
 }
 
-const PERIODS = [
-  { labelKey: "all", value: null },
-  { labelKey: "month_1", value: 30 },
-  { labelKey: "month_3", value: 90 },
-  { labelKey: "month_6", value: 180 },
-  { labelKey: "year_1", value: 365 },
-];
-
-function percent(n, d) {
-  if (!d) return "-";
-  return Math.round((n / d) * 100) + "%";
-}
-function getSinceDate(days) {
-  if (!days) return null;
-  const date = new Date();
-  date.setDate(date.getDate() - days);
-  return date.toISOString();
-}
-function getCustomSinceDate(from, to) {
-  if (!from || !to) return null;
-  const fromIso = new Date(from).toISOString();
-  const toIso = new Date(to).toISOString();
-  return { from: fromIso, to: toIso };
-}
-
+// ---------------------- 카드 ----------------------
 function RankCard(props) {
   const { t } = useTranslation();
   const { rank, name, image, win_count, win_rate, match_wins, match_count, match_win_rate, isMobile } = props;
@@ -241,6 +278,7 @@ function RankCard(props) {
   );
 }
 
+// ---------------------- 스켈레톤 ----------------------
 function SkeletonTableRow({ colCount = 7 }) {
   return (
     <tr>
@@ -272,6 +310,7 @@ function SkeletonTableRow({ colCount = 7 }) {
   );
 }
 
+// ---------------------- 메인 컴포넌트 ----------------------
 export default function StatsPage({
   selectedCup,
   showCommentBox = false,
@@ -292,6 +331,7 @@ export default function StatsPage({
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 800);
+  const [fetchKey, setFetchKey] = useState(0); // 강제 재조회 키
 
   // 광고 공급자 (언어/국가 기준)
   const isKR =
@@ -307,6 +347,7 @@ export default function StatsPage({
     return () => window.removeEventListener("resize", onResize);
   }, []);
 
+  // 데이터 로딩
   useEffect(() => {
     async function fetchStats() {
       if (!selectedCup?.id) {
@@ -315,31 +356,33 @@ export default function StatsPage({
         return;
       }
       setLoading(true);
+
       let statsArr;
       if (customMode && customFrom && customTo) {
         const range = getCustomSinceDate(customFrom, customTo);
         statsArr = await fetchWinnerStatsFromDB(selectedCup.id, range);
       } else {
-        const since = getSinceDate(period);
-        statsArr = await fetchWinnerStatsFromDB(selectedCup.id, since);
+        const range = getRangeForAllOrPeriod(period); // ← ALL도 명시 범위 사용
+        statsArr = await fetchWinnerStatsFromDB(selectedCup.id, range);
       }
-      setStats(statsArr);
+
+      setStats(normalizeStats(statsArr)); // 화면 보정 후 반영
       setLoading(false);
     }
     fetchStats();
-  }, [selectedCup, period, customMode, customFrom, customTo]);
+  }, [selectedCup, period, customMode, customFrom, customTo, fetchKey]);
 
+  // 검색/정렬/멤버필터
   const filteredStats = useMemo(() => {
-    let result = [...stats].filter(row => row.name?.toLowerCase().includes(search.toLowerCase()));
+    let result = [...stats].filter((row) =>
+      row.name?.toLowerCase().includes(search.toLowerCase())
+    );
 
-    // 👇 회원 전용 보기일 때는 user_* 필드로 완전히 덮어씀
     if (userOnly) {
-      result = result.map(row => ({
+      // 회원 전용 탭: 우승 카운트만 회원 집계 사용(duels는 전체 기준 유지)
+      result = result.map((row) => ({
         ...row,
-        win_count:   row.user_win_count   || 0,
-        match_wins:  row.user_match_wins  || 0,
-        match_count: row.user_match_count || 0,
-        total_games: row.user_total_games || 0,
+        win_count: row.user_win_count || 0,
       }));
     }
 
@@ -348,10 +391,10 @@ export default function StatsPage({
       .sort((a, b) => {
         if (sortKey === "win_count" || sortKey === "user_win_count") {
           if (a.win_count !== b.win_count) {
-            return sortDesc ? (b.win_count - a.win_count) : (a.win_count - b.win_count);
+            return sortDesc ? b.win_count - a.win_count : a.win_count - b.win_count;
           }
           if (a.match_wins !== b.match_wins) {
-            return sortDesc ? (b.match_wins - a.match_wins) : (a.match_wins - b.match_wins);
+            return sortDesc ? b.match_wins - a.match_wins : a.match_wins - b.match_wins;
           }
           return a._originIdx - b._originIdx;
         }
@@ -377,31 +420,40 @@ export default function StatsPage({
         if (av > bv) return sortDesc ? -1 : 1;
         return a._originIdx - b._originIdx;
       });
-    result.forEach((row, i) => { row.rank = i + 1; });
+
+    result.forEach((row, i) => {
+      row.rank = i + 1;
+    });
     return result;
   }, [stats, search, userOnly, sortKey, sortDesc]);
 
+  // 페이지네이션
   const totalStats = filteredStats.length;
   const totalPages = Math.max(1, Math.ceil(totalStats / itemsPerPage));
   const pagedStats = useMemo(
     () => filteredStats.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage),
     [filteredStats, currentPage, itemsPerPage]
   );
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [search, itemsPerPage, stats]);
 
-  useEffect(() => { setCurrentPage(1); }, [search, itemsPerPage, stats]);
-
-  const top3 = useMemo(() =>
-    [...filteredStats] // 🔁 탭/기간/검색 반영된 집합에서 상위 뽑기
-      .sort((a, b) => {
-        if (a.win_count > b.win_count) return -1;
-        if (a.win_count < b.win_count) return 1;
-        if (a.match_wins > b.match_wins) return -1;
-        if (a.match_wins < b.match_wins) return 1;
-        return (a.rank || 0) - (b.rank || 0);
-      })
-      .slice(0, 3), [filteredStats]
+  // 상단 카드(현재 필터 결과 기준 Top3)
+  const top3 = useMemo(
+    () =>
+      [...filteredStats]
+        .sort((a, b) => {
+          if (a.win_count > b.win_count) return -1;
+          if (a.win_count < b.win_count) return 1;
+          if (a.match_wins > b.match_wins) return -1;
+          if (a.match_wins < b.match_wins) return 1;
+          return (a.rank || 0) - (b.rank || 0);
+        })
+        .slice(0, 3),
+    [filteredStats]
   );
 
+  // 스타일
   const ivoryCell = {
     background: "#fcf5cd",
     fontWeight: 800,
@@ -415,6 +467,7 @@ export default function StatsPage({
     padding: "7px 0",
   };
 
+  // 페이지네이션 UI
   function Pagination() {
     if (totalPages <= 1) return null;
     let pages = [];
@@ -438,13 +491,15 @@ export default function StatsPage({
             background: currentPage === 1 ? "#f7f7f7" : "#fff",
             cursor: currentPage === 1 ? "default" : "pointer",
           }}
-          onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+          onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
         >
           &lt;
         </button>
         {pages.map((p, i) =>
           p === "..." ? (
-            <span key={i} style={{ margin: "0 4px" }}>...</span>
+            <span key={i} style={{ margin: "0 4px" }}>
+              ...
+            </span>
           ) : (
             <button
               key={p}
@@ -476,7 +531,7 @@ export default function StatsPage({
             background: currentPage === totalPages ? "#f7f7f7" : "#fff",
             cursor: currentPage === totalPages ? "default" : "pointer",
           }}
-          onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+          onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
         >
           &gt;
         </button>
@@ -484,6 +539,7 @@ export default function StatsPage({
     );
   }
 
+  // 공유/신고 바
   function ShareAndReportBar() {
     if (!selectedCup?.id) return null;
     const shareUrl = `${window.location.origin}/${lang}/select-round/${selectedCup.id}`;
@@ -501,9 +557,7 @@ export default function StatsPage({
         <button
           onClick={() => {
             navigator.clipboard.writeText(shareUrl);
-            window?.toast?.success
-              ? window.toast.success(t("share_link_copied"))
-              : alert(t("share_link_copied"));
+            window?.toast?.success ? window.toast.success(t("share_link_copied")) : alert(t("share_link_copied"));
           }}
           style={{
             color: "#1976ed",
@@ -523,6 +577,7 @@ export default function StatsPage({
     );
   }
 
+  // 썸네일 컬럼 제외 테이블 컬럼 정의
   const sortableCols = [
     { key: "rank", label: t("rank"), isIvory: true },
     { key: "name", label: t("name") },
@@ -585,9 +640,10 @@ export default function StatsPage({
       <style>
         {`@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&display=swap');`}
       </style>
+
       <ShareAndReportBar />
 
-      {/* 1~3등 카드형 */}
+      {/* Top3 카드 */}
       <div
         style={{
           display: "flex",
@@ -628,10 +684,22 @@ export default function StatsPage({
           marginTop: 4,
         }}
       >
-        <button style={tabBtnStyle(!userOnly)} onClick={() => setUserOnly(false)}>
+        <button
+          style={tabBtnStyle(!userOnly)}
+          onClick={() => {
+            setUserOnly(false);
+            setFetchKey((k) => k + 1); // 탭 전환시 재조회 키 갱신
+          }}
+        >
           {t("all")}
         </button>
-        <button style={{ ...tabBtnStyle(userOnly), marginRight: 0 }} onClick={() => setUserOnly(true)}>
+        <button
+          style={{ ...tabBtnStyle(userOnly), marginRight: 0 }}
+          onClick={() => {
+            setUserOnly(true);
+            setFetchKey((k) => k + 1);
+          }}
+        >
           {t("members_only")}
         </button>
       </div>
@@ -652,6 +720,7 @@ export default function StatsPage({
             onClick={() => {
               setCustomMode(false);
               setPeriod(p.value);
+              setFetchKey((k) => k + 1);
             }}
             style={periodBtnStyle(!customMode && period === p.value)}
           >
@@ -667,6 +736,7 @@ export default function StatsPage({
           onClick={() => {
             setCustomMode(true);
             setPeriod(undefined);
+            setFetchKey((k) => k + 1);
           }}
         >
           {t("custom_period")}
@@ -704,6 +774,7 @@ export default function StatsPage({
               }}
               onClick={() => {
                 if (customFrom && customTo) setCustomMode(true);
+                setFetchKey((k) => k + 1);
               }}
               disabled={!customFrom || !customTo}
             >
@@ -725,6 +796,7 @@ export default function StatsPage({
                 setCustomFrom("");
                 setCustomTo("");
                 setPeriod(null);
+                setFetchKey((k) => k + 1);
               }}
             >
               {t("cancel")}
@@ -733,7 +805,7 @@ export default function StatsPage({
         )}
       </div>
 
-      {/* 보기개수 버튼들 */}
+      {/* 보기 개수 버튼들 */}
       <div
         style={{
           display: "flex",
@@ -781,7 +853,7 @@ export default function StatsPage({
             background: "#fafbfc",
             color: "#222",
             transition: "all 0.15s",
-            boxShadow: "0 1px 6px #1976ed11"
+            boxShadow: "0 1px 6px #1976ed11",
           }}
           aria-label={t("search") || "Search"}
         />
@@ -837,57 +909,63 @@ export default function StatsPage({
           </thead>
           <tbody>
             {loading
-              ? Array.from({ length: 5 }).map((_, i) => (
-                  <SkeletonTableRow key={i} colCount={sortableCols.length} />
-                ))
-              : pagedStats.length === 0 ? (
-                  <tr>
-                    <td colSpan={sortableCols.length} style={{ padding: 22, color: "#888" }}>
-                      {t("cannot_show_results")}
-                    </td>
-                  </tr>
-                ) : (
-                  pagedStats.map((row, idx) => {
-                    const isHighlighted = highlightCandidateId && row.candidate_id === highlightCandidateId;
-                    const highlightStyle = isHighlighted
-                      ? {
-                          background: "linear-gradient(90deg,#f9e7ff 0%,#f3fbff 80%)",
-                          boxShadow: "0 2px 12px #d489ec15",
-                          fontWeight: 800,
-                          borderLeft: "6px solid #d489ec",
-                          color: "#7114b5",
-                          fontSize: isMobile ? 15 : 17,
-                          transition: "all 0.12s",
-                        }
-                      : { background: idx % 2 === 0 ? "#fafdff" : "#fff", color: "#333" };
-                    return (
-                      <tr key={row.candidate_id} style={highlightStyle}>
-                        <td style={ivoryCell}>{row.rank}</td>
-                        <td
-                          style={{
-                            ...normalCell,
-                            fontWeight: 700,
-                            fontSize: isMobile ? 13 : 15,
-                            overflow: "hidden",
-                            textOverflow: "ellipsis",
-                            whiteSpace: "nowrap",
-                            maxWidth: isMobile ? 90 : 120,
-                          }}
-                        >
-                          {row.name}
-                        </td>
-                        <td style={normalCell}>{row.win_count}</td>
-                        <td style={ivoryCell}>{row.total_games ? percent(row.win_count, row.total_games) : "-"}</td>
-                        <td style={normalCell}>{row.match_wins}</td>
-                        <td style={normalCell}>{row.match_count}</td>
-                        <td style={ivoryCell}>{row.match_count ? percent(row.match_wins, row.match_count) : "-"}</td>
-                      </tr>
-                    );
-                  })
+              ? Array.from({ length: 5 }).map((_, i) => <SkeletonTableRow key={i} colCount={sortableCols.length} />)
+              : pagedStats.length === 0
+              ? (
+                <tr>
+                  <td colSpan={sortableCols.length} style={{ padding: 22, color: "#888" }}>
+                    {t("cannot_show_results")}
+                  </td>
+                </tr>
+                )
+              : (
+                pagedStats.map((row, idx) => {
+                  const isHighlighted = highlightCandidateId && row.candidate_id === highlightCandidateId;
+                  const highlightStyle = isHighlighted
+                    ? {
+                        background: "linear-gradient(90deg,#f9e7ff 0%,#f3fbff 80%)",
+                        boxShadow: "0 2px 12px #d489ec15",
+                        fontWeight: 800,
+                        borderLeft: "6px solid #d489ec",
+                        color: "#7114b5",
+                        fontSize: isMobile ? 15 : 17,
+                        transition: "all 0.12s",
+                      }
+                    : { background: idx % 2 === 0 ? "#fafdff" : "#fff", color: "#333" };
+                  return (
+                    <tr key={row.candidate_id} style={highlightStyle}>
+                      <td style={ivoryCell}>{row.rank}</td>
+                      <td
+                        style={{
+                          ...normalCell,
+                          fontWeight: 700,
+                          fontSize: isMobile ? 13 : 15,
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                          whiteSpace: "nowrap",
+                          maxWidth: isMobile ? 90 : 120,
+                        }}
+                        title={row.name}
+                      >
+                        {row.name}
+                      </td>
+                      <td style={normalCell}>{row.win_count}</td>
+                      <td style={ivoryCell}>
+                        {row.total_games ? percent(row.win_count, row.total_games) : "-"}
+                      </td>
+                      <td style={normalCell}>{row.match_wins}</td>
+                      <td style={normalCell}>{row.match_count}</td>
+                      <td style={ivoryCell}>
+                        {row.match_count ? percent(row.match_wins, row.match_count) : "-"}
+                      </td>
+                    </tr>
+                  );
+                })
                 )}
           </tbody>
         </table>
       </div>
+
       <Pagination />
 
       {/* 댓글 위 가로 배너 */}
@@ -911,13 +989,13 @@ export default function StatsPage({
         </div>
       )}
 
-      {/* 댓글 박스 */}
+      {/* 댓글 */}
       {showCommentBox && <CommentBox cupId={selectedCup.id} />}
     </div>
   );
 }
 
-// 탭버튼 스타일
+// ---------------------- 버튼 스타일 ----------------------
 function tabBtnStyle(selected) {
   return {
     padding: "8px 19px",
@@ -934,7 +1012,6 @@ function tabBtnStyle(selected) {
     marginBottom: 7,
   };
 }
-// 기간버튼 스타일
 function periodBtnStyle(selected) {
   return {
     padding: "7px 15px",
