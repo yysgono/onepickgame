@@ -454,14 +454,29 @@ function Match({ cup, onResult, selectedCount }) {
   // 광고 프로바이더 (모바일 하단 고정 배너에서만 사용)
   const provider = (i18n?.language || "en").startsWith("ko") ? "coupang" : "amazon";
 
+  // ✅ 자동 bye 중복 실행 방지용 ref
+  const autoByeIdxRef = useRef(-1);
+  // ✅ handlePick 레이스 방지용: 현재 idx 스냅샷
+  const pickingGuardRef = useRef({ idx: -1, running: false });
+
   useEffect(() => {
     async function init() {
       setLoading(true);
       setError("");
-      let players = cup.data;
+
+      // ✅ 입력 데이터 de-dup (id 기준) + truthy 필터
+      const seen = new Set();
+      let players = (cup?.data || []).filter(Boolean).filter((c) => {
+        if (!c?.id) return false;
+        if (seen.has(c.id)) return false;
+        seen.add(c.id);
+        return true;
+      });
+
       if (selectedCount && players.length > selectedCount) {
         players = shuffle([...players]).slice(0, selectedCount);
       }
+
       await deleteOldWinnerLogAndStats(cup.id);
       const { matches, byes } = makeFirstRound(players);
       setBracket(matches);
@@ -478,6 +493,8 @@ function Match({ cup, onResult, selectedCount }) {
       setSaving(false);
       setSelElim([]);
       setSelAdv([]);
+      autoByeIdxRef.current = -1;
+      pickingGuardRef.current = { idx: -1, running: false };
       setLoading(false);
     }
     init();
@@ -519,6 +536,8 @@ function Match({ cup, onResult, selectedCount }) {
       setRoundNum((r) => r + 1);
       setHistoryStack([]);
       setSelectedIdx(null);
+      autoByeIdxRef.current = -1; // 다음 라운드로 넘어가면 초기화
+      pickingGuardRef.current = { idx: -1, running: false };
     }
     // eslint-disable-next-line
   }, [idx, bracket, matchHistory, pendingWinners, cup, roundNum, showResurrect, resurrectUsed]);
@@ -536,6 +555,8 @@ function Match({ cup, onResult, selectedCount }) {
     setEliminatedCandidates([]);
     setSelElim([]);
     setSelAdv([]);
+    autoByeIdxRef.current = -1;
+    pickingGuardRef.current = { idx: -1, running: false };
   }
   function handleResurrectConfirm(final16) {
     setShowResurrect(false);
@@ -551,6 +572,8 @@ function Match({ cup, onResult, selectedCount }) {
     setEliminatedCandidates([]);
     setSelElim([]);
     setSelAdv([]);
+    autoByeIdxRef.current = -1;
+    pickingGuardRef.current = { idx: -1, running: false };
   }
 
   async function handleFinish(winner, matchHistory) {
@@ -582,19 +605,38 @@ function Match({ cup, onResult, selectedCount }) {
   const currentMatch = bracket[idx] || [];
   const [c1, c2] = currentMatch;
 
+  // ✅ bye 자동 진행: 같은 인덱스에서 중복 실행을 막고, 타이머 정리
   useEffect(() => {
-    if (!c1 || !c2) {
-      if (c1 || c2) {
-        setTimeout(() => {
-          handlePick(c1 ? 0 : 1);
-        }, 150);
-      }
+    // 이미 수동/자동 선택 애니메이션 중이면 대기
+    if (selectedIdx !== null) return;
+
+    // 둘 중 하나만 있을 때(bye) 자동 진행, 단 동일 idx에서 한 번만
+    if ((!c1 || !c2) && (c1 || c2) && autoByeIdxRef.current !== idx) {
+      autoByeIdxRef.current = idx;
+      const t = setTimeout(() => {
+        // 레이스 방지: 이미 다른 pick이 실행 중이면 무시
+        if (pickingGuardRef.current.running) return;
+        handlePick(c1 ? 0 : 1);
+      }, 150);
+      return () => clearTimeout(t);
+    }
+
+    // 정상 매치(둘 다 존재)로 들어오면 다음 bye 대비해 ref 초기화 가능
+    if (c1 && c2) {
+      autoByeIdxRef.current = -1;
     }
     // eslint-disable-next-line
-  }, [idx, bracket]);
+  }, [idx, bracket, c1, c2, selectedIdx]);
 
   function handlePick(winnerIdx) {
     if (autoPlaying || selectedIdx !== null) return;
+
+    // 레이스/중복 방지: 동일 idx에서 동시에 두 번 실행되는 것을 막음
+    if (pickingGuardRef.current.running && pickingGuardRef.current.idx === idx) {
+      return;
+    }
+    pickingGuardRef.current = { idx, running: true };
+
     setHistoryStack((prev) => [
       ...prev,
       {
@@ -605,13 +647,35 @@ function Match({ cup, onResult, selectedCount }) {
         matchHistory: JSON.parse(JSON.stringify(matchHistory)),
       },
     ]);
+
     setSelectedIdx(winnerIdx);
-    setTimeout(() => {
-      const winner = winnerIdx === 0 ? c1 : c2;
-      setMatchHistory((prev) => [...prev, { round: roundNum, c1, c2, winner }]);
+
+    const localIdx = idx; // 스냅샷
+    const localC1 = c1;
+    const localC2 = c2;
+
+    const t = setTimeout(() => {
+      // 여전히 같은 매치를 처리 중인지 확인
+      if (localIdx !== idx) {
+        pickingGuardRef.current = { idx: -1, running: false };
+        setSelectedIdx(null);
+        return;
+      }
+      const winner = winnerIdx === 0 ? localC1 : localC2;
+      if (!winner) {
+        // 방어적 가드
+        pickingGuardRef.current = { idx: -1, running: false };
+        setSelectedIdx(null);
+        return;
+      }
+      setMatchHistory((prev) => [...prev, { round: roundNum, c1: localC1, c2: localC2, winner }]);
       setIdx(idx + 1);
       setSelectedIdx(null);
+      pickingGuardRef.current = { idx: -1, running: false };
     }, 180);
+
+    // 안전: 컴포넌트 언마운트/라운드 전환 시 타이머 정리
+    return () => clearTimeout(t);
   }
 
   function handleBack() {
@@ -625,6 +689,8 @@ function Match({ cup, onResult, selectedCount }) {
     setMatchHistory(prev.matchHistory);
     setHistoryStack(historyStack.slice(0, -1));
     setSelectedIdx(null);
+    autoByeIdxRef.current = -1;
+    pickingGuardRef.current = { idx: -1, running: false };
   }
 
   const STAGE_SIZE = isMobile ? 15 : 20;
