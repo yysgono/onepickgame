@@ -1,4 +1,3 @@
-// src/components/Footer.js
 import React from "react";
 import { useTranslation, Trans } from "react-i18next";
 import { Link, useLocation } from "react-router-dom";

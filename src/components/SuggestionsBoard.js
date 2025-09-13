@@ -145,7 +145,7 @@ export default function SuggestionsBoard({ user, isAdmin }) {
             }}
           />
 
-          <label htmlFor="suggest-content" style={{ display: "none" }}>
+        <label htmlFor="suggest-content" style={{ display: "none" }}>
             {t("enter_content") || "Enter content"}
           </label>
           <textarea

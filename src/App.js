@@ -1,4 +1,3 @@
-// App.js
 import "./i18n";
 import "./App.css";
 import React, { useState, useEffect } from "react";
@@ -274,11 +273,10 @@ function App() {
 
   // Header가 경로 보존 네비게이션을 수행하므로,
   // 여기서는 언어 상태와 로컬 스토리지만 갱신해주면 됩니다.
-  // (호환성 위해 options 인자를 받아도 무시하지 않게 서명만 유지)
   function handleLangChange(lng, _options) {
     i18n.changeLanguage(lng);
     localStorage.setItem("onepickgame_lang", lng);
-    // 네비게이션은 Header에서 처리(현재 경로 유지)
+    // 네비게이션은 Header에서 처리
   }
 
   function handleBackup() {
@@ -338,9 +336,7 @@ function App() {
             setWorldcupList(freshList);
           } catch (e) {
             alert(
-              (t("delete_failed") || "Delete failed!") +
-                " " +
-                (e.message || e)
+              (t("delete_failed") || "Delete failed!") + " " + (e.message || e)
             );
           }
         }}
@@ -378,9 +374,7 @@ function App() {
             setWorldcupList(freshList);
           } catch (e) {
             alert(
-              (t("delete_failed") || "Delete failed!") +
-                " " +
-                (e.message || e)
+              (t("delete_failed") || "Delete failed!") + " " + (e.message || e)
             );
           }
         }}
@@ -426,7 +420,9 @@ function App() {
     }, [id, worldcupList]);
 
     if (loading)
-      return <div style={{ padding: 60, textAlign: "center" }}>{t("loading")}</div>;
+      return (
+        <div style={{ padding: 60, textAlign: "center" }}>{t("loading")}</div>
+      );
     if (!cup)
       return (
         <div style={{ padding: 60, textAlign: "center", color: "#d33" }}>
@@ -470,7 +466,7 @@ function App() {
     const descMap = {
       en: "Create and play worldcup-style matches. Community-driven tournaments and stats.",
       ko: "이상형 월드컵 사이트 입니다. 커뮤니티 기반 토너먼트와 통계를 제공합니다.",
-      ja: "理想のワールドカップを作成してプレイ。コミュニ티主导のトーナ먼트と統計。",
+      ja: "理想のワールドカップ를作成してプレイ。コミュニティ主导のトーナメントと統計。",
       fr: "Créez et jouez à des tournois. Communauté active et statistiques.",
       es: "Crea y juega torneos. Comunidad activa y estadísticas.",
       de: "Turniere erstellen und spielen. Community & Statistiken.",
@@ -522,9 +518,7 @@ function App() {
               setWorldcupList(freshList);
             } catch (e) {
               alert(
-                (t("delete_failed") || "Delete failed!") +
-                  " " +
-                  (e.message || e)
+                (t("delete_failed") || "Delete failed!") + " " + (e.message || e)
               );
             }
           }}
@@ -605,7 +599,9 @@ function App() {
     function AdminRoute() {
       if (nicknameLoading) {
         return (
-          <div style={{ padding: 60, textAlign: "center", fontWeight: 700, fontSize: 22 }}>
+          <div
+            style={{ padding: 60, textAlign: "center", fontWeight: 700, fontSize: 22 }}
+          >
             Loading...
           </div>
         );
@@ -644,7 +640,9 @@ function App() {
     function AdminStatsRoute() {
       if (nicknameLoading) {
         return (
-          <div style={{ padding: 60, textAlign: "center", fontWeight: 700, fontSize: 22 }}>
+          <div
+            style={{ padding: 60, textAlign: "center", fontWeight: 700, fontSize: 22 }}
+          >
             Loading...
           </div>
         );
@@ -709,10 +707,29 @@ function App() {
 
         <div className="main-content-box">
           <Routes>
-            {/* 언어 없는 경로 진입시 영어로 강제 리다이렉트 */}
-            <Route path="/signup" element={<Navigate to="/en/signup" replace />} />
-            <Route path="/find-id" element={<Navigate to="/en/find-id" replace />} />
-            <Route path="/find-pw" element={<Navigate to="/en/find-pw" replace />} />
+            {/* ✅ 추가된 루트(언어 없는) 고정 문서 라우트 */}
+            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+            <Route path="/terms-of-service" element={<TermsOfService />} />
+            <Route
+              path="/suggestions-board"
+              element={<SuggestionsBoard user={user} isAdmin={isAdmin} />}
+            />
+            <Route path="/notice" element={<NoticePage />} />
+            <Route path="/notice/:id" element={<NoticeDetail />} />
+
+            {/* 언어 없는 기타 경로 보정 */}
+            <Route
+              path="/signup"
+              element={<Navigate to="/en/signup" replace />}
+            />
+            <Route
+              path="/find-id"
+              element={<Navigate to="/en/find-id" replace />}
+            />
+            <Route
+              path="/find-pw"
+              element={<Navigate to="/en/find-pw" replace />}
+            />
 
             {/* 각 언어별 홈 경로 */}
             <Route
@@ -751,16 +768,25 @@ function App() {
               }
             />
 
-            <Route path="/:lang/select-round/:id" element={<SelectRoundPageWrapper />} />
-            <Route path="/:lang/match/:id/:round" element={<MatchPage worldcupList={worldcupList} />} />
-            <Route path="/:lang/result/:id" element={<ResultPage worldcupList={worldcupList} />} />
-            <Route path="/:lang/result/:id/:round" element={<ResultPage worldcupList={worldcupList} />} />
+            <Route
+              path="/:lang/select-round/:id"
+              element={<SelectRoundPageWrapper />}
+            />
+            <Route
+              path="/:lang/match/:id/:round"
+              element={<MatchPage worldcupList={worldcupList} />}
+            />
+            <Route
+              path="/:lang/result/:id"
+              element={<ResultPage worldcupList={worldcupList} />}
+            />
+            <Route
+              path="/:lang/result/:id/:round"
+              element={<ResultPage worldcupList={worldcupList} />}
+            />
 
             {/* ✅ 구 경로 리다이렉트 */}
             <Route path="/:lang/stats/:id" element={<RedirectStatsToResult />} />
-
-            {/* 필요시 기존 StatsPageWrapper를 별도 경로로 유지하려면 다른 경로를 쓰세요 */}
-            {/* <Route path="/:lang/stats-legacy/:id" element={<StatsPageWrapper />} /> */}
 
             <Route path="/:lang/worldcup-maker" element={<WorldcupMakerWrapper />} />
             <Route path="/:lang/manage" element={<ManageWorldcupWrapper />} />
@@ -773,7 +799,10 @@ function App() {
                 />
               }
             />
-            <Route path="/:lang/edit-worldcup/:id" element={<EditWorldcupPageWrapper />} />
+            <Route
+              path="/:lang/edit-worldcup/:id"
+              element={<EditWorldcupPageWrapper />}
+            />
 
             <Route path="/:lang/admin" element={<AdminRoute />} />
             <Route path="/:lang/admin-stats" element={<AdminStatsRoute />} />
@@ -781,13 +810,15 @@ function App() {
             <Route path="/:lang/signup" element={<SignupBox />} />
             <Route
               path="/:lang/login"
-              element={<LoginBox setUser={setUser} setNickname={updateNickname} />}
+              element={
+                <LoginBox setUser={setUser} setNickname={updateNickname} />
+              }
             />
             <Route path="/:lang/find-id" element={<FindIdBox />} />
             <Route path="/:lang/find-pw" element={<FindPwBox />} />
             <Route path="/:lang/reset-password" element={<Navigate to="/en" />} />
 
-            {/* 아래 세 페이지는 각 컴포넌트 내부에서 Seo 처리됨 */}
+            {/* 아래 세 페이지는 각 컴포넌트 내부에서 Seo 처리됨 (언어 경로 버전) */}
             <Route path="/:lang/privacy-policy" element={<PrivacyPolicy />} />
             <Route path="/:lang/terms-of-service" element={<TermsOfService />} />
             <Route
@@ -796,9 +827,12 @@ function App() {
             />
 
             <Route path="/:lang/my-worldcups" element={<MyWorldcupsWrapper />} />
-            <Route path="/:lang/recent-worldcups" element={<RecentWorldcupsWrapper />} />
+            <Route
+              path="/:lang/recent-worldcups"
+              element={<RecentWorldcupsWrapper />}
+            />
 
-            {/* 공지 */}
+            {/* 공지 (언어 경로) */}
             <Route path="/:lang/notice" element={<NoticePage />} />
             <Route path="/:lang/notice/:id" element={<NoticeDetail />} />
 

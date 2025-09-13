@@ -62,14 +62,11 @@ export default function PrivacyPolicy() {
             You may request access, correction, deletion, or restriction of your personal data at any time by contacting us by email.
           </li>
           <li>
-            See also our{" "}
-            <Link to="/terms-of-service">Terms of Service</Link>
-            .
+            See also our <Link to="/terms-of-service">Terms of Service</Link>.
           </li>
         </ul>
         <p>
-          Contact:{" "}
-          <a href="mailto:yysgono@gmail.com">yysgono@gmail.com</a>
+          Contact: <a href="mailto:yysgono@gmail.com">yysgono@gmail.com</a>
         </p>
         <p style={{ color: "#777", fontSize: 14, marginTop: 30 }}>
           This policy is effective from July 10, 2025.

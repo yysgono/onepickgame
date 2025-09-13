@@ -38,14 +38,11 @@ export default function TermsOfService() {
             Third-party ads and cookies may be displayed or used for personalized advertising (for example, Google AdSense).
           </li>
           <li>
-            Please refer to our{" "}
-            <Link to="/privacy-policy">Privacy Policy</Link>
-            {" "}for details on personal data.
+            Please refer to our <Link to="/privacy-policy">Privacy Policy</Link> for details on personal data.
           </li>
           <li>These terms are effective from July 10, 2025.</li>
           <li>
-            For any questions, contact:{" "}
-            <a href="mailto:yysgono@gmail.com">yysgono@gmail.com</a>
+            For any questions, contact: <a href="mailto:yysgono@gmail.com">yysgono@gmail.com</a>
           </li>
         </ul>
         <p style={{ marginTop: 28, color: "#777", fontSize: 15 }}>
