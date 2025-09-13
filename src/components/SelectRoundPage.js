@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 import MediaRenderer from "./MediaRenderer";
-import { fetchWinnerStatsFromDB, pushRecentWorldcup } from "../utils"; // ✅ 통계/최근본
+import { fetchWinnerStatsFromDB, pushRecentWorldcup } from "../utils.js"; // ✅ 통계/최근본
 import AdSlot from "./AdSlot"; // ✅ 광고 공통 컴포넌트
 
 function useIsMobile() {

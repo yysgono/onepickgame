@@ -1,7 +1,6 @@
-// src/components/StatsPage.js
 import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { useParams } from "react-router-dom";
-import { fetchWinnerStatsFromDB } from "../utils";
+import { fetchWinnerStatsFromDB } from "../utils.js";
 import { useTranslation } from "react-i18next";
 import MediaRenderer from "./MediaRenderer";
 import { supabase } from "../utils/supabaseClient";
