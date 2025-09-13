@@ -1,3 +1,4 @@
+// src/utils.js
 import { supabase } from "./utils/supabaseClient";
 
 // ---------------------- YouTube 유틸 ----------------------
@@ -80,32 +81,50 @@ export async function deleteWorldcupGame(id) {
 }
 
 // ---------------------- winner_logs / stats ----------------------
+/**
+ * (중요) 새 플레이 시작 전에 “내 것만” 싹 지워서
+ * 이번 플레이 1회만 반영되게 함.
+ */
 export async function deleteOldWinnerLogAndStats(cup_id) {
   const { user_id, guest_id } = await getUserOrGuestId();
-  let deleteQuery = supabase.from("winner_logs").delete().eq("cup_id", cup_id);
-  if (user_id) deleteQuery = deleteQuery.eq("user_id", user_id);
-  if (guest_id) deleteQuery = deleteQuery.eq("guest_id", guest_id);
-  await deleteQuery;
 
-  let statsDelete = supabase.from("winner_stats").delete().eq("cup_id", cup_id);
-  if (user_id) statsDelete = statsDelete.eq("user_id", user_id);
-  if (guest_id) statsDelete = statsDelete.eq("guest_id", guest_id);
-  await statsDelete;
+  // winner_logs
+  {
+    let q = supabase.from("winner_logs").delete().eq("cup_id", cup_id);
+    if (user_id) q = q.eq("user_id", user_id);
+    if (guest_id) q = q.eq("guest_id", guest_id);
+    await q;
+  }
+
+  // winner_stats
+  {
+    let q = supabase.from("winner_stats").delete().eq("cup_id", cup_id);
+    if (user_id) q = q.eq("user_id", user_id);
+    if (guest_id) q = q.eq("guest_id", guest_id);
+    await q;
+  }
 }
 
+/**
+ * 우승 로그 저장
+ * - 항상 마지막 1회만 유지되도록 upsert 로 동작
+ * - (가능하면 DB에 UNIQUE (cup_id, user_id, guest_id) 추가 권장)
+ */
 export async function insertWinnerLog(cup_id, winner_id = null) {
   const { user_id, guest_id } = await getUserOrGuestId();
+  const payload = { user_id, guest_id, cup_id, winner_id };
   const { error } = await supabase
     .from("winner_logs")
-    .insert([{ user_id, guest_id, cup_id, winner_id }]);
-  if (error) {
-    if (error.code === "23505" || error.message?.includes("duplicate"))
-      return false;
-    return false;
-  }
+    .upsert([payload], {
+      onConflict: ["user_id", "guest_id", "cup_id"],
+    });
+  if (error) return false;
   return true;
 }
 
+/**
+ * 개별 후보 통계 upsert — 마지막 1회만 유지
+ */
 export async function upsertMyWinnerStat({
   cup_id,
   candidate_id,
@@ -133,13 +152,16 @@ export async function upsertMyWinnerStat({
     .from("winner_stats")
     .upsert([payload], {
       onConflict: ["user_id", "guest_id", "cup_id", "candidate_id"],
-    })
+    }) // 🔑 동일 유저/게스트+컵+후보 조합 1행만 유지
     .select()
     .single();
   if (error) throw error;
   return data;
 }
 
+/**
+ * 여러 후보 통계 upsert — 마지막 1회만 유지
+ */
 export async function upsertMyWinnerStat_parallel(statsArr, cup_id) {
   const { user_id, guest_id } = await getUserOrGuestId();
   const rows = statsArr.map((stat) => ({
@@ -152,7 +174,7 @@ export async function upsertMyWinnerStat_parallel(statsArr, cup_id) {
     .from("winner_stats")
     .upsert(rows, {
       onConflict: ["user_id", "guest_id", "cup_id", "candidate_id"],
-    });
+    }); // 🔑 동일 조합 1행만 유지
   if (error) throw error;
 }
 
@@ -168,9 +190,9 @@ export async function getMyWinnerStats({ cup_id } = {}) {
 }
 
 /**
- * 누적 통계 가져오기 (기간 지정 가능) — ★ 전체 페이지네이션으로 모두 집계
- * PostgREST 기본 limit(1000) 때문에 누락되는 레코드가 생기지 않도록
- * 1,000개 단위로 끝까지 불러와 합산합니다.
+ * 누적 통계 가져오기 (기간 지정 가능) — 전체 페이지네이션으로 모두 집계
+ * - created_at DESC 로 읽어 “방금 플레이”가 바로 반영
+ * - Supabase 기본 limit(1000) 넘어가도 끝까지 합산
  */
 export async function fetchWinnerStatsFromDB(cup_id, since) {
   const PAGE = 1000;
@@ -186,8 +208,7 @@ export async function fetchWinnerStatsFromDB(cup_id, since) {
         { count: "exact" }
       )
       .eq("cup_id", cup_id)
-      // 최신부터 읽으면 “최근 게임”이 먼저 잡힘
-      .order("created_at", { ascending: false })
+      .order("created_at", { ascending: false }) // 최신 먼저
       .range(from, to);
 
     if (since && typeof since === "object" && since.from && since.to) {
@@ -200,10 +221,7 @@ export async function fetchWinnerStatsFromDB(cup_id, since) {
     if (error) throw error;
 
     allRows.push(...(data || []));
-
-    // 마지막 페이지면 종료
-    if (!data || data.length < PAGE) break;
-
+    if (!data || data.length < PAGE) break; // 마지막 페이지
     from += PAGE;
     to += PAGE;
   }
@@ -221,7 +239,7 @@ export async function fetchWinnerStatsFromDB(cup_id, since) {
         match_wins: 0,
         match_count: 0,
         total_games: 0,
-        user_win_count: 0, // 회원전용 탭용
+        user_win_count: 0, // 회원 전용 탭 계산용
       };
     }
     statsMap[id].win_count += row.win_count || 0;
