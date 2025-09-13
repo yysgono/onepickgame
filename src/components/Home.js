@@ -422,7 +422,7 @@ function Home({
                 provider="coupang"
                 width={isMobile ? 320 : 728}
                 height={isMobile ? 100 : 90}
-                              />
+              />
             ) : (
               <a
                 href={amazonUrl}
@@ -900,7 +900,7 @@ function Home({
                 provider="coupang"
                 width={isMobile ? 320 : 728}
                 height={isMobile ? 100 : 90}
-                              />
+              />
             )}
           </div>
         ) : (
