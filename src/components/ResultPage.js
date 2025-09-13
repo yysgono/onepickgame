@@ -86,6 +86,9 @@ export default function ResultPage({ worldcupList }) {
   const langMatch = location.pathname.match(/^\/([a-z]{2})(\/|$)/);
   const lang = langMatch ? langMatch[1] : "ko";
 
+  // 통계 전용 모드: /:lang/stats/:id 경로일 때
+  const isStatsOnly = /\/stats\/\d+/.test(location.pathname);
+
   const [cup, setCup] = useState(null);
   const [winner, setWinner] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -121,7 +124,8 @@ export default function ResultPage({ worldcupList }) {
         thisCup = cupData || null;
       }
 
-      if (!thisWinner && thisCup) {
+      // 통계 전용 모드가 아니고, winner가 없고, cup이 있을 때만 우승자 로딩 시도
+      if (!isStatsOnly && !thisWinner && thisCup) {
         let winnerObj = null;
         if (thisCup.winner_id) {
           if (thisCup.data) {
@@ -138,7 +142,8 @@ export default function ResultPage({ worldcupList }) {
             winnerObj = candidate || null;
           }
         }
-        if (!winnerObj && thisCup?.data?.length > 0) winnerObj = thisCup.data[0];
+        // 🔴 여기서 첫 번째 후보를 강제로 우승자로 세팅하던 코드를 제거했습니다.
+        // if (!winnerObj && thisCup?.data?.length > 0) winnerObj = thisCup.data[0];
         thisWinner = winnerObj;
       }
 
@@ -152,7 +157,8 @@ export default function ResultPage({ worldcupList }) {
     return () => {
       mounted = false;
     };
-  }, [id, locationCup, locationWinner]);
+    // isStatsOnly가 경로에 따라 달라질 수 있으니 의존성에 포함
+  }, [id, locationCup, locationWinner, isStatsOnly]);
 
   if (loading)
     return (
@@ -177,7 +183,8 @@ export default function ResultPage({ worldcupList }) {
       </div>
     );
 
-  if (!cup || !winner)
+  // 통계 전용 모드에서는 winner가 없어도 정상 동작해야 하므로 cup만 확인
+  if (!cup)
     return (
       <div style={{ textAlign: "center", padding: 60, color: "#d33", minHeight: "60vh" }}>
         {t("error_no_data")}
@@ -185,7 +192,7 @@ export default function ResultPage({ worldcupList }) {
         <button onClick={() => window.location.reload()}>{t("retry")}</button>
         <br />
         <br />
-        <a href="/" style={{ color: "#1976ed", textDecoration: "underline" }}>
+        <a href={`/${lang}`} style={{ color: "#1976ed", textDecoration: "underline" }}>
           {t("home")}
         </a>
       </div>
@@ -288,122 +295,124 @@ export default function ResultPage({ worldcupList }) {
           </div>
         </div>
 
-        {/* 우승자 카드 + 버튼 */}
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            margin: "0 auto 28px auto",
-            width: "100%",
-          }}
-        >
-          <h2
-            style={{
-              fontWeight: 900,
-              color: "#fff",
-              fontSize: isMobile ? 35 : 48,
-              margin: "32px 0 6px 0",
-              letterSpacing: -2,
-              lineHeight: 1.08,
-              textShadow: "0 3px 8px #2228",
-            }}
-          />
-          <div
-            style={{
-              fontSize: isMobile ? 24 : 29,
-              fontWeight: 700,
-              margin: "8px 0 3px 0",
-              color: "#fff",
-              textShadow: "0 3px 8px #2228",
-            }}
-          >
-            🥇 {t("winner")}
-          </div>
-          <div
-            style={{
-              width: isMobile ? 135 : 170,
-              height: isMobile ? 135 : 170,
-              borderRadius: 18,
-              margin: "0 auto 0px auto",
-              background: "#eee",
-              border: "3.5px solid #1976ed",
-              overflow: "hidden",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <MediaRenderer url={winner.image} alt={winner.name} />
-          </div>
-          <div
-            style={{
-              fontSize: isMobile ? 26 : 32,
-              fontWeight: 700,
-              margin: "14px auto 6px auto",
-              textAlign: "center",
-              wordBreak: "break-all",
-              maxWidth: 260,
-              lineHeight: 1.13,
-              color: "#fff",
-              textShadow: "0 3px 8px #2228",
-            }}
-            title={winner.name}
-          >
-            {truncateToTwoLinesByByte(winner.name, 24).map((line, i) => (
-              <span key={i} style={{ display: "block" }}>{line}</span>
-            ))}
-          </div>
+        {/* 우승자 카드 + 버튼 (우승자 확정 & 통계 전용 모드가 아닐 때만) */}
+        {winner && !isStatsOnly && (
           <div
             style={{
               display: "flex",
-              flexDirection: "row",
-              justifyContent: "center",
+              flexDirection: "column",
               alignItems: "center",
-              gap: 10,
-              margin: "18px auto 0 auto",
+              justifyContent: "center",
+              margin: "0 auto 28px auto",
+              width: "100%",
             }}
           >
-            <button
+            <h2
               style={{
-                padding: isMobile ? "11px 26px" : "12px 32px",
-                borderRadius: 10,
-                background: "#1976ed",
+                fontWeight: 900,
                 color: "#fff",
-                fontWeight: 700,
-                border: "none",
-                fontSize: isMobile ? 17 : 20,
-                cursor: "pointer",
+                fontSize: isMobile ? 35 : 48,
+                margin: "32px 0 6px 0",
+                letterSpacing: -2,
+                lineHeight: 1.08,
+                textShadow: "0 3px 8px #2228",
               }}
-              onClick={() => navigate(`/${lang}/select-round/${cup.id}`)}
-            >
-              {t("retry")}
-            </button>
-            <button
+            />
+            <div
               style={{
-                padding: isMobile ? "11px 24px" : "12px 28px",
-                borderRadius: 10,
-                background: "#eee",
-                color: "#333",
+                fontSize: isMobile ? 24 : 29,
                 fontWeight: 700,
-                border: "none",
-                fontSize: isMobile ? 16 : 20,
-                cursor: "pointer",
+                margin: "8px 0 3px 0",
+                color: "#fff",
+                textShadow: "0 3px 8px #2228",
               }}
-              onClick={() => navigate(`/${lang}`)}
             >
-              {t("home")}
-            </button>
+              🥇 {t("winner")}
+            </div>
+            <div
+              style={{
+                width: isMobile ? 135 : 170,
+                height: isMobile ? 135 : 170,
+                borderRadius: 18,
+                margin: "0 auto 0px auto",
+                background: "#eee",
+                border: "3.5px solid #1976ed",
+                overflow: "hidden",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <MediaRenderer url={winner.image} alt={winner.name} />
+            </div>
+            <div
+              style={{
+                fontSize: isMobile ? 26 : 32,
+                fontWeight: 700,
+                margin: "14px auto 6px auto",
+                textAlign: "center",
+                wordBreak: "break-all",
+                maxWidth: 260,
+                lineHeight: 1.13,
+                color: "#fff",
+                textShadow: "0 3px 8px #2228",
+              }}
+              title={winner.name}
+            >
+              {truncateToTwoLinesByByte(winner.name, 24).map((line, i) => (
+                <span key={i} style={{ display: "block" }}>{line}</span>
+              ))}
+            </div>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "center",
+                alignItems: "center",
+                gap: 10,
+                margin: "18px auto 0 auto",
+              }}
+            >
+              <button
+                style={{
+                  padding: isMobile ? "11px 26px" : "12px 32px",
+                  borderRadius: 10,
+                  background: "#1976ed",
+                  color: "#fff",
+                  fontWeight: 700,
+                  border: "none",
+                  fontSize: isMobile ? 17 : 20,
+                  cursor: "pointer",
+                }}
+                onClick={() => navigate(`/${lang}/select-round/${cup.id}`)}
+              >
+                {t("retry")}
+              </button>
+              <button
+                style={{
+                  padding: isMobile ? "11px 24px" : "12px 28px",
+                  borderRadius: 10,
+                  background: "#eee",
+                  color: "#333",
+                  fontWeight: 700,
+                  border: "none",
+                  fontSize: isMobile ? 16 : 20,
+                  cursor: "pointer",
+                }}
+                onClick={() => navigate(`/${lang}`)}
+              >
+                {t("home")}
+              </button>
+            </div>
           </div>
-        </div>
+        )}
 
-        {/* 통계 + 댓글 */}
+        {/* 통계 + 댓글 (우승자 유무와 상관없이 표시) */}
         <div style={{ margin: "0 auto 0 auto", maxWidth: MAIN, width: "100%" }}>
           <StatsPage
             selectedCup={cup}
             showCommentBox={true}
-            winner={winner}
+            winner={winner || null}
             showShareAndReport={true}
           />
         </div>
