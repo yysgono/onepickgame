@@ -1,10 +1,10 @@
-// src/components/MatchPage.js
-import React, { useMemo } from "react";
+import React, { useMemo, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import Match from "./Match";
 import AdSlot from "./AdSlot";
 import ReferralBanner from "./ReferralBanner";
+import { pushRecentWorldcup } from "../utils";
 
 function useViewport() {
   const [vw, setVw] = React.useState(
@@ -33,6 +33,11 @@ export default function MatchPage({ worldcupList = [] }) {
     () => worldcupList.find((c) => String(c.id) === String(id)),
     [worldcupList, id]
   );
+
+  // 페이지 진입 시 최근 본 기록
+  useEffect(() => {
+    if (cup?.id) pushRecentWorldcup(cup.id);
+  }, [cup?.id]);
 
   // 광고 공급자 (ko -> coupang, 그 외 -> amazon)
   const isKR =

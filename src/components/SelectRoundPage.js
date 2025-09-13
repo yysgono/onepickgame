@@ -1,21 +1,9 @@
-// src/components/SelectRoundPage.js
 import React, { useState, useEffect, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 import MediaRenderer from "./MediaRenderer";
-import { fetchWinnerStatsFromDB } from "../utils"; // ✅ 1·2등 통계용
+import { fetchWinnerStatsFromDB, pushRecentWorldcup } from "../utils"; // ✅ 통계/최근본
 import AdSlot from "./AdSlot"; // ✅ 광고 공통 컴포넌트
-
-// 최근 본 월드컵 기록 (로컬스토리지)
-function pushRecentWorldcup(id) {
-  if (!id || typeof window === "undefined") return;
-  try {
-    const KEY = "onepickgame_recentWorldcups";
-    const arr = JSON.parse(localStorage.getItem(KEY) || "[]");
-    const next = [id, ...arr.filter((x) => String(x) !== String(id))].slice(0, 30);
-    localStorage.setItem(KEY, JSON.stringify(next));
-  } catch {}
-}
 
 function useIsMobile() {
   const [isMobile, setIsMobile] = React.useState(
@@ -273,7 +261,7 @@ export default function SelectRoundPage({
   }
 
   function handleStart(selectedRound) {
-    if (cup?.id) pushRecentWorldcup(cup.id); // ← 보강 (선택: 중복 기록 OK)
+    if (cup?.id) pushRecentWorldcup(cup.id); // 기록 보강
     if (onSelect) onSelect(selectedRound);
     else if (cup?.id && lang) {
       navigate(`/${lang}/match/${cup.id}/${selectedRound}`);
@@ -285,7 +273,7 @@ export default function SelectRoundPage({
     new Set((candidates || []).map((c) => c.name || c.title || c))
   );
 
-  // ✅ 버튼과 썸ने일 겹침 방지용 여백
+  // ✅ 버튼과 썸네일 겹침 방지용 여백
   const topSpacerH = isMobile ? 60 : 70;
   const thumbH = isMobile ? 150 : 190;
 

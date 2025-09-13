@@ -1,4 +1,3 @@
-// src/components/ResultPage.js
 import React, { useEffect, useState } from "react";
 import { useParams, useLocation, useNavigate } from "react-router-dom";
 import StatsPage from "./StatsPage";
@@ -7,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import { supabase } from "../utils/supabaseClient";
 import AdSlot from "./AdSlot";
 import ReferralBanner from "./ReferralBanner";
+import { pushRecentWorldcup } from "../utils";
 
 // 2줄(24*2byte) 초과시 ... 처리
 function truncateToTwoLinesByByte(str, maxBytePerLine = 24) {
@@ -157,6 +157,11 @@ export default function ResultPage({ worldcupList }) {
       mounted = false;
     };
   }, [id, locationCup, locationWinner, isStatsOnly]);
+
+  // 페이지에 cup 로드되면 최근 본 기록
+  useEffect(() => {
+    if (cup?.id) pushRecentWorldcup(cup.id);
+  }, [cup?.id]);
 
   if (loading)
     return (
