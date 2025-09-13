@@ -170,6 +170,7 @@ export async function getMyWinnerStats({ cup_id } = {}) {
 /**
  * 누적 통계 가져오기 (기간 지정 가능)
  * - DB group() 사용 ❌ → 클라이언트에서 안전하게 합산
+ * - 회원 전용 집계(user_*)도 함께 계산
  */
 export async function fetchWinnerStatsFromDB(cup_id, since) {
   let query = supabase
@@ -196,18 +197,31 @@ export async function fetchWinnerStatsFromDB(cup_id, since) {
         candidate_id: id,
         name: row.name,
         image: row.image,
+        // 전체 집계
         win_count: 0,
         match_wins: 0,
         match_count: 0,
         total_games: 0,
+        // 회원 전용 집계
         user_win_count: 0,
+        user_match_wins: 0,
+        user_match_count: 0,
+        user_total_games: 0,
       };
     }
-    statsMap[id].win_count += row.win_count || 0;
-    statsMap[id].match_wins += row.match_wins || 0;
+    // 전체 합산
+    statsMap[id].win_count   += row.win_count   || 0;
+    statsMap[id].match_wins  += row.match_wins  || 0;
     statsMap[id].match_count += row.match_count || 0;
     statsMap[id].total_games += row.total_games || 0;
-    if (row.user_id) statsMap[id].user_win_count += row.win_count || 0;
+
+    // 회원 전용 합산 (user_id가 있는 레코드만)
+    if (row.user_id) {
+      statsMap[id].user_win_count   += row.win_count   || 0;
+      statsMap[id].user_match_wins  += row.match_wins  || 0;
+      statsMap[id].user_match_count += row.match_count || 0;
+      statsMap[id].user_total_games += row.total_games || 0;
+    }
   }
   return Object.values(statsMap);
 }

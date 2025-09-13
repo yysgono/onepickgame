@@ -49,20 +49,40 @@ function getRangeForAllOrPeriod(period) {
 // 일부 예전 레코드의 match_count/total_games가 과소 저장된 경우 화면에서 보정
 function normalizeStats(arr) {
   return (arr || []).map((r) => {
-    const win_count = Number(r.win_count || 0);
-    const match_wins = Number(r.match_wins || 0);
+    // 전체 집계
+    const win_count       = Number(r.win_count || 0);
+    const match_wins      = Number(r.match_wins || 0);
     const match_count_raw = Number(r.match_count || 0);
     const total_games_raw = Number(r.total_games || 0);
 
     const match_count = Math.max(match_count_raw, match_wins, win_count);
-    const total_games = Math.max(total_games_raw, win_count ? 1 : 0);
+
+    // total_games_raw가 0인데 최소한의 기록이 있으면 1로 보정
+    const hasAnyRecord = (win_count > 0) || (match_wins > 0) || (match_count_raw > 0);
+    const total_games = total_games_raw > 0 ? total_games_raw : (hasAnyRecord ? 1 : 0);
+
+    // 회원 전용 집계(집계 함수가 내려준 값이 있으면 동일 규칙으로 보정)
+    const user_win_count       = Number(r.user_win_count || 0);
+    const user_match_wins      = Number(r.user_match_wins || 0);
+    const user_match_count_raw = Number(r.user_match_count || 0);
+    const user_total_games_raw = Number(r.user_total_games || 0);
+
+    const user_match_count = Math.max(user_match_count_raw, user_match_wins, user_win_count);
+    const user_hasAnyRecord = (user_win_count > 0) || (user_match_wins > 0) || (user_match_count_raw > 0);
+    const user_total_games = user_total_games_raw > 0 ? user_total_games_raw : (user_hasAnyRecord ? 1 : 0);
 
     return {
       ...r,
+      // 전체
       win_count,
       match_wins,
       match_count,
       total_games,
+      // 회원 전용
+      user_win_count,
+      user_match_wins,
+      user_match_count,
+      user_total_games,
     };
   });
 }
@@ -379,18 +399,21 @@ export default function StatsPage({
       row.name?.toLowerCase().includes(search.toLowerCase())
     );
 
+    // 회원 전용이면 표시용 필드를 user_* 기준으로 전환
     if (userOnly) {
-      // 회원 전용 탭: 우승 카운트만 회원 집계 사용(duels는 전체 기준 유지)
       result = result.map((row) => ({
         ...row,
-        win_count: row.user_win_count || 0,
+        win_count:   row.user_win_count   || 0,
+        match_wins:  row.user_match_wins  || 0,
+        match_count: row.user_match_count || 0,
+        total_games: row.user_total_games || 0,
       }));
     }
 
     result = result
       .map((row, i) => ({ ...row, _originIdx: i }))
       .sort((a, b) => {
-        if (sortKey === "win_count" || sortKey === "user_win_count") {
+        if (sortKey === "win_count") {
           if (a.win_count !== b.win_count) {
             return sortDesc ? b.win_count - a.win_count : a.win_count - b.win_count;
           }
