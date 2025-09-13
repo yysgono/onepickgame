@@ -1,4 +1,4 @@
-// src/utils.js
+// utils.js
 import { supabase } from "./utils/supabaseClient";
 
 // YouTube 관련 유틸
@@ -88,14 +88,13 @@ export async function deleteOldWinnerLogAndStats(cup_id) {
   if (user_id) deleteQuery = deleteQuery.eq("user_id", user_id);
   if (guest_id) deleteQuery = deleteQuery.eq("guest_id", guest_id);
   await deleteQuery;
-
   let statsDelete = supabase.from("winner_stats").delete().eq("cup_id", cup_id);
   if (user_id) statsDelete = statsDelete.eq("user_id", user_id);
   if (guest_id) statsDelete = statsDelete.eq("guest_id", guest_id);
   await statsDelete;
 }
 
-// winner_logs 기록
+// winner_logs 기록 (패자부활전 포함)
 export async function insertWinnerLog(cup_id, winner_id = null) {
   const { user_id, guest_id } = await getUserOrGuestId();
   const { error } = await supabase
@@ -141,7 +140,7 @@ export async function upsertMyWinnerStat({
   return data;
 }
 
-// **배열 병렬 upsert**
+// winner_stats upsert (배열 병렬)
 export async function upsertMyWinnerStat_parallel(statsArr, cup_id) {
   const { user_id, guest_id } = await getUserOrGuestId();
   const rows = statsArr.map(stat => ({
@@ -169,8 +168,11 @@ export async function getMyWinnerStats({ cup_id } = {}) {
 }
 
 /**
- * 누적 통계(기간 가능) + **프론트 보정(shim)**
- * - DB 수정 없이 과거 데이터의 match_count 부족분을 화면에서 안전 보정
+ * 누적 통계 가져오기 (기간 지정 가능)
+ * 행 단위 보정 규칙:
+ *   - duels += (match_count > 0 ? match_count : Math.max(match_wins, win_count))
+ *   - total_games += (total_games > 0 ? total_games : (match_count>0 || match_wins>0 || win_count>0 ? 1 : 0))
+ *   - Members Only 집계도 동일 규칙으로 별도 합산
  */
 export async function fetchWinnerStatsFromDB(cup_id, since) {
   let query = supabase
@@ -187,49 +189,49 @@ export async function fetchWinnerStatsFromDB(cup_id, since) {
   const { data, error } = await query;
   if (error) throw error;
 
-  // 1) 합산
   const statsMap = {};
   for (const row of data) {
     const id = row.candidate_id;
+
     if (!statsMap[id]) {
       statsMap[id] = {
         candidate_id: id,
         name: row.name,
         image: row.image,
-        win_count: 0,
-        match_wins: 0,
-        match_count: 0,
-        total_games: 0,
+        win_count: 0,         // 우승(회)
+        match_wins: 0,        // 듀얼 승리 수
+        match_count: 0,       // 듀얼 수 (보정 합산)
+        total_games: 0,       // 플레이한 월드컵 수 (보정 합산)
+        // Members only
         user_win_count: 0,
         user_match_wins: 0,
         user_match_count: 0,
         user_total_games: 0,
       };
     }
-    // 전체 합
-    statsMap[id].win_count   += row.win_count   || 0;
-    statsMap[id].match_wins  += row.match_wins  || 0;
-    statsMap[id].match_count += row.match_count || 0;
-    statsMap[id].total_games += row.total_games || 0;
 
-    // 회원 전용 합(회원 row에만)
+    const wc = Number(row.win_count || 0);
+    const mw = Number(row.match_wins || 0);
+    const mc = Number(row.match_count || 0);
+    const tg = Number(row.total_games || 0);
+
+    // 후보 전체 집계
+    statsMap[id].win_count  += wc;
+    statsMap[id].match_wins += mw;
+
+    const mcFixed = mc > 0 ? mc : Math.max(mw, wc);
+    const tgFixed = tg > 0 ? tg : ((mcFixed > 0 || mw > 0 || wc > 0) ? 1 : 0);
+
+    statsMap[id].match_count += mcFixed;
+    statsMap[id].total_games += tgFixed;
+
+    // Members Only 집계
     if (row.user_id) {
-      statsMap[id].user_win_count   += row.win_count   || 0;
-      statsMap[id].user_match_wins  += row.match_wins  || 0;
-      statsMap[id].user_match_count += row.match_count || 0;
-      statsMap[id].user_total_games += row.total_games || 0;
+      statsMap[id].user_win_count   += wc;
+      statsMap[id].user_match_wins  += mw;
+      statsMap[id].user_match_count += mcFixed;
+      statsMap[id].user_total_games += tgFixed;
     }
-  }
-
-  // 2) 안전 보정(shim)
-  for (const s of Object.values(statsMap)) {
-    if (s.match_count < s.match_wins) s.match_count = s.match_wins;
-    if (s.match_count < s.win_count)  s.match_count = s.win_count;
-    if (s.total_games === 0 && (s.win_count > 0 || s.match_count > 0)) s.total_games = 1;
-
-    if (s.user_match_count < s.user_match_wins) s.user_match_count = s.user_match_wins;
-    if (s.user_match_count < s.user_win_count)  s.user_match_count = s.user_win_count;
-    if (s.user_total_games === 0 && (s.user_win_count > 0 || s.user_match_count > 0)) s.user_total_games = 1;
   }
 
   return Object.values(statsMap);
@@ -249,26 +251,29 @@ export function calcStatsFromMatchHistory(candidates, winner, matchHistory) {
       total_games: 0,
     };
   });
-
   if (!Array.isArray(matchHistory)) matchHistory = [];
 
   matchHistory.forEach(({ c1, c2, winner: matchWinner }) => {
     if (c1 && statsMap[c1.id]) statsMap[c1.id].match_count++;
     if (c2 && statsMap[c2.id]) statsMap[c2.id].match_count++;
-    if (matchWinner && statsMap[matchWinner.id]) statsMap[matchWinner.id].match_wins++;
+    if (matchWinner && statsMap[matchWinner.id]) {
+      statsMap[matchWinner.id].match_wins++;
+    }
   });
 
   if (winner && statsMap[winner.id]) {
     statsMap[winner.id].win_count = 1;
     statsMap[winner.id].total_games = 1;
     Object.keys(statsMap).forEach(id => {
-      if (id !== String(winner.id)) statsMap[id].total_games = 1;
+      if (id !== String(winner.id)) {
+        statsMap[id].total_games = 1;
+      }
     });
   }
   return Object.values(statsMap);
 }
 
-// 최고 우승자 찾기
+// 최고 우승자 찾기 (DB 통계 기반)
 export function getMostWinnerFromDB(statsArr, cupData) {
   if (!statsArr || !Array.isArray(statsArr)) return null;
   let maxWin = -1;
