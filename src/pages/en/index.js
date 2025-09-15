@@ -19,7 +19,7 @@ export default function EnPage(props) {
   return (
     <>
       <Helmet htmlAttributes={{ lang: "en" }}>
-        <title>One Pick Game - Bracket Game Site</title>
+        <title>One Pick Game - Bracket Game Ideal Type Tournament World Cup </title>
         <meta
           name="description"
           content="Bracket game site One Pick Game. Create your own tournament bracket, enjoy fun matchups, and play with users around the world!"
@@ -27,7 +27,7 @@ export default function EnPage(props) {
 
         {/* Canonical & OpenGraph */}
         <link rel="canonical" href={self} />
-        <meta property="og:title" content="One Pick Game - Bracket Game Site" />
+        <meta property="og:title" content="One Pick Game - Bracket Game Ideal Type Tournament World Cup" />
         <meta
           property="og:description"
           content="Bracket game site One Pick Game. Create your own tournament bracket, enjoy fun matchups, and play with users around the world!"

@@ -27,7 +27,7 @@ export default function KoPage(props) {
 
         {/* Canonical & OpenGraph */}
         <link rel="canonical" href={self} />
-        <meta property="og:title" content="One Pick Game - 이상형 월드컵 사이트" />
+        <meta property="og:title" content="One Pick Game - 이상형 월드컵 해외 사이트 Ideal Type Tournament World Cup" />
         <meta
           property="og:description"
           content="이상형 월드컵 해외 사이트 One Pick Game입니다. 원픽게임 사이트에서 다양한 주제의 월드컵 만들기 기능으로 해외 유저들과 함께 즐겨보세요. Ideal Type Tournament World Cup"
