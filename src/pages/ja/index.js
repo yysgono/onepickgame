@@ -14,30 +14,60 @@ export default function JaPage(props) {
   }, [i18n]);
 
   const base = "https://www.onepickgame.com";
-  const self = `${base}/ja`; // trailingSlash:false와 일치
+  const self = `${base}/ja`;
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: "One Pick Game",
+    alternateName: ["OnePickGame", "理想のタイプワールドカップ"],
+    url: base,
+    inLanguage: "ja",
+    potentialAction: {
+      "@type": "SearchAction",
+      target: `${base}/ja?search={query}`,
+      "query-input": "required name=query",
+    },
+  };
 
   return (
     <>
       <Helmet htmlAttributes={{ lang: "ja" }}>
-        <title>One Pick Game - 理想のタイプワールドカップ</title>
+        <title>One Pick Game - 理想のタイプワールドカップ トーナメント</title>
         <meta
           name="description"
-          content="理想のタイプワールドカップが作れるOne Pick Game。色々なテーマでワールドカップを作成して、世界中のユーザーと楽しもう！"
+          content="One Pick Gameで理想のタイプワールドカップをプレイ！自分だけのトーナメントを作成して、好きな候補に投票し、世界中のユーザーと一緒に楽しもう。"
         />
 
         {/* Canonical & OpenGraph */}
         <link rel="canonical" href={self} />
-        <meta property="og:title" content="One Pick Game - 理想のタイプワールドカップ" />
+        <meta
+          property="og:title"
+          content="One Pick Game - 理想のタイプワールドカップ トーナメント"
+        />
         <meta
           property="og:description"
-          content="理想のタイプワールドカップが作れるOne Pick Game。色々なテーマでワールドカップを作成して、世界中のユーザーと楽しもう！"
+          content="One Pick Gameは理想のタイプワールドカップサイトです。自分だけのトーナメントを作って、投票して、世界中の友達とシェアしよう！"
         />
         <meta property="og:image" content={`${base}/ogimg.png`} />
         <meta property="og:url" content={self} />
         <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="One Pick Game" />
         <meta property="og:locale" content="ja_JP" />
 
-        {/* hreflang: 지원하는 모든 언어 */}
+        {/* Twitter Card */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta
+          name="twitter:title"
+          content="One Pick Game - 理想のタイプワールドカップ トーナメント"
+        />
+        <meta
+          name="twitter:description"
+          content="One Pick Gameは理想のタイプワールドカップサイトです。自分だけのトーナメントを作って、投票して、世界中の友達とシェアしよう！"
+        />
+        <meta name="twitter:image" content={`${base}/ogimg.png`} />
+
+        {/* hreflang */}
         <link rel="alternate" hrefLang="ar" href={`${base}/ar`} />
         <link rel="alternate" hrefLang="bn" href={`${base}/bn`} />
         <link rel="alternate" hrefLang="de" href={`${base}/de`} />
@@ -55,6 +85,9 @@ export default function JaPage(props) {
         <link rel="alternate" hrefLang="vi" href={`${base}/vi`} />
         <link rel="alternate" hrefLang="zh" href={`${base}/zh`} />
         <link rel="alternate" hrefLang="x-default" href={`${base}/en`} />
+
+        {/* JSON-LD */}
+        <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
       </Helmet>
 
       <Home {...props} />

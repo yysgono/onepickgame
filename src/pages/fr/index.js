@@ -14,30 +14,60 @@ export default function FrPage(props) {
   }, [i18n]);
 
   const base = "https://www.onepickgame.com";
-  const self = `${base}/fr`; // trailingSlash:false와 일치
+  const self = `${base}/fr`;
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: "One Pick Game",
+    alternateName: ["OnePickGame", "Coupe du Monde du Type Idéal"],
+    url: base,
+    inLanguage: "fr",
+    potentialAction: {
+      "@type": "SearchAction",
+      target: `${base}/fr?search={query}`,
+      "query-input": "required name=query",
+    },
+  };
 
   return (
     <>
       <Helmet htmlAttributes={{ lang: "fr" }}>
-        <title>One Pick Game - Site de jeux de Brackets</title>
+        <title>One Pick Game - Coupe du Monde du Type Idéal Tournoi</title>
         <meta
           name="description"
-          content="One Pick Game est un site de jeux de brackets. Créez votre propre tournoi à élimination directe et jouez avec des utilisateurs du monde entier !"
+          content="Jouez à la Coupe du Monde du Type Idéal sur One Pick Game ! Créez vos propres tournois, votez pour vos favoris et profitez de matchs amusants avec des utilisateurs du monde entier."
         />
 
         {/* Canonical & OpenGraph */}
         <link rel="canonical" href={self} />
-        <meta property="og:title" content="One Pick Game - Site de jeux de Brackets" />
+        <meta
+          property="og:title"
+          content="One Pick Game - Coupe du Monde du Type Idéal Tournoi"
+        />
         <meta
           property="og:description"
-          content="One Pick Game est un site de jeux de brackets. Créez votre propre tournoi à élimination directe et jouez avec des utilisateurs du monde entier !"
+          content="One Pick Game est le site de la Coupe du Monde du Type Idéal. Créez votre propre tournoi, participez aux duels et partagez les résultats avec des amis partout dans le monde."
         />
         <meta property="og:image" content={`${base}/ogimg.png`} />
         <meta property="og:url" content={self} />
         <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="One Pick Game" />
         <meta property="og:locale" content="fr_FR" />
 
-        {/* hreflang: 지원하는 모든 언어 */}
+        {/* Twitter Card */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta
+          name="twitter:title"
+          content="One Pick Game - Coupe du Monde du Type Idéal Tournoi"
+        />
+        <meta
+          name="twitter:description"
+          content="One Pick Game est le site de la Coupe du Monde du Type Idéal. Créez votre propre tournoi, participez aux duels et partagez les résultats avec des amis partout dans le monde."
+        />
+        <meta name="twitter:image" content={`${base}/ogimg.png`} />
+
+        {/* hreflang */}
         <link rel="alternate" hrefLang="ar" href={`${base}/ar`} />
         <link rel="alternate" hrefLang="bn" href={`${base}/bn`} />
         <link rel="alternate" hrefLang="de" href={`${base}/de`} />
@@ -55,6 +85,9 @@ export default function FrPage(props) {
         <link rel="alternate" hrefLang="vi" href={`${base}/vi`} />
         <link rel="alternate" hrefLang="zh" href={`${base}/zh`} />
         <link rel="alternate" hrefLang="x-default" href={`${base}/en`} />
+
+        {/* JSON-LD */}
+        <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
       </Helmet>
 
       <Home {...props} />

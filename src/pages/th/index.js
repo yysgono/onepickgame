@@ -14,30 +14,60 @@ export default function ThPage(props) {
   }, [i18n]);
 
   const base = "https://www.onepickgame.com";
-  const self = `${base}/th`; // trailingSlash:false와 일치
+  const self = `${base}/th`;
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: "One Pick Game",
+    alternateName: ["OnePickGame", "เกม Ideal Type World Cup"],
+    url: base,
+    inLanguage: "th",
+    potentialAction: {
+      "@type": "SearchAction",
+      target: `${base}/th?search={query}`,
+      "query-input": "required name=query",
+    },
+  };
 
   return (
     <>
       <Helmet htmlAttributes={{ lang: "th" }}>
-        <title>One Pick Game - เว็บไซต์เกมจัดสายการแข่งขัน</title>
+        <title>One Pick Game - เกมทัวร์นาเมนต์ Ideal Type World Cup</title>
         <meta
           name="description"
-          content="เว็บไซต์เกมจัดสายการแข่งขัน One Pick Game สร้างทัวร์นาเมนต์ของคุณเอง สนุกกับแมตช์สุดมันส์ และเล่นกับผู้ใช้งานทั่วโลก!"
+          content="เล่นเกม Ideal Type World Cup บน One Pick Game! สร้างทัวร์นาเมนต์ของคุณเอง โหวตให้กับตัวเลือกที่ชอบ และสนุกไปกับผู้ใช้จากทั่วโลก."
         />
 
         {/* Canonical & OpenGraph */}
         <link rel="canonical" href={self} />
-        <meta property="og:title" content="One Pick Game - เว็บไซต์เกมจัดสายการแข่งขัน" />
+        <meta
+          property="og:title"
+          content="One Pick Game - เกมทัวร์นาเมนต์ Ideal Type World Cup"
+        />
         <meta
           property="og:description"
-          content="เว็บไซต์เกมจัดสายการแข่งขัน One Pick Game สร้างทัวร์นาเมนต์ของคุณเอง สนุกกับแมตช์สุดมันส์ และเล่นกับผู้ใช้งานทั่วโลก!"
+          content="One Pick Game คือเว็บไซต์ Ideal Type World Cup สร้างทัวร์นาเมนต์ของคุณเอง เล่นและแชร์ผลลัพธ์กับเพื่อน ๆ ทั่วโลก!"
         />
         <meta property="og:image" content={`${base}/ogimg.png`} />
         <meta property="og:url" content={self} />
         <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="One Pick Game" />
         <meta property="og:locale" content="th_TH" />
 
-        {/* hreflang: 지원하는 모든 언어 */}
+        {/* Twitter Card */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta
+          name="twitter:title"
+          content="One Pick Game - เกมทัวร์นาเมนต์ Ideal Type World Cup"
+        />
+        <meta
+          name="twitter:description"
+          content="One Pick Game คือเว็บไซต์ Ideal Type World Cup สร้างทัวร์นาเมนต์ของคุณเอง เล่นและแชร์ผลลัพธ์กับเพื่อน ๆ ทั่วโลก!"
+        />
+        <meta name="twitter:image" content={`${base}/ogimg.png`} />
+
+        {/* hreflang */}
         <link rel="alternate" hrefLang="ar" href={`${base}/ar`} />
         <link rel="alternate" hrefLang="bn" href={`${base}/bn`} />
         <link rel="alternate" hrefLang="de" href={`${base}/de`} />
@@ -55,6 +85,9 @@ export default function ThPage(props) {
         <link rel="alternate" hrefLang="vi" href={`${base}/vi`} />
         <link rel="alternate" hrefLang="zh" href={`${base}/zh`} />
         <link rel="alternate" hrefLang="x-default" href={`${base}/en`} />
+
+        {/* JSON-LD */}
+        <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
       </Helmet>
 
       <Home {...props} />

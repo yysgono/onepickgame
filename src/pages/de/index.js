@@ -14,30 +14,54 @@ export default function DePage(props) {
   }, [i18n]);
 
   const base = "https://www.onepickgame.com";
-  const self = `${base}/de`; // trailingSlash:false와 일치
+  const self = `${base}/de`;
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: "One Pick Game",
+    alternateName: ["OnePickGame", "Ideal Type World Cup"],
+    url: base,
+    inLanguage: "de",
+    potentialAction: {
+      "@type": "SearchAction",
+      target: `${base}/de?search={query}`,
+      "query-input": "required name=query"
+    }
+  };
 
   return (
     <>
       <Helmet htmlAttributes={{ lang: "de" }}>
-        <title>One Pick Game - Bracket-Spielseite</title>
+        <title>One Pick Game - Idealtyp Weltcup Turnierspiel</title>
         <meta
           name="description"
-          content="One Pick Game ist eine Bracket-Spielseite. Erstelle dein eigenes Turnier und spiele mit Nutzern aus aller Welt!"
+          content="Spiele den Idealtyp Weltcup auf One Pick Game! Erstelle deine eigenen Turnier-Brackets, stimme für Favoriten ab und genieße spannende Duelle mit Nutzern weltweit."
         />
 
         {/* Canonical & OpenGraph */}
         <link rel="canonical" href={self} />
-        <meta property="og:title" content="One Pick Game - Bracket-Spielseite" />
+        <meta property="og:title" content="One Pick Game - Idealtyp Weltcup Turnierspiel" />
         <meta
           property="og:description"
-          content="One Pick Game ist eine Bracket-Spielseite. Erstelle dein eigenes Turnier und spiele mit Nutzern aus aller Welt!"
+          content="One Pick Game ist die Idealtyp Weltcup Seite. Erstelle dein eigenes Bracket, spiele Turniere und teile Ergebnisse mit Freunden auf der ganzen Welt!"
         />
         <meta property="og:image" content={`${base}/ogimg.png`} />
         <meta property="og:url" content={self} />
         <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="One Pick Game" />
         <meta property="og:locale" content="de_DE" />
 
-        {/* hreflang: 지원하는 모든 언어 */}
+        {/* Twitter Card */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="One Pick Game - Idealtyp Weltcup Turnierspiel" />
+        <meta
+          name="twitter:description"
+          content="One Pick Game ist die Idealtyp Weltcup Seite. Erstelle dein eigenes Bracket, spiele Turniere und teile Ergebnisse mit Freunden auf der ganzen Welt!"
+        />
+        <meta name="twitter:image" content={`${base}/ogimg.png`} />
+
+        {/* hreflang */}
         <link rel="alternate" hrefLang="ar" href={`${base}/ar`} />
         <link rel="alternate" hrefLang="bn" href={`${base}/bn`} />
         <link rel="alternate" hrefLang="de" href={`${base}/de`} />
@@ -55,6 +79,9 @@ export default function DePage(props) {
         <link rel="alternate" hrefLang="vi" href={`${base}/vi`} />
         <link rel="alternate" hrefLang="zh" href={`${base}/zh`} />
         <link rel="alternate" hrefLang="x-default" href={`${base}/en`} />
+
+        {/* JSON-LD */}
+        <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
       </Helmet>
 
       <Home {...props} />

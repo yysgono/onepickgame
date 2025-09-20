@@ -14,30 +14,52 @@ export default function ZhPage(props) {
   }, [i18n]);
 
   const base = "https://www.onepickgame.com";
-  const self = `${base}/zh`; // trailingSlash:false와 일치
+  const self = `${base}/zh`;
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: "One Pick Game",
+    alternateName: ["OnePickGame", "理想型世界杯 游戏"],
+    url: base,
+    inLanguage: "zh",
+    potentialAction: {
+      "@type": "SearchAction",
+      target: `${base}/zh?search={query}`,
+      "query-input": "required name=query",
+    },
+  };
 
   return (
     <>
       <Helmet htmlAttributes={{ lang: "zh" }}>
-        <title>One Pick Game - 理想型世界杯小游戏网站</title>
+        <title>One Pick Game - 理想型世界杯 锦标赛游戏</title>
         <meta
           name="description"
-          content="理想型世界杯小游戏网站 One Pick Game。创建自己的淘汰赛，与全球用户一起参与有趣的对决！"
+          content="在 One Pick Game 上玩理想型世界杯！创建属于自己的锦标赛，为喜欢的选项投票，并与全球用户一起享受乐趣。"
         />
 
-        {/* Canonical & OpenGraph */}
         <link rel="canonical" href={self} />
-        <meta property="og:title" content="One Pick Game - 理想型世界杯小游戏网站" />
+        <meta property="og:title" content="One Pick Game - 理想型世界杯 锦标赛游戏" />
         <meta
           property="og:description"
-          content="理想型世界杯小游戏网站 One Pick Game。创建自己的淘汰赛，与全球用户一起参与有趣的对决！"
+          content="One Pick Game 是理想型世界杯网站。创建属于你的锦标赛，参与比赛，并与全世界的朋友分享结果！"
         />
         <meta property="og:image" content={`${base}/ogimg.png`} />
         <meta property="og:url" content={self} />
         <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="One Pick Game" />
         <meta property="og:locale" content="zh_CN" />
 
-        {/* hreflang: 지원하는 모든 언어 */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="One Pick Game - 理想型世界杯 锦标赛游戏" />
+        <meta
+          name="twitter:description"
+          content="One Pick Game 是理想型世界杯网站。创建属于你的锦标赛，参与比赛，并与全世界的朋友分享结果！"
+        />
+        <meta name="twitter:image" content={`${base}/ogimg.png`} />
+
+        {/* hreflang 공통 */}
         <link rel="alternate" hrefLang="ar" href={`${base}/ar`} />
         <link rel="alternate" hrefLang="bn" href={`${base}/bn`} />
         <link rel="alternate" hrefLang="de" href={`${base}/de`} />
@@ -55,6 +77,8 @@ export default function ZhPage(props) {
         <link rel="alternate" hrefLang="vi" href={`${base}/vi`} />
         <link rel="alternate" hrefLang="zh" href={`${base}/zh`} />
         <link rel="alternate" hrefLang="x-default" href={`${base}/en`} />
+
+        <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
       </Helmet>
 
       <Home {...props} />

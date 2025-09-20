@@ -14,30 +14,54 @@ export default function ArPage(props) {
   }, [i18n]);
 
   const base = "https://www.onepickgame.com";
-  const self = `${base}/ar`; // trailingSlash: false 설정과 일치
+  const self = `${base}/ar`;
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: "One Pick Game",
+    alternateName: ["OnePickGame", "Ideal Type World Cup"],
+    url: base,
+    inLanguage: "ar",
+    potentialAction: {
+      "@type": "SearchAction",
+      target: `${base}/ar?search={query}`,
+      "query-input": "required name=query"
+    }
+  };
 
   return (
     <>
       <Helmet htmlAttributes={{ lang: "ar", dir: "rtl" }}>
-        <title>ون بيك جيم - موقع لعبة البطولة</title>
+        <title>One Pick Game - كأس العالم لاختيار النوع المثالي</title>
         <meta
           name="description"
-          content="موقع ون بيك جيم للبطولات. أنشئ بطولة خاصة بك، استمتع بالتحديات، وشارك اللعب مع مستخدمين من جميع أنحاء العالم!"
+          content="العب كأس العالم لاختيار النوع المثالي على One Pick Game! أنشئ بطولاتك الخاصة، صوّت لمفضلّيك، واستمتع بمواجهات ممتعة مع مستخدمين من جميع أنحاء العالم."
         />
 
         {/* Canonical & OpenGraph */}
         <link rel="canonical" href={self} />
-        <meta property="og:title" content="ون بيك جيم - موقع لعبة البطولة" />
+        <meta property="og:title" content="One Pick Game - كأس العالم لاختيار النوع المثالي" />
         <meta
           property="og:description"
-          content="موقع ون بيك جيم للبطولات. أنشئ بطولة خاصة بك، استمتع بالتحديات، وشارك اللعب مع مستخدمين من جميع أنحاء العالم!"
+          content="One Pick Game هو موقع كأس العالم لاختيار النوع المثالي. أنشئ البطولات الخاصة بك، العب الجولات، وشارك النتائج مع أصدقائك حول العالم!"
         />
         <meta property="og:image" content={`${base}/ogimg.png`} />
         <meta property="og:url" content={self} />
         <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="One Pick Game" />
         <meta property="og:locale" content="ar_AR" />
 
-        {/* hreflang: 지원하는 모든 언어 */}
+        {/* Twitter Card */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="One Pick Game - كأس العالم لاختيار النوع المثالي" />
+        <meta
+          name="twitter:description"
+          content="One Pick Game هو موقع كأس العالم لاختيار النوع المثالي. أنشئ البطولات الخاصة بك، العب الجولات، وشارك النتائج مع أصدقائك حول العالم!"
+        />
+        <meta name="twitter:image" content={`${base}/ogimg.png`} />
+
+        {/* hreflang */}
         <link rel="alternate" hrefLang="ar" href={`${base}/ar`} />
         <link rel="alternate" hrefLang="bn" href={`${base}/bn`} />
         <link rel="alternate" hrefLang="de" href={`${base}/de`} />
@@ -55,6 +79,9 @@ export default function ArPage(props) {
         <link rel="alternate" hrefLang="vi" href={`${base}/vi`} />
         <link rel="alternate" hrefLang="zh" href={`${base}/zh`} />
         <link rel="alternate" hrefLang="x-default" href={`${base}/en`} />
+
+        {/* JSON-LD */}
+        <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
       </Helmet>
 
       <Home {...props} />
