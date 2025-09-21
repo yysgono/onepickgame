@@ -1,9 +1,9 @@
+// src/components/SelectRoundPage.js
 import React, { useState, useEffect, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 import MediaRenderer from "./MediaRenderer";
 import { fetchWinnerStatsFromDB, pushRecentWorldcup } from "../utils.js"; // ✅ 통계/최근본
-import AdSlot from "./AdSlot"; // ✅ 광고 공통 컴포넌트
 
 function useIsMobile() {
   const [isMobile, setIsMobile] = React.useState(
@@ -69,12 +69,6 @@ export default function SelectRoundPage({
 
   const navigate = useNavigate();
   const { lang: langParam } = useParams();
-
-  // 🇰🇷 한국이면 쿠팡, 그 외는 아마존
-  const isKR =
-    (i18n.language || "en").startsWith("ko") ||
-    (typeof window !== "undefined" && window.APP_COUNTRY === "KR");
-  const provider = isKR ? "coupang" : "amazon";
 
   // ✅ 통계 가져오기 (홈 카드와 동일)
   useEffect(() => {
@@ -282,27 +276,9 @@ export default function SelectRoundPage({
 
   return (
     <div style={{ width: "100%", position: "relative" }}>
-      {/* ✅ 헤더 바로 밑 배너: 728x90(PC) / 320x100(모바일) */}
-      <div style={{ width: "100%", display: "flex", justifyContent: "center" }}>
-        <div
-          style={{
-            width: isMobile ? 320 : 728,
-            height: isMobile ? 100 : 90,
-            marginTop: isMobile ? 8 : 12,
-          }}
-        >
-          {typeof window !== "undefined" && (
-            <AdSlot
-              id="ad-select-header"
-              provider={provider}
-              width={isMobile ? 320 : 728}
-              height={isMobile ? 100 : 90}
-            />
-          )}
-        </div>
-      </div>
+      {/* ⛔ 헤더 바로 밑 제휴 배너 제거 — 애드센스 자동광고만 사용 */}
 
-      {/* ✅ 가운데 콘텐츠 + 사이드 배너 2열 레이아웃 */}
+      {/* ✅ 가운데 콘텐츠 (사이드 제휴 배너 제거) */}
       <div
         style={{
           width: "100%",
@@ -312,29 +288,6 @@ export default function SelectRoundPage({
           gap: 16,
         }}
       >
-        {/* 좌측 사이드 배너 (PC 와이드에서만) */}
-        {!isMobile && isWideForSideAds && (
-          <div
-            style={{
-              width: 300,
-              minWidth: 300,
-              height: 600,
-              position: "sticky",
-              top: 86, // 헤더 높이만큼
-              alignSelf: "flex-start",
-            }}
-          >
-            {typeof window !== "undefined" && (
-              <AdSlot
-                id="ad-select-left"
-                provider={provider}
-                width={300}
-                height={600}
-              />
-            )}
-          </div>
-        )}
-
         {/* 메인 컨텐츠 패널 */}
         <div
           style={{
@@ -653,82 +606,9 @@ export default function SelectRoundPage({
             </div>
           </div>
 
-          {/* ✅ PC 하단 배너 (페이지 하단 영역) */}
-          {!isMobile && (
-            <div
-              style={{
-                width: "100%",
-                display: "flex",
-                justifyContent: "center",
-                marginTop: 26,
-              }}
-            >
-              <div style={{ width: 728, height: 90 }}>
-                {typeof window !== "undefined" && (
-                  <AdSlot
-                    id="ad-select-footer-pc"
-                    provider={provider}
-                    width={728}
-                    height={90}
-                  />
-                )}
-              </div>
-            </div>
-          )}
+          {/* ⛔ PC/모바일 제휴 배너 영역 제거 — 애드센스 자동광고만 사용 */}
         </div>
-
-        {/* 우측 사이드 배너 (PC 와이드에서만) */}
-        {!isMobile && isWideForSideAds && (
-          <div
-            style={{
-              width: 300,
-              minWidth: 300,
-              height: 600,
-              position: "sticky",
-              top: 86,
-              alignSelf: "flex-start",
-            }}
-          >
-            {typeof window !== "undefined" && (
-              <AdSlot
-                id="ad-select-right"
-                provider={provider}
-                width={300}
-                height={600}
-              />
-            )}
-          </div>
-        )}
       </div>
-
-      {/* ✅ 모바일 하단 고정 배너 (320x100) */}
-      {isMobile && (
-        <div
-          style={{
-            position: "fixed",
-            left: 0,
-            right: 0,
-            bottom: 0,
-            zIndex: 50,
-            width: "100%",
-            display: "flex",
-            justifyContent: "center",
-            background: "rgba(10,12,18,0.65)",
-            backdropFilter: "blur(6px)",
-          }}
-        >
-          <div style={{ width: 320, height: 100 }}>
-            {typeof window !== "undefined" && (
-              <AdSlot
-                id="ad-select-footer-mobile"
-                provider={provider}
-                width={320}
-                height={100}
-              />
-            )}
-          </div>
-        </div>
-      )}
     </div>
   );
 }

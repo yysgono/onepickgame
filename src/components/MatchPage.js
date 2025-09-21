@@ -1,8 +1,8 @@
+// src/components/MatchPage.js
 import React, { useMemo, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import Match from "./Match";
-import AdSlot from "./AdSlot";
 import ReferralBanner from "./ReferralBanner";
 import { pushRecentWorldcup } from "../utils";
 
@@ -27,7 +27,7 @@ export default function MatchPage({ worldcupList = [] }) {
   const { id, round } = useParams();
   const { i18n } = useTranslation();
   const navigate = useNavigate();
-  const { isMobile, isWideForSideAds } = useViewport();
+  const { isMobile /*, isWideForSideAds*/ } = useViewport();
 
   const cup = useMemo(
     () => worldcupList.find((c) => String(c.id) === String(id)),
@@ -38,12 +38,6 @@ export default function MatchPage({ worldcupList = [] }) {
   useEffect(() => {
     if (cup?.id) pushRecentWorldcup(cup.id);
   }, [cup?.id]);
-
-  // 광고 공급자 (ko -> coupang, 그 외 -> amazon)
-  const isKR =
-    (i18n.language || "en").startsWith("ko") ||
-    (typeof window !== "undefined" && window.APP_COUNTRY === "KR");
-  const provider = isKR ? "coupang" : "amazon";
 
   // 라운드 수
   const selectedCount = Math.max(2, Math.min(Number(round) || 2, 10000));
@@ -76,28 +70,9 @@ export default function MatchPage({ worldcupList = [] }) {
 
   return (
     <div style={{ width: "100%", position: "relative" }}>
-      {/* ✅ 헤더 바로 아래 광고: 데스크톱 728×90 / 모바일 320×100 */}
-      <div style={{ display: "flex", justifyContent: "center", marginTop: 12 }}>
-        <div
-          style={{
-            width: isMobile ? 320 : 728,
-            height: isMobile ? 100 : 90,
-            marginBottom: 8,
-          }}
-        >
-          {typeof window !== "undefined" && (
-            <AdSlot
-              id="ad-matchpage-header"
-              provider={provider}
-              width={isMobile ? 320 : 728}
-              height={isMobile ? 100 : 90}
-              mobile={isMobile}
-            />
-          )}
-        </div>
-      </div>
+      {/* ⛔ 헤더 바로 아래 제휴 배너(쿠팡/아마존) 제거 — 애드센스 자동광고만 사용 */}
 
-      {/* 가운데 + 사이드 2칼럼 */}
+      {/* 가운데 단일 컬럼 (사이드 제휴 배너 제거) */}
       <div
         style={{
           width: "100%",
@@ -107,29 +82,6 @@ export default function MatchPage({ worldcupList = [] }) {
           gap: 16,
         }}
       >
-        {/* 좌측 사이드 광고 (와이드에서만) */}
-        {!isMobile && isWideForSideAds && (
-          <div
-            style={{
-              width: 300,
-              minWidth: 300,
-              height: 600,
-              position: "sticky",
-              top: 100,
-              alignSelf: "flex-start",
-            }}
-          >
-            {typeof window !== "undefined" && (
-              <AdSlot
-                id="ad-match-left"
-                provider={provider}
-                width={300}
-                height={600}
-              />
-            )}
-          </div>
-        )}
-
         {/* 메인 패널 (매치 본문) */}
         <div
           style={{
@@ -141,7 +93,7 @@ export default function MatchPage({ worldcupList = [] }) {
         >
           <Match cup={cup} onResult={() => {}} selectedCount={selectedCount} />
 
-          {/* 🔻 하단은 “쿠팡/아마존” 대신 래퍼럴 배너로 교체 */}
+          {/* 🔻 하단은 레퍼럴 배너 유지 */}
           {!isMobile && (
             <div
               style={{
@@ -152,37 +104,14 @@ export default function MatchPage({ worldcupList = [] }) {
               }}
             >
               <div style={{ width: "100%", maxWidth: 900 }}>
-                <ReferralBanner lang={(i18n.language || "en")} />
+                <ReferralBanner lang={i18n.language || "en"} />
               </div>
             </div>
           )}
         </div>
-
-        {/* 우측 사이드 광고 (와이드에서만) */}
-        {!isMobile && isWideForSideAds && (
-          <div
-            style={{
-              width: 300,
-              minWidth: 300,
-              height: 600,
-              position: "sticky",
-              top: 100,
-              alignSelf: "flex-start",
-            }}
-          >
-            {typeof window !== "undefined" && (
-              <AdSlot
-                id="ad-match-right"
-                provider={provider}
-                width={300}
-                height={600}
-              />
-            )}
-          </div>
-        )}
       </div>
 
-      {/* ✅ 모바일 하단 고정 광고는 Match.js 안에서 이미 렌더됨 */}
+      {/* ⛔ 모바일 하단 고정 제휴 배너도 제거 — Match.js도 애드센스 자동광고만 사용 */}
     </div>
   );
 }

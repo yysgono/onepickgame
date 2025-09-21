@@ -446,7 +446,7 @@ function App() {
     // ⬇️ 홈 타이틀/설명 다국어화 맵
     const titleMap = {
       en: "OnePickGame - Create and play worldcups",
-      ko: "원픽게임 - 이상형 월드컵 사이트",
+      ko: "원픽게임 - 이상형 월드컵 해외 사이트",
       ja: "OnePickGame - ワールドカップ作成＆プレイ",
       fr: "OnePickGame - Créez et jouez aux tournois",
       es: "OnePickGame - Crea y juega torneos",
@@ -465,7 +465,7 @@ function App() {
 
     const descMap = {
       en: "Create and play worldcup-style matches. Community-driven tournaments and stats.",
-      ko: "이상형 월드컵 사이트 입니다. 커뮤니티 기반 토너먼트와 통계를 제공합니다.",
+      ko: "이상형 월드컵 해외 사이트 입니다. 커뮤니티 기반 토너먼트와 통계를 제공합니다.",
       ja: "理想のワールドカップ를作成してプレイ。コミュニティ主导のトーナメントと統計。",
       fr: "Créez et jouez à des tournois. Communauté active et statistiques.",
       es: "Crea y juega torneos. Comunidad activa y estadísticas.",

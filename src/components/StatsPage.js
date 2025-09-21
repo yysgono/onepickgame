@@ -1,3 +1,4 @@
+// src/components/StatsPage.js
 import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { useParams } from "react-router-dom";
 import { fetchWinnerStatsFromDB } from "../utils.js";
@@ -5,7 +6,6 @@ import { useTranslation } from "react-i18next";
 import MediaRenderer from "./MediaRenderer";
 import { supabase } from "../utils/supabaseClient";
 import CommentBox from "./CommentBox";
-import AdSlot from "./AdSlot";   // 배너 컴포넌트
 
 // ---------------------- 공용 유틸 ----------------------
 const PERIODS = [
@@ -352,12 +352,6 @@ export default function StatsPage({
   const [currentPage, setCurrentPage] = useState(1);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 800);
   const [fetchKey, setFetchKey] = useState(0); // 강제 재조회 키
-
-  // 광고 공급자 (언어/국가 기준)
-  const isKR =
-    (i18n?.language || "en").startsWith("ko") ||
-    (typeof window !== "undefined" && window.APP_COUNTRY === "KR");
-  const provider = isKR ? "coupang" : "amazon";
 
   useEffect(() => {
     function onResize() {
@@ -989,28 +983,7 @@ export default function StatsPage({
 
       <Pagination />
 
-      {/* 댓글 위 가로 배너 */}
-      {showCommentBox && (
-        <div
-          style={{
-            width: "100%",
-            display: "flex",
-            justifyContent: "center",
-            margin: "18px 0 10px",
-          }}
-        >
-          <div style={{ width: isMobile ? 320 : 728, height: isMobile ? 100 : 90 }}>
-            <AdSlot
-              id="ad-stats-above-comments"
-              provider={provider}
-              width={isMobile ? 320 : 728}
-              height={isMobile ? 100 : 90}
-            />
-          </div>
-        </div>
-      )}
-
-      {/* 댓글 */}
+      {/* ⛔ 댓글 위 제휴 배너 제거 — 애드센스 자동광고만 사용 */}
       {showCommentBox && <CommentBox cupId={selectedCup.id} />}
     </div>
   );

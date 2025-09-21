@@ -1,7 +1,7 @@
+// src/components/StatsRoutePage.js
 import React from "react";
 import { useParams, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import AdSlot from "./AdSlot";
 import StatsPage from "./StatsPage";
 
 function useIsMobile() {
@@ -32,10 +32,6 @@ export default function StatsRoutePage({ worldcupList }) {
   const vw = useViewportWidth();
   const isWideForSideAds = vw >= 1200;
 
-  const isKR =
-    (i18n.language || "en").startsWith("ko") || (window.APP_COUNTRY === "KR");
-  const provider = isKR ? "coupang" : "amazon";
-
   const cup =
     worldcupList?.find((c) => String(c.id) === String(id)) ||
     location.state?.cup ||
@@ -45,62 +41,20 @@ export default function StatsRoutePage({ worldcupList }) {
 
   return (
     <div style={{ width: "100%", position: "relative", paddingBottom: isMobile ? 110 : 0 }}>
-      {/* 헤더 밑 */}
-      <div style={{ width: "100%", display: "flex", justifyContent: "center" }}>
-        <div style={{ width: isMobile ? 320 : 728, height: isMobile ? 100 : 90, marginTop: isMobile ? 8 : 12 }}>
-          <AdSlot id="ad-stats-header" provider={provider} width={isMobile ? 320 : 728} height={isMobile ? 100 : 90} />
-        </div>
-      </div>
+      {/* ⛔ 헤더 아래 배너 제거 (애드센스 자동광고만 사용) */}
 
       <div style={{ width: "100%", display: "flex", justifyContent: "center", gap: 16, marginTop: 10 }}>
-        {/* 좌 */}
-        {!isMobile && isWideForSideAds && (
-          <div style={{ width: 300, minWidth: 300, height: 600, position: "sticky", top: 86, alignSelf: "flex-start" }}>
-            <AdSlot id="ad-stats-left" provider={provider} width={300} height={600} />
-          </div>
-        )}
+        {/* ⛔ 좌측/우측 사이드 배너 제거 */}
 
         {/* 본문 */}
         <div style={{ width: "100%", maxWidth: 980 }}>
           <StatsPage selectedCup={cup} showCommentBox={true} />
-          {!isMobile && (
-            <div style={{ width: "100%", display: "flex", justifyContent: "center", margin: "22px 0 10px" }}>
-              <div style={{ width: 728, height: 90 }}>
-                <AdSlot id="ad-stats-footer-pc" provider={provider} width={728} height={90} />
-              </div>
-            </div>
-          )}
-        </div>
 
-        {/* 우 */}
-        {!isMobile && isWideForSideAds && (
-          <div style={{ width: 300, minWidth: 300, height: 600, position: "sticky", top: 86, alignSelf: "flex-start" }}>
-            <AdSlot id="ad-stats-right" provider={provider} width={300} height={600} />
-          </div>
-        )}
+          {/* ⛔ PC 하단 배너 제거 */}
+        </div>
       </div>
 
-      {/* 모바일 하단 고정 */}
-      {isMobile && (
-        <div
-          style={{
-            position: "fixed",
-            left: 0,
-            right: 0,
-            bottom: 0,
-            zIndex: 50,
-            width: "100%",
-            display: "flex",
-            justifyContent: "center",
-            background: "rgba(10,12,18,0.65)",
-            backdropFilter: "blur(6px)",
-          }}
-        >
-          <div style={{ width: 320, height: 100 }}>
-            <AdSlot id="ad-stats-footer-mobile" provider={provider} width={320} height={100} />
-          </div>
-        </div>
-      )}
+      {/* ⛔ 모바일 하단 고정 배너 제거 */}
     </div>
   );
 }

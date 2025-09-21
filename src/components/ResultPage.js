@@ -1,10 +1,10 @@
+// src/components/ResultPage.js
 import React, { useEffect, useState } from "react";
 import { useParams, useLocation, useNavigate } from "react-router-dom";
 import StatsPage from "./StatsPage";
 import MediaRenderer from "./MediaRenderer";
 import { useTranslation } from "react-i18next";
 import { supabase } from "../utils/supabaseClient";
-import AdSlot from "./AdSlot";
 import ReferralBanner from "./ReferralBanner";
 import { pushRecentWorldcup } from "../utils";
 
@@ -51,37 +51,14 @@ function useIsMobile(breakpoint = 800) {
   return isMobile;
 }
 
-function useViewport() {
-  const [vw, setVw] = React.useState(
-    typeof window !== "undefined" ? window.innerWidth : 1200
-  );
-  React.useEffect(() => {
-    if (typeof window === "undefined") return;
-    const onResize = () => setVw(window.innerWidth);
-    window.addEventListener("resize", onResize);
-    return () => window.removeEventListener("resize", onResize);
-  }, []);
-  return vw;
-}
-
 export default function ResultPage({ worldcupList }) {
   const { id } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
-  // 레이아웃 상수: 본문폭/배너폭/여백
-  const MAIN = 1200;     // 본문 maxWidth
-  const BANNER = 300;    // 사이드배너 width
-  const GAP = 24;        // 본문과 배너 사이 여백
-  const SAFE = 48;       // 여유 버퍼 (섀도/스크롤바/줌 대비)
-
-  // 배너를 겹치지 않고 띄울 수 있는 최소 뷰포트 폭
-  const MIN_VW_FOR_SIDE = MAIN + 2 * (BANNER + GAP) + SAFE;
-
-  // 배너 좌/우 위치(calc) — 둘 다 left로 통일 (중앙 기준 대칭)
-  const leftPos  = `calc(50% - ${MAIN / 2 + GAP + BANNER}px)`;
-  const rightPos = `calc(50% + ${MAIN / 2 + GAP}px)`;
+  // 레이아웃: 본문 maxWidth
+  const MAIN = 1200;
 
   // 언어코드
   const langMatch = location.pathname.match(/^\/([a-z]{2})(\/|$)/);
@@ -95,14 +72,6 @@ export default function ResultPage({ worldcupList }) {
   const [loading, setLoading] = useState(true);
 
   const isMobile = useIsMobile(800);
-  const vw = useViewport();
-  const canShowSideAds = !isMobile && vw >= MIN_VW_FOR_SIDE;
-
-  // 광고 프로바이더
-  const isKR =
-    (i18n?.language || "en").startsWith("ko") ||
-    (typeof window !== "undefined" && window.APP_COUNTRY === "KR");
-  const provider = isKR ? "coupang" : "amazon";
 
   const locationCup =
     location.state?.cup ||
@@ -158,7 +127,7 @@ export default function ResultPage({ worldcupList }) {
     };
   }, [id, locationCup, locationWinner, isStatsOnly]);
 
-  // 페이지에 cup 로드되면 최근 본 기록
+  // 최근 본 기록
   useEffect(() => {
     if (cup?.id) pushRecentWorldcup(cup.id);
   }, [cup?.id]);
@@ -186,7 +155,7 @@ export default function ResultPage({ worldcupList }) {
       </div>
     );
 
-  // 통계 전용 모드에서는 winner가 없어도 정상 동작해야 하므로 cup만 확인
+  // 통계 전용 모드에서는 winner가 없어도 정상 동작
   if (!cup)
     return (
       <div style={{ textAlign: "center", padding: 60, color: "#d33", minHeight: "60vh" }}>
@@ -211,13 +180,6 @@ export default function ResultPage({ worldcupList }) {
         boxSizing: "border-box",
       }}
     >
-      {/* (선택) 사이드 배너 강제 숨김 미디어쿼리 — 필요 시 주석 해제
-      <style>{`
-        @media (max-width: ${MIN_VW_FOR_SIDE + 100}px) {
-          .side-ad { display: none !important; }
-        }
-      `}</style> */}
-
       {/* 배경 오버레이 */}
       <div
         style={{
@@ -230,48 +192,6 @@ export default function ResultPage({ worldcupList }) {
           background: "rgba(0,0,0,0.4)",
         }}
       />
-
-      {/* 좌/우 사이드 배너 */}
-      {canShowSideAds && (
-        <div
-          className="side-ad"
-          style={{
-            position: "fixed",
-            top: 120,
-            left: leftPos,
-            width: BANNER,
-            height: 600,
-            zIndex: 10,
-          }}
-        >
-          <AdSlot
-            id="ad-result-left"
-            provider={provider}
-            width={BANNER}
-            height={600}
-          />
-        </div>
-      )}
-      {canShowSideAds && (
-        <div
-          className="side-ad"
-          style={{
-            position: "fixed",
-            top: 120,
-            left: rightPos, // ← right 대신 left 사용
-            width: BANNER,
-            height: 600,
-            zIndex: 10,
-          }}
-        >
-          <AdSlot
-            id="ad-result-right"
-            provider={provider}
-            width={BANNER}
-            height={600}
-          />
-        </div>
-      )}
 
       {/* 메인 컨텐츠 */}
       <div
@@ -286,28 +206,9 @@ export default function ResultPage({ worldcupList }) {
           boxSizing: "border-box",
         }}
       >
-        {/* 헤더 바로 아래 가로 배너 */}
-        <div
-          style={{
-            width: "100%",
-            display: "flex",
-            justifyContent: "center",
-            marginTop: isMobile ? 8 : 12,
-            marginBottom: isMobile ? 6 : 10,
-          }}
-        >
-          <div style={{ width: isMobile ? 320 : 728, height: isMobile ? 100 : 90 }}>
-            <AdSlot
-              id="ad-result-top"
-              provider={provider}
-              width={isMobile ? 320 : 728}
-              height={isMobile ? 100 : 90}
-              mobile={isMobile}
-            />
-          </div>
-        </div>
+        {/* ⛔ 헤더/사이드/하단 고정 배너 모두 제거 (애드센스 자동광고만 사용) */}
 
-        {/* 우승자 카드 + 버튼 (우승자 확정 & 통계 전용 모드가 아닐 때만) */}
+        {/* 우승자 카드 (통계 전용 모드가 아닐 때만) */}
         {winner && !isStatsOnly && (
           <div
             style={{
@@ -319,7 +220,6 @@ export default function ResultPage({ worldcupList }) {
               width: "100%",
             }}
           >
-            {/* 비어있던 h2는 제거 */}
             <div
               style={{
                 fontSize: isMobile ? 24 : 29,
@@ -409,7 +309,7 @@ export default function ResultPage({ worldcupList }) {
           </div>
         )}
 
-        {/* 통계 + 댓글 (우승자 유무와 상관없이 표시) */}
+        {/* 통계 + 댓글 */}
         <div style={{ margin: "0 auto 0 auto", maxWidth: MAIN, width: "100%" }}>
           <StatsPage
             selectedCup={cup}
@@ -419,9 +319,9 @@ export default function ResultPage({ worldcupList }) {
           />
         </div>
 
-        {/* 🔻 하단: 레퍼럴 배너 (홈은 쿠팡, 여긴 레퍼럴) */}
+        {/* 하단: 에피데믹 사운드 래퍼럴 유지 */}
         <div style={{ width: "100%", maxWidth: 900, margin: "16px auto 40px" }}>
-          <ReferralBanner lang={(i18n?.language || "en")} />
+          <ReferralBanner lang={typeof window !== "undefined" ? (navigator.language || "en") : "en"} />
         </div>
       </div>
     </div>

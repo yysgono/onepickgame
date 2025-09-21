@@ -10,7 +10,6 @@ import MediaRenderer from "./MediaRenderer";
 import ResurrectionPage from "./ResurrectionPage";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import AdSlot from "./AdSlot";
 
 // Spinner
 function Spinner({ size = 60 }) {
@@ -295,6 +294,7 @@ function CandidateBox({ c, onClick, disabled, idx, selected, t }) {
           height: "190%",
           zIndex: 0,
           background: "radial-gradient(circle at 50% 60%, #fff 0%, #fff0 92%)",
+        //  NOTE: 밝기 효과 유지
           filter: "blur(38px)",
           opacity: 0.13,
           pointerEvents: "none",
@@ -450,9 +450,6 @@ function Match({ cup, onResult, selectedCount }) {
   // 뷰포트
   const vw = typeof window !== "undefined" ? window.innerWidth : 1200;
   const isMobile = vw < 1000;
-
-  // 광고 프로바이더 (모바일 하단 고정 배너에서만 사용)
-  const provider = (i18n?.language || "en").startsWith("ko") ? "coupang" : "amazon";
 
   // ✅ 자동 bye 중복 실행 방지용 ref
   const autoByeIdxRef = useRef(-1);
@@ -944,32 +941,7 @@ function Match({ cup, onResult, selectedCount }) {
         </div>
       </div>
 
-      {/* 모바일 하단 고정 배너(유지) */}
-      {isMobile && (
-        <div
-          style={{
-            position: "fixed",
-            left: 0,
-            right: 0,
-            bottom: 0,
-            zIndex: 50,
-            width: "100%",
-            display: "flex",
-            justifyContent: "center",
-            background: "rgba(10,12,18,0.65)",
-            backdropFilter: "blur(6px)",
-          }}
-        >
-          <div style={{ width: 320, height: 100 }}>
-            <AdSlot
-              id="ad-match-footer-mobile"
-              provider={provider}
-              width={320}
-              height={100}
-            />
-          </div>
-        </div>
-      )}
+      {/* 모바일 하단 고정 배너 제거 (애드센스 자동광고만 사용) */}
 
       <style>
         {`
