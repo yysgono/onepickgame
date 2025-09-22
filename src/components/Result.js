@@ -1,6 +1,7 @@
-import React from "react";
+import React, { Suspense } from "react";
 import { useTranslation } from "react-i18next";
-import StatsPage from "./StatsPage";
+// import StatsPage from "./StatsPage"; // 지연 로딩으로 교체
+const StatsPage = React.lazy(() => import("./StatsPage"));
 import MediaRenderer from "./MediaRenderer";
 
 function Result({ winner, cup, onRestart, onStats }) {
@@ -76,7 +77,10 @@ function Result({ winner, cup, onRestart, onStats }) {
         {t("stats")}
       </button>
       <div style={{ margin: "60px auto 0", maxWidth: 840 }}>
-        <StatsPage selectedCup={cup} showOnlyWinner={true} />
+        {/* 라이트 모드 + 지연 로딩 */}
+        <Suspense fallback={null}>
+          <StatsPage selectedCup={cup} mode="lite" />
+        </Suspense>
       </div>
     </div>
   );
