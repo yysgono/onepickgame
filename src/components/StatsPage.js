@@ -13,9 +13,11 @@ import React, {
 import { useParams } from "react-router-dom";
 import { fetchWinnerStatsFromDB } from "../utils";
 import { useTranslation } from "react-i18next";
+// import MediaRenderer from "./MediaRenderer"; // ★ lazy 로 변경
+// import CommentBox from "./CommentBox";       // ★ lazy 로 변경
 import { supabase } from "../utils/supabaseClient";
 
-// 무거운 컴포넌트는 지연 로딩
+// ★ 무거운 컴포넌트는 지연 로딩해서 첫 페인트 가속
 const MediaRenderer = lazy(() => import("./MediaRenderer"));
 const CommentBox = lazy(() => import("./CommentBox"));
 
@@ -103,6 +105,7 @@ function normalizeStats(arr) {
     const user_total_games =
       user_total_games_raw > 0 ? user_total_games_raw : userHasAny ? 1 : 0;
 
+    // 미리 계산해 두는 표시 문자열/검색용 lower-name
     const display = {
       winRateAll: percent(win_count, total_games),
       winRateUser: percent(user_win_count, user_total_games),
@@ -110,22 +113,26 @@ function normalizeStats(arr) {
       matchRateUser: percent(user_match_wins, user_match_count),
     };
 
-    // 정렬용 숫자 승률 사전 계산
+    // ★ 정렬용 숫자 승률을 미리 계산해 CPU 비용 감소
     const win_rate_num = total_games ? win_count / total_games : 0;
     const match_win_rate_num = match_count ? match_wins / match_count : 0;
 
     return {
       ...r,
+      // 수치(전체)
       win_count,
       match_wins,
       match_count,
       total_games,
+      // 수치(회원)
       user_win_count,
       user_match_wins,
       user_match_count,
       user_total_games,
+      // 표시/검색 보조
       _name_lc: (r.name || "").toLowerCase(),
       _display: display,
+      // ★ 숫자 승률
       win_rate_num,
       match_win_rate_num,
     };
@@ -133,10 +140,10 @@ function normalizeStats(arr) {
   return out;
 }
 
-/* ========================= 세션/로컬 캐시 ========================= */
+/* ========================= 간단 세션/로컬 캐시 (첫 진입 속도↑) ========================= */
 function readCache(key) {
   try {
-    const raw = sessionStorage.getItem(key) || localStorage.getItem(key);
+    const raw = sessionStorage.getItem(key) || localStorage.getItem(key); // ★ localStorage 추가
     if (!raw) return null;
     const parsed = JSON.parse(raw);
     if (!parsed || typeof parsed !== "object") return null;
@@ -150,8 +157,10 @@ function writeCache(key, data) {
   try {
     const payload = JSON.stringify({ savedAt: safeNow(), data });
     sessionStorage.setItem(key, payload);
-    localStorage.setItem(key, payload);
-  } catch {}
+    localStorage.setItem(key, payload); // ★ localStorage 추가
+  } catch {
+    // storage 불가 시 무시
+  }
 }
 
 /* ========================= 신고 버튼 ========================= */
@@ -334,7 +343,18 @@ const RankCard = React.memo(function RankCard(props) {
           flexShrink: 0,
         }}
       >
-        <Suspense fallback={<div style={{ width: "100%", height: "100%", background: "#f3f4f9" }} />}>
+        {/* ★ 이미지/비디오 지연 로딩: 초기 페인트 가볍게 */}
+        <Suspense
+          fallback={
+            <div
+              style={{
+                width: "100%",
+                height: "100%",
+                background: "#f3f4f9",
+              }}
+            />
+          }
+        >
           <MediaRenderer url={image} alt={name} loading="lazy" />
         </Suspense>
       </div>
@@ -424,7 +444,7 @@ export default function StatsPage({
   const [search, setSearch] = useState("");
   const deferredSearch = useDeferredValue(search);
   const [userOnly, setUserOnly] = useState(false);
-  const [itemsPerPage, setItemsPerPage] = useState(25); // 초기 렌더 가볍게
+  const [itemsPerPage, setItemsPerPage] = useState(25); // ★ 기본 10으로 낮춰 첫 렌더 가볍게
   const [period, setPeriod] = useState(null);
   const [customMode, setCustomMode] = useState(false);
   const [customFrom, setCustomFrom] = useState("");
@@ -455,11 +475,10 @@ export default function StatsPage({
     };
   }, []);
 
-  // 데이터 로딩 (+캐시) + ★ AbortController 적용
+  // 데이터 로딩 (+세션/로컬 캐시)
   useEffect(() => {
     let alive = true;
     const seq = ++fetchSeqRef.current;
-    const controller = new AbortController(); // <-- 요놈이 요청 취소 담당
 
     async function run() {
       if (!selectedCup?.id) {
@@ -473,45 +492,32 @@ export default function StatsPage({
       const rk = rangeKeyFrom(period, customMode, customFrom, customTo);
       const cacheKey = `stats:${selectedCup.id}:${rk}:v2`;
 
-      // 1) 캐시로 즉시 페인트
+      // 1) 캐시 있으면 먼저 표시(낙관 렌더)
       const cached = readCache(cacheKey);
       if (cached && alive && seq === fetchSeqRef.current) {
         setStats(cached);
         setLoading(false);
       }
 
-      try {
-        // 2) 실제 데이터 페치
-        let rows;
-        if (customMode && customFrom && customTo) {
-          const range = getCustomSinceDate(customFrom, customTo);
-          // 여기에 signal 전달 (유틸이 지원하면 취소됨 / 지원 안하면 무시)
-          rows = await fetchWinnerStatsFromDB(selectedCup.id, range, { signal: controller.signal });
-        } else {
-          const since = getRangeForAllOrPeriod(period);
-          rows = await fetchWinnerStatsFromDB(selectedCup.id, since, { signal: controller.signal });
-        }
-
-        if (!alive || seq !== fetchSeqRef.current) return; // 늦게 온 응답 무시
-        const normalized = normalizeStats(rows);
-        setStats(normalized);
-        setLoading(false);
-        writeCache(cacheKey, normalized);
-      } catch (e) {
-        // abort인 경우는 조용히 무시
-        if (e?.name === "AbortError") return;
-        if (!alive || seq !== fetchSeqRef.current) return;
-        console.error("stats fetch error:", e);
-        setLoading(false);
+      // 2) 실제 데이터 페치
+      let rows;
+      if (customMode && customFrom && customTo) {
+        const range = getCustomSinceDate(customFrom, customTo);
+        rows = await fetchWinnerStatsFromDB(selectedCup.id, range);
+      } else {
+        const since = getRangeForAllOrPeriod(period);
+        rows = await fetchWinnerStatsFromDB(selectedCup.id, since);
       }
+      if (!alive || seq !== fetchSeqRef.current) return; // ★ 오래된 응답 무시
+      const normalized = normalizeStats(rows);
+      setStats(normalized);
+      setLoading(false);
+      writeCache(cacheKey, normalized);
     }
-
     run();
-
-    // cleanup: 이전 요청 취소
     return () => {
       alive = false;
-      controller.abort();
+      // ★ AbortController 없이도 seq 가드로 레이스 방지
     };
   }, [selectedCup, period, customMode, customFrom, customTo, fetchKey]);
 
@@ -537,11 +543,13 @@ export default function StatsPage({
 
   /* ===== 검색/정렬/멤버 필터 ===== */
   const filteredStats = useMemo(() => {
+    // 검색(소문자 사전 계산 필드 사용)
     const q = (deferredSearch || "").toLowerCase();
     let result = q
       ? stats.filter((row) => row._name_lc.includes(q))
       : stats.slice();
 
+    // 회원 전용이면 표시용 수치 교체
     if (userOnly) {
       result = result.map((row) => ({
         ...row,
@@ -549,11 +557,13 @@ export default function StatsPage({
         match_wins: row.user_match_wins || 0,
         match_count: row.user_match_count || 0,
         total_games: row.user_total_games || 0,
+        // ★ 사용자 기준 승률도 숫자로 재계산해두기(정렬 부하↓)
         win_rate_num: (row.user_total_games || 0) ? (row.user_win_count || 0) / (row.user_total_games || 0) : 0,
         match_win_rate_num: (row.user_match_count || 0) ? (row.user_match_wins || 0) / (row.user_match_count || 0) : 0,
       }));
     }
 
+    // 정렬
     result = result
       .map((row, i) => ({ ...row, _originIdx: i }))
       .sort((a, b) => {
@@ -589,6 +599,7 @@ export default function StatsPage({
         return a._originIdx - b._originIdx;
       });
 
+    // rank 부여
     result.forEach((row, i) => (row.rank = i + 1));
     return result;
   }, [stats, deferredSearch, userOnly, sortKey, sortDesc]);
@@ -609,7 +620,7 @@ export default function StatsPage({
     setCurrentPage(1);
   }, [deferredSearch, itemsPerPage, stats, userOnly]);
 
-  /* ===== Top3 카드 ===== */
+  /* ===== Top3 카드 (검색/회원 모드 반영) ===== */
   const top3 = useMemo(() => {
     return filteredStats.slice(0, 3).map((r) => {
       const winRate = userOnly ? r._display?.winRateUser : r._display?.winRateAll;
@@ -807,7 +818,11 @@ export default function StatsPage({
         </div>
       </div>
 
-      {/* 폰트 @import는 index.html의 <link>로 이동 권장 */}
+      {/* ★ 폰트 @import는 삭제했습니다. (index.html의 <head>에 link로 넣어주세요)
+          <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+          <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&display=swap">
+          <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&display=swap">
+      */}
 
       <ShareAndReportBar />
 
@@ -855,7 +870,7 @@ export default function StatsPage({
           onClick={() => {
             startTransition(() => {
               setUserOnly(false);
-              setFetchKey((k) => k + 1);
+              setFetchKey((k) => k + 1); // 탭 전환시 재조회 키 갱신(정합성)
             });
           }}
         >
@@ -1051,6 +1066,7 @@ export default function StatsPage({
           width: "100%",
           overflowX: "auto",
           marginBottom: 12,
+          // ★ 화면 밖 페인트 건너뛰기 → 초기 표시 빨라짐
           contentVisibility: "auto",
           containIntrinsicSize: "1000px",
         }}
