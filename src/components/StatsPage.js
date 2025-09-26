@@ -424,7 +424,7 @@ export default function StatsPage({
   const [search, setSearch] = useState("");
   const deferredSearch = useDeferredValue(search);
   const [userOnly, setUserOnly] = useState(false);
-  const [itemsPerPage, setItemsPerPage] = useState(10); // 초기 렌더 가볍게
+  const [itemsPerPage, setItemsPerPage] = useState(25); // 초기 렌더 가볍게
   const [period, setPeriod] = useState(null);
   const [customMode, setCustomMode] = useState(false);
   const [customFrom, setCustomFrom] = useState("");
