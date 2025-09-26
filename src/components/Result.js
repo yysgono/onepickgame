@@ -1,17 +1,46 @@
-import React, { Suspense } from "react";
+import React, { Suspense, useEffect, useRef, useState, useTransition, lazy } from "react";
 import { useTranslation } from "react-i18next";
-// import StatsPage from "./StatsPage"; // 지연 로딩으로 교체
+
+// 지연 로딩
 const StatsPage = React.lazy(() => import("./StatsPage"));
-import MediaRenderer from "./MediaRenderer";
+const MediaRenderer = lazy(() => import("./MediaRenderer"));
+
+function useOnScreen(options) {
+  const ref = useRef(null);
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    if (!ref.current) return;
+    let obs;
+    try {
+      obs = new IntersectionObserver(([entry]) => {
+        if (entry.isIntersecting) {
+          setVisible(true);
+          obs.disconnect(); // 한 번 보이면 관찰 종료
+        }
+      }, options);
+      obs.observe(ref.current);
+    } catch {
+      // IntersectionObserver 미지원 브라우저 대비: 즉시 표시
+      setVisible(true);
+    }
+    return () => obs && obs.disconnect();
+  }, [options]);
+
+  return [ref, visible];
+}
 
 function Result({ winner, cup, onRestart, onStats }) {
   const { t } = useTranslation();
+  const [, startTransition] = useTransition();
+
+  // StatsPage를 뷰포트에 들어오면 로드
+  const [statsAnchorRef, statsVisible] = useOnScreen({ rootMargin: "200px 0px" });
 
   return (
     <div style={{ textAlign: "center", padding: 50 }}>
-      <h2 style={{ fontWeight: 700, fontSize: 32, marginBottom: 10 }}>
-        🥇 {t("winner")}
-      </h2>
+      <h2 style={{ fontWeight: 700, fontSize: 32, marginBottom: 10 }}>🥇 {t("winner")}</h2>
+
       <div
         style={{
           width: 180,
@@ -23,8 +52,11 @@ function Result({ winner, cup, onRestart, onStats }) {
           overflow: "hidden",
         }}
       >
-        <MediaRenderer url={winner.image} />
+        <Suspense fallback={<div style={{ width: "100%", height: "100%", background: "#f3f4f9" }} />}>
+          <MediaRenderer url={winner.image} alt={winner.name} loading="lazy" />
+        </Suspense>
       </div>
+
       <div
         style={{
           fontSize: 28,
@@ -45,6 +77,7 @@ function Result({ winner, cup, onRestart, onStats }) {
       >
         {winner.name}
       </div>
+
       <button
         style={{
           padding: "10px 32px",
@@ -55,11 +88,13 @@ function Result({ winner, cup, onRestart, onStats }) {
           border: "none",
           fontSize: 20,
           marginTop: 8,
+          cursor: "pointer",
         }}
-        onClick={onRestart}
+        onClick={() => startTransition(() => onRestart())}
       >
         {t("retry")}
       </button>
+
       <button
         style={{
           padding: "10px 28px",
@@ -71,15 +106,29 @@ function Result({ winner, cup, onRestart, onStats }) {
           fontSize: 19,
           marginLeft: 20,
           marginTop: 8,
+          cursor: "pointer",
         }}
-        onClick={onStats}
+        onClick={() => startTransition(() => onStats())}
       >
         {t("stats")}
       </button>
-      <div style={{ margin: "60px auto 0", maxWidth: 840 }}>
-        {/* 라이트 모드 + 지연 로딩 */}
-        <Suspense fallback={null}>
-          <StatsPage selectedCup={cup} mode="lite" />
+
+      {/* StatsPage를 화면에 보일 때만 마운트 → 초기 페인트 훨씬 가벼움 */}
+      <div ref={statsAnchorRef} style={{ margin: "60px auto 0", maxWidth: 840 }}>
+        <Suspense
+          fallback={
+            <div
+              style={{
+                width: "100%",
+                minHeight: 200,
+                borderRadius: 12,
+                background: "#f6f8fc",
+                boxShadow: "0 2px 12px #0001",
+              }}
+            />
+          }
+        >
+          {statsVisible ? <StatsPage selectedCup={cup} mode="lite" /> : null}
         </Suspense>
       </div>
     </div>
