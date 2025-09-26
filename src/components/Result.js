@@ -1,9 +1,34 @@
-import React, { Suspense, useEffect, useRef, useState, useTransition, lazy } from "react";
+import React, {
+  Suspense,
+  useEffect,
+  useRef,
+  useState,
+  useTransition,
+  lazy,
+  useCallback,
+} from "react";
 import { useTranslation } from "react-i18next";
 
-// 지연 로딩
-const StatsPage = React.lazy(() => import("./StatsPage"));
+// ——— Lazy imports
+const StatsPage = React.lazy(() => import(/* webpackPrefetch: true */ "./StatsPage"));
 const MediaRenderer = lazy(() => import("./MediaRenderer"));
+
+// ——— requestIdleCallback 폴리필 (사파리 등)
+const ric =
+  typeof window !== "undefined" && window.requestIdleCallback
+    ? window.requestIdleCallback.bind(window)
+    : (cb) => setTimeout(() => cb({ timeRemaining: () => 50 }), 200);
+
+// ——— StatsPage 청크 프리페치(한 번만)
+let statsPrefetchPromise = null;
+function prefetchStatsPage() {
+  if (!statsPrefetchPromise) {
+    statsPrefetchPromise = import(/* webpackPrefetch: true */ "./StatsPage").catch(() => {
+      // 실패해도 앱 흐름에 영향 없도록 무시
+    });
+  }
+  return statsPrefetchPromise;
+}
 
 function useOnScreen(options) {
   const ref = useRef(null);
@@ -15,19 +40,19 @@ function useOnScreen(options) {
     try {
       obs = new IntersectionObserver(([entry]) => {
         if (entry.isIntersecting) {
+          prefetchStatsPage(); // ★ 근접만 해도 미리 당겨오기
           setVisible(true);
-          obs.disconnect(); // 한 번 보이면 관찰 종료
+          obs.disconnect();
         }
       }, options);
       obs.observe(ref.current);
     } catch {
-      // IntersectionObserver 미지원 브라우저 대비: 즉시 표시
       setVisible(true);
     }
     return () => obs && obs.disconnect();
   }, [options]);
 
-  return [ref, visible];
+  return [ref, visible, setVisible];
 }
 
 function Result({ winner, cup, onRestart, onStats }) {
@@ -35,7 +60,27 @@ function Result({ winner, cup, onRestart, onStats }) {
   const [, startTransition] = useTransition();
 
   // StatsPage를 뷰포트에 들어오면 로드
-  const [statsAnchorRef, statsVisible] = useOnScreen({ rootMargin: "200px 0px" });
+  const [statsAnchorRef, statsVisible, setStatsVisible] = useOnScreen({ rootMargin: "300px 0px" });
+
+  // ★ 1) 페이지가 한숨 돌릴 때(Idle)에 StatsPage 프리페치
+  useEffect(() => {
+    const id = ric(() => prefetchStatsPage());
+    return () => typeof window !== "undefined" && window.cancelIdleCallback && window.cancelIdleCallback(id);
+  }, []);
+
+  // ★ 2) 사용자가 Stats 버튼에 손만 올려도(hint) 프리페치
+  const handleStatsHover = useCallback(() => {
+    prefetchStatsPage();
+  }, []);
+
+  // ★ 3) Stats 클릭 시 즉시 보이도록 가속(선택)
+  const handleStatsClick = useCallback(() => {
+    // 먼저 프리페치 시도(이미 되었으면 즉시 resolve)
+    prefetchStatsPage()?.finally(() => {
+      setStatsVisible(true); // 바로 마운트
+      startTransition(() => onStats && onStats());
+    });
+  }, [onStats, setStatsVisible, startTransition]);
 
   return (
     <div style={{ textAlign: "center", padding: 50 }}>
@@ -53,7 +98,7 @@ function Result({ winner, cup, onRestart, onStats }) {
         }}
       >
         <Suspense fallback={<div style={{ width: "100%", height: "100%", background: "#f3f4f9" }} />}>
-          <MediaRenderer url={winner.image} alt={winner.name} loading="lazy" />
+          <MediaRenderer url={winner.image} alt={winner.name} loading="lazy" decoding="async" />
         </Suspense>
       </div>
 
@@ -90,7 +135,7 @@ function Result({ winner, cup, onRestart, onStats }) {
           marginTop: 8,
           cursor: "pointer",
         }}
-        onClick={() => startTransition(() => onRestart())}
+        onClick={() => startTransition(() => onRestart && onRestart())}
       >
         {t("retry")}
       </button>
@@ -108,7 +153,9 @@ function Result({ winner, cup, onRestart, onStats }) {
           marginTop: 8,
           cursor: "pointer",
         }}
-        onClick={() => startTransition(() => onStats())}
+        onMouseEnter={handleStatsHover}
+        onFocus={handleStatsHover}
+        onClick={handleStatsClick}
       >
         {t("stats")}
       </button>

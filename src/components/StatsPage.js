@@ -30,6 +30,11 @@ const PERIODS = [
 
 const CACHE_TTL_MS = 5 * 60 * 1000; // 5분 캐시
 
+const ric =
+  typeof window !== "undefined" && window.requestIdleCallback
+    ? window.requestIdleCallback.bind(window)
+    : (cb) => setTimeout(() => cb({ timeRemaining: () => 50 }), 150);
+
 function safeNow() {
   try {
     return Date.now();
@@ -149,8 +154,14 @@ function readCache(key) {
 function writeCache(key, data) {
   try {
     const payload = JSON.stringify({ savedAt: safeNow(), data });
+    // session 먼저 써서 탭 간에도 체감 빠르게
     sessionStorage.setItem(key, payload);
-    localStorage.setItem(key, payload);
+    // idle 시간에 localStorage에도 복사
+    ric(() => {
+      try {
+        localStorage.setItem(key, payload);
+      } catch {}
+    });
   } catch {}
 }
 
@@ -335,7 +346,7 @@ const RankCard = React.memo(function RankCard(props) {
         }}
       >
         <Suspense fallback={<div style={{ width: "100%", height: "100%", background: "#f3f4f9" }} />}>
-          <MediaRenderer url={image} alt={name} loading="lazy" />
+          <MediaRenderer url={image} alt={name} loading="lazy" decoding="async" />
         </Suspense>
       </div>
       <div
@@ -459,7 +470,7 @@ export default function StatsPage({
   useEffect(() => {
     let alive = true;
     const seq = ++fetchSeqRef.current;
-    const controller = new AbortController(); // <-- 요놈이 요청 취소 담당
+    const controller = new AbortController(); // 요청 취소 담당
 
     async function run() {
       if (!selectedCup?.id) {
@@ -485,7 +496,6 @@ export default function StatsPage({
         let rows;
         if (customMode && customFrom && customTo) {
           const range = getCustomSinceDate(customFrom, customTo);
-          // 여기에 signal 전달 (유틸이 지원하면 취소됨 / 지원 안하면 무시)
           rows = await fetchWinnerStatsFromDB(selectedCup.id, range, { signal: controller.signal });
         } else {
           const since = getRangeForAllOrPeriod(period);
@@ -493,13 +503,12 @@ export default function StatsPage({
         }
 
         if (!alive || seq !== fetchSeqRef.current) return; // 늦게 온 응답 무시
-        const normalized = normalizeStats(rows);
+        const normalized = normalizeStats(rows || []);
         setStats(normalized);
         setLoading(false);
         writeCache(cacheKey, normalized);
       } catch (e) {
-        // abort인 경우는 조용히 무시
-        if (e?.name === "AbortError") return;
+        if (e?.name === "AbortError") return; // 취소 조용히 무시
         if (!alive || seq !== fetchSeqRef.current) return;
         console.error("stats fetch error:", e);
         setLoading(false);
@@ -549,8 +558,14 @@ export default function StatsPage({
         match_wins: row.user_match_wins || 0,
         match_count: row.user_match_count || 0,
         total_games: row.user_total_games || 0,
-        win_rate_num: (row.user_total_games || 0) ? (row.user_win_count || 0) / (row.user_total_games || 0) : 0,
-        match_win_rate_num: (row.user_match_count || 0) ? (row.user_match_wins || 0) / (row.user_match_count || 0) : 0,
+        win_rate_num:
+          (row.user_total_games || 0)
+            ? (row.user_win_count || 0) / (row.user_total_games || 0)
+            : 0,
+        match_win_rate_num:
+          (row.user_match_count || 0)
+            ? (row.user_match_wins || 0) / (row.user_match_count || 0)
+            : 0,
       }));
     }
 
@@ -806,8 +821,6 @@ export default function StatsPage({
           {selectedCup?.title}
         </div>
       </div>
-
-      {/* 폰트 @import는 index.html의 <link>로 이동 권장 */}
 
       <ShareAndReportBar />
 
