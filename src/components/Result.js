@@ -73,8 +73,9 @@ function Result({ winner, cup, onRestart, onStats }) {
     prefetchStatsPage();
   }, []);
 
-  // ★ 3) Stats 클릭 시 즉시 보이도록 가속
+  // ★ 3) Stats 클릭 시 즉시 보이도록 가속(선택)
   const handleStatsClick = useCallback(() => {
+    // 먼저 프리페치 시도(이미 되었으면 즉시 resolve)
     prefetchStatsPage()?.finally(() => {
       setStatsVisible(true); // 바로 마운트
       startTransition(() => onStats && onStats());
@@ -166,7 +167,7 @@ function Result({ winner, cup, onRestart, onStats }) {
         </div>
       </Suspense>
 
-      {/* StatsPage를 화면에 보일 때 마운트 (rootMargin 확대로 “더 빨리” 마운트됨) */}
+      {/* StatsPage를 화면에 보일 때만 마운트 → 초기 페인트 훨씬 가벼움 (rootMargin 확대로 “더 빨리” 마운트됨) */}
       <div ref={statsAnchorRef} style={{ margin: "60px auto 0", maxWidth: 840 }}>
         <Suspense
           fallback={
