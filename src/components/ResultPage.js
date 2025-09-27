@@ -112,7 +112,10 @@ export default function ResultPage({ worldcupList }) {
             .from("worldcups")
             .select("*")
             .eq("id", id)
-            .single();
+            .single()
+            // @ts-ignore: supabase fetch 옵션이 signal을 전파하는 경우가 있어 무해함
+            .abortSignal?.(controller.signal);
+
           if (error) throw error;
           thisCup = cupData || null;
         }
@@ -283,7 +286,7 @@ export default function ResultPage({ worldcupList }) {
               }}
             >
               {/* ★ MediaRenderer도 lazy라 초기 페인트 지연 ↓ */}
-              <Suspense fallback={<div style={{ width: "100%", height: "100%", background: "#f3f4f9" }} />} >
+              <Suspense fallback={<div style={{ width: "100%", height: "100%", background: "#f3f4f9" }} />}>
                 <MediaRenderer url={winner.image} alt={winner.name} loading="lazy" />
               </Suspense>
             </div>
@@ -364,7 +367,7 @@ export default function ResultPage({ worldcupList }) {
 
         {/* 하단: 에피데믹 사운드 래퍼럴 */}
         <div style={{ width: "100%", maxWidth: 900, margin: "16px auto 40px" }}>
-          <Suspense fallback={<div style={{ height: 48 }} />} >
+          <Suspense fallback={<div style={{ height: 48 }} />}>
             <ReferralBanner lang={typeof window !== "undefined" ? (navigator.language || "en") : "en"} />
           </Suspense>
         </div>
