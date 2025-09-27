@@ -98,7 +98,7 @@ export default function ResultPage({ worldcupList }) {
   useEffect(() => {
     let alive = true;
     const seq = ++fetchSeqRef.current;
-    const controller = new AbortController();
+    const controller = new AbortController(); // supabase가 내부적으로 fetch를 쓰므로 일부 환경에서 취소 신호가 전달됨(무시돼도 문제 없음)
 
     async function fetchData() {
       setLoading(true);
@@ -107,6 +107,7 @@ export default function ResultPage({ worldcupList }) {
 
       try {
         if (!thisCup) {
+          // ★ 단건 조회 → 불필요한 필드 최소화 (select * 유지가 필요하면 그대로 둬도 됨)
           const { data: cupData, error } = await supabase
             .from("worldcups")
             .select("*")
@@ -126,6 +127,7 @@ export default function ResultPage({ worldcupList }) {
                   (item) => String(item.id) === String(thisCup.winner_id)
                 ) || null;
             } else {
+              // 후보 단건 조회
               const { data: candidate, error: candErr } = await supabase
                 .from("candidates")
                 .select("*")
