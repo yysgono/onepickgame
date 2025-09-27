@@ -14,8 +14,9 @@ import { useParams } from "react-router-dom";
 import { fetchWinnerStatsFromDB } from "../utils";
 import { useTranslation } from "react-i18next";
 import { supabase } from "../utils/supabaseClient";
+import Spinner from "./Spinner"; // ✅ 스피너
 
-// 무거운 컴포넌트는 지연 로딩
+// 무거운 컴포넌트 지연 로딩
 const MediaRenderer = lazy(() => import("./MediaRenderer"));
 const CommentBox = lazy(() => import("./CommentBox"));
 
@@ -29,11 +30,6 @@ const PERIODS = [
 ];
 
 const CACHE_TTL_MS = 5 * 60 * 1000; // 5분 캐시
-
-const ric =
-  typeof window !== "undefined" && window.requestIdleCallback
-    ? window.requestIdleCallback.bind(window)
-    : (cb) => setTimeout(() => cb({ timeRemaining: () => 50 }), 150);
 
 function safeNow() {
   try {
@@ -71,10 +67,10 @@ function rangeKeyFrom(period, customMode, customFrom, customTo) {
   return since ? `since:${since}` : "all";
 }
 
-// created_at 범위를 항상 명시 (단 All 은 조건 제거 → null 반환)
+// created_at 범위를 항상 명시 (단 ALL은 조건 제거 → null 반환)
 function getRangeForAllOrPeriod(period) {
   if (period) return getSinceDate(period); // ISO string
-  return null; // ALL: created_at 조건 자체를 주지 않음
+  return null; // ALL: created_at 조건 자체 제거
 }
 
 // 일부 예전 레코드 보정 + 표시/검색용 필드 사전 계산
@@ -88,8 +84,7 @@ function normalizeStats(arr) {
     const match_count = Math.max(match_count_raw, match_wins, win_count);
 
     // total_games가 0인데 기록이 있다면 최소 1
-    const hasAny =
-      win_count > 0 || match_wins > 0 || match_count_raw > 0;
+    const hasAny = win_count > 0 || match_wins > 0 || match_count_raw > 0;
     const total_games = total_games_raw > 0 ? total_games_raw : hasAny ? 1 : 0;
 
     const user_win_count = Number(r.user_win_count || 0);
@@ -102,9 +97,7 @@ function normalizeStats(arr) {
       user_win_count
     );
     const userHasAny =
-      user_win_count > 0 ||
-      user_match_wins > 0 ||
-      user_match_count_raw > 0;
+      user_win_count > 0 || user_match_wins > 0 || user_match_count_raw > 0;
     const user_total_games =
       user_total_games_raw > 0 ? user_total_games_raw : userHasAny ? 1 : 0;
 
@@ -154,14 +147,8 @@ function readCache(key) {
 function writeCache(key, data) {
   try {
     const payload = JSON.stringify({ savedAt: safeNow(), data });
-    // session 먼저 써서 탭 간에도 체감 빠르게
     sessionStorage.setItem(key, payload);
-    // idle 시간에 localStorage에도 복사
-    ric(() => {
-      try {
-        localStorage.setItem(key, payload);
-      } catch {}
-    });
+    localStorage.setItem(key, payload);
   } catch {}
 }
 
@@ -345,8 +332,12 @@ const RankCard = React.memo(function RankCard(props) {
           flexShrink: 0,
         }}
       >
-        <Suspense fallback={<div style={{ width: "100%", height: "100%", background: "#f3f4f9" }} />}>
-          <MediaRenderer url={image} alt={name} loading="lazy" decoding="async" />
+        <Suspense
+          fallback={
+            <div style={{ width: "100%", height: "100%", background: "#f3f4f9" }} />
+          }
+        >
+          <MediaRenderer url={image} alt={name} loading="lazy" />
         </Suspense>
       </div>
       <div
@@ -383,13 +374,14 @@ const RankCard = React.memo(function RankCard(props) {
           marginTop: 0,
         }}
       >
-        {t("match_wins")} {match_wins} | {t("duel_count")} {match_count} | {t("match_win_rate")} {match_win_rate}
+        {t("match_wins")} {match_wins} | {t("duel_count")} {match_count} |{" "}
+        {t("match_win_rate")} {match_win_rate}
       </div>
     </div>
   );
 });
 
-/* ========================= 스켈레톤 ========================= */
+/* ========================= 스켈레톤 (미사용시 남겨둠) ========================= */
 const SkeletonTableRow = React.memo(function SkeletonTableRow({ colCount = 7 }) {
   return (
     <tr>
@@ -435,7 +427,7 @@ export default function StatsPage({
   const [search, setSearch] = useState("");
   const deferredSearch = useDeferredValue(search);
   const [userOnly, setUserOnly] = useState(false);
-  const [itemsPerPage, setItemsPerPage] = useState(25); // 초기 렌더 가볍게
+  const [itemsPerPage, setItemsPerPage] = useState(25);
   const [period, setPeriod] = useState(null);
   const [customMode, setCustomMode] = useState(false);
   const [customFrom, setCustomFrom] = useState("");
@@ -445,10 +437,10 @@ export default function StatsPage({
   const [isMobile, setIsMobile] = useState(
     typeof window !== "undefined" ? window.innerWidth < 800 : false
   );
-  const [fetchKey, setFetchKey] = useState(0); // 강제 재조회 키
+  const [fetchKey, setFetchKey] = useState(0);
   const [, startTransition] = useTransition();
 
-  // ★ 이전 요청보다 늦게 끝난 응답이 상태를 덮어쓰지 않도록 가드
+  // 이전 요청보다 늦게 끝난 응답이 상태를 덮어쓰지 않도록 가드
   const fetchSeqRef = useRef(0);
 
   // 리사이즈 rAF 쓰로틀
@@ -466,11 +458,11 @@ export default function StatsPage({
     };
   }, []);
 
-  // 데이터 로딩 (+캐시) + ★ AbortController 적용
+  // 데이터 로딩 (+캐시) + AbortController 적용
   useEffect(() => {
     let alive = true;
     const seq = ++fetchSeqRef.current;
-    const controller = new AbortController(); // 요청 취소 담당
+    const controller = new AbortController();
 
     async function run() {
       if (!selectedCup?.id) {
@@ -496,19 +488,23 @@ export default function StatsPage({
         let rows;
         if (customMode && customFrom && customTo) {
           const range = getCustomSinceDate(customFrom, customTo);
-          rows = await fetchWinnerStatsFromDB(selectedCup.id, range, { signal: controller.signal });
+          rows = await fetchWinnerStatsFromDB(selectedCup.id, range, {
+            signal: controller.signal,
+          });
         } else {
           const since = getRangeForAllOrPeriod(period);
-          rows = await fetchWinnerStatsFromDB(selectedCup.id, since, { signal: controller.signal });
+          rows = await fetchWinnerStatsFromDB(selectedCup.id, since, {
+            signal: controller.signal,
+          });
         }
 
         if (!alive || seq !== fetchSeqRef.current) return; // 늦게 온 응답 무시
-        const normalized = normalizeStats(rows || []);
+        const normalized = normalizeStats(rows);
         setStats(normalized);
         setLoading(false);
         writeCache(cacheKey, normalized);
       } catch (e) {
-        if (e?.name === "AbortError") return; // 취소 조용히 무시
+        if (e?.name === "AbortError") return; // 취소는 조용히 무시
         if (!alive || seq !== fetchSeqRef.current) return;
         console.error("stats fetch error:", e);
         setLoading(false);
@@ -517,10 +513,9 @@ export default function StatsPage({
 
     run();
 
-    // cleanup: 이전 요청 취소
     return () => {
       alive = false;
-      controller.abort();
+      controller.abort(); // 이전 요청 취소
     };
   }, [selectedCup, period, customMode, customFrom, customTo, fetchKey]);
 
@@ -547,9 +542,7 @@ export default function StatsPage({
   /* ===== 검색/정렬/멤버 필터 ===== */
   const filteredStats = useMemo(() => {
     const q = (deferredSearch || "").toLowerCase();
-    let result = q
-      ? stats.filter((row) => row._name_lc.includes(q))
-      : stats.slice();
+    let result = q ? stats.filter((row) => row._name_lc.includes(q)) : stats.slice();
 
     if (userOnly) {
       result = result.map((row) => ({
@@ -558,14 +551,12 @@ export default function StatsPage({
         match_wins: row.user_match_wins || 0,
         match_count: row.user_match_count || 0,
         total_games: row.user_total_games || 0,
-        win_rate_num:
-          (row.user_total_games || 0)
-            ? (row.user_win_count || 0) / (row.user_total_games || 0)
-            : 0,
-        match_win_rate_num:
-          (row.user_match_count || 0)
-            ? (row.user_match_wins || 0) / (row.user_match_count || 0)
-            : 0,
+        win_rate_num: (row.user_total_games || 0)
+          ? (row.user_win_count || 0) / (row.user_total_games || 0)
+          : 0,
+        match_win_rate_num: (row.user_match_count || 0)
+          ? (row.user_match_wins || 0) / (row.user_match_count || 0)
+          : 0,
       }));
     }
 
@@ -672,16 +663,14 @@ export default function StatsPage({
         </button>
         {pages.map((p, i) =>
           p === "..." ? (
-            <span key={i} style={{ margin: "0 4px" }}>...</span>
+            <span key={i} style={{ margin: "0 4px" }}>
+              ...
+            </span>
           ) : (
             <button
               key={p}
               aria-label={t("goto_page", { page: p })}
-              onClick={() =>
-                startTransition(() => {
-                  setCurrentPage(p);
-                })
-              }
+              onClick={() => setCurrentPage(p)}
               style={{
                 margin: "0 4px",
                 padding: "4px 12px",
@@ -733,15 +722,13 @@ export default function StatsPage({
         <ReportButton cupId={selectedCup.id} size="sm" />
         <button
           onClick={() => {
-            startTransition(() => {
-              navigator.clipboard
-                .writeText(shareUrl)
-                .then(() => {
-                  if (window?.toast?.success) window.toast.success(t("share_link_copied"));
-                  else alert(t("share_link_copied"));
-                })
-                .catch(() => alert(shareUrl));
-            });
+            navigator.clipboard
+              .writeText(shareUrl)
+              .then(() => {
+                if (window?.toast?.success) window.toast.success(t("share_link_copied"));
+                else alert(t("share_link_copied"));
+              })
+              .catch(() => alert(shareUrl));
           }}
           style={{
             color: "#1976ed",
@@ -797,14 +784,15 @@ export default function StatsPage({
             fontSize: isMobile ? 22 : 36,
             color: "#fff",
             background: "linear-gradient(135deg, #1947e5 22%, #0e1e36 92%)",
-            boxShadow: "0 4px 24px 0 #1976ed26, 0 1px 12px #18317899, 0 0px 0px #111b2522",
+            boxShadow:
+              "0 4px 24px 0 #1976ed26, 0 1px 12px #18317899, 0 0px 0px #111b2522",
             borderRadius: 18,
             padding: isMobile ? "11px 14px" : "22px 54px",
             border: "2px solid #1976ed66",
             textShadow: "0 2px 12px #1976ed44, 0 1px 8px #111b2599",
             fontFamily: "'Orbitron', 'Pretendard', sans-serif",
             letterSpacing: "-1.5px",
-            lineHeight: 1.15,
+            lineHeight: 1.15, // ✅ 숫자 값 (따옴표 제거)
             maxWidth: isMobile ? "96vw" : 940,
             minWidth: 0,
             overflow: "hidden",
@@ -1091,7 +1079,9 @@ export default function StatsPage({
                   style={{
                     padding: "8px 0",
                     cursor: col.key === "rank" ? undefined : "pointer",
-                    ...(col.isIvory ? ivoryCell : { background: "#fff", fontWeight: 700, color: "#333" }),
+                    ...(col.isIvory
+                      ? ivoryCell
+                      : { background: "#fff", fontWeight: 700, color: "#333" }),
                     userSelect: "none",
                   }}
                   onClick={
@@ -1117,67 +1107,66 @@ export default function StatsPage({
             </tr>
           </thead>
           <tbody>
-            {loading
-              ? Array.from({ length: 5 }).map((_, i) => (
-                  <SkeletonTableRow key={i} colCount={sortableCols.length} />
-                ))
-              : pagedStats.length === 0
-              ? (
-                <tr>
-                  <td colSpan={sortableCols.length} style={{ padding: 22, color: "#888" }}>
-                    {t("cannot_show_results")}
-                  </td>
-                </tr>
-                )
-              : (
-                pagedStats.map((row, idx) => {
-                  const isHighlighted =
-                    highlightCandidateId && row.candidate_id === highlightCandidateId;
-                  const highlightStyle = isHighlighted
-                    ? {
-                        background: "linear-gradient(90deg,#f9e7ff 0%,#f3fbff 80%)",
-                        boxShadow: "0 2px 12px #d489ec15",
-                        fontWeight: 800,
-                        borderLeft: "6px solid #d489ec",
-                        color: "#7114b5",
-                        fontSize: isMobile ? 15 : 17,
-                        transition: "all 0.12s",
-                      }
-                    : { background: idx % 2 === 0 ? "#fafdff" : "#fff", color: "#333" };
+            {loading ? (
+              // ✅ 로딩 스피너 (테이블 중앙)
+              <tr>
+                <td colSpan={sortableCols.length} style={{ padding: 28 }}>
+                  <Spinner size={28} label={t("loading")} />
+                </td>
+              </tr>
+            ) : pagedStats.length === 0 ? (
+              <tr>
+                <td colSpan={sortableCols.length} style={{ padding: 22, color: "#888" }}>
+                  {t("cannot_show_results")}
+                </td>
+              </tr>
+            ) : (
+              pagedStats.map((row, idx) => {
+                const isHighlighted =
+                  highlightCandidateId && row.candidate_id === highlightCandidateId;
+                const highlightStyle = isHighlighted
+                  ? {
+                      background: "linear-gradient(90deg,#f9e7ff 0%,#f3fbff 80%)",
+                      boxShadow: "0 2px 12px #d489ec15",
+                      fontWeight: 800,
+                      borderLeft: "6px solid #d489ec",
+                      color: "#7114b5",
+                      fontSize: isMobile ? 15 : 17,
+                      transition: "all 0.12s",
+                    }
+                  : { background: idx % 2 === 0 ? "#fafdff" : "#fff", color: "#333" };
 
-                  const winRateStr = userOnly
-                    ? row._display?.winRateUser
-                    : row._display?.winRateAll;
-                  const matchWinRateStr = userOnly
-                    ? row._display?.matchRateUser
-                    : row._display?.matchRateAll;
+                const winRateStr = userOnly ? row._display?.winRateUser : row._display?.winRateAll;
+                const matchWinRateStr = userOnly
+                  ? row._display?.matchRateUser
+                  : row._display?.matchRateAll;
 
-                  return (
-                    <tr key={row.candidate_id} style={highlightStyle}>
-                      <td style={ivoryCell}>{row.rank}</td>
-                      <td
-                        style={{
-                          ...normalCell,
-                          fontWeight: 700,
-                          fontSize: isMobile ? 13 : 15,
-                          overflow: "hidden",
-                          textOverflow: "ellipsis",
-                          whiteSpace: "nowrap",
-                          maxWidth: isMobile ? 90 : 120,
-                        }}
-                        title={row.name}
-                      >
-                        {row.name}
-                      </td>
-                      <td style={normalCell}>{row.win_count}</td>
-                      <td style={ivoryCell}>{winRateStr ?? "-"}</td>
-                      <td style={normalCell}>{row.match_wins}</td>
-                      <td style={normalCell}>{row.match_count}</td>
-                      <td style={ivoryCell}>{matchWinRateStr ?? "-"}</td>
-                    </tr>
-                  );
-                })
-                )}
+                return (
+                  <tr key={row.candidate_id} style={highlightStyle}>
+                    <td style={ivoryCell}>{row.rank}</td>
+                    <td
+                      style={{
+                        ...normalCell,
+                        fontWeight: 700,
+                        fontSize: isMobile ? 13 : 15,
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        whiteSpace: "nowrap",
+                        maxWidth: isMobile ? 90 : 120,
+                      }}
+                      title={row.name}
+                    >
+                      {row.name}
+                    </td>
+                    <td style={normalCell}>{row.win_count}</td>
+                    <td style={ivoryCell}>{winRateStr ?? "-"}</td>
+                    <td style={normalCell}>{row.match_wins}</td>
+                    <td style={normalCell}>{row.match_count}</td>
+                    <td style={ivoryCell}>{matchWinRateStr ?? "-"}</td>
+                  </tr>
+                );
+              })
+            )}
           </tbody>
         </table>
       </div>
@@ -1186,7 +1175,13 @@ export default function StatsPage({
 
       {/* 댓글 */}
       {showCommentBox && (
-        <Suspense fallback={<div style={{ padding: 12, color: "#888", textAlign: "center" }}>Loading…</div>}>
+        <Suspense
+          fallback={
+            <div style={{ padding: 12, textAlign: "center" }}>
+              <Spinner size={20} label="Loading…" />
+            </div>
+          }
+        >
           <CommentBox cupId={selectedCup.id} />
         </Suspense>
       )}

@@ -1,31 +1,33 @@
 // src/components/Spinner.js
 import React from "react";
 
-const Spinner = ({ size = 60 }) => (
-  <div style={{
-    display: "flex",
-    justifyContent: "center",
+export default function Spinner({ size = 36, label = "Loading…" }) {
+  const ring = {
+    width: size,
+    height: size,
+    borderRadius: "50%",
+    border: `${Math.max(2, Math.round(size / 9))}px solid #e8efff`,
+    borderTopColor: "#1976ed",
+    animation: "onepick-spin 0.9s linear infinite",
+    boxSizing: "border-box",
+  };
+  const wrap = {
+    display: "inline-flex",
     alignItems: "center",
-    height: size + 24,
-    margin: "50px 0"
-  }}>
-    <div style={{
-      width: size,
-      height: size,
-      border: `${size / 10}px solid #e3f0fb`,
-      borderTop: `${size / 10}px solid #1976ed`,
-      borderRadius: "50%",
-      animation: "spin 1.1s linear infinite"
-    }} />
-    <style>
-      {`
-        @keyframes spin {
-          0% { transform: rotate(0deg);}
-          100% { transform: rotate(360deg);}
-        }
-      `}
-    </style>
-  </div>
-);
+    gap: 12,
+  };
+  const text = {
+    fontWeight: 600,
+    color: "#1976ed",
+  };
 
-export default Spinner;
+  return (
+    <div role="status" aria-live="polite" style={wrap}>
+      <div style={ring} />
+      {label ? <span style={text}>{label}</span> : null}
+      <style>{`
+        @keyframes onepick-spin { to { transform: rotate(360deg); } }
+      `}</style>
+    </div>
+  );
+}
