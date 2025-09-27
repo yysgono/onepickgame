@@ -11,7 +11,7 @@ import React, {
   useRef,
 } from "react";
 import { useParams } from "react-router-dom";
-import { fetchWinnerStatsFromDB } from "../utils";
+import { fetchWinnerStatsFromDB } from "../utils/fetchWinnerStatsFromDB";
 import { useTranslation } from "react-i18next";
 import { supabase } from "../utils/supabaseClient";
 
