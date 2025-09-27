@@ -88,8 +88,7 @@ function normalizeStats(arr) {
     const match_count = Math.max(match_count_raw, match_wins, win_count);
 
     // total_games가 0인데 기록이 있다면 최소 1
-    const hasAny =
-      win_count > 0 || match_wins > 0 || match_count_raw > 0;
+    const hasAny = win_count > 0 || match_wins > 0 || match_count_raw > 0;
     const total_games = total_games_raw > 0 ? total_games_raw : hasAny ? 1 : 0;
 
     const user_win_count = Number(r.user_win_count || 0);
@@ -345,7 +344,7 @@ const RankCard = React.memo(function RankCard(props) {
           flexShrink: 0,
         }}
       >
-        <Suspense fallback={<div style={{ width: "100%", height: "100%", background: "#f3f4f9" }} />}>
+        <Suspense fallback={<div style={{ width: "100%", height: "100%", background: "#f3f4f9" }} />} >
           <MediaRenderer url={image} alt={name} loading="lazy" decoding="async" />
         </Suspense>
       </div>
@@ -426,6 +425,7 @@ export default function StatsPage({
   selectedCup,
   showCommentBox = false,
   highlightCandidateId,
+  headless = false, // ★ 추가: 데이터만 로드하고 화면은 렌더하지 않음
 }) {
   const { t } = useTranslation();
   const { lang } = useParams();
@@ -435,7 +435,7 @@ export default function StatsPage({
   const [search, setSearch] = useState("");
   const deferredSearch = useDeferredValue(search);
   const [userOnly, setUserOnly] = useState(false);
-  const [itemsPerPage, setItemsPerPage] = useState(25); // 초기 렌더 가볍게
+  const [itemsPerPage, setItemsPerPage] = useState(10); // 초기 10으로 조정
   const [period, setPeriod] = useState(null);
   const [customMode, setCustomMode] = useState(false);
   const [customFrom, setCustomFrom] = useState("");
@@ -450,6 +450,12 @@ export default function StatsPage({
 
   // ★ 이전 요청보다 늦게 끝난 응답이 상태를 덮어쓰지 않도록 가드
   const fetchSeqRef = useRef(0);
+
+  // 문자열 비교 Collator (미세 최적화)
+  const collator = useMemo(
+    () => new Intl.Collator(undefined, { sensitivity: "base" }),
+    []
+  );
 
   // 리사이즈 rAF 쓰로틀
   useEffect(() => {
@@ -595,10 +601,16 @@ export default function StatsPage({
           if (av > bv) return sortDesc ? -1 : 1;
           return a._originIdx - b._originIdx;
         }
+
+        // 문자열/기타 비교 (미세 최적화: Intl.Collator)
         let av = a[sortKey];
         let bv = b[sortKey];
-        if (typeof av === "string") av = av.toLowerCase();
-        if (typeof bv === "string") bv = bv.toLowerCase();
+        if (typeof av === "string" && typeof bv === "string") {
+          const c = collator.compare(av, bv);
+          if (c < 0) return sortDesc ? 1 : -1;
+          if (c > 0) return sortDesc ? -1 : 1;
+          return a._originIdx - b._originIdx;
+        }
         if (av < bv) return sortDesc ? 1 : -1;
         if (av > bv) return sortDesc ? -1 : 1;
         return a._originIdx - b._originIdx;
@@ -606,7 +618,31 @@ export default function StatsPage({
 
     result.forEach((row, i) => (row.rank = i + 1));
     return result;
-  }, [stats, deferredSearch, userOnly, sortKey, sortDesc]);
+  }, [stats, deferredSearch, userOnly, sortKey, sortDesc, collator]);
+
+  /* ===== optimisticRows: 서버 응답 전 즉시 표 모양 렌더 ===== */
+  const optimisticRows = useMemo(() => {
+    if (!selectedCup?.data || !Array.isArray(selectedCup.data)) return [];
+    return selectedCup.data.map((c, i) => ({
+      candidate_id: c.id,
+      name: c.name || "",
+      image: c.image || "",
+      win_count: 0,
+      match_wins: 0,
+      match_count: 0,
+      total_games: 0,
+      _display: {
+        winRateAll: "-",
+        winRateUser: "-",
+        matchRateAll: "-",
+        matchRateUser: "-",
+      },
+      win_rate_num: 0,
+      match_win_rate_num: 0,
+      rank: i + 1,
+      _name_lc: (c.name || "").toLowerCase(),
+    }));
+  }, [selectedCup?.data]);
 
   /* ===== 페이지네이션 ===== */
   const totalStats = filteredStats.length;
@@ -772,6 +808,12 @@ export default function StatsPage({
     { key: "match_win_rate", label: t("match_win_rate"), isIvory: true },
   ];
 
+  /* ===== headless: 데이터만 선로딩 ===== */
+  if (headless) {
+    return null;
+  }
+
+  /* ===== 렌더 ===== */
   return (
     <div
       style={{
@@ -1117,7 +1159,35 @@ export default function StatsPage({
             </tr>
           </thead>
           <tbody>
-            {loading
+            {(loading && optimisticRows.length > 0)
+              ? optimisticRows.slice(0, itemsPerPage).map((row, idx) => {
+                  const baseStyle = { background: idx % 2 === 0 ? "#fafdff" : "#fff", color: "#333" };
+                  return (
+                    <tr key={`opt-${row.candidate_id}`} style={baseStyle}>
+                      <td style={ivoryCell}>{row.rank}</td>
+                      <td
+                        style={{
+                          ...normalCell,
+                          fontWeight: 700,
+                          fontSize: isMobile ? 13 : 15,
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                          whiteSpace: "nowrap",
+                          maxWidth: isMobile ? 90 : 120,
+                        }}
+                        title={row.name}
+                      >
+                        {row.name}
+                      </td>
+                      <td style={normalCell}>0</td>
+                      <td style={ivoryCell}>-</td>
+                      <td style={normalCell}>0</td>
+                      <td style={normalCell}>0</td>
+                      <td style={ivoryCell}>-</td>
+                    </tr>
+                  );
+                })
+              : loading
               ? Array.from({ length: 5 }).map((_, i) => (
                   <SkeletonTableRow key={i} colCount={sortableCols.length} />
                 ))

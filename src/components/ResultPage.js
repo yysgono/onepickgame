@@ -98,7 +98,7 @@ export default function ResultPage({ worldcupList }) {
   useEffect(() => {
     let alive = true;
     const seq = ++fetchSeqRef.current;
-    const controller = new AbortController(); // supabase가 내부적으로 fetch를 쓰므로 일부 환경에서 취소 신호가 전달됨(무시돼도 문제 없음)
+    const controller = new AbortController();
 
     async function fetchData() {
       setLoading(true);
@@ -107,15 +107,11 @@ export default function ResultPage({ worldcupList }) {
 
       try {
         if (!thisCup) {
-          // ★ 단건 조회 → 불필요한 필드 최소화 (select * 유지가 필요하면 그대로 둬도 됨)
           const { data: cupData, error } = await supabase
             .from("worldcups")
             .select("*")
             .eq("id", id)
-            .single()
-            // @ts-ignore: supabase fetch 옵션이 signal을 전파하는 경우가 있어 무해함
-            .abortSignal?.(controller.signal);
-
+            .single();
           if (error) throw error;
           thisCup = cupData || null;
         }
@@ -130,7 +126,6 @@ export default function ResultPage({ worldcupList }) {
                   (item) => String(item.id) === String(thisCup.winner_id)
                 ) || null;
             } else {
-              // 후보 단건 조회
               const { data: candidate, error: candErr } = await supabase
                 .from("candidates")
                 .select("*")
@@ -286,7 +281,7 @@ export default function ResultPage({ worldcupList }) {
               }}
             >
               {/* ★ MediaRenderer도 lazy라 초기 페인트 지연 ↓ */}
-              <Suspense fallback={<div style={{ width: "100%", height: "100%", background: "#f3f4f9" }} />}>
+              <Suspense fallback={<div style={{ width: "100%", height: "100%", background: "#f3f4f9" }} />} >
                 <MediaRenderer url={winner.image} alt={winner.name} loading="lazy" />
               </Suspense>
             </div>
@@ -367,7 +362,7 @@ export default function ResultPage({ worldcupList }) {
 
         {/* 하단: 에피데믹 사운드 래퍼럴 */}
         <div style={{ width: "100%", maxWidth: 900, margin: "16px auto 40px" }}>
-          <Suspense fallback={<div style={{ height: 48 }} />}>
+          <Suspense fallback={<div style={{ height: 48 }} />} >
             <ReferralBanner lang={typeof window !== "undefined" ? (navigator.language || "en") : "en"} />
           </Suspense>
         </div>

@@ -1,3 +1,4 @@
+// src/components/Result.jsx
 import React, {
   Suspense,
   useEffect,
@@ -60,12 +61,11 @@ function Result({ winner, cup, onRestart, onStats }) {
   const [, startTransition] = useTransition();
 
   // StatsPage를 뷰포트에 들어오면 로드
-  const [statsAnchorRef, statsVisible, setStatsVisible] = useOnScreen({ rootMargin: "300px 0px" });
+  const [statsAnchorRef, statsVisible, setStatsVisible] = useOnScreen({ rootMargin: "1600px 0px" }); // ★ 더 일찍
 
-  // ★ 1) 페이지가 한숨 돌릴 때(Idle)에 StatsPage 프리페치
+  // ★ 1) 들어오자마자 프리페치(Idle 기다리지 않음)
   useEffect(() => {
-    const id = ric(() => prefetchStatsPage());
-    return () => typeof window !== "undefined" && window.cancelIdleCallback && window.cancelIdleCallback(id);
+    prefetchStatsPage();
   }, []);
 
   // ★ 2) 사용자가 Stats 버튼에 손만 올려도(hint) 프리페치
@@ -73,9 +73,8 @@ function Result({ winner, cup, onRestart, onStats }) {
     prefetchStatsPage();
   }, []);
 
-  // ★ 3) Stats 클릭 시 즉시 보이도록 가속(선택)
+  // ★ 3) Stats 클릭 시 즉시 보이도록 가속
   const handleStatsClick = useCallback(() => {
-    // 먼저 프리페치 시도(이미 되었으면 즉시 resolve)
     prefetchStatsPage()?.finally(() => {
       setStatsVisible(true); // 바로 마운트
       startTransition(() => onStats && onStats());
@@ -97,7 +96,7 @@ function Result({ winner, cup, onRestart, onStats }) {
           overflow: "hidden",
         }}
       >
-        <Suspense fallback={<div style={{ width: "100%", height: "100%", background: "#f3f4f9" }} />}>
+        <Suspense fallback={<div style={{ width: "100%", height: "100%", background: "#f3f4f9" }} />} >
           <MediaRenderer url={winner.image} alt={winner.name} loading="lazy" decoding="async" />
         </Suspense>
       </div>
@@ -160,7 +159,14 @@ function Result({ winner, cup, onRestart, onStats }) {
         {t("stats")}
       </button>
 
-      {/* StatsPage를 화면에 보일 때만 마운트 → 초기 페인트 훨씬 가벼움 */}
+      {/* ★ 숨김 프리마운트: 화면엔 안 보이지만 StatsPage는 마운트되어 fetch/캐시가 즉시 동작 */}
+      <Suspense fallback={null}>
+        <div style={{ display: "none" }} aria-hidden>
+          <StatsPage selectedCup={cup} headless />
+        </div>
+      </Suspense>
+
+      {/* StatsPage를 화면에 보일 때 마운트 (rootMargin 확대로 “더 빨리” 마운트됨) */}
       <div ref={statsAnchorRef} style={{ margin: "60px auto 0", maxWidth: 840 }}>
         <Suspense
           fallback={
