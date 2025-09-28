@@ -11,8 +11,7 @@ import React, {
   useRef,
 } from "react";
 import { useParams } from "react-router-dom";
-// ✅ utils 경로 확인: ../utils/fetchWinnerStatsFromDB 로 가져옴
-import { fetchWinnerStatsFromDB } from "../utils/fetchWinnerStatsFromDB";
+import { fetchWinnerStatsFromDB } from "../utils";
 import { useTranslation } from "react-i18next";
 import { supabase } from "../utils/supabaseClient";
 
@@ -155,7 +154,9 @@ function readCache(key) {
 function writeCache(key, data) {
   try {
     const payload = JSON.stringify({ savedAt: safeNow(), data });
+    // session 먼저 써서 탭 간에도 체감 빠르게
     sessionStorage.setItem(key, payload);
+    // idle 시간에 localStorage에도 복사
     ric(() => {
       try {
         localStorage.setItem(key, payload);
