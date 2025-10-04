@@ -14,6 +14,7 @@ import { useParams } from "react-router-dom";
 import { fetchWinnerStatsFromDB } from "../utils";
 import { useTranslation } from "react-i18next";
 import { supabase } from "../utils/supabaseClient";
+import { normalizeStats } from "../utils/statsUtils";
 
 // 무거운 컴포넌트는 지연 로딩
 const MediaRenderer = lazy(() => import("./MediaRenderer"));
@@ -28,7 +29,8 @@ const PERIODS = [
   { labelKey: "year_1", value: 365 },
 ];
 
-const CACHE_TTL_MS = 5 * 60 * 1000; // 5분 캐시
+// ① 캐시 보존시간 연장: 30분 (기존 5분 → 30분)
+const CACHE_TTL_MS = 30 * 60 * 1000; // 30분 캐시
 
 const ric =
   typeof window !== "undefined" && window.requestIdleCallback
@@ -41,11 +43,6 @@ function safeNow() {
   } catch {
     return new Date().getTime();
   }
-}
-
-function percent(n, d) {
-  if (!d) return "-";
-  return Math.round((n / d) * 100) + "%";
 }
 
 function getSinceDate(days) {
@@ -75,67 +72,6 @@ function rangeKeyFrom(period, customMode, customFrom, customTo) {
 function getRangeForAllOrPeriod(period) {
   if (period) return getSinceDate(period); // ISO string
   return null; // ALL: created_at 조건 자체를 주지 않음
-}
-
-// 일부 예전 레코드 보정 + 표시/검색용 필드 사전 계산
-function normalizeStats(arr) {
-  const out = (arr || []).map((r) => {
-    const win_count = Number(r.win_count || 0);
-    const match_wins = Number(r.match_wins || 0);
-    const match_count_raw = Number(r.match_count || 0);
-    const total_games_raw = Number(r.total_games || 0);
-
-    const match_count = Math.max(match_count_raw, match_wins, win_count);
-
-    // total_games가 0인데 기록이 있다면 최소 1
-    const hasAny =
-      win_count > 0 || match_wins > 0 || match_count_raw > 0;
-    const total_games = total_games_raw > 0 ? total_games_raw : hasAny ? 1 : 0;
-
-    const user_win_count = Number(r.user_win_count || 0);
-    const user_match_wins = Number(r.user_match_wins || 0);
-    const user_match_count_raw = Number(r.user_match_count || 0);
-    const user_total_games_raw = Number(r.user_total_games || 0);
-    const user_match_count = Math.max(
-      user_match_count_raw,
-      user_match_wins,
-      user_win_count
-    );
-    const userHasAny =
-      user_win_count > 0 ||
-      user_match_wins > 0 ||
-      user_match_count_raw > 0;
-    const user_total_games =
-      user_total_games_raw > 0 ? user_total_games_raw : userHasAny ? 1 : 0;
-
-    const display = {
-      winRateAll: percent(win_count, total_games),
-      winRateUser: percent(user_win_count, user_total_games),
-      matchRateAll: percent(match_wins, match_count),
-      matchRateUser: percent(user_match_wins, user_match_count),
-    };
-
-    // 정렬용 숫자 승률 사전 계산
-    const win_rate_num = total_games ? win_count / total_games : 0;
-    const match_win_rate_num = match_count ? match_wins / match_count : 0;
-
-    return {
-      ...r,
-      win_count,
-      match_wins,
-      match_count,
-      total_games,
-      user_win_count,
-      user_match_wins,
-      user_match_count,
-      user_total_games,
-      _name_lc: (r.name || "").toLowerCase(),
-      _display: display,
-      win_rate_num,
-      match_win_rate_num,
-    };
-  });
-  return out;
 }
 
 /* ========================= 세션/로컬 캐시 ========================= */
@@ -345,8 +281,9 @@ const RankCard = React.memo(function RankCard(props) {
           flexShrink: 0,
         }}
       >
+        {/* ④ Top3 즉시 보이기: 이미지 eager 로드 */}
         <Suspense fallback={<div style={{ width: "100%", height: "100%", background: "#f3f4f9" }} />}>
-          <MediaRenderer url={image} alt={name} loading="lazy" decoding="async" />
+          <MediaRenderer url={image} alt={name} loading="eager" decoding="async" />
         </Suspense>
       </div>
       <div
@@ -435,7 +372,7 @@ export default function StatsPage({
   const [search, setSearch] = useState("");
   const deferredSearch = useDeferredValue(search);
   const [userOnly, setUserOnly] = useState(false);
-  const [itemsPerPage, setItemsPerPage] = useState(25); // 초기 렌더 가볍게
+  const [itemsPerPage, setItemsPerPage] = useState(10); // 초기 렌더 더 가볍게(25 → 10)
   const [period, setPeriod] = useState(null);
   const [customMode, setCustomMode] = useState(false);
   const [customFrom, setCustomFrom] = useState("");
@@ -445,7 +382,7 @@ export default function StatsPage({
   const [isMobile, setIsMobile] = useState(
     typeof window !== "undefined" ? window.innerWidth < 800 : false
   );
-  const [fetchKey, setFetchKey] = useState(0); // 강제 재조회 키
+  const [fetchKey, setFetchKey] = useState(0); // 기간/커스텀 변경 시 재조회 키
   const [, startTransition] = useTransition();
 
   // ★ 이전 요청보다 늦게 끝난 응답이 상태를 덮어쓰지 않도록 가드
@@ -837,20 +774,34 @@ export default function StatsPage({
           overflowX: "auto",
         }}
       >
-        {top3.map((row, i) => (
-          <RankCard
-            key={row.candidate_id}
-            rank={i + 1}
-            name={row.name}
-            image={row.image}
-            win_count={row._card.win_count}
-            win_rate={row._card.win_rate}
-            match_wins={row._card.match_wins}
-            match_count={row._card.match_count}
-            match_win_rate={row._card.match_win_rate}
-            isMobile={isMobile}
-          />
-        ))}
+        {loading
+          ? [0, 1, 2].map((i) => (
+              <div
+                key={i}
+                style={{
+                  width: isMobile ? 270 : 320,
+                  height: isMobile ? 420 : 480,
+                  borderRadius: 26,
+                  background: "#f6f8fc",
+                  boxShadow: "0 8px 36px #1111",
+                  margin: "32px 15px 18px 15px",
+                }}
+              />
+            ))
+          : top3.map((row, i) => (
+              <RankCard
+                key={row.candidate_id}
+                rank={i + 1}
+                name={row.name}
+                image={row.image}
+                win_count={row._card.win_count}
+                win_rate={row._card.win_rate}
+                match_wins={row._card.match_wins}
+                match_count={row._card.match_count}
+                match_win_rate={row._card.match_win_rate}
+                isMobile={isMobile}
+              />
+            ))}
       </div>
 
       {/* 회원/전체 탭 */}
@@ -863,12 +814,12 @@ export default function StatsPage({
           marginTop: 4,
         }}
       >
+        {/* ② 토글 시 재페치 제거: setFetchKey 삭제 */}
         <button
           style={tabBtnStyle(!userOnly)}
           onClick={() => {
             startTransition(() => {
               setUserOnly(false);
-              setFetchKey((k) => k + 1);
             });
           }}
         >
@@ -879,7 +830,6 @@ export default function StatsPage({
           onClick={() => {
             startTransition(() => {
               setUserOnly(true);
-              setFetchKey((k) => k + 1);
             });
           }}
         >
