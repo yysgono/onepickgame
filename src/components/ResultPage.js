@@ -1,33 +1,17 @@
 // src/components/ResultPage.js
 import React, { useEffect, useState, lazy, Suspense, useRef, useTransition } from "react";
 import { useParams, useLocation, useNavigate } from "react-router-dom";
+// import StatsPage from "./StatsPage";                // ★ 지연 로딩으로 변경
+// import MediaRenderer from "./MediaRenderer";        // ★ 지연 로딩으로 변경
 import { useTranslation } from "react-i18next";
 import { supabase } from "../utils/supabaseClient";
-import { pushRecentWorldcup, fetchWinnerStatsFromDB } from "../utils";
-import { normalizeStats } from "../utils/statsUtils";
+// import ReferralBanner from "./ReferralBanner";       // ★ 지연 로딩으로 변경
+import { pushRecentWorldcup } from "../utils";
 
-// ★ 무거운 것들 lazy 로드 + prefetch 힌트
-const StatsPage = lazy(() => import(/* webpackPrefetch: true */ "./StatsPage"));
-const MediaRenderer = lazy(() => import(/* webpackPrefetch: true */ "./MediaRenderer"));
+// ★ 무거운 것들 lazy 로드 → 초기 JS/페인트 가벼움
+const StatsPage = lazy(() => import("./StatsPage"));
+const MediaRenderer = lazy(() => import("./MediaRenderer"));
 const ReferralBanner = lazy(() => import("./ReferralBanner"));
-
-// requestIdleCallback 폴리필
-const ric =
-  typeof window !== "undefined" && window.requestIdleCallback
-    ? window.requestIdleCallback.bind(window)
-    : (cb) => setTimeout(() => cb({ timeRemaining: () => 50 }), 200);
-
-// StatsPage & MediaRenderer 청크 프리페치(한 번만)
-let statsPrefetchPromise = null;
-function prefetchStatsPage() {
-  if (!statsPrefetchPromise) {
-    statsPrefetchPromise = Promise.all([
-      import(/* webpackPrefetch: true */ "./StatsPage"),
-      import(/* webpackPrefetch: true */ "./MediaRenderer"),
-    ]).catch(() => {});
-  }
-  return statsPrefetchPromise;
-}
 
 // 2줄(24*2byte) 초과시 ... 처리
 function truncateToTwoLinesByByte(str, maxBytePerLine = 24) {
@@ -59,7 +43,7 @@ function truncateToTwoLinesByByte(str, maxBytePerLine = 24) {
   return lines;
 }
 
-// rAF 쓰로틀된 리사이즈
+// ★ rAF 쓰로틀된 리사이즈로 과도한 리렌더 방지
 function useIsMobile(breakpoint = 800) {
   const [isMobile, setIsMobile] = React.useState(
     typeof window !== "undefined" ? window.innerWidth < breakpoint : false
@@ -108,13 +92,13 @@ export default function ResultPage({ worldcupList }) {
     (worldcupList && worldcupList.find((c) => String(c.id) === id));
   const locationWinner = location.state?.winner;
 
-  // fetch 경합 방지용 시퀀스/Abort
+  // ★ fetch 경합 방지용 시퀀스/Abort
   const fetchSeqRef = useRef(0);
 
   useEffect(() => {
     let alive = true;
     const seq = ++fetchSeqRef.current;
-    const controller = new AbortController();
+    const controller = new AbortController(); // supabase가 내부적으로 fetch를 쓰므로 일부 환경에서 취소 신호가 전달됨(무시돼도 문제 없음)
 
     async function fetchData() {
       setLoading(true);
@@ -123,15 +107,20 @@ export default function ResultPage({ worldcupList }) {
 
       try {
         if (!thisCup) {
+          // ★ 단건 조회 → 불필요한 필드 최소화 (select * 유지가 필요하면 그대로 둬도 됨)
           const { data: cupData, error } = await supabase
             .from("worldcups")
             .select("*")
             .eq("id", id)
-            .single();
+            .single()
+            // @ts-ignore: supabase fetch 옵션이 signal을 전파하는 경우가 있어 무해함
+            .abortSignal?.(controller.signal);
+
           if (error) throw error;
           thisCup = cupData || null;
         }
 
+        // 통계 전용 모드가 아니고, winner가 없고, cup이 있을 때만 우승자 로딩 시도
         if (!isStatsOnly && !thisWinner && thisCup) {
           let winnerObj = null;
           if (thisCup.winner_id) {
@@ -141,6 +130,7 @@ export default function ResultPage({ worldcupList }) {
                   (item) => String(item.id) === String(thisCup.winner_id)
                 ) || null;
             } else {
+              // 후보 단건 조회
               const { data: candidate, error: candErr } = await supabase
                 .from("candidates")
                 .select("*")
@@ -153,32 +143,12 @@ export default function ResultPage({ worldcupList }) {
           thisWinner = winnerObj;
         }
 
-        if (!alive || seq !== fetchSeqRef.current) return;
+        if (!alive || seq !== fetchSeqRef.current) return; // 늦게 온 응답 무시
         setCup(thisCup);
         setWinner(thisWinner);
         setLoading(false);
-
-        // ★★★ StatsPage 선행 준비: idle에 청크 프리패치 + "전체 기간" 데이터 캐시에 저장
-        if (thisCup?.id) {
-          // 1) 청크 프리패치 (StatsPage + MediaRenderer)
-          ric(() => prefetchStatsPage());
-
-          // 2) 데이터 선행 fetch → StatsPage가 쓰는 캐시 키 형식과 동일
-          const cacheKey = `stats:${thisCup.id}:all:v2`;
-          ric(async () => {
-            try {
-              const rows = await fetchWinnerStatsFromDB(thisCup.id, null);
-              const normalized = normalizeStats(rows || []);
-              const payload = JSON.stringify({ savedAt: Date.now(), data: normalized });
-              sessionStorage.setItem(cacheKey, payload);
-              ric(() => {
-                try { localStorage.setItem(cacheKey, payload); } catch {}
-              });
-            } catch {}
-          });
-        }
       } catch (e) {
-        if (e?.name === "AbortError") return;
+        if (e?.name === "AbortError") return; // 취소된 요청은 조용히 무시
         if (!alive || seq !== fetchSeqRef.current) return;
         console.error("ResultPage fetch error:", e);
         setCup(thisCup ?? null);
@@ -190,11 +160,11 @@ export default function ResultPage({ worldcupList }) {
     fetchData();
     return () => {
       alive = false;
-      controller.abort();
+      controller.abort(); // ★ 이전 요청 취소
     };
   }, [id, locationCup, locationWinner, isStatsOnly]);
 
-  // 최근 본 기록
+  // 최근 본 기록 (동기 로컬스토리지 → 성능 영향 적음)
   useEffect(() => {
     if (cup?.id) pushRecentWorldcup(cup.id);
   }, [cup?.id]);
@@ -222,6 +192,7 @@ export default function ResultPage({ worldcupList }) {
       </div>
     );
 
+  // 통계 전용 모드에서는 winner가 없어도 정상 동작
   if (!cup)
     return (
       <div style={{ textAlign: "center", padding: 60, color: "#d33", minHeight: "60vh" }}>
@@ -241,6 +212,7 @@ export default function ResultPage({ worldcupList }) {
       style={{
         width: "100vw",
         minHeight: "100vh",
+        // ★ 모바일에서 background-attachment: fixed 는 렌더링 비용이 큼 → 모바일은 scroll로
         background: "url('/onepick.png') center center / cover no-repeat",
         backgroundAttachment: isMobile ? "scroll" : "fixed",
         position: "relative",
@@ -271,6 +243,7 @@ export default function ResultPage({ worldcupList }) {
           padding: isMobile ? "0 0 28px 0" : "0 0 44px 0",
           minHeight: "100vh",
           boxSizing: "border-box",
+          // ★ 화면 밖 페인트/레이아웃 비용 축소
           contentVisibility: "auto",
           containIntrinsicSize: "1200px 800px",
         }}
@@ -312,6 +285,7 @@ export default function ResultPage({ worldcupList }) {
                 justifyContent: "center",
               }}
             >
+              {/* ★ MediaRenderer도 lazy라 초기 페인트 지연 ↓ */}
               <Suspense fallback={<div style={{ width: "100%", height: "100%", background: "#f3f4f9" }} />}>
                 <MediaRenderer url={winner.image} alt={winner.name} loading="lazy" />
               </Suspense>
@@ -380,6 +354,7 @@ export default function ResultPage({ worldcupList }) {
 
         {/* 통계 + 댓글 */}
         <div style={{ margin: "0 auto 0 auto", maxWidth: MAIN, width: "100%" }}>
+          {/* ★ StatsPage 자체도 lazy → 첫 페인트 가벼움 */}
           <Suspense fallback={<div style={{ padding: 16, textAlign: "center", color: "#aaa" }}>{t("loading")}</div>}>
             <StatsPage
               selectedCup={cup}
