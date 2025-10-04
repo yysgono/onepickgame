@@ -240,7 +240,7 @@
   "unsupported_file_type": "지원하지 않는 파일 형식입니다.",
   "unsupported_file_type_detail": "지원하지 않는 파일 형식입니다. (이미지: JPG, PNG, GIF, SVG, WEBP, AVIF / 동영상: MP4, WEBM, MOV)",
   "image_size_limit_6mb": "최대 6MB",
-  "edit_no_permission": "이 월드컵을 수정할 권한이 없습니다.",
+  "edit_no_permission": "이 월드컵을 수정하는 권한이 없습니다.",
   "edit_worldcup": "월드컵 수정",
   "description": "설명",
   "count_unit": "개",
@@ -290,5 +290,9 @@
   },
   "find_id.enter_nickname": "닉네임을 입력하세요",
   "find_id.result": "당신의 이메일(ID)은 {{email}}입니다",
-  "find_id.loading": "찾는 중..."
+  "find_id.loading": "찾는 중...",
+  "loading_hint": "더 정확한 결과를 위해 약 5초만 기다려 주세요.",
+  "prev_page": "이전 페이지",
+  "next_page": "다음 페이지",
+  "goto_page": "{{page}}페이지로 이동"
 }

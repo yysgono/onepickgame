@@ -290,5 +290,9 @@
   },
   "find_id.enter_nickname": "请输入您的昵称",
   "find_id.result": "您的邮箱（账号）是 {{email}}",
-  "find_id.loading": "查找中..."
+  "find_id.loading": "查找中...",
+  "loading_hint": "为获得更稳定的体验，请等待约5秒。",
+  "prev_page": "上一页",
+  "next_page": "下一页",
+  "goto_page": "前往第 {{page}} 页"
 }

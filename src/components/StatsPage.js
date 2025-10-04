@@ -88,8 +88,7 @@ function normalizeStats(arr) {
     const match_count = Math.max(match_count_raw, match_wins, win_count);
 
     // total_games가 0인데 기록이 있다면 최소 1
-    const hasAny =
-      win_count > 0 || match_wins > 0 || match_count_raw > 0;
+    const hasAny = win_count > 0 || match_wins > 0 || match_count_raw > 0;
     const total_games = total_games_raw > 0 ? total_games_raw : hasAny ? 1 : 0;
 
     const user_win_count = Number(r.user_win_count || 0);
@@ -797,7 +796,8 @@ export default function StatsPage({
             fontSize: isMobile ? 22 : 36,
             color: "#fff",
             background: "linear-gradient(135deg, #1947e5 22%, #0e1e36 92%)",
-            boxShadow: "0 4px 24px 0 #1976ed26, 0 1px 12px #18317899, 0 0px 0px #111b2522",
+            boxShadow:
+              "0 4px 24px 0 #1976ed26, 0 1px 12px #18317899, 0 0px 0px #111b2522",
             borderRadius: 18,
             padding: isMobile ? "11px 14px" : "22px 54px",
             border: "2px solid #1976ed66",
@@ -1058,6 +1058,40 @@ export default function StatsPage({
         />
       </div>
 
+      {/* 🔔 로딩 안내 문구 (i18n + 영어 기본 fallback) */}
+      {loading && (
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            marginBottom: 12,
+          }}
+        >
+          <div
+            style={{
+              padding: isMobile ? "8px 12px" : "10px 14px",
+              background: "#fff7cc",
+              border: "1px solid #ffe58f",
+              borderRadius: 10,
+              color: "#7a5d00",
+              fontWeight: 900,
+              fontSize: isMobile ? 16 : 18,
+              lineHeight: 1.25,
+              boxShadow: "0 1px 6px #0000000f",
+              textAlign: "center",
+              maxWidth: 600,
+            }}
+            role="status"
+            aria-live="polite"
+          >
+            ⏳ {t(
+              "loading_hint",
+              "For accurate statistics, please wait about 5 seconds."
+            )}
+          </div>
+        </div>
+      )}
+
       {/* 통계 테이블 */}
       <div
         style={{
@@ -1091,7 +1125,9 @@ export default function StatsPage({
                   style={{
                     padding: "8px 0",
                     cursor: col.key === "rank" ? undefined : "pointer",
-                    ...(col.isIvory ? ivoryCell : { background: "#fff", fontWeight: 700, color: "#333" }),
+                    ...(col.isIvory
+                      ? ivoryCell
+                      : { background: "#fff", fontWeight: 700, color: "#333" }),
                     userSelect: "none",
                   }}
                   onClick={

@@ -202,7 +202,6 @@
   "drag_upload_detail": "Sürükleyip bırakın veya tıklayın (Resimler 6MB'a, Videolar 20MB'a kadar).",
   "saving": "Kaydediliyor...",
   "save": "Kaydet",
-  
   "matchObj": {
     "round": "{{n}}'li Tur",
     "final": "Final",
@@ -222,7 +221,6 @@
     "nextRound": "Sonraki Tur",
     "nextRoundTitle": "{{a}} vs {{b}}"
   },
-
   "resurrection": {
     "title": "Diriliş Turu",
     "instruction": "Soldan <b>1~4 adayı canlandırın</b>,<br>ve sağdan <b>1~4 ilerlemiş adayı düşürün</b>.<br><b>Canlandırılan ve düşürülen aday sayısı eşit olmalıdır.</b><br>Devam etmek istemiyorsanız, Atlaya tıklayın.",
@@ -234,10 +232,8 @@
     "skip": "Atla",
     "confirm": "Onayla"
   },
-
   "notice_title_notice-1": "One Pick Game nedir?",
   "notice_title_notice-2": "Kendi Dünya Kupasını Nasıl Oluşturursun",
-
   "limit_select": "En fazla {{count}} seçebilirsiniz.",
   "only_images_under_6mb": "Yalnızca 6MB altındaki resimler yüklenebilir.",
   "only_videos_under_20mb": "Yalnızca 20MB altındaki videolar yüklenebilir.",
@@ -269,7 +265,6 @@
   "restore": "Geri Yükle",
   "worldcup_title": "Dünya Kupası Başlığı",
   "nickname_rule": "Takma ad en az 3 karakter olmalı ve Korece harfler, harfler, sayılar, tire veya alt çizgi içerebilir.",
-
   "comment": {
     "placeholder": "Yorum yaz.",
     "submit": "Gönder",
@@ -293,8 +288,11 @@
     "banExpiresAt": "Yasak bitiş tarihi",
     "banReason": "Yasak sebebi"
   },
-
   "find_id.enter_nickname": "Takma adınızı girin",
   "find_id.result": "E-posta (ID) adresiniz {{email}}",
-  "find_id.loading": "Aranıyor..."
+  "find_id.loading": "Aranıyor...",
+  "loading_hint": "Daha kararlı bir deneyim için lütfen yaklaşık 5 saniye bekleyin.",
+  "prev_page": "Önceki Sayfa",
+  "next_page": "Sonraki Sayfa",
+  "goto_page": "{{page}}. sayfaya git"
 }

@@ -1,9 +1,10 @@
+// src/components/NoticeBoard.js
 import React, { useEffect, useState } from "react";
 import { supabase } from "../utils/supabaseClient";
 import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
-// 반응형 감지 훅 (FixedCupSection과 동일하게 사용)
+// 반응형 감지 훅 (FixedCupSection과 동일)
 function useIsMobile() {
   const [isMobile, setIsMobile] = useState(window.innerWidth < 900);
   useEffect(() => {
@@ -52,7 +53,7 @@ function NoticeBoard() {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { lang = "en" } = useParams();
-  const isMobile = useIsMobile(); // 반응형 훅 사용
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     async function fetchRecent() {
@@ -78,9 +79,9 @@ function NoticeBoard() {
   return (
     <div
       style={{
-        width: isMobile ? "98vw" : 700,
-        maxWidth: isMobile ? "99vw" : 950,
-        minWidth: isMobile ? 0 : 520,
+        width: isMobile ? "98vw" : "100%",
+        maxWidth: isMobile ? "99vw" : "1160px",
+        minWidth: 0,
         borderRadius: 22,
         background: "linear-gradient(135deg,#181e2a 80%,#1c2335 100%)",
         boxShadow: "0 6px 28px 0 #12203f77",
@@ -94,17 +95,20 @@ function NoticeBoard() {
       }}
     >
       {/* Title */}
-      <div style={{
-        fontWeight: 900,
-        fontSize: isMobile ? 22 : 27,
-        color: "#3faaff",
-        letterSpacing: "-1.2px",
-        marginBottom: 14,
-        width: "100%",
-        lineHeight: 1.09,
-      }}>
+      <div
+        style={{
+          fontWeight: 900,
+          fontSize: isMobile ? 22 : 27,
+          color: "#3faaff",
+          letterSpacing: "-1.2px",
+          marginBottom: 14,
+          width: "100%",
+          lineHeight: 1.09,
+        }}
+      >
         {t("notice_and_comments", "Notice & Recent Comments")}
       </div>
+
       {/* Notices */}
       <div style={{ marginBottom: 8, width: "100%" }}>
         {notices.map(notice => (
@@ -128,40 +132,53 @@ function NoticeBoard() {
             onClick={() => navigate(`/${lang}/notice/${notice.id}`)}
             title={t("see_details", "Click to see details")}
           >
-            <span style={{
-              paddingRight: 8,
-              display: "inline-block",
-              maxWidth: "100%",
-              verticalAlign: "middle"
-            }}>📢 {t(`notice_title_${notice.id}`, notice.title)}</span>
+            <span
+              style={{
+                paddingRight: 8,
+                display: "inline-block",
+                maxWidth: "100%",
+                verticalAlign: "middle"
+              }}
+            >
+              📢 {t(`notice_title_${notice.id}`, notice.title)}
+            </span>
           </div>
         ))}
       </div>
+
       {/* Divider */}
-      <div style={{
-        width: "100%",
-        height: 1,
-        background: "#23355299",
-        margin: "7px 0 6px 0"
-      }} />
+      <div
+        style={{
+          width: "100%",
+          height: 1,
+          background: "#23355299",
+          margin: "7px 0 6px 0"
+        }}
+      />
+
       {/* Recent Comments Title */}
-      <div style={{
-        width: "100%",
-        fontWeight: 800,
-        color: "#7ad6ff",
-        fontSize: 16,
-        margin: "0 0 5px 0"
-      }}>
+      <div
+        style={{
+          width: "100%",
+          fontWeight: 800,
+          color: "#7ad6ff",
+          fontSize: 16,
+          margin: "0 0 5px 0"
+        }}
+      >
         {t("recent_comments", "Recent Comments")}
       </div>
+
       {/* Recent Comments List */}
-      <div style={{
-        width: "100%",
-        display: "flex",
-        flexDirection: "column",
-        gap: 10,
-        maxHeight: "none",
-      }}>
+      <div
+        style={{
+          width: "100%",
+          display: "flex",
+          flexDirection: "column",
+          gap: 10,
+          maxHeight: "none",
+        }}
+      >
         {loading ? (
           <div style={{ color: "#aaa", fontSize: 15 }}>
             {t("loading", "Loading...")}
@@ -171,67 +188,120 @@ function NoticeBoard() {
             {t("no_comments", "No comments")}
           </div>
         ) : (
-          recentComments.map(cmt => (
-            <div
-              key={cmt.id}
-              style={{
-                background: "#213046",
-                borderRadius: 7,
-                padding: "7px 12px 7px 10px",
-                color: "#fff",
-                fontSize: 16,
-                fontWeight: 800,
-                boxShadow: "0 1px 7px #1676ed10",
-                cursor: "pointer",
-                marginBottom: 1,
-                display: "flex",
-                alignItems: "center",
-                minHeight: "auto",
-                width: "100%",
-                gap: 16
-              }}
-              title={`${cmt.content} / ${cmt.nickname} / ${cmt.cupTitle}`}
-              onClick={() => window.location.href = `/${lang}/stats/${cmt.cup_id}`}
-            >
-              {/* Comment Content */}
-              <span style={{
-                color: "#fff",
-                fontWeight: 900,
-                width: 90,
-                whiteSpace: "nowrap",
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-                flex: "0 0 auto"
-              }}>
-                {cmt.content}
-              </span>
-              {/* Nickname */}
-              <span style={{
-                color: "#ffe381",
-                fontWeight: 700,
-                width: 80,
-                whiteSpace: "nowrap",
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-                flex: "0 0 auto"
-              }}>
-                {cmt.nickname}
-              </span>
-              {/* Worldcup Title */}
-              <span style={{
-                color: "#a3d8ff",
-                fontWeight: 500,
-                flex: "1 1 0%",
-                minWidth: 100,
-                whiteSpace: "nowrap",
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-                textAlign: "left"
-              }}>
-                {cmt.cupTitle}
-              </span>
-            </div>
-          ))
+          recentComments.map(cmt => {
+            const onClick = () => (window.location.href = `/${lang}/stats/${cmt.cup_id}`);
+
+            // 공통 행 스타일
+            const rowBase = {
+              background: "#213046",
+              borderRadius: 7,
+              padding: isMobile ? "9px 12px" : "9px 14px",
+              color: "#fff",
+              fontSize: 16,
+              fontWeight: 800,
+              boxShadow: "0 1px 7px #1676ed10",
+              cursor: "pointer",
+              width: "100%",
+            };
+
+            if (isMobile) {
+              // 모바일: 내용 2줄, 아래 메타 라인
+              return (
+                <div
+                  key={cmt.id}
+                  style={{ ...rowBase, display: "flex", flexDirection: "column", gap: 6 }}
+                  title={`${cmt.content} / ${cmt.nickname} / ${cmt.cupTitle}`}
+                  onClick={onClick}
+                >
+                  <span
+                    style={{
+                      fontWeight: 900,
+                      lineHeight: 1.3,
+                      display: "-webkit-box",
+                      WebkitLineClamp: 2,
+                      WebkitBoxOrient: "vertical",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                    }}
+                  >
+                    {cmt.content}
+                  </span>
+                  <span
+                    style={{
+                      fontWeight: 700,
+                      color: "#cde9ff",
+                      fontSize: 14,
+                      lineHeight: 1.25,
+                      whiteSpace: "nowrap",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                    }}
+                  >
+                    <span style={{ color: "#ffe381", fontWeight: 800 }}>{cmt.nickname}</span>
+                    {" • "}
+                    <span style={{ color: "#a3d8ff", fontWeight: 600 }}>{cmt.cupTitle}</span>
+                  </span>
+                </div>
+              );
+            }
+
+            // 데스크톱: grid 3열(내용 넓게 + 2줄 표시)
+            return (
+              <div
+                key={cmt.id}
+                style={{
+                  ...rowBase,
+                  display: "grid",
+                  gridTemplateColumns: "minmax(360px, 2.2fr) 120px minmax(220px, 1.4fr)",
+                  alignItems: "center",
+                  columnGap: 16
+                }}
+                title={`${cmt.content} / ${cmt.nickname} / ${cmt.cupTitle}`}
+                onClick={onClick}
+              >
+                {/* Comment Content (최대 2줄) */}
+                <span
+                  style={{
+                    fontWeight: 900,
+                    lineHeight: 1.3,
+                    display: "-webkit-box",
+                    WebkitLineClamp: 2,
+                    WebkitBoxOrient: "vertical",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                  }}
+                >
+                  {cmt.content}
+                </span>
+
+                {/* Nickname */}
+                <span
+                  style={{
+                    color: "#ffe381",
+                    fontWeight: 700,
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                  }}
+                >
+                  {cmt.nickname}
+                </span>
+
+                {/* Worldcup Title */}
+                <span
+                  style={{
+                    color: "#a3d8ff",
+                    fontWeight: 500,
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                  }}
+                >
+                  {cmt.cupTitle}
+                </span>
+              </div>
+            );
+          })
         )}
       </div>
     </div>

@@ -148,6 +148,7 @@
   "createWorldcup": "Créer un Worldcup",
   "uploadZone": "Zone de téléversement",
   "worldcupTitle": "Titre du Worldcup",
+  "worldcup_title": "Titre du Worldcup",
   "enter_title": "Entrez un titre",
   "descriptionOptional": "Description (facultatif)",
   "candidateList": "Liste des candidats",
@@ -225,7 +226,7 @@
     "banExpiresAt": "Date de fin de bannissement",
     "banReason": "Raison du bannissement"
   },
-  "match": {
+  "matchObj": {
     "round": "Tour de {{n}}",
     "final": "Finale",
     "semiFinal": "Demi-finale",
@@ -256,5 +257,31 @@
     "confirm": "Confirmer"
   },
   "notice_title_notice-1": "Qu'est-ce que One Pick Game ?",
-  "notice_title_notice-2": "Comment créer votre propre Worldcup ?"
+  "notice_title_notice-2": "Comment créer votre propre Worldcup ?",
+  "only_videos_under_20mb": "Seules les vidéos jusqu'à 20 Mo peuvent être téléversées.",
+  "unsupported_file_type": "Type de fichier non pris en charge.",
+  "unsupported_file_type_detail": "Type de fichier non pris en charge. (Images : JPG, PNG, GIF, SVG, WEBP, AVIF / Vidéos : MP4, WEBM, MOV)",
+  "image_size_limit_6mb": "Max. 6 Mo",
+  "worldcup_saved_id": "Worldcup enregistré !\nID : {{id}}",
+  "save_failed_try_again": "Échec de l'enregistrement. Veuillez réessayer.",
+  "create_worldcup": "Créer un Worldcup",
+  "login_required_create_worldcup": "Veuillez vous connecter pour créer un Worldcup.",
+  "banned_from_creating_worldcups": "Vous êtes interdit de créer des Worldcups.",
+  "ban_expires_at": "La suspension expire le",
+  "ban_reason": "Raison du bannissement",
+  "max_upload_files": "Vous pouvez téléverser jusqu'à {{count}} fichiers.",
+  "add_at_least_two_candidates": "Veuillez ajouter au moins deux candidats.",
+  "enter_name_for_all_candidates": "Veuillez saisir un nom pour chaque candidat.",
+  "worldcup_created": "Worldcup créé !",
+  "image_video_url_optional": "URL image/vidéo (facultatif)",
+  "image_video_upload_limit": "Images : jusqu'à 6 Mo, Vidéos : jusqu'à 20 Mo.",
+  "image_load_failed": "Échec du chargement de l'image.",
+  "error_no_data": "Aucune donnée.",
+  "backupAll": "Sauvegarde complète",
+  "restore": "Restaurer",
+  "nickname_rule": "Le pseudo doit contenir au moins 3 caractères (lettres coréennes, lettres, chiffres, tiret ou souligné).",
+  "loading_hint": "Pour des statistiques précises, veuillez patienter environ 5 secondes.",
+  "prev_page": "Page précédente",
+  "next_page": "Page suivante",
+  "goto_page": "Aller à la page {{page}}"
 }

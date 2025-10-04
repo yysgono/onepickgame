@@ -202,7 +202,6 @@
   "drag_upload_detail": "Dateien ziehen oder klicken zum Hochladen (Bilder bis 6 MB, Videos bis 20 MB).",
   "saving": "Wird gespeichert...",
   "save": "Speichern",
-
   "matchObj": {
     "round": "Runde der {{n}}",
     "final": "Finale",
@@ -221,8 +220,7 @@
     "bye": "{{count}} Kandidaten rücken automatisch mit Freilos vor!",
     "nextRound": "Nächste Runde",
     "nextRoundTitle": "{{a}} gegen {{b}}"
-    },
-
+  },
   "resurrection": {
     "title": "Wiederbelebungsrunde",
     "instruction": "Wähle <b>1–4 Kandidaten zur Wiederbelebung</b> links und <b>1–4 fortgeschrittene Kandidaten zum Austauschen</b> rechts aus.<br><b>Die Anzahl der wiederbelebten und entfernten Kandidaten muss gleich sein.</b><br>Wenn du nicht fortfahren willst, klicke auf Überspringen.",
@@ -234,10 +232,8 @@
     "skip": "Überspringen",
     "confirm": "Bestätigen"
   },
-
   "notice_title_notice-1": "Was ist One Pick Game?",
   "notice_title_notice-2": "Wie erstellt man seinen eigenen Worldcup?",
-
   "limit_select": "Du kannst bis zu {{count}} auswählen.",
   "only_images_under_6mb": "Nur Bilder bis 6 MB können hochgeladen werden.",
   "only_videos_under_20mb": "Nur Videos bis 20 MB können hochgeladen werden.",
@@ -269,7 +265,6 @@
   "restore": "Wiederherstellen",
   "worldcup_title": "Worldcup-Titel",
   "nickname_rule": "Spitzname: mind. 3 Zeichen. Erlaubt sind Koreanisch, Buchstaben, Zahlen, Bindestrich oder Unterstrich.",
-
   "comment": {
     "placeholder": "Kommentar schreiben.",
     "submit": "Absenden",
@@ -293,8 +288,11 @@
     "banExpiresAt": "Ende der Sperre",
     "banReason": "Sperrgrund"
   },
-
   "find_id.enter_nickname": "Gib deinen Spitznamen ein",
   "find_id.result": "Deine E-Mail (ID) lautet {{email}}",
-  "find_id.loading": "Wird gesucht..."
+  "find_id.loading": "Wird gesucht...",
+  "loading_hint": "Für genaue Statistiken warte bitte ca. 5 Sekunden.",
+  "prev_page": "Vorherige Seite",
+  "next_page": "Nächste Seite",
+  "goto_page": "Zu Seite {{page}}"
 }

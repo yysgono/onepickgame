@@ -296,5 +296,10 @@
 
   "find_id.enter_nickname": "Enter your nickname",
   "find_id.result": "Your email (ID) is {{email}}",
-  "find_id.loading": "Finding..."
+  "find_id.loading": "Finding...",
+
+  "loading_hint": "For accurate statistics, please wait about 5 seconds.",
+  "prev_page": "Previous page",
+  "next_page": "Next page",
+  "goto_page": "Go to page {{page}}"
 }

@@ -202,7 +202,7 @@
   "drag_upload_detail": "ドラッグ＆ドロップまたはクリックでファイルをアップロード（画像最大6MB、動画最大20MB）",
   "saving": "保存中...",
   "save": "保存",
-    "matchObj": {
+  "matchObj": {
     "round": "{{n}} 強",
     "final": "決勝戦",
     "semiFinal": "準決勝",
@@ -221,7 +221,6 @@
     "nextRound": "次のラウンド",
     "nextRoundTitle": "{{a}} vs {{b}}"
   },
-
   "resurrection": {
     "title": "復活ラウンド",
     "instruction": "左側から<b>1〜4名の復活候補</b>を、右側から<b>1〜4名の進出候補を除外</b>してください。<br><b>復活と除外の人数は同じである必要があります。</b><br>スキップしたい場合は「スキップ」を押してください。",
@@ -233,10 +232,8 @@
     "skip": "スキップ",
     "confirm": "確定"
   },
-
   "notice_title_notice-1": "One Pick Gameとは？",
   "notice_title_notice-2": "自分だけのワールドカップの作り方",
-
   "limit_select": "{{count}} 個まで選択できます。",
   "only_images_under_6mb": "6MB以下の画像のみアップロード可能です。",
   "only_videos_under_20mb": "20MB以下の動画のみアップロード可能です。",
@@ -268,7 +265,6 @@
   "restore": "復元",
   "worldcup_title": "ワールドカップタイトル",
   "nickname_rule": "ニックネームは3文字以上で、韓国語、英字、数字、ハイフン、またはアンダースコアを使用できます。",
-
   "comment": {
     "placeholder": "コメントを書く",
     "submit": "送信",
@@ -292,8 +288,11 @@
     "banExpiresAt": "利用停止解除日",
     "banReason": "利用停止理由"
   },
-
   "find_id.enter_nickname": "ニックネームを入力してください",
   "find_id.result": "あなたのメールアドレス（ID）は {{email}} です",
-  "find_id.loading": "検索中..."
+  "find_id.loading": "検索中...",
+  "loading_hint": "より正確な結果のため、約5秒お待ちください。",
+  "prev_page": "前のページ",
+  "next_page": "次のページ",
+  "goto_page": "ページ{{page}}へ"
 }

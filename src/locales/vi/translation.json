@@ -290,5 +290,9 @@
   },
   "find_id.enter_nickname": "Nhập biệt danh của bạn",
   "find_id.result": "Email (ID) của bạn là {{email}}",
-  "find_id.loading": "Đang tìm..."
+  "find_id.loading": "Đang tìm...",
+  "loading_hint": "Để trải nghiệm ổn định hơn, vui lòng đợi khoảng 5 giây.",
+  "prev_page": "Trang trước",
+  "next_page": "Trang sau",
+  "goto_page": "Đi tới trang {{page}}"
 }

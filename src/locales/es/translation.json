@@ -290,5 +290,9 @@
   },
   "find_id.enter_nickname": "Ingrese su apodo",
   "find_id.result": "Su correo electrónico (ID) es {{email}}",
-  "find_id.loading": "Buscando..."
+  "find_id.loading": "Buscando...",
+  "loading_hint": "Para obtener estadísticas precisas, espere unos 5 segundos, por favor.",
+  "prev_page": "Página anterior",
+  "next_page": "Página siguiente",
+  "goto_page": "Ir a la página {{page}}"
 }

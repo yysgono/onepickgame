@@ -233,7 +233,6 @@
   "restore": "Restaurar",
   "worldcup_title": "Título do Worldcup",
   "nickname_rule": "O apelido deve ter 3+ caracteres usando letras coreanas, letras, números, hífen ou sublinhado.",
-
   "comment": {
     "placeholder": "Escreva um comentário.",
     "submit": "Enviar",
@@ -257,7 +256,6 @@
     "banExpiresAt": "Data de desbanimento",
     "banReason": "Razão do banimento"
   },
-
   "matchObj": {
     "round": "Rodada de {{n}}",
     "final": "Final",
@@ -277,10 +275,9 @@
     "nextRound": "Próxima rodada",
     "nextRoundTitle": "{{a}} vs {{b}}"
   },
-
   "resurrection": {
     "title": "Rodada de Ressurreição",
-    "instruction": "Selecione <b>1~4 candidatos para reviver</b> à esquerda e <b>1~4 candidatos avançados para remover</b> à direita.<br>O número de revividos e removidos deve ser igual.<br>Se não quiser continuar, clique em Pular.",
+    "instruction": "Selecione <b>1~4 candidatos para reviver</b> à esquerda e <b>1~4 candidatos avançados para remover</b> à direita.<br><b>O número de revividos e removidos deve ser igual.</b><br>Se não quiser continuar, clique em Pular.",
     "note": "(Isso não será contado nas estatísticas. Apenas para cálculo rápido de resultado.)",
     "eliminated": "Candidatos Eliminados",
     "advanced": "Candidatos Avançados (Top 16)",
@@ -289,11 +286,10 @@
     "skip": "Pular",
     "confirm": "Confirmar"
   },
-
   "notice_title_notice-1": "O que é o One Pick Game?",
   "notice_title_notice-2": "Como criar seu próprio Worldcup",
-
-  "find_id.enter_nickname": "Digite seu apelido",
-  "find_id.result": "Seu e-mail (ID) é {{email}}",
-  "find_id.loading": "Procurando..."
+  "loading_hint": "Para resultados mais precisos, aguarde cerca de 5 segundos.",
+  "prev_page": "Página anterior",
+  "next_page": "Próxima página",
+  "goto_page": "Ir para a página {{page}}"
 }

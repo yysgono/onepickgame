@@ -272,5 +272,10 @@
 
   "find_id.enter_nickname": "أدخل لقبك",
   "find_id.result": "بريدك الإلكتروني (ID) هو {{email}}",
-  "find_id.loading": "جارٍ البحث..."
+  "find_id.loading": "جارٍ البحث...",
+
+  "loading_hint": "للحصول على إحصاءات دقيقة، يُرجى الانتظار حوالي 5 ثوانٍ.",
+  "prev_page": "الصفحة السابقة",
+  "next_page": "الصفحة التالية",
+  "goto_page": "الانتقال إلى الصفحة {{page}}"
 }

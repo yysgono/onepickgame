@@ -296,5 +296,9 @@
 
   "find_id.enter_nickname": "Masukkan nama panggilan Anda",
   "find_id.result": "Email (ID) Anda adalah {{email}}",
-  "find_id.loading": "Mencari..."
+  "find_id.loading": "Mencari...",
+  "loading_hint": "Untuk akurasi, mohon tunggu sekitar 5 detik.",
+  "prev_page": "Halaman sebelumnya",
+  "next_page": "Halaman berikutnya",
+  "goto_page": "Ke halaman {{page}}"
 }
