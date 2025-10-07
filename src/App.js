@@ -33,9 +33,7 @@ import PrivacyPolicy from "./components/PrivacyPolicy";
 import TermsOfService from "./components/TermsOfService";
 import Footer from "./components/Footer";
 import SuggestionsBoard from "./components/SuggestionsBoard";
-import NoticePage from "./components/NoticePage";
 import SEOManager from "./seo/SEOManager";
-import NoticeDetail from "./components/NoticeDetail";
 import AdGuard from "./ads/AdGuard";
 
 import DePage from "./pages/de";
@@ -62,7 +60,6 @@ import {
 } from "./utils/supabaseWorldcupApi";
 import { supabase } from "./utils/supabaseClient";
 
-// ⬇️ 홈(:lang)에도 canonical/hreflang용 Seo 사용
 import Seo from "./seo/Seo";
 
 function useIsMobile() {
@@ -82,7 +79,6 @@ function useIsMobile() {
 }
 
 function getLangPath(i18n, path = "") {
-  // 기본 언어 영어
   const lang = (i18n.language || "en").split("-")[0];
   if (path.startsWith("/")) path = path.slice(1);
   return `/${lang}${path ? "/" + path : ""}`;
@@ -161,19 +157,15 @@ function LanguageWrapper(props) {
   }
 }
 
-// ✅ 라우트 변경 시 스크롤 최상단으로 초기화
 function ScrollToTopOnRouteChange() {
   const location = useLocation();
   useEffect(() => {
     try {
-      // 브라우저 기본 스크롤 복원 비활성화
       if ("scrollRestoration" in window.history) {
         window.history.scrollRestoration = "manual";
       }
     } catch {}
-    // 최상단으로 이동
     window.scrollTo({ top: 0, left: 0, behavior: "auto" });
-    // 사파리 호환
     document.documentElement.scrollTop = 0;
     document.body.scrollTop = 0;
   }, [location.pathname, location.search, location.hash]);
@@ -181,7 +173,7 @@ function ScrollToTopOnRouteChange() {
 }
 
 function App() {
-  useIsMobile(); // 필요 시 반응형 값 사용
+  useIsMobile();
   const [worldcupList, setWorldcupList] = useState([]);
   const { t, i18n } = useTranslation();
   const [user, setUser] = useState(null);
@@ -271,12 +263,9 @@ function App() {
     }
   }, [i18n]);
 
-  // Header가 경로 보존 네비게이션을 수행하므로,
-  // 여기서는 언어 상태와 로컬 스토리지만 갱신해주면 됩니다.
   function handleLangChange(lng, _options) {
     i18n.changeLanguage(lng);
     localStorage.setItem("onepickgame_lang", lng);
-    // 네비게이션은 Header에서 처리
   }
 
   function handleBackup() {
@@ -311,7 +300,6 @@ function App() {
     e.target.value = "";
   }
 
-  // --------- 래퍼들: navigate 사용으로 SPA 이동 ---------
   function MyWorldcupsWrapper() {
     const navigate = useNavigate();
     const myId = user?.id;
@@ -443,7 +431,6 @@ function App() {
       langMatch ? langMatch[1] : i18n.language || "en"
     ).split("-")[0];
 
-    // ⬇️ 홈 타이틀/설명 다국어화 맵
     const titleMap = {
       en: "OnePickGame - Create and play worldcups",
       ko: "원픽게임 - 이상형 월드컵 해외 사이트",
@@ -542,9 +529,7 @@ function App() {
           candidates={cup.data}
           onSelect={(roundOrCandidate) => {
             if (typeof roundOrCandidate === "number") {
-              navigate(
-                getLangPath(i18n, `match/${cup.id}/${roundOrCandidate}`)
-              );
+              navigate(getLangPath(i18n, `match/${cup.id}/${roundOrCandidate}`));
             } else if (
               typeof roundOrCandidate === "object" &&
               roundOrCandidate?.id
@@ -678,7 +663,6 @@ function App() {
       );
     }
 
-    // ✅ 구 경로(/:lang/stats/:id)로 들어오면 결과 페이지로 리다이렉트
     function RedirectStatsToResult() {
       const { lang, id } = useParams();
       return <Navigate to={`/${lang}/result/${id}`} replace />;
@@ -702,22 +686,17 @@ function App() {
           />
         </div>
 
-        {/* ✅ 광고 차단 가드: 특정 페이지 & 관리자에서 전역 광고 숨김 */}
         <AdGuard isAdmin={isAdmin} />
 
         <div className="main-content-box">
           <Routes>
-            {/* ✅ 추가된 루트(언어 없는) 고정 문서 라우트 */}
             <Route path="/privacy-policy" element={<PrivacyPolicy />} />
             <Route path="/terms-of-service" element={<TermsOfService />} />
             <Route
               path="/suggestions-board"
               element={<SuggestionsBoard user={user} isAdmin={isAdmin} />}
             />
-            <Route path="/notice" element={<NoticePage />} />
-            <Route path="/notice/:id" element={<NoticeDetail />} />
 
-            {/* 언어 없는 기타 경로 보정 */}
             <Route
               path="/signup"
               element={<Navigate to="/en/signup" replace />}
@@ -731,7 +710,6 @@ function App() {
               element={<Navigate to="/en/find-pw" replace />}
             />
 
-            {/* 각 언어별 홈 경로 */}
             <Route
               path="/:lang"
               element={
@@ -785,7 +763,6 @@ function App() {
               element={<ResultPage worldcupList={worldcupList} />}
             />
 
-            {/* ✅ 구 경로 리다이렉트 */}
             <Route path="/:lang/stats/:id" element={<RedirectStatsToResult />} />
 
             <Route path="/:lang/worldcup-maker" element={<WorldcupMakerWrapper />} />
@@ -818,7 +795,6 @@ function App() {
             <Route path="/:lang/find-pw" element={<FindPwBox />} />
             <Route path="/:lang/reset-password" element={<Navigate to="/en" />} />
 
-            {/* 아래 세 페이지는 각 컴포넌트 내부에서 Seo 처리됨 (언어 경로 버전) */}
             <Route path="/:lang/privacy-policy" element={<PrivacyPolicy />} />
             <Route path="/:lang/terms-of-service" element={<TermsOfService />} />
             <Route
@@ -832,11 +808,8 @@ function App() {
               element={<RecentWorldcupsWrapper />}
             />
 
-            {/* 공지 (언어 경로) */}
-            <Route path="/:lang/notice" element={<NoticePage />} />
-            <Route path="/:lang/notice/:id" element={<NoticeDetail />} />
+            {/* ✅ Notice 관련 경로 완전 삭제됨 */}
 
-            {/* 기본 라우팅 */}
             <Route path="/" element={<Navigate to="/en" replace />} />
             <Route path="*" element={<Navigate to="/en" replace />} />
           </Routes>
@@ -892,7 +865,6 @@ function App() {
       <div style={{ position: "relative", zIndex: 2 }}>
         <div className="main-content-outer" style={{ paddingTop: 190, margin: 0 }}>
           <Router>
-            {/* ✅ 라우트 변경 시 스크롤 초기화 */}
             <ScrollToTopOnRouteChange />
             <AppRoutes />
             <Footer />

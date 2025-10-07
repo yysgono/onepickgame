@@ -68,15 +68,15 @@ export default function ResultPage({ worldcupList }) {
   const { id } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation(); // ★ i18n도 가져와서 폴백에 사용
   const [, startTransition] = useTransition();
 
   // 레이아웃: 본문 maxWidth
   const MAIN = 1200;
 
-  // 언어코드
+  // 언어코드: URL(/:lang/...) 우선, 없으면 i18n.language 사용
   const langMatch = location.pathname.match(/^\/([a-z]{2})(\/|$)/);
-  const lang = langMatch ? langMatch[1] : "ko";
+  const lang = langMatch ? langMatch[1] : (i18n.language?.split("-")[0] || "ko");
 
   // 통계 전용 모드: /:lang/stats/:id 경로일 때
   const isStatsOnly = /\/stats\/\d+/.test(location.pathname);
@@ -368,7 +368,8 @@ export default function ResultPage({ worldcupList }) {
         {/* 하단: 에피데믹 사운드 래퍼럴 */}
         <div style={{ width: "100%", maxWidth: 900, margin: "16px auto 40px" }}>
           <Suspense fallback={<div style={{ height: 48 }} />}>
-            <ReferralBanner lang={typeof window !== "undefined" ? (navigator.language || "en") : "en"} />
+            {/* ✅ navigator.language 대신 URL에서 구한 lang을 전달 */}
+            <ReferralBanner lang={lang} />
           </Suspense>
         </div>
       </div>
