@@ -1,4 +1,3 @@
-// src/components/StatsRoutePage.js
 import React from "react";
 import { useParams, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";

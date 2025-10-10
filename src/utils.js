@@ -1,9 +1,11 @@
+// src/utils.js
 import { supabase } from "./utils/supabaseClient";
 
-// ---------------------- YouTube 유틸 ----------------------
+/* ======================= YouTube 유틸 ======================= */
 export function getYoutubeId(url = "") {
   if (!url) return "";
-  const reg = /(?:youtube\.com\/.*[?&]v=|youtube\.com\/(?:v|embed)\/|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
+  const reg =
+    /(?:youtube\.com\/.*[?&]v=|youtube\.com\/(?:v|embed)\/|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
   const match = url.match(reg);
   return match ? match[1] : "";
 }
@@ -21,24 +23,26 @@ export function getYoutubeEmbed(url = "") {
   return "";
 }
 
-// ---------------------- Recent Worldcups (localStorage) ----------------------
+/* ================= Recent Worldcups (localStorage) ================= */
 export function pushRecentWorldcup(id) {
   if (!id || typeof window === "undefined") return;
   try {
     const KEY = "onepickgame_recentWorldcups";
     const arr = JSON.parse(localStorage.getItem(KEY) || "[]");
-    const next = [id, ...arr.filter((x) => String(x) !== String(id))].slice(0, 30);
+    const next = [id, ...arr.filter((x) => String(x) !== String(id))].slice(
+      0,
+      30
+    );
     localStorage.setItem(KEY, JSON.stringify(next));
   } catch {}
 }
 
-// ---------------------- Guest / User ID ----------------------
+/* ===================== Guest / User ID ===================== */
 export function getOrCreateGuestId() {
   let guestId = localStorage.getItem("guest_id");
   if (!guestId) {
     guestId =
-      crypto.randomUUID?.() ||
-      Math.random().toString(36).slice(2) + Date.now();
+      crypto.randomUUID?.() || Math.random().toString(36).slice(2) + Date.now();
     localStorage.setItem("guest_id", guestId);
   }
   return guestId;
@@ -49,7 +53,7 @@ export async function getUserOrGuestId() {
   else return { user_id: null, guest_id: getOrCreateGuestId() };
 }
 
-// ---------------------- Worldcup CRUD ----------------------
+/* ===================== Worldcup CRUD ===================== */
 export async function getWorldcupGames() {
   const { data, error } = await supabase
     .from("worldcups")
@@ -77,10 +81,7 @@ export async function addWorldcupGame(cup) {
   return data.id;
 }
 export async function updateWorldcupGame(id, updates) {
-  const { error } = await supabase
-    .from("worldcups")
-    .update(updates)
-    .eq("id", id);
+  const { error } = await supabase.from("worldcups").update(updates).eq("id", id);
   if (error) throw error;
   return true;
 }
@@ -90,7 +91,7 @@ export async function deleteWorldcupGame(id) {
   return true;
 }
 
-// ---------------------- winner_logs / stats ----------------------
+/* ================ winner_logs / stats ================ */
 export async function deleteOldWinnerLogAndStats(cup_id) {
   const { user_id, guest_id } = await getUserOrGuestId();
   let deleteQuery = supabase.from("winner_logs").delete().eq("cup_id", cup_id);
@@ -178,12 +179,48 @@ export async function getMyWinnerStats({ cup_id } = {}) {
   return data;
 }
 
+/* ================== 통계 가져오기 (캐시 + 페이지네이션) ================== */
 /**
- * 누적 통계 가져오기 (기간 지정 가능) — ★ 전체 페이지네이션으로 모두 집계
- * PostgREST 기본 limit(1000) 때문에 누락되는 레코드가 생기지 않도록
- * 1,000개 단위로 끝까지 불러와 합산합니다.
+ * 누적 통계 가져오기 (기간 지정 가능)
+ * - 1,000개 단위로 끝까지 불러와 클라이언트에서 합산
+ * - 5분 TTL 캐시(sessionStorage 우선, localStorage 보조)
  */
+const STATS_CACHE_TTL = 5 * 60 * 1000; // 5분
+
+function readStatsCache(key) {
+  try {
+    const raw = sessionStorage.getItem(key) || localStorage.getItem(key);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    if (!parsed || typeof parsed !== "object") return null;
+    if (Date.now() - parsed.savedAt > STATS_CACHE_TTL) return null;
+    return parsed.data || null;
+  } catch {
+    return null;
+  }
+}
+function writeStatsCache(key, data) {
+  try {
+    const payload = JSON.stringify({ savedAt: Date.now(), data });
+    sessionStorage.setItem(key, payload);
+    try {
+      localStorage.setItem(key, payload);
+    } catch {}
+  } catch {}
+}
+
 export async function fetchWinnerStatsFromDB(cup_id, since) {
+  const sinceKey =
+    since && typeof since === "object" && since.from && since.to
+      ? `from:${since.from}|to:${since.to}`
+      : typeof since === "string"
+      ? `since:${since}`
+      : "all";
+  const cacheKey = `stats:${cup_id}:${sinceKey}:v3`;
+
+  const cached = readStatsCache(cacheKey);
+  if (cached) return cached;
+
   const PAGE = 1000;
   let from = 0;
   let to = PAGE - 1;
@@ -193,11 +230,9 @@ export async function fetchWinnerStatsFromDB(cup_id, since) {
     let query = supabase
       .from("winner_stats")
       .select(
-        "candidate_id,name,image,win_count,match_wins,match_count,total_games,user_id,guest_id,created_at",
-        { count: "exact" }
+        "candidate_id,name,image,win_count,match_wins,match_count,total_games,user_id,guest_id,created_at"
       )
       .eq("cup_id", cup_id)
-      // 최신부터 읽으면 “최근 게임”이 먼저 잡힘
       .order("created_at", { ascending: false })
       .range(from, to);
 
@@ -210,11 +245,9 @@ export async function fetchWinnerStatsFromDB(cup_id, since) {
     const { data, error } = await query;
     if (error) throw error;
 
-    allRows.push(...(data || []));
+    if (data && data.length) allRows.push(...data);
 
-    // 마지막 페이지면 종료
     if (!data || data.length < PAGE) break;
-
     from += PAGE;
     to += PAGE;
   }
@@ -232,7 +265,7 @@ export async function fetchWinnerStatsFromDB(cup_id, since) {
         match_wins: 0,
         match_count: 0,
         total_games: 0,
-        user_win_count: 0, // 회원전용 탭용
+        user_win_count: 0, // 회원 전용 탭용
       };
     }
     statsMap[id].win_count += row.win_count || 0;
@@ -242,10 +275,12 @@ export async function fetchWinnerStatsFromDB(cup_id, since) {
     if (row.user_id) statsMap[id].user_win_count += row.win_count || 0;
   }
 
-  return Object.values(statsMap);
+  const result = Object.values(statsMap);
+  writeStatsCache(cacheKey, result);
+  return result;
 }
 
-// ---------------------- 계산 함수 ----------------------
+/* ================ 계산 함수 ================ */
 export function calcStatsFromMatchHistory(candidates, winner, matchHistory) {
   const statsMap = {};
   candidates.forEach((c) => {
@@ -289,3 +324,7 @@ export function getMostWinnerFromDB(statsArr, cupData) {
   }
   return mostWinner;
 }
+
+/* ===== 호환성 별칭(다른 파일에서 불러와도 에러 안 나도록) ===== */
+export const fetchWinnerStatsFast = fetchWinnerStatsFromDB;
+export const fetchWinnerStatsFromDB_SLOW = fetchWinnerStatsFromDB;

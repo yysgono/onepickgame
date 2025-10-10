@@ -1,11 +1,8 @@
-// src/components/StatsPage.js
 import React, {
   useState,
   useEffect,
   useCallback,
   useMemo,
-  useDeferredValue,
-  useTransition,
   lazy,
   Suspense,
   useRef,
@@ -29,19 +26,6 @@ const PERIODS = [
 ];
 
 const CACHE_TTL_MS = 5 * 60 * 1000; // 5분 캐시
-
-const ric =
-  typeof window !== "undefined" && window.requestIdleCallback
-    ? window.requestIdleCallback.bind(window)
-    : (cb) => setTimeout(() => cb({ timeRemaining: () => 50 }), 150);
-
-function safeNow() {
-  try {
-    return Date.now();
-  } catch {
-    return new Date().getTime();
-  }
-}
 
 function percent(n, d) {
   if (!d) return "-";
@@ -77,46 +61,13 @@ function getRangeForAllOrPeriod(period) {
   return null; // ALL: created_at 조건 자체를 주지 않음
 }
 
-// 일부 예전 레코드 보정 + 표시/검색용 필드 사전 계산
+// 표시/검색/정렬용 필드 사전 계산 (가볍게)
 function normalizeStats(arr) {
   const out = (arr || []).map((r) => {
     const win_count = Number(r.win_count || 0);
     const match_wins = Number(r.match_wins || 0);
-    const match_count_raw = Number(r.match_count || 0);
-    const total_games_raw = Number(r.total_games || 0);
-
-    const match_count = Math.max(match_count_raw, match_wins, win_count);
-
-    // total_games가 0인데 기록이 있다면 최소 1
-    const hasAny = win_count > 0 || match_wins > 0 || match_count_raw > 0;
-    const total_games = total_games_raw > 0 ? total_games_raw : hasAny ? 1 : 0;
-
-    const user_win_count = Number(r.user_win_count || 0);
-    const user_match_wins = Number(r.user_match_wins || 0);
-    const user_match_count_raw = Number(r.user_match_count || 0);
-    const user_total_games_raw = Number(r.user_total_games || 0);
-    const user_match_count = Math.max(
-      user_match_count_raw,
-      user_match_wins,
-      user_win_count
-    );
-    const userHasAny =
-      user_win_count > 0 ||
-      user_match_wins > 0 ||
-      user_match_count_raw > 0;
-    const user_total_games =
-      user_total_games_raw > 0 ? user_total_games_raw : userHasAny ? 1 : 0;
-
-    const display = {
-      winRateAll: percent(win_count, total_games),
-      winRateUser: percent(user_win_count, user_total_games),
-      matchRateAll: percent(match_wins, match_count),
-      matchRateUser: percent(user_match_wins, user_match_count),
-    };
-
-    // 정렬용 숫자 승률 사전 계산
-    const win_rate_num = total_games ? win_count / total_games : 0;
-    const match_win_rate_num = match_count ? match_wins / match_count : 0;
+    const match_count = Number(r.match_count || 0);
+    const total_games = Number(r.total_games || 0);
 
     return {
       ...r,
@@ -124,27 +75,26 @@ function normalizeStats(arr) {
       match_wins,
       match_count,
       total_games,
-      user_win_count,
-      user_match_wins,
-      user_match_count,
-      user_total_games,
       _name_lc: (r.name || "").toLowerCase(),
-      _display: display,
-      win_rate_num,
-      match_win_rate_num,
+      _display: {
+        winRateAll: percent(win_count, total_games),
+        matchRateAll: percent(match_wins, match_count),
+      },
+      win_rate_num: total_games ? win_count / total_games : 0,
+      match_win_rate_num: match_count ? match_wins / match_count : 0,
     };
   });
   return out;
 }
 
-/* ========================= 세션/로컬 캐시 ========================= */
+/* ========================= 세션 캐시 ========================= */
 function readCache(key) {
   try {
-    const raw = sessionStorage.getItem(key) || localStorage.getItem(key);
+    const raw = sessionStorage.getItem(key);
     if (!raw) return null;
     const parsed = JSON.parse(raw);
     if (!parsed || typeof parsed !== "object") return null;
-    if (safeNow() - parsed.savedAt > CACHE_TTL_MS) return null;
+    if (Date.now() - parsed.savedAt > CACHE_TTL_MS) return null;
     return parsed.data || null;
   } catch {
     return null;
@@ -152,15 +102,8 @@ function readCache(key) {
 }
 function writeCache(key, data) {
   try {
-    const payload = JSON.stringify({ savedAt: safeNow(), data });
-    // session 먼저 써서 탭 간에도 체감 빠르게
+    const payload = JSON.stringify({ savedAt: Date.now(), data });
     sessionStorage.setItem(key, payload);
-    // idle 시간에 localStorage에도 복사
-    ric(() => {
-      try {
-        localStorage.setItem(key, payload);
-      } catch {}
-    });
   } catch {}
 }
 
@@ -432,9 +375,8 @@ export default function StatsPage({
   const [sortKey, setSortKey] = useState("win_count");
   const [sortDesc, setSortDesc] = useState(true);
   const [search, setSearch] = useState("");
-  const deferredSearch = useDeferredValue(search);
   const [userOnly, setUserOnly] = useState(false);
-  const [itemsPerPage, setItemsPerPage] = useState(25); // 초기 렌더 가볍게
+  const [itemsPerPage, setItemsPerPage] = useState(25);
   const [period, setPeriod] = useState(null);
   const [customMode, setCustomMode] = useState(false);
   const [customFrom, setCustomFrom] = useState("");
@@ -444,32 +386,20 @@ export default function StatsPage({
   const [isMobile, setIsMobile] = useState(
     typeof window !== "undefined" ? window.innerWidth < 800 : false
   );
-  const [fetchKey, setFetchKey] = useState(0); // 강제 재조회 키
-  const [, startTransition] = useTransition();
 
-  // ★ 이전 요청보다 늦게 끝난 응답이 상태를 덮어쓰지 않도록 가드
-  const fetchSeqRef = useRef(0);
-
-  // 리사이즈 rAF 쓰로틀
+  // 레이아웃 리사이즈
   useEffect(() => {
     if (typeof window === "undefined") return;
-    let raf = 0;
-    const onResize = () => {
-      cancelAnimationFrame(raf);
-      raf = requestAnimationFrame(() => setIsMobile(window.innerWidth < 800));
-    };
+    const onResize = () => setIsMobile(window.innerWidth < 800);
     window.addEventListener("resize", onResize);
-    return () => {
-      cancelAnimationFrame(raf);
-      window.removeEventListener("resize", onResize);
-    };
+    return () => window.removeEventListener("resize", onResize);
   }, []);
 
-  // 데이터 로딩 (+캐시) + ★ AbortController 적용
+  // 데이터 로딩 (+캐시)
+  const fetchSeqRef = useRef(0);
   useEffect(() => {
     let alive = true;
     const seq = ++fetchSeqRef.current;
-    const controller = new AbortController(); // 요청 취소 담당
 
     async function run() {
       if (!selectedCup?.id) {
@@ -481,33 +411,32 @@ export default function StatsPage({
       setLoading(true);
 
       const rk = rangeKeyFrom(period, customMode, customFrom, customTo);
-      const cacheKey = `stats:${selectedCup.id}:${rk}:v2`;
+      const cacheKey = `stats:${selectedCup.id}:${rk}:fast`;
 
-      // 1) 캐시로 즉시 페인트
+      // 캐시 즉시 페인트
       const cached = readCache(cacheKey);
       if (cached && alive && seq === fetchSeqRef.current) {
         setStats(cached);
         setLoading(false);
+        return;
       }
 
       try {
-        // 2) 실제 데이터 페치
         let rows;
         if (customMode && customFrom && customTo) {
           const range = getCustomSinceDate(customFrom, customTo);
-          rows = await fetchWinnerStatsFromDB(selectedCup.id, range, { signal: controller.signal });
+          rows = await fetchWinnerStatsFromDB(selectedCup.id, range);
         } else {
           const since = getRangeForAllOrPeriod(period);
-          rows = await fetchWinnerStatsFromDB(selectedCup.id, since, { signal: controller.signal });
+          rows = await fetchWinnerStatsFromDB(selectedCup.id, since);
         }
 
-        if (!alive || seq !== fetchSeqRef.current) return; // 늦게 온 응답 무시
+        if (!alive || seq !== fetchSeqRef.current) return;
         const normalized = normalizeStats(rows || []);
         setStats(normalized);
         setLoading(false);
         writeCache(cacheKey, normalized);
       } catch (e) {
-        if (e?.name === "AbortError") return; // 취소 조용히 무시
         if (!alive || seq !== fetchSeqRef.current) return;
         console.error("stats fetch error:", e);
         setLoading(false);
@@ -515,13 +444,10 @@ export default function StatsPage({
     }
 
     run();
-
-    // cleanup: 이전 요청 취소
     return () => {
       alive = false;
-      controller.abort();
     };
-  }, [selectedCup, period, customMode, customFrom, customTo, fetchKey]);
+  }, [selectedCup, period, customMode, customFrom, customTo]);
 
   /* ===== 스타일 메모화 ===== */
   const ivoryCell = useMemo(
@@ -545,10 +471,8 @@ export default function StatsPage({
 
   /* ===== 검색/정렬/멤버 필터 ===== */
   const filteredStats = useMemo(() => {
-    const q = (deferredSearch || "").toLowerCase();
-    let result = q
-      ? stats.filter((row) => row._name_lc.includes(q))
-      : stats.slice();
+    const q = (search || "").toLowerCase();
+    let result = q ? stats.filter((row) => row._name_lc.includes(q)) : stats.slice();
 
     if (userOnly) {
       result = result.map((row) => ({
@@ -565,6 +489,10 @@ export default function StatsPage({
           (row.user_match_count || 0)
             ? (row.user_match_wins || 0) / (row.user_match_count || 0)
             : 0,
+        _display: {
+          winRateAll: percent(row.user_win_count || 0, row.user_total_games || 0),
+          matchRateAll: percent(row.user_match_wins || 0, row.user_match_count || 0),
+        },
       }));
     }
 
@@ -605,7 +533,7 @@ export default function StatsPage({
 
     result.forEach((row, i) => (row.rank = i + 1));
     return result;
-  }, [stats, deferredSearch, userOnly, sortKey, sortDesc]);
+  }, [stats, search, userOnly, sortKey, sortDesc]);
 
   /* ===== 페이지네이션 ===== */
   const totalStats = filteredStats.length;
@@ -621,25 +549,33 @@ export default function StatsPage({
 
   useEffect(() => {
     setCurrentPage(1);
-  }, [deferredSearch, itemsPerPage, stats, userOnly]);
+  }, [search, itemsPerPage, stats, userOnly]);
 
   /* ===== Top3 카드 ===== */
   const top3 = useMemo(() => {
-    return filteredStats.slice(0, 3).map((r) => {
-      const winRate = userOnly ? r._display?.winRateUser : r._display?.winRateAll;
-      const matchRate = userOnly ? r._display?.matchRateUser : r._display?.matchRateAll;
-      return {
-        ...r,
-        _card: {
-          win_count: r.win_count,
-          match_wins: r.match_wins,
-          match_count: r.match_count,
-          win_rate: winRate ?? "-",
-          match_win_rate: matchRate ?? "-",
-        },
-      };
-    });
-  }, [filteredStats, userOnly]);
+    const arr = stats;
+    let A = null, B = null, C = null;
+    for (const r of arr) {
+      const key = r.win_count ?? 0;
+      const rate = r.win_rate_num ?? 0;
+      const better = (X) => (!X || key > X.key || (key === X.key && rate > X.rate));
+      const wrap = { row: r, key, rate };
+      if (better(A)) { C = B; B = A; A = wrap; }
+      else if (better(B)) { C = B; B = wrap; }
+      else if (better(C)) { C = wrap; }
+    }
+    const pick = [A?.row, B?.row, C?.row].filter(Boolean);
+    return pick.map((r) => ({
+      ...r,
+      _card: {
+        win_count: r.win_count,
+        match_wins: r.match_wins,
+        match_count: r.match_count,
+        win_rate: r._display?.winRateAll ?? "-",
+        match_win_rate: r._display?.matchRateAll ?? "-",
+      },
+    }));
+  }, [stats]);
 
   /* ===== 페이지네이션 UI ===== */
   function Pagination() {
@@ -676,11 +612,7 @@ export default function StatsPage({
             <button
               key={p}
               aria-label={t("goto_page", { page: p })}
-              onClick={() =>
-                startTransition(() => {
-                  setCurrentPage(p);
-                })
-              }
+              onClick={() => setCurrentPage(p)}
               style={{
                 margin: "0 4px",
                 padding: "4px 12px",
@@ -732,15 +664,13 @@ export default function StatsPage({
         <ReportButton cupId={selectedCup.id} size="sm" />
         <button
           onClick={() => {
-            startTransition(() => {
-              navigator.clipboard
-                .writeText(shareUrl)
-                .then(() => {
-                  if (window?.toast?.success) window.toast.success(t("share_link_copied"));
-                  else alert(t("share_link_copied"));
-                })
-                .catch(() => alert(shareUrl));
-            });
+            navigator.clipboard
+              .writeText(shareUrl)
+              .then(() => {
+                if (window?.toast?.success) window.toast.success(t("share_link_copied"));
+                else alert(t("share_link_copied"));
+              })
+              .catch(() => alert(shareUrl));
           }}
           style={{
             color: "#1976ed",
@@ -760,7 +690,7 @@ export default function StatsPage({
     );
   }
 
-  /* ===== 테이블 컬럼 정의 ===== */
+  /* ===== 테이블 컬럼 ===== */
   const sortableCols = [
     { key: "rank", label: t("rank"), isIvory: true },
     { key: "name", label: t("name") },
@@ -796,8 +726,7 @@ export default function StatsPage({
             fontSize: isMobile ? 22 : 36,
             color: "#fff",
             background: "linear-gradient(135deg, #1947e5 22%, #0e1e36 92%)",
-            boxShadow:
-              "0 4px 24px 0 #1976ed26, 0 1px 12px #18317899, 0 0px 0px #111b2522",
+            boxShadow: "0 4px 24px 0 #1976ed26, 0 1px 12px #18317899, 0 0px 0px #111b2522",
             borderRadius: 18,
             padding: isMobile ? "11px 14px" : "22px 54px",
             border: "2px solid #1976ed66",
@@ -863,25 +792,12 @@ export default function StatsPage({
           marginTop: 4,
         }}
       >
-        <button
-          style={tabBtnStyle(!userOnly)}
-          onClick={() => {
-            startTransition(() => {
-              setUserOnly(false);
-              setFetchKey((k) => k + 1);
-            });
-          }}
-        >
+        <button style={tabBtnStyle(!userOnly)} onClick={() => setUserOnly(false)}>
           {t("all")}
         </button>
         <button
           style={{ ...tabBtnStyle(userOnly), marginRight: 0 }}
-          onClick={() => {
-            startTransition(() => {
-              setUserOnly(true);
-              setFetchKey((k) => k + 1);
-            });
-          }}
+          onClick={() => setUserOnly(true)}
         >
           {t("members_only")}
         </button>
@@ -901,11 +817,8 @@ export default function StatsPage({
           <button
             key={p.value === null ? "all" : p.value}
             onClick={() => {
-              startTransition(() => {
-                setCustomMode(false);
-                setPeriod(p.value);
-                setFetchKey((k) => k + 1);
-              });
+              setCustomMode(false);
+              setPeriod(p.value);
             }}
             style={periodBtnStyle(!customMode && period === p.value)}
           >
@@ -919,11 +832,8 @@ export default function StatsPage({
             background: customMode ? "#e7f7f6" : "#fff",
           }}
           onClick={() => {
-            startTransition(() => {
-              setCustomMode(true);
-              setPeriod(undefined);
-              setFetchKey((k) => k + 1);
-            });
+            setCustomMode(true);
+            setPeriod(undefined);
           }}
         >
           {t("custom_period")}
@@ -960,10 +870,7 @@ export default function StatsPage({
                 marginRight: 0,
               }}
               onClick={() => {
-                startTransition(() => {
-                  if (customFrom && customTo) setCustomMode(true);
-                  setFetchKey((k) => k + 1);
-                });
+                if (customFrom && customTo) setCustomMode(true);
               }}
               disabled={!customFrom || !customTo}
             >
@@ -981,13 +888,10 @@ export default function StatsPage({
                 cursor: "pointer",
               }}
               onClick={() => {
-                startTransition(() => {
-                  setCustomMode(false);
-                  setCustomFrom("");
-                  setCustomTo("");
-                  setPeriod(null);
-                  setFetchKey((k) => k + 1);
-                });
+                setCustomMode(false);
+                setCustomFrom("");
+                setCustomTo("");
+                setPeriod(null);
               }}
             >
               {t("cancel")}
@@ -1018,11 +922,7 @@ export default function StatsPage({
               fontSize: 15,
               cursor: "pointer",
             }}
-            onClick={() =>
-              startTransition(() => {
-                setItemsPerPage(num);
-              })
-            }
+            onClick={() => setItemsPerPage(num)}
           >
             {t("view_" + num)}
           </button>
@@ -1035,11 +935,7 @@ export default function StatsPage({
           type="text"
           placeholder={t("search") || "Search"}
           value={search}
-          onChange={(e) =>
-            startTransition(() => {
-              setSearch(e.target.value);
-            })
-          }
+          onChange={(e) => setSearch(e.target.value)}
           style={{
             width: isMobile ? 180 : 320,
             fontSize: isMobile ? 14 : 16,
@@ -1057,40 +953,6 @@ export default function StatsPage({
           aria-label={t("search") || "Search"}
         />
       </div>
-
-      {/* 🔔 로딩 안내 문구 (i18n + 영어 기본 fallback) */}
-      {loading && (
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            marginBottom: 12,
-          }}
-        >
-          <div
-            style={{
-              padding: isMobile ? "8px 12px" : "10px 14px",
-              background: "#fff7cc",
-              border: "1px solid #ffe58f",
-              borderRadius: 10,
-              color: "#7a5d00",
-              fontWeight: 900,
-              fontSize: isMobile ? 16 : 18,
-              lineHeight: 1.25,
-              boxShadow: "0 1px 6px #0000000f",
-              textAlign: "center",
-              maxWidth: 600,
-            }}
-            role="status"
-            aria-live="polite"
-          >
-            ⏳ {t(
-              "loading_hint",
-              "For accurate statistics, please wait about 5 seconds."
-            )}
-          </div>
-        </div>
-      )}
 
       {/* 통계 테이블 */}
       <div
@@ -1119,28 +981,32 @@ export default function StatsPage({
         >
           <thead>
             <tr>
-              {sortableCols.map((col) => (
+              {[
+                { key: "rank", label: t("rank"), isIvory: true },
+                { key: "name", label: t("name") },
+                { key: "win_count", label: t("win_count") },
+                { key: "win_rate", label: t("win_rate"), isIvory: true },
+                { key: "match_wins", label: t("match_wins") },
+                { key: "match_count", label: t("duel_count") },
+                { key: "match_win_rate", label: t("match_win_rate"), isIvory: true },
+              ].map((col) => (
                 <th
                   key={col.key}
                   style={{
                     padding: "8px 0",
                     cursor: col.key === "rank" ? undefined : "pointer",
-                    ...(col.isIvory
-                      ? ivoryCell
-                      : { background: "#fff", fontWeight: 700, color: "#333" }),
+                    ...(col.isIvory ? ivoryCell : { background: "#fff", fontWeight: 700, color: "#333" }),
                     userSelect: "none",
                   }}
                   onClick={
                     col.key === "rank"
                       ? undefined
                       : () => {
-                          startTransition(() => {
-                            if (sortKey === col.key) setSortDesc((desc) => !desc);
-                            else {
-                              setSortKey(col.key);
-                              setSortDesc(true);
-                            }
-                          });
+                          if (sortKey === col.key) setSortDesc((desc) => !desc);
+                          else {
+                            setSortKey(col.key);
+                            setSortDesc(true);
+                          }
                         }
                   }
                 >
@@ -1155,12 +1021,12 @@ export default function StatsPage({
           <tbody>
             {loading
               ? Array.from({ length: 5 }).map((_, i) => (
-                  <SkeletonTableRow key={i} colCount={sortableCols.length} />
+                  <SkeletonTableRow key={i} colCount={7} />
                 ))
               : pagedStats.length === 0
               ? (
                 <tr>
-                  <td colSpan={sortableCols.length} style={{ padding: 22, color: "#888" }}>
+                  <td colSpan={7} style={{ padding: 22, color: "#888" }}>
                     {t("cannot_show_results")}
                   </td>
                 </tr>
@@ -1181,12 +1047,8 @@ export default function StatsPage({
                       }
                     : { background: idx % 2 === 0 ? "#fafdff" : "#fff", color: "#333" };
 
-                  const winRateStr = userOnly
-                    ? row._display?.winRateUser
-                    : row._display?.winRateAll;
-                  const matchWinRateStr = userOnly
-                    ? row._display?.matchRateUser
-                    : row._display?.matchRateAll;
+                  const winRateStr = row._display?.winRateAll;
+                  const matchWinRateStr = row._display?.matchRateAll;
 
                   return (
                     <tr key={row.candidate_id} style={highlightStyle}>
