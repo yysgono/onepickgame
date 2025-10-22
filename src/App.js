@@ -432,7 +432,7 @@ function App() {
     ).split("-")[0];
 
     const titleMap = {
-      en: "OnePickGame - Create and play worldcups",
+      en: "OnePickGame - Ideal Type World Cup",
       ko: "원픽게임 - 이상형 월드컵 해외 사이트",
       ja: "OnePickGame - ワールドカップ作成＆プレイ",
       fr: "OnePickGame - Créez et jouez aux tournois",
