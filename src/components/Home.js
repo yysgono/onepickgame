@@ -287,11 +287,9 @@ function Home({
     setVisibleCount((prev) => prev + PAGE_SIZE);
   };
 
-  // 언어코드
   const lang = (i18n.language || "en").split("-")[0];
   const getRoute = (base, cupId) => `/${lang}${base}/${cupId}`;
 
-  // 카드 설명 스타일
   const cardDescStyle = {
     color: "#b9dafb",
     fontSize: isMobile ? 14 : 16,
@@ -311,7 +309,6 @@ function Home({
     background: "none",
   };
 
-  // 카드 하단 바
   const cardBottomBarStyle = {
     width: "100%",
     height: 4,
@@ -322,7 +319,6 @@ function Home({
     boxShadow: "0 2px 10px #1976ed44",
   };
 
-  // 에피데믹 사운드 소개 텍스트 (레퍼럴 유지)
   const referralUrl = "https://www.epidemicsound.com/referral/4u2zqt";
   const epiInfo = (() => {
     const title = "Epidemic Sound";
@@ -369,7 +365,6 @@ function Home({
     return { title, line1, line2 };
   })();
 
-  // 라우팅 최상단 보정
   const goto = (url) => {
     window.scrollTo(0, 0);
     document.documentElement.scrollTop = 0;
@@ -389,8 +384,6 @@ function Home({
       {showFixedWorldcups !== false && (
         <FixedCupSection worldcupList={fixedCupsWithStats || []} />
       )}
-
-      {/* (헤더 밑 제휴 배너 제거) */}
 
       {/* 검색/정렬 바 */}
       <div
@@ -515,6 +508,7 @@ function Home({
                       pointerEvents: "none",
                     }}
                   />
+
                   {/* 썸네일 */}
                   <div
                     style={{
@@ -563,6 +557,7 @@ function Home({
                         />
                       )}
                     </div>
+
                     <div
                       style={{
                         width: "50%",
@@ -599,6 +594,7 @@ function Home({
                         />
                       )}
                     </div>
+
                     <div
                       style={{
                         position: "absolute",
@@ -694,7 +690,7 @@ function Home({
                     {cup.description || cup.desc || ""}
                   </div>
 
-                  {/* 버튼/액션영역 */}
+                  {/* 버튼 영역 */}
                   <div
                     style={{
                       width: "100%",
@@ -790,7 +786,6 @@ function Home({
                     </button>
                   </div>
 
-                  {/* 맨 하단 파란 밑줄 */}
                   <div style={cardBottomBarStyle}></div>
                 </div>
               </React.Fragment>
@@ -807,7 +802,30 @@ function Home({
           ))}
       </div>
 
-      {/* 🔽 하단: 에피데믹 사운드 레퍼럴 카드 (유지) */}
+      {/* ✅✅✅ 더보기 버튼을 에피데믹 카드 위로 이동 */}
+      {visibleCount < filtered.length && (
+        <div style={{ textAlign: "center", margin: "18px 0 26px 0" }}>
+          <button
+            style={{
+              padding: "13px 44px",
+              background: "#1976ed",
+              color: "#fff",
+              fontWeight: 900,
+              borderRadius: 10,
+              border: "none",
+              fontSize: 17,
+              boxShadow: "0 2px 12px #1976ed33",
+              cursor: "pointer",
+              letterSpacing: "0.4px",
+            }}
+            onClick={handleLoadMore}
+          >
+            {t("load_more")}
+          </button>
+        </div>
+      )}
+
+      {/* ✅✅✅ 에피데믹 사운드 카드: 더보기 버튼 아래로 이동 */}
       <div
         style={{
           width: "100%",
@@ -830,7 +848,6 @@ function Home({
             textAlign: "center",
           }}
         >
-          {/* 1줄 제목 */}
           <div
             style={{
               fontWeight: 900,
@@ -841,7 +858,7 @@ function Home({
           >
             {epiInfo.title}
           </div>
-          {/* 2줄 본문 */}
+
           <div
             style={{
               fontWeight: 700,
@@ -854,7 +871,6 @@ function Home({
             {epiInfo.line1 + "\n" + epiInfo.line2}
           </div>
 
-          {/* CTA 버튼 */}
           <div style={{ marginTop: isMobile ? 10 : 12 }}>
             <a
               href={referralUrl}
@@ -881,28 +897,6 @@ function Home({
           </div>
         </div>
       </div>
-
-      {visibleCount < filtered.length && (
-        <div style={{ textAlign: "center", margin: "18px 0 60px 0" }}>
-          <button
-            style={{
-              padding: "13px 44px",
-              background: "#1976ed",
-              color: "#fff",
-              fontWeight: 900,
-              borderRadius: 10,
-              border: "none",
-              fontSize: 17,
-              boxShadow: "0 2px 12px #1976ed33",
-              cursor: "pointer",
-              letterSpacing: "0.4px",
-            }}
-            onClick={handleLoadMore}
-          >
-            {t("load_more")}
-          </button>
-        </div>
-      )}
 
       <style>
         {`
