@@ -432,17 +432,21 @@ function Home({
         />
       </div>
 
-      {/* ✅ 수정: 카드 그리드 중앙 정렬 */}
+      {/* ✅ 자동광고 격리: 카드 그리드를 별도 컨테이너로 감싸기 */}
       <div
+        className="worldcup-cards-isolation-wrapper"
         style={{
           display: "flex",
           justifyContent: "center",
           width: "100vw",
           padding: 0,
           margin: 0,
+          isolation: "isolate",
+          contain: "layout style",
         }}
       >
         <div
+          className="worldcup-cards-grid"
           style={{
             display: "grid",
             gridTemplateColumns: `repeat(auto-fill, ${CARD_WIDTH}px)`,
@@ -459,338 +463,337 @@ function Home({
               const [first, second] = getTop2Winners(winStats, cup.data);
 
               return (
-                <React.Fragment key={cup.id}>
+                <div
+                  key={cup.id}
+                  ref={(el) => (cardRefs.current[idx] = el)}
+                  style={{
+                    width: CARD_WIDTH,
+                    height: CARD_HEIGHT,
+                    borderRadius: 18,
+                    background: "rgba(17,27,55,0.77)",
+                    boxShadow: "0 8px 38px 0 #1976ed45, 0 2px 12px #1976ed44",
+                    border: "1.5px solid #233a74",
+                    display: "flex",
+                    flexDirection: "column",
+                    position: "relative",
+                    overflow: "hidden",
+                    transition: "box-shadow 0.18s, transform 0.16s",
+                    marginBottom: 0,
+                    cursor: "pointer",
+                    backdropFilter: "blur(13px) brightness(1.04)",
+                    WebkitBackdropFilter: "blur(13px) brightness(1.04)",
+                    willChange: "transform",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform =
+                      "translateY(-7px) scale(1.025)";
+                    e.currentTarget.style.boxShadow =
+                      "0 12px 50px 0 #1976ed88, 0 2.5px 16px #4abfff77";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = "";
+                    e.currentTarget.style.boxShadow =
+                      "0 8px 38px 0 #1976ed45, 0 2px 12px #1976ed44";
+                  }}
+                  onClick={() => {
+                    goto(getRoute("/select-round", cup.id));
+                  }}
+                >
                   <div
-                    ref={(el) => (cardRefs.current[idx] = el)}
                     style={{
-                      width: CARD_WIDTH,
-                      height: CARD_HEIGHT,
-                      borderRadius: 18,
-                      background: "rgba(17,27,55,0.77)",
-                      boxShadow: "0 8px 38px 0 #1976ed45, 0 2px 12px #1976ed44",
-                      border: "1.5px solid #233a74",
+                      position: "absolute",
+                      top: "-33%",
+                      left: "-12%",
+                      width: "140%",
+                      height: "180%",
+                      zIndex: 0,
+                      background:
+                        "radial-gradient(circle at 50% 60%, #2a8fff33 0%, #11264c00 90%)",
+                      filter: "blur(22px) brightness(1.1)",
+                      opacity: 0.92,
+                      pointerEvents: "none",
+                    }}
+                  />
+
+                  {/* 썸네일 */}
+                  <div
+                    style={{
+                      width: "100%",
+                      height: THUMB_HEIGHT,
                       display: "flex",
-                      flexDirection: "column",
-                      position: "relative",
+                      flexDirection: "row",
+                      background:
+                        "linear-gradient(90deg, #162d52 0%, #284176 100%)",
+                      borderTopLeftRadius: 18,
+                      borderTopRightRadius: 18,
                       overflow: "hidden",
-                      transition: "box-shadow 0.18s, transform 0.16s",
-                      marginBottom: 0,
-                      cursor: "pointer",
-                      backdropFilter: "blur(13px) brightness(1.04)",
-                      WebkitBackdropFilter: "blur(13px) brightness(1.04)",
-                      willChange: "transform",
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.transform =
-                        "translateY(-7px) scale(1.025)";
-                      e.currentTarget.style.boxShadow =
-                        "0 12px 50px 0 #1976ed88, 0 2.5px 16px #4abfff77";
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.transform = "";
-                      e.currentTarget.style.boxShadow =
-                        "0 8px 38px 0 #1976ed45, 0 2px 12px #1976ed44";
-                    }}
-                    onClick={() => {
-                      goto(getRoute("/select-round", cup.id));
+                      position: "relative",
+                      zIndex: 2,
                     }}
                   >
                     <div
                       style={{
-                        position: "absolute",
-                        top: "-33%",
-                        left: "-12%",
-                        width: "140%",
-                        height: "180%",
-                        zIndex: 0,
-                        background:
-                          "radial-gradient(circle at 50% 60%, #2a8fff33 0%, #11264c00 90%)",
-                        filter: "blur(22px) brightness(1.1)",
-                        opacity: 0.92,
-                        pointerEvents: "none",
-                      }}
-                    />
-
-                    {/* 썸네일 */}
-                    <div
-                      style={{
-                        width: "100%",
-                        height: THUMB_HEIGHT,
-                        display: "flex",
-                        flexDirection: "row",
-                        background:
-                          "linear-gradient(90deg, #162d52 0%, #284176 100%)",
+                        width: "50%",
+                        height: "100%",
+                        background: "#192145",
                         borderTopLeftRadius: 18,
-                        borderTopRightRadius: 18,
                         overflow: "hidden",
                         position: "relative",
-                        zIndex: 2,
-                      }}
-                    >
-                      <div
-                        style={{
-                          width: "50%",
-                          height: "100%",
-                          background: "#192145",
-                          borderTopLeftRadius: 18,
-                          overflow: "hidden",
-                          position: "relative",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                        }}
-                      >
-                        {first?.image ? (
-                          <MediaRenderer
-                            url={first.image}
-                            alt={t("first_place")}
-                            playable={false}
-                            style={{
-                              width: "100%",
-                              height: "100%",
-                              objectFit: "cover",
-                              objectPosition: "center center",
-                              background: "#111",
-                            }}
-                          />
-                        ) : (
-                          <div
-                            style={{ width: "100%", height: "100%", background: "#222" }}
-                          />
-                        )}
-                      </div>
-
-                      <div
-                        style={{
-                          width: "50%",
-                          height: "100%",
-                          background: "#1f2540",
-                          borderTopRightRadius: 18,
-                          overflow: "hidden",
-                          position: "relative",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                        }}
-                      >
-                        {second?.image ? (
-                          <MediaRenderer
-                            url={second.image}
-                            alt={t("second_place")}
-                            playable={false}
-                            style={{
-                              width: "100%",
-                              height: "100%",
-                              objectFit: "cover",
-                              objectPosition: "center center",
-                              background: "#111",
-                            }}
-                          />
-                        ) : (
-                          <div
-                            style={{
-                              width: "100%",
-                              height: "100%",
-                              background: "#15182b",
-                            }}
-                          />
-                        )}
-                      </div>
-
-                      <div
-                        style={{
-                          position: "absolute",
-                          top: "50%",
-                          left: "50%",
-                          transform: "translate(-50%,-55%)",
-                          zIndex: 5,
-                          pointerEvents: "none",
-                          width: isMobile ? 55 : 70,
-                          height: isMobile ? 55 : 70,
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                        }}
-                      >
-                        <img
-                          src="/vs.png"
-                          alt={t("vs")}
-                          style={{
-                            width: "100%",
-                            height: "100%",
-                            objectFit: "contain",
-                            userSelect: "none",
-                            pointerEvents: "none",
-                          }}
-                          draggable={false}
-                        />
-                      </div>
-                    </div>
-
-                    {/* 제목 */}
-                    <div
-                      style={{
-                        width: "100%",
-                        maxWidth: "100%",
-                        minHeight: isMobile ? 32 : 38,
-                        maxHeight: isMobile ? 90 : 105,
-                        overflow: "hidden",
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
-                        flex: 1,
-                        padding: isMobile ? "4px 10px 0 10px" : "6px 18px 0 18px",
-                        fontWeight: 900,
-                        fontSize: isMobile ? 17 : 20,
-                        color: "#fff",
-                        fontFamily: "'Orbitron', 'Pretendard', sans-serif",
-                        textAlign: "center",
-                        wordBreak: "break-all",
-                        lineHeight: 1.17,
-                        letterSpacing: "0.4px",
-                        boxSizing: "border-box",
-                        background: mainDark,
-                        margin: 0,
-                        marginBottom: 0,
-                        whiteSpace: "normal",
-                        textShadow: "0 1.5px 8px #191b25cc",
                       }}
-                      title={cup.title}
                     >
-                      <span
-                        style={{
-                          width: "100%",
-                          display: "block",
-                          textAlign: "center",
-                          lineHeight: 1.18,
-                          margin: 0,
-                          padding: 0,
-                          whiteSpace: "pre-line",
-                          wordBreak: "keep-all",
-                          fontFamily: "'Orbitron', 'Pretendard', sans-serif",
-                          fontWeight: 900,
-                        }}
-                      >
-                        {(() => {
-                          const title = (cup.title || "").slice(0, 70);
-                          if (title.length <= 40) return title;
-                          const breakpoint = (() => {
-                            const i = title.lastIndexOf(" ", 40);
-                            return i === -1 ? 40 : i;
-                          })();
-                          return (
-                            title.slice(0, breakpoint) +
-                            "\n" +
-                            title.slice(breakpoint + 1)
-                          );
-                        })()}
-                      </span>
+                      {first?.image ? (
+                        <MediaRenderer
+                          url={first.image}
+                          alt={t("first_place")}
+                          playable={false}
+                          style={{
+                            width: "100%",
+                            height: "100%",
+                            objectFit: "cover",
+                            objectPosition: "center center",
+                            background: "#111",
+                          }}
+                        />
+                      ) : (
+                        <div
+                          style={{ width: "100%", height: "100%", background: "#222" }}
+                        />
+                      )}
                     </div>
 
-                    {/* 설명 */}
-                    <div style={cardDescStyle}>
-                      {cup.description || cup.desc || ""}
-                    </div>
-
-                    {/* 버튼 영역 */}
                     <div
                       style={{
-                        width: "100%",
+                        width: "50%",
+                        height: "100%",
+                        background: "#1f2540",
+                        borderTopRightRadius: 18,
+                        overflow: "hidden",
+                        position: "relative",
                         display: "flex",
                         alignItems: "center",
-                        justifyContent: "space-between",
-                        padding: isMobile ? "3px 8px 6px 8px" : "6px 16px 7px 16px",
-                        minHeight: isMobile ? 23 : 27,
-                        background: mainDark,
-                        boxSizing: "border-box",
-                        marginTop: "auto",
-                        borderTop: "none",
-                        borderBottom: "none",
-                        borderRadius: 0,
-                        gap: 0,
+                        justifyContent: "center",
                       }}
                     >
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          goto(getRoute("/select-round", cup.id));
-                        }}
-                        style={buttonStyle}
-                        onMouseOver={(e) =>
-                          (e.currentTarget.style.background = "#1c2232")
-                        }
-                        onMouseOut={(e) =>
-                          (e.currentTarget.style.background = mainDark)
-                        }
-                      >
-                        {t("start")}
-                      </button>
-
-                      {isMine(cup) ? (
-                        <div style={{ display: "flex", gap: 5 }}>
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              goto(getRoute("/edit-worldcup", cup.id));
-                            }}
-                            style={smallButtonStyle}
-                            onMouseOver={(e) =>
-                              (e.currentTarget.style.background = "#1c2232")
-                            }
-                            onMouseOut={(e) =>
-                              (e.currentTarget.style.background = mainDark)
-                            }
-                          >
-                            {t("edit")}
-                          </button>
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              if (
-                                !window.confirm(
-                                  t("delete_confirm") ||
-                                    "Are you sure you want to delete?"
-                                )
-                              )
-                                return;
-                              if (onDelete) onDelete(cup.id);
-                              else window.location.reload();
-                            }}
-                            style={smallButtonStyle}
-                            onMouseOver={(e) =>
-                              (e.currentTarget.style.background = "#1c2232")
-                            }
-                            onMouseOut={(e) =>
-                              (e.currentTarget.style.background = mainDark)
-                            }
-                          >
-                            {t("delete")}
-                          </button>
-                        </div>
+                      {second?.image ? (
+                        <MediaRenderer
+                          url={second.image}
+                          alt={t("second_place")}
+                          playable={false}
+                          style={{
+                            width: "100%",
+                            height: "100%",
+                            objectFit: "cover",
+                            objectPosition: "center center",
+                            background: "#111",
+                          }}
+                        />
                       ) : (
-                        <div style={{ width: isMobile ? 29 : 40 }} />
+                        <div
+                          style={{
+                            width: "100%",
+                            height: "100%",
+                            background: "#15182b",
+                          }}
+                        />
                       )}
-
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          goto(getRoute("/stats", cup.id));
-                        }}
-                        style={buttonStyle}
-                        onMouseOver={(e) =>
-                          (e.currentTarget.style.background = "#1c2232")
-                        }
-                        onMouseOut={(e) =>
-                          (e.currentTarget.style.background = mainDark)
-                        }
-                      >
-                        {t("stats_comment")}
-                      </button>
                     </div>
 
-                    <div style={cardBottomBarStyle}></div>
+                    <div
+                      style={{
+                        position: "absolute",
+                        top: "50%",
+                        left: "50%",
+                        transform: "translate(-50%,-55%)",
+                        zIndex: 5,
+                        pointerEvents: "none",
+                        width: isMobile ? 55 : 70,
+                        height: isMobile ? 55 : 70,
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <img
+                        src="/vs.png"
+                        alt={t("vs")}
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                          objectFit: "contain",
+                          userSelect: "none",
+                          pointerEvents: "none",
+                        }}
+                        draggable={false}
+                      />
+                    </div>
                   </div>
-                </React.Fragment>
+
+                  {/* 제목 */}
+                  <div
+                    style={{
+                      width: "100%",
+                      maxWidth: "100%",
+                      minHeight: isMobile ? 32 : 38,
+                      maxHeight: isMobile ? 90 : 105,
+                      overflow: "hidden",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      flex: 1,
+                      padding: isMobile ? "4px 10px 0 10px" : "6px 18px 0 18px",
+                      fontWeight: 900,
+                      fontSize: isMobile ? 17 : 20,
+                      color: "#fff",
+                      fontFamily: "'Orbitron', 'Pretendard', sans-serif",
+                      textAlign: "center",
+                      wordBreak: "break-all",
+                      lineHeight: 1.17,
+                      letterSpacing: "0.4px",
+                      boxSizing: "border-box",
+                      background: mainDark,
+                      margin: 0,
+                      marginBottom: 0,
+                      whiteSpace: "normal",
+                      textShadow: "0 1.5px 8px #191b25cc",
+                    }}
+                    title={cup.title}
+                  >
+                    <span
+                      style={{
+                        width: "100%",
+                        display: "block",
+                        textAlign: "center",
+                        lineHeight: 1.18,
+                        margin: 0,
+                        padding: 0,
+                        whiteSpace: "pre-line",
+                        wordBreak: "keep-all",
+                        fontFamily: "'Orbitron', 'Pretendard', sans-serif",
+                        fontWeight: 900,
+                      }}
+                    >
+                      {(() => {
+                        const title = (cup.title || "").slice(0, 70);
+                        if (title.length <= 40) return title;
+                        const breakpoint = (() => {
+                          const i = title.lastIndexOf(" ", 40);
+                          return i === -1 ? 40 : i;
+                        })();
+                        return (
+                          title.slice(0, breakpoint) +
+                          "\n" +
+                          title.slice(breakpoint + 1)
+                        );
+                      })()}
+                    </span>
+                  </div>
+
+                  {/* 설명 */}
+                  <div style={cardDescStyle}>
+                    {cup.description || cup.desc || ""}
+                  </div>
+
+                  {/* 버튼 영역 */}
+                  <div
+                    style={{
+                      width: "100%",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                      padding: isMobile ? "3px 8px 6px 8px" : "6px 16px 7px 16px",
+                      minHeight: isMobile ? 23 : 27,
+                      background: mainDark,
+                      boxSizing: "border-box",
+                      marginTop: "auto",
+                      borderTop: "none",
+                      borderBottom: "none",
+                      borderRadius: 0,
+                      gap: 0,
+                    }}
+                  >
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        goto(getRoute("/select-round", cup.id));
+                      }}
+                      style={buttonStyle}
+                      onMouseOver={(e) =>
+                        (e.currentTarget.style.background = "#1c2232")
+                      }
+                      onMouseOut={(e) =>
+                        (e.currentTarget.style.background = mainDark)
+                      }
+                    >
+                      {t("start")}
+                    </button>
+
+                    {isMine(cup) ? (
+                      <div style={{ display: "flex", gap: 5 }}>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            goto(getRoute("/edit-worldcup", cup.id));
+                          }}
+                          style={smallButtonStyle}
+                          onMouseOver={(e) =>
+                            (e.currentTarget.style.background = "#1c2232")
+                          }
+                          onMouseOut={(e) =>
+                            (e.currentTarget.style.background = mainDark)
+                          }
+                        >
+                          {t("edit")}
+                        </button>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            if (
+                              !window.confirm(
+                                t("delete_confirm") ||
+                                  "Are you sure you want to delete?"
+                              )
+                            )
+                              return;
+                            if (onDelete) onDelete(cup.id);
+                            else window.location.reload();
+                          }}
+                          style={smallButtonStyle}
+                          onMouseOver={(e) =>
+                            (e.currentTarget.style.background = "#1c2232")
+                          }
+                          onMouseOut={(e) =>
+                            (e.currentTarget.style.background = mainDark)
+                          }
+                        >
+                          {t("delete")}
+                        </button>
+                      </div>
+                    ) : (
+                      <div style={{ width: isMobile ? 29 : 40 }} />
+                    )}
+
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        goto(getRoute("/stats", cup.id));
+                      }}
+                      style={buttonStyle}
+                      onMouseOver={(e) =>
+                        (e.currentTarget.style.background = "#1c2232")
+                      }
+                      onMouseOut={(e) =>
+                        (e.currentTarget.style.background = mainDark)
+                      }
+                    >
+                      {t("stats_comment")}
+                    </button>
+                  </div>
+
+                  <div style={cardBottomBarStyle}></div>
+                </div>
               );
             })}
 
@@ -904,9 +907,22 @@ function Home({
       <style>
         {`
           @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&display=swap');
+          
           button:focus, button:active {
             outline: none !important;
             box-shadow: none !important;
+          }
+          
+          /* ✅ 자동광고가 카드 그리드 내부에 삽입되는 것을 차단 */
+          .worldcup-cards-isolation-wrapper {
+            isolation: isolate;
+            contain: layout style;
+          }
+          
+          .worldcup-cards-grid > ins,
+          .worldcup-cards-grid > .adsbygoogle {
+            display: none !important;
+            visibility: hidden !important;
           }
         `}
       </style>
