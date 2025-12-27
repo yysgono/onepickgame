@@ -102,6 +102,7 @@ function Home({
       s.crossOrigin = "anonymous";
       document.head.appendChild(s);
     }
+    // Auto Ads는 애드센스 관리자에서 자동광고 ON이면 자동 배치됩니다.
   }, []);
 
   const [search, setSearch] = useState("");
@@ -326,7 +327,7 @@ function Home({
         ko: "무료 저작권 걱정 없는 음악 사용법 · 할인코드 · 무료체험",
         en: "Royalty-free music for creators: how to use, discount tips & free trial",
         ja: "クリエイター向けロイヤリティフリー音源の使い方・割引情報・無料トライアル",
-        fr: "Musique libre de droits pour créateurs : mode d'emploi, réductions et essai gratuit",
+        fr: "Musique libre de droits pour créateurs : mode d’emploi, réductions et essai gratuit",
         es: "Música libre de derechos para creadores: uso, descuentos y prueba gratis",
         de: "GEMA-freie Musik für Creator: Nutzung, Rabatte & Gratis-Test",
         pt: "Música livre de direitos para criadores: como usar, descontos e teste grátis",
@@ -345,7 +346,7 @@ function Home({
       {
         ko: "유튜브 · 트위치 · 인스타 등에서 저작권 분쟁 없이 안전하게 사용하세요.",
         en: "Use safely on YouTube, Twitch, Instagram—no copyright strikes.",
-        ja: "YouTube・Twitch・Instagramで著作権トラブルを気にせず安心して利用できます。",
+        ja: "YouTube・Twitch・Instagramで著作권トラブルを気にせず安心して利用できます。",
         fr: "Utilisez-la en toute sécurité sur YouTube, Twitch, Instagram—sans revendications.",
         es: "Úsala con seguridad en YouTube, Twitch, Instagram—sin reclamaciones de copyright.",
         de: "Sicher nutzen auf YouTube, Twitch, Instagram—ohne Copyright-Strikes.",
@@ -358,7 +359,7 @@ function Home({
         ar: "استخدمها بأمان على YouTube وTwitch وInstagram—من دون إنذارات حقوق نشر.",
         bn: "YouTube, Twitch, Instagram-এ নিরাপদে ব্যবহার করুন—কপিরাইট স্ট্রাইক নয়।",
         th: "ปลอดภัยบน YouTube, Twitch, Instagram—ไม่โดนลิขสิทธิ์",
-        tr: "YouTube, Twitch, Instagram'da güvenle kullanın—hak ihlali yok.",
+        tr: "YouTube, Twitch, Instagram’da güvenle kullanın—hak ihlali yok.",
       }[lang] ||
       "Use safely on YouTube, Twitch, Instagram—no copyright strikes.";
     return { title, line1, line2 };
@@ -432,42 +433,33 @@ function Home({
         />
       </div>
 
-      {/* ✅ 자동광고 격리: 카드 그리드를 별도 컨테이너로 감싸기 */}
+      {/* 카드 그리드 */}
       <div
-        className="worldcup-cards-isolation-wrapper"
         style={{
-          display: "flex",
-          justifyContent: "center",
+          display: "grid",
+          gridTemplateColumns: `repeat(auto-fit, minmax(${CARD_WIDTH}px, 1fr))`,
+          gap: CARD_GAP,
           width: "100vw",
+          maxWidth: "100vw",
+          margin: "0 auto",
           padding: 0,
-          margin: 0,
-          isolation: "isolate",
-          contain: "layout style",
+          boxSizing: "border-box",
+          justifyItems: "center",
+          alignItems: "start",
+          zIndex: 2,
         }}
       >
-        <div
-          className="worldcup-cards-grid"
-          style={{
-            display: "grid",
-            gridTemplateColumns: `repeat(auto-fill, ${CARD_WIDTH}px)`,
-            gap: CARD_GAP,
-            maxWidth: "100%",
-            justifyContent: "center",
-            padding: isMobile ? "0 4px" : "0 8px",
-            boxSizing: "border-box",
-          }}
-        >
-          {visibleList.length > 0 &&
-            visibleList.map((cup, idx) => {
-              const winStats = winStatsMap[cup.id] || [];
-              const [first, second] = getTop2Winners(winStats, cup.data);
+        {visibleList.length > 0 &&
+          visibleList.map((cup, idx) => {
+            const winStats = winStatsMap[cup.id] || [];
+            const [first, second] = getTop2Winners(winStats, cup.data);
 
-              return (
+            return (
+              <React.Fragment key={cup.id}>
                 <div
-                  key={cup.id}
                   ref={(el) => (cardRefs.current[idx] = el)}
                   style={{
-                    width: CARD_WIDTH,
+                    width: "100%",
                     height: CARD_HEIGHT,
                     borderRadius: 18,
                     background: "rgba(17,27,55,0.77)",
@@ -483,6 +475,8 @@ function Home({
                     backdropFilter: "blur(13px) brightness(1.04)",
                     WebkitBackdropFilter: "blur(13px) brightness(1.04)",
                     willChange: "transform",
+                    maxWidth: CARD_WIDTH,
+                    minWidth: CARD_WIDTH,
                   }}
                   onMouseEnter={(e) => {
                     e.currentTarget.style.transform =
@@ -794,21 +788,21 @@ function Home({
 
                   <div style={cardBottomBarStyle}></div>
                 </div>
-              );
-            })}
+              </React.Fragment>
+            );
+          })}
 
-          {visibleList.length === 0 &&
-            Array.from({ length: SKELETON_COUNT }).map((_, i) => (
-              <SkeletonCard
-                key={i}
-                cardHeight={CARD_HEIGHT}
-                thumbHeight={THUMB_HEIGHT}
-              />
-            ))}
-        </div>
+        {visibleList.length === 0 &&
+          Array.from({ length: SKELETON_COUNT }).map((_, i) => (
+            <SkeletonCard
+              key={i}
+              cardHeight={CARD_HEIGHT}
+              thumbHeight={THUMB_HEIGHT}
+            />
+          ))}
       </div>
 
-      {/* 더보기 버튼 */}
+      {/* ✅✅✅ 더보기 버튼을 에피데믹 카드 위로 이동 */}
       {visibleCount < filtered.length && (
         <div style={{ textAlign: "center", margin: "18px 0 26px 0" }}>
           <button
@@ -831,7 +825,7 @@ function Home({
         </div>
       )}
 
-      {/* 에피데믹 사운드 카드 */}
+      {/* ✅✅✅ 에피데믹 사운드 카드: 더보기 버튼 아래로 이동 */}
       <div
         style={{
           width: "100%",
@@ -907,22 +901,9 @@ function Home({
       <style>
         {`
           @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&display=swap');
-          
           button:focus, button:active {
             outline: none !important;
             box-shadow: none !important;
-          }
-          
-          /* ✅ 자동광고가 카드 그리드 내부에 삽입되는 것을 차단 */
-          .worldcup-cards-isolation-wrapper {
-            isolation: isolate;
-            contain: layout style;
-          }
-          
-          .worldcup-cards-grid > ins,
-          .worldcup-cards-grid > .adsbygoogle {
-            display: none !important;
-            visibility: hidden !important;
           }
         `}
       </style>
