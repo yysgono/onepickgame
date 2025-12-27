@@ -102,7 +102,7 @@ export default function Header({
     } else {
       ({ error } = await supabase
         .from("profiles")
-        .insert([{ id: user.id, nickname: trimName }]));
+        .insert([{ id: user.id, nickname: trimName }])); // upsert 대체
     }
     setEditLoading(false);
     if (error) {
@@ -161,8 +161,10 @@ export default function Header({
     setShowProfile(false);
   }
 
+  // ✅ 기본 언어 'en' 고정 + 변형코드(en-US 등) 안전 처리
   const currentLang = (i18n.language || "en").split("-")[0];
 
+  // 로고 클릭: 언어 홈으로 이동 (SPA)
   function handleLogoClick() {
     navigate(`/${currentLang}`);
   }
@@ -173,6 +175,7 @@ export default function Header({
     navigate(`/${currentLang}/recent-worldcups`);
   }
 
+  // ✅ 언어 변경 시 현재 경로 유지
   function changeLanguageAndKeepPath(lng) {
     try {
       i18n.changeLanguage(lng);
@@ -180,6 +183,7 @@ export default function Header({
       localStorage.setItem("onepickgame_lang", lng);
 
       const { pathname, search, hash } = location;
+      // 분해해서 선두의 2글자 언어코드가 있으면 교체, 없으면 추가
       const parts = pathname.split("/").filter(Boolean);
       if (parts.length > 0 && /^[a-z]{2}$/.test(parts[0])) {
         parts[0] = lng;
@@ -189,6 +193,7 @@ export default function Header({
       const newPath = "/" + parts.join("/");
       navigate(newPath + (search || "") + (hash || ""), { replace: true });
     } catch {
+      // fallback: 홈으로
       navigate(`/${lng}`, { replace: true });
     }
   }
@@ -292,6 +297,7 @@ export default function Header({
     boxShadow: "0 0 7px #157be94a",
   };
 
+  // ---- Modal Styles ----
   const modalOverlayStyle = {
     position: "fixed",
     left: 0,
@@ -385,344 +391,302 @@ export default function Header({
   };
 
   return (
-    <>
-      <style>
-        {`
-          /* ✅ 헤더 영역 광고 완전 차단 */
-          header ins.adsbygoogle,
-          header > ins,
-          header .adsbygoogle {
-            display: none !important;
-            visibility: hidden !important;
-            width: 0 !important;
-            height: 0 !important;
-            position: absolute !important;
-            left: -9999px !important;
-            pointer-events: none !important;
-          }
-          
-          /* ✅ 헤더 레이아웃 보호 */
-          header {
-            isolation: isolate !important;
-            contain: layout style !important;
-            width: 100% !important;
-            max-width: 100vw !important;
-            overflow: hidden !important;
-          }
-          
-          /* ✅ header-wrapper 클래스도 보호 */
-          .header-wrapper,
-          .header-wrapper * {
-            max-width: 100vw !important;
-            overflow-x: hidden !important;
-          }
-          
-          .header-wrapper ins.adsbygoogle,
-          .header-wrapper > ins,
-          .header-wrapper .adsbygoogle {
-            display: none !important;
-            visibility: hidden !important;
-            width: 0 !important;
-            height: 0 !important;
-          }
-        `}
-      </style>
-      
-      <header
+    <header
+      style={{
+        width: "100%",
+        background: `linear-gradient(90deg,rgba(20,23,32,0.92) 80%,rgba(20,26,44,0.82)),url('${headerBgUrl}') center/cover no-repeat`,
+        boxShadow: "0 2px 22px #000a, 0 1.5px 6px #1e2242cc",
+        borderBottom: "4px solid #1976ed",
+        position: "sticky",
+        top: 0,
+        zIndex: 1000,
+        padding: "0 0 12px 0",
+        backdropFilter: "blur(2.5px)",
+        WebkitBackdropFilter: "blur(2.5px)",
+      }}
+    >
+      {/* 로고/텍스트 영역 */}
+      <div
         style={{
           width: "100%",
-          background: `linear-gradient(90deg,rgba(20,23,32,0.92) 80%,rgba(20,26,44,0.82)),url('${headerBgUrl}') center/cover no-repeat`,
-          boxShadow: "0 2px 22px #000a, 0 1.5px 6px #1e2242cc",
-          borderBottom: "4px solid #1976ed",
-          position: "sticky",
-          top: 0,
-          zIndex: 1000,
-          padding: "0 0 12px 0",
-          backdropFilter: "blur(2.5px)",
-          WebkitBackdropFilter: "blur(2.5px)",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          padding: "10px 0 7px 0",
+          cursor: "pointer",
+          userSelect: "none",
+        }}
+        onClick={handleLogoClick}
+      >
+        <img
+          src={logoImgUrl}
+          alt={t("onepick_logo_alt", "OnePickGame logo")}
+          style={{
+            width: 42,
+            height: 42,
+            borderRadius: "50%",
+            border: "2.2px solid #1976ed",
+            background: "rgba(24,29,42,0.9)",
+            marginRight: 8,
+            filter: "drop-shadow(0 0 10px #00c8ffbb)",
+            verticalAlign: "middle",
+          }}
+          draggable={false}
+        />
+        <span
+          style={{
+            fontWeight: 900,
+            fontSize: 23,
+            fontFamily: "'Orbitron', 'Pretendard', 'Montserrat', sans-serif",
+            color: "#fff",
+            textShadow: "0 2px 16px #157be9cc, 0 0.5px 2.5px #fff",
+            letterSpacing: "1.2px",
+            lineHeight: 1.13,
+            marginTop: 2,
+          }}
+        >
+          {t("onepick_brand", "One Pick Game")}
+        </span>
+      </div>
+
+      {/* 버튼/메뉴 */}
+      <div
+        style={{
+          width: "100%",
+          maxWidth: 1800,
+          margin: "0 auto",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          flexWrap: "wrap",
+          gap: "10px 12px",
+          padding: "0 12px",
+          minHeight: 48,
         }}
       >
-        {/* 로고/텍스트 영역 */}
-        <div
-          style={{
-            width: "100%",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            padding: "10px 0 7px 0",
-            cursor: "pointer",
-            userSelect: "none",
-          }}
-          onClick={handleLogoClick}
-        >
-          <img
-            src={logoImgUrl}
-            alt={t("onepick_logo_alt", "OnePickGame logo")}
-            style={{
-              width: 42,
-              height: 42,
-              borderRadius: "50%",
-              border: "2.2px solid #1976ed",
-              background: "rgba(24,29,42,0.9)",
-              marginRight: 8,
-              filter: "drop-shadow(0 0 10px #00c8ffbb)",
-              verticalAlign: "middle",
-            }}
-            draggable={false}
-          />
-          <span
-            style={{
-              fontWeight: 900,
-              fontSize: 23,
-              fontFamily: "'Orbitron', 'Pretendard', 'Montserrat', sans-serif",
-              color: "#fff",
-              textShadow: "0 2px 16px #157be9cc, 0 0.5px 2.5px #fff",
-              letterSpacing: "1.2px",
-              lineHeight: 1.13,
-              marginTop: 2,
-            }}
-          >
-            {t("onepick_brand", "One Pick Game")}
-          </span>
-        </div>
-
-        {/* 버튼/메뉴 */}
-        <div
-          style={{
-            width: "100%",
-            maxWidth: 1800,
-            margin: "0 auto",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            flexWrap: "wrap",
-            gap: "10px 12px",
-            padding: "0 12px",
-            minHeight: 48,
-          }}
-        >
-          {isAdmin && (
-            <>
-              <button
-                style={adminButtonStyle("#1976ed")}
-                onClick={() => navigate(`/${currentLang}/admin`)}
-              >
-                {t("dashboard")}
-              </button>
-              <button
-                style={statButtonStyle}
-                onClick={() => navigate(`/${currentLang}/admin-stats`)}
-              >
-                {t("stats")}
-              </button>
-              <button style={adminButtonStyle()} onClick={onBackup}>
-                {t("backupAll")}
-              </button>
-              <button
-                style={adminButtonStyle("#253253")}
-                onClick={() => inputRef.current && inputRef.current.click()}
-              >
-                {t("restore")}
-              </button>
-              <input
-                ref={inputRef}
-                type="file"
-                accept="application/json"
-                style={{ display: "none" }}
-                onChange={onRestore}
-              />
-            </>
-          )}
-
-          <button style={mainButtonStyle} onClick={onMakeWorldcup}>
-            {t("makeWorldcup")}
-          </button>
-
-          {user && (
-            <button style={infoButtonStyle} onClick={handleMyWorldcup}>
-              {t("my_worldcups")}
+        {isAdmin && (
+          <>
+            <button
+              style={adminButtonStyle("#1976ed")}
+              onClick={() => navigate(`/${currentLang}/admin`)}
+            >
+              {t("dashboard")}
             </button>
-          )}
+            <button
+              style={statButtonStyle}
+              onClick={() => navigate(`/${currentLang}/admin-stats`)}
+            >
+              {t("stats")}
+            </button>
+            <button style={adminButtonStyle()} onClick={onBackup}>
+              {t("backupAll")}
+            </button>
+            <button
+              style={adminButtonStyle("#253253")}
+              onClick={() => inputRef.current && inputRef.current.click()}
+            >
+              {t("restore")}
+            </button>
+            <input
+              ref={inputRef}
+              type="file"
+              accept="application/json"
+              style={{ display: "none" }}
+              onChange={onRestore}
+            />
+          </>
+        )}
 
-          <button style={infoButtonStyle} onClick={handleRecentWorldcup}>
-            {t("recent_worldcups")}
+        <button style={mainButtonStyle} onClick={onMakeWorldcup}>
+          {t("makeWorldcup")}
+        </button>
+
+        {user && (
+          <button style={infoButtonStyle} onClick={handleMyWorldcup}>
+            {t("my_worldcups")}
           </button>
+        )}
 
-          <select
-            value={(i18n.language || "en").split("-")[0]}
-            onChange={(e) => changeLanguageAndKeepPath(e.target.value)}
-            style={selectStyle}
-            aria-label={t("language_select", "Select language")}
-          >
-            {languages.map((lang) => (
-              <option key={lang.code} value={lang.code}>
-                {lang.label}
-              </option>
-            ))}
-          </select>
+        <button style={infoButtonStyle} onClick={handleRecentWorldcup}>
+          {t("recent_worldcups")}
+        </button>
 
-          {user ? (
-            <>
-              <span
-                style={{
-                  fontWeight: 700,
-                  color: "#22dcff",
-                  margin: "0 6px 0 0",
-                  whiteSpace: "nowrap",
-                  userSelect: "none",
-                  textShadow: "0 0 6px #00e5ff88, 0 0.5px 2.5px #fff",
-                  fontFamily: "'Pretendard','Orbitron',sans-serif",
-                  fontSize: 15,
-                }}
-              >
-                {nicknameLoading ? t("loading_nickname") : nickname || t("no_nickname")}
-              </span>
-              <button style={infoButtonStyle} onClick={() => setShowProfile(true)}>
-                {t("edit_profile")}
-              </button>
-              <button style={logoutButtonStyle} onClick={handleLogout}>
-                {t("logout")}
-              </button>
+        {/* ----------- 언어 선택 (현재 경로 유지) ----------- */}
+        <select
+          value={(i18n.language || "en").split("-")[0]}
+          onChange={(e) => changeLanguageAndKeepPath(e.target.value)}
+          style={selectStyle}
+          aria-label={t("language_select", "Select language")}
+        >
+          {languages.map((lang) => (
+            <option key={lang.code} value={lang.code}>
+              {lang.label}
+            </option>
+          ))}
+        </select>
+        {/* ----------- 여기까지 ----------- */}
 
-              {showProfile && (
-                <div style={modalOverlayStyle} onClick={() => setShowProfile(false)}>
-                  <div style={modalContentStyle} onClick={(e) => e.stopPropagation()}>
-                    <div
-                      style={{
-                        fontWeight: 800,
-                        fontSize: 21,
-                        marginBottom: 18,
-                        textAlign: "center",
-                      }}
-                    >
-                      {t("edit_profile")}
+        {user ? (
+          <>
+            <span
+              style={{
+                fontWeight: 700,
+                color: "#22dcff",
+                margin: "0 6px 0 0",
+                whiteSpace: "nowrap",
+                userSelect: "none",
+                textShadow: "0 0 6px #00e5ff88, 0 0.5px 2.5px #fff",
+                fontFamily: "'Pretendard','Orbitron',sans-serif",
+                fontSize: 15,
+              }}
+            >
+              {nicknameLoading ? t("loading_nickname") : nickname || t("no_nickname")}
+            </span>
+            <button style={infoButtonStyle} onClick={() => setShowProfile(true)}>
+              {t("edit_profile")}
+            </button>
+            <button style={logoutButtonStyle} onClick={handleLogout}>
+              {t("logout")}
+            </button>
+
+            {showProfile && (
+              <div style={modalOverlayStyle} onClick={() => setShowProfile(false)}>
+                <div style={modalContentStyle} onClick={(e) => e.stopPropagation()}>
+                  <div
+                    style={{
+                      fontWeight: 800,
+                      fontSize: 21,
+                      marginBottom: 18,
+                      textAlign: "center",
+                    }}
+                  >
+                    {t("edit_profile")}
+                  </div>
+
+                  <div style={{ width: "100%" }}>
+                    <div style={{ marginBottom: 10, fontSize: 15 }}>
+                      <b>{t("email")}:</b> {user.email}
                     </div>
 
-                    <div style={{ width: "100%" }}>
-                      <div style={{ marginBottom: 10, fontSize: 15 }}>
-                        <b>{t("email")}:</b> {user.email}
-                      </div>
-
-                      <div style={{ marginBottom: 10, fontSize: 15 }}>
-                        <b>{t("nickname")}:</b>
-                        <input
-                          type="text"
-                          value={editNickname}
-                          onChange={(e) => setEditNickname(e.target.value)}
-                          style={modalInputStyle}
-                          placeholder={t("nickname")}
-                          maxLength={20}
-                          disabled={editLoading}
-                        />
-                        <button
-                          style={modalProfileButtonStyle}
-                          onClick={handleNicknameChange}
-                          disabled={editLoading}
-                        >
-                          {editLoading ? t("changing") : t("change_nickname")}
-                        </button>
-                      </div>
-
+                    <div style={{ marginBottom: 10, fontSize: 15 }}>
+                      <b>{t("nickname")}:</b>
+                      <input
+                        type="text"
+                        value={editNickname}
+                        onChange={(e) => setEditNickname(e.target.value)}
+                        style={modalInputStyle}
+                        placeholder={t("nickname")}
+                        maxLength={20}
+                        disabled={editLoading}
+                      />
                       <button
-                        style={modalGrayButtonStyle}
-                        onClick={handlePasswordChange}
+                        style={modalProfileButtonStyle}
+                        onClick={handleNicknameChange}
                         disabled={editLoading}
                       >
-                        {t("send_pw_reset")}
+                        {editLoading ? t("changing") : t("change_nickname")}
                       </button>
-
-                      {profile?.withdrawal_requested_at ? (
-                        <button
-                          style={modalGrayButtonStyle}
-                          onClick={handleCancelWithdrawal}
-                          disabled={cancelLoading}
-                        >
-                          {cancelLoading ? t("canceling") : t("withdraw_cancel")}
-                        </button>
-                      ) : (
-                        <button
-                          style={modalDeleteButtonStyle}
-                          onClick={handleWithdrawalRequest}
-                          disabled={withdrawLoading}
-                        >
-                          {withdrawLoading ? t("changing") : t("withdraw")}
-                        </button>
-                      )}
-
-                      {editError && (
-                        <div
-                          style={{
-                            color: "red",
-                            marginTop: 7,
-                            fontSize: 14,
-                            textAlign: "center",
-                          }}
-                        >
-                          {editError}
-                        </div>
-                      )}
                     </div>
 
                     <button
-                      style={modalCloseButtonStyle}
-                      onClick={() => setShowProfile(false)}
+                      style={modalGrayButtonStyle}
+                      onClick={handlePasswordChange}
+                      disabled={editLoading}
                     >
-                      {t("close")}
+                      {t("send_pw_reset")}
                     </button>
 
-                    <button
-                      style={{
-                        position: "absolute",
-                        top: 10,
-                        right: 10,
-                        width: 32,
-                        height: 32,
-                        background: "transparent",
-                        border: "none",
-                        color: "#555",
-                        fontSize: 28,
-                        cursor: "pointer",
-                        zIndex: 10,
-                      }}
-                      aria-label={t("close")}
-                      tabIndex={0}
-                      onClick={() => setShowProfile(false)}
-                    >
-                      <svg width="22" height="22" viewBox="0 0 22 22">
-                        <line
-                          x1="4"
-                          y1="4"
-                          x2="18"
-                          y2="18"
-                          stroke="#333"
-                          strokeWidth="2.2"
-                          strokeLinecap="round"
-                        />
-                        <line
-                          x1="18"
-                          y1="4"
-                          x2="4"
-                          y2="18"
-                          stroke="#333"
-                          strokeWidth="2.2"
-                          strokeLinecap="round"
-                        />
-                      </svg>
-                    </button>
+                    {profile?.withdrawal_requested_at ? (
+                      <button
+                        style={modalGrayButtonStyle}
+                        onClick={handleCancelWithdrawal}
+                        disabled={cancelLoading}
+                      >
+                        {cancelLoading ? t("canceling") : t("withdraw_cancel")}
+                      </button>
+                    ) : (
+                      <button
+                        style={modalDeleteButtonStyle}
+                        onClick={handleWithdrawalRequest}
+                        disabled={withdrawLoading}
+                      >
+                        {withdrawLoading ? t("changing") : t("withdraw")}
+                      </button>
+                    )}
+
+                    {editError && (
+                      <div
+                        style={{
+                          color: "red",
+                          marginTop: 7,
+                          fontSize: 14,
+                          textAlign: "center",
+                        }}
+                      >
+                        {editError}
+                      </div>
+                    )}
                   </div>
+
+                  <button
+                    style={modalCloseButtonStyle}
+                    onClick={() => setShowProfile(false)}
+                  >
+                    {t("close")}
+                  </button>
+
+                  <button
+                    style={{
+                      position: "absolute",
+                      top: 10,
+                      right: 10,
+                      width: 32,
+                      height: 32,
+                      background: "transparent",
+                      border: "none",
+                      color: "#555",
+                      fontSize: 28,
+                      cursor: "pointer",
+                      zIndex: 10,
+                    }}
+                    aria-label={t("close")}
+                    tabIndex={0}
+                    onClick={() => setShowProfile(false)}
+                  >
+                    <svg width="22" height="22" viewBox="0 0 22 22">
+                      <line
+                        x1="4"
+                        y1="4"
+                        x2="18"
+                        y2="18"
+                        stroke="#333"
+                        strokeWidth="2.2"
+                        strokeLinecap="round"
+                      />
+                      <line
+                        x1="18"
+                        y1="4"
+                        x2="4"
+                        y2="18"
+                        stroke="#333"
+                        strokeWidth="2.2"
+                        strokeLinecap="round"
+                      />
+                    </svg>
+                  </button>
                 </div>
-              )}
-            </>
-          ) : (
-            <button
-              style={mainButtonStyle}
-              onClick={() => navigate(`/${currentLang}/login`)}
-            >
-              {t("login")}
-            </button>
-          )}
-        </div>
-      </header>
-    </>
+              </div>
+            )}
+          </>
+        ) : (
+          <button
+            style={mainButtonStyle}
+            onClick={() => navigate(`/${currentLang}/login`)}
+          >
+            {t("login")}
+          </button>
+        )}
+      </div>
+    </header>
   );
 }
