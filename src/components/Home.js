@@ -432,19 +432,6 @@ function Home({
         />
       </div>
 
-      {/* ✅ 광고 허용 영역 (상단) */}
-      <div className="ad-zone-top" style={{ 
-        width: "100%", 
-        maxWidth: "728px", 
-        margin: "0 auto 20px",
-        minHeight: "90px",
-        display: "flex",
-        justifyContent: "center",
-        isolation: "isolate"
-      }}>
-        {/* 자동광고가 여기 들어올 수 있음 */}
-      </div>
-
       {/* ✅ 자동광고 격리: 카드 그리드를 별도 컨테이너로 감싸기 */}
       <div
         className="worldcup-cards-isolation-wrapper"
@@ -921,70 +908,21 @@ function Home({
         {`
           @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&display=swap');
           
-          /* ✅ 전체 레이아웃 보호 */
-          body, html, #root {
-            width: 100% !important;
-            max-width: 100vw !important;
-            overflow-x: hidden !important;
-            margin: 0 !important;
-            padding: 0 !important;
-          }
-          
-          * {
-            box-sizing: border-box !important;
-          }
-          
           button:focus, button:active {
             outline: none !important;
             box-shadow: none !important;
           }
           
-          /* ✅ 자동광고 크기 및 위치 제한 */
-          ins.adsbygoogle {
-            display: block !important;
-            max-width: 100% !important;
-            margin: 20px auto !important;
-            clear: both !important;
-          }
-          
-          /* ✅ 자동광고가 카드 그리드 내부에 삽입되는 것을 완전 차단 */
+          /* ✅ 자동광고가 카드 그리드 내부에 삽입되는 것을 차단 */
           .worldcup-cards-isolation-wrapper {
-            isolation: isolate !important;
-            contain: layout style !important;
+            isolation: isolate;
+            contain: layout style;
           }
           
           .worldcup-cards-grid > ins,
-          .worldcup-cards-grid > .adsbygoogle,
-          .worldcup-cards-grid ins.adsbygoogle {
+          .worldcup-cards-grid > .adsbygoogle {
             display: none !important;
             visibility: hidden !important;
-            width: 0 !important;
-            height: 0 !important;
-            position: absolute !important;
-            left: -9999px !important;
-          }
-          
-          /* ✅ 앵커 광고 위치 고정 */
-          ins.adsbygoogle[data-anchor-status] {
-            position: fixed !important;
-            bottom: 0 !important;
-            left: 0 !important;
-            right: 0 !important;
-            width: 100% !important;
-            max-width: 100vw !important;
-            z-index: 9999 !important;
-          }
-          
-          /* ✅ 자동광고 크기 제한 */
-          ins.adsbygoogle[data-ad-format="auto"] {
-            max-width: 100% !important;
-            width: auto !important;
-          }
-          
-          /* ✅ 광고 허용 영역에서만 표시 */
-          .ad-zone-top ins.adsbygoogle {
-            display: block !important;
-            max-width: 728px !important;
           }
         `}
       </style>
