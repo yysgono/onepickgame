@@ -12,7 +12,6 @@ html, body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-
 body {
   font-family: 'Noto Sans', 'Apple SD Gothic Neo', 'Malgun Gothic', 'Microsoft YaHei', 'Meiryo', Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -24,7 +23,6 @@ body {
   min-height: 100vh;
   background: #f6f8fa;
 }
-
 #root {
   margin: 0 !important;
   padding: 0 !important;
@@ -32,7 +30,6 @@ body {
   min-height: 100vh;
   background: #f6f8fa;
 }
-
 .app-main-wrapper {
   min-height: 100vh;
   width: 100%;
@@ -42,7 +39,6 @@ body {
   padding: 0 !important;
   background: #f6f8fa;
 }
-
 .header-wrapper {
   width: 100%;
   max-width: 1800px;
@@ -51,7 +47,7 @@ body {
   background: none;
 }
 
-/* 광고 (기존 커스텀 배너용) */
+/* 광고 */
 .ad-banner.left,
 .ad-banner.right {
   position: fixed;
@@ -69,8 +65,8 @@ body {
   justify-content: center;
   background: none;
   pointer-events: none;
+  border: 2px dashed blue !important;
 }
-
 .ad-banner.left img,
 .ad-banner.right img {
   width: 260px !important;
@@ -79,8 +75,8 @@ body {
   border-radius: 16px;
   display: block;
   pointer-events: auto;
+  border: 2px solid deepskyblue !important;
 }
-
 .ad-banner.left { left: 24px; }
 .ad-banner.right { right: 24px; }
 
@@ -99,16 +95,16 @@ body {
   border-radius: 18px;
   overflow: hidden;
   height: auto;
+  border: 2px dashed red !important;
 }
-
 .ad-banner.top img {
   width: 100%;
   max-width: 1200px;
   max-height: 140px;
   display: block;
   border-radius: 14px;
+  border: 2px solid orange !important;
 }
-
 .ad-banner.bottom {
   position: fixed;
   left: 50%;
@@ -123,8 +119,8 @@ body {
   min-width: 200px;
   background: none;
   padding-bottom: 0;
+  border: 2px dashed green !important;
 }
-
 .ad-banner.bottom img {
   width: 100%;
   max-width: 98vw;
@@ -132,6 +128,7 @@ body {
   max-height: 160px;
   border-radius: 18px;
   display: block;
+  border: 2px solid greenyellow !important;
 }
 
 /* ===== 본문 ===== */
@@ -156,7 +153,7 @@ body {
   min-width: 0 !important;
   margin: 0 !important;
   position: relative;
-  overflow-x: hidden; /* 🔧 수정됨 (기존 visible → hidden) */
+  overflow-x: visible;
   box-sizing: border-box;
 }
 
@@ -167,7 +164,6 @@ body {
   margin: 24px 0 8px 0;
   justify-content: center;
 }
-
 .candidate-card {
   background: #f8fafd;
   border-radius: 18px;
@@ -181,7 +177,6 @@ body {
   transition: box-shadow .17s;
   position: relative;
 }
-
 .candidate-card img {
   width: 120px;
   height: 120px;
@@ -191,7 +186,6 @@ body {
   background: #eef2f5;
   box-shadow: 0 0 0 1px #dce3eb;
 }
-
 .comment-box {
   width: 680px;
   margin: 32px auto 0 auto;
@@ -208,7 +202,6 @@ body {
     display: none !important;
   }
 }
-
 @media (max-width: 1400px) {
   .main-content-box {
     max-width: 98vw !important;
@@ -219,7 +212,6 @@ body {
     min-width: 160px;
   }
 }
-
 @media (max-width: 1000px) {
   .main-content-box {
     max-width: 99vw !important;
@@ -239,7 +231,6 @@ body {
     display: none !important;
   }
 }
-
 @media (max-width: 700px) {
   .main-content-box {
     padding: 0 !important;
@@ -286,13 +277,11 @@ body {
   text-align: center;
   letter-spacing: -0.5px;
 }
-
 .section-title {
   font-weight: 700;
   font-size: 1.13em;
   margin: 20px 0 12px 2px;
 }
-
 .card-title {
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -308,7 +297,6 @@ body {
   line-height: 1.3;
   word-break: break-all;
 }
-
 .card-desc {
   color: #888;
   font-size: 15px;
@@ -324,21 +312,102 @@ body {
   line-height: 1.3;
   word-break: break-all;
 }
-
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
 }
 
-/* ===== Google AdSense (manual) safety ===== */
-.ad-container {
-  width: 100%;
-  max-width: 100%;
-  overflow-x: hidden;
-  box-sizing: border-box;
+/* Skeleton animation */
+@keyframes skeleton-pulse {
+  0% { opacity: 0.72; }
+  100% { opacity: 1; }
 }
 
-.adsbygoogle {
-  display: block;
-  width: 100% !important;
-  max-width: 100% !important;
+html, body {
+  background-color: #f6f8fa !important;
+  background-image:
+    linear-gradient(0deg, #e8e8ef 1px, transparent 1px),
+    linear-gradient(90deg, #e8e8ef 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+.game-card {
+  position: relative;
+  border: 3px solid #a653fb;
+  background: #18172a;
+  box-shadow: 0 8px 30px rgba(166,83,251,0.15);
+  overflow: hidden;
+  display: flex;
+  flex-direction: row;
+  transition: box-shadow 0.18s, transform 0.16s;
+  cursor: pointer;
+  clip-path: polygon(
+    12% 0%, 100% 0%, 100% 88%, 88% 100%, 0% 100%, 0% 12%
+  );
+}
+.game-card:hover {
+  box-shadow: 0 0 32px 2px #a653fb88, 0 8px 30px #a653fb22;
+}
+.game-card-bar {
+  width: 40px;
+  height: 100%;
+  background: linear-gradient(180deg,#a653fb 60%,#51298c 100%);
+  color: #fff;
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  letter-spacing: 2px;
+  box-shadow: 2px 0 12px #a653fb55;
+  user-select: none;
+  font-size: 16px;
+}
+.neon-btn {
+  background: rgba(24,24,44,0.72);
+  color: #fff;
+  font-weight: 900;
+  border: none;
+  outline: none;
+  border-radius: 999px;
+  font-size: 16px;
+  padding: 7px 22px;
+  cursor: pointer;
+  font-family: 'Orbitron', 'Pretendard', sans-serif;
+  box-shadow: none;
+  transition: background 0.16s;
+}
+.neon-btn:focus, .neon-btn:active, .neon-btn:hover {
+  outline: none;
+  box-shadow: none;
+  background: rgba(40, 54, 104, 0.84);
+}
+
+/* 카드 전체 사각형 처리 */
+.candidate-card,
+.game-card {
+  border-radius: 0 !important;
+}
+
+/* 카드 내 이미지도 사각형 */
+.candidate-card img,
+.game-card img {
+  border-radius: 0 !important;
+}
+
+/* 썸네일 박스(상단 이미지 영역)도 사각형 */
+.candidate-card > div:first-child,
+.game-card > div:first-child {
+  border-top-left-radius: 0 !important;
+  border-top-right-radius: 0 !important;
+}
+
+/* 혹시 모를 다른 카드/이미지도 한 번에 처리 */
+.card,
+.card img,
+.card .thumb {
+  border-radius: 0 !important;
+}
+.ad-banner.top {
+  margin-top: 12px !important;
 }
