@@ -13,6 +13,7 @@ import {
 import { useTranslation } from "react-i18next";
 
 import Header from "./components/Header";
+import AdsenseTop from "./components/AdsenseTop";
 import Home from "./components/Home";
 import SelectRoundPage from "./components/SelectRoundPage";
 import MatchPage from "./components/MatchPage";
@@ -671,22 +672,25 @@ function App() {
     return (
       <>
         <SEOManager />
-        <div className="header-wrapper" style={{ margin: 0, padding: 0 }}>
-          <Header
-            onLangChange={handleLangChange}
-            onBackup={handleBackup}
-            onRestore={handleRestore}
-            onMakeWorldcup={handleMakeWorldcup}
-            isAdmin={isAdmin}
-            user={user}
-            nickname={nickname}
-            nicknameLoading={nicknameLoading}
-            setUser={setUser}
-            setNickname={updateNickname}
-          />
-        </div>
+<div className="header-wrapper" style={{ margin: 0, padding: 0 }}>
+  <Header
+    onLangChange={handleLangChange}
+    onBackup={handleBackup}
+    onRestore={handleRestore}
+    onMakeWorldcup={handleMakeWorldcup}
+    isAdmin={isAdmin}
+    user={user}
+    nickname={nickname}
+    nicknameLoading={nicknameLoading}
+    setUser={setUser}
+    setNickname={updateNickname}
+  />
+</div>
 
-        <AdGuard isAdmin={isAdmin} />
+{/* 🔥 여기 추가 (상단 광고) */}
+<AdsenseTop />
+
+<AdGuard isAdmin={isAdmin} />
 
         <div className="main-content-box">
           <Routes>
