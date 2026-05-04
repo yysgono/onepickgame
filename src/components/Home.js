@@ -89,21 +89,6 @@ function Home({
     document.body.scrollTop = 0;
   }, []);
 
-  // 애드센스 자동광고 스크립트 한 번만 주입
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    const EXISTING = document.querySelector(
-      `script[src*="pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"][src*="${ADSENSE_CLIENT}"]`
-    );
-    if (!EXISTING) {
-      const s = document.createElement("script");
-      s.async = true;
-      s.src = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT}`;
-      s.crossOrigin = "anonymous";
-      document.head.appendChild(s);
-    }
-    // Auto Ads는 애드센스 관리자에서 자동광고 ON이면 자동 배치됩니다.
-  }, []);
 
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState("popular");
