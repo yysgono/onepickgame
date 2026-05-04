@@ -3,6 +3,7 @@ import React, { useMemo, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import Match from "./Match";
+import AdsenseSide from "./AdsenseSide";
 import ReferralBanner from "./ReferralBanner";
 import { pushRecentWorldcup } from "../utils";
 
@@ -72,44 +73,40 @@ export default function MatchPage({ worldcupList = [] }) {
     <div style={{ width: "100%", position: "relative" }}>
       {/* ⛔ 헤더 바로 아래 제휴 배너(쿠팡/아마존) 제거 — 애드센스 자동광고만 사용 */}
 
-      {/* 가운데 단일 컬럼 (사이드 제휴 배너 제거) */}
-      <div
-        style={{
-          width: "100%",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "flex-start",
-          gap: 16,
-        }}
-      >
-        {/* 메인 패널 (매치 본문) */}
-        <div
-          style={{
-            width: "100%",
-            maxWidth: 1200,
-            background: "transparent",
-            borderRadius: 0,
-          }}
-        >
-          <Match cup={cup} onResult={() => {}} selectedCount={selectedCount} />
+<div
+  style={{
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "flex-start",
+  }}
+>
 
-          {/* 🔻 하단은 레퍼럴 배너 유지 */}
-          {!isMobile && (
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                marginTop: 18,
-                marginBottom: 16,
-              }}
-            >
-              <div style={{ width: "100%", maxWidth: 900 }}>
-                <ReferralBanner lang={i18n.language || "en"} />
-              </div>
-            </div>
-          )}
-        </div>
+  {/* ✅ 왼쪽 광고 */}
+  {!isMobile && (
+    <div style={{ width: 160, marginRight: 20 }}>
+      <AdsenseSide />
+    </div>
+  )}
+
+  {/* ✅ 메인 */}
+  <div style={{ width: "100%", maxWidth: 1200 }}>
+    <Match cup={cup} onResult={() => {}} selectedCount={selectedCount} />
+
+    {!isMobile && (
+      <div style={{ marginTop: 20 }}>
+        <ReferralBanner lang={i18n.language || "en"} />
       </div>
+    )}
+  </div>
+
+  {/* ✅ 오른쪽 광고 */}
+  {!isMobile && (
+    <div style={{ width: 160, marginLeft: 20 }}>
+      <AdsenseSide />
+    </div>
+  )}
+
+</div>
 
       {/* ⛔ 모바일 하단 고정 제휴 배너도 제거 — Match.js도 애드센스 자동광고만 사용 */}
     </div>
