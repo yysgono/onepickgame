@@ -11,6 +11,27 @@ const PAGE_SIZE = 21;
 // 애드센스 클라이언트 ID
 const ADSENSE_CLIENT = "ca-pub-2906270915716379";
 
+const AdsenseMid = () => {
+  useEffect(() => {
+    try {
+      (window.adsbygoogle = window.adsbygoogle || []).push({});
+    } catch (e) {}
+  }, []);
+
+  return (
+    <div style={{ width: "100%", textAlign: "center", margin: "20px 0" }}>
+      <ins
+        className="adsbygoogle"
+        style={{ display: "block" }}
+        data-ad-client="ca-pub-2906270915716379"
+        data-ad-slot="3294216783"
+        data-ad-format="auto"
+        data-full-width-responsive="true"
+      />
+    </div>
+  );
+};
+
 const useSlideFadeIn = (length) => {
   const refs = useRef([]);
   useEffect(() => {
@@ -435,14 +456,19 @@ function Home({
         }}
       >
         {visibleList.length > 0 &&
-          visibleList.map((cup, idx) => {
-            const winStats = winStatsMap[cup.id] || [];
-            const [first, second] = getTop2Winners(winStats, cup.data);
+visibleList.map((cup, idx) => {
+  const winStats = winStatsMap[cup.id] || [];
+  const [first, second] = getTop2Winners(winStats, cup.data);
 
-            return (
-              <React.Fragment key={cup.id}>
-                <div
-                  ref={(el) => (cardRefs.current[idx] = el)}
+  return (
+    <React.Fragment key={cup.id}>
+
+      {/* ⭐ 광고 (여기!!) */}
+      {idx === 5 && <AdsenseMid />}
+      {idx === 12 && <AdsenseMid />}
+
+      <div
+        ref={(el) => (cardRefs.current[idx] = el)}
                   style={{
                     width: "100%",
                     height: CARD_HEIGHT,
