@@ -308,9 +308,39 @@ export default function SelectRoundPage({
               onClick={handleShare}
               aria-label={t("share_worldcup")}
             >
-              📢 {t("share_worldcup")}
+               {t("share_worldcup")}
             </button>
           )}
+
+          <button
+  onClick={() => handleStart(selectedRound)}
+  style={{
+    position: "absolute",
+    top: isMobile ? 20 : 30,
+    left: "50%",
+    transform: "translateX(-50%)",
+    padding: isMobile ? "10px 22px" : "16px 48px",
+    fontSize: isMobile ? 14 : 20,
+    fontWeight: "900",
+    borderRadius: 14,
+    border: "none",
+    background: "linear-gradient(135deg, #00c6ff, #0072ff)",
+    color: "#fff",
+    cursor: "pointer",
+    boxShadow: "0 6px 20px rgba(0, 114, 255, 0.5)",
+    zIndex: 30,
+    letterSpacing: "0.5px",
+    transition: "all 0.2s ease",
+  }}
+  onMouseEnter={(e) => {
+    e.currentTarget.style.transform = "translateX(-50%) scale(1.05)";
+  }}
+  onMouseLeave={(e) => {
+    e.currentTarget.style.transform = "translateX(-50%) scale(1)";
+  }}
+>
+  🚀 START NOW
+</button>
 
           {/* 오른쪽 상단 결과/통계 보기 버튼 */}
           <button
