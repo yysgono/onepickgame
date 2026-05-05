@@ -313,7 +313,8 @@ export default function Header({
     padding: 0,
   };
   const modalContentStyle = {
-    background: "#fff",
+background: "#1e293b",
+color: "#fff",
     borderRadius: 12,
     padding: "32px 28px",
     minWidth: 330,
@@ -336,7 +337,9 @@ export default function Header({
     width: "100%",
     padding: "10px 11px",
     borderRadius: 7,
-    border: "1.2px solid #bbb",
+background: "#334155",
+color: "#fff",
+border: "1px solid #475569",
     fontSize: 16,
     marginBottom: 9,
     boxSizing: "border-box",
@@ -355,8 +358,8 @@ export default function Header({
   };
   const modalGrayButtonStyle = {
     width: "100%",
-    background: "#bbb",
-    color: "#fff",
+background: "#475569",
+color: "#fff",
     border: "none",
     borderRadius: 8,
     fontWeight: 700,
