@@ -9,6 +9,7 @@ function LoginBox({ setUser, setNickname }) {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
   async function handleLogin(e) {
@@ -58,7 +59,7 @@ function LoginBox({ setUser, setNickname }) {
       }}
       aria-label={t("login")}
     >
-      <h2 style={{ textAlign: "center", marginBottom: 20 }}>{t("login")}</h2>
+      <h2 style={{ textAlign: "center", marginBottom: 20,  color: "#111" }}>{t("login")}</h2>
       <form onSubmit={handleLogin}>
         <input
           type="email"
@@ -75,27 +76,43 @@ function LoginBox({ setUser, setNickname }) {
             border: "1.2px solid #bbb",
             fontSize: 16,
             marginBottom: 12,
+              boxSizing: "border-box", // ⭐ 이거 추가
           }}
           required
           spellCheck={false}
         />
-        <input
-          type="password"
-          value={password}
-          onChange={e => setPassword(e.target.value)}
-          placeholder={t("password")}
-          aria-label={t("password")}
-          autoComplete="current-password"
-          style={{
-            width: "100%",
-            padding: 10,
-            borderRadius: 7,
-            border: "1.2px solid #bbb",
-            fontSize: 16,
-            marginBottom: 18,
-          }}
-          required
-        />
+<div style={{ position: "relative", marginBottom: 18 }}>
+  <input
+    type={showPassword ? "text" : "password"}
+    value={password}
+    onChange={e => setPassword(e.target.value)}
+    placeholder={t("password")}
+    style={{
+      width: "100%",
+          padding: "10px 40px 10px 10px", // ⭐ 이거 추가
+boxSizing: "border-box",
+      borderRadius: 7,
+      border: "1.2px solid #bbb",
+      fontSize: 16,
+    }}
+    required
+  />
+
+  <span
+    onClick={() => setShowPassword(!showPassword)}
+    style={{
+      position: "absolute",
+      right: 10,
+      top: "50%",
+      transform: "translateY(-50%)",
+      cursor: "pointer",
+      color: "#1976ed",
+      fontSize: 18,
+    }}
+  >
+    👁
+  </span>
+</div>
         <button
           type="submit"
           disabled={loading}
@@ -103,6 +120,7 @@ function LoginBox({ setUser, setNickname }) {
             width: "100%",
             background: "#1976ed",
             color: "#fff",
+            boxShadow: "0 4px 12px rgba(25,118,237,0.4)",
             fontWeight: 800,
             border: "none",
             borderRadius: 9,
