@@ -2,6 +2,8 @@
 import React, { useEffect, useState, lazy, Suspense, useRef } from "react";
 import { useParams, useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import AdsenseSide from "./AdsenseSide";
+import AdsenseTop from "./AdsenseTop";
 import { supabase } from "../utils/supabaseClient";
 import { pushRecentWorldcup } from "../utils";
 
@@ -262,20 +264,49 @@ export default function ResultPage({ worldcupList }) {
         }}
       />
 
-      <div
-        style={{
-          position: "relative",
-          zIndex: 1,
-          width: "100%",
-          maxWidth: 1200,
-          margin: "0 auto",
-          padding: isMobile ? "0 0 28px 0" : "0 0 44px 0",
-          minHeight: "100vh",
-          boxSizing: "border-box",
-          contentVisibility: "auto",
-          containIntrinsicSize: "1200px 800px",
-        }}
-      >
+<div
+  style={{
+    position: "relative",
+    zIndex: 1,
+    width: "100%",
+  }}
+>
+
+  {/* ✅ 상단 광고 */}
+  {!isMobile && (
+    <div style={{ display: "flex", justifyContent: "center", marginTop: 10 }}>
+      <AdsenseTop />
+    </div>
+  )}
+
+  <div
+    style={{
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "flex-start",
+    }}
+  >
+
+    {/* ✅ 왼쪽 광고 */}
+    {!isMobile && (
+      <div style={{ width: 160, marginRight: 20 }}>
+        <AdsenseSide />
+      </div>
+    )}
+
+    {/* ✅ 기존 메인 */}
+    <div
+      style={{
+        maxWidth: 1200,
+        width: "100%",
+        margin: "0 auto",
+        padding: isMobile ? "0 0 28px 0" : "0 0 44px 0",
+        minHeight: "100vh",
+        boxSizing: "border-box",
+        contentVisibility: "auto",
+        containIntrinsicSize: "1200px 800px",
+      }}
+    >
         {winner && !isStatsOnly && (
           <div
             style={{
@@ -404,7 +435,17 @@ export default function ResultPage({ worldcupList }) {
             <ReferralBanner lang={lang} />
           </Suspense>
         </div>
+
+      </div> {/* ⭐ 메인 끝 */}
+
+      {!isMobile && (
+        <div style={{ width: 160, marginLeft: 20 }}>
+          <AdsenseSide />
+        </div>
+      )}
+
+    </div> {/* ⭐ flex 끝 */}
+  </div> {/* ⭐ wrapper 끝 */}
       </div>
-    </div>
   );
 }

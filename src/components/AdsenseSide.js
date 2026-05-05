@@ -11,11 +11,14 @@ export default function AdsenseSide() {
   return (
     <ins
       className="adsbygoogle"
-      style={{ display: "block" }}
+      style={{
+        display: "block",
+        width: "160px",
+        height: "600px"
+      }}
       data-ad-client="ca-pub-2906270915716379"
-      data-ad-slot="3294216783"
+      data-ad-slot="2170480333"   // ⭐ 이거 꼭 새로 만든 걸로 바꿔
       data-ad-format="auto"
-      data-full-width-responsive="true"
     />
   );
 }

@@ -2,6 +2,8 @@ import React from "react";
 import { useParams, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import StatsPage from "./StatsPage";
+import AdsenseSide from "./AdsenseSide";
+import AdsenseTop from "./AdsenseTop";
 
 function useIsMobile() {
   const [m, setM] = React.useState(window.innerWidth < 700);
@@ -12,6 +14,7 @@ function useIsMobile() {
   }, []);
   return m;
 }
+
 function useViewportWidth() {
   const [vw, setVw] = React.useState(window.innerWidth);
   React.useEffect(() => {
@@ -39,21 +42,49 @@ export default function StatsRoutePage({ worldcupList }) {
   if (!cup) return null;
 
   return (
-    <div style={{ width: "100%", position: "relative", paddingBottom: isMobile ? 110 : 0 }}>
-      {/* ⛔ 헤더 아래 배너 제거 (애드센스 자동광고만 사용) */}
+    <div
+      style={{
+        width: "100%",
+        position: "relative",
+        paddingBottom: isMobile ? 110 : 0,
+      }}
+    >
+      {/* ✅ 상단 광고 */}
+      {!isMobile && (
+        <div style={{ display: "flex", justifyContent: "center", marginTop: 10 }}>
+          <AdsenseTop />
+        </div>
+      )}
 
-      <div style={{ width: "100%", display: "flex", justifyContent: "center", gap: 16, marginTop: 10 }}>
-        {/* ⛔ 좌측/우측 사이드 배너 제거 */}
+      {/* ✅ 전체 레이아웃 */}
+      <div
+        style={{
+          width: "100%",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "flex-start",
+          marginTop: 10,
+        }}
+      >
+        {/* ✅ 왼쪽 광고 */}
+        {!isMobile && isWideForSideAds && (
+          <div style={{ width: 160, marginRight: 20 }}>
+            <AdsenseSide />
+          </div>
+        )}
 
-        {/* 본문 */}
+        {/* ✅ 메인 */}
         <div style={{ width: "100%", maxWidth: 980 }}>
           <StatsPage selectedCup={cup} showCommentBox={true} />
-
-          {/* ⛔ PC 하단 배너 제거 */}
         </div>
-      </div>
 
-      {/* ⛔ 모바일 하단 고정 배너 제거 */}
+        {/* ✅ 오른쪽 광고 */}
+        {!isMobile && isWideForSideAds && (
+          <div style={{ width: 160, marginLeft: 20 }}>
+            <AdsenseSide />
+          </div>
+        )}
+      </div>
     </div>
   );
 }
