@@ -269,7 +269,7 @@ export default function SelectRoundPage({
   );
 
   // ✅ 버튼과 썸네일 겹침 방지용 여백
-  const topSpacerH = isMobile ? 60 : 70;
+  const topSpacerH = isMobile ? 20 : 25;
   const thumbH = isMobile ? 150 : 190;
 
   // ✅ 1등/2등 결정
@@ -312,13 +312,11 @@ export default function SelectRoundPage({
             </button>
           )}
 
-          <button
+<button
   onClick={() => handleStart(selectedRound)}
   style={{
-    position: "absolute",
-    top: isMobile ? 20 : 30,
-    left: "50%",
-    transform: "translateX(-50%)",
+    display: "block",
+    margin: "15px auto",
     padding: isMobile ? "10px 22px" : "16px 48px",
     fontSize: isMobile ? 14 : 20,
     fontWeight: "900",
@@ -328,15 +326,6 @@ export default function SelectRoundPage({
     color: "#fff",
     cursor: "pointer",
     boxShadow: "0 6px 20px rgba(0, 114, 255, 0.5)",
-    zIndex: 30,
-    letterSpacing: "0.5px",
-    transition: "all 0.2s ease",
-  }}
-  onMouseEnter={(e) => {
-    e.currentTarget.style.transform = "translateX(-50%) scale(1.05)";
-  }}
-  onMouseLeave={(e) => {
-    e.currentTarget.style.transform = "translateX(-50%) scale(1)";
   }}
 >
   🚀 START NOW
@@ -350,7 +339,28 @@ export default function SelectRoundPage({
           >
             {t("show_result")}
           </button>
-
+<div style={{ textAlign: "center", marginTop: 12 }}>
+  <select
+    value={selectedRound}
+    onChange={(e) => setSelectedRound(Number(e.target.value))}
+    style={{
+      padding: "10px 20px",
+      fontSize: 15,
+      borderRadius: 10,
+      border: "2px solid #1976ed",
+      background: "#16213a",
+      color: "#fff",
+      fontWeight: "bold",
+      cursor: "pointer",
+    }}
+  >
+    {possibleRounds.map((r) => (
+      <option key={r} value={r}>
+        Round of {r}
+      </option>
+    ))}
+  </select>
+</div>
           {cup && (
             <>
               {/* ✅ 제목 위 썸네일 */}
