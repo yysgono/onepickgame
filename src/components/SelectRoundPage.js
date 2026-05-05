@@ -3,6 +3,7 @@ import React, { useState, useEffect, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 import MediaRenderer from "./MediaRenderer";
+import AdsenseSide from "./AdsenseSide";
 import { fetchWinnerStatsFromDB, pushRecentWorldcup } from "../utils.js"; // ✅ 통계/최근본
 
 function useIsMobile() {
@@ -279,15 +280,12 @@ export default function SelectRoundPage({
       {/* ⛔ 헤더 바로 밑 제휴 배너 제거 — 애드센스 자동광고만 사용 */}
 
       {/* ✅ 가운데 콘텐츠 (사이드 제휴 배너 제거) */}
-      <div
-        style={{
-          width: "100%",
-          marginTop: 10,
-          display: "flex",
-          justifyContent: "center",
-          gap: 16,
-        }}
-      >
+<div style={{ display: "flex", justifyContent: "center" }}>
+  {!isMobile && isWideForSideAds && (
+  <div style={{ width: 160, marginRight: 20 }}>
+    <AdsenseSide />
+  </div>
+)}
         {/* 메인 컨텐츠 패널 */}
         <div
           style={{
@@ -608,6 +606,12 @@ export default function SelectRoundPage({
 
           {/* ⛔ PC/모바일 제휴 배너 영역 제거 — 애드센스 자동광고만 사용 */}
         </div>
+        {/* ⭐⭐⭐ 여기 넣어 ⭐⭐⭐ */}
+{!isMobile && isWideForSideAds && (
+  <div style={{ width: 160, marginLeft: 20 }}>
+    <AdsenseSide />
+  </div>
+)}
       </div>
     </div>
   );
