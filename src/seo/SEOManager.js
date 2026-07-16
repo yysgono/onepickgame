@@ -5,28 +5,41 @@ import { useLocation } from "react-router-dom";
 export default function SEOManager() {
   const { pathname } = useLocation();
 
-  // /:lang(/slug...) 형태만 고려
-  const m = (pathname || "/").match(/^\/([a-z]{2})(?:\/(.*))?$/i);
-  const slug = (m?.[2] || "").replace(/^\/+|\/+$/g, "");
+  // /:lang 또는 /:lang/slug 형태에서 slug 추출
+  // 예:
+  // /ko                         → ""
+  // /ko/blog                    → "blog"
+  // /ko/blog/epidemic-sound-review
+  //                             → "blog/epidemic-sound-review"
+  const match = (pathname || "/").match(
+    /^\/([a-z]{2})(?:\/(.*))?$/i
+  );
 
-  // 인덱스 허용(정적 slug)
+  const slug = (match?.[2] || "").replace(
+    /^\/+|\/+$/g,
+    ""
+  );
+
+  // 색인을 허용하는 정적 경로
   const INDEX_ALLOW = new Set([
-    "",                 // /:lang  (홈)
+    "",                 // /:lang
+    "blog",             // /:lang/blog
     "privacy-policy",   // /:lang/privacy-policy
     "terms-of-service", // /:lang/terms-of-service
-    "suggestions",      // /:lang/suggestions  (목록)
-    "notice",           // /:lang/notice  (공지 목록)
+    "suggestions",      // /:lang/suggestions
+    "notice",           // /:lang/notice
   ]);
 
-  // 인덱스 허용(동적 패턴)
+  // 색인을 허용하는 동적 경로
   const ALLOW_PATTERNS = [
-    /^notice\/[^/]+$/,                 // /:lang/notice/:id
-    /^select-round\/[^/]+$/,           // /:lang/select-round/:id
-    /^result\/[^/]+(?:\/[^/]+)?$/,     // /:lang/result/:id(/:round)
-    /^stats\/[^/]+$/,                  // /:lang/stats/:id
+    /^blog\/[^/]+$/,                    // /:lang/blog/:slug
+    /^notice\/[^/]+$/,                  // /:lang/notice/:id
+    /^select-round\/[^/]+$/,            // /:lang/select-round/:id
+    /^result\/[^/]+(?:\/[^/]+)?$/,      // /:lang/result/:id(/:round)
+    /^stats\/[^/]+$/,                   // /:lang/stats/:id
   ];
 
-  // 인덱스 제외(개인화/보안/관리/제작 흐름 등)
+  // 색인에서 제외할 경로
   const NOINDEX_PATTERNS = [
     /^(login|signup|find-(id|pw)|reset-password)(\/|$)/,
     /^(admin|admin-stats)(\/|$)/,
@@ -35,13 +48,29 @@ export default function SEOManager() {
     /^(backup)(\/|$)/,
   ];
 
-  const isNoIndex = NOINDEX_PATTERNS.some((re) => re.test(slug));
-  const isIndexAllowed = INDEX_ALLOW.has(slug) || ALLOW_PATTERNS.some((re) => re.test(slug));
-  const shouldNoIndex = isNoIndex || !isIndexAllowed;
+  const isExplicitlyNoIndex = NOINDEX_PATTERNS.some(
+    (pattern) => pattern.test(slug)
+  );
 
-  return shouldNoIndex ? (
+  const isIndexAllowed =
+    INDEX_ALLOW.has(slug) ||
+    ALLOW_PATTERNS.some((pattern) =>
+      pattern.test(slug)
+    );
+
+  const shouldNoIndex =
+    isExplicitlyNoIndex || !isIndexAllowed;
+
+  if (!shouldNoIndex) {
+    return null;
+  }
+
+  return (
     <Helmet>
-      <meta name="robots" content="noindex,follow" />
+      <meta
+        name="robots"
+        content="noindex,follow"
+      />
     </Helmet>
-  ) : null;
+  );
 }
