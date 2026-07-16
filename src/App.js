@@ -36,6 +36,8 @@ import Footer from "./components/Footer";
 import SuggestionsBoard from "./components/SuggestionsBoard";
 import SEOManager from "./seo/SEOManager";
 import AdGuard from "./ads/AdGuard";
+import BlogPage from "./components/BlogPage";
+import BlogPostPage from "./components/BlogPostPage";
 
 import DePage from "./pages/de";
 import EnPage from "./pages/en";
@@ -713,7 +715,17 @@ function App() {
               path="/find-pw"
               element={<Navigate to="/en/find-pw" replace />}
             />
+    {/* 블로그 목록 */}
+    <Route
+      path="/:lang/blog"
+      element={<BlogPage />}
+    />
 
+    {/* 블로그 상세 글 */}
+    <Route
+      path="/:lang/blog/:slug"
+      element={<BlogPostPage />}
+    />
             <Route
               path="/:lang"
               element={

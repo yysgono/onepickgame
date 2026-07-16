@@ -168,11 +168,17 @@ export default function Header({
   function handleLogoClick() {
     navigate(`/${currentLang}`);
   }
+
   function handleMyWorldcup() {
     navigate(`/${currentLang}/my-worldcups`);
   }
+
   function handleRecentWorldcup() {
     navigate(`/${currentLang}/recent-worldcups`);
+  }
+
+  function handleBlog() {
+    navigate(`/${currentLang}/blog`);
   }
 
   // ✅ 언어 변경 시 현재 경로 유지
@@ -312,9 +318,10 @@ export default function Header({
     margin: 0,
     padding: 0,
   };
+
   const modalContentStyle = {
-background: "#1e293b",
-color: "#fff",
+    background: "#1e293b",
+    color: "#fff",
     borderRadius: 12,
     padding: "32px 28px",
     minWidth: 330,
@@ -333,17 +340,19 @@ color: "#fff",
     transform: "translateX(-50%)",
     zIndex: 10001,
   };
+
   const modalInputStyle = {
     width: "100%",
     padding: "10px 11px",
     borderRadius: 7,
-background: "#334155",
-color: "#fff",
-border: "1px solid #475569",
+    background: "#334155",
+    color: "#fff",
+    border: "1px solid #475569",
     fontSize: 16,
     marginBottom: 9,
     boxSizing: "border-box",
   };
+
   const modalProfileButtonStyle = {
     width: "100%",
     background: blueMain,
@@ -356,10 +365,11 @@ border: "1px solid #475569",
     margin: "7px 0 0",
     cursor: "pointer",
   };
+
   const modalGrayButtonStyle = {
     width: "100%",
-background: "#475569",
-color: "#fff",
+    background: "#475569",
+    color: "#fff",
     border: "none",
     borderRadius: 8,
     fontWeight: 700,
@@ -368,6 +378,7 @@ color: "#fff",
     margin: "10px 0 0",
     cursor: "pointer",
   };
+
   const modalDeleteButtonStyle = {
     width: "100%",
     background: "#e14444",
@@ -380,6 +391,7 @@ color: "#fff",
     margin: "14px 0 0",
     cursor: "pointer",
   };
+
   const modalCloseButtonStyle = {
     background: "#eee",
     color: "#222",
@@ -475,21 +487,25 @@ color: "#fff",
             >
               {t("dashboard")}
             </button>
+
             <button
               style={statButtonStyle}
               onClick={() => navigate(`/${currentLang}/admin-stats`)}
             >
               {t("stats")}
             </button>
+
             <button style={adminButtonStyle()} onClick={onBackup}>
               {t("backupAll")}
             </button>
+
             <button
               style={adminButtonStyle("#253253")}
               onClick={() => inputRef.current && inputRef.current.click()}
             >
               {t("restore")}
             </button>
+
             <input
               ref={inputRef}
               type="file"
@@ -512,6 +528,10 @@ color: "#fff",
 
         <button style={infoButtonStyle} onClick={handleRecentWorldcup}>
           {t("recent_worldcups")}
+        </button>
+
+        <button style={infoButtonStyle} onClick={handleBlog}>
+          Blog
         </button>
 
         {/* ----------- 언어 선택 (현재 경로 유지) ----------- */}
@@ -543,18 +563,31 @@ color: "#fff",
                 fontSize: 15,
               }}
             >
-              {nicknameLoading ? t("loading_nickname") : nickname || t("no_nickname")}
+              {nicknameLoading
+                ? t("loading_nickname")
+                : nickname || t("no_nickname")}
             </span>
-            <button style={infoButtonStyle} onClick={() => setShowProfile(true)}>
+
+            <button
+              style={infoButtonStyle}
+              onClick={() => setShowProfile(true)}
+            >
               {t("edit_profile")}
             </button>
+
             <button style={logoutButtonStyle} onClick={handleLogout}>
               {t("logout")}
             </button>
 
             {showProfile && (
-              <div style={modalOverlayStyle} onClick={() => setShowProfile(false)}>
-                <div style={modalContentStyle} onClick={(e) => e.stopPropagation()}>
+              <div
+                style={modalOverlayStyle}
+                onClick={() => setShowProfile(false)}
+              >
+                <div
+                  style={modalContentStyle}
+                  onClick={(e) => e.stopPropagation()}
+                >
                   <div
                     style={{
                       fontWeight: 800,
@@ -573,6 +606,7 @@ color: "#fff",
 
                     <div style={{ marginBottom: 10, fontSize: 15 }}>
                       <b>{t("nickname")}:</b>
+
                       <input
                         type="text"
                         value={editNickname}
@@ -582,12 +616,15 @@ color: "#fff",
                         maxLength={20}
                         disabled={editLoading}
                       />
+
                       <button
                         style={modalProfileButtonStyle}
                         onClick={handleNicknameChange}
                         disabled={editLoading}
                       >
-                        {editLoading ? t("changing") : t("change_nickname")}
+                        {editLoading
+                          ? t("changing")
+                          : t("change_nickname")}
                       </button>
                     </div>
 
@@ -605,7 +642,9 @@ color: "#fff",
                         onClick={handleCancelWithdrawal}
                         disabled={cancelLoading}
                       >
-                        {cancelLoading ? t("canceling") : t("withdraw_cancel")}
+                        {cancelLoading
+                          ? t("canceling")
+                          : t("withdraw_cancel")}
                       </button>
                     ) : (
                       <button
@@ -613,7 +652,9 @@ color: "#fff",
                         onClick={handleWithdrawalRequest}
                         disabled={withdrawLoading}
                       >
-                        {withdrawLoading ? t("changing") : t("withdraw")}
+                        {withdrawLoading
+                          ? t("changing")
+                          : t("withdraw")}
                       </button>
                     )}
 
