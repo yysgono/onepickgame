@@ -16,4 +16,7 @@
   <sitemap><loc>https://www.onepickgame.com/sitemaps/sitemap-tr-v2.xml</loc></sitemap>
   <sitemap><loc>https://www.onepickgame.com/sitemaps/sitemap-vi-v2.xml</loc></sitemap>
   <sitemap><loc>https://www.onepickgame.com/sitemaps/sitemap-zh-v2.xml</loc></sitemap>
+    <sitemap>
+    <loc>https://www.onepickgame.com/sitemaps/sitemap-blog.xml</loc>
+  </sitemap>
 </sitemapindex>
