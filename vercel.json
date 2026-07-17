@@ -1,4 +1,18 @@
 {
+  "version": 2,
+  "builds": [
+    {
+      "src": "server.js",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "build"
+      }
+    }
+  ],
   "redirects": [
     {
       "source": "/:path*",
@@ -84,38 +98,17 @@
       ]
     }
   ],
-  "rewrites": [
+  "routes": [
     {
-      "source": "/api/:path*",
-      "destination": "/server.js"
+      "src": "/api/(.*)",
+      "dest": "/server.js"
     },
     {
-      "source": "/sitemap_index-v2.xml",
-      "destination": "/sitemap_index-v2.xml"
+      "handle": "filesystem"
     },
     {
-      "source": "/sitemaps/:file*",
-      "destination": "/sitemaps/:file*"
-    },
-    {
-      "source": "/robots.txt",
-      "destination": "/robots.txt"
-    },
-    {
-      "source": "/ads.txt",
-      "destination": "/ads.txt"
-    },
-    {
-      "source": "/:all*(png|jpg|jpeg|gif|webp|avif|svg|ico)",
-      "destination": "/:all*"
-    },
-    {
-      "source": "/:all*(js|css|map|json)",
-      "destination": "/:all*"
-    },
-    {
-      "source": "/(.*)",
-      "destination": "/"
+      "src": "/(.*)",
+      "dest": "/index.html"
     }
   ],
   "trailingSlash": false,
