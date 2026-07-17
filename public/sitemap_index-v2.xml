@@ -1,22 +1,72 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <sitemap><loc>https://www.onepickgame.com/sitemaps/sitemap-en-v2.xml</loc></sitemap>
-  <sitemap><loc>https://www.onepickgame.com/sitemaps/sitemap-ko-v2.xml</loc></sitemap>
-  <sitemap><loc>https://www.onepickgame.com/sitemaps/sitemap-ar-v2.xml</loc></sitemap>
-  <sitemap><loc>https://www.onepickgame.com/sitemaps/sitemap-bn-v2.xml</loc></sitemap>
-  <sitemap><loc>https://www.onepickgame.com/sitemaps/sitemap-de-v2.xml</loc></sitemap>
-  <sitemap><loc>https://www.onepickgame.com/sitemaps/sitemap-es-v2.xml</loc></sitemap>
-  <sitemap><loc>https://www.onepickgame.com/sitemaps/sitemap-fr-v2.xml</loc></sitemap>
-  <sitemap><loc>https://www.onepickgame.com/sitemaps/sitemap-hi-v2.xml</loc></sitemap>
-  <sitemap><loc>https://www.onepickgame.com/sitemaps/sitemap-id-v2.xml</loc></sitemap>
-  <sitemap><loc>https://www.onepickgame.com/sitemaps/sitemap-ja-v2.xml</loc></sitemap>
-  <sitemap><loc>https://www.onepickgame.com/sitemaps/sitemap-pt-v2.xml</loc></sitemap>
-  <sitemap><loc>https://www.onepickgame.com/sitemaps/sitemap-ru-v2.xml</loc></sitemap>
-  <sitemap><loc>https://www.onepickgame.com/sitemaps/sitemap-th-v2.xml</loc></sitemap>
-  <sitemap><loc>https://www.onepickgame.com/sitemaps/sitemap-tr-v2.xml</loc></sitemap>
-  <sitemap><loc>https://www.onepickgame.com/sitemaps/sitemap-vi-v2.xml</loc></sitemap>
-  <sitemap><loc>https://www.onepickgame.com/sitemaps/sitemap-zh-v2.xml</loc></sitemap>
-    <sitemap>
-    <loc>https://www.onepickgame.com/sitemaps/sitemap-blog.xml</loc>
+
+  <sitemap>
+    <loc>https://www.onepickgame.com/sitemaps/sitemap-en-v2.xml</loc>
   </sitemap>
+
+  <sitemap>
+    <loc>https://www.onepickgame.com/sitemaps/sitemap-ko-v2.xml</loc>
+  </sitemap>
+
+  <sitemap>
+    <loc>https://www.onepickgame.com/sitemaps/sitemap-ar-v2.xml</loc>
+  </sitemap>
+
+  <sitemap>
+    <loc>https://www.onepickgame.com/sitemaps/sitemap-bn-v2.xml</loc>
+  </sitemap>
+
+  <sitemap>
+    <loc>https://www.onepickgame.com/sitemaps/sitemap-de-v2.xml</loc>
+  </sitemap>
+
+  <sitemap>
+    <loc>https://www.onepickgame.com/sitemaps/sitemap-es-v2.xml</loc>
+  </sitemap>
+
+  <sitemap>
+    <loc>https://www.onepickgame.com/sitemaps/sitemap-fr-v2.xml</loc>
+  </sitemap>
+
+  <sitemap>
+    <loc>https://www.onepickgame.com/sitemaps/sitemap-hi-v2.xml</loc>
+  </sitemap>
+
+  <sitemap>
+    <loc>https://www.onepickgame.com/sitemaps/sitemap-id-v2.xml</loc>
+  </sitemap>
+
+  <sitemap>
+    <loc>https://www.onepickgame.com/sitemaps/sitemap-ja-v2.xml</loc>
+  </sitemap>
+
+  <sitemap>
+    <loc>https://www.onepickgame.com/sitemaps/sitemap-pt-v2.xml</loc>
+  </sitemap>
+
+  <sitemap>
+    <loc>https://www.onepickgame.com/sitemaps/sitemap-ru-v2.xml</loc>
+  </sitemap>
+
+  <sitemap>
+    <loc>https://www.onepickgame.com/sitemaps/sitemap-th-v2.xml</loc>
+  </sitemap>
+
+  <sitemap>
+    <loc>https://www.onepickgame.com/sitemaps/sitemap-tr-v2.xml</loc>
+  </sitemap>
+
+  <sitemap>
+    <loc>https://www.onepickgame.com/sitemaps/sitemap-vi-v2.xml</loc>
+  </sitemap>
+
+  <sitemap>
+    <loc>https://www.onepickgame.com/sitemaps/sitemap-zh-v2.xml</loc>
+  </sitemap>
+
+  <sitemap>
+    <loc>https://www.onepickgame.com/api/sitemap-blog</loc>
+  </sitemap>
+
 </sitemapindex>
