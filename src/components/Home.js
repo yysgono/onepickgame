@@ -325,51 +325,6 @@ function Home({
     boxShadow: "0 2px 10px #1976ed44",
   };
 
-  const referralUrl = "https://www.epidemicsound.com/referral/4u2zqt";
-  const epiInfo = (() => {
-    const title = "Epidemic Sound";
-    const line1 =
-      {
-        ko: "무료 저작권 걱정 없는 음악 사용법 · 할인코드 · 무료체험",
-        en: "Royalty-free music for creators: how to use, discount tips & free trial",
-        ja: "クリエイター向けロイヤリティフリー音源の使い方・割引情報・無料トライアル",
-        fr: "Musique libre de droits pour créateurs : mode d’emploi, réductions et essai gratuit",
-        es: "Música libre de derechos para creadores: uso, descuentos y prueba gratis",
-        de: "GEMA-freie Musik für Creator: Nutzung, Rabatte & Gratis-Test",
-        pt: "Música livre de direitos para criadores: como usar, descontos e teste grátis",
-        ru: "Музыка без отчислений для авторов: как использовать, скидки и пробный период",
-        id: "Musik bebas lisensi untuk kreator: cara pakai, diskon & uji coba gratis",
-        hi: "क्रिएटर्स के लिए रॉयल्टी-फ्री म्यूज़िक: उपयोग, छूट टिप्स और फ्री ट्रायल",
-        vi: "Nhạc miễn phí bản quyền cho creator: cách dùng, mẹo giảm giá & dùng thử",
-        zh: "面向创作者的免版税音乐：使用方法、优惠与免费试用",
-        ar: "موسيقى بلا حقوق للمنشئين: كيفية الاستخدام، الخصومات، والتجربة المجانية",
-        bn: "ক্রিয়েটরদের জন্য রয়্যালটি-ফ্রি মিউজিক: ব্যবহার, ডিসকাউন্ট ও ফ্রি ট্রায়াল",
-        th: "เพลงไร้ลิขสิทธิ์สำหรับครีเอเตอร์: วิธีใช้ ส่วนลด & ทดลองฟรี",
-        tr: "Üreticiler için telifsiz müzik: kullanım, indirimler ve ücretsiz deneme",
-      }[lang] ||
-      "Royalty-free music for creators: how to use, discount tips & free trial";
-    const line2 =
-      {
-        ko: "유튜브 · 트위치 · 인스타 등에서 저작권 분쟁 없이 안전하게 사용하세요.",
-        en: "Use safely on YouTube, Twitch, Instagram—no copyright strikes.",
-        ja: "YouTube・Twitch・Instagramで著作권トラブルを気にせず安心して利用できます。",
-        fr: "Utilisez-la en toute sécurité sur YouTube, Twitch, Instagram—sans revendications.",
-        es: "Úsala con seguridad en YouTube, Twitch, Instagram—sin reclamaciones de copyright.",
-        de: "Sicher nutzen auf YouTube, Twitch, Instagram—ohne Copyright-Strikes.",
-        pt: "Use com segurança no YouTube, Twitch e Instagram—sem strikes de direitos autorais.",
-        ru: "Безопасно для YouTube, Twitch, Instagram—без страйков по авторским правам.",
-        id: "Aman dipakai di YouTube, Twitch, Instagram—tanpa klaim hak cipta.",
-        hi: "YouTube, Twitch, Instagram पर सुरक्षित—कॉपीराइट स्ट्राइक की चिंता नहीं।",
-        vi: "An toàn trên YouTube, Twitch, Instagram—không lo bản quyền.",
-        zh: "可在 YouTube、Twitch、Instagram 安全使用——无版权警告。",
-        ar: "استخدمها بأمان على YouTube وTwitch وInstagram—من دون إنذارات حقوق نشر.",
-        bn: "YouTube, Twitch, Instagram-এ নিরাপদে ব্যবহার করুন—কপিরাইট স্ট্রাইক নয়।",
-        th: "ปลอดภัยบน YouTube, Twitch, Instagram—ไม่โดนลิขสิทธิ์",
-        tr: "YouTube, Twitch, Instagram’da güvenle kullanın—hak ihlali yok.",
-      }[lang] ||
-      "Use safely on YouTube, Twitch, Instagram—no copyright strikes.";
-    return { title, line1, line2 };
-  })();
 
   const goto = (url) => {
     window.scrollTo(0, 0);
@@ -813,7 +768,7 @@ visibleList.map((cup, idx) => {
           ))}
       </div>
 
-      {/* ✅✅✅ 더보기 버튼을 에피데믹 카드 위로 이동 */}
+      {/* ✅✅✅ 더보기 버튼 */}
       {visibleCount < filtered.length && (
         <div style={{ textAlign: "center", margin: "18px 0 26px 0" }}>
           <button
@@ -836,78 +791,7 @@ visibleList.map((cup, idx) => {
         </div>
       )}
 
-      {/* ✅✅✅ 에피데믹 사운드 카드: 더보기 버튼 아래로 이동 */}
-      <div
-        style={{
-          width: "100%",
-          display: "flex",
-          justifyContent: "center",
-          marginTop: isMobile ? 18 : 26,
-          marginBottom: isMobile ? 22 : 28,
-          padding: isMobile ? "0 10px" : 0,
-        }}
-      >
-        <div
-          style={{
-            width: isMobile ? 320 : 728,
-            background: "linear-gradient(135deg, #14213a 10%, #1f2f57 90%)",
-            border: "1.2px solid #1f3c72",
-            borderRadius: 14,
-            boxShadow: "0 8px 28px rgba(25,118,237,0.25)",
-            padding: isMobile ? "14px 14px" : "20px 22px",
-            color: "#fff",
-            textAlign: "center",
-          }}
-        >
-          <div
-            style={{
-              fontWeight: 900,
-              fontSize: isMobile ? 18 : 22,
-              letterSpacing: "-0.2px",
-              marginBottom: isMobile ? 6 : 8,
-            }}
-          >
-            {epiInfo.title}
-          </div>
 
-          <div
-            style={{
-              fontWeight: 700,
-              fontSize: isMobile ? 13 : 16,
-              lineHeight: 1.35,
-              opacity: 0.98,
-              whiteSpace: "pre-line",
-            }}
-          >
-            {epiInfo.line1 + "\n" + epiInfo.line2}
-          </div>
-
-          <div style={{ marginTop: isMobile ? 10 : 12 }}>
-            <a
-              href={referralUrl}
-              target="_blank"
-              rel="noopener sponsored nofollow"
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                justifyContent: "center",
-                padding: isMobile ? "9px 14px" : "11px 18px",
-                borderRadius: 10,
-                background: "#1976ed",
-                color: "#fff",
-                fontWeight: 900,
-                textDecoration: "none",
-                border: "1.2px solid #5aa1ff",
-                boxShadow: "0 2px 10px rgba(25,118,237,0.35)",
-                fontSize: isMobile ? 14 : 16,
-              }}
-              aria-label="Epidemic Sound free trial referral"
-            >
-              {lang === "ko" ? "무료체험 / 사용법 보기" : "Free trial & how to use"}
-            </a>
-          </div>
-        </div>
-      </div>
 
       <style>
         {`
