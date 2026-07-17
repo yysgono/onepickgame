@@ -52,9 +52,6 @@ function escapeXml(value) {
  *
  * 주소:
  * https://www.onepickgame.com/api/sitemap-blog
- *
- * Supabase blog_posts 테이블의 language와 slug를 읽어서
- * 블로그 사이트맵을 자동 생성합니다.
  */
 app.get("/api/sitemap-blog", async (req, res) => {
   try {
@@ -70,12 +67,12 @@ app.get("/api/sitemap-blog", async (req, res) => {
 
     const urls = new Set();
 
-    // 각 언어의 블로그 목록 페이지
+    // 각 언어 블로그 목록 페이지
     for (const language of BLOG_LANGUAGES) {
       urls.add(`${SITE_URL}/${language}/blog`);
     }
 
-    // Supabase에 저장된 블로그 상세 페이지
+    // Supabase에 저장된 모든 블로그 글
     for (const post of posts || []) {
       const language = String(post.language || "").trim();
       const slug = String(post.slug || "").trim();
@@ -93,7 +90,7 @@ app.get("/api/sitemap-blog", async (req, res) => {
       );
     }
 
-    const urlItems = Array.from(urls)
+    const urlXml = Array.from(urls)
       .sort()
       .map(
         (url) => `  <url>
@@ -105,9 +102,10 @@ app.get("/api/sitemap-blog", async (req, res) => {
     const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
-${urlItems}
+${urlXml}
 
-</urlset>`;
+</urlset>
+`;
 
     res.setHeader("Content-Type", "application/xml; charset=utf-8");
     res.setHeader(
@@ -119,10 +117,11 @@ ${urlItems}
   } catch (err) {
     console.error("블로그 사이트맵 생성 오류:", err);
 
-    return res
-      .status(500)
-      .type("text/plain")
-      .send(`사이트맵 생성 실패: ${err.message || "알 수 없는 오류"}`);
+    res.setHeader("Content-Type", "text/plain; charset=utf-8");
+
+    return res.status(500).send(
+      `사이트맵 생성 실패: ${err.message || "알 수 없는 오류"}`
+    );
   }
 });
 
@@ -251,7 +250,16 @@ app.get("/api/board", async (req, res) => {
 });
 
 /*
- * 로컬 실행용
+ * API 주소를 잘못 입력했을 때
+ */
+app.use("/api", (req, res) => {
+  return res.status(404).json({
+    error: "API route not found",
+  });
+});
+
+/*
+ * 로컬 실행
  */
 const PORT = process.env.PORT || 5001;
 
@@ -262,6 +270,6 @@ if (require.main === module) {
 }
 
 /*
- * Vercel 실행용
+ * Vercel 실행
  */
 module.exports = app;

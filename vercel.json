@@ -2,7 +2,12 @@
   "redirects": [
     {
       "source": "/:path*",
-      "has": [{ "type": "host", "value": "onepickgame.com" }],
+      "has": [
+        {
+          "type": "host",
+          "value": "onepickgame.com"
+        }
+      ],
       "destination": "https://www.onepickgame.com/:path*",
       "permanent": true
     },
@@ -34,30 +39,84 @@
   ],
   "headers": [
     {
-      "source": "/sitemap_index-v2\\.xml",
-      "headers": [{ "key": "Content-Type", "value": "application/xml; charset=utf-8" }]
+      "source": "/sitemap_index-v2.xml",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/xml; charset=utf-8"
+        }
+      ]
     },
     {
       "source": "/sitemaps/(.*)\\.xml",
-      "headers": [{ "key": "Content-Type", "value": "application/xml; charset=utf-8" }]
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/xml; charset=utf-8"
+        }
+      ]
+    },
+    {
+      "source": "/api/sitemap-blog",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/xml; charset=utf-8"
+        }
+      ]
     },
     {
       "source": "/robots\\.txt",
-      "headers": [{ "key": "Content-Type", "value": "text/plain; charset=utf-8" }]
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "text/plain; charset=utf-8"
+        }
+      ]
     },
     {
       "source": "/ads\\.txt",
-      "headers": [{ "key": "Content-Type", "value": "text/plain; charset=utf-8" }]
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "text/plain; charset=utf-8"
+        }
+      ]
     }
   ],
   "rewrites": [
-    { "source": "/sitemap_index-v2.xml", "destination": "/sitemap_index-v2.xml" },
-    { "source": "/sitemaps/:file*", "destination": "/sitemaps/:file*" },
-    { "source": "/robots.txt", "destination": "/robots.txt" },
-    { "source": "/ads.txt", "destination": "/ads.txt" },
-    { "source": "/:all*(png|jpg|jpeg|gif|webp|avif|svg|ico)", "destination": "/:all*" },
-    { "source": "/:all*(js|css|map|json)", "destination": "/:all*" },
-    { "source": "/(.*)", "destination": "/" }
+    {
+      "source": "/api/:path*",
+      "destination": "/server.js"
+    },
+    {
+      "source": "/sitemap_index-v2.xml",
+      "destination": "/sitemap_index-v2.xml"
+    },
+    {
+      "source": "/sitemaps/:file*",
+      "destination": "/sitemaps/:file*"
+    },
+    {
+      "source": "/robots.txt",
+      "destination": "/robots.txt"
+    },
+    {
+      "source": "/ads.txt",
+      "destination": "/ads.txt"
+    },
+    {
+      "source": "/:all*(png|jpg|jpeg|gif|webp|avif|svg|ico)",
+      "destination": "/:all*"
+    },
+    {
+      "source": "/:all*(js|css|map|json)",
+      "destination": "/:all*"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/"
+    }
   ],
   "trailingSlash": false,
   "cleanUrls": true
