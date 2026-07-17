@@ -10,12 +10,68 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-const supabaseAdmin = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY
+/*
+ * 환경변수
+ *
+ * 현재 Vercel에 등록된 CRA 환경변수와
+ * 기존 서버 환경변수 이름을 모두 지원합니다.
+ */
+const SUPABASE_URL =
+  process.env.REACT_APP_SUPABASE_URL ||
+  process.env.NEXT_PUBLIC_SUPABASE_URL;
+
+const SUPABASE_ANON_KEY =
+  process.env.REACT_APP_SUPABASE_ANON_KEY ||
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+const SUPABASE_SERVICE_ROLE_KEY =
+  process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+const SUPABASE_JWT_SECRET =
+  process.env.SUPABASE_JWT_SECRET;
+
+if (!SUPABASE_URL) {
+  throw new Error(
+    "REACT_APP_SUPABASE_URL 또는 NEXT_PUBLIC_SUPABASE_URL 환경변수가 필요합니다."
+  );
+}
+
+if (!SUPABASE_ANON_KEY && !SUPABASE_SERVICE_ROLE_KEY) {
+  throw new Error(
+    "REACT_APP_SUPABASE_ANON_KEY 또는 SUPABASE_SERVICE_ROLE_KEY 환경변수가 필요합니다."
+  );
+}
+
+/*
+ * 일반 Supabase 클라이언트
+ *
+ * service role key가 있으면 그것을 우선 사용하고,
+ * 없으면 anon key를 사용합니다.
+ */
+const supabase = createClient(
+  SUPABASE_URL,
+  SUPABASE_SERVICE_ROLE_KEY || SUPABASE_ANON_KEY,
+  {
+    auth: {
+      persistSession: false,
+      autoRefreshToken: false,
+    },
+  }
 );
 
-const SUPABASE_JWT_SECRET = process.env.SUPABASE_JWT_SECRET;
+/*
+ * 관리자 기능 전용 클라이언트
+ *
+ * service role key가 등록된 경우에만 생성됩니다.
+ */
+const supabaseAdmin = SUPABASE_SERVICE_ROLE_KEY
+  ? createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {
+      auth: {
+        persistSession: false,
+        autoRefreshToken: false,
+      },
+    })
+  : null;
 
 const SITE_URL = "https://www.onepickgame.com";
 
@@ -48,6 +104,22 @@ function escapeXml(value) {
 }
 
 /*
+ * 서버 상태 확인
+ *
+ * 주소:
+ * https://www.onepickgame.com/api/health
+ */
+app.get("/api/health", (req, res) => {
+  return res.status(200).json({
+    ok: true,
+    supabaseUrlConfigured: Boolean(SUPABASE_URL),
+    anonKeyConfigured: Boolean(SUPABASE_ANON_KEY),
+    serviceRoleConfigured: Boolean(SUPABASE_SERVICE_ROLE_KEY),
+    jwtSecretConfigured: Boolean(SUPABASE_JWT_SECRET),
+  });
+});
+
+/*
  * 블로그 자동 사이트맵
  *
  * 주소:
@@ -55,7 +127,7 @@ function escapeXml(value) {
  */
 app.get("/api/sitemap-blog", async (req, res) => {
   try {
-    const { data: posts, error } = await supabaseAdmin
+    const { data: posts, error } = await supabase
       .from("blog_posts")
       .select("language, slug")
       .order("language", { ascending: true })
@@ -67,14 +139,17 @@ app.get("/api/sitemap-blog", async (req, res) => {
 
     const urls = new Set();
 
-    // 각 언어 블로그 목록 페이지
+    // 각 언어의 블로그 목록 페이지
     for (const language of BLOG_LANGUAGES) {
       urls.add(`${SITE_URL}/${language}/blog`);
     }
 
-    // Supabase에 저장된 모든 블로그 글
+    // Supabase에 저장된 블로그 글
     for (const post of posts || []) {
-      const language = String(post.language || "").trim();
+      const language = String(post.language || "")
+        .trim()
+        .toLowerCase();
+
       const slug = String(post.slug || "").trim();
 
       if (!language || !slug) {
@@ -107,7 +182,11 @@ ${urlXml}
 </urlset>
 `;
 
-    res.setHeader("Content-Type", "application/xml; charset=utf-8");
+    res.setHeader(
+      "Content-Type",
+      "application/xml; charset=utf-8"
+    );
+
     res.setHeader(
       "Cache-Control",
       "public, s-maxage=3600, stale-while-revalidate=86400"
@@ -117,10 +196,15 @@ ${urlXml}
   } catch (err) {
     console.error("블로그 사이트맵 생성 오류:", err);
 
-    res.setHeader("Content-Type", "text/plain; charset=utf-8");
+    res.setHeader(
+      "Content-Type",
+      "text/plain; charset=utf-8"
+    );
 
     return res.status(500).send(
-      `사이트맵 생성 실패: ${err.message || "알 수 없는 오류"}`
+      `사이트맵 생성 실패: ${
+        err?.message || "알 수 없는 오류"
+      }`
     );
   }
 });
@@ -129,11 +213,28 @@ ${urlXml}
  * 회원 탈퇴
  */
 app.post("/api/deleteuser", async (req, res) => {
-  const { id } = req.body;
+  const { id } = req.body || {};
 
   if (!id) {
     return res.status(400).json({
       error: "user id required",
+    });
+  }
+
+  /*
+   * 회원 탈퇴는 관리자 권한이 필요합니다.
+   */
+  if (!supabaseAdmin) {
+    return res.status(500).json({
+      error:
+        "SUPABASE_SERVICE_ROLE_KEY 환경변수가 설정되지 않았습니다.",
+    });
+  }
+
+  if (!SUPABASE_JWT_SECRET) {
+    return res.status(500).json({
+      error:
+        "SUPABASE_JWT_SECRET 환경변수가 설정되지 않았습니다.",
     });
   }
 
@@ -145,10 +246,19 @@ app.post("/api/deleteuser", async (req, res) => {
     });
   }
 
-  const token = authHeader.split(" ")[1];
+  const token = authHeader.slice(7).trim();
+
+  if (!token) {
+    return res.status(401).json({
+      error: "Authorization token missing or malformed",
+    });
+  }
 
   try {
-    const decoded = jwt.verify(token, SUPABASE_JWT_SECRET);
+    const decoded = jwt.verify(
+      token,
+      SUPABASE_JWT_SECRET
+    );
 
     if (decoded.sub !== id) {
       return res.status(403).json({
@@ -156,7 +266,8 @@ app.post("/api/deleteuser", async (req, res) => {
       });
     }
 
-    const { error } = await supabaseAdmin.auth.admin.deleteUser(id);
+    const { error } =
+      await supabaseAdmin.auth.admin.deleteUser(id);
 
     if (error) {
       return res.status(500).json({
@@ -168,6 +279,8 @@ app.post("/api/deleteuser", async (req, res) => {
       message: "User deleted successfully",
     });
   } catch (err) {
+    console.error("회원 탈퇴 오류:", err);
+
     return res.status(401).json({
       error: "Invalid or expired token",
     });
@@ -178,7 +291,12 @@ app.post("/api/deleteuser", async (req, res) => {
  * 게시글 등록
  */
 app.post("/api/board", async (req, res) => {
-  const { title, content, author_id, type } = req.body;
+  const {
+    title,
+    content,
+    author_id,
+    type,
+  } = req.body || {};
 
   if (!title || !content || !author_id) {
     return res.status(400).json({
@@ -187,7 +305,7 @@ app.post("/api/board", async (req, res) => {
   }
 
   try {
-    const { data, error } = await supabaseAdmin
+    const { data, error } = await supabase
       .from("posts")
       .insert([
         {
@@ -206,8 +324,10 @@ app.post("/api/board", async (req, res) => {
 
     return res.status(200).json(data);
   } catch (err) {
+    console.error("게시글 등록 오류:", err);
+
     return res.status(500).json({
-      error: err.message || "등록 실패",
+      error: err?.message || "등록 실패",
     });
   }
 });
@@ -216,35 +336,56 @@ app.post("/api/board", async (req, res) => {
  * 게시글 목록
  */
 app.get("/api/board", async (req, res) => {
-  const { page = 1, limit = 20, type = "" } = req.query;
+  const {
+    page = "1",
+    limit = "20",
+    type = "",
+  } = req.query;
 
-  const pageNum = parseInt(page, 10) || 1;
-  const pageSize = parseInt(limit, 10) || 20;
+  const parsedPage = Number.parseInt(page, 10);
+  const parsedLimit = Number.parseInt(limit, 10);
+
+  const pageNum =
+    Number.isFinite(parsedPage) && parsedPage > 0
+      ? parsedPage
+      : 1;
+
+  const pageSize =
+    Number.isFinite(parsedLimit) && parsedLimit > 0
+      ? Math.min(parsedLimit, 100)
+      : 20;
 
   const from = (pageNum - 1) * pageSize;
   const to = from + pageSize - 1;
 
-  let query = supabaseAdmin
-    .from("posts")
-    .select("*", { count: "exact" })
-    .order("created_at", { ascending: false })
-    .range(from, to);
-
-  if (type) {
-    query = query.eq("type", type);
-  }
-
   try {
-    const { data, error } = await query;
+    let query = supabase
+      .from("posts")
+      .select("*", { count: "exact" })
+      .order("created_at", { ascending: false })
+      .range(from, to);
+
+    if (type) {
+      query = query.eq("type", type);
+    }
+
+    const { data, error, count } = await query;
 
     if (error) {
       throw error;
     }
 
-    return res.status(200).json(data || []);
+    return res.status(200).json({
+      data: data || [],
+      count: count || 0,
+      page: pageNum,
+      limit: pageSize,
+    });
   } catch (err) {
+    console.error("게시글 목록 오류:", err);
+
     return res.status(500).json({
-      error: err.message || "불러오기 실패",
+      error: err?.message || "불러오기 실패",
     });
   }
 });
@@ -265,7 +406,9 @@ const PORT = process.env.PORT || 5001;
 
 if (require.main === module) {
   app.listen(PORT, () => {
-    console.log(`API server listening on port ${PORT}`);
+    console.log(
+      `API server listening on port ${PORT}`
+    );
   });
 }
 
