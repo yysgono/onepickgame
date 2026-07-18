@@ -6,6 +6,7 @@ import AdsenseSide from "./AdsenseSide";
 import AdsenseTop from "./AdsenseTop";
 import { supabase } from "../utils/supabaseClient";
 import { pushRecentWorldcup } from "../utils";
+import Seo from "../seo/Seo";
 
 const StatsPage = React.lazy(() => import(/* webpackPrefetch: true */ "./StatsPage"));
 const MediaRenderer = lazy(() => import("./MediaRenderer"));
@@ -241,7 +242,22 @@ export default function ResultPage({ worldcupList }) {
       </div>
     );
 
-  return (
+ return (
+  <>
+    <Seo
+      lang={lang}
+      slug={`result/${cup.id}`}
+title={`${winner?.name || cup.title} - ${cup.title} | One Pick Game`}
+      description={cup.description || cup.desc || ""}
+      image={
+        winner?.image ||
+        cup.thumbnail ||
+        cup.image ||
+        cup.data?.[0]?.image ||
+        "/onepick-social.png"
+      }
+    />
+
     <div
       style={{
         width: "100vw",
@@ -447,5 +463,6 @@ export default function ResultPage({ worldcupList }) {
     </div> {/* ⭐ flex 끝 */}
   </div> {/* ⭐ wrapper 끝 */}
       </div>
+    </>
   );
 }

@@ -6,18 +6,27 @@ import Match from "./Match";
 import AdsenseSide from "./AdsenseSide";
 import ReferralBanner from "./ReferralBanner";
 import { pushRecentWorldcup } from "../utils";
+import Seo from "../seo/Seo";
 
 function useViewport() {
   const [vw, setVw] = React.useState(
     typeof window !== "undefined" ? window.innerWidth : 1200
   );
+
   React.useEffect(() => {
     if (typeof window === "undefined") return;
+
     const onResize = () => setVw(window.innerWidth);
+
     window.addEventListener("resize", onResize);
     return () => window.removeEventListener("resize", onResize);
   }, []);
-  return { vw, isMobile: vw < 1000, isWideForSideAds: vw >= 1300 };
+
+  return {
+    vw,
+    isMobile: vw < 1000,
+    isWideForSideAds: vw >= 1300,
+  };
 }
 
 /**
@@ -28,7 +37,9 @@ export default function MatchPage({ worldcupList = [] }) {
   const { id, round } = useParams();
   const { i18n } = useTranslation();
   const navigate = useNavigate();
-  const { isMobile /*, isWideForSideAds*/ } = useViewport();
+  const { isMobile } = useViewport();
+
+  const lang = (i18n.language || "en").split("-")[0];
 
   const cup = useMemo(
     () => worldcupList.find((c) => String(c.id) === String(id)),
@@ -49,9 +60,7 @@ export default function MatchPage({ worldcupList = [] }) {
         Not found.
         <br />
         <button
-          onClick={() =>
-            navigate(`/${(i18n.language || "en").split("-")[0]}`)
-          }
+          onClick={() => navigate(`/${lang}`)}
           style={{
             marginTop: 12,
             padding: "10px 18px",
@@ -70,45 +79,66 @@ export default function MatchPage({ worldcupList = [] }) {
   }
 
   return (
-    <div style={{ width: "100%", position: "relative" }}>
-      {/* ⛔ 헤더 바로 아래 제휴 배너(쿠팡/아마존) 제거 — 애드센스 자동광고만 사용 */}
+    <>
+      <Seo
+        lang={lang}
+        slug={`match/${cup.id}/${selectedCount}`}
+        title={`${cup.title} ${selectedCount}강 | One Pick Game`}
+        description={
+          cup.description ||
+          cup.desc ||
+          `${cup.title}에서 최고의 선택을 골라보세요.`
+        }
+        image={
+          cup.thumbnail ||
+          cup.image ||
+          cup.data?.[0]?.image ||
+          "/onepick-social.png"
+        }
+      />
 
-<div
-  style={{
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "flex-start",
-  }}
->
+      <div style={{ width: "100%", position: "relative" }}>
+        {/* ⛔ 헤더 바로 아래 제휴 배너 제거 */}
 
-  {/* ✅ 왼쪽 광고 */}
-  {!isMobile && (
-    <div style={{ width: 160, marginRight: 20 }}>
-      <AdsenseSide />
-    </div>
-  )}
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "flex-start",
+          }}
+        >
+          {/* 왼쪽 광고 */}
+          {!isMobile && (
+            <div style={{ width: 160, marginRight: 20 }}>
+              <AdsenseSide />
+            </div>
+          )}
 
-  {/* ✅ 메인 */}
-  <div style={{ width: "100%", maxWidth: 1200 }}>
-    <Match cup={cup} onResult={() => {}} selectedCount={selectedCount} />
+          {/* 메인 */}
+          <div style={{ width: "100%", maxWidth: 1200 }}>
+            <Match
+              cup={cup}
+              onResult={() => {}}
+              selectedCount={selectedCount}
+            />
 
-    {!isMobile && (
-      <div style={{ marginTop: 20 }}>
-        <ReferralBanner lang={i18n.language || "en"} />
+            {!isMobile && (
+              <div style={{ marginTop: 20 }}>
+                <ReferralBanner lang={lang} />
+              </div>
+            )}
+          </div>
+
+          {/* 오른쪽 광고 */}
+          {!isMobile && (
+            <div style={{ width: 160, marginLeft: 20 }}>
+              <AdsenseSide />
+            </div>
+          )}
+        </div>
+
+        {/* 모바일 하단 제휴 배너 제거 */}
       </div>
-    )}
-  </div>
-
-  {/* ✅ 오른쪽 광고 */}
-  {!isMobile && (
-    <div style={{ width: 160, marginLeft: 20 }}>
-      <AdsenseSide />
-    </div>
-  )}
-
-</div>
-
-      {/* ⛔ 모바일 하단 고정 제휴 배너도 제거 — Match.js도 애드센스 자동광고만 사용 */}
-    </div>
+    </>
   );
 }

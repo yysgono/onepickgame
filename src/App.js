@@ -520,29 +520,44 @@ function App() {
       );
     }
 
-    function SelectRoundPageWrapper() {
-      const { id } = useParams();
+function SelectRoundPageWrapper() {
+  const { id, lang } = useParams();
       const cup = worldcupList.find((c) => String(c.id) === id);
       const navigate = useNavigate();
       if (!cup) return null;
       return (
-        <SelectRoundPage
-          cup={cup}
-          maxRound={cup.data.length}
-          candidates={cup.data}
-          onSelect={(roundOrCandidate) => {
-            if (typeof roundOrCandidate === "number") {
-              navigate(getLangPath(i18n, `match/${cup.id}/${roundOrCandidate}`));
-            } else if (
-              typeof roundOrCandidate === "object" &&
-              roundOrCandidate?.id
-            ) {
-              navigate(getLangPath(i18n, `match/${cup.id}/${cup.data.length}`));
-            }
-          }}
-        />
-      );
-    }
+  <>
+    <Seo
+      lang={lang}
+      slug={`select-round/${cup.id}`}
+      title={`${cup.title} | One Pick Game`}
+      description={cup.description || cup.desc || ""}
+image={
+  cup.thumbnail ||
+  cup.image ||
+  cup.data?.[0]?.image ||
+  "/onepick-social.png"
+}
+    />
+
+    <SelectRoundPage
+      cup={cup}
+      maxRound={cup.data.length}
+      candidates={cup.data}
+      onSelect={(roundOrCandidate) => {
+        if (typeof roundOrCandidate === "number") {
+          navigate(getLangPath(i18n, `match/${cup.id}/${roundOrCandidate}`));
+        } else if (
+          typeof roundOrCandidate === "object" &&
+          roundOrCandidate?.id
+        ) {
+          navigate(getLangPath(i18n, `match/${cup.id}/${cup.data.length}`));
+        }
+      }}
+    />
+  </>
+);
+}
 
     function WorldcupMakerWrapper() {
       const navigate = useNavigate();
