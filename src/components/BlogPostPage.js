@@ -30,6 +30,7 @@ const detailText = {
       "이 언어로 작성된 글이 없거나 삭제된 글입니다.",
     error: "글을 불러오지 못했습니다.",
     back: "블로그로 돌아가기",
+    views: "조회수",
     affiliate:
       "이 글에는 제휴 링크가 포함되어 있습니다. 링크를 통해 가입할 경우 추가 비용 없이 일정 수수료를 받을 수 있습니다.",
   },
@@ -41,6 +42,7 @@ const detailText = {
       "This article is not available in the selected language.",
     error: "Unable to load the article.",
     back: "Back to blog",
+    views: "Views",
     affiliate:
       "This article contains affiliate links. I may receive a commission at no additional cost to you.",
   },
@@ -52,6 +54,7 @@ const detailText = {
       "選択した言語の記事がないか、削除されています。",
     error: "記事を読み込めませんでした。",
     back: "ブログに戻る",
+    views: "閲覧数",
     affiliate:
       "この記事にはアフィリエイトリンクが含まれています。リンクから登録すると、追加料金なしで報酬を受け取る場合があります。",
   },
@@ -63,6 +66,7 @@ const detailText = {
       "所选语言的文章不存在或已被删除。",
     error: "无法加载文章。",
     back: "返回博客",
+    views: "浏览量",
     affiliate:
       "本文包含联盟链接。如果您通过这些链接注册，我可能会获得佣金，您无需支付额外费用。",
   },
@@ -74,6 +78,7 @@ const detailText = {
       "Este artículo no está disponible en el idioma seleccionado o ha sido eliminado.",
     error: "No se pudo cargar el artículo.",
     back: "Volver al blog",
+    views: "Visualizaciones",
     affiliate:
       "Este artículo contiene enlaces de afiliados. Puedo recibir una comisión sin ningún coste adicional para ti.",
   },
@@ -85,6 +90,7 @@ const detailText = {
       "Cet article n’est pas disponible dans la langue sélectionnée ou a été supprimé.",
     error: "Impossible de charger l’article.",
     back: "Retour au blog",
+    views: "Vues",
     affiliate:
       "Cet article contient des liens d’affiliation. Je peux recevoir une commission sans frais supplémentaires pour vous.",
   },
@@ -96,6 +102,7 @@ const detailText = {
       "Bài viết này không có sẵn bằng ngôn ngữ đã chọn hoặc đã bị xóa.",
     error: "Không thể tải bài viết.",
     back: "Quay lại blog",
+    views: "Lượt xem",
     affiliate:
       "Bài viết này có chứa liên kết tiếp thị liên kết. Tôi có thể nhận được hoa hồng mà bạn không phải trả thêm chi phí.",
   },
@@ -107,6 +114,7 @@ const detailText = {
       "Dieser Artikel ist in der ausgewählten Sprache nicht verfügbar oder wurde gelöscht.",
     error: "Der Artikel konnte nicht geladen werden.",
     back: "Zurück zum Blog",
+    views: "Aufrufe",
     affiliate:
       "Dieser Artikel enthält Affiliate-Links. Ich kann eine Provision erhalten, ohne dass für Sie zusätzliche Kosten entstehen.",
   },
@@ -118,6 +126,7 @@ const detailText = {
       "Эта статья недоступна на выбранном языке или была удалена.",
     error: "Не удалось загрузить статью.",
     back: "Вернуться в блог",
+    views: "Просмотры",
     affiliate:
       "Эта статья содержит партнерские ссылки. Я могу получить комиссию без дополнительных расходов для вас.",
   },
@@ -129,6 +138,7 @@ const detailText = {
       "Artikel ini tidak tersedia dalam bahasa yang dipilih atau telah dihapus.",
     error: "Artikel tidak dapat dimuat.",
     back: "Kembali ke blog",
+    views: "Tayangan",
     affiliate:
       "Artikel ini mengandung tautan afiliasi. Saya mungkin menerima komisi tanpa biaya tambahan bagi Anda.",
   },
@@ -140,6 +150,7 @@ const detailText = {
       "Este artigo não está disponível no idioma selecionado ou foi removido.",
     error: "Não foi possível carregar o artigo.",
     back: "Voltar ao blog",
+    views: "Visualizações",
     affiliate:
       "Este artigo contém links de afiliados. Posso receber uma comissão sem nenhum custo adicional para você.",
   },
@@ -151,6 +162,7 @@ const detailText = {
       "यह लेख चुनी गई भाषा में उपलब्ध नहीं है या इसे हटा दिया गया है।",
     error: "लेख लोड नहीं किया जा सका।",
     back: "ब्लॉग पर वापस जाएँ",
+    views: "देखे जाने की संख्या",
     affiliate:
       "इस लेख में एफिलिएट लिंक शामिल हैं। इन लिंक से साइन अप करने पर मुझे बिना किसी अतिरिक्त लागत के कमीशन मिल सकता है।",
   },
@@ -162,6 +174,7 @@ const detailText = {
       "Bu makale seçilen dilde mevcut değil veya silinmiş olabilir.",
     error: "Makale yüklenemedi.",
     back: "Bloga dön",
+    views: "Görüntülenme",
     affiliate:
       "Bu makale bağlı kuruluş bağlantıları içerir. Size ek bir maliyet oluşturmadan komisyon kazanabilirim.",
   },
@@ -173,6 +186,7 @@ const detailText = {
       "บทความนี้ไม่มีในภาษาที่เลือกหรืออาจถูกลบแล้ว",
     error: "ไม่สามารถโหลดบทความได้",
     back: "กลับไปที่บล็อก",
+    views: "ยอดเข้าชม",
     affiliate:
       "บทความนี้มีลิงก์แนะนำ หากคุณสมัครผ่านลิงก์ดังกล่าว ฉันอาจได้รับค่าคอมมิชชันโดยที่คุณไม่เสียค่าใช้จ่ายเพิ่มเติม",
   },
@@ -184,6 +198,7 @@ const detailText = {
       "هذا المقال غير متاح باللغة المحددة أو ربما تم حذفه.",
     error: "تعذر تحميل المقال.",
     back: "العودة إلى المدونة",
+    views: "المشاهدات",
     affiliate:
       "تحتوي هذه المقالة على روابط تسويق بالعمولة. قد أحصل على عمولة دون أي تكلفة إضافية عليك.",
   },
@@ -195,6 +210,7 @@ const detailText = {
       "নির্বাচিত ভাষায় এই নিবন্ধটি পাওয়া যাচ্ছে না অথবা এটি মুছে ফেলা হয়েছে।",
     error: "নিবন্ধটি লোড করা যায়নি।",
     back: "ব্লগে ফিরে যান",
+    views: "দেখা হয়েছে",
     affiliate:
       "এই নিবন্ধে অ্যাফিলিয়েট লিঙ্ক রয়েছে। এসব লিঙ্কের মাধ্যমে নিবন্ধন করলে অতিরিক্ত কোনো খরচ ছাড়াই আমি কমিশন পেতে পারি।",
   },
@@ -202,6 +218,10 @@ const detailText = {
 
 function getDetailText(lang) {
   return detailText[lang] || detailText.en;
+}
+
+function getBrandName(lang) {
+  return lang === "ko" ? "원픽게임" : "OnePickGame";
 }
 
 function formatDate(date, lang) {
@@ -215,6 +235,14 @@ function formatDate(date, lang) {
     }).format(new Date(date));
   } catch {
     return "";
+  }
+}
+
+function formatViewCount(count, lang) {
+  try {
+    return new Intl.NumberFormat(lang).format(count);
+  } catch {
+    return String(count);
   }
 }
 
@@ -248,6 +276,7 @@ function getVisitorId() {
     return newVisitorId;
   } catch (error) {
     console.error("Visitor ID creation error:", error);
+
     return createFallbackVisitorId();
   }
 }
@@ -260,10 +289,14 @@ export default function BlogPostPage() {
     : "en";
 
   const text = getDetailText(currentLang);
+  const brandName = getBrandName(currentLang);
 
   const [post, setPost] = useState(null);
   const [loading, setLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
+  const [viewCount, setViewCount] = useState(0);
+  const [viewCountLoading, setViewCountLoading] =
+    useState(false);
 
   useEffect(() => {
     let mounted = true;
@@ -272,6 +305,7 @@ export default function BlogPostPage() {
       setLoading(true);
       setErrorMessage("");
       setPost(null);
+      setViewCount(0);
 
       try {
         const { data, error } = await supabase
@@ -327,41 +361,67 @@ export default function BlogPostPage() {
       return undefined;
     }
 
-    let cancelled = false;
+    let mounted = true;
 
-    async function recordBlogView() {
+    async function recordViewAndFetchCount() {
+      setViewCountLoading(true);
+
       try {
         const visitorId = getVisitorId();
 
-        const { error } = await supabase.rpc(
-          "record_blog_view",
-          {
+        const { error: recordError } =
+          await supabase.rpc("record_blog_view", {
             p_slug: post.slug,
             p_language: post.language,
             p_visitor_id: visitorId,
-          }
-        );
+          });
 
-        if (!cancelled && error) {
+        if (recordError) {
           console.error(
             "Blog view recording error:",
-            error
+            recordError
           );
         }
-      } catch (error) {
-        if (!cancelled) {
+
+        const { data, error: countError } =
+          await supabase.rpc("get_blog_view_count", {
+            p_slug: post.slug,
+            p_language: post.language,
+          });
+
+        if (!mounted) {
+          return;
+        }
+
+        if (countError) {
           console.error(
-            "Blog view recording error:",
+            "Blog view count fetch error:",
+            countError
+          );
+          setViewCount(0);
+          return;
+        }
+
+        setViewCount(Number(data) || 0);
+      } catch (error) {
+        if (mounted) {
+          console.error(
+            "Blog view processing error:",
             error
           );
+          setViewCount(0);
+        }
+      } finally {
+        if (mounted) {
+          setViewCountLoading(false);
         }
       }
     }
 
-    recordBlogView();
+    recordViewAndFetchCount();
 
     return () => {
-      cancelled = true;
+      mounted = false;
     };
   }, [post?.slug, post?.language]);
 
@@ -383,7 +443,7 @@ export default function BlogPostPage() {
         <Seo
           lang={currentLang}
           slug={`blog/${slug}`}
-          title={`${text.error} | OnePickGame`}
+          title={`${text.error} | ${brandName}`}
           description={text.error}
           noindex={true}
         />
@@ -413,7 +473,7 @@ export default function BlogPostPage() {
         <Seo
           lang={currentLang}
           slug={`blog/${slug}`}
-          title={`${text.notFound} | OnePickGame`}
+          title={`${text.notFound} | ${brandName}`}
           description={text.notFoundDescription}
           noindex={true}
         />
@@ -445,10 +505,10 @@ export default function BlogPostPage() {
       <Seo
         lang={currentLang}
         slug={`blog/${post.slug}`}
-        title={`${post.title} | OnePickGame`}
+        title={`${post.title} | ${brandName}`}
         description={
           post.description ||
-          `${post.title} - OnePickGame`
+          `${post.title} - ${brandName}`
         }
       />
 
@@ -463,7 +523,9 @@ export default function BlogPostPage() {
 
           <header className="blog-post-header">
             <p className="blog-eyebrow">
-              ONEPICKGAME BLOG
+              {currentLang === "ko"
+                ? "원픽게임 블로그"
+                : "ONEPICKGAME BLOG"}
             </p>
 
             <h1 className="blog-post-title">
@@ -476,17 +538,29 @@ export default function BlogPostPage() {
               </p>
             )}
 
-            {post.created_at && (
-              <time
-                className="blog-post-date"
-                dateTime={post.created_at}
-              >
-                {formatDate(
-                  post.created_at,
-                  currentLang
-                )}
-              </time>
-            )}
+            <div className="blog-post-meta">
+              {post.created_at && (
+                <time
+                  className="blog-post-date"
+                  dateTime={post.created_at}
+                >
+                  {formatDate(
+                    post.created_at,
+                    currentLang
+                  )}
+                </time>
+              )}
+
+              <span className="blog-post-views">
+                {text.views}{" "}
+                {viewCountLoading
+                  ? "..."
+                  : formatViewCount(
+                      viewCount,
+                      currentLang
+                    )}
+              </span>
+            </div>
           </header>
 
           <aside className="affiliate-disclosure">
