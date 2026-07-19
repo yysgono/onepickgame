@@ -338,7 +338,7 @@ function Home({
       style={{
         width: "100vw",
         minHeight: "100vh",
-        background: `url('/83243377_1669883362558_1_600x600.avif') center center / cover no-repeat fixed`,
+background: "#000",
         position: "relative",
       }}
     >
