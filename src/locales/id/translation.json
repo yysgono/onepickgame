@@ -294,5 +294,24 @@
   "loading_hint": "Untuk akurasi, mohon tunggu sekitar 5 detik.",
   "prev_page": "Halaman sebelumnya",
   "next_page": "Halaman berikutnya",
-  "goto_page": "Ke halaman {{page}}"
+  "goto_page": "Ke halaman {{page}}",
+  "match_page_description": "Mainkan turnamen {{title}} dan pilih favorit Anda melalui pertandingan satu lawan satu.",
+  "matchCommunity": {
+    "suggestionTitle": "Punya ide untuk turnamen ini?",
+    "placeholder": "Tulis saran Anda untuk turnamen ini...",
+    "loginPlaceholder": "Silakan masuk untuk mengirim saran.",
+    "submit": "Kirim",
+    "submitting": "Mengirim...",
+    "loginRequired": "Anda harus masuk untuk mengirim saran.",
+    "nicknameRequired": "Nama panggilan diperlukan untuk mengirim saran.",
+    "inputRequired": "Silakan masukkan saran Anda.",
+    "limit": "Saran dapat berisi hingga {{count}} karakter.",
+    "saveError": "Gagal menyimpan saran.",
+    "success": "Saran Anda berhasil dikirim!",
+    "viewSuggestions": "Lihat saran terbaru",
+    "noSuggestions": "Belum ada saran.",
+    "suggestionLoadError": "Gagal memuat saran.",
+    "unknownUser": "Pengguna tidak dikenal",
+    "latestSuggestionsOnly": "Hanya {{count}} saran terbaru yang ditampilkan."
+  }
 }

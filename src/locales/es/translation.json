@@ -294,5 +294,24 @@
   "loading_hint": "Para obtener estadísticas precisas, espere unos 5 segundos, por favor.",
   "prev_page": "Página anterior",
   "next_page": "Página siguiente",
-  "goto_page": "Ir a la página {{page}}"
+  "goto_page": "Ir a la página {{page}}",
+  "match_page_description": "Elige tu favorito en {{title}}.",
+  "matchCommunity": {
+    "suggestionTitle": "Sugerir candidatos o mejoras",
+    "placeholder": "Ejemplo: Agrega un nuevo candidato a este torneo.",
+    "loginPlaceholder": "Inicia sesión para enviar una sugerencia.",
+    "submit": "Enviar",
+    "submitting": "Enviando...",
+    "loginRequired": "Debes iniciar sesión para enviar una sugerencia.",
+    "nicknameRequired": "Debes configurar un apodo en tu perfil.",
+    "inputRequired": "Escribe una sugerencia.",
+    "limit": "Las sugerencias pueden tener hasta {{count}} caracteres.",
+    "saveError": "No se pudo enviar la sugerencia.",
+    "success": "Tu sugerencia se envió correctamente.",
+    "viewSuggestions": "Ver sugerencias ({{count}})",
+    "noSuggestions": "Aún no hay sugerencias.",
+    "suggestionLoadError": "No se pudieron cargar las sugerencias.",
+    "unknownUser": "Usuario desconocido",
+    "latestSuggestionsOnly": "Solo se muestran las {{count}} sugerencias más recientes."
+  }
 }

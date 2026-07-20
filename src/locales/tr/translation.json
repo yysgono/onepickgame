@@ -294,5 +294,24 @@
   "loading_hint": "Daha kararlı bir deneyim için lütfen yaklaşık 5 saniye bekleyin.",
   "prev_page": "Önceki Sayfa",
   "next_page": "Sonraki Sayfa",
-  "goto_page": "{{page}}. sayfaya git"
+  "goto_page": "{{page}}. sayfaya git",
+  "match_page_description": "{{title}} turnuvasında en iyi seçimi yapın.",
+  "matchCommunity": {
+    "suggestionTitle": "Aday ekleme veya iyileştirme önerisi",
+    "placeholder": "Örn. Bu turnuvaya yeni bir aday ekleyin.",
+    "loginPlaceholder": "Öneri göndermek için giriş yapın.",
+    "submit": "Gönder",
+    "submitting": "Gönderiliyor...",
+    "loginRequired": "Öneri göndermek için giriş yapmanız gerekir.",
+    "nicknameRequired": "Öneri göndermek için profilinizde bir takma ad belirleyin.",
+    "inputRequired": "Lütfen önerinizi girin.",
+    "limit": "Öneriler en fazla {{count}} karakter olabilir.",
+    "saveError": "Öneri kaydedilemedi.",
+    "success": "Öneriniz gönderildi.",
+    "viewSuggestions": "Önerileri Gör ({{count}})",
+    "noSuggestions": "Henüz öneri yok.",
+    "suggestionLoadError": "Öneriler yüklenemedi.",
+    "unknownUser": "Bilinmeyen kullanıcı",
+    "latestSuggestionsOnly": "Yalnızca en son {{count}} öneri gösteriliyor."
+  }
 }

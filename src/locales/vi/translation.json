@@ -294,5 +294,24 @@
   "loading_hint": "Để trải nghiệm ổn định hơn, vui lòng đợi khoảng 5 giây.",
   "prev_page": "Trang trước",
   "next_page": "Trang sau",
-  "goto_page": "Đi tới trang {{page}}"
-}
+  "goto_page": "Đi tới trang {{page}}",
+  "match_page_description": "Hãy chọn lựa chọn tốt nhất trong {{title}}.",
+  "matchCommunity": {
+    "suggestionTitle": "Đề xuất thêm hoặc cải thiện ứng cử viên",
+    "placeholder": "Ví dụ: Hãy thêm một ứng cử viên mới vào giải đấu này.",
+    "loginPlaceholder": "Đăng nhập để gửi đề xuất.",
+    "submit": "Gửi",
+    "submitting": "Đang gửi...",
+    "loginRequired": "Bạn cần đăng nhập để gửi đề xuất.",
+    "nicknameRequired": "Vui lòng đặt biệt danh trong hồ sơ để gửi đề xuất.",
+    "inputRequired": "Vui lòng nhập nội dung đề xuất.",
+    "limit": "Đề xuất có thể dài tối đa {{count}} ký tự.",
+    "saveError": "Không thể lưu đề xuất.",
+    "success": "Đề xuất đã được gửi.",
+    "viewSuggestions": "Xem đề xuất ({{count}})",
+    "noSuggestions": "Chưa có đề xuất nào.",
+    "suggestionLoadError": "Không thể tải đề xuất.",
+    "unknownUser": "Người dùng không xác định",
+    "latestSuggestionsOnly": "Chỉ hiển thị {{count}} đề xuất mới nhất."
+  }
+  }

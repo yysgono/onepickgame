@@ -1,10 +1,11 @@
 // src/components/MatchPage.js
-import React, { useMemo, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import React, { useEffect, useMemo } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+
 import Match from "./Match";
+import MatchCommunityBox from "./MatchCommunityBox";
 import AdsenseSide from "./AdsenseSide";
-import ReferralBanner from "./ReferralBanner";
 import { pushRecentWorldcup } from "../utils";
 import Seo from "../seo/Seo";
 
@@ -14,81 +15,122 @@ function useViewport() {
   );
 
   React.useEffect(() => {
-    if (typeof window === "undefined") return;
+    if (typeof window === "undefined") return undefined;
 
-    const onResize = () => setVw(window.innerWidth);
+    const handleResize = () => {
+      setVw(window.innerWidth);
+    };
 
-    window.addEventListener("resize", onResize);
-    return () => window.removeEventListener("resize", onResize);
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
   }, []);
 
   return {
-    vw,
     isMobile: vw < 1000,
-    isWideForSideAds: vw >= 1300,
   };
 }
 
 /**
  * props:
- *  - worldcupList: App에서 내려준 전체 리스트
+ * - worldcupList: App에서 내려준 전체 월드컵 목록
  */
 export default function MatchPage({ worldcupList = [] }) {
   const { id, round } = useParams();
-  const { i18n } = useTranslation();
   const navigate = useNavigate();
+  const { t, i18n } = useTranslation();
   const { isMobile } = useViewport();
 
   const lang = (i18n.language || "en").split("-")[0];
 
-  const cup = useMemo(
-    () => worldcupList.find((c) => String(c.id) === String(id)),
-    [worldcupList, id]
-  );
+  const cup = useMemo(() => {
+    return worldcupList.find(
+      (item) => String(item.id) === String(id)
+    );
+  }, [worldcupList, id]);
 
-  // 페이지 진입 시 최근 본 기록
   useEffect(() => {
-    if (cup?.id) pushRecentWorldcup(cup.id);
+    if (cup?.id) {
+      pushRecentWorldcup(cup.id);
+    }
   }, [cup?.id]);
 
-  // 라운드 수
-  const selectedCount = Math.max(2, Math.min(Number(round) || 2, 10000));
+  const selectedCount = Math.max(
+    2,
+    Math.min(Number(round) || 2, 10000)
+  );
 
   if (!cup) {
     return (
-      <div style={{ padding: 40, textAlign: "center", color: "#fff" }}>
-        Not found.
-        <br />
+      <div
+        style={{
+          minHeight: "60vh",
+          padding: 40,
+          boxSizing: "border-box",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          textAlign: "center",
+          color: "#fff",
+        }}
+      >
+        <div
+          style={{
+            fontSize: 18,
+            fontWeight: 700,
+          }}
+        >
+          {t("not_found", {
+            defaultValue: "Bracket not found.",
+          })}
+        </div>
+
         <button
+          type="button"
           onClick={() => navigate(`/${lang}`)}
           style={{
-            marginTop: 12,
+            marginTop: 16,
             padding: "10px 18px",
-            borderRadius: 8,
             border: "none",
+            borderRadius: 8,
             background: "#1976ed",
             color: "#fff",
+            fontSize: 15,
             fontWeight: 800,
             cursor: "pointer",
           }}
         >
-          Back to home
+          {t("home", {
+            defaultValue: "Home",
+          })}
         </button>
       </div>
     );
   }
+
+  const roundLabel = t("round_of", {
+    count: selectedCount,
+    defaultValue: "Round of {{count}}",
+  });
+
+  const seoDescription =
+    cup.description ||
+    cup.desc ||
+    t("match_page_description", {
+      title: cup.title,
+      defaultValue: "Choose your favorite from {{title}}.",
+    });
 
   return (
     <>
       <Seo
         lang={lang}
         slug={`match/${cup.id}/${selectedCount}`}
-        title={`${cup.title} ${selectedCount}강 | One Pick Game`}
-        description={
-          cup.description ||
-          cup.desc ||
-          `${cup.title}에서 최고의 선택을 골라보세요.`
-        }
+        title={`${cup.title} ${roundLabel} | OnePickGame`}
+        description={seoDescription}
         image={
           cup.thumbnail ||
           cup.image ||
@@ -97,47 +139,65 @@ export default function MatchPage({ worldcupList = [] }) {
         }
       />
 
-      <div style={{ width: "100%", position: "relative" }}>
-        {/* ⛔ 헤더 바로 아래 제휴 배너 제거 */}
-
+      <div
+        style={{
+          position: "relative",
+          width: "100%",
+          boxSizing: "border-box",
+        }}
+      >
         <div
           style={{
+            width: "100%",
             display: "flex",
-            justifyContent: "center",
             alignItems: "flex-start",
+            justifyContent: "center",
+            boxSizing: "border-box",
           }}
         >
-          {/* 왼쪽 광고 */}
           {!isMobile && (
-            <div style={{ width: 160, marginRight: 20 }}>
+            <aside
+              aria-label="Left advertisement"
+              style={{
+                width: 160,
+                flexShrink: 0,
+                marginRight: 20,
+              }}
+            >
               <AdsenseSide />
-            </div>
+            </aside>
           )}
 
-          {/* 메인 */}
-          <div style={{ width: "100%", maxWidth: 1200 }}>
+          <main
+            style={{
+              width: "100%",
+              maxWidth: 1200,
+              minWidth: 0,
+              boxSizing: "border-box",
+            }}
+          >
             <Match
               cup={cup}
               onResult={() => {}}
               selectedCount={selectedCount}
             />
 
-            {!isMobile && (
-              <div style={{ marginTop: 20 }}>
-                <ReferralBanner lang={lang} />
-              </div>
-            )}
-          </div>
+            <MatchCommunityBox cupId={cup.id} />
+          </main>
 
-          {/* 오른쪽 광고 */}
           {!isMobile && (
-            <div style={{ width: 160, marginLeft: 20 }}>
+            <aside
+              aria-label="Right advertisement"
+              style={{
+                width: 160,
+                flexShrink: 0,
+                marginLeft: 20,
+              }}
+            >
               <AdsenseSide />
-            </div>
+            </aside>
           )}
         </div>
-
-        {/* 모바일 하단 제휴 배너 제거 */}
       </div>
     </>
   );

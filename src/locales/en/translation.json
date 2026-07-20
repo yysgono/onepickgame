@@ -294,5 +294,24 @@
   "loading_hint": "For accurate statistics, please wait about five seconds.",
   "prev_page": "Previous",
   "next_page": "Next",
-  "goto_page": "Go to page {{page}}"
+  "goto_page": "Go to page {{page}}",
+  "match_page_description": "Choose your favorite from {{title}}.",
+  "matchCommunity": {
+    "suggestionTitle": "Suggest a Candidate or Improvement",
+    "placeholder": "Example: Please add a new candidate to this bracket.",
+    "loginPlaceholder": "Log in to submit a suggestion.",
+    "submit": "Submit",
+    "submitting": "Submitting...",
+    "loginRequired": "You must be logged in to submit a suggestion.",
+    "nicknameRequired": "A profile nickname is required.",
+    "inputRequired": "Please enter a suggestion.",
+    "limit": "Suggestions can be up to {{count}} characters.",
+    "saveError": "Failed to submit your suggestion.",
+    "success": "Your suggestion has been submitted.",
+    "viewSuggestions": "View Submitted Suggestions ({{count}})",
+    "noSuggestions": "No suggestions have been submitted yet.",
+    "suggestionLoadError": "Failed to load submitted suggestions.",
+    "unknownUser": "Unknown User",
+    "latestSuggestionsOnly": "Only the latest {{count}} suggestions are shown."
+  }
 }

@@ -117,7 +117,7 @@
   "reason": "사유",
   "only_owner_or_admin_delete": "본인 또는 관리자만 삭제 가능합니다.",
   "comment_save_fail": "댓글 저장 실패",
-  "choose_file": "파일 선택",
+    "choose_file": "파일 선택",
   "fileChoose": "파일 선택",
   "image_upload": "이미지 업로드",
   "preview": "미리보기",
@@ -265,7 +265,7 @@
   "restore": "복원",
   "worldcup_title": "이상형 월드컵 제목",
   "nickname_rule": "닉네임은 한글, 영문, 숫자, 하이픈, 언더스코어를 사용하여 3자 이상이어야 합니다.",
-  "comment": {
+    "comment": {
     "placeholder": "댓글을 입력하세요.",
     "submit": "등록",
     "comments": "댓글",
@@ -294,5 +294,26 @@
   "loading_hint": "더 정확한 결과를 위해 약 5초만 기다려 주세요.",
   "prev_page": "이전 페이지",
   "next_page": "다음 페이지",
-  "goto_page": "{{page}}페이지로 이동"
+  "goto_page": "{{page}}페이지로 이동",
+
+  "match_page_description": "{{title}}에서 최고의 선택을 가려보세요.",
+
+  "matchCommunity": {
+    "suggestionTitle": "후보 추가 또는 개선 제안",
+    "placeholder": "예: 이 이상형 월드컵에 새로운 후보를 추가해주세요.",
+    "loginPlaceholder": "제안을 작성하려면 로그인하세요.",
+    "submit": "등록",
+    "submitting": "등록 중...",
+    "loginRequired": "제안을 작성하려면 로그인이 필요합니다.",
+    "nicknameRequired": "제안을 작성하려면 프로필에서 닉네임을 설정해주세요.",
+    "inputRequired": "제안 내용을 입력해주세요.",
+    "limit": "제안은 최대 {{count}}자까지 입력할 수 있습니다.",
+    "saveError": "제안을 저장하지 못했습니다.",
+    "success": "제안이 등록되었습니다.",
+    "viewSuggestions": "제안 보기 ({{count}})",
+    "noSuggestions": "아직 등록된 제안이 없습니다.",
+    "suggestionLoadError": "제안을 불러오지 못했습니다.",
+    "unknownUser": "알 수 없는 사용자",
+    "latestSuggestionsOnly": "최신 {{count}}개의 제안만 표시됩니다."
+  }
 }
