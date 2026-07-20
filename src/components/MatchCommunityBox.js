@@ -600,14 +600,11 @@ export default function MatchCommunityBox({ cupId }) {
         >
           <span aria-hidden="true">💬</span>
 
-          <span>
-            {t(
-              "matchCommunity.commentsTitle",
-              {
-                defaultValue: "최근 의견",
-              }
-            )}
-          </span>
+  <span>
+    💬 {t("matchCommunity.recentSuggestions")}
+  </span>
+
+  <span>{suggestions.length}</span>
         </div>
 
         <span

@@ -294,21 +294,26 @@
   "goto_page": "Ir para a página {{page}}",
   "match_page_description": "Jogue o torneio {{title}} e escolha seu favorito em confrontos diretos.",
   "matchCommunity": {
-    "suggestionTitle": "Tem uma sugestão para este torneio?",
+    "suggestionTitle": "Tem alguma sugestão para este torneio?",
     "placeholder": "Escreva sua sugestão para este torneio...",
     "loginPlaceholder": "Faça login para enviar uma sugestão.",
     "submit": "Enviar",
     "submitting": "Enviando...",
     "loginRequired": "Você precisa fazer login para enviar uma sugestão.",
-    "nicknameRequired": "É necessário definir um apelido para enviar uma sugestão.",
-    "inputRequired": "Digite sua sugestão.",
+    "nicknameRequired": "Defina um apelido no seu perfil.",
+    "inputRequired": "Digite uma sugestão.",
     "limit": "As sugestões podem ter até {{count}} caracteres.",
-    "saveError": "Falha ao salvar a sugestão.",
-    "success": "Sua sugestão foi enviada com sucesso!",
-    "viewSuggestions": "Ver sugestões mais recentes",
+    "saveError": "Falha ao enviar a sugestão.",
+    "success": "Sua sugestão foi enviada.",
+    "viewSuggestions": "Ver sugestões enviadas ({{count}})",
     "noSuggestions": "Ainda não há sugestões.",
     "suggestionLoadError": "Falha ao carregar as sugestões.",
     "unknownUser": "Usuário desconhecido",
-    "latestSuggestionsOnly": "Apenas as {{count}} sugestões mais recentes são exibidas."
-  }
+    "latestSuggestionsOnly": "Apenas as {{count}} sugestões mais recentes são exibidas.",
+    "recentSuggestions": "Sugestões recentes"
+  },
+  "win_rate_value": "Taxa de vitória {{rate}}%",
+  "match_record": "{{wins}} vitórias / {{matches}} partidas",
+  "championship_wins_count": "{{formattedCount}} títulos",
+  "characters_remaining": "{{count}} / {{max}}"
 }

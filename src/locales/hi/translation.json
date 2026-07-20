@@ -297,21 +297,26 @@
   "goto_page": "पृष्ठ {{page}} पर जाएँ",
   "match_page_description": "{{title}} में अपना पसंदीदा चुनें।",
   "matchCommunity": {
-    "suggestionTitle": "उम्मीदवार या सुधार का सुझाव दें",
-    "placeholder": "उदाहरण: कृपया इस टूर्नामेंट में एक नया उम्मीदवार जोड़ें।",
+    "suggestionTitle": "क्या आपके पास इस टूर्नामेंट के लिए कोई सुझाव है?",
+    "placeholder": "इस टूर्नामेंट के लिए अपना सुझाव लिखें...",
     "loginPlaceholder": "सुझाव भेजने के लिए लॉगिन करें।",
-    "submit": "जमा करें",
-    "submitting": "जमा किया जा रहा है...",
+    "submit": "भेजें",
+    "submitting": "भेजा जा रहा है...",
     "loginRequired": "सुझाव भेजने के लिए लॉगिन आवश्यक है।",
-    "nicknameRequired": "आपकी प्रोफ़ाइल के लिए एक उपनाम आवश्यक है।",
+    "nicknameRequired": "कृपया अपनी प्रोफ़ाइल में एक उपनाम सेट करें।",
     "inputRequired": "कृपया एक सुझाव दर्ज करें।",
     "limit": "सुझाव अधिकतम {{count}} अक्षरों का हो सकता है।",
-    "saveError": "सुझाव सहेजने में विफल।",
+    "saveError": "सुझाव भेजने में विफल।",
     "success": "आपका सुझाव सफलतापूर्वक भेज दिया गया।",
-    "viewSuggestions": "सुझाव देखें ({{count}})",
-    "noSuggestions": "अभी तक कोई सुझाव नहीं।",
+    "viewSuggestions": "भेजे गए सुझाव देखें ({{count}})",
+    "noSuggestions": "अभी तक कोई सुझाव नहीं है।",
     "suggestionLoadError": "सुझाव लोड करने में विफल।",
     "unknownUser": "अज्ञात उपयोगकर्ता",
-    "latestSuggestionsOnly": "केवल नवीनतम {{count}} सुझाव दिखाए जाते हैं।"
-  }
+    "latestSuggestionsOnly": "केवल नवीनतम {{count}} सुझाव दिखाए जाते हैं।",
+    "recentSuggestions": "हाल की राय"
+  },
+  "win_rate_value": "जीत दर {{rate}}%",
+  "match_record": "{{wins}} जीत / {{matches}} मैच",
+  "championship_wins_count": "{{formattedCount}} टूर्नामेंट जीत",
+  "characters_remaining": "{{count}} / {{max}}"
 }

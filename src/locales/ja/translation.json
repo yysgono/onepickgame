@@ -297,21 +297,26 @@
   "goto_page": "ページ{{page}}へ",
   "match_page_description": "{{title}}のトーナメントをプレイして、1対1の対戦でお気に入りを選びましょう。",
   "matchCommunity": {
-    "suggestionTitle": "このトーナメントについて提案がありますか？",
+    "suggestionTitle": "このトーナメントについて提案はありますか？",
     "placeholder": "このトーナメントへの提案を書いてください...",
     "loginPlaceholder": "提案を送信するにはログインしてください。",
     "submit": "送信",
     "submitting": "送信中...",
     "loginRequired": "提案を送信するにはログインが必要です。",
-    "nicknameRequired": "提案を送信するにはニックネームが必要です。",
-    "inputRequired": "提案内容を入力してください。",
-    "limit": "提案は最大{{count}}文字までです。",
-    "saveError": "提案の保存に失敗しました。",
-    "success": "提案を送信しました！",
-    "viewSuggestions": "最新の提案を見る",
+    "nicknameRequired": "プロフィールにニックネームを設定してください。",
+    "inputRequired": "提案を入力してください。",
+    "limit": "提案は最大{{count}}文字まで入力できます。",
+    "saveError": "提案の送信に失敗しました。",
+    "success": "提案を送信しました。",
+    "viewSuggestions": "送信された提案を見る ({{count}})",
     "noSuggestions": "まだ提案はありません。",
     "suggestionLoadError": "提案の読み込みに失敗しました。",
     "unknownUser": "不明なユーザー",
-    "latestSuggestionsOnly": "最新{{count}}件の提案のみ表示しています。"
-  }
+    "latestSuggestionsOnly": "最新{{count}}件の提案のみ表示しています。",
+    "recentSuggestions": "最近の意見"
+  },
+  "win_rate_value": "勝率 {{rate}}%",
+  "match_record": "{{wins}}勝 / {{matches}}戦",
+  "championship_wins_count": "{{formattedCount}}回優勝",
+  "characters_remaining": "{{count}} / {{max}}"
 }

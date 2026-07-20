@@ -297,21 +297,26 @@
   "goto_page": "Zu Seite {{page}}",
   "match_page_description": "Wähle deinen Favoriten aus {{title}}.",
   "matchCommunity": {
-    "suggestionTitle": "Kandidaten oder Verbesserungen vorschlagen",
-    "placeholder": "Beispiel: Bitte füge diesem Turnier einen neuen Kandidaten hinzu.",
+    "suggestionTitle": "Hast du einen Vorschlag für dieses Turnier?",
+    "placeholder": "Schreibe deinen Vorschlag für dieses Turnier...",
     "loginPlaceholder": "Melde dich an, um einen Vorschlag einzureichen.",
-    "submit": "Absenden",
+    "submit": "Senden",
     "submitting": "Wird gesendet...",
     "loginRequired": "Du musst angemeldet sein, um einen Vorschlag einzureichen.",
     "nicknameRequired": "Für dein Profil ist ein Spitzname erforderlich.",
     "inputRequired": "Bitte gib einen Vorschlag ein.",
     "limit": "Vorschläge dürfen höchstens {{count}} Zeichen lang sein.",
     "saveError": "Dein Vorschlag konnte nicht gesendet werden.",
-    "success": "Dein Vorschlag wurde eingereicht.",
-    "viewSuggestions": "Eingereichte Vorschläge anzeigen ({{count}})",
-    "noSuggestions": "Bisher wurden keine Vorschläge eingereicht.",
-    "suggestionLoadError": "Die eingereichten Vorschläge konnten nicht geladen werden.",
-    "unknownUser": "Unbekannter Nutzer",
-    "latestSuggestionsOnly": "Es werden nur die neuesten {{count}} Vorschläge angezeigt."
-  }
+    "success": "Dein Vorschlag wurde gesendet.",
+    "viewSuggestions": "Gesendete Vorschläge anzeigen ({{count}})",
+    "noSuggestions": "Noch keine Vorschläge vorhanden.",
+    "suggestionLoadError": "Vorschläge konnten nicht geladen werden.",
+    "unknownUser": "Unbekannter Benutzer",
+    "latestSuggestionsOnly": "Es werden nur die neuesten {{count}} Vorschläge angezeigt.",
+    "recentSuggestions": "Neueste Vorschläge"
+  },
+  "win_rate_value": "Siegesquote {{rate}}%",
+  "match_record": "{{wins}} Siege / {{matches}} Matches",
+  "championship_wins_count": "{{formattedCount}} Turniersiege",
+  "characters_remaining": "{{count}} / {{max}}"
 }

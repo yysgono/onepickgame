@@ -312,6 +312,11 @@
     "noSuggestions": "Chưa có đề xuất nào.",
     "suggestionLoadError": "Không thể tải đề xuất.",
     "unknownUser": "Người dùng không xác định",
-    "latestSuggestionsOnly": "Chỉ hiển thị {{count}} đề xuất mới nhất."
-  }
-  }
+    "latestSuggestionsOnly": "Chỉ hiển thị {{count}} đề xuất mới nhất.",
+    "recentSuggestions": "Ý kiến gần đây"
+  },
+  "win_rate_value": "Tỷ lệ thắng {{rate}}%",
+  "match_record": "{{wins}} thắng / {{matches}} trận",
+  "championship_wins_count": "Vô địch {{formattedCount}} lần",
+  "characters_remaining": "{{count}} / {{max}}"
+}

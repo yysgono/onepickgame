@@ -297,11 +297,11 @@
   "goto_page": "Go to page {{page}}",
   "match_page_description": "Choose your favorite from {{title}}.",
   "matchCommunity": {
-    "suggestionTitle": "Suggest a Candidate or Improvement",
-    "placeholder": "Example: Please add a new candidate to this bracket.",
+    "suggestionTitle": "Do you have a suggestion for this tournament?",
+    "placeholder": "Write your suggestion for this tournament...",
     "loginPlaceholder": "Log in to submit a suggestion.",
-    "submit": "Submit",
-    "submitting": "Submitting...",
+    "submit": "Send",
+    "submitting": "Sending...",
     "loginRequired": "You must be logged in to submit a suggestion.",
     "nicknameRequired": "A profile nickname is required.",
     "inputRequired": "Please enter a suggestion.",
@@ -309,9 +309,14 @@
     "saveError": "Failed to submit your suggestion.",
     "success": "Your suggestion has been submitted.",
     "viewSuggestions": "View Submitted Suggestions ({{count}})",
-    "noSuggestions": "No suggestions have been submitted yet.",
+    "noSuggestions": "No suggestions yet.",
     "suggestionLoadError": "Failed to load submitted suggestions.",
     "unknownUser": "Unknown User",
-    "latestSuggestionsOnly": "Only the latest {{count}} suggestions are shown."
-  }
+    "latestSuggestionsOnly": "Only the latest {{count}} suggestions are shown.",
+    "recentSuggestions": "Recent Suggestions"
+  },
+  "win_rate_value": "Win rate {{rate}}%",
+  "match_record": "{{wins}} wins / {{matches}} matches",
+  "championship_wins_count": "{{formattedCount}} tournament wins",
+  "characters_remaining": "{{count}} / {{max}}"
 }

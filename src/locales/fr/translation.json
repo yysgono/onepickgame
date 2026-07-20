@@ -297,8 +297,8 @@
   "goto_page": "Aller à la page {{page}}",
   "match_page_description": "Choisissez votre favori dans {{title}}.",
   "matchCommunity": {
-    "suggestionTitle": "Suggérer des candidats ou des améliorations",
-    "placeholder": "Ex. : Veuillez ajouter un nouveau candidat à ce tournoi.",
+    "suggestionTitle": "Avez-vous une suggestion pour ce tournoi ?",
+    "placeholder": "Écrivez votre suggestion pour ce tournoi...",
     "loginPlaceholder": "Connectez-vous pour envoyer une suggestion.",
     "submit": "Envoyer",
     "submitting": "Envoi...",
@@ -308,10 +308,15 @@
     "limit": "Les suggestions sont limitées à {{count}} caractères.",
     "saveError": "Échec de l'envoi de la suggestion.",
     "success": "Votre suggestion a été envoyée.",
-    "viewSuggestions": "Voir les suggestions ({{count}})",
+    "viewSuggestions": "Voir les suggestions envoyées ({{count}})",
     "noSuggestions": "Aucune suggestion pour le moment.",
     "suggestionLoadError": "Impossible de charger les suggestions.",
     "unknownUser": "Utilisateur inconnu",
-    "latestSuggestionsOnly": "Seules les {{count}} suggestions les plus récentes sont affichées."
-  }
+    "latestSuggestionsOnly": "Seules les {{count}} suggestions les plus récentes sont affichées.",
+    "recentSuggestions": "Suggestions récentes"
+  },
+  "win_rate_value": "Taux de victoire {{rate}} %",
+  "match_record": "{{wins}} victoires / {{matches}} matchs",
+  "championship_wins_count": "{{formattedCount}} victoires en tournoi",
+  "characters_remaining": "{{count}} / {{max}}"
 }

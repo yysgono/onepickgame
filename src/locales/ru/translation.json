@@ -297,21 +297,26 @@
   "goto_page": "Перейти на страницу {{page}}",
   "match_page_description": "Выберите лучшего кандидата в турнире «{{title}}».",
   "matchCommunity": {
-    "suggestionTitle": "Предложить кандидата или улучшение",
-    "placeholder": "Например: добавьте нового кандидата в этот турнир.",
-    "loginPlaceholder": "Войдите, чтобы оставить предложение.",
+    "suggestionTitle": "Есть предложение для этого турнира?",
+    "placeholder": "Напишите своё предложение для этого турнира...",
+    "loginPlaceholder": "Войдите, чтобы отправить предложение.",
     "submit": "Отправить",
     "submitting": "Отправка...",
-    "loginRequired": "Чтобы оставить предложение, необходимо войти.",
-    "nicknameRequired": "Чтобы оставить предложение, укажите никнейм в профиле.",
-    "inputRequired": "Введите текст предложения.",
+    "loginRequired": "Чтобы отправить предложение, необходимо войти.",
+    "nicknameRequired": "Укажите никнейм в своём профиле.",
+    "inputRequired": "Введите предложение.",
     "limit": "Предложение может содержать не более {{count}} символов.",
-    "saveError": "Не удалось сохранить предложение.",
+    "saveError": "Не удалось отправить предложение.",
     "success": "Предложение успешно отправлено.",
-    "viewSuggestions": "Посмотреть предложения ({{count}})",
+    "viewSuggestions": "Просмотреть предложения ({{count}})",
     "noSuggestions": "Предложений пока нет.",
     "suggestionLoadError": "Не удалось загрузить предложения.",
     "unknownUser": "Неизвестный пользователь",
-    "latestSuggestionsOnly": "Показаны только последние {{count}} предложений."
-  }
+    "latestSuggestionsOnly": "Показаны только последние {{count}} предложений.",
+    "recentSuggestions": "Последние предложения"
+  },
+  "win_rate_value": "Процент побед {{rate}}%",
+  "match_record": "{{wins}} побед / {{matches}} матчей",
+  "championship_wins_count": "{{formattedCount}} побед в турнирах",
+  "characters_remaining": "{{count}} / {{max}}"
 }

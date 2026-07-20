@@ -297,21 +297,26 @@
   "goto_page": "Ke halaman {{page}}",
   "match_page_description": "Mainkan turnamen {{title}} dan pilih favorit Anda melalui pertandingan satu lawan satu.",
   "matchCommunity": {
-    "suggestionTitle": "Punya ide untuk turnamen ini?",
-    "placeholder": "Tulis saran Anda untuk turnamen ini...",
-    "loginPlaceholder": "Silakan masuk untuk mengirim saran.",
+    "suggestionTitle": "Apakah Anda punya saran untuk turnamen ini?",
+    "placeholder": "Tuliskan saran Anda untuk turnamen ini...",
+    "loginPlaceholder": "Masuk untuk mengirim saran.",
     "submit": "Kirim",
     "submitting": "Mengirim...",
     "loginRequired": "Anda harus masuk untuk mengirim saran.",
-    "nicknameRequired": "Nama panggilan diperlukan untuk mengirim saran.",
-    "inputRequired": "Silakan masukkan saran Anda.",
+    "nicknameRequired": "Silakan atur nama panggilan di profil Anda.",
+    "inputRequired": "Silakan masukkan saran.",
     "limit": "Saran dapat berisi hingga {{count}} karakter.",
-    "saveError": "Gagal menyimpan saran.",
-    "success": "Saran Anda berhasil dikirim!",
-    "viewSuggestions": "Lihat saran terbaru",
+    "saveError": "Gagal mengirim saran.",
+    "success": "Saran Anda berhasil dikirim.",
+    "viewSuggestions": "Lihat saran yang dikirim ({{count}})",
     "noSuggestions": "Belum ada saran.",
     "suggestionLoadError": "Gagal memuat saran.",
     "unknownUser": "Pengguna tidak dikenal",
-    "latestSuggestionsOnly": "Hanya {{count}} saran terbaru yang ditampilkan."
-  }
+    "latestSuggestionsOnly": "Hanya {{count}} saran terbaru yang ditampilkan.",
+    "recentSuggestions": "Saran Terbaru"
+  },
+  "win_rate_value": "Tingkat kemenangan {{rate}}%",
+  "match_record": "{{wins}} kemenangan / {{matches}} pertandingan",
+  "championship_wins_count": "{{formattedCount}} kemenangan turnamen",
+  "characters_remaining": "{{count}} / {{max}}"
 }

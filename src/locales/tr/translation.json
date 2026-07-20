@@ -297,21 +297,26 @@
   "goto_page": "{{page}}. sayfaya git",
   "match_page_description": "{{title}} turnuvasında en iyi seçimi yapın.",
   "matchCommunity": {
-    "suggestionTitle": "Aday ekleme veya iyileştirme önerisi",
-    "placeholder": "Örn. Bu turnuvaya yeni bir aday ekleyin.",
+    "suggestionTitle": "Bu turnuva için bir öneriniz var mı?",
+    "placeholder": "Bu turnuva için önerinizi yazın...",
     "loginPlaceholder": "Öneri göndermek için giriş yapın.",
     "submit": "Gönder",
     "submitting": "Gönderiliyor...",
     "loginRequired": "Öneri göndermek için giriş yapmanız gerekir.",
-    "nicknameRequired": "Öneri göndermek için profilinizde bir takma ad belirleyin.",
-    "inputRequired": "Lütfen önerinizi girin.",
+    "nicknameRequired": "Lütfen profilinizde bir takma ad belirleyin.",
+    "inputRequired": "Lütfen bir öneri girin.",
     "limit": "Öneriler en fazla {{count}} karakter olabilir.",
-    "saveError": "Öneri kaydedilemedi.",
+    "saveError": "Öneri gönderilemedi.",
     "success": "Öneriniz gönderildi.",
-    "viewSuggestions": "Önerileri Gör ({{count}})",
+    "viewSuggestions": "Gönderilen önerileri görüntüle ({{count}})",
     "noSuggestions": "Henüz öneri yok.",
     "suggestionLoadError": "Öneriler yüklenemedi.",
     "unknownUser": "Bilinmeyen kullanıcı",
-    "latestSuggestionsOnly": "Yalnızca en son {{count}} öneri gösteriliyor."
-  }
+    "latestSuggestionsOnly": "Yalnızca en son {{count}} öneri gösteriliyor.",
+    "recentSuggestions": "Son Görüşler"
+  },
+  "win_rate_value": "Kazanma oranı {{rate}}%",
+  "match_record": "{{wins}} galibiyet / {{matches}} maç",
+  "championship_wins_count": "{{formattedCount}} şampiyonluk",
+  "characters_remaining": "{{count}} / {{max}}"
 }

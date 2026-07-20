@@ -297,8 +297,8 @@
   "goto_page": "الانتقال إلى الصفحة {{page}}",
   "match_page_description": "اختر المفضّل لديك من {{title}}.",
   "matchCommunity": {
-    "suggestionTitle": "اقترح متسابقًا أو تحسينًا",
-    "placeholder": "مثال: يرجى إضافة متسابق جديد إلى هذه البطولة.",
+    "suggestionTitle": "هل لديك اقتراح لهذه البطولة؟",
+    "placeholder": "اكتب اقتراحك لهذه البطولة...",
     "loginPlaceholder": "سجّل الدخول لإرسال اقتراح.",
     "submit": "إرسال",
     "submitting": "جارٍ الإرسال...",
@@ -309,9 +309,14 @@
     "saveError": "تعذّر إرسال اقتراحك.",
     "success": "تم إرسال اقتراحك.",
     "viewSuggestions": "عرض الاقتراحات المرسلة ({{count}})",
-    "noSuggestions": "لم تُرسل أي اقتراحات حتى الآن.",
+    "noSuggestions": "لا توجد اقتراحات حتى الآن.",
     "suggestionLoadError": "تعذّر تحميل الاقتراحات المرسلة.",
     "unknownUser": "مستخدم غير معروف",
-    "latestSuggestionsOnly": "يتم عرض أحدث {{count}} اقتراحًا فقط."
-  }
+    "latestSuggestionsOnly": "يتم عرض أحدث {{count}} اقتراحًا فقط.",
+    "recentSuggestions": "أحدث الاقتراحات"
+  },
+  "win_rate_value": "نسبة الفوز {{rate}}%",
+  "match_record": "{{wins}} فوز / {{matches}} مباراة",
+  "championship_wins_count": "{{formattedCount}} انتصارًا في البطولة",
+  "characters_remaining": "{{count}} / {{max}}"
 }
