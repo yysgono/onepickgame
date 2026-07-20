@@ -271,7 +271,7 @@ function CandidateBox({ c, onClick, disabled, idx, selected, t }) {
         border: selected ? "3.5px solid #5fd4f3" : "1.5px solid #223a74",
         transform: hover && !isMobile ? "translateY(-10px) scale(1.025)" : "",
         transition: "all 0.3s ease-in-out",
-        margin: isMobile ? "2vw 0" : "32px 0",
+margin: isMobile ? "12px 0" : "20px 0",
         cursor: c && !disabled && !isYoutube ? "pointer" : "default",
         backdropFilter: "blur(11px) brightness(1.06)",
         WebkitBackdropFilter: "blur(11px) brightness(1.06)",
@@ -775,7 +775,6 @@ function Match({ cup, onResult, selectedCount }) {
       style={{
         textAlign: "center",
         padding: isMobile ? "10px 0 0 0" : "12px 0 0 0",
-        minHeight: "75vh",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",

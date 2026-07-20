@@ -5,6 +5,7 @@ import { supabase } from "../utils/supabaseClient";
 
 const MAX_SUGGESTION_LENGTH = 100;
 const SUGGESTION_LIST_LIMIT = 50;
+const COMMENTS_PER_PAGE = 5;
 
 function formatDate(value, language) {
   if (!value) return "";
@@ -44,7 +45,10 @@ export default function MatchCommunityBox({ cupId }) {
 
   const [suggestions, setSuggestions] = useState([]);
   const [suggestionCount, setSuggestionCount] = useState(0);
-  const [suggestionsOpen, setSuggestionsOpen] = useState(false);
+
+  const [visibleSuggestionCount, setVisibleSuggestionCount] =
+    useState(COMMENTS_PER_PAGE);
+
   const [suggestionsLoaded, setSuggestionsLoaded] = useState(false);
   const [suggestionsLoading, setSuggestionsLoading] = useState(false);
   const [suggestionsError, setSuggestionsError] = useState("");
@@ -166,16 +170,22 @@ export default function MatchCommunityBox({ cupId }) {
 
     const { data, error } = await supabase
       .from("match_suggestions")
-      .select("id, nickname, content, language, status, created_at")
+      .select(
+        "id, nickname, content, language, status, created_at"
+      )
       .eq("cup_id", cupId)
       .neq("status", "rejected")
       .order("created_at", { ascending: false })
       .limit(SUGGESTION_LIST_LIMIT);
 
     if (error) {
-      console.error("MatchCommunityBox suggestions error:", error);
+      console.error(
+        "MatchCommunityBox suggestions error:",
+        error
+      );
 
       setSuggestions([]);
+
       setSuggestionsError(
         t("matchCommunity.suggestionLoadError", {
           defaultValue: "제출된 의견을 불러오지 못했습니다.",
@@ -186,10 +196,6 @@ export default function MatchCommunityBox({ cupId }) {
 
       setSuggestions(nextSuggestions);
 
-      /*
-       * 목록은 최대 50개만 불러오므로 실제 전체 개수는
-       * 별도의 count 쿼리 결과를 유지한다.
-       */
       if (nextSuggestions.length < SUGGESTION_LIST_LIMIT) {
         setSuggestionCount(nextSuggestions.length);
       }
@@ -206,23 +212,24 @@ export default function MatchCommunityBox({ cupId }) {
 
     setSuggestions([]);
     setSuggestionCount(0);
-    setSuggestionsOpen(false);
+    setVisibleSuggestionCount(COMMENTS_PER_PAGE);
     setSuggestionsLoaded(false);
     setSuggestionsLoading(false);
     setSuggestionsError("");
 
-    fetchSuggestionCount();
-  }, [cupId, fetchSuggestionCount]);
-
-  async function handleToggleSuggestions() {
-    const nextOpen = !suggestionsOpen;
-
-    setSuggestionsOpen(nextOpen);
-
-    if (nextOpen && !suggestionsLoaded) {
-      await fetchSuggestions();
+    async function loadCommunity() {
+      await Promise.all([
+        fetchSuggestionCount(),
+        fetchSuggestions(),
+      ]);
     }
-  }
+
+    loadCommunity();
+  }, [
+    cupId,
+    fetchSuggestionCount,
+    fetchSuggestions,
+  ]);
 
   async function handleSubmit(event) {
     event.preventDefault();
@@ -236,15 +243,18 @@ export default function MatchCommunityBox({ cupId }) {
           defaultValue: "의견을 제출하지 못했습니다.",
         })
       );
+
       return;
     }
 
     if (!user?.id) {
       setSubmitError(
         t("matchCommunity.loginRequired", {
-          defaultValue: "의견을 제출하려면 로그인해야 합니다.",
+          defaultValue:
+            "의견을 제출하려면 로그인해야 합니다.",
         })
       );
+
       return;
     }
 
@@ -260,6 +270,7 @@ export default function MatchCommunityBox({ cupId }) {
           defaultValue: "프로필 닉네임이 필요합니다.",
         })
       );
+
       return;
     }
 
@@ -271,20 +282,25 @@ export default function MatchCommunityBox({ cupId }) {
           defaultValue: "의견을 입력해 주세요.",
         })
       );
+
       return;
     }
 
-    if (trimmedContent.length > MAX_SUGGESTION_LENGTH) {
+    if (
+      trimmedContent.length >
+      MAX_SUGGESTION_LENGTH
+    ) {
       setSubmitError(
         t("matchCommunity.limit", {
           count: MAX_SUGGESTION_LENGTH,
-          defaultValue: "의견은 최대 {{count}}자까지 입력할 수 있습니다.",
+          defaultValue:
+            "의견은 최대 {{count}}자까지 입력할 수 있습니다.",
         })
       );
+
       return;
     }
-
-    setSubmitting(true);
+        setSubmitting(true);
 
     const { data, error } = await supabase
       .from("match_suggestions")
@@ -296,19 +312,25 @@ export default function MatchCommunityBox({ cupId }) {
         language,
         status: "pending",
       })
-      .select("id, nickname, content, language, status, created_at")
+      .select(
+        "id, nickname, content, language, status, created_at"
+      )
       .single();
 
     setSubmitting(false);
 
     if (error) {
-      console.error("MatchCommunityBox suggestion insert error:", error);
+      console.error(
+        "MatchCommunityBox suggestion insert error:",
+        error
+      );
 
       setSubmitError(
         t("matchCommunity.saveError", {
           defaultValue: "의견을 제출하지 못했습니다.",
         })
       );
+
       return;
     }
 
@@ -338,7 +360,18 @@ export default function MatchCommunityBox({ cupId }) {
     }
   }
 
-  const inputDisabled = authLoading || !user || submitting;
+  function handleLoadMoreSuggestions() {
+    setVisibleSuggestionCount((current) =>
+      Math.min(
+        current + COMMENTS_PER_PAGE,
+        suggestions.length
+      )
+    );
+  }
+
+  const inputDisabled =
+    authLoading || !user || submitting;
+
   const submitDisabled =
     inputDisabled || suggestion.trim().length === 0;
 
@@ -350,7 +383,8 @@ export default function MatchCommunityBox({ cupId }) {
         margin: "30px auto 48px",
         padding: 20,
         boxSizing: "border-box",
-        border: "1px solid rgba(25, 118, 237, 0.5)",
+        border:
+          "1px solid rgba(25, 118, 237, 0.5)",
         borderRadius: 16,
         background:
           "linear-gradient(145deg, rgba(17, 28, 53, 0.96), rgba(20, 35, 68, 0.94))",
@@ -374,7 +408,8 @@ export default function MatchCommunityBox({ cupId }) {
 
           <span>
             {t("matchCommunity.suggestionTitle", {
-              defaultValue: "후보 또는 개선사항 건의",
+              defaultValue:
+                "후보 또는 개선사항 건의",
             })}
           </span>
         </div>
@@ -401,32 +436,48 @@ export default function MatchCommunityBox({ cupId }) {
             placeholder={
               authLoading
                 ? t("loading", {
-                    defaultValue: "불러오는 중...",
+                    defaultValue:
+                      "불러오는 중...",
                   })
                 : user
-                  ? t("matchCommunity.placeholder", {
-                      defaultValue:
-                        "예: 이 월드컵에 새로운 후보를 추가해 주세요.",
-                    })
-                  : t("matchCommunity.loginPlaceholder", {
-                      defaultValue:
-                        "로그인 후 의견을 제출할 수 있습니다.",
-                    })
+                  ? t(
+                      "matchCommunity.placeholder",
+                      {
+                        defaultValue:
+                          "예: 이 월드컵에 새로운 후보를 추가해 주세요.",
+                      }
+                    )
+                  : t(
+                      "matchCommunity.loginPlaceholder",
+                      {
+                        defaultValue:
+                          "로그인 후 의견을 제출할 수 있습니다.",
+                      }
+                    )
             }
-            aria-label={t("matchCommunity.suggestionTitle", {
-              defaultValue: "후보 또는 개선사항 건의",
-            })}
+            aria-label={t(
+              "matchCommunity.suggestionTitle",
+              {
+                defaultValue:
+                  "후보 또는 개선사항 건의",
+              }
+            )}
             style={{
               flex: "1 1 280px",
               minWidth: 0,
               height: 46,
               padding: "0 14px",
               boxSizing: "border-box",
-              border: "1px solid rgba(95, 212, 243, 0.45)",
+              border:
+                "1px solid rgba(95, 212, 243, 0.45)",
               borderRadius: 10,
               outline: "none",
-              background: inputDisabled ? "#2b3446" : "#f8fafc",
-              color: inputDisabled ? "#9ca6b8" : "#172033",
+              background: inputDisabled
+                ? "#2b3446"
+                : "#f8fafc",
+              color: inputDisabled
+                ? "#9ca6b8"
+                : "#172033",
               fontSize: 15,
               fontWeight: 600,
             }}
@@ -449,16 +500,22 @@ export default function MatchCommunityBox({ cupId }) {
               fontSize: 15,
               fontWeight: 900,
               whiteSpace: "nowrap",
-              cursor: submitDisabled ? "not-allowed" : "pointer",
+              cursor: submitDisabled
+                ? "not-allowed"
+                : "pointer",
               boxShadow: submitDisabled
                 ? "none"
                 : "0 4px 14px rgba(25, 118, 237, 0.3)",
             }}
           >
             {submitting
-              ? t("matchCommunity.submitting", {
-                  defaultValue: "제출 중...",
-                })
+              ? t(
+                  "matchCommunity.submitting",
+                  {
+                    defaultValue:
+                      "제출 중...",
+                  }
+                )
               : t("matchCommunity.submit", {
                   defaultValue: "제출",
                 })}
@@ -477,7 +534,9 @@ export default function MatchCommunityBox({ cupId }) {
           }}
         >
           <span
-            role={submitError ? "alert" : undefined}
+            role={
+              submitError ? "alert" : undefined
+            }
             style={{
               minWidth: 0,
               color: submitError
@@ -486,7 +545,9 @@ export default function MatchCommunityBox({ cupId }) {
                   ? "#73e6a4"
                   : "#94a3b8",
               fontWeight:
-                submitError || submitMessage ? 700 : 500,
+                submitError || submitMessage
+                  ? 700
+                  : 500,
               wordBreak: "break-word",
             }}
           >
@@ -497,12 +558,14 @@ export default function MatchCommunityBox({ cupId }) {
             style={{
               flexShrink: 0,
               color:
-                suggestion.length >= MAX_SUGGESTION_LENGTH
+                suggestion.length >=
+                MAX_SUGGESTION_LENGTH
                   ? "#ff8c8c"
                   : "#94a3b8",
             }}
           >
-            {suggestion.length}/{MAX_SUGGESTION_LENGTH}
+            {suggestion.length}/
+            {MAX_SUGGESTION_LENGTH}
           </span>
         </div>
       </form>
@@ -510,87 +573,83 @@ export default function MatchCommunityBox({ cupId }) {
       <div
         style={{
           height: 1,
-          margin: "20px 0 14px",
-          background: "rgba(255, 255, 255, 0.12)",
+          margin: "20px 0 16px",
+          background:
+            "rgba(255, 255, 255, 0.12)",
         }}
       />
 
-      <button
-        type="button"
-        onClick={handleToggleSuggestions}
-        aria-expanded={suggestionsOpen}
-        aria-controls={`match-suggestions-${cupId}`}
+      <div
         style={{
-          width: "100%",
-          minHeight: 46,
-          padding: "10px 12px",
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
           gap: 12,
-          border: "1px solid rgba(255, 255, 255, 0.14)",
-          borderRadius: 10,
-          background: suggestionsOpen
-            ? "rgba(25, 118, 237, 0.18)"
-            : "rgba(255, 255, 255, 0.06)",
-          color: "#fff",
-          fontSize: 15,
-          fontWeight: 800,
-          cursor: "pointer",
-          textAlign: "left",
+          marginBottom: 12,
         }}
       >
-        <span>
-          💬{" "}
-          {t("matchCommunity.viewSuggestions", {
-            count: suggestionCount,
-            defaultValue: "제출된 의견 보기 ({{count}})",
-          })}
-        </span>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 8,
+            color: "#fff",
+            fontSize: 17,
+            fontWeight: 900,
+          }}
+        >
+          <span aria-hidden="true">💬</span>
+
+          <span>
+            {t(
+              "matchCommunity.commentsTitle",
+              {
+                defaultValue: "최근 의견",
+              }
+            )}
+          </span>
+        </div>
 
         <span
-          aria-hidden="true"
           style={{
-            flexShrink: 0,
+            color: "#94a3b8",
             fontSize: 13,
-            transform: suggestionsOpen
-              ? "rotate(180deg)"
-              : "rotate(0deg)",
-            transition: "transform 0.2s ease",
+            fontWeight: 700,
           }}
         >
-          ▼
+          {suggestionCount}
         </span>
-      </button>
+      </div>
 
-      {suggestionsOpen && (
-        <div
-          id={`match-suggestions-${cupId}`}
-          style={{
-            marginTop: 12,
-            padding: "0 12px",
-            overflow: "hidden",
-            border: "1px solid rgba(255, 255, 255, 0.1)",
-            borderRadius: 10,
-            background: "rgba(0, 0, 0, 0.12)",
-          }}
-        >
-          {suggestionsLoading && (
-            <div
-              style={{
-                padding: "24px 0",
-                color: "#9ba8bc",
-                fontSize: 14,
-                textAlign: "center",
-              }}
-            >
-              {t("loading", {
-                defaultValue: "불러오는 중...",
-              })}
-            </div>
-          )}
+      <div
+        id={`match-suggestions-${cupId}`}
+        style={{
+          padding: "0 14px",
+          overflow: "hidden",
+          border:
+            "1px solid rgba(255, 255, 255, 0.1)",
+          borderRadius: 12,
+          background: "rgba(0, 0, 0, 0.12)",
+        }}
+      >
+        {suggestionsLoading && (
+          <div
+            style={{
+              padding: "28px 0",
+              color: "#9ba8bc",
+              fontSize: 14,
+              textAlign: "center",
+            }}
+          >
+            {t("loading", {
+              defaultValue:
+                "불러오는 중...",
+            })}
+          </div>
+        )}
 
-          {!suggestionsLoading && suggestionsError && (
+        {!suggestionsLoading &&
+          suggestionsError && (
             <div
               role="alert"
               style={{
@@ -617,113 +676,167 @@ export default function MatchCommunityBox({ cupId }) {
                   }}
                 >
                   {t("retry", {
-                    defaultValue: "다시 시도",
+                    defaultValue:
+                      "다시 시도",
                   })}
                 </button>
               </div>
             </div>
           )}
+                  {!suggestionsLoading &&
+          !suggestionsError &&
+          suggestions.length === 0 && (
+            <div
+              style={{
+                padding: "28px 0",
+                color: "#9ba8bc",
+                fontSize: 14,
+                textAlign: "center",
+              }}
+            >
+              {t("matchCommunity.noSuggestions", {
+                defaultValue:
+                  "아직 작성된 의견이 없습니다.",
+              })}
+            </div>
+          )}
 
-          {!suggestionsLoading &&
-            !suggestionsError &&
-            suggestions.length === 0 && (
-              <div
-                style={{
-                  padding: "24px 0",
-                  color: "#9ba8bc",
-                  fontSize: 14,
-                  textAlign: "center",
-                }}
-              >
-                {t("matchCommunity.noSuggestions", {
-                  defaultValue: "아직 제출된 의견이 없습니다.",
-                })}
-              </div>
-            )}
+        {!suggestionsLoading &&
+          !suggestionsError &&
+          suggestions
+            .slice(0, visibleSuggestionCount)
+            .map((item, index) => {
+              const visibleItems =
+                suggestions.slice(
+                  0,
+                  visibleSuggestionCount
+                );
 
-          {!suggestionsLoading &&
-            !suggestionsError &&
-            suggestions.map((item, index) => (
-              <article
-                key={item.id}
-                style={{
-                  padding: "14px 2px",
-                  borderBottom:
-                    index === suggestions.length - 1
-                      ? "none"
-                      : "1px solid rgba(255, 255, 255, 0.1)",
-                }}
-              >
-                <div
+              return (
+                <article
+                  key={item.id}
                   style={{
-                    display: "flex",
-                    alignItems: "center",
-                    flexWrap: "wrap",
-                    gap: 8,
-                    marginBottom: 6,
+                    padding: "15px 2px",
+                    borderBottom:
+                      index ===
+                      visibleItems.length - 1
+                        ? "none"
+                        : "1px solid rgba(255,255,255,0.1)",
                   }}
                 >
-                  <strong
+                  <div
                     style={{
-                      color: "#5fd4f3",
+                      display: "flex",
+                      alignItems: "center",
+                      flexWrap: "wrap",
+                      gap: 8,
+                      marginBottom: 7,
+                    }}
+                  >
+                    <strong
+                      style={{
+                        color: "#5fd4f3",
+                        fontSize: 14,
+                      }}
+                    >
+                      {item.nickname ||
+                        t(
+                          "matchCommunity.unknownUser",
+                          {
+                            defaultValue:
+                              "알 수 없는 사용자",
+                          }
+                        )}
+                    </strong>
+
+                    <time
+                      dateTime={
+                        item.created_at ||
+                        undefined
+                      }
+                      style={{
+                        color: "#8492a8",
+                        fontSize: 12,
+                      }}
+                    >
+                      {formatDate(
+                        item.created_at,
+                        i18n.language
+                      )}
+                    </time>
+                  </div>
+
+                  <div
+                    style={{
+                      color: "#e7edf7",
                       fontSize: 14,
+                      lineHeight: 1.6,
+                      whiteSpace: "pre-line",
                       wordBreak: "break-word",
+                      overflowWrap: "anywhere",
                     }}
                   >
-                    {item.nickname ||
-                      t("matchCommunity.unknownUser", {
-                        defaultValue: "알 수 없는 사용자",
-                      })}
-                  </strong>
+                    {item.content}
+                  </div>
+                </article>
+              );
+            })}
+      </div>
 
-                  <time
-                    dateTime={item.created_at || undefined}
-                    style={{
-                      color: "#8492a8",
-                      fontSize: 12,
-                    }}
-                  >
-                    {formatDate(item.created_at, i18n.language)}
-                  </time>
-                </div>
-
-                <div
-                  style={{
-                    color: "#e7edf7",
-                    fontSize: 14,
-                    lineHeight: 1.55,
-                    whiteSpace: "pre-line",
-                    wordBreak: "break-word",
-                    overflowWrap: "anywhere",
-                  }}
-                >
-                  {item.content}
-                </div>
-              </article>
-            ))}
-
-          {!suggestionsLoading &&
-            !suggestionsError &&
-            suggestionCount > suggestions.length &&
-            suggestions.length > 0 && (
-              <div
-                style={{
-                  padding: "12px 0",
-                  borderTop: "1px solid rgba(255, 255, 255, 0.1)",
-                  color: "#8492a8",
-                  fontSize: 12,
-                  textAlign: "center",
-                }}
-              >
-                {t("matchCommunity.latestSuggestionsOnly", {
-                  count: SUGGESTION_LIST_LIMIT,
-                  defaultValue:
-                    "최근 {{count}}개의 의견만 표시됩니다.",
-                })}
-              </div>
+      {!suggestionsLoading &&
+        !suggestionsError &&
+        visibleSuggestionCount <
+          suggestions.length && (
+          <button
+            type="button"
+            onClick={
+              handleLoadMoreSuggestions
+            }
+            style={{
+              width: "100%",
+              marginTop: 12,
+              minHeight: 44,
+              border: "none",
+              borderRadius: 10,
+              background:
+                "#1976ed",
+              color: "#fff",
+              fontWeight: 900,
+              cursor: "pointer",
+            }}
+          >
+            {t(
+              "matchCommunity.loadMore",
+              {
+                defaultValue:
+                  "의견 더보기",
+              }
             )}
-        </div>
-      )}
+          </button>
+        )}
+
+      {!suggestionsLoading &&
+        !suggestionsError &&
+        suggestions.length > 0 &&
+        visibleSuggestionCount >=
+          suggestions.length && (
+          <div
+            style={{
+              marginTop: 12,
+              color: "#94a3b8",
+              textAlign: "center",
+              fontSize: 12,
+            }}
+          >
+            {t(
+              "matchCommunity.allCommentsLoaded",
+              {
+                defaultValue:
+                  "모든 의견을 확인했습니다.",
+              }
+            )}
+          </div>
+        )}
     </section>
   );
 }
