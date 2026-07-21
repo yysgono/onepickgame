@@ -495,15 +495,33 @@ export default function StatsPage({
     result = result
       .map((row, i) => ({ ...row, _originIdx: i }))
       .sort((a, b) => {
-        if (sortKey === "win_count") {
-          if (a.win_count !== b.win_count) {
-            return sortDesc ? b.win_count - a.win_count : a.win_count - b.win_count;
-          }
-          if (a.match_wins !== b.match_wins) {
-            return sortDesc ? b.match_wins - a.match_wins : a.match_wins - b.match_wins;
-          }
-          return a._originIdx - b._originIdx;
-        }
+if (sortKey === "win_count") {
+  if (a.win_count !== b.win_count) {
+    return sortDesc
+      ? b.win_count - a.win_count
+      : a.win_count - b.win_count;
+  }
+
+  if (a.win_rate_num !== b.win_rate_num) {
+    return sortDesc
+      ? b.win_rate_num - a.win_rate_num
+      : a.win_rate_num - b.win_rate_num;
+  }
+
+  if (a.match_wins !== b.match_wins) {
+    return sortDesc
+      ? b.match_wins - a.match_wins
+      : a.match_wins - b.match_wins;
+  }
+
+  if (a.match_win_rate_num !== b.match_win_rate_num) {
+    return sortDesc
+      ? b.match_win_rate_num - a.match_win_rate_num
+      : a.match_win_rate_num - b.match_win_rate_num;
+  }
+
+  return a._originIdx - b._originIdx;
+}
         if (sortKey === "win_rate") {
           const av = a.win_rate_num || 0;
           const bv = b.win_rate_num || 0;
