@@ -98,6 +98,19 @@ function Home({
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
 
+  const lang = (i18n.language || "en").split("-")[0];
+  const getRoute = (base, cupId) => `/${lang}${base}/${cupId}`;
+
+const getDisplayTitle = (cup) => {
+  if (lang === "en") return cup.title || "";
+
+  return (
+    cup?.title_translations?.[lang] ||
+    cup.title ||
+    ""
+  );
+};
+
   // 최상단 이동
   useEffect(() => {
     try {
@@ -174,7 +187,7 @@ function Home({
     ? (worldcupList || [])
         .filter(
           (cup) =>
-            (cup.title || "").toLowerCase().includes(search.toLowerCase()) ||
+getDisplayTitle(cup).toLowerCase().includes(search.toLowerCase()) ||
             ((cup.description || cup.desc || "") || "")
               .toLowerCase()
               .includes(search.toLowerCase())
@@ -292,9 +305,6 @@ function Home({
   const handleLoadMore = () => {
     setVisibleCount((prev) => prev + PAGE_SIZE);
   };
-
-  const lang = (i18n.language || "en").split("-")[0];
-  const getRoute = (base, cupId) => `/${lang}${base}/${cupId}`;
 
   const cardDescStyle = {
     color: "#b9dafb",
@@ -414,6 +424,7 @@ background: "#000",
 visibleList.map((cup, idx) => {
   const winStats = winStatsMap[cup.id] || [];
   const [first, second] = getTop2Winners(winStats, cup.data);
+  const displayTitle = getDisplayTitle(cup);
 
   return (
     <React.Fragment key={cup.id}>
@@ -619,7 +630,7 @@ visibleList.map((cup, idx) => {
                       whiteSpace: "normal",
                       textShadow: "0 1.5px 8px #191b25cc",
                     }}
-                    title={cup.title}
+                    title={displayTitle}
                   >
                     <span
                       style={{
@@ -636,7 +647,7 @@ visibleList.map((cup, idx) => {
                       }}
                     >
                       {(() => {
-                        const title = (cup.title || "").slice(0, 70);
+                        const title = displayTitle.slice(0, 70);
                         if (title.length <= 40) return title;
                         const breakpoint = (() => {
                           const i = title.lastIndexOf(" ", 40);
@@ -653,7 +664,11 @@ visibleList.map((cup, idx) => {
 
                   {/* 설명 */}
                   <div style={cardDescStyle}>
-                    {cup.description || cup.desc || ""}
+{cup.description_translations?.[lang] ||
+  cup.description_translations?.en ||
+  cup.description ||
+  cup.desc ||
+  ""}
                   </div>
 
                   {/* 버튼 영역 */}
