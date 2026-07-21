@@ -464,11 +464,44 @@ export default function StatsPage({
     }),
     []
   );
+const rankedStats = useMemo(() => {
+  return stats
+    .map((row, i) => ({
+      ...row,
+      _originIdx: i,
+    }))
+    .sort((a, b) => {
+      if (a.win_count !== b.win_count) {
+        return b.win_count - a.win_count;
+      }
 
+      if (a.win_rate_num !== b.win_rate_num) {
+        return b.win_rate_num - a.win_rate_num;
+      }
+
+      if (a.match_wins !== b.match_wins) {
+        return b.match_wins - a.match_wins;
+      }
+
+      if (a.match_win_rate_num !== b.match_win_rate_num) {
+        return b.match_win_rate_num - a.match_win_rate_num;
+      }
+
+      return a._originIdx - b._originIdx;
+    })
+    .map((row, i) => ({
+      ...row,
+      rank: i + 1,
+    }));
+}, [stats]);
   /* ===== 검색/정렬/멤버 필터 ===== */
   const filteredStats = useMemo(() => {
     const q = (search || "").toLowerCase();
-    let result = q ? stats.filter((row) => row._name_lc.includes(q)) : stats.slice();
+  let result = q
+  ? rankedStats.filter((row) =>
+      row._name_lc.includes(q)
+    )
+  : rankedStats.slice();
 
     if (userOnly) {
       result = result.map((row) => ({
@@ -547,7 +580,13 @@ if (sortKey === "win_count") {
 
     result.forEach((row, i) => (row.rank = i + 1));
     return result;
-  }, [stats, search, userOnly, sortKey, sortDesc]);
+}, [
+  rankedStats,
+  search,
+  userOnly,
+  sortKey,
+  sortDesc,
+]);
 
   /* ===== 페이지네이션 ===== */
   const totalStats = filteredStats.length;
@@ -566,30 +605,19 @@ if (sortKey === "win_count") {
   }, [search, itemsPerPage, stats, userOnly]);
 
   /* ===== Top3 카드 ===== */
-  const top3 = useMemo(() => {
-    const arr = stats;
-    let A = null, B = null, C = null;
-    for (const r of arr) {
-      const key = r.win_count ?? 0;
-      const rate = r.win_rate_num ?? 0;
-      const better = (X) => (!X || key > X.key || (key === X.key && rate > X.rate));
-      const wrap = { row: r, key, rate };
-      if (better(A)) { C = B; B = A; A = wrap; }
-      else if (better(B)) { C = B; B = wrap; }
-      else if (better(C)) { C = wrap; }
-    }
-    const pick = [A?.row, B?.row, C?.row].filter(Boolean);
-    return pick.map((r) => ({
-      ...r,
-      _card: {
-        win_count: r.win_count,
-        match_wins: r.match_wins,
-        match_count: r.match_count,
-        win_rate: r._display?.winRateAll ?? "-",
-        match_win_rate: r._display?.matchRateAll ?? "-",
-      },
-    }));
-  }, [stats]);
+const top3 = useMemo(() => {
+  return rankedStats.slice(0, 3).map((r) => ({
+    ...r,
+    _card: {
+      win_count: r.win_count,
+      match_wins: r.match_wins,
+      match_count: r.match_count,
+      win_rate: r._display?.winRateAll ?? "-",
+      match_win_rate:
+        r._display?.matchRateAll ?? "-",
+    },
+  }));
+}, [rankedStats]);
 
   /* ===== 페이지네이션 UI ===== */
   function Pagination() {
