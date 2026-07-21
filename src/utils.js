@@ -355,14 +355,6 @@ export async function fetchWinnerStatsFromDB(
     ? `since:${since}`
     : "all";
 
-  const cacheKey =
-    `stats:${cup_id}:${sinceKey}:rpc-v1`;
-
-  const cached = readStatsCache(cacheKey);
-
-  if (cached) {
-    return cached;
-  }
 
   let p_from = null;
   let p_to = null;
@@ -411,8 +403,6 @@ export async function fetchWinnerStatsFromDB(
       row.user_total_games || 0
     ),
   }));
-
-  writeStatsCache(cacheKey, result);
 
   return result;
 }

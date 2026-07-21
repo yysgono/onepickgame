@@ -383,6 +383,7 @@ export default function StatsPage({
   const [customTo, setCustomTo] = useState("");
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
+  const [refreshKey, setRefreshKey] = useState(0);
   const [isMobile, setIsMobile] = useState(
     typeof window !== "undefined" ? window.innerWidth < 800 : false
   );
@@ -410,17 +411,6 @@ export default function StatsPage({
       }
       setLoading(true);
 
-      const rk = rangeKeyFrom(period, customMode, customFrom, customTo);
-      const cacheKey = `stats:${selectedCup.id}:${rk}:fast`;
-
-      // 캐시 즉시 페인트
-      const cached = readCache(cacheKey);
-      if (cached && alive && seq === fetchSeqRef.current) {
-        setStats(cached);
-        setLoading(false);
-        return;
-      }
-
       try {
         let rows;
         if (customMode && customFrom && customTo) {
@@ -435,7 +425,6 @@ export default function StatsPage({
         const normalized = normalizeStats(rows || []);
         setStats(normalized);
         setLoading(false);
-        writeCache(cacheKey, normalized);
       } catch (e) {
         if (!alive || seq !== fetchSeqRef.current) return;
         console.error("stats fetch error:", e);
@@ -447,7 +436,14 @@ export default function StatsPage({
     return () => {
       alive = false;
     };
-  }, [selectedCup, period, customMode, customFrom, customTo]);
+}, [
+  selectedCup?.id,
+  period,
+  customMode,
+  customFrom,
+  customTo,
+  refreshKey,
+]);
 
   /* ===== 스타일 메모화 ===== */
   const ivoryCell = useMemo(
@@ -816,10 +812,11 @@ export default function StatsPage({
         {PERIODS.map((p) => (
           <button
             key={p.value === null ? "all" : p.value}
-            onClick={() => {
-              setCustomMode(false);
-              setPeriod(p.value);
-            }}
+onClick={() => {
+  setCustomMode(false);
+  setPeriod(p.value);
+  setRefreshKey((value) => value + 1);
+}}
             style={periodBtnStyle(!customMode && period === p.value)}
           >
             {t(p.labelKey)}
