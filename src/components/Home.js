@@ -6,7 +6,7 @@ import { fetchWinnerStatsFromDB } from "../utils";
 import MediaRenderer from "./MediaRenderer";
 import FixedCupSection from "./FixedCupCarousel";
 
-const PAGE_SIZE = 21;
+const PAGE_SIZE = 28;
 
 // 애드센스 클라이언트 ID
 const ADSENSE_CLIENT = "ca-pub-2906270915716379";
@@ -430,9 +430,15 @@ visibleList.map((cup, idx) => {
     <React.Fragment key={cup.id}>
 
       {/* ⭐ 광고 (여기!!) */}
-{idx === 5 && <AdsenseMid />}
-{idx === 10 && <AdsenseMid />}
-{idx === 15 && <AdsenseMid />}
+{idx === 6 && <AdsenseMid />}
+{idx === 13 && <AdsenseMid />}
+{idx === 20 && <AdsenseMid />}
+{idx === 27 && <AdsenseMid />}
+{idx === 34 && <AdsenseMid />}
+{idx === 41 && <AdsenseMid />}
+{idx === 48 && <AdsenseMid />}
+{idx === 55 && <AdsenseMid />}
+{idx === 62 && <AdsenseMid />}
       <div
         ref={(el) => (cardRefs.current[idx] = el)}
                   style={{
