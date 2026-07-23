@@ -50,7 +50,7 @@ export default function KoPage(props) {
         />
         <meta
           property="og:description"
-          content="One Pick Game에서 직접 이상형 월드컵을 만들고 플레이하세요. 해외 유저들과 실시간으로 대결하며 즐기는 글로벌 원픽게임!"
+          content="이상형 월드컵 One Pick Game에서 직접 만들고 플레이하세요. 해외 유저들과 실시간으로 대결하며 즐기는 글로벌 원픽게임!"
         />
         <meta property="og:image" content={`${base}/ogimg.png`} />
         <meta property="og:url" content={self} />
