@@ -343,18 +343,30 @@ getDisplayTitle(cup).toLowerCase().includes(search.toLowerCase()) ||
     navigate(url);
   };
 
-  return (
-    <div
+return (
+  <div
+    style={{
+      width: "100vw",
+      minHeight: "100vh",
+      background: "#000",
+      position: "relative",
+    }}
+  >
+    <h1
       style={{
-        width: "100vw",
-        minHeight: "100vh",
-background: "#000",
-        position: "relative",
+        position: "absolute",
+        left: "-9999px",
+        width: "1px",
+        height: "1px",
+        overflow: "hidden",
       }}
     >
-      {showFixedWorldcups !== false && (
-        <FixedCupSection worldcupList={fixedCupsWithStats || []} />
-      )}
+      OnePickGame - Ultimate Tournament World Cup Platform
+    </h1>
+
+    {showFixedWorldcups !== false && (
+      <FixedCupSection worldcupList={fixedCupsWithStats || []} />
+    )}
 
       {/* 검색/정렬 바 */}
       <div
