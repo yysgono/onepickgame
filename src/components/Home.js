@@ -1,10 +1,5 @@
 // src/components/Home.js
-import React, {
-  useState,
-  useRef,
-  useEffect,
-  useCallback,
-} from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { fetchWinnerStatsFromDB } from "../utils";
@@ -12,9 +7,6 @@ import MediaRenderer from "./MediaRenderer";
 import FixedCupSection from "./FixedCupCarousel";
 
 const PAGE_SIZE = 28;
-const STATS_CACHE_TTL = 30 * 60 * 1000; // 30분
-const STATS_FETCH_CONCURRENCY = 6;
-const STATS_CACHE_PREFIX = "onepickgame:home-stats:";
 
 // 애드센스 클라이언트 ID
 const ADSENSE_CLIENT = "ca-pub-2906270915716379";
@@ -42,37 +34,20 @@ const AdsenseMid = () => {
 
 const useSlideFadeIn = (length) => {
   const refs = useRef([]);
-
   useEffect(() => {
-    const timers = [];
-
-    refs.current.slice(0, length).forEach((ref, i) => {
-      if (!ref) return;
-
-      ref.style.opacity = "0";
-      ref.style.transform = "translateY(20px) scale(0.97)";
-
-      const timer = window.setTimeout(() => {
-        if (!ref) return;
-
-        ref.style.transition =
-          "opacity 0.5s cubic-bezier(.35,1,.4,1), " +
-          "transform 0.48s cubic-bezier(.35,1,.4,1)";
-
-        ref.style.opacity = "1";
-        ref.style.transform = "translateY(0) scale(1)";
-      }, 60 + 18 * i);
-
-      timers.push(timer);
+    refs.current.forEach((ref, i) => {
+      if (ref) {
+        ref.style.opacity = "0";
+        ref.style.transform = "translateY(20px) scale(0.97)";
+        setTimeout(() => {
+          ref.style.transition =
+            "opacity 0.5s cubic-bezier(.35,1,.4,1), transform 0.48s cubic-bezier(.35,1,.4,1)";
+          ref.style.opacity = "1";
+          ref.style.transform = "translateY(0) scale(1)";
+        }, 60 + 18 * i);
+      }
     });
-
-    return () => {
-      timers.forEach((timer) => {
-        window.clearTimeout(timer);
-      });
-    };
   }, [length]);
-
   return refs;
 };
 
@@ -158,207 +133,19 @@ const getDisplayTitle = (cup) => {
 
   const [winStatsMap, setWinStatsMap] = useState({});
 
-// 메모리 캐시
-const statsCacheRef = useRef(new Map());
-
-// 동일한 월드컵에 대한 중복 요청 방지
-const statsPromiseRef = useRef(new Map());
-
-const getCachedStats = useCallback((cupId) => {
-  if (!cupId) return null;
-
-  // 먼저 메모리 캐시 확인
-  if (statsCacheRef.current.has(cupId)) {
-    return statsCacheRef.current.get(cupId);
-  }
-
-  if (typeof window === "undefined") {
-    return null;
-  }
-
-  try {
-    const cacheKey = `${STATS_CACHE_PREFIX}${String(cupId)}`;
-    const raw = window.sessionStorage.getItem(cacheKey);
-
-    if (!raw) {
-      return null;
-    }
-
-    const parsed = JSON.parse(raw);
-
-    const isFresh =
-      parsed &&
-      Array.isArray(parsed.stats) &&
-      Number.isFinite(parsed.cachedAt) &&
-      Date.now() - parsed.cachedAt < STATS_CACHE_TTL;
-
-    if (!isFresh) {
-      window.sessionStorage.removeItem(cacheKey);
-      return null;
-    }
-
-    statsCacheRef.current.set(cupId, parsed.stats);
-
-    return parsed.stats;
-  } catch (error) {
-    console.warn("홈 통계 캐시 읽기 실패:", error);
-    return null;
-  }
-}, []);
-
-const saveCachedStats = useCallback((cupId, stats) => {
-  const safeStats = Array.isArray(stats) ? stats : [];
-
-  statsCacheRef.current.set(cupId, safeStats);
-
-  if (typeof window === "undefined") {
-    return safeStats;
-  }
-
-  try {
-    const cacheKey = `${STATS_CACHE_PREFIX}${String(cupId)}`;
-
-    window.sessionStorage.setItem(
-      cacheKey,
-      JSON.stringify({
-        cachedAt: Date.now(),
-        stats: safeStats,
-      })
-    );
-  } catch (error) {
-    console.warn("홈 통계 캐시 저장 실패:", error);
-  }
-
-  return safeStats;
-}, []);
-
-const loadCupStats = useCallback(
-  async (cupId) => {
-    if (!cupId) {
-      return [];
-    }
-
-    const cached = getCachedStats(cupId);
-
-    if (cached) {
-      return cached;
-    }
-
-    // 이미 같은 통계를 불러오는 중이면 기존 Promise 재사용
-    if (statsPromiseRef.current.has(cupId)) {
-      return statsPromiseRef.current.get(cupId);
-    }
-
-    const request = Promise.resolve()
-      .then(() => fetchWinnerStatsFromDB(cupId))
-      .then((stats) => {
-        return saveCachedStats(cupId, stats);
-      })
-      .catch((error) => {
-        console.error(`월드컵 통계 조회 실패 (${cupId}):`, error);
-        return [];
-      })
-      .finally(() => {
-        statsPromiseRef.current.delete(cupId);
-      });
-
-    statsPromiseRef.current.set(cupId, request);
-
-    return request;
-  },
-  [getCachedStats, saveCachedStats]
-);
-
-useEffect(() => {
-  let cancelled = false;
-
-  const cupIds = Array.isArray(worldcupList)
-    ? [
-        ...new Set(
-          worldcupList
-            .map((cup) => cup?.id)
-            .filter(Boolean)
-        ),
-      ]
-    : [];
-
-  if (cupIds.length === 0) {
+  useEffect(() => {
     setWinStatsMap({});
-
-    return () => {
-      cancelled = true;
-    };
-  }
-
-  // 기존 통계 및 캐시된 데이터 즉시 재사용
-  setWinStatsMap((prev) => {
-    const next = {};
-
-    cupIds.forEach((cupId) => {
-      const cached = getCachedStats(cupId);
-
-      if (cached) {
-        next[cupId] = cached;
-      } else if (Array.isArray(prev[cupId])) {
-        next[cupId] = prev[cupId];
-      }
-    });
-
-    return next;
-  });
-
-  async function loadAllStats() {
-    const results = {};
-    let nextIndex = 0;
-
-    async function worker() {
-      while (!cancelled) {
-        const currentIndex = nextIndex;
-        nextIndex += 1;
-
-        if (currentIndex >= cupIds.length) {
-          return;
-        }
-
-        const cupId = cupIds[currentIndex];
-        const stats = await loadCupStats(cupId);
-
-        results[cupId] = Array.isArray(stats) ? stats : [];
-      }
+    if (Array.isArray(worldcupList) && worldcupList.length > 0) {
+      worldcupList.forEach((cup) => {
+        fetchWinnerStatsFromDB(cup.id).then((statsArr) => {
+          setWinStatsMap((prev) => ({
+            ...prev,
+            [cup.id]: statsArr,
+          }));
+        });
+      });
     }
-
-    const workerCount = Math.min(
-      STATS_FETCH_CONCURRENCY,
-      cupIds.length
-    );
-
-    await Promise.all(
-      Array.from(
-        { length: workerCount },
-        () => worker()
-      )
-    );
-
-    if (cancelled) {
-      return;
-    }
-
-    setWinStatsMap((prev) => ({
-      ...prev,
-      ...results,
-    }));
-  }
-
-  loadAllStats();
-
-  return () => {
-    cancelled = true;
-  };
-}, [
-  worldcupList,
-  getCachedStats,
-  loadCupStats,
-]);
+  }, [worldcupList]);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -374,67 +161,27 @@ useEffect(() => {
   const THUMB_HEIGHT = isMobile ? 148 : 168 * 1.05;
 
   const [fixedCupsWithStats, setFixedCupsWithStats] = useState([]);
-
-useEffect(() => {
-  let cancelled = false;
-
-  async function fillFixedStats() {
-    if (
-      !Array.isArray(fixedWorldcups) ||
-      fixedWorldcups.length === 0
-    ) {
-      if (!cancelled) {
+  useEffect(() => {
+    let mounted = true;
+    async function fillFixedStats() {
+      if (!fixedWorldcups || !fixedWorldcups.length) {
         setFixedCupsWithStats([]);
+        return;
       }
-
-      return;
+      const list = await Promise.all(
+        fixedWorldcups.map(async (cup) => {
+          if (Array.isArray(cup.winStats) && cup.winStats.length > 0) return cup;
+          const statsArr = await fetchWinnerStatsFromDB(cup.id);
+          return { ...cup, winStats: statsArr };
+        })
+      );
+      if (mounted) setFixedCupsWithStats(list);
     }
-
-    const list = await Promise.all(
-      fixedWorldcups.map(async (cup) => {
-        if (
-          Array.isArray(cup.winStats) &&
-          cup.winStats.length > 0
-        ) {
-          return cup;
-        }
-
-        // 홈에서 이미 조회한 통계 우선 사용
-        let stats = winStatsMap[cup.id];
-
-        // 세션 캐시 확인
-        if (!Array.isArray(stats)) {
-          stats = getCachedStats(cup.id);
-        }
-
-        // 캐시에도 없을 때만 실제 요청
-        if (!Array.isArray(stats)) {
-          stats = await loadCupStats(cup.id);
-        }
-
-        return {
-          ...cup,
-          winStats: Array.isArray(stats) ? stats : [],
-        };
-      })
-    );
-
-    if (!cancelled) {
-      setFixedCupsWithStats(list);
-    }
-  }
-
-  fillFixedStats();
-
-  return () => {
-    cancelled = true;
-  };
-}, [
-  fixedWorldcups,
-  winStatsMap,
-  getCachedStats,
-  loadCupStats,
-]);
+    fillFixedStats();
+    return () => {
+      mounted = false;
+    };
+  }, [fixedWorldcups]);
 
   const filtered = Array.isArray(worldcupList)
     ? (worldcupList || [])
