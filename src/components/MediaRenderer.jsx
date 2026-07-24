@@ -28,7 +28,7 @@ function getYoutubeId(url) {
 
   const patterns = [
     /youtu\.be\/([^/?&#]+)/i,
-    /youtube\.com\/watch\?.*?[?&]v=([^&#]+)/i,
+/youtube\.com\/watch\?(?:.*&)?v=([^&#]+)/i,
     /youtube\.com\/embed\/([^/?&#]+)/i,
     /youtube\.com\/shorts\/([^/?&#]+)/i,
     /youtube\.com\/live\/([^/?&#]+)/i,
