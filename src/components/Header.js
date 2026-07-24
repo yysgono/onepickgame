@@ -165,17 +165,9 @@ export default function Header({
   const currentLang = (i18n.language || "en").split("-")[0];
 
   // 로고 클릭: 언어 홈으로 이동 (SPA)
-function handleLogoClick(event) {
-  event?.preventDefault();
-  event?.stopPropagation();
-
-  const supportedLanguages = languages.map((lang) => lang.code);
-  const safeLang = supportedLanguages.includes(currentLang)
-    ? currentLang
-    : "en";
-
-  window.location.assign(`/${safeLang}`);
-}
+  function handleLogoClick() {
+    navigate(`/${currentLang}`);
+  }
 
   function handleMyWorldcup() {
     navigate(`/${currentLang}/my-worldcups`);
