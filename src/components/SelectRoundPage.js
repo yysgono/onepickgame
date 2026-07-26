@@ -98,7 +98,23 @@ export default function SelectRoundPage({
   }, [cup?.id]);
 
   // 언어코드 추출 (하이픈 변형은 앞 두 글자만)
-  let lang = langParam || (i18n.language || "ko").split("-")[0] || "ko";
+  let lang = langParam || (i18n.language || "en").split("-")[0] || "en";
+  const normalizedLang = String(lang || "en")
+  .toLowerCase()
+  .split("-")[0];
+
+const translatedTitle =
+  cup?.title_translations?.[normalizedLang] ||
+  cup?.title_translations?.en ||
+  cup?.title ||
+  "";
+
+const translatedDescription =
+  cup?.description_translations?.[normalizedLang] ||
+  cup?.description_translations?.en ||
+  cup?.description ||
+  cup?.desc ||
+  "";
 
   // 라운드 후보군 계산을 useMemo 로
   const possibleRounds = useMemo(() => {
@@ -481,12 +497,12 @@ export default function SelectRoundPage({
                   boxShadow: "0 2px 16px #1976ed18",
                   marginTop: isMobile ? 12 : 16,
                 }}
-                title={cup?.title}
-              >
-                {cup?.title}
-              </div>
+title={translatedTitle}
+>
+  {translatedTitle}
+</div>
 
-              {(cup?.desc || cup?.description) && (
+{translatedDescription && (
                 <div
                   style={{
                     fontWeight: 400,
@@ -508,7 +524,7 @@ export default function SelectRoundPage({
                     wordBreak: "break-word",
                   }}
                 >
-                  {cup.desc || cup.description}
+{translatedDescription}
                 </div>
               )}
             </>
