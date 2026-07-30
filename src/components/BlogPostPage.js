@@ -31,8 +31,6 @@ const detailText = {
     error: "글을 불러오지 못했습니다.",
     back: "블로그로 돌아가기",
     views: "조회수",
-    affiliate:
-      "이 글에는 제휴 링크가 포함되어 있습니다. 링크를 통해 가입할 경우 추가 비용 없이 일정 수수료를 받을 수 있습니다.",
   },
 
   en: {
@@ -43,8 +41,6 @@ const detailText = {
     error: "Unable to load the article.",
     back: "Back to blog",
     views: "Views",
-    affiliate:
-      "This article contains affiliate links. I may receive a commission at no additional cost to you.",
   },
 
   ja: {
@@ -55,8 +51,6 @@ const detailText = {
     error: "記事を読み込めませんでした。",
     back: "ブログに戻る",
     views: "閲覧数",
-    affiliate:
-      "この記事にはアフィリエイトリンクが含まれています。リンクから登録すると、追加料金なしで報酬を受け取る場合があります。",
   },
 
   zh: {
@@ -67,8 +61,6 @@ const detailText = {
     error: "无法加载文章。",
     back: "返回博客",
     views: "浏览量",
-    affiliate:
-      "本文包含联盟链接。如果您通过这些链接注册，我可能会获得佣金，您无需支付额外费用。",
   },
 
   es: {
@@ -79,8 +71,6 @@ const detailText = {
     error: "No se pudo cargar el artículo.",
     back: "Volver al blog",
     views: "Visualizaciones",
-    affiliate:
-      "Este artículo contiene enlaces de afiliados. Puedo recibir una comisión sin ningún coste adicional para ti.",
   },
 
   fr: {
@@ -91,8 +81,6 @@ const detailText = {
     error: "Impossible de charger l’article.",
     back: "Retour au blog",
     views: "Vues",
-    affiliate:
-      "Cet article contient des liens d’affiliation. Je peux recevoir une commission sans frais supplémentaires pour vous.",
   },
 
   vi: {
@@ -103,8 +91,6 @@ const detailText = {
     error: "Không thể tải bài viết.",
     back: "Quay lại blog",
     views: "Lượt xem",
-    affiliate:
-      "Bài viết này có chứa liên kết tiếp thị liên kết. Tôi có thể nhận được hoa hồng mà bạn không phải trả thêm chi phí.",
   },
 
   de: {
@@ -115,8 +101,6 @@ const detailText = {
     error: "Der Artikel konnte nicht geladen werden.",
     back: "Zurück zum Blog",
     views: "Aufrufe",
-    affiliate:
-      "Dieser Artikel enthält Affiliate-Links. Ich kann eine Provision erhalten, ohne dass für Sie zusätzliche Kosten entstehen.",
   },
 
   ru: {
@@ -127,8 +111,6 @@ const detailText = {
     error: "Не удалось загрузить статью.",
     back: "Вернуться в блог",
     views: "Просмотры",
-    affiliate:
-      "Эта статья содержит партнерские ссылки. Я могу получить комиссию без дополнительных расходов для вас.",
   },
 
   id: {
@@ -139,8 +121,6 @@ const detailText = {
     error: "Artikel tidak dapat dimuat.",
     back: "Kembali ke blog",
     views: "Tayangan",
-    affiliate:
-      "Artikel ini mengandung tautan afiliasi. Saya mungkin menerima komisi tanpa biaya tambahan bagi Anda.",
   },
 
   pt: {
@@ -151,8 +131,6 @@ const detailText = {
     error: "Não foi possível carregar o artigo.",
     back: "Voltar ao blog",
     views: "Visualizações",
-    affiliate:
-      "Este artigo contém links de afiliados. Posso receber uma comissão sem nenhum custo adicional para você.",
   },
 
   hi: {
@@ -163,8 +141,6 @@ const detailText = {
     error: "लेख लोड नहीं किया जा सका।",
     back: "ब्लॉग पर वापस जाएँ",
     views: "देखे जाने की संख्या",
-    affiliate:
-      "इस लेख में एफिलिएट लिंक शामिल हैं। इन लिंक से साइन अप करने पर मुझे बिना किसी अतिरिक्त लागत के कमीशन मिल सकता है।",
   },
 
   tr: {
@@ -175,8 +151,6 @@ const detailText = {
     error: "Makale yüklenemedi.",
     back: "Bloga dön",
     views: "Görüntülenme",
-    affiliate:
-      "Bu makale bağlı kuruluş bağlantıları içerir. Size ek bir maliyet oluşturmadan komisyon kazanabilirim.",
   },
 
   th: {
@@ -187,8 +161,6 @@ const detailText = {
     error: "ไม่สามารถโหลดบทความได้",
     back: "กลับไปที่บล็อก",
     views: "ยอดเข้าชม",
-    affiliate:
-      "บทความนี้มีลิงก์แนะนำ หากคุณสมัครผ่านลิงก์ดังกล่าว ฉันอาจได้รับค่าคอมมิชชันโดยที่คุณไม่เสียค่าใช้จ่ายเพิ่มเติม",
   },
 
   ar: {
@@ -199,8 +171,6 @@ const detailText = {
     error: "تعذر تحميل المقال.",
     back: "العودة إلى المدونة",
     views: "المشاهدات",
-    affiliate:
-      "تحتوي هذه المقالة على روابط تسويق بالعمولة. قد أحصل على عمولة دون أي تكلفة إضافية عليك.",
   },
 
   bn: {
@@ -211,8 +181,6 @@ const detailText = {
     error: "নিবন্ধটি লোড করা যায়নি।",
     back: "ব্লগে ফিরে যান",
     views: "দেখা হয়েছে",
-    affiliate:
-      "এই নিবন্ধে অ্যাফিলিয়েট লিঙ্ক রয়েছে। এসব লিঙ্কের মাধ্যমে নিবন্ধন করলে অতিরিক্ত কোনো খরচ ছাড়াই আমি কমিশন পেতে পারি।",
   },
 };
 
@@ -562,10 +530,6 @@ export default function BlogPostPage() {
               </span>
             </div>
           </header>
-
-          <aside className="affiliate-disclosure">
-            {text.affiliate}
-          </aside>
 
           <div
             className="blog-post-content"
