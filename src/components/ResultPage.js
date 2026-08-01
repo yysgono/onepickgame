@@ -10,7 +10,6 @@ import Seo from "../seo/Seo";
 
 const StatsPage = React.lazy(() => import(/* webpackPrefetch: true */ "./StatsPage"));
 const MediaRenderer = lazy(() => import("./MediaRenderer"));
-const ReferralBanner = lazy(() => import("./ReferralBanner"));
 
 function truncateToTwoLinesByByte(str, maxBytePerLine = 24) {
   if (!str) return [];
@@ -446,11 +445,6 @@ title={`${winner?.name || cup.title} - ${cup.title} | One Pick Game`}
           </div>
         </div>
 
-        <div style={{ width: "100%", maxWidth: 900, margin: "16px auto 40px" }}>
-          <Suspense fallback={<div style={{ height: 48 }} />}>
-            <ReferralBanner lang={lang} />
-          </Suspense>
-        </div>
 
       </div> {/* ⭐ 메인 끝 */}
 
