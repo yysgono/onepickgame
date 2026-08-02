@@ -34,7 +34,7 @@ export default function EnPage(props) {
   return (
     <>
       <Helmet htmlAttributes={{ lang: "en" }}>
-        <title>One Pick Game - Ideal Type World Cup Bracket Game</title>
+        <title>이상형 월드컵 One Pick Game - Ideal Type World Cup Bracket 원픽게임</title>
         <meta
           name="description"
           content="Play the Ideal Type World Cup on One Pick Game! Create your own tournament brackets, vote for favorites, and enjoy fun matchups with users worldwide."
@@ -42,7 +42,7 @@ export default function EnPage(props) {
 
         {/* Canonical & OpenGraph */}
         <link rel="canonical" href={self} />
-        <meta property="og:title" content="One Pick Game - Ideal Type World Cup Bracket Game" />
+        <meta property="og:title" content="Ideal Type World Cup - Bracket Game | One Pick Game" />
         <meta
           property="og:description"
           content="One Pick Game is the Ideal Type World Cup site. Make your own bracket, play tournaments, and share results with friends around the world!"

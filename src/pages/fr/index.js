@@ -41,10 +41,7 @@ export default function FrPage(props) {
 
         {/* Canonical & OpenGraph */}
         <link rel="canonical" href={self} />
-        <meta
-          property="og:title"
-          content="One Pick Game - Coupe du Monde du Type Idéal Tournoi"
-        />
+<meta property="og:title" content="Tournoi de Vote - One Pick Game" />
         <meta
           property="og:description"
           content="One Pick Game est le site de la Coupe du Monde du Type Idéal. Créez votre propre tournoi, participez aux duels et partagez les résultats avec des amis partout dans le monde."

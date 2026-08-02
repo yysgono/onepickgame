@@ -40,7 +40,7 @@ export default function TrPage(props) {
         />
 
         <link rel="canonical" href={self} />
-        <meta property="og:title" content="One Pick Game - Ideal Type World Cup Turnuva Oyunu" />
+<meta property="og:title" content="Turnuva Oyunu - One Pick Game" />
         <meta
           property="og:description"
           content="One Pick Game Ideal Type World Cup sitesi. Kendi turnuvanı oluştur, maçlara katıl ve sonuçları dünyayla paylaş!"

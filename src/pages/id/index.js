@@ -41,10 +41,7 @@ export default function IdPage(props) {
 
         {/* Canonical & OpenGraph */}
         <link rel="canonical" href={self} />
-        <meta
-          property="og:title"
-          content="One Pick Game - Turnamen Piala Dunia Tipe Ideal"
-        />
+<meta property="og:title" content="Turnamen Voting - One Pick Game" />
         <meta
           property="og:description"
           content="One Pick Game adalah situs Piala Dunia Tipe Ideal. Buat bracket Anda sendiri, ikuti turnamen, dan bagikan hasilnya dengan teman di seluruh dunia!"

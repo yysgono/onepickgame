@@ -41,7 +41,7 @@ export default function DePage(props) {
 
         {/* Canonical & OpenGraph */}
         <link rel="canonical" href={self} />
-        <meta property="og:title" content="One Pick Game - Idealtyp Weltcup Turnierspiel" />
+<meta property="og:title" content="Ideal Type World Cup Bracket Game | One Pick Game" />
         <meta
           property="og:description"
           content="One Pick Game ist die Idealtyp Weltcup Seite. Erstelle dein eigenes Bracket, spiele Turniere und teile Ergebnisse mit Freunden auf der ganzen Welt!"

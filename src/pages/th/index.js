@@ -41,10 +41,7 @@ export default function ThPage(props) {
 
         {/* Canonical & OpenGraph */}
         <link rel="canonical" href={self} />
-        <meta
-          property="og:title"
-          content="One Pick Game - เกมทัวร์นาเมนต์ Ideal Type World Cup"
-        />
+<meta property="og:title" content="เกมโหวตแบบทัวร์นาเมนต์ - One Pick Game" />
         <meta
           property="og:description"
           content="One Pick Game คือเว็บไซต์ Ideal Type World Cup สร้างทัวร์นาเมนต์ของคุณเอง เล่นและแชร์ผลลัพธ์กับเพื่อน ๆ ทั่วโลก!"

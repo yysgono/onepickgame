@@ -40,7 +40,7 @@ export default function ViPage(props) {
         />
 
         <link rel="canonical" href={self} />
-        <meta property="og:title" content="One Pick Game - Trò chơi giải đấu Ideal Type World Cup" />
+<meta property="og:title" content="Trò chơi vòng loại yêu thích - One Pick Game" />
         <meta
           property="og:description"
           content="One Pick Game là trang web Ideal Type World Cup. Hãy tạo giải đấu riêng, tham gia trận đấu và chia sẻ kết quả với bạn bè toàn cầu!"

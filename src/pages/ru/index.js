@@ -41,10 +41,7 @@ export default function RuPage(props) {
 
         {/* Canonical & OpenGraph */}
         <link rel="canonical" href={self} />
-        <meta
-          property="og:title"
-          content="One Pick Game - Турнир Кубка мира идеального типа"
-        />
+<meta property="og:title" content="Турнир голосований - One Pick Game" />
         <meta
           property="og:description"
           content="One Pick Game — это сайт Кубка мира идеального типа. Создайте свой собственный турнир, играйте и делитесь результатами с друзьями по всему миру!"

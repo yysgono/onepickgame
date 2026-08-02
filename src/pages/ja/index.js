@@ -41,10 +41,7 @@ export default function JaPage(props) {
 
         {/* Canonical & OpenGraph */}
         <link rel="canonical" href={self} />
-        <meta
-          property="og:title"
-          content="One Pick Game - 理想のタイプワールドカップ トーナメント"
-        />
+<meta property="og:title" content="トーナメントゲーム - One Pick Game" />
         <meta
           property="og:description"
           content="One Pick Gameは理想のタイプワールドカップサイトです。自分だけのトーナメントを作って、投票して、世界中の友達とシェアしよう！"

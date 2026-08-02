@@ -41,7 +41,7 @@ export default function BnPage(props) {
 
         {/* Canonical & OpenGraph */}
         <link rel="canonical" href={self} />
-        <meta property="og:title" content="One Pick Game - আইডিয়াল টাইপ ওয়ার্ল্ড কাপ" />
+        <meta property="og:title" content="আইডিয়াল টাইপ ওয়ার্ল্ড কাপ - One Pick Game" />
         <meta
           property="og:description"
           content="One Pick Game হলো আইডিয়াল টাইপ ওয়ার্ল্ড কাপ সাইট। নিজের ব্র্যাকেট তৈরি করুন, টুর্নামেন্ট খেলুন এবং আপনার ফলাফল সারা বিশ্বের বন্ধুদের সাথে শেয়ার করুন!"

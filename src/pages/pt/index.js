@@ -41,10 +41,7 @@ export default function PtPage(props) {
 
         {/* Canonical & OpenGraph */}
         <link rel="canonical" href={self} />
-        <meta
-          property="og:title"
-          content="One Pick Game - Copa do Mundo do Tipo Ideal Torneio"
-        />
+<meta property="og:title" content="Torneio de Votação - One Pick Game" />
         <meta
           property="og:description"
           content="One Pick Game é o site da Copa do Mundo do Tipo Ideal. Crie seu próprio torneio, vote e compartilhe os resultados com amigos em todo o mundo!"

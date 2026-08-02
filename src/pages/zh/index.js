@@ -40,7 +40,7 @@ export default function ZhPage(props) {
         />
 
         <link rel="canonical" href={self} />
-        <meta property="og:title" content="One Pick Game - 理想型世界杯 锦标赛游戏" />
+<meta property="og:title" content="淘汰赛游戏 - One Pick Game" />
         <meta
           property="og:description"
           content="One Pick Game 是理想型世界杯网站。创建属于你的锦标赛，参与比赛，并与全世界的朋友分享结果！"
