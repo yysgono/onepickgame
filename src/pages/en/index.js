@@ -55,7 +55,7 @@ export default function EnPage(props) {
 
         {/* Twitter Card */}
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="One Pick Game - Ideal Type World Cup Bracket Game" />
+        <meta name="twitter:title" content="Ideal Type World Cup Bracket Game - One Pick Game" />
         <meta
           name="twitter:description"
           content="One Pick Game is the Ideal Type World Cup site. Make your own bracket, play tournaments, and share results with friends around the world!"
