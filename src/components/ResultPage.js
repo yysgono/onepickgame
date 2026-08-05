@@ -87,9 +87,57 @@ export default function ResultPage({ worldcupList }) {
 
   const MAIN = 1200;
 
-  const langMatch = location.pathname.match(/^\/([a-z]{2})(\/|$)/);
-  const lang = langMatch ? langMatch[1] : i18n.language?.split("-")[0] || "ko";
-  const isStatsOnly = /\/stats\/\d+/.test(location.pathname);
+const langMatch = location.pathname.match(/^\/([a-z]{2})(\/|$)/);
+
+const lang = langMatch
+  ? langMatch[1]
+  : i18n.language?.split("-")[0] || "ko";
+
+const isStatsOnly = /\/stats\/\d+/.test(location.pathname);
+
+const bracketTitleMap = {
+  en: "Bracket Game",
+  ko: "이상형 월드컵",
+  ja: "人気投票トーナメント",
+  zh: "淘汰赛游戏",
+  es: "Torneo de Votación",
+  fr: "Tournoi de Vote",
+  vi: "Giải đấu bình chọn",
+  de: "Abstimmungsturnier",
+  ru: "Турнир голосований",
+  id: "Turnamen Voting",
+  pt: "Torneio de Votação",
+  hi: "वोटिंग टूर्नामेंट",
+  tr: "Turnuva Oyunu",
+  th: "เกมโหวตแบบทัวร์นาเมนต์",
+  ar: "بطولة التصويت",
+  bn: "ভোটিং টুর্নামেন্ট",
+};
+
+const winnerLabelMap = {
+  en: "Winner",
+  ko: "우승자",
+  ja: "優勝",
+  zh: "冠军",
+  es: "Ganador",
+  fr: "Gagnant",
+  vi: "Người chiến thắng",
+  de: "Gewinner",
+  ru: "Победитель",
+  id: "Pemenang",
+  pt: "Vencedor",
+  hi: "विजेता",
+  tr: "Kazanan",
+  th: "ผู้ชนะ",
+  ar: "الفائز",
+  bn: "বিজয়ী",
+};
+
+const winnerLabel =
+  winnerLabelMap[lang] || winnerLabelMap.en;
+
+const bracketTitle =
+  bracketTitleMap[lang] || bracketTitleMap.en;
 
   const [cup, setCup] = useState(null);
   const [winner, setWinner] = useState(null);
@@ -241,21 +289,42 @@ export default function ResultPage({ worldcupList }) {
       </div>
     );
 
+    const normalizedLang = String(lang || "en")
+  .toLowerCase()
+  .split("-")[0];
+
+const translatedTitle =
+  cup?.title_translations?.[normalizedLang] ||
+  cup?.title_translations?.en ||
+  cup?.title ||
+  "";
+
+const translatedDescription =
+  cup?.description_translations?.[normalizedLang] ||
+  cup?.description_translations?.en ||
+  cup?.description ||
+  cup?.desc ||
+  "";
+
  return (
   <>
-    <Seo
-      lang={lang}
-      slug={`result/${cup.id}`}
-title={`${winner?.name || cup.title} - ${cup.title} | One Pick Game`}
-      description={cup.description || cup.desc || ""}
-      image={
-        winner?.image ||
-        cup.thumbnail ||
-        cup.image ||
-        cup.data?.[0]?.image ||
-        "/onepick-social.png"
-      }
-    />
+<Seo
+  lang={lang}
+  slug={`result/${cup.id}`}
+title={
+  winner?.name
+    ? `${bracketTitle} | ${translatedTitle} | ${winner.name} | One Pick Game`
+    : `${bracketTitle} | ${translatedTitle} | One Pick Game`
+}
+  description={translatedDescription}
+  image={
+    winner?.image ||
+    cup.thumbnail ||
+    cup.image ||
+    cup.data?.[0]?.image ||
+    "/onepick-social.png"
+  }
+/>
 
     <div
       style={{

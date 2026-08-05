@@ -434,43 +434,43 @@ function App() {
       langMatch ? langMatch[1] : i18n.language || "en"
     ).split("-")[0];
 
-    const titleMap = {
-      en: "OnePickGame - Ideal Type World Cup",
-      ko: "원픽게임 - 이상형 월드컵 해외 사이트",
-      ja: "OnePickGame - ワールドカップ作成＆プレイ",
-      fr: "OnePickGame - Créez et jouez aux tournois",
-      es: "OnePickGame - Crea y juega torneos",
-      de: "OnePickGame - Turniere erstellen und spielen",
-      pt: "OnePickGame - Crie e jogue torneios",
-      ru: "OnePickGame — Создавайте и играйте в турниры",
-      id: "OnePickGame - Buat & mainkan turnamen",
-      hi: "OnePickGame - वर्ल्डकप बनाएं और खेलें",
-      vi: "OnePickGame - Tạo & chơi giải đấu",
-      zh: "OnePickGame - 创建并游玩锦标赛",
-      ar: "OnePickGame - أنشئ والعب البطولات",
-      bn: "OnePickGame - টুর্নামেন্ট তৈরি ও খেলুন",
-      th: "OnePickGame - สร้างและเล่นทัวร์นาเมนต์",
-      tr: "OnePickGame - Turnuva oluştur ve oyna",
-    };
+const titleMap = {
+en: "Bracket Game | Ideal Type World Cup | One Pick Game",
+  ko: "이상형 월드컵 | One Pick Game",
+  ja: "トーナメントゲーム | One Pick Game",
+  fr: "Tournoi de Vote | One Pick Game",
+  es: "Torneo de Votación | One Pick Game",
+  de: "Abstimmungsturnier | One Pick Game",
+  pt: "Torneio de Votação | One Pick Game",
+  ru: "Турнир голосований | One Pick Game",
+  id: "Turnamen Voting | One Pick Game",
+  hi: "वोटिंग टूर्नामेंट | One Pick Game",
+  vi: "Giải đấu bình chọn | One Pick Game",
+  zh: "淘汰赛游戏 | One Pick Game",
+  ar: "بطولة التصويت | One Pick Game",
+  bn: "ভোটিং টুর্নামেন্ট | One Pick Game",
+  th: "เกมโหวตแบบทัวร์นาเมนต์ | One Pick Game",
+  tr: "Turnuva Oyunu | One Pick Game",
+};
 
-    const descMap = {
-      en: "Create and play worldcup-style matches. Community-driven tournaments and stats.",
-      ko: "이상형 월드컵 해외 사이트 입니다. 커뮤니티 기반 토너먼트와 통계를 제공합니다.",
-      ja: "理想のワールドカップ를作成してプレイ。コミュニティ主导のトーナメントと統計。",
-      fr: "Créez et jouez à des tournois. Communauté active et statistiques.",
-      es: "Crea y juega torneos. Comunidad activa y estadísticas.",
-      de: "Turniere erstellen und spielen. Community & Statistiken.",
-      pt: "Crie e jogue torneios. Comunidade e estatísticas.",
-      ru: "Создавайте и играйте в турниры. Сообщество и статистика.",
-      id: "Buat dan mainkan turnamen. Komunitas & statistik.",
-      hi: "टूर्नामेंट बनाएं और खेलें। कम्युनिटी और आँकड़े।",
-      vi: "Tạo và chơi giải đấu. Cộng đồng & thống kê.",
-      zh: "创建并游玩锦标赛。拥有社区与统计功能。",
-      ar: "أنشئ والعب البطولات. مجتمع وإحصاءات.",
-      bn: "টুর্নামেন্ট তৈরি ও খেলুন। কমিউনিটি ও পরিসংখ্যান।",
-      th: "สร้างและเล่นทัวร์นาเมนต์ พร้อมชุมชนและสถิติ",
-      tr: "Turnuva oluştur ve oyna. Topluluk ve istatistikler.",
-    };
+const descMap = {
+  en: "Create and play bracket games. Build your own tournaments, vote for your favorites, and enjoy community rankings.",
+  ko: "이상형 월드컵 만들기 다양한 토너먼트에 참여하고 인기 순위와 커뮤니티를 즐겨보세요.",
+  ja: "トーナメントゲームを作成して遊ぼう。お気に入りに投票し、ランキングやコミュニティを楽しめます。",
+  fr: "Créez et jouez à des tournois de vote. Votez pour vos favoris et découvrez les classements de la communauté.",
+  es: "Crea y juega torneos de votación. Vota por tus favoritos y disfruta de las clasificaciones de la comunidad.",
+  de: "Erstelle und spiele Abstimmungsturniere. Stimme für deine Favoriten ab und entdecke Community-Ranglisten.",
+  pt: "Crie e jogue torneios de votação. Vote nos seus favoritos e confira os rankings da comunidade.",
+  ru: "Создавайте и играйте в турниры голосований. Голосуйте за своих фаворитов и изучайте рейтинги сообщества.",
+  id: "Buat dan mainkan turnamen voting. Pilih favoritmu dan nikmati peringkat komunitas.",
+  hi: "वोटिंग टूर्नामेंट बनाएं और खेलें। अपने पसंदीदा को वोट दें और समुदाय की रैंकिंग देखें।",
+  vi: "Tạo và chơi giải đấu bình chọn. Bình chọn mục yêu thích và khám phá bảng xếp hạng cộng đồng.",
+  zh: "创建并游玩淘汰赛游戏，为你喜欢的角色投票，并查看社区排行榜。",
+  ar: "أنشئ والعب بطولات التصويت، وصوّت لمفضلاتك واستمتع بتصنيفات المجتمع.",
+  bn: "ভোটিং টুর্নামেন্ট তৈরি করুন ও খেলুন। আপনার প্রিয়দের ভোট দিন এবং কমিউনিটির র‍্যাঙ্কিং দেখুন।",
+  th: "สร้างและเล่นเกมโหวตแบบทัวร์นาเมนต์ โหวตสิ่งที่คุณชื่นชอบและดูอันดับจากชุมชน",
+  tr: "Turnuva oyunları oluştur ve oyna. Favorilerine oy ver ve topluluk sıralamalarını keşfet."
+};
 
     function handleMakeWorldcup() {
       if (!user) {
@@ -521,24 +521,80 @@ function App() {
     }
 
 function SelectRoundPageWrapper() {
-  const { id, lang } = useParams();
-      const cup = worldcupList.find((c) => String(c.id) === id);
-      const navigate = useNavigate();
-      if (!cup) return null;
-      return (
-  <>
-    <Seo
-      lang={lang}
-      slug={`select-round/${cup.id}`}
-      title={`${cup.title} | One Pick Game`}
-      description={cup.description || cup.desc || ""}
-image={
-  cup.thumbnail ||
-  cup.image ||
-  cup.data?.[0]?.image ||
-  "/onepick-social.png"
+  const { id, lang = "en" } = useParams();
+const cup = worldcupList.find((c) => String(c.id) === String(id));
+
+if (!cup) {
+  return (
+    <div
+      style={{
+        minHeight: "60vh",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        color: "#fff",
+        fontSize: 18,
+        fontWeight: 700,
+      }}
+    >
+      {t("loading") || "Loading..."}
+    </div>
+  );
 }
-    />
+
+  const normalizedLang = String(lang || "en")
+    .toLowerCase()
+    .split("-")[0];
+
+  const bracketTitleMap = {
+    en: "Bracket Game",
+    ko: "이상형 월드컵",
+    ja: "人気投票トーナメント",
+    zh: "淘汰赛游戏",
+    es: "Torneo de Votación",
+    fr: "Tournoi de Vote",
+    vi: "Giải đấu bình chọn",
+    de: "Abstimmungsturnier",
+    ru: "Турнир голосований",
+    id: "Turnamen Voting",
+    pt: "Torneio de Votação",
+    hi: "वोटिंग टूर्नामेंट",
+    tr: "Turnuva Oyunu",
+    th: "เกมโหวตแบบทัวร์นาเมนต์",
+    ar: "بطولة التصويت",
+    bn: "ভোটিং টুর্নামেন্ট",
+  };
+
+  const bracketTitle =
+    bracketTitleMap[normalizedLang] || bracketTitleMap.en;
+
+  const translatedTitle =
+    cup?.title_translations?.[normalizedLang] ||
+    cup?.title_translations?.en ||
+    cup?.title ||
+    "";
+
+  const translatedDescription =
+    cup?.description_translations?.[normalizedLang] ||
+    cup?.description_translations?.en ||
+    cup?.description ||
+    cup?.desc ||
+    "";
+
+  return (
+    <>
+      <Seo
+        lang={normalizedLang}
+        slug={`select-round/${cup.id}`}
+        title={`${bracketTitle} | ${translatedTitle} | One Pick Game`}
+        description={translatedDescription}
+        image={
+          cup.thumbnail ||
+          cup.image ||
+          cup.data?.[0]?.image ||
+          "/onepick-social.png"
+        }
+      />
 
     <SelectRoundPage
       cup={cup}

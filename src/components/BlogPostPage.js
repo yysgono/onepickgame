@@ -470,15 +470,15 @@ export default function BlogPostPage() {
 
   return (
     <>
-      <Seo
-        lang={currentLang}
-        slug={`blog/${post.slug}`}
-        title={`${post.title} | ${brandName}`}
-        description={
-          post.description ||
-          `${post.title} - ${brandName}`
-        }
-      />
+<Seo
+  lang={currentLang}
+  slug={`blog/${post.slug}`}
+  title={`이상형 월드컵 - ${post.title} | ${brandName}`}
+  description={
+    post.description ||
+    `${post.title} - ${brandName}`
+  }
+/>
 
       <main className="blog-page">
         <article className="blog-post">
