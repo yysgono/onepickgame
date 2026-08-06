@@ -352,17 +352,7 @@ return (
       position: "relative",
     }}
   >
-    <h1
-      style={{
-        position: "absolute",
-        left: "-9999px",
-        width: "1px",
-        height: "1px",
-        overflow: "hidden",
-      }}
-    >
-      OnePickGame - Ultimate Tournament World Cup Platform
-    </h1>
+
 
     {showFixedWorldcups !== false && (
       <FixedCupSection worldcupList={fixedCupsWithStats || []} />
