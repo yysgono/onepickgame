@@ -122,13 +122,15 @@ function extractCandidateStoragePath(imageValue) {
 
   if (encodedPath) {
     try {
-      return decodeURIComponent(encodedPath);
+      // 실제 구조:
+      // bucket = candidates
+      // object name = candidates/admin/파일명
+      return decodeURIComponent(encodedPath).replace(/^\/+/, "");
     } catch {
-      return encodedPath;
+      return encodedPath.replace(/^\/+/, "");
     }
   }
 
-  // 외부 URL은 우리 Storage 파일이 아닙니다.
   if (
     value.startsWith("http://") ||
     value.startsWith("https://") ||
@@ -137,7 +139,6 @@ function extractCandidateStoragePath(imageValue) {
     return null;
   }
 
-  // 상대 경로가 저장된 경우만 허용
   return value.replace(/^\/+/, "");
 }
 
@@ -145,16 +146,43 @@ async function removeStoragePaths(paths) {
   const uniquePaths = [...new Set(paths.filter(Boolean))];
 
   if (uniquePaths.length === 0) {
+    console.log("[Storage 삭제] 삭제할 경로 없음");
     return [];
   }
+
+  console.log("[Storage 삭제] 요청 경로:", uniquePaths);
 
   const { data, error } = await supabase.storage
     .from(CANDIDATE_BUCKET)
     .remove(uniquePaths);
 
+  console.log("[Storage 삭제] 결과:", data);
+  console.log("[Storage 삭제] 에러:", error);
+
   if (error) {
     throw new Error(
       `기존 Storage 파일 삭제 실패: ${error.message}`
+    );
+  }
+
+  const removedPaths = new Set(
+    (data || [])
+      .map((item) => item?.name)
+      .filter(Boolean)
+  );
+
+  const notConfirmed = uniquePaths.filter(
+    (path) => !removedPaths.has(path)
+  );
+
+  if (notConfirmed.length > 0) {
+    console.warn(
+      "[Storage 삭제] 삭제 응답에서 확인되지 않은 경로:",
+      notConfirmed
+    );
+
+    throw new Error(
+      "기존 파일 삭제가 확인되지 않았습니다. Storage DELETE/SELECT 정책과 경로를 확인해 주세요."
     );
   }
 
@@ -674,6 +702,11 @@ function EditWorldcupPage({
       // DB 갱신 후에 삭제되거나 교체된 기존 파일을 정리합니다.
       const oldPathsToDelete =
         collectOldPathsToDelete(updatedData);
+
+      console.log(
+        "[월드컵 편집] 삭제 예정 기존 파일:",
+        oldPathsToDelete
+      );
 
       if (oldPathsToDelete.length > 0) {
         await removeStoragePaths(oldPathsToDelete);
