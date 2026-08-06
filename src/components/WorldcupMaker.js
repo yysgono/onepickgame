@@ -1,23 +1,157 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
+import imageCompression from "browser-image-compression";
+
 import CandidateInput from "./CandidateInput";
 import COLORS from "../styles/theme";
-import { mainButtonStyle, grayButtonStyle } from "../styles/common";
+import {
+  mainButtonStyle,
+  grayButtonStyle,
+} from "../styles/common";
 import { addWorldcupGame } from "../utils/supabaseWorldcupApi";
 import { uploadCandidateImage } from "../utils/supabaseImageUpload";
 import { supabase } from "../utils/supabaseClient";
 import useBanCheck from "../hooks/useBanCheck";
 import { useTranslation } from "react-i18next";
-import imageCompression from "browser-image-compression"; // ★ 추가
 
 const DEFAULT_THUMB_URL = "/default-thumb.png";
+
 const MAX_UPLOAD = 50;
+const MAX_CANDIDATES = 1024;
+
+const IMAGE_MAX_INPUT_BYTES = 6 * 1024 * 1024;
+const IMAGE_MAX_OUTPUT_BYTES = 1 * 1024 * 1024;
+const VIDEO_MAX_BYTES = 20 * 1024 * 1024;
+
+const IMAGE_EXTENSIONS = /\.(jpe?g|png|webp|avif)$/i;
+const VIDEO_EXTENSIONS = /\.(mp4|webm|mov)$/i;
+
+const IMAGE_MIME_TYPES = new Set([
+  "image/jpeg",
+  "image/png",
+  "image/webp",
+  "image/avif",
+]);
+
+const VIDEO_MIME_TYPES = new Set([
+  "video/mp4",
+  "video/webm",
+  "video/quicktime",
+]);
 
 function isMobile() {
-  if (typeof window !== "undefined") {
-    return window.innerWidth <= 700;
+  return (
+    typeof window !== "undefined" &&
+    window.innerWidth <= 700
+  );
+}
+
+function isBlobUrl(value) {
+  return (
+    typeof value === "string" &&
+    value.startsWith("blob:")
+  );
+}
+
+function revokeBlobUrl(value) {
+  if (isBlobUrl(value)) {
+    URL.revokeObjectURL(value);
   }
-  return false;
+}
+
+function cleanCandidateName(filename) {
+  return filename
+    .replace(/\.[^/.]+$/, "")
+    .replace(/[_-]+/g, " ")
+    .trim();
+}
+
+function isImageFile(file) {
+  return (
+    IMAGE_MIME_TYPES.has(file.type) ||
+    IMAGE_EXTENSIONS.test(file.name)
+  );
+}
+
+function isVideoFile(file) {
+  return (
+    VIDEO_MIME_TYPES.has(file.type) ||
+    VIDEO_EXTENSIONS.test(file.name)
+  );
+}
+
+/**
+ * 이미지를 WebP로 압축합니다.
+ *
+ * 1차: Web Worker 사용
+ * 2차: Web Worker 없이 재시도
+ *
+ * 두 번 모두 실패하면 에러를 발생시키며
+ * 원본 파일은 업로드하지 않습니다.
+ */
+async function compressImageToWebp(file) {
+  const compressionOptions = {
+    maxSizeMB: 0.7,
+    maxWidthOrHeight: 1200,
+    fileType: "image/webp",
+    initialQuality: 0.8,
+    alwaysKeepResolution: false,
+  };
+
+  let compressedBlob;
+
+  try {
+    compressedBlob = await imageCompression(file, {
+      ...compressionOptions,
+      useWebWorker: true,
+    });
+  } catch (workerError) {
+    console.warn(
+      "Web Worker 압축 실패. 일반 방식으로 재시도합니다:",
+      file.name,
+      workerError
+    );
+
+    compressedBlob = await imageCompression(file, {
+      ...compressionOptions,
+      useWebWorker: false,
+    });
+  }
+
+  if (!compressedBlob || compressedBlob.size <= 0) {
+    throw new Error("압축된 이미지가 비어 있습니다.");
+  }
+
+  const baseName =
+    file.name.replace(/\.[^/.]+$/, "").trim() ||
+    "image";
+
+  const webpFile = new File(
+    [compressedBlob],
+    `${baseName}.webp`,
+    {
+      type: "image/webp",
+      lastModified: Date.now(),
+    }
+  );
+
+  if (webpFile.type !== "image/webp") {
+    throw new Error("WebP 변환에 실패했습니다.");
+  }
+
+  if (webpFile.size > IMAGE_MAX_OUTPUT_BYTES) {
+    const sizeMB = (
+      webpFile.size /
+      1024 /
+      1024
+    ).toFixed(2);
+
+    throw new Error(
+      `압축 후 이미지가 1MB를 초과합니다: ${sizeMB}MB`
+    );
+  }
+
+  return webpFile;
 }
 
 function WorldcupMaker({ onCreate, onCancel }) {
@@ -25,207 +159,437 @@ function WorldcupMaker({ onCreate, onCancel }) {
 
   const [title, setTitle] = useState("");
   const [desc, setDesc] = useState("");
+
   const [candidates, setCandidates] = useState([
-    { id: uuidv4(), name: "", image: "", file: null },
-    { id: uuidv4(), name: "", image: "", file: null },
+    {
+      id: uuidv4(),
+      name: "",
+      image: "",
+      file: null,
+    },
+    {
+      id: uuidv4(),
+      name: "",
+      image: "",
+      file: null,
+    },
   ]);
+
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
   const [user, setUser] = useState(null);
   const [nickname, setNickname] = useState("");
+
+  const [dragActive, setDragActive] =
+    useState(false);
+
   const mobile = isMobile();
 
-  const fileInputRef = useRef();
-  const [dragActive, setDragActive] = useState(false);
+  const fileInputRef = useRef(null);
+  const candidatesRef = useRef(candidates);
+
+  useEffect(() => {
+    candidatesRef.current = candidates;
+  }, [candidates]);
 
   useEffect(() => {
     async function fetchUser() {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      setUser(user);
-      if (user) {
-        const { data: profile } = await supabase
+      try {
+        const {
+          data: { user: currentUser },
+          error: userError,
+        } = await supabase.auth.getUser();
+
+        if (userError) {
+          throw userError;
+        }
+
+        setUser(currentUser);
+
+        if (!currentUser) {
+          return;
+        }
+
+        const {
+          data: profile,
+          error: profileError,
+        } = await supabase
           .from("profiles")
           .select("nickname")
-          .eq("id", user.id)
+          .eq("id", currentUser.id)
           .single();
+
+        if (profileError) {
+          console.error(
+            "프로필 조회 실패:",
+            profileError
+          );
+        }
+
         setNickname(profile?.nickname || "");
+      } catch (fetchError) {
+        console.error(
+          "사용자 정보 조회 실패:",
+          fetchError
+        );
+        setUser(null);
       }
     }
+
     fetchUser();
   }, []);
 
   useEffect(() => {
     return () => {
-      candidates.forEach((candidate) => {
-        if (candidate.image && candidate.image.startsWith("blob:")) {
-          URL.revokeObjectURL(candidate.image);
+      candidatesRef.current.forEach(
+        (candidate) => {
+          revokeBlobUrl(candidate.image);
         }
-      });
+      );
     };
-  }, [candidates]);
+  }, []);
 
-  const { isBanned, banInfo } = useBanCheck(user);
-
-  if (!user) {
-    return (
-      <div style={{ padding: 60, textAlign: "center" }}>
-        <h2>{t("login_required_create_worldcup") || "Please log in to create a Worldcup."}</h2>
-      </div>
-    );
-  }
-  if (isBanned) {
-    return (
-      <div
-        style={{
-          padding: 60,
-          textAlign: "center",
-          color: "#d33",
-          fontWeight: 700,
-        }}
-      >
-        🚫 {t("banned_from_creating_worldcups") || "You are banned from creating Worldcups."}
-        <br />
-        {banInfo && banInfo.expires_at && (
-          <div>
-            {t("ban_expires_at") || "Ban expires at"}: {banInfo.expires_at.replace("T", " ").slice(0, 16)}
-          </div>
-        )}
-        {banInfo && banInfo.reason && <div>{t("ban_reason") || "Reason"}: {banInfo.reason}</div>}
-      </div>
-    );
-  }
+  const { isBanned, banInfo } =
+    useBanCheck(user);
 
   function addCandidate() {
-    setCandidates((candidates) => [
-      ...candidates,
-      { id: uuidv4(), name: "", image: "", file: null },
-    ]);
-  }
-  function updateCandidate(idx, val) {
-    setCandidates((cands) => cands.map((c, i) => (i === idx ? val : c)));
-  }
-  function removeCandidate(idx) {
-    if (candidates.length <= 2) return;
-    const candidateToRemove = candidates[idx];
-    if (candidateToRemove.image && candidateToRemove.image.startsWith("blob:")) {
-      URL.revokeObjectURL(candidateToRemove.image);
-    }
-    setCandidates((cands) => cands.filter((_, i) => i !== idx));
+    setCandidates((current) => {
+      if (
+        current.length >= MAX_CANDIDATES
+      ) {
+        alert(
+          t("max_candidates", {
+            count: MAX_CANDIDATES,
+          }) ||
+            `You can add up to ${MAX_CANDIDATES} candidates.`
+        );
+
+        return current;
+      }
+
+      return [
+        ...current,
+        {
+          id: uuidv4(),
+          name: "",
+          image: "",
+          file: null,
+        },
+      ];
+    });
   }
 
-  // ★★★ 파일 업로드: 이미지면 webp로 자동 변환/압축
-  async function handleFiles(fileList) {
-    if (fileList.length > MAX_UPLOAD) {
-      alert(
-        t("max_upload_files", { count: MAX_UPLOAD }) ||
-          `You can upload up to ${MAX_UPLOAD} files.`
-      );
+  function updateCandidate(index, value) {
+    setCandidates((current) =>
+      current.map(
+        (candidate, candidateIndex) => {
+          if (candidateIndex !== index) {
+            return candidate;
+          }
+
+          if (
+            candidate.image !== value.image &&
+            isBlobUrl(candidate.image)
+          ) {
+            revokeBlobUrl(candidate.image);
+          }
+
+          return value;
+        }
+      )
+    );
+  }
+
+  function removeCandidate(index) {
+    if (candidates.length <= 2) {
       return;
     }
-    const files = Array.from(fileList).filter((file) =>
-      /\.(jpe?g|png|gif|svg|webp|avif|mp4|webm|mov)$/i.test(file.name)
+
+    setCandidates((current) => {
+      const candidateToRemove =
+        current[index];
+
+      revokeBlobUrl(
+        candidateToRemove?.image
+      );
+
+      return current.filter(
+        (_, candidateIndex) =>
+          candidateIndex !== index
+      );
+    });
+  }
+
+  async function handleFiles(fileList) {
+    const selectedFiles = Array.from(
+      fileList || []
     );
-    if (files.length === 0) return;
 
-    // 이미지 자동 변환 및 fileCandidates 생성
-    const fileCandidates = await Promise.all(files.map(async (file) => {
-      const isImage = /\.(jpe?g|png|gif|svg|webp|avif)$/i.test(file.name);
-      let compressedFile = file;
-      if (isImage) {
+    if (selectedFiles.length === 0) {
+      return;
+    }
+
+    if (
+      selectedFiles.length > MAX_UPLOAD
+    ) {
+      alert(
+        t("max_upload_files", {
+          count: MAX_UPLOAD,
+        }) ||
+          `You can upload up to ${MAX_UPLOAD} files at once.`
+      );
+
+      return;
+    }
+
+    if (
+      candidates.length +
+        selectedFiles.length >
+      MAX_CANDIDATES
+    ) {
+      alert(
+        t("max_candidates", {
+          count: MAX_CANDIDATES,
+        }) ||
+          `You can add up to ${MAX_CANDIDATES} candidates.`
+      );
+
+      return;
+    }
+
+    const processedCandidates = [];
+    const rejectedFiles = [];
+
+    for (const file of selectedFiles) {
+      const image = isImageFile(file);
+      const video = isVideoFile(file);
+
+      if (!image && !video) {
+        rejectedFiles.push(
+          `${file.name}: ${
+            t("unsupported_file_type") ||
+            "Unsupported file type"
+          }`
+        );
+        continue;
+      }
+
+      if (
+        image &&
+        file.size > IMAGE_MAX_INPUT_BYTES
+      ) {
+        rejectedFiles.push(
+          `${file.name}: ${
+            t("only_images_under_6mb") ||
+            "Image exceeds 6MB"
+          }`
+        );
+        continue;
+      }
+
+      if (
+        video &&
+        file.size > VIDEO_MAX_BYTES
+      ) {
+        rejectedFiles.push(
+          `${file.name}: ${
+            t("only_videos_under_20mb") ||
+            "Video exceeds 20MB"
+          }`
+        );
+        continue;
+      }
+
+      let finalFile = file;
+
+      if (image) {
         try {
-          compressedFile = await imageCompression(file, {
-            maxSizeMB: 1,
-            maxWidthOrHeight: 1200,
-            useWebWorker: true,
-            fileType: "image/webp",
-          });
-        } catch (e) {
-          compressedFile = file;
-        }
-      }
-      const cleanName = file.name
-        .replace(/\.[^/.]+$/, "")
-        .replace(/[_\-]+/g, " ")
-        .trim();
-      return {
-        id: uuidv4(),
-        name: cleanName,
-        image: URL.createObjectURL(compressedFile),
-        file: compressedFile,
-      };
-    }));
+          finalFile =
+            await compressImageToWebp(file);
+        } catch (compressionError) {
+          console.error(
+            "이미지 압축 최종 실패:",
+            file.name,
+            compressionError
+          );
 
-    setCandidates((cands) => {
-      const oldCandidates = [...cands];
-      const updated = [...cands];
-      let idx = 0;
-      for (let i = 0; i < updated.length && idx < fileCandidates.length; i++) {
-        if (!updated[i].image && !updated[i].name) {
-          if (oldCandidates[i]?.image.startsWith("blob:")) {
-            URL.revokeObjectURL(oldCandidates[i].image);
-          }
-          updated[i] = fileCandidates[idx++];
+          rejectedFiles.push(
+            `${file.name}: ${
+              t("image_compression_failed") ||
+              "Image compression failed"
+            }`
+          );
+
+          // 압축 실패 시 원본은 올리지 않습니다.
+          continue;
         }
       }
-      while (idx < fileCandidates.length) {
-        updated.push(fileCandidates[idx++]);
+
+      processedCandidates.push({
+        id: uuidv4(),
+        name: cleanCandidateName(
+          file.name
+        ),
+        image:
+          URL.createObjectURL(finalFile),
+        file: finalFile,
+      });
+    }
+
+    if (rejectedFiles.length > 0) {
+      alert(
+        `${
+          t("some_files_not_added") ||
+          "Some files could not be added."
+        }\n\n${rejectedFiles.join("\n")}`
+      );
+    }
+
+    if (
+      processedCandidates.length === 0
+    ) {
+      return;
+    }
+
+    setCandidates((current) => {
+      const updated = [...current];
+      let processedIndex = 0;
+
+      for (
+        let index = 0;
+        index < updated.length &&
+        processedIndex <
+          processedCandidates.length;
+        index += 1
+      ) {
+        if (
+          !updated[index].image &&
+          !updated[index].name
+        ) {
+          revokeBlobUrl(
+            updated[index].image
+          );
+
+          updated[index] =
+            processedCandidates[
+              processedIndex
+            ];
+
+          processedIndex += 1;
+        }
       }
+
+      while (
+        processedIndex <
+        processedCandidates.length
+      ) {
+        updated.push(
+          processedCandidates[
+            processedIndex
+          ]
+        );
+
+        processedIndex += 1;
+      }
+
       return updated;
     });
   }
 
-  function handleDrag(e) {
-    e.preventDefault();
-    e.stopPropagation();
-    if (e.type === "dragenter" || e.type === "dragover") {
+  function handleDrag(event) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    if (
+      event.type === "dragenter" ||
+      event.type === "dragover"
+    ) {
       setDragActive(true);
-    } else if (e.type === "dragleave") {
+    } else if (
+      event.type === "dragleave"
+    ) {
       setDragActive(false);
     }
   }
 
-  async function handleSubmit(e) {
-    e.preventDefault();
+  async function handleSubmit(event) {
+    event.preventDefault();
     setError("");
-    if (loading) return;
+
+    if (loading) {
+      return;
+    }
 
     const list = candidates
-      .map((c) => ({
-        ...c,
-        name: c.name.trim(),
-        image: c.image.trim(),
-        id: c.id || uuidv4(),
+      .map((candidate) => ({
+        ...candidate,
+        name: String(
+          candidate.name || ""
+        ).trim(),
+        image: String(
+          candidate.image || ""
+        ).trim(),
+        id: candidate.id || uuidv4(),
       }))
-      .filter((c) => c.name);
+      .filter(
+        (candidate) => candidate.name
+      );
 
     if (!title.trim()) {
-      setError(t("enter_title") || "Please enter a title.");
-      return;
-    }
-    if (list.length < 2) {
-      setError(t("add_at_least_two_candidates") || "Please add at least two candidates.");
+      setError(
+        t("enter_title") ||
+          "Please enter a title."
+      );
       return;
     }
 
-    // Duplicate name check
+    if (list.length < 2) {
+      setError(
+        t(
+          "add_at_least_two_candidates"
+        ) ||
+          "Please add at least two candidates."
+      );
+      return;
+    }
+
     const nameMap = {};
-    list.forEach((c) => {
-      const lower = c.name.toLowerCase();
-      if (!nameMap[lower]) nameMap[lower] = [];
-      nameMap[lower].push(c.name);
+
+    list.forEach((candidate) => {
+      const normalizedName =
+        candidate.name.toLowerCase();
+
+      if (!nameMap[normalizedName]) {
+        nameMap[normalizedName] = [];
+      }
+
+      nameMap[normalizedName].push(
+        candidate.name
+      );
     });
 
-    const duplicates = Object.values(nameMap).filter((arr) => arr.length > 1);
+    const duplicates = Object.values(
+      nameMap
+    ).filter(
+      (names) => names.length > 1
+    );
 
     if (duplicates.length > 0) {
-      const dupNames = duplicates.map((arr) => arr[0]).join(", ");
+      const duplicateNames = duplicates
+        .map((names) => names[0])
+        .join(", ");
+
       setError(
-        t("duplicate_candidate_names", { names: dupNames }) ||
-          "Duplicate candidate names: " + dupNames
+        t(
+          "duplicate_candidate_names",
+          {
+            names: duplicateNames,
+          }
+        ) ||
+          `Duplicate candidate names: ${duplicateNames}`
       );
+
       return;
     }
 
@@ -234,35 +598,106 @@ function WorldcupMaker({ onCreate, onCancel }) {
     try {
       const {
         data: { user: currentUser },
+        error: userError,
       } = await supabase.auth.getUser();
-      if (!currentUser?.id) throw new Error("No login info.");
 
-      const updatedList = await Promise.all(
-        list.map(async (c) => {
-          let imageUrl = c.image;
-          if (c.file) {
-            imageUrl = await uploadCandidateImage(
-              c.file,
-              nickname || currentUser.id
-            );
-          }
-          if (!imageUrl) imageUrl = DEFAULT_THUMB_URL;
-          return { id: c.id, name: c.name, image: imageUrl };
-        })
-      );
+      if (userError) {
+        throw userError;
+      }
+
+      if (!currentUser?.id) {
+        throw new Error(
+          "No login info."
+        );
+      }
+
+      const updatedList =
+        await Promise.all(
+          list.map(
+            async (candidate) => {
+              let imageUrl =
+                candidate.image;
+
+              if (candidate.file) {
+                const fileIsImage =
+                  candidate.file.type.startsWith(
+                    "image/"
+                  );
+
+                const fileIsVideo =
+                  candidate.file.type.startsWith(
+                    "video/"
+                  );
+
+                if (
+                  fileIsImage &&
+                  candidate.file.type !==
+                    "image/webp"
+                ) {
+                  throw new Error(
+                    `${candidate.file.name}: WebP로 압축되지 않은 이미지입니다.`
+                  );
+                }
+
+                if (
+                  fileIsImage &&
+                  candidate.file.size >
+                    IMAGE_MAX_OUTPUT_BYTES
+                ) {
+                  throw new Error(
+                    `${candidate.file.name}: 압축 후 이미지가 1MB를 초과합니다.`
+                  );
+                }
+
+                if (
+                  fileIsVideo &&
+                  candidate.file.size >
+                    VIDEO_MAX_BYTES
+                ) {
+                  throw new Error(
+                    `${candidate.file.name}: 동영상이 20MB를 초과합니다.`
+                  );
+                }
+
+                imageUrl =
+                  await uploadCandidateImage(
+                    candidate.file,
+                    nickname ||
+                      currentUser.id
+                  );
+              }
+
+              if (!imageUrl) {
+                imageUrl =
+                  DEFAULT_THUMB_URL;
+              }
+
+              return {
+                id: candidate.id,
+                name: candidate.name,
+                image: imageUrl,
+              };
+            }
+          )
+        );
 
       const newCup = {
         title: title.trim(),
         description: desc.trim(),
         data: updatedList,
-        created_at: new Date().toISOString(),
+        created_at:
+          new Date().toISOString(),
         owner: currentUser.id,
         creator: currentUser.id,
       };
 
-      const id = await addWorldcupGame(newCup);
+      const id =
+        await addWorldcupGame(newCup);
+
       alert(
-        t("worldcup_saved_id", { id }) ||
+        t("worldcup_saved_id", {
+          id,
+        }) ||
           `Worldcup saved!\nID: ${id}`
       );
 
@@ -273,20 +708,102 @@ function WorldcupMaker({ onCreate, onCancel }) {
         });
       }
 
+      candidates.forEach(
+        (candidate) => {
+          revokeBlobUrl(
+            candidate.image
+          );
+        }
+      );
+
       setTitle("");
       setDesc("");
+
       setCandidates([
-        { id: uuidv4(), name: "", image: "", file: null },
-        { id: uuidv4(), name: "", image: "", file: null },
+        {
+          id: uuidv4(),
+          name: "",
+          image: "",
+          file: null,
+        },
+        {
+          id: uuidv4(),
+          name: "",
+          image: "",
+          file: null,
+        },
       ]);
-    } catch (e) {
-      setError(
-        t("save_failed_try_again") || "Failed to save. Please try again."
+    } catch (submitError) {
+      console.error(
+        "월드컵 저장 실패:",
+        submitError
       );
-      console.error(e);
+
+      setError(
+        submitError?.message ||
+          t("save_failed_try_again") ||
+          "Failed to save. Please try again."
+      );
     } finally {
       setLoading(false);
     }
+  }
+
+  if (!user) {
+    return (
+      <div
+        style={{
+          padding: 60,
+          textAlign: "center",
+        }}
+      >
+        <h2>
+          {t(
+            "login_required_create_worldcup"
+          ) ||
+            "Please log in to create a Worldcup."}
+        </h2>
+      </div>
+    );
+  }
+
+  if (isBanned) {
+    return (
+      <div
+        style={{
+          padding: 60,
+          textAlign: "center",
+          color: "#d33",
+          fontWeight: 700,
+        }}
+      >
+        🚫{" "}
+        {t(
+          "banned_from_creating_worldcups"
+        ) ||
+          "You are banned from creating Worldcups."}
+        <br />
+
+        {banInfo?.expires_at && (
+          <div>
+            {t("ban_expires_at") ||
+              "Ban expires at"}
+            :{" "}
+            {banInfo.expires_at
+              .replace("T", " ")
+              .slice(0, 16)}
+          </div>
+        )}
+
+        {banInfo?.reason && (
+          <div>
+            {t("ban_reason") ||
+              "Reason"}
+            : {banInfo.reason}
+          </div>
+        )}
+      </div>
+    );
   }
 
   return (
@@ -296,7 +813,8 @@ function WorldcupMaker({ onCreate, onCancel }) {
         margin: "40px auto",
         background: "#fff",
         borderRadius: 18,
-        boxShadow: "0 4px 20px #0002",
+        boxShadow:
+          "0 4px 20px #0002",
         padding: mobile ? 18 : 30,
         position: "relative",
       }}
@@ -311,123 +829,229 @@ function WorldcupMaker({ onCreate, onCancel }) {
           color: COLORS.main,
         }}
       >
-        {t("create_worldcup") || "Create Worldcup"}
+        {t("create_worldcup") ||
+          "Create Worldcup"}
       </h2>
+
       <form onSubmit={handleSubmit}>
-        {/* Upload box */}
         <div
-          onDrop={(e) => {
-            e.preventDefault();
+          onDrop={(event) => {
+            event.preventDefault();
             setDragActive(false);
-            handleFiles(e.dataTransfer.files);
+
+            handleFiles(
+              event.dataTransfer.files
+            );
           }}
           onDragOver={handleDrag}
           onDragEnter={handleDrag}
           onDragLeave={handleDrag}
+          onClick={() =>
+            fileInputRef.current?.click()
+          }
           style={{
-            border: "2.5px dashed #3caeff",
+            border:
+              "2.5px dashed #3caeff",
             borderRadius: 18,
-            padding: mobile ? "38px 12px" : "46px 32px",
+            padding: mobile
+              ? "38px 12px"
+              : "46px 32px",
             marginBottom: 24,
             textAlign: "center",
-            background: dragActive ? "#d3eafdcc" : "#f3f9ff",
+            background: dragActive
+              ? "#d3eafdcc"
+              : "#f3f9ff",
             cursor: "pointer",
             fontSize: mobile ? 18 : 22,
             fontWeight: 700,
             color: "#1677ed",
             letterSpacing: "-0.5px",
-            minHeight: mobile ? 90 : 120,
+            minHeight: mobile
+              ? 90
+              : 120,
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            transition: "background 0.18s, border-color 0.18s",
+            transition:
+              "background 0.18s, border-color 0.18s",
           }}
-          onClick={() => fileInputRef.current.click()}
         >
           <input
             ref={fileInputRef}
             type="file"
-            accept=".jpg,.jpeg,.png,.gif,.svg,.webp,.avif,.mp4,.webm,.mov"
+            accept=".jpg,.jpeg,.png,.webp,.avif,.mp4,.webm,.mov,image/jpeg,image/png,image/webp,image/avif,video/mp4,video/webm,video/quicktime"
             multiple
-            style={{ display: "none" }}
-            onChange={(e) => handleFiles(e.target.files)}
+            style={{
+              display: "none",
+            }}
+            onChange={async (
+              event
+            ) => {
+              await handleFiles(
+                event.target.files
+              );
+
+              // 같은 파일을 다시 선택할 수 있도록 초기화
+              event.target.value = "";
+            }}
             disabled={loading}
           />
+
           <span>
-            <span style={{ fontSize: mobile ? 20 : 26 }}>📁</span>
+            <span
+              style={{
+                fontSize: mobile
+                  ? 20
+                  : 26,
+              }}
+            >
+              📁
+            </span>
+
             <br />
+
             {t("drag_upload_detail") ||
-              "You can upload images (up to 6MB) or videos (up to 20MB). Max 50 files."}
+              "Images up to 6MB are compressed to WebP. Videos up to 20MB. Max 50 files at once."}
           </span>
         </div>
+
         <input
           value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          placeholder={t("worldcup_title") || "Worldcup Title"}
+          onChange={(event) =>
+            setTitle(
+              event.target.value
+            )
+          }
+          placeholder={
+            t("worldcup_title") ||
+            "Worldcup Title"
+          }
           maxLength={70}
           style={{
             width: "100%",
             padding: 10,
             borderRadius: 8,
-            border: "1.5px solid #bbb",
+            border:
+              "1.5px solid #bbb",
             fontSize: mobile ? 15 : 18,
             marginBottom: 16,
           }}
           disabled={loading}
         />
+
         <textarea
           value={desc}
-          onChange={(e) => setDesc(e.target.value)}
-          placeholder={t("description_optional") || "Description (optional)"}
+          onChange={(event) =>
+            setDesc(
+              event.target.value
+            )
+          }
+          placeholder={
+            t(
+              "description_optional"
+            ) ||
+            "Description (optional)"
+          }
           maxLength={400}
           rows={2}
           style={{
             width: "100%",
             padding: 10,
             borderRadius: 8,
-            border: "1.5px solid #bbb",
+            border:
+              "1.5px solid #bbb",
             fontSize: mobile ? 13 : 15,
             marginBottom: 18,
           }}
           disabled={loading}
         />
-        <div style={{ marginBottom: 18 }}>
-          <div style={{ fontWeight: 700, marginBottom: 7 }}>
-            {t("candidates") || "Candidates"}{" "}
-            <span style={{ color: "#888", fontWeight: 400, fontSize: mobile ? 13 : 15 }}>
-              ({candidates.length} / 1024)
+
+        <div
+          style={{
+            marginBottom: 18,
+          }}
+        >
+          <div
+            style={{
+              fontWeight: 700,
+              marginBottom: 7,
+            }}
+          >
+            {t("candidates") ||
+              "Candidates"}{" "}
+            <span
+              style={{
+                color: "#888",
+                fontWeight: 400,
+                fontSize: mobile
+                  ? 13
+                  : 15,
+              }}
+            >
+              ({candidates.length} /{" "}
+              {MAX_CANDIDATES})
             </span>
           </div>
-          {candidates.map((c, i) => (
-            <CandidateInput
-              key={c.id}
-              value={c}
-              onChange={(val) => updateCandidate(i, val)}
-              onRemove={() => removeCandidate(i)}
-              disabled={loading}
-              minCandidates={candidates.length <= 2}
-            />
-          ))}
+
+          {candidates.map(
+            (candidate, index) => (
+              <CandidateInput
+                key={candidate.id}
+                value={candidate}
+                onChange={(value) =>
+                  updateCandidate(
+                    index,
+                    value
+                  )
+                }
+                onRemove={() =>
+                  removeCandidate(
+                    index
+                  )
+                }
+                disabled={loading}
+                minCandidates={
+                  candidates.length <= 2
+                }
+              />
+            )
+          )}
+
           <button
             type="button"
             onClick={addCandidate}
             style={{
-              ...mainButtonStyle(mobile),
+              ...mainButtonStyle(
+                mobile
+              ),
               fontSize: 15,
-              padding: mobile ? "8px 16px" : "10px 22px",
+              padding: mobile
+                ? "8px 16px"
+                : "10px 22px",
               borderRadius: 8,
               marginTop: 6,
-              width: mobile ? "100%" : undefined,
+              width: mobile
+                ? "100%"
+                : undefined,
             }}
-            disabled={loading}
+            disabled={
+              loading ||
+              candidates.length >=
+                MAX_CANDIDATES
+            }
           >
-            + {t("add_candidate") || "Add Candidate"}
+            +{" "}
+            {t("add_candidate") ||
+              "Add Candidate"}
           </button>
         </div>
+
         {error && (
           <div
             style={{
-              color: COLORS.danger || "#d33",
+              color:
+                COLORS.danger ||
+                "#d33",
               marginBottom: 10,
               textAlign: "center",
             }}
@@ -435,31 +1059,56 @@ function WorldcupMaker({ onCreate, onCancel }) {
             {error}
           </div>
         )}
-        <div style={{ display: "flex", gap: 12, marginTop: 8 }}>
+
+        <div
+          style={{
+            display: "flex",
+            gap: 12,
+            marginTop: 8,
+          }}
+        >
           <button
             type="submit"
             style={{
-              ...mainButtonStyle(mobile),
-              fontSize: mobile ? 15 : 17,
+              ...mainButtonStyle(
+                mobile
+              ),
+              fontSize: mobile
+                ? 15
+                : 17,
               borderRadius: 10,
-              padding: mobile ? "11px 0" : "13px 0",
+              padding: mobile
+                ? "11px 0"
+                : "13px 0",
             }}
             disabled={loading}
           >
-            {loading ? t("saving") || "Saving..." : t("save") || "Save"}
+            {loading
+              ? t("saving") ||
+                "Saving..."
+              : t("save") ||
+                "Save"}
           </button>
+
           <button
             type="button"
             onClick={onCancel}
             style={{
-              ...grayButtonStyle(mobile),
-              fontSize: mobile ? 15 : 17,
+              ...grayButtonStyle(
+                mobile
+              ),
+              fontSize: mobile
+                ? 15
+                : 17,
               borderRadius: 10,
-              padding: mobile ? "11px 0" : "13px 0",
+              padding: mobile
+                ? "11px 0"
+                : "13px 0",
             }}
             disabled={loading}
           >
-            {t("cancel") || "Cancel"}
+            {t("cancel") ||
+              "Cancel"}
           </button>
         </div>
       </form>
