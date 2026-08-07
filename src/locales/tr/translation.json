@@ -223,7 +223,7 @@
   },
   "resurrection": {
     "title": "Diriliş Turu",
-    "instruction": "Soldan <b>1~4 adayı canlandırın</b>,<br>ve sağdan <b>1~4 ilerlemiş adayı düşürün</b>.<br><b>Canlandırılan ve düşürülen aday sayısı eşit olmalıdır.</b><br>Devam etmek istemiyorsanız, Atlaya tıklayın.",
+   "instruction": "Soldan geri döndürmek istediğiniz 1–4 elenmiş adayı seçin.\nSağdan çıkarmak istediğiniz 1–4 tur atlamış adayı seçin.\nGeri döndürülen ve çıkarılan adayların sayısı eşit olmalıdır.\nDevam etmek istemiyorsanız Atla'ya tıklayın.",
     "note": "(Bu istatistiklere sayılmaz. Sadece hızlı sonuç hesaplama için.)",
     "eliminated": "Elenen Adaylar",
     "advanced": "İlerlemiş Adaylar (İlk 16)",

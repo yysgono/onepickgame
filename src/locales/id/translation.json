@@ -223,7 +223,7 @@
   },
   "resurrection": {
     "title": "Babak Kebangkitan",
-    "instruction": "Pilih <b>1~4 kandidat untuk dihidupkan kembali</b> di kiri,<br>dan <b>1~4 kandidat lolos untuk diganti</b> di kanan.<br><b>Jumlah yang dihidupkan dan diganti harus sama.</b><br>Jika tidak ingin lanjut, klik Lewati.",
+   "instruction": "Pilih 1–4 kandidat yang telah tereliminasi di sebelah kiri untuk dihidupkan kembali.\nPilih 1–4 kandidat yang lolos di sebelah kanan untuk dikeluarkan.\nJumlah kandidat yang dihidupkan kembali dan dikeluarkan harus sama.\nJika tidak ingin melanjutkan, cukup klik Lewati.",
     "note": "(Tidak dihitung dalam statistik. Hanya untuk perhitungan cepat.)",
     "eliminated": "Kandidat Tersingkir",
     "advanced": "Kandidat Lolos (Top 16)",

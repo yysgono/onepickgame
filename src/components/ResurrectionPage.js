@@ -1,6 +1,19 @@
 // src/components/ResurrectionPage.js
 import React, { useState, useMemo } from "react";
-import { useTranslation, Trans } from "react-i18next";
+import { useTranslation } from "react-i18next";
+
+function cleanInstructionText(value = "") {
+  return String(value)
+    .replace(/<\/?b>/gi, "")
+    .replace(/<\/?strong>/gi, "")
+    .replace(/\/b\//gi, "")
+    .replace(/\/strong\//gi, "")
+    .replace(/<br\s*\/?>/gi, "\n")
+    .replace(/\\n/g, "\n")
+    .replace(/[ \t]+\n/g, "\n")
+    .replace(/\n[ \t]+/g, "\n")
+    .trim();
+}
 
 function ResurrectionPage({
   eliminated = [],
@@ -20,6 +33,16 @@ function ResurrectionPage({
 
   const [queryElim, setQueryElim] = useState("");
   const [queryAdv, setQueryAdv] = useState("");
+
+  const instructionText = cleanInstructionText(
+    t("resurrection.instruction", {
+      defaultValue:
+        "Please select 1~4 candidates to revive from the left.\n" +
+        "Select 1~4 advanced candidates to drop from the right.\n" +
+        "The number of revived and dropped candidates must be equal.\n" +
+        "If you don't want to proceed, just click Skip.",
+    })
+  );
 
   const filteredElim = useMemo(
     () =>
@@ -44,6 +67,7 @@ function ResurrectionPage({
       setSelElim([...selElim, c]);
     }
   }
+
   function toggleAdv(c) {
     if (selAdv.find((x) => x.id === c.id)) {
       setSelAdv(selAdv.filter((x) => x.id !== c.id));
@@ -118,25 +142,30 @@ function ResurrectionPage({
         >
           {t("resurrection.skip")}
         </button>
+
         <button
           onClick={() =>
             bothReady &&
             !isSaving &&
             onConfirm([
-              ...advanced.filter((c) => !selAdv.some((x) => x.id === c.id)),
-              ...selElim,
+              ...advanced.filter(
+                (c) => !selAdv.some((x) => x.id === c.id)
+              ),
+                            ...selElim,
             ])
           }
           disabled={!bothReady || isSaving}
           style={{
-            background: bothReady && !isSaving ? "#2976ed" : "#b3c5dd",
+            background:
+              bothReady && !isSaving ? "#2976ed" : "#b3c5dd",
             color: "#fff",
             padding: "15px 38px",
             borderRadius: 13,
             fontWeight: 900,
             fontSize: 20,
             border: "none",
-            cursor: bothReady && !isSaving ? "pointer" : "not-allowed",
+            cursor:
+              bothReady && !isSaving ? "pointer" : "not-allowed",
             letterSpacing: "0.7px",
           }}
         >
@@ -147,7 +176,12 @@ function ResurrectionPage({
       {/* 저장중 메시지 */}
       {saveInProgressMsg && (
         <div
-          style={{ fontSize: 16, fontWeight: 600, color: "#aad", marginBottom: 18 }}
+          style={{
+            fontSize: 16,
+            fontWeight: 600,
+            color: "#aad",
+            marginBottom: 18,
+          }}
         >
           {saveInProgressMsg}
         </div>
@@ -165,29 +199,36 @@ function ResurrectionPage({
       >
         {t("resurrection.title")}
       </div>
+
       <div style={noticeStyle}>
-        <Trans i18nKey="resurrection.instruction">
-          Please select <b>1~4 candidates to revive</b> from the left,
-          <br />
-          and <b>1~4 advanced candidates to drop</b> from the right.
-          <br />
-          <b>The number of revived and dropped candidates must be equal.</b>
-          <br />
-          If you don't want to proceed, just click Skip.
-        </Trans>
-        <br />
-        <span style={{ color: "#99e", fontWeight: 400 }}>
+        <div
+          style={{
+            whiteSpace: "pre-line",
+            lineHeight: 1.65,
+            wordBreak: "keep-all",
+          }}
+        >
+          {instructionText}
+        </div>
+
+        <div
+          style={{
+            color: "#99e",
+            fontWeight: 400,
+            marginTop: 10,
+          }}
+        >
           {t("resurrection.note")}
-        </span>
+        </div>
       </div>
 
       {/* 좌우 선택 영역 */}
       <div
         style={{
           display: "flex",
-          gap: 24,            // ⬅ 간격 축소
+          gap: 24,
           width: "90vw",
-          maxWidth: 1100,     // ⬅ 전체 폭 축소
+          maxWidth: 1100,
           margin: "0 auto",
           alignItems: "flex-start",
           justifyContent: "center",
@@ -206,13 +247,14 @@ function ResurrectionPage({
           >
             {t("resurrection.eliminated")}
           </div>
+
           <input
             placeholder={t("resurrection.search_placeholder")}
             value={queryElim}
             onChange={(e) => setQueryElim(e.target.value)}
             style={{
               width: "100%",
-              maxWidth: 480,   // ⬅ 검색창 폭 축소
+              maxWidth: 480,
               fontSize: 16,
               marginBottom: 12,
               padding: "8px 12px",
@@ -223,12 +265,14 @@ function ResurrectionPage({
               color: "#fff",
             }}
           />
+
           <div
             style={{
               display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))", // ⬅ 카드 최소폭 축소
-              gap: 12,                 // ⬅ 카드 간격 축소
-              maxHeight: "50vh",       // ⬅ 세로 높이 소폭 축소
+              gridTemplateColumns:
+                "repeat(auto-fit, minmax(160px, 1fr))",
+              gap: 12,
+              maxHeight: "50vh",
               overflowY: "auto",
               paddingBottom: 8,
               borderRadius: 12,
@@ -237,13 +281,18 @@ function ResurrectionPage({
             }}
           >
             {filteredElim.map((c) => {
-              const selected = selElim.some((x) => x.id === c.id);
+              const selected = selElim.some(
+                (x) => x.id === c.id
+              );
+
               return (
                 <div
                   key={c.id}
                   onClick={() => toggleElim(c)}
                   style={{
-                    background: selected ? "#2976ed" : "#202b3d",
+                    background: selected
+                      ? "#2976ed"
+                      : "#202b3d",
                     color: selected ? "#fff" : "#d6eaff",
                     border: selected
                       ? "2.5px solid #6fd6fc"
@@ -283,6 +332,7 @@ function ResurrectionPage({
               );
             })}
           </div>
+
           <div
             style={{
               fontSize: 14,
@@ -297,8 +347,7 @@ function ResurrectionPage({
             })}
           </div>
         </div>
-
-        {/* 진출(상위 16명) 목록 */}
+                {/* 진출(상위 16명) 목록 */}
         <div style={{ flex: 1, minWidth: 0 }}>
           <div
             style={{
@@ -311,13 +360,14 @@ function ResurrectionPage({
           >
             {t("resurrection.advanced")}
           </div>
+
           <input
             placeholder={t("resurrection.search_placeholder")}
             value={queryAdv}
             onChange={(e) => setQueryAdv(e.target.value)}
             style={{
               width: "100%",
-              maxWidth: 480,   // ⬅ 검색창 폭 축소
+              maxWidth: 480,
               fontSize: 16,
               marginBottom: 12,
               padding: "8px 12px",
@@ -328,10 +378,12 @@ function ResurrectionPage({
               color: "#fff",
             }}
           />
+
           <div
             style={{
               display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))",
+              gridTemplateColumns:
+                "repeat(auto-fit, minmax(160px, 1fr))",
               gap: 12,
               maxHeight: "50vh",
               overflowY: "auto",
@@ -342,13 +394,18 @@ function ResurrectionPage({
             }}
           >
             {filteredAdv.map((c) => {
-              const selected = selAdv.some((x) => x.id === c.id);
+              const selected = selAdv.some(
+                (x) => x.id === c.id
+              );
+
               return (
                 <div
                   key={c.id}
                   onClick={() => toggleAdv(c)}
                   style={{
-                    background: selected ? "#2976ed" : "#202d3d",
+                    background: selected
+                      ? "#2976ed"
+                      : "#202d3d",
                     color: selected ? "#fff" : "#d6eaff",
                     border: selected
                       ? "2.5px solid #6fd6fc"
@@ -388,6 +445,7 @@ function ResurrectionPage({
               );
             })}
           </div>
+
           <div
             style={{
               fontSize: 14,

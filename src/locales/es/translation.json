@@ -223,7 +223,7 @@
   },
   "resurrection": {
     "title": "Ronda de Resurrección",
-    "instruction": "Por favor seleccione <b>1~4 candidatos para revivir</b> de la izquierda,<br>y <b>1~4 candidatos avanzados para eliminar</b> de la derecha.<br><b>La cantidad de revividos y eliminados debe ser igual.</b><br>Si no desea continuar, simplemente haga clic en Omitir.",
+   "instruction": "Selecciona de 1 a 4 candidatos eliminados de la izquierda para revivirlos.\nSelecciona de 1 a 4 candidatos clasificados de la derecha para eliminarlos.\nEl número de candidatos revividos y eliminados debe ser el mismo.\nSi no quieres continuar, haz clic en Omitir.",
     "note": "(Esto no contará para las estadísticas. Solo para cálculo rápido del resultado.)",
     "eliminated": "Candidatos eliminados",
     "advanced": "Candidatos avanzados (Top 16)",

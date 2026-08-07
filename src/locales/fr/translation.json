@@ -223,7 +223,7 @@
   },
   "resurrection": {
     "title": "Tour de Résurrection",
-    "instruction": "Veuillez sélectionner <b>1 à 4 candidats à ressusciter</b> à gauche,<br>et <b>1 à 4 candidats avancés à éliminer</b> à droite.<br><b>Le nombre de ressuscités et d'éliminés doit être égal.</b><br>Si vous ne souhaitez pas continuer, cliquez simplement sur Passer.",
+ "instruction": "Sélectionnez de 1 à 4 candidats éliminés à gauche à faire revenir.\nSélectionnez de 1 à 4 candidats qualifiés à droite à éliminer.\nLe nombre de candidats repêchés et éliminés doit être identique.\nSi vous ne souhaitez pas continuer, cliquez simplement sur Passer.",
     "note": "(Cela ne comptera pas pour les statistiques. Uniquement pour un calcul rapide des résultats.)",
     "eliminated": "Candidats éliminés",
     "advanced": "Candidats avancés (Top 16)",

@@ -223,7 +223,7 @@
   },
   "resurrection": {
     "title": "Vòng hồi sinh",
-    "instruction": "Chọn <b>1~4 ứng cử viên để hồi sinh</b> bên trái,<br>và <b>1~4 ứng cử viên để loại</b> bên phải.<br><b>Số lượng hồi sinh và loại bỏ phải bằng nhau.</b><br>Nếu không muốn, bấm Bỏ qua.",
+    "instruction": "Chọn từ 1–4 ứng viên đã bị loại ở bên trái để đưa trở lại.\nChọn từ 1–4 ứng viên đã đi tiếp ở bên phải để loại ra.\nSố ứng viên được đưa trở lại và bị loại ra phải bằng nhau.\nNếu không muốn tiếp tục, chỉ cần nhấn Bỏ qua.",
     "note": "(Không tính thống kê. Chỉ để tính kết quả nhanh.)",
     "eliminated": "Ứng cử viên bị loại",
     "advanced": "Ứng cử viên đi tiếp (Top 16)",
