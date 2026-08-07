@@ -170,7 +170,9 @@ function ManageWorldcup({
    * 일반 사용자 → 영구삭제
    * ===================================================
    */
- async function handleDelete(cup) {
+async function handleDelete(cup) {
+  alert("ManageWorldcup 삭제 함수 실행됨");
+
   console.log("🔥 DELETE CHECK", {
     isAdmin,
     user,
