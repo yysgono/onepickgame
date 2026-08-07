@@ -4,15 +4,8 @@ const WORLDCUP_TABLE = "worldcups";
 const CANDIDATE_BUCKET = "candidates";
 
 /**
- * 후보 이미지 URL 또는 상대 경로에서
- * candidates 버킷 내부의 실제 파일 경로를 추출합니다.
- *
- * 예:
- * https://xxx.supabase.co/storage/v1/object/public/candidates/admin/test.webp
- * → admin/test.webp
- *
- * https://xxx.supabase.co/storage/v1/object/public/candidates/candidates/admin/test.webp
- * → candidates/admin/test.webp
+ * 후보 이미지 URL 또는 상대경로에서
+ * candidates 버킷 내부 실제 파일 경로 추출
  */
 function extractCandidateStoragePath(imageValue) {
   if (typeof imageValue !== "string") {
@@ -25,7 +18,7 @@ function extractCandidateStoragePath(imageValue) {
     return null;
   }
 
-  // Base64 / blob / 기본 이미지 등은 Storage 파일이 아님
+  // Storage 파일이 아닌 것들
   if (
     value.startsWith("data:") ||
     value.startsWith("blob:") ||
@@ -34,7 +27,7 @@ function extractCandidateStoragePath(imageValue) {
     return null;
   }
 
-  // Supabase Public URL
+  // Supabase public URL
   const publicUrlMatch = value.match(
     /\/storage\/v1\/object\/public\/candidates\/(.+?)(?:\?.*)?$/
   );
@@ -47,7 +40,7 @@ function extractCandidateStoragePath(imageValue) {
     }
   }
 
-  // Supabase Signed URL
+  // Supabase signed URL
   const signedUrlMatch = value.match(
     /\/storage\/v1\/object\/sign\/candidates\/(.+?)(?:\?.*)?$/
   );
@@ -60,7 +53,7 @@ function extractCandidateStoragePath(imageValue) {
     }
   }
 
-  // 외부 URL은 Storage 삭제 대상 아님
+  // 외부 URL은 삭제 대상 아님
   if (
     value.startsWith("http://") ||
     value.startsWith("https://") ||
@@ -74,7 +67,7 @@ function extractCandidateStoragePath(imageValue) {
 }
 
 /**
- * 후보 데이터에서 Storage 파일 경로 추출
+ * 후보 데이터에서 Storage 이미지 경로 추출
  */
 function getCandidateImagePaths(worldcupData) {
   if (!Array.isArray(worldcupData)) {
@@ -92,8 +85,9 @@ function getCandidateImagePaths(worldcupData) {
 
 /**
  * =====================================================
- * 일반 월드컵 전체 조회
- * 삭제된 월드컵(deleted_at 있음)은 제외
+ * 정상 월드컵 전체 조회
+ *
+ * deleted_at이 있는 휴지통 월드컵은 제외
  * =====================================================
  */
 export async function getWorldcupGames() {
@@ -113,8 +107,7 @@ export async function getWorldcupGames() {
 
 /**
  * =====================================================
- * 월드컵 단일 조회
- * 휴지통에 있는 월드컵은 일반 페이지에서 조회하지 않음
+ * 정상 월드컵 단일 조회
  * =====================================================
  */
 export async function getWorldcupGame(id) {
@@ -203,12 +196,12 @@ export async function updateWorldcupGame(id, updates) {
 
 /**
  * =====================================================
- * 일반 사용자용 영구삭제
+ * 일반 사용자 삭제
  *
- * Storage 이미지 삭제
- * → DB 삭제
+ * 즉시 영구삭제
  *
- * 기존 삭제 방식 유지
+ * 1. Storage 이미지 삭제
+ * 2. DB row 삭제
  * =====================================================
  */
 export async function deleteWorldcupGame(id) {
@@ -216,7 +209,6 @@ export async function deleteWorldcupGame(id) {
     throw new Error("월드컵 ID가 없습니다.");
   }
 
-  // 1. 이미지 정보 먼저 가져오기
   const { data: worldcup, error: fetchError } = await supabase
     .from(WORLDCUP_TABLE)
     .select("id, data")
@@ -234,13 +226,8 @@ export async function deleteWorldcupGame(id) {
 
   const imagePaths = getCandidateImagePaths(worldcup.data);
 
-  // 2. Storage 삭제
+  // Storage 이미지 삭제
   if (imagePaths.length > 0) {
-    console.log(
-      "[일반 사용자 영구삭제] Storage 삭제 경로:",
-      imagePaths
-    );
-
     const { data: removedFiles, error: storageError } =
       await supabase.storage
         .from(CANDIDATE_BUCKET)
@@ -259,14 +246,24 @@ export async function deleteWorldcupGame(id) {
     }
 
     console.log(
-      `Storage 이미지 삭제 완료: ${
-        removedFiles?.length || 0
-      }개`,
-      removedFiles
+      `Storage 이미지 삭제 완료: ${removedFiles?.length || 0}개`
     );
   }
 
-  // 3. DB 삭제
+  // 운영자 PICK 등록이 되어 있다면 먼저 제거
+  const { error: fixedError } = await supabase
+    .from("fixed_worldcups")
+    .delete()
+    .eq("worldcup_id", id);
+
+  if (fixedError) {
+    console.warn(
+      "fixed_worldcups 정리 실패:",
+      fixedError
+    );
+  }
+
+  // DB 실제 삭제
   const { error: deleteError } = await supabase
     .from(WORLDCUP_TABLE)
     .delete()
@@ -287,13 +284,12 @@ export async function deleteWorldcupGame(id) {
 
 /**
  * =====================================================
- * 관리자용 삭제
+ * 관리자 삭제
  *
- * 실제 삭제 X
- * Storage 삭제 X
- * deleted_at만 기록
+ * 실제 삭제하지 않음
+ * Storage 이미지도 유지
  *
- * → 휴지통 이동
+ * deleted_at만 설정해서 휴지통으로 이동
  * =====================================================
  */
 export async function softDeleteWorldcupGame(id) {
@@ -312,7 +308,7 @@ export async function softDeleteWorldcupGame(id) {
     .single();
 
   if (error) {
-    console.error("월드컵 휴지통 이동 실패:", error);
+    console.error("휴지통 이동 실패:", error);
     throw error;
   }
 
@@ -325,7 +321,7 @@ export async function softDeleteWorldcupGame(id) {
 
 /**
  * =====================================================
- * 관리자 휴지통 목록 조회
+ * 관리자 휴지통 목록
  * =====================================================
  */
 export async function getDeletedWorldcupGames() {
@@ -379,10 +375,11 @@ export async function restoreWorldcupGame(id) {
  * =====================================================
  * 관리자 휴지통 영구삭제
  *
- * 반드시 휴지통에 있는 월드컵만 삭제
+ * 휴지통에 있는 월드컵만 처리
  *
- * Storage 삭제
- * → DB 삭제
+ * 1. Storage 삭제
+ * 2. 운영자 PICK 정리
+ * 3. DB 삭제
  * =====================================================
  */
 export async function permanentlyDeleteWorldcupGame(id) {
@@ -390,7 +387,6 @@ export async function permanentlyDeleteWorldcupGame(id) {
     throw new Error("월드컵 ID가 없습니다.");
   }
 
-  // 휴지통에 있는 데이터만 조회
   const { data: worldcup, error: fetchError } = await supabase
     .from(WORLDCUP_TABLE)
     .select("id, data, deleted_at")
@@ -400,27 +396,20 @@ export async function permanentlyDeleteWorldcupGame(id) {
 
   if (fetchError) {
     console.error(
-      "영구삭제 대상 월드컵 조회 실패:",
+      "영구삭제할 월드컵 조회 실패:",
       fetchError
     );
     throw fetchError;
   }
 
   if (!worldcup) {
-    throw new Error(
-      "휴지통에서 영구삭제할 월드컵을 찾을 수 없습니다."
-    );
+    throw new Error("휴지통의 월드컵을 찾을 수 없습니다.");
   }
 
   const imagePaths = getCandidateImagePaths(worldcup.data);
 
-  // Storage 파일 삭제
+  // Storage 실제 삭제
   if (imagePaths.length > 0) {
-    console.log(
-      "[관리자 영구삭제] Storage 삭제 경로:",
-      imagePaths
-    );
-
     const { data: removedFiles, error: storageError } =
       await supabase.storage
         .from(CANDIDATE_BUCKET)
@@ -428,7 +417,7 @@ export async function permanentlyDeleteWorldcupGame(id) {
 
     if (storageError) {
       console.error(
-        "관리자 영구삭제 Storage 실패:",
+        "영구삭제 Storage 실패:",
         storageError,
         imagePaths
       );
@@ -439,14 +428,24 @@ export async function permanentlyDeleteWorldcupGame(id) {
     }
 
     console.log(
-      `[관리자 영구삭제] 이미지 ${
-        removedFiles?.length || 0
-      }개 삭제 완료`,
-      removedFiles
+      `영구삭제 이미지: ${removedFiles?.length || 0}개`
     );
   }
 
-  // Storage 성공 후 DB 삭제
+  // 운영자 PICK에서도 제거
+  const { error: fixedError } = await supabase
+    .from("fixed_worldcups")
+    .delete()
+    .eq("worldcup_id", id);
+
+  if (fixedError) {
+    console.warn(
+      "fixed_worldcups 정리 실패:",
+      fixedError
+    );
+  }
+
+  // DB 실제 삭제
   const { error: deleteError } = await supabase
     .from(WORLDCUP_TABLE)
     .delete()
@@ -455,7 +454,7 @@ export async function permanentlyDeleteWorldcupGame(id) {
 
   if (deleteError) {
     console.error(
-      "관리자 월드컵 DB 영구삭제 실패:",
+      "월드컵 DB 영구삭제 실패:",
       deleteError
     );
     throw deleteError;
