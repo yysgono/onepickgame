@@ -170,10 +170,17 @@ function ManageWorldcup({
    * 일반 사용자 → 영구삭제
    * ===================================================
    */
-  async function handleDelete(cup) {
-    const message = isAdmin
-      ? `"${cup.title}"을 휴지통으로 이동하시겠습니까?\n\n관리자 대시보드에서 다시 복구할 수 있습니다.`
-      : `"${cup.title}"을 정말 삭제하시겠습니까?\n\n삭제하면 복구할 수 없습니다.`;
+ async function handleDelete(cup) {
+  console.log("🔥 DELETE CHECK", {
+    isAdmin,
+    user,
+    cupId: cup.id,
+    title: cup.title,
+  });
+
+  const message = isAdmin
+    ? `"${cup.title}"을 휴지통으로 이동하시겠습니까?\n\n관리자 대시보드에서 다시 복구할 수 있습니다.`
+    : `"${cup.title}"을 정말 삭제하시겠습니까?\n\n삭제하면 복구할 수 없습니다.`;
 
     if (!window.confirm(message)) {
       return;
