@@ -93,7 +93,7 @@ const lang = langMatch
   ? langMatch[1]
   : i18n.language?.split("-")[0] || "ko";
 
-const isStatsOnly = /\/stats\/\d+/.test(location.pathname);
+const isStatsOnly = /\/stats\/[^/]+\/?$/.test(location.pathname);
 
 const bracketTitleMap = {
   en: "Bracket Game",
