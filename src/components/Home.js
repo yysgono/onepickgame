@@ -252,31 +252,37 @@ getDisplayTitle(cup).toLowerCase().includes(search.toLowerCase()) ||
   }
 
   const mainDark = "#171C27";
-  const buttonStyle = {
-    background: mainDark,
-    color: "#fff",
-    fontWeight: 900,
-    border: "none",
-    borderRadius: 8,
-    fontSize: isMobile ? 13 : 14,
-    padding: isMobile ? "5px 12px" : "7px 17px",
-    outline: "none",
-    cursor: "pointer",
-    letterSpacing: "0.5px",
-    fontFamily: "'Orbitron', 'Pretendard', sans-serif",
-    margin: "0 2px",
-    boxShadow: "none",
-    transition: "background 0.15s",
-    marginTop: 0,
-    marginBottom: 0,
-    display: "inline-block",
-  };
+const buttonStyle = {
+  background: mainDark,
+  color: "#fff",
+  fontWeight: 900,
+  border: "none",
+  borderRadius: 8,
+  fontSize: isMobile ? 12 : 13,
+  padding: isMobile ? "5px 8px" : "6px 11px",
+  outline: "none",
+  cursor: "pointer",
+  letterSpacing: "0.2px",
+  fontFamily: "'Orbitron', 'Pretendard', sans-serif",
+  margin: "0 1px",
+  boxShadow: "none",
+  transition: "background 0.15s",
+  marginTop: 0,
+  marginBottom: 0,
 
-  const smallButtonStyle = {
-    ...buttonStyle,
-    padding: isMobile ? "4px 7px" : "6px 10px",
-    fontSize: isMobile ? 12 : 13,
-  };
+  display: "inline-flex",
+  alignItems: "center",
+  justifyContent: "center",
+
+  whiteSpace: "nowrap",
+  lineHeight: 1.05,
+};
+
+const smallButtonStyle = {
+  ...buttonStyle,
+  padding: isMobile ? "4px 6px" : "6px 8px",
+  fontSize: isMobile ? 11 : 12,
+};
 
   const sortButton = (label, value) => (
     <button
@@ -306,24 +312,34 @@ getDisplayTitle(cup).toLowerCase().includes(search.toLowerCase()) ||
     setVisibleCount((prev) => prev + PAGE_SIZE);
   };
 
-  const cardDescStyle = {
-    color: "#b9dafb",
-    fontSize: isMobile ? 14 : 16,
-    lineHeight: 1.33,
-    textAlign: "center",
-    padding: isMobile ? "4px 10px 0 10px" : "8px 18px 0 18px",
-    minHeight: isMobile ? 24 : 33,
-    maxHeight: isMobile ? 36 : 42,
-    display: "-webkit-box",
-    WebkitLineClamp: 2,
-    WebkitBoxOrient: "vertical",
-    overflow: "hidden",
-    textOverflow: "ellipsis",
-    wordBreak: "keep-all",
-    margin: 0,
-    marginBottom: 3,
-    background: "none",
-  };
+const cardDescStyle = {
+  color: "#b9dafb",
+  fontSize: isMobile ? 13 : 15,
+  lineHeight: 1.35,
+  textAlign: "center",
+
+  padding: isMobile
+    ? "5px 10px 0 10px"
+    : "7px 16px 0 16px",
+
+  height: isMobile ? 40 : 43,
+  boxSizing: "border-box",
+
+  display: "-webkit-box",
+  WebkitLineClamp: 2,
+  WebkitBoxOrient: "vertical",
+
+  overflow: "hidden",
+  textOverflow: "ellipsis",
+
+  wordBreak: "keep-all",
+  overflowWrap: "break-word",
+  whiteSpace: "normal",
+
+  margin: 0,
+  marginBottom: 3,
+  background: "none",
+};
 
   const cardBottomBarStyle = {
     width: "100%",
@@ -611,64 +627,64 @@ visibleList.map((cup, idx) => {
                   </div>
 
                   {/* 제목 */}
-                  <div
-                    style={{
-                      width: "100%",
-                      maxWidth: "100%",
-                      minHeight: isMobile ? 32 : 38,
-                      maxHeight: isMobile ? 90 : 105,
-                      overflow: "hidden",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      flex: 1,
-                      padding: isMobile ? "4px 10px 0 10px" : "6px 18px 0 18px",
-                      fontWeight: 900,
-                      fontSize: isMobile ? 17 : 20,
-                      color: "#fff",
-                      fontFamily: "'Orbitron', 'Pretendard', sans-serif",
-                      textAlign: "center",
-                      wordBreak: "break-all",
-                      lineHeight: 1.17,
-                      letterSpacing: "0.4px",
-                      boxSizing: "border-box",
-                      background: mainDark,
-                      margin: 0,
-                      marginBottom: 0,
-                      whiteSpace: "normal",
-                      textShadow: "0 1.5px 8px #191b25cc",
-                    }}
-                    title={displayTitle}
-                  >
-                    <span
-                      style={{
-                        width: "100%",
-                        display: "block",
-                        textAlign: "center",
-                        lineHeight: 1.18,
-                        margin: 0,
-                        padding: 0,
-                        whiteSpace: "pre-line",
-                        wordBreak: "keep-all",
-                        fontFamily: "'Orbitron', 'Pretendard', sans-serif",
-                        fontWeight: 900,
-                      }}
-                    >
-                      {(() => {
-                        const title = displayTitle.slice(0, 70);
-                        if (title.length <= 40) return title;
-                        const breakpoint = (() => {
-                          const i = title.lastIndexOf(" ", 40);
-                          return i === -1 ? 40 : i;
-                        })();
-                        return (
-                          title.slice(0, breakpoint) +
-                          "\n" +
-                          title.slice(breakpoint + 1)
-                        );
-                      })()}
-                    </span>
-                  </div>
+<div
+  style={{
+    width: "100%",
+    height: isMobile ? 46 : 50,
+    boxSizing: "border-box",
+
+    padding: isMobile
+      ? "5px 10px 2px 10px"
+      : "6px 14px 2px 14px",
+
+    background: mainDark,
+
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+
+    overflow: "hidden",
+    margin: 0,
+  }}
+  title={displayTitle}
+>
+  <span
+    style={{
+      width: "100%",
+
+      display: "-webkit-box",
+      WebkitBoxOrient: "vertical",
+      WebkitLineClamp: 2,
+
+      overflow: "hidden",
+      textOverflow: "ellipsis",
+
+      whiteSpace: "normal",
+      wordBreak: "keep-all",
+      overflowWrap: "break-word",
+
+      textAlign: "center",
+      lineHeight: 1.14,
+
+      fontSize: isMobile ? 16 : 18,
+      letterSpacing: "0.1px",
+
+      color: "#fff",
+
+      fontFamily:
+        "'Orbitron', 'Pretendard', sans-serif",
+
+      fontWeight: 900,
+
+      textShadow: "0 1.5px 8px #191b25cc",
+
+      margin: 0,
+      padding: 0,
+    }}
+  >
+    {displayTitle}
+  </span>
+</div>
 
                   {/* 설명 */}
                   <div style={cardDescStyle}>
@@ -686,8 +702,8 @@ visibleList.map((cup, idx) => {
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "space-between",
-                      padding: isMobile ? "3px 8px 6px 8px" : "6px 16px 7px 16px",
-                      minHeight: isMobile ? 23 : 27,
+padding: isMobile ? "4px 7px 7px 7px" : "6px 10px 8px 10px",
+minHeight: isMobile ? 32 : 34,
                       background: mainDark,
                       boxSizing: "border-box",
                       marginTop: "auto",
