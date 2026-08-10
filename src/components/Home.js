@@ -448,15 +448,18 @@ visibleList.map((cup, idx) => {
     <React.Fragment key={cup.id}>
 
       {/* ⭐ 광고 (여기!!) */}
-{idx === 5 && <AdsenseMid />}
-{idx === 11 && <AdsenseMid />}
-{idx === 16 && <AdsenseMid />}
+{idx === 10 && <AdsenseMid />}
+{idx === 14 && <AdsenseMid />}
+{idx === 17 && <AdsenseMid />}
+{idx === 20 && <AdsenseMid />}
 {idx === 21 && <AdsenseMid />}
-{idx === 25 && <AdsenseMid />}
+{idx === 24 && <AdsenseMid />}
+{idx === 27 && <AdsenseMid />}
+{idx === 30 && <AdsenseMid />}
 {idx === 31 && <AdsenseMid />}
-{idx === 39 && <AdsenseMid />}
-{idx === 42 && <AdsenseMid />}
-{idx === 50 && <AdsenseMid />}
+{idx === 34 && <AdsenseMid />}
+{idx === 37 && <AdsenseMid />}
+{idx === 41 && <AdsenseMid />}
       <div
         ref={(el) => (cardRefs.current[idx] = el)}
                   style={{
