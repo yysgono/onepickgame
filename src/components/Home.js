@@ -6,7 +6,7 @@ import { fetchWinnerStatsFromDB } from "../utils";
 import MediaRenderer from "./MediaRenderer";
 import FixedCupSection from "./FixedCupCarousel";
 
-const PAGE_SIZE = 28;
+const PAGE_SIZE = 32;
 
 // 애드센스 클라이언트 ID
 const ADSENSE_CLIENT = "ca-pub-2906270915716379";
@@ -449,8 +449,8 @@ visibleList.map((cup, idx) => {
 
       {/* ⭐ 광고 (여기!!) */}
 {idx === 10 && <AdsenseMid />}
-{idx === 14 && <AdsenseMid />}
-{idx === 17 && <AdsenseMid />}
+{idx === 13 && <AdsenseMid />}
+{idx === 18 && <AdsenseMid />}
 {idx === 32 && <AdsenseMid />}
 {idx === 35 && <AdsenseMid />}
 {idx === 41 && <AdsenseMid />}
