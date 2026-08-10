@@ -451,15 +451,10 @@ visibleList.map((cup, idx) => {
 {idx === 10 && <AdsenseMid />}
 {idx === 14 && <AdsenseMid />}
 {idx === 17 && <AdsenseMid />}
-{idx === 20 && <AdsenseMid />}
-{idx === 21 && <AdsenseMid />}
-{idx === 24 && <AdsenseMid />}
-{idx === 27 && <AdsenseMid />}
-{idx === 30 && <AdsenseMid />}
-{idx === 31 && <AdsenseMid />}
-{idx === 34 && <AdsenseMid />}
-{idx === 37 && <AdsenseMid />}
+{idx === 32 && <AdsenseMid />}
+{idx === 35 && <AdsenseMid />}
 {idx === 41 && <AdsenseMid />}
+{idx === 45 && <AdsenseMid />}
       <div
         ref={(el) => (cardRefs.current[idx] = el)}
                   style={{
