@@ -6,7 +6,7 @@ import { fetchWinnerStatsFromDB } from "../utils";
 import MediaRenderer from "./MediaRenderer";
 import FixedCupSection from "./FixedCupCarousel";
 
-const PAGE_SIZE = 41;
+const PAGE_SIZE = 24;
 
 // 애드센스 클라이언트 ID
 const ADSENSE_CLIENT = "ca-pub-2906270915716379";
