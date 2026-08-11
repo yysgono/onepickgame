@@ -455,7 +455,7 @@ visibleList.map((cup, idx) => {
 {idx === 25 && <AdsenseMid />}
 {idx === 28 && <AdsenseMid />}
 {idx === 34 && <AdsenseMid />}
-{idx === 41 && <AdsenseMid />}
+{idx === 38 && <AdsenseMid />}
       <div
         ref={(el) => (cardRefs.current[idx] = el)}
                   style={{
