@@ -754,46 +754,83 @@ const top3 = useMemo(() => {
       }}
     >
       {/* 상단 타이틀 */}
-      <div
-        style={{
-          width: "100%",
-          display: "flex",
-          justifyContent: "center",
-          margin: "34px 0 19px 0",
-        }}
-      >
-        <div
-          style={{
-            fontWeight: 900,
-            fontSize: isMobile ? 22 : 36,
-            color: "#fff",
-            background: "linear-gradient(135deg, #1947e5 22%, #0e1e36 92%)",
-            boxShadow: "0 4px 24px 0 #1976ed26, 0 1px 12px #18317899, 0 0px 0px #111b2522",
-            borderRadius: 18,
-            padding: isMobile ? "11px 14px" : "22px 54px",
-            border: "2px solid #1976ed66",
-            textShadow: "0 2px 12px #1976ed44, 0 1px 8px #111b2599",
-            fontFamily: "'Orbitron', 'Pretendard', sans-serif",
-            letterSpacing: "-1.5px",
-            lineHeight: 1.15,
-            maxWidth: isMobile ? "96vw" : 940,
-            minWidth: 0,
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            whiteSpace: "nowrap",
-            display: "block",
-            wordBreak: "break-all",
-            textAlign: "center",
-            margin: "0 auto",
-            userSelect: "text",
-          }}
-          title={selectedCup?.title}
-        >
-          {selectedCup?.title}
-        </div>
-      </div>
+<div
+  style={{
+    width: "100%",
+    display: "flex",
+    justifyContent: "center",
+    margin: "34px 0 12px 0",
+  }}
+>
+  <div
+    style={{
+      fontWeight: 900,
+      fontSize: isMobile ? 22 : 36,
+      color: "#fff",
+      background: "linear-gradient(135deg, #1947e5 22%, #0e1e36 92%)",
+      boxShadow:
+        "0 4px 24px 0 #1976ed26, 0 1px 12px #18317899, 0 0px 0px #111b2522",
+      borderRadius: 18,
+      padding: isMobile ? "11px 14px" : "22px 54px",
+      border: "2px solid #1976ed66",
+      textShadow: "0 2px 12px #1976ed44, 0 1px 8px #111b2599",
+      fontFamily: "'Orbitron', 'Pretendard', sans-serif",
+      letterSpacing: "-1.5px",
+      lineHeight: 1.15,
+      maxWidth: isMobile ? "96vw" : 940,
+      minWidth: 0,
+      overflow: "hidden",
+      textOverflow: "ellipsis",
+      whiteSpace: "nowrap",
+      display: "block",
+      wordBreak: "break-all",
+      textAlign: "center",
+      margin: "0 auto",
+      userSelect: "text",
+    }}
+    title={selectedCup?.title}
+  >
+    {selectedCup?.title}
+  </div>
+</div>
 
-      <ShareAndReportBar />
+{/* 월드컵 시작 버튼 */}
+<div
+  style={{
+    display: "flex",
+    justifyContent: "center",
+    margin: isMobile ? "10px 0 12px" : "12px 0 14px",
+  }}
+>
+  <button
+    type="button"
+    onClick={() => {
+      window.location.href =
+        `/${lang}/select-round/${selectedCup.id}`;
+    }}
+    style={{
+      minWidth: isMobile ? 190 : 240,
+      padding: isMobile ? "12px 24px" : "15px 38px",
+      borderRadius: 12,
+      border: "2px solid #39c6ff",
+      background:
+        "linear-gradient(135deg, #1976ed 0%, #1250d8 100%)",
+      color: "#fff",
+      fontSize: isMobile ? 17 : 20,
+      fontWeight: 900,
+      fontFamily: "'Orbitron', 'Pretendard', sans-serif",
+      cursor: "pointer",
+      boxShadow:
+        "0 4px 18px #1976ed77, 0 0 12px #25cfff55",
+      textShadow: "0 1px 4px #0006",
+      letterSpacing: "0.2px",
+    }}
+  >
+    ▶ {t("start")}
+  </button>
+</div>
+
+<ShareAndReportBar />
 
       {/* Top3 카드 */}
       <div
