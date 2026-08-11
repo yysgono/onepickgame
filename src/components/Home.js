@@ -8,6 +8,25 @@ import FixedCupSection from "./FixedCupCarousel";
 
 const PAGE_SIZE = 24;
 
+const LANGUAGES = [
+  { code: "en", label: "English" },
+  { code: "ko", label: "한국어" },
+  { code: "ja", label: "日本語" },
+  { code: "zh", label: "简体中文" },
+  { code: "es", label: "Español" },
+  { code: "fr", label: "Français" },
+  { code: "vi", label: "Tiếng Việt" },
+  { code: "de", label: "Deutsch" },
+  { code: "ru", label: "Русский" },
+  { code: "id", label: "Bahasa Indonesia" },
+  { code: "pt", label: "Português" },
+  { code: "hi", label: "हिन्दी" },
+  { code: "tr", label: "Türkçe" },
+  { code: "th", label: "ภาษาไทย" },
+  { code: "ar", label: "العربية" },
+  { code: "bn", label: "বাংলা" },
+];
+
 // 애드센스 클라이언트 ID
 const ADSENSE_CLIENT = "ca-pub-2906270915716379";
 
@@ -95,11 +114,49 @@ function Home({
   fixedWorldcups,
   showFixedWorldcups = true,
 }) {
-  const { t, i18n } = useTranslation();
-  const navigate = useNavigate();
+const { t, i18n } = useTranslation();
+const navigate = useNavigate();
 
-  const lang = (i18n.language || "en").split("-")[0];
-  const getRoute = (base, cupId) => `/${lang}${base}/${cupId}`;
+const lang = (i18n.language || "en").split("-")[0];
+
+const getRoute = (base, cupId) =>
+  `/${lang}${base}/${cupId}`;
+
+// 홈 화면 아래쪽 언어 선택기
+const changeHomeLanguage = async (newLang) => {
+  try {
+    // i18next 언어 변경
+    await i18n.changeLanguage(newLang);
+
+    // 선택 언어 저장
+    localStorage.setItem("onepickgame_lang", newLang);
+
+    // 현재 주소 유지하면서 언어 부분만 변경
+    const parts = window.location.pathname
+      .split("/")
+      .filter(Boolean);
+
+    if (
+      parts.length > 0 &&
+      LANGUAGES.some((item) => item.code === parts[0])
+    ) {
+      parts[0] = newLang;
+    } else {
+      parts.unshift(newLang);
+    }
+
+    const newPath = "/" + parts.join("/");
+
+    navigate(
+      newPath +
+        window.location.search +
+        window.location.hash,
+      { replace: true }
+    );
+  } catch (error) {
+    console.error("언어 변경 실패:", error);
+  }
+};
 
 const getDisplayTitle = (cup) => {
   if (lang === "en") return cup.title || "";
@@ -374,53 +431,93 @@ return (
       <FixedCupSection worldcupList={fixedCupsWithStats || []} />
     )}
 
-      {/* 검색/정렬 바 */}
-      <div
-        style={{
-          width: "100vw",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          gap: isMobile ? 10 : 20,
-          margin: isMobile ? "12px 0 8px" : "22px 0 14px",
-          padding: isMobile ? "0 8px" : "0 12px",
-          flexDirection: isMobile ? "column" : "row",
-          zIndex: 5,
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 6,
-            justifyContent: "center",
-          }}
-        >
-          {sortButton(t("popular"), "popular")}
-          {sortButton(t("latest"), "recent")}
-        </div>
-        <input
-          type="text"
-          placeholder={t("search_placeholder")}
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          style={{
-            background: "#fff",
-            color: "#1b2236",
-            border: "2px solid #fff",
-            borderRadius: 8,
-            padding: isMobile ? "9px 13px" : "13px 20px",
-            fontSize: isMobile ? 16 : 17,
-            minWidth: isMobile ? 0 : 220,
-            maxWidth: 400,
-            outline: "none",
-            fontWeight: 700,
-            boxShadow: "0 2px 12px #fff5",
-            transition: "border .14s, box-shadow .14s",
-            letterSpacing: ".1px",
-          }}
-        />
-      </div>
+{/* 검색/정렬 + 언어 선택 */}
+<div
+  style={{
+    width: "100vw",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+    gap: isMobile ? 9 : 11,
+    margin: isMobile ? "12px 0 10px" : "22px 0 16px",
+    padding: isMobile ? "0 8px" : "0 12px",
+    zIndex: 5,
+    boxSizing: "border-box",
+  }}
+>
+  {/* Popular / Latest / 검색창 */}
+  <div
+    style={{
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      gap: isMobile ? 8 : 14,
+      flexWrap: "wrap",
+    }}
+  >
+    <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        gap: 6,
+        justifyContent: "center",
+      }}
+    >
+      {sortButton(t("popular"), "popular")}
+      {sortButton(t("latest"), "recent")}
+    </div>
+
+    <input
+      type="text"
+      placeholder={t("search_placeholder")}
+      value={search}
+      onChange={(e) => setSearch(e.target.value)}
+      style={{
+        background: "#fff",
+        color: "#1b2236",
+        border: "2px solid #fff",
+        borderRadius: 8,
+        padding: isMobile ? "9px 13px" : "13px 20px",
+        fontSize: isMobile ? 16 : 17,
+        minWidth: isMobile ? 180 : 220,
+        maxWidth: 400,
+        outline: "none",
+        fontWeight: 700,
+        boxShadow: "0 2px 12px #fff5",
+        transition: "border .14s, box-shadow .14s",
+        letterSpacing: ".1px",
+      }}
+    />
+  </div>
+
+  {/* 언어 선택 */}
+  <select
+    value={lang}
+    onChange={(e) => changeHomeLanguage(e.target.value)}
+    aria-label="Select language"
+    style={{
+      background: "#222f45",
+      color: "#fff",
+      border: "1px solid #1976ed",
+      borderRadius: 8,
+      padding: isMobile ? "7px 12px" : "8px 15px",
+      fontSize: isMobile ? 13 : 14,
+      fontWeight: 700,
+      minWidth: isMobile ? 130 : 150,
+      cursor: "pointer",
+      outline: "none",
+      textAlign: "center",
+      boxShadow: "0 0 8px #1976ed55",
+    }}
+  >
+    {LANGUAGES.map((item) => (
+      <option key={item.code} value={item.code}>
+        {item.label}
+      </option>
+    ))}
+  </select>
+</div>
 
       {/* 카드 그리드 */}
       <div
