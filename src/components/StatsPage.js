@@ -371,6 +371,17 @@ export default function StatsPage({
 }) {
   const { t } = useTranslation();
   const { lang } = useParams();
+
+  const normalizedLang = String(lang || "en")
+  .toLowerCase()
+  .split("-")[0];
+
+const displayCupTitle =
+  selectedCup?.title_translations?.[normalizedLang] ||
+  selectedCup?.title_translations?.en ||
+  selectedCup?.title ||
+  "";
+
   const [stats, setStats] = useState([]);
   const [sortKey, setSortKey] = useState("win_count");
   const [sortDesc, setSortDesc] = useState(true);
@@ -788,9 +799,9 @@ const top3 = useMemo(() => {
       margin: "0 auto",
       userSelect: "text",
     }}
-    title={selectedCup?.title}
-  >
-    {selectedCup?.title}
+title={displayCupTitle}
+>
+  {displayCupTitle}
   </div>
 </div>
 
