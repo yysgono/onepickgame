@@ -264,6 +264,9 @@
   "restore": "Restore",
   "worldcup_title": "Bracket Title",
   "nickname_rule": "Nickname must be at least 3 characters and may contain Korean characters, letters, numbers, hyphens, or underscores.",
+    "worldcup_guide_title": "Want to know how to create an Ideal Type World Cup?",
+  "worldcup_guide_description": "Check out our guide from adding candidates to creating your World Cup.",
+  "view_creation_guide": "View Guide",
   "comment": {
     "placeholder": "Write a comment.",
     "submit": "Submit",

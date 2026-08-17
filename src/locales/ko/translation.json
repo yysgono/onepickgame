@@ -265,6 +265,9 @@
   "restore": "복원",
   "worldcup_title": "이상형 월드컵 제목",
   "nickname_rule": "닉네임은 한글, 영문, 숫자, 하이픈, 언더스코어를 사용하여 3자 이상이어야 합니다.",
+  "worldcup_guide_title": "이상형 월드컵 만드는 방법이 궁금하신가요?",
+"worldcup_guide_description": "처음이라면 후보 등록부터 월드컵 생성까지 가이드를 확인해보세요.",
+"view_creation_guide": "만드는 방법 보기",
   "comment": {
     "placeholder": "댓글을 입력하세요.",
     "submit": "등록",

@@ -922,6 +922,66 @@ if (!user) {
           "Create Worldcup"}
       </h2>
 
+      {/* 월드컵 만들기 가이드 */}
+      <div
+        style={{
+          background: "#f3f9ff",
+          border: "1.5px solid #d3eafd",
+          borderRadius: 12,
+          padding: mobile ? "14px 14px" : "16px 18px",
+          marginBottom: 20,
+          textAlign: "center",
+        }}
+      >
+        <div
+          style={{
+            fontSize: mobile ? 15 : 16,
+            fontWeight: 800,
+            color: "#222",
+            marginBottom: 6,
+          }}
+        >
+          📘{" "}
+          {t("worldcup_guide_title") ||
+            "How to Create an Ideal Type World Cup"}
+        </div>
+
+        <div
+          style={{
+            fontSize: mobile ? 13 : 14,
+            color: "#666",
+            lineHeight: 1.5,
+            marginBottom: 11,
+          }}
+        >
+          {t("worldcup_guide_description") ||
+            "Check out our guide to learn how to create your own World Cup."}
+        </div>
+
+        <button
+          type="button"
+          onClick={() => {
+            const lang =
+              window.location.pathname.split("/")[1] || "en";
+
+            window.location.href =
+              `/${lang}/blog/how-to-create-ideal-type-world-cup`;
+          }}
+          style={{
+            background: "#fff",
+            color: "#1976ed",
+            border: "1.5px solid #1976ed",
+            borderRadius: 8,
+            padding: mobile ? "8px 15px" : "9px 18px",
+            fontSize: mobile ? 13 : 14,
+            fontWeight: 800,
+            cursor: "pointer",
+          }}
+        >
+          {t("view_creation_guide") || "View Guide"} →
+        </button>
+      </div>
+
       <form onSubmit={handleSubmit}>
         <div
           onDrop={(event) => {
