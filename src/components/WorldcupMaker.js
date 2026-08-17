@@ -749,23 +749,112 @@ function WorldcupMaker({ onCreate, onCancel }) {
     }
   }
 
-  if (!user) {
-    return (
+if (!user) {
+  const currentLang = (
+    window.location.pathname.split("/")[1] || "en"
+  ).toLowerCase();
+
+  const guideUrl =
+    currentLang === "ko"
+      ? "/ko/blog/how-to-create-ideal-type-world-cup"
+      : `/${currentLang}/blog/how-to-create-ideal-type-world-cup`;
+
+  const loginUrl = `/${currentLang}/login`;
+
+  return (
+    <div
+      style={{
+        padding: mobile ? "40px 18px" : "60px 20px",
+        textAlign: "center",
+        maxWidth: 700,
+        margin: "0 auto",
+      }}
+    >
+      {/* 만드는 방법 글 보기 */}
       <div
         style={{
-          padding: 60,
-          textAlign: "center",
+          background: "#fff",
+          borderRadius: 16,
+          padding: mobile ? "24px 18px" : "30px",
+          marginBottom: 28,
+          boxShadow: "0 4px 20px #0002",
         }}
       >
-        <h2>
-          {t(
-            "login_required_create_worldcup"
-          ) ||
-            "Please log in to create a Worldcup."}
+        <h2
+          style={{
+            color: "#111827",
+            marginTop: 0,
+            marginBottom: 12,
+            fontSize: mobile ? 22 : 27,
+          }}
+        >
+          {currentLang === "ko"
+            ? "이상형 월드컵 만드는 방법"
+            : "How to Create a Worldcup"}
         </h2>
+
+        <p
+          style={{
+            color: "#64748b",
+            lineHeight: 1.7,
+            marginBottom: 22,
+          }}
+        >
+          {currentLang === "ko"
+            ? "처음 만드는 분들을 위한 이상형 월드컵 만들기 가이드를 확인해보세요."
+            : "Check out our guide to learn how to create your own Worldcup."}
+        </p>
+
+        <button
+          type="button"
+          onClick={() => {
+            window.location.href = guideUrl;
+          }}
+          style={{
+            ...mainButtonStyle(mobile),
+            padding: mobile ? "11px 20px" : "12px 28px",
+            fontSize: mobile ? 15 : 17,
+            borderRadius: 10,
+            cursor: "pointer",
+          }}
+        >
+          {currentLang === "ko"
+            ? "만드는 방법 보기"
+            : "View Creation Guide"}
+        </button>
       </div>
-    );
-  }
+
+      {/* 로그인 안내 */}
+      <h2
+        style={{
+          color: "#fff",
+          fontSize: mobile ? 20 : 24,
+          marginBottom: 20,
+        }}
+      >
+        {t("login_required_create_worldcup") ||
+          "Please log in to create a Worldcup."}
+      </h2>
+
+      {/* 로그인 버튼 */}
+      <button
+        type="button"
+        onClick={() => {
+          window.location.href = loginUrl;
+        }}
+        style={{
+          ...mainButtonStyle(mobile),
+          padding: mobile ? "11px 30px" : "13px 38px",
+          fontSize: mobile ? 16 : 18,
+          borderRadius: 10,
+          cursor: "pointer",
+        }}
+      >
+        {t("login") || "Login"}
+      </button>
+    </div>
+  );
+}
 
   if (isBanned) {
     return (

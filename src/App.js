@@ -979,20 +979,11 @@ function App() {
        월드컵 만들기
     =============================================== */
 
-    function handleMakeWorldcup() {
-      if (!user) {
-        alert(
-          t("login_required") ||
-            "Login required."
-        );
-
-        return;
-      }
-
-      navigate(
-        `/${currentLang}/worldcup-maker`
-      );
-    }
+function handleMakeWorldcup() {
+  navigate(
+    `/${currentLang}/worldcup-maker`
+  );
+}
 
     /* ===============================================
        메인 홈
