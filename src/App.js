@@ -1227,35 +1227,89 @@ function handleMakeWorldcup() {
     =============================================== */
 
     function WorldcupMakerWrapper() {
-      const navigate =
-        useNavigate();
+  const navigate =
+    useNavigate();
 
-      return (
-        <WorldcupMaker
-          fetchWorldcups={
-            fetchWorldcups
-          }
-          onCreate={() => {
-            navigate(
-              getLangPath(
-                i18n
-              )
-            );
-          }}
-          onCancel={() =>
-            navigate(
-              getLangPath(
-                i18n
-              )
+  const makerTitleMap = {
+    en: "Create an Ideal Type World Cup | bracket One Pick Game",
+    ko: "이상형 월드컵 만들기 | One Pick Game",
+    ja: "理想のタイプワールドカップを作成 | One Pick Game",
+    zh: "创建理想型世界杯 | One Pick Game",
+    ru: "Создать турнир | One Pick Game",
+    pt: "Criar Torneio | One Pick Game",
+    es: "Crear Torneo | One Pick Game",
+    fr: "Créer un Tournoi | One Pick Game",
+    id: "Buat Turnamen | One Pick Game",
+    hi: "टूर्नामेंट बनाएँ | One Pick Game",
+    de: "Turnier erstellen | One Pick Game",
+    vi: "Tạo giải đấu | One Pick Game",
+    ar: "إنشاء بطولة | One Pick Game",
+    bn: "টুর্নামেন্ট তৈরি করুন | One Pick Game",
+    th: "สร้างทัวร์นาเมนต์ | One Pick Game",
+    tr: "Turnuva Oluştur | One Pick Game",
+  };
+
+  const makerDescMap = {
+    en: "Create your own ideal type world cup. Add candidates and images, build your bracket, and share it with others.",
+    ko: "나만의 이상형 월드컵을 만들어보세요. 이미지와 후보를 등록하고 토너먼트를 만들어 친구들과 공유할 수 있습니다.",
+    ja: "候補と画像を登録して、自分だけの理想のタイプワールドカップを作成して共有できます。",
+    zh: "添加候选项和图片，创建属于自己的理想型世界杯并与他人分享。",
+    ru: "Создайте свой турнир, добавьте участников и изображения и поделитесь им с другими.",
+    pt: "Crie seu próprio torneio, adicione candidatos e imagens e compartilhe com outras pessoas.",
+    es: "Crea tu propio torneo, añade candidatos e imágenes y compártelo con otros.",
+    fr: "Créez votre propre tournoi, ajoutez des candidats et des images, puis partagez-le.",
+    id: "Buat turnamenmu sendiri, tambahkan kandidat dan gambar, lalu bagikan.",
+    hi: "अपना टूर्नामेंट बनाएँ, उम्मीदवार और चित्र जोड़ें और दूसरों के साथ साझा करें।",
+    de: "Erstelle dein eigenes Turnier, füge Kandidaten und Bilder hinzu und teile es mit anderen.",
+    vi: "Tạo giải đấu của riêng bạn, thêm ứng viên và hình ảnh rồi chia sẻ với mọi người.",
+    ar: "أنشئ بطولتك الخاصة وأضف المرشحين والصور وشاركها مع الآخرين.",
+    bn: "নিজের টুর্নামেন্ট তৈরি করুন, প্রার্থী ও ছবি যোগ করুন এবং অন্যদের সঙ্গে শেয়ার করুন।",
+    th: "สร้างทัวร์นาเมนต์ของคุณเอง เพิ่มผู้เข้าแข่งขันและรูปภาพ แล้วแชร์ให้ผู้อื่น",
+    tr: "Kendi turnuvanı oluştur, adaylar ve görseller ekle ve başkalarıyla paylaş.",
+  };
+
+  return (
+    <>
+      <Seo
+        lang={currentLang}
+        slug="worldcup-maker"
+        title={
+          makerTitleMap[currentLang] ||
+          makerTitleMap.en
+        }
+        description={
+          makerDescMap[currentLang] ||
+          makerDescMap.en
+        }
+        indexable={true}
+      />
+
+      <WorldcupMaker
+        fetchWorldcups={
+          fetchWorldcups
+        }
+        onCreate={() => {
+          navigate(
+            getLangPath(
+              i18n
             )
-          }
-          user={user}
-          nickname={
-            nickname
-          }
-        />
-      );
-    }
+          );
+        }}
+        onCancel={() =>
+          navigate(
+            getLangPath(
+              i18n
+            )
+          )
+        }
+        user={user}
+        nickname={
+          nickname
+        }
+      />
+    </>
+  );
+}
 
     /* ===============================================
        월드컵 관리 래퍼

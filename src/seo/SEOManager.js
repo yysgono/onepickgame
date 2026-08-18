@@ -21,14 +21,15 @@ export default function SEOManager() {
   );
 
   // 색인을 허용하는 정적 경로
-  const INDEX_ALLOW = new Set([
-    "",                 // /:lang
-    "blog",             // /:lang/blog
-    "privacy-policy",   // /:lang/privacy-policy
-    "terms-of-service", // /:lang/terms-of-service
-    "suggestions",      // /:lang/suggestions
-    "notice",           // /:lang/notice
-  ]);
+const INDEX_ALLOW = new Set([
+  "",
+  "blog",
+  "worldcup-maker",
+  "privacy-policy",
+  "terms-of-service",
+  "suggestions",
+  "notice",
+]);
 
   // 색인을 허용하는 동적 경로
   const ALLOW_PATTERNS = [
@@ -40,13 +41,13 @@ export default function SEOManager() {
   ];
 
   // 색인에서 제외할 경로
-  const NOINDEX_PATTERNS = [
-    /^(login|signup|find-(id|pw)|reset-password)(\/|$)/,
-    /^(admin|admin-stats)(\/|$)/,
-    /^(worldcup-maker|edit-worldcup|manage)(\/|$)/,
-    /^(my-worldcups|recent-worldcups)(\/|$)/,
-    /^(backup)(\/|$)/,
-  ];
+const NOINDEX_PATTERNS = [
+  /^(login|signup|find-(id|pw)|reset-password)(\/|$)/,
+  /^(admin|admin-stats)(\/|$)/,
+  /^(edit-worldcup|manage)(\/|$)/,
+  /^(my-worldcups|recent-worldcups)(\/|$)/,
+  /^(backup)(\/|$)/,
+];
 
   const isExplicitlyNoIndex = NOINDEX_PATTERNS.some(
     (pattern) => pattern.test(slug)
