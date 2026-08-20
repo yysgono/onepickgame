@@ -593,10 +593,23 @@ visibleList.map((cup, idx) => {
                     e.currentTarget.style.boxShadow =
                       "0 8px 38px 0 #1976ed45, 0 2px 12px #1976ed44";
                   }}
-                  onClick={() => {
-                    goto(getRoute("/select-round", cup.id));
-                  }}
-                >
+                 onClick={() => {
+  goto(getRoute("/select-round", cup.id));
+}}
+
+onAuxClick={(e) => {
+  // 마우스 휠(가운데 버튼) 클릭
+  if (e.button === 1) {
+    e.preventDefault();
+
+    window.open(
+      getRoute("/select-round", cup.id),
+      "_blank",
+      "noopener,noreferrer"
+    );
+  }
+}}
+>
                   <div
                     style={{
                       position: "absolute",
