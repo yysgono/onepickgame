@@ -32,6 +32,7 @@
   "worldcup_guide_title": "Möchtest du wissen, wie du dein eigenes Turnier erstellst?",
 "worldcup_guide_description": "Sieh dir unsere Anleitung an – vom Hinzufügen der Kandidaten bis zur Erstellung deines Turniers.",
 "view_creation_guide": "Anleitung ansehen",
+"participation_count": "{{count}} Teilnahmen",
   "victory": "Sieg",
   "match": "Match",
   "winning_rate": "Siegesquote",

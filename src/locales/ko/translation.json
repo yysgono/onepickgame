@@ -263,6 +263,7 @@
   "error_no_data": "데이터가 없습니다.",
   "backupAll": "전체 백업",
   "restore": "복원",
+  "participation_count": "{{count}}회 참여",
   "worldcup_title": "이상형 월드컵 제목",
   "nickname_rule": "닉네임은 한글, 영문, 숫자, 하이픈, 언더스코어를 사용하여 3자 이상이어야 합니다.",
   "worldcup_guide_title": "이상형 월드컵 만드는 방법이 궁금하신가요?",

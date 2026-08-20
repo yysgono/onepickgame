@@ -40,6 +40,7 @@
   "month_6": "6 เดือน",
   "year_1": "1 ปี",
   "custom_period": "กำหนดช่วงเวลา",
+  "participation_count": "เล่นแล้ว {{count}} ครั้ง",
   "worldcup_guide_title": "อยากรู้วิธีสร้างทัวร์นาเมนต์ของคุณเองไหม?",
 "worldcup_guide_description": "ดูคู่มือตั้งแต่การเพิ่มผู้เข้าแข่งขันไปจนถึงการสร้างทัวร์นาเมนต์",
 "view_creation_guide": "ดูคู่มือการสร้าง",

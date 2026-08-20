@@ -23,6 +23,7 @@
   "terms_of_service": "شروط الخدمة",
   "privacy_policy": "سياسة الخصوصية",
   "report": "إبلاغ",
+  "participation_count": "{{count}} مشاركة",
   "report_submit": "إرسال الإبلاغ",
   "report_submit_success": "تم إرسال الإبلاغ بنجاح!",
   "share_worldcup": "مشاركة كأس العالم",

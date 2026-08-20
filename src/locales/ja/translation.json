@@ -285,6 +285,7 @@
     "delete": "削除",
     "deleteAuth": "削除できるのは所有者または管理者のみです。",
     "upvote": "おすすめ",
+    "participation_count": "{{count}}回参加",
     "downvote": "おすすめしない",
     "blinded": "このコメントは非表示です。",
     "loading": "読み込み中...",

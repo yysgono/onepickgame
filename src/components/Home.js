@@ -538,6 +538,13 @@ return (
         {visibleList.length > 0 &&
 visibleList.map((cup, idx) => {
   const winStats = winStatsMap[cup.id] || [];
+
+  // 후보들의 누적 우승 횟수 합계 = 총 참여 횟수
+  const totalPlays = winStats.reduce(
+    (sum, row) => sum + (row.win_count || 0),
+    0
+  );
+
   const [first, second] = getTop2Winners(winStats, cup.data);
   const displayTitle = getDisplayTitle(cup);
 
@@ -790,6 +797,25 @@ visibleList.map((cup, idx) => {
   cup.desc ||
   ""}
                   </div>
+
+                  {/* 참여 횟수 */}
+<div
+  style={{
+    width: "100%",
+    textAlign: "center",
+    color: "#8fc7ff",
+    fontSize: isMobile ? 12 : 13,
+    fontWeight: 700,
+    padding: "2px 0 3px",
+    background: mainDark,
+    boxSizing: "border-box",
+  }}
+>
+  👥{" "}
+{t("participation_count", {
+  count: totalPlays.toLocaleString(),
+})}
+</div>
 
                   {/* 버튼 영역 */}
                   <div

@@ -40,6 +40,7 @@
 "view_creation_guide": "Lihat panduan",
   "month_1": "1 bulan",
   "month_3": "3 bulan",
+  "participation_count": "{{count}} kali dimainkan",
   "month_6": "6 bulan",
   "year_1": "1 tahun",
   "custom_period": "Periode Kustom",

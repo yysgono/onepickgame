@@ -20,6 +20,7 @@
   "next_round": "পরবর্তী রাউন্ড",
   "auto_advancement": "{{count}} জন প্রার্থী বাই পেয়ে স্বয়ংক্রিয়ভাবে অগ্রসর হয়েছে!",
   "select": "নির্বাচন করুন",
+  "participation_count": "{{count}} বার খেলা হয়েছে",
   "terms_of_service": "পরিষেবার শর্তাবলী",
   "privacy_policy": "গোপনীয়তা নীতি",
   "report": "রিপোর্ট",

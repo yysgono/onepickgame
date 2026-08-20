@@ -29,6 +29,7 @@
   "share_link_copied": "Link de compartilhamento copiado!",
   "winner": "Vencedor",
   "win_rate": "Taxa de vitória",
+  "participation_count": "{{count}} participações",
   "victory": "Vitória",
   "match": "Partida",
   "winning_rate": "Taxa de vitória",

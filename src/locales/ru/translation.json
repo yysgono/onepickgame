@@ -28,6 +28,7 @@
   "share_worldcup": "Поделиться турниром",
   "share_link_copied": "Ссылка для обмена скопирована!",
   "winner": "Победитель",
+  "participation_count": "{{count}} игр",
   "win_rate": "Процент побед",
   "victory": "Победа",
   "worldcup_guide_title": "Хотите узнать, как создать свой турнир?",

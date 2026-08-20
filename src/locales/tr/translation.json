@@ -36,6 +36,7 @@
   "members_only": "Sadece Üyeler",
   "user_only": "Sadece Kullanıcılar",
   "month_1": "1 ay",
+  "participation_count": "{{count}} oynama",
   "worldcup_guide_title": "Kendi turnuvanızı nasıl oluşturacağınızı öğrenmek ister misiniz?",
 "worldcup_guide_description": "Aday eklemekten turnuvanızı oluşturmaya kadar rehberimize göz atın.",
 "view_creation_guide": "Oluşturma rehberini görüntüle",

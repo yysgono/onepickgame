@@ -35,6 +35,7 @@
 "worldcup_guide_description": "Consultez notre guide, de l'ajout des candidats à la création de votre tournoi.",
 "view_creation_guide": "Voir le guide",
   "winning_rate": "Taux de victoire",
+  "participation_count": "{{count}} participations",
   "all": "Tout",
   "members_only": "Membres uniquement",
   "user_only": "Utilisateurs uniquement",

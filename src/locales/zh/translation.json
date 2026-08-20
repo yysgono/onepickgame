@@ -32,6 +32,7 @@
   "victory": "胜利",
   "match": "对决",
   "winning_rate": "胜率",
+  "participation_count": "参与 {{count}} 次",
   "all": "全部",
   "worldcup_guide_title": "想知道如何创建理想型世界杯吗？",
 "worldcup_guide_description": "查看指南，了解从添加候选项到创建世界杯的完整流程。",

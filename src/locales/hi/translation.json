@@ -30,11 +30,13 @@
   "winner": "विजेता",
   "win_rate": "विजय दर",
   "victory": "विजय",
+  
   "match": "मैच",
   "winning_rate": "जीतने की दर",
   "all": "सभी",
   "members_only": "केवल सदस्य",
   "user_only": "केवल उपयोगकर्ता",
+  "participation_count": "{{count}} बार खेला गया",
   "month_1": "1 माह",
   "worldcup_guide_title": "अपना खुद का टूर्नामेंट बनाना सीखना चाहते हैं?",
 "worldcup_guide_description": "उम्मीदवार जोड़ने से लेकर टूर्नामेंट बनाने तक हमारी गाइड देखें।",
