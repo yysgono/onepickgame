@@ -675,11 +675,17 @@ export default function SelectRoundPage({
   // 1등 / 2등 결정
   // ======================================================
 
-  const [first, second] = pickTop2(
-    cup,
-    candidates,
-    winStats
-  );
+const [first, second] = pickTop2(
+  cup,
+  candidates,
+  winStats
+);
+
+const totalPlays = winStats.reduce(
+  (sum, row) => sum + (row.win_count || 0),
+  0
+);
+
 
   return (
     <div
@@ -950,7 +956,7 @@ export default function SelectRoundPage({
               </div>
 
               {/* 제목 */}
-              <div
+              <h1
                 style={{
                   fontWeight: 900,
                   fontSize: isMobile
@@ -989,7 +995,7 @@ export default function SelectRoundPage({
                 title={translatedTitle}
               >
                 {translatedTitle}
-              </div>
+              </h1>
 
               {/* 설명 */}
               {translatedDescription && (
@@ -1145,17 +1151,18 @@ export default function SelectRoundPage({
               boxShadow: "0 2px 26px #1976ed19",
             }}
           >
-            <div
-              style={{
-                fontWeight: 700,
-                color: "#ffe067",
-                fontSize: isMobile ? 17 : 21,
-                marginBottom: 10,
-                letterSpacing: "-0.5px",
-              }}
-            >
-              {t("candidates") || "Candidates"}
-            </div>
+<h2
+  style={{
+    fontWeight: 700,
+    color: "#ffe067",
+    fontSize: isMobile ? 17 : 21,
+    marginTop: 0,
+    marginBottom: 10,
+    letterSpacing: "-0.5px",
+  }}
+>
+  {t("candidates") || "Candidates"}
+</h2>
 
             <div
               style={{
@@ -1188,6 +1195,43 @@ export default function SelectRoundPage({
               ))}
             </div>
           </div>
+
+{/* 게임 정보 */}
+<div
+  style={{
+    margin: "20px auto 0",
+    maxWidth: 670,
+    background: "#20253b",
+    borderRadius: 14,
+    padding: 18,
+    color: "#fff",
+  }}
+>
+  <h2
+    style={{
+      fontWeight: 800,
+      fontSize: 18,
+      marginBottom: 12,
+      color: "#ffe067",
+    }}
+  >
+    게임 정보
+  </h2>
+
+  <div>후보 수 : {candidates.length}</div>
+
+  <div>
+    참여 횟수 : {totalPlays.toLocaleString()}회
+  </div>
+
+  <div>
+    등록일 :{" "}
+    {cup?.created_at
+      ? new Date(cup.created_at).toLocaleDateString()
+      : "-"}
+  </div>
+</div>
+
         </div>
 
         {/* 오른쪽 사이드 광고 */}
