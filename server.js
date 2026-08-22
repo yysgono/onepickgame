@@ -694,6 +694,253 @@ app.get(
 );
 
 /*
+ * 새 월드컵용 동적 SEO HTML
+ *
+ * 기존 프리렌더 파일이 없는 select-round만
+ * Vercel에서 이쪽으로 보냅니다.
+ */
+app.use(async (req, res, next) => {
+  if (req.query?.seo !== "worldcup") {
+    return next();
+  }
+
+  const lang = String(
+    req.query?.lang || "en"
+  )
+    .trim()
+    .toLowerCase();
+
+  const id = String(
+    req.query?.id || ""
+  ).trim();
+
+  const SUPPORTED_LANGS = new Set([
+    "ko",
+    "en",
+    "ja",
+    "zh",
+    "ru",
+    "pt",
+    "es",
+    "fr",
+    "id",
+    "hi",
+    "de",
+    "vi",
+    "ar",
+    "bn",
+    "th",
+    "tr",
+  ]);
+
+  if (!SUPPORTED_LANGS.has(lang)) {
+    return res.status(400).send(
+      "Unsupported language"
+    );
+  }
+
+  // DB에 잘못된 UUID를 보내지 않도록 먼저 검사
+  const UUID_RE =
+    /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
+  if (!UUID_RE.test(id)) {
+    return res.status(400).send(
+      "Invalid worldcup id"
+    );
+  }
+
+  function escapeHtml(value = "") {
+    return String(value)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  }
+
+  try {
+    /*
+     * 월드컵 1개만 읽기
+     * DB 수정 / insert / update / delete 없음
+     */
+    const { data: cup, error } =
+      await supabase
+        .from("worldcups")
+        .select(
+          "id,title,description,data,created_at"
+        )
+        .eq("id", id)
+        .maybeSingle();
+
+    if (error) {
+      console.error(
+        "동적 SEO 월드컵 조회 실패:",
+        error
+      );
+
+      return res.status(500).send(
+        "SEO lookup failed"
+      );
+    }
+
+    if (!cup) {
+      return res.status(404).send(
+        "Worldcup not found"
+      );
+    }
+
+    /*
+     * 배포된 CRA 기본 index.html을 가져옵니다.
+     * / 는 정적 파일이라 DB 조회 없음.
+     */
+    const baseResponse = await fetch(
+      `${SITE_URL}/`
+    );
+
+    if (!baseResponse.ok) {
+      throw new Error(
+        `Base HTML load failed: ${baseResponse.status}`
+      );
+    }
+
+    let html =
+      await baseResponse.text();
+
+    const prefix =
+      lang === "ko"
+        ? "이상형 월드컵"
+        : lang === "en"
+          ? "Ideal Type World Cup - Bracket Game"
+          : "Tournament Bracket";
+
+    const title =
+      cup.title || "OnePickGame";
+
+    const description =
+      cup.description ||
+      `Play ${title} on OnePickGame.`;
+
+    const canonical =
+      `${SITE_URL}/${lang}/select-round/${cup.id}`;
+
+    const image =
+      cup?.data?.[0]?.image ||
+      `${SITE_URL}/onepick-social.png`;
+
+    const seoTitle =
+      `${prefix} | ${title} | One Pick Game`;
+
+    const seoHead = `
+<title>${escapeHtml(seoTitle)}</title>
+
+<meta
+  name="description"
+  content="${escapeHtml(description)}"
+/>
+
+<meta
+  name="robots"
+  content="index, follow, max-image-preview:large"
+/>
+
+<link
+  rel="canonical"
+  href="${escapeHtml(canonical)}"
+/>
+
+<meta
+  property="og:type"
+  content="website"
+/>
+
+<meta
+  property="og:title"
+  content="${escapeHtml(seoTitle)}"
+/>
+
+<meta
+  property="og:description"
+  content="${escapeHtml(description)}"
+/>
+
+<meta
+  property="og:url"
+  content="${escapeHtml(canonical)}"
+/>
+
+<meta
+  property="og:site_name"
+  content="OnePickGame"
+/>
+
+<meta
+  property="og:image"
+  content="${escapeHtml(image)}"
+/>
+
+<meta
+  name="twitter:card"
+  content="summary_large_image"
+/>
+
+<meta
+  name="twitter:title"
+  content="${escapeHtml(seoTitle)}"
+/>
+
+<meta
+  name="twitter:description"
+  content="${escapeHtml(description)}"
+/>
+
+<meta
+  name="twitter:image"
+  content="${escapeHtml(image)}"
+/>
+`;
+
+    // html 언어 변경
+    html = html.replace(
+      /<html([^>]*)lang="[^"]*"([^>]*)>/i,
+      `<html$1lang="${lang}"$2>`
+    );
+
+    // </head> 바로 전에 SEO 삽입
+    html = html.replace(
+      "</head>",
+      `${seoHead}\n</head>`
+    );
+
+    /*
+     * CDN 캐시:
+     * 같은 새 월드컵에 요청이 반복돼도
+     * DB를 계속 조회하지 않게 함.
+     */
+    res.setHeader(
+      "Cache-Control",
+      "public, s-maxage=300, stale-while-revalidate=3600"
+    );
+
+    res.setHeader(
+      "Content-Type",
+      "text/html; charset=utf-8"
+    );
+
+    return res
+      .status(200)
+      .send(html);
+  } catch (err) {
+    console.error(
+      "동적 월드컵 SEO HTML 오류:",
+      err
+    );
+
+    return res.status(500).send(
+      "Dynamic SEO rendering failed"
+    );
+  }
+});
+/*
  * API 주소를 잘못 입력했을 때
  *
  * 반드시 다른 API 코드들보다 아래에 있어야 합니다.

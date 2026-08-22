@@ -111,21 +111,26 @@
     }
   ],
 
-  "routes": [
-    {
-      "src": "/api/(.*)",
-      "dest": "/server.js"
-    },
+"routes": [
+  {
+    "src": "/api/(.*)",
+    "dest": "/server.js"
+  },
 
-    {
-      "handle": "filesystem"
-    },
+  {
+    "handle": "filesystem"
+  },
 
-    {
-      "src": "/(.*)",
-      "dest": "/"
-    }
-  ],
+  {
+    "src": "/(ko|en|ja|zh|ru|pt|es|fr|id|hi|de|vi|ar|bn|th|tr)/select-round/([^/]+)/?$",
+    "dest": "/server.js?seo=worldcup&lang=$1&id=$2"
+  },
+
+  {
+    "src": "/(.*)",
+    "dest": "/"
+  }
+],
 
   "trailingSlash": false,
   "cleanUrls": true
