@@ -292,7 +292,6 @@ ${urlXml}
     );
   }
 });
-
 /*
  * IndexNow 블로그 URL 제출
  *
@@ -617,13 +616,11 @@ app.get("/api/board", async (req, res) => {
     });
   }
 });
-
 /*
  * 월드컵 SEO 데이터 조회
  *
  * 읽기 전용
- * 필요한 컬럼만 조회
- * DB 오류가 나도 500 JSON만 반환
+ * DB에 확실히 존재하는 최소 컬럼만 조회
  */
 app.get(
   "/api/seo/worldcup/:id",
@@ -639,22 +636,12 @@ app.get(
     }
 
     try {
-      const {
-        data,
-        error,
-      } = await supabase
+      const { data, error } = await supabase
         .from("worldcups")
-        .select(`
-          id,
-          title,
-          description,
-          title_translations,
-          description_translations,
-          data,
-          created_at
-        `)
+        .select(
+          "id,title,description,data,created_at"
+        )
         .eq("id", id)
-        .is("deleted_at", null)
         .maybeSingle();
 
       if (error) {
@@ -665,6 +652,8 @@ app.get(
 
         return res.status(500).json({
           error: "seo lookup failed",
+          code: error.code || null,
+          message: error.message || null,
         });
       }
 
@@ -684,10 +673,6 @@ app.get(
         title: data.title || "",
         description:
           data.description || "",
-        title_translations:
-          data.title_translations || {},
-        description_translations:
-          data.description_translations || {},
         image:
           data?.data?.[0]?.image || "",
         created_at:
@@ -701,6 +686,8 @@ app.get(
 
       return res.status(500).json({
         error: "internal server error",
+        message:
+          err?.message || null,
       });
     }
   }
