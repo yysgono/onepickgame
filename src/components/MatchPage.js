@@ -45,17 +45,32 @@ export default function MatchPage({ worldcupList = [] }) {
 
   const lang = (i18n.language || "en").split("-")[0];
 
-  const cup = useMemo(() => {
-    return worldcupList.find(
-      (item) => String(item.id) === String(id)
-    );
-  }, [worldcupList, id]);
+const cup = useMemo(() => {
+  return worldcupList.find(
+    (item) => String(item.id) === String(id)
+  );
+}, [worldcupList, id]);
+
+const translatedTitle =
+  cup?.title_translations?.[lang] ||
+  cup?.title_translations?.en ||
+  cup?.title ||
+  "";
+
+const translatedDescription =
+  cup?.description_translations?.[lang] ||
+  cup?.description_translations?.en ||
+  cup?.description ||
+  cup?.desc ||
+  "";
 
   useEffect(() => {
-    if (cup?.id) {
-      pushRecentWorldcup(cup.id);
-    }
-  }, [cup?.id]);
+  if (cup?.id) {
+    pushRecentWorldcup(cup.id);
+  }
+}, [cup?.id]);
+  
+  
 
   const selectedCount = Math.max(
     2,
@@ -116,28 +131,28 @@ export default function MatchPage({ worldcupList = [] }) {
     defaultValue: "Round of {{count}}",
   });
 
-  const seoDescription =
-    cup.description ||
-    cup.desc ||
-    t("match_page_description", {
-      title: cup.title,
-      defaultValue: "Choose your favorite from {{title}}.",
-    });
+const seoDescription =
+  translatedDescription ||
+  t("match_page_description", {
+    title: translatedTitle,
+    defaultValue: "Choose your favorite from {{title}}.",
+  });
 
   return (
     <>
-      <Seo
-        lang={lang}
-        slug={`match/${cup.id}/${selectedCount}`}
-        title={`${cup.title} ${roundLabel} | OnePickGame`}
-        description={seoDescription}
-        image={
-          cup.thumbnail ||
-          cup.image ||
-          cup.data?.[0]?.image ||
-          "/onepick-social.png"
-        }
-      />
+<Seo
+  lang={lang}
+  slug={`match/${cup.id}/${selectedCount}`}
+  title={`${translatedTitle} ${roundLabel} | OnePickGame`}
+  description={seoDescription}
+  image={
+    cup.thumbnail ||
+    cup.image ||
+    cup.data?.[0]?.image ||
+    "/onepick-social.png"
+  }
+  indexable={false}
+/>
 
       <div
         style={{
@@ -176,11 +191,14 @@ export default function MatchPage({ worldcupList = [] }) {
               boxSizing: "border-box",
             }}
           >
-            <Match
-              cup={cup}
-              onResult={() => {}}
-              selectedCount={selectedCount}
-            />
+ <Match
+  cup={{
+    ...cup,
+    title: translatedTitle,
+  }}
+  onResult={() => {}}
+  selectedCount={selectedCount}
+/>
 
             <MatchCommunityBox cupId={cup.id} />
           </main>
