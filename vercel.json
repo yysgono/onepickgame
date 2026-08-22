@@ -122,11 +122,6 @@
     },
 
     {
-      "src": "/(ko|en|ja|zh|ru|pt|es|fr|id|hi|de|vi|ar|bn|th|tr)/select-round/([^/]+)/?$",
-      "dest": "/$1/select-round/$2/index.html"
-    },
-
-    {
       "src": "/(.*)",
       "dest": "/"
     }
