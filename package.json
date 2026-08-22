@@ -2,6 +2,7 @@
   "name": "worldcup-streamrecorder",
   "version": "1.0.0",
   "private": true,
+
   "dependencies": {
     "@supabase/supabase-js": "^2.50.2",
     "browser-image-compression": "^2.0.2",
@@ -21,11 +22,14 @@
     "uuid": "^11.1.0",
     "web-vitals": "^5.0.3"
   },
-"scripts": {
-  "start": "react-scripts start",
-  "sitemap": "node scripts/generate-sitemap.mjs",
-  "build": "node scripts/generate-sitemap.mjs && react-scripts build"
-},
+
+  "scripts": {
+    "start": "react-scripts start",
+    "sitemap": "node scripts/generate-sitemap.mjs",
+    "build": "node scripts/generate-sitemap.mjs && react-scripts build",
+    "postbuild": "node scripts/generate-prerender-seo.mjs"
+  },
+
   "browserslist": {
     "production": [
       ">0.2%",
@@ -38,6 +42,7 @@
       "last 1 safari version"
     ]
   },
+
   "devDependencies": {
     "eslint-plugin-react-hooks": "^5.2.0",
     "typescript": "^4.9.5"
