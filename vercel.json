@@ -1,5 +1,6 @@
 {
   "version": 2,
+
   "builds": [
     {
       "src": "server.js",
@@ -13,6 +14,7 @@
       }
     }
   ],
+
   "redirects": [
     {
       "source": "/:path*",
@@ -25,32 +27,38 @@
       "destination": "https://www.onepickgame.com/:path*",
       "permanent": true
     },
+
     {
       "source": "/(ar|bn|de|es|fr|hi|id|ja|ko|pt|ru|th|tr|vi|zh)/privacy-policy",
       "destination": "/en/privacy-policy",
       "permanent": true
     },
+
     {
       "source": "/(ar|bn|de|es|fr|hi|id|ja|ko|pt|ru|th|tr|vi|zh)/terms-of-service",
       "destination": "/en/terms-of-service",
       "permanent": true
     },
+
     {
       "source": "/(ar|bn|de|es|fr|hi|id|ja|ko|pt|ru|th|tr|vi|zh)/suggestions-board",
       "destination": "/en/suggestions-board",
       "permanent": true
     },
+
     {
       "source": "/(ar|bn|de|es|fr|hi|id|ja|ko|pt|ru|th|tr|vi|zh)/suggestions",
       "destination": "/en/suggestions-board",
       "permanent": true
     },
+
     {
       "source": "/(ar|bn|de|es|fr|hi|id|ja|ko|pt|ru|th|tr|vi|zh)/notice",
       "destination": "/en/notice",
       "permanent": true
     }
   ],
+
   "headers": [
     {
       "source": "/sitemap_index-v2.xml",
@@ -61,6 +69,7 @@
         }
       ]
     },
+
     {
       "source": "/sitemaps/(.*)\\.xml",
       "headers": [
@@ -70,6 +79,7 @@
         }
       ]
     },
+
     {
       "source": "/api/sitemap-blog",
       "headers": [
@@ -79,6 +89,7 @@
         }
       ]
     },
+
     {
       "source": "/robots\\.txt",
       "headers": [
@@ -88,6 +99,7 @@
         }
       ]
     },
+
     {
       "source": "/ads\\.txt",
       "headers": [
@@ -98,19 +110,28 @@
       ]
     }
   ],
+
   "routes": [
     {
       "src": "/api/(.*)",
       "dest": "/server.js"
     },
+
     {
       "handle": "filesystem"
     },
+
+    {
+      "src": "/(ko|en|ja|zh|ru|pt|es|fr|id|hi|de|vi|ar|bn|th|tr)/select-round/([^/]+)/?$",
+      "dest": "/$1/select-round/$2/index.html"
+    },
+
     {
       "src": "/(.*)",
       "dest": "/"
     }
   ],
+
   "trailingSlash": false,
   "cleanUrls": true
 }
