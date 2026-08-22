@@ -180,6 +180,7 @@ function WorldcupMaker({ onCreate, onCancel }) {
 
   const [user, setUser] = useState(null);
   const [nickname, setNickname] = useState("");
+  const [authChecked, setAuthChecked] = useState(false);
 
   const [dragActive, setDragActive] =
     useState(false);
@@ -193,52 +194,71 @@ function WorldcupMaker({ onCreate, onCancel }) {
     candidatesRef.current = candidates;
   }, [candidates]);
 
-  useEffect(() => {
-    async function fetchUser() {
-      try {
-        const {
-          data: { user: currentUser },
-          error: userError,
-        } = await supabase.auth.getUser();
+ useEffect(() => {
+  let mounted = true;
 
-        if (userError) {
-          throw userError;
-        }
+  async function fetchUser() {
+    try {
+      const {
+        data: { user: currentUser },
+        error: userError,
+      } = await supabase.auth.getUser();
 
-        setUser(currentUser);
+      if (userError) {
+        throw userError;
+      }
 
-        if (!currentUser) {
-          return;
-        }
+      if (!mounted) return;
 
-        const {
-          data: profile,
-          error: profileError,
-        } = await supabase
-          .from("profiles")
-          .select("nickname")
-          .eq("id", currentUser.id)
-          .single();
+      // 비회원
+      if (!currentUser) {
+        setUser(null);
+        return;
+      }
 
-        if (profileError) {
-          console.error(
-            "프로필 조회 실패:",
-            profileError
-          );
-        }
+      // 회원이면 프로필까지 먼저 가져온 후 한 번에 표시
+      const {
+        data: profile,
+        error: profileError,
+      } = await supabase
+        .from("profiles")
+        .select("nickname")
+        .eq("id", currentUser.id)
+        .single();
 
-        setNickname(profile?.nickname || "");
-      } catch (fetchError) {
+      if (profileError) {
         console.error(
-          "사용자 정보 조회 실패:",
-          fetchError
+          "프로필 조회 실패:",
+          profileError
         );
+      }
+
+      if (!mounted) return;
+
+      setNickname(profile?.nickname || "");
+      setUser(currentUser);
+    } catch (fetchError) {
+      console.error(
+        "사용자 정보 조회 실패:",
+        fetchError
+      );
+
+      if (mounted) {
         setUser(null);
       }
+    } finally {
+      if (mounted) {
+        setAuthChecked(true);
+      }
     }
+  }
 
-    fetchUser();
-  }, []);
+  fetchUser();
+
+  return () => {
+    mounted = false;
+  };
+}, []);
 
   useEffect(() => {
     return () => {
@@ -748,6 +768,22 @@ function WorldcupMaker({ onCreate, onCancel }) {
       setLoading(false);
     }
   }
+
+if (!authChecked) {
+  return (
+    <div
+      style={{
+        minHeight: 500,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        color: "#fff",
+      }}
+    >
+      Loading...
+    </div>
+  );
+}
 
 if (!user) {
   const currentLang = (
