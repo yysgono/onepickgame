@@ -619,6 +619,94 @@ app.get("/api/board", async (req, res) => {
 });
 
 /*
+ * 월드컵 SEO 데이터 조회
+ *
+ * 읽기 전용
+ * 필요한 컬럼만 조회
+ * DB 오류가 나도 500 JSON만 반환
+ */
+app.get(
+  "/api/seo/worldcup/:id",
+  async (req, res) => {
+    const id = String(
+      req.params?.id || ""
+    ).trim();
+
+    if (!id) {
+      return res.status(400).json({
+        error: "worldcup id required",
+      });
+    }
+
+    try {
+      const {
+        data,
+        error,
+      } = await supabase
+        .from("worldcups")
+        .select(`
+          id,
+          title,
+          description,
+          title_translations,
+          description_translations,
+          data,
+          created_at
+        `)
+        .eq("id", id)
+        .is("deleted_at", null)
+        .maybeSingle();
+
+      if (error) {
+        console.error(
+          "월드컵 SEO 조회 오류:",
+          error
+        );
+
+        return res.status(500).json({
+          error: "seo lookup failed",
+        });
+      }
+
+      if (!data) {
+        return res.status(404).json({
+          error: "worldcup not found",
+        });
+      }
+
+      res.setHeader(
+        "Cache-Control",
+        "public, s-maxage=300, stale-while-revalidate=3600"
+      );
+
+      return res.status(200).json({
+        id: data.id,
+        title: data.title || "",
+        description:
+          data.description || "",
+        title_translations:
+          data.title_translations || {},
+        description_translations:
+          data.description_translations || {},
+        image:
+          data?.data?.[0]?.image || "",
+        created_at:
+          data.created_at || null,
+      });
+    } catch (err) {
+      console.error(
+        "월드컵 SEO API 예외:",
+        err
+      );
+
+      return res.status(500).json({
+        error: "internal server error",
+      });
+    }
+  }
+);
+
+/*
  * API 주소를 잘못 입력했을 때
  *
  * 반드시 다른 API 코드들보다 아래에 있어야 합니다.
