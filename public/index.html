@@ -1,88 +1,37 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- ✅ Google AdSense (자동광고 전용) -->
+  <!-- Charset -->
+  <meta charset="UTF-8" />
+
+  <!-- Viewport -->
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
+
+  <!-- Google AdSense -->
   <script
     async
     src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2906270915716379"
     crossorigin="anonymous"
   ></script>
 
-  <!-- ✅ Canonical URL -->
-  <link rel="canonical" href="https://www.onepickgame.com/" />
-
-  <!-- ✅ Meta SEO -->
-  <meta
-    name="description"
-    content="이상형 월드컵 One Pick Game - Create your own tournament bracket with our tournament bracket generator and maker. Enjoy fun matchups and play with users from around the world!"
-  />
-  <meta
-    property="og:title"
-    content="이상형 월드컵 OnePickGame - Tournament Bracket Game Site - One Pick Game"
-  />
-  <meta
-    property="og:description"
-    content="Create your own tournament bracket with our tournament bracket generator and maker. Enjoy fun matchups and play with users from around the world!"
-  />
-  <meta
-    property="og:image"
-    content="https://www.onepickgame.com/ogimg_superwide.png"
-  />
-  <meta property="og:image:width" content="1200" />
-  <meta property="og:image:height" content="630" />
-  <meta property="og:url" content="https://www.onepickgame.com/" />
-
-  <!-- ✅ Twitter Card -->
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta
-    name="twitter:title"
-    content="이상형 월드컵 OnePickGame - Tournament Bracket Game Site - One Pick Game"
-  />
-  <meta
-    name="twitter:description"
-    content="이상형 월드컵 One Pick Game - Create your own tournament bracket with our tournament bracket generator and maker. Enjoy fun matchups and play with users from around the world!"
-  />
-  <meta
-    name="twitter:image"
-    content="https://www.onepickgame.com/ogimg_superwide.png"
-  />
-
-  <!-- ✅ Charset & Viewport -->
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-  <!-- ✅ Title -->
-  <title>Tournament Bracket | One Pick Game 이상형 월드컵 원픽게임</title>
-
-  <!-- ✅ hreflang -->
-  <link rel="alternate" hreflang="en" href="https://www.onepickgame.com/" />
-  <link rel="alternate" hreflang="ar" href="https://www.onepickgame.com/ar/" />
-  <link rel="alternate" hreflang="bn" href="https://www.onepickgame.com/bn/" />
-  <link rel="alternate" hreflang="de" href="https://www.onepickgame.com/de/" />
-  <link rel="alternate" hreflang="es" href="https://www.onepickgame.com/es/" />
-  <link rel="alternate" hreflang="fr" href="https://www.onepickgame.com/fr/" />
-  <link rel="alternate" hreflang="hi" href="https://www.onepickgame.com/hi/" />
-  <link rel="alternate" hreflang="id" href="https://www.onepickgame.com/id/" />
-  <link rel="alternate" hreflang="ja" href="https://www.onepickgame.com/ja/" />
-  <link rel="alternate" hreflang="ko" href="https://www.onepickgame.com/ko/" />
-  <link rel="alternate" hreflang="pt" href="https://www.onepickgame.com/pt/" />
-  <link rel="alternate" hreflang="ru" href="https://www.onepickgame.com/ru/" />
-  <link rel="alternate" hreflang="th" href="https://www.onepickgame.com/th/" />
-  <link rel="alternate" hreflang="tr" href="https://www.onepickgame.com/tr/" />
-  <link rel="alternate" hreflang="vi" href="https://www.onepickgame.com/vi/" />
-  <link rel="alternate" hreflang="zh" href="https://www.onepickgame.com/zh/" />
-  <link rel="alternate" hreflang="x-default" href="https://www.onepickgame.com/" />
-
-  <!-- ✅ Favicon -->
+  <!-- Favicon -->
   <link
     rel="icon"
     type="image/png"
     sizes="512x512"
     href="/favicon_512x512.png"
   />
-  <link rel="icon" type="image/svg+xml" href="/favicon_auto.svg" />
 
-  <!-- ✅ Schema.org -->
+  <link
+    rel="icon"
+    type="image/svg+xml"
+    href="/favicon_auto.svg"
+  />
+
+  <!-- Organization Schema -->
   <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -93,22 +42,30 @@
     }
   </script>
 
-  <!-- ✅ Preconnect for Google Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <!-- Google Fonts -->
+  <link
+    rel="preconnect"
+    href="https://fonts.googleapis.com"
+  />
 
-  <!-- ✅ Preload & Load Fonts -->
+  <link
+    rel="preconnect"
+    href="https://fonts.gstatic.com"
+    crossorigin
+  />
+
   <link
     rel="preload"
     as="style"
     href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Noto+Sans:wght@400;700&display=swap"
   />
+
   <link
     href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Noto+Sans:wght@400;700&display=swap"
     rel="stylesheet"
   />
 
-  <!-- ✅ Critical CSS -->
+  <!-- Critical CSS -->
   <style>
     body {
       margin: 0;
@@ -130,30 +87,14 @@
       color: #00c8ff;
       font-weight: bold;
     }
-
-    /* ✅ 검색엔진에는 보이지만 화면에서는 숨김 */
-    .seo-h1 {
-      position: absolute;
-      width: 1px;
-      height: 1px;
-      padding: 0;
-      margin: -1px;
-      overflow: hidden;
-      clip: rect(0, 0, 0, 0);
-      white-space: nowrap;
-      border: 0;
-    }
   </style>
 </head>
 
 <body>
-  <!-- ✅ 초기 HTML에도 포함되는 H1 -->
-  <h1 class="seo-h1">
-    OnePickGame - Ideal Type World Cup and Tournament Bracket Game
-  </h1>
-
   <div id="root">
-    <div class="loading-screen">Loading...</div>
+    <div class="loading-screen">
+      Loading...
+    </div>
   </div>
 </body>
 </html>

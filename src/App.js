@@ -1729,6 +1729,17 @@ function handleMakeWorldcup() {
               }
             />
 
+{/* ID 없는 잘못된 게임 URL → 해당 언어 홈으로 이동 */}
+<Route
+  path="/:lang/select-round"
+  element={<Navigate to=".." replace relative="path" />}
+/>
+
+<Route
+  path="/:lang/result"
+  element={<Navigate to=".." replace relative="path" />}
+/>
+
             <Route
               path="/:lang/select-round/:id"
               element={

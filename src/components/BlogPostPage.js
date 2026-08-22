@@ -413,7 +413,7 @@ export default function BlogPostPage() {
           slug={`blog/${slug}`}
           title={`${text.error} | ${brandName}`}
           description={text.error}
-          noindex={true}
+          indexable={false}
         />
 
         <main className="blog-page">
@@ -443,7 +443,7 @@ export default function BlogPostPage() {
           slug={`blog/${slug}`}
           title={`${text.notFound} | ${brandName}`}
           description={text.notFoundDescription}
-          noindex={true}
+          indexable={false}
         />
 
         <main className="blog-page">
