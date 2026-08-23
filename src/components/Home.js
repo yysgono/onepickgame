@@ -315,8 +315,10 @@ const buttonStyle = {
   fontWeight: 900,
   border: "none",
   borderRadius: 8,
-  fontSize: isMobile ? 12 : 13,
-  padding: isMobile ? "5px 8px" : "6px 11px",
+
+  fontSize: isMobile ? 13 : 14,
+  padding: isMobile ? "6px 8px" : "7px 11px",
+
   outline: "none",
   cursor: "pointer",
   letterSpacing: "0.2px",
@@ -337,8 +339,8 @@ const buttonStyle = {
 
 const smallButtonStyle = {
   ...buttonStyle,
-  padding: isMobile ? "4px 6px" : "6px 8px",
-  fontSize: isMobile ? 11 : 12,
+  padding: isMobile ? "5px 6px" : "7px 8px",
+  fontSize: isMobile ? 12 : 13,
 };
 
 
@@ -348,7 +350,7 @@ const smallButtonStyle = {
 
 const cardDescStyle = {
   color: "#b9dafb",
-  fontSize: isMobile ? 13 : 15,
+  fontSize: isMobile ? 14 : 16,
   lineHeight: 1.35,
   textAlign: "center",
 
@@ -356,7 +358,7 @@ const cardDescStyle = {
     ? "5px 10px 0 10px"
     : "7px 16px 0 16px",
 
-  height: isMobile ? 40 : 43,
+  height: isMobile ? 42 : 46,
   boxSizing: "border-box",
 
   display: "-webkit-box",
@@ -599,6 +601,11 @@ return (
             ? "0 11px"
             : "0 15px",
 
+            width: isMobile ? 62 : 72,
+display: "inline-flex",
+alignItems: "center",
+justifyContent: "center",
+
           flexShrink: 0,
 
           border:
@@ -615,7 +622,7 @@ return (
 
           color: "#fff",
 
-          fontSize: isMobile ? 13 : 15,
+          fontSize: isMobile ? 14 : 16,
           fontWeight: 800,
 
           cursor: "pointer",
@@ -645,6 +652,11 @@ return (
             ? "0 11px"
             : "0 15px",
 
+            width: isMobile ? 62 : 72,
+display: "inline-flex",
+alignItems: "center",
+justifyContent: "center",
+
           flexShrink: 0,
 
           border:
@@ -661,7 +673,7 @@ return (
 
           color: "#fff",
 
-          fontSize: isMobile ? 13 : 15,
+          fontSize: isMobile ? 14 : 16,
           fontWeight: 800,
 
           cursor: "pointer",
@@ -1017,7 +1029,7 @@ onMouseDown={(e) => {
       textAlign: "center",
       lineHeight: 1.14,
 
-      fontSize: isMobile ? 16 : 18,
+      fontSize: isMobile ? 17 : 20,
       letterSpacing: "0.1px",
 
       color: "#fff",
@@ -1052,7 +1064,7 @@ onMouseDown={(e) => {
     width: "100%",
     textAlign: "center",
     color: "#8fc7ff",
-    fontSize: isMobile ? 12 : 13,
+    fontSize: isMobile ? 13 : 14,
     fontWeight: 700,
     padding: "2px 0 3px",
     background: mainDark,
