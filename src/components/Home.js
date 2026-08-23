@@ -661,7 +661,7 @@ return (
 
           color: "#fff",
 
-          fontSize: isMobile ? 12 : 13,
+          fontSize: isMobile ? 13 : 15,
           fontWeight: 800,
 
           cursor: "pointer",
