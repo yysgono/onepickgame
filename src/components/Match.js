@@ -245,7 +245,7 @@ function AdaptiveTitle({
     fontSize,
     setFontSize,
   ] = useState(
-    isMobile ? 54 : 100
+    isMobile ? 38 : 54
   );
 
   useEffect(() => {
@@ -253,11 +253,16 @@ function AdaptiveTitle({
       return;
     }
 
+    // 제목은 최대 2줄까지만 허용
     const boxHeight =
-      isMobile ? 65 : 130;
+      isMobile ? 72 : 112;
 
+    // 너무 크게 시작하지 않도록 조정
     let size =
-      isMobile ? 54 : 100;
+      isMobile ? 38 : 54;
+
+    const minSize =
+      isMobile ? 22 : 32;
 
     ref.current.style.fontSize =
       `${size}px`;
@@ -265,10 +270,9 @@ function AdaptiveTitle({
     while (
       ref.current.scrollHeight >
         boxHeight &&
-      size >
-        (isMobile ? 22 : 38)
+      size > minSize
     ) {
-      size -= 2;
+      size -= 1;
 
       ref.current.style.fontSize =
         `${size}px`;
@@ -286,23 +290,43 @@ function AdaptiveTitle({
       style={{
         fontWeight: 900,
         color: "#fff",
-        letterSpacing:
-          "-1.5px",
-        lineHeight: 1.1,
-        wordBreak: "break-all",
+
+        fontSize,
+
+        // 제목 가독성
+        letterSpacing: isMobile
+          ? "-0.5px"
+          : "-1px",
+        lineHeight: 1.15,
+
+        // ★ 영어 단어 중간 잘림 방지
+        wordBreak: "keep-all",
+        overflowWrap: "normal",
+        whiteSpace: "normal",
+
         textAlign: "center",
+
+        // 최대 2줄
         display: "-webkit-box",
         WebkitLineClamp: 2,
-        WebkitBoxOrient:
-          "vertical",
+        WebkitBoxOrient: "vertical",
         overflow: "hidden",
-        fontSize,
+
+        // ★ 기존 900보다 넓게
+        width: "100%",
         maxWidth: isMobile
           ? "92vw"
-          : 900,
+          : 1100,
+
+        boxSizing: "border-box",
+        padding: isMobile
+          ? "0 10px"
+          : "0 20px",
+
         margin: isMobile
-          ? "5px auto 0"
-          : "13px auto 0",
+          ? "8px auto 4px"
+          : "18px auto 6px",
+
         userSelect: "text",
       }}
       title={title}
