@@ -341,29 +341,6 @@ const smallButtonStyle = {
   fontSize: isMobile ? 11 : 12,
 };
 
-  const sortButton = (label, value) => (
-    <button
-      type="button"
-      style={{
-        background: sort === value ? "#1976ed" : "#222c3d",
-        color: "#fff",
-        fontWeight: 800,
-        border: "none",
-        borderRadius: 7,
-        fontSize: isMobile ? 13 : 14,
-        padding: isMobile ? "6px 14px" : "7px 18px",
-        marginRight: 6,
-        marginLeft: 0,
-        cursor: "pointer",
-        boxShadow: sort === value ? "0 2px 14px #1976ed55" : "none",
-        outline: sort === value ? "2px solid #22c1ff99" : "none",
-        transition: "background .15s, box-shadow .13s",
-      }}
-      onClick={() => setSort(value)}
-    >
-      {label}
-    </button>
-  );
 
   const handleLoadMore = () => {
     setVisibleCount((prev) => prev + PAGE_SIZE);
@@ -430,93 +407,342 @@ return (
     {showFixedWorldcups !== false && (
       <FixedCupSection worldcupList={fixedCupsWithStats || []} />
     )}
-
-{/* 검색/정렬 + 언어 선택 */}
+  {/* 만들기 / 언어 / 검색 / 정렬 */}
 <div
   style={{
-    width: "100vw",
+    width: "100%",
     display: "flex",
-    flexDirection: "column",
     justifyContent: "center",
-    alignItems: "center",
-    gap: isMobile ? 9 : 11,
-    margin: isMobile ? "12px 0 10px" : "22px 0 16px",
-    padding: isMobile ? "0 8px" : "0 12px",
-    zIndex: 5,
+    padding: isMobile ? "0 10px" : "0 16px",
+    margin: isMobile ? "16px 0 14px" : "26px 0 22px",
     boxSizing: "border-box",
+    zIndex: 5,
   }}
 >
-  {/* Popular / Latest / 검색창 */}
   <div
     style={{
+      width: "100%",
+      maxWidth: isMobile ? 430 : 700,
+
       display: "flex",
-      justifyContent: "center",
-      alignItems: "center",
-      gap: isMobile ? 8 : 14,
-      flexWrap: "wrap",
+      flexDirection: "column",
+
+      gap: isMobile ? 8 : 10,
+
+      padding: isMobile
+        ? "11px 10px"
+        : "13px 16px",
+
+      background: "rgba(14, 20, 34, 0.78)",
+
+      border:
+        "1px solid rgba(65, 125, 210, 0.22)",
+
+      borderRadius: 14,
+
+      boxShadow:
+        "0 10px 28px rgba(0,0,0,0.35)",
+
+      backdropFilter: "blur(10px)",
+      WebkitBackdropFilter: "blur(10px)",
+
+      boxSizing: "border-box",
     }}
   >
+
+    {/* =========================
+        1줄 : 만들기 + 언어
+    ========================== */}
     <div
       style={{
+        width: "100%",
         display: "flex",
         alignItems: "center",
-        gap: 6,
         justifyContent: "center",
+        gap: isMobile ? 7 : 9,
       }}
     >
-      {sortButton(t("popular"), "popular")}
-      {sortButton(t("latest"), "recent")}
+      {/* 이상형 월드컵 만들기 */}
+      <button
+        type="button"
+        onClick={() => {
+          if (onMakeWorldcup) {
+            onMakeWorldcup();
+          } else {
+            goto(`/${lang}/create`);
+          }
+        }}
+        style={{
+          flex: 1,
+          height: isMobile ? 41 : 44,
+
+          border:
+            "1px solid rgba(45,145,255,0.65)",
+
+          borderRadius: 8,
+
+          background: "#176fd1",
+
+          color: "#fff",
+
+          fontSize: isMobile ? 12 : 14,
+          fontWeight: 900,
+
+          fontFamily:
+            "'Orbitron', 'Pretendard', sans-serif",
+
+          cursor: "pointer",
+
+          boxShadow:
+            "0 4px 12px rgba(23,111,209,0.24)",
+
+          letterSpacing: "0.1px",
+
+          whiteSpace: "nowrap",
+
+          transition:
+            "transform .15s, background .15s, box-shadow .15s",
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.transform =
+            "translateY(-1px)";
+
+          e.currentTarget.style.background =
+            "#1d7be3";
+
+          e.currentTarget.style.boxShadow =
+            "0 6px 16px rgba(23,111,209,0.32)";
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.transform = "";
+
+          e.currentTarget.style.background =
+            "#176fd1";
+
+          e.currentTarget.style.boxShadow =
+            "0 4px 12px rgba(23,111,209,0.24)";
+        }}
+      >
+        ＋{" "}
+        {t("create_worldcup", {
+          defaultValue:
+            lang === "ko"
+              ? "이상형 월드컵 만들기"
+              : "Create Bracket",
+        })}
+      </button>
+
+      {/* 언어 선택 */}
+      <select
+        value={lang}
+        onChange={(e) =>
+          changeHomeLanguage(e.target.value)
+        }
+        aria-label="Select language"
+        style={{
+          width: isMobile ? 100 : 120,
+          flexShrink: 0,
+
+          height: isMobile ? 41 : 44,
+
+          background: "#171f2d",
+          color: "#dfe9f8",
+
+          border:
+            "1px solid rgba(68,126,205,0.45)",
+
+          borderRadius: 8,
+
+          padding: isMobile
+            ? "0 7px"
+            : "0 10px",
+
+          boxSizing: "border-box",
+
+          fontSize: isMobile ? 11 : 13,
+          fontWeight: 700,
+
+          cursor: "pointer",
+          outline: "none",
+        }}
+      >
+        {LANGUAGES.map((item) => (
+          <option
+            key={item.code}
+            value={item.code}
+          >
+            {item.label}
+          </option>
+        ))}
+      </select>
     </div>
 
-    <input
-      type="text"
-      placeholder={t("search_placeholder")}
-      value={search}
-      onChange={(e) => setSearch(e.target.value)}
+    {/* =========================
+        2줄 : 인기 + 최신 + 검색
+    ========================== */}
+    <div
       style={{
-        background: "#fff",
-        color: "#1b2236",
-        border: "2px solid #fff",
-        borderRadius: 8,
-        padding: isMobile ? "9px 13px" : "13px 20px",
-        fontSize: isMobile ? 16 : 17,
-        minWidth: isMobile ? 180 : 220,
-        maxWidth: 400,
-        outline: "none",
-        fontWeight: 700,
-        boxShadow: "0 2px 12px #fff5",
-        transition: "border .14s, box-shadow .14s",
-        letterSpacing: ".1px",
+        width: "100%",
+        display: "flex",
+        alignItems: "center",
+        gap: isMobile ? 6 : 8,
       }}
-    />
-  </div>
+    >
+      {/* 인기 */}
+      <button
+        type="button"
+        onClick={() => setSort("popular")}
+        style={{
+          height: isMobile ? 38 : 40,
 
-  {/* 언어 선택 */}
-  <select
-    value={lang}
-    onChange={(e) => changeHomeLanguage(e.target.value)}
-    aria-label="Select language"
-    style={{
-      background: "#222f45",
-      color: "#fff",
-      border: "1px solid #1976ed",
-      borderRadius: 8,
-      padding: isMobile ? "7px 12px" : "8px 15px",
-      fontSize: isMobile ? 13 : 14,
-      fontWeight: 700,
-      minWidth: isMobile ? 130 : 150,
-      cursor: "pointer",
-      outline: "none",
-      textAlign: "center",
-      boxShadow: "0 0 8px #1976ed55",
-    }}
-  >
-    {LANGUAGES.map((item) => (
-      <option key={item.code} value={item.code}>
-        {item.label}
-      </option>
-    ))}
-  </select>
+          padding: isMobile
+            ? "0 11px"
+            : "0 15px",
+
+          flexShrink: 0,
+
+          border:
+            sort === "popular"
+              ? "1px solid #2f8cff"
+              : "1px solid rgba(255,255,255,0.08)",
+
+          borderRadius: 7,
+
+          background:
+            sort === "popular"
+              ? "#1677d8"
+              : "#1b2434",
+
+          color: "#fff",
+
+          fontSize: isMobile ? 12 : 13,
+          fontWeight: 800,
+
+          cursor: "pointer",
+
+          boxShadow:
+            sort === "popular"
+              ? "0 3px 10px rgba(22,119,216,0.25)"
+              : "none",
+
+          whiteSpace: "nowrap",
+
+          transition:
+            "background .15s, border .15s",
+        }}
+      >
+        {t("popular")}
+      </button>
+
+      {/* 최신 */}
+      <button
+        type="button"
+        onClick={() => setSort("recent")}
+        style={{
+          height: isMobile ? 38 : 40,
+
+          padding: isMobile
+            ? "0 11px"
+            : "0 15px",
+
+          flexShrink: 0,
+
+          border:
+            sort === "recent"
+              ? "1px solid #2f8cff"
+              : "1px solid rgba(255,255,255,0.08)",
+
+          borderRadius: 7,
+
+          background:
+            sort === "recent"
+              ? "#1677d8"
+              : "#1b2434",
+
+          color: "#fff",
+
+          fontSize: isMobile ? 12 : 13,
+          fontWeight: 800,
+
+          cursor: "pointer",
+
+          boxShadow:
+            sort === "recent"
+              ? "0 3px 10px rgba(22,119,216,0.25)"
+              : "none",
+
+          whiteSpace: "nowrap",
+
+          transition:
+            "background .15s, border .15s",
+        }}
+      >
+        {t("latest")}
+      </button>
+
+      {/* 검색 */}
+      <div
+        style={{
+          flex: 1,
+          minWidth: 0,
+          position: "relative",
+        }}
+      >
+        <input
+          type="text"
+          placeholder={t("search_placeholder")}
+          value={search}
+          onChange={(e) =>
+            setSearch(e.target.value)
+          }
+          style={{
+            width: "100%",
+
+            height: isMobile ? 38 : 40,
+
+            background: "#fff",
+            color: "#172033",
+
+            border: "none",
+            borderRadius: 7,
+
+            padding: isMobile
+              ? "0 32px 0 11px"
+              : "0 38px 0 14px",
+
+            boxSizing: "border-box",
+
+            fontSize: isMobile ? 12 : 14,
+            fontWeight: 700,
+
+            outline: "none",
+
+            boxShadow:
+              "0 2px 8px rgba(0,0,0,0.18)",
+          }}
+        />
+
+        <span
+          style={{
+            position: "absolute",
+
+            right: isMobile ? 9 : 12,
+            top: "50%",
+
+            transform: "translateY(-50%)",
+
+            color: "#6c778c",
+
+            fontSize: isMobile ? 13 : 15,
+
+            pointerEvents: "none",
+          }}
+        >
+          🔍
+        </span>
+      </div>
+    </div>
+  </div>
 </div>
 
       {/* 카드 그리드 */}
