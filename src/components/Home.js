@@ -485,7 +485,7 @@ return (
 
           color: "#fff",
 
-          fontSize: isMobile ? 12 : 14,
+          fontSize: isMobile ? 13 : 16,
           fontWeight: 900,
 
           fontFamily:
@@ -559,7 +559,7 @@ return (
 
           boxSizing: "border-box",
 
-          fontSize: isMobile ? 11 : 13,
+          fontSize: isMobile ? 12 : 14,
           fontWeight: 700,
 
           cursor: "pointer",
@@ -615,7 +615,7 @@ return (
 
           color: "#fff",
 
-          fontSize: isMobile ? 12 : 13,
+          fontSize: isMobile ? 13 : 15,
           fontWeight: 800,
 
           cursor: "pointer",
@@ -712,7 +712,7 @@ return (
 
             boxSizing: "border-box",
 
-            fontSize: isMobile ? 12 : 14,
+            fontSize: isMobile ? 13 : 16,
             fontWeight: 700,
 
             outline: "none",
