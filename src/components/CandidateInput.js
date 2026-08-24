@@ -9,16 +9,22 @@ import { hasBadword } from "../badwords-multilang";
 
 const DEFAULT_IMAGE = "/default-thumb.png";
 
-function getYoutubeThumb(url) {
-  const match = url?.match(
-    /(?:youtu\.be\/|youtube\.com\/(?:embed\/|watch\?v=))([\w-]{11})/
+function getYoutubeVideoId(url = "") {
+  const match = String(url).match(
+    /(?:youtu\.be\/|youtube\.com\/(?:embed\/|shorts\/|watch\?v=))([\w-]{11})/
   );
 
-  if (match) {
-    return `https://img.youtube.com/vi/${match[1]}/mqdefault.jpg`;
+  return match ? match[1] : null;
+}
+
+function getYoutubeThumb(url) {
+  const videoId = getYoutubeVideoId(url);
+
+  if (!videoId) {
+    return null;
   }
 
-  return null;
+  return `https://img.youtube.com/vi/${videoId}/mqdefault.jpg`;
 }
 
 function getFileExtension(
@@ -32,16 +38,18 @@ function getFileExtension(
       .toLowerCase();
   }
 
-  if (!url) return "";
+  if (!url) {
+    return "";
+  }
 
   const cleanUrl =
-    url.split("?")[0];
+    String(url).split("?")[0];
 
   const fileName =
     cleanUrl.split("/").pop();
 
   const parts =
-    fileName.split(".");
+    String(fileName).split(".");
 
   if (parts.length === 1) {
     return "";
@@ -52,7 +60,7 @@ function getFileExtension(
   ].toLowerCase();
 }
 
-// GIF 첫 프레임 정지 썸네일
+// GIF 첫 프레임 썸네일
 function GifThumbnail({
   fileOrUrl,
   style,
@@ -64,9 +72,7 @@ function GifThumbnail({
 
     if (fileOrUrl instanceof File) {
       objectUrl =
-        URL.createObjectURL(
-          fileOrUrl
-        );
+        URL.createObjectURL(fileOrUrl);
     } else if (
       typeof fileOrUrl === "string"
     ) {
@@ -150,10 +156,21 @@ function CandidateInput({
   const fileInputRef =
     useRef(null);
 
+  const youtubeFetchTimerRef =
+    useRef(null);
+
+  const latestUrlRef =
+    useRef("");
+
   const [
     previewUrl,
     setPreviewUrl,
   ] = useState("");
+
+  const [
+    youtubeLoading,
+    setYoutubeLoading,
+  ] = useState(false);
 
   // 파일 미리보기
   useEffect(() => {
@@ -191,6 +208,19 @@ function CandidateInput({
     value.image,
   ]);
 
+  // 타이머 정리
+  useEffect(() => {
+    return () => {
+      if (
+        youtubeFetchTimerRef.current
+      ) {
+        clearTimeout(
+          youtubeFetchTimerRef.current
+        );
+      }
+    };
+  }, []);
+
   const youtubeThumb =
     getYoutubeThumb(
       value.image
@@ -203,14 +233,6 @@ function CandidateInput({
         "",
       value.file
     );
-
-  const isVideoFile =
-    [
-      "mp4",
-      "webm",
-      "ogg",
-      "mov",
-    ].includes(ext);
 
   const isGif =
     ext === "gif" ||
@@ -260,9 +282,7 @@ function CandidateInput({
     ) {
       alert(
         t("badword_warning") ||
-          t(
-            "Contains profanity or banned words"
-          )
+          "Contains profanity or banned words"
       );
 
       return;
@@ -274,19 +294,144 @@ function CandidateInput({
     });
   }
 
+  async function fetchYoutubeTitle(
+    url
+  ) {
+    if (
+      !getYoutubeVideoId(url)
+    ) {
+      return;
+    }
+
+    // 이미 이름이 있으면 자동 입력 안 함
+    if (
+      String(
+        value.name || ""
+      ).trim()
+    ) {
+      return;
+    }
+
+    try {
+      setYoutubeLoading(true);
+
+      const response =
+        await fetch(
+          `https://www.youtube.com/oembed?url=${encodeURIComponent(
+            url
+          )}&format=json`
+        );
+
+      if (!response.ok) {
+        return;
+      }
+
+      const data =
+        await response.json();
+
+      const title =
+        String(
+          data?.title || ""
+        ).trim();
+
+      if (!title) {
+        return;
+      }
+
+      // 요청 중 URL이 바뀐 경우 무시
+      if (
+        latestUrlRef.current !==
+        url
+      ) {
+        return;
+      }
+
+      // 사용자가 그 사이 직접 이름을 입력했다면 덮어쓰지 않음
+      if (
+        String(
+          value.name || ""
+        ).trim()
+      ) {
+        return;
+      }
+
+      onChange({
+        ...value,
+        name:
+          title.slice(
+            0,
+            24
+          ),
+        image:
+          url,
+        file:
+          undefined,
+        fileName:
+          undefined,
+      });
+    } catch (error) {
+      console.error(
+        "YouTube 제목 가져오기 실패:",
+        error
+      );
+    } finally {
+      setYoutubeLoading(false);
+    }
+  }
+
   function handleImageUrlChange(
     event
   ) {
+    const url =
+      event.target.value;
+
+    latestUrlRef.current =
+      url;
+
     onChange({
       ...value,
       image:
-        event.target.value,
-      file: undefined,
-      fileName: undefined,
+        url,
+      file:
+        undefined,
+      fileName:
+        undefined,
     });
+
+    if (
+      youtubeFetchTimerRef.current
+    ) {
+      clearTimeout(
+        youtubeFetchTimerRef.current
+      );
+    }
+
+    // 유튜브 링크가 아니면 종료
+    if (
+      !getYoutubeVideoId(url)
+    ) {
+      return;
+    }
+
+    // 이름이 이미 있으면 자동 입력 안 함
+    if (
+      String(
+        value.name || ""
+      ).trim()
+    ) {
+      return;
+    }
+
+    // 입력할 때마다 요청하지 않도록 500ms 대기
+    youtubeFetchTimerRef.current =
+      setTimeout(() => {
+        fetchYoutubeTitle(
+          url
+        );
+      }, 500);
   }
 
-  async function handleFileChange(
+  function handleFileChange(
     event
   ) {
     const file =
@@ -325,10 +470,8 @@ function CandidateInput({
       !mimeAllowed
     ) {
       alert(
-        t(
-          "only_image_file"
-        ) ||
-          "Only JPG, PNG, GIF, SVG, WebP, AVIF files can be uploaded."
+        t("only_image_file") ||
+          "Only JPG, PNG, GIF, SVG, WebP, AVIF image files can be uploaded."
       );
 
       event.target.value =
@@ -337,8 +480,7 @@ function CandidateInput({
       return;
     }
 
-    // WorldcupMaker에서 최종 WebP 변환하므로
-    // 여기서는 원본 입력 파일 크기만 제한
+    // 로컬 이미지 최대 6MB
     if (
       file.size >
       6 * 1024 * 1024
@@ -364,7 +506,6 @@ function CandidateInput({
         file.name,
     });
 
-    // 같은 파일 재선택 가능
     event.target.value =
       "";
   }
@@ -459,16 +600,6 @@ function CandidateInput({
                 DEFAULT_IMAGE;
             }}
           />
-        ) : isVideoFile ? (
-          <span
-            role="img"
-            aria-label={
-              t("video") ||
-              "Video"
-            }
-          >
-            🎥
-          </span>
         ) : (
           <span
             style={{
@@ -482,41 +613,49 @@ function CandidateInput({
         )}
       </div>
 
-      {/* 이름 */}
-      <input
-        type="text"
-        value={
-          value.name || ""
-        }
-        onChange={
-          handleNameChange
-        }
-        placeholder={
-          t("name") ||
-          "Name"
-        }
-        maxLength={24}
+      {/* 후보 이름 */}
+      <div
         style={{
-          width: 100,
-          padding:
-            "9px 8px",
-          borderRadius: 7,
-          border:
-            "1.2px solid #b4c4e4",
-          fontSize: 15,
-          fontWeight: 600,
-          background:
-            "#fff",
+          width: 110,
           flexShrink: 0,
-          boxSizing:
-            "border-box",
         }}
-        disabled={
-          disabled
-        }
-      />
+      >
+        <input
+          type="text"
+          value={
+            value.name || ""
+          }
+          onChange={
+            handleNameChange
+          }
+          placeholder={
+            youtubeLoading
+              ? "Loading..."
+              : t("name") ||
+                "Name"
+          }
+          maxLength={24}
+          style={{
+            width: "100%",
+            padding:
+              "9px 8px",
+            borderRadius: 7,
+            border:
+              "1.2px solid #b4c4e4",
+            fontSize: 15,
+            fontWeight: 600,
+            background:
+              "#fff",
+            boxSizing:
+              "border-box",
+          }}
+          disabled={
+            disabled
+          }
+        />
+      </div>
 
-      {/* URL / YouTube */}
+      {/* 이미지 URL / YouTube */}
       <input
         type="text"
         value={
@@ -580,22 +719,6 @@ function CandidateInput({
             disabled
               ? 0.6
               : 1,
-        }}
-        onMouseOver={(
-          event
-        ) => {
-          if (!disabled) {
-            event.currentTarget.style.background =
-              "#45b7fa";
-          }
-        }}
-        onMouseOut={(
-          event
-        ) => {
-          if (!disabled) {
-            event.currentTarget.style.background =
-              "linear-gradient(90deg, #1976ed 70%, #45b7fa 100%)";
-          }
         }}
         disabled={
           disabled
