@@ -726,39 +726,43 @@ function WorldcupMaker({
     banInfo,
   } = useBanCheck(user);
 
-  function addCandidate() {
-    setCandidates(
-      (current) => {
-        if (
-          current.length >=
-          MAX_CANDIDATES
-        ) {
-          alert(
-            t(
-              "max_candidates",
-              {
-                count:
-                  MAX_CANDIDATES,
-              }
-            ) ||
-              `You can add up to ${MAX_CANDIDATES} candidates.`
-          );
+function addCandidate() {
+  setCandidates((current) => {
+    // 앞으로 추가할 수 있는 남은 개수
+    const remaining =
+      MAX_CANDIDATES - current.length;
 
-          return current;
-        }
+    if (remaining <= 0) {
+      alert(
+        t("max_candidates", {
+          count: MAX_CANDIDATES,
+        }) ||
+          `You can add up to ${MAX_CANDIDATES} candidates.`
+      );
 
-        return [
-          ...current,
-          {
-            id: uuidv4(),
-            name: "",
-            image: "",
-            file: null,
-          },
-        ];
-      }
+      return current;
+    }
+
+    // 기본 10개 추가
+    // 최대 개수에 가까우면 남은 개수만 추가
+    const addCount = Math.min(10, remaining);
+
+    const newCandidates = Array.from(
+      { length: addCount },
+      () => ({
+        id: uuidv4(),
+        name: "",
+        image: "",
+        file: null,
+      })
     );
-  }
+
+    return [
+      ...current,
+      ...newCandidates,
+    ];
+  });
+}
 
   function updateCandidate(
     index,
@@ -1099,35 +1103,57 @@ if (!image) {
       return;
     }
 
-    const list =
-      candidates
-        .map(
-          (
-            candidate
-          ) => ({
-            ...candidate,
+  const list = candidates
+  .map((candidate) => ({
+    ...candidate,
 
-            name:
-              String(
-                candidate.name ||
-                  ""
-              ).trim(),
+    name: String(
+      candidate.name || ""
+    ).trim(),
 
-            image:
-              String(
-                candidate.image ||
-                  ""
-              ).trim(),
+    image: String(
+      candidate.image || ""
+    ).trim(),
 
-            id:
-              candidate.id ||
-              uuidv4(),
-          })
-        )
-        .filter(
-          (candidate) =>
-            candidate.name
-        );
+    id:
+      candidate.id ||
+      uuidv4(),
+  }))
+
+  // 이름 / 이미지 / 파일이 전부 없는 완전 빈칸은 자동 제외
+  .filter((candidate) => {
+    const hasName =
+      Boolean(candidate.name);
+
+    const hasImage =
+      Boolean(candidate.image);
+
+    const hasFile =
+      candidate.file instanceof File;
+
+    return (
+      hasName ||
+      hasImage ||
+      hasFile
+    );
+  });
+
+
+// 뭔가 입력한 후보인데 이름만 없는 경우만 차단
+const candidateWithoutName =
+  list.find(
+    (candidate) =>
+      !candidate.name
+  );
+
+if (candidateWithoutName) {
+  setError(
+    t("candidate_name_required") ||
+      "Please enter a name for each candidate you use."
+  );
+
+  return;
+}
 
     // 제목 필수
     if (!title.trim()) {
