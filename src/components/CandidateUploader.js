@@ -8,11 +8,22 @@ function CandidateUploader({ onUpload, preview }) {
   const [img, setImg] = useState(preview || "");
 
   // 파일 확장자 체크 함수
-  function isAllowedImage(file) {
-    const ext = file.name.split('.').pop().toLowerCase();
-    // 파일 타입 체크(jpg, jpeg, png만 허용)
-    return ["jpg", "jpeg", "png"].includes(ext);
-  }
+function isAllowedImage(file) {
+  const ext = file.name.split(".").pop().toLowerCase();
+
+  const allowedExtensions = ["jpg", "jpeg", "png", "gif", "svg"];
+  const allowedMimeTypes = [
+    "image/jpeg",
+    "image/png",
+    "image/gif",
+    "image/svg+xml",
+  ];
+
+  return (
+    allowedExtensions.includes(ext) &&
+    allowedMimeTypes.includes(file.type)
+  );
+}
 
   function handleFile(e) {
     const file = e.target.files[0];
@@ -45,7 +56,7 @@ function CandidateUploader({ onUpload, preview }) {
     <div style={{ margin: "18px 0", display: "flex", alignItems: "center", gap: 16 }}>
       <input
         type="file"
-        accept=".jpg,.jpeg,.png,image/jpeg,image/jpg,image/png"
+   accept=".jpg,.jpeg,.png,.gif,.svg,image/jpeg,image/png,image/gif,image/svg+xml"
         ref={ref}
         style={{ display: "none" }}
         onChange={handleFile}
