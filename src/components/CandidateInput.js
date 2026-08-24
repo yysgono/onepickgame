@@ -9,16 +9,36 @@ import { hasBadword } from "../badwords-multilang";
 
 const DEFAULT_IMAGE = "/default-thumb.png";
 
+// ======================================================
+// YouTube video id
+// ======================================================
 function getYoutubeVideoId(url = "") {
-  const match = String(url).match(
-    /(?:youtu\.be\/|youtube\.com\/(?:embed\/|shorts\/|watch\?v=))([\w-]{11})/
-  );
+  const value = String(url || "").trim();
 
-  return match ? match[1] : null;
+  const patterns = [
+    /youtu\.be\/([\w-]{11})/i,
+    /youtube\.com\/watch\?.*v=([\w-]{11})/i,
+    /youtube\.com\/embed\/([\w-]{11})/i,
+    /youtube\.com\/shorts\/([\w-]{11})/i,
+  ];
+
+  for (const pattern of patterns) {
+    const match = value.match(pattern);
+
+    if (match?.[1]) {
+      return match[1];
+    }
+  }
+
+  return null;
 }
 
+// ======================================================
+// YouTube thumbnail
+// ======================================================
 function getYoutubeThumb(url) {
-  const videoId = getYoutubeVideoId(url);
+  const videoId =
+    getYoutubeVideoId(url);
 
   if (!videoId) {
     return null;
@@ -27,12 +47,15 @@ function getYoutubeThumb(url) {
   return `https://img.youtube.com/vi/${videoId}/mqdefault.jpg`;
 }
 
+// ======================================================
+// 확장자
+// ======================================================
 function getFileExtension(
   url = "",
   file = null
 ) {
   if (file?.name) {
-    return file.name
+    return String(file.name)
       .split(".")
       .pop()
       .toLowerCase();
@@ -43,15 +66,19 @@ function getFileExtension(
   }
 
   const cleanUrl =
-    String(url).split("?")[0];
+    String(url)
+      .split("?")[0];
 
   const fileName =
-    cleanUrl.split("/").pop();
+    cleanUrl
+      .split("/")
+      .pop();
 
   const parts =
-    String(fileName).split(".");
+    String(fileName)
+      .split(".");
 
-  if (parts.length === 1) {
+  if (parts.length <= 1) {
     return "";
   }
 
@@ -60,21 +87,29 @@ function getFileExtension(
   ].toLowerCase();
 }
 
+// ======================================================
 // GIF 첫 프레임 썸네일
+// ======================================================
 function GifThumbnail({
   fileOrUrl,
   style,
 }) {
-  const canvasRef = useRef(null);
+  const canvasRef =
+    useRef(null);
 
   useEffect(() => {
     let objectUrl = null;
 
-    if (fileOrUrl instanceof File) {
+    if (
+      fileOrUrl instanceof File
+    ) {
       objectUrl =
-        URL.createObjectURL(fileOrUrl);
+        URL.createObjectURL(
+          fileOrUrl
+        );
     } else if (
-      typeof fileOrUrl === "string"
+      typeof fileOrUrl ===
+      "string"
     ) {
       objectUrl =
         fileOrUrl;
@@ -95,14 +130,18 @@ function GifThumbnail({
 
       canvas.width =
         img.naturalWidth ||
-        img.width;
+        img.width ||
+        1;
 
       canvas.height =
         img.naturalHeight ||
-        img.height;
+        img.height ||
+        1;
 
       const ctx =
-        canvas.getContext("2d");
+        canvas.getContext(
+          "2d"
+        );
 
       if (!ctx) {
         return;
@@ -144,6 +183,9 @@ function GifThumbnail({
   );
 }
 
+// ======================================================
+// CandidateInput
+// ======================================================
 function CandidateInput({
   value,
   onChange,
@@ -156,11 +198,11 @@ function CandidateInput({
   const fileInputRef =
     useRef(null);
 
-  const youtubeFetchTimerRef =
-    useRef(null);
-
   const latestUrlRef =
     useRef("");
+
+  const requestIdRef =
+    useRef(0);
 
   const [
     previewUrl,
@@ -172,21 +214,25 @@ function CandidateInput({
     setYoutubeLoading,
   ] = useState(false);
 
-  // 파일 미리보기
+  // ====================================================
+  // 파일 미리보기 URL
+  // ====================================================
   useEffect(() => {
     if (
       value.file instanceof File
     ) {
-      const url =
+      const objectUrl =
         URL.createObjectURL(
           value.file
         );
 
-      setPreviewUrl(url);
+      setPreviewUrl(
+        objectUrl
+      );
 
       return () => {
         URL.revokeObjectURL(
-          url
+          objectUrl
         );
       };
     }
@@ -208,19 +254,6 @@ function CandidateInput({
     value.image,
   ]);
 
-  // 타이머 정리
-  useEffect(() => {
-    return () => {
-      if (
-        youtubeFetchTimerRef.current
-      ) {
-        clearTimeout(
-          youtubeFetchTimerRef.current
-        );
-      }
-    };
-  }, []);
-
   const youtubeThumb =
     getYoutubeThumb(
       value.image
@@ -238,7 +271,9 @@ function CandidateInput({
     ext === "gif" ||
     value.file?.type ===
       "image/gif" ||
-    value.image?.startsWith(
+    String(
+      value.image || ""
+    ).startsWith(
       "data:image/gif"
     );
 
@@ -253,14 +288,18 @@ function CandidateInput({
     thumb =
       previewUrl;
   } else if (
-    value.image?.startsWith(
+    String(
+      value.image || ""
+    ).startsWith(
       "http"
     )
   ) {
     thumb =
       value.image;
   } else if (
-    value.image?.startsWith(
+    String(
+      value.image || ""
+    ).startsWith(
       "data:image"
     )
   ) {
@@ -268,6 +307,9 @@ function CandidateInput({
       value.image;
   }
 
+  // ====================================================
+  // 이름 변경
+  // ====================================================
   function handleNameChange(
     event
   ) {
@@ -281,8 +323,10 @@ function CandidateInput({
       )
     ) {
       alert(
-        t("badword_warning") ||
-          "Contains profanity or banned words"
+        t(
+          "badword_warning"
+        ) ||
+          "Contains profanity or banned words."
       );
 
       return;
@@ -294,16 +338,20 @@ function CandidateInput({
     });
   }
 
+  // ====================================================
+  // YouTube 제목 가져오기
+  // ====================================================
   async function fetchYoutubeTitle(
     url
   ) {
-    if (
-      !getYoutubeVideoId(url)
-    ) {
+    const videoId =
+      getYoutubeVideoId(url);
+
+    if (!videoId) {
       return;
     }
 
-    // 이미 이름이 있으면 자동 입력 안 함
+    // 이미 이름이 있으면 자동 제목 입력 안 함
     if (
       String(
         value.name || ""
@@ -312,8 +360,13 @@ function CandidateInput({
       return;
     }
 
+    const myRequestId =
+      ++requestIdRef.current;
+
     try {
-      setYoutubeLoading(true);
+      setYoutubeLoading(
+        true
+      );
 
       const response =
         await fetch(
@@ -322,23 +375,27 @@ function CandidateInput({
           )}&format=json`
         );
 
-      if (!response.ok) {
+      if (
+        !response.ok
+      ) {
+        console.error(
+          "YouTube oEmbed 실패:",
+          response.status
+        );
+
         return;
       }
 
       const data =
         await response.json();
 
-      const title =
-        String(
-          data?.title || ""
-        ).trim();
-
-      if (!title) {
+      if (
+        myRequestId !==
+        requestIdRef.current
+      ) {
         return;
       }
 
-      // 요청 중 URL이 바뀐 경우 무시
       if (
         latestUrlRef.current !==
         url
@@ -346,19 +403,23 @@ function CandidateInput({
         return;
       }
 
-      // 사용자가 그 사이 직접 이름을 입력했다면 덮어쓰지 않음
-      if (
+      const youtubeTitle =
         String(
-          value.name || ""
-        ).trim()
-      ) {
+          data?.title || ""
+        ).trim();
+
+      if (!youtubeTitle) {
         return;
       }
 
+      /*
+       * 사용자 이름이 비어 있을 때만
+       * YouTube 제목 자동 입력
+       */
       onChange({
         ...value,
         name:
-          title.slice(
+          youtubeTitle.slice(
             0,
             24
           ),
@@ -375,10 +436,20 @@ function CandidateInput({
         error
       );
     } finally {
-      setYoutubeLoading(false);
+      if (
+        myRequestId ===
+        requestIdRef.current
+      ) {
+        setYoutubeLoading(
+          false
+        );
+      }
     }
   }
 
+  // ====================================================
+  // 이미지 URL / YouTube URL
+  // ====================================================
   function handleImageUrlChange(
     event
   ) {
@@ -388,6 +459,9 @@ function CandidateInput({
     latestUrlRef.current =
       url;
 
+    /*
+     * URL은 즉시 화면에 반영
+     */
     onChange({
       ...value,
       image:
@@ -398,22 +472,21 @@ function CandidateInput({
         undefined,
     });
 
-    if (
-      youtubeFetchTimerRef.current
-    ) {
-      clearTimeout(
-        youtubeFetchTimerRef.current
-      );
-    }
+    const videoId =
+      getYoutubeVideoId(url);
 
-    // 유튜브 링크가 아니면 종료
-    if (
-      !getYoutubeVideoId(url)
-    ) {
+    if (!videoId) {
+      setYoutubeLoading(
+        false
+      );
+
       return;
     }
 
-    // 이름이 이미 있으면 자동 입력 안 함
+    /*
+     * 이미 이름이 있으면
+     * 자동 제목 가져오지 않음
+     */
     if (
       String(
         value.name || ""
@@ -422,20 +495,23 @@ function CandidateInput({
       return;
     }
 
-    // 입력할 때마다 요청하지 않도록 500ms 대기
-    youtubeFetchTimerRef.current =
-      setTimeout(() => {
-        fetchYoutubeTitle(
-          url
-        );
-      }, 500);
+    /*
+     * 붙여넣기 직후 바로 제목 가져오기
+     */
+    fetchYoutubeTitle(
+      url
+    );
   }
 
+  // ====================================================
+  // 로컬 이미지 파일
+  // ====================================================
   function handleFileChange(
     event
   ) {
     const file =
-      event.target.files?.[0];
+      event.target
+        .files?.[0];
 
     if (!file) {
       return;
@@ -460,17 +536,22 @@ function CandidateInput({
       );
 
     const mimeAllowed =
-      !file.type ||
+      Boolean(
+        file.type
+      ) &&
       allowedMimeTypes.has(
         file.type
       );
 
+    // 동영상 / 기타 파일 차단
     if (
       !extensionAllowed ||
       !mimeAllowed
     ) {
       alert(
-        t("only_image_file") ||
+        t(
+          "only_image_file"
+        ) ||
           "Only JPG, PNG, GIF, SVG, WebP, AVIF image files can be uploaded."
       );
 
@@ -480,7 +561,7 @@ function CandidateInput({
       return;
     }
 
-    // 로컬 이미지 최대 6MB
+    // 원본 최대 6MB
     if (
       file.size >
       6 * 1024 * 1024
@@ -506,6 +587,7 @@ function CandidateInput({
         file.name,
     });
 
+    // 같은 파일 재선택 가능
     event.target.value =
       "";
   }
@@ -616,7 +698,7 @@ function CandidateInput({
       {/* 후보 이름 */}
       <div
         style={{
-          width: 110,
+          width: 120,
           flexShrink: 0,
         }}
       >
@@ -655,7 +737,7 @@ function CandidateInput({
         />
       </div>
 
-      {/* 이미지 URL / YouTube */}
+      {/* URL / YouTube */}
       <input
         type="text"
         value={
@@ -672,7 +754,7 @@ function CandidateInput({
         }
         style={{
           flex: 1,
-          minWidth: 120,
+          minWidth: 180,
           padding:
             "9px 10px",
           borderRadius: 7,
