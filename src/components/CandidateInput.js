@@ -421,7 +421,7 @@ function CandidateInput({
         name:
           youtubeTitle.slice(
             0,
-            24
+            62
           ),
         image:
           url,
@@ -716,7 +716,7 @@ function CandidateInput({
               : t("name") ||
                 "Name"
           }
-          maxLength={24}
+          maxLength={62}
           style={{
             width: "100%",
             padding:
