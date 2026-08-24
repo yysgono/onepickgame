@@ -38,9 +38,6 @@ const IMAGE_MAX_INPUT_BYTES =
 const IMAGE_MAX_OUTPUT_BYTES =
   1 * 1024 * 1024;
 
-// 동영상 최대 크기
-const VIDEO_MAX_BYTES =
-  20 * 1024 * 1024;
 
 /*
  * 지원 이미지
@@ -55,8 +52,7 @@ const VIDEO_MAX_BYTES =
 const IMAGE_EXTENSIONS =
   /\.(jpe?g|png|webp|avif|svg)$/i;
 
-const VIDEO_EXTENSIONS =
-  /\.(mp4|webm|mov)$/i;
+
 
 const IMAGE_MIME_TYPES =
   new Set([
@@ -67,12 +63,6 @@ const IMAGE_MIME_TYPES =
     "image/svg+xml",
   ]);
 
-const VIDEO_MIME_TYPES =
-  new Set([
-    "video/mp4",
-    "video/webm",
-    "video/quicktime",
-  ]);
 
 function isMobile() {
   return (
@@ -118,21 +108,6 @@ function isImageFile(file) {
       file.type
     ) ||
     IMAGE_EXTENSIONS.test(
-      file.name || ""
-    )
-  );
-}
-
-function isVideoFile(file) {
-  if (!file) {
-    return false;
-  }
-
-  return (
-    VIDEO_MIME_TYPES.has(
-      file.type
-    ) ||
-    VIDEO_EXTENSIONS.test(
       file.name || ""
     )
   );
@@ -861,9 +836,6 @@ function WorldcupMaker({
    *   → normalizeImageFile()
    *   → 최종 WebP
    *
-   * 동영상:
-   *   MP4 / WebM / MOV
-   *   → 원본 유지
    */
   async function handleFiles(
     fileList
@@ -927,27 +899,18 @@ function WorldcupMaker({
       const file of
       selectedFiles
     ) {
-      const image =
-        isImageFile(file);
+const image = isImageFile(file);
 
-      const video =
-        isVideoFile(file);
+if (!image) {
+  rejectedFiles.push(
+    `${file.name}: ${
+      t("only_image_file") ||
+      "Only image files can be uploaded. Local video uploads are not supported."
+    }`
+  );
 
-      if (
-        !image &&
-        !video
-      ) {
-        rejectedFiles.push(
-          `${file.name}: ${
-            t(
-              "unsupported_file_type"
-            ) ||
-            "Unsupported file type"
-          }`
-        );
-
-        continue;
-      }
+  continue;
+} 
 
       // 원본 이미지 최대 6MB
       if (
@@ -961,24 +924,6 @@ function WorldcupMaker({
               "only_images_under_6mb"
             ) ||
             "Image exceeds 6MB"
-          }`
-        );
-
-        continue;
-      }
-
-      // 동영상 최대 20MB
-      if (
-        video &&
-        file.size >
-          VIDEO_MAX_BYTES
-      ) {
-        rejectedFiles.push(
-          `${file.name}: ${
-            t(
-              "only_videos_under_20mb"
-            ) ||
-            "Video exceeds 20MB"
           }`
         );
 
@@ -1297,8 +1242,7 @@ function WorldcupMaker({
 
       /*
        * =====================================================
-       * 후보 이미지/영상 최종 업로드
-       * =====================================================
+             * =====================================================
        *
        * CandidateInput에서 개별 선택한 이미지도
        * 여기서 최종적으로 normalizeImageFile()을 거친다.
@@ -1309,8 +1253,7 @@ function WorldcupMaker({
        * - PNG → WebP
        * - AVIF → WebP
        * - WebP ≤1MB → 그대로
-       * - 영상 → 원본 유지
-       */
+          */
       const updatedList =
         await Promise.all(
           list.map(
@@ -1326,24 +1269,14 @@ function WorldcupMaker({
                 let uploadFile =
                   candidate.file;
 
-                const fileIsImage =
-                  isImageFile(
-                    uploadFile
-                  );
+               const fileIsImage =
+  isImageFile(uploadFile);
 
-                const fileIsVideo =
-                  isVideoFile(
-                    uploadFile
-                  );
-
-                if (
-                  !fileIsImage &&
-                  !fileIsVideo
-                ) {
-                  throw new Error(
-                    `${uploadFile.name}: 지원하지 않는 파일 형식입니다.`
-                  );
-                }
+if (!fileIsImage) {
+  throw new Error(
+    `${uploadFile.name}: 이미지 파일만 업로드할 수 있습니다.`
+  );
+}
 
                 /*
                  * 이미지 원본 6MB 제한
@@ -1440,29 +1373,7 @@ function WorldcupMaker({
                   );
                 }
 
-                /*
-                 * 영상 20MB 제한
-                 */
-                if (
-                  fileIsVideo &&
-                  uploadFile.size >
-                    VIDEO_MAX_BYTES
-                ) {
-                  const sizeMB =
-                    (
-                      uploadFile.size /
-                      1024 /
-                      1024
-                    ).toFixed(
-                      2
-                    );
-
-                  throw new Error(
-                    `${uploadFile.name}: 동영상이 20MB를 초과합니다. (${sizeMB}MB)`
-                  );
-                }
-
-                /*
+                               /*
                  * Supabase Storage 업로드
                  */
                 imageUrl =
@@ -2060,7 +1971,7 @@ function WorldcupMaker({
             }
             type="file"
 
-            accept=".jpg,.jpeg,.png,.webp,.avif,.svg,.mp4,.webm,.mov,image/jpeg,image/png,image/webp,image/avif,image/svg+xml,video/mp4,video/webm,video/quicktime"
+           accept=".jpg,.jpeg,.png,.webp,.avif,.svg,image/jpeg,image/png,image/webp,image/avif,image/svg+xml"
 
             multiple
 
@@ -2086,25 +1997,54 @@ function WorldcupMaker({
             }
           />
 
-          <span>
-            <span
-              style={{
-                fontSize:
-                  mobile
-                    ? 20
-                    : 26,
-              }}
-            >
-              📁
-            </span>
+         <span>
+  <span
+    style={{
+      fontSize: mobile ? 20 : 26,
+    }}
+  >
+    📁
+  </span>
 
-            <br />
+  <br />
 
-            {t(
-              "drag_upload_detail"
-            ) ||
-              "Images up to 6MB are converted to WebP. SVG is also supported. Videos up to 20MB. Max 50 files at once."}
-          </span>
+  <span
+    style={{
+      display: "block",
+      marginTop: 8,
+      fontSize: mobile ? 16 : 19,
+      fontWeight: 800,
+    }}
+  >
+    {t("drag_upload_images") ||
+      "Drag and drop images here, or click to upload."}
+  </span>
+
+  <span
+    style={{
+      display: "block",
+      marginTop: 6,
+      fontSize: mobile ? 12 : 14,
+      fontWeight: 600,
+      opacity: 0.72,
+    }}
+  >
+    JPG · PNG · WebP · AVIF · SVG · Max 6MB
+  </span>
+
+  <span
+    style={{
+      display: "block",
+      marginTop: 3,
+      fontSize: mobile ? 11 : 13,
+      fontWeight: 500,
+      opacity: 0.58,
+    }}
+  >
+    {t("local_video_not_supported") ||
+      "Local video uploads are not supported. You can use YouTube links instead."}
+  </span>
+</span>
         </div>
 
         {/* 제목 */}
