@@ -159,11 +159,10 @@ const changeHomeLanguage = async (newLang) => {
 };
 
 const getDisplayTitle = (cup) => {
-  if (lang === "en") return cup.title || "";
-
   return (
     cup?.title_translations?.[lang] ||
-    cup.title ||
+    cup?.title_translations?.en ||
+    cup?.title ||
     ""
   );
 };
