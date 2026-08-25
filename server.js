@@ -617,10 +617,10 @@ app.get("/api/board", async (req, res) => {
   }
 });
 /*
- * 월드컵 SEO 데이터 조회
- *
- * 읽기 전용
- * DB에 확실히 존재하는 최소 컬럼만 조회
+ /*
+ * =====================================================
+ * 월드컵 SEO 데이터 조회 API
+ * =====================================================
  */
 app.get(
   "/api/seo/worldcup/:id",
@@ -636,13 +636,20 @@ app.get(
     }
 
     try {
-      const { data, error } = await supabase
-        .from("worldcups")
-        .select(
-          "id,title,description,data,created_at"
-        )
-        .eq("id", id)
-        .maybeSingle();
+      const { data, error } =
+        await supabase
+          .from("worldcups")
+          .select(`
+            id,
+            title,
+            description,
+            title_translations,
+            description_translations,
+            data,
+            created_at
+          `)
+          .eq("id", id)
+          .maybeSingle();
 
       if (error) {
         console.error(
@@ -670,11 +677,22 @@ app.get(
 
       return res.status(200).json({
         id: data.id,
-        title: data.title || "",
+
+        title:
+          data.title || "",
+
         description:
           data.description || "",
+
+        title_translations:
+          data.title_translations || {},
+
+        description_translations:
+          data.description_translations || {},
+
         image:
           data?.data?.[0]?.image || "",
+
         created_at:
           data.created_at || null,
       });
@@ -693,149 +711,331 @@ app.get(
   }
 );
 
+
 /*
+ * =====================================================
  * 새 월드컵용 동적 SEO HTML
+ * =====================================================
  *
- * 기존 프리렌더 파일이 없는 select-round만
- * Vercel에서 이쪽으로 보냅니다.
+ * /:lang/select-round/:id 요청을
+ * vercel.json에서
+ *
+ * /server.js?seo=worldcup&lang=:lang&id=:id
+ *
+ * 로 보내는 구조
  */
-app.use(async (req, res, next) => {
-  if (req.query?.seo !== "worldcup") {
-    return next();
-  }
+app.use(
+  async (req, res, next) => {
+    if (
+      req.query?.seo !==
+      "worldcup"
+    ) {
+      return next();
+    }
 
-  const lang = String(
-    req.query?.lang || "en"
-  )
-    .trim()
-    .toLowerCase();
+    const lang = String(
+      req.query?.lang || "en"
+    )
+      .trim()
+      .toLowerCase();
 
-  const id = String(
-    req.query?.id || ""
-  ).trim();
+    const id = String(
+      req.query?.id || ""
+    ).trim();
 
-  const SUPPORTED_LANGS = new Set([
-    "ko",
-    "en",
-    "ja",
-    "zh",
-    "ru",
-    "pt",
-    "es",
-    "fr",
-    "id",
-    "hi",
-    "de",
-    "vi",
-    "ar",
-    "bn",
-    "th",
-    "tr",
-  ]);
+    const SUPPORTED_LANGS =
+      new Set([
+        "ko",
+        "en",
+        "ja",
+        "zh",
+        "ru",
+        "pt",
+        "es",
+        "fr",
+        "id",
+        "hi",
+        "de",
+        "vi",
+        "ar",
+        "bn",
+        "th",
+        "tr",
+      ]);
 
-  if (!SUPPORTED_LANGS.has(lang)) {
-    return res.status(400).send(
-      "Unsupported language"
-    );
-  }
+    if (
+      !SUPPORTED_LANGS.has(lang)
+    ) {
+      return res
+        .status(400)
+        .send(
+          "Unsupported language"
+        );
+    }
 
-  // DB에 잘못된 UUID를 보내지 않도록 먼저 검사
-  const UUID_RE =
-    /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+    const UUID_RE =
+      /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
-  if (!UUID_RE.test(id)) {
-    return res.status(400).send(
-      "Invalid worldcup id"
-    );
-  }
+    if (!UUID_RE.test(id)) {
+      return res
+        .status(400)
+        .send(
+          "Invalid worldcup id"
+        );
+    }
 
-  function escapeHtml(value = "") {
-    return String(value)
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
-      .replace(/'/g, "&#039;");
-  }
-
-  try {
-    /*
-     * 월드컵 1개만 읽기
-     * DB 수정 / insert / update / delete 없음
-     */
-    const { data: cup, error } =
-      await supabase
-        .from("worldcups")
-        .select(
-          "id,title,description,data,created_at"
+    function escapeHtml(
+      value = ""
+    ) {
+      return String(value)
+        .replace(
+          /&/g,
+          "&amp;"
         )
+        .replace(
+          /</g,
+          "&lt;"
+        )
+        .replace(
+          />/g,
+          "&gt;"
+        )
+        .replace(
+          /"/g,
+          "&quot;"
+        )
+        .replace(
+          /'/g,
+          "&#039;"
+        );
+    }
+
+    /*
+     * JSON-LD에 넣을 값은
+     * HTML escape가 아니라
+     * JSON.stringify로 안전하게 처리
+     */
+    function safeJson(value) {
+      return JSON.stringify(
+        value
+      ).replace(
+        /</g,
+        "\\u003c"
+      );
+    }
+
+    try {
+      /*
+       * 월드컵 1개 조회
+       * DB 수정 없음
+       */
+      const {
+        data: cup,
+        error,
+      } = await supabase
+        .from("worldcups")
+        .select(`
+          id,
+          title,
+          description,
+          title_translations,
+          description_translations,
+          data,
+          created_at
+        `)
         .eq("id", id)
         .maybeSingle();
 
-    if (error) {
-      console.error(
-        "동적 SEO 월드컵 조회 실패:",
-        error
-      );
+      if (error) {
+        console.error(
+          "동적 SEO 월드컵 조회 실패:",
+          error
+        );
 
-      return res.status(500).send(
-        "SEO lookup failed"
-      );
-    }
+        return res
+          .status(500)
+          .send(
+            "SEO lookup failed"
+          );
+      }
 
-    if (!cup) {
-      return res.status(404).send(
-        "Worldcup not found"
-      );
-    }
+      if (!cup) {
+        return res
+          .status(404)
+          .send(
+            "Worldcup not found"
+          );
+      }
 
-    /*
-     * 배포된 CRA 기본 index.html을 가져옵니다.
-     * / 는 정적 파일이라 DB 조회 없음.
-     */
-    const baseResponse = await fetch(
-      `${SITE_URL}/`
-    );
+      /*
+       * 기본 CRA HTML 가져오기
+       */
+      const baseResponse =
+        await fetch(
+          `${SITE_URL}/`
+        );
 
-    if (!baseResponse.ok) {
-      throw new Error(
-        `Base HTML load failed: ${baseResponse.status}`
-      );
-    }
+      if (!baseResponse.ok) {
+        throw new Error(
+          `Base HTML load failed: ${baseResponse.status}`
+        );
+      }
 
-    let html =
-      await baseResponse.text();
+      let html =
+        await baseResponse.text();
+      
 
-    const prefix =
+      /*
+       * =================================================
+       * 언어별 제목 / 설명
+       * =================================================
+       */
+
+// 언어별 제목
+const localizedTitle = String(
+  cup?.title_translations?.[lang] ||
+  cup?.title ||
+  "OnePickGame"
+).trim();
+
+// DB에 설명이 있으면 번역 설명 → 기본 설명 순서로 사용
+// 설명이 없으면 언어별 SEO 설명 자동 생성
+const savedDescription =
+  cup?.description_translations?.[lang] ||
+  cup?.description ||
+  "";
+
+const localizedDescription = String(
+  savedDescription ||
+    (
       lang === "ko"
-        ? "이상형 월드컵"
+        ? `${localizedTitle} 이상형 월드컵을 원픽게임에서 플레이하세요. 좋아하는 후보를 선택하고 최종 우승자를 확인해보세요.`
         : lang === "en"
-          ? "Ideal Type World Cup - Bracket Game"
-          : "Tournament Bracket";
+          ? `Play the ${localizedTitle} tournament bracket game on OnePickGame. Choose your favorites and find the ultimate winner.`
+          : `Play ${localizedTitle} on OnePickGame. Choose your favorites and find the ultimate winner.`
+    )
+).trim();
 
-    const title =
-      cup.title || "OnePickGame";
 
-    const description =
-      cup.description ||
-      `Play ${title} on OnePickGame.`;
+// SEO 제목
+// 한국어: 이상형 월드컵 - 게임명 | 원픽게임
+// 영어: Ideal Type World Cup - 게임명 Tournament Game | OnePickGame
+// 기타 언어: 게임명 | OnePickGame
 
-    const canonical =
-      `${SITE_URL}/${lang}/select-round/${cup.id}`;
+const seoTitle =
+  lang === "ko"
+    ? `이상형 월드컵 - ${localizedTitle} | 원픽게임`
+    : lang === "en"
+  ? `Ideal Type World Cup - ${localizedTitle} Tournament Game | OnePickGame`
+      : `${localizedTitle} | OnePickGame`;
 
-    const image =
-      cup?.data?.[0]?.image ||
-      `${SITE_URL}/onepick-social.png`;
+      const canonical =
+        `${SITE_URL}/${lang}/select-round/${cup.id}`;
 
-    const seoTitle =
-      `${prefix} | ${title} | One Pick Game`;
+      /*
+       * 대표 이미지
+       */
+      const image =
+        cup?.data?.find?.(
+          (item) =>
+            item?.image
+        )?.image ||
+        `${SITE_URL}/onepick-social.png`;
 
-    const seoHead = `
-<title>${escapeHtml(seoTitle)}</title>
+      /*
+       * =================================================
+       * hreflang
+       * =================================================
+       *
+       * 현재는 모든 지원 언어를 연결.
+       * 번역 존재 언어만 연결하고 싶다면
+       * 나중에 더 엄격하게 바꿀 수 있음.
+       */
+
+      const hreflangTags =
+        Array.from(
+          SUPPORTED_LANGS
+        )
+          .map(
+            (
+              language
+            ) => `
+<link
+  rel="alternate"
+  hreflang="${language}"
+  href="${SITE_URL}/${language}/select-round/${cup.id}"
+/>`
+          )
+          .join("");
+
+      const xDefaultTag = `
+<link
+  rel="alternate"
+  hreflang="x-default"
+  href="${SITE_URL}/en/select-round/${cup.id}"
+/>`;
+
+      /*
+       * =================================================
+       * JSON-LD
+       * =================================================
+       */
+
+      const jsonLd = {
+        "@context":
+          "https://schema.org",
+
+        "@type":
+          "WebPage",
+
+        name:
+          localizedTitle,
+
+        description:
+          localizedDescription,
+
+        url:
+          canonical,
+
+        inLanguage:
+          lang,
+
+        isPartOf: {
+          "@type":
+            "WebSite",
+
+          name:
+            "OnePickGame",
+
+          url:
+            SITE_URL,
+        },
+
+        primaryImageOfPage: {
+          "@type":
+            "ImageObject",
+
+          url:
+            image,
+        },
+      };
+
+      /*
+       * =================================================
+       * 게임별 SEO HEAD
+       * =================================================
+       */
+
+      const seoHead = `
+<title>${escapeHtml(
+        seoTitle
+      )}</title>
 
 <meta
   name="description"
-  content="${escapeHtml(description)}"
+  content="${escapeHtml(
+    localizedDescription
+  )}"
 />
 
 <meta
@@ -845,8 +1045,14 @@ app.use(async (req, res, next) => {
 
 <link
   rel="canonical"
-  href="${escapeHtml(canonical)}"
+  href="${escapeHtml(
+    canonical
+  )}"
 />
+
+${hreflangTags}
+
+${xDefaultTag}
 
 <meta
   property="og:type"
@@ -855,17 +1061,23 @@ app.use(async (req, res, next) => {
 
 <meta
   property="og:title"
-  content="${escapeHtml(seoTitle)}"
+  content="${escapeHtml(
+    seoTitle
+  )}"
 />
 
 <meta
   property="og:description"
-  content="${escapeHtml(description)}"
+  content="${escapeHtml(
+    localizedDescription
+  )}"
 />
 
 <meta
   property="og:url"
-  content="${escapeHtml(canonical)}"
+  content="${escapeHtml(
+    canonical
+  )}"
 />
 
 <meta
@@ -875,7 +1087,16 @@ app.use(async (req, res, next) => {
 
 <meta
   property="og:image"
-  content="${escapeHtml(image)}"
+  content="${escapeHtml(
+    image
+  )}"
+/>
+
+<meta
+  property="og:image:alt"
+  content="${escapeHtml(
+    localizedTitle
+  )}"
 />
 
 <meta
@@ -885,71 +1106,276 @@ app.use(async (req, res, next) => {
 
 <meta
   name="twitter:title"
-  content="${escapeHtml(seoTitle)}"
+  content="${escapeHtml(
+    seoTitle
+  )}"
 />
 
 <meta
   name="twitter:description"
-  content="${escapeHtml(description)}"
+  content="${escapeHtml(
+    localizedDescription
+  )}"
 />
 
 <meta
   name="twitter:image"
-  content="${escapeHtml(image)}"
+  content="${escapeHtml(
+    image
+  )}"
 />
+
+<script type="application/ld+json">
+${safeJson(jsonLd)}
+</script>
 `;
 
-    // html 언어 변경
-    html = html.replace(
-      /<html([^>]*)lang="[^"]*"([^>]*)>/i,
-      `<html$1lang="${lang}"$2>`
-    );
-
-    // </head> 바로 전에 SEO 삽입
-    html = html.replace(
-      "</head>",
-      `${seoHead}\n</head>`
-    );
-
-    /*
-     * CDN 캐시:
-     * 같은 새 월드컵에 요청이 반복돼도
-     * DB를 계속 조회하지 않게 함.
-     */
-    res.setHeader(
-      "Cache-Control",
-      "public, s-maxage=300, stale-while-revalidate=3600"
-    );
-
-    res.setHeader(
-      "Content-Type",
-      "text/html; charset=utf-8"
-    );
-
-    return res
-      .status(200)
-      .send(html);
-  } catch (err) {
-    console.error(
-      "동적 월드컵 SEO HTML 오류:",
-      err
-    );
-
-    return res.status(500).send(
-      "Dynamic SEO rendering failed"
-    );
-  }
-});
 /*
- * API 주소를 잘못 입력했을 때
+ * =================================================
+ * 서버 초기 HTML용 월드컵 본문
+ * =================================================
  *
- * 반드시 다른 API 코드들보다 아래에 있어야 합니다.
+ * React가 실행되기 전에도 검색엔진이
+ * 제목 / 설명 / 후보명을 읽을 수 있게 함.
+ *
+ * React가 실행되면 #root 안의 이 내용은
+ * 실제 앱 화면으로 교체됨.
  */
-app.use("/api", (req, res) => {
-  return res.status(404).json({
-    error: "API route not found",
-  });
-});
+
+const candidateNames = Array.isArray(cup?.data)
+  ? cup.data
+      .map((item) =>
+        String(
+          item?.name ||
+          item?.title ||
+          ""
+        ).trim()
+      )
+      .filter(Boolean)
+      .slice(0, 32)
+  : [];
+
+const candidateHeading =
+  lang === "ko"
+    ? "후보"
+    : lang === "ja"
+      ? "候補"
+      : lang === "zh"
+        ? "候选"
+        : lang === "es"
+          ? "Candidatos"
+          : lang === "fr"
+            ? "Candidats"
+            : lang === "de"
+              ? "Kandidaten"
+              : lang === "pt"
+                ? "Candidatos"
+                : lang === "ru"
+                  ? "Участники"
+                  : lang === "vi"
+                    ? "Ứng viên"
+                    : lang === "id"
+                      ? "Kandidat"
+                      : lang === "tr"
+                        ? "Adaylar"
+                        : lang === "th"
+                          ? "ผู้เข้าแข่งขัน"
+                          : lang === "ar"
+                            ? "المتسابقون"
+                            : lang === "bn"
+                              ? "প্রার্থীরা"
+                              : lang === "hi"
+                                ? "प्रतियोगी"
+                                : "Candidates";
+
+const candidateListHtml =
+  candidateNames.length > 0
+    ? `
+      <section>
+        <h2>${escapeHtml(candidateHeading)}</h2>
+
+        <ul>
+          ${candidateNames
+            .map(
+              (name) =>
+                `<li>${escapeHtml(name)}</li>`
+            )
+            .join("\n")}
+        </ul>
+      </section>
+    `
+    : "";
+
+const seoBody = `
+<main
+  id="seo-content"
+  style="
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 24px;
+    color: #ffffff;
+    font-family: Arial, sans-serif;
+  "
+>
+  <h1>
+    ${escapeHtml(localizedTitle)}
+  </h1>
+
+  <p>
+    ${escapeHtml(localizedDescription)}
+  </p>
+
+  ${candidateListHtml}
+</main>
+`;
+
+      /*
+       * =================================================
+       * 중요:
+       * CRA 기본 SEO 태그 제거
+       * =================================================
+       *
+       * 기존 홈 canonical/title 등이
+       * 게임 페이지와 중복되지 않도록 제거
+       */
+
+      html = html
+        .replace(
+          /<title[\s\S]*?<\/title>/gi,
+          ""
+        )
+
+        .replace(
+          /<meta\s+[^>]*name=["']description["'][^>]*>/gi,
+          ""
+        )
+
+        .replace(
+          /<meta\s+[^>]*name=["']robots["'][^>]*>/gi,
+          ""
+        )
+
+        .replace(
+          /<link\s+[^>]*rel=["']canonical["'][^>]*>/gi,
+          ""
+        )
+
+        .replace(
+          /<link\s+[^>]*rel=["']alternate["'][^>]*>/gi,
+          ""
+        )
+
+        .replace(
+          /<meta\s+[^>]*property=["']og:type["'][^>]*>/gi,
+          ""
+        )
+
+        .replace(
+          /<meta\s+[^>]*property=["']og:title["'][^>]*>/gi,
+          ""
+        )
+
+        .replace(
+          /<meta\s+[^>]*property=["']og:description["'][^>]*>/gi,
+          ""
+        )
+
+        .replace(
+          /<meta\s+[^>]*property=["']og:url["'][^>]*>/gi,
+          ""
+        )
+
+        .replace(
+          /<meta\s+[^>]*property=["']og:site_name["'][^>]*>/gi,
+          ""
+        )
+
+        .replace(
+          /<meta\s+[^>]*property=["']og:image["'][^>]*>/gi,
+          ""
+        )
+
+        .replace(
+          /<meta\s+[^>]*property=["']og:image:alt["'][^>]*>/gi,
+          ""
+        )
+
+        .replace(
+          /<meta\s+[^>]*name=["']twitter:card["'][^>]*>/gi,
+          ""
+        )
+
+        .replace(
+          /<meta\s+[^>]*name=["']twitter:title["'][^>]*>/gi,
+          ""
+        )
+
+        .replace(
+          /<meta\s+[^>]*name=["']twitter:description["'][^>]*>/gi,
+          ""
+        )
+
+        .replace(
+          /<meta\s+[^>]*name=["']twitter:image["'][^>]*>/gi,
+          ""
+        );
+
+      /*
+       * html lang 변경
+       */
+      html = html.replace(
+        /<html([^>]*)lang=["'][^"']*["']([^>]*)>/i,
+        `<html$1lang="${lang}"$2>`
+      );
+/*
+ * CRA의 Loading...을
+ * 실제 월드컵 SEO 본문으로 교체
+ */
+html = html.replace(
+  /<div\s+id=["']root["']>\s*<div\s+class=["']loading-screen["']>\s*Loading\.\.\.\s*<\/div>\s*<\/div>/i,
+  `<div id="root">${seoBody}</div>`
+);
+      /*
+       * =================================================
+       * SEO HEAD 삽입
+       * =================================================
+       */
+
+      html = html.replace(
+        "</head>",
+        `${seoHead}\n</head>`
+      );
+
+      /*
+       * 캐시
+       */
+      res.setHeader(
+        "Cache-Control",
+        "public, s-maxage=300, stale-while-revalidate=3600"
+      );
+
+      res.setHeader(
+        "Content-Type",
+        "text/html; charset=utf-8"
+      );
+
+      return res
+        .status(200)
+        .send(html);
+    } catch (err) {
+      console.error(
+        "동적 월드컵 SEO HTML 오류:",
+        err
+      );
+
+      return res
+        .status(500)
+        .send(
+          "Dynamic SEO rendering failed"
+        );
+    }
+  }
+);
 
 /*
  * 로컬 실행
