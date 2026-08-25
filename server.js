@@ -711,7 +711,428 @@ app.get(
   }
 );
 
+/*
+ * =====================================================
+ * 언어별 홈 SEO HTML
+ * =====================================================
+ *
+ * /ko, /en, /ja ...
+ * vercel.json에서
+ *
+ * /server.js?seo=home&lang=:lang
+ *
+ * 로 보내는 구조
+ */
 
+app.use(async (req, res, next) => {
+  if (req.query?.seo !== "home") {
+    return next();
+  }
+
+  const lang = String(req.query?.lang || "en")
+    .trim()
+    .toLowerCase();
+
+  const SUPPORTED_LANGS = [
+    "ko",
+    "en",
+    "ja",
+    "zh",
+    "ru",
+    "pt",
+    "es",
+    "fr",
+    "id",
+    "hi",
+    "de",
+    "vi",
+    "ar",
+    "bn",
+    "th",
+    "tr",
+  ];
+
+  if (!SUPPORTED_LANGS.includes(lang)) {
+    return res.status(400).send("Unsupported language");
+  }
+
+  function escapeHtml(value = "") {
+    return String(value)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  }
+
+  function safeJson(value) {
+    return JSON.stringify(value).replace(/</g, "\\u003c");
+  }
+
+  /*
+   * 언어별 홈 SEO
+   *
+   * 우선 ko/en은 기존 React 페이지와 동일하게 맞춤.
+   * 나머지는 현재 기본 문구 사용.
+   */
+  const HOME_SEO = {
+    ko: {
+      title:
+        "이상형 월드컵 해외 사이트 - 토너먼트 게임 | OnePickGame",
+      description:
+        "OnePickGame(원픽 게임)에서 다양한 이상형 월드컵과 토너먼트 게임을 즐겨보세요. 직접 월드컵을 만들고, 최애를 선택하고, 결과를 친구들과 공유할 수 있습니다.",
+      locale: "ko_KR",
+    },
+
+    en: {
+      title:
+        "Tournament Bracket Game & Ideal Type World Cup | OnePickGame",
+      description:
+        "Create and play tournament bracket games on OnePickGame, also known as 이상형 월드컵. Build brackets, vote for your favorites, and share your results.",
+      locale: "en_US",
+    },
+
+    ja: {
+      title:
+        "人気投票トーナメント・理想型ワールドカップ | OnePickGame",
+      description:
+        "OnePickGameで人気投票トーナメントを作成してプレイ。お気に入りを選び、結果を友達と共有できます。",
+      locale: "ja_JP",
+    },
+
+    zh: {
+      title:
+        "人气投票淘汰赛・理想型世界杯 | OnePickGame",
+      description:
+        "在OnePickGame创建和游玩人气投票淘汰赛，选择你最喜欢的候选并分享最终结果。",
+      locale: "zh_CN",
+    },
+
+    es: {
+      title:
+        "Juego de Torneos y Votaciones | OnePickGame",
+      description:
+        "Crea y juega torneos de votación en OnePickGame. Elige tus favoritos y comparte los resultados.",
+      locale: "es_ES",
+    },
+
+    fr: {
+      title:
+        "Jeu de Tournoi et de Vote | OnePickGame",
+      description:
+        "Créez et jouez à des tournois de vote sur OnePickGame. Choisissez vos favoris et partagez vos résultats.",
+      locale: "fr_FR",
+    },
+
+    de: {
+      title:
+        "Turnier- und Abstimmungsspiel | OnePickGame",
+      description:
+        "Erstelle und spiele Abstimmungsturniere auf OnePickGame. Wähle deine Favoriten und teile deine Ergebnisse.",
+      locale: "de_DE",
+    },
+
+    pt: {
+      title:
+        "Jogo de Torneio e Votação | OnePickGame",
+      description:
+        "Crie e jogue torneios de votação no OnePickGame. Escolha seus favoritos e compartilhe os resultados.",
+      locale: "pt_BR",
+    },
+
+    ru: {
+      title:
+        "Турнир голосований | OnePickGame",
+      description:
+        "Создавайте и играйте в турниры голосований на OnePickGame. Выбирайте фаворитов и делитесь результатами.",
+      locale: "ru_RU",
+    },
+
+    id: {
+      title:
+        "Game Turnamen Voting | OnePickGame",
+      description:
+        "Buat dan mainkan turnamen voting di OnePickGame. Pilih favoritmu dan bagikan hasilnya.",
+      locale: "id_ID",
+    },
+
+    hi: {
+      title:
+        "वोटिंग टूर्नामेंट गेम | OnePickGame",
+      description:
+        "OnePickGame पर वोटिंग टूर्नामेंट बनाएं और खेलें। अपने पसंदीदा उम्मीदवार चुनें और परिणाम साझा करें।",
+      locale: "hi_IN",
+    },
+
+    vi: {
+      title:
+        "Trò Chơi Giải Đấu Bình Chọn | OnePickGame",
+      description:
+        "Tạo và chơi các giải đấu bình chọn trên OnePickGame. Chọn ứng viên yêu thích và chia sẻ kết quả.",
+      locale: "vi_VN",
+    },
+
+    tr: {
+      title:
+        "Oylama Turnuvası Oyunu | OnePickGame",
+      description:
+        "OnePickGame'de oylama turnuvaları oluşturun ve oynayın. Favorilerinizi seçin ve sonuçları paylaşın.",
+      locale: "tr_TR",
+    },
+
+    th: {
+      title:
+        "เกมโหวตแบบทัวร์นาเมนต์ | OnePickGame",
+      description:
+        "สร้างและเล่นเกมโหวตแบบทัวร์นาเมนต์บน OnePickGame เลือกรายการโปรดและแชร์ผลลัพธ์ของคุณ",
+      locale: "th_TH",
+    },
+
+    ar: {
+      title:
+        "لعبة بطولة التصويت | OnePickGame",
+      description:
+        "أنشئ والعب بطولات التصويت على OnePickGame واختر المفضلة لديك وشارك النتائج.",
+      locale: "ar",
+    },
+
+    bn: {
+      title:
+        "ভোটিং টুর্নামেন্ট গেম | OnePickGame",
+      description:
+        "OnePickGame-এ ভোটিং টুর্নামেন্ট তৈরি করুন ও খেলুন। আপনার পছন্দের প্রার্থী বেছে নিন এবং ফলাফল শেয়ার করুন।",
+      locale: "bn_BD",
+    },
+  };
+
+  const seo = HOME_SEO[lang] || HOME_SEO.en;
+
+  const canonical = `${SITE_URL}/${lang}`;
+  const image = `${SITE_URL}/ogimg.png`;
+
+  const hreflangTags = SUPPORTED_LANGS.map(
+    (language) => `
+<link
+  rel="alternate"
+  hreflang="${language}"
+  href="${SITE_URL}/${language}"
+/>`
+  ).join("");
+
+  const xDefaultTag = `
+<link
+  rel="alternate"
+  hreflang="x-default"
+  href="${SITE_URL}/en"
+/>`;
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: "OnePickGame",
+    alternateName: [
+      "One Pick Game",
+      "Ideal Type World Cup",
+      "원픽게임",
+    ],
+    url: SITE_URL,
+    inLanguage: lang,
+  };
+
+  try {
+    const baseResponse = await fetch(`${SITE_URL}/`);
+
+    if (!baseResponse.ok) {
+      throw new Error(
+        `Base HTML load failed: ${baseResponse.status}`
+      );
+    }
+
+    let html = await baseResponse.text();
+
+    /*
+     * CRA 기본 SEO 제거
+     */
+    html = html
+      .replace(/<title[\s\S]*?<\/title>/gi, "")
+      .replace(
+        /<meta\s+[^>]*name=["']description["'][^>]*>/gi,
+        ""
+      )
+      .replace(
+        /<meta\s+[^>]*name=["']robots["'][^>]*>/gi,
+        ""
+      )
+      .replace(
+        /<link\s+[^>]*rel=["']canonical["'][^>]*>/gi,
+        ""
+      )
+      .replace(
+        /<link\s+[^>]*rel=["']alternate["'][^>]*>/gi,
+        ""
+      )
+      .replace(
+        /<meta\s+[^>]*property=["']og:type["'][^>]*>/gi,
+        ""
+      )
+      .replace(
+        /<meta\s+[^>]*property=["']og:title["'][^>]*>/gi,
+        ""
+      )
+      .replace(
+        /<meta\s+[^>]*property=["']og:description["'][^>]*>/gi,
+        ""
+      )
+      .replace(
+        /<meta\s+[^>]*property=["']og:url["'][^>]*>/gi,
+        ""
+      )
+      .replace(
+        /<meta\s+[^>]*property=["']og:site_name["'][^>]*>/gi,
+        ""
+      )
+      .replace(
+        /<meta\s+[^>]*property=["']og:image["'][^>]*>/gi,
+        ""
+      )
+      .replace(
+        /<meta\s+[^>]*property=["']og:image:alt["'][^>]*>/gi,
+        ""
+      )
+      .replace(
+        /<meta\s+[^>]*property=["']og:locale["'][^>]*>/gi,
+        ""
+      )
+      .replace(
+        /<meta\s+[^>]*name=["']twitter:card["'][^>]*>/gi,
+        ""
+      )
+      .replace(
+        /<meta\s+[^>]*name=["']twitter:title["'][^>]*>/gi,
+        ""
+      )
+      .replace(
+        /<meta\s+[^>]*name=["']twitter:description["'][^>]*>/gi,
+        ""
+      )
+      .replace(
+        /<meta\s+[^>]*name=["']twitter:image["'][^>]*>/gi,
+        ""
+      );
+
+    /*
+     * html lang 변경
+     */
+    html = html.replace(
+      /<html([^>]*)lang=["'][^"']*["']([^>]*)>/i,
+      `<html$1lang="${lang}"$2>`
+    );
+
+    const seoHead = `
+<title>${escapeHtml(seo.title)}</title>
+
+<meta
+  name="description"
+  content="${escapeHtml(seo.description)}"
+/>
+
+<meta
+  name="robots"
+  content="index, follow, max-image-preview:large"
+/>
+
+<link
+  rel="canonical"
+  href="${canonical}"
+/>
+
+${hreflangTags}
+
+${xDefaultTag}
+
+<meta property="og:type" content="website" />
+
+<meta
+  property="og:title"
+  content="${escapeHtml(seo.title)}"
+/>
+
+<meta
+  property="og:description"
+  content="${escapeHtml(seo.description)}"
+/>
+
+<meta property="og:url" content="${canonical}" />
+
+<meta
+  property="og:site_name"
+  content="OnePickGame"
+/>
+
+<meta
+  property="og:locale"
+  content="${escapeHtml(seo.locale)}"
+/>
+
+<meta
+  property="og:image"
+  content="${image}"
+/>
+
+<meta
+  property="og:image:alt"
+  content="${escapeHtml(seo.title)}"
+/>
+
+<meta
+  name="twitter:card"
+  content="summary_large_image"
+/>
+
+<meta
+  name="twitter:title"
+  content="${escapeHtml(seo.title)}"
+/>
+
+<meta
+  name="twitter:description"
+  content="${escapeHtml(seo.description)}"
+/>
+
+<meta
+  name="twitter:image"
+  content="${image}"
+/>
+
+<script type="application/ld+json">
+${safeJson(jsonLd)}
+</script>
+`;
+
+    html = html.replace(
+      "</head>",
+      `${seoHead}\n</head>`
+    );
+
+    res.setHeader(
+      "Cache-Control",
+      "public, s-maxage=300, stale-while-revalidate=3600"
+    );
+
+    res.setHeader(
+      "Content-Type",
+      "text/html; charset=utf-8"
+    );
+
+    return res.status(200).send(html);
+  } catch (err) {
+    console.error("홈 SEO HTML 오류:", err);
+
+    return res
+      .status(500)
+      .send("Home SEO rendering failed");
+  }
+});
 /*
  * =====================================================
  * 새 월드컵용 동적 SEO HTML

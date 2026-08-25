@@ -109,6 +109,11 @@
     },
 
     {
+      "src": "/(ko|en|ja|zh|ru|pt|es|fr|id|hi|de|vi|ar|bn|th|tr)/?$",
+      "dest": "/server.js?seo=home&lang=$1"
+    },
+
+    {
       "src": "/(ko|en|ja|zh|ru|pt|es|fr|id|hi|de|vi|ar|bn|th|tr)/select-round/([^/]+)/?$",
       "dest": "/server.js?seo=worldcup&lang=$1&id=$2"
     },
