@@ -1116,16 +1116,11 @@ function handleMakeWorldcup() {
           .toLowerCase()
           .split("-")[0];
 
-      const translatedTitle =
-        cup
-          ?.title_translations?.[
-          normalizedLang
-        ] ||
-        cup
-          ?.title_translations
-          ?.en ||
-        cup?.title ||
-        "";
+ const translatedTitle =
+  cup?.title_translations?.[normalizedLang] ||
+  cup?.title_translations?.en ||
+  cup?.title ||
+  "";
 
 const worldCupKeywordMap = {
   ko: "이상형 월드컵",
@@ -1150,13 +1145,16 @@ const worldCupKeyword =
   worldCupKeywordMap[normalizedLang] ||
   worldCupKeywordMap.en;
 
+const cleanEnglishTitle = translatedTitle
+  .replace(/\s+(Bracket|Tournament)$/i, "")
+  .trim();
+
 const pageSeoTitle =
   normalizedLang === "en"
-    ? `${worldCupKeyword} - ${translatedTitle} Tournament Game | OnePickGame`
+    ? `${cleanEnglishTitle} Tournament Bracket Game | Ideal Type World Cup | OnePickGame`
     : normalizedLang === "ko"
       ? `${worldCupKeyword} - ${translatedTitle} | 원픽게임`
       : `${worldCupKeyword} - ${translatedTitle} | OnePickGame`;
-
       const translatedDescription =
         cup
           ?.description_translations?.[

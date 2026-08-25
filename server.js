@@ -945,9 +945,13 @@ const worldCupKeyword =
   worldCupKeywordMap[lang] ||
   worldCupKeywordMap.en;
 
+const cleanEnglishTitle = localizedTitle
+  .replace(/\s+(Bracket|Tournament)$/i, "")
+  .trim();
+
 const seoTitle =
   lang === "en"
-    ? `${worldCupKeyword} - ${localizedTitle} Tournament Game | OnePickGame`
+    ? `${cleanEnglishTitle} Tournament Bracket Game | Ideal Type World Cup | OnePickGame`
     : lang === "ko"
       ? `${worldCupKeyword} - ${localizedTitle} | 원픽게임`
       : `${worldCupKeyword} - ${localizedTitle} | OnePickGame`;
