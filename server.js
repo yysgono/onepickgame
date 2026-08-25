@@ -922,12 +922,35 @@ const localizedDescription = String(
 // 영어: Ideal Type World Cup - 게임명 Tournament Game | OnePickGame
 // 기타 언어: 게임명 | OnePickGame
 
+const worldCupKeywordMap = {
+  ko: "이상형 월드컵",
+  en: "Ideal Type World Cup",
+  ja: "人気投票トーナメント",
+  zh: "人气投票淘汰赛",
+  es: "Torneo de Votación",
+  fr: "Tournoi de Vote",
+  de: "Abstimmungsturnier",
+  pt: "Torneio de Votação",
+  ru: "Турнир голосований",
+  id: "Turnamen Voting",
+  hi: "वोटिंग टूर्नामेंट",
+  vi: "Giải đấu bình chọn",
+  ar: "بطولة التصويت",
+  bn: "ভোটিং টুর্নামেন্ট",
+  th: "เกมโหวตแบบทัวร์นาเมนต์",
+  tr: "Oylama Turnuvası",
+};
+
+const worldCupKeyword =
+  worldCupKeywordMap[lang] ||
+  worldCupKeywordMap.en;
+
 const seoTitle =
-  lang === "ko"
-    ? `이상형 월드컵 - ${localizedTitle} | 원픽게임`
-    : lang === "en"
-  ? `Ideal Type World Cup - ${localizedTitle} Tournament Game | OnePickGame`
-      : `${localizedTitle} | OnePickGame`;
+  lang === "en"
+    ? `${worldCupKeyword} - ${localizedTitle} Tournament Game | OnePickGame`
+    : lang === "ko"
+      ? `${worldCupKeyword} - ${localizedTitle} | 원픽게임`
+      : `${worldCupKeyword} - ${localizedTitle} | OnePickGame`;
 
       const canonical =
         `${SITE_URL}/${lang}/select-round/${cup.id}`;

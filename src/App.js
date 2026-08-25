@@ -1116,31 +1116,6 @@ function handleMakeWorldcup() {
           .toLowerCase()
           .split("-")[0];
 
-      const bracketTitleMap = {
-        en: "Bracket Game",
-        ko: "이상형 월드컵",
-        ja: "人気投票トーナメント",
-        zh: "淘汰赛游戏",
-        es: "Torneo de Votación",
-        fr: "Tournoi de Vote",
-        vi: "Giải đấu bình chọn",
-        de: "Abstimmungsturnier",
-        ru: "Турнир голосований",
-        id: "Turnamen Voting",
-        pt: "Torneio de Votação",
-        hi: "वोटिंग टूर्नामेंट",
-        tr: "Turnuva Oyunu",
-        th: "เกมโหวตแบบทัวร์นาเมนต์",
-        ar: "بطولة التصويت",
-        bn: "ভোটিং টুর্নামেন্ট",
-      };
-
-      const bracketTitle =
-        bracketTitleMap[
-          normalizedLang
-        ] ||
-        bracketTitleMap.en;
-
       const translatedTitle =
         cup
           ?.title_translations?.[
@@ -1151,6 +1126,36 @@ function handleMakeWorldcup() {
           ?.en ||
         cup?.title ||
         "";
+
+const worldCupKeywordMap = {
+  ko: "이상형 월드컵",
+  en: "Ideal Type World Cup",
+  ja: "人気投票トーナメント",
+  zh: "人气投票淘汰赛",
+  es: "Torneo de Votación",
+  fr: "Tournoi de Vote",
+  de: "Abstimmungsturnier",
+  pt: "Torneio de Votação",
+  ru: "Турнир голосований",
+  id: "Turnamen Voting",
+  hi: "वोटिंग टूर्नामेंट",
+  vi: "Giải đấu bình chọn",
+  ar: "بطولة التصويت",
+  bn: "ভোটিং টুর্নামেন্ট",
+  th: "เกมโหวตแบบทัวร์นาเมนต์",
+  tr: "Oylama Turnuvası",
+};
+
+const worldCupKeyword =
+  worldCupKeywordMap[normalizedLang] ||
+  worldCupKeywordMap.en;
+
+const pageSeoTitle =
+  normalizedLang === "en"
+    ? `${worldCupKeyword} - ${translatedTitle} Tournament Game | OnePickGame`
+    : normalizedLang === "ko"
+      ? `${worldCupKeyword} - ${translatedTitle} | 원픽게임`
+      : `${worldCupKeyword} - ${translatedTitle} | OnePickGame`;
 
       const translatedDescription =
         cup
@@ -1171,7 +1176,7 @@ function handleMakeWorldcup() {
               normalizedLang
             }
             slug={`select-round/${cup.id}`}
-            title={`${bracketTitle} | ${translatedTitle} | One Pick Game`}
+       title={pageSeoTitle}
             description={
               translatedDescription
             }
