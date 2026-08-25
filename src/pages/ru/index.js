@@ -19,50 +19,80 @@ export default function RuPage(props) {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    name: "One Pick Game",
-    alternateName: ["OnePickGame", "Кубок мира идеального типа"],
+    name: "OnePickGame",
+    alternateName: [
+      "One Pick Game",
+      "Ideal Type World Cup"
+    ],
     url: base,
     inLanguage: "ru",
     potentialAction: {
       "@type": "SearchAction",
       target: `${base}/ru?search={query}`,
-      "query-input": "required name=query",
-    },
+      "query-input": "required name=query"
+    }
   };
 
   return (
     <>
       <Helmet htmlAttributes={{ lang: "ru" }}>
-        <title>One Pick Game - Турнир Кубка мира идеального типа</title>
+        <title>Турнирная игра и турнирная сетка | OnePickGame</title>
+
         <meta
           name="description"
-          content="Играйте в Кубок мира идеального типа на One Pick Game! Создавайте свои собственные турниры, голосуйте за любимых и соревнуйтесь с пользователями по всему миру."
+          content="Создавайте и проходите турниры на OnePickGame. Выбирайте фаворитов, голосуйте в каждом раунде, создавайте свою турнирную сетку и делитесь результатами."
         />
 
-        {/* Canonical & OpenGraph */}
+        <meta
+          name="robots"
+          content="index, follow, max-image-preview:large"
+        />
+
+        {/* Canonical */}
         <link rel="canonical" href={self} />
-<meta property="og:title" content="Турнир голосований - One Pick Game" />
+
+        {/* Open Graph */}
+        <meta
+          property="og:title"
+          content="Турнирная игра и турнирная сетка | OnePickGame"
+        />
+
         <meta
           property="og:description"
-          content="One Pick Game — это сайт Кубка мира идеального типа. Создайте свой собственный турнир, играйте и делитесь результатами с друзьями по всему миру!"
+          content="Создавайте и проходите турниры на OnePickGame. Выбирайте фаворитов, голосуйте в каждом раунде и делитесь результатами."
         />
+
         <meta property="og:image" content={`${base}/ogimg.png`} />
+
+        <meta
+          property="og:image:alt"
+          content="OnePickGame - Турнирная игра и турнирная сетка"
+        />
+
         <meta property="og:url" content={self} />
         <meta property="og:type" content="website" />
-        <meta property="og:site_name" content="One Pick Game" />
+        <meta property="og:site_name" content="OnePickGame" />
         <meta property="og:locale" content="ru_RU" />
 
         {/* Twitter Card */}
         <meta name="twitter:card" content="summary_large_image" />
+
         <meta
           name="twitter:title"
-          content="One Pick Game - Турнир Кубка мира идеального типа"
+          content="Турнирная игра и турнирная сетка | OnePickGame"
         />
+
         <meta
           name="twitter:description"
-          content="One Pick Game — это сайт Кубка мира идеального типа. Создайте свой собственный турнир, играйте и делитесь результатами с друзьями по всему миру!"
+          content="Создайте свой турнир на OnePickGame, голосуйте за фаворитов и делитесь результатами."
         />
+
         <meta name="twitter:image" content={`${base}/ogimg.png`} />
+
+        <meta
+          name="twitter:image:alt"
+          content="OnePickGame - Турнирная игра и турнирная сетка"
+        />
 
         {/* hreflang */}
         <link rel="alternate" hrefLang="ar" href={`${base}/ar`} />
@@ -84,7 +114,9 @@ export default function RuPage(props) {
         <link rel="alternate" hrefLang="x-default" href={`${base}/en`} />
 
         {/* JSON-LD */}
-        <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
+        <script type="application/ld+json">
+          {JSON.stringify(jsonLd)}
+        </script>
       </Helmet>
 
       <Home {...props} />

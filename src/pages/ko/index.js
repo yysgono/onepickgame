@@ -14,18 +14,22 @@ export default function KoPage(props) {
   }, [i18n]);
 
   const base = "https://www.onepickgame.com";
-  const self = `${base}/ko`; // trailingSlash:false와 일치
+  const self = `${base}/ko`;
 
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    "name": "One Pick Game",
-    "alternateName": ["원픽게임", "OnePickGame"],
-    "url": base,
-    "inLanguage": "ko",
-    "potentialAction": {
+    name: "OnePickGame",
+    alternateName: [
+      "원픽게임",
+      "One Pick Game",
+      "Ideal Type World Cup"
+    ],
+    url: base,
+    inLanguage: "ko",
+    potentialAction: {
       "@type": "SearchAction",
-      "target": `${base}/ko?search={query}`,
+      target: `${base}/ko?search={query}`,
       "query-input": "required name=query"
     }
   };
@@ -33,44 +37,65 @@ export default function KoPage(props) {
   return (
     <>
       <Helmet htmlAttributes={{ lang: "ko" }}>
-        {/* Title에 '해외' 키워드 포함 */}
-        <title>이상형 월드컵 사이트 - One Pick Game | 원픽게임</title>
+        <title>이상형 월드컵 해외 사이트 - 토너먼트 게임 | OnePickGame</title>
 
         <meta
           name="description"
-          content="이상형 월드컵 해외 사이트 One Pick Game(원픽게임). 다양한 주제로 브라켓을 만들고 플레이하며 전 세계 유저들과 함께 즐겨보세요!"
+          content="OnePickGame(원픽 게임)에서 다양한 이상형 월드컵과 토너먼트 게임을 즐겨보세요. 직접 월드컵을 만들고, 최애를 선택하고, 결과를 친구들과 공유할 수 있습니다."
         />
 
-        {/* Canonical & OpenGraph */}
+        <meta
+          name="robots"
+          content="index, follow, max-image-preview:large"
+        />
+
+        {/* Canonical */}
         <link rel="canonical" href={self} />
 
+        {/* Open Graph */}
         <meta
           property="og:title"
-          content="이상형 월드컵 사이트 – One Pick Game | 원픽게임"
+          content="이상형 월드컵 - 토너먼트 게임 | OnePickGame"
         />
+
         <meta
           property="og:description"
-          content="이상형 월드컵 One Pick Game에서 직접 만들고 플레이하세요. 해외 유저들과 실시간으로 대결하며 즐기는 글로벌 원픽게임!"
+          content="OnePickGame에서 다양한 이상형 월드컵과 토너먼트 게임을 즐겨보세요. 직접 만들고 최애를 선택해 결과를 공유할 수 있습니다."
         />
+
         <meta property="og:image" content={`${base}/ogimg.png`} />
+
+        <meta
+          property="og:image:alt"
+          content="OnePickGame - 이상형 월드컵 토너먼트 게임"
+        />
+
         <meta property="og:url" content={self} />
         <meta property="og:type" content="website" />
-        <meta property="og:site_name" content="One Pick Game" />
+        <meta property="og:site_name" content="OnePickGame" />
         <meta property="og:locale" content="ko_KR" />
 
         {/* Twitter Card */}
         <meta name="twitter:card" content="summary_large_image" />
+
         <meta
           name="twitter:title"
-          content="One Pick Game – 이상형 월드컵 사이트 | 원픽게임"
+          content="이상형 월드컵 - 토너먼트 게임 | OnePickGame"
         />
+
         <meta
           name="twitter:description"
-          content="이상형 월드컵 해외 사이트 원픽게임에서 브라켓을 만들고 전 세계 유저들과 함께 즐겨보세요!"
+          content="OnePickGame에서 이상형 월드컵을 만들고 플레이하세요. 최애를 선택하고 토너먼트 결과를 친구들과 공유할 수 있습니다."
         />
+
         <meta name="twitter:image" content={`${base}/ogimg.png`} />
 
-        {/* hreflang: 지원하는 모든 언어 */}
+        <meta
+          name="twitter:image:alt"
+          content="OnePickGame - 이상형 월드컵 토너먼트 게임"
+        />
+
+        {/* hreflang */}
         <link rel="alternate" hrefLang="ar" href={`${base}/ar`} />
         <link rel="alternate" hrefLang="bn" href={`${base}/bn`} />
         <link rel="alternate" hrefLang="de" href={`${base}/de`} />
@@ -90,7 +115,9 @@ export default function KoPage(props) {
         <link rel="alternate" hrefLang="x-default" href={`${base}/en`} />
 
         {/* JSON-LD */}
-        <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
+        <script type="application/ld+json">
+          {JSON.stringify(jsonLd)}
+        </script>
       </Helmet>
 
       <Home {...props} />

@@ -19,47 +19,82 @@ export default function ViPage(props) {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    name: "One Pick Game",
-    alternateName: ["OnePickGame", "Trò chơi Ideal Type World Cup"],
+    name: "OnePickGame",
+    alternateName: [
+      "One Pick Game",
+      "Ideal Type World Cup"
+    ],
     url: base,
     inLanguage: "vi",
     potentialAction: {
       "@type": "SearchAction",
       target: `${base}/vi?search={query}`,
-      "query-input": "required name=query",
-    },
+      "query-input": "required name=query"
+    }
   };
 
   return (
     <>
       <Helmet htmlAttributes={{ lang: "vi" }}>
-        <title>One Pick Game - Trò chơi giải đấu Ideal Type World Cup</title>
+        <title>Trò Chơi Giải Đấu và Bảng Đấu | OnePickGame</title>
+
         <meta
           name="description"
-          content="Chơi Ideal Type World Cup trên One Pick Game! Tạo giải đấu riêng, bình chọn cho lựa chọn yêu thích và vui chơi cùng bạn bè trên toàn thế giới."
+          content="Tạo và chơi các trò chơi giải đấu trên OnePickGame. Chọn ứng viên yêu thích, bình chọn qua từng vòng, tạo bảng đấu của riêng bạn và chia sẻ kết quả."
         />
 
+        <meta
+          name="robots"
+          content="index, follow, max-image-preview:large"
+        />
+
+        {/* Canonical */}
         <link rel="canonical" href={self} />
-<meta property="og:title" content="Trò chơi vòng loại yêu thích - One Pick Game" />
+
+        {/* Open Graph */}
+        <meta
+          property="og:title"
+          content="Trò Chơi Giải Đấu và Bảng Đấu | OnePickGame"
+        />
+
         <meta
           property="og:description"
-          content="One Pick Game là trang web Ideal Type World Cup. Hãy tạo giải đấu riêng, tham gia trận đấu và chia sẻ kết quả với bạn bè toàn cầu!"
+          content="Tạo và chơi các giải đấu trên OnePickGame. Chọn ứng viên yêu thích, bình chọn qua từng vòng và chia sẻ kết quả của bạn."
         />
+
         <meta property="og:image" content={`${base}/ogimg.png`} />
+
+        <meta
+          property="og:image:alt"
+          content="OnePickGame - Trò Chơi Giải Đấu và Bảng Đấu"
+        />
+
         <meta property="og:url" content={self} />
         <meta property="og:type" content="website" />
-        <meta property="og:site_name" content="One Pick Game" />
+        <meta property="og:site_name" content="OnePickGame" />
         <meta property="og:locale" content="vi_VN" />
 
+        {/* Twitter Card */}
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="One Pick Game - Trò chơi giải đấu Ideal Type World Cup" />
+
+        <meta
+          name="twitter:title"
+          content="Trò Chơi Giải Đấu và Bảng Đấu | OnePickGame"
+        />
+
         <meta
           name="twitter:description"
-          content="One Pick Game là trang web Ideal Type World Cup. Hãy tạo giải đấu riêng, tham gia trận đấu và chia sẻ kết quả với bạn bè toàn cầu!"
+          content="Tạo giải đấu của riêng bạn trên OnePickGame, bình chọn cho ứng viên yêu thích và chia sẻ kết quả."
         />
+
         <meta name="twitter:image" content={`${base}/ogimg.png`} />
 
-        {/* hreflang 공통 */}
+        <meta
+          name="twitter:image:alt"
+          content="OnePickGame - Trò Chơi Giải Đấu và Bảng Đấu"
+        />
+
+        {/* hreflang */}
         <link rel="alternate" hrefLang="ar" href={`${base}/ar`} />
         <link rel="alternate" hrefLang="bn" href={`${base}/bn`} />
         <link rel="alternate" hrefLang="de" href={`${base}/de`} />
@@ -78,7 +113,10 @@ export default function ViPage(props) {
         <link rel="alternate" hrefLang="zh" href={`${base}/zh`} />
         <link rel="alternate" hrefLang="x-default" href={`${base}/en`} />
 
-        <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
+        {/* JSON-LD */}
+        <script type="application/ld+json">
+          {JSON.stringify(jsonLd)}
+        </script>
       </Helmet>
 
       <Home {...props} />

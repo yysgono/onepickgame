@@ -19,50 +19,77 @@ export default function JaPage(props) {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    name: "One Pick Game",
-    alternateName: ["OnePickGame", "理想のタイプワールドカップ"],
+    name: "OnePickGame",
+    alternateName: ["One Pick Game", "Ideal Type World Cup"],
     url: base,
     inLanguage: "ja",
     potentialAction: {
       "@type": "SearchAction",
       target: `${base}/ja?search={query}`,
-      "query-input": "required name=query",
-    },
+      "query-input": "required name=query"
+    }
   };
 
   return (
     <>
       <Helmet htmlAttributes={{ lang: "ja" }}>
-        <title>One Pick Game - 理想のタイプワールドカップ トーナメント</title>
+        <title>トーナメント・ブラケットゲーム | OnePickGame</title>
+
         <meta
           name="description"
-          content="One Pick Gameで理想のタイプワールドカップをプレイ！自分だけのトーナメントを作成して、好きな候補に投票し、世界中のユーザーと一緒に楽しもう。"
+          content="OnePickGameでトーナメントやブラケットゲームを作成して遊べます。お気に入りに投票し、対戦を勝ち抜くトーナメントを楽しみ、結果をシェアしましょう。"
         />
 
-        {/* Canonical & OpenGraph */}
+        <meta
+          name="robots"
+          content="index, follow, max-image-preview:large"
+        />
+
+        {/* Canonical */}
         <link rel="canonical" href={self} />
-<meta property="og:title" content="トーナメントゲーム - One Pick Game" />
+
+        {/* Open Graph */}
+        <meta
+          property="og:title"
+          content="トーナメント・ブラケットゲーム | OnePickGame"
+        />
+
         <meta
           property="og:description"
-          content="One Pick Gameは理想のタイプワールドカップサイトです。自分だけのトーナメントを作って、投票して、世界中の友達とシェアしよう！"
+          content="OnePickGameでトーナメントやブラケットゲームを作成して遊ぼう。お気に入りに投票して、結果をシェアできます。"
         />
+
         <meta property="og:image" content={`${base}/ogimg.png`} />
+
+        <meta
+          property="og:image:alt"
+          content="OnePickGame - トーナメント・ブラケットゲーム"
+        />
+
         <meta property="og:url" content={self} />
         <meta property="og:type" content="website" />
-        <meta property="og:site_name" content="One Pick Game" />
+        <meta property="og:site_name" content="OnePickGame" />
         <meta property="og:locale" content="ja_JP" />
 
         {/* Twitter Card */}
         <meta name="twitter:card" content="summary_large_image" />
+
         <meta
           name="twitter:title"
-          content="One Pick Game - 理想のタイプワールドカップ トーナメント"
+          content="トーナメント・ブラケットゲーム | OnePickGame"
         />
+
         <meta
           name="twitter:description"
-          content="One Pick Gameは理想のタイプワールドカップサイトです。自分だけのトーナメントを作って、投票して、世界中の友達とシェアしよう！"
+          content="OnePickGameで自分だけのトーナメントを作成し、お気に入りに投票してブラケットゲームを楽しもう。"
         />
+
         <meta name="twitter:image" content={`${base}/ogimg.png`} />
+
+        <meta
+          name="twitter:image:alt"
+          content="OnePickGame - トーナメント・ブラケットゲーム"
+        />
 
         {/* hreflang */}
         <link rel="alternate" hrefLang="ar" href={`${base}/ar`} />
@@ -84,7 +111,9 @@ export default function JaPage(props) {
         <link rel="alternate" hrefLang="x-default" href={`${base}/en`} />
 
         {/* JSON-LD */}
-        <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
+        <script type="application/ld+json">
+          {JSON.stringify(jsonLd)}
+        </script>
       </Helmet>
 
       <Home {...props} />

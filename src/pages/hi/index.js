@@ -19,53 +19,77 @@ export default function HiPage(props) {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    name: "One Pick Game",
-    alternateName: ["OnePickGame", "आदर्श प्रकार विश्व कप"],
+    name: "OnePickGame",
+    alternateName: ["One Pick Game", "Ideal Type World Cup"],
     url: base,
     inLanguage: "hi",
     potentialAction: {
       "@type": "SearchAction",
       target: `${base}/hi?search={query}`,
-      "query-input": "required name=query",
-    },
+      "query-input": "required name=query"
+    }
   };
 
   return (
     <>
       <Helmet htmlAttributes={{ lang: "hi" }}>
-        <title>One Pick Game - आदर्श प्रकार वर्ल्ड कप टूर्नामेंट</title>
+        <title>टूर्नामेंट और ब्रैकेट गेम | OnePickGame</title>
+
         <meta
           name="description"
-          content="One Pick Game पर आदर्श प्रकार वर्ल्ड कप खेलें! अपने स्वयं के टूर्नामेंट ब्रैकेट बनाएं, पसंदीदा को वोट दें और दुनिया भर के उपयोगकर्ताओं के साथ मजेदार मुकाबलों का आनंद लें।"
+          content="OnePickGame पर टूर्नामेंट और ब्रैकेट गेम बनाएं और खेलें। अपने पसंदीदा विकल्प चुनें, मुकाबलों में वोट करें, अपना टूर्नामेंट बनाएं और नतीजे शेयर करें।"
         />
 
-        {/* Canonical & OpenGraph */}
+        <meta
+          name="robots"
+          content="index, follow, max-image-preview:large"
+        />
+
+        {/* Canonical */}
         <link rel="canonical" href={self} />
+
+        {/* Open Graph */}
         <meta
           property="og:title"
-          content="One Pick Game - आदर्श प्रकार वर्ल्ड कप टूर्नामेंट"
+          content="टूर्नामेंट और ब्रैकेट गेम | OnePickGame"
         />
+
         <meta
           property="og:description"
-          content="One Pick Game आदर्श प्रकार वर्ल्ड कप साइट है। अपना खुद का ब्रैकेट बनाएं, टूर्नामेंट खेलें और दुनिया भर के दोस्तों के साथ परिणाम साझा करें!"
+          content="OnePickGame पर टूर्नामेंट और ब्रैकेट गेम बनाएं और खेलें। अपने पसंदीदा विकल्पों को वोट दें और नतीजे शेयर करें।"
         />
+
         <meta property="og:image" content={`${base}/ogimg.png`} />
+
+        <meta
+          property="og:image:alt"
+          content="OnePickGame - टूर्नामेंट और ब्रैकेट गेम"
+        />
+
         <meta property="og:url" content={self} />
         <meta property="og:type" content="website" />
-        <meta property="og:site_name" content="One Pick Game" />
+        <meta property="og:site_name" content="OnePickGame" />
         <meta property="og:locale" content="hi_IN" />
 
         {/* Twitter Card */}
         <meta name="twitter:card" content="summary_large_image" />
+
         <meta
           name="twitter:title"
-          content="One Pick Game - आदर्श प्रकार वर्ल्ड कप टूर्नामेंट"
+          content="टूर्नामेंट और ब्रैकेट गेम | OnePickGame"
         />
+
         <meta
           name="twitter:description"
-          content="One Pick Game आदर्श प्रकार वर्ल्ड कप साइट है। अपना खुद का ब्रैकेट बनाएं, टूर्नामेंट खेलें और दुनिया भर के दोस्तों के साथ परिणाम साझा करें!"
+          content="OnePickGame पर अपना टूर्नामेंट और ब्रैकेट बनाएं, पसंदीदा विकल्पों को वोट दें और अपने नतीजे शेयर करें।"
         />
+
         <meta name="twitter:image" content={`${base}/ogimg.png`} />
+
+        <meta
+          name="twitter:image:alt"
+          content="OnePickGame - टूर्नामेंट और ब्रैकेट गेम"
+        />
 
         {/* hreflang */}
         <link rel="alternate" hrefLang="ar" href={`${base}/ar`} />
@@ -87,7 +111,9 @@ export default function HiPage(props) {
         <link rel="alternate" hrefLang="x-default" href={`${base}/en`} />
 
         {/* JSON-LD */}
-        <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
+        <script type="application/ld+json">
+          {JSON.stringify(jsonLd)}
+        </script>
       </Helmet>
 
       <Home {...props} />

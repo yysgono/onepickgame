@@ -19,50 +19,77 @@ export default function IdPage(props) {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    name: "One Pick Game",
-    alternateName: ["OnePickGame", "Piala Dunia Tipe Ideal"],
+    name: "OnePickGame",
+    alternateName: ["One Pick Game", "Ideal Type World Cup"],
     url: base,
     inLanguage: "id",
     potentialAction: {
       "@type": "SearchAction",
       target: `${base}/id?search={query}`,
-      "query-input": "required name=query",
-    },
+      "query-input": "required name=query"
+    }
   };
 
   return (
     <>
       <Helmet htmlAttributes={{ lang: "id" }}>
-        <title>One Pick Game - Turnamen Piala Dunia Tipe Ideal</title>
+        <title>Game Turnamen dan Bracket | OnePickGame</title>
+
         <meta
           name="description"
-          content="Mainkan Piala Dunia Tipe Ideal di One Pick Game! Buat bracket turnamen Anda sendiri, pilih favorit, dan nikmati pertandingan seru bersama pengguna dari seluruh dunia."
+          content="Buat dan mainkan game turnamen dan bracket di OnePickGame. Pilih favoritmu, beri suara dalam setiap pertandingan, buat turnamen sendiri, dan bagikan hasilnya."
         />
 
-        {/* Canonical & OpenGraph */}
+        <meta
+          name="robots"
+          content="index, follow, max-image-preview:large"
+        />
+
+        {/* Canonical */}
         <link rel="canonical" href={self} />
-<meta property="og:title" content="Turnamen Voting - One Pick Game" />
+
+        {/* Open Graph */}
+        <meta
+          property="og:title"
+          content="Game Turnamen dan Bracket | OnePickGame"
+        />
+
         <meta
           property="og:description"
-          content="One Pick Game adalah situs Piala Dunia Tipe Ideal. Buat bracket Anda sendiri, ikuti turnamen, dan bagikan hasilnya dengan teman di seluruh dunia!"
+          content="Buat dan mainkan game turnamen dan bracket di OnePickGame. Pilih favoritmu, beri suara, dan bagikan hasil turnamenmu."
         />
+
         <meta property="og:image" content={`${base}/ogimg.png`} />
+
+        <meta
+          property="og:image:alt"
+          content="OnePickGame - Game Turnamen dan Bracket"
+        />
+
         <meta property="og:url" content={self} />
         <meta property="og:type" content="website" />
-        <meta property="og:site_name" content="One Pick Game" />
+        <meta property="og:site_name" content="OnePickGame" />
         <meta property="og:locale" content="id_ID" />
 
         {/* Twitter Card */}
         <meta name="twitter:card" content="summary_large_image" />
+
         <meta
           name="twitter:title"
-          content="One Pick Game - Turnamen Piala Dunia Tipe Ideal"
+          content="Game Turnamen dan Bracket | OnePickGame"
         />
+
         <meta
           name="twitter:description"
-          content="One Pick Game adalah situs Piala Dunia Tipe Ideal. Buat bracket Anda sendiri, ikuti turnamen, dan bagikan hasilnya dengan teman di seluruh dunia!"
+          content="Buat turnamen dan bracket sendiri di OnePickGame, pilih favoritmu, beri suara, dan bagikan hasilnya."
         />
+
         <meta name="twitter:image" content={`${base}/ogimg.png`} />
+
+        <meta
+          name="twitter:image:alt"
+          content="OnePickGame - Game Turnamen dan Bracket"
+        />
 
         {/* hreflang */}
         <link rel="alternate" hrefLang="ar" href={`${base}/ar`} />
@@ -84,7 +111,9 @@ export default function IdPage(props) {
         <link rel="alternate" hrefLang="x-default" href={`${base}/en`} />
 
         {/* JSON-LD */}
-        <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
+        <script type="application/ld+json">
+          {JSON.stringify(jsonLd)}
+        </script>
       </Helmet>
 
       <Home {...props} />

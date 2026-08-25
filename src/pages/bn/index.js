@@ -19,8 +19,8 @@ export default function BnPage(props) {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    name: "One Pick Game",
-    alternateName: ["OnePickGame", "Ideal Type World Cup"],
+    name: "OnePickGame",
+    alternateName: ["One Pick Game", "Ideal Type World Cup"],
     url: base,
     inLanguage: "bn",
     potentialAction: {
@@ -33,33 +33,63 @@ export default function BnPage(props) {
   return (
     <>
       <Helmet htmlAttributes={{ lang: "bn" }}>
-        <title>One Pick Game - আইডিয়াল টাইপ ওয়ার্ল্ড কাপ</title>
+        <title>ভোটিং টুর্নামেন্ট ও ব্র্যাকেট গেম | OnePickGame</title>
+
         <meta
           name="description"
-          content="One Pick Game-এ খেলুন আইডিয়াল টাইপ ওয়ার্ল্ড কাপ! নিজের টুর্নামেন্ট তৈরি করুন, প্রিয়জনকে ভোট দিন এবং সারা বিশ্বের ব্যবহারকারীদের সাথে মজাদার ম্যাচআপ উপভোগ করুন।"
+          content="OnePickGame-এ ভোটিং টুর্নামেন্ট ও ব্র্যাকেট গেম তৈরি করুন এবং খেলুন। আপনার পছন্দের প্রতিযোগী বেছে নিন, ভোট দিন, নিজের টুর্নামেন্ট তৈরি করুন এবং ফলাফল শেয়ার করুন।"
         />
 
-        {/* Canonical & OpenGraph */}
+        <meta
+          name="robots"
+          content="index, follow, max-image-preview:large"
+        />
+
+        {/* Canonical */}
         <link rel="canonical" href={self} />
-        <meta property="og:title" content="আইডিয়াল টাইপ ওয়ার্ল্ড কাপ - One Pick Game" />
+
+        {/* Open Graph */}
+        <meta
+          property="og:title"
+          content="ভোটিং টুর্নামেন্ট ও ব্র্যাকেট গেম | OnePickGame"
+        />
+
         <meta
           property="og:description"
-          content="One Pick Game হলো আইডিয়াল টাইপ ওয়ার্ল্ড কাপ সাইট। নিজের ব্র্যাকেট তৈরি করুন, টুর্নামেন্ট খেলুন এবং আপনার ফলাফল সারা বিশ্বের বন্ধুদের সাথে শেয়ার করুন!"
+          content="OnePickGame-এ ভোটিং টুর্নামেন্ট ও ব্র্যাকেট গেম খেলুন। পছন্দের প্রতিযোগী বেছে নিন, নিজের টুর্নামেন্ট তৈরি করুন এবং ফলাফল শেয়ার করুন।"
         />
+
         <meta property="og:image" content={`${base}/ogimg.png`} />
+
+        <meta
+          property="og:image:alt"
+          content="OnePickGame - ভোটিং টুর্নামেন্ট ও ব্র্যাকেট গেম"
+        />
+
         <meta property="og:url" content={self} />
         <meta property="og:type" content="website" />
-        <meta property="og:site_name" content="One Pick Game" />
-        <meta property="og:locale" content="bn_BD" />
+        <meta property="og:site_name" content="OnePickGame" />
+        <meta property="og:locale" content="bn_IN" />
 
         {/* Twitter Card */}
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="One Pick Game - আইডিয়াল টাইপ ওয়ার্ল্ড কাপ" />
+
+        <meta
+          name="twitter:title"
+          content="ভোটিং টুর্নামেন্ট ও ব্র্যাকেট গেম | OnePickGame"
+        />
+
         <meta
           name="twitter:description"
-          content="One Pick Game হলো আইডিয়াল টাইপ ওয়ার্ল্ড কাপ সাইট। নিজের ব্র্যাকেট তৈরি করুন, টুর্নামেন্ট খেলুন এবং আপনার ফলাফল সারা বিশ্বের বন্ধুদের সাথে শেয়ার করুন!"
+          content="OnePickGame-এ নিজের ভোটিং টুর্নামেন্ট তৈরি করুন, পছন্দের প্রতিযোগীকে ভোট দিন এবং মজার ব্র্যাকেট গেম খেলুন।"
         />
+
         <meta name="twitter:image" content={`${base}/ogimg.png`} />
+
+        <meta
+          name="twitter:image:alt"
+          content="OnePickGame - ভোটিং টুর্নামেন্ট ও ব্র্যাকেট গেম"
+        />
 
         {/* hreflang */}
         <link rel="alternate" hrefLang="ar" href={`${base}/ar`} />
@@ -81,7 +111,9 @@ export default function BnPage(props) {
         <link rel="alternate" hrefLang="x-default" href={`${base}/en`} />
 
         {/* JSON-LD */}
-        <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
+        <script type="application/ld+json">
+          {JSON.stringify(jsonLd)}
+        </script>
       </Helmet>
 
       <Home {...props} />

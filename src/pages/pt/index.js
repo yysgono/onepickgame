@@ -19,50 +19,80 @@ export default function PtPage(props) {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    name: "One Pick Game",
-    alternateName: ["OnePickGame", "Copa do Mundo do Tipo Ideal"],
+    name: "OnePickGame",
+    alternateName: [
+      "One Pick Game",
+      "Ideal Type World Cup"
+    ],
     url: base,
     inLanguage: "pt",
     potentialAction: {
       "@type": "SearchAction",
       target: `${base}/pt?search={query}`,
-      "query-input": "required name=query",
-    },
+      "query-input": "required name=query"
+    }
   };
 
   return (
     <>
       <Helmet htmlAttributes={{ lang: "pt" }}>
-        <title>One Pick Game - Copa do Mundo do Tipo Ideal Torneio</title>
+        <title>Jogo de Torneio e Chaveamento | OnePickGame</title>
+
         <meta
           name="description"
-          content="Jogue a Copa do Mundo do Tipo Ideal no One Pick Game! Crie seus próprios torneios, vote em seus favoritos e divirta-se com usuários de todo o mundo."
+          content="Crie e jogue torneios e jogos de chaveamento no OnePickGame. Vote nos seus favoritos, monte seu próprio torneio e compartilhe os resultados com seus amigos."
         />
 
-        {/* Canonical & OpenGraph */}
+        <meta
+          name="robots"
+          content="index, follow, max-image-preview:large"
+        />
+
+        {/* Canonical */}
         <link rel="canonical" href={self} />
-<meta property="og:title" content="Torneio de Votação - One Pick Game" />
+
+        {/* Open Graph */}
+        <meta
+          property="og:title"
+          content="Jogo de Torneio e Chaveamento | OnePickGame"
+        />
+
         <meta
           property="og:description"
-          content="One Pick Game é o site da Copa do Mundo do Tipo Ideal. Crie seu próprio torneio, vote e compartilhe os resultados com amigos em todo o mundo!"
+          content="Crie e jogue torneios no OnePickGame. Escolha seus favoritos, vote em cada confronto e compartilhe os resultados."
         />
+
         <meta property="og:image" content={`${base}/ogimg.png`} />
+
+        <meta
+          property="og:image:alt"
+          content="OnePickGame - Jogo de Torneio e Chaveamento"
+        />
+
         <meta property="og:url" content={self} />
         <meta property="og:type" content="website" />
-        <meta property="og:site_name" content="One Pick Game" />
+        <meta property="og:site_name" content="OnePickGame" />
         <meta property="og:locale" content="pt_BR" />
 
         {/* Twitter Card */}
         <meta name="twitter:card" content="summary_large_image" />
+
         <meta
           name="twitter:title"
-          content="One Pick Game - Copa do Mundo do Tipo Ideal Torneio"
+          content="Jogo de Torneio e Chaveamento | OnePickGame"
         />
+
         <meta
           name="twitter:description"
-          content="One Pick Game é o site da Copa do Mundo do Tipo Ideal. Crie seu próprio torneio, vote e compartilhe os resultados com amigos em todo o mundo!"
+          content="Crie seu próprio torneio no OnePickGame, vote nos seus favoritos e compartilhe os resultados."
         />
+
         <meta name="twitter:image" content={`${base}/ogimg.png`} />
+
+        <meta
+          name="twitter:image:alt"
+          content="OnePickGame - Jogo de Torneio e Chaveamento"
+        />
 
         {/* hreflang */}
         <link rel="alternate" hrefLang="ar" href={`${base}/ar`} />
@@ -84,7 +114,9 @@ export default function PtPage(props) {
         <link rel="alternate" hrefLang="x-default" href={`${base}/en`} />
 
         {/* JSON-LD */}
-        <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
+        <script type="application/ld+json">
+          {JSON.stringify(jsonLd)}
+        </script>
       </Helmet>
 
       <Home {...props} />

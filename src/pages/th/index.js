@@ -19,50 +19,80 @@ export default function ThPage(props) {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    name: "One Pick Game",
-    alternateName: ["OnePickGame", "เกม Ideal Type World Cup"],
+    name: "OnePickGame",
+    alternateName: [
+      "One Pick Game",
+      "Ideal Type World Cup"
+    ],
     url: base,
     inLanguage: "th",
     potentialAction: {
       "@type": "SearchAction",
       target: `${base}/th?search={query}`,
-      "query-input": "required name=query",
-    },
+      "query-input": "required name=query"
+    }
   };
 
   return (
     <>
       <Helmet htmlAttributes={{ lang: "th" }}>
-        <title>One Pick Game - เกมทัวร์นาเมนต์ Ideal Type World Cup</title>
+        <title>เกมทัวร์นาเมนต์และสายการแข่งขัน | OnePickGame</title>
+
         <meta
           name="description"
-          content="เล่นเกม Ideal Type World Cup บน One Pick Game! สร้างทัวร์นาเมนต์ของคุณเอง โหวตให้กับตัวเลือกที่ชอบ และสนุกไปกับผู้ใช้จากทั่วโลก."
+          content="สร้างและเล่นเกมทัวร์นาเมนต์บน OnePickGame เลือกรายการโปรด โหวตในแต่ละรอบ สร้างสายการแข่งขันของคุณเอง และแชร์ผลลัพธ์กับเพื่อน ๆ"
         />
 
-        {/* Canonical & OpenGraph */}
+        <meta
+          name="robots"
+          content="index, follow, max-image-preview:large"
+        />
+
+        {/* Canonical */}
         <link rel="canonical" href={self} />
-<meta property="og:title" content="เกมโหวตแบบทัวร์นาเมนต์ - One Pick Game" />
+
+        {/* Open Graph */}
+        <meta
+          property="og:title"
+          content="เกมทัวร์นาเมนต์และสายการแข่งขัน | OnePickGame"
+        />
+
         <meta
           property="og:description"
-          content="One Pick Game คือเว็บไซต์ Ideal Type World Cup สร้างทัวร์นาเมนต์ของคุณเอง เล่นและแชร์ผลลัพธ์กับเพื่อน ๆ ทั่วโลก!"
+          content="สร้างและเล่นเกมทัวร์นาเมนต์บน OnePickGame เลือกรายการโปรด โหวตในแต่ละรอบ และแชร์ผลลัพธ์ของคุณ"
         />
+
         <meta property="og:image" content={`${base}/ogimg.png`} />
+
+        <meta
+          property="og:image:alt"
+          content="OnePickGame - เกมทัวร์นาเมนต์และสายการแข่งขัน"
+        />
+
         <meta property="og:url" content={self} />
         <meta property="og:type" content="website" />
-        <meta property="og:site_name" content="One Pick Game" />
+        <meta property="og:site_name" content="OnePickGame" />
         <meta property="og:locale" content="th_TH" />
 
         {/* Twitter Card */}
         <meta name="twitter:card" content="summary_large_image" />
+
         <meta
           name="twitter:title"
-          content="One Pick Game - เกมทัวร์นาเมนต์ Ideal Type World Cup"
+          content="เกมทัวร์นาเมนต์และสายการแข่งขัน | OnePickGame"
         />
+
         <meta
           name="twitter:description"
-          content="One Pick Game คือเว็บไซต์ Ideal Type World Cup สร้างทัวร์นาเมนต์ของคุณเอง เล่นและแชร์ผลลัพธ์กับเพื่อน ๆ ทั่วโลก!"
+          content="สร้างทัวร์นาเมนต์ของคุณเองบน OnePickGame โหวตตัวเลือกที่ชื่นชอบ และแชร์ผลการแข่งขัน"
         />
+
         <meta name="twitter:image" content={`${base}/ogimg.png`} />
+
+        <meta
+          name="twitter:image:alt"
+          content="OnePickGame - เกมทัวร์นาเมนต์และสายการแข่งขัน"
+        />
 
         {/* hreflang */}
         <link rel="alternate" hrefLang="ar" href={`${base}/ar`} />
@@ -84,7 +114,9 @@ export default function ThPage(props) {
         <link rel="alternate" hrefLang="x-default" href={`${base}/en`} />
 
         {/* JSON-LD */}
-        <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
+        <script type="application/ld+json">
+          {JSON.stringify(jsonLd)}
+        </script>
       </Helmet>
 
       <Home {...props} />

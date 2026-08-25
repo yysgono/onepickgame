@@ -19,47 +19,82 @@ export default function TrPage(props) {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    name: "One Pick Game",
-    alternateName: ["OnePickGame", "Ideal Type World Cup Oyunu"],
+    name: "OnePickGame",
+    alternateName: [
+      "One Pick Game",
+      "Ideal Type World Cup"
+    ],
     url: base,
     inLanguage: "tr",
     potentialAction: {
       "@type": "SearchAction",
       target: `${base}/tr?search={query}`,
-      "query-input": "required name=query",
-    },
+      "query-input": "required name=query"
+    }
   };
 
   return (
     <>
       <Helmet htmlAttributes={{ lang: "tr" }}>
-        <title>One Pick Game - Ideal Type World Cup Turnuva Oyunu</title>
+        <title>Turnuva ve Eşleşme Oyunu | OnePickGame</title>
+
         <meta
           name="description"
-          content="One Pick Game'de Ideal Type World Cup oynayın! Kendi turnuva parantezinizi oluşturun, favorilerinize oy verin ve dünya çapındaki kullanıcılarla eğlenin."
+          content="OnePickGame'de turnuva ve eşleşme oyunları oluşturun ve oynayın. Favorilerinizi seçin, her turda oy verin, kendi turnuvanızı oluşturun ve sonuçları paylaşın."
         />
 
+        <meta
+          name="robots"
+          content="index, follow, max-image-preview:large"
+        />
+
+        {/* Canonical */}
         <link rel="canonical" href={self} />
-<meta property="og:title" content="Turnuva Oyunu - One Pick Game" />
+
+        {/* Open Graph */}
+        <meta
+          property="og:title"
+          content="Turnuva ve Eşleşme Oyunu | OnePickGame"
+        />
+
         <meta
           property="og:description"
-          content="One Pick Game Ideal Type World Cup sitesi. Kendi turnuvanı oluştur, maçlara katıl ve sonuçları dünyayla paylaş!"
+          content="OnePickGame'de turnuvalar oluşturun ve oynayın. Favorilerinizi seçin, eşleşmelerde oy verin ve sonuçlarınızı paylaşın."
         />
+
         <meta property="og:image" content={`${base}/ogimg.png`} />
+
+        <meta
+          property="og:image:alt"
+          content="OnePickGame - Turnuva ve Eşleşme Oyunu"
+        />
+
         <meta property="og:url" content={self} />
         <meta property="og:type" content="website" />
-        <meta property="og:site_name" content="One Pick Game" />
+        <meta property="og:site_name" content="OnePickGame" />
         <meta property="og:locale" content="tr_TR" />
 
+        {/* Twitter Card */}
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="One Pick Game - Ideal Type World Cup Turnuva Oyunu" />
+
+        <meta
+          name="twitter:title"
+          content="Turnuva ve Eşleşme Oyunu | OnePickGame"
+        />
+
         <meta
           name="twitter:description"
-          content="One Pick Game Ideal Type World Cup sitesi. Kendi turnuvanı oluştur, maçlara katıl ve sonuçları dünyayla paylaş!"
+          content="OnePickGame'de kendi turnuvanızı oluşturun, favorilerinize oy verin ve sonuçlarınızı paylaşın."
         />
+
         <meta name="twitter:image" content={`${base}/ogimg.png`} />
 
-        {/* hreflang 공통 */}
+        <meta
+          name="twitter:image:alt"
+          content="OnePickGame - Turnuva ve Eşleşme Oyunu"
+        />
+
+        {/* hreflang */}
         <link rel="alternate" hrefLang="ar" href={`${base}/ar`} />
         <link rel="alternate" hrefLang="bn" href={`${base}/bn`} />
         <link rel="alternate" hrefLang="de" href={`${base}/de`} />
@@ -78,7 +113,10 @@ export default function TrPage(props) {
         <link rel="alternate" hrefLang="zh" href={`${base}/zh`} />
         <link rel="alternate" hrefLang="x-default" href={`${base}/en`} />
 
-        <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
+        {/* JSON-LD */}
+        <script type="application/ld+json">
+          {JSON.stringify(jsonLd)}
+        </script>
       </Helmet>
 
       <Home {...props} />
