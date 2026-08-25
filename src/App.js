@@ -523,25 +523,7 @@ function App() {
     fixedWorldcupIds,
   ]);
 
-  /* ===================================================
-     저장된 언어 적용
-  =================================================== */
-
-  useEffect(() => {
-    const savedLang =
-      localStorage.getItem(
-        "onepickgame_lang"
-      );
-
-    if (
-      savedLang &&
-      savedLang !== i18n.language
-    ) {
-      i18n.changeLanguage(
-        savedLang
-      );
-    }
-  }, [i18n]);
+ 
 
   /* ===================================================
      언어 변경
