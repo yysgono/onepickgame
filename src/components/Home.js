@@ -119,6 +119,16 @@ const navigate = useNavigate();
 
 const lang = (i18n.language || "en").split("-")[0];
 
+console.log("🔥 HOME DEBUG", {
+  pathname: window.location.pathname,
+  i18nLanguage: i18n.language,
+  resolvedLanguage: i18n.resolvedLanguage,
+  lang,
+  firstCup: worldcupList?.[0],
+  firstCupTitle: worldcupList?.[0]?.title,
+  firstCupEnTitle: worldcupList?.[0]?.title_translations?.en,
+});
+
 const getRoute = (base, cupId) =>
   `/${lang}${base}/${cupId}`;
 
