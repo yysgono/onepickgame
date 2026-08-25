@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import Home from "../../components/Home";
 import { useTranslation } from "react-i18next";
 
@@ -34,7 +34,7 @@ export default function KoPage(props) {
     <>
       <Helmet htmlAttributes={{ lang: "ko" }}>
         {/* Title에 '해외' 키워드 포함 */}
-        <title>이상형 월드컵 해외 사이트 - One Pick Game | 원픽게임</title>
+        <title>이상형 월드컵 사이트 - One Pick Game | 원픽게임</title>
 
         <meta
           name="description"
@@ -46,7 +46,7 @@ export default function KoPage(props) {
 
         <meta
           property="og:title"
-          content="이상형 월드컵 해외 사이트 – One Pick Game | 원픽게임"
+          content="이상형 월드컵 사이트 – One Pick Game | 원픽게임"
         />
         <meta
           property="og:description"
@@ -62,7 +62,7 @@ export default function KoPage(props) {
         <meta name="twitter:card" content="summary_large_image" />
         <meta
           name="twitter:title"
-          content="One Pick Game – 이상형 월드컵 해외 사이트 | 원픽게임"
+          content="One Pick Game – 이상형 월드컵 사이트 | 원픽게임"
         />
         <meta
           name="twitter:description"

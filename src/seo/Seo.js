@@ -102,10 +102,20 @@ export default function Seo({
 
   type = "website",
 }) {
-  const normalizedLang = String(lang || "en").split("-")[0];
+const normalizedLang = String(lang || "en").split("-")[0];
 
-  // 항상 실제 서비스 도메인 사용
-  const origin = SITE_URL;
+const safeTitle = String(title || "OnePickGame")
+  .replace(/\s+/g, " ")
+  .trim();
+
+const safeDescription = String(
+  description || "Create and play tournament bracket games on OnePickGame."
+)
+  .replace(/\s+/g, " ")
+  .trim();
+
+// 항상 실제 서비스 도메인 사용
+const origin = SITE_URL;
 
   const canonical = normalizeCanonical(origin, normalizedLang, slug, {
     langPrefix,
@@ -135,13 +145,15 @@ export default function Seo({
     .map((l) => OG_LOCALE_MAP[l])
     .filter(Boolean);
 
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "WebPage",
-    name: title,
-    description,
-    url: canonical,
-    inLanguage: normalizedLang,
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+
+  name: safeTitle,
+  description: safeDescription,
+
+  url: canonical,
+  inLanguage: normalizedLang,
     isPartOf: {
       "@type": "WebSite",
       name: "OnePickGame",
@@ -163,22 +175,21 @@ export default function Seo({
 
       <html lang={normalizedLang} />
 
-      <title>{title}</title>
+<title>{safeTitle}</title>
 
-      <meta
-        name="description"
-        content={description}
-      />
+<meta
+  name="description"
+  content={safeDescription}
+/>
 
-      <meta
-        name="robots"
-        content={
-          indexable
-            ? "index, follow, max-image-preview:large"
-            : "noindex, nofollow"
-        }
-      />
-
+<meta
+  name="robots"
+  content={
+    indexable
+      ? "index, follow, max-image-preview:large"
+      : "noindex, follow"
+  }
+/>
       {/* Canonical */}
 
       <link
@@ -219,15 +230,15 @@ export default function Seo({
         content={type}
       />
 
-      <meta
-        property="og:title"
-        content={title}
-      />
+   <meta
+  property="og:title"
+  content={safeTitle}
+/>
 
-      <meta
-        property="og:description"
-        content={description}
-      />
+<meta
+  property="og:description"
+  content={safeDescription}
+/>
 
       <meta
         property="og:url"
@@ -259,10 +270,10 @@ export default function Seo({
             content={absoluteImage}
           />
 
-          <meta
-            property="og:image:alt"
-            content={title}
-          />
+<meta
+  property="og:image:alt"
+  content={safeTitle}
+/>
         </>
       )}
 
@@ -273,15 +284,15 @@ export default function Seo({
         content="summary_large_image"
       />
 
-      <meta
-        name="twitter:title"
-        content={title}
-      />
+<meta
+  name="twitter:title"
+  content={safeTitle}
+/>
 
-      <meta
-        name="twitter:description"
-        content={description}
-      />
+<meta
+  name="twitter:description"
+  content={safeDescription}
+/>
 
       {absoluteImage && (
         <>
@@ -290,10 +301,10 @@ export default function Seo({
             content={absoluteImage}
           />
 
-          <meta
-            name="twitter:image:alt"
-            content={title}
-          />
+<meta
+  name="twitter:image:alt"
+  content={safeTitle}
+/>
         </>
       )}
 

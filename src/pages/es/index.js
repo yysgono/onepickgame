@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import Home from "../../components/Home";
 import { useTranslation } from "react-i18next";
 
@@ -43,7 +43,7 @@ export default function EsPage(props) {
         <link rel="canonical" href={self} />
         <meta
           property="og:title"
-          content="One Pick Game - Copa Mundial de Tipos Ideales Torneo"
+          content="Copa Mundial de Tipos Ideales Torneo - One Pick Game"
         />
         <meta
           property="og:description"

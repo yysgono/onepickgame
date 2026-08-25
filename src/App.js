@@ -956,24 +956,39 @@ function App() {
       tr: "Turnuva Oyunu | One Pick Game",
     };
 
-    const descMap = {
-      en: "Create and play bracket games. Build your own tournaments, vote for your favorites, and enjoy community rankings.",
-      ko: "이상형 월드컵 만들기 다양한 토너먼트에 참여하고 인기 순위와 커뮤니티를 즐겨보세요.",
-      ja: "トーナメントゲームを作成して遊ぼう。お気に入りに投票し、ランキングやコミュニティを楽しめます。",
-      fr: "Créez et jouez à des tournois de vote. Votez pour vos favoris et découvrez les classements de la communauté.",
-      es: "Crea y juega torneos de votación. Vota por tus favoritos y disfruta de las clasificaciones de la comunidad.",
-      de: "Erstelle und spiele Abstimmungsturniere. Stimme für deine Favoriten ab und entdecke Community-Ranglisten.",
-      pt: "Crie e jogue torneios de votação. Vote nos seus favoritos e confira os rankings da comunidade.",
-      ru: "Создавайте и играйте в турниры голосований. Голосуйте за своих фаворитов и изучайте рейтинги сообщества.",
-      id: "Buat dan mainkan turnamen voting. Pilih favoritmu dan nikmati peringkat komunitas.",
-      hi: "वोटिंग टूर्नामेंट बनाएं और खेलें। अपने पसंदीदा को वोट दें और समुदाय की रैंकिंग देखें।",
-      vi: "Tạo và chơi giải đấu bình chọn. Bình chọn mục yêu thích và khám phá bảng xếp hạng cộng đồng.",
-      zh: "创建并游玩淘汰赛游戏，为你喜欢的角色投票，并查看社区排行榜。",
-      ar: "أنشئ والعب بطولات التصويت، وصوّت لمفضلاتك واستمتع بتصنيفات المجتمع.",
-      bn: "ভোটিং টুর্নামেন্ট তৈরি করুন ও খেলুন। আপনার প্রিয়দের ভোট দিন এবং কমিউনিটির র‍্যাঙ্কিং দেখুন।",
-      th: "สร้างและเล่นเกมโหวตแบบทัวร์นาเมนต์ โหวตสิ่งที่คุณชื่นชอบและดูอันดับจากชุมชน",
-      tr: "Turnuva oyunları oluştur ve oyna. Favorilerine oy ver ve topluluk sıralamalarını keşfet.",
-    };
+const descMap = {
+  en: "Create and play tournament bracket games on One Pick Game. Vote for your favorites, build your own brackets, and discover community rankings.",
+
+  ko: "이상형 월드컵을 만들고 다양한 토너먼트 게임을 플레이해보세요. 좋아하는 후보를 선택하고 직접 월드컵을 만들며 인기 순위도 확인할 수 있습니다.",
+
+  ja: "投票トーナメントを作成してプレイしよう。お気に入りを選んで対戦を楽しみ、自分だけのトーナメントを作成したり、人気ランキングをチェックできます。",
+
+  zh: "创建并游玩投票淘汰赛，选择你最喜欢的候选项进行对决，还可以创建自己的比赛并查看社区人气排名。",
+
+  es: "Crea y juega torneos de votación en One Pick Game. Elige tus favoritos, crea tus propios torneos y descubre los rankings de la comunidad.",
+
+  fr: "Créez et jouez à des tournois de vote sur One Pick Game. Choisissez vos favoris, créez vos propres tournois et découvrez les classements de la communauté.",
+
+  de: "Erstelle und spiele Abstimmungsturniere auf One Pick Game. Wähle deine Favoriten, erstelle eigene Turniere und entdecke die Ranglisten der Community.",
+
+  pt: "Crie e jogue torneios de votação no One Pick Game. Escolha seus favoritos, monte seus próprios torneios e descubra os rankings da comunidade.",
+
+  ru: "Создавайте и играйте в турниры с голосованием на One Pick Game. Выбирайте фаворитов, создавайте собственные турниры и смотрите рейтинги сообщества.",
+
+  id: "Buat dan mainkan turnamen voting di One Pick Game. Pilih favoritmu, buat turnamen sendiri, dan lihat peringkat komunitas.",
+
+  hi: "One Pick Game पर वोटिंग टूर्नामेंट बनाएं और खेलें। अपने पसंदीदा विकल्प चुनें, अपना टूर्नामेंट बनाएं और कम्युनिटी रैंकिंग देखें।",
+
+  vi: "Tạo và chơi các giải đấu bình chọn trên One Pick Game. Chọn mục yêu thích, tạo giải đấu của riêng bạn và khám phá bảng xếp hạng cộng đồng.",
+
+  ar: "أنشئ والعب بطولات التصويت على One Pick Game. اختر مفضلاتك، وأنشئ بطولاتك الخاصة، واكتشف تصنيفات المجتمع.",
+
+  bn: "One Pick Game-এ ভোটিং টুর্নামেন্ট তৈরি করুন ও খেলুন। আপনার পছন্দের প্রতিযোগী বেছে নিন, নিজের টুর্নামেন্ট তৈরি করুন এবং কমিউনিটি র‍্যাঙ্কিং দেখুন।",
+
+  th: "สร้างและเล่นเกมโหวตแบบทัวร์นาเมนต์บน One Pick Game เลือกรายการโปรด สร้างทัวร์นาเมนต์ของคุณเอง และดูอันดับยอดนิยมจากชุมชน",
+
+  tr: "One Pick Game'de oylama turnuvaları oluştur ve oyna. Favorilerini seç, kendi turnuvanı oluştur ve topluluk sıralamalarını keşfet.",
+};
 
     /* ===============================================
        월드컵 만들기
@@ -1155,17 +1170,22 @@ const pageSeoTitle =
     : normalizedLang === "ko"
       ? `${worldCupKeyword} - ${translatedTitle} | 원픽게임`
       : `${worldCupKeyword} - ${translatedTitle} | OnePickGame`;
-      const translatedDescription =
-        cup
-          ?.description_translations?.[
-          normalizedLang
-        ] ||
-        cup
-          ?.description_translations
-          ?.en ||
-        cup?.description ||
-        cup?.desc ||
-        "";
+     const savedDescription =
+  cup?.description_translations?.[normalizedLang] ||
+  cup?.description_translations?.en ||
+  cup?.description ||
+  cup?.desc ||
+  "";
+
+const translatedDescription =
+  savedDescription ||
+  (
+    normalizedLang === "ko"
+      ? `${translatedTitle} 이상형 월드컵을 원픽게임에서 플레이하세요. 좋아하는 후보를 선택하고 최종 우승자를 확인해보세요.`
+      : normalizedLang === "en"
+        ? `Play the ${cleanEnglishTitle} tournament bracket game on OnePickGame. Choose your favorites and find the ultimate winner.`
+        : `Play ${translatedTitle} on OnePickGame. Choose your favorites and find the ultimate winner.`
+  );
 
       return (
         <>
@@ -1234,42 +1254,57 @@ const pageSeoTitle =
     useNavigate();
 
   const makerTitleMap = {
-    en: "Create an Ideal Type World Cup | bracket One Pick Game",
-    ko: "이상형 월드컵 만들기 | One Pick Game",
-    ja: "理想のタイプワールドカップを作成 | One Pick Game",
-    zh: "创建理想型世界杯 | One Pick Game",
-    ru: "Создать турнир | One Pick Game",
-    pt: "Criar Torneio | One Pick Game",
-    es: "Crear Torneo | One Pick Game",
-    fr: "Créer un Tournoi | One Pick Game",
-    id: "Buat Turnamen | One Pick Game",
-    hi: "टूर्नामेंट बनाएँ | One Pick Game",
-    de: "Turnier erstellen | One Pick Game",
-    vi: "Tạo giải đấu | One Pick Game",
-    ar: "إنشاء بطولة | One Pick Game",
-    bn: "টুর্নামেন্ট তৈরি করুন | One Pick Game",
-    th: "สร้างทัวร์นาเมนต์ | One Pick Game",
-    tr: "Turnuva Oluştur | One Pick Game",
-  };
+  en: "Create a Tournament Bracket Game | OnePickGame",
+  ko: "이상형 월드컵 만들기 | 원픽게임",
+  ja: "投票トーナメントを作成 | OnePickGame",
+  zh: "创建投票淘汰赛 | OnePickGame",
+  es: "Crear un Torneo de Votación | OnePickGame",
+  fr: "Créer un Tournoi de Vote | OnePickGame",
+  de: "Abstimmungsturnier erstellen | OnePickGame",
+  pt: "Criar um Torneio de Votação | OnePickGame",
+  ru: "Создать турнир с голосованием | OnePickGame",
+  id: "Buat Turnamen Voting | OnePickGame",
+  hi: "वोटिंग टूर्नामेंट बनाएं | OnePickGame",
+  vi: "Tạo Giải Đấu Bình Chọn | OnePickGame",
+  ar: "إنشاء بطولة تصويت | OnePickGame",
+  bn: "ভোটিং টুর্নামেন্ট তৈরি করুন | OnePickGame",
+  th: "สร้างเกมโหวตแบบทัวร์นาเมนต์ | OnePickGame",
+  tr: "Oylama Turnuvası Oluştur | OnePickGame",
+};
 
-  const makerDescMap = {
-    en: "Create your own ideal type world cup. Add candidates and images, build your bracket, and share it with others.",
-    ko: "나만의 이상형 월드컵을 만들어보세요. 이미지와 후보를 등록하고 토너먼트를 만들어 친구들과 공유할 수 있습니다.",
-    ja: "候補と画像を登録して、自分だけの理想のタイプワールドカップを作成して共有できます。",
-    zh: "添加候选项和图片，创建属于自己的理想型世界杯并与他人分享。",
-    ru: "Создайте свой турнир, добавьте участников и изображения и поделитесь им с другими.",
-    pt: "Crie seu próprio torneio, adicione candidatos e imagens e compartilhe com outras pessoas.",
-    es: "Crea tu propio torneo, añade candidatos e imágenes y compártelo con otros.",
-    fr: "Créez votre propre tournoi, ajoutez des candidats et des images, puis partagez-le.",
-    id: "Buat turnamenmu sendiri, tambahkan kandidat dan gambar, lalu bagikan.",
-    hi: "अपना टूर्नामेंट बनाएँ, उम्मीदवार और चित्र जोड़ें और दूसरों के साथ साझा करें।",
-    de: "Erstelle dein eigenes Turnier, füge Kandidaten und Bilder hinzu und teile es mit anderen.",
-    vi: "Tạo giải đấu của riêng bạn, thêm ứng viên và hình ảnh rồi chia sẻ với mọi người.",
-    ar: "أنشئ بطولتك الخاصة وأضف المرشحين والصور وشاركها مع الآخرين.",
-    bn: "নিজের টুর্নামেন্ট তৈরি করুন, প্রার্থী ও ছবি যোগ করুন এবং অন্যদের সঙ্গে শেয়ার করুন।",
-    th: "สร้างทัวร์นาเมนต์ของคุณเอง เพิ่มผู้เข้าแข่งขันและรูปภาพ แล้วแชร์ให้ผู้อื่น",
-    tr: "Kendi turnuvanı oluştur, adaylar ve görseller ekle ve başkalarıyla paylaş.",
-  };
+const makerDescMap = {
+  en: "Create your own tournament bracket game on OnePickGame. Add candidates, build matchups, share your bracket, and let players vote for their favorites.",
+
+  ko: "나만의 이상형 월드컵을 만들어보세요. 후보를 추가하고 대진을 구성해 공유한 뒤, 다른 사용자들과 함께 좋아하는 후보를 선택할 수 있습니다.",
+
+  ja: "自分だけの投票トーナメントを作成できます。候補を追加して対戦を組み、共有してみんなでお気に入りに投票しましょう。",
+
+  zh: "创建属于自己的投票淘汰赛。添加候选项、生成对战、分享比赛，并让大家为喜欢的候选项投票。",
+
+  es: "Crea tu propio torneo de votación. Añade candidatos, organiza enfrentamientos, comparte el torneo y deja que los jugadores voten por sus favoritos.",
+
+  fr: "Créez votre propre tournoi de vote. Ajoutez des candidats, organisez les duels, partagez le tournoi et laissez les joueurs voter pour leurs favoris.",
+
+  de: "Erstelle dein eigenes Abstimmungsturnier. Füge Kandidaten hinzu, erstelle Duelle, teile das Turnier und lass Spieler für ihre Favoriten abstimmen.",
+
+  pt: "Crie seu próprio torneio de votação. Adicione candidatos, monte os confrontos, compartilhe o torneio e deixe os jogadores votarem em seus favoritos.",
+
+  ru: "Создайте собственный турнир с голосованием. Добавляйте участников, составляйте пары, делитесь турниром и голосуйте за любимых участников.",
+
+  id: "Buat turnamen voting milikmu sendiri. Tambahkan kandidat, susun pertandingan, bagikan turnamen, dan biarkan pemain memilih favorit mereka.",
+
+  hi: "अपना वोटिंग टूर्नामेंट बनाएं। प्रतियोगियों को जोड़ें, मुकाबले तैयार करें, टूर्नामेंट शेयर करें और खिलाड़ियों को अपने पसंदीदा विकल्प के लिए वोट करने दें।",
+
+  vi: "Tạo giải đấu bình chọn của riêng bạn. Thêm ứng viên, tạo các cặp đấu, chia sẻ giải đấu và để người chơi bình chọn cho mục yêu thích.",
+
+  ar: "أنشئ بطولة تصويت خاصة بك. أضف المتسابقين، وأنشئ المواجهات، وشارك البطولة، ودع اللاعبين يصوتون لمفضلاتهم.",
+
+  bn: "নিজের ভোটিং টুর্নামেন্ট তৈরি করুন। প্রতিযোগী যোগ করুন, ম্যাচআপ তৈরি করুন, টুর্নামেন্ট শেয়ার করুন এবং খেলোয়াড়দের পছন্দের প্রতিযোগীকে ভোট দিতে দিন।",
+
+  th: "สร้างเกมโหวตแบบทัวร์นาเมนต์ของคุณเอง เพิ่มผู้เข้าแข่งขัน จัดคู่การแข่งขัน แชร์ทัวร์นาเมนต์ และให้ผู้เล่นโหวตตัวเลือกที่ชื่นชอบ",
+
+  tr: "Kendi oylama turnuvanı oluştur. Adayları ekle, eşleşmeleri hazırla, turnuvayı paylaş ve oyuncuların favorilerine oy vermesini sağla.",
+};
 
   return (
     <>
