@@ -1707,67 +1707,82 @@ app.use(async (req, res, next) => {
      * 제목
      */
 
-    const worldcupTitle =
-      String(
-        worldcup.title ||
-        worldcup.name ||
-        "Tournament"
-      )
-        .replace(/\s+/g, " ")
-        .trim();
-
     /*
-     * 설명
-     */
+ * 언어별 제목
+ * 해당 언어 번역 → 영어 번역 → 기본 제목 → 기본값
+ */
+const translatedTitle =
+  worldcup.title_translations &&
+  typeof worldcup.title_translations === "object"
+    ? worldcup.title_translations[lang] ||
+      worldcup.title_translations.en
+    : "";
 
-    let worldcupDescription =
-      String(
-        worldcup.description || ""
-      )
-        .replace(/\s+/g, " ")
-        .trim();
+const worldcupTitle =
+  String(
+    translatedTitle ||
+    worldcup.title ||
+    worldcup.name ||
+    "Tournament"
+  )
+    .replace(/\s+/g, " ")
+    .trim();
 
-    if (!worldcupDescription) {
-      if (lang === "ko") {
-        worldcupDescription =
-          `${worldcupTitle} 이상형 월드컵을 플레이해보세요. ` +
-          `후보들을 비교하고 최애를 선택해 최종 우승자를 결정할 수 있습니다.`;
-      } else if (lang === "ja") {
-        worldcupDescription =
-          `${worldcupTitle} のトーナメントをプレイしよう。` +
-          `候補を比較してお気に入りを選び、最終優勝者を決めましょう。`;
-      } else if (lang === "zh") {
-        worldcupDescription =
-          `来玩 ${worldcupTitle} 淘汰赛。` +
-          `比较候选人，选择你最喜欢的选项并决出最终冠军。`;
-      } else if (lang === "es") {
-        worldcupDescription =
-          `Juega ${worldcupTitle} en OnePickGame. ` +
-          `Compara candidatos, elige tus favoritos y descubre al ganador final.`;
-      } else if (lang === "pt") {
-        worldcupDescription =
-          `Jogue ${worldcupTitle} no OnePickGame. ` +
-          `Compare os candidatos, escolha seus favoritos e descubra o vencedor final.`;
-      } else if (lang === "fr") {
-        worldcupDescription =
-          `Jouez à ${worldcupTitle} sur OnePickGame. ` +
-          `Comparez les candidats, choisissez vos favoris et découvrez le gagnant final.`;
-      } else if (lang === "de") {
-        worldcupDescription =
-          `Spiele ${worldcupTitle} auf OnePickGame. ` +
-          `Vergleiche die Kandidaten, wähle deine Favoriten und bestimme den Sieger.`;
-      } else {
-        worldcupDescription =
-          `Play ${worldcupTitle} on OnePickGame. ` +
-          `Compare candidates, choose your favorites, and discover the ultimate winner.`;
-      }
-    }
+/*
+ * 언어별 설명
+ * 해당 언어 번역 → 영어 번역 → 기본 설명
+ */
+const translatedDescription =
+  worldcup.description_translations &&
+  typeof worldcup.description_translations === "object"
+    ? worldcup.description_translations[lang] ||
+      worldcup.description_translations.en
+    : "";
 
+let worldcupDescription =
+  String(
+    translatedDescription ||
+    worldcup.description ||
+    ""
+  )
+    .replace(/\s+/g, " ")
+    .trim();
+
+if (!worldcupDescription) {
+  if (lang === "ko") {
     worldcupDescription =
-      worldcupDescription.slice(
-        0,
-        180
-      );
+      `${worldcupTitle}을 플레이해보세요. ` +
+      `후보들을 비교하고 최애를 선택해 최종 우승자를 결정할 수 있습니다.`;
+  } else if (lang === "ja") {
+    worldcupDescription =
+      `${worldcupTitle}をプレイしよう。` +
+      `候補を比較してお気に入りを選び、最終優勝者を決めましょう。`;
+  } else if (lang === "zh") {
+    worldcupDescription =
+      `来玩${worldcupTitle}。` +
+      `比较候选人，选择你最喜欢的选项并决出最终冠军。`;
+  } else if (lang === "es") {
+    worldcupDescription =
+      `Juega ${worldcupTitle} en OnePickGame. ` +
+      `Compara candidatos, elige tus favoritos y descubre al ganador final.`;
+  } else if (lang === "pt") {
+    worldcupDescription =
+      `Jogue ${worldcupTitle} no OnePickGame. ` +
+      `Compare os candidatos, escolha seus favoritos e descubra o vencedor final.`;
+  } else if (lang === "fr") {
+    worldcupDescription =
+      `Jouez à ${worldcupTitle} sur OnePickGame. ` +
+      `Comparez les candidats, choisissez vos favoris et découvrez le gagnant final.`;
+  } else if (lang === "de") {
+    worldcupDescription =
+      `Spiele ${worldcupTitle} auf OnePickGame. ` +
+      `Vergleiche die Kandidaten, wähle deine Favoriten und bestimme den Sieger.`;
+  } else {
+    worldcupDescription =
+      `Play ${worldcupTitle} on OnePickGame. ` +
+      `Compare candidates, choose your favorites, and discover the ultimate winner.`;
+  }
+}
 
     /*
      * Canonical
