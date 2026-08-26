@@ -1868,21 +1868,21 @@ if (!worldcupDescription) {
      * SEO title
      */
 
-    let seoTitle;
+let seoTitle;
 
-    if (lang === "ko") {
-      seoTitle =
-        `${worldcupTitle} 이상형 월드컵 | OnePickGame`;
-    } else if (lang === "ja") {
-      seoTitle =
-        `${worldcupTitle} トーナメント | OnePickGame`;
-    } else if (lang === "zh") {
-      seoTitle =
-        `${worldcupTitle} 淘汰赛 | OnePickGame`;
-    } else {
-      seoTitle =
-        `${worldcupTitle} Tournament | OnePickGame`;
-    }
+if (lang === "ko") {
+  seoTitle =
+    `이상형 월드컵 | ${worldcupTitle} | OnePickGame`;
+} else if (lang === "ja") {
+  seoTitle =
+    `${worldcupTitle} トーナメント | OnePickGame`;
+} else if (lang === "zh") {
+  seoTitle =
+    `${worldcupTitle} 淘汰赛 | OnePickGame`;
+} else {
+  seoTitle =
+    `${worldcupTitle} Tournament | OnePickGame`;
+}
 
     /*
      * JSON-LD
