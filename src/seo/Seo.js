@@ -80,6 +80,7 @@ function toAbsoluteUrl(origin, url) {
   }
 
   const normalizedOrigin = stripTrailingSlash(origin || SITE_URL);
+
   const normalizedUrl = String(url).startsWith("/")
     ? url
     : `/${url}`;
@@ -91,35 +92,36 @@ export default function Seo({
   lang = "en",
   slug = "",
   title = "OnePickGame",
-  description = "Create and play worldcup-style tournaments.",
+  description = "Create and play tournament bracket games on OnePickGame.",
   image = "/onepick-social.png",
-
   indexable = true,
-
   langPrefix = true,
-
   hreflangLangs,
-
   type = "website",
 }) {
-const normalizedLang = String(lang || "en").split("-")[0];
+  const normalizedLang = String(lang || "en").split("-")[0];
 
-const safeTitle = String(title || "OnePickGame")
-  .replace(/\s+/g, " ")
-  .trim();
+  const safeTitle = String(title || "OnePickGame")
+    .replace(/\s+/g, " ")
+    .trim();
 
-const safeDescription = String(
-  description || "Create and play tournament bracket games on OnePickGame."
-)
-  .replace(/\s+/g, " ")
-  .trim();
+  const safeDescription = String(
+    description ||
+      "Create and play tournament bracket games on OnePickGame."
+  )
+    .replace(/\s+/g, " ")
+    .trim();
 
-// 항상 실제 서비스 도메인 사용
-const origin = SITE_URL;
+  const origin = SITE_URL;
 
-  const canonical = normalizeCanonical(origin, normalizedLang, slug, {
-    langPrefix,
-  });
+  const canonical = normalizeCanonical(
+    origin,
+    normalizedLang,
+    slug,
+    {
+      langPrefix,
+    }
+  );
 
   const absoluteImage = image
     ? toAbsoluteUrl(origin, image)
@@ -129,11 +131,16 @@ const origin = SITE_URL;
     hreflangLangs ?? SUPPORTED_LANGS;
 
   const hreflangs = indexable
-    ? langsForHreflang.map((l) => ({
-        hreflang: l,
-        href: normalizeCanonical(origin, l, slug, {
-          langPrefix,
-        }),
+    ? langsForHreflang.map((language) => ({
+        hreflang: language,
+        href: normalizeCanonical(
+          origin,
+          language,
+          slug,
+          {
+            langPrefix,
+          }
+        ),
       }))
     : [];
 
@@ -141,19 +148,17 @@ const origin = SITE_URL;
     OG_LOCALE_MAP[normalizedLang] || "en_US";
 
   const alternateOgLocales = langsForHreflang
-    .filter((l) => l !== normalizedLang)
-    .map((l) => OG_LOCALE_MAP[l])
+    .filter((language) => language !== normalizedLang)
+    .map((language) => OG_LOCALE_MAP[language])
     .filter(Boolean);
 
-const jsonLd = {
-  "@context": "https://schema.org",
-  "@type": "WebPage",
-
-  name: safeTitle,
-  description: safeDescription,
-
-  url: canonical,
-  inLanguage: normalizedLang,
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    name: safeTitle,
+    description: safeDescription,
+    url: canonical,
+    inLanguage: normalizedLang,
     isPartOf: {
       "@type": "WebSite",
       name: "OnePickGame",
@@ -171,34 +176,32 @@ const jsonLd = {
 
   return (
     <Helmet>
-      {/* 기본 */}
-
+      {/* 기본 SEO */}
       <html lang={normalizedLang} />
 
-<title>{safeTitle}</title>
+      <title>{safeTitle}</title>
 
-<meta
-  name="description"
-  content={safeDescription}
-/>
+      <meta
+        name="description"
+        content={safeDescription}
+      />
 
-<meta
-  name="robots"
-  content={
-    indexable
-      ? "index, follow, max-image-preview:large"
-      : "noindex, follow"
-  }
-/>
+      <meta
+        name="robots"
+        content={
+          indexable
+            ? "index, follow, max-image-preview:large"
+            : "noindex, follow"
+        }
+      />
+
       {/* Canonical */}
-
       <link
         rel="canonical"
         href={canonical}
       />
 
       {/* hreflang */}
-
       {hreflangs.map(({ hreflang, href }) => (
         <link
           key={hreflang}
@@ -224,21 +227,20 @@ const jsonLd = {
       )}
 
       {/* Open Graph */}
-
       <meta
         property="og:type"
         content={type}
       />
 
-   <meta
-  property="og:title"
-  content={safeTitle}
-/>
+      <meta
+        property="og:title"
+        content={safeTitle}
+      />
 
-<meta
-  property="og:description"
-  content={safeDescription}
-/>
+      <meta
+        property="og:description"
+        content={safeDescription}
+      />
 
       <meta
         property="og:url"
@@ -270,29 +272,28 @@ const jsonLd = {
             content={absoluteImage}
           />
 
-<meta
-  property="og:image:alt"
-  content={safeTitle}
-/>
+          <meta
+            property="og:image:alt"
+            content={safeTitle}
+          />
         </>
       )}
 
       {/* Twitter */}
-
       <meta
         name="twitter:card"
         content="summary_large_image"
       />
 
-<meta
-  name="twitter:title"
-  content={safeTitle}
-/>
+      <meta
+        name="twitter:title"
+        content={safeTitle}
+      />
 
-<meta
-  name="twitter:description"
-  content={safeDescription}
-/>
+      <meta
+        name="twitter:description"
+        content={safeDescription}
+      />
 
       {absoluteImage && (
         <>
@@ -301,15 +302,14 @@ const jsonLd = {
             content={absoluteImage}
           />
 
-<meta
-  name="twitter:image:alt"
-  content={safeTitle}
-/>
+          <meta
+            name="twitter:image:alt"
+            content={safeTitle}
+          />
         </>
       )}
 
       {/* JSON-LD */}
-
       <script type="application/ld+json">
         {JSON.stringify(jsonLd)}
       </script>

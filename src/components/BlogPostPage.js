@@ -226,7 +226,8 @@ function getVisitorId() {
   const storageKey = "onepickgame_visitor_id";
 
   try {
-    const savedVisitorId = localStorage.getItem(storageKey);
+    const savedVisitorId =
+      localStorage.getItem(storageKey);
 
     if (savedVisitorId) {
       return savedVisitorId;
@@ -239,32 +240,46 @@ function getVisitorId() {
         ? window.crypto.randomUUID()
         : createFallbackVisitorId();
 
-    localStorage.setItem(storageKey, newVisitorId);
+    localStorage.setItem(
+      storageKey,
+      newVisitorId
+    );
 
     return newVisitorId;
   } catch (error) {
-    console.error("Visitor ID creation error:", error);
+    console.error(
+      "Visitor ID creation error:",
+      error
+    );
 
     return createFallbackVisitorId();
   }
 }
 
 export default function BlogPostPage() {
-  const { lang = "en", slug = "" } = useParams();
+  const { lang = "en", slug = "" } =
+    useParams();
 
-  const currentLang = SUPPORTED_LANGS.includes(lang)
-    ? lang
-    : "en";
+  const currentLang =
+    SUPPORTED_LANGS.includes(lang)
+      ? lang
+      : "en";
 
   const text = getDetailText(currentLang);
-  const brandName = getBrandName(currentLang);
+  const brandName =
+    getBrandName(currentLang);
 
   const [post, setPost] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [errorMessage, setErrorMessage] = useState("");
-  const [viewCount, setViewCount] = useState(0);
-  const [viewCountLoading, setViewCountLoading] =
-    useState(false);
+  const [loading, setLoading] =
+    useState(true);
+  const [errorMessage, setErrorMessage] =
+    useState("");
+  const [viewCount, setViewCount] =
+    useState(0);
+  const [
+    viewCountLoading,
+    setViewCountLoading,
+  ] = useState(false);
 
   useEffect(() => {
     let mounted = true;
@@ -276,22 +291,31 @@ export default function BlogPostPage() {
       setViewCount(0);
 
       try {
-        const { data, error } = await supabase
-          .from("blog_posts")
-          .select(
-            "id, language, slug, title, description, content, created_at"
-          )
-          .eq("language", currentLang)
-          .eq("slug", slug)
-          .maybeSingle();
+        const { data, error } =
+          await supabase
+            .from("blog_posts")
+            .select(
+              "id, language, slug, title, description, content, created_at"
+            )
+            .eq(
+              "language",
+              currentLang
+            )
+            .eq("slug", slug)
+            .maybeSingle();
 
         if (!mounted) {
           return;
         }
 
         if (error) {
-          console.error("Blog post fetch error:", error);
-          setErrorMessage(error.message || text.error);
+          console.error(
+            "Blog post fetch error:",
+            error
+          );
+          setErrorMessage(
+            error.message || text.error
+          );
           setPost(null);
         } else {
           setPost(data || null);
@@ -301,8 +325,13 @@ export default function BlogPostPage() {
           return;
         }
 
-        console.error("Blog post fetch error:", error);
-        setErrorMessage(error?.message || text.error);
+        console.error(
+          "Blog post fetch error:",
+          error
+        );
+        setErrorMessage(
+          error?.message || text.error
+        );
         setPost(null);
       } finally {
         if (mounted) {
@@ -322,10 +351,17 @@ export default function BlogPostPage() {
     return () => {
       mounted = false;
     };
-  }, [currentLang, slug, text.error]);
+  }, [
+    currentLang,
+    slug,
+    text.error,
+  ]);
 
   useEffect(() => {
-    if (!post?.slug || !post?.language) {
+    if (
+      !post?.slug ||
+      !post?.language
+    ) {
       return undefined;
     }
 
@@ -335,14 +371,20 @@ export default function BlogPostPage() {
       setViewCountLoading(true);
 
       try {
-        const visitorId = getVisitorId();
+        const visitorId =
+          getVisitorId();
 
         const { error: recordError } =
-          await supabase.rpc("record_blog_view", {
-            p_slug: post.slug,
-            p_language: post.language,
-            p_visitor_id: visitorId,
-          });
+          await supabase.rpc(
+            "record_blog_view",
+            {
+              p_slug: post.slug,
+              p_language:
+                post.language,
+              p_visitor_id:
+                visitorId,
+            }
+          );
 
         if (recordError) {
           console.error(
@@ -351,11 +393,17 @@ export default function BlogPostPage() {
           );
         }
 
-        const { data, error: countError } =
-          await supabase.rpc("get_blog_view_count", {
+        const {
+          data,
+          error: countError,
+        } = await supabase.rpc(
+          "get_blog_view_count",
+          {
             p_slug: post.slug,
-            p_language: post.language,
-          });
+            p_language:
+              post.language,
+          }
+        );
 
         if (!mounted) {
           return;
@@ -370,7 +418,9 @@ export default function BlogPostPage() {
           return;
         }
 
-        setViewCount(Number(data) || 0);
+        setViewCount(
+          Number(data) || 0
+        );
       } catch (error) {
         if (mounted) {
           console.error(
@@ -381,7 +431,9 @@ export default function BlogPostPage() {
         }
       } finally {
         if (mounted) {
-          setViewCountLoading(false);
+          setViewCountLoading(
+            false
+          );
         }
       }
     }
@@ -391,7 +443,10 @@ export default function BlogPostPage() {
     return () => {
       mounted = false;
     };
-  }, [post?.slug, post?.language]);
+  }, [
+    post?.slug,
+    post?.language,
+  ]);
 
   if (loading) {
     return (
@@ -419,8 +474,12 @@ export default function BlogPostPage() {
         <main className="blog-page">
           <div className="blog-container">
             <div className="blog-status blog-status-error">
-              <strong>{text.error}</strong>
-              <span>{errorMessage}</span>
+              <strong>
+                {text.error}
+              </strong>
+              <span>
+                {errorMessage}
+              </span>
             </div>
 
             <Link
@@ -442,17 +501,23 @@ export default function BlogPostPage() {
           lang={currentLang}
           slug={`blog/${slug}`}
           title={`${text.notFound} | ${brandName}`}
-          description={text.notFoundDescription}
+          description={
+            text.notFoundDescription
+          }
           indexable={false}
         />
 
         <main className="blog-page">
           <div className="blog-container">
             <div className="blog-status">
-              <strong>{text.notFound}</strong>
+              <strong>
+                {text.notFound}
+              </strong>
 
               <span>
-                {text.notFoundDescription}
+                {
+                  text.notFoundDescription
+                }
               </span>
             </div>
 
@@ -470,15 +535,15 @@ export default function BlogPostPage() {
 
   return (
     <>
-<Seo
-  lang={currentLang}
-  slug={`blog/${post.slug}`}
-  title={`이상형 월드컵 - ${post.title} | ${brandName}`}
-  description={
-    post.description ||
-    `${post.title} - ${brandName}`
-  }
-/>
+      <Seo
+        lang={currentLang}
+        slug={`blog/${post.slug}`}
+        title={`${post.title} | ${brandName}`}
+        description={
+          post.description ||
+          `${post.title} - ${brandName}`
+        }
+      />
 
       <main className="blog-page">
         <article className="blog-post">
@@ -510,7 +575,9 @@ export default function BlogPostPage() {
               {post.created_at && (
                 <time
                   className="blog-post-date"
-                  dateTime={post.created_at}
+                  dateTime={
+                    post.created_at
+                  }
                 >
                   {formatDate(
                     post.created_at,
@@ -534,7 +601,8 @@ export default function BlogPostPage() {
           <div
             className="blog-post-content"
             dangerouslySetInnerHTML={{
-              __html: post.content || "",
+              __html:
+                post.content || "",
             }}
           />
         </article>

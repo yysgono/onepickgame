@@ -205,7 +205,10 @@ function formatDate(date, lang) {
 export default function BlogPage() {
   const { lang = "en" } = useParams();
 
-  const currentLang = SUPPORTED_LANGS.includes(lang) ? lang : "en";
+  const currentLang = SUPPORTED_LANGS.includes(lang)
+    ? lang
+    : "en";
+
   const text = getBlogText(currentLang);
 
   const [posts, setPosts] = useState([]);
@@ -259,12 +262,12 @@ export default function BlogPage() {
 
   return (
     <>
-<Seo
-  lang={currentLang}
-  slug="blog"
-  title={`이상형 월드컵 - ${text.title} | One Pick Game`}
-  description={text.description.replace("\n", " ")}
-/>
+      <Seo
+        lang={currentLang}
+        slug="blog"
+        title={`${text.title} | OnePickGame`}
+        description={text.description.replace("\n", " ")}
+      />
 
       <main className="blog-page">
         <section className="blog-container">

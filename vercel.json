@@ -27,26 +27,31 @@
       "destination": "https://www.onepickgame.com/:path*",
       "permanent": true
     },
+
     {
       "source": "/(ar|bn|de|es|fr|hi|id|ja|ko|pt|ru|th|tr|vi|zh)/privacy-policy",
       "destination": "/en/privacy-policy",
       "permanent": true
     },
+
     {
       "source": "/(ar|bn|de|es|fr|hi|id|ja|ko|pt|ru|th|tr|vi|zh)/terms-of-service",
       "destination": "/en/terms-of-service",
       "permanent": true
     },
+
     {
       "source": "/(ar|bn|de|es|fr|hi|id|ja|ko|pt|ru|th|tr|vi|zh)/suggestions-board",
       "destination": "/en/suggestions-board",
       "permanent": true
     },
+
     {
       "source": "/(ar|bn|de|es|fr|hi|id|ja|ko|pt|ru|th|tr|vi|zh)/suggestions",
       "destination": "/en/suggestions-board",
       "permanent": true
     },
+
     {
       "source": "/(ar|bn|de|es|fr|hi|id|ja|ko|pt|ru|th|tr|vi|zh)/notice",
       "destination": "/en/notice",
@@ -64,6 +69,7 @@
         }
       ]
     },
+
     {
       "source": "/sitemaps/(.*)\\.xml",
       "headers": [
@@ -73,6 +79,7 @@
         }
       ]
     },
+
     {
       "source": "/api/sitemap-blog",
       "headers": [
@@ -82,6 +89,7 @@
         }
       ]
     },
+
     {
       "source": "/robots\\.txt",
       "headers": [
@@ -91,6 +99,7 @@
         }
       ]
     },
+
     {
       "source": "/ads\\.txt",
       "headers": [
@@ -111,6 +120,16 @@
     {
       "src": "/(ko|en|ja|zh|ru|pt|es|fr|id|hi|de|vi|ar|bn|th|tr)/?$",
       "dest": "/server.js?seo=home&lang=$1"
+    },
+
+    {
+      "src": "/(ko|en|ja|zh|ru|pt|es|fr|id|hi|de|vi|ar|bn|th|tr)/blog/?$",
+      "dest": "/server.js?seo=blog-list&lang=$1"
+    },
+
+    {
+      "src": "/(ko|en|ja|zh|ru|pt|es|fr|id|hi|de|vi|ar|bn|th|tr)/blog/([^/]+)/?$",
+      "dest": "/server.js?seo=blog-post&lang=$1&slug=$2"
     },
 
     {
