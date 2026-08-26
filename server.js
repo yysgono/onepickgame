@@ -1742,6 +1742,11 @@ if (typeof descriptionTranslations === "string") {
   }
 }
 
+console.log("SEO DEBUG lang:", lang);
+console.log("SEO DEBUG raw:", worldcup.description_translations);
+console.log("SEO DEBUG parsed:", descriptionTranslations);
+console.log("SEO DEBUG ko:", descriptionTranslations.ko);
+
 const translatedDescription =
   descriptionTranslations[lang] ||
   descriptionTranslations.en ||
