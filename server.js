@@ -1,29 +1,80 @@
-// server.js
+/// server.js
 
-import express from "express";
-import cors from "cors";
-import fetch from "node-fetch";
-import dotenv from "dotenv";
-import { createClient } from "@supabase/supabase-js";
-
-dotenv.config();
+const express = require("express");
+const cors = require("cors");
+const jwt = require("jsonwebtoken");
+const { createClient } = require("@supabase/supabase-js");
+require("dotenv").config();
 
 const app = express();
 
 app.use(cors());
 app.use(express.json({ limit: "10mb" }));
-app.use(express.urlencoded({ extended: true, limit: "10mb" }));
+app.use(
+  express.urlencoded({
+    extended: true,
+    limit: "10mb",
+  })
+);
 
 const SITE_URL = "https://www.onepickgame.com";
 
-const SUPABASE_URL = process.env.SUPABASE_URL;
+const SUPABASE_URL =
+  process.env.REACT_APP_SUPABASE_URL ||
+  process.env.NEXT_PUBLIC_SUPABASE_URL ||
+  process.env.SUPABASE_URL;
+
+const SUPABASE_ANON_KEY =
+  process.env.REACT_APP_SUPABASE_ANON_KEY ||
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
+  process.env.SUPABASE_ANON_KEY;
+
 const SUPABASE_SERVICE_ROLE_KEY =
   process.env.SUPABASE_SERVICE_ROLE_KEY;
 
+const SUPABASE_JWT_SECRET =
+  process.env.SUPABASE_JWT_SECRET;
+
+if (!SUPABASE_URL) {
+  throw new Error(
+    "Supabase URL 환경변수가 설정되지 않았습니다."
+  );
+}
+
+if (
+  !SUPABASE_ANON_KEY &&
+  !SUPABASE_SERVICE_ROLE_KEY
+) {
+  throw new Error(
+    "Supabase key 환경변수가 설정되지 않았습니다."
+  );
+}
+
 const supabase = createClient(
   SUPABASE_URL,
-  SUPABASE_SERVICE_ROLE_KEY
+  SUPABASE_SERVICE_ROLE_KEY ||
+    SUPABASE_ANON_KEY,
+  {
+    auth: {
+      persistSession: false,
+      autoRefreshToken: false,
+    },
+  }
 );
+
+const supabaseAdmin =
+  SUPABASE_SERVICE_ROLE_KEY
+    ? createClient(
+        SUPABASE_URL,
+        SUPABASE_SERVICE_ROLE_KEY,
+        {
+          auth: {
+            persistSession: false,
+            autoRefreshToken: false,
+          },
+        }
+      )
+    : null;
 
 const SUPPORTED_LANGS = [
   "ko",
@@ -2116,4 +2167,27 @@ app.use((req, res) => {
  * =====================================================
  */
 
-export default app;
+/*
+ * =====================================================
+ * 로컬 실행
+ * =====================================================
+ */
+
+const PORT =
+  process.env.PORT || 5001;
+
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(
+      `API server listening on port ${PORT}`
+    );
+  });
+}
+
+/*
+ * =====================================================
+ * Vercel 실행
+ * =====================================================
+ */
+
+module.exports = app;
