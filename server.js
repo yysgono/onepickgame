@@ -1732,12 +1732,20 @@ const worldcupTitle =
  * 언어별 설명
  * 해당 언어 번역 → 영어 번역 → 기본 설명
  */
+let descriptionTranslations = worldcup.description_translations || {};
+
+if (typeof descriptionTranslations === "string") {
+  try {
+    descriptionTranslations = JSON.parse(descriptionTranslations);
+  } catch {
+    descriptionTranslations = {};
+  }
+}
+
 const translatedDescription =
-  worldcup.description_translations &&
-  typeof worldcup.description_translations === "object"
-    ? worldcup.description_translations[lang] ||
-      worldcup.description_translations.en
-    : "";
+  descriptionTranslations[lang] ||
+  descriptionTranslations.en ||
+  "";
 
 let worldcupDescription =
   String(
