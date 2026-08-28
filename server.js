@@ -1034,7 +1034,7 @@ const HOME_SEO = {
 
   ko: {
     title:
-      "이상형 월드컵 해외 사이트 - 토너먼트 게임 | OnePickGame",
+      "이상형 월드컵 해외 사이트 - 토너먼트 원픽 게임 | OnePickGame",
 
     description:
       "OnePickGame(원픽 게임)에서 다양한 이상형 월드컵과 토너먼트 게임을 즐겨보세요. 직접 월드컵을 만들고, 최애를 선택하고, 결과를 친구들과 공유할 수 있습니다.",
@@ -1183,6 +1183,27 @@ const HOME_SEO = {
   },
 };
 
+/*
+ * =====================================================
+ * 홈 추천 월드컵
+ * =====================================================
+ */
+
+const FEATURED_WORLDCUP_IDS = [
+  "70e27e0e-1112-4785-b2f6-7aee5f508b0e",
+  "2142cd10-468b-4fd9-8bf3-a09c4aeffc77",
+  "f36ba254-140f-4153-b551-e0df5c90674d",
+  "172f7127-cc23-40bb-92f0-188d7fb90670",
+  "d3cece18-68d7-4ecf-ad40-b08bd44ca992",
+  "9e9495b4-9f16-4f0e-b615-d6df55c78d4a",
+  "b83f8f15-2935-480f-9e87-f7e4275e83a6",
+  "c257e2f1-7b2f-4a32-b9c6-6093755f58b8",
+  "90af1d97-559b-4706-8878-e878dc3cd43f",
+  "d389ef73-bb86-46ba-b7f6-6c3e454271e8",
+  "3828b32f-ecaf-4d60-bca7-1c09e5527394",
+  "91b47d8c-72ec-4f4d-94bf-b88537d7da02",
+];
+
 app.use(async (req, res, next) => {
   if (req.query?.seo !== "home") {
     return next();
@@ -1217,80 +1238,128 @@ app.use(async (req, res, next) => {
     let html =
       await baseResponse.text();
 
-    html = html
-      .replace(
-        /<title[\s\S]*?<\/title>/gi,
-        ""
+    /*
+     * =====================================================
+     * 추천 월드컵 조회
+     * =====================================================
+     */
+
+    const {
+      data: featuredWorldcups,
+      error: featuredWorldcupsError,
+    } = await supabase
+      .from("worldcups")
+      .select(
+        "id, title, title_translations"
       )
-      .replace(
-        /<meta\s+[^>]*name=["']description["'][^>]*>/gi,
-        ""
-      )
-      .replace(
-        /<meta\s+[^>]*name=["']robots["'][^>]*>/gi,
-        ""
-      )
-      .replace(
-        /<link\s+[^>]*rel=["']canonical["'][^>]*>/gi,
-        ""
-      )
-      .replace(
-        /<link\s+[^>]*rel=["']alternate["'][^>]*>/gi,
-        ""
-      )
-      .replace(
-        /<meta\s+[^>]*property=["']og:type["'][^>]*>/gi,
-        ""
-      )
-      .replace(
-        /<meta\s+[^>]*property=["']og:title["'][^>]*>/gi,
-        ""
-      )
-      .replace(
-        /<meta\s+[^>]*property=["']og:description["'][^>]*>/gi,
-        ""
-      )
-      .replace(
-        /<meta\s+[^>]*property=["']og:url["'][^>]*>/gi,
-        ""
-      )
-      .replace(
-        /<meta\s+[^>]*property=["']og:site_name["'][^>]*>/gi,
-        ""
-      )
-      .replace(
-        /<meta\s+[^>]*property=["']og:image["'][^>]*>/gi,
-        ""
-      )
-      .replace(
-        /<meta\s+[^>]*property=["']og:image:alt["'][^>]*>/gi,
-        ""
-      )
-      .replace(
-        /<meta\s+[^>]*property=["']og:locale["'][^>]*>/gi,
-        ""
-      )
-      .replace(
-        /<meta\s+[^>]*name=["']twitter:card["'][^>]*>/gi,
-        ""
-      )
-      .replace(
-        /<meta\s+[^>]*name=["']twitter:title["'][^>]*>/gi,
-        ""
-      )
-      .replace(
-        /<meta\s+[^>]*name=["']twitter:description["'][^>]*>/gi,
-        ""
-      )
-      .replace(
-        /<meta\s+[^>]*name=["']twitter:image["'][^>]*>/gi,
-        ""
+      .in("id", FEATURED_WORLDCUP_IDS)
+      .is("deleted_at", null);
+
+    if (featuredWorldcupsError) {
+      console.warn(
+        "홈 추천 월드컵 조회 실패:",
+        featuredWorldcupsError
+      );
+    }
+
+    /*
+     * Supabase 조회 순서와 상관없이
+     * FEATURED_WORLDCUP_IDS 순서 유지
+     */
+
+    const featuredWorldcupMap =
+      new Map(
+        (featuredWorldcups || []).map(
+          (cup) => [cup.id, cup]
+        )
       );
 
-    html = html.replace(
-      /<html([^>]*)lang=["'][^"']*["']([^>]*)>/i,
-      `<html$1lang="${lang}"$2>`
-    );
+const orderedFeaturedWorldcups =
+  FEATURED_WORLDCUP_IDS
+    .map((id) =>
+      featuredWorldcupMap.get(id)
+    )
+    .filter(Boolean);
+
+/*
+ * 기존 기본 SEO 제거
+ */
+
+html = html
+  .replace(/<title[\s\S]*?<\/title>/gi, "")
+  .replace(
+    /<meta\s+[^>]*name=["']description["'][^>]*>/gi,
+    ""
+  )
+  .replace(
+    /<meta\s+[^>]*name=["']robots["'][^>]*>/gi,
+    ""
+  )
+  .replace(
+    /<link\s+[^>]*rel=["']canonical["'][^>]*>/gi,
+    ""
+  )
+  .replace(
+    /<link\s+[^>]*rel=["']alternate["'][^>]*>/gi,
+    ""
+  )
+  .replace(
+    /<meta\s+[^>]*property=["']og:type["'][^>]*>/gi,
+    ""
+  )
+  .replace(
+    /<meta\s+[^>]*property=["']og:title["'][^>]*>/gi,
+    ""
+  )
+  .replace(
+    /<meta\s+[^>]*property=["']og:description["'][^>]*>/gi,
+    ""
+  )
+  .replace(
+    /<meta\s+[^>]*property=["']og:url["'][^>]*>/gi,
+    ""
+  )
+  .replace(
+    /<meta\s+[^>]*property=["']og:site_name["'][^>]*>/gi,
+    ""
+  )
+  .replace(
+    /<meta\s+[^>]*property=["']og:image["'][^>]*>/gi,
+    ""
+  )
+  .replace(
+    /<meta\s+[^>]*property=["']og:image:alt["'][^>]*>/gi,
+    ""
+  )
+  .replace(
+    /<meta\s+[^>]*property=["']og:locale["'][^>]*>/gi,
+    ""
+  )
+  .replace(
+    /<meta\s+[^>]*name=["']twitter:card["'][^>]*>/gi,
+    ""
+  )
+  .replace(
+    /<meta\s+[^>]*name=["']twitter:title["'][^>]*>/gi,
+    ""
+  )
+  .replace(
+    /<meta\s+[^>]*name=["']twitter:description["'][^>]*>/gi,
+    ""
+  )
+  .replace(
+    /<meta\s+[^>]*name=["']twitter:image["'][^>]*>/gi,
+    ""
+  );
+
+/*
+ * html lang 변경
+ */
+
+html = html.replace(
+  /<html([^>]*)lang=["'][^"']*["']([^>]*)>/i,
+  `<html$1lang="${lang}"$2>`
+);
 
     const canonical =
       `${SITE_URL}/${lang}`;
@@ -1442,6 +1511,207 @@ ${safeJson(jsonLd)}
 </script>
 `;
 
+      /*
+     * =====================================================
+     * 홈 서버 SEO 본문
+     * 검색엔진이 JS 실행 전에도 홈의 핵심 내용을 읽을 수 있게 함
+     * =====================================================
+     */
+
+    const HOME_BODY_TEXT = {
+      ko: {
+        h1: "이상형 월드컵",
+        intro:
+          "OnePickGame에서 다양한 이상형 월드컵과 토너먼트 게임을 즐겨보세요. 좋아하는 후보를 선택해 최종 우승자를 결정하고, 직접 이상형 월드컵을 만들어 친구들과 공유할 수 있습니다.",
+        playTitle: "이상형 월드컵 즐기기",
+        playText:
+          "애니메이션, 게임, 스포츠, 연예인 등 다양한 주제의 이상형 월드컵에서 후보들을 비교하고 나만의 최애를 선택해보세요.",
+            featuredTitle: "추천 이상형 월드컵",
+        createTitle: "나만의 이상형 월드컵 만들기",
+        createText:
+          "원하는 후보와 이미지를 등록해 직접 토너먼트를 만들고 다른 사람들과 공유할 수 있습니다.",
+      },
+
+      en: {
+        h1: "Ideal Type World Cup & Tournament Bracket",
+        intro:
+          "Play tournament bracket games on OnePickGame. Compare your favorite characters, celebrities, games, sports stars, and more to choose the ultimate winner.",
+        playTitle: "Play Tournament Bracket Games",
+        playText:
+          "Explore tournament brackets across anime, games, sports, celebrities, and many other topics. Choose your favorite in each matchup and find your ultimate winner.",
+       featuredTitle: "Featured Tournament Brackets",
+          createTitle: "Create Your Own Tournament",
+        createText:
+          "Create your own bracket with custom candidates and images, then share it with friends and other players.",
+      },
+
+      ja: {
+        h1: "理想のタイプワールドカップ・トーナメント",
+        intro:
+          "OnePickGameでさまざまな理想のタイプワールドカップやトーナメントを楽しもう。お気に入りの候補を選び、最後の優勝者を決めることができます。",
+        playTitle: "トーナメントを楽しむ",
+        playText:
+          "アニメ、ゲーム、スポーツ、芸能人など、さまざまなテーマの候補を比較して自分だけのお気に入りを選ぼう。",
+       featuredTitle: "おすすめトーナメント",
+          createTitle: "自分だけのトーナメントを作成",
+        createText:
+          "好きな候補と画像を登録してオリジナルのトーナメントを作成し、他のユーザーと共有できます。",
+      },
+
+      zh: {
+        h1: "理想型世界杯・淘汰赛游戏",
+        intro:
+          "在OnePickGame体验各种理想型世界杯和淘汰赛游戏。比较你喜欢的角色、明星、游戏和体育选手，选出最终冠军。",
+        playTitle: "体验淘汰赛游戏",
+        playText:
+          "探索动漫、游戏、体育、明星等不同主题的淘汰赛，在每轮对决中选择你更喜欢的候选人。",
+      featuredTitle: "推荐淘汰赛",
+          createTitle: "创建自己的淘汰赛",
+        createText:
+          "添加自己喜欢的候选人和图片，创建专属淘汰赛并与其他玩家分享。",
+      },
+    };
+
+const defaultHomeBody = {
+  h1: seo.title.replace(/\s*\|\s*OnePickGame\s*$/i, ""),
+  intro: seo.description,
+  playTitle: "Tournament Bracket Games",
+  playText:
+    "Compare candidates in head-to-head matchups, choose your favorites, and discover your ultimate winner.",
+  featuredTitle: "Featured Tournament Brackets",
+  createTitle: "Create Your Own Tournament",
+  createText:
+    "Create your own tournament bracket with custom candidates and share it with other players.",
+};
+    const homeBody =
+      HOME_BODY_TEXT[lang] ||
+      defaultHomeBody;
+
+    /*
+     * =====================================================
+     * 추천 월드컵 HTML
+     * =====================================================
+     */
+
+    const featuredWorldcupLinks =
+      orderedFeaturedWorldcups
+        .map((cup) => {
+          let titleTranslations =
+            cup.title_translations || {};
+
+          if (
+            typeof titleTranslations ===
+            "string"
+          ) {
+            try {
+              titleTranslations =
+                JSON.parse(
+                  titleTranslations
+                );
+            } catch {
+              titleTranslations = {};
+            }
+          }
+
+          const localizedTitle =
+            String(
+              titleTranslations?.[lang] ||
+              titleTranslations?.en ||
+              cup.title ||
+              "Tournament"
+            )
+              .replace(/\s+/g, " ")
+              .trim();
+
+          const href =
+            `${SITE_URL}/${lang}/select-round/` +
+            encodeURIComponent(cup.id);
+
+          return `
+<li>
+  <a href="${href}">
+    ${escapeHtml(localizedTitle)}
+  </a>
+</li>`;
+        })
+        .join("\n");
+
+    const seoBody = `
+<main
+  id="seo-content"
+  style="
+    max-width:900px;
+    margin:40px auto;
+    padding:24px;
+    color:#ffffff;
+    font-family:Arial,sans-serif;
+  "
+>
+  <article>
+
+    <h1>
+      ${escapeHtml(homeBody.h1)}
+    </h1>
+
+    <p>
+      ${escapeHtml(homeBody.intro)}
+    </p>
+
+    <section>
+      <h2>
+        ${escapeHtml(homeBody.playTitle)}
+      </h2>
+
+      <p>
+        ${escapeHtml(homeBody.playText)}
+      </p>
+    </section>
+    ${
+      featuredWorldcupLinks
+        ? `
+    <section>
+
+      <h2>
+        ${escapeHtml(
+          homeBody.featuredTitle
+        )}
+      </h2>
+
+      <ul>
+        ${featuredWorldcupLinks}
+      </ul>
+
+    </section>
+`
+        : ""
+    }
+    <section>
+      <h2>
+        ${escapeHtml(homeBody.createTitle)}
+      </h2>
+
+      <p>
+        ${escapeHtml(homeBody.createText)}
+      </p>
+    </section>
+
+  </article>
+</main>
+`;
+
+    /*
+     * 기존 Loading 화면을 서버 SEO 콘텐츠로 교체
+     */
+
+    html = html.replace(
+      /<div\s+id=["']root["']>\s*<div\s+class=["']loading-screen["']>\s*Loading\.\.\.\s*<\/div>\s*<\/div>/i,
+      `<div id="root">${seoBody}</div>`
+    );
+
+    /*
+     * SEO head 삽입
+     */
+
     html = html.replace(
       "</head>",
       `${seoHead}\n</head>`
@@ -1451,7 +1721,6 @@ ${safeJson(jsonLd)}
       "Cache-Control",
       "public, s-maxage=300, stale-while-revalidate=3600"
     );
-
     res.setHeader(
       "Content-Type",
       "text/html; charset=utf-8"
