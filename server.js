@@ -1192,7 +1192,7 @@ const HOME_SEO = {
 const FEATURED_WORLDCUP_IDS = [
   "70e27e0e-1112-4785-b2f6-7aee5f508b0e",
   "2142cd10-468b-4fd9-8bf3-a09c4aeffc77",
-  "f36ba254-140f-4153-b551-e0df5c90674d",
+  "4e2f1bfd-8ecc-4fd7-a9de-be369c370bf4",
   "172f7127-cc23-40bb-92f0-188d7fb90670",
   "d3cece18-68d7-4ecf-ad40-b08bd44ca992",
   "9e9495b4-9f16-4f0e-b615-d6df55c78d4a",
