@@ -154,6 +154,7 @@ function MediaRenderer({
   playable = false,
   style = {},
   onPlay,
+  active = true,
 }) {
   const { t } = useTranslation();
 
@@ -169,11 +170,12 @@ function MediaRenderer({
   /*
    * 새로운 URL이 들어오면 이전 미디어의 오류 및 재생 상태를 초기화합니다.
    */
-  useEffect(() => {
-    setMediaError(false);
+useEffect(() => {
+  if (!active) {
     setYoutubePlaying(false);
     setVideoPlaying(false);
-  }, [safeUrl]);
+  }
+}, [active]);
 
   const handleMediaError = () => {
     setMediaError(true);

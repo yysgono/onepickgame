@@ -502,6 +502,8 @@ function CandidateBox({
   disabled,
   selected,
   t,
+  mediaActive = true,
+  onMediaPlay,
 }) {
   const [hover, setHover] =
     useState(false);
@@ -702,17 +704,19 @@ function CandidateBox({
         }}
       >
         {c ? (
-          <MediaRenderer
-            url={c.image}
-            alt={c.name}
-            playable
-            style={{
-              objectFit: "contain",
-              width: "100%",
-              height: "100%",
-              background: "#21283a",
-            }}
-          />
+<MediaRenderer
+  url={c.image}
+  alt={c.name}
+  playable
+  active={mediaActive}
+  onPlay={onMediaPlay}
+  style={{
+    objectFit: "contain",
+    width: "100%",
+    height: "100%",
+    background: "#21283a",
+  }}
+/>
         ) : (
           <div
             style={{
@@ -1080,6 +1084,15 @@ function Match({
     selectedIdx,
     setSelectedIdx,
   ] = useState(null);
+
+  const [
+  activeMediaId,
+  setActiveMediaId,
+] = useState(null);
+
+useEffect(() => {
+  setActiveMediaId(null);
+}, [idx, roundNum]);
 
   const [
     statsMap,
@@ -2299,55 +2312,66 @@ function Match({
               zIndex: 1,
             }}
           >
-            <CandidateBox
-              key={
-                c1?.id ||
-                "c1"
-              }
-              c={c1}
-              stat={c1Stat}
-              statsLoading={
-                statsLoading
-              }
-              onClick={() =>
-                handlePick(0)
-              }
-              disabled={
-                autoPlaying ||
-                selectedIdx !==
-                  null
-              }
-              selected={
-                selectedIdx ===
-                0
-              }
-              t={t}
-            />
-
-            <CandidateBox
-              key={
-                c2?.id ||
-                "c2"
-              }
-              c={c2}
-              stat={c2Stat}
-              statsLoading={
-                statsLoading
-              }
-              onClick={() =>
-                handlePick(1)
-              }
-              disabled={
-                autoPlaying ||
-                selectedIdx !==
-                  null
-              }
-              selected={
-                selectedIdx ===
-                1
-              }
-              t={t}
-            />
+<CandidateBox
+  key={
+    c1?.id ||
+    "c1"
+  }
+  c={c1}
+  stat={c1Stat}
+  statsLoading={
+    statsLoading
+  }
+  onClick={() =>
+    handlePick(0)
+  }
+  disabled={
+    autoPlaying ||
+    selectedIdx !==
+      null
+  }
+  selected={
+    selectedIdx ===
+    0
+  }
+  mediaActive={
+    activeMediaId === c1?.id
+  }
+  onMediaPlay={() =>
+    setActiveMediaId(c1?.id)
+  }
+  t={t}
+/>
+<CandidateBox
+  key={
+    c2?.id ||
+    "c2"
+  }
+  c={c2}
+  stat={c2Stat}
+  statsLoading={
+    statsLoading
+  }
+  onClick={() =>
+    handlePick(1)
+  }
+  disabled={
+    autoPlaying ||
+    selectedIdx !==
+      null
+  }
+  selected={
+    selectedIdx ===
+    1
+  }
+  mediaActive={
+    activeMediaId === c2?.id
+  }
+  onMediaPlay={() =>
+    setActiveMediaId(c2?.id)
+  }
+  t={t}
+/>
 
             <div
               style={{
