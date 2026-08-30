@@ -15,6 +15,17 @@ const COLORS = {
   gray: "#888",
 };
 
+const CATEGORY_OPTIONS = [
+  { value: "person", label: "People" },
+  { value: "music", label: "Music" },
+  { value: "game", label: "Games" },
+  { value: "sports", label: "Sports" },
+  { value: "anime_manga", label: "Anime / Manga" },
+  { value: "movie_drama", label: "Movies / TV" },
+  { value: "food", label: "Food" },
+  { value: "etc", label: "Other" },
+];
+
 const CANDIDATE_BUCKET = "candidates";
 const MAX_IMAGE_INPUT_BYTES = 6 * 1024 * 1024;
 const MAX_IMAGE_OUTPUT_BYTES = 1 * 1024 * 1024;
@@ -278,9 +289,10 @@ function EditWorldcupPage({
   const [nickname, setNickname] = useState("");
   const [originalCup, setOriginalCup] = useState(null);
 
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [data, setData] = useState([]);
+const [title, setTitle] = useState("");
+const [description, setDescription] = useState("");
+const [category, setCategory] = useState("");
+const [data, setData] = useState([]);
 
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -328,10 +340,11 @@ function EditWorldcupPage({
       (item) => String(item.id) === String(cupId)
     );
 
-    setOriginalCup(cup || null);
-    setTitle(cup?.title || "");
-    setDescription(cup?.description || "");
-    setData(
+setOriginalCup(cup || null);
+setTitle(cup?.title || "");
+setDescription(cup?.description || "");
+setCategory(cup?.category || "etc")
+setData(
       Array.isArray(cup?.data)
         ? cup.data.map((candidate) => ({
             ...candidate,
@@ -608,14 +621,22 @@ function EditWorldcupPage({
   async function handleSave() {
     setError("");
 
-    if (!title.trim()) {
-      setError(
-        t("edit_need_title") || "제목을 입력해 주세요."
-      );
-      return;
-    }
+if (!title.trim()) {
+  setError(
+    t("edit_need_title") || "제목을 입력해 주세요."
+  );
+  return;
+}
 
-    if (data.length < 2) {
+if (!category) {
+  setError(
+    t("select_category") ||
+      "Please select a category."
+  );
+  return;
+}
+
+if (data.length < 2) {
       setError(
         t("edit_need_min_candidates") ||
           "후보를 최소 2개 이상 남겨 주세요."
@@ -684,12 +705,13 @@ function EditWorldcupPage({
         });
       }
 
-      const updatedCup = {
-        ...originalCup,
-        title: title.trim(),
-        description: description.trim(),
-        data: updatedData,
-      };
+const updatedCup = {
+  ...originalCup,
+  title: title.trim(),
+  description: description.trim(),
+  category,
+  data: updatedData,
+};
 
       // 먼저 DB를 새 URL로 안전하게 갱신합니다.
       await updateWorldcupGame(
@@ -886,6 +908,56 @@ function EditWorldcupPage({
             }
             disabled={loading}
           />
+        </label>
+      </div>
+
+
+      {/* 카테고리 */}
+      <div style={{ marginBottom: 26 }}>
+        <label
+          style={{
+            fontWeight: 700,
+            fontSize: 17,
+            color: "#223",
+            display: "block",
+          }}
+        >
+         {t("category") || "Category"}{" "}
+          <span style={{ color: COLORS.danger }}>*</span>
+
+          <select
+            value={category}
+            onChange={(event) =>
+              setCategory(event.target.value)
+            }
+            disabled={loading}
+            style={{
+              width: "100%",
+              padding: 12,
+              borderRadius: 9,
+              border: `1.7px solid ${COLORS.main}22`,
+              fontSize: 16,
+              marginTop: 6,
+              background: "#fafdff",
+              boxSizing: "border-box",
+              outlineColor: COLORS.main,
+              cursor: loading ? "default" : "pointer",
+            }}
+          >
+            <option value="">
+              {t("select_category") ||
+                "Please select a category"}
+            </option>
+
+            {CATEGORY_OPTIONS.map((item) => (
+              <option
+                key={item.value}
+                value={item.value}
+              >
+                {item.label}
+              </option>
+            ))}
+          </select>
         </label>
       </div>
 

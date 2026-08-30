@@ -1,535 +1,320 @@
-import React, {
-  useEffect,
-  useState,
-} from "react";
-
+import React, { useEffect, useMemo, useState } from "react";
 import { supabase } from "../utils/supabaseClient";
 
-import {
-  getWorldcupGames,
-  getDeletedWorldcupGames,
-  restoreWorldcupGame,
-  permanentlyDeleteWorldcupGame,
-} from "../utils/supabaseWorldcupApi";
+// ========================================
+// 카테고리
+// ========================================
 
-/**
- * winner_stats에서
- * 최다 우승 후보 이미지 가져오기
- */
-async function getMostWinnerThumbnail(
-  cup_id
-) {
-  const { data, error } =
-    await supabase
-      .from("winner_stats")
-      .select(
-        "candidate_id, name, image, win_count"
-      )
-      .eq("cup_id", cup_id)
-      .order("win_count", {
-        ascending: false,
-      })
-      .limit(1)
-      .maybeSingle();
+const CATEGORY_OPTIONS = [
+  { value: "person", label: "인물" },
+  { value: "music", label: "음악" },
+  { value: "game", label: "게임" },
+  { value: "sports", label: "스포츠" },
+  { value: "anime_manga", label: "애니 / 만화" },
+  { value: "movie_drama", label: "영화 / 드라마" },
+  { value: "food", label: "음식" },
+  { value: "etc", label: "기타" },
+];
 
-  if (error || !data) {
-    return null;
-  }
+// ========================================
+// 데이터
+// ========================================
 
-  return data.image;
-}
-
-/**
- * 댓글 총 개수
- */
-async function getTotalComments() {
-  const { count, error } =
-    await supabase
-      .from("comments")
-      .select("id", {
-        count: "exact",
-        head: true,
-      });
-
-  return error
-    ? 0
-    : count || 0;
-}
-
-/**
- * 운영자 PICK ID 목록
- */
-async function getFixedCupIds() {
-  const { data, error } =
-    await supabase
-      .from("fixed_worldcups")
-      .select("worldcup_id")
-      .order("order", {
-        ascending: true,
-      });
+// 월드컵 전체 목록
+async function getAllWorldcups() {
+  const { data, error } = await supabase
+    .from("worldcups")
+    .select("*")
+    .order("created_at", { ascending: false });
 
   if (error) {
-    console.error(
-      "운영자 PICK 조회 실패:",
-      error
-    );
-
+    console.error("월드컵 목록 불러오기 실패:", error);
     return [];
   }
 
-  return (data || []).map(
-    (row) => row.worldcup_id
-  );
+  return data || [];
 }
 
-/**
- * 운영자 PICK 추가
- */
-async function addFixedCupId(
-  worldcup_id
-) {
-  const { error } =
-    await supabase
-      .from("fixed_worldcups")
-      .insert([
-        {
-          worldcup_id,
-        },
-      ]);
+// 댓글 총 개수
+async function getTotalComments() {
+  const { count, error } = await supabase
+    .from("comments")
+    .select("id", { count: "exact", head: true });
 
   if (error) {
-    throw error;
+    console.error("댓글 개수 불러오기 실패:", error);
+    return 0;
   }
 
-  return true;
+  return count || 0;
 }
 
-/**
- * 운영자 PICK 삭제
- */
-async function removeFixedCupId(
-  worldcup_id
+// 월드컵 관리 정보 저장
+async function updateWorldcupManagement(
+  worldcupId,
+  category,
+  isFeatured,
+  featuredOrder
 ) {
-  const { error } =
-    await supabase
-      .from("fixed_worldcups")
-      .delete()
-      .eq(
-        "worldcup_id",
-        worldcup_id
-      );
+  const updateData = {
+    category: category || null,
+    is_featured: isFeatured,
+    featured_order:
+      isFeatured && featuredOrder !== ""
+        ? Number(featuredOrder)
+        : null,
+  };
 
-  if (error) {
-    throw error;
-  }
+  const { error } = await supabase
+    .from("worldcups")
+    .update(updateData)
+    .eq("id", worldcupId);
 
-  return true;
+  if (error) throw error;
 }
+
+// ========================================
+// AdminDashboard
+// ========================================
 
 export default function AdminDashboard() {
-  const [
-    totalWorldcups,
-    setTotalWorldcups,
-  ] = useState(0);
+  const [totalWorldcups, setTotalWorldcups] = useState(0);
+  const [totalComments, setTotalComments] = useState(0);
 
-  const [
-    totalComments,
-    setTotalComments,
-  ] = useState(0);
+  const [allWorldcups, setAllWorldcups] = useState([]);
 
-  const [
-    allWorldcups,
-    setAllWorldcups,
-  ] = useState([]);
+  // 각 월드컵의 관리자 편집값
+  const [editValues, setEditValues] = useState({});
 
-  const [
-    fixedList,
-    setFixedList,
-  ] = useState([]);
+  // 검색
+  const [searchTerm, setSearchTerm] = useState("");
 
-  const [
-    addId,
-    setAddId,
-  ] = useState("");
+  // 카테고리 필터
+  const [categoryFilter, setCategoryFilter] = useState("all");
 
-  const [
-    loading,
-    setLoading,
-  ] = useState(false);
+  // 추천만 보기
+  const [featuredOnly, setFeaturedOnly] = useState(false);
 
-  // 휴지통
-  const [
-    deletedWorldcups,
-    setDeletedWorldcups,
-  ] = useState([]);
+  // 저장 중인 월드컵 ID
+  const [savingId, setSavingId] = useState(null);
 
-  const [
-    trashLoading,
-    setTrashLoading,
-  ] = useState(false);
+  // 처음 로딩
+  const [loading, setLoading] = useState(true);
 
-  /**
-   * ===================================================
-   * 정상 월드컵/댓글 다시 로드
-   * ===================================================
-   */
-  async function refreshDashboard() {
-    try {
-      const worldcups =
-        await getWorldcupGames();
+  // ========================================
+  // 최초 데이터 로드
+  // ========================================
 
-      setAllWorldcups(
-        worldcups
-      );
-
-      setTotalWorldcups(
-        worldcups.length
-      );
-
-      const comments =
-        await getTotalComments();
-
-      setTotalComments(
-        comments
-      );
-    } catch (e) {
-      console.error(
-        "관리자 대시보드 조회 실패:",
-        e
-      );
-    }
-  }
-
-  /**
-   * ===================================================
-   * 휴지통 조회
-   * ===================================================
-   */
-  async function fetchTrash() {
-    try {
-      setTrashLoading(true);
-
-      const data =
-        await getDeletedWorldcupGames();
-
-      setDeletedWorldcups(
-        data
-      );
-    } catch (e) {
-      console.error(
-        "휴지통 조회 실패:",
-        e
-      );
-    } finally {
-      setTrashLoading(
-        false
-      );
-    }
-  }
-
-  /**
-   * 첫 로딩
-   */
   useEffect(() => {
-    refreshDashboard();
-    fetchTrash();
+    loadDashboard();
   }, []);
 
-  /**
-   * ===================================================
-   * 운영자 PICK 목록
-   * ===================================================
-   */
-  async function fetchFixedList() {
+  async function loadDashboard() {
     setLoading(true);
 
     try {
-      const fixedIds =
-        await getFixedCupIds();
+      const [worldcups, comments] = await Promise.all([
+        getAllWorldcups(),
+        getTotalComments(),
+      ]);
 
-      const cups = [];
+      setAllWorldcups(worldcups);
+      setTotalWorldcups(worldcups.length);
+      setTotalComments(comments);
 
-      for (const id of fixedIds) {
-        const cup =
-          allWorldcups.find(
-            (wc) =>
-              String(wc.id) ===
-              String(id)
-          );
+      const initialEditValues = {};
 
-        // 휴지통에 있는 월드컵은 allWorldcups에 없으므로
-        // 운영자 PICK에서도 자동으로 표시되지 않음
-        if (cup) {
-          const winnerThumb =
-            await getMostWinnerThumbnail(
-              id
-            );
+      worldcups.forEach((wc) => {
+        initialEditValues[wc.id] = {
+          category: wc.category || "",
+          is_featured: Boolean(wc.is_featured),
+          featured_order:
+            wc.featured_order === null ||
+            wc.featured_order === undefined
+              ? ""
+              : String(wc.featured_order),
+        };
+      });
 
-          const thumb =
-            winnerThumb ||
-            cup.data?.[0]
-              ?.image ||
-            "/default-thumb.png";
-
-          cups.push({
-            id: cup.id,
-            title: cup.title,
-            thumb,
-          });
-        }
-      }
-
-      setFixedList(cups);
-    } catch (e) {
-      console.error(
-        "운영자 PICK 조회 실패:",
-        e
-      );
+      setEditValues(initialEditValues);
     } finally {
       setLoading(false);
     }
   }
 
-  /**
-   * 정상 월드컵이 갱신되면
-   * 운영자 PICK도 동기화
-   */
-  useEffect(() => {
-    if (
-      allWorldcups.length >
-      0
-    ) {
-      fetchFixedList();
-    } else {
-      setFixedList([]);
+  // ========================================
+  // 편집값 변경
+  // ========================================
+
+  function handleEditChange(worldcupId, field, value) {
+    setEditValues((prev) => ({
+      ...prev,
+      [worldcupId]: {
+        ...prev[worldcupId],
+        [field]: value,
+      },
+    }));
+  }
+
+  // ========================================
+  // 추천 ON / OFF
+  // ========================================
+
+  function handleFeaturedToggle(worldcupId) {
+    setEditValues((prev) => {
+      const current = prev[worldcupId];
+
+      if (!current) return prev;
+
+      const nextFeatured = !current.is_featured;
+
+      return {
+        ...prev,
+        [worldcupId]: {
+          ...current,
+          is_featured: nextFeatured,
+
+          // 추천 해제하면 순서도 비움
+          featured_order: nextFeatured
+            ? current.featured_order
+            : "",
+        },
+      };
+    });
+  }
+
+  // ========================================
+  // 저장
+  // ========================================
+
+  async function handleSave(worldcupId) {
+    const values = editValues[worldcupId];
+
+    if (!values) return;
+
+    if (!values.category) {
+      alert("카테고리를 선택해주세요.");
+      return;
     }
 
-    // eslint-disable-next-line
+    if (
+      values.is_featured &&
+      values.featured_order !== "" &&
+      Number(values.featured_order) < 1
+    ) {
+      alert("추천 순서는 1 이상의 숫자로 입력해주세요.");
+      return;
+    }
+
+    setSavingId(worldcupId);
+
+    try {
+      await updateWorldcupManagement(
+        worldcupId,
+        values.category,
+        values.is_featured,
+        values.featured_order
+      );
+
+      // 로컬 데이터도 즉시 갱신
+      setAllWorldcups((prev) =>
+        prev.map((wc) =>
+          String(wc.id) === String(worldcupId)
+            ? {
+                ...wc,
+                category: values.category,
+                is_featured: values.is_featured,
+                featured_order:
+                  values.is_featured &&
+                  values.featured_order !== ""
+                    ? Number(values.featured_order)
+                    : null,
+              }
+            : wc
+        )
+      );
+
+      alert("저장되었습니다.");
+    } catch (error) {
+      console.error(error);
+      alert("저장 실패: " + error.message);
+    } finally {
+      setSavingId(null);
+    }
+  }
+
+  // ========================================
+  // 필터링
+  // ========================================
+
+  const filteredWorldcups = useMemo(() => {
+    let list = [...allWorldcups];
+
+    const keyword = searchTerm.trim().toLowerCase();
+
+    if (keyword) {
+      list = list.filter((wc) => {
+        const title = String(wc.title || "").toLowerCase();
+        const id = String(wc.id || "").toLowerCase();
+
+        return title.includes(keyword) || id.includes(keyword);
+      });
+    }
+
+    if (categoryFilter === "unassigned") {
+      list = list.filter((wc) => !wc.category);
+    } else if (categoryFilter !== "all") {
+      list = list.filter(
+        (wc) => wc.category === categoryFilter
+      );
+    }
+
+    if (featuredOnly) {
+      list = list.filter((wc) => wc.is_featured);
+    }
+
+    return list;
+  }, [
+    allWorldcups,
+    searchTerm,
+    categoryFilter,
+    featuredOnly,
+  ]);
+
+  // ========================================
+  // 카테고리 미지정 개수
+  // ========================================
+
+  const unassignedCount = useMemo(() => {
+    return allWorldcups.filter((wc) => !wc.category).length;
   }, [allWorldcups]);
 
-  /**
-   * ===================================================
-   * 운영자 PICK 추가
-   * ===================================================
-   */
-  async function handleAddFixedWorldcup(
-    worldcupId
-  ) {
-    if (
-      fixedList.some(
-        (wc) =>
-          String(wc.id) ===
-          String(worldcupId)
-      )
-    ) {
-      alert(
-        "이미 추가된 월드컵입니다."
-      );
+  // ========================================
+  // 추천 개수
+  // ========================================
 
-      return;
-    }
+  const featuredCount = useMemo(() => {
+    return allWorldcups.filter(
+      (wc) => wc.is_featured
+    ).length;
+  }, [allWorldcups]);
 
-    const found =
-      allWorldcups.find(
-        (wc) =>
-          String(wc.id) ===
-          String(worldcupId)
-      );
-
-    if (!found) {
-      alert(
-        "존재하지 않는 월드컵 ID이거나 휴지통에 있는 월드컵입니다."
-      );
-
-      return;
-    }
-
-    try {
-      await addFixedCupId(
-        found.id
-      );
-
-      await fetchFixedList();
-    } catch (e) {
-      alert(
-        "추가 실패: " +
-          e.message
-      );
-    }
-  }
-
-  /**
-   * ===================================================
-   * 운영자 PICK 삭제
-   * ===================================================
-   */
-  async function handleRemoveFixedWorldcup(
-    worldcupId
-  ) {
-    if (
-      !window.confirm(
-        "운영자 PICK에서 제거할까요?"
-      )
-    ) {
-      return;
-    }
-
-    try {
-      await removeFixedCupId(
-        worldcupId
-      );
-
-      await fetchFixedList();
-    } catch (e) {
-      alert(
-        "삭제 실패: " +
-          e.message
-      );
-    }
-  }
-
-  function handleAddClick(e) {
-    e.preventDefault();
-
-    if (!addId.trim()) {
-      return;
-    }
-
-    handleAddFixedWorldcup(
-      addId.trim()
-    );
-
-    setAddId("");
-  }
-
-  /**
-   * ===================================================
-   * 휴지통 복구
-   * ===================================================
-   */
-  async function handleRestoreWorldcup(
-    cup
-  ) {
-    if (
-      !window.confirm(
-        `"${cup.title}" 월드컵을 복구하시겠습니까?\n\n복구하면 사이트에 다시 표시됩니다.`
-      )
-    ) {
-      return;
-    }
-
-    try {
-      await restoreWorldcupGame(
-        cup.id
-      );
-
-      await Promise.all([
-        refreshDashboard(),
-        fetchTrash(),
-      ]);
-
-      alert(
-        "월드컵이 복구되었습니다!"
-      );
-    } catch (e) {
-      console.error(
-        "복구 실패:",
-        e
-      );
-
-      alert(
-        e?.message ||
-          "복구 실패"
-      );
-    }
-  }
-
-  /**
-   * ===================================================
-   * 휴지통 영구삭제
-   * ===================================================
-   */
-  async function handlePermanentDelete(
-    cup
-  ) {
-    if (
-      !window.confirm(
-        `"${cup.title}"을 영구삭제하시겠습니까?\n\nStorage의 후보 이미지까지 삭제됩니다.`
-      )
-    ) {
-      return;
-    }
-
-    if (
-      !window.confirm(
-        "정말 삭제할까요?\n\n이 작업은 복구할 수 없습니다."
-      )
-    ) {
-      return;
-    }
-
-    try {
-      const result =
-        await permanentlyDeleteWorldcupGame(
-          cup.id
-        );
-
-      await Promise.all([
-        refreshDashboard(),
-        fetchTrash(),
-      ]);
-
-      alert(
-        `영구삭제 완료!\nStorage 이미지 ${
-          result?.deletedImageCount ||
-          0
-        }개 삭제`
-      );
-    } catch (e) {
-      console.error(
-        "영구삭제 실패:",
-        e
-      );
-
-      alert(
-        e?.message ||
-          "영구삭제 실패"
-      );
-    }
-  }
-
-  /**
-   * 삭제 시간
-   */
-  function formatDeletedAt(
-    deletedAt
-  ) {
-    if (!deletedAt) {
-      return "-";
-    }
-
-    try {
-      return new Date(
-        deletedAt
-      ).toLocaleString();
-    } catch {
-      return deletedAt;
-    }
-  }
+  // ========================================
+  // 렌더
+  // ========================================
 
   return (
     <div
       style={{
-        maxWidth: 1050,
-        margin:
-          "40px auto",
+        maxWidth: 1150,
+        margin: "40px auto",
         background: "#fff",
         borderRadius: 24,
-        boxShadow:
-          "0 4px 24px #e6ecfa",
+        boxShadow: "0 4px 24px #e6ecfa",
         padding: 40,
       }}
     >
+      {/* 제목 */}
       <h2
         style={{
           fontWeight: 900,
@@ -542,724 +327,554 @@ export default function AdminDashboard() {
         🛡️ 관리자 대시보드
       </h2>
 
-      {/* ============================================= */}
-      {/* 통계 */}
-      {/* ============================================= */}
+      {/* ========================================
+          통계
+      ======================================== */}
+
       <div
         style={{
           display: "flex",
-          gap: 30,
+          gap: 20,
           flexWrap: "wrap",
-          justifyContent:
-            "center",
+          justifyContent: "center",
           marginBottom: 40,
         }}
       >
-        <div
-          style={{
-            background:
-              "#f6f8fc",
-            borderRadius: 18,
-            boxShadow:
-              "0 2px 14px #dde4ef",
-            minWidth: 210,
-            padding:
-              "30px 36px",
-            textAlign:
-              "center",
-          }}
-        >
-          <div
-            style={{
-              fontSize: 20,
-              fontWeight: 800,
-              color: "#666",
-            }}
-          >
-            전체 월드컵 수
-          </div>
+        <StatBox
+          title="전체 월드컵 수"
+          value={totalWorldcups}
+        />
 
-          <div
-            style={{
-              fontSize: 38,
-              fontWeight: 900,
-              color:
-                "#1976ed",
-              marginTop: 10,
-            }}
-          >
-            {totalWorldcups}
-          </div>
-        </div>
+        <StatBox
+          title="전체 댓글 수"
+          value={totalComments}
+        />
 
-        <div
-          style={{
-            background:
-              "#f6f8fc",
-            borderRadius: 18,
-            boxShadow:
-              "0 2px 14px #dde4ef",
-            minWidth: 210,
-            padding:
-              "30px 36px",
-            textAlign:
-              "center",
-          }}
-        >
-          <div
-            style={{
-              fontSize: 20,
-              fontWeight: 800,
-              color: "#666",
-            }}
-          >
-            전체 댓글 수
-          </div>
+        <StatBox
+          title="카테고리 미지정"
+          value={unassignedCount}
+          valueColor={
+            unassignedCount > 0
+              ? "#e14444"
+              : "#1976ed"
+          }
+        />
 
-          <div
-            style={{
-              fontSize: 38,
-              fontWeight: 900,
-              color:
-                "#1976ed",
-              marginTop: 10,
-            }}
-          >
-            {totalComments}
-          </div>
-        </div>
+        <StatBox
+          title="추천 월드컵"
+          value={featuredCount}
+          valueColor="#f39c12"
+        />
       </div>
 
-      {/* ============================================= */}
-      {/* 운영자 PICK */}
-      {/* ============================================= */}
+      {/* ========================================
+          월드컵 카테고리 / 추천 관리
+      ======================================== */}
+
       <div
         style={{
-          background:
-            "#f9fafe",
-
-          borderRadius:
-            14,
-
+          background: "#f9fafe",
+          borderRadius: 14,
           padding: 28,
-
-          boxShadow:
-            "0 1px 8px #dde5ef77",
-
-          fontSize: 18,
-
-          color: "#444",
-
-          marginBottom:
-            32,
+          boxShadow: "0 1px 8px #dde5ef77",
+          marginBottom: 32,
         }}
       >
         <div
           style={{
-            fontWeight:
-              800,
-
-            fontSize:
-              21,
-
-            marginBottom:
-              18,
-
-            color:
-              "#174cd7",
+            fontWeight: 900,
+            fontSize: 22,
+            marginBottom: 8,
+            color: "#174cd7",
           }}
         >
-          👑 운영자 PICK 월드컵 관리
+          🗂️ 월드컵 카테고리 / 추천 관리
         </div>
 
-        <form
-          onSubmit={
-            handleAddClick
-          }
+        <div
           style={{
-            marginBottom:
-              14,
+            fontSize: 14,
+            color: "#777",
+            marginBottom: 22,
+          }}
+        >
+          기존 월드컵의 카테고리를 지정하고 홈 추천
+          노출 여부를 관리할 수 있습니다.
+        </div>
 
-            display:
-              "flex",
+        {/* 검색 / 필터 */}
 
-            gap: 7,
+        <div
+          style={{
+            display: "flex",
+            flexWrap: "wrap",
+            gap: 10,
+            marginBottom: 22,
+            alignItems: "center",
           }}
         >
           <input
-            value={addId}
+            type="text"
+            value={searchTerm}
             onChange={(e) =>
-              setAddId(
-                e.target.value
-              )
+              setSearchTerm(e.target.value)
             }
-            placeholder="월드컵 ID 입력"
+            placeholder="월드컵 제목 또는 ID 검색"
             style={{
-              fontSize:
-                16,
-
-              padding:
-                "8px 13px",
-
-              borderRadius:
-                7,
-
-              border:
-                "1.2px solid #bbb",
-
-              width: 200,
+              flex: "1 1 260px",
+              minWidth: 200,
+              padding: "10px 13px",
+              borderRadius: 8,
+              border: "1px solid #cfd6e4",
+              fontSize: 15,
+              outline: "none",
+              background: "#fff",
             }}
-            disabled={
-              loading
-            }
           />
 
-          <button
-            type="submit"
-            style={{
-              background:
-                "#1976ed",
-
-              color:
-                "#fff",
-
-              border:
-                "none",
-
-              borderRadius:
-                7,
-
-              fontWeight:
-                700,
-
-              fontSize:
-                15,
-
-              padding:
-                "8px 16px",
-
-              cursor:
-                "pointer",
-            }}
-            disabled={
-              loading
+          <select
+            value={categoryFilter}
+            onChange={(e) =>
+              setCategoryFilter(e.target.value)
             }
+            style={{
+              padding: "10px 12px",
+              borderRadius: 8,
+              border: "1px solid #cfd6e4",
+              fontSize: 14,
+              background: "#fff",
+              cursor: "pointer",
+            }}
           >
-            추가
-          </button>
-        </form>
+            <option value="all">
+              전체 카테고리
+            </option>
+
+            <option value="unassigned">
+              미지정
+            </option>
+
+            {CATEGORY_OPTIONS.map((category) => (
+              <option
+                key={category.value}
+                value={category.value}
+              >
+                {category.label}
+              </option>
+            ))}
+          </select>
+
+          <label
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 6,
+              fontSize: 14,
+              fontWeight: 700,
+              color: "#555",
+              cursor: "pointer",
+              padding: "9px 11px",
+              background: "#fff",
+              border: "1px solid #cfd6e4",
+              borderRadius: 8,
+            }}
+          >
+            <input
+              type="checkbox"
+              checked={featuredOnly}
+              onChange={(e) =>
+                setFeaturedOnly(e.target.checked)
+              }
+            />
+
+            ⭐ 추천만 보기
+          </label>
+        </div>
+
+        {/* 결과 개수 */}
 
         <div
           style={{
-            display:
-              "flex",
-
-            flexWrap:
-              "wrap",
-
-            gap: 18,
-
-            marginTop:
-              10,
+            marginBottom: 12,
+            fontSize: 14,
+            color: "#777",
+            fontWeight: 700,
           }}
         >
-          {loading && (
-            <div>
-              고정 월드컵
-              불러오는 중...
-            </div>
-          )}
+          표시 중: {filteredWorldcups.length}개
+        </div>
 
-          {fixedList.length ===
-            0 &&
-            !loading && (
-              <div
-                style={{
-                  color:
-                    "#888",
+        {/* 로딩 */}
 
-                  margin:
-                    "18px 0",
-                }}
-              >
-                아직 추가된
-                고정 월드컵이
-                없습니다.
-              </div>
-            )}
+        {loading && (
+          <div
+            style={{
+              padding: 30,
+              textAlign: "center",
+              color: "#777",
+            }}
+          >
+            월드컵 목록을 불러오는 중...
+          </div>
+        )}
 
-          {fixedList.map(
-            (wc) => (
+        {/* 월드컵 목록 */}
+
+        {!loading &&
+          filteredWorldcups.map((wc) => {
+            const values = editValues[wc.id] || {
+              category: "",
+              is_featured: false,
+              featured_order: "",
+            };
+
+            const firstImage =
+              wc.data?.[0]?.image ||
+              "/default-thumb.png";
+
+            return (
               <div
                 key={wc.id}
                 style={{
-                  width: 120,
-
-                  minHeight:
-                    130,
-
-                  background:
-                    "#f6f8fa",
-
-                  borderRadius:
-                    9,
-
-                  boxShadow:
-                    "0 2px 8px #0001",
-
-                  display:
-                    "flex",
-
-                  flexDirection:
-                    "column",
-
-                  alignItems:
-                    "center",
-
-                  position:
-                    "relative",
-
-                  marginBottom:
-                    5,
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 14,
+                  padding: 14,
+                  marginBottom: 10,
+                  background: "#fff",
+                  borderRadius: 12,
+                  border: values.is_featured
+                    ? "1.5px solid #f4c45e"
+                    : "1px solid #e1e6ef",
+                  boxShadow: values.is_featured
+                    ? "0 2px 10px #f4c45e22"
+                    : "0 1px 5px #0000000a",
+                  flexWrap: "wrap",
                 }}
               >
+                {/* 썸네일 */}
+
                 <img
-                  src={
-                    wc.thumb
-                  }
-                  alt={
-                    wc.title
-                  }
-                  style={{
-                    width:
-                      82,
-
-                    height:
-                      82,
-
-                    objectFit:
-                      "cover",
-
-                    borderRadius:
-                      6,
-
-                    margin:
-                      "10px 0 5px 0",
-
-                    background:
-                      "#eceff4",
-
-                    cursor:
-                      "pointer",
+                  src={firstImage}
+                  alt={wc.title}
+                  onError={(e) => {
+                    e.currentTarget.src =
+                      "/default-thumb.png";
                   }}
-                  onClick={() =>
-                    window.open(
-                      `/worldcup/${wc.id}`,
-                      "_blank"
-                    )
-                  }
+                  style={{
+                    width: 66,
+                    height: 66,
+                    objectFit: "cover",
+                    borderRadius: 8,
+                    background: "#eceff4",
+                    flexShrink: 0,
+                  }}
                 />
 
+                {/* 제목 */}
+
                 <div
                   style={{
-                    fontWeight:
-                      700,
-
-                    fontSize:
-                      13,
-
-                    textAlign:
-                      "center",
-
-                    color:
-                      "#174cd7",
-
-                    maxWidth:
-                      90,
-
-                    whiteSpace:
-                      "nowrap",
-
-                    overflow:
-                      "hidden",
-
-                    textOverflow:
-                      "ellipsis",
-                  }}
-                >
-                  {wc.title}
-                </div>
-
-                <button
-                  onClick={() =>
-                    handleRemoveFixedWorldcup(
-                      wc.id
-                    )
-                  }
-                  style={{
-                    position:
-                      "absolute",
-
-                    right: 4,
-                    top: 4,
-
-                    background:
-                      "#e14444",
-
-                    color:
-                      "#fff",
-
-                    border:
-                      "none",
-
-                    borderRadius:
-                      6,
-
-                    padding:
-                      "2px 8px",
-
-                    fontSize:
-                      12,
-
-                    cursor:
-                      "pointer",
-
-                    fontWeight:
-                      700,
-                  }}
-                  disabled={
-                    loading
-                  }
-                >
-                  삭제
-                </button>
-              </div>
-            )
-          )}
-        </div>
-      </div>
-
-      {/* ============================================= */}
-      {/* ⭐ 관리자 월드컵 휴지통 */}
-      {/* ============================================= */}
-      <div
-        style={{
-          background:
-            "#fff7f7",
-
-          border:
-            "1px solid #ffd7d7",
-
-          borderRadius:
-            14,
-
-          padding: 28,
-
-          boxShadow:
-            "0 1px 8px #e5dede77",
-
-          marginBottom:
-            32,
-        }}
-      >
-        <div
-          style={{
-            display:
-              "flex",
-
-            justifyContent:
-              "space-between",
-
-            alignItems:
-              "center",
-
-            gap: 10,
-
-            marginBottom:
-              16,
-          }}
-        >
-          <div>
-            <div
-              style={{
-                fontWeight:
-                  900,
-
-                fontSize:
-                  22,
-
-                color:
-                  "#c53030",
-              }}
-            >
-              🗑️ 월드컵 휴지통
-            </div>
-
-            <div
-              style={{
-                marginTop:
-                  5,
-
-                color:
-                  "#777",
-
-                fontSize:
-                  13,
-              }}
-            >
-              관리자가 삭제한
-              월드컵만
-              저장됩니다.
-            </div>
-          </div>
-
-          <button
-            type="button"
-            onClick={
-              fetchTrash
-            }
-            disabled={
-              trashLoading
-            }
-            style={{
-              border: 0,
-
-              borderRadius:
-                8,
-
-              padding:
-                "8px 14px",
-
-              background:
-                "#e5e7eb",
-
-              color:
-                "#333",
-
-              fontWeight:
-                700,
-
-              cursor:
-                trashLoading
-                  ? "wait"
-                  : "pointer",
-            }}
-          >
-            {trashLoading
-              ? "불러오는 중..."
-              : "새로고침"}
-          </button>
-        </div>
-
-        {trashLoading ? (
-          <div
-            style={{
-              color: "#999",
-              padding:
-                "18px 0",
-            }}
-          >
-            휴지통을
-            불러오는 중...
-          </div>
-        ) : deletedWorldcups.length ===
-          0 ? (
-          <div
-            style={{
-              color: "#aaa",
-
-              padding:
-                "24px 0",
-
-              textAlign:
-                "center",
-            }}
-          >
-            휴지통이
-            비어 있습니다.
-          </div>
-        ) : (
-          <div>
-            {deletedWorldcups.map(
-              (cup) => (
-                <div
-                  key={cup.id}
-                  style={{
-                    padding:
-                      "15px 0",
-
-                    borderBottom:
-                      "1px solid #f1dede",
-
-                    display:
-                      "flex",
-
-                    gap: 15,
-
-                    alignItems:
-                      "center",
-
-                    flexWrap:
-                      "wrap",
+                    flex: "1 1 240px",
+                    minWidth: 180,
                   }}
                 >
                   <div
                     style={{
-                      flex: 1,
-                      minWidth:
-                        220,
+                      fontWeight: 800,
+                      fontSize: 15,
+                      color: "#222",
+                      marginBottom: 5,
                     }}
                   >
-                    <div
-                      style={{
-                        fontSize:
-                          17,
+                    {values.is_featured && (
+                      <span
+                        style={{
+                          marginRight: 5,
+                          color: "#f39c12",
+                        }}
+                      >
+                        ⭐
+                      </span>
+                    )}
 
-                        fontWeight:
-                          800,
-
-                        color:
-                          "#333",
-                      }}
-                    >
-                      {cup.title ||
-                        "(제목 없음)"}
-                    </div>
-
-                    <div
-                      style={{
-                        fontSize:
-                          12,
-
-                        color:
-                          "#888",
-
-                        marginTop:
-                          5,
-                      }}
-                    >
-                      삭제 시간:{" "}
-                      {formatDeletedAt(
-                        cup.deleted_at
-                      )}
-                    </div>
-
-                    <div
-                      style={{
-                        fontSize:
-                          11,
-
-                        color:
-                          "#aaa",
-
-                        marginTop:
-                          3,
-
-                        wordBreak:
-                          "break-all",
-                      }}
-                    >
-                      ID:{" "}
-                      {cup.id}
-                    </div>
+                    {wc.title}
                   </div>
 
-                  <button
-                    type="button"
-                    onClick={() =>
-                      handleRestoreWorldcup(
-                        cup
+                  <div
+                    style={{
+                      fontSize: 11,
+                      color: "#999",
+                      wordBreak: "break-all",
+                    }}
+                  >
+                    {wc.id}
+                  </div>
+                </div>
+
+                {/* 카테고리 */}
+
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 4,
+                  }}
+                >
+                  <span
+                    style={{
+                      fontSize: 11,
+                      fontWeight: 700,
+                      color: "#777",
+                    }}
+                  >
+                    카테고리
+                  </span>
+
+                  <select
+                    value={values.category}
+                    onChange={(e) =>
+                      handleEditChange(
+                        wc.id,
+                        "category",
+                        e.target.value
                       )
                     }
                     style={{
-                      border:
-                        "none",
-
-                      borderRadius:
-                        8,
-
-                      padding:
-                        "8px 16px",
-
-                      background:
-                        "#1976ed",
-
-                      color:
-                        "#fff",
-
-                      fontWeight:
-                        800,
-
-                      cursor:
-                        "pointer",
+                      width: 135,
+                      padding: "8px 9px",
+                      borderRadius: 7,
+                      border: values.category
+                        ? "1px solid #ccd4e0"
+                        : "1px solid #e14444",
+                      background: "#fff",
+                      fontSize: 14,
+                      cursor: "pointer",
                     }}
                   >
-                    복구
-                  </button>
+                    <option value="">
+                      미지정
+                    </option>
+
+                    {CATEGORY_OPTIONS.map(
+                      (category) => (
+                        <option
+                          key={category.value}
+                          value={category.value}
+                        >
+                          {category.label}
+                        </option>
+                      )
+                    )}
+                  </select>
+                </div>
+
+                {/* 추천 */}
+
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 4,
+                  }}
+                >
+                  <span
+                    style={{
+                      fontSize: 11,
+                      fontWeight: 700,
+                      color: "#777",
+                    }}
+                  >
+                    홈 추천
+                  </span>
 
                   <button
                     type="button"
                     onClick={() =>
-                      handlePermanentDelete(
-                        cup
-                      )
+                      handleFeaturedToggle(wc.id)
                     }
                     style={{
-                      border:
-                        "none",
-
-                      borderRadius:
-                        8,
-
-                      padding:
-                        "8px 16px",
-
+                      minWidth: 105,
+                      padding: "8px 12px",
+                      borderRadius: 7,
+                      border: "none",
+                      cursor: "pointer",
+                      fontWeight: 800,
+                      fontSize: 13,
                       background:
-                        "#222",
-
+                        values.is_featured
+                          ? "#f39c12"
+                          : "#e9edf3",
                       color:
-                        "#fff",
-
-                      fontWeight:
-                        800,
-
-                      cursor:
-                        "pointer",
+                        values.is_featured
+                          ? "#fff"
+                          : "#555",
                     }}
                   >
-                    영구삭제
+                    {values.is_featured
+                      ? "⭐ 추천 중"
+                      : "추천 고정"}
                   </button>
                 </div>
-              )
-            )}
-          </div>
-        )}
+
+                {/* 추천 순서 */}
+
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 4,
+                  }}
+                >
+                  <span
+                    style={{
+                      fontSize: 11,
+                      fontWeight: 700,
+                      color: "#777",
+                    }}
+                  >
+                    추천 순서
+                  </span>
+
+                  <input
+                    type="number"
+                    min="1"
+                    value={values.featured_order}
+                    disabled={!values.is_featured}
+                    onChange={(e) =>
+                      handleEditChange(
+                        wc.id,
+                        "featured_order",
+                        e.target.value
+                      )
+                    }
+                    placeholder="-"
+                    style={{
+                      width: 70,
+                      padding: "8px 8px",
+                      borderRadius: 7,
+                      border: "1px solid #ccd4e0",
+                      background:
+                        values.is_featured
+                          ? "#fff"
+                          : "#f1f3f6",
+                      fontSize: 14,
+                      textAlign: "center",
+                    }}
+                  />
+                </div>
+
+                {/* 저장 */}
+
+                <button
+                  type="button"
+                  onClick={() =>
+                    handleSave(wc.id)
+                  }
+                  disabled={savingId === wc.id}
+                  style={{
+                    padding: "9px 16px",
+                    borderRadius: 7,
+                    border: "none",
+                    background: "#1976ed",
+                    color: "#fff",
+                    fontWeight: 800,
+                    fontSize: 13,
+                    cursor:
+                      savingId === wc.id
+                        ? "default"
+                        : "pointer",
+                    opacity:
+                      savingId === wc.id
+                        ? 0.6
+                        : 1,
+                  }}
+                >
+                  {savingId === wc.id
+                    ? "저장 중..."
+                    : "저장"}
+                </button>
+              </div>
+            );
+          })}
+
+        {!loading &&
+          filteredWorldcups.length === 0 && (
+            <div
+              style={{
+                padding: 35,
+                textAlign: "center",
+                color: "#888",
+              }}
+            >
+              조건에 맞는 월드컵이 없습니다.
+            </div>
+          )}
       </div>
 
-      {/* 안내 */}
+      {/* ========================================
+          안내
+      ======================================== */}
+
       <div
         style={{
-          background:
-            "#f5f7fb",
-
-          borderRadius:
-            14,
-
+          background: "#f5f7fb",
+          borderRadius: 14,
           padding: 28,
-
-          boxShadow:
-            "0 1px 8px #dde5ef77",
-
+          boxShadow: "0 1px 8px #dde5ef77",
           fontSize: 19,
-
           color: "#555",
         }}
       >
-        월드컵/유저/댓글 관리 및 통계,
-        데이터 백업은
+        월드컵/유저/댓글 관리 및 통계, 데이터
+        백업은
         <br />
         상단 메뉴 또는 사이드바에서
         이동하세요.
+      </div>
+    </div>
+  );
+}
+
+// ========================================
+// 통계 박스
+// ========================================
+
+function StatBox({
+  title,
+  value,
+  valueColor = "#1976ed",
+}) {
+  return (
+    <div
+      style={{
+        background: "#f6f8fc",
+        borderRadius: 18,
+        boxShadow: "0 2px 14px #dde4ef",
+        minWidth: 190,
+        padding: "25px 28px",
+        textAlign: "center",
+      }}
+    >
+      <div
+        style={{
+          fontSize: 17,
+          fontWeight: 800,
+          color: "#666",
+        }}
+      >
+        {title}
+      </div>
+
+      <div
+        style={{
+          fontSize: 34,
+          fontWeight: 900,
+          color: valueColor,
+          marginTop: 10,
+        }}
+      >
+        {value}
       </div>
     </div>
   );

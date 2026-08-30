@@ -30,6 +30,17 @@ const DEFAULT_THUMB_URL =
 const MAX_UPLOAD = 50;
 const MAX_CANDIDATES = 1024;
 
+const CATEGORY_OPTIONS = [
+  { value: "person", label: "People" },
+  { value: "music", label: "Music" },
+  { value: "game", label: "Games" },
+  { value: "sports", label: "Sports" },
+  { value: "anime_manga", label: "Anime / Manga" },
+  { value: "movie_drama", label: "Movies / TV" },
+  { value: "food", label: "Food" },
+  { value: "etc", label: "Other" },
+];
+
 // 업로드 전 원본 이미지 최대 크기
 const IMAGE_MAX_INPUT_BYTES =
   6 * 1024 * 1024;
@@ -552,18 +563,23 @@ function WorldcupMaker({
   const { t } =
     useTranslation();
 
-  const [
-    title,
-    setTitle,
-  ] = useState("");
+const [
+  title,
+  setTitle,
+] = useState("");
 
-  const [
-    desc,
-    setDesc,
-  ] = useState("");
+const [
+  desc,
+  setDesc,
+] = useState("");
 
-  const [
-    candidates,
+const [
+  category,
+  setCategory,
+] = useState("etc");
+
+const [
+  candidates,
     setCandidates,
   ] = useState([
     {
@@ -1155,19 +1171,18 @@ if (candidateWithoutName) {
   return;
 }
 
-    // 제목 필수
-    if (!title.trim()) {
-      setError(
-        t(
-          "enter_title"
-        ) ||
-          "Please enter a title."
-      );
+// 제목 필수
+if (!title.trim()) {
+  setError(
+    t("enter_title") ||
+      "Please enter a title."
+  );
 
-      return;
-    }
+  return;
+}
 
-    // 후보 최소 2명
+
+// 후보 최소 2명
     if (
       list.length < 2
     ) {
@@ -1438,25 +1453,28 @@ if (!fileIsImage) {
        * 새 월드컵 저장
        * =====================================================
        */
-      const newCup = {
-        title:
-          title.trim(),
+const newCup = {
+  title:
+    title.trim(),
 
-        description:
-          desc.trim(),
+  description:
+    desc.trim(),
 
-        data:
-          updatedList,
+  category:
+    category,
 
-        created_at:
-          new Date().toISOString(),
+  data:
+    updatedList,
 
-        owner:
-          currentUser.id,
+  created_at:
+    new Date().toISOString(),
 
-        creator:
-          currentUser.id,
-      };
+  owner:
+    currentUser.id,
+
+  creator:
+    currentUser.id,
+};
 
       const id =
         await addWorldcupGame(
@@ -1496,10 +1514,11 @@ if (!fileIsImage) {
       /*
        * 폼 초기화
        */
-      setTitle("");
-      setDesc("");
+setTitle("");
+setDesc("");
+setCategory("etc");
 
-      setCandidates([
+setCandidates([
         {
           id: uuidv4(),
           name: "",
@@ -2157,6 +2176,53 @@ if (!fileIsImage) {
             loading
           }
         />
+
+        {/* 카테고리 */}
+        <div
+          style={{
+            marginBottom: 18,
+          }}
+        >
+          <div
+            style={{
+              fontWeight: 700,
+              fontSize: mobile ? 14 : 16,
+              marginBottom: 7,
+              color: "#333",
+            }}
+          >
+            {t("category") || "Category"}{" "}
+            <span style={{ color: "#e14444" }}>*</span>
+          </div>
+
+          <select
+            value={category}
+            onChange={(event) =>
+              setCategory(event.target.value)
+            }
+            disabled={loading}
+            style={{
+              width: "100%",
+              padding: 10,
+              borderRadius: 8,
+border: "1.5px solid #bbb",
+              fontSize: mobile ? 14 : 16,
+              boxSizing: "border-box",
+              background: "#fff",
+              cursor: loading ? "default" : "pointer",
+            }}
+          >
+
+            {CATEGORY_OPTIONS.map((item) => (
+              <option
+                key={item.value}
+                value={item.value}
+              >
+                {item.label}
+              </option>
+            ))}
+          </select>
+        </div>
 
         {/* 후보 */}
         <div
