@@ -156,8 +156,8 @@ export default function CommentBox({ cupId }) {
     }
     const text = content.trim();
     if (!text) return setError(t("comment.inputContent"));
-    if (text.length > 80) return setError(t("comment.limit80"));
-    if (text.split("\n").length > 5) return setError(t("comment.limitLines"));
+if (text.length > 500) return setError(t("comment.limit500"));
+if (text.split("\n").length > 15) return setError(t("comment.limitLines"));
     if (containsBadword(nickname))
       return setError(t("comment.badwordNickname"));
     if (containsBadword(text))
@@ -299,21 +299,21 @@ export default function CommentBox({ cupId }) {
             {t("comment.loginRequired")}
           </div>
         ) : (
-          <textarea
-            value={content}
-            onChange={(e) => setContent(e.target.value.slice(0, 80))}
+<textarea
+  value={content}
+  onChange={(e) => setContent(e.target.value.slice(0, 500))}
             placeholder={
               isBanned
                 ? t("comment.banned")
                 : t("comment.placeholder")
             }
-            rows={3}
+            rows={5}
             disabled={!user || isBanned}
             style={{
               flex: 1,
               minWidth: 0,
-              minHeight: 44,
-              maxHeight: 120,
+minHeight: 110,
+maxHeight: 260,
               padding: "14px 14px",
               borderRadius: 11,
               border: `1.2px solid ${COLORS.border}`,
@@ -326,7 +326,7 @@ export default function CommentBox({ cupId }) {
               boxSizing: "border-box",
               width: isMobile ? "100%" : undefined,
             }}
-            maxLength={80}
+            maxLength={500}
           />
         )}
         <button

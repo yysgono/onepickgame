@@ -6,8 +6,6 @@ import { fetchWinnerStatsFromDB } from "../utils";
 import MediaRenderer from "./MediaRenderer";
 import FixedCupSection from "./FixedCupCarousel";
 
-const PAGE_SIZE = 24;
-
 const LANGUAGES = [
   { code: "en", label: "English" },
   { code: "ko", label: "한국어" },
@@ -27,6 +25,19 @@ const LANGUAGES = [
   { code: "bn", label: "বাংলা" },
 ];
 
+const HOME_CATEGORIES = [
+  { key: "person", slug: "person", label: "People" },
+  { key: "anime_manga", slug: "anime-manga", label: "Anime / Manga" },
+  { key: "sports", slug: "sports", label: "Sports" },
+
+  { key: "game", slug: "game", label: "Games" },
+  { key: "music", slug: "music", label: "Music" },
+  { key: "movie_drama", slug: "movie-drama", label: "Movies / TV" },
+
+  { key: "food", slug: "food", label: "Food" },
+  { key: "etc", slug: "etc", label: "Other" },
+];
+
 // 애드센스 클라이언트 ID
 const ADSENSE_CLIENT = "ca-pub-2906270915716379";
 
@@ -42,7 +53,7 @@ const AdsenseMid = () => {
       <ins
         className="adsbygoogle"
         style={{ display: "block" }}
-        data-ad-client="ca-pub-2906270915716379"
+   data-ad-client={ADSENSE_CLIENT}
         data-ad-slot="3294216783"
         data-ad-format="auto"
         data-full-width-responsive="true"
@@ -51,65 +62,13 @@ const AdsenseMid = () => {
   );
 };
 
-const useSlideFadeIn = (length) => {
-  const refs = useRef([]);
-  useEffect(() => {
-    refs.current.forEach((ref, i) => {
-      if (ref) {
-        ref.style.opacity = "0";
-        ref.style.transform = "translateY(20px) scale(0.97)";
-        setTimeout(() => {
-          ref.style.transition =
-            "opacity 0.5s cubic-bezier(.35,1,.4,1), transform 0.48s cubic-bezier(.35,1,.4,1)";
-          ref.style.opacity = "1";
-          ref.style.transform = "translateY(0) scale(1)";
-        }, 60 + 18 * i);
-      }
-    });
-  }, [length]);
-  return refs;
-};
 
-function SkeletonCard({ cardHeight, thumbHeight }) {
-  return (
-    <div
-      style={{
-        width: "100%",
-        height: cardHeight,
-        background: "rgba(24,27,34,0.66)",
-        border: "none",
-        borderRadius: 18,
-        margin: 0,
-        padding: 0,
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        gap: 0,
-        backdropFilter: "blur(5px)",
-        boxShadow: "0 8px 28px 0 #1e254877, 0 1.5px 8px #1976ed22",
-      }}
-    >
-      <div
-        style={{
-          width: "100%",
-          height: thumbHeight,
-          borderTopLeftRadius: 18,
-          borderTopRightRadius: 18,
-        }}
-      />
-    </div>
-  );
-}
 
 function Home({
   worldcupList,
-  fetchWorldcups,
-  onSelect,
   onMakeWorldcup,
   onDelete,
   user,
-  nickname,
   isAdmin,
   fixedWorldcups,
   showFixedWorldcups = true,
@@ -118,16 +77,6 @@ const { t, i18n } = useTranslation();
 const navigate = useNavigate();
 
 const lang = (i18n.language || "en").split("-")[0];
-
-console.log("🔥 HOME DEBUG", {
-  pathname: window.location.pathname,
-  i18nLanguage: i18n.language,
-  resolvedLanguage: i18n.resolvedLanguage,
-  lang,
-  firstCup: worldcupList?.[0],
-  firstCupTitle: worldcupList?.[0]?.title,
-  firstCupEnTitle: worldcupList?.[0]?.title_translations?.en,
-});
 
 const getRoute = (base, cupId) =>
   `/${lang}${base}/${cupId}`;
@@ -192,10 +141,10 @@ const getDisplayTitle = (cup) => {
 
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState("popular");
+  const [otherVisibleCount, setOtherVisibleCount] = useState(8);
   const [vw, setVw] = useState(
     typeof window !== "undefined" ? window.innerWidth : 1200
   );
-  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
 
   const [winStatsMap, setWinStatsMap] = useState({});
 
@@ -220,11 +169,10 @@ const getDisplayTitle = (cup) => {
     return () => window.removeEventListener("resize", onResize);
   }, []);
   const isMobile = vw < 600;
-  const CARD_WIDTH = isMobile ? 320 : 420;
-  const CARD_HEIGHT = isMobile ? 325 : 350;
-  const CARD_GAP = isMobile ? 7 : 13;
-  const SKELETON_COUNT = isMobile ? 3 : 6;
-  const THUMB_HEIGHT = isMobile ? 148 : 168 * 1.05;
+const CARD_WIDTH = isMobile ? 320 : 420;
+const CARD_HEIGHT = isMobile ? 325 : 350;
+const CARD_GAP = isMobile ? 7 : 13;
+const THUMB_HEIGHT = isMobile ? 148 : 168 * 1.05;
 
   const [fixedCupsWithStats, setFixedCupsWithStats] = useState([]);
   useEffect(() => {
@@ -249,36 +197,120 @@ const getDisplayTitle = (cup) => {
     };
   }, [fixedWorldcups]);
 
-  const filtered = Array.isArray(worldcupList)
-    ? (worldcupList || [])
-        .filter(
-          (cup) =>
-getDisplayTitle(cup).toLowerCase().includes(search.toLowerCase()) ||
-            ((cup.description || cup.desc || "") || "")
-              .toLowerCase()
-              .includes(search.toLowerCase())
-        )
-        .sort((a, b) => {
-          if (sort === "recent") {
-            return (b.created_at || b.id) > (a.created_at || a.id) ? 1 : -1;
-          } else {
-            const aw =
-              winStatsMap[a.id]?.reduce(
-                (sum, row) => sum + (row.win_count || 0),
-                0
-              ) || 0;
-            const bw =
-              winStatsMap[b.id]?.reduce(
-                (sum, row) => sum + (row.win_count || 0),
-                0
-              ) || 0;
-            return bw - aw;
-          }
-        })
-    : [];
+const filtered = Array.isArray(worldcupList)
+  ? (worldcupList || [])
+    .filter((cup) => {
+  const keyword = search.trim().toLowerCase();
 
-  const visibleList = filtered.slice(0, visibleCount);
-  const cardRefs = useSlideFadeIn(visibleList.length);
+  if (!keyword) return true;
+
+  const displayTitle =
+    getDisplayTitle(cup).toLowerCase();
+
+  const displayDescription = (
+    cup.description_translations?.[lang] ||
+    cup.description_translations?.en ||
+    cup.description ||
+    cup.desc ||
+    ""
+  ).toLowerCase();
+
+  // 후보 이름 검색
+  const hasMatchingCandidate =
+    Array.isArray(cup.data) &&
+    cup.data.some((candidate) => {
+      const candidateName = (
+        candidate?.name_translations?.[lang] ||
+        candidate?.name_translations?.en ||
+        candidate?.name ||
+        candidate?.title ||
+        ""
+      )
+        .toString()
+        .toLowerCase();
+
+      return candidateName.includes(keyword);
+    });
+
+  return (
+    displayTitle.includes(keyword) ||
+    displayDescription.includes(keyword) ||
+    hasMatchingCandidate
+  );
+})
+      .sort((a, b) => {
+        if (sort === "recent") {
+          return (b.created_at || b.id) > (a.created_at || a.id)
+            ? 1
+            : -1;
+        } else {
+          const aw =
+            winStatsMap[a.id]?.reduce(
+              (sum, row) => sum + (row.win_count || 0),
+              0
+            ) || 0;
+
+          const bw =
+            winStatsMap[b.id]?.reduce(
+              (sum, row) => sum + (row.win_count || 0),
+              0
+            ) || 0;
+
+          return bw - aw;
+        }
+      })
+  : [];
+
+
+  const categoryRowRefs = useRef({});
+  const [categoryScrollState, setCategoryScrollState] = useState({});
+
+const updateCategoryScrollState = (rowKey) => {
+  const el = categoryRowRefs.current[rowKey];
+  if (!el) return;
+
+  const maxScrollLeft =
+    el.scrollWidth - el.clientWidth;
+
+  const canScrollLeft =
+    el.scrollLeft > 5;
+
+  const canScrollRight =
+    el.scrollLeft < maxScrollLeft - 5;
+
+  setCategoryScrollState((prev) => {
+    const current = prev[rowKey];
+
+    if (
+      current?.canScrollLeft === canScrollLeft &&
+      current?.canScrollRight === canScrollRight
+    ) {
+      return prev;
+    }
+
+    return {
+      ...prev,
+      [rowKey]: {
+        canScrollLeft,
+        canScrollRight,
+      },
+    };
+  });
+};
+
+const scrollCategoryRow = (rowKey, direction) => {
+  const el = categoryRowRefs.current[rowKey];
+  if (!el) return;
+
+  const amount = isMobile
+    ? CARD_WIDTH + CARD_GAP
+    : (CARD_WIDTH + CARD_GAP) * 2;
+
+  el.scrollBy({
+    left: direction * amount,
+    behavior: "smooth",
+  });
+};
 
   const currentUserId = user?.id || "";
   const currentUserEmail = user?.email || "";
@@ -317,7 +349,7 @@ getDisplayTitle(cup).toLowerCase().includes(search.toLowerCase()) ||
     );
   }
 
-  const mainDark = "#171C27";
+  const mainDark =  "#000";
 const buttonStyle = {
   background: mainDark,
   color: "#fff",
@@ -325,13 +357,13 @@ const buttonStyle = {
   border: "none",
   borderRadius: 8,
 
-  fontSize: isMobile ? 13 : 14,
+fontSize: isMobile ? 15 : 17,
   padding: isMobile ? "6px 8px" : "7px 11px",
 
   outline: "none",
   cursor: "pointer",
   letterSpacing: "0.2px",
-  fontFamily: "'Orbitron', 'Pretendard', sans-serif",
+fontFamily: "'Pretendard', sans-serif",
   margin: "0 1px",
   boxShadow: "none",
   transition: "background 0.15s",
@@ -349,13 +381,9 @@ const buttonStyle = {
 const smallButtonStyle = {
   ...buttonStyle,
   padding: isMobile ? "5px 6px" : "7px 8px",
-  fontSize: isMobile ? 12 : 13,
+fontSize: isMobile ? 15 : 17,
 };
 
-
-  const handleLoadMore = () => {
-    setVisibleCount((prev) => prev + PAGE_SIZE);
-  };
 
 const cardDescStyle = {
   color: "#b9dafb",
@@ -396,13 +424,830 @@ const cardDescStyle = {
     boxShadow: "0 2px 10px #1976ed44",
   };
 
-
-  const goto = (url) => {
+    const goto = (url) => {
     window.scrollTo(0, 0);
     document.documentElement.scrollTop = 0;
     document.body.scrollTop = 0;
     navigate(url);
   };
+  
+
+const renderWorldcupCard = (cup) => {
+  const winStats = winStatsMap[cup.id] || [];
+
+  // 후보들의 누적 우승 횟수 합계 = 총 참여 횟수
+  const totalPlays = winStats.reduce(
+    (sum, row) => sum + (row.win_count || 0),
+    0
+  );
+
+  
+  const [first, second] = getTop2Winners(
+    winStats,
+    cup.data
+  );
+
+  const displayTitle = getDisplayTitle(cup);
+
+  return (
+    <div
+      key={cup.id}
+       style={{
+        width: "100%",
+        height: CARD_HEIGHT,
+        borderRadius: 18,
+        background: "#000",
+        boxShadow:
+          "0 8px 38px 0 #1976ed45, 0 2px 12px #1976ed44",
+        border: "1.5px solid #233a74",
+        display: "flex",
+        flexDirection: "column",
+        position: "relative",
+        overflow: "hidden",
+        transition:
+          "box-shadow 0.18s, transform 0.16s",
+        marginBottom: 0,
+        cursor: "pointer",
+        backdropFilter:
+          "blur(13px) brightness(1.04)",
+        WebkitBackdropFilter:
+          "blur(13px) brightness(1.04)",
+        willChange: "transform",
+        maxWidth: CARD_WIDTH,
+        minWidth: CARD_WIDTH,
+      }}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.transform =
+          "translateY(-7px) scale(1.025)";
+
+        e.currentTarget.style.boxShadow =
+          "0 12px 50px 0 #1976ed88, 0 2.5px 16px #4abfff77";
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.transform = "";
+
+        e.currentTarget.style.boxShadow =
+          "0 8px 38px 0 #1976ed45, 0 2px 12px #1976ed44";
+      }}
+      onClick={() => {
+        goto(
+          getRoute(
+            "/select-round",
+            cup.id
+          )
+        );
+      }}
+      onMouseDown={(e) => {
+        if (e.button === 1) {
+          e.preventDefault();
+          e.stopPropagation();
+
+          const url = getRoute(
+            "/select-round",
+            cup.id
+          );
+
+          const newWindow =
+            window.open(
+              url,
+              "_blank"
+            );
+
+          if (newWindow) {
+            newWindow.opener = null;
+          }
+        }
+      }}
+    >
+      {/* 배경 효과 */}
+      <div
+        style={{
+          position: "absolute",
+          top: "-33%",
+          left: "-12%",
+          width: "140%",
+          height: "180%",
+          zIndex: 0,
+          background:
+            "radial-gradient(circle at 50% 60%, #2a8fff33 0%, #11264c00 90%)",
+          filter:
+            "blur(22px) brightness(1.1)",
+          opacity: 0.92,
+          pointerEvents: "none",
+        }}
+      />
+
+      {/* 썸네일 */}
+      <div
+        style={{
+          width: "100%",
+          height: THUMB_HEIGHT,
+          display: "flex",
+          flexDirection: "row",
+          background:
+            "linear-gradient(90deg, #162d52 0%, #284176 100%)",
+          borderTopLeftRadius: 18,
+          borderTopRightRadius: 18,
+          overflow: "hidden",
+          position: "relative",
+          zIndex: 2,
+        }}
+      >
+        <div
+          style={{
+            width: "50%",
+            height: "100%",
+            background: "#192145",
+            borderTopLeftRadius: 18,
+            overflow: "hidden",
+            position: "relative",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          {first?.image ? (
+            <MediaRenderer
+              url={first.image}
+              alt={t("first_place")}
+              playable={false}
+              style={{
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+                objectPosition:
+                  "center center",
+                background: "#111",
+              }}
+            />
+          ) : (
+            <div
+              style={{
+                width: "100%",
+                height: "100%",
+                background: "#222",
+              }}
+            />
+          )}
+        </div>
+
+        <div
+          style={{
+            width: "50%",
+            height: "100%",
+            background: "#1f2540",
+            borderTopRightRadius: 18,
+            overflow: "hidden",
+            position: "relative",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          {second?.image ? (
+            <MediaRenderer
+              url={second.image}
+              alt={t("second_place")}
+              playable={false}
+              style={{
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+                objectPosition:
+                  "center center",
+                background: "#111",
+              }}
+            />
+          ) : (
+            <div
+              style={{
+                width: "100%",
+                height: "100%",
+                background: "#15182b",
+              }}
+            />
+          )}
+        </div>
+
+        {/* VS */}
+        <div
+          style={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform:
+              "translate(-50%,-55%)",
+            zIndex: 5,
+            pointerEvents: "none",
+            width: isMobile ? 55 : 70,
+            height: isMobile ? 55 : 70,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <img
+            src="/vs.png"
+            alt={t("vs")}
+            style={{
+              width: "100%",
+              height: "100%",
+              objectFit: "contain",
+              userSelect: "none",
+              pointerEvents: "none",
+            }}
+            draggable={false}
+          />
+        </div>
+      </div>
+
+      {/* 제목 */}
+      <div
+        style={{
+          width: "100%",
+          height: isMobile ? 46 : 50,
+          boxSizing: "border-box",
+          padding: isMobile
+            ? "5px 10px 2px 10px"
+            : "6px 14px 2px 14px",
+          background: mainDark,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          overflow: "hidden",
+          margin: 0,
+        }}
+        title={displayTitle}
+      >
+        <span
+          style={{
+            width: "100%",
+            display: "-webkit-box",
+            WebkitBoxOrient:
+              "vertical",
+            WebkitLineClamp: 2,
+            overflow: "hidden",
+            textOverflow:
+              "ellipsis",
+            whiteSpace: "normal",
+            wordBreak: "keep-all",
+            overflowWrap:
+              "break-word",
+            textAlign: "center",
+            lineHeight: 1.14,
+            fontSize:
+              isMobile ? 17 : 20,
+            letterSpacing: "0.1px",
+            color: "#fff",
+fontFamily:
+  "'Pretendard', sans-serif",
+
+fontWeight: 800,
+            textShadow:
+              "0 1.5px 8px #191b25cc",
+            margin: 0,
+            padding: 0,
+          }}
+        >
+          {displayTitle}
+        </span>
+      </div>
+
+      {/* 설명 */}
+      <div style={cardDescStyle}>
+        {cup.description_translations?.[
+          lang
+        ] ||
+          cup.description_translations
+            ?.en ||
+          cup.description ||
+          cup.desc ||
+          ""}
+      </div>
+
+      {/* 참여 횟수 */}
+      <div
+        style={{
+          width: "100%",
+          textAlign: "center",
+          color: "#8fc7ff",
+          fontSize:
+            isMobile ? 13 : 14,
+          fontWeight: 700,
+          padding: "2px 0 3px",
+          background: mainDark,
+          boxSizing: "border-box",
+        }}
+      >
+        👥{" "}
+        {t("participation_count", {
+          count:
+            totalPlays.toLocaleString(),
+        })}
+      </div>
+
+      {/* 버튼 */}
+      <div
+        style={{
+          width: "100%",
+          display: "flex",
+          alignItems: "center",
+          justifyContent:
+            "space-between",
+          padding: isMobile
+            ? "4px 7px 7px 7px"
+            : "6px 10px 8px 10px",
+          minHeight:
+            isMobile ? 32 : 34,
+          background: mainDark,
+          boxSizing: "border-box",
+          marginTop: "auto",
+          borderTop: "none",
+          borderBottom: "none",
+          borderRadius: 0,
+          gap: 0,
+        }}
+      >
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+
+            goto(
+              getRoute(
+                "/select-round",
+                cup.id
+              )
+            );
+          }}
+          style={buttonStyle}
+          onMouseOver={(e) =>
+            (e.currentTarget.style.background =
+              "#1c2232")
+          }
+          onMouseOut={(e) =>
+            (e.currentTarget.style.background =
+              mainDark)
+          }
+        >
+          {t("start")}
+        </button>
+
+        {isMine(cup) ? (
+          <div
+            style={{
+              display: "flex",
+              gap: 5,
+            }}
+          >
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+
+                goto(
+                  getRoute(
+                    "/edit-worldcup",
+                    cup.id
+                  )
+                );
+              }}
+              style={smallButtonStyle}
+              onMouseOver={(e) =>
+                (e.currentTarget.style.background =
+                  "#1c2232")
+              }
+              onMouseOut={(e) =>
+                (e.currentTarget.style.background =
+                  mainDark)
+              }
+            >
+              {t("edit")}
+            </button>
+
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+
+                if (
+                  !window.confirm(
+                    t(
+                      "delete_confirm"
+                    ) ||
+                      "Are you sure you want to delete?"
+                  )
+                ) {
+                  return;
+                }
+
+                if (onDelete) {
+                  onDelete(cup.id);
+                } else {
+                  window.location.reload();
+                }
+              }}
+              style={smallButtonStyle}
+              onMouseOver={(e) =>
+                (e.currentTarget.style.background =
+                  "#1c2232")
+              }
+              onMouseOut={(e) =>
+                (e.currentTarget.style.background =
+                  mainDark)
+              }
+            >
+              {t("delete")}
+            </button>
+          </div>
+        ) : (
+          <div
+            style={{
+              width:
+                isMobile ? 29 : 40,
+            }}
+          />
+        )}
+
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+
+            goto(
+              getRoute(
+                "/stats",
+                cup.id
+              )
+            );
+          }}
+          style={buttonStyle}
+          onMouseOver={(e) =>
+            (e.currentTarget.style.background =
+              "#1c2232")
+          }
+          onMouseOut={(e) =>
+            (e.currentTarget.style.background =
+              mainDark)
+          }
+        >
+          {t("stats_comment")}
+        </button>
+      </div>
+
+      <div
+        style={cardBottomBarStyle}
+      />
+    </div>
+  );
+};
+
+
+const renderCategorySection = ({
+  rowKey,
+  title,
+  cups,
+  slug = null,
+  featured = false,
+}) => {
+  if (!Array.isArray(cups) || cups.length === 0) {
+    return null;
+  }
+
+  return (
+    <section
+      key={rowKey}
+      style={{
+        width: "100%",
+        margin: isMobile
+          ? "24px 0 30px"
+          : "34px 0 42px",
+      }}
+    >
+      {/* 카테고리 제목 */}
+      <div
+        style={{
+          width: "100%",
+          maxWidth: 1400,
+          margin: "0 auto",
+          padding: isMobile
+            ? "0 14px 10px"
+            : "0 24px 14px",
+          boxSizing: "border-box",
+display: "flex",
+alignItems: "center",
+justifyContent: "center",
+gap: isMobile ? 8 : 11,
+        }}
+      >
+        <h2
+          style={{
+            margin: 0,
+color: "#ffd43b",
+fontSize: isMobile ? 27 : 36,
+fontWeight: 900,
+            lineHeight: 1.2,
+            fontFamily:
+              "'Orbitron', 'Pretendard', sans-serif",
+          }}
+        >
+          {title}
+        </h2>
+
+        {!featured && slug && (
+          <button
+            type="button"
+            onClick={() =>
+              goto(`/${lang}/category/${slug}`)
+            }
+            style={{
+              padding: 0,
+              border: "none",
+              background: "transparent",
+              color: "#75b9ff",
+              fontSize: isMobile ? 14 : 17,
+              fontWeight: 800,
+              cursor: "pointer",
+              whiteSpace: "nowrap",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.color =
+                "#b9ddff";
+              e.currentTarget.style.textDecoration =
+                "underline";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.color =
+                "#75b9ff";
+              e.currentTarget.style.textDecoration =
+                "none";
+            }}
+          >
+            {t("view_all", {
+              defaultValue: "View all",
+            })}{" "}
+            ›
+          </button>
+        )}
+      </div>
+
+      {/* 가로 슬라이드 */}
+      <div
+        style={{
+          width: "100%",
+          position: "relative",
+        }}
+      >
+        
+{/* 왼쪽 화살표 */}
+{rowKey !== "etc" && categoryScrollState[rowKey]?.canScrollLeft && (
+  <button
+    type="button"
+    aria-label="Scroll left"
+    onClick={() =>
+      scrollCategoryRow(rowKey, -1)
+    }
+    style={{
+      position: "absolute",
+      left: isMobile ? 3 : 10,
+      top: "50%",
+      transform: "translateY(-50%)",
+      zIndex: 20,
+
+      width: isMobile ? 44 : 72,
+      height: isMobile ? 130 : 240,
+
+      border: "none",
+      borderRadius: 9,
+
+      background: "rgba(10, 17, 29, 0.88)",
+      color: "#fff",
+
+      fontSize: isMobile ? 32 : 48,
+      fontWeight: 900,
+
+      cursor: "pointer",
+
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+
+      boxShadow: "0 4px 16px rgba(0,0,0,0.4)",
+    }}
+  >
+    ‹
+  </button>
+)}
+
+{/* 카드들 */}
+<div
+  ref={(el) => {
+    categoryRowRefs.current[rowKey] = el;
+
+    if (el && rowKey !== "etc") {
+      requestAnimationFrame(() => {
+        updateCategoryScrollState(rowKey);
+      });
+    }
+  }}
+  onScroll={() => {
+    if (rowKey !== "etc") {
+      updateCategoryScrollState(rowKey);
+    }
+  }}
+  className="home-category-scroll"
+  style={{
+    width: "100%",
+    display: "flex",
+
+    flexWrap: rowKey === "etc" ? "wrap" : "nowrap",
+
+    justifyContent:
+      rowKey === "etc"
+        ? "center"
+        : cups.length * (CARD_WIDTH + CARD_GAP) < vw
+        ? "center"
+        : "flex-start",
+
+    gap: CARD_GAP,
+
+    overflowX: rowKey === "etc" ? "hidden" : "auto",
+    overflowY: "hidden",
+
+    scrollBehavior: "smooth",
+    WebkitOverflowScrolling: "touch",
+
+    padding: isMobile
+      ? "8px 42px 12px"
+      : "10px 76px 16px",
+
+    boxSizing: "border-box",
+  }}
+>
+  {(rowKey === "etc"
+    ? cups.slice(0, otherVisibleCount)
+    : cups
+  ).map((cup) => (
+    <React.Fragment key={`${rowKey}-${cup.id}`}>
+      <div
+        style={{
+          flex: `0 0 ${CARD_WIDTH}px`,
+          width: CARD_WIDTH,
+          minWidth: CARD_WIDTH,
+        }}
+      >
+        {renderWorldcupCard(cup)}
+      </div>
+    </React.Fragment>
+  ))}
+
+{rowKey === "etc" && otherVisibleCount < cups.length && (
+  <div
+    style={{
+      width: "100%",
+      display: "flex",
+      justifyContent: "center",
+      marginTop: isMobile ? 10 : 14,
+    }}
+  >
+    <button
+      type="button"
+      onClick={() =>
+        setOtherVisibleCount((prev) => prev + 8)
+      }
+      style={{
+        border: "1px solid #2f8cff",
+        borderRadius: 8,
+        background: "#176fd1",
+        color: "#fff",
+        padding: isMobile
+          ? "9px 22px"
+          : "11px 30px",
+        fontSize: isMobile ? 14 : 16,
+        fontWeight: 900,
+        cursor: "pointer",
+      }}
+    >
+      {lang === "ko" ? "더보기" : "Load more"}
+    </button>
+  </div>
+)}
+
+</div>
+
+     {/* 오른쪽 화살표 */}
+{categoryScrollState[rowKey]?.canScrollRight && (
+  <button
+    type="button"
+    aria-label="Scroll right"
+    onClick={() =>
+      scrollCategoryRow(rowKey, 1)
+    }
+    style={{
+      position: "absolute",
+      right: isMobile ? 3 : 10,
+      top: "50%",
+      transform: "translateY(-50%)",
+      zIndex: 20,
+
+      width: isMobile ? 44 : 72,
+      height: isMobile ? 130 : 240,
+
+      border: "none",
+      borderRadius: 9,
+
+      background: "rgba(10, 17, 29, 0.88)",
+      color: "#fff",
+
+      fontSize: isMobile ? 32 : 48,
+      fontWeight: 900,
+
+      cursor: "pointer",
+
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+
+      boxShadow: "0 4px 16px rgba(0,0,0,0.4)",
+    }}
+  >
+    ›
+  </button>
+)}
+      </div>
+    </section>
+  );
+};
+
+
+const featuredCups = Array.isArray(worldcupList)
+  ? [...worldcupList]
+     .filter((cup) => {
+  if (cup.is_featured !== true) {
+    return false;
+  }
+
+  const keyword = search.trim().toLowerCase();
+
+  if (!keyword) {
+    return true;
+  }
+
+  const title = getDisplayTitle(cup)
+    .toString()
+    .toLowerCase();
+
+  const description = (
+    cup.description_translations?.[lang] ||
+    cup.description_translations?.en ||
+    cup.description ||
+    cup.desc ||
+    ""
+  )
+    .toString()
+    .toLowerCase();
+
+  const hasMatchingCandidate =
+    Array.isArray(cup.data) &&
+    cup.data.some((candidate) => {
+      const candidateName = (
+        candidate?.name_translations?.[lang] ||
+        candidate?.name_translations?.en ||
+        candidate?.name ||
+        candidate?.title ||
+        ""
+      )
+        .toString()
+        .toLowerCase();
+
+      return candidateName.includes(keyword);
+    });
+
+  return (
+    title.includes(keyword) ||
+    description.includes(keyword) ||
+    hasMatchingCandidate
+  );
+})
+.sort((a, b) => {
+  const aOrder = a.featured_order ?? 999999;
+  const bOrder = b.featured_order ?? 999999;
+
+  return aOrder - bOrder;
+})
+  : [];
+
+const categorySections = HOME_CATEGORIES.map(
+  (category) => ({
+    ...category,
+
+    cups: filtered.filter(
+      (cup) =>
+        (cup.category || "etc") ===
+        category.key
+    ),
+  })
+);
+
+const visibleCategorySections = categorySections.filter(
+  (section) => section.cups.length > 0
+);
 
 return (
   <div
@@ -460,17 +1305,40 @@ return (
       boxSizing: "border-box",
     }}
   >
-
+{/* One Pick Game 소개 */}
+<div
+  style={{
+    width: "100%",
+    textAlign: "center",
+    padding: isMobile ? "4px 4px 7px" : "6px 10px 9px",
+    boxSizing: "border-box",
+    color: "#fff",
+    fontSize: isMobile ? 14 : 16,
+    fontWeight: 800,
+    lineHeight: 1.55,
+    wordBreak: "keep-all",
+  }}
+>
+  {t("home_intro_title_1", {
+    defaultValue:
+      "One Pick Game is a global tournament bracket site",
+  })}
+  <br />
+  {t("home_intro_title_2", {
+    defaultValue:
+      "where you can choose your ultimate favorite.",
+  })}
+</div>
     {/* =========================
         1줄 : 만들기 + 언어
     ========================== */}
     <div
       style={{
         width: "100%",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        gap: isMobile ? 7 : 9,
+display: "flex",
+alignItems: "center",
+justifyContent: "center",
+gap: isMobile ? 8 : 11,
       }}
     >
       {/* 이상형 월드컵 만들기 */}
@@ -480,7 +1348,7 @@ return (
           if (onMakeWorldcup) {
             onMakeWorldcup();
           } else {
-            goto(`/${lang}/create`);
+        goto(`/${lang}/worldcup-maker`);
           }
         }}
         style={{
@@ -499,8 +1367,8 @@ return (
           fontSize: isMobile ? 13 : 16,
           fontWeight: 900,
 
-          fontFamily:
-            "'Orbitron', 'Pretendard', sans-serif",
+fontFamily:
+  "'Pretendard', sans-serif",
 
           cursor: "pointer",
 
@@ -765,461 +1633,63 @@ justifyContent: "center",
     </div>
   </div>
 </div>
-
-      {/* 카드 그리드 */}
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: `repeat(auto-fit, minmax(${CARD_WIDTH}px, 1fr))`,
-          gap: CARD_GAP,
-          width: "100vw",
-          maxWidth: "100vw",
-          margin: "0 auto",
-          padding: 0,
-          boxSizing: "border-box",
-          justifyItems: "center",
-          alignItems: "start",
-          zIndex: 2,
-        }}
-      >
-        {visibleList.length > 0 &&
-visibleList.map((cup, idx) => {
-  const winStats = winStatsMap[cup.id] || [];
-
-  // 후보들의 누적 우승 횟수 합계 = 총 참여 횟수
-  const totalPlays = winStats.reduce(
-    (sum, row) => sum + (row.win_count || 0),
-    0
-  );
-
-  const [first, second] = getTop2Winners(winStats, cup.data);
-  const displayTitle = getDisplayTitle(cup);
-
-  return (
-    <React.Fragment key={cup.id}>
-
-      {/* ⭐ 광고 (여기!!) */}
-{idx === 3 && <AdsenseMid />}
-{idx === 6 && <AdsenseMid />}
-{idx === 11 && <AdsenseMid />}
-{idx === 19 && <AdsenseMid />}
-{idx === 25 && <AdsenseMid />}
-{idx === 28 && <AdsenseMid />}
-{idx === 34 && <AdsenseMid />}
-{idx === 38 && <AdsenseMid />}
-      <div
-        ref={(el) => (cardRefs.current[idx] = el)}
-                  style={{
-                    width: "100%",
-                    height: CARD_HEIGHT,
-                    borderRadius: 18,
-                    background: "rgba(17,27,55,0.77)",
-                    boxShadow: "0 8px 38px 0 #1976ed45, 0 2px 12px #1976ed44",
-                    border: "1.5px solid #233a74",
-                    display: "flex",
-                    flexDirection: "column",
-                    position: "relative",
-                    overflow: "hidden",
-                    transition: "box-shadow 0.18s, transform 0.16s",
-                    marginBottom: 0,
-                    cursor: "pointer",
-                    backdropFilter: "blur(13px) brightness(1.04)",
-                    WebkitBackdropFilter: "blur(13px) brightness(1.04)",
-                    willChange: "transform",
-                    maxWidth: CARD_WIDTH,
-                    minWidth: CARD_WIDTH,
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.transform =
-                      "translateY(-7px) scale(1.025)";
-                    e.currentTarget.style.boxShadow =
-                      "0 12px 50px 0 #1976ed88, 0 2.5px 16px #4abfff77";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.transform = "";
-                    e.currentTarget.style.boxShadow =
-                      "0 8px 38px 0 #1976ed45, 0 2px 12px #1976ed44";
-                  }}
-onClick={() => {
-  goto(getRoute("/select-round", cup.id));
-}}
-
-onMouseDown={(e) => {
-  // 가운데 휠 클릭
-  if (e.button === 1) {
-    e.preventDefault();
-    e.stopPropagation();
-
-    const url = getRoute(
-      "/select-round",
-      cup.id
-    );
-
-    const newWindow = window.open(
-      url,
-      "_blank"
-    );
-
-    if (newWindow) {
-      newWindow.opener = null;
-    }
-  }
-}}
->
-                  <div
-                    style={{
-                      position: "absolute",
-                      top: "-33%",
-                      left: "-12%",
-                      width: "140%",
-                      height: "180%",
-                      zIndex: 0,
-                      background:
-                        "radial-gradient(circle at 50% 60%, #2a8fff33 0%, #11264c00 90%)",
-                      filter: "blur(22px) brightness(1.1)",
-                      opacity: 0.92,
-                      pointerEvents: "none",
-                    }}
-                  />
-
-                  {/* 썸네일 */}
-                  <div
-                    style={{
-                      width: "100%",
-                      height: THUMB_HEIGHT,
-                      display: "flex",
-                      flexDirection: "row",
-                      background:
-                        "linear-gradient(90deg, #162d52 0%, #284176 100%)",
-                      borderTopLeftRadius: 18,
-                      borderTopRightRadius: 18,
-                      overflow: "hidden",
-                      position: "relative",
-                      zIndex: 2,
-                    }}
-                  >
-                    <div
-                      style={{
-                        width: "50%",
-                        height: "100%",
-                        background: "#192145",
-                        borderTopLeftRadius: 18,
-                        overflow: "hidden",
-                        position: "relative",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                      }}
-                    >
-                      {first?.image ? (
-                        <MediaRenderer
-                          url={first.image}
-                          alt={t("first_place")}
-                          playable={false}
-                          style={{
-                            width: "100%",
-                            height: "100%",
-                            objectFit: "cover",
-                            objectPosition: "center center",
-                            background: "#111",
-                          }}
-                        />
-                      ) : (
-                        <div
-                          style={{ width: "100%", height: "100%", background: "#222" }}
-                        />
-                      )}
-                    </div>
-
-                    <div
-                      style={{
-                        width: "50%",
-                        height: "100%",
-                        background: "#1f2540",
-                        borderTopRightRadius: 18,
-                        overflow: "hidden",
-                        position: "relative",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                      }}
-                    >
-                      {second?.image ? (
-                        <MediaRenderer
-                          url={second.image}
-                          alt={t("second_place")}
-                          playable={false}
-                          style={{
-                            width: "100%",
-                            height: "100%",
-                            objectFit: "cover",
-                            objectPosition: "center center",
-                            background: "#111",
-                          }}
-                        />
-                      ) : (
-                        <div
-                          style={{
-                            width: "100%",
-                            height: "100%",
-                            background: "#15182b",
-                          }}
-                        />
-                      )}
-                    </div>
-
-                    <div
-                      style={{
-                        position: "absolute",
-                        top: "50%",
-                        left: "50%",
-                        transform: "translate(-50%,-55%)",
-                        zIndex: 5,
-                        pointerEvents: "none",
-                        width: isMobile ? 55 : 70,
-                        height: isMobile ? 55 : 70,
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                      }}
-                    >
-                      <img
-                        src="/vs.png"
-                        alt={t("vs")}
-                        style={{
-                          width: "100%",
-                          height: "100%",
-                          objectFit: "contain",
-                          userSelect: "none",
-                          pointerEvents: "none",
-                        }}
-                        draggable={false}
-                      />
-                    </div>
-                  </div>
-
-                  {/* 제목 */}
-<div
-  style={{
-    width: "100%",
-    height: isMobile ? 46 : 50,
-    boxSizing: "border-box",
-
-    padding: isMobile
-      ? "5px 10px 2px 10px"
-      : "6px 14px 2px 14px",
-
-    background: mainDark,
-
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-
-    overflow: "hidden",
-    margin: 0,
-  }}
-  title={displayTitle}
->
-  <span
+{/* 검색 결과 없음 */}
+{search.trim() && filtered.length === 0 && (
+  <div
     style={{
       width: "100%",
-
-      display: "-webkit-box",
-      WebkitBoxOrient: "vertical",
-      WebkitLineClamp: 2,
-
-      overflow: "hidden",
-      textOverflow: "ellipsis",
-
-      whiteSpace: "normal",
-      wordBreak: "keep-all",
-      overflowWrap: "break-word",
-
+      maxWidth: 700,
+      margin: isMobile
+        ? "30px auto 50px"
+        : "46px auto 70px",
+      padding: "0 20px",
+      boxSizing: "border-box",
       textAlign: "center",
-      lineHeight: 1.14,
-
-      fontSize: isMobile ? 17 : 20,
-      letterSpacing: "0.1px",
-
-      color: "#fff",
-
-      fontFamily:
-        "'Orbitron', 'Pretendard', sans-serif",
-
-      fontWeight: 900,
-
-      textShadow: "0 1.5px 8px #191b25cc",
-
-      margin: 0,
-      padding: 0,
+      color: "#9eb3cc",
+      fontSize: isMobile ? 15 : 18,
+      fontWeight: 700,
+      lineHeight: 1.6,
     }}
   >
-    {displayTitle}
-  </span>
-</div>
-
-                  {/* 설명 */}
-                  <div style={cardDescStyle}>
-{cup.description_translations?.[lang] ||
-  cup.description_translations?.en ||
-  cup.description ||
-  cup.desc ||
-  ""}
-                  </div>
-
-                  {/* 참여 횟수 */}
-<div
-  style={{
-    width: "100%",
-    textAlign: "center",
-    color: "#8fc7ff",
-    fontSize: isMobile ? 13 : 14,
-    fontWeight: 700,
-    padding: "2px 0 3px",
-    background: mainDark,
-    boxSizing: "border-box",
-  }}
->
-  👥{" "}
-{t("participation_count", {
-  count: totalPlays.toLocaleString(),
+    {t("no_search_results", {
+      defaultValue:
+        lang === "ko"
+          ? "검색 결과가 없습니다."
+          : "No results found.",
+    })}
+  </div>
+)}
+{/* 추천 */}
+{renderCategorySection({
+  rowKey: "featured",
+  title: t("category_featured", {
+    defaultValue: "Featured",
+  }),
+  cups: featuredCups,
+  featured: true,
 })}
-</div>
 
-                  {/* 버튼 영역 */}
-                  <div
-                    style={{
-                      width: "100%",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "space-between",
-padding: isMobile ? "4px 7px 7px 7px" : "6px 10px 8px 10px",
-minHeight: isMobile ? 32 : 34,
-                      background: mainDark,
-                      boxSizing: "border-box",
-                      marginTop: "auto",
-                      borderTop: "none",
-                      borderBottom: "none",
-                      borderRadius: 0,
-                      gap: 0,
-                    }}
-                  >
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        goto(getRoute("/select-round", cup.id));
-                      }}
-                      style={buttonStyle}
-                      onMouseOver={(e) =>
-                        (e.currentTarget.style.background = "#1c2232")
-                      }
-                      onMouseOut={(e) =>
-                        (e.currentTarget.style.background = mainDark)
-                      }
-                    >
-                      {t("start")}
-                    </button>
 
-                    {isMine(cup) ? (
-                      <div style={{ display: "flex", gap: 5 }}>
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            goto(getRoute("/edit-worldcup", cup.id));
-                          }}
-                          style={smallButtonStyle}
-                          onMouseOver={(e) =>
-                            (e.currentTarget.style.background = "#1c2232")
-                          }
-                          onMouseOut={(e) =>
-                            (e.currentTarget.style.background = mainDark)
-                          }
-                        >
-                          {t("edit")}
-                        </button>
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            if (
-                              !window.confirm(
-                                t("delete_confirm") ||
-                                  "Are you sure you want to delete?"
-                              )
-                            )
-                              return;
-                            if (onDelete) onDelete(cup.id);
-                            else window.location.reload();
-                          }}
-                          style={smallButtonStyle}
-                          onMouseOver={(e) =>
-                            (e.currentTarget.style.background = "#1c2232")
-                          }
-                          onMouseOut={(e) =>
-                            (e.currentTarget.style.background = mainDark)
-                          }
-                        >
-                          {t("delete")}
-                        </button>
-                      </div>
-                    ) : (
-                      <div style={{ width: isMobile ? 29 : 40 }} />
-                    )}
 
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        goto(getRoute("/stats", cup.id));
-                      }}
-                      style={buttonStyle}
-                      onMouseOver={(e) =>
-                        (e.currentTarget.style.background = "#1c2232")
-                      }
-                      onMouseOut={(e) =>
-                        (e.currentTarget.style.background = mainDark)
-                      }
-                    >
-                      {t("stats_comment")}
-                    </button>
-                  </div>
+{/* 카테고리 */}
+{visibleCategorySections.map((section, index) => (
+  <React.Fragment key={section.key}>
+    {renderCategorySection({
+      rowKey: section.key,
 
-                  <div style={cardBottomBarStyle}></div>
-                </div>
-              </React.Fragment>
-            );
-          })}
+      title: t(`category_${section.key}`, {
+        defaultValue: section.label,
+      }),
 
-        {visibleList.length === 0 &&
-          Array.from({ length: SKELETON_COUNT }).map((_, i) => (
-            <SkeletonCard
-              key={i}
-              cardHeight={CARD_HEIGHT}
-              thumbHeight={THUMB_HEIGHT}
-            />
-          ))}
-      </div>
+      cups: section.cups,
+      slug: section.slug,
+    })}
 
-      {/* ✅✅✅ 더보기 버튼 */}
-      {visibleCount < filtered.length && (
-        <div style={{ textAlign: "center", margin: "18px 0 26px 0" }}>
-          <button
-            style={{
-              padding: "13px 44px",
-              background: "#1976ed",
-              color: "#fff",
-              fontWeight: 900,
-              borderRadius: 10,
-              border: "none",
-              fontSize: 17,
-              boxShadow: "0 2px 12px #1976ed33",
-              cursor: "pointer",
-              letterSpacing: "0.4px",
-            }}
-            onClick={handleLoadMore}
-          >
-            {t("load_more")}
-          </button>
-        </div>
-      )}
+{(index === 2 || index === 5) && (
+  <AdsenseMid />
+)}
+  </React.Fragment>
+))}
 
 
 
@@ -1230,6 +1700,14 @@ minHeight: isMobile ? 32 : 34,
             outline: none !important;
             box-shadow: none !important;
           }
+            .home-category-scroll {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.home-category-scroll::-webkit-scrollbar {
+  display: none;
+}
         `}
       </style>
     </div>

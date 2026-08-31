@@ -38,6 +38,7 @@ import SEOManager from "./seo/SEOManager";
 import AdGuard from "./ads/AdGuard";
 import BlogPage from "./components/BlogPage";
 import BlogPostPage from "./components/BlogPostPage";
+import CategoryPage from "./components/CategoryPage";
 
 import DePage from "./pages/de";
 import EnPage from "./pages/en";
@@ -1696,16 +1697,28 @@ const makerDescMap = {
               }
             />
 
-            <Route
-              path="/:lang/blog/:slug"
-              element={
-                <BlogPostPage />
-              }
-            />
+<Route
+  path="/:lang/blog/:slug"
+  element={
+    <BlogPostPage />
+  }
+/>
 
-            <Route
-              path="/:lang"
-              element={
+<Route
+  path="/:lang/category/:categorySlug"
+  element={
+<CategoryPage
+  worldcupList={worldcupList}
+  onDelete={handleWorldcupDelete}
+  user={user}
+  isAdmin={isAdmin}
+/>
+  }
+/>
+
+<Route
+  path="/:lang"
+  element={
                 <>
                                     <LanguageWrapper
                     worldcupList={
