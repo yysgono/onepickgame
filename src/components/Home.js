@@ -1270,7 +1270,7 @@ return (
     display: "flex",
     justifyContent: "center",
     padding: isMobile ? "0 10px" : "0 16px",
-    margin: isMobile ? "16px 0 14px" : "26px 0 22px",
+    margin: isMobile ? "10px 0 14px" : "10px 0 22px",
     boxSizing: "border-box",
     zIndex: 5,
   }}
