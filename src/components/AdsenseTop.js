@@ -36,8 +36,7 @@ return (
         display: "block",
         width: "100%",
         maxWidth: "728px",
-        height: "90px",
-        margin: "0 auto",
+               margin: "0 auto",
       }}
       data-ad-client="ca-pub-2906270915716379"
       data-ad-slot="3294216783"
