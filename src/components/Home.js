@@ -1555,48 +1555,57 @@ boxShadow: "none",
         {t("latest")}
       </button>
 
-      {/* 검색 */}
-      <div
-        style={{
-          flex: 1,
-          minWidth: 0,
-          position: "relative",
-        }}
-      >
-        <input
-          type="text"
-          placeholder={t("search_placeholder")}
-          value={search}
-          onChange={(e) =>
-            setSearch(e.target.value)
-          }
-          style={{
-            width: "100%",
+{/* 검색 */}
+<div
+  style={{
+    flex: 1,
+    minWidth: 0,
+    position: "relative",
+  }}
+>
+  <input
+    className="home-search-input"
+    type="text"
+    placeholder={t("search_placeholder")}
+    value={search}
+    onChange={(e) =>
+      setSearch(e.target.value)
+    }
+    style={{
+      width: "100%",
 
-            height: isMobile ? 38 : 40,
+      height: isMobile ? 38 : 40,
 
- background: "rgba(255,255,255,0.07)",
-color: "#fff",
+      background: "rgba(255,255,255,0.07)",
+      color: "#fff",
 
-border: "1px solid rgba(255,255,255,0.10)",
-borderRadius: 8,
+      border: "1px solid rgba(255,255,255,0.10)",
+      borderRadius: 8,
 
-            padding: isMobile
-              ? "0 32px 0 11px"
-              : "0 38px 0 14px",
+      padding: isMobile
+        ? "0 32px 0 11px"
+        : "0 38px 0 14px",
 
-            boxSizing: "border-box",
+      boxSizing: "border-box",
 
-            fontSize: isMobile ? 13 : 16,
-            fontWeight: 700,
+      fontSize: isMobile ? 13 : 16,
+      fontWeight: 700,
 
-            outline: "none",
+      outline: "none",
 
-            boxShadow:
-              "0 2px 8px rgba(0,0,0,0.18)",
-          }}
-        />
+      boxShadow:
+        "0 2px 8px rgba(0,0,0,0.18)",
+    }}
+  />
 
+  <style>
+    {`
+      .home-search-input::placeholder {
+        color: #c4ccda;
+        opacity: 1;
+      }
+    `}
+  </style>
         <span
           style={{
             position: "absolute",
