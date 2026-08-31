@@ -218,6 +218,11 @@ export default function AdminStatsPage() {
   ] = useState([]);
 
   const [
+  recentPlays,
+  setRecentPlays,
+] = useState([]);
+
+  const [
     deletingCommentId,
     setDeletingCommentId,
   ] = useState(null);
@@ -314,6 +319,79 @@ export default function AdminStatsPage() {
         // ----------------------------------------------
         // 최근 7일 댓글 최대 30개
         // ----------------------------------------------
+// ----------------------------------------------
+// 최근 완료된 월드컵 최대 30개
+// ----------------------------------------------
+const {
+  data: recentPlayData,
+  error: recentPlayError,
+} = await supabase
+  .from("winner_logs")
+  .select("id, cup_id, winner_id, created_at")
+  .order("created_at", { ascending: false })
+  .limit(30);
+
+if (
+  !recentPlayError &&
+  Array.isArray(recentPlayData)
+) {
+  const cupIds = [
+    ...new Set(
+      recentPlayData
+        .map((row) => row.cup_id)
+        .filter(Boolean)
+    ),
+  ];
+
+  let titleMap = {};
+
+  if (cupIds.length > 0) {
+    const {
+      data: cupData,
+      error: cupError,
+    } = await supabase
+      .from("worldcups")
+      .select("id, title")
+      .in("id", cupIds);
+
+    if (cupError) {
+      console.error(
+        "최근 플레이 월드컵 제목 조회 실패:",
+        cupError
+      );
+    } else {
+      titleMap = Object.fromEntries(
+        (cupData || []).map((cup) => [
+          cup.id,
+          cup.title,
+        ])
+      );
+    }
+  }
+
+  if (mounted) {
+    setRecentPlays(
+      recentPlayData.map((row) => ({
+        ...row,
+        worldcup_title:
+          titleMap[row.cup_id] ||
+          "삭제되었거나 제목 없는 월드컵",
+      }))
+    );
+  }
+} else {
+  if (recentPlayError) {
+    console.error(
+      "최근 플레이 조회 실패:",
+      recentPlayError
+    );
+  }
+
+  if (mounted) {
+    setRecentPlays([]);
+  }
+}
+
         const sevenDaysAgo =
           new Date();
 
@@ -388,6 +466,8 @@ export default function AdminStatsPage() {
       mounted = false;
     };
   }, []);
+
+  
 
   // ======================================================
   // 댓글 삭제
@@ -947,6 +1027,140 @@ export default function AdminStatsPage() {
           한국시간(KST) 기준
         </div>
       </div>
+
+      {/* ==================================================
+    최근 플레이
+================================================== */}
+<div
+  style={{
+    background: "#f9fbff",
+    borderRadius: 16,
+    padding: 28,
+    boxShadow: "0 1px 10px #dde5ef77",
+    marginBottom: 32,
+  }}
+>
+  <h4
+    style={{
+      fontWeight: 800,
+      marginBottom: 20,
+      marginTop: 0,
+      fontSize: 20,
+      color: "#26326b",
+      textAlign: "center",
+    }}
+  >
+    🔥 최근 플레이 (최근 완료 30개)
+  </h4>
+
+  {loading ? (
+    <div
+      style={{
+        textAlign: "center",
+        color: "#999",
+        padding: 20,
+      }}
+    >
+      최근 플레이를 불러오는 중...
+    </div>
+  ) : recentPlays.length === 0 ? (
+    <div
+      style={{
+        textAlign: "center",
+        color: "#aaa",
+        padding: 20,
+      }}
+    >
+      최근 플레이 기록이 없습니다.
+    </div>
+  ) : (
+    <div
+      style={{
+        maxHeight: 430,
+        overflowY: "auto",
+      }}
+    >
+      {recentPlays.map((play) => {
+        const playedAt =
+          new Date(
+            play.created_at
+          ).toLocaleString("ko-KR", {
+            timeZone: "Asia/Seoul",
+          });
+
+        return (
+          <div
+            key={play.id}
+            onClick={() =>
+              handleCommentClick(
+                play.cup_id
+              )
+            }
+            style={{
+              display: "flex",
+              justifyContent:
+                "space-between",
+              alignItems: "center",
+              gap: 14,
+              padding: "11px 13px",
+              marginBottom: 8,
+              background: "#fff",
+              borderRadius: 10,
+              boxShadow:
+                "0 1px 4px #dfe4ec",
+              cursor: "pointer",
+            }}
+            title="클릭하면 해당 월드컵 통계로 이동합니다."
+          >
+            <div
+              style={{
+                minWidth: 0,
+                flex: 1,
+              }}
+            >
+              <div
+                style={{
+                  fontSize: 15,
+                  fontWeight: 800,
+                  color: "#222",
+                  overflow: "hidden",
+                  textOverflow:
+                    "ellipsis",
+                  whiteSpace: "nowrap",
+                }}
+              >
+                {play.worldcup_title}
+              </div>
+            </div>
+
+            <div
+              style={{
+                flexShrink: 0,
+                fontSize: 12,
+                fontWeight: 700,
+                color: "#8d96aa",
+                whiteSpace: "nowrap",
+              }}
+            >
+              {playedAt}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  )}
+
+  <div
+    style={{
+      textAlign: "center",
+      color: "#a0a8b9",
+      fontSize: 12,
+      marginTop: 16,
+    }}
+  >
+    끝까지 완료된 플레이 · 한국시간(KST)
+  </div>
+</div>
 
       {/* ==================================================
           최근 댓글

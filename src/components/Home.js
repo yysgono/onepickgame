@@ -1596,7 +1596,8 @@ borderRadius: 8,
 
             outline: "none",
 
-           boxShadow: "none",
+            boxShadow:
+              "0 2px 8px rgba(0,0,0,0.18)",
           }}
         />
 
