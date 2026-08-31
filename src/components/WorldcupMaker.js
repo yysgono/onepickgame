@@ -1786,24 +1786,26 @@ setCandidates([
 
   return (
     <div
-      style={{
-        maxWidth: 700,
+style={{
+  maxWidth: 700,
 
-        margin: "40px auto",
+  margin: "40px auto",
 
-        background: "#fff",
+  background: "#fff",
 
-        borderRadius: 18,
+  color: "#000",
 
-        boxShadow:
-          "0 4px 20px #0002",
+  borderRadius: 18,
 
-        padding: mobile
-          ? 18
-          : 30,
+  boxShadow:
+    "0 4px 20px #0002",
 
-        position: "relative",
-      }}
+  padding: mobile
+    ? 18
+    : 30,
+
+  position: "relative",
+}}
     >
       <h2
         style={{
@@ -2174,6 +2176,7 @@ setCandidates([
           }}
           disabled={
             loading
+            
           }
         />
 
@@ -2183,17 +2186,17 @@ setCandidates([
             marginBottom: 18,
           }}
         >
-          <div
-            style={{
-              fontWeight: 700,
-              fontSize: mobile ? 14 : 16,
-              marginBottom: 7,
-              color: "#333",
-            }}
-          >
-            {t("category") || "Category"}{" "}
-            <span style={{ color: "#e14444" }}>*</span>
-          </div>
+<div
+  style={{
+    fontWeight: 700,
+    fontSize: mobile ? 14 : 16,
+    marginBottom: 7,
+    color: "#000",
+  }}
+>
+  {t("category") || "Category"}{" "}
+  <span style={{ color: "#e14444" }}>*</span>
+</div>
 
           <select
             value={category}
@@ -2208,19 +2211,26 @@ setCandidates([
 border: "1.5px solid #bbb",
               fontSize: mobile ? 14 : 16,
               boxSizing: "border-box",
-              background: "#fff",
+       background: "#fff",
+color: "#000",
               cursor: loading ? "default" : "pointer",
             }}
           >
 
-            {CATEGORY_OPTIONS.map((item) => (
-              <option
-                key={item.value}
-                value={item.value}
-              >
-                {item.label}
-              </option>
-            ))}
+{CATEGORY_OPTIONS.map((item) => (
+  <option
+    key={item.value}
+    value={item.value}
+    style={{
+      background: "#fff",
+      color: "#000",
+    }}
+  >
+    {t(`category_${item.value}`, {
+      defaultValue: item.label,
+    })}
+  </option>
+))}
           </select>
         </div>
 

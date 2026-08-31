@@ -1319,15 +1319,9 @@ return (
     wordBreak: "keep-all",
   }}
 >
-  {t("home_intro_title_1", {
-    defaultValue:
-      "One Pick Game is a global tournament bracket site",
-  })}
-  <br />
-  {t("home_intro_title_2", {
-    defaultValue:
-      "where you can choose your ultimate favorite.",
-  })}
+{t("home_intro_line1")}
+<br />
+{t("home_intro_line2")}
 </div>
     {/* =========================
         1줄 : 만들기 + 언어

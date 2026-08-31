@@ -16,14 +16,14 @@ const COLORS = {
 };
 
 const CATEGORY_OPTIONS = [
-  { value: "person", label: "People" },
-  { value: "music", label: "Music" },
-  { value: "game", label: "Games" },
-  { value: "sports", label: "Sports" },
-  { value: "anime_manga", label: "Anime / Manga" },
-  { value: "movie_drama", label: "Movies / TV" },
-  { value: "food", label: "Food" },
-  { value: "etc", label: "Other" },
+  { value: "person", labelKey: "category_person" },
+  { value: "music", labelKey: "category_music" },
+  { value: "game", labelKey: "category_game" },
+  { value: "sports", labelKey: "category_sports" },
+  { value: "anime_manga", labelKey: "category_anime_manga" },
+  { value: "movie_drama", labelKey: "category_movie_drama" },
+  { value: "food", labelKey: "category_food" },
+  { value: "etc", labelKey: "category_etc" },
 ];
 
 const CANDIDATE_BUCKET = "candidates";
@@ -931,32 +931,31 @@ const updatedCup = {
               setCategory(event.target.value)
             }
             disabled={loading}
-            style={{
-              width: "100%",
-              padding: 12,
-              borderRadius: 9,
-              border: `1.7px solid ${COLORS.main}22`,
-              fontSize: 16,
-              marginTop: 6,
-              background: "#fafdff",
-              boxSizing: "border-box",
-              outlineColor: COLORS.main,
-              cursor: loading ? "default" : "pointer",
-            }}
+style={{
+  width: "100%",
+  padding: 10,
+  borderRadius: 8,
+  border: "1.5px solid #bbb",
+  fontSize: mobile ? 14 : 16,
+  boxSizing: "border-box",
+  background: "#fff",
+  color: "#000",
+  cursor: loading ? "default" : "pointer",
+}}
           >
             <option value="">
               {t("select_category") ||
                 "Please select a category"}
             </option>
 
-            {CATEGORY_OPTIONS.map((item) => (
-              <option
-                key={item.value}
-                value={item.value}
-              >
-                {item.label}
-              </option>
-            ))}
+{CATEGORY_OPTIONS.map((item) => (
+  <option
+    key={item.value}
+    value={item.value}
+  >
+    {t(item.labelKey)}
+  </option>
+))}
           </select>
         </label>
       </div>
