@@ -491,17 +491,43 @@ const unassignedCount = useMemo(() => {
                 fontWeight: 700,
               }}
             >
-              {wc.title || "제목 없음"}
+<div
+  style={{
+    fontSize: 16,
+    fontWeight: 800,
+    color: "#222",
+  }}
+>
+  {typeof wc.title === "object"
+    ? wc.title.ko ||
+      wc.title.en ||
+      Object.values(wc.title)[0] ||
+      "제목 없음"
+    : wc.title || "제목 없음"}
+</div>
 
-              <div
-                style={{
-                  fontSize: 11,
-                  color: "#999",
-                  marginTop: 4,
-                }}
-              >
-                {wc.id}
-              </div>
+<div
+  style={{
+    fontSize: 11,
+    color: "#999",
+    marginTop: 5,
+  }}
+>
+  ID: {wc.id}
+</div>
+
+<div
+  style={{
+    fontSize: 12,
+    color: "#e14444",
+    marginTop: 4,
+  }}
+>
+  삭제일:{" "}
+  {wc.deleted_at
+    ? new Date(wc.deleted_at).toLocaleString("ko-KR")
+    : "-"}
+</div>
             </div>
 
             <button
