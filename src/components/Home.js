@@ -915,9 +915,9 @@ const renderCategorySection = ({
       key={rowKey}
       style={{
         width: "100%",
-        margin: isMobile
-          ? "24px 0 30px"
-          : "34px 0 42px",
+margin: isMobile
+  ? "18px 0 22px"
+  : "24px 0 28px",
       }}
     >
       {/* 카테고리 제목 */}
@@ -926,9 +926,9 @@ const renderCategorySection = ({
           width: "100%",
           maxWidth: 1400,
           margin: "0 auto",
-          padding: isMobile
-            ? "0 14px 10px"
-            : "0 24px 14px",
+ padding: isMobile
+  ? "0 14px 6px"
+  : "0 24px 8px",
           boxSizing: "border-box",
 display: "flex",
 alignItems: "center",
