@@ -72,7 +72,25 @@ async function updateWorldcupManagement(
 
   if (error) throw error;
 }
+// 삭제된 월드컵 복구
+async function restoreWorldcup(worldcupId) {
+  const { error } = await supabase
+    .from("worldcups")
+    .update({ deleted_at: null })
+    .eq("id", worldcupId);
 
+  if (error) throw error;
+}
+
+// 휴지통에서 영구 삭제
+async function permanentlyDeleteWorldcup(worldcupId) {
+  const { error } = await supabase
+    .from("worldcups")
+    .delete()
+    .eq("id", worldcupId);
+
+  if (error) throw error;
+}
 // ========================================
 // AdminDashboard
 // ========================================
@@ -100,6 +118,8 @@ export default function AdminDashboard() {
 
   // 처음 로딩
   const [loading, setLoading] = useState(true);
+  const [showTrash, setShowTrash] = useState(false);
+const [trashWorkingId, setTrashWorkingId] = useState(null);
 
   // ========================================
   // 최초 데이터 로드
@@ -118,8 +138,10 @@ export default function AdminDashboard() {
         getTotalComments(),
       ]);
 
-      setAllWorldcups(worldcups);
-      setTotalWorldcups(worldcups.length);
+setAllWorldcups(worldcups);
+setTotalWorldcups(
+  worldcups.filter((wc) => !wc.deleted_at).length
+);
       setTotalComments(comments);
 
       const initialEditValues = {};
@@ -242,13 +264,59 @@ export default function AdminDashboard() {
       setSavingId(null);
     }
   }
+const activeWorldcups = useMemo(() => {
+  return allWorldcups.filter((wc) => !wc.deleted_at);
+}, [allWorldcups]);
 
+const deletedWorldcups = useMemo(() => {
+  return allWorldcups.filter((wc) => Boolean(wc.deleted_at));
+}, [allWorldcups]);
+
+async function handleRestoreWorldcup(id) {
+  if (!window.confirm("이 월드컵을 복구할까요?")) return;
+
+  setTrashWorkingId(id);
+
+  try {
+    await restoreWorldcup(id);
+    await loadDashboard();
+    alert("복구되었습니다.");
+  } catch (error) {
+    console.error(error);
+    alert("복구 실패: " + error.message);
+  } finally {
+    setTrashWorkingId(null);
+  }
+}
+
+async function handlePermanentDelete(id) {
+  if (
+    !window.confirm(
+      "정말 영구 삭제할까요?\n이 작업은 되돌릴 수 없습니다."
+    )
+  ) {
+    return;
+  }
+
+  setTrashWorkingId(id);
+
+  try {
+    await permanentlyDeleteWorldcup(id);
+    await loadDashboard();
+    alert("영구 삭제되었습니다.");
+  } catch (error) {
+    console.error(error);
+    alert("영구 삭제 실패: " + error.message);
+  } finally {
+    setTrashWorkingId(null);
+  }
+}
   // ========================================
   // 필터링
   // ========================================
 
   const filteredWorldcups = useMemo(() => {
-    let list = [...allWorldcups];
+  let list = [...activeWorldcups];
 
     const keyword = searchTerm.trim().toLowerCase();
 
@@ -275,7 +343,7 @@ export default function AdminDashboard() {
 
     return list;
   }, [
-    allWorldcups,
+    activeWorldcups,
     searchTerm,
     categoryFilter,
     featuredOnly,
@@ -285,9 +353,12 @@ export default function AdminDashboard() {
   // 카테고리 미지정 개수
   // ========================================
 
-  const unassignedCount = useMemo(() => {
-    return allWorldcups.filter((wc) => !wc.category).length;
-  }, [allWorldcups]);
+const unassignedCount = useMemo(() => {
+  return activeWorldcups.filter(
+    (wc) => !wc.category
+  ).length;
+}, [activeWorldcups]);
+
 
   // ========================================
   // 추천 개수
@@ -366,6 +437,116 @@ export default function AdminDashboard() {
           valueColor="#f39c12"
         />
       </div>
+      <div
+  style={{
+    marginBottom: 30,
+    background: "#fff5f5",
+    border: "1px solid #ffd6d6",
+    borderRadius: 14,
+    padding: 20,
+  }}
+>
+  <button
+    type="button"
+    onClick={() => setShowTrash((prev) => !prev)}
+    style={{
+      border: "none",
+      background: "#e14444",
+      color: "#fff",
+      padding: "10px 16px",
+      borderRadius: 8,
+      fontWeight: 800,
+      cursor: "pointer",
+    }}
+  >
+    🗑️ 휴지통 ({deletedWorldcups.length})
+  </button>
+
+  {showTrash && (
+    <div style={{ marginTop: 18 }}>
+      {deletedWorldcups.length === 0 ? (
+        <div style={{ color: "#777" }}>
+          휴지통이 비어 있습니다.
+        </div>
+      ) : (
+        deletedWorldcups.map((wc) => (
+          <div
+            key={wc.id}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 10,
+              padding: 12,
+              marginBottom: 8,
+              background: "#fff",
+              border: "1px solid #eee",
+              borderRadius: 10,
+              flexWrap: "wrap",
+            }}
+          >
+            <div
+              style={{
+                flex: 1,
+                minWidth: 200,
+                fontWeight: 700,
+              }}
+            >
+              {wc.title || "제목 없음"}
+
+              <div
+                style={{
+                  fontSize: 11,
+                  color: "#999",
+                  marginTop: 4,
+                }}
+              >
+                {wc.id}
+              </div>
+            </div>
+
+            <button
+              type="button"
+              disabled={trashWorkingId === wc.id}
+              onClick={() =>
+                handleRestoreWorldcup(wc.id)
+              }
+              style={{
+                border: "none",
+                background: "#1976ed",
+                color: "#fff",
+                padding: "8px 13px",
+                borderRadius: 7,
+                fontWeight: 800,
+                cursor: "pointer",
+              }}
+            >
+              ♻️ 복구
+            </button>
+
+            <button
+              type="button"
+              disabled={trashWorkingId === wc.id}
+              onClick={() =>
+                handlePermanentDelete(wc.id)
+              }
+              style={{
+                border: "none",
+                background: "#333",
+                color: "#fff",
+                padding: "8px 13px",
+                borderRadius: 7,
+                fontWeight: 800,
+                cursor: "pointer",
+              }}
+            >
+              ❌ 영구삭제
+            </button>
+          </div>
+        ))
+      )}
+    </div>
+  )}
+</div>
 
       {/* ========================================
           월드컵 카테고리 / 추천 관리
