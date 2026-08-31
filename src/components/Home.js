@@ -1124,7 +1124,7 @@ fontWeight: 900,
         cursor: "pointer",
       }}
     >
-      {lang === "ko" ? "더보기" : "Load more"}
+      {t("load_more")}
     </button>
   </div>
 )}
@@ -1289,15 +1289,15 @@ return (
         ? "11px 10px"
         : "13px 16px",
 
-      background: "rgba(14, 20, 34, 0.78)",
+background: "rgba(10, 16, 28, 0.72)",
 
-      border:
-        "1px solid rgba(65, 125, 210, 0.22)",
+border:
+  "1px solid rgba(255,255,255,0.08)",
 
-      borderRadius: 14,
+borderRadius: 12,
 
-      boxShadow:
-        "0 10px 28px rgba(0,0,0,0.35)",
+boxShadow:
+  "0 8px 24px rgba(0,0,0,0.28)",
 
       backdropFilter: "blur(10px)",
       WebkitBackdropFilter: "blur(10px)",
@@ -1312,10 +1312,10 @@ return (
     textAlign: "center",
     padding: isMobile ? "4px 4px 7px" : "6px 10px 9px",
     boxSizing: "border-box",
-    color: "#fff",
-    fontSize: isMobile ? 14 : 16,
-    fontWeight: 800,
-    lineHeight: 1.55,
+color: "#e9eef7",
+fontSize: isMobile ? 14 : 15,
+fontWeight: 700,
+lineHeight: 1.5,
     wordBreak: "keep-all",
   }}
 >
@@ -1479,29 +1479,27 @@ justifyContent: "center",
 
           flexShrink: 0,
 
-          border:
-            sort === "popular"
-              ? "1px solid #2f8cff"
-              : "1px solid rgba(255,255,255,0.08)",
+border: "none",
+borderBottom:
+  sort === "popular"
+    ? "2px solid #2f8cff"
+    : "2px solid transparent",
 
-          borderRadius: 7,
+borderRadius: 0,
 
-          background:
-            sort === "popular"
-              ? "#1677d8"
-              : "#1b2434",
+background: "transparent",
 
-          color: "#fff",
+color:
+  sort === "popular"
+    ? "#ffffff"
+    : "#8290a5",
 
           fontSize: isMobile ? 14 : 16,
           fontWeight: 800,
 
           cursor: "pointer",
 
-          boxShadow:
-            sort === "popular"
-              ? "0 3px 10px rgba(22,119,216,0.25)"
-              : "none",
+boxShadow: "none",
 
           whiteSpace: "nowrap",
 
@@ -1530,29 +1528,27 @@ justifyContent: "center",
 
           flexShrink: 0,
 
-          border:
-            sort === "recent"
-              ? "1px solid #2f8cff"
-              : "1px solid rgba(255,255,255,0.08)",
+border: "none",
+borderBottom:
+  sort === "recent"
+    ? "2px solid #2f8cff"
+    : "2px solid transparent",
 
-          borderRadius: 7,
+borderRadius: 0,
 
-          background:
-            sort === "recent"
-              ? "#1677d8"
-              : "#1b2434",
+background: "transparent",
 
-          color: "#fff",
+color:
+  sort === "recent"
+    ? "#ffffff"
+    : "#8290a5",
 
           fontSize: isMobile ? 14 : 16,
           fontWeight: 800,
 
           cursor: "pointer",
 
-          boxShadow:
-            sort === "recent"
-              ? "0 3px 10px rgba(22,119,216,0.25)"
-              : "none",
+boxShadow: "none",
 
           whiteSpace: "nowrap",
 
@@ -1583,11 +1579,11 @@ justifyContent: "center",
 
             height: isMobile ? 38 : 40,
 
-            background: "#fff",
-            color: "#172033",
+ background: "rgba(255,255,255,0.07)",
+color: "#fff",
 
-            border: "none",
-            borderRadius: 7,
+border: "1px solid rgba(255,255,255,0.10)",
+borderRadius: 8,
 
             padding: isMobile
               ? "0 32px 0 11px"
@@ -1600,8 +1596,7 @@ justifyContent: "center",
 
             outline: "none",
 
-            boxShadow:
-              "0 2px 8px rgba(0,0,0,0.18)",
+           boxShadow: "none",
           }}
         />
 

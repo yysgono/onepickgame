@@ -73,6 +73,8 @@
   "per_page_50": "페이지당 50개",
   "per_page_100": "페이지당 100개",
   "email": "이메일",
+  "load_more": "더 보기",
+  "category_featured": "이상형 월드컵 추천",
   "nickname": "닉네임",
   "change_nickname": "닉네임 변경",
   "send_pw_reset": "비밀번호 재설정 메일 발송",

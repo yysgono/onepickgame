@@ -51,6 +51,8 @@
 "view_all": "Ver tudo ›",
 "category": "Categoria",
 "chooseFile": "Escolher arquivo",
+"category_featured": "Destaques",
+"load_more": "Ver mais",
 "add_candidate": "Adicionar participante",
 "drag_upload_images": "Arraste e solte imagens aqui",
 "image_upload_formats": "JPG · PNG · WebP · AVIF · SVG · Máx. 6 MB",

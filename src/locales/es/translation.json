@@ -32,6 +32,8 @@
   "participation_count": "{{count}} participaciones",
 "worldcup_guide_description": "Consulta nuestra guía, desde añadir candidatos hasta crear tu torneo.",
 "home_intro_line1": "One Pick Game es",
+"load_more": "Ver más",
+"category_featured": "Destacados",
 "home_intro_line2": "una plataforma global de torneos donde puedes elegir a tu favorito definitivo.",
 "select_category": "Selecciona una categoría",
 "category_person": "Personas",
