@@ -433,8 +433,42 @@ const displayCupTitle =
         }
 
         if (!alive || seq !== fetchSeqRef.current) return;
-        const normalized = normalizeStats(rows || []);
-        setStats(normalized);
+const currentCandidates = Array.isArray(selectedCup?.data)
+  ? selectedCup.data
+  : [];
+
+const rowsWithCurrentNames = (rows || []).map((row) => {
+  const currentCandidate = currentCandidates.find(
+    (candidate) =>
+      String(candidate?.id) ===
+      String(row?.candidate_id)
+  );
+
+  if (!currentCandidate) {
+    return row;
+  }
+
+  const currentName =
+    currentCandidate?.name_translations?.[normalizedLang] ||
+    currentCandidate?.name_translations?.en ||
+    currentCandidate?.name ||
+    row?.name ||
+    "";
+
+  return {
+    ...row,
+    name: currentName,
+    image:
+      currentCandidate?.image ||
+      row?.image ||
+      "",
+  };
+});
+
+const normalized =
+  normalizeStats(rowsWithCurrentNames);
+
+setStats(normalized);
         setLoading(false);
       } catch (e) {
         if (!alive || seq !== fetchSeqRef.current) return;
