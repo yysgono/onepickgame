@@ -11,27 +11,31 @@ export default function Footer() {
   const lang = langMatch ? langMatch[1] : (i18n.language || "en").split("-")[0];
 
   return (
-    <footer
-      style={{
-        width: "100vw",
-        maxWidth: "100vw",
-        background: "rgba(18,24,37,0.94)",
-        borderTop: "3px solid #1976ed",
-        marginTop: 50,
-        padding: "30px 0 20px 0",
-        position: "relative",
-        zIndex: 20,
-        boxShadow: "0 -3px 24px #1976ed19",
-      }}
-    >
-      <div
-        style={{
-          maxWidth: 800,
-          margin: "0 auto",
-          padding: "0 14px",
-          textAlign: "center",
-        }}
-      >
+<footer
+  style={{
+    width: "100%",
+    maxWidth: "100%",
+    boxSizing: "border-box",
+    overflowX: "hidden",
+    background: "rgba(18,24,37,0.94)",
+    borderTop: "3px solid #1976ed",
+    marginTop: 50,
+    padding: "30px 0 20px 0",
+    position: "relative",
+    zIndex: 20,
+    boxShadow: "0 -3px 24px #1976ed19",
+  }}
+>
+<div
+  style={{
+    width: "100%",
+    maxWidth: 800,
+    boxSizing: "border-box",
+    margin: "0 auto",
+    padding: "0 14px",
+    textAlign: "center",
+  }}
+>
         <div
           style={{
             color: "#e7f2ff",
