@@ -2075,46 +2075,142 @@ if (!worldcupDescription) {
       `${SITE_URL}/${lang}/select-round/` +
       encodeURIComponent(id);
 
-    /*
-     * 후보 이미지 찾기
-     */
+/*
+ * 후보 이미지 / YouTube 썸네일 찾기
+ */
 
-    let candidates = [];
+let candidates = [];
 
-    if (Array.isArray(worldcup.data)) {
-      candidates = worldcup.data;
-    } else if (
-      Array.isArray(worldcup.candidates)
-    ) {
-      candidates =
-        worldcup.candidates;
+if (Array.isArray(worldcup.data)) {
+  candidates = worldcup.data;
+} else if (Array.isArray(worldcup.candidates)) {
+  candidates = worldcup.candidates;
+}
+
+/*
+ * YouTube URL에서 video ID 추출
+ */
+function extractYouTubeId(url = "") {
+  try {
+    const value = String(url || "").trim();
+
+    if (!value) return "";
+
+    // youtu.be/VIDEO_ID
+    let match = value.match(
+      /youtu\.be\/([a-zA-Z0-9_-]{6,})/i
+    );
+
+    if (match?.[1]) {
+      return match[1];
     }
 
-    const firstCandidateWithImage =
-      candidates.find(
-        (candidate) =>
-          candidate &&
-          typeof candidate.image ===
-            "string" &&
-          candidate.image.trim()
-      );
+    // youtube.com/watch?v=VIDEO_ID
+    match = value.match(
+      /[?&]v=([a-zA-Z0-9_-]{6,})/i
+    );
 
-    let image =
-      firstCandidateWithImage?.image ||
-      worldcup.image ||
-      worldcup.thumbnail ||
-      "/ogimg.png";
-
-    if (
-      !/^https?:\/\//i.test(image)
-    ) {
-      image =
-        `${SITE_URL}${
-          image.startsWith("/")
-            ? ""
-            : "/"
-        }${image}`;
+    if (match?.[1]) {
+      return match[1];
     }
+
+    // youtube.com/embed/VIDEO_ID
+    match = value.match(
+      /youtube(?:-nocookie)?\.com\/embed\/([a-zA-Z0-9_-]{6,})/i
+    );
+
+    if (match?.[1]) {
+      return match[1];
+    }
+
+    // youtube.com/shorts/VIDEO_ID
+    match = value.match(
+      /youtube\.com\/shorts\/([a-zA-Z0-9_-]{6,})/i
+    );
+
+    if (match?.[1]) {
+      return match[1];
+    }
+
+    return "";
+  } catch {
+    return "";
+  }
+}
+
+/*
+ * 일반 이미지인지 YouTube 영상인지 판단해서
+ * 실제 OG 이미지 URL 반환
+ */
+function getOgImageFromCandidate(candidate) {
+  if (!candidate) return "";
+
+  const source =
+    candidate.image ||
+    candidate.url ||
+    candidate.videoUrl ||
+    candidate.video_url ||
+    candidate.youtubeUrl ||
+    candidate.youtube_url ||
+    "";
+
+  if (!source) return "";
+
+  const youtubeId = extractYouTubeId(source);
+
+  if (youtubeId) {
+    return `https://i.ytimg.com/vi/${youtubeId}/hqdefault.jpg`;
+  }
+
+  return String(source).trim();
+}
+
+/*
+ * 이미지가 있는 첫 번째 후보
+ */
+let image = "";
+
+for (const candidate of candidates) {
+  const candidateImage =
+    getOgImageFromCandidate(candidate);
+
+  if (candidateImage) {
+    image = candidateImage;
+    break;
+  }
+}
+
+/*
+ * 후보에서 못 찾았으면 월드컵 대표 이미지 사용
+ */
+if (!image) {
+  image =
+    worldcup.image ||
+    worldcup.thumbnail ||
+    "/ogimg.png";
+}
+
+/*
+ * worldcup.image 자체가 YouTube URL일 수도 있으므로
+ * 한 번 더 체크
+ */
+const youtubeId =
+  extractYouTubeId(image);
+
+if (youtubeId) {
+  image =
+    `https://i.ytimg.com/vi/${youtubeId}/hqdefault.jpg`;
+}
+
+/*
+ * 상대 경로라면 절대 URL로 변환
+ */
+if (!/^https?:\/\//i.test(image)) {
+  image =
+    `${SITE_URL}${
+      image.startsWith("/") ? "" : "/"
+    }${image}`;
+}
 
     /*
      * hreflang
