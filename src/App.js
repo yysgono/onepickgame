@@ -2047,7 +2047,7 @@ const makerDescMap = {
         <div
           className="main-content-outer"
           style={{
-            paddingTop: 190,
+            paddingTop: 0,
             margin: 0,
           }}
         >
