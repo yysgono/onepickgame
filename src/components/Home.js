@@ -4,7 +4,6 @@ import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { fetchWinnerStatsFromDB } from "../utils";
 import MediaRenderer from "./MediaRenderer";
-import FixedCupSection from "./FixedCupCarousel";
 
 const LANGUAGES = [
   { code: "en", label: "English" },
@@ -1260,9 +1259,6 @@ return (
   >
 
 
-    {showFixedWorldcups !== false && (
-      <FixedCupSection worldcupList={fixedCupsWithStats || []} />
-    )}
   {/* 만들기 / 언어 / 검색 / 정렬 */}
 <div
   style={{
