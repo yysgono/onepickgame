@@ -18,7 +18,7 @@ export default function AdsenseTop() {
   }, []);
 
   return (
-    <div style={{ width: "100%", textAlign: "center", margin: "20px 0" }}>
+    <div style={{ width: "100%", textAlign: "center", margin: "10px 0" }}>
       <ins
         ref={adRef}
         className="adsbygoogle"
