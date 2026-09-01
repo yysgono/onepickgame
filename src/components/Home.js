@@ -986,13 +986,30 @@ fontWeight: 900,
         )}
       </div>
 
-      {/* 가로 슬라이드 */}
-      <div
-        style={{
-          width: "100%",
-          position: "relative",
-        }}
-      >
+{/* 가로 슬라이드 */}
+<div
+  style={{
+    width: "100%",
+
+    maxWidth:
+      !isMobile &&
+      (rowKey === "music" ||
+        rowKey === "movie_drama")
+        ? 3 * CARD_WIDTH +
+          2 * CARD_GAP +
+          152
+        : "100%",
+
+    margin:
+      !isMobile &&
+      (rowKey === "music" ||
+        rowKey === "movie_drama")
+        ? "0 auto"
+        : 0,
+
+    position: "relative",
+  }}
+>
         
 {/* 왼쪽 화살표 */}
 {rowKey !== "etc" && categoryScrollState[rowKey]?.canScrollLeft && (
@@ -1680,7 +1697,7 @@ boxShadow: "none",
       slug: section.slug,
     })}
 
-{(index === 2 || index === 5) && (
+{(index === 1 || index === 5) && (
   <AdsenseMid />
 )}
   </React.Fragment>
