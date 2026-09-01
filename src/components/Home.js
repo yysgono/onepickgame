@@ -915,8 +915,8 @@ const renderCategorySection = ({
       style={{
         width: "100%",
 margin: isMobile
-  ? "18px 0 22px"
-  : "24px 0 28px",
+  ? "14px 0 16px"
+  : "18px 0 20px",
       }}
     >
       {/* 카테고리 제목 */}
