@@ -708,6 +708,12 @@ if (data.length < 2) {
 const updatedCup = {
   ...originalCup,
   title: title.trim(),
+
+  title_translations: {
+    ...(originalCup?.title_translations || {}),
+    [i18n.language.split("-")[0]]: title.trim(),
+  },
+
   description: description.trim(),
   category,
   data: updatedData,
