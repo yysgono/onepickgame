@@ -282,7 +282,7 @@ function EditWorldcupPage({
   cupId,
   isAdmin,
 }) {
-  const { t } = useTranslation();
+const { t, i18n } = useTranslation();
  
   const [user, setUser] = useState(null);
   const [nickname, setNickname] = useState("");
@@ -704,9 +704,18 @@ if (data.length < 2) {
         });
       }
 
+const currentLang =
+  (i18n.language || "en").split("-")[0];
+
 const updatedCup = {
   ...originalCup,
   title: title.trim(),
+
+  title_translations: {
+    ...(originalCup?.title_translations || {}),
+    [currentLang]: title.trim(),
+  },
+
   description: description.trim(),
   category,
   data: updatedData,
