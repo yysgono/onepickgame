@@ -990,23 +990,6 @@ fontWeight: 900,
 <div
   style={{
     width: "100%",
-
-    maxWidth:
-      !isMobile &&
-      (rowKey === "music" ||
-        rowKey === "movie_drama")
-        ? 3 * CARD_WIDTH +
-          2 * CARD_GAP +
-          152
-        : "100%",
-
-    margin:
-      !isMobile &&
-      (rowKey === "music" ||
-        rowKey === "movie_drama")
-        ? "0 auto"
-        : 0,
-
     position: "relative",
   }}
 >
@@ -1697,9 +1680,13 @@ boxShadow: "none",
       slug: section.slug,
     })}
 
-{(index === 1 || index === 5) && (
+{(index === 1 ||
+  index === 3 ||
+  index === 5 ||
+  index === 7) && (
   <AdsenseMid />
 )}
+
   </React.Fragment>
 ))}
 
