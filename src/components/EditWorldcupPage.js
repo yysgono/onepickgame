@@ -282,9 +282,8 @@ function EditWorldcupPage({
   cupId,
   isAdmin,
 }) {
-  const navigate = useNavigate();
-  const { t } = useTranslation();
-
+  const { t, i18n } = useTranslation();
+ 
   const [user, setUser] = useState(null);
   const [nickname, setNickname] = useState("");
   const [originalCup, setOriginalCup] = useState(null);
