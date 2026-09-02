@@ -1636,15 +1636,7 @@ const defaultHomeBody = {
 </li>`;
         })
         .join("\n");
-const seoFallbackStyle = `
-<style>
-@keyframes seoFallbackShow {
-  to {
-    opacity: 1;
-  }
-}
-</style>
-`;
+
     const seoBody = `
 <main
   id="seo-content"
@@ -1654,8 +1646,6 @@ const seoFallbackStyle = `
     padding:24px;
     color:#ffffff;
     font-family:Arial,sans-serif;
-    opacity:0;
-    animation:seoFallbackShow 0s 2s forwards;
   "
 >
   <article>
@@ -1725,7 +1715,7 @@ const seoFallbackStyle = `
 
 html = html.replace(
   "</head>",
-  `${seoHead}\n${seoFallbackStyle}\n</head>`
+  `${seoHead}\n</head>`
 );
 
     res.setHeader(
