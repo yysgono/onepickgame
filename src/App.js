@@ -11,9 +11,7 @@ import {
   useParams,
 } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-
 import Header from "./components/Header";
-import AdsenseTop from "./components/AdsenseTop";
 import Home from "./components/Home";
 import SelectRoundPage from "./components/SelectRoundPage";
 import MatchPage from "./components/MatchPage";
@@ -1622,13 +1620,11 @@ const makerDescMap = {
           />
         </div>
 
-        <AdsenseTop />
-
-        <AdGuard
-          isAdmin={
-            isAdmin
-          }
-        />
+<AdGuard
+  isAdmin={
+    isAdmin
+  }
+/>
 
         <div className="main-content-box">
           <Routes>
