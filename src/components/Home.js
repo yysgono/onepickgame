@@ -192,7 +192,7 @@ useEffect(() => {
   return () => {
     mounted = false;
   };
-}, [worldcupList]);
+}, []);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
