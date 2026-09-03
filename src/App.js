@@ -1335,13 +1335,15 @@ const makerDescMap = {
         fetchWorldcups={
           fetchWorldcups
         }
-        onCreate={() => {
-          navigate(
-            getLangPath(
-              i18n
-            )
-          );
-        }}
+ onCreate={async () => {
+  await fetchWorldcups();
+
+  navigate(
+    getLangPath(
+      i18n
+    )
+  );
+}}
         onCancel={() =>
           navigate(
             getLangPath(
