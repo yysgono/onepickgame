@@ -3,6 +3,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { fetchWinnerStatsFromDB } from "../utils";
+import { supabase } from "../utils/supabaseClient";
 import MediaRenderer from "./MediaRenderer";
 
 const LANGUAGES = [
@@ -141,25 +142,57 @@ const getDisplayTitle = (cup) => {
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState("popular");
   const [otherVisibleCount, setOtherVisibleCount] = useState(8);
+  const [rowVisibleCounts, setRowVisibleCounts] = useState({});
   const [vw, setVw] = useState(
     typeof window !== "undefined" ? window.innerWidth : 1200
   );
 
-  const [winStatsMap, setWinStatsMap] = useState({});
+const [winStatsMap, setWinStatsMap] = useState({});
+const [playCountMap, setPlayCountMap] = useState({});
 
-  useEffect(() => {
-    setWinStatsMap({});
-    if (Array.isArray(worldcupList) && worldcupList.length > 0) {
-      worldcupList.forEach((cup) => {
-        fetchWinnerStatsFromDB(cup.id).then((statsArr) => {
-          setWinStatsMap((prev) => ({
-            ...prev,
-            [cup.id]: statsArr,
-          }));
-        });
+const requestedStatsRef = useRef(new Set());
+
+useEffect(() => {
+  let mounted = true;
+
+  async function fetchPlayCounts() {
+    try {
+      const { data, error } = await supabase.rpc(
+        "get_worldcup_play_counts"
+      );
+
+      if (error) {
+        console.error(
+          "참여 횟수 조회 실패:",
+          error
+        );
+        return;
+      }
+
+      if (!mounted) return;
+
+      const nextMap = {};
+
+      (data || []).forEach((row) => {
+        nextMap[String(row.cup_id)] =
+          Number(row.play_count || 0);
       });
+
+      setPlayCountMap(nextMap);
+    } catch (error) {
+      console.error(
+        "참여 횟수 조회 오류:",
+        error
+      );
     }
-  }, [worldcupList]);
+  }
+
+  fetchPlayCounts();
+
+  return () => {
+    mounted = false;
+  };
+}, [worldcupList]);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -242,27 +275,46 @@ const filtered = Array.isArray(worldcupList)
           return (b.created_at || b.id) > (a.created_at || a.id)
             ? 1
             : -1;
-        } else {
-          const aw =
-            winStatsMap[a.id]?.reduce(
-              (sum, row) => sum + (row.win_count || 0),
-              0
-            ) || 0;
+} else {
+  const aw =
+    playCountMap[String(a.id)] || 0;
 
-          const bw =
-            winStatsMap[b.id]?.reduce(
-              (sum, row) => sum + (row.win_count || 0),
-              0
-            ) || 0;
+  const bw =
+    playCountMap[String(b.id)] || 0;
 
-          return bw - aw;
-        }
+  return bw - aw;
+}
       })
   : [];
 
 
   const categoryRowRefs = useRef({});
   const [categoryScrollState, setCategoryScrollState] = useState({});
+  const ROW_INITIAL_COUNT = 6;
+const ROW_LOAD_MORE_COUNT = 6;
+
+const getRowVisibleCount = (rowKey) => {
+  return rowVisibleCounts[rowKey] || ROW_INITIAL_COUNT;
+};
+
+const loadMoreRow = (rowKey, totalCount) => {
+  setRowVisibleCounts((prev) => {
+    const current =
+      prev[rowKey] || ROW_INITIAL_COUNT;
+
+    if (current >= totalCount) {
+      return prev;
+    }
+
+    return {
+      ...prev,
+      [rowKey]: Math.min(
+        current + ROW_LOAD_MORE_COUNT,
+        totalCount
+      ),
+    };
+  });
+};
 
 const updateCategoryScrollState = (rowKey) => {
   const el = categoryRowRefs.current[rowKey];
@@ -435,8 +487,11 @@ const renderWorldcupCard = (cup) => {
   const winStats = winStatsMap[cup.id] || [];
 
   // 후보들의 누적 우승 횟수 합계 = 총 참여 횟수
-  const totalPlays = winStats.reduce(
-    (sum, row) => sum + (row.win_count || 0),
+const totalPlays =
+  playCountMap[String(cup.id)] ??
+  winStats.reduce(
+    (sum, row) =>
+      sum + (row.win_count || 0),
     0
   );
 
@@ -1045,11 +1100,27 @@ fontWeight: 900,
       });
     }
   }}
-  onScroll={() => {
-    if (rowKey !== "etc") {
-      updateCategoryScrollState(rowKey);
-    }
-  }}
+onScroll={(e) => {
+  if (rowKey === "etc") {
+    return;
+  }
+
+  updateCategoryScrollState(rowKey);
+
+  const el = e.currentTarget;
+
+  const remaining =
+    el.scrollWidth -
+    el.scrollLeft -
+    el.clientWidth;
+
+  if (remaining < CARD_WIDTH * 2) {
+    loadMoreRow(
+      rowKey,
+      cups.length
+    );
+  }
+}}
   className="home-category-scroll"
   style={{
     width: "100%",
@@ -1079,10 +1150,13 @@ fontWeight: 900,
     boxSizing: "border-box",
   }}
 >
-  {(rowKey === "etc"
-    ? cups.slice(0, otherVisibleCount)
-    : cups
-  ).map((cup) => (
+{(rowKey === "etc"
+  ? cups.slice(0, otherVisibleCount)
+  : cups.slice(
+      0,
+      getRowVisibleCount(rowKey)
+    )
+).map((cup) => (
     <React.Fragment key={`${rowKey}-${cup.id}`}>
       <div
         style={{
@@ -1247,7 +1321,89 @@ const categorySections = HOME_CATEGORIES.map(
 const visibleCategorySections = categorySections.filter(
   (section) => section.cups.length > 0
 );
+useEffect(() => {
+  const visibleCups = [];
 
+  featuredCups
+    .slice(
+      0,
+      getRowVisibleCount("featured")
+    )
+    .forEach((cup) => {
+      visibleCups.push(cup);
+    });
+
+  visibleCategorySections.forEach(
+    (section) => {
+      const visible =
+        section.key === "etc"
+          ? section.cups.slice(
+              0,
+              otherVisibleCount
+            )
+          : section.cups.slice(
+              0,
+              getRowVisibleCount(
+                section.key
+              )
+            );
+
+      visible.forEach((cup) => {
+        visibleCups.push(cup);
+      });
+    }
+  );
+
+  const uniqueCups = [
+    ...new Map(
+      visibleCups.map((cup) => [
+        String(cup.id),
+        cup,
+      ])
+    ).values(),
+  ];
+
+  uniqueCups.forEach((cup) => {
+    const key = String(cup.id);
+
+    if (
+      requestedStatsRef.current.has(key)
+    ) {
+      return;
+    }
+
+    requestedStatsRef.current.add(key);
+
+    fetchWinnerStatsFromDB(cup.id)
+      .then((statsArr) => {
+        setWinStatsMap((prev) => ({
+          ...prev,
+          [cup.id]:
+            Array.isArray(statsArr)
+              ? statsArr
+              : [],
+        }));
+      })
+      .catch((error) => {
+        console.error(
+          "카드 상세 통계 조회 실패:",
+          cup.id,
+          error
+        );
+
+        requestedStatsRef.current.delete(
+          key
+        );
+      });
+  });
+}, [
+  rowVisibleCounts,
+  otherVisibleCount,
+  search,
+  sort,
+  playCountMap,
+  worldcupList,
+]);
 return (
   <div
     style={{
