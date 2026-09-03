@@ -306,11 +306,25 @@ const filtered = Array.isArray(worldcupList)
 
   const categoryRowRefs = useRef({});
   const [categoryScrollState, setCategoryScrollState] = useState({});
-  const ROW_INITIAL_COUNT = 6;
+const ROW_INITIAL_COUNT = 6;
 const ROW_LOAD_MORE_COUNT = 6;
 
+const getInitialRowCount = () => {
+  const cardsForScreen = Math.ceil(
+    vw / (CARD_WIDTH + CARD_GAP)
+  );
+
+  return Math.max(
+    ROW_INITIAL_COUNT,
+    cardsForScreen + 2
+  );
+};
+
 const getRowVisibleCount = (rowKey) => {
-  return rowVisibleCounts[rowKey] || ROW_INITIAL_COUNT;
+  return (
+    rowVisibleCounts[rowKey] ||
+    getInitialRowCount()
+  );
 };
 
 const loadMoreRow = (rowKey, totalCount) => {
@@ -1144,13 +1158,17 @@ onScroll={(e) => {
 
     flexWrap: rowKey === "etc" ? "wrap" : "nowrap",
 
-    justifyContent:
-      rowKey === "etc"
-        ? "center"
-        : cups.length * (CARD_WIDTH + CARD_GAP) < vw
-        ? "center"
-        : "flex-start",
-
+justifyContent:
+  rowKey === "etc"
+    ? "center"
+    : Math.min(
+        cups.length,
+        getRowVisibleCount(rowKey)
+      ) *
+        (CARD_WIDTH + CARD_GAP) <
+      vw
+    ? "center"
+    : "flex-start",
     gap: CARD_GAP,
 
     overflowX: rowKey === "etc" ? "hidden" : "auto",
