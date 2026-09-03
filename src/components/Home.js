@@ -38,6 +38,9 @@ const HOME_CATEGORIES = [
   { key: "etc", slug: "etc", label: "Other" },
 ];
 
+let playCountsPromise = null;
+let playCountsCache = null;
+
 // 애드센스 클라이언트 ID
 const ADSENSE_CLIENT = "ca-pub-2906270915716379";
 
@@ -157,17 +160,30 @@ useEffect(() => {
 
   async function fetchPlayCounts() {
     try {
-      const { data, error } = await supabase.rpc(
-        "get_worldcup_play_counts"
-      );
+let data;
 
-      if (error) {
-        console.error(
-          "참여 횟수 조회 실패:",
-          error
-        );
-        return;
-      }
+if (playCountsCache) {
+  data = playCountsCache;
+} else {
+  if (!playCountsPromise) {
+    playCountsPromise = supabase
+      .rpc("get_worldcup_play_counts")
+      .then(({ data, error }) => {
+        if (error) {
+          throw error;
+        }
+
+        playCountsCache = data || [];
+        return playCountsCache;
+      })
+      .finally(() => {
+        playCountsPromise = null;
+      });
+  }
+
+  data = await playCountsPromise;
+}
+
 
       if (!mounted) return;
 
