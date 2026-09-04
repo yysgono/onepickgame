@@ -329,8 +329,8 @@ const getRowVisibleCount = (rowKey) => {
 
 const loadMoreRow = (rowKey, totalCount) => {
   setRowVisibleCounts((prev) => {
-    const current =
-      prev[rowKey] || ROW_INITIAL_COUNT;
+const current =
+  prev[rowKey] || getInitialRowCount();
 
     if (current >= totalCount) {
       return prev;
