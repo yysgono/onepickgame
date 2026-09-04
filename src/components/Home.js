@@ -217,7 +217,7 @@ if (playCountsCache) {
     return () => window.removeEventListener("resize", onResize);
   }, []);
   const isMobile = vw < 600;
-const CARD_WIDTH = isMobile ? 340 : 460;
+const CARD_WIDTH = isMobile ? 340 : 500;
 const CARD_HEIGHT = isMobile ? 330 : 365;
 const CARD_GAP = isMobile ? 7 : 13;
 const THUMB_HEIGHT = isMobile ? 165 : 195;
