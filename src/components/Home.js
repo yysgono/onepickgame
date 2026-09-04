@@ -217,10 +217,10 @@ if (playCountsCache) {
     return () => window.removeEventListener("resize", onResize);
   }, []);
   const isMobile = vw < 600;
-const CARD_WIDTH = isMobile ? 320 : 420;
-const CARD_HEIGHT = isMobile ? 325 : 350;
+const CARD_WIDTH = isMobile ? 340 : 460;
+const CARD_HEIGHT = isMobile ? 330 : 365;
 const CARD_GAP = isMobile ? 7 : 13;
-const THUMB_HEIGHT = isMobile ? 148 : 168 * 1.05;
+const THUMB_HEIGHT = isMobile ? 165 : 195;
 
   const [fixedCupsWithStats, setFixedCupsWithStats] = useState([]);
   useEffect(() => {
