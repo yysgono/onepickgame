@@ -45,6 +45,10 @@ const CATEGORY_MAP = {
     key: "music",
     label: "Music",
   },
+  korea: {
+  key: "korea",
+  label: "K-Celeb",
+},
   game: {
     key: "game",
     label: "Games",
