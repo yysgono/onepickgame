@@ -58,6 +58,7 @@
 "image_upload_formats": "JPG · PNG · WebP · AVIF · SVG · 최대 6MB",
 "local_video_not_supported": "로컬 동영상 업로드는 지원하지 않습니다.",
 "description_optional": "설명 (선택사항)",
+"category_korea": "K-셀ㄹ럽",
 "candidate_list": "후보 목록",
   "custom_period": "사용자 지정 기간",
   "set_period": "기간 설정",

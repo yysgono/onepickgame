@@ -17,6 +17,7 @@ const COLORS = {
 
 const CATEGORY_OPTIONS = [
   { value: "person", labelKey: "category_person" },
+  { value: "korea", labelKey: "category_korea" },
   { value: "music", labelKey: "category_music" },
   { value: "game", labelKey: "category_game" },
   { value: "sports", labelKey: "category_sports" },
