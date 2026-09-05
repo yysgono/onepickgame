@@ -26,15 +26,13 @@ const LANGUAGES = [
 ];
 
 const HOME_CATEGORIES = [
+  { key: "korea", slug: "korea", label: "K-Celeb" },
   { key: "person", slug: "person", label: "People" },
-  { key: "korea", slug: "korea", label: "Korea" },
   { key: "anime_manga", slug: "anime-manga", label: "Anime / Manga" },
-  { key: "sports", slug: "sports", label: "Sports" },
-
   { key: "game", slug: "game", label: "Games" },
+  { key: "sports", slug: "sports", label: "Sports" },
   { key: "music", slug: "music", label: "Music" },
   { key: "movie_drama", slug: "movie-drama", label: "Movies / TV" },
-
   { key: "food", slug: "food", label: "Food" },
   { key: "etc", slug: "etc", label: "Other" },
 ];

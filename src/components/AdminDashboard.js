@@ -7,6 +7,7 @@ import { supabase } from "../utils/supabaseClient";
 
 const CATEGORY_OPTIONS = [
   { value: "person", label: "인물" },
+  { value: "korea", label: "K-셀럽" },
   { value: "music", label: "음악" },
   { value: "game", label: "게임" },
   { value: "sports", label: "스포츠" },
