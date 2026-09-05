@@ -32,6 +32,7 @@ const MAX_CANDIDATES = 1024;
 
 const CATEGORY_OPTIONS = [
   { value: "person", label: "People" },
+  { value: "korea", label: "Korea" },
   { value: "music", label: "Music" },
   { value: "game", label: "Games" },
   { value: "sports", label: "Sports" },
