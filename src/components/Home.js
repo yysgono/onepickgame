@@ -27,6 +27,7 @@ const LANGUAGES = [
 
 const HOME_CATEGORIES = [
   { key: "person", slug: "person", label: "People" },
+  { key: "korea", slug: "korea", label: "Korea" },
   { key: "anime_manga", slug: "anime-manga", label: "Anime / Manga" },
   { key: "sports", slug: "sports", label: "Sports" },
 
