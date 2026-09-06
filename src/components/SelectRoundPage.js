@@ -459,6 +459,12 @@ export default function SelectRoundPage({
     )
   );
 
+  const visibleCandidateNames = uniqueNames.slice(0, 20);
+const remainingCandidateCount = Math.max(
+  uniqueNames.length - 20,
+  0
+);
+
   // ======================================================
   // 버튼과 썸네일 겹침 방지용 여백
   // ======================================================
@@ -969,25 +975,41 @@ const totalPlays = winStats.reduce(
                 justifyContent: "center",
               }}
             >
-              {uniqueNames.map((name, idx) => (
-                <span
-                  key={idx}
-                  style={{
-                    background: "#181d2c",
-                    color: "#fff",
-                    borderRadius: 8,
-                    padding: isMobile
-                      ? "5px 11px"
-                      : "7px 17px",
-                    fontWeight: 600,
-                    fontSize: isMobile ? 14 : 16,
-                    marginBottom: "5px",
-                    boxShadow: "0 2px 8px #11223319",
-                  }}
-                >
-                  {name}
-                </span>
-              ))}
+         {visibleCandidateNames.map((name, idx) => (
+  <span
+    key={idx}
+    style={{
+      background: "#181d2c",
+      color: "#fff",
+      borderRadius: 8,
+      padding: isMobile
+        ? "5px 11px"
+        : "7px 17px",
+      fontWeight: 600,
+      fontSize: isMobile ? 14 : 16,
+      marginBottom: "5px",
+      boxShadow: "0 2px 8px #11223319",
+    }}
+  >
+    {name}
+  </span>
+))}
+
+{remainingCandidateCount > 0 && (
+  <span
+    style={{
+      color: "#b9d3ff",
+      fontWeight: 700,
+      fontSize: isMobile ? 14 : 16,
+      padding: isMobile
+        ? "5px 11px"
+        : "7px 17px",
+      marginBottom: "5px",
+    }}
+  >
+    외 {remainingCandidateCount}명
+  </span>
+)}
             </div>
           </div>
 
