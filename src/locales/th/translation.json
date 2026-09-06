@@ -55,6 +55,7 @@
 "category_movie_drama": "ภาพยนตร์ / ซีรีส์",
 "category_korea": "คนดังเกาหลี",
 "category_food": "อาหาร",
+"candidates_remaining": "อีก {{count}} คน",
 "category_etc": "อื่นๆ",
 "view_all": "ดูทั้งหมด ›",
 "category": "หมวดหมู่",

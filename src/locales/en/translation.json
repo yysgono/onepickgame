@@ -36,6 +36,7 @@
   "members_only": "Members Only",
   "user_only": "Members Only",
   "home_intro_line1": "One Pick Game is",
+  "candidates_remaining": "{{count}} more",
 "home_intro_line2": "a global tournament bracket site where you can choose your ultimate favorite.",
 "select_category": "Select a category",
 "category_person": "People",

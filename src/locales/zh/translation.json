@@ -141,6 +141,7 @@
 "category_music": "音乐",
 "category_movie_drama": "电影 / 电视剧",
 "category_food": "美食",
+"candidates_remaining": "另有{{count}}人",
 "category_etc": "其他",
 "view_all": "查看全部 ›",
 "category": "分类",

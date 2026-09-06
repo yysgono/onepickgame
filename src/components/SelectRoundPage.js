@@ -1007,7 +1007,9 @@ const totalPlays = winStats.reduce(
       marginBottom: "5px",
     }}
   >
-    외 {remainingCandidateCount}명
+{t("candidates_remaining", {
+  count: remainingCandidateCount,
+})}
   </span>
 )}
             </div>

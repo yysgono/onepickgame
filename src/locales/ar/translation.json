@@ -41,6 +41,7 @@
 "category_movie_drama": "أفلام / مسلسلات",
 "category_featured": "مختارات",
  "category_korea": "مشاهير كوريا",
+  "candidates_remaining": "{{count}} آخرون",
 "load_more": "عرض المزيد",
 "category_food": "طعام",
 "category_etc": "أخرى",

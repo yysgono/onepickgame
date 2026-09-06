@@ -38,6 +38,7 @@
 "select_category": "Sélectionnez une catégorie",
 "category_person": "Personnalités",
 "category_anime_manga": "Anime / Manga",
+"candidates_remaining": "{{count}} autres",
 "category_sports": "Sports",
 "load_more": "Voir plus",
 "category_korea": "Célébrités coréennes",

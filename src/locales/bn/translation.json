@@ -47,6 +47,7 @@
  "category_korea": "কোরিয়ান সেলিব্রিটি",
 "load_more": "আরও দেখুন",
 "category_featured": "নির্বাচিত",
+"candidates_remaining": "আরও {{count}} জন",
 "category_etc": "অন্যান্য",
 "view_all": "সব দেখুন ›",
 "category": "বিভাগ",

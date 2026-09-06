@@ -42,6 +42,7 @@
 "category_game": "Игры",
 "category_korea": "Корейские знаменитости",
 "category_music": "Музыка",
+"candidates_remaining": "ещё {{count}}",
 "category_movie_drama": "Фильмы / Сериалы",
 "category_food": "Еда",
 "category_etc": "Другое",

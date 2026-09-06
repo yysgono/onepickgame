@@ -51,6 +51,7 @@
 "category_etc": "Outros",
 "view_all": "Ver tudo ›",
 "category": "Categoria",
+"candidates_remaining": "mais {{count}}",
 "chooseFile": "Escolher arquivo",
 "category_featured": "Destaques",
 "load_more": "Ver mais",

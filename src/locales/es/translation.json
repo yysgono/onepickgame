@@ -31,6 +31,7 @@
   "worldcup_guide_title": "¿Quieres saber cómo crear tu propio torneo?",
   "participation_count": "{{count}} participaciones",
 "worldcup_guide_description": "Consulta nuestra guía, desde añadir candidatos hasta crear tu torneo.",
+"candidates_remaining": "{{count}} más",
 "home_intro_line1": "One Pick Game es",
 "load_more": "Ver más",
 "category_featured": "Destacados",

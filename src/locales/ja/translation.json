@@ -29,6 +29,7 @@
   "share_link_copied": "共有リンクがコピーされました！",
   "home_intro_line1": "One Pick Gameは",
 "home_intro_line2": "自分だけの推しを選んで楽しめる、グローバルなトーナメントサイトです。",
+"candidates_remaining": "ほか{{count}}名",
 "select_category": "カテゴリーを選択",
 "category_person": "人物",
 "category_anime_manga": "アニメ / 漫画",
