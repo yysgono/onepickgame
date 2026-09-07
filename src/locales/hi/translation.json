@@ -40,6 +40,8 @@
 "category_music": "संगीत",
 "category_movie_drama": "फ़िल्में / सीरीज़",
 "category_food": "खाना",
+"candidates": "प्रतियोगी",
+"recommended_worldcups": "सुझाए गए टूर्नामेंट",
 "category_etc": "अन्य",
 "candidates_remaining": "{{count}} और",
 "category_featured": "चुनिंदा",

@@ -1107,9 +1107,9 @@ textShadow: "none",
         marginBottom: 14,
         color: "#ffe067",
       }}
-    >
-      관련 월드컵
-    </h2>
+>
+  {t("recommended_worldcups")}
+</h2>
 
     <div
       style={{

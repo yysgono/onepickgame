@@ -60,6 +60,8 @@
 "description_optional": "설명 (선택사항)",
 "candidates_remaining": "외 {{count}}명",
 "category_korea": "K-셀럽",
+"candidates": "후보",
+"recommended_worldcups": "이상형 월드컵 추천",
 "candidate_list": "후보 목록",
   "custom_period": "사용자 지정 기간",
   "set_period": "기간 설정",

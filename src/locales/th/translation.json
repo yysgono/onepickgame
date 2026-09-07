@@ -53,6 +53,8 @@
 "category_music": "เพลง",
 "category_featured": "แนะนำ",
 "category_movie_drama": "ภาพยนตร์ / ซีรีส์",
+"candidates": "ผู้เข้าแข่งขัน",
+"recommended_worldcups": "ทัวร์นาเมนต์แนะนำ",
 "category_korea": "คนดังเกาหลี",
 "category_food": "อาหาร",
 "candidates_remaining": "อีก {{count}} คน",

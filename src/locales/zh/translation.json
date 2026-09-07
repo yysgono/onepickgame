@@ -146,6 +146,8 @@
 "view_all": "查看全部 ›",
 "category": "分类",
 "chooseFile": "选择文件",
+"candidates": "候选项",
+"recommended_worldcups": "推荐人气投票淘汰赛",
 "add_candidate": "添加候选项",
 "drag_upload_images": "将图片拖放到这里",
 "image_upload_formats": "JPG · PNG · WebP · AVIF · SVG · 最大 6MB",

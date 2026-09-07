@@ -40,6 +40,8 @@
 "category_anime_manga": "Аниме / Манга",
 "category_sports": "Спорт",
 "category_game": "Игры",
+"candidates": "Участники",
+"recommended_worldcups": "Рекомендуемые турниры",
 "category_korea": "Корейские знаменитости",
 "category_music": "Музыка",
 "candidates_remaining": "ещё {{count}}",
