@@ -1056,31 +1056,31 @@ textShadow: "none",
       color: "#ffe067",
     }}
   >
-    게임 정보
+   {t("game_info")}
   </h2>
 
   <div>
-    카테고리 :{" "}
+    {t("category")} :{" "}
     {t(`category_${cup?.category || "etc"}`, {
       defaultValue: cup?.category || "etc",
     })}
   </div>
 
-  <div>후보 수 : {candidates.length}</div>
+  <div>{t("candidate_count")} : {candidates.length}</div>
 
   <div>
-    참여 횟수 : {totalPlays.toLocaleString()}회
+{t("play_count")} : {totalPlays.toLocaleString()}
   </div>
 
   <div>
-    등록일 :{" "}
+ {t("created_date")} :{" "}
     {cup?.created_at
       ? new Date(cup.created_at).toLocaleDateString()
       : "-"}
   </div>
 
   <div>
-    최근 수정일 :{" "}
+    {t("updated_date")} :{" "}
     {cup?.updated_at
       ? new Date(cup.updated_at).toLocaleDateString()
       : "-"}
