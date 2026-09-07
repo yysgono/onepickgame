@@ -377,8 +377,8 @@ textShadow: "none",
     top: isMobile ? 11 : 23,
     left: isMobile ? 11 : 26,
     zIndex: 20,
-    background: "linear-gradient(90deg, #1976ed 80%, #45b7fa 100%)",
-color: "#071a2e",
+background: "#13e67e",
+color: "#062414",
 fontWeight: 1000,
 textShadow: "none",
     border: "none",
@@ -581,9 +581,9 @@ const totalPlays = winStats.reduce(
       fontWeight: 900,
       borderRadius: 14,
       border: "none",
-      background:
-        "linear-gradient(135deg, #00c6ff, #0072ff)",
-   color: "#062414",
+background:
+  "linear-gradient(135deg, #ff8a00, #ff3d00)",
+color: "#fff",
 textShadow: "none",
       cursor: "pointer",
       boxShadow:
