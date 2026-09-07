@@ -97,6 +97,8 @@ export default function SelectRoundPage({
 
   const [winStats, setWinStats] =
     useState([]);
+    const [showAllCandidates, setShowAllCandidates] =
+  useState(false);
 
   const isMobile = useIsMobile();
 
@@ -459,7 +461,10 @@ export default function SelectRoundPage({
     )
   );
 
-  const visibleCandidateNames = uniqueNames.slice(0, 20);
+const visibleCandidateNames = showAllCandidates
+  ? uniqueNames
+  : uniqueNames.slice(0, 20);
+
 const remainingCandidateCount = Math.max(
   uniqueNames.length - 20,
   0
@@ -550,79 +555,62 @@ const totalPlays = winStats.reduce(
             </button>
           )}
 
-          {/* 상단 START NOW 버튼 */}
-          <button
-            onClick={() =>
-              handleStart(selectedRound)
-            }
-            style={{
-              display: "block",
-              margin: "15px auto",
-              padding: isMobile
-                ? "10px 22px"
-                : "16px 48px",
-              fontSize: isMobile
-                ? 14
-                : 20,
-              fontWeight: "900",
-              borderRadius: 14,
-              border: "none",
-              background:
-                "linear-gradient(135deg, #00c6ff, #0072ff)",
-              color: "#fff",
-              cursor: "pointer",
-              boxShadow:
-                "0 6px 20px rgba(0, 114, 255, 0.5)",
-            }}
-          >
-            🚀 START NOW
-          </button>
+      {/* 상단 START NOW + 라운드 선택 */}
+<div
+  style={{
+    width: isMobile ? "78%" : 300,
+    maxWidth: 300,
+    margin: "15px auto 18px",
+  }}
+>
+  <button
+    onClick={() => handleStart(selectedRound)}
+    style={{
+      width: "100%",
+      height: isMobile ? 58 : 68,
+      fontSize: isMobile ? 19 : 24,
+      fontWeight: 900,
+      borderRadius: 14,
+      border: "none",
+      background:
+        "linear-gradient(135deg, #00c6ff, #0072ff)",
+      color: "#fff",
+      cursor: "pointer",
+      boxShadow:
+        "0 6px 20px rgba(0, 114, 255, 0.5)",
+    }}
+  >
+    🚀 START NOW
+  </button>
 
-          {/* 오른쪽 상단 결과 보기 */}
-          <button
-            style={resultBtn}
-            onClick={handleShowStats}
-            aria-label={t("show_result")}
-          >
-            {t("show_result")}
-          </button>
-
-          {/* 상단 간단 라운드 선택 */}
-          <div
-            style={{
-              textAlign: "center",
-              marginTop: 12,
-            }}
-          >
-            <select
-              value={selectedRound}
-              onChange={(e) =>
-                setSelectedRound(
-                  Number(e.target.value)
-                )
-              }
-              style={{
-                padding: "10px 20px",
-                fontSize: 15,
-                borderRadius: 10,
-                border:
-                  "2px solid #1976ed",
-                background: "#16213a",
-                color: "#fff",
-                fontWeight: "bold",
-                cursor: "pointer",
-              }}
-            >
-              {possibleRounds.map((r) => (
-                <option
-                  key={r}
-                  value={r}
-                >
-                  Round of {r}
-                </option>
-              ))}
-            </select>
-          </div>
+  <select
+    value={selectedRound}
+    onChange={(e) =>
+      setSelectedRound(Number(e.target.value))
+    }
+    style={{
+      width: "100%",
+      height: isMobile ? 50 : 56,
+      marginTop: 9,
+      padding: "0 16px",
+      fontSize: isMobile ? 17 : 20,
+      fontWeight: 800,
+      textAlign: "center",
+      borderRadius: 11,
+      border: "2px solid #1976ed",
+      background: "#16213a",
+      color: "#fff",
+      cursor: "pointer",
+      boxSizing: "border-box",
+    }}
+  >
+    {possibleRounds.map((r) => (
+      <option key={r} value={r}>
+        Round of {r}
+      </option>
+    ))}
+  </select>
+</div>
 
           {cup && (
             <>
@@ -995,9 +983,13 @@ const totalPlays = winStats.reduce(
   </span>
 ))}
 
-{remainingCandidateCount > 0 && (
-  <span
+{remainingCandidateCount > 0 && !showAllCandidates && (
+  <button
+    type="button"
+    onClick={() => setShowAllCandidates(true)}
     style={{
+      background: "transparent",
+      border: "none",
       color: "#b9d3ff",
       fontWeight: 700,
       fontSize: isMobile ? 14 : 16,
@@ -1005,12 +997,13 @@ const totalPlays = winStats.reduce(
         ? "5px 11px"
         : "7px 17px",
       marginBottom: "5px",
+      cursor: "pointer",
     }}
   >
-{t("candidates_remaining", {
-  count: remainingCandidateCount,
-})}
-  </span>
+    {t("candidates_remaining", {
+      count: remainingCandidateCount,
+    })}
+  </button>
 )}
             </div>
           </div>
@@ -1049,6 +1042,12 @@ const totalPlays = winStats.reduce(
       ? new Date(cup.created_at).toLocaleDateString()
       : "-"}
   </div>
+  <div>
+  최근 수정일 :{" "}
+  {cup?.updated_at
+    ? new Date(cup.updated_at).toLocaleDateString()
+    : "-"}
+</div>
 </div>
 
         </div>
