@@ -89,6 +89,7 @@ export default function SelectRoundPage({
   maxRound,
   candidates,
   onSelect,
+  worldcupList = [],
 }) {
   const { t, i18n } = useTranslation();
 
@@ -493,7 +494,25 @@ const totalPlays = winStats.reduce(
   (sum, row) => sum + (row.win_count || 0),
   0
 );
+// ======================================================
+// 관련 월드컵
+// 같은 카테고리 + 현재 월드컵 제외 + 최대 4개
+// ======================================================
 
+const relatedWorldcups = (worldcupList || [])
+  .filter((item) => {
+    if (!item?.id) return false;
+
+    if (String(item.id) === String(cup?.id)) {
+      return false;
+    }
+
+    return (
+      (item.category || "etc") ===
+      (cup?.category || "etc")
+    );
+  })
+  .slice(0, 4);
 
   return (
     <div
@@ -1040,6 +1059,13 @@ textShadow: "none",
     게임 정보
   </h2>
 
+  <div>
+    카테고리 :{" "}
+    {t(`category_${cup?.category || "etc"}`, {
+      defaultValue: cup?.category || "etc",
+    })}
+  </div>
+
   <div>후보 수 : {candidates.length}</div>
 
   <div>
@@ -1052,13 +1078,121 @@ textShadow: "none",
       ? new Date(cup.created_at).toLocaleDateString()
       : "-"}
   </div>
+
   <div>
-  최근 수정일 :{" "}
-  {cup?.updated_at
-    ? new Date(cup.updated_at).toLocaleDateString()
-    : "-"}
+    최근 수정일 :{" "}
+    {cup?.updated_at
+      ? new Date(cup.updated_at).toLocaleDateString()
+      : "-"}
+  </div>
 </div>
-</div>
+
+{/* 관련 월드컵 */}
+{relatedWorldcups.length > 0 && (
+  <div
+    style={{
+      margin: "20px auto 0",
+      maxWidth: 670,
+      background: "#20253b",
+      borderRadius: 14,
+      padding: isMobile ? 14 : 18,
+      color: "#fff",
+    }}
+  >
+    <h2
+      style={{
+        fontWeight: 800,
+        fontSize: isMobile ? 17 : 18,
+        marginTop: 0,
+        marginBottom: 14,
+        color: "#ffe067",
+      }}
+    >
+      관련 월드컵
+    </h2>
+
+    <div
+      style={{
+        display: "grid",
+        gridTemplateColumns: isMobile
+          ? "1fr 1fr"
+          : "repeat(4, 1fr)",
+        gap: 10,
+      }}
+    >
+      {relatedWorldcups.map((item) => {
+        const relatedTitle =
+          item?.title_translations?.[normalizedLang] ||
+          item?.title_translations?.en ||
+          item?.title ||
+          "";
+
+        const relatedImage =
+          item?.thumbnail ||
+          item?.image ||
+          item?.data?.[0]?.image ||
+          "";
+
+        return (
+          <div
+            key={item.id}
+            onClick={() =>
+              navigate(
+                `/${normalizedLang}/select-round/${item.id}`
+              )
+            }
+            style={{
+              background: "#181d2c",
+              borderRadius: 10,
+              overflow: "hidden",
+              cursor: "pointer",
+              border: "1px solid #2d3959",
+            }}
+          >
+            <div
+              style={{
+                width: "100%",
+                height: isMobile ? 80 : 95,
+                background: "#111",
+                overflow: "hidden",
+              }}
+            >
+              {relatedImage && (
+                <MediaRenderer
+                  url={relatedImage}
+                  alt={relatedTitle}
+                  playable={false}
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
+                  }}
+                />
+              )}
+            </div>
+
+            <div
+              style={{
+                padding: "8px 7px",
+                fontSize: isMobile ? 12 : 13,
+                fontWeight: 700,
+                lineHeight: 1.3,
+                color: "#fff",
+                minHeight: isMobile ? 46 : 50,
+                display: "-webkit-box",
+                WebkitLineClamp: 2,
+                WebkitBoxOrient: "vertical",
+                overflow: "hidden",
+              }}
+            >
+              {relatedTitle}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  </div>
+)}
 
         </div>
 

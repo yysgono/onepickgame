@@ -1216,8 +1216,9 @@ const translatedDescription =
             }
           />
 
-          <SelectRoundPage
-            cup={cup}
+  <SelectRoundPage
+  cup={cup}
+  worldcupList={worldcupList}
             maxRound={
               cup.data.length
             }
