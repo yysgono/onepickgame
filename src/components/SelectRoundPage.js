@@ -554,7 +554,14 @@ const totalPlays = winStats.reduce(
               {t("share_worldcup")}
             </button>
           )}
-
+{/* 오른쪽 상단 결과 보기 */}
+<button
+  style={resultBtn}
+  onClick={handleShowStats}
+  aria-label={t("show_result")}
+>
+  {t("show_result")}
+</button>
       {/* 상단 START NOW + 라운드 선택 */}
 <div
   style={{
