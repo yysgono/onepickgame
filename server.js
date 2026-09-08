@@ -651,16 +651,15 @@ ${safeJson(jsonLd)}
         )
         .join("\n");
 
-const seoBody = `
+      const seoBody = `
 <main
   id="seo-content"
   style="
-    position:absolute;
-    width:1px;
-    height:1px;
-    overflow:hidden;
-    clip:rect(0 0 0 0);
-    white-space:nowrap;
+    max-width:900px;
+    margin:40px auto;
+    padding:24px;
+    color:#ffffff;
+    font-family:Arial,sans-serif;
   "
 >
   <h1>${escapeHtml(text.title)}</h1>
@@ -1638,15 +1637,16 @@ const defaultHomeBody = {
         })
         .join("\n");
 
-    const seoBody = `
+const seoBody = `
 <main
   id="seo-content"
   style="
-    max-width:900px;
-    margin:40px auto;
-    padding:24px;
-    color:#ffffff;
-    font-family:Arial,sans-serif;
+    position:absolute;
+    width:1px;
+    height:1px;
+    overflow:hidden;
+    clip:rect(0 0 0 0);
+    white-space:nowrap;
   "
 >
   <article>
