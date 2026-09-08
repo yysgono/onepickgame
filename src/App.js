@@ -269,18 +269,32 @@ function ScrollToTopButton() {
 style={{
   position: "fixed",
   right: 24,
-  bottom: 120,
-  width: 64,
-  height: 64,
+  bottom: 130,
+
+  width: 72,
+  height: 72,
+
   borderRadius: "50%",
-  border: "1px solid rgba(255,255,255,0.22)",
-  background: "rgba(10, 24, 43, 0.92)",
-  color: "#fff",
-  fontSize: 34,
+  border: "3px solid #ffd400",
+
+  background:
+    "linear-gradient(145deg, #ff9f1c 0%, #ff6b00 100%)",
+
+  color: "#ffffff",
+  fontSize: 40,
   fontWeight: 900,
+
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+
   cursor: "pointer",
   zIndex: 9999,
-  boxShadow: "0 6px 22px rgba(0,0,0,0.35)",
+
+  boxShadow:
+    "0 0 0 4px rgba(255,212,0,0.18), 0 0 22px rgba(255,166,0,0.75), 0 8px 24px rgba(0,0,0,0.45)",
+
+  transition: "transform 0.2s ease",
 }}
     >
       ↑
