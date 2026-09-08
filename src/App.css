@@ -158,11 +158,20 @@ body {
   width: 100%;
 }
 
+/*
+  중요:
+  App.js가 실제 헤더 높이를 paddingTop으로 넣어주기 때문에
+  여기서는 padding-top을 건드리지 않는다.
+*/
 .main-content-box {
   background: transparent !important;
   border-radius: 0 !important;
   box-shadow: none !important;
-  padding: 0 !important;
+
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  padding-bottom: 0 !important;
+
   max-width: 100% !important;
   min-width: 0 !important;
   margin: 0 !important;
@@ -223,7 +232,10 @@ body {
 @media (max-width: 1400px) {
   .main-content-box {
     max-width: 98vw !important;
-    padding: 0 !important;
+
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    padding-bottom: 0 !important;
   }
 
   .ad-banner.top,
@@ -237,7 +249,10 @@ body {
   .main-content-box {
     max-width: 99vw !important;
     margin: 0 auto !important;
-    padding: 0 !important;
+
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    padding-bottom: 0 !important;
   }
 
   .comment-box {
@@ -259,7 +274,14 @@ body {
 
 @media (max-width: 700px) {
   .main-content-box {
-    padding: 0 !important;
+    /*
+      모바일에서도 padding-top은 App.js의
+      headerHeight 값을 그대로 사용한다.
+    */
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    padding-bottom: 0 !important;
+
     border-radius: 0 !important;
     min-width: 0 !important;
     margin: 0 auto !important;

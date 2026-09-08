@@ -1,6 +1,6 @@
 import "./i18n";
 import "./App.css";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   BrowserRouter as Router,
   Routes,
@@ -245,7 +245,28 @@ function ScrollToTopOnRouteChange() {
 
 function App() {
   useIsMobile();
+const headerRef = useRef(null);
+const [headerHeight, setHeaderHeight] = useState(0);
 
+useEffect(() => {
+  if (!headerRef.current) return;
+
+  const updateHeaderHeight = () => {
+    setHeaderHeight(headerRef.current.offsetHeight);
+  };
+
+  updateHeaderHeight();
+
+  const resizeObserver = new ResizeObserver(updateHeaderHeight);
+  resizeObserver.observe(headerRef.current);
+
+  window.addEventListener("resize", updateHeaderHeight);
+
+  return () => {
+    resizeObserver.disconnect();
+    window.removeEventListener("resize", updateHeaderHeight);
+  };
+}, []);
   const [worldcupList, setWorldcupList] = useState([]);
 
   const { t, i18n } = useTranslation();
@@ -1584,13 +1605,20 @@ const makerDescMap = {
       <>
         <SEOManager />
 
-        <div
-          className="header-wrapper"
-          style={{
-            margin: 0,
-            padding: 0,
-          }}
-        >
+<div
+  ref={headerRef}
+  className="header-wrapper"
+  style={{
+    margin: 0,
+    padding: 0,
+    position: "fixed",
+    top: 0,
+    left: 0,
+    width: "100%",
+    maxWidth: "none",
+    zIndex: 1000,
+  }}
+>
           <Header
             onLangChange={
               handleLangChange
@@ -1629,8 +1657,13 @@ const makerDescMap = {
   }
 />
 
-        <div className="main-content-box">
-          <Routes>
+<div
+  className="main-content-box"
+  style={{
+    paddingTop: headerHeight,
+  }}
+>
+  <Routes>
             <Route
               path="/privacy-policy"
               element={
@@ -1998,8 +2031,8 @@ const makerDescMap = {
         margin: 0,
         padding: 0,
         minHeight: "100vh",
-        position: "relative",
-        overflow: "hidden",
+position: "relative",
+overflowX: "hidden",
       }}
     >
       <img

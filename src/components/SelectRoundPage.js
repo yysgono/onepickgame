@@ -721,7 +721,7 @@ textShadow: "none",
         "0 6px 20px rgba(0, 114, 255, 0.5)",
     }}
   >
-    🚀 START NOW
+ 🚀 {t("start")}
   </button>
 
   <select
@@ -746,9 +746,9 @@ textShadow: "none",
     }}
   >
     {possibleRounds.map((r) => (
-      <option key={r} value={r}>
-        Round of {r}
-      </option>
+<option key={r} value={r}>
+  {t("round_of", { count: r })}
+</option>
     ))}
   </select>
 </div>

@@ -165,9 +165,16 @@ export default function Header({
   const currentLang = (i18n.language || "en").split("-")[0];
 
   // 로고 클릭: 언어 홈으로 이동 (SPA)
-  function handleLogoClick() {
-    navigate(`/${currentLang}`);
+function handleLogoClick() {
+  const homePath = `/${currentLang}`;
+
+  if (location.pathname === homePath) {
+    navigate(homePath, { replace: true });
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  } else {
+    navigate(homePath);
   }
+}
 
   function handleMyWorldcup() {
     navigate(`/${currentLang}/my-worldcups`);
@@ -412,10 +419,9 @@ export default function Header({
         background: `linear-gradient(90deg,rgba(20,23,32,0.92) 80%,rgba(20,26,44,0.82)),url('${headerBgUrl}') center/cover no-repeat`,
         boxShadow: "0 2px 22px #000a, 0 1.5px 6px #1e2242cc",
         borderBottom: "4px solid #1976ed",
-        position: "sticky",
-        top: 0,
-        zIndex: 1000,
-        padding: "0 0 12px 0",
+position: "relative",
+zIndex: 1000,
+      padding: "0 0 16px 0",
         backdropFilter: "blur(2.5px)",
         WebkitBackdropFilter: "blur(2.5px)",
       }}
@@ -427,7 +433,7 @@ export default function Header({
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-          padding: "10px 0 7px 0",
+    padding: "13px 0 10px 0",
           cursor: "pointer",
           userSelect: "none",
         }}
@@ -437,8 +443,8 @@ export default function Header({
           src={logoImgUrl}
           alt={t("onepick_logo_alt", "OnePickGame logo")}
           style={{
-            width: 42,
-            height: 42,
+          width: 50,
+height: 50,
             borderRadius: "50%",
             border: "2.2px solid #1976ed",
             background: "rgba(24,29,42,0.9)",
@@ -451,7 +457,7 @@ export default function Header({
         <span
           style={{
             fontWeight: 900,
-            fontSize: 23,
+            fontSize: 27,
             fontFamily: "'Orbitron', 'Pretendard', 'Montserrat', sans-serif",
             color: "#fff",
             textShadow: "0 2px 16px #157be9cc, 0 0.5px 2.5px #fff",
@@ -467,16 +473,19 @@ export default function Header({
       {/* 버튼/메뉴 */}
       <div
         style={{
-          width: "100%",
-          maxWidth: 1800,
-          margin: "0 auto",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          flexWrap: "wrap",
-          gap: "10px 12px",
-          padding: "0 12px",
-          minHeight: 48,
+width: "100%",
+maxWidth: 1800,
+margin: "0 auto",
+display: "flex",
+alignItems: "center",
+justifyContent: "center",
+flexWrap: "wrap",
+gap: "10px 12px",
+padding: "4px 12px",
+minHeight: 56,
+boxSizing: "border-box",
+transform: "scale(1.1)",
+transformOrigin: "center",
         }}
       >
         {isAdmin && (
