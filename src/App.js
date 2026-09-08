@@ -266,22 +266,22 @@ function ScrollToTopButton() {
           behavior: "smooth",
         });
       }}
-      style={{
-        position: "fixed",
-        right: 20,
-        bottom: 24,
-        width: 52,
-        height: 52,
-        borderRadius: "50%",
-        border: "1px solid rgba(255,255,255,0.22)",
-        background: "rgba(10, 24, 43, 0.92)",
-        color: "#fff",
-        fontSize: 26,
-        fontWeight: 900,
-        cursor: "pointer",
-        zIndex: 9999,
-        boxShadow: "0 6px 22px rgba(0,0,0,0.35)",
-      }}
+style={{
+  position: "fixed",
+  right: 24,
+  bottom: 120,
+  width: 64,
+  height: 64,
+  borderRadius: "50%",
+  border: "1px solid rgba(255,255,255,0.22)",
+  background: "rgba(10, 24, 43, 0.92)",
+  color: "#fff",
+  fontSize: 34,
+  fontWeight: 900,
+  cursor: "pointer",
+  zIndex: 9999,
+  boxShadow: "0 6px 22px rgba(0,0,0,0.35)",
+}}
     >
       ↑
     </button>
