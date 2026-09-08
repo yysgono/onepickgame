@@ -28,8 +28,8 @@ import { useTranslation } from "react-i18next";
 const DEFAULT_THUMB_URL =
   "/default-thumb.png";
 
-const MAX_UPLOAD = 50;
-const MAX_CANDIDATES = 1024;
+const MAX_UPLOAD = 3000;
+const MAX_CANDIDATES = 3000;
 
 const CATEGORY_OPTIONS = [
   { value: "person", label: "People" },
