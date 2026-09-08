@@ -1708,7 +1708,52 @@ setCandidates([
               ? "이상형 월드컵 만드는 방법"
               : "How to Create a Worldcup"}
           </h2>
+{/* 콘텐츠 원본 언어 */}
+<div
+  style={{
+    marginBottom: 22,
+  }}
+>
+  <label
+    style={{
+      fontWeight: 700,
+      fontSize: 17,
+      color: "#223",
+      display: "block",
+    }}
+  >
+    🌐 {t("content_language")}
 
+    <select
+      value={contentLanguage}
+      onChange={(event) =>
+        setContentLanguage(event.target.value)
+      }
+      disabled={loading}
+      style={{
+        width: "100%",
+        marginTop: 6,
+        padding: 10,
+        borderRadius: 8,
+        border: "1.5px solid #bbb",
+        fontSize: mobile ? 14 : 16,
+        boxSizing: "border-box",
+        background: "#fff",
+        color: "#000",
+        cursor: loading ? "default" : "pointer",
+      }}
+    >
+      {CONTENT_LANGUAGE_OPTIONS.map((item) => (
+        <option
+          key={item.value}
+          value={item.value}
+        >
+          {item.label}
+        </option>
+      ))}
+    </select>
+  </label>
+</div>
           <p
             style={{
               color: "#64748b",
@@ -2516,59 +2561,7 @@ color: "#000",
             {error}
           </div>
         )}
-{/* 콘텐츠 원본 언어 */}
-<div
-  style={{
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "flex-end",
-    gap: 8,
-    marginTop: 8,
-    marginBottom: 10,
-  }}
->
-  <span
-    style={{
-      fontSize: mobile ? 13 : 14,
-      fontWeight: 700,
-      color: "#555",
-    }}
-  >
-    🌐 콘텐츠 언어
-  </span>
 
-  <select
-    value={contentLanguage}
-    onChange={(event) => {
-      setContentLanguage(
-        event.target.value
-      );
-    }}
-    disabled={loading}
-    style={{
-      padding: "8px 10px",
-      borderRadius: 8,
-      border:
-        "1.5px solid #1976ed",
-      background: "#fff",
-      color: "#222",
-      fontSize: mobile ? 13 : 14,
-      fontWeight: 700,
-      cursor: "pointer",
-    }}
-  >
-    {CONTENT_LANGUAGE_OPTIONS.map(
-      (item) => (
-        <option
-          key={item.value}
-          value={item.value}
-        >
-          {item.label}
-        </option>
-      )
-    )}
-  </select>
-</div>
         {/* 저장 / 취소 */}
         <div
           style={{
