@@ -1266,7 +1266,7 @@ detailTags.length > 0 && (
         border: "none",
         background: "transparent",
         color: "#b9d3ff",
-        fontSize: isMobile ? 13 : 14,
+        fontSize: isMobile ? 16 : 18,
         fontWeight: 800,
         cursor: "pointer",
         textDecoration: "underline",
