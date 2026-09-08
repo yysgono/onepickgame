@@ -564,7 +564,7 @@ const remainingCandidateCount = Math.max(
   // 버튼과 썸네일 겹침 방지용 여백
   // ======================================================
 
-  const topSpacerH = isMobile ? 20 : 25;
+ const topSpacerH = isMobile ? 58 : 25;
   const thumbH = isMobile ? 150 : 190;
 
   // ======================================================
@@ -665,6 +665,7 @@ const creatorOtherWorldcups =
             maxWidth: isMobile
               ? "100%"
               : 880,
+              boxSizing: "border-box",
             background:
               "rgba(20, 24, 37, 0.95)",
             borderRadius:
