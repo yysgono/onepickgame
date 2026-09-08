@@ -725,6 +725,13 @@ textShadow: "none",
  🚀 {t("start")}
   </button>
 
+  <div
+  style={{
+    position: "relative",
+    width: "100%",
+    marginTop: 9,
+  }}
+>
   <select
     value={selectedRound}
     onChange={(e) =>
@@ -733,8 +740,7 @@ textShadow: "none",
     style={{
       width: "100%",
       height: isMobile ? 50 : 56,
-      marginTop: 9,
-      padding: "0 16px",
+      padding: "0 48px 0 16px",
       fontSize: isMobile ? 17 : 20,
       fontWeight: 800,
       textAlign: "center",
@@ -744,14 +750,32 @@ textShadow: "none",
       color: "#fff",
       cursor: "pointer",
       boxSizing: "border-box",
+      appearance: "none",
+      WebkitAppearance: "none",
     }}
   >
     {possibleRounds.map((r) => (
-<option key={r} value={r}>
-  {t("round_of", { count: r })}
-</option>
+      <option key={r} value={r}>
+        {t("round_of", { count: r })}
+      </option>
     ))}
   </select>
+
+  <span
+    style={{
+      position: "absolute",
+      right: 17,
+      top: "50%",
+      transform: "translateY(-50%)",
+      color: "#ffffff",
+      fontSize: isMobile ? 18 : 21,
+      fontWeight: 900,
+      pointerEvents: "none",
+    }}
+  >
+    ▼
+  </span>
+</div>
 </div>
 
           {cup && (
