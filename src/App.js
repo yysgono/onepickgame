@@ -1,6 +1,6 @@
 import "./i18n";
 import "./App.css";
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import {
   BrowserRouter as Router,
   Routes,
@@ -238,35 +238,61 @@ function ScrollToTopOnRouteChange() {
 
   return null;
 }
+function ScrollToTopButton() {
+  const [visible, setVisible] = useState(false);
 
+  useEffect(() => {
+    const handleScroll = () => {
+      setVisible(window.scrollY > 500);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    handleScroll();
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
+  if (!visible) return null;
+
+  return (
+    <button
+      type="button"
+      aria-label="Back to top"
+      onClick={() => {
+        window.scrollTo({
+          top: 0,
+          behavior: "smooth",
+        });
+      }}
+      style={{
+        position: "fixed",
+        right: 20,
+        bottom: 24,
+        width: 52,
+        height: 52,
+        borderRadius: "50%",
+        border: "1px solid rgba(255,255,255,0.22)",
+        background: "rgba(10, 24, 43, 0.92)",
+        color: "#fff",
+        fontSize: 26,
+        fontWeight: 900,
+        cursor: "pointer",
+        zIndex: 9999,
+        boxShadow: "0 6px 22px rgba(0,0,0,0.35)",
+      }}
+    >
+      ↑
+    </button>
+  );
+}
 /* =====================================================
    APP
 ===================================================== */
 
 function App() {
-  useIsMobile();
-const headerRef = useRef(null);
-const [headerHeight, setHeaderHeight] = useState(0);
-
-useEffect(() => {
-  if (!headerRef.current) return;
-
-  const updateHeaderHeight = () => {
-    setHeaderHeight(headerRef.current.offsetHeight);
-  };
-
-  updateHeaderHeight();
-
-  const resizeObserver = new ResizeObserver(updateHeaderHeight);
-  resizeObserver.observe(headerRef.current);
-
-  window.addEventListener("resize", updateHeaderHeight);
-
-  return () => {
-    resizeObserver.disconnect();
-    window.removeEventListener("resize", updateHeaderHeight);
-  };
-}, []);
+ useIsMobile();
   const [worldcupList, setWorldcupList] = useState([]);
 
   const { t, i18n } = useTranslation();
@@ -1606,17 +1632,12 @@ const makerDescMap = {
         <SEOManager />
 
 <div
-  ref={headerRef}
   className="header-wrapper"
   style={{
     margin: 0,
     padding: 0,
-    position: "fixed",
-    top: 0,
-    left: 0,
     width: "100%",
     maxWidth: "none",
-    zIndex: 1000,
   }}
 >
           <Header
@@ -1657,12 +1678,7 @@ const makerDescMap = {
   }
 />
 
-<div
-  className="main-content-box"
-  style={{
-    paddingTop: headerHeight,
-  }}
->
+<div className="main-content-box">
   <Routes>
             <Route
               path="/privacy-policy"
@@ -2083,13 +2099,15 @@ overflowX: "hidden",
             margin: 0,
           }}
         >
-          <Router>
-            <ScrollToTopOnRouteChange />
+<Router>
+  <ScrollToTopOnRouteChange />
 
-            <AppRoutes />
+  <AppRoutes />
 
-            <Footer />
-          </Router>
+  <ScrollToTopButton />
+
+  <Footer />
+</Router>
         </div>
       </div>
     </div>
