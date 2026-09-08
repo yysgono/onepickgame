@@ -1360,158 +1360,154 @@ if (!title.trim()) {
        * - AVIF → WebP
        * - WebP ≤1MB → 그대로
           */
-      const updatedList =
-        await Promise.all(
-          list.map(
-            async (
-              candidate
-            ) => {
-              let imageUrl =
-                candidate.image;
+     const BATCH_SIZE = 20;
 
-              if (
-                candidate.file
-              ) {
-                let uploadFile =
-                  candidate.file;
+const updatedList = [];
 
-               const fileIsImage =
-  isImageFile(uploadFile);
+for (
+  let start = 0;
+  start < list.length;
+  start += BATCH_SIZE
+) {
+  const batch = list.slice(
+    start,
+    start + BATCH_SIZE
+  );
 
-if (!fileIsImage) {
-  throw new Error(
-    `${uploadFile.name}: 이미지 파일만 업로드할 수 있습니다.`
+  const batchResults =
+    await Promise.all(
+      batch.map(
+        async (candidate) => {
+          let imageUrl =
+            candidate.image;
+
+          if (candidate.file) {
+            let uploadFile =
+              candidate.file;
+
+            const fileIsImage =
+              isImageFile(
+                uploadFile
+              );
+
+            if (!fileIsImage) {
+              throw new Error(
+                `${uploadFile.name}: 이미지 파일만 업로드할 수 있습니다.`
+              );
+            }
+
+            /*
+             * 이미지 원본 6MB 제한
+             */
+            if (
+              uploadFile.size >
+              IMAGE_MAX_INPUT_BYTES
+            ) {
+              const sizeMB =
+                (
+                  uploadFile.size /
+                  1024 /
+                  1024
+                ).toFixed(2);
+
+              throw new Error(
+                `${uploadFile.name}: 이미지가 6MB를 초과합니다. (${sizeMB}MB)`
+              );
+            }
+
+            /*
+             * 최종 WebP 정규화
+             */
+            try {
+              uploadFile =
+                await normalizeImageFile(
+                  uploadFile
+                );
+            } catch (
+              normalizeError
+            ) {
+              console.error(
+                "최종 이미지 변환 실패:",
+                candidate.file?.name,
+                normalizeError
+              );
+
+              throw new Error(
+                `${
+                  candidate.file
+                    ?.name ||
+                  "image"
+                }: ${
+                  normalizeError
+                    ?.message ||
+                  "이미지 변환에 실패했습니다."
+                }`
+              );
+            }
+
+            /*
+             * 최종 파일은 반드시 WebP
+             */
+            if (
+              uploadFile.type !==
+              "image/webp"
+            ) {
+              throw new Error(
+                `${uploadFile.name}: WebP 변환에 실패했습니다.`
+              );
+            }
+
+            /*
+             * 최종 이미지 1MB 제한
+             */
+            if (
+              uploadFile.size >
+              IMAGE_MAX_OUTPUT_BYTES
+            ) {
+              const sizeMB =
+                (
+                  uploadFile.size /
+                  1024 /
+                  1024
+                ).toFixed(2);
+
+              throw new Error(
+                `${uploadFile.name}: 압축 후 이미지가 1MB를 초과합니다. (${sizeMB}MB)`
+              );
+            }
+
+            /*
+             * Supabase Storage 업로드
+             */
+            imageUrl =
+              await uploadCandidateImage(
+                uploadFile,
+                nickname ||
+                  currentUser.id
+              );
+          }
+
+          /*
+           * 이미지 URL도 파일도 없으면 기본 썸네일
+           */
+          if (!imageUrl) {
+            imageUrl =
+              DEFAULT_THUMB_URL;
+          }
+
+          return {
+            id: candidate.id,
+            name: candidate.name,
+            image: imageUrl,
+          };
+        }
+      )
+    );
+
+  updatedList.push(
+    ...batchResults
   );
 }
-
-                /*
-                 * 이미지 원본 6MB 제한
-                 *
-                 * CandidateInput에서도 검사하지만
-                 * 저장 직전에 한 번 더 검증
-                 */
-                if (
-                  fileIsImage &&
-                  uploadFile.size >
-                    IMAGE_MAX_INPUT_BYTES
-                ) {
-                  const sizeMB =
-                    (
-                      uploadFile.size /
-                      1024 /
-                      1024
-                    ).toFixed(
-                      2
-                    );
-
-                  throw new Error(
-                    `${uploadFile.name}: 이미지가 6MB를 초과합니다. (${sizeMB}MB)`
-                  );
-                }
-
-                /*
-                 * 이미지면 최종 WebP 정규화
-                 */
-                if (
-                  fileIsImage
-                ) {
-                  try {
-                    uploadFile =
-                      await normalizeImageFile(
-                        uploadFile
-                      );
-                  } catch (
-                    normalizeError
-                  ) {
-                    console.error(
-                      "최종 이미지 변환 실패:",
-                      candidate.file
-                        ?.name,
-                      normalizeError
-                    );
-
-                    throw new Error(
-                      `${
-                        candidate.file
-                          ?.name ||
-                        "image"
-                      }: ${
-                        normalizeError
-                          ?.message ||
-                        "이미지 변환에 실패했습니다."
-                      }`
-                    );
-                  }
-                }
-
-                /*
-                 * 이미지면 최종 파일은 반드시 WebP
-                 */
-                if (
-                  fileIsImage &&
-                  uploadFile.type !==
-                    "image/webp"
-                ) {
-                  throw new Error(
-                    `${uploadFile.name}: WebP 변환에 실패했습니다.`
-                  );
-                }
-
-                /*
-                 * 최종 이미지 1MB 제한
-                 */
-                if (
-                  fileIsImage &&
-                  uploadFile.size >
-                    IMAGE_MAX_OUTPUT_BYTES
-                ) {
-                  const sizeMB =
-                    (
-                      uploadFile.size /
-                      1024 /
-                      1024
-                    ).toFixed(
-                      2
-                    );
-
-                  throw new Error(
-                    `${uploadFile.name}: 압축 후 이미지가 1MB를 초과합니다. (${sizeMB}MB)`
-                  );
-                }
-
-                               /*
-                 * Supabase Storage 업로드
-                 */
-                imageUrl =
-                  await uploadCandidateImage(
-                    uploadFile,
-
-                    nickname ||
-                      currentUser.id
-                  );
-              }
-
-              // 이미지 URL도 파일도 없으면 기본 썸네일
-              if (
-                !imageUrl
-              ) {
-                imageUrl =
-                  DEFAULT_THUMB_URL;
-              }
-
-              return {
-                id:
-                  candidate.id,
-
-                name:
-                  candidate.name,
-
-                image:
-                  imageUrl,
-              };
-            }
-          )
-        );
 
       /*
        * =====================================================
