@@ -1708,52 +1708,7 @@ setCandidates([
               ? "이상형 월드컵 만드는 방법"
               : "How to Create a Worldcup"}
           </h2>
-{/* 콘텐츠 원본 언어 */}
-<div
-  style={{
-    marginBottom: 22,
-  }}
->
-  <label
-    style={{
-      fontWeight: 700,
-      fontSize: 17,
-      color: "#223",
-      display: "block",
-    }}
-  >
-    🌐 {t("content_language")}
 
-    <select
-      value={contentLanguage}
-      onChange={(event) =>
-        setContentLanguage(event.target.value)
-      }
-      disabled={loading}
-      style={{
-        width: "100%",
-        marginTop: 6,
-        padding: 10,
-        borderRadius: 8,
-        border: "1.5px solid #bbb",
-        fontSize: mobile ? 14 : 16,
-        boxSizing: "border-box",
-        background: "#fff",
-        color: "#000",
-        cursor: loading ? "default" : "pointer",
-      }}
-    >
-      {CONTENT_LANGUAGE_OPTIONS.map((item) => (
-        <option
-          key={item.value}
-          value={item.value}
-        >
-          {item.label}
-        </option>
-      ))}
-    </select>
-  </label>
-</div>
           <p
             style={{
               color: "#64748b",
@@ -2055,6 +2010,52 @@ style={{
           handleSubmit
         }
       >
+        {/* 콘텐츠 원본 언어 */}
+<div
+  style={{
+    marginBottom: 22,
+  }}
+>
+  <label
+    style={{
+      fontWeight: 700,
+      fontSize: 17,
+      color: "#223",
+      display: "block",
+    }}
+  >
+    🌐 {t("content_language")}
+
+    <select
+      value={contentLanguage}
+      onChange={(event) =>
+        setContentLanguage(event.target.value)
+      }
+      disabled={loading}
+      style={{
+        width: "100%",
+        marginTop: 6,
+        padding: 10,
+        borderRadius: 8,
+        border: "1.5px solid #bbb",
+        fontSize: mobile ? 14 : 16,
+        boxSizing: "border-box",
+        background: "#fff",
+        color: "#000",
+        cursor: loading ? "default" : "pointer",
+      }}
+    >
+      {CONTENT_LANGUAGE_OPTIONS.map((item) => (
+        <option
+          key={item.value}
+          value={item.value}
+        >
+          {item.label}
+        </option>
+      ))}
+    </select>
+  </label>
+</div>
         {/* 드래그 앤 드롭 업로드 */}
         <div
           onDrop={(
