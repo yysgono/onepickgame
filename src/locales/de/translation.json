@@ -51,6 +51,8 @@
 "tags": "Tags",
 "tag": "Tag",
 "tags_help": "Bis zu 3 Tags · 20 Zeichen pro Tag",
+"go_to_start": "Zum Anfang",
+"random_select": "Zufällig wählen",
 "creator": "Ersteller",
 "creator_other_worldcups": " · Weitere Turniere dieses Erstellers",
 "popular_searches": "Beliebte Suchanfragen",

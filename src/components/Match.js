@@ -1937,7 +1937,35 @@ useEffect(() => {
         running: false,
       };
   }
+function handleGoToStart() {
+  const langMatch = location.pathname.match(
+    /^\/([a-z]{2})(\/|$)/
+  );
 
+  const lang = langMatch
+    ? langMatch[1]
+    : "ko";
+
+  navigate(
+    `/${lang}/select-round/${cup.id}`
+  );
+}
+
+function handleRandomPick() {
+  if (
+    !c1 ||
+    !c2 ||
+    autoPlaying ||
+    selectedIdx !== null
+  ) {
+    return;
+  }
+
+  const randomIndex =
+    Math.random() < 0.5 ? 0 : 1;
+
+  handlePick(randomIndex);
+}
   const STAGE_SIZE =
     isMobile
       ? 15
@@ -2154,117 +2182,7 @@ useEffect(() => {
           </div>
         )}
 
-      {bracket.length > 1 &&
-        nextRoundCandidates
-          .length === 2 && (
-          <div
-            style={{
-              background:
-                "linear-gradient(" +
-                "90deg, " +
-                "#fafdff 80%, " +
-                "#e3f0fb 100%" +
-                ")",
-              borderRadius: 11,
-              boxShadow:
-                "0 1px 6px " +
-                "#1976ed18",
-              padding: isMobile
-                ? "3px 6px"
-                : "9px 20px",
-              margin: isMobile
-                ? "2px 0 6px"
-                : "2px 0 11px",
-              display:
-                "inline-flex",
-              alignItems:
-                "center",
-              fontSize:
-                STAGE_SIZE,
-              color: "#1976ed",
-              gap: 6,
-              maxWidth: isMobile
-                ? "90vw"
-                : 600,
-              whiteSpace:
-                "nowrap",
-              overflow: "hidden",
-              textOverflow:
-                "ellipsis",
-              justifyContent:
-                "center",
-              userSelect: "text",
-            }}
-            title={t(
-              "nextRoundTitle",
-              {
-                a:
-                  nextRoundCandidates[
-                    0
-                  ]?.name || "",
-                b:
-                  nextRoundCandidates[
-                    1
-                  ]?.name || "",
-              }
-            )}
-          >
-            <b>
-              {t("next_round")}
-            </b>{" "}
-
-            {truncateNames(
-              nextRoundCandidates
-            ).map(
-              (
-                name,
-                index
-              ) => (
-                <React.Fragment
-                  key={index}
-                >
-                  <span
-                    style={{
-                      fontWeight:
-                        700,
-                      margin:
-                        "0 4px",
-                      maxWidth:
-                        140,
-                      display:
-                        "inline-block",
-                      textOverflow:
-                        "ellipsis",
-                      overflow:
-                        "hidden",
-                      whiteSpace:
-                        "nowrap",
-                    }}
-                  >
-                    {name}
-                  </span>
-
-                  {index === 0 && (
-                    <span
-                      style={{
-                        fontWeight:
-                          400,
-                        fontSize:
-                          STAGE_SIZE *
-                          0.9,
-                      }}
-                    >
-                      {t("vs") ||
-                        "vs"}
-                    </span>
-                  )}
-                </React.Fragment>
-              )
-            )}
-          </div>
-        )}
-
-      <div
+         <div
         style={{
           width: "100%",
           maxWidth: 1600,
@@ -2373,43 +2291,122 @@ useEffect(() => {
   t={t}
 />
 
-            <div
-              style={{
-                position:
-                  "absolute",
-                left: "50%",
-                top: isMobile
-                  ? "10px"
-                  : "22px",
-                transform:
-                  "translate(-50%, 0)",
-                zIndex: 99,
-              }}
-            >
-              <BackArrowButton
-                onClick={
-                  handleBack
-                }
-                disabled={
-                  showResurrect ||
-                  (
-                    resurrectUsed &&
-                    roundNum ===
-                      3 &&
-                    idx === 0
-                  ) ||
-                  historyStack
-                    .length ===
-                    0 ||
-                  selectedIdx !==
-                    null
-                }
-              />
-            </div>
+       <div
+  style={{
+    position: "absolute",
+    left: "50%",
+    top: "50%",
+    transform: "translate(-50%, -50%)",
+    zIndex: 99,
+    pointerEvents: "none",
+  }}
+>
+  <img
+    src="/vs.png"
+    alt="VS"
+    draggable={false}
+    style={{
+      width: isMobile ? 64 : 105,
+      height: "auto",
+      display: "block",
+      filter:
+        "drop-shadow(0 0 12px rgba(25,118,237,0.65))",
+    }}
+  />
+</div>
           </div>
         </div>
       </div>
+<div
+  style={{
+    width: "100%",
+    maxWidth: 980,
+    display: "grid",
+    gridTemplateColumns: "repeat(3, 1fr)",
+    gap: isMobile ? 8 : 18,
+    margin: isMobile
+      ? "14px auto 20px"
+      : "24px auto 30px",
+    padding: isMobile
+      ? "0 10px"
+      : "0 20px",
+    boxSizing: "border-box",
+  }}
+>
+  <button
+    type="button"
+    onClick={handleBack}
+disabled={
+  showResurrect ||
+  (resurrectUsed &&
+    roundNum === 3 &&
+    idx === 0) ||
+  historyStack.length === 0 ||
+  selectedIdx !== null
+}
+    style={{
+      height: isMobile ? 48 : 64,
+      borderRadius: 16,
+      border: "1.5px solid #315a8f",
+      background: "#101d32",
+      color: "#fff",
+      fontSize: isMobile ? 14 : 20,
+      fontWeight: 800,
+      cursor:
+        historyStack.length === 0
+          ? "default"
+          : "pointer",
+      opacity:
+        historyStack.length === 0
+          ? 0.45
+          : 1,
+    }}
+  >
+    ‹ {t("back")}
+  </button>
 
+  <button
+    type="button"
+    onClick={handleGoToStart}
+    style={{
+      height: isMobile ? 48 : 64,
+      borderRadius: 16,
+      border: "1.5px solid #315a8f",
+      background: "#101d32",
+      color: "#fff",
+      fontSize: isMobile ? 14 : 20,
+      fontWeight: 800,
+      cursor: "pointer",
+    }}
+  >
+↻ {t("go_to_start")}
+  </button>
+
+  <button
+    type="button"
+    onClick={handleRandomPick}
+    disabled={
+      !c1 ||
+      !c2 ||
+      selectedIdx !== null
+    }
+    style={{
+      height: isMobile ? 48 : 64,
+      borderRadius: 16,
+      border: "none",
+      background:
+        "linear-gradient(135deg, #168cff, #2563ff)",
+      color: "#fff",
+      fontSize: isMobile ? 14 : 20,
+      fontWeight: 900,
+      cursor: "pointer",
+      boxShadow:
+        "0 6px 20px rgba(37,99,255,0.28)",
+    }}
+  >
+  ⇄ {t("random_select")}
+  </button>
+</div>
       <style>
         {`
           @import url(

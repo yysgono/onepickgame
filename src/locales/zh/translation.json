@@ -150,6 +150,8 @@
 "tag": "标签",
 "tags_help": "最多3个 · 每个标签最多20个字符",
 "creator": "创建者",
+"go_to_start": "回到开始",
+"random_select": "随机选择",
 "creator_other_worldcups": "创建的其他锦标赛",
 "popular_searches": "热门搜索",
 "category": "分类",
