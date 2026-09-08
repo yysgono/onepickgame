@@ -1185,14 +1185,15 @@ textShadow: "none",
     color: "#fff",
   }}
 >
-  <h2
-    style={{
-      fontWeight: 800,
-      fontSize: 18,
-      marginBottom: 12,
-      color: "#ffe067",
-    }}
-  >
+<h2
+  style={{
+    fontWeight: 800,
+    fontSize: 18,
+    marginTop: 0,
+    marginBottom: 12,
+    color: "#ffe067",
+  }}
+>
    {t("game_info")}
   </h2>
 
