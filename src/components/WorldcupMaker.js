@@ -6,6 +6,7 @@ import React, {
   useState,
 } from "react";
 
+import { useNavigate } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 import imageCompression from "browser-image-compression";
 
@@ -41,6 +42,43 @@ const CATEGORY_OPTIONS = [
   { value: "food", label: "Food" },
   { value: "etc", label: "Other" },
 ];
+
+const CONTENT_LANGUAGE_OPTIONS = [
+  { value: "en", label: "English" },
+  { value: "ko", label: "한국어" },
+  { value: "ja", label: "日本語" },
+  { value: "zh", label: "简体中文" },
+  { value: "es", label: "Español" },
+  { value: "fr", label: "Français" },
+  { value: "vi", label: "Tiếng Việt" },
+  { value: "de", label: "Deutsch" },
+  { value: "ru", label: "Русский" },
+  { value: "id", label: "Bahasa Indonesia" },
+  { value: "pt", label: "Português" },
+  { value: "hi", label: "हिन्दी" },
+  { value: "tr", label: "Türkçe" },
+  { value: "th", label: "ภาษาไทย" },
+  { value: "ar", label: "العربية" },
+  { value: "bn", label: "বাংলা" },
+];
+
+const getCurrentPageLanguage = () => {
+  if (typeof window === "undefined") {
+    return "en";
+  }
+
+  const lang =
+    window.location.pathname
+      .split("/")[1]
+      ?.toLowerCase() || "en";
+
+  const supported =
+    CONTENT_LANGUAGE_OPTIONS.some(
+      (item) => item.value === lang
+    );
+
+  return supported ? lang : "en";
+};
 
 // 업로드 전 원본 이미지 최대 크기
 const IMAGE_MAX_INPUT_BYTES =
@@ -563,6 +601,16 @@ function WorldcupMaker({
 }) {
   const { t } =
     useTranslation();
+
+  const navigate =
+    useNavigate();
+
+  const [
+    contentLanguage,
+    setContentLanguage,
+  ] = useState(
+    getCurrentPageLanguage
+  );
 
 const [
   title,
@@ -1477,11 +1525,14 @@ const newCup = {
   description:
     desc.trim(),
 
-category:
-  category,
+  original_language:
+    contentLanguage,
 
-tags:
-  getCleanTags(),
+  category:
+    category,
+
+  tags:
+    getCleanTags(),
 
 data:
   updatedList,
@@ -1553,6 +1604,9 @@ setCandidates([
           file: null,
         },
       ]);
+      navigate(
+  `/${contentLanguage}/select-round/${id}`
+);
     } catch (
       submitError
     ) {
@@ -2462,7 +2516,59 @@ color: "#000",
             {error}
           </div>
         )}
+{/* 콘텐츠 원본 언어 */}
+<div
+  style={{
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "flex-end",
+    gap: 8,
+    marginTop: 8,
+    marginBottom: 10,
+  }}
+>
+  <span
+    style={{
+      fontSize: mobile ? 13 : 14,
+      fontWeight: 700,
+      color: "#555",
+    }}
+  >
+    🌐 콘텐츠 언어
+  </span>
 
+  <select
+    value={contentLanguage}
+    onChange={(event) => {
+      setContentLanguage(
+        event.target.value
+      );
+    }}
+    disabled={loading}
+    style={{
+      padding: "8px 10px",
+      borderRadius: 8,
+      border:
+        "1.5px solid #1976ed",
+      background: "#fff",
+      color: "#222",
+      fontSize: mobile ? 13 : 14,
+      fontWeight: 700,
+      cursor: "pointer",
+    }}
+  >
+    {CONTENT_LANGUAGE_OPTIONS.map(
+      (item) => (
+        <option
+          key={item.value}
+          value={item.value}
+        >
+          {item.label}
+        </option>
+      )
+    )}
+  </select>
+</div>
         {/* 저장 / 취소 */}
         <div
           style={{

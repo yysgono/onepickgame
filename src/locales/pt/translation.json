@@ -49,6 +49,7 @@
 "tags": "Tags",
 "tag": "Tag",
 "tags_help": "Até 3 tags · 20 caracteres por tag",
+"content_language": "Idioma do conteúdo",
 "creator": "Criador",
 "go_to_start": "Voltar ao início",
 "random_select": "Escolha aleatória",

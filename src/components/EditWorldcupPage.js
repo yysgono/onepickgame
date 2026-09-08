@@ -26,7 +26,24 @@ const CATEGORY_OPTIONS = [
   { value: "food", labelKey: "category_food" },
   { value: "etc", labelKey: "category_etc" },
 ];
-
+const CONTENT_LANGUAGE_OPTIONS = [
+  { value: "en", label: "English" },
+  { value: "ko", label: "한국어" },
+  { value: "ja", label: "日本語" },
+  { value: "zh", label: "简体中文" },
+  { value: "es", label: "Español" },
+  { value: "fr", label: "Français" },
+  { value: "vi", label: "Tiếng Việt" },
+  { value: "de", label: "Deutsch" },
+  { value: "ru", label: "Русский" },
+  { value: "id", label: "Bahasa Indonesia" },
+  { value: "pt", label: "Português" },
+  { value: "hi", label: "हिन्दी" },
+  { value: "tr", label: "Türkçe" },
+  { value: "th", label: "ภาษาไทย" },
+  { value: "ar", label: "العربية" },
+  { value: "bn", label: "বাংলা" },
+];
 const CANDIDATE_BUCKET = "candidates";
 const MAX_IMAGE_INPUT_BYTES = 6 * 1024 * 1024;
 const MAX_IMAGE_OUTPUT_BYTES = 1 * 1024 * 1024;
@@ -293,6 +310,7 @@ const [title, setTitle] = useState("");
 const [description, setDescription] = useState("");
 const [category, setCategory] = useState("");
 const [tags, setTags] = useState(["", "", ""]);
+const [contentLanguage, setContentLanguage] = useState("en");
 const [data, setData] = useState([]);
 
 const normalizeTag = (value) =>
@@ -360,6 +378,13 @@ setOriginalCup(cup || null);
 setTitle(cup?.title || "");
 setDescription(cup?.description || "");
 setCategory(cup?.category || "etc");
+
+const pageLang =
+  (i18n.language || "en").split("-")[0];
+
+setContentLanguage(
+  cup?.original_language || pageLang
+);
 
 const existingTags = Array.isArray(cup?.tags)
   ? cup.tags.slice(0, 3)
@@ -745,11 +770,11 @@ const updatedCup = {
   },
 
 description: description.trim(),
+original_language: contentLanguage,
 category,
 tags: getCleanTags(),
 data: updatedData,
 };
-
       // 먼저 DB를 새 URL로 안전하게 갱신합니다.
       await updateWorldcupGame(
         originalCup.id,
@@ -780,7 +805,9 @@ data: updatedData,
           "월드컵 수정이 완료되었습니다."
       );
 
-      navigate("/");
+    navigate(
+  `/${contentLanguage}/select-round/${originalCup.id}`
+);
     } catch (saveError) {
       console.error("월드컵 수정 실패:", saveError);
 
@@ -1331,7 +1358,54 @@ style={{
           {error}
         </div>
       )}
+{/* 콘텐츠 원본 언어 */}
+<div
+  style={{
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "flex-end",
+    gap: 8,
+    marginTop: 22,
+    marginBottom: 10,
+  }}
+>
+  <span
+    style={{
+      fontSize: mobile ? 13 : 14,
+      fontWeight: 700,
+      color: "#555",
+    }}
+  >
+   🌐 {t("content_language")}
+  </span>
 
+  <select
+    value={contentLanguage}
+    onChange={(event) => {
+      setContentLanguage(event.target.value);
+    }}
+    disabled={loading}
+    style={{
+      padding: "8px 10px",
+      borderRadius: 8,
+      border: "1.5px solid #1976ed",
+      background: "#fff",
+      color: "#222",
+      fontSize: mobile ? 13 : 14,
+      fontWeight: 700,
+      cursor: "pointer",
+    }}
+  >
+    {CONTENT_LANGUAGE_OPTIONS.map((item) => (
+      <option
+        key={item.value}
+        value={item.value}
+      >
+        {item.label}
+      </option>
+    ))}
+  </select>
+</div>
       <div
         style={{
           marginTop: 38,
