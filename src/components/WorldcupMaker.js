@@ -1360,7 +1360,7 @@ if (!title.trim()) {
        * - AVIF → WebP
        * - WebP ≤1MB → 그대로
           */
-     const BATCH_SIZE = 20;
+     const BATCH_SIZE = 10;
 
 const updatedList = [];
 
