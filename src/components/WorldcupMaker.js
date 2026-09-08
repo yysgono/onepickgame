@@ -955,11 +955,19 @@ function addCandidate() {
       return;
     }
 
-    if (
-      candidates.length +
-        selectedFiles.length >
-      MAX_CANDIDATES
-    ) {
+const filledCandidateCount =
+  candidates.filter(
+    (candidate) =>
+      candidate.name ||
+      candidate.image ||
+      candidate.file
+  ).length;
+
+if (
+  filledCandidateCount +
+    selectedFiles.length >
+  MAX_CANDIDATES
+) {
       alert(
         t(
           "max_candidates",
