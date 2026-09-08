@@ -292,7 +292,23 @@ const { t, i18n } = useTranslation();
 const [title, setTitle] = useState("");
 const [description, setDescription] = useState("");
 const [category, setCategory] = useState("");
+const [tags, setTags] = useState(["", "", ""]);
 const [data, setData] = useState([]);
+
+const normalizeTag = (value) =>
+  String(value || "")
+    .replace(/^#+/, "")
+    .trim()
+    .slice(0, 20);
+
+const getCleanTags = () =>
+  Array.from(
+    new Set(
+      tags
+        .map(normalizeTag)
+        .filter(Boolean)
+    )
+  ).slice(0, 3);
 
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -343,7 +359,18 @@ const [data, setData] = useState([]);
 setOriginalCup(cup || null);
 setTitle(cup?.title || "");
 setDescription(cup?.description || "");
-setCategory(cup?.category || "etc")
+setCategory(cup?.category || "etc");
+
+const existingTags = Array.isArray(cup?.tags)
+  ? cup.tags.slice(0, 3)
+  : [];
+
+setTags([
+  existingTags[0] || "",
+  existingTags[1] || "",
+  existingTags[2] || "",
+]);
+
 setData(
       Array.isArray(cup?.data)
         ? cup.data.map((candidate) => ({
@@ -717,9 +744,10 @@ const updatedCup = {
     [currentLang]: title.trim(),
   },
 
-  description: description.trim(),
-  category,
-  data: updatedData,
+description: description.trim(),
+category,
+tags: getCleanTags(),
+data: updatedData,
 };
 
       // 먼저 DB를 새 URL로 안전하게 갱신합니다.
@@ -919,7 +947,73 @@ const updatedCup = {
           />
         </label>
       </div>
+{/* 태그 */}
+<div style={{ marginBottom: 26 }}>
+  <label
+    style={{
+      fontWeight: 700,
+      fontSize: 17,
+      color: "#223",
+      display: "block",
+    }}
+  >
+    {t("tags") || "Tags"}
 
+    <div
+      style={{
+        display: "grid",
+        gridTemplateColumns: mobile
+          ? "1fr"
+          : "repeat(3, 1fr)",
+        gap: 8,
+        marginTop: 6,
+      }}
+    >
+      {tags.map((tag, index) => (
+        <input
+          key={index}
+          type="text"
+          value={tag}
+          maxLength={21}
+          disabled={loading}
+          placeholder={`#${t("tag") || "Tag"} ${index + 1}`}
+          onChange={(event) => {
+            const value = event.target.value
+              .replace(/^#+/, "")
+              .slice(0, 20);
+
+            setTags((prev) =>
+              prev.map((item, itemIndex) =>
+                itemIndex === index ? value : item
+              )
+            );
+          }}
+          style={{
+            width: "100%",
+            padding: 10,
+            borderRadius: 8,
+            border: `1.7px solid ${COLORS.main}22`,
+            fontSize: 15,
+            boxSizing: "border-box",
+            background: "#fafdff",
+          }}
+        />
+      ))}
+    </div>
+
+    <div
+      style={{
+        marginTop: 6,
+        fontSize: 12,
+        fontWeight: 500,
+        color: "#777",
+      }}
+    >
+      {t("tags_help") ||
+        "Up to 3 tags · 20 characters each"}
+    </div>
+  </label>
+</div>
 
       {/* 카테고리 */}
       <div style={{ marginBottom: 26 }}>

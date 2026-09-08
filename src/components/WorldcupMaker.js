@@ -578,6 +578,22 @@ const [
   category,
   setCategory,
 ] = useState("etc");
+const [tags, setTags] = useState(["", "", ""]);
+
+const normalizeTag = (value) =>
+  String(value || "")
+    .replace(/^#+/, "")
+    .trim()
+    .slice(0, 20);
+
+const getCleanTags = () =>
+  Array.from(
+    new Set(
+      tags
+        .map(normalizeTag)
+        .filter(Boolean)
+    )
+  ).slice(0, 3);
 
 const [
   candidates,
@@ -1461,11 +1477,14 @@ const newCup = {
   description:
     desc.trim(),
 
-  category:
-    category,
+category:
+  category,
 
-  data:
-    updatedList,
+tags:
+  getCleanTags(),
+
+data:
+  updatedList,
 
   created_at:
     new Date().toISOString(),
@@ -1518,6 +1537,7 @@ const newCup = {
 setTitle("");
 setDesc("");
 setCategory("etc");
+setTags(["", "", ""]);
 
 setCandidates([
         {
@@ -2180,7 +2200,76 @@ style={{
             
           }
         />
+{/* 태그 */}
+<div
+  style={{
+    marginBottom: 18,
+  }}
+>
+  <div
+    style={{
+      fontWeight: 700,
+      fontSize: mobile ? 14 : 16,
+      marginBottom: 7,
+      color: "#000",
+    }}
+  >
+    {t("tags") || "Tags"}
+  </div>
 
+  <div
+    style={{
+      display: "grid",
+      gridTemplateColumns: mobile
+        ? "1fr"
+        : "repeat(3, 1fr)",
+      gap: 8,
+    }}
+  >
+    {tags.map((tag, index) => (
+      <input
+        key={index}
+        type="text"
+        value={tag}
+        maxLength={21}
+        disabled={loading}
+        placeholder={`#${t("tag") || "Tag"} ${index + 1}`}
+        onChange={(event) => {
+          const value = event.target.value
+            .replace(/^#+/, "")
+            .slice(0, 20);
+
+          setTags((prev) =>
+            prev.map((item, itemIndex) =>
+              itemIndex === index ? value : item
+            )
+          );
+        }}
+        style={{
+          width: "100%",
+          padding: 10,
+          borderRadius: 8,
+          border: "1.5px solid #bbb",
+          fontSize: mobile ? 13 : 15,
+          boxSizing: "border-box",
+          background: "#fff",
+          color: "#000",
+        }}
+      />
+    ))}
+  </div>
+
+  <div
+    style={{
+      marginTop: 6,
+      fontSize: mobile ? 11 : 12,
+      color: "#777",
+    }}
+  >
+    {t("tags_help") ||
+      "Up to 3 tags · 20 characters each"}
+  </div>
+</div>
         {/* 카테고리 */}
         <div
           style={{

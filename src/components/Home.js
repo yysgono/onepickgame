@@ -1,7 +1,10 @@
 // src/components/Home.js
 import React, { useState, useRef, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
+import {
+  useNavigate,
+  useLocation,
+} from "react-router-dom";
 import { fetchWinnerStatsFromDB } from "../utils";
 import { supabase } from "../utils/supabaseClient";
 import MediaRenderer from "./MediaRenderer";
@@ -77,6 +80,7 @@ function Home({
 }) {
 const { t, i18n } = useTranslation();
 const navigate = useNavigate();
+const location = useLocation();
 
 const lang = (i18n.language || "en").split("-")[0];
 
@@ -141,13 +145,117 @@ const getDisplayTitle = (cup) => {
   }, []);
 
 
-  const [search, setSearch] = useState("");
-  const [sort, setSort] = useState("popular");
+const [search, setSearch] = useState("");
+const [sort, setSort] = useState("popular");
+const [popularSearches, setPopularSearches] = useState([]);
+
+useEffect(() => {
+  const params =
+    new URLSearchParams(location.search);
+
+  const searchParam =
+    params.get("search");
+
+  if (searchParam) {
+    setSearch(searchParam);
+  }
+}, [location.search]);
+
+
   const [otherVisibleCount, setOtherVisibleCount] = useState(8);
   const [rowVisibleCounts, setRowVisibleCounts] = useState({});
   const [vw, setVw] = useState(
     typeof window !== "undefined" ? window.innerWidth : 1200
   );
+
+  const SEARCH_COOLDOWN =
+  30 * 60 * 1000;
+
+const normalizeSearchQuery = (value) =>
+  String(value || "")
+    .trim()
+    .replace(/^#+/, "")
+    .toLowerCase()
+    .slice(0, 50);
+
+const loadPopularSearches = async () => {
+  try {
+    const { data, error } = await supabase.rpc(
+      "get_popular_searches",
+      {
+        p_language: lang,
+        p_limit: 4,
+      }
+    );
+
+    if (error) {
+      throw error;
+    }
+
+    setPopularSearches(
+      Array.isArray(data) ? data : []
+    );
+  } catch (error) {
+    console.error(
+      "인기 검색어 조회 실패:",
+      error
+    );
+  }
+};
+
+const recordSearch = async (value) => {
+  const query =
+    normalizeSearchQuery(value);
+
+  if (!query) return;
+
+  try {
+    const storageKey =
+      `onepick_search_${lang}_${encodeURIComponent(query)}`;
+
+    const lastRecorded =
+      Number(
+        localStorage.getItem(storageKey) || 0
+      );
+
+    const now = Date.now();
+
+    if (
+      now - lastRecorded <
+      SEARCH_COOLDOWN
+    ) {
+      return;
+    }
+
+    const { error } = await supabase.rpc(
+      "record_search",
+      {
+        p_query: query,
+        p_language: lang,
+      }
+    );
+
+    if (error) {
+      throw error;
+    }
+
+    localStorage.setItem(
+      storageKey,
+      String(now)
+    );
+
+    await loadPopularSearches();
+  } catch (error) {
+    console.error(
+      "검색 통계 기록 실패:",
+      error
+    );
+  }
+};
+useEffect(() => {
+  loadPopularSearches();
+}, [lang]);
+
 
 const [winStatsMap, setWinStatsMap] = useState({});
 const [playCountMap, setPlayCountMap] = useState({});
@@ -244,10 +352,28 @@ const THUMB_HEIGHT = isMobile ? 165 : 195;
     };
   }, [fixedWorldcups]);
 
+const creatorFilter =
+  new URLSearchParams(
+    location.search
+  ).get("creator");
+
 const filtered = Array.isArray(worldcupList)
   ? (worldcupList || [])
     .filter((cup) => {
-  const keyword = search.trim().toLowerCase();
+
+      if (creatorFilter) {
+        const cupCreator =
+          cup?.owner || cup?.creator;
+
+        if (
+          String(cupCreator || "") !==
+          String(creatorFilter)
+        ) {
+          return false;
+        }
+      }
+const keyword =
+  normalizeSearchQuery(search);
 
   if (!keyword) return true;
 
@@ -278,12 +404,19 @@ const filtered = Array.isArray(worldcupList)
 
       return candidateName.includes(keyword);
     });
-
-  return (
-    displayTitle.includes(keyword) ||
-    displayDescription.includes(keyword) ||
-    hasMatchingCandidate
+const hasMatchingTag =
+  Array.isArray(cup.tags) &&
+  cup.tags.some((tag) =>
+    normalizeSearchQuery(tag).includes(
+      keyword
+    )
   );
+return (
+  displayTitle.includes(keyword) ||
+  displayDescription.includes(keyword) ||
+  hasMatchingCandidate ||
+  hasMatchingTag
+);
 })
       .sort((a, b) => {
         if (sort === "recent") {
@@ -1325,10 +1458,19 @@ const featuredCups = Array.isArray(worldcupList)
       return candidateName.includes(keyword);
     });
 
+  const hasMatchingTag =
+    Array.isArray(cup.tags) &&
+    cup.tags.some((tag) =>
+      normalizeSearchQuery(tag).includes(
+        normalizeSearchQuery(keyword)
+      )
+    );
+
   return (
     title.includes(keyword) ||
     description.includes(keyword) ||
-    hasMatchingCandidate
+    hasMatchingCandidate ||
+    hasMatchingTag
   );
 })
 .sort((a, b) => {
@@ -1463,16 +1605,16 @@ return (
   <div
     style={{
       width: "100%",
-      maxWidth: isMobile ? 430 : 700,
+    maxWidth: isMobile ? 430 : 800,
 
       display: "flex",
       flexDirection: "column",
 
-      gap: isMobile ? 8 : 10,
+gap: isMobile ? 9 : 13,
 
-      padding: isMobile
-        ? "11px 10px"
-        : "13px 16px",
+padding: isMobile
+  ? "13px 11px"
+  : "18px 22px",
 
 background: "rgba(10, 16, 28, 0.72)",
 
@@ -1498,7 +1640,7 @@ boxShadow:
     padding: isMobile ? "4px 4px 7px" : "6px 10px 9px",
     boxSizing: "border-box",
 color: "#e9eef7",
-fontSize: isMobile ? 14 : 15,
+fontSize: isMobile ? 14 : 16,
 fontWeight: 700,
 lineHeight: 1.5,
     wordBreak: "keep-all",
@@ -1757,9 +1899,14 @@ boxShadow: "none",
     type="text"
     placeholder={t("search_placeholder")}
     value={search}
-    onChange={(e) =>
-      setSearch(e.target.value)
-    }
+onChange={(e) =>
+  setSearch(e.target.value)
+}
+onKeyDown={(e) => {
+  if (e.key === "Enter") {
+    recordSearch(search);
+  }
+}}
     style={{
       width: "100%",
 
@@ -1786,6 +1933,7 @@ boxShadow: "none",
         "0 2px 8px rgba(0,0,0,0.18)",
     }}
   />
+
 
   <style>
     {`
@@ -1815,6 +1963,62 @@ boxShadow: "none",
         </span>
       </div>
     </div>
+
+    {/* 인기검색어 */}
+    {popularSearches.length > 0 && (
+  <div
+style={{
+  marginTop: 8,
+  display: "flex",
+  flexWrap: "wrap",
+  gap: 8,
+  alignItems: "center",
+  justifyContent: "center",
+}}
+  >
+    <span
+      style={{
+        color: "#777",
+        fontWeight: 700,
+      }}
+    >
+      {t("popular_searches") || "Popular searches"} :
+    </span>
+
+{popularSearches.slice(0, 4).map((item) => (
+  <button
+    key={item.query}
+    type="button"
+    onClick={() => {
+      setSearch(item.query);
+      recordSearch(item.query);
+
+      const params = new URLSearchParams(
+        window.location.search
+      );
+
+      params.set("search", item.query);
+
+      navigate(
+        `/${lang}?${params.toString()}`
+      );
+    }}
+    style={{
+      border: "none",
+      background: "transparent",
+      padding: 0,
+      color: "#1976ed",
+      fontSize: "inherit",
+      fontWeight: 700,
+      cursor: "pointer",
+      textDecoration: "underline",
+    }}
+  >
+    {item.query}
+  </button>
+))}
+  </div>
+)}
   </div>
 </div>
 {/* 검색 결과 없음 */}

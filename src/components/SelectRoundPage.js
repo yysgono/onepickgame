@@ -5,6 +5,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import MediaRenderer from "./MediaRenderer";
 import AdsenseSide from "./AdsenseSide";
 import { fetchWinnerStatsFromDB, pushRecentWorldcup } from "../utils.js"; // ✅ 통계/최근본
+import { supabase } from "../utils/supabaseClient";
 
 function useIsMobile() {
   const [isMobile, setIsMobile] = React.useState(
@@ -98,6 +99,43 @@ export default function SelectRoundPage({
 
   const [winStats, setWinStats] =
     useState([]);
+    const [creatorNickname, setCreatorNickname] =
+  useState("");
+  const [detailTags, setDetailTags] = useState(
+  Array.isArray(cup?.tags) ? cup.tags : []
+);
+
+useEffect(() => {
+  let mounted = true;
+
+  async function loadLatestTags() {
+    if (!cup?.id) return;
+
+    try {
+      const { data, error } = await supabase
+        .from("worldcups")
+        .select("tags")
+        .eq("id", cup.id)
+        .single();
+
+      if (error) throw error;
+
+      if (mounted) {
+        setDetailTags(
+          Array.isArray(data?.tags) ? data.tags : []
+        );
+      }
+    } catch (error) {
+      console.error("태그 조회 실패:", error);
+    }
+  }
+
+  loadLatestTags();
+
+  return () => {
+    mounted = false;
+  };
+}, [cup?.id]);
     const [showAllCandidates, setShowAllCandidates] =
   useState(false);
 
@@ -108,6 +146,7 @@ export default function SelectRoundPage({
   const isWideForSideAds = vw >= 1300;
 
   const navigate = useNavigate();
+
 
   const { lang: langParam } = useParams();
 
@@ -151,7 +190,55 @@ export default function SelectRoundPage({
       pushRecentWorldcup(cup.id);
     }
   }, [cup?.id]);
+useEffect(() => {
+  let mounted = true;
 
+  async function loadCreator() {
+    const creatorId =
+      cup?.owner || cup?.creator;
+
+    if (!creatorId) {
+      if (mounted) {
+        setCreatorNickname("");
+      }
+      return;
+    }
+
+    try {
+      const { data, error } =
+        await supabase
+          .from("profiles")
+          .select("nickname")
+          .eq("id", creatorId)
+          .maybeSingle();
+
+      if (error) {
+        throw error;
+      }
+
+      if (mounted) {
+        setCreatorNickname(
+          data?.nickname || ""
+        );
+      }
+    } catch (error) {
+      console.error(
+        "제작자 조회 실패:",
+        error
+      );
+
+      if (mounted) {
+        setCreatorNickname("");
+      }
+    }
+  }
+
+  loadCreator();
+
+  return () => {
+    mounted = false;
+  };
+}, [cup?.owner, cup?.creator]);
   // ======================================================
   // 현재 언어
   // ======================================================
@@ -513,6 +600,31 @@ const relatedWorldcups = (worldcupList || [])
     );
   })
   .slice(0, 4);
+
+  const creatorId =
+  cup?.owner || cup?.creator;
+
+const creatorOtherWorldcups =
+  (worldcupList || []).filter((item) => {
+    if (!item?.id) return false;
+
+    // 현재 보고 있는 월드컵 제외
+    if (
+      String(item.id) ===
+      String(cup?.id)
+    ) {
+      return false;
+    }
+
+    const itemCreator =
+      item?.owner || item?.creator;
+
+    return (
+      creatorId &&
+      String(itemCreator) ===
+        String(creatorId)
+    );
+  });
 
   return (
     <div
@@ -1059,6 +1171,20 @@ textShadow: "none",
    {t("game_info")}
   </h2>
 
+  {creatorNickname && (
+  <div>
+    {t("creator") || "Creator"} :{" "}
+    <span
+      style={{
+        fontWeight: 800,
+        color: "#69aaff",
+      }}
+    >
+      {creatorNickname}
+    </span>
+  </div>
+)}
+
   <div>
     {t("category")} :{" "}
     {t(`category_${cup?.category || "etc"}`, {
@@ -1085,8 +1211,72 @@ textShadow: "none",
       ? new Date(cup.updated_at).toLocaleDateString()
       : "-"}
   </div>
+  {Array.isArray(detailTags) &&
+detailTags.length > 0 && (
+    <div
+      style={{
+        marginTop: 13,
+        display: "flex",
+        justifyContent: "center",
+        flexWrap: "wrap",
+        gap: 8,
+      }}
+    >
+   {detailTags.slice(0, 3).map((tag) => (
+        <button
+          key={tag}
+          type="button"
+          onClick={() =>
+            navigate(
+              `/${normalizedLang}?search=${encodeURIComponent(
+                tag
+              )}`
+            )
+          }
+          style={{
+            border: "1px solid #3b5680",
+            background: "#181d2c",
+            color: "#69aaff",
+            borderRadius: 20,
+            padding: "5px 10px",
+            fontSize: isMobile ? 12 : 13,
+            fontWeight: 700,
+            cursor: "pointer",
+          }}
+        >
+          #{tag}
+        </button>
+      ))}
+    </div>
+  )}
 </div>
-
+{creatorNickname &&
+  creatorOtherWorldcups.length > 0 && (
+    <button
+      type="button"
+      onClick={() =>
+        navigate(
+          `/${normalizedLang}?creator=${encodeURIComponent(
+            creatorId
+          )}`
+        )
+      }
+      style={{
+        marginTop: 14,
+        border: "none",
+        background: "transparent",
+        color: "#b9d3ff",
+        fontSize: isMobile ? 13 : 14,
+        fontWeight: 800,
+        cursor: "pointer",
+        textDecoration: "underline",
+      }}
+    >
+      {creatorNickname}
+      {t("creator_other_worldcups") ||
+        "'s other brackets"} →
+    </button>
+  )}
 {/* 관련 월드컵 */}
 {relatedWorldcups.length > 0 && (
   <div
