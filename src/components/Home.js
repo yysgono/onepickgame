@@ -637,12 +637,20 @@ const cardDescStyle = {
     boxShadow: "0 2px 10px #1976ed44",
   };
 
-    const goto = (url) => {
-    window.scrollTo(0, 0);
+const goto = (url) => {
+  navigate(url);
+
+  requestAnimationFrame(() => {
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: "instant",
+    });
+
     document.documentElement.scrollTop = 0;
     document.body.scrollTop = 0;
-    navigate(url);
-  };
+  });
+};
   
 
 const renderWorldcupCard = (cup) => {
