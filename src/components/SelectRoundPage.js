@@ -701,7 +701,9 @@ const creatorOtherWorldcups =
   style={{
     width: isMobile ? "78%" : 300,
     maxWidth: 300,
-    margin: "15px auto 18px",
+    margin: isMobile
+      ? "-2px auto 18px"
+      : "15px auto 18px",
   }}
 >
   <button
