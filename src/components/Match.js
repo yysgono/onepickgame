@@ -7,7 +7,6 @@ import React, {
 
 import {
   calcStatsFromMatchHistory,
-  deleteOldWinnerLogAndStats,
   fetchWinnerStatsFromDB,
   insertWinnerLog,
   upsertMyWinnerStat_parallel,
@@ -1221,11 +1220,7 @@ useEffect(() => {
       }
 
       try {
-        await (
-          deleteOldWinnerLogAndStats(
-            cup.id
-          )
-        );
+    
 
         if (!mounted) {
           return;
