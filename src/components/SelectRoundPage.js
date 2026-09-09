@@ -1175,7 +1175,46 @@ textShadow: "none",
 )}
             </div>
           </div>
+{/* 게임 이용 안내 */}
+<div
+  style={{
+    margin: "20px auto 0",
+    maxWidth: 670,
+    background: "#20253b",
+    borderRadius: 14,
+    padding: isMobile ? "14px 16px" : "18px 22px",
+    color: "#fff",
+    boxSizing: "border-box",
+  }}
+>
+  <h2
+    style={{
+      fontWeight: 800,
+      fontSize: isMobile ? 17 : 18,
+      marginTop: 0,
+      marginBottom: 12,
+      color: "#ffe067",
+    }}
+  >
+    {t("game_guide")}
+  </h2>
 
+  <div
+    style={{
+      fontSize: isMobile ? 13 : 15,
+      lineHeight: 1.75,
+      color: "#d7e2f3",
+      textAlign: "left",
+      whiteSpace: "pre-line",
+      wordBreak: "keep-all",
+    }}
+  >
+    {`• ${t("game_guide_upload")}
+• ${t("game_guide_reset")}
+• ${t("game_guide_random")}
+• ${t("game_guide_revive")}`}
+  </div>
+</div>
 {/* 게임 정보 */}
 <div
   style={{
