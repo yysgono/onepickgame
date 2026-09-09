@@ -1190,7 +1190,7 @@ textShadow: "none",
   <h2
     style={{
       fontWeight: 800,
-      fontSize: isMobile ? 17 : 18,
+     fontSize: isMobile ? 18 : 20,
       marginTop: 0,
       marginBottom: 12,
       color: "#ffe067",
@@ -1201,16 +1201,15 @@ textShadow: "none",
 
   <div
     style={{
-      fontSize: isMobile ? 13 : 15,
-      lineHeight: 1.75,
+fontSize: isMobile ? 15 : 17,
+lineHeight: 1.8,
       color: "#d7e2f3",
       textAlign: "left",
       whiteSpace: "pre-line",
-      wordBreak: "keep-all",
+      wordBreak: "keep-all", 
     }}
   >
-    {`• ${t("game_guide_upload")}
-• ${t("game_guide_reset")}
+{`• ${t("game_guide_reset")}
 • ${t("game_guide_random")}
 • ${t("game_guide_revive")}`}
   </div>

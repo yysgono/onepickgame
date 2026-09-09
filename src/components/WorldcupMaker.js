@@ -2203,6 +2203,18 @@ style={{
   >
     JPG · PNG · WebP · AVIF · SVG · Max 6MB
   </span>
+  <div
+  style={{
+    marginTop: 10,
+    fontSize: mobile ? 14 : 16,
+    fontWeight: 700,
+    lineHeight: 1.55,
+    color: "#ffe067",
+    wordBreak: "keep-all",
+  }}
+>
+  ⚠️ {t("game_guide_upload")}
+</div>
 
   <span
     style={{
