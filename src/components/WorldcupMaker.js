@@ -2209,7 +2209,7 @@ style={{
     fontSize: mobile ? 14 : 16,
     fontWeight: 700,
     lineHeight: 1.55,
-    color: "#ffe067",
+  color: "#1976ed",
     wordBreak: "keep-all",
   }}
 >
