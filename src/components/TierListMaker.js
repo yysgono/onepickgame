@@ -1362,19 +1362,21 @@ const list =
       : customPresetName.trim() || text.directTierList;
 
 
-  const sourceCandidates =
-    useMemo(() => {
-      if (
-        !selectedCup ||
-        !Array.isArray(
-          selectedCup.data
-        )
-      ) {
-        return [];
-      }
+const sourceCandidates =
+  useMemo(() => {
+    const activeSourceCup =
+      sourcePresetCup || selectedCup;
 
+    if (
+      !activeSourceCup ||
+      !Array.isArray(
+        activeSourceCup.data
+      )
+    ) {
+      return [];
+    }
 
-      return selectedCup.data.map(
+    return activeSourceCup.data.map(
         (
           candidate,
           index
@@ -1398,10 +1400,11 @@ const list =
               : `worldcup-index-${index}`,
         })
       );
-    }, [
-      selectedCup,
-      getCandidateName,
-    ]);
+}, [
+  sourcePresetCup,
+  selectedCup,
+  getCandidateName,
+]);
 
 
   const allCandidates =
@@ -3260,10 +3263,42 @@ const handleDragEndItem =
               );
             }
           }
+const candidatesForSaveMap = new Map();
 
+allCandidates.forEach((item) => {
+  if (!item?._tierKey) return;
 
-          const finalCandidates =
-            allCandidates.map(
+  candidatesForSaveMap.set(
+    item._tierKey,
+    item
+  );
+});
+
+TIERS.forEach((tier) => {
+  (tierItems[tier] || []).forEach((item) => {
+    if (!item?._tierKey) return;
+
+    candidatesForSaveMap.set(
+      item._tierKey,
+      item
+    );
+  });
+});
+
+if (onePick?._tierKey) {
+  candidatesForSaveMap.set(
+    onePick._tierKey,
+    onePick
+  );
+}
+
+const candidatesForSave =
+  Array.from(
+    candidatesForSaveMap.values()
+  );
+  
+const finalCandidates =
+  candidatesForSave.map(
               (item) => {
                 const finalItem =
                   uploadedCandidateMap.get(
