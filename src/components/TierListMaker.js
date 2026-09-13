@@ -1670,6 +1670,83 @@ const list =
         _tierKey: `imported-${String(candidate?.id ?? index)}-${index}`,
       }));
 
+      const mergeWithLatestPresetCandidates = async (payload) => {
+  if (
+    mode !== "edit" ||
+    !payload?.source_worldcup_id
+  ) {
+    return payload;
+  }
+
+  try {
+    const { data: sourceCup, error } = await supabase
+      .from("worldcups")
+      .select("id, data")
+      .eq("id", payload.source_worldcup_id)
+      .maybeSingle();
+
+    if (
+      error ||
+      !sourceCup ||
+      !Array.isArray(sourceCup.data)
+    ) {
+      return payload;
+    }
+
+    const savedCandidates = Array.isArray(payload.candidates)
+      ? payload.candidates
+      : [];
+
+    const candidateMap = new Map();
+
+    // 기존 티어표 후보는 무조건 보존
+    savedCandidates.forEach((candidate) => {
+      if (candidate?.id == null) return;
+
+      candidateMap.set(
+        String(candidate.id),
+        {
+          ...candidate,
+        }
+      );
+    });
+
+    // 현재 프리셋 후보를 병합
+    sourceCup.data.forEach((candidate) => {
+      if (candidate?.id == null) return;
+
+      const key = String(candidate.id);
+      const oldCandidate = candidateMap.get(key);
+
+      if (oldCandidate) {
+        // 기존 후보면 최신 이미지/이름 등 반영
+        candidateMap.set(key, {
+          ...oldCandidate,
+          ...candidate,
+          id: oldCandidate.id,
+        });
+      } else {
+        // 새로 생긴 후보
+        candidateMap.set(key, {
+          ...candidate,
+        });
+      }
+    });
+
+    return {
+      ...payload,
+      candidates: Array.from(candidateMap.values()),
+    };
+  } catch (error) {
+    console.warn(
+      "티어표 수정용 최신 프리셋 후보 병합 실패:",
+      error
+    );
+
+    return payload;
+  }
+};
+
     const hydratePayload = (payload, mode) => {
       if (!payload || cancelled) {
         return false;
@@ -1758,12 +1835,20 @@ const list =
                 "tier_labels"
               );
 
-            if (hasSourceMeta) {
-              if (!cancelled && hydratePayload(stored, mode)) {
-                hydratedPayloadKeyRef.current = hydrationKey;
-              }
-              return;
-            }
+      if (hasSourceMeta) {
+  const mergedStored =
+    await mergeWithLatestPresetCandidates(stored);
+
+  if (
+    !cancelled &&
+    hydratePayload(mergedStored, mode)
+  ) {
+    hydratedPayloadKeyRef.current =
+      hydrationKey;
+  }
+
+  return;
+}
           }
         }
       } catch (storageError) {
@@ -1791,9 +1876,16 @@ const list =
           throw new Error(text.loadEditFailed);
         }
 
-        if (!cancelled && hydratePayload(data, mode)) {
-          hydratedPayloadKeyRef.current = hydrationKey;
-        }
+      const mergedData =
+  await mergeWithLatestPresetCandidates(data);
+
+if (
+  !cancelled &&
+  hydratePayload(mergedData, mode)
+) {
+  hydratedPayloadKeyRef.current =
+    hydrationKey;
+}
       } catch (loadError) {
         console.error("Tier list edit/clone DB fallback failed", loadError);
         if (!cancelled) {
