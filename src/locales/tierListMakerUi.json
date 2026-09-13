@@ -1,0 +1,210 @@
+{
+  "ko": {
+    "tierListMakerUi": {
+      "tagHint": "최대 5개 · 각 20자 · 같은 태그는 1번만 저장됩니다.",
+      "tagPlaceholder": "#태그 {{index}}",
+      "draftSave": "임시저장",
+      "draftLoad": "불러오기",
+      "draftSaved": "임시저장했습니다.",
+      "draftSaveFailed": "임시저장에 실패했습니다.",
+      "draftMissing": "저장된 임시 티어표가 없습니다.",
+      "draftLoaded": "임시저장 내용을 불러왔습니다.",
+      "draftLoadFailed": "임시저장 내용을 불러오지 못했습니다."
+    }
+  },
+  "en": {
+    "tierListMakerUi": {
+      "tagHint": "Up to 5 tags · 20 characters each · duplicate tags are saved once.",
+      "tagPlaceholder": "#Tag {{index}}",
+      "draftSave": "Save Draft",
+      "draftLoad": "Load Draft",
+      "draftSaved": "Draft saved.",
+      "draftSaveFailed": "Failed to save draft.",
+      "draftMissing": "No saved draft was found.",
+      "draftLoaded": "Draft loaded.",
+      "draftLoadFailed": "Failed to load draft."
+    }
+  },
+  "ja": {
+    "tierListMakerUi": {
+      "tagHint": "最大5個・各20文字・同じタグは1回だけ保存されます。",
+      "tagPlaceholder": "#タグ {{index}}",
+      "draftSave": "一時保存",
+      "draftLoad": "読み込む",
+      "draftSaved": "一時保存しました。",
+      "draftSaveFailed": "一時保存に失敗しました。",
+      "draftMissing": "保存された下書きがありません。",
+      "draftLoaded": "下書きを読み込みました。",
+      "draftLoadFailed": "下書きを読み込めませんでした。"
+    }
+  },
+  "zh": {
+    "tierListMakerUi": {
+      "tagHint": "最多5个标签 · 每个20个字符 · 重复标签只保存一次。",
+      "tagPlaceholder": "#标签 {{index}}",
+      "draftSave": "暂存",
+      "draftLoad": "加载草稿",
+      "draftSaved": "草稿已保存。",
+      "draftSaveFailed": "草稿保存失败。",
+      "draftMissing": "没有已保存的草稿。",
+      "draftLoaded": "草稿已加载。",
+      "draftLoadFailed": "草稿加载失败。"
+    }
+  },
+  "es": {
+    "tierListMakerUi": {
+      "tagHint": "Hasta 5 etiquetas · 20 caracteres cada una · las repetidas se guardan una sola vez.",
+      "tagPlaceholder": "#Etiqueta {{index}}",
+      "draftSave": "Guardar borrador",
+      "draftLoad": "Cargar borrador",
+      "draftSaved": "Borrador guardado.",
+      "draftSaveFailed": "No se pudo guardar el borrador.",
+      "draftMissing": "No hay ningún borrador guardado.",
+      "draftLoaded": "Borrador cargado.",
+      "draftLoadFailed": "No se pudo cargar el borrador."
+    }
+  },
+  "fr": {
+    "tierListMakerUi": {
+      "tagHint": "Jusqu’à 5 tags · 20 caractères chacun · les doublons ne sont enregistrés qu’une fois.",
+      "tagPlaceholder": "#Tag {{index}}",
+      "draftSave": "Enregistrer le brouillon",
+      "draftLoad": "Charger le brouillon",
+      "draftSaved": "Brouillon enregistré.",
+      "draftSaveFailed": "Échec de l’enregistrement du brouillon.",
+      "draftMissing": "Aucun brouillon enregistré.",
+      "draftLoaded": "Brouillon chargé.",
+      "draftLoadFailed": "Échec du chargement du brouillon."
+    }
+  },
+  "vi": {
+    "tierListMakerUi": {
+      "tagHint": "Tối đa 5 thẻ · 20 ký tự mỗi thẻ · thẻ trùng chỉ được lưu một lần.",
+      "tagPlaceholder": "#Thẻ {{index}}",
+      "draftSave": "Lưu nháp",
+      "draftLoad": "Tải bản nháp",
+      "draftSaved": "Đã lưu bản nháp.",
+      "draftSaveFailed": "Không thể lưu bản nháp.",
+      "draftMissing": "Không tìm thấy bản nháp đã lưu.",
+      "draftLoaded": "Đã tải bản nháp.",
+      "draftLoadFailed": "Không thể tải bản nháp."
+    }
+  },
+  "de": {
+    "tierListMakerUi": {
+      "tagHint": "Bis zu 5 Tags · je 20 Zeichen · doppelte Tags werden nur einmal gespeichert.",
+      "tagPlaceholder": "#Tag {{index}}",
+      "draftSave": "Entwurf speichern",
+      "draftLoad": "Entwurf laden",
+      "draftSaved": "Entwurf gespeichert.",
+      "draftSaveFailed": "Entwurf konnte nicht gespeichert werden.",
+      "draftMissing": "Kein gespeicherter Entwurf gefunden.",
+      "draftLoaded": "Entwurf geladen.",
+      "draftLoadFailed": "Entwurf konnte nicht geladen werden."
+    }
+  },
+  "ru": {
+    "tierListMakerUi": {
+      "tagHint": "До 5 тегов · по 20 символов · одинаковые теги сохраняются один раз.",
+      "tagPlaceholder": "#Тег {{index}}",
+      "draftSave": "Сохранить черновик",
+      "draftLoad": "Загрузить черновик",
+      "draftSaved": "Черновик сохранён.",
+      "draftSaveFailed": "Не удалось сохранить черновик.",
+      "draftMissing": "Сохранённый черновик не найден.",
+      "draftLoaded": "Черновик загружен.",
+      "draftLoadFailed": "Не удалось загрузить черновик."
+    }
+  },
+  "id": {
+    "tierListMakerUi": {
+      "tagHint": "Maksimal 5 tag · masing-masing 20 karakter · tag duplikat hanya disimpan sekali.",
+      "tagPlaceholder": "#Tag {{index}}",
+      "draftSave": "Simpan Draf",
+      "draftLoad": "Muat Draf",
+      "draftSaved": "Draf tersimpan.",
+      "draftSaveFailed": "Gagal menyimpan draf.",
+      "draftMissing": "Tidak ada draf tersimpan.",
+      "draftLoaded": "Draf dimuat.",
+      "draftLoadFailed": "Gagal memuat draf."
+    }
+  },
+  "pt": {
+    "tierListMakerUi": {
+      "tagHint": "Até 5 tags · 20 caracteres cada · tags repetidas são salvas apenas uma vez.",
+      "tagPlaceholder": "#Tag {{index}}",
+      "draftSave": "Salvar rascunho",
+      "draftLoad": "Carregar rascunho",
+      "draftSaved": "Rascunho salvo.",
+      "draftSaveFailed": "Falha ao salvar o rascunho.",
+      "draftMissing": "Nenhum rascunho salvo foi encontrado.",
+      "draftLoaded": "Rascunho carregado.",
+      "draftLoadFailed": "Falha ao carregar o rascunho."
+    }
+  },
+  "hi": {
+    "tierListMakerUi": {
+      "tagHint": "अधिकतम 5 टैग · हर टैग 20 अक्षर · डुप्लिकेट टैग केवल एक बार सेव होंगे।",
+      "tagPlaceholder": "#टैग {{index}}",
+      "draftSave": "ड्राफ्ट सेव करें",
+      "draftLoad": "ड्राफ्ट लोड करें",
+      "draftSaved": "ड्राफ्ट सेव हो गया।",
+      "draftSaveFailed": "ड्राफ्ट सेव नहीं हो सका।",
+      "draftMissing": "कोई सेव किया हुआ ड्राफ्ट नहीं मिला।",
+      "draftLoaded": "ड्राफ्ट लोड हो गया।",
+      "draftLoadFailed": "ड्राफ्ट लोड नहीं हो सका।"
+    }
+  },
+  "tr": {
+    "tierListMakerUi": {
+      "tagHint": "En fazla 5 etiket · her biri 20 karakter · yinelenen etiketler bir kez kaydedilir.",
+      "tagPlaceholder": "#Etiket {{index}}",
+      "draftSave": "Taslağı Kaydet",
+      "draftLoad": "Taslağı Yükle",
+      "draftSaved": "Taslak kaydedildi.",
+      "draftSaveFailed": "Taslak kaydedilemedi.",
+      "draftMissing": "Kayıtlı taslak bulunamadı.",
+      "draftLoaded": "Taslak yüklendi.",
+      "draftLoadFailed": "Taslak yüklenemedi."
+    }
+  },
+  "th": {
+    "tierListMakerUi": {
+      "tagHint": "สูงสุด 5 แท็ก · แท็กละ 20 ตัวอักษร · แท็กซ้ำจะบันทึกเพียงครั้งเดียว",
+      "tagPlaceholder": "#แท็ก {{index}}",
+      "draftSave": "บันทึกร่าง",
+      "draftLoad": "โหลดร่าง",
+      "draftSaved": "บันทึกร่างแล้ว",
+      "draftSaveFailed": "บันทึกร่างไม่สำเร็จ",
+      "draftMissing": "ไม่พบร่างที่บันทึกไว้",
+      "draftLoaded": "โหลดร่างแล้ว",
+      "draftLoadFailed": "โหลดร่างไม่สำเร็จ"
+    }
+  },
+  "ar": {
+    "tierListMakerUi": {
+      "tagHint": "حتى 5 وسوم · 20 حرفًا لكل وسم · يتم حفظ الوسوم المكررة مرة واحدة فقط.",
+      "tagPlaceholder": "#وسم {{index}}",
+      "draftSave": "حفظ المسودة",
+      "draftLoad": "تحميل المسودة",
+      "draftSaved": "تم حفظ المسودة.",
+      "draftSaveFailed": "تعذر حفظ المسودة.",
+      "draftMissing": "لا توجد مسودة محفوظة.",
+      "draftLoaded": "تم تحميل المسودة.",
+      "draftLoadFailed": "تعذر تحميل المسودة."
+    }
+  },
+  "bn": {
+    "tierListMakerUi": {
+      "tagHint": "সর্বোচ্চ ৫টি ট্যাগ · প্রতিটি ২০ অক্ষর · একই ট্যাগ একবারই সংরক্ষিত হবে।",
+      "tagPlaceholder": "#ট্যাগ {{index}}",
+      "draftSave": "খসড়া সংরক্ষণ",
+      "draftLoad": "খসড়া লোড",
+      "draftSaved": "খসড়া সংরক্ষিত হয়েছে।",
+      "draftSaveFailed": "খসড়া সংরক্ষণ করা যায়নি।",
+      "draftMissing": "কোনো সংরক্ষিত খসড়া পাওয়া যায়নি।",
+      "draftLoaded": "খসড়া লোড হয়েছে।",
+      "draftLoadFailed": "খসড়া লোড করা যায়নি।"
+    }
+  }
+}

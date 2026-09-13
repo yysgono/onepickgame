@@ -8,6 +8,7 @@ import {
 import { fetchWinnerStatsFromDB } from "../utils";
 import { supabase } from "../utils/supabaseClient";
 import MediaRenderer from "./MediaRenderer";
+import GameModeNav from "./GameModeNav";
 
 const LANGUAGES = [
   { code: "en", label: "English" },
@@ -148,16 +149,32 @@ const getDisplayTitle = (cup) => {
 const [search, setSearch] = useState("");
 const [sort, setSort] = useState("popular");
 const [popularSearches, setPopularSearches] = useState([]);
+const searchInputRef = useRef(null);
 
 useEffect(() => {
   const params =
     new URLSearchParams(location.search);
 
-  const searchParam =
-    params.get("search");
+  const searchParam = params.get("search");
+  const sortParam = params.get("sort");
+  const focusParam = params.get("focus");
 
   if (searchParam) {
     setSearch(searchParam);
+  }
+
+  if (sortParam === "popular" || sortParam === "latest") {
+    setSort(sortParam);
+  }
+
+  if (focusParam === "search") {
+    window.setTimeout(() => {
+      searchInputRef.current?.focus();
+      searchInputRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+      });
+    }, 80);
   }
 }, [location.search]);
 
@@ -1613,7 +1630,7 @@ return (
   <div
     style={{
       width: "100%",
-    maxWidth: isMobile ? 430 : 800,
+maxWidth: isMobile ? 430 : 1180,
 
       display: "flex",
       flexDirection: "column",
@@ -1622,42 +1639,52 @@ gap: isMobile ? 9 : 13,
 
 padding: isMobile
   ? "13px 11px"
-  : "18px 22px",
+  : "10px 22px",
 
-background: "rgba(10, 16, 28, 0.72)",
+background: "transparent",
 
-border:
-  "1px solid rgba(255,255,255,0.08)",
+border: "none",
 
-borderRadius: 12,
+borderRadius: 0,
 
-boxShadow:
-  "0 8px 24px rgba(0,0,0,0.28)",
+boxShadow: "none",
 
-      backdropFilter: "blur(10px)",
-      WebkitBackdropFilter: "blur(10px)",
+backdropFilter: "none",
+WebkitBackdropFilter: "none",
 
       boxSizing: "border-box",
     }}
   >
-{/* One Pick Game 소개 */}
+
+{/* 게임 모드 선택 */}
+<GameModeNav
+  activeMode="worldcup"
+  isMobile={isMobile}
+/>
 <div
   style={{
     width: "100%",
-    textAlign: "center",
-    padding: isMobile ? "4px 4px 7px" : "6px 10px 9px",
+    maxWidth: isMobile ? 430 : 980,
+    margin: isMobile ? "0 auto" : "12px auto 0",
+
+    padding: isMobile
+      ? "15px 13px"
+      : "24px 28px",
+
+    background: "rgba(10, 16, 28, 0.72)",
+    border: "1px solid rgba(255,255,255,0.08)",
+    borderRadius: 16,
+    boxShadow: "0 8px 24px rgba(0,0,0,0.28)",
+    backdropFilter: "blur(10px)",
+    WebkitBackdropFilter: "blur(10px)",
+
     boxSizing: "border-box",
-color: "#e9eef7",
-fontSize: isMobile ? 14 : 16,
-fontWeight: 700,
-lineHeight: 1.5,
-    wordBreak: "keep-all",
+    display: "flex",
+    flexDirection: "column",
+
+    gap: isMobile ? 11 : 18,
   }}
 >
-{t("home_intro_line1")}
-<br />
-{t("home_intro_line2")}
-</div>
     {/* =========================
         1줄 : 만들기 + 언어
     ========================== */}
@@ -1680,37 +1707,37 @@ gap: isMobile ? 8 : 11,
         goto(`/${lang}/worldcup-maker`);
           }
         }}
-        style={{
-          flex: 1,
-          height: isMobile ? 41 : 44,
+  style={{
+  flex: 1,
 
-          border:
-            "1px solid rgba(45,145,255,0.65)",
+  height: isMobile ? 48 : 60,
 
-          borderRadius: 8,
+  border:
+    "1px solid rgba(45,145,255,0.75)",
 
-          background: "#176fd1",
+  borderRadius: 11,
 
-          color: "#fff",
+  background: "#176fd1",
+  color: "#fff",
 
-          fontSize: isMobile ? 13 : 16,
-          fontWeight: 900,
+  fontSize: isMobile ? 15 : 21,
+  fontWeight: 900,
 
-fontFamily:
-  "'Pretendard', sans-serif",
+  fontFamily:
+    "'Pretendard', sans-serif",
 
-          cursor: "pointer",
+  cursor: "pointer",
 
-          boxShadow:
-            "0 4px 12px rgba(23,111,209,0.24)",
+  boxShadow:
+    "0 5px 18px rgba(23,111,209,0.34)",
 
-          letterSpacing: "0.1px",
+  letterSpacing: "0.2px",
 
-          whiteSpace: "nowrap",
+  whiteSpace: "nowrap",
 
-          transition:
-            "transform .15s, background .15s, box-shadow .15s",
-        }}
+  transition:
+    "transform .15s, background .15s, box-shadow .15s",
+}}
         onMouseEnter={(e) => {
           e.currentTarget.style.transform =
             "translateY(-1px)";
@@ -1747,32 +1774,32 @@ fontFamily:
           changeHomeLanguage(e.target.value)
         }
         aria-label="Select language"
-        style={{
-          width: isMobile ? 100 : 120,
-          flexShrink: 0,
+    style={{
+  width: isMobile ? 105 : 135,
+  flexShrink: 0,
 
-          height: isMobile ? 41 : 44,
+  height: isMobile ? 48 : 60,
 
-          background: "#171f2d",
-          color: "#dfe9f8",
+  background: "#171f2d",
+  color: "#dfe9f8",
 
-          border:
-            "1px solid rgba(68,126,205,0.45)",
+  border:
+    "1px solid rgba(68,126,205,0.45)",
 
-          borderRadius: 8,
+  borderRadius: 11,
 
-          padding: isMobile
-            ? "0 7px"
-            : "0 10px",
+  padding: isMobile
+    ? "0 9px"
+    : "0 14px",
 
-          boxSizing: "border-box",
+  boxSizing: "border-box",
 
-          fontSize: isMobile ? 12 : 14,
-          fontWeight: 700,
+  fontSize: isMobile ? 13 : 16,
+  fontWeight: 700,
 
-          cursor: "pointer",
-          outline: "none",
-        }}
+  cursor: "pointer",
+  outline: "none",
+}}
       >
         {LANGUAGES.map((item) => (
           <option
@@ -1801,13 +1828,13 @@ fontFamily:
         type="button"
         onClick={() => setSort("popular")}
         style={{
-          height: isMobile ? 38 : 40,
+          height: isMobile ? 42 : 48,
 
           padding: isMobile
             ? "0 11px"
             : "0 15px",
 
-            width: isMobile ? 62 : 72,
+           width: isMobile ? 66 : 82,
 display: "inline-flex",
 alignItems: "center",
 justifyContent: "center",
@@ -1829,7 +1856,7 @@ color:
     ? "#ffffff"
     : "#8290a5",
 
-          fontSize: isMobile ? 14 : 16,
+          fontSize: isMobile ? 14 : 18,
           fontWeight: 800,
 
           cursor: "pointer",
@@ -1850,13 +1877,13 @@ boxShadow: "none",
         type="button"
         onClick={() => setSort("recent")}
         style={{
-          height: isMobile ? 38 : 40,
+     height: isMobile ? 42 : 48,
 
           padding: isMobile
             ? "0 11px"
             : "0 15px",
 
-            width: isMobile ? 62 : 72,
+      width: isMobile ? 66 : 82,
 display: "inline-flex",
 alignItems: "center",
 justifyContent: "center",
@@ -1878,7 +1905,7 @@ color:
     ? "#ffffff"
     : "#8290a5",
 
-          fontSize: isMobile ? 14 : 16,
+        fontSize: isMobile ? 14 : 18,
           fontWeight: 800,
 
           cursor: "pointer",
@@ -1903,6 +1930,7 @@ boxShadow: "none",
   }}
 >
   <input
+    ref={searchInputRef}
     className="home-search-input"
     type="text"
     placeholder={t("search_placeholder")}
@@ -1918,21 +1946,21 @@ onKeyDown={(e) => {
     style={{
       width: "100%",
 
-      height: isMobile ? 38 : 40,
+      height: isMobile ? 42 : 48,
 
       background: "rgba(255,255,255,0.07)",
       color: "#fff",
 
       border: "1px solid rgba(255,255,255,0.10)",
-      borderRadius: 8,
+      borderRadius: 10,
 
-      padding: isMobile
-        ? "0 32px 0 11px"
-        : "0 38px 0 14px",
+  padding: isMobile
+  ? "0 34px 0 12px"
+  : "0 42px 0 16px",
 
       boxSizing: "border-box",
 
-      fontSize: isMobile ? 13 : 16,
+   fontSize: isMobile ? 14 : 18,
       fontWeight: 700,
 
       outline: "none",
@@ -2027,8 +2055,12 @@ style={{
 ))}
   </div>
 )}
+
+</div> {/* 만들기/검색 작은 패널 닫기 */}
+
   </div>
 </div>
+
 {/* 검색 결과 없음 */}
 {search.trim() && filtered.length === 0 && (
   <div

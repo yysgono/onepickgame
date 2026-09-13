@@ -1,3 +1,4 @@
+import "../registerPresetTranslations";
 // src/components/Header.js
 import React, { useRef, useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
@@ -6,9 +7,17 @@ import { supabase } from "../utils/supabaseClient";
 
 function isValidNickname(nickname) {
   if (!nickname) return false;
+
   const regex = /^[\uAC00-\uD7A3\w-]+$/;
+
   if (!regex.test(nickname)) return false;
-  if (nickname.replace(/[\uAC00-\uD7A3]/g, "**").length < 3) return false;
+
+  if (
+    nickname.replace(/[\uAC00-\uD7A3]/g, "**").length < 3
+  ) {
+    return false;
+  }
+
   return true;
 }
 
@@ -44,24 +53,46 @@ export default function Header({
   setNickname,
 }) {
   const { t, i18n } = useTranslation();
+
   const navigate = useNavigate();
   const location = useLocation();
   const inputRef = useRef();
 
-  const [showProfile, setShowProfile] = useState(false);
-  const [editNickname, setEditNickname] = useState(nickname || "");
-  const [editError, setEditError] = useState("");
-  const [editLoading, setEditLoading] = useState(false);
-  const [profile, setProfile] = useState(null);
-  const [withdrawLoading, setWithdrawLoading] = useState(false);
-  const [cancelLoading, setCancelLoading] = useState(false);
+  const [showProfile, setShowProfile] =
+    useState(false);
+
+  const [editNickname, setEditNickname] =
+    useState(nickname || "");
+
+  const [editError, setEditError] =
+    useState("");
+
+  const [editLoading, setEditLoading] =
+    useState(false);
+
+  const [profile, setProfile] =
+    useState(null);
+
+  const [
+    withdrawLoading,
+    setWithdrawLoading,
+  ] = useState(false);
+
+  const [
+    cancelLoading,
+    setCancelLoading,
+  ] = useState(false);
 
   useEffect(() => {
     setEditNickname(nickname || "");
   }, [nickname]);
 
   useEffect(() => {
-    if (!user) return setProfile(null);
+    if (!user) {
+      setProfile(null);
+      return;
+    }
+
     supabase
       .from("profiles")
       .select("*")
@@ -82,664 +113,1722 @@ export default function Header({
 
   async function handleNicknameChange() {
     setEditError("");
-    const trimName = editNickname.trim();
+
+    const trimName =
+      editNickname.trim();
+
     if (!isValidNickname(trimName)) {
-      setEditError(t("nickname_rule"));
+      setEditError(
+        t("nickname_rule")
+      );
+
       return;
     }
+
     setEditLoading(true);
-    const { data: exist } = await supabase
-      .from("profiles")
-      .select("id")
-      .eq("id", user.id)
-      .single();
+
+    const { data: exist } =
+      await supabase
+        .from("profiles")
+        .select("id")
+        .eq("id", user.id)
+        .single();
+
     let error;
+
     if (exist) {
-      ({ error } = await supabase
-        .from("profiles")
-        .update({ nickname: trimName })
-        .eq("id", user.id));
+      ({ error } =
+        await supabase
+          .from("profiles")
+          .update({
+            nickname: trimName,
+          })
+          .eq("id", user.id));
     } else {
-      ({ error } = await supabase
-        .from("profiles")
-        .insert([{ id: user.id, nickname: trimName }])); // upsert 대체
+      ({ error } =
+        await supabase
+          .from("profiles")
+          .insert([
+            {
+              id: user.id,
+              nickname: trimName,
+            },
+          ]));
     }
+
     setEditLoading(false);
+
     if (error) {
-      setEditError(error.message || t("nickname_change_fail"));
+      setEditError(
+        error.message ||
+          t("nickname_change_fail")
+      );
+
       return;
     }
+
     setNickname(trimName);
     setShowProfile(false);
+
     alert(t("nickname_changed"));
   }
 
   async function handlePasswordChange() {
     setEditError("");
+
     if (!user?.email) {
-      setEditError(t("no_email_info"));
+      setEditError(
+        t("no_email_info")
+      );
+
       return;
     }
+
     setEditLoading(true);
-    const { error } = await supabase.auth.resetPasswordForEmail(user.email);
+
+    const { error } =
+      await supabase.auth
+        .resetPasswordForEmail(
+          user.email
+        );
+
     setEditLoading(false);
+
     if (error) {
-      setEditError(error.message || t("pw_mail_send_fail"));
+      setEditError(
+        error.message ||
+          t("pw_mail_send_fail")
+      );
+
       return;
     }
+
     alert(t("pw_mail_sent"));
   }
 
   async function handleWithdrawalRequest() {
     setEditError("");
     setWithdrawLoading(true);
-    const { error } = await supabase
-      .from("profiles")
-      .update({ withdrawal_requested_at: new Date().toISOString() })
-      .eq("id", user.id);
+
+    const { error } =
+      await supabase
+        .from("profiles")
+        .update({
+          withdrawal_requested_at:
+            new Date().toISOString(),
+        })
+        .eq("id", user.id);
+
     setWithdrawLoading(false);
-    if (error) return setEditError(`${t("withdraw_fail")}: ${error.message}`);
-    alert(`${t("withdraw_requested")}\n${t("withdraw_in_week")}`);
+
+    if (error) {
+      setEditError(
+        `${t("withdraw_fail")}: ${error.message}`
+      );
+
+      return;
+    }
+
+    alert(
+      `${t("withdraw_requested")}\n${t(
+        "withdraw_in_week"
+      )}`
+    );
+
     setProfile((prev) => ({
       ...prev,
-      withdrawal_requested_at: new Date().toISOString(),
+
+      withdrawal_requested_at:
+        new Date().toISOString(),
     }));
+
     setShowProfile(false);
   }
 
   async function handleCancelWithdrawal() {
     setEditError("");
     setCancelLoading(true);
-    const { error } = await supabase
-      .from("profiles")
-      .update({ withdrawal_requested_at: null })
-      .eq("id", user.id);
+
+    const { error } =
+      await supabase
+        .from("profiles")
+        .update({
+          withdrawal_requested_at:
+            null,
+        })
+        .eq("id", user.id);
+
     setCancelLoading(false);
-    if (error) return setEditError(`${t("cancel_fail")}: ${error.message}`);
+
+    if (error) {
+      setEditError(
+        `${t("cancel_fail")}: ${error.message}`
+      );
+
+      return;
+    }
+
     alert(t("withdraw_canceled"));
-    setProfile((prev) => ({ ...prev, withdrawal_requested_at: null }));
+
+    setProfile((prev) => ({
+      ...prev,
+
+      withdrawal_requested_at:
+        null,
+    }));
+
     setShowProfile(false);
   }
 
-  // ✅ 기본 언어 'en' 고정 + 변형코드(en-US 등) 안전 처리
-  const currentLang = (i18n.language || "en").split("-")[0];
+  const currentLang =
+    (
+      i18n.language ||
+      "en"
+    ).split("-")[0];
 
-  // 로고 클릭: 언어 홈으로 이동 (SPA)
-function handleLogoClick() {
-  const homePath = `/${currentLang}`;
+  function handleLogoClick() {
+    const homePath =
+      `/${currentLang}`;
 
-  if (location.pathname === homePath) {
-    navigate(homePath, { replace: true });
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  } else {
-    navigate(homePath);
-  }
-}
+    if (
+      location.pathname ===
+      homePath
+    ) {
+      navigate(
+        homePath,
+        {
+          replace: true,
+        }
+      );
 
-  function handleMyWorldcup() {
-    navigate(`/${currentLang}/my-worldcups`);
-  }
-
-  function handleRecentWorldcup() {
-    navigate(`/${currentLang}/recent-worldcups`);
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
+    } else {
+      navigate(homePath);
+    }
   }
 
   function handleBlog() {
-    navigate(`/${currentLang}/blog`);
+    navigate(
+      `/${currentLang}/blog`
+    );
   }
 
-  // ✅ 언어 변경 시 현재 경로 유지
-  function changeLanguageAndKeepPath(lng) {
+  function changeLanguageAndKeepPath(
+    lng
+  ) {
     try {
       i18n.changeLanguage(lng);
-      if (typeof onLangChange === "function") onLangChange(lng);
-      localStorage.setItem("onepickgame_lang", lng);
 
-      const { pathname, search, hash } = location;
-      // 분해해서 선두의 2글자 언어코드가 있으면 교체, 없으면 추가
-      const parts = pathname.split("/").filter(Boolean);
-      if (parts.length > 0 && /^[a-z]{2}$/.test(parts[0])) {
+      if (
+        typeof onLangChange ===
+        "function"
+      ) {
+        onLangChange(lng);
+      }
+
+      localStorage.setItem(
+        "onepickgame_lang",
+        lng
+      );
+
+      const {
+        pathname,
+        search,
+        hash,
+      } = location;
+
+      const parts =
+        pathname
+          .split("/")
+          .filter(Boolean);
+
+      if (
+        parts.length > 0 &&
+        /^[a-z]{2}$/.test(
+          parts[0]
+        )
+      ) {
         parts[0] = lng;
       } else {
         parts.unshift(lng);
       }
-      const newPath = "/" + parts.join("/");
-      navigate(newPath + (search || "") + (hash || ""), { replace: true });
+
+      const newPath =
+        "/" + parts.join("/");
+
+      navigate(
+        newPath +
+          (search || "") +
+          (hash || ""),
+        {
+          replace: true,
+        }
+      );
     } catch {
-      // fallback: 홈으로
-      navigate(`/${lng}`, { replace: true });
+      navigate(
+        `/${lng}`,
+        {
+          replace: true,
+        }
+      );
     }
   }
 
-  const logoImgUrl = "/onepick2.png";
-  const headerBgUrl = "/onepick3.png";
+  const logoImgUrl =
+    "/onepick2.png";
 
-  const darkBlue = "#171C27";
-  const blueMain = "#1976ed";
-  const blueGradient = "linear-gradient(90deg,#2999ff,#236de8 100%)";
-  const blueNeon = "0 0 16px #2999ff88, 0 2px 12px #1976ed33";
-  const gold = "#ffbe3b";
+  const headerBgUrl =
+    "/onepick3.png";
 
-  const adminButtonStyle = (bgColor = darkBlue, color = "#fff") => ({
+  const darkBlue =
+    "#171C27";
+
+  const blueMain =
+    "#1976ed";
+
+  const blueGradient =
+    "linear-gradient(90deg,#2999ff,#236de8 100%)";
+
+  const blueNeon =
+    "0 0 16px #2999ff88, 0 2px 12px #1976ed33";
+
+  const gold =
+    "#ffbe3b";
+
+  const adminButtonStyle = (
+    bgColor = darkBlue,
+    color = "#fff"
+  ) => ({
     background: bgColor,
     color,
+
     borderRadius: 8,
+
     fontWeight: 800,
-    padding: "7px 17px",
+
+    padding:
+      "11px 24px",
+
     border: "none",
+
     cursor: "pointer",
-    fontSize: 15,
-    whiteSpace: "nowrap",
-    transition: "background .15s, box-shadow .15s, color .12s",
-    boxShadow: "0 2px 10px #1976ed33",
-    letterSpacing: "-0.2px",
-    outline: "none",
+
+    fontSize: 18,
+
+    whiteSpace:
+      "nowrap",
+
+    transition:
+      "background .15s, box-shadow .15s, color .12s",
+
+    boxShadow:
+      "0 2px 10px #1976ed33",
+
+    letterSpacing:
+      "0",
+
+    fontFamily:
+      "'Pretendard', 'Noto Sans KR', Arial, sans-serif",
+
+    textShadow:
+      "none",
+
+    outline:
+      "none",
   });
 
   const statButtonStyle = {
     background: gold,
     color: "#222",
+
     border: "none",
     borderRadius: 8,
+
     fontWeight: 800,
-    padding: "7px 17px",
-    fontSize: 15,
-    boxShadow: "0 0 7px #fffbe34a",
+
+    padding:
+      "11px 24px",
+
+    fontSize: 18,
+
+    boxShadow:
+      "0 0 7px #fffbe34a",
+
     cursor: "pointer",
+
     outline: "none",
-    letterSpacing: "-0.1px",
+
+    letterSpacing:
+      "0",
+
+    fontFamily:
+      "'Pretendard', 'Noto Sans KR', Arial, sans-serif",
+
+    textShadow:
+      "none",
   };
 
   const mainButtonStyle = {
-    background: blueGradient,
+    background:
+      blueGradient,
+
     color: "#fff",
+
     border: "none",
+
     borderRadius: 10,
+
     fontWeight: 900,
-    padding: "8px 22px",
-    fontSize: 16,
-    boxShadow: blueNeon,
-    letterSpacing: "0.03em",
-    transition: "background .17s, box-shadow .13s, color .12s",
-    cursor: "pointer",
-    whiteSpace: "nowrap",
-    outline: "none",
+
+    padding:
+      "11px 24px",
+
+    fontSize: 19,
+
+    boxShadow:
+      blueNeon,
+
+    letterSpacing:
+      "0",
+
+    fontFamily:
+      "'Pretendard', 'Noto Sans KR', Arial, sans-serif",
+
+    textShadow:
+      "none",
+
+    transition:
+      "background .17s, box-shadow .13s, color .12s",
+
+    cursor:
+      "pointer",
+
+    whiteSpace:
+      "nowrap",
+
+    outline:
+      "none",
+  };
+
+  const worldcupButtonStyle = {
+    ...mainButtonStyle,
+
+    background:
+      "linear-gradient(90deg,#d92f55,#b91f46 100%)",
+
+    boxShadow:
+      "0 0 16px #d92f5588, 0 2px 12px #b91f4633",
+  };
+
+  const guessButtonStyle = {
+    ...mainButtonStyle,
+
+    background:
+      "linear-gradient(90deg,#18975b,#0f7043 100%)",
+
+    boxShadow:
+      "0 0 16px #18975b66, 0 2px 12px #0f704333",
+  };
+
+  const blindRankingButtonStyle = {
+    ...mainButtonStyle,
+
+    background:
+      "linear-gradient(90deg,#7b3fc6,#54258f 100%)",
+
+    boxShadow:
+      "0 0 16px #7b3fc666, 0 2px 12px #54258f33",
+  };
+
+  const disabledModeButtonStyle = {
+    cursor:
+      "not-allowed",
+
+    opacity:
+      0.55,
   };
 
   const infoButtonStyle = {
-    background: "rgba(30,43,82,0.94)",
+    background:
+      "rgba(30,43,82,0.94)",
+
     color: "#fff",
+
     border: "none",
+
     borderRadius: 8,
+
     fontWeight: 700,
-    padding: "8px 17px",
-    fontSize: 15,
-    boxShadow: "0 0 7px #1976ed2d",
-    transition: "background .14s, color .13s, box-shadow .12s",
-    outline: "none",
-    marginRight: 3,
-    whiteSpace: "nowrap",
+
+    padding:
+      "11px 24px",
+
+    fontSize: 18,
+
+    boxShadow:
+      "0 0 7px #1976ed2d",
+
+    transition:
+      "background .14s, color .13s, box-shadow .12s",
+
+    outline:
+      "none",
+
+    marginRight: 0,
+
+    whiteSpace:
+      "nowrap",
+
+    fontFamily:
+      "'Pretendard', 'Noto Sans KR', Arial, sans-serif",
+
+    textShadow:
+      "none",
   };
 
   const logoutButtonStyle = {
-    background: "#232c40",
+    background:
+      "#232c40",
+
     color: "#fff",
+
     border: "none",
+
     borderRadius: 8,
+
     fontWeight: 700,
-    padding: "7px 15px",
-    fontSize: 15,
-    boxShadow: "0 0 9px #157be940",
-    cursor: "pointer",
-    outline: "none",
-    transition: "background .12s, color .13s",
+
+    padding:
+      "11px 24px",
+
+    fontSize: 18,
+
+    boxShadow:
+      "0 0 9px #157be940",
+
+    cursor:
+      "pointer",
+
+    outline:
+      "none",
+
+    transition:
+      "background .12s, color .13s",
+
+    fontFamily:
+      "'Pretendard', 'Noto Sans KR', Arial, sans-serif",
+
+    textShadow:
+      "none",
   };
 
   const selectStyle = {
-    padding: "7px 13px",
+    padding:
+      "10px 16px",
+
     borderRadius: 8,
-    fontWeight: 600,
-    fontSize: 15,
-    minWidth: 100,
-    background: "#222f45",
+
+    fontWeight: 700,
+
+    fontSize: 18,
+
+    minWidth: 150,
+
+    background:
+      "#222f45",
+
     color: "#fff",
-    border: "1px solid #1258cc",
-    cursor: "pointer",
-    userSelect: "none",
-    outline: "none",
-    boxShadow: "0 0 7px #157be94a",
+
+    border:
+      "1px solid #1258cc",
+
+    cursor:
+      "pointer",
+
+    userSelect:
+      "none",
+
+    outline:
+      "none",
+
+    boxShadow:
+      "0 0 7px #157be94a",
+
+    fontFamily:
+      "'Pretendard', 'Noto Sans KR', Arial, sans-serif",
+
+    textShadow:
+      "none",
   };
 
-  // ---- Modal Styles ----
   const modalOverlayStyle = {
-    position: "fixed",
+    position:
+      "fixed",
+
     left: 0,
     top: 0,
-    width: "100vw",
-    height: "100vh",
-    background: "rgba(0,0,0,0.32)",
-    zIndex: 9999,
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
+
+    width:
+      "100vw",
+
+    height:
+      "100vh",
+
+    background:
+      "rgba(0,0,0,0.32)",
+
+    zIndex:
+      9999,
+
+    display:
+      "flex",
+
+    alignItems:
+      "center",
+
+    justifyContent:
+      "center",
+
     margin: 0,
     padding: 0,
   };
 
   const modalContentStyle = {
-    background: "#1e293b",
-    color: "#fff",
-    borderRadius: 12,
-    padding: "32px 28px",
-    minWidth: 330,
-    maxWidth: 380,
-    width: "100%",
-    boxShadow: "0 4px 24px rgba(0,0,0,0.15)",
-    display: "flex",
-    flexDirection: "column",
-    gap: 14,
-    alignItems: "center",
-    boxSizing: "border-box",
-    margin: 0,
-    position: "fixed",
-    top: "110px",
-    left: "50%",
-    transform: "translateX(-50%)",
-    zIndex: 10001,
+    background:
+      "#1e293b",
+
+    color:
+      "#fff",
+
+    borderRadius:
+      12,
+
+    padding:
+      "32px 28px",
+
+    minWidth:
+      330,
+
+    maxWidth:
+      380,
+
+    width:
+      "100%",
+
+    boxShadow:
+      "0 4px 24px rgba(0,0,0,0.15)",
+
+    display:
+      "flex",
+
+    flexDirection:
+      "column",
+
+    gap:
+      14,
+
+    alignItems:
+      "center",
+
+    boxSizing:
+      "border-box",
+
+    margin:
+      0,
+
+    position:
+      "fixed",
+
+    top:
+      "110px",
+
+    left:
+      "50%",
+
+    transform:
+      "translateX(-50%)",
+
+    zIndex:
+      10001,
   };
 
   const modalInputStyle = {
-    width: "100%",
-    padding: "10px 11px",
-    borderRadius: 7,
-    background: "#334155",
-    color: "#fff",
-    border: "1px solid #475569",
-    fontSize: 16,
-    marginBottom: 9,
-    boxSizing: "border-box",
+    width:
+      "100%",
+
+    padding:
+      "10px 11px",
+
+    borderRadius:
+      7,
+
+    background:
+      "#334155",
+
+    color:
+      "#fff",
+
+    border:
+      "1px solid #475569",
+
+    fontSize:
+      16,
+
+    marginBottom:
+      9,
+
+    boxSizing:
+      "border-box",
   };
 
   const modalProfileButtonStyle = {
-    width: "100%",
-    background: blueMain,
-    color: "#fff",
-    border: "none",
-    borderRadius: 8,
-    fontWeight: 800,
-    fontSize: 16,
-    padding: "10px 0",
-    margin: "7px 0 0",
-    cursor: "pointer",
+    width:
+      "100%",
+
+    background:
+      blueMain,
+
+    color:
+      "#fff",
+
+    border:
+      "none",
+
+    borderRadius:
+      8,
+
+    fontWeight:
+      800,
+
+    fontSize:
+      16,
+
+    padding:
+      "10px 0",
+
+    margin:
+      "7px 0 0",
+
+    cursor:
+      "pointer",
   };
 
   const modalGrayButtonStyle = {
-    width: "100%",
-    background: "#475569",
-    color: "#fff",
-    border: "none",
-    borderRadius: 8,
-    fontWeight: 700,
-    fontSize: 15,
-    padding: "8px 0",
-    margin: "10px 0 0",
-    cursor: "pointer",
+    width:
+      "100%",
+
+    background:
+      "#475569",
+
+    color:
+      "#fff",
+
+    border:
+      "none",
+
+    borderRadius:
+      8,
+
+    fontWeight:
+      700,
+
+    fontSize:
+      15,
+
+    padding:
+      "8px 0",
+
+    margin:
+      "10px 0 0",
+
+    cursor:
+      "pointer",
   };
 
   const modalDeleteButtonStyle = {
-    width: "100%",
-    background: "#e14444",
-    color: "#fff",
-    border: "none",
-    borderRadius: 8,
-    fontWeight: 700,
-    fontSize: 15,
-    padding: "10px 0",
-    margin: "14px 0 0",
-    cursor: "pointer",
+    width:
+      "100%",
+
+    background:
+      "#e14444",
+
+    color:
+      "#fff",
+
+    border:
+      "none",
+
+    borderRadius:
+      8,
+
+    fontWeight:
+      700,
+
+    fontSize:
+      15,
+
+    padding:
+      "10px 0",
+
+    margin:
+      "14px 0 0",
+
+    cursor:
+      "pointer",
   };
 
   const modalCloseButtonStyle = {
-    background: "#eee",
-    color: "#222",
-    border: "none",
-    borderRadius: 8,
-    padding: "7px 0",
-    fontWeight: 600,
-    cursor: "pointer",
-    width: 180,
-    marginTop: 10,
-    userSelect: "none",
+    background:
+      "#eee",
+
+    color:
+      "#222",
+
+    border:
+      "none",
+
+    borderRadius:
+      8,
+
+    padding:
+      "7px 0",
+
+    fontWeight:
+      600,
+
+    cursor:
+      "pointer",
+
+    width:
+      180,
+
+    marginTop:
+      10,
+
+    userSelect:
+      "none",
   };
 
   return (
     <header
       style={{
-        width: "100%",
-        background: `linear-gradient(90deg,rgba(20,23,32,0.92) 80%,rgba(20,26,44,0.82)),url('${headerBgUrl}') center/cover no-repeat`,
-        boxShadow: "0 2px 22px #000a, 0 1.5px 6px #1e2242cc",
-        borderBottom: "4px solid #1976ed",
-position: "relative",
-zIndex: 1000,
-      padding: "0 0 16px 0",
-        backdropFilter: "blur(2.5px)",
-        WebkitBackdropFilter: "blur(2.5px)",
+        width:
+          "100%",
+
+        background:
+          `linear-gradient(90deg,rgba(20,23,32,0.92) 80%,rgba(20,26,44,0.82)),url('${headerBgUrl}') center/cover no-repeat`,
+
+        boxShadow:
+          "0 2px 22px #000a, 0 1.5px 6px #1e2242cc",
+
+        borderBottom:
+          "4px solid #1976ed",
+
+        position:
+          "relative",
+
+        zIndex:
+          1000,
+
+        padding:
+          "0 0 20px 0",
+
+        backdropFilter:
+          "blur(2.5px)",
+
+        WebkitBackdropFilter:
+          "blur(2.5px)",
       }}
     >
-      {/* 로고/텍스트 영역 */}
+      {/* 로고 */}
       <div
         style={{
-          width: "100%",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-    padding: "13px 0 10px 0",
-          cursor: "pointer",
-          userSelect: "none",
+          width:
+            "100%",
+
+          display:
+            "flex",
+
+          justifyContent:
+            "center",
+
+          alignItems:
+            "center",
+
+          padding:
+            "18px 0 14px 0",
+
+          cursor:
+            "pointer",
+
+          userSelect:
+            "none",
         }}
-        onClick={handleLogoClick}
+        onClick={
+          handleLogoClick
+        }
       >
         <img
-          src={logoImgUrl}
-          alt={t("onepick_logo_alt", "OnePickGame logo")}
+          src={
+            logoImgUrl
+          }
+          alt={t(
+            "onepick_logo_alt",
+            "OnePickGame logo"
+          )}
           style={{
-          width: 50,
-height: 50,
-            borderRadius: "50%",
-            border: "2.2px solid #1976ed",
-            background: "rgba(24,29,42,0.9)",
-            marginRight: 8,
-            filter: "drop-shadow(0 0 10px #00c8ffbb)",
-            verticalAlign: "middle",
+            width: 64,
+            height: 64,
+
+            borderRadius:
+              "50%",
+
+            border:
+              "2.2px solid #1976ed",
+
+            background:
+              "rgba(24,29,42,0.9)",
+
+            marginRight:
+              8,
+
+            filter:
+              "drop-shadow(0 0 10px #00c8ffbb)",
+
+            verticalAlign:
+              "middle",
           }}
-          draggable={false}
+          draggable={
+            false
+          }
         />
+
         <span
           style={{
-            fontWeight: 900,
-            fontSize: 27,
-            fontFamily: "'Orbitron', 'Pretendard', 'Montserrat', sans-serif",
-            color: "#fff",
-            textShadow: "0 2px 16px #157be9cc, 0 0.5px 2.5px #fff",
-            letterSpacing: "1.2px",
-            lineHeight: 1.13,
-            marginTop: 2,
+            fontWeight:
+              900,
+
+            fontSize:
+              34,
+
+            fontFamily:
+              "'Pretendard', 'Noto Sans KR', Arial, sans-serif",
+
+            color:
+              "#fff",
+
+            textShadow:
+              "none",
+
+            letterSpacing:
+              "0.3px",
+
+            lineHeight:
+              1.13,
+
+            marginTop:
+              2,
           }}
         >
-          {t("onepick_brand", "One Pick Game")}
+          {t(
+            "onepick_brand",
+            "One Pick Game"
+          )}
         </span>
       </div>
 
-      {/* 버튼/메뉴 */}
+      {/* 헤더 메뉴 */}
       <div
         style={{
-width: "100%",
-maxWidth: 1800,
-margin: "0 auto",
-display: "flex",
-alignItems: "center",
-justifyContent: "center",
-flexWrap: "wrap",
-gap: "10px 12px",
-padding: "4px 12px",
-minHeight: 56,
-boxSizing: "border-box",
-transform: "scale(1.1)",
-transformOrigin: "center",
+          width:
+            "100%",
+
+          maxWidth:
+            1800,
+
+          margin:
+            "0 auto",
+
+          padding:
+            "6px 16px 0",
+
+          boxSizing:
+            "border-box",
+
+          display:
+            "flex",
+
+          flexDirection:
+            "column",
+
+          alignItems:
+            "center",
+
+          gap:
+            12,
         }}
       >
+        {/* =========================
+            1줄
+            이상형 월드컵 / 맞히기 / Blog / 언어
+        ========================== */}
+        <div
+          style={{
+            width:
+              "calc(100% - 24px)",
+
+            maxWidth:
+              860,
+
+            display:
+              "flex",
+
+            alignItems:
+              "center",
+
+            justifyContent:
+              "flex-start",
+
+            flexWrap:
+              "wrap",
+
+            gap:
+              "10px 12px",
+
+            boxSizing:
+              "border-box",
+          }}
+        >
+          {/* 이상형 월드컵 */}
+          <button
+            style={{
+              ...worldcupButtonStyle,
+
+              width:
+                220,
+
+              minHeight:
+                46,
+            }}
+            onClick={() =>
+              navigate(
+                `/${currentLang}`
+              )
+            }
+          >
+            {t("gameModeNav.worldcup")}
+          </button>
+
+          {/* 맞히기 */}
+          <button
+            type="button"
+            disabled
+            style={{
+              ...guessButtonStyle,
+              ...disabledModeButtonStyle,
+
+              width:
+                190,
+
+              minHeight:
+                46,
+            }}
+            title={t("gameModeNav.comingSoon")}
+          >
+            {t("gameModeNav.quiz")}
+          </button>
+
+          {/* Blog */}
+          <button
+            style={{
+              ...infoButtonStyle,
+
+              width:
+                96,
+
+              minHeight:
+                46,
+            }}
+            onClick={
+              handleBlog
+            }
+          >
+            Blog
+          </button>
+
+          {/* 언어 */}
+          <select
+            value={
+              (
+                i18n.language ||
+                "en"
+              ).split("-")[0]
+            }
+            onChange={(
+              e
+            ) =>
+              changeLanguageAndKeepPath(
+                e.target.value
+              )
+            }
+            style={{
+              ...selectStyle,
+
+              flex:
+                "1 1 180px",
+
+              minWidth:
+                180,
+
+              minHeight:
+                46,
+
+              boxSizing:
+                "border-box",
+            }}
+            aria-label={t(
+              "language_select",
+              "Select language"
+            )}
+          >
+            {languages.map(
+              (lang) => (
+                <option
+                  key={
+                    lang.code
+                  }
+                  value={
+                    lang.code
+                  }
+                >
+                  {
+                    lang.label
+                  }
+                </option>
+              )
+            )}
+          </select>
+        </div>
+
+        {/* =========================
+            2줄
+            티어표 / 블라인드 랭킹 / 계정
+        ========================== */}
+        <div
+          style={{
+            width:
+              "calc(100% - 24px)",
+
+            maxWidth:
+              860,
+
+            display:
+              "flex",
+
+            alignItems:
+              "center",
+
+            justifyContent:
+              "flex-start",
+
+            flexWrap:
+              "wrap",
+
+            gap:
+              "10px 12px",
+
+            boxSizing:
+              "border-box",
+          }}
+        >
+          {/* 티어표 */}
+          <button
+            style={{
+              ...mainButtonStyle,
+
+              width:
+                220,
+
+              minHeight:
+                46,
+            }}
+            onClick={() =>
+              navigate(
+                `/${currentLang}/tier-list`
+              )
+            }
+          >
+            {t("gameModeNav.tierList")}
+          </button>
+
+          {/* 블라인드 랭킹 */}
+          <button
+            type="button"
+            disabled
+            style={{
+              ...blindRankingButtonStyle,
+              ...disabledModeButtonStyle,
+
+              width:
+                190,
+
+              minHeight:
+                46,
+            }}
+            title={t("gameModeNav.comingSoon")}
+          >
+            {t("gameModeNav.blindRanking")}
+          </button>
+
+          {user ? (
+            <>
+              {/* 닉네임 */}
+              <span
+                style={{
+                  width:
+                    96,
+
+                  justifyContent:
+                    "center",
+
+                  fontWeight:
+                    900,
+
+                  color:
+                    "#ffffff",
+
+                  background:
+                    "#0f2940",
+
+                  border:
+                    "1px solid #2d6f9f",
+
+                  borderRadius:
+                    9,
+
+                  padding:
+                    "10px 16px",
+
+                  margin:
+                    0,
+
+                  minHeight:
+                    46,
+
+                  display:
+                    "inline-flex",
+
+                  alignItems:
+                    "center",
+
+                  boxSizing:
+                    "border-box",
+
+                  whiteSpace:
+                    "nowrap",
+
+                  userSelect:
+                    "none",
+
+                  textShadow:
+                    "none",
+
+                  fontFamily:
+                    "'Pretendard', 'Noto Sans KR', Arial, sans-serif",
+
+                  fontSize:
+                    18,
+
+                  letterSpacing:
+                    0,
+                }}
+              >
+                {nicknameLoading
+                  ? t(
+                      "loading_nickname"
+                    )
+                  : nickname ||
+                    t(
+                      "no_nickname"
+                    )}
+              </span>
+
+              {/* 프로필 */}
+              <button
+                style={{
+                  ...infoButtonStyle,
+
+                  width:
+                    150,
+
+                  minHeight:
+                    46,
+                }}
+                onClick={() =>
+                  setShowProfile(
+                    true
+                  )
+                }
+              >
+                {t(
+                  "edit_profile"
+                )}
+              </button>
+
+              {/* 로그아웃 */}
+              <button
+                style={{
+                  ...logoutButtonStyle,
+
+                  flex:
+                    "1 1 100px",
+
+                  minWidth:
+                    100,
+
+                  minHeight:
+                    46,
+                }}
+                onClick={
+                  handleLogout
+                }
+              >
+                {t(
+                  "logout"
+                )}
+              </button>
+            </>
+          ) : (
+            <button
+              style={{
+                ...mainButtonStyle,
+
+                flex:
+                  "1 1 190px",
+
+                minWidth:
+                  190,
+
+                minHeight:
+                  46,
+              }}
+              onClick={() =>
+                navigate(
+                  `/${currentLang}/login`
+                )
+              }
+            >
+              {t(
+                "auth.loginSignup"
+              )}
+            </button>
+          )}
+        </div>
+
+        {/* 관리자 전용 */}
         {isAdmin && (
-          <>
+          <div
+            style={{
+              width:
+                "100%",
+
+              display:
+                "flex",
+
+              alignItems:
+                "center",
+
+              justifyContent:
+                "center",
+
+              flexWrap:
+                "wrap",
+
+              gap:
+                "10px 12px",
+
+              paddingTop:
+                2,
+            }}
+          >
             <button
-              style={adminButtonStyle("#1976ed")}
-              onClick={() => navigate(`/${currentLang}/admin`)}
+              style={adminButtonStyle(
+                "#1976ed"
+              )}
+              onClick={() =>
+                navigate(
+                  `/${currentLang}/admin`
+                )
+              }
             >
-              {t("dashboard")}
+              {t(
+                "dashboard"
+              )}
             </button>
 
             <button
-              style={statButtonStyle}
-              onClick={() => navigate(`/${currentLang}/admin-stats`)}
+              style={
+                statButtonStyle
+              }
+              onClick={() =>
+                navigate(
+                  `/${currentLang}/admin-stats`
+                )
+              }
             >
-              {t("stats")}
-            </button>
-
-            <button style={adminButtonStyle()} onClick={onBackup}>
-              {t("backupAll")}
+              {t(
+                "stats"
+              )}
             </button>
 
             <button
-              style={adminButtonStyle("#253253")}
-              onClick={() => inputRef.current && inputRef.current.click()}
+              style={adminButtonStyle()}
+              onClick={
+                onBackup
+              }
             >
-              {t("restore")}
+              {t(
+                "backupAll"
+              )}
+            </button>
+
+            <button
+              style={adminButtonStyle(
+                "#253253"
+              )}
+              onClick={() =>
+                inputRef.current &&
+                inputRef.current.click()
+              }
+            >
+              {t(
+                "restore"
+              )}
             </button>
 
             <input
-              ref={inputRef}
+              ref={
+                inputRef
+              }
               type="file"
               accept="application/json"
-              style={{ display: "none" }}
-              onChange={onRestore}
-            />
-          </>
-        )}
-
-        <button style={mainButtonStyle} onClick={onMakeWorldcup}>
-          {t("makeWorldcup")}
-        </button>
-
-        {user && (
-          <button style={infoButtonStyle} onClick={handleMyWorldcup}>
-            {t("my_worldcups")}
-          </button>
-        )}
-
-        <button style={infoButtonStyle} onClick={handleRecentWorldcup}>
-          {t("recent_worldcups")}
-        </button>
-
-        <button style={infoButtonStyle} onClick={handleBlog}>
-          Blog
-        </button>
-
-        {/* ----------- 언어 선택 (현재 경로 유지) ----------- */}
-        <select
-          value={(i18n.language || "en").split("-")[0]}
-          onChange={(e) => changeLanguageAndKeepPath(e.target.value)}
-          style={selectStyle}
-          aria-label={t("language_select", "Select language")}
-        >
-          {languages.map((lang) => (
-            <option key={lang.code} value={lang.code}>
-              {lang.label}
-            </option>
-          ))}
-        </select>
-        {/* ----------- 여기까지 ----------- */}
-
-        {user ? (
-          <>
-            <span
               style={{
-                fontWeight: 700,
-                color: "#22dcff",
-                margin: "0 6px 0 0",
-                whiteSpace: "nowrap",
-                userSelect: "none",
-                textShadow: "0 0 6px #00e5ff88, 0 0.5px 2.5px #fff",
-                fontFamily: "'Pretendard','Orbitron',sans-serif",
-                fontSize: 15,
+                display:
+                  "none",
               }}
-            >
-              {nicknameLoading
-                ? t("loading_nickname")
-                : nickname || t("no_nickname")}
-            </span>
-
-            <button
-              style={infoButtonStyle}
-              onClick={() => setShowProfile(true)}
-            >
-              {t("edit_profile")}
-            </button>
-
-            <button style={logoutButtonStyle} onClick={handleLogout}>
-              {t("logout")}
-            </button>
-
-            {showProfile && (
-              <div
-                style={modalOverlayStyle}
-                onClick={() => setShowProfile(false)}
-              >
-                <div
-                  style={modalContentStyle}
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  <div
-                    style={{
-                      fontWeight: 800,
-                      fontSize: 21,
-                      marginBottom: 18,
-                      textAlign: "center",
-                    }}
-                  >
-                    {t("edit_profile")}
-                  </div>
-
-                  <div style={{ width: "100%" }}>
-                    <div style={{ marginBottom: 10, fontSize: 15 }}>
-                      <b>{t("email")}:</b> {user.email}
-                    </div>
-
-                    <div style={{ marginBottom: 10, fontSize: 15 }}>
-                      <b>{t("nickname")}:</b>
-
-                      <input
-                        type="text"
-                        value={editNickname}
-                        onChange={(e) => setEditNickname(e.target.value)}
-                        style={modalInputStyle}
-                        placeholder={t("nickname")}
-                        maxLength={20}
-                        disabled={editLoading}
-                      />
-
-                      <button
-                        style={modalProfileButtonStyle}
-                        onClick={handleNicknameChange}
-                        disabled={editLoading}
-                      >
-                        {editLoading
-                          ? t("changing")
-                          : t("change_nickname")}
-                      </button>
-                    </div>
-
-                    <button
-                      style={modalGrayButtonStyle}
-                      onClick={handlePasswordChange}
-                      disabled={editLoading}
-                    >
-                      {t("send_pw_reset")}
-                    </button>
-
-                    {profile?.withdrawal_requested_at ? (
-                      <button
-                        style={modalGrayButtonStyle}
-                        onClick={handleCancelWithdrawal}
-                        disabled={cancelLoading}
-                      >
-                        {cancelLoading
-                          ? t("canceling")
-                          : t("withdraw_cancel")}
-                      </button>
-                    ) : (
-                      <button
-                        style={modalDeleteButtonStyle}
-                        onClick={handleWithdrawalRequest}
-                        disabled={withdrawLoading}
-                      >
-                        {withdrawLoading
-                          ? t("changing")
-                          : t("withdraw")}
-                      </button>
-                    )}
-
-                    {editError && (
-                      <div
-                        style={{
-                          color: "red",
-                          marginTop: 7,
-                          fontSize: 14,
-                          textAlign: "center",
-                        }}
-                      >
-                        {editError}
-                      </div>
-                    )}
-                  </div>
-
-                  <button
-                    style={modalCloseButtonStyle}
-                    onClick={() => setShowProfile(false)}
-                  >
-                    {t("close")}
-                  </button>
-
-                  <button
-                    style={{
-                      position: "absolute",
-                      top: 10,
-                      right: 10,
-                      width: 32,
-                      height: 32,
-                      background: "transparent",
-                      border: "none",
-                      color: "#555",
-                      fontSize: 28,
-                      cursor: "pointer",
-                      zIndex: 10,
-                    }}
-                    aria-label={t("close")}
-                    tabIndex={0}
-                    onClick={() => setShowProfile(false)}
-                  >
-                    <svg width="22" height="22" viewBox="0 0 22 22">
-                      <line
-                        x1="4"
-                        y1="4"
-                        x2="18"
-                        y2="18"
-                        stroke="#333"
-                        strokeWidth="2.2"
-                        strokeLinecap="round"
-                      />
-                      <line
-                        x1="18"
-                        y1="4"
-                        x2="4"
-                        y2="18"
-                        stroke="#333"
-                        strokeWidth="2.2"
-                        strokeLinecap="round"
-                      />
-                    </svg>
-                  </button>
-                </div>
-              </div>
-            )}
-          </>
-        ) : (
-          <button
-            style={mainButtonStyle}
-            onClick={() => navigate(`/${currentLang}/login`)}
-          >
-            {t("login")}
-          </button>
+              onChange={
+                onRestore
+              }
+            />
+          </div>
         )}
       </div>
+
+      {/* 프로필 모달 */}
+      {showProfile && (
+        <div
+          style={
+            modalOverlayStyle
+          }
+          onClick={() =>
+            setShowProfile(
+              false
+            )
+          }
+        >
+          <div
+            style={
+              modalContentStyle
+            }
+            onClick={(
+              e
+            ) =>
+              e.stopPropagation()
+            }
+          >
+            <div
+              style={{
+                fontWeight:
+                  800,
+
+                fontSize:
+                  21,
+
+                marginBottom:
+                  18,
+
+                textAlign:
+                  "center",
+              }}
+            >
+              {t(
+                "edit_profile"
+              )}
+            </div>
+
+            <div
+              style={{
+                width:
+                  "100%",
+              }}
+            >
+              <div
+                style={{
+                  marginBottom:
+                    10,
+
+                  fontSize:
+                    15,
+                }}
+              >
+                <b>
+                  {t(
+                    "email"
+                  )}
+                  :
+                </b>{" "}
+                {user?.email ||
+                  ""}
+              </div>
+
+              <div
+                style={{
+                  marginBottom:
+                    10,
+
+                  fontSize:
+                    15,
+                }}
+              >
+                <b>
+                  {t(
+                    "nickname"
+                  )}
+                  :
+                </b>
+
+                <input
+                  type="text"
+                  value={
+                    editNickname
+                  }
+                  onChange={(
+                    e
+                  ) =>
+                    setEditNickname(
+                      e.target.value
+                    )
+                  }
+                  style={
+                    modalInputStyle
+                  }
+                  placeholder={t(
+                    "nickname"
+                  )}
+                  maxLength={
+                    20
+                  }
+                  disabled={
+                    editLoading
+                  }
+                />
+
+                <button
+                  style={
+                    modalProfileButtonStyle
+                  }
+                  onClick={
+                    handleNicknameChange
+                  }
+                  disabled={
+                    editLoading
+                  }
+                >
+                  {editLoading
+                    ? t(
+                        "changing"
+                      )
+                    : t(
+                        "change_nickname"
+                      )}
+                </button>
+              </div>
+
+              <button
+                style={
+                  modalGrayButtonStyle
+                }
+                onClick={
+                  handlePasswordChange
+                }
+                disabled={
+                  editLoading
+                }
+              >
+                {t(
+                  "send_pw_reset"
+                )}
+              </button>
+
+              {profile?.withdrawal_requested_at ? (
+                <button
+                  style={
+                    modalGrayButtonStyle
+                  }
+                  onClick={
+                    handleCancelWithdrawal
+                  }
+                  disabled={
+                    cancelLoading
+                  }
+                >
+                  {cancelLoading
+                    ? t(
+                        "canceling"
+                      )
+                    : t(
+                        "withdraw_cancel"
+                      )}
+                </button>
+              ) : (
+                <button
+                  style={
+                    modalDeleteButtonStyle
+                  }
+                  onClick={
+                    handleWithdrawalRequest
+                  }
+                  disabled={
+                    withdrawLoading
+                  }
+                >
+                  {withdrawLoading
+                    ? t(
+                        "changing"
+                      )
+                    : t(
+                        "withdraw"
+                      )}
+                </button>
+              )}
+
+              {editError && (
+                <div
+                  style={{
+                    color:
+                      "red",
+
+                    marginTop:
+                      7,
+
+                    fontSize:
+                      14,
+
+                    textAlign:
+                      "center",
+                  }}
+                >
+                  {
+                    editError
+                  }
+                </div>
+              )}
+            </div>
+
+            <button
+              style={
+                modalCloseButtonStyle
+              }
+              onClick={() =>
+                setShowProfile(
+                  false
+                )
+              }
+            >
+              {t(
+                "close"
+              )}
+            </button>
+
+            <button
+              style={{
+                position:
+                  "absolute",
+
+                top:
+                  10,
+
+                right:
+                  10,
+
+                width:
+                  32,
+
+                height:
+                  32,
+
+                background:
+                  "transparent",
+
+                border:
+                  "none",
+
+                color:
+                  "#555",
+
+                fontSize:
+                  28,
+
+                cursor:
+                  "pointer",
+
+                zIndex:
+                  10,
+              }}
+              aria-label={t(
+                "close"
+              )}
+              tabIndex={
+                0
+              }
+              onClick={() =>
+                setShowProfile(
+                  false
+                )
+              }
+            >
+              <svg
+                width="22"
+                height="22"
+                viewBox="0 0 22 22"
+              >
+                <line
+                  x1="4"
+                  y1="4"
+                  x2="18"
+                  y2="18"
+                  stroke="#333"
+                  strokeWidth="2.2"
+                  strokeLinecap="round"
+                />
+
+                <line
+                  x1="18"
+                  y1="4"
+                  x2="4"
+                  y2="18"
+                  stroke="#333"
+                  strokeWidth="2.2"
+                  strokeLinecap="round"
+                />
+              </svg>
+            </button>
+          </div>
+        </div>
+      )}
     </header>
   );
 }

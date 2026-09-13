@@ -37,6 +37,9 @@ import AdGuard from "./ads/AdGuard";
 import BlogPage from "./components/BlogPage";
 import BlogPostPage from "./components/BlogPostPage";
 import CategoryPage from "./components/CategoryPage";
+import TierListPage from "./components/TierListPage";
+import TierListMaker from "./components/TierListMaker";
+import TierListResultPage from "./components/TierListResultPage";
 
 import DePage from "./pages/de";
 import EnPage from "./pages/en";
@@ -304,6 +307,51 @@ style={{
 /* =====================================================
    APP
 ===================================================== */
+
+function RouteBackground() {
+  const { pathname } = useLocation();
+  const isTierListPage = /^\/(?:[^/]+\/)?tier-list(?:\/|$)/.test(pathname);
+
+  if (isTierListPage) {
+    return (
+      <div
+        aria-hidden="true"
+        style={{
+          position: "fixed",
+          inset: 0,
+          zIndex: 0,
+          background: "#000",
+          pointerEvents: "none",
+        }}
+      />
+    );
+  }
+
+  return (
+      <img
+        src="/OnePickGame.avif"
+        alt="OnePickGame 배경"
+        style={{
+          position: "fixed",
+          inset: 0,
+          zIndex: 0,
+          width: "100vw",
+          height: "100vh",
+          minHeight: "100vh",
+          minWidth: "100vw",
+          objectFit: "cover",
+          objectPosition: "center",
+          pointerEvents: "none",
+          userSelect: "none",
+          opacity: 1,
+        }}
+        draggable={false}
+        loading="eager"
+        fetchpriority="high"
+        aria-hidden="true"
+      />
+  );
+}
 
 function App() {
  useIsMobile();
@@ -1777,7 +1825,35 @@ const makerDescMap = {
 />
   }
 />
+<Route
+  path="/:lang/tier-list"
+  element={
+    <TierListPage
+      worldcupList={worldcupList}
+    />
+  }
+/>
+<Route
+  path="/:lang/tier-list/create"
+  element={
+    <TierListMaker
+      worldcupList={worldcupList}
+    />
+  }
+/>
 
+<Route
+  path="/:lang/tier-list/create/:id"
+  element={
+    <TierListMaker
+      worldcupList={worldcupList}
+    />
+  }
+/>
+<Route
+  path="/:lang/tier-list/:id"
+  element={<TierListResultPage />}
+/>
 <Route
   path="/:lang"
   element={
@@ -2055,6 +2131,7 @@ const makerDescMap = {
   =================================================== */
 
   return (
+    <Router>
     <div
       className="app-main-wrapper"
       style={{
@@ -2065,28 +2142,8 @@ position: "relative",
 overflowX: "hidden",
       }}
     >
-      <img
-        src="/OnePickGame.avif"
-        alt="OnePickGame 배경"
-        style={{
-          position: "fixed",
-          inset: 0,
-          zIndex: 0,
-          width: "100vw",
-          height: "100vh",
-          minHeight: "100vh",
-          minWidth: "100vw",
-          objectFit: "cover",
-          objectPosition: "center",
-          pointerEvents: "none",
-          userSelect: "none",
-          opacity: 1,
-        }}
-        draggable={false}
-        loading="eager"
-        fetchpriority="high"
-        aria-hidden="true"
-      />
+      <RouteBackground />
+
 
       <div
         style={{
@@ -2113,7 +2170,6 @@ overflowX: "hidden",
             margin: 0,
           }}
         >
-<Router>
   <ScrollToTopOnRouteChange />
 
   <AppRoutes />
@@ -2121,10 +2177,10 @@ overflowX: "hidden",
   <ScrollToTopButton />
 
   <Footer />
-</Router>
         </div>
       </div>
     </div>
+    </Router>
   );
 }
 

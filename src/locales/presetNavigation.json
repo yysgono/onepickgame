@@ -1,0 +1,274 @@
+{
+  "ko": {
+    "tierList": {
+      "result": {
+        "usedPresetLabel": "사용한 프리셋",
+        "sourcePresetFallback": "원본 월드컵",
+        "browsePresetTierLists": "이 프리셋을 사용한 다른 티어표 보기"
+      }
+    },
+    "presetNavigation": {
+      "myBrackets": "내 이상형 월드컵",
+      "myTierLists": "내가 만든 티어표"
+    },
+    "tierTags": {
+      "label": "태그",
+      "hint": "최대 5개 · 각 30자 · 같은 태그로 티어표를 찾을 수 있어요."
+    }
+  },
+  "en": {
+    "tierList": {
+      "result": {
+        "usedPresetLabel": "Preset used",
+        "sourcePresetFallback": "Source bracket",
+        "browsePresetTierLists": "View other tier lists using this preset"
+      }
+    },
+    "presetNavigation": {
+      "myBrackets": "My Brackets",
+      "myTierLists": "My Tier Lists"
+    },
+    "tierTags": {
+      "label": "Tags",
+      "hint": "Up to 5 tags, 30 characters each. Find tier lists with matching tags."
+    }
+  },
+  "ja": {
+    "tierList": {
+      "result": {
+        "usedPresetLabel": "使用したプリセット",
+        "sourcePresetFallback": "元のトーナメント",
+        "browsePresetTierLists": "このプリセットを使った他のティアリストを見る"
+      }
+    },
+    "presetNavigation": {
+      "myBrackets": "自分のトーナメント",
+      "myTierLists": "自分のティアリスト"
+    },
+    "tierTags": {
+      "label": "タグ",
+      "hint": "最大5個、各30文字。同じタグのティアリストを検索できます。"
+    }
+  },
+  "zh": {
+    "tierList": {
+      "result": {
+        "usedPresetLabel": "使用的预设",
+        "sourcePresetFallback": "原始淘汰赛",
+        "browsePresetTierLists": "查看使用此预设的其他榜单"
+      }
+    },
+    "presetNavigation": {
+      "myBrackets": "我的淘汰赛",
+      "myTierLists": "我的榜单"
+    },
+    "tierTags": {
+      "label": "标签",
+      "hint": "最多5个，每个30字。可查找相同标签的榜单。"
+    }
+  },
+  "es": {
+    "tierList": {
+      "result": {
+        "usedPresetLabel": "Plantilla utilizada",
+        "sourcePresetFallback": "Torneo original",
+        "browsePresetTierLists": "Ver otras listas con esta plantilla"
+      }
+    },
+    "presetNavigation": {
+      "myBrackets": "Mis torneos",
+      "myTierLists": "Mis listas"
+    },
+    "tierTags": {
+      "label": "Etiquetas",
+      "hint": "Hasta 5 etiquetas de 30 caracteres para encontrar listas relacionadas."
+    }
+  },
+  "fr": {
+    "tierList": {
+      "result": {
+        "usedPresetLabel": "Modèle utilisé",
+        "sourcePresetFallback": "Tournoi d’origine",
+        "browsePresetTierLists": "Voir les autres classements utilisant ce modèle"
+      }
+    },
+    "presetNavigation": {
+      "myBrackets": "Mes tournois",
+      "myTierLists": "Mes classements"
+    },
+    "tierTags": {
+      "label": "Tags",
+      "hint": "Jusqu’à 5 tags de 30 caractères pour trouver des classements associés."
+    }
+  },
+  "de": {
+    "tierList": {
+      "result": {
+        "usedPresetLabel": "Verwendete Vorlage",
+        "sourcePresetFallback": "Ursprüngliches Turnier",
+        "browsePresetTierLists": "Weitere Tierlisten mit dieser Vorlage ansehen"
+      }
+    },
+    "presetNavigation": {
+      "myBrackets": "Meine Turniere",
+      "myTierLists": "Meine Tierlisten"
+    },
+    "tierTags": {
+      "label": "Tags",
+      "hint": "Bis zu 5 Tags mit je 30 Zeichen für passende Tierlisten."
+    }
+  },
+  "pt": {
+    "tierList": {
+      "result": {
+        "usedPresetLabel": "Modelo utilizado",
+        "sourcePresetFallback": "Torneio original",
+        "browsePresetTierLists": "Ver outras listas com este modelo"
+      }
+    },
+    "presetNavigation": {
+      "myBrackets": "Meus torneios",
+      "myTierLists": "Minhas listas"
+    },
+    "tierTags": {
+      "label": "Tags",
+      "hint": "Até 5 tags de 30 caracteres para encontrar listas relacionadas."
+    }
+  },
+  "ru": {
+    "tierList": {
+      "result": {
+        "usedPresetLabel": "Использованный шаблон",
+        "sourcePresetFallback": "Исходный турнир",
+        "browsePresetTierLists": "Посмотреть другие тир-листы с этим шаблоном"
+      }
+    },
+    "presetNavigation": {
+      "myBrackets": "Мои турниры",
+      "myTierLists": "Мои тир-листы"
+    },
+    "tierTags": {
+      "label": "Теги",
+      "hint": "До 5 тегов по 30 символов для поиска похожих тир-листов."
+    }
+  },
+  "vi": {
+    "tierList": {
+      "result": {
+        "usedPresetLabel": "Mẫu đã sử dụng",
+        "sourcePresetFallback": "Giải đấu gốc",
+        "browsePresetTierLists": "Xem các bảng xếp hạng khác dùng mẫu này"
+      }
+    },
+    "presetNavigation": {
+      "myBrackets": "Giải đấu của tôi",
+      "myTierLists": "Bảng xếp hạng của tôi"
+    },
+    "tierTags": {
+      "label": "Thẻ",
+      "hint": "Tối đa 5 thẻ, mỗi thẻ 30 ký tự để tìm bảng cùng thẻ."
+    }
+  },
+  "id": {
+    "tierList": {
+      "result": {
+        "usedPresetLabel": "Preset yang digunakan",
+        "sourcePresetFallback": "Turnamen sumber",
+        "browsePresetTierLists": "Lihat tier list lain dengan preset ini"
+      }
+    },
+    "presetNavigation": {
+      "myBrackets": "Turnamen Saya",
+      "myTierLists": "Tier List Saya"
+    },
+    "tierTags": {
+      "label": "Tag",
+      "hint": "Maksimal 5 tag, masing-masing 30 karakter untuk mencari daftar terkait."
+    }
+  },
+  "hi": {
+    "tierList": {
+      "result": {
+        "usedPresetLabel": "इस्तेमाल किया गया प्रीसेट",
+        "sourcePresetFallback": "मूल टूर्नामेंट",
+        "browsePresetTierLists": "इस प्रीसेट से बनी अन्य टियर सूचियाँ देखें"
+      }
+    },
+    "presetNavigation": {
+      "myBrackets": "मेरे टूर्नामेंट",
+      "myTierLists": "मेरी टियर सूचियाँ"
+    },
+    "tierTags": {
+      "label": "टैग",
+      "hint": "अधिकतम 5 टैग, हर टैग में 30 अक्षर। समान टैग वाली सूचियाँ खोजें।"
+    }
+  },
+  "tr": {
+    "tierList": {
+      "result": {
+        "usedPresetLabel": "Kullanılan şablon",
+        "sourcePresetFallback": "Kaynak turnuva",
+        "browsePresetTierLists": "Bu şablonla oluşturulan diğer listeleri gör"
+      }
+    },
+    "presetNavigation": {
+      "myBrackets": "Turnuvalarım",
+      "myTierLists": "Sıralama Listelerim"
+    },
+    "tierTags": {
+      "label": "Etiketler",
+      "hint": "İlgili listeler için en fazla 5 etiket, her biri 30 karakter."
+    }
+  },
+  "th": {
+    "tierList": {
+      "result": {
+        "usedPresetLabel": "พรีเซ็ตที่ใช้",
+        "sourcePresetFallback": "ทัวร์นาเมนต์ต้นฉบับ",
+        "browsePresetTierLists": "ดูเทียร์ลิสต์อื่นที่ใช้พรีเซ็ตนี้"
+      }
+    },
+    "presetNavigation": {
+      "myBrackets": "ทัวร์นาเมนต์ของฉัน",
+      "myTierLists": "เทียร์ลิสต์ของฉัน"
+    },
+    "tierTags": {
+      "label": "แท็ก",
+      "hint": "สูงสุด 5 แท็ก แท็กละ 30 ตัวอักษร เพื่อค้นหาเทียร์ลิสต์ที่ใช้แท็กเดียวกัน"
+    }
+  },
+  "ar": {
+    "tierList": {
+      "result": {
+        "usedPresetLabel": "القالب المستخدم",
+        "sourcePresetFallback": "البطولة الأصلية",
+        "browsePresetTierLists": "عرض قوائم التصنيف الأخرى التي تستخدم هذا القالب"
+      }
+    },
+    "presetNavigation": {
+      "myBrackets": "بطولاتي",
+      "myTierLists": "قوائم التصنيف الخاصة بي"
+    },
+    "tierTags": {
+      "label": "الوسوم",
+      "hint": "حتى 5 وسوم، كل منها 30 حرفًا، للعثور على قوائم ذات وسوم مماثلة."
+    }
+  },
+  "bn": {
+    "tierList": {
+      "result": {
+        "usedPresetLabel": "ব্যবহৃত প্রিসেট",
+        "sourcePresetFallback": "মূল টুর্নামেন্ট",
+        "browsePresetTierLists": "এই প্রিসেট দিয়ে তৈরি অন্যান্য টিয়ার তালিকা দেখুন"
+      }
+    },
+    "presetNavigation": {
+      "myBrackets": "আমার টুর্নামেন্ট",
+      "myTierLists": "আমার টিয়ার তালিকা"
+    },
+    "tierTags": {
+      "label": "ট্যাগ",
+      "hint": "সর্বোচ্চ ৫টি ট্যাগ, প্রতিটিতে ৩০ অক্ষর। একই ট্যাগের তালিকা খুঁজুন।"
+    }
+  }
+}

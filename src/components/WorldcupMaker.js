@@ -6,7 +6,10 @@ import React, {
   useState,
 } from "react";
 
-import { useNavigate } from "react-router-dom";
+import {
+  useLocation,
+  useNavigate,
+} from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 import imageCompression from "browser-image-compression";
 
@@ -61,6 +64,28 @@ const CONTENT_LANGUAGE_OPTIONS = [
   { value: "ar", label: "العربية" },
   { value: "bn", label: "বাংলা" },
 ];
+
+const WORLDCUP_FROM_TIER_STORAGE_KEY =
+  "onepick_worldcup_from_tier_v1";
+
+const normalizeWorldcupCategoryFromTier = (value) => {
+  const category = String(value || "").trim();
+
+  if (CATEGORY_OPTIONS.some((item) => item.value === category)) {
+    return category;
+  }
+
+  const categoryMap = {
+    animation: "anime_manga",
+    entertainment: "etc",
+    food: "food",
+    game: "game",
+    sports: "sports",
+    other: "etc",
+  };
+
+  return categoryMap[category] || "etc";
+};
 
 const getCurrentPageLanguage = () => {
   if (typeof window === "undefined") {
@@ -605,6 +630,9 @@ function WorldcupMaker({
   const navigate =
     useNavigate();
 
+  const location =
+    useLocation();
+
   const [
     contentLanguage,
     setContentLanguage,
@@ -661,6 +689,79 @@ const [
     },
   ]);
 
+
+  // 티어표 결과에서 넘어온 후보들을 이상형 월드컵 만들기에 미리 채운다.
+  // 기존 이미지 URL을 그대로 재사용하므로 동일 이미지를 다시 업로드하지 않는다.
+  useEffect(() => {
+    let payload = null;
+
+    try {
+      const raw = sessionStorage.getItem(
+        WORLDCUP_FROM_TIER_STORAGE_KEY
+      );
+
+      if (!raw) {
+        return;
+      }
+
+      payload = JSON.parse(raw);
+      sessionStorage.removeItem(
+        WORLDCUP_FROM_TIER_STORAGE_KEY
+      );
+    } catch (readError) {
+      console.error(
+        "Tier → Worldcup payload read failed",
+        readError
+      );
+      return;
+    }
+
+    if (!payload) {
+      return;
+    }
+
+    if (payload.title) {
+      setTitle(
+        String(payload.title).trim().slice(0, 100)
+      );
+    }
+
+    const categoryMap = {
+      game: "game",
+      entertainment: "person",
+      animation: "anime_manga",
+      food: "food",
+      sports: "sports",
+      other: "etc",
+    };
+
+    setCategory(
+      categoryMap[payload.category] || "etc"
+    );
+
+    if (
+      Array.isArray(payload.candidates) &&
+      payload.candidates.length > 0
+    ) {
+      const imported = payload.candidates
+        .filter(
+          (candidate) =>
+            candidate &&
+            (candidate.image || candidate.name)
+        )
+        .map((candidate) => ({
+          id: candidate.id || uuidv4(),
+          name: candidate.name || "",
+          image: candidate.image || "",
+          file: null,
+        }));
+
+      if (imported.length >= 2) {
+        setCandidates(imported);
+      }
+    }
+  }, []);
+
   const [
     error,
     setError,
@@ -697,12 +798,88 @@ const [
   const fileInputRef =
     useRef(null);
 
+  const prefillAppliedRef =
+    useRef(false);
+
   const candidatesRef =
     useRef(candidates);
       useEffect(() => {
     candidatesRef.current =
       candidates;
   }, [candidates]);
+
+  useEffect(() => {
+    if (
+      prefillAppliedRef.current ||
+      !location.state?.prefillFromTier
+    ) {
+      return;
+    }
+
+    try {
+      const savedPayload =
+        sessionStorage.getItem(
+          WORLDCUP_FROM_TIER_STORAGE_KEY
+        );
+
+      if (!savedPayload) {
+        prefillAppliedRef.current = true;
+        return;
+      }
+
+      const payload =
+        JSON.parse(savedPayload);
+
+      const nextCandidates =
+        Array.isArray(payload?.candidates)
+          ? payload.candidates
+              .map((candidate, index) => ({
+                id:
+                  candidate?.id ||
+                  "tier-candidate-" + index,
+                name:
+                  String(candidate?.name || ""),
+                image:
+                  String(candidate?.image || ""),
+                file: null,
+              }))
+              .filter(
+                (candidate) =>
+                  candidate.name ||
+                  candidate.image
+              )
+          : [];
+
+      if (nextCandidates.length >= 2) {
+        setCandidates(nextCandidates);
+      }
+
+      if (payload?.title) {
+        setTitle(
+          String(payload.title)
+        );
+      }
+
+      if (payload?.category) {
+        setCategory(
+          normalizeWorldcupCategoryFromTier(
+            payload.category
+          )
+        );
+      }
+
+      prefillAppliedRef.current = true;
+      sessionStorage.removeItem(
+        WORLDCUP_FROM_TIER_STORAGE_KEY
+      );
+    } catch (prefillError) {
+      console.error(
+        "월드컵 프리필 로드 실패:",
+        prefillError
+      );
+      prefillAppliedRef.current = true;
+    }
+  }, [location.state]);
 
   useEffect(() => {
     let mounted = true;

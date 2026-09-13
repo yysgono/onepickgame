@@ -234,6 +234,7 @@ function MediaRenderer({
   style = {},
   onPlay,
   active = true,
+  loading = "lazy",
 }) {
   const { t } = useTranslation();
 
@@ -243,6 +244,11 @@ function MediaRenderer({
     mediaError,
     setMediaError,
   ] = useState(false);
+
+  const [
+  imageRetry,
+  setImageRetry,
+] = useState(0);
 
   const [
     youtubeStarted,
@@ -271,11 +277,12 @@ function MediaRenderer({
   /**
    * 후보 URL이 바뀌면 상태 초기화
    */
-  useEffect(() => {
-    setMediaError(false);
-    setYoutubeStarted(false);
-    setVideoPlaying(false);
-  }, [safeUrl]);
+useEffect(() => {
+  setMediaError(false);
+  setImageRetry(0);
+  setYoutubeStarted(false);
+  setVideoPlaying(false);
+}, [safeUrl]);
 
   /**
    * YouTube는 iframe을 없애지 않습니다.
@@ -313,7 +320,17 @@ function MediaRenderer({
   const handleMediaError = () => {
     setMediaError(true);
   };
+const handleImageError = () => {
+  if (imageRetry < 2) {
+    setTimeout(() => {
+      setImageRetry((prev) => prev + 1);
+    }, 500 + imageRetry * 500);
 
+    return;
+  }
+
+  setMediaError(true);
+};
   /**
    * 1. 빈 URL
    */
@@ -672,8 +689,9 @@ function MediaRenderer({
     }
 
     return (
-      <img
-        src={safeUrl}
+<img
+  key={`${safeUrl}-${imageRetry}`}
+  src={safeUrl}
         alt={alt}
         style={{
           width: "100%",
@@ -684,11 +702,11 @@ function MediaRenderer({
           ...style,
         }}
         draggable={false}
-        loading="lazy"
+        loading={loading}
         decoding="async"
-        onError={
-          handleMediaError
-        }
+onError={
+  handleImageError
+}
       />
     );
   }
@@ -706,8 +724,9 @@ function MediaRenderer({
   }
 
   return (
-    <img
-      src={safeUrl}
+<img
+  key={`${safeUrl}-${imageRetry}`}
+  src={safeUrl}
       alt={alt}
       style={{
         width: "100%",
@@ -718,11 +737,11 @@ function MediaRenderer({
         ...style,
       }}
       draggable={false}
-      loading="lazy"
+  loading={loading}
       decoding="async"
-      onError={
-        handleMediaError
-      }
+onError={
+  handleImageError
+}
     />
   );
 }

@@ -3,7 +3,7 @@ import { Helmet } from "react-helmet-async";
 import { useLocation } from "react-router-dom";
 
 export default function SEOManager() {
-  const { pathname } = useLocation();
+  const { pathname, search } = useLocation();
 
   // /:lang 또는 /:lang/slug 형태에서 slug 추출
   // 예:
@@ -29,6 +29,8 @@ const INDEX_ALLOW = new Set([
   "terms-of-service",
   "suggestions",
   "notice",
+  "tier-list",
+  "tier-list/create",
 ]);
 
   // 색인을 허용하는 동적 경로
@@ -38,6 +40,7 @@ const INDEX_ALLOW = new Set([
     /^select-round\/[^/]+$/,            // /:lang/select-round/:id
     /^result\/[^/]+(?:\/[^/]+)?$/,      // /:lang/result/:id(/:round)
     /^stats\/[^/]+$/,                   // /:lang/stats/:id
+    /^tier-list\/(?!create(?:\/|$))[^/]+$/, // /:lang/tier-list/:id
   ];
 
   // 색인에서 제외할 경로
@@ -59,8 +62,13 @@ const NOINDEX_PATTERNS = [
       pattern.test(slug)
     );
 
+  const searchParams = new URLSearchParams(search || "");
+  const isTierEditOrClone =
+    slug === "tier-list/create" &&
+    (searchParams.has("edit") || searchParams.has("clone"));
+
   const shouldNoIndex =
-    isExplicitlyNoIndex || !isIndexAllowed;
+    isExplicitlyNoIndex || isTierEditOrClone || !isIndexAllowed;
 
   if (!shouldNoIndex) {
     return null;

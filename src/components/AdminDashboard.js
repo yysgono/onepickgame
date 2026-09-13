@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { supabase } from "../utils/supabaseClient";
+import TierPresetAdmin from "./TierPresetAdmin";
 
 // ========================================
 // 카테고리
@@ -15,6 +16,15 @@ const CATEGORY_OPTIONS = [
   { value: "movie_drama", label: "영화 / 드라마" },
   { value: "food", label: "음식" },
   { value: "etc", label: "기타" },
+];
+
+const TIER_CATEGORY_OPTIONS = [
+  { value: "game", label: "게임" },
+  { value: "entertainment", label: "연예인" },
+  { value: "animation", label: "애니" },
+  { value: "food", label: "음식" },
+  { value: "sports", label: "스포츠" },
+  { value: "other", label: "기타" },
 ];
 
 // ========================================
@@ -34,6 +44,29 @@ async function getAllWorldcups() {
   }
 
   return data || [];
+}
+
+async function getAllTierLists() {
+  const { data, error } = await supabase
+    .from("tier_lists")
+    .select("id, title, category, thumbnail_url, candidate_count, candidates, created_at")
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error("티어표 목록 불러오기 실패:", error);
+    return [];
+  }
+
+  return data || [];
+}
+
+async function updateTierListCategory(tierListId, category) {
+  const { error } = await supabase
+    .from("tier_lists")
+    .update({ category: category || "other" })
+    .eq("id", tierListId);
+
+  if (error) throw error;
 }
 
 // 댓글 총 개수
@@ -101,6 +134,12 @@ export default function AdminDashboard() {
   const [totalComments, setTotalComments] = useState(0);
 
   const [allWorldcups, setAllWorldcups] = useState([]);
+  const [allTierLists, setAllTierLists] = useState([]);
+  const [tierCategoryValues, setTierCategoryValues] = useState({});
+  const [tierSearchTerm, setTierSearchTerm] = useState("");
+  const [tierCategoryFilter, setTierCategoryFilter] = useState("all");
+  const [tierVisibleCount, setTierVisibleCount] = useState(5);
+  const [tierSavingId, setTierSavingId] = useState(null);
 
   // 각 월드컵의 관리자 편집값
   const [editValues, setEditValues] = useState({});
@@ -113,6 +152,10 @@ export default function AdminDashboard() {
 
   // 추천만 보기
   const [featuredOnly, setFeaturedOnly] = useState(false);
+
+  // 관리자 월드컵 목록: 처음 5개만 표시
+  const [worldcupVisibleCount, setWorldcupVisibleCount] =
+    useState(5);
 
   // 저장 중인 월드컵 ID
   const [savingId, setSavingId] = useState(null);
@@ -134,12 +177,14 @@ const [trashWorkingId, setTrashWorkingId] = useState(null);
     setLoading(true);
 
     try {
-      const [worldcups, comments] = await Promise.all([
+      const [worldcups, comments, tierLists] = await Promise.all([
         getAllWorldcups(),
         getTotalComments(),
+        getAllTierLists(),
       ]);
 
 setAllWorldcups(worldcups);
+setAllTierLists(tierLists);
 setTotalWorldcups(
   worldcups.filter((wc) => !wc.deleted_at).length
 );
@@ -160,6 +205,12 @@ setTotalWorldcups(
       });
 
       setEditValues(initialEditValues);
+
+      const initialTierCategoryValues = {};
+      tierLists.forEach((item) => {
+        initialTierCategoryValues[item.id] = item.category || "other";
+      });
+      setTierCategoryValues(initialTierCategoryValues);
     } finally {
       setLoading(false);
     }
@@ -312,6 +363,28 @@ async function handlePermanentDelete(id) {
     setTrashWorkingId(null);
   }
 }
+  async function handleTierCategorySave(tierListId) {
+    const category = tierCategoryValues[tierListId] || "other";
+    setTierSavingId(tierListId);
+
+    try {
+      await updateTierListCategory(tierListId, category);
+      setAllTierLists((prev) =>
+        prev.map((item) =>
+          String(item.id) === String(tierListId)
+            ? { ...item, category }
+            : item
+        )
+      );
+      alert("티어표 카테고리가 저장되었습니다.");
+    } catch (error) {
+      console.error(error);
+      alert("티어표 카테고리 저장 실패: " + error.message);
+    } finally {
+      setTierSavingId(null);
+    }
+  }
+
   // ========================================
   // 필터링
   // ========================================
@@ -349,6 +422,27 @@ async function handlePermanentDelete(id) {
     categoryFilter,
     featuredOnly,
   ]);
+
+  const filteredTierLists = useMemo(() => {
+    let list = [...allTierLists];
+    const keyword = tierSearchTerm.trim().toLowerCase();
+
+    if (keyword) {
+      list = list.filter((item) => {
+        const title = String(item.title || "").toLowerCase();
+        const id = String(item.id || "").toLowerCase();
+        return title.includes(keyword) || id.includes(keyword);
+      });
+    }
+
+    if (tierCategoryFilter !== "all") {
+      list = list.filter(
+        (item) => (item.category || "other") === tierCategoryFilter
+      );
+    }
+
+    return list;
+  }, [allTierLists, tierSearchTerm, tierCategoryFilter]);
 
   // ========================================
   // 카테고리 미지정 개수
@@ -624,9 +718,10 @@ const unassignedCount = useMemo(() => {
           <input
             type="text"
             value={searchTerm}
-            onChange={(e) =>
-              setSearchTerm(e.target.value)
-            }
+            onChange={(e) => {
+              setSearchTerm(e.target.value);
+              setWorldcupVisibleCount(5);
+            }}
             placeholder="월드컵 제목 또는 ID 검색"
             style={{
               flex: "1 1 260px",
@@ -642,9 +737,10 @@ const unassignedCount = useMemo(() => {
 
           <select
             value={categoryFilter}
-            onChange={(e) =>
-              setCategoryFilter(e.target.value)
-            }
+            onChange={(e) => {
+              setCategoryFilter(e.target.value);
+              setWorldcupVisibleCount(5);
+            }}
             style={{
               padding: "10px 12px",
               borderRadius: 8,
@@ -690,9 +786,10 @@ const unassignedCount = useMemo(() => {
             <input
               type="checkbox"
               checked={featuredOnly}
-              onChange={(e) =>
-                setFeaturedOnly(e.target.checked)
-              }
+              onChange={(e) => {
+                setFeaturedOnly(e.target.checked);
+                setWorldcupVisibleCount(5);
+              }}
             />
 
             ⭐ 추천만 보기
@@ -729,7 +826,9 @@ const unassignedCount = useMemo(() => {
         {/* 월드컵 목록 */}
 
         {!loading &&
-          filteredWorldcups.map((wc) => {
+          filteredWorldcups
+            .slice(0, worldcupVisibleCount)
+            .map((wc) => {
             const values = editValues[wc.id] || {
               category: "",
               is_featured: false,
@@ -1007,6 +1106,53 @@ const unassignedCount = useMemo(() => {
           })}
 
         {!loading &&
+          worldcupVisibleCount <
+            filteredWorldcups.length && (
+            <div
+              style={{
+                marginTop: 16,
+                marginBottom: 8,
+                textAlign: "center",
+              }}
+            >
+              <button
+                type="button"
+                onClick={() =>
+                  setWorldcupVisibleCount(
+                    (prev) => prev + 5
+                  )
+                }
+                style={{
+                  padding: "10px 20px",
+                  border: "none",
+                  borderRadius: 8,
+                  background: "#1976ed",
+                  color: "#fff",
+                  fontSize: 14,
+                  fontWeight: 800,
+                  cursor: "pointer",
+                }}
+              >
+                더보기 ↓
+              </button>
+
+              <div
+                style={{
+                  marginTop: 7,
+                  fontSize: 12,
+                  color: "#888",
+                }}
+              >
+                {Math.min(
+                  worldcupVisibleCount,
+                  filteredWorldcups.length
+                )}
+                /{filteredWorldcups.length}개 표시 중
+              </div>
+            </div>
+          )}
+
+        {!loading &&
           filteredWorldcups.length === 0 && (
             <div
               style={{
@@ -1018,7 +1164,266 @@ const unassignedCount = useMemo(() => {
               조건에 맞는 월드컵이 없습니다.
             </div>
           )}
+        </div>
+
+      {/* ========================================
+          티어표 카테고리 관리
+      ======================================== */}
+      <div
+        style={{
+          background: "#f9fafe",
+          borderRadius: 14,
+          padding: 28,
+          boxShadow: "0 1px 8px #dde5ef77",
+          marginBottom: 32,
+        }}
+      >
+        <div
+          style={{
+            fontWeight: 900,
+            fontSize: 22,
+            marginBottom: 8,
+            color: "#087ba8",
+          }}
+        >
+          📊 티어표 카테고리 관리
+        </div>
+
+        <div
+          style={{
+            fontSize: 14,
+            color: "#777",
+            marginBottom: 22,
+          }}
+        >
+          공개된 티어표의 카테고리를 관리자가 직접 수정할 수 있습니다.
+        </div>
+
+        <div
+          style={{
+            display: "flex",
+            flexWrap: "wrap",
+            gap: 10,
+            marginBottom: 18,
+            alignItems: "center",
+          }}
+        >
+          <input
+            type="text"
+            value={tierSearchTerm}
+            onChange={(e) => {
+              setTierSearchTerm(e.target.value);
+              setTierVisibleCount(5);
+            }}
+            placeholder="티어표 제목 또는 ID 검색"
+            style={{
+              flex: "1 1 260px",
+              minWidth: 200,
+              padding: "10px 13px",
+              borderRadius: 8,
+              border: "1px solid #cfd6e4",
+              fontSize: 15,
+              outline: "none",
+              background: "#fff",
+            }}
+          />
+
+          <select
+            value={tierCategoryFilter}
+            onChange={(e) => {
+              setTierCategoryFilter(e.target.value);
+              setTierVisibleCount(5);
+            }}
+            style={{
+              padding: "10px 12px",
+              borderRadius: 8,
+              border: "1px solid #cfd6e4",
+              fontSize: 14,
+              background: "#fff",
+              cursor: "pointer",
+            }}
+          >
+            <option value="all">전체 카테고리</option>
+            {TIER_CATEGORY_OPTIONS.map((category) => (
+              <option key={category.value} value={category.value}>
+                {category.label}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div
+          style={{
+            marginBottom: 12,
+            fontSize: 14,
+            color: "#777",
+            fontWeight: 700,
+          }}
+        >
+          검색 결과: {filteredTierLists.length}개 / 현재 {Math.min(tierVisibleCount, filteredTierLists.length)}개 표시
+        </div>
+
+        {filteredTierLists
+          .slice(0, tierVisibleCount)
+          .map((item) => {
+            const categoryValue = tierCategoryValues[item.id] || item.category || "other";
+            const thumbnail =
+              item.thumbnail_url ||
+              (Array.isArray(item.candidates)
+                ? item.candidates.find((candidate) => candidate?.image)?.image
+                : "") ||
+              "/default-thumb.png";
+
+            return (
+              <div
+                key={item.id}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 14,
+                  padding: 14,
+                  marginBottom: 10,
+                  background: "#fff",
+                  borderRadius: 12,
+                  border: "1px solid #e1e6ef",
+                  boxShadow: "0 1px 5px #0000000a",
+                  flexWrap: "wrap",
+                }}
+              >
+                <img
+                  src={thumbnail}
+                  alt={item.title || "Tier List"}
+                  onError={(e) => {
+                    e.currentTarget.src = "/default-thumb.png";
+                  }}
+                  style={{
+                    width: 66,
+                    height: 66,
+                    objectFit: "cover",
+                    borderRadius: 8,
+                    background: "#eceff4",
+                    flexShrink: 0,
+                  }}
+                />
+
+                <div style={{ flex: "1 1 260px", minWidth: 180 }}>
+                  <div
+                    style={{
+                      fontWeight: 800,
+                      fontSize: 15,
+                      color: "#222",
+                      marginBottom: 5,
+                    }}
+                  >
+                    {item.title || "제목 없음"}
+                  </div>
+                  <div
+                    style={{
+                      fontSize: 11,
+                      color: "#999",
+                      wordBreak: "break-all",
+                    }}
+                  >
+                    {item.id}
+                    {item.candidate_count != null
+                      ? ` · 후보 ${item.candidate_count}명`
+                      : ""}
+                  </div>
+                </div>
+
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 4,
+                  }}
+                >
+                  <span
+                    style={{
+                      fontSize: 11,
+                      fontWeight: 700,
+                      color: "#777",
+                    }}
+                  >
+                    카테고리
+                  </span>
+                  <select
+                    value={categoryValue}
+                    onChange={(e) =>
+                      setTierCategoryValues((prev) => ({
+                        ...prev,
+                        [item.id]: e.target.value,
+                      }))
+                    }
+                    style={{
+                      width: 135,
+                      padding: "8px 9px",
+                      borderRadius: 7,
+                      border: "1px solid #ccd4e0",
+                      background: "#fff",
+                      fontSize: 14,
+                      cursor: "pointer",
+                    }}
+                  >
+                    {TIER_CATEGORY_OPTIONS.map((category) => (
+                      <option key={category.value} value={category.value}>
+                        {category.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => handleTierCategorySave(item.id)}
+                  disabled={tierSavingId === item.id}
+                  style={{
+                    padding: "9px 16px",
+                    borderRadius: 7,
+                    border: "none",
+                    background: "#087ba8",
+                    color: "#fff",
+                    fontWeight: 800,
+                    fontSize: 13,
+                    cursor: tierSavingId === item.id ? "default" : "pointer",
+                    opacity: tierSavingId === item.id ? 0.6 : 1,
+                  }}
+                >
+                  {tierSavingId === item.id ? "저장 중..." : "저장"}
+                </button>
+              </div>
+            );
+          })}
+
+        {tierVisibleCount < filteredTierLists.length && (
+          <div style={{ marginTop: 16, textAlign: "center" }}>
+            <button
+              type="button"
+              onClick={() => setTierVisibleCount((prev) => prev + 5)}
+              style={{
+                padding: "10px 20px",
+                border: "none",
+                borderRadius: 8,
+                background: "#087ba8",
+                color: "#fff",
+                fontSize: 14,
+                fontWeight: 800,
+                cursor: "pointer",
+              }}
+            >
+              더보기 ↓
+            </button>
+          </div>
+        )}
+
+        {filteredTierLists.length === 0 && (
+          <div style={{ padding: 30, textAlign: "center", color: "#888" }}>
+            조건에 맞는 티어표가 없습니다.
+          </div>
+        )}
       </div>
+
+      <TierPresetAdmin />
 
       {/* ========================================
           안내

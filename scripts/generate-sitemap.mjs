@@ -105,34 +105,75 @@ function makeUrlEntry({
 }
 
 // ======================================================
+// DB 전체 페이지 순회
+// ======================================================
+
+const DB_PAGE_SIZE = 1000;
+
+async function fetchAllRows({ table, select, applyFilters, label }) {
+  const allRows = [];
+  let from = 0;
+
+  while (true) {
+    let query = supabase
+      .from(table)
+      .select(select)
+      .order("created_at", { ascending: true })
+      .order("id", { ascending: true })
+      .range(from, from + DB_PAGE_SIZE - 1);
+
+    if (typeof applyFilters === "function") {
+      query = applyFilters(query);
+    }
+
+    const { data, error } = await query;
+
+    if (error) {
+      console.error(`❌ ${label} 조회 실패:`, error);
+      throw error;
+    }
+
+    const rows = Array.isArray(data) ? data : [];
+    allRows.push(...rows);
+
+    if (rows.length < DB_PAGE_SIZE) {
+      break;
+    }
+
+    from += DB_PAGE_SIZE;
+  }
+
+  console.log(`✅ ${label} ${allRows.length}개 조회 완료`);
+  return allRows;
+}
+
+// ======================================================
 // 월드컵 데이터 가져오기
 // ======================================================
 
 async function fetchWorldcups() {
-  console.log("🔎 Supabase worldcups 조회 중...");
+  console.log("🔎 Supabase worldcups 전체 조회 중...");
 
-  const { data, error } = await supabase
-    .from("worldcups")
-    .select("id, created_at")
-    .is("deleted_at", null)
-    .order("created_at", {
-      ascending: false,
-    });
+  return fetchAllRows({
+    table: "worldcups",
+    select: "id, created_at",
+    applyFilters: (query) => query.is("deleted_at", null),
+    label: "활성 월드컵",
+  });
+}
 
-  if (error) {
-    console.error(
-      "❌ worldcups 조회 실패:",
-      error
-    );
+// ======================================================
+// 티어표 데이터 가져오기
+// ======================================================
 
-    throw error;
-  }
+async function fetchTierLists() {
+  console.log("🔎 Supabase tier_lists 전체 조회 중...");
 
-  console.log(
-    `✅ 활성 월드컵 ${data?.length || 0}개 조회 완료`
-  );
-
-  return data || [];
+  return fetchAllRows({
+    table: "tier_lists",
+    select: "id, created_at",
+    label: "티어표",
+  });
 }
 
 // ======================================================
@@ -141,7 +182,8 @@ async function fetchWorldcups() {
 
 function generateLanguageSitemap(
   lang,
-  worldcups
+  worldcups,
+  tierLists
 ) {
   const today = new Date()
     .toISOString()
@@ -185,6 +227,22 @@ function generateLanguageSitemap(
     priority: "0.6",
   });
 
+  // 티어표 목록
+  xml += makeUrlEntry({
+    loc: `${BASE_URL}/${lang}/tier-list`,
+    lastmod: today,
+    changefreq: "daily",
+    priority: "0.9",
+  });
+
+  // 티어표 만들기
+  xml += makeUrlEntry({
+    loc: `${BASE_URL}/${lang}/tier-list/create`,
+    lastmod: today,
+    changefreq: "weekly",
+    priority: "0.8",
+  });
+
   // ====================================================
   // 개별 월드컵
   // ====================================================
@@ -203,6 +261,23 @@ function generateLanguageSitemap(
       changefreq: "weekly",
 
       priority: "0.8",
+    });
+  }
+
+  // ====================================================
+  // 개별 티어표 결과
+  // ====================================================
+
+  for (const tierList of tierLists) {
+    if (!tierList?.id) continue;
+
+    xml += makeUrlEntry({
+      loc:
+        `${BASE_URL}/${lang}` +
+        `/tier-list/${tierList.id}`,
+      lastmod: formatDate(tierList.created_at),
+      changefreq: "weekly",
+      priority: "0.75",
     });
   }
 
@@ -270,12 +345,16 @@ async function generateSitemaps() {
     const worldcups =
       await fetchWorldcups();
 
+    const tierLists =
+      await fetchTierLists();
+
     // 언어별 sitemap 생성
     for (const lang of LANGS) {
       const xml =
         generateLanguageSitemap(
           lang,
-          worldcups
+          worldcups,
+          tierLists
         );
 
       const filePath =
@@ -284,14 +363,18 @@ async function generateSitemaps() {
           `sitemap-${lang}-v2.xml`
         );
 
+      const tempPath = `${filePath}.tmp`;
+
       fs.writeFileSync(
-        filePath,
+        tempPath,
         xml,
         "utf8"
       );
 
+      fs.renameSync(tempPath, filePath);
+
       console.log(
-        `✅ ${lang}: ${worldcups.length}개 월드컵 → ${filePath}`
+        `✅ ${lang}: ${worldcups.length}개 월드컵 + ${tierLists.length}개 티어표 → ${filePath}`
       );
     }
 
@@ -305,11 +388,15 @@ async function generateSitemaps() {
         "sitemap_index-v2.xml"
       );
 
+    const tempIndexPath = `${indexPath}.tmp`;
+
     fs.writeFileSync(
-      indexPath,
+      tempIndexPath,
       indexXml,
       "utf8"
     );
+
+    fs.renameSync(tempIndexPath, indexPath);
 
     console.log("");
     console.log(
@@ -320,7 +407,7 @@ async function generateSitemaps() {
 
     console.log("");
     console.log(
-      `🎉 총 ${worldcups.length}개 월드컵 × ${LANGS.length}개 언어`
+      `🎉 총 ${worldcups.length}개 월드컵 + ${tierLists.length}개 티어표 × ${LANGS.length}개 언어`
     );
 
     console.log(
