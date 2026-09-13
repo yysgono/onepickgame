@@ -1920,8 +1920,8 @@ ctx.fillText(
         ctx.fillStyle =
           "#64d8ff";
 
-        ctx.font =
-          "900 22px Arial, sans-serif";
+ctx.font =
+  "900 30px Arial, sans-serif";
 
         ctx.textAlign =
           "right";
