@@ -55,6 +55,27 @@ const EDIT_STORAGE_KEY =
 const WORLDCUP_FROM_TIER_STORAGE_KEY =
   "onepick_worldcup_from_tier_v1";
 
+  function getTierListTitle(tierList, lang, fallback = "Tier List") {
+  if (!tierList) return fallback;
+
+  let translations = tierList.title_translations || {};
+
+  // 혹시 문자열 형태로 들어오는 경우도 대비
+  if (typeof translations === "string") {
+    try {
+      translations = JSON.parse(translations);
+    } catch {
+      translations = {};
+    }
+  }
+
+  return (
+    translations?.[lang] ||
+    translations?.en ||
+    tierList.title ||
+    fallback
+  );
+}
 
 /* =========================================================
    Canvas export helpers
@@ -1088,10 +1109,11 @@ const canManage =
         window.location.href;
 
 
-      const title =
-        tierList
-          ?.title ||
-        "OnePickGame Tier List";
+   const title = getTierListTitle(
+  tierList,
+  lang,
+  "OnePickGame Tier List"
+);
 
 
       setShareMessage(
@@ -1361,12 +1383,17 @@ const canManage =
         ctx.font =
           "900 48px Arial, sans-serif";
 
-        ctx.fillText(
-          tierList.title ||
-            "Tier List",
-          outerPadding,
-          75
-        );
+const exportTitle = getTierListTitle(
+  tierList,
+  lang,
+  "Tier List"
+);
+
+ctx.fillText(
+  exportTitle,
+  outerPadding,
+  75
+);
 
 
         ctx.fillStyle =
@@ -1946,11 +1973,11 @@ const canManage =
           );
 
 
-        const safeTitle =
-          (
-            tierList.title ||
-            "tier-list"
-          )
+    const safeTitle =
+  (
+    exportTitle ||
+    "tier-list"
+  )
             .replace(
               /[\\/:*?"<>|]/g,
               "_"
@@ -2045,8 +2072,12 @@ const canManage =
           JSON.stringify({
             fromTierListId:
               tierList.id,
-            title:
-              tierList.title || "",
+          title:
+  getTierListTitle(
+    tierList,
+    lang,
+    tierList.title || ""
+  ),
             category:
               tierList.category || "other",
             source_worldcup_id:
@@ -2202,6 +2233,8 @@ const canManage =
             user_id: tierList.user_id || null,
             guest_nickname: tierList.guest_nickname || "",
             title: tierList.title,
+            title_translations:
+  tierList.title_translations || {},
             source_worldcup_id:
               tierList.source_worldcup_id || null,
             category: tierList.category || "other",
@@ -2644,21 +2677,26 @@ if (isAdmin) {
     );
   }
 
-  const seoResultTitle = t(
-    "tierList.seo.resultTitle",
-    {
-      title: tierList.title || t("tierList.result.tierList"),
-    }
-  );
+const displayTitle = getTierListTitle(
+  tierList,
+  lang,
+  t("tierList.result.tierList")
+);
 
-  const seoResultDescription = t(
-    "tierList.seo.resultDescription",
-    {
-      title: tierList.title || t("tierList.result.tierList"),
-      count: Number(tierList.candidate_count || 0),
-    }
-  );
+const seoResultTitle = t(
+  "tierList.seo.resultTitle",
+  {
+    title: displayTitle,
+  }
+);
 
+const seoResultDescription = t(
+  "tierList.seo.resultDescription",
+  {
+    title: displayTitle,
+    count: Number(tierList.candidate_count || 0),
+  }
+);
   const seoResultImage =
     tierList.thumbnail_url ||
     onePickCandidate?.image ||
@@ -3123,7 +3161,7 @@ flexShrink: 0,
         overflowWrap: "anywhere",
       }}
     >
-      {tierList.title}
+{displayTitle}
     </h1>
   </div>
 
@@ -3152,7 +3190,7 @@ flexShrink: 0,
             marginTop: isMobile ? 10 : 14,
             display: "flex",
             flexDirection: isMobile ? "column" : "row",
-            alignItems: "center",
+        alignItems: isMobile ? "center" : "flex-start",
             gap: isMobile ? 12 : 24,
           }}
         >
@@ -3337,7 +3375,7 @@ objectPosition: "center",
             style={{
               width: isMobile ? "100%" : 250,
               minWidth: isMobile ? 0 : 250,
-              marginTop: isMobile ? 0 : 8,
+           marginTop: 0,
             }}
           >
             <div
