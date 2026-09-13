@@ -739,8 +739,8 @@ function TierListPage({
               .from(
                 "tier_lists"
               )
-        .select(
-  "id, user_id, guest_nickname, title, source_worldcup_id, category, thumbnail_url, candidate_count, has_one_pick, view_count, like_count, comment_count, clone_count, created_at, tier_labels, tiers, candidates"
+       .select(
+  "id, user_id, guest_nickname, title, title_translations, source_worldcup_id, category, thumbnail_url, candidate_count, has_one_pick, view_count, like_count, comment_count, clone_count, created_at, tier_labels, tiers, candidates"
 );
 
 
@@ -981,6 +981,14 @@ if (cleanSearch) {
 
  const cards = useMemo(() => {
   return tierLists.map((item) => {
+    const titleTranslations =
+  readTranslationMap(item?.title_translations);
+
+const displayTitle =
+  titleTranslations?.[lang] ||
+  titleTranslations?.en ||
+  item?.title ||
+  "Tier List";
     const candidates =
       Array.isArray(item?.candidates)
         ? item.candidates
@@ -1132,16 +1140,15 @@ if (cleanSearch) {
        최종 카드 데이터
     ========================================= */
 
-    return {
-      ...item,
+  return {
+  ...item,
 
-      previewImage,
+  displayTitle,
 
-      presetName,
-
-      tierPreview,
-
-      hasTierPreview,
+  previewImage,
+  presetName,
+  tierPreview,
+  hasTierPreview,
 
       author:
         item.user_id
@@ -2158,7 +2165,7 @@ gap:
                 {item.previewImage ? (
   <MediaRenderer
     url={item.previewImage}
-    alt={item.title || ""}
+   alt={item.displayTitle || ""}
     playable={false}
     loading="lazy"
     style={{
@@ -2401,7 +2408,7 @@ gap:
                       </div>
 
                       <div
-                        title={item.title || ""}
+                   title={item.displayTitle || ""}
                         style={{
                           marginTop: 8,
                           fontSize: isMobile ? 16 : 18,
@@ -2418,7 +2425,7 @@ gap:
                           wordBreak: "break-word",
                         }}
                       >
-                        {item.title}
+                  {item.displayTitle}
                       </div>
 <div
   style={{
