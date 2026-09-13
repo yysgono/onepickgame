@@ -282,6 +282,79 @@ const EDIT_STORAGE_KEY =
 const TIER_DRAFT_STORAGE_KEY =
   "onepick_tier_draft_v1";
 
+// 임시저장용 직접 업로드 이미지는 localStorage가 아니라 IndexedDB에 보관합니다.
+// File/Blob 객체를 그대로 저장할 수 있어 새로고침/다른 프리셋 이동 후에도 복원 가능합니다.
+const TIER_DRAFT_DB_NAME = "onepick_tier_draft_assets_v1";
+const TIER_DRAFT_DB_STORE = "draftAssets";
+const TIER_DRAFT_DB_KEY = "currentDraftImages";
+
+function openTierDraftDb() {
+  return new Promise((resolve, reject) => {
+    if (typeof window === "undefined" || !window.indexedDB) {
+      reject(new Error("IndexedDB is unavailable"));
+      return;
+    }
+
+    const request = window.indexedDB.open(TIER_DRAFT_DB_NAME, 1);
+
+    request.onupgradeneeded = () => {
+      const db = request.result;
+      if (!db.objectStoreNames.contains(TIER_DRAFT_DB_STORE)) {
+        db.createObjectStore(TIER_DRAFT_DB_STORE);
+      }
+    };
+
+    request.onsuccess = () => resolve(request.result);
+    request.onerror = () => reject(request.error || new Error("IndexedDB open failed"));
+  });
+}
+
+async function saveTierDraftFiles(entries) {
+  const db = await openTierDraftDb();
+
+  try {
+    await new Promise((resolve, reject) => {
+      const tx = db.transaction(TIER_DRAFT_DB_STORE, "readwrite");
+      const store = tx.objectStore(TIER_DRAFT_DB_STORE);
+
+      store.put(
+        {
+          version: 1,
+          savedAt: Date.now(),
+          entries,
+        },
+        TIER_DRAFT_DB_KEY
+      );
+
+      tx.oncomplete = () => resolve();
+      tx.onerror = () => reject(tx.error || new Error("IndexedDB write failed"));
+      tx.onabort = () => reject(tx.error || new Error("IndexedDB write aborted"));
+    });
+  } finally {
+    db.close();
+  }
+}
+
+async function loadTierDraftFiles() {
+  const db = await openTierDraftDb();
+
+  try {
+    return await new Promise((resolve, reject) => {
+      const tx = db.transaction(TIER_DRAFT_DB_STORE, "readonly");
+      const store = tx.objectStore(TIER_DRAFT_DB_STORE);
+      const request = store.get(TIER_DRAFT_DB_KEY);
+
+      request.onsuccess = () => {
+        const entries = request.result?.entries;
+        resolve(Array.isArray(entries) ? entries : []);
+      };
+      request.onerror = () => reject(request.error || new Error("IndexedDB read failed"));
+    });
+  } finally {
+    db.close();
+  }
+}
+
 
 const createEmptyTiers = () => ({
   S: [],
@@ -2908,23 +2981,64 @@ const handleDragEndItem =
 
 
   const saveDraft =
-    useCallback(() => {
+    useCallback(async () => {
       if (typeof window === "undefined") return;
 
       try {
+        const draftFileMap = new Map();
+
+        const collectLocalFile = (item) => {
+          if (
+            !item ||
+            item?._source !== "local" ||
+            !item?._tierKey ||
+            !(item.file instanceof Blob)
+          ) {
+            return;
+          }
+
+          draftFileMap.set(String(item._tierKey), item.file);
+        };
+
+        (localCandidates || []).forEach(collectLocalFile);
+        TIERS.forEach((tier) => {
+          (tierItems[tier] || []).forEach(collectLocalFile);
+        });
+        collectLocalFile(onePick);
+
+        // 직접 업로드한 File/Blob은 IndexedDB에 별도 저장합니다.
+        await saveTierDraftFiles(
+          Array.from(draftFileMap.entries()).map(([tierKey, file]) => ({
+            tierKey,
+            file,
+          }))
+        );
+
         const serializeItem = (item) => {
           if (!item) return null;
-          if (item?._source === "local" || String(item?.image || "").startsWith("blob:")) {
-            return null;
-          }
 
           const { file, ...safeItem } = item;
           void file;
+
+          // blob: URL은 브라우저 세션용 주소라 저장하지 않습니다.
+          // 대신 _tierKey를 남겨 IndexedDB의 실제 File과 다시 연결합니다.
+          if (
+            item?._source === "local" ||
+            String(item?.image || "").startsWith("blob:")
+          ) {
+            return {
+              ...safeItem,
+              image: "",
+              _source: "local",
+              _draftLocal: true,
+            };
+          }
+
           return safeItem;
         };
 
         const draft = {
-          version: 1,
+          version: 2,
           savedAt: Date.now(),
           title: tierListTitle,
           category: selectedCategory,
@@ -2973,7 +3087,7 @@ const handleDragEndItem =
 
 
   const loadDraft =
-    useCallback(() => {
+    useCallback(async () => {
       if (typeof window === "undefined") return;
 
       try {
@@ -2986,6 +3100,71 @@ const handleDragEndItem =
         }
 
         const draft = JSON.parse(raw);
+        const storedFiles = await loadTierDraftFiles().catch((error) => {
+          console.warn("임시저장 이미지 IndexedDB 읽기 실패:", error);
+          return [];
+        });
+
+        const fileMap = new Map(
+          storedFiles
+            .filter((entry) => entry?.tierKey && entry?.file instanceof Blob)
+            .map((entry) => [String(entry.tierKey), entry.file])
+        );
+
+        const restoredItemMap = new Map();
+
+        const restoreItem = (item) => {
+          if (!item) return null;
+
+          const key = String(item?._tierKey || "");
+          const isLocalDraftItem =
+            item?._source === "local" ||
+            item?._draftLocal === true ||
+            String(item?.image || "").startsWith("blob:");
+
+          if (!isLocalDraftItem) {
+            return item;
+          }
+
+          if (key && restoredItemMap.has(key)) {
+            return restoredItemMap.get(key);
+          }
+
+          const file = key ? fileMap.get(key) : null;
+          if (!file) {
+            // 예전(version 1) 임시저장은 로컬 이미지를 저장하지 않았으므로
+            // 파일이 없는 항목은 깨진 카드 대신 제외합니다.
+            return null;
+          }
+
+          const url = URL.createObjectURL(file);
+          localUrlsRef.current.add(url);
+
+          const restored = {
+            ...item,
+            image: url,
+            file,
+            _source: "local",
+          };
+          delete restored._draftLocal;
+
+          if (key) {
+            restoredItemMap.set(key, restored);
+          }
+
+          return restored;
+        };
+
+        // localCandidates보다 티어/원픽에만 남은 로컬 후보가 있어도 복원되도록
+        // 먼저 모든 저장 항목을 한 번 훑어 동일 _tierKey의 객체/URL을 재사용합니다.
+        const allDraftItems = [
+          ...(Array.isArray(draft?.localCandidates) ? draft.localCandidates : []),
+          ...TIERS.flatMap((tier) =>
+            Array.isArray(draft?.tierItems?.[tier]) ? draft.tierItems[tier] : []
+          ),
+          draft?.onePick || null,
+        ].filter(Boolean);
+        allDraftItems.forEach(restoreItem);
 
         setTierListTitle(draft?.title || "");
         setSelectedCategory(
@@ -3003,16 +3182,27 @@ const handleDragEndItem =
         const nextTiers = createEmptyTiers();
         TIERS.forEach((tier) => {
           nextTiers[tier] = Array.isArray(draft?.tierItems?.[tier])
-            ? draft.tierItems[tier]
+            ? draft.tierItems[tier].map(restoreItem).filter(Boolean)
             : [];
         });
         setTierItems(nextTiers);
-        setOnePick(draft?.onePick || null);
-        setLocalCandidates(
-          Array.isArray(draft?.localCandidates)
-            ? draft.localCandidates
-            : []
+        setOnePick(restoreItem(draft?.onePick || null));
+
+        const restoredLocalCandidates = Array.isArray(draft?.localCandidates)
+          ? draft.localCandidates.map(restoreItem).filter(Boolean)
+          : [];
+
+        // 혹시 로컬 후보가 티어에만 저장되어 있던 경우도 미분류로 돌아올 수 있게 보존합니다.
+        const candidateMap = new Map(
+          restoredLocalCandidates.map((item) => [String(item._tierKey), item])
         );
+        restoredItemMap.forEach((item, key) => {
+          if (!candidateMap.has(key)) {
+            candidateMap.set(key, item);
+          }
+        });
+
+        setLocalCandidates(Array.from(candidateMap.values()));
         setSelectedMobileItem(null);
         setSearchKeyword("");
         setSaveError("");
