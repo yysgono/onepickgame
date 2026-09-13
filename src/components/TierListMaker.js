@@ -1564,15 +1564,7 @@ const sourceCandidates =
     );
 
 
-  const isBuilderMode =
-    Boolean(id) ||
-    localOnlyMode ||
-    Boolean(
-      cloneTierListId
-    ) ||
-    Boolean(
-      editTierListId
-    );
+  const isBuilderMode = true;
 
 
   const placedCount =
@@ -5854,6 +5846,675 @@ objectPosition: "center",
               </button>
             </div>
 
+            {/* ============================================
+                후보 추가 / 프리셋 선택
+                기존 첫 화면의 소스 선택 UI를 등록 버튼 아래로 이동
+                ============================================ */}
+
+            {/* 직접 이미지 업로드 */}
+
+            <div
+              onDragOver={(
+                e
+              ) => {
+                e.preventDefault();
+
+                setFileDragOver(
+                  true
+                );
+              }}
+              onDragLeave={() => {
+                setFileDragOver(
+                  false
+                );
+              }}
+              onDrop={(
+                e
+              ) => {
+                e.preventDefault();
+
+                setFileDragOver(
+                  false
+                );
+
+
+                addLocalFiles(
+                  e.dataTransfer
+                    .files
+                );
+              }}
+              style={{
+                marginTop:
+                  28,
+
+                padding:
+                  isMobile
+                    ? "26px 16px"
+                    : "34px 24px",
+
+                borderRadius:
+                  14,
+
+                border:
+                  fileDragOver
+                    ? "2px solid #19bfff"
+                    : "1px dashed #315a8f",
+
+                background:
+                  fileDragOver
+                    ? "rgba(25,191,255,0.08)"
+                    : "#07111f",
+
+                textAlign:
+                  "center",
+              }}
+            >
+              <div
+                style={{
+                  fontSize:
+                    isMobile
+                      ? 36
+                      : 48,
+                }}
+              >
+                📁
+              </div>
+
+
+              <div
+                style={{
+                  marginTop:
+                    8,
+
+                  fontSize:
+                    isMobile
+                      ? 18
+                      : 22,
+
+                  fontWeight:
+                    900,
+                }}
+              >
+                {text.uploadTitle}
+              </div>
+
+
+              <div
+                style={{
+                  marginTop:
+                    6,
+
+                  color:
+                    "#8fa6c3",
+
+                  fontSize:
+                    isMobile
+                      ? 13
+                      : 15,
+
+                  fontWeight:
+                    700,
+                }}
+              >
+                {text.uploadDesc}
+              </div>
+
+
+              <button
+                type="button"
+                onClick={() =>
+                  fileInputRef
+                    .current
+                    ?.click()
+                }
+                style={{
+                  marginTop:
+                    16,
+
+                  padding:
+                    "11px 22px",
+
+                  borderRadius:
+                    9,
+
+                  border:
+                    "1px solid #19bfff",
+
+                  background:
+                    "#087ba8",
+
+                  color:
+                    "#fff",
+
+                  cursor:
+                    "pointer",
+
+                  fontWeight:
+                    900,
+                }}
+              >
+                ＋{" "}
+                {text.chooseImages}
+              </button>
+
+
+              <input
+                ref={
+                  fileInputRef
+                }
+                type="file"
+                accept="image/*"
+                multiple
+                onChange={(
+                  e
+                ) => {
+                  addLocalFiles(
+                    e.target.files
+                  );
+
+                  e.target.value =
+                    "";
+                }}
+                style={{
+                  display:
+                    "none",
+                }}
+              />
+            </div>
+
+
+            {/* OR */}
+
+            <div
+              style={{
+                margin:
+                  "32px 0 15px",
+
+                display:
+                  "flex",
+
+                alignItems:
+                  "center",
+
+                gap:
+                  12,
+
+                color:
+                  "#74859b",
+              }}
+            >
+              <div
+                style={{
+                  flex:
+                    1,
+
+                  height:
+                    1,
+
+                  background:
+                    "#24364e",
+                }}
+              />
+
+
+              <span
+                style={{
+                  fontSize:
+                    14,
+
+                  fontWeight:
+                    900,
+                }}
+              >
+                {text.or}
+              </span>
+
+
+              <div
+                style={{
+                  flex:
+                    1,
+
+                  height:
+                    1,
+
+                  background:
+                    "#24364e",
+                }}
+              />
+            </div>
+
+
+            {/* 기존 이상형 월드컵 */}
+
+            <div
+              style={{
+                padding:
+                  isMobile
+                    ? 14
+                    : 18,
+
+                border:
+                  "1px solid rgba(25,191,255,0.32)",
+
+                borderRadius:
+                  14,
+
+                background:
+                  "rgba(7,26,43,0.78)",
+              }}
+            >
+              <div
+                style={{
+                  fontSize:
+                    isMobile
+                      ? 17
+                      : 20,
+
+                  fontWeight:
+                    900,
+
+                  color:
+                    "#64d8ff",
+
+                  textAlign:
+                    "center",
+                }}
+              >
+                ⭐{" "}
+                {text.importWorldcupTitle}
+              </div>
+
+
+      <div
+  style={{
+    marginTop: 6,
+    color: "#9fb0c7",
+    fontSize: isMobile ? 13 : 15,
+    fontWeight: 700,
+    lineHeight: 1.5,
+    textAlign: "center",
+  }}
+>
+  {text.importWorldcupDesc}
+</div>
+
+<div
+  style={{
+    marginTop: 10,
+    color: "#64d8ff",
+    fontSize: isMobile ? 14 : 16,
+    fontWeight: 900,
+    lineHeight: 1.5,
+    textAlign: "center",
+  }}
+>
+  {text.importGuide}
+</div>
+
+<div
+  style={{
+    marginTop: 2,
+    textAlign: "center",
+    color: "#64d8ff",
+    fontSize: isMobile
+      ? 22
+      : 28,
+    lineHeight: 1,
+    fontWeight: 900,
+  }}
+>
+  ↓
+</div>
+            </div>
+
+<div
+  style={{
+    marginTop: 16,
+    display: "flex",
+    justifyContent: "center",
+  }}
+>
+  <input
+    type="text"
+    value={presetSearch}
+    onChange={(e) => {
+      setPresetSearch(
+        e.target.value
+      );
+
+      setPresetVisibleCount(8);
+    }}
+    placeholder={
+      text.presetSearchPlaceholder
+    }
+    style={{
+      width: isMobile
+        ? "100%"
+        : 720,
+
+      height: 42,
+
+      padding: "0 13px",
+
+      boxSizing:
+        "border-box",
+
+      borderRadius: 8,
+
+      border:
+        "1px solid #315a8f",
+
+      background:
+        "#0b1628",
+
+      color: "#fff",
+
+      outline: "none",
+
+      fontSize: 14,
+
+      fontWeight: 700,
+    }}
+  />
+</div>
+
+            {winnerLoading && (
+              <div
+                style={{
+                  marginTop:
+                    15,
+
+                  textAlign:
+                    "center",
+
+                  color:
+                    "#8fb8e8",
+
+                  fontWeight:
+                    800,
+                }}
+              >
+                {text.loadingWinners}
+              </div>
+            )}
+
+
+            <div
+              style={{
+                marginTop: 18,
+                display: "grid",
+                gridTemplateColumns: isMobile
+                  ? "1fr"
+                  : "repeat(4, minmax(0, 1fr))",
+                gap: isMobile ? 12 : 16,
+                width: isMobile
+                  ? "100%"
+                  : "min(1320px, calc(100vw - 80px))",
+                position: isMobile ? "static" : "relative",
+                left: isMobile ? "auto" : "50%",
+                transform: isMobile ? "none" : "translateX(-50%)",
+              }}
+            >
+           {filteredPresetWorldcups
+  .slice(
+    0,
+    presetVisibleCount
+  )
+  .map(
+                (
+                  cup
+                ) => {
+                  const winner =
+                    winnerMap[
+                      String(
+                        cup.id
+                      )
+                    ] ||
+                    null;
+
+
+                  const fallback =
+                    Array.isArray(
+                      cup.data
+                    )
+                      ? (
+                        cup.data.find(
+                          (
+                            candidate
+                          ) =>
+                            candidate
+                              ?.image
+                        ) ||
+                        null
+                      )
+                      : null;
+
+
+                  const thumbnail =
+                    winner ||
+                    fallback;
+
+
+                  return (
+                    <button
+                      key={
+                        cup.id
+                      }
+                      type="button"
+                      onClick={() =>
+                        navigate(
+                          `/${lang}/tier-list/create/${cup.id}`
+                        )
+                      }
+                      style={{
+                        padding:
+                          0,
+
+                        borderRadius:
+                          14,
+
+                        overflow:
+                          "hidden",
+
+                        border:
+                          "1px solid #27466f",
+
+                        background:
+                          "#0b1628",
+
+                        color:
+                          "#fff",
+
+                        cursor:
+                          "pointer",
+
+                        textAlign:
+                          "left",
+                      }}
+                    >
+                      <div
+                        style={{
+                          width:
+                            "100%",
+
+                          height:
+                            isMobile ? 145 : 180,
+
+                          background:
+                            "#07111f",
+
+                          overflow:
+                            "hidden",
+                        }}
+                      >
+                        {thumbnail?.image ? (
+                          <MediaRenderer
+                            url={
+                              thumbnail.image
+                            }
+                            alt={
+                              getTitle(
+                                cup
+                              )
+                            }
+                            playable={
+                              false
+                            }
+                            style={{
+                              width:
+                                "100%",
+
+                              height:
+                                "100%",
+
+                              objectFit:
+                                "cover",
+
+                              display:
+                                "block",
+                            }}
+                          />
+                        ) : (
+                          <div
+                            style={{
+                              width:
+                                "100%",
+
+                              height:
+                                "100%",
+
+                              display:
+                                "flex",
+
+                              alignItems:
+                                "center",
+
+                              justifyContent:
+                                "center",
+
+                              color:
+                                "#607086",
+
+                              fontWeight:
+                                800,
+                            }}
+                          >
+                            {text.noImage}
+                          </div>
+                        )}
+                      </div>
+
+
+                      <div
+                        style={{
+                          padding:
+                            "12px 14px 5px",
+
+                          fontSize:
+                            isMobile
+                              ? 16
+                              : 19,
+
+                          fontWeight:
+                            900,
+                          lineHeight: 1.35,
+                          minHeight: isMobile ? 44 : 52,
+                          display: "-webkit-box",
+                          WebkitBoxOrient: "vertical",
+                          WebkitLineClamp: 2,
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                          overflowWrap: "anywhere",
+                        }}
+                      >
+                        {getTitle(
+                          cup
+                        )}
+                      </div>
+
+
+                      <div
+                        style={{
+                          padding:
+                            "0 14px 13px",
+
+                          color:
+                            "#8fb8e8",
+
+                          fontSize:
+                            13,
+
+                          fontWeight:
+                            700,
+                        }}
+                      >
+                        {Array.isArray(
+                          cup.data
+                        )
+                          ? cup
+                              .data
+                              .length
+                          : 0}{" "}
+
+                        {text.candidates}
+                      </div>
+                    </button>
+                  );
+                }
+              )}
+            </div>
+
+            {presetVisibleCount <
+  filteredPresetWorldcups.length && (
+  <div
+    style={{
+      marginTop: 18,
+      textAlign: "center",
+    }}
+  >
+    <button
+      type="button"
+      onClick={() =>
+        setPresetVisibleCount(
+          (prev) => prev + 8
+        )
+      }
+      style={{
+        padding: "12px 28px",
+        borderRadius: 8,
+        border:
+          "1px solid #315a8f",
+        background: "#14243d",
+        color: "#fff",
+        fontSize: 15,
+        fontWeight: 900,
+        cursor: "pointer",
+      }}
+    >
+      {text.loadMore}
+    </button>
+
+    <div
+      style={{
+        marginTop: 7,
+        color: "#7187a3",
+        fontSize: 11,
+        fontWeight: 700,
+      }}
+    >
+      {Math.min(
+        presetVisibleCount,
+        filteredPresetWorldcups.length
+      )}
+      /
+      {
+        filteredPresetWorldcups.length
+      }
+    </div>
+  </div>
+)}
+          
 
             {/* ============================================
                 미분류 후보
