@@ -83,6 +83,21 @@ export default function Header({
     setCancelLoading,
   ] = useState(false);
 
+  const [isMobile, setIsMobile] = useState(
+    typeof window !== "undefined"
+      ? window.innerWidth < 600
+      : false
+  );
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 600);
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   useEffect(() => {
     setEditNickname(nickname || "");
   }, [nickname]);
@@ -707,13 +722,13 @@ export default function Header({
       12,
 
     padding:
-      "32px 28px",
+      isMobile ? "22px 18px" : "32px 28px",
 
     minWidth:
-      330,
+      isMobile ? 0 : 330,
 
     maxWidth:
-      380,
+      isMobile ? "calc(100vw - 28px)" : 380,
 
     width:
       "100%",
@@ -743,7 +758,7 @@ export default function Header({
       "fixed",
 
     top:
-      "110px",
+      isMobile ? "72px" : "110px",
 
     left:
       "50%",
@@ -934,7 +949,7 @@ export default function Header({
           1000,
 
         padding:
-          "0 0 20px 0",
+          isMobile ? "0 0 12px 0" : "0 0 20px 0",
 
         backdropFilter:
           "blur(2.5px)",
@@ -959,7 +974,7 @@ export default function Header({
             "center",
 
           padding:
-            "18px 0 14px 0",
+            isMobile ? "10px 12px 8px" : "18px 0 14px 0",
 
           cursor:
             "pointer",
@@ -980,8 +995,8 @@ export default function Header({
             "OnePickGame logo"
           )}
           style={{
-            width: 64,
-            height: 64,
+            width: isMobile ? 46 : 64,
+            height: isMobile ? 46 : 64,
 
             borderRadius:
               "50%",
@@ -993,7 +1008,7 @@ export default function Header({
               "rgba(24,29,42,0.9)",
 
             marginRight:
-              8,
+              isMobile ? 7 : 8,
 
             filter:
               "drop-shadow(0 0 10px #00c8ffbb)",
@@ -1012,7 +1027,7 @@ export default function Header({
               900,
 
             fontSize:
-              34,
+              isMobile ? 27 : 34,
 
             fontFamily:
               "'Pretendard', 'Noto Sans KR', Arial, sans-serif",
@@ -1053,7 +1068,7 @@ export default function Header({
             "0 auto",
 
           padding:
-            "6px 16px 0",
+            isMobile ? "4px 12px 0" : "6px 16px 0",
 
           boxSizing:
             "border-box",
@@ -1068,7 +1083,7 @@ export default function Header({
             "center",
 
           gap:
-            12,
+            isMobile ? 8 : 12,
         }}
       >
         {/* =========================
@@ -1078,25 +1093,28 @@ export default function Header({
         <div
           style={{
             width:
-              "calc(100% - 24px)",
+              isMobile ? "100%" : "calc(100% - 24px)",
 
             maxWidth:
               860,
 
             display:
-              "flex",
+              isMobile ? "grid" : "flex",
+
+            gridTemplateColumns:
+              isMobile ? "repeat(2, minmax(0, 1fr))" : undefined,
 
             alignItems:
               "center",
 
             justifyContent:
-              "flex-start",
+              isMobile ? "stretch" : "flex-start",
 
             flexWrap:
-              "wrap",
+              isMobile ? undefined : "wrap",
 
             gap:
-              "10px 12px",
+              isMobile ? 8 : "10px 12px",
 
             boxSizing:
               "border-box",
@@ -1108,10 +1126,16 @@ export default function Header({
               ...worldcupButtonStyle,
 
               width:
-                220,
+                isMobile ? "100%" : 220,
 
               minHeight:
-                46,
+                isMobile ? 44 : 46,
+
+              padding:
+                isMobile ? "9px 10px" : worldcupButtonStyle.padding,
+
+              fontSize:
+                isMobile ? 15 : worldcupButtonStyle.fontSize,
             }}
             onClick={() =>
               navigate(
@@ -1131,10 +1155,16 @@ export default function Header({
               ...disabledModeButtonStyle,
 
               width:
-                190,
+                isMobile ? "100%" : 190,
 
               minHeight:
-                46,
+                isMobile ? 44 : 46,
+
+              padding:
+                isMobile ? "9px 10px" : guessButtonStyle.padding,
+
+              fontSize:
+                isMobile ? 15 : guessButtonStyle.fontSize,
             }}
             title={t("gameModeNav.comingSoon")}
           >
@@ -1147,10 +1177,16 @@ export default function Header({
               ...infoButtonStyle,
 
               width:
-                96,
+                isMobile ? "100%" : 96,
 
               minHeight:
-                46,
+                isMobile ? 42 : 46,
+
+              padding:
+                isMobile ? "8px 10px" : infoButtonStyle.padding,
+
+              fontSize:
+                isMobile ? 14 : infoButtonStyle.fontSize,
             }}
             onClick={
               handleBlog
@@ -1177,14 +1213,26 @@ export default function Header({
             style={{
               ...selectStyle,
 
+              gridColumn:
+                isMobile ? "1 / -1" : undefined,
+
+              width:
+                isMobile ? "100%" : undefined,
+
               flex:
-                "1 1 180px",
+                isMobile ? undefined : "1 1 180px",
 
               minWidth:
-                180,
+                isMobile ? 0 : 180,
 
               minHeight:
-                46,
+                isMobile ? 42 : 46,
+
+              padding:
+                isMobile ? "8px 12px" : selectStyle.padding,
+
+              fontSize:
+                isMobile ? 14 : selectStyle.fontSize,
 
               boxSizing:
                 "border-box",
@@ -1220,25 +1268,28 @@ export default function Header({
         <div
           style={{
             width:
-              "calc(100% - 24px)",
+              isMobile ? "100%" : "calc(100% - 24px)",
 
             maxWidth:
               860,
 
             display:
-              "flex",
+              isMobile ? "grid" : "flex",
+
+            gridTemplateColumns:
+              isMobile ? "repeat(2, minmax(0, 1fr))" : undefined,
 
             alignItems:
               "center",
 
             justifyContent:
-              "flex-start",
+              isMobile ? "stretch" : "flex-start",
 
             flexWrap:
-              "wrap",
+              isMobile ? undefined : "wrap",
 
             gap:
-              "10px 12px",
+              isMobile ? 8 : "10px 12px",
 
             boxSizing:
               "border-box",
@@ -1250,10 +1301,16 @@ export default function Header({
               ...mainButtonStyle,
 
               width:
-                220,
+                isMobile ? "100%" : 220,
 
               minHeight:
-                46,
+                isMobile ? 44 : 46,
+
+              padding:
+                isMobile ? "9px 10px" : mainButtonStyle.padding,
+
+              fontSize:
+                isMobile ? 15 : mainButtonStyle.fontSize,
             }}
             onClick={() =>
               navigate(
@@ -1273,10 +1330,16 @@ export default function Header({
               ...disabledModeButtonStyle,
 
               width:
-                190,
+                isMobile ? "100%" : 190,
 
               minHeight:
-                46,
+                isMobile ? 44 : 46,
+
+              padding:
+                isMobile ? "9px 10px" : blindRankingButtonStyle.padding,
+
+              fontSize:
+                isMobile ? 14 : blindRankingButtonStyle.fontSize,
             }}
             title={t("gameModeNav.comingSoon")}
           >
@@ -1289,7 +1352,7 @@ export default function Header({
               <span
                 style={{
                   width:
-                    96,
+                    isMobile ? "100%" : 96,
 
                   justifyContent:
                     "center",
@@ -1310,13 +1373,13 @@ export default function Header({
                     9,
 
                   padding:
-                    "10px 16px",
+                    isMobile ? "8px 10px" : "10px 16px",
 
                   margin:
                     0,
 
                   minHeight:
-                    46,
+                    isMobile ? 42 : 46,
 
                   display:
                     "inline-flex",
@@ -1340,7 +1403,7 @@ export default function Header({
                     "'Pretendard', 'Noto Sans KR', Arial, sans-serif",
 
                   fontSize:
-                    18,
+                    isMobile ? 14 : 18,
 
                   letterSpacing:
                     0,
@@ -1362,10 +1425,16 @@ export default function Header({
                   ...infoButtonStyle,
 
                   width:
-                    150,
+                    isMobile ? "100%" : 150,
 
                   minHeight:
-                    46,
+                    isMobile ? 42 : 46,
+
+                  padding:
+                    isMobile ? "8px 10px" : infoButtonStyle.padding,
+
+                  fontSize:
+                    isMobile ? 14 : infoButtonStyle.fontSize,
                 }}
                 onClick={() =>
                   setShowProfile(
@@ -1384,13 +1453,22 @@ export default function Header({
                   ...logoutButtonStyle,
 
                   flex:
-                    "1 1 100px",
+                    isMobile ? undefined : "1 1 100px",
+
+                  width:
+                    isMobile ? "100%" : undefined,
 
                   minWidth:
-                    100,
+                    isMobile ? 0 : 100,
 
                   minHeight:
-                    46,
+                    isMobile ? 42 : 46,
+
+                  padding:
+                    isMobile ? "8px 10px" : logoutButtonStyle.padding,
+
+                  fontSize:
+                    isMobile ? 14 : logoutButtonStyle.fontSize,
                 }}
                 onClick={
                   handleLogout
@@ -1406,14 +1484,26 @@ export default function Header({
               style={{
                 ...mainButtonStyle,
 
+                gridColumn:
+                  isMobile ? "1 / -1" : undefined,
+
+                width:
+                  isMobile ? "100%" : undefined,
+
                 flex:
-                  "1 1 190px",
+                  isMobile ? undefined : "1 1 190px",
 
                 minWidth:
-                  190,
+                  isMobile ? 0 : 190,
 
                 minHeight:
-                  46,
+                  isMobile ? 44 : 46,
+
+                padding:
+                  isMobile ? "9px 10px" : mainButtonStyle.padding,
+
+                fontSize:
+                  isMobile ? 15 : mainButtonStyle.fontSize,
               }}
               onClick={() =>
                 navigate(
@@ -1448,10 +1538,16 @@ export default function Header({
                 "wrap",
 
               gap:
-                "10px 12px",
+                isMobile ? 8 : "10px 12px",
 
               paddingTop:
                 2,
+
+              paddingLeft:
+                isMobile ? 12 : 0,
+
+              paddingRight:
+                isMobile ? 12 : 0,
             }}
           >
             <button

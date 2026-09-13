@@ -2724,7 +2724,7 @@ minWidth: 0,
 
           padding:
             isMobile
-              ? "20px 10px 50px"
+              ? "12px 8px 40px"
               : "22px 28px 80px",
 
           boxSizing:
@@ -2742,10 +2742,10 @@ minWidth: 0,
 
     width: "100%",
 
-marginTop: isMobile ? 10 : 16,
+marginTop: isMobile ? 6 : 16,
 
 padding: isMobile
-  ? "16px 16px 18px"
+  ? "12px 10px 14px"
   : "18px 24px 20px",
 
     boxSizing: "border-box",
@@ -2760,11 +2760,12 @@ padding: isMobile
 <div
   style={{
     display: "flex",
-    flexWrap: "wrap",
+    flexDirection: isMobile ? "column" : "row",
+    flexWrap: isMobile ? "nowrap" : "wrap",
     justifyContent: "space-between",
-    alignItems: "center",
-    gap: 12,
-    marginBottom: 12,
+    alignItems: isMobile ? "stretch" : "center",
+    gap: isMobile ? 8 : 12,
+    marginBottom: isMobile ? 10 : 12,
   }}
 >
 
@@ -2782,9 +2783,11 @@ padding: isMobile
     style={{
 flexShrink: 0,
 
-      minHeight: 52,
+      width: isMobile ? "100%" : "auto",
 
-      padding: "0 20px",
+      minHeight: isMobile ? 42 : 52,
+
+      padding: isMobile ? "0 14px" : "0 20px",
 
       borderRadius: 10,
 
@@ -2794,7 +2797,7 @@ flexShrink: 0,
 
       color: "#fff",
 
-      fontSize: 15,
+      fontSize: isMobile ? 14 : 15,
 
       fontWeight: 900,
 
@@ -2822,12 +2825,14 @@ flexShrink: 0,
 
  <div
   style={{
-    display: "flex",
-    flexWrap: "wrap",
+    display: isMobile ? "grid" : "flex",
+    gridTemplateColumns: isMobile ? "repeat(3, minmax(0, 1fr))" : undefined,
+    flexWrap: isMobile ? undefined : "wrap",
     alignItems: "center",
-    justifyContent: "flex-end",
-    gap: 8,
-    marginLeft: "auto",
+    justifyContent: isMobile ? "stretch" : "flex-end",
+    gap: isMobile ? 7 : 8,
+    marginLeft: isMobile ? 0 : "auto",
+    width: isMobile ? "100%" : "auto",
     minWidth: 0,
     maxWidth: "100%",
   }}
@@ -2837,9 +2842,11 @@ flexShrink: 0,
       onClick={handleLike}
       disabled={likeLoading}
       style={{
-        minHeight: 52,
+        minHeight: isMobile ? 42 : 52,
 
-        padding: "0 18px",
+        width: isMobile ? "100%" : "auto",
+
+        padding: isMobile ? "0 8px" : "0 18px",
 
         borderRadius: 10,
 
@@ -2855,7 +2862,7 @@ flexShrink: 0,
           ? "#ff9aae"
           : "#fff",
 
-        fontSize: 14,
+        fontSize: isMobile ? 12 : 14,
 
         fontWeight: 900,
 
@@ -2882,9 +2889,11 @@ flexShrink: 0,
       onClick={handleDownload}
       disabled={downloading}
       style={{
-        minHeight: 52,
+        minHeight: isMobile ? 42 : 52,
 
-        padding: "0 18px",
+        width: isMobile ? "100%" : "auto",
+
+        padding: isMobile ? "0 8px" : "0 18px",
 
         borderRadius: 10,
 
@@ -2898,7 +2907,7 @@ flexShrink: 0,
           "#fff",
 
         fontSize:
-          14,
+          isMobile ? 12 : 14,
 
         fontWeight:
           900,
@@ -2930,9 +2939,11 @@ flexShrink: 0,
       type="button"
       onClick={handleShare}
       style={{
-        minHeight: 52,
+        minHeight: isMobile ? 42 : 52,
 
-        padding: "0 18px",
+        width: isMobile ? "100%" : "auto",
+
+        padding: isMobile ? "0 8px" : "0 18px",
 
         borderRadius: 10,
 
@@ -2946,7 +2957,7 @@ flexShrink: 0,
           "#fff",
 
         fontSize:
-          14,
+          isMobile ? 12 : 14,
 
         fontWeight:
           900,
@@ -2976,9 +2987,11 @@ flexShrink: 0,
           type="button"
           onClick={handleEdit}
           style={{
-            minHeight: 52,
+            minHeight: isMobile ? 40 : 52,
 
-            padding: "0 18px",
+            width: isMobile ? "100%" : "auto",
+
+            padding: isMobile ? "0 8px" : "0 18px",
 
             borderRadius: 10,
 
@@ -2992,7 +3005,7 @@ flexShrink: 0,
               "#fff",
 
             fontSize:
-              14,
+              isMobile ? 12 : 14,
 
             fontWeight:
               900,
@@ -3021,9 +3034,11 @@ flexShrink: 0,
           onClick={handleDelete}
           disabled={deleting}
           style={{
-            minHeight: 52,
+            minHeight: isMobile ? 40 : 52,
 
-            padding: "0 18px",
+            width: isMobile ? "100%" : "auto",
+
+            padding: isMobile ? "0 8px" : "0 18px",
 
             borderRadius: 10,
 
@@ -3037,7 +3052,7 @@ flexShrink: 0,
               "#ff9aae",
 
             fontSize:
-              14,
+              isMobile ? 12 : 14,
 
             fontWeight:
               900,
@@ -3094,7 +3109,7 @@ flexShrink: 0,
         color: "#fff",
 
         fontSize: isMobile
-          ? 28
+          ? 24
           : 40,
 
         fontWeight: 900,
@@ -3112,13 +3127,13 @@ flexShrink: 0,
     </h1>
   </div>
 
-  <div style={{display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "baseline", gap: 12, marginTop: 14, color: "#8fa6c3", fontSize: isMobile ? 12 : 14, fontWeight: 700}}>
+  <div style={{display: "flex", flexDirection: isMobile ? "column" : "row", flexWrap: "wrap", justifyContent: isMobile ? "center" : "space-between", alignItems: isMobile ? "center" : "baseline", gap: isMobile ? 6 : 12, marginTop: isMobile ? 10 : 14, color: "#8fa6c3", fontSize: isMobile ? 11 : 14, fontWeight: 700, textAlign: isMobile ? "center" : "left"}}>
     <div>
       👤 {text.author}: <strong style={{color: "#dbe9f8"}}>{authorName || text.unknownAuthor}</strong>
       {" · "}{formatDate(tierList.created_at)}
     </div>
     {canBrowsePreset && (
-      <div style={{marginLeft: "auto", minWidth: 0, maxWidth: "100%", textAlign: "right"}}>
+      <div style={{marginLeft: isMobile ? 0 : "auto", minWidth: 0, maxWidth: "100%", textAlign: isMobile ? "center" : "right"}}>
         {t("tierList.result.usedPresetLabel")}{": "}
         <button type="button" onClick={() => openPresetTierLists(false)} style={{border: 0, background: "transparent", color: "#64d8ff", padding: 0, font: "inherit", textDecoration: "underline", cursor: "pointer", overflowWrap: "anywhere", textAlign: "inherit"}}>
           <PresetTitle id={tierList.source_worldcup_id} snapshot={sourcePresetName} lang={lang} />
@@ -3134,11 +3149,11 @@ flexShrink: 0,
 
         <div
           style={{
-            marginTop: 14,
+            marginTop: isMobile ? 10 : 14,
             display: "flex",
             flexDirection: isMobile ? "column" : "row",
             alignItems: "center",
-            gap: isMobile ? 18 : 24,
+            gap: isMobile ? 12 : 24,
           }}
         >
           <div
