@@ -5847,6 +5847,387 @@ objectPosition: "center",
             </div>
 
             {/* ============================================
+                미분류 후보
+                ============================================ */}
+
+            <div
+              onDragOver={(
+                e
+              ) => {
+                e.preventDefault();
+
+                e.dataTransfer.dropEffect =
+                  "move";
+              }}
+              onDrop={
+                handleUnrankedDrop
+              }
+              style={{
+                marginTop:
+                  24,
+
+                padding:
+                  16,
+
+                borderRadius:
+                  12,
+
+                background:
+                  "#07111f",
+
+                border:
+                  "1px solid #27466f",
+              }}
+            >
+              <div
+                style={{
+                  display:
+                    "flex",
+
+                  justifyContent:
+                    "space-between",
+
+                  gap:
+                    12,
+
+                  alignItems:
+                    "center",
+
+                  flexWrap:
+                    "wrap",
+
+                  marginBottom:
+                    12,
+                }}
+              >
+                <div
+                  style={{
+                    fontSize:
+                      18,
+
+                    fontWeight:
+                      900,
+                  }}
+                >
+                  {text.unrankedCandidates}
+
+                  {" · "}
+
+                  {unrankedCandidates.length}
+                </div>
+
+
+                <label
+                  style={{
+                    padding:
+                      "8px 13px",
+
+                    borderRadius:
+                      8,
+
+                    border:
+                      "1px solid #19bfff",
+
+                    background:
+                      "#073653",
+
+                    color:
+                      "#fff",
+
+                    fontSize:
+                      13,
+
+                    fontWeight:
+                      900,
+
+                    cursor:
+                      "pointer",
+                  }}
+                >
+                  ＋{" "}
+                  {text.addImages}
+
+
+                  <input
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    onChange={(
+                      e
+                    ) => {
+                      addLocalFiles(
+                        e.target.files
+                      );
+
+
+                      e.target.value =
+                        "";
+                    }}
+                    style={{
+                      display:
+                        "none",
+                    }}
+                  />
+                </label>
+              </div>
+
+
+              {/* 검색 */}
+
+              <div
+                style={{
+                  position:
+                    "relative",
+
+                  marginBottom:
+                    14,
+                }}
+              >
+                <input
+                  type="text"
+                  value={
+                    searchKeyword
+                  }
+                  onChange={(
+                    e
+                  ) =>
+                    setSearchKeyword(
+                      e.target.value
+                    )
+                  }
+                  placeholder={
+                    text.searchPlaceholder
+                  }
+                  style={{
+                    width:
+                      "100%",
+
+                    height:
+                      42,
+
+                    boxSizing:
+                      "border-box",
+
+                    padding:
+                      "0 42px 0 13px",
+
+                    borderRadius:
+                      8,
+
+                    border:
+                      "1px solid #315a8f",
+
+                    background:
+                      "#0b1628",
+
+                    color:
+                      "#fff",
+
+                    outline:
+                      "none",
+
+                    fontSize:
+                      14,
+
+                    fontWeight:
+                      700,
+                  }}
+                />
+
+
+                {searchKeyword && (
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setSearchKeyword(
+                        ""
+                      )
+                    }
+                    style={{
+                      position:
+                        "absolute",
+
+                      right:
+                        8,
+
+                      top:
+                        "50%",
+
+                      transform:
+                        "translateY(-50%)",
+
+                      width:
+                        28,
+
+                      height:
+                        28,
+
+                      border:
+                        "none",
+
+                      borderRadius:
+                        "50%",
+
+                      background:
+                        "#17263a",
+
+                      color:
+                        "#aebdd2",
+
+                      cursor:
+                        "pointer",
+
+                      fontSize:
+                        16,
+
+                      fontWeight:
+                        900,
+                    }}
+                  >
+                    ×
+                  </button>
+                )}
+              </div>
+
+
+              {searchKeyword && (
+                <div
+                  style={{
+                    marginBottom:
+                      10,
+
+                    color:
+                      "#7fa8d7",
+
+                    fontSize:
+                      12,
+
+                    fontWeight:
+                      800,
+                  }}
+                >
+                  {text.searchResult(
+                    visibleCandidates.length
+                  )}
+                </div>
+              )}
+
+
+              {/* 후보 그리드 */}
+
+              <div
+                style={{
+                  display: "grid",
+
+                  gridTemplateColumns:
+                    isMobile
+                      ? "repeat(3, minmax(0, 1fr))"
+                      : "repeat(8, minmax(0, 1fr))",
+
+                  gap: 8,
+
+                  // 후보가 많아져도 페이지 전체가 끝없이 길어지지 않도록
+                  // 이 후보 영역 자체에 스크롤바를 만듭니다.
+                  maxHeight: isMobile ? 520 : 650,
+                  overflowY: "auto",
+                  overflowX: "hidden",
+                  paddingRight: 4,
+                  overscrollBehavior: "contain",
+                  scrollbarGutter: "stable",
+                }}
+              >
+            {visibleCandidates
+  .slice(0, visibleCandidateCount)
+  .map(
+                  (
+                    item
+                  ) => (
+                    <CandidateCard
+                      key={
+                        item._tierKey
+                      }
+                      item={
+                        item
+                      }
+                      isMobile={
+                        isMobile
+                      }
+                      text={
+                        text
+                      }
+                      onDragStartItem={
+                        handleDragStartItem
+                      }
+                      onDragEndItem={
+                        handleDragEndItem
+                      }
+                      onRemoveLocal={
+                        removeLocalCandidate
+                      }
+                      onSelectItem={
+                        setSelectedMobileItem
+                      }
+                    />
+                  )
+                )}
+              </div>
+
+{visibleCandidates.length > visibleCandidateCount && (
+  <div
+    style={{
+      display: "flex",
+      justifyContent: "center",
+      marginTop: 16,
+    }}
+  >
+    <button
+      type="button"
+      onClick={() =>
+        setVisibleCandidateCount(
+          (prev) => prev + 80
+        )
+      }
+      style={{
+        minWidth: 160,
+        padding: "11px 20px",
+        borderRadius: 8,
+        border: "1px solid #315a8f",
+        background: "#101d32",
+        color: "#fff",
+        fontSize: 14,
+        fontWeight: 900,
+        cursor: "pointer",
+      }}
+    >
+      {text.loadMore}
+    </button>
+  </div>
+)}
+
+              {visibleCandidates.length ===
+                0 && (
+                <div
+                  style={{
+                    padding:
+                      "24px 10px",
+
+                    textAlign:
+                      "center",
+
+                    color:
+                      "#607086",
+
+                    fontWeight:
+                      800,
+                  }}
+                >
+                  {text.noSearchResult}
+                </div>
+              )}
+            </div>
+
+
+            {/* ============================================
                 후보 추가 / 프리셋 선택
                 기존 첫 화면의 소스 선택 UI를 등록 버튼 아래로 이동
                 ============================================ */}
@@ -6516,385 +6897,6 @@ objectPosition: "center",
 )}
           
 
-            {/* ============================================
-                미분류 후보
-                ============================================ */}
-
-            <div
-              onDragOver={(
-                e
-              ) => {
-                e.preventDefault();
-
-                e.dataTransfer.dropEffect =
-                  "move";
-              }}
-              onDrop={
-                handleUnrankedDrop
-              }
-              style={{
-                marginTop:
-                  24,
-
-                padding:
-                  16,
-
-                borderRadius:
-                  12,
-
-                background:
-                  "#07111f",
-
-                border:
-                  "1px solid #27466f",
-              }}
-            >
-              <div
-                style={{
-                  display:
-                    "flex",
-
-                  justifyContent:
-                    "space-between",
-
-                  gap:
-                    12,
-
-                  alignItems:
-                    "center",
-
-                  flexWrap:
-                    "wrap",
-
-                  marginBottom:
-                    12,
-                }}
-              >
-                <div
-                  style={{
-                    fontSize:
-                      18,
-
-                    fontWeight:
-                      900,
-                  }}
-                >
-                  {text.unrankedCandidates}
-
-                  {" · "}
-
-                  {unrankedCandidates.length}
-                </div>
-
-
-                <label
-                  style={{
-                    padding:
-                      "8px 13px",
-
-                    borderRadius:
-                      8,
-
-                    border:
-                      "1px solid #19bfff",
-
-                    background:
-                      "#073653",
-
-                    color:
-                      "#fff",
-
-                    fontSize:
-                      13,
-
-                    fontWeight:
-                      900,
-
-                    cursor:
-                      "pointer",
-                  }}
-                >
-                  ＋{" "}
-                  {text.addImages}
-
-
-                  <input
-                    type="file"
-                    accept="image/*"
-                    multiple
-                    onChange={(
-                      e
-                    ) => {
-                      addLocalFiles(
-                        e.target.files
-                      );
-
-
-                      e.target.value =
-                        "";
-                    }}
-                    style={{
-                      display:
-                        "none",
-                    }}
-                  />
-                </label>
-              </div>
-
-
-              {/* 검색 */}
-
-              <div
-                style={{
-                  position:
-                    "relative",
-
-                  marginBottom:
-                    14,
-                }}
-              >
-                <input
-                  type="text"
-                  value={
-                    searchKeyword
-                  }
-                  onChange={(
-                    e
-                  ) =>
-                    setSearchKeyword(
-                      e.target.value
-                    )
-                  }
-                  placeholder={
-                    text.searchPlaceholder
-                  }
-                  style={{
-                    width:
-                      "100%",
-
-                    height:
-                      42,
-
-                    boxSizing:
-                      "border-box",
-
-                    padding:
-                      "0 42px 0 13px",
-
-                    borderRadius:
-                      8,
-
-                    border:
-                      "1px solid #315a8f",
-
-                    background:
-                      "#0b1628",
-
-                    color:
-                      "#fff",
-
-                    outline:
-                      "none",
-
-                    fontSize:
-                      14,
-
-                    fontWeight:
-                      700,
-                  }}
-                />
-
-
-                {searchKeyword && (
-                  <button
-                    type="button"
-                    onClick={() =>
-                      setSearchKeyword(
-                        ""
-                      )
-                    }
-                    style={{
-                      position:
-                        "absolute",
-
-                      right:
-                        8,
-
-                      top:
-                        "50%",
-
-                      transform:
-                        "translateY(-50%)",
-
-                      width:
-                        28,
-
-                      height:
-                        28,
-
-                      border:
-                        "none",
-
-                      borderRadius:
-                        "50%",
-
-                      background:
-                        "#17263a",
-
-                      color:
-                        "#aebdd2",
-
-                      cursor:
-                        "pointer",
-
-                      fontSize:
-                        16,
-
-                      fontWeight:
-                        900,
-                    }}
-                  >
-                    ×
-                  </button>
-                )}
-              </div>
-
-
-              {searchKeyword && (
-                <div
-                  style={{
-                    marginBottom:
-                      10,
-
-                    color:
-                      "#7fa8d7",
-
-                    fontSize:
-                      12,
-
-                    fontWeight:
-                      800,
-                  }}
-                >
-                  {text.searchResult(
-                    visibleCandidates.length
-                  )}
-                </div>
-              )}
-
-
-              {/* 후보 그리드 */}
-
-              <div
-                style={{
-                  display: "grid",
-
-                  gridTemplateColumns:
-                    isMobile
-                      ? "repeat(3, minmax(0, 1fr))"
-                      : "repeat(8, minmax(0, 1fr))",
-
-                  gap: 8,
-
-                  // 후보가 많아져도 페이지 전체가 끝없이 길어지지 않도록
-                  // 이 후보 영역 자체에 스크롤바를 만듭니다.
-                  maxHeight: isMobile ? 520 : 650,
-                  overflowY: "auto",
-                  overflowX: "hidden",
-                  paddingRight: 4,
-                  overscrollBehavior: "contain",
-                  scrollbarGutter: "stable",
-                }}
-              >
-            {visibleCandidates
-  .slice(0, visibleCandidateCount)
-  .map(
-                  (
-                    item
-                  ) => (
-                    <CandidateCard
-                      key={
-                        item._tierKey
-                      }
-                      item={
-                        item
-                      }
-                      isMobile={
-                        isMobile
-                      }
-                      text={
-                        text
-                      }
-                      onDragStartItem={
-                        handleDragStartItem
-                      }
-                      onDragEndItem={
-                        handleDragEndItem
-                      }
-                      onRemoveLocal={
-                        removeLocalCandidate
-                      }
-                      onSelectItem={
-                        setSelectedMobileItem
-                      }
-                    />
-                  )
-                )}
-              </div>
-
-{visibleCandidates.length > visibleCandidateCount && (
-  <div
-    style={{
-      display: "flex",
-      justifyContent: "center",
-      marginTop: 16,
-    }}
-  >
-    <button
-      type="button"
-      onClick={() =>
-        setVisibleCandidateCount(
-          (prev) => prev + 80
-        )
-      }
-      style={{
-        minWidth: 160,
-        padding: "11px 20px",
-        borderRadius: 8,
-        border: "1px solid #315a8f",
-        background: "#101d32",
-        color: "#fff",
-        fontSize: 14,
-        fontWeight: 900,
-        cursor: "pointer",
-      }}
-    >
-      {text.loadMore}
-    </button>
-  </div>
-)}
-
-              {visibleCandidates.length ===
-                0 && (
-                <div
-                  style={{
-                    padding:
-                      "24px 10px",
-
-                    textAlign:
-                      "center",
-
-                    color:
-                      "#607086",
-
-                    fontWeight:
-                      800,
-                  }}
-                >
-                  {text.noSearchResult}
-                </div>
-              )}
-            </div>
 
 
             {/* 이미지 재사용 안내 */}
