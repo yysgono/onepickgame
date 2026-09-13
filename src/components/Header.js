@@ -1055,142 +1055,128 @@ export default function Header({
         </span>
       </div>
 
-      {/* 헤더 메뉴 */}
+         {/* 헤더 메뉴 */}
       <div
         style={{
-          width:
-            "100%",
-
-          maxWidth:
-            1800,
-
-          margin:
-            "0 auto",
-
-          padding:
-            isMobile ? "4px 12px 0" : "6px 16px 0",
-
-          boxSizing:
-            "border-box",
-
-          display:
-            "flex",
-
-          flexDirection:
-            "column",
-
-          alignItems:
-            "center",
-
-          gap:
-            isMobile ? 8 : 12,
+          width: "100%",
+          maxWidth: 1800,
+          margin: "0 auto",
+          padding: "6px 16px 0",
+          boxSizing: "border-box",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          gap: 12,
         }}
       >
         {/* =========================
             1줄
-            이상형 월드컵 / 맞히기 / Blog / 언어
+            Bracket / Tier List / Quiz / Blind Ranking
         ========================== */}
         <div
           style={{
-            width:
-              isMobile ? "100%" : "calc(100% - 24px)",
-
-            maxWidth:
-              860,
-
-            display:
-              isMobile ? "grid" : "flex",
-
-            gridTemplateColumns:
-              isMobile ? "repeat(2, minmax(0, 1fr))" : undefined,
-
-            alignItems:
-              "center",
-
-            justifyContent:
-              isMobile ? "stretch" : "flex-start",
-
-            flexWrap:
-              isMobile ? undefined : "wrap",
-
-            gap:
-              isMobile ? 8 : "10px 12px",
-
-            boxSizing:
-              "border-box",
+            width: "calc(100% - 24px)",
+            maxWidth: 860,
+            display: "grid",
+   gridTemplateColumns:
+  isMobile
+    ? "repeat(2, minmax(0, 1fr))"
+    : "repeat(4, minmax(0, 1fr))",
+            gap: 12,
+            boxSizing: "border-box",
           }}
         >
-          {/* 이상형 월드컵 */}
+          {/* Bracket */}
           <button
             style={{
               ...worldcupButtonStyle,
-
-              width:
-                isMobile ? "100%" : 220,
-
-              minHeight:
-                isMobile ? 44 : 46,
-
-              padding:
-                isMobile ? "9px 10px" : worldcupButtonStyle.padding,
-
-              fontSize:
-                isMobile ? 15 : worldcupButtonStyle.fontSize,
+              width: "100%",
+              minHeight: 46,
             }}
             onClick={() =>
-              navigate(
-                `/${currentLang}`
-              )
+              navigate(`/${currentLang}`)
             }
           >
             {t("gameModeNav.worldcup")}
           </button>
 
-          {/* 맞히기 */}
+          {/* Tier List */}
+          <button
+            style={{
+              ...mainButtonStyle,
+              width: "100%",
+              minHeight: 46,
+            }}
+            onClick={() =>
+              navigate(
+                `/${currentLang}/tier-list`
+              )
+            }
+          >
+            {t("gameModeNav.tierList")}
+          </button>
+
+          {/* Quiz */}
           <button
             type="button"
             disabled
             style={{
               ...guessButtonStyle,
               ...disabledModeButtonStyle,
-
-              width:
-                isMobile ? "100%" : 190,
-
-              minHeight:
-                isMobile ? 44 : 46,
-
-              padding:
-                isMobile ? "9px 10px" : guessButtonStyle.padding,
-
-              fontSize:
-                isMobile ? 15 : guessButtonStyle.fontSize,
+              width: "100%",
+              minHeight: 46,
             }}
-            title={t("gameModeNav.comingSoon")}
+            title={t(
+              "gameModeNav.comingSoon"
+            )}
           >
             {t("gameModeNav.quiz")}
           </button>
 
+          {/* Blind Ranking */}
+          <button
+            type="button"
+            disabled
+            style={{
+              ...blindRankingButtonStyle,
+              ...disabledModeButtonStyle,
+              width: "100%",
+              minHeight: 46,
+            }}
+            title={t(
+              "gameModeNav.comingSoon"
+            )}
+          >
+            {t(
+              "gameModeNav.blindRanking"
+            )}
+          </button>
+        </div>
+
+        {/* =========================
+            2줄
+            Blog / 언어 / 계정
+        ========================== */}
+        <div
+          style={{
+            width: "calc(100% - 24px)",
+            maxWidth: 860,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            flexWrap: "wrap",
+            gap: "10px 12px",
+            boxSizing: "border-box",
+          }}
+        >
           {/* Blog */}
           <button
             style={{
               ...infoButtonStyle,
-
-              width:
-                isMobile ? "100%" : 96,
-
-              minHeight:
-                isMobile ? 42 : 46,
-
-              padding:
-                isMobile ? "8px 10px" : infoButtonStyle.padding,
-
-              fontSize:
-                isMobile ? 14 : infoButtonStyle.fontSize,
+              minWidth: 110,
+              minHeight: 46,
             }}
-            onClick={
-              handleBlog
-            }
+            onClick={handleBlog}
           >
             Blog
           </button>
@@ -1203,39 +1189,16 @@ export default function Header({
                 "en"
               ).split("-")[0]
             }
-            onChange={(
-              e
-            ) =>
+            onChange={(e) =>
               changeLanguageAndKeepPath(
                 e.target.value
               )
             }
             style={{
               ...selectStyle,
-
-              gridColumn:
-                isMobile ? "1 / -1" : undefined,
-
-              width:
-                isMobile ? "100%" : undefined,
-
-              flex:
-                isMobile ? undefined : "1 1 180px",
-
-              minWidth:
-                isMobile ? 0 : 180,
-
-              minHeight:
-                isMobile ? 42 : 46,
-
-              padding:
-                isMobile ? "8px 12px" : selectStyle.padding,
-
-              fontSize:
-                isMobile ? 14 : selectStyle.fontSize,
-
-              boxSizing:
-                "border-box",
+              minWidth: 190,
+              minHeight: 46,
+              boxSizing: "border-box",
             }}
             aria-label={t(
               "language_select",
@@ -1245,123 +1208,26 @@ export default function Header({
             {languages.map(
               (lang) => (
                 <option
-                  key={
-                    lang.code
-                  }
-                  value={
-                    lang.code
-                  }
+                  key={lang.code}
+                  value={lang.code}
                 >
-                  {
-                    lang.label
-                  }
+                  {lang.label}
                 </option>
               )
             )}
           </select>
-        </div>
-
-        {/* =========================
-            2줄
-            티어표 / 블라인드 랭킹 / 계정
-        ========================== */}
-        <div
-          style={{
-            width:
-              isMobile ? "100%" : "calc(100% - 24px)",
-
-            maxWidth:
-              860,
-
-            display:
-              isMobile ? "grid" : "flex",
-
-            gridTemplateColumns:
-              isMobile ? "repeat(2, minmax(0, 1fr))" : undefined,
-
-            alignItems:
-              "center",
-
-            justifyContent:
-              isMobile ? "stretch" : "flex-start",
-
-            flexWrap:
-              isMobile ? undefined : "wrap",
-
-            gap:
-              isMobile ? 8 : "10px 12px",
-
-            boxSizing:
-              "border-box",
-          }}
-        >
-          {/* 티어표 */}
-          <button
-            style={{
-              ...mainButtonStyle,
-
-              width:
-                isMobile ? "100%" : 220,
-
-              minHeight:
-                isMobile ? 44 : 46,
-
-              padding:
-                isMobile ? "9px 10px" : mainButtonStyle.padding,
-
-              fontSize:
-                isMobile ? 15 : mainButtonStyle.fontSize,
-            }}
-            onClick={() =>
-              navigate(
-                `/${currentLang}/tier-list`
-              )
-            }
-          >
-            {t("gameModeNav.tierList")}
-          </button>
-
-          {/* 블라인드 랭킹 */}
-          <button
-            type="button"
-            disabled
-            style={{
-              ...blindRankingButtonStyle,
-              ...disabledModeButtonStyle,
-
-              width:
-                isMobile ? "100%" : 190,
-
-              minHeight:
-                isMobile ? 44 : 46,
-
-              padding:
-                isMobile ? "9px 10px" : blindRankingButtonStyle.padding,
-
-              fontSize:
-                isMobile ? 14 : blindRankingButtonStyle.fontSize,
-            }}
-            title={t("gameModeNav.comingSoon")}
-          >
-            {t("gameModeNav.blindRanking")}
-          </button>
 
           {user ? (
             <>
               {/* 닉네임 */}
               <span
                 style={{
-                  width:
-                    isMobile ? "100%" : 96,
-
+                  minWidth: 100,
                   justifyContent:
                     "center",
 
-                  fontWeight:
-                    900,
-
-                  color:
-                    "#ffffff",
+                  fontWeight: 900,
+                  color: "#ffffff",
 
                   background:
                     "#0f2940",
@@ -1369,17 +1235,14 @@ export default function Header({
                   border:
                     "1px solid #2d6f9f",
 
-                  borderRadius:
-                    9,
+                  borderRadius: 9,
 
                   padding:
-                    isMobile ? "8px 10px" : "10px 16px",
+                    "10px 16px",
 
-                  margin:
-                    0,
+                  margin: 0,
 
-                  minHeight:
-                    isMobile ? 42 : 46,
+                  minHeight: 46,
 
                   display:
                     "inline-flex",
@@ -1402,11 +1265,9 @@ export default function Header({
                   fontFamily:
                     "'Pretendard', 'Noto Sans KR', Arial, sans-serif",
 
-                  fontSize:
-                    isMobile ? 14 : 18,
+                  fontSize: 18,
 
-                  letterSpacing:
-                    0,
+                  letterSpacing: 0,
                 }}
               >
                 {nicknameLoading
@@ -1423,87 +1284,34 @@ export default function Header({
               <button
                 style={{
                   ...infoButtonStyle,
-
-                  width:
-                    isMobile ? "100%" : 150,
-
-                  minHeight:
-                    isMobile ? 42 : 46,
-
-                  padding:
-                    isMobile ? "8px 10px" : infoButtonStyle.padding,
-
-                  fontSize:
-                    isMobile ? 14 : infoButtonStyle.fontSize,
+                  minWidth: 140,
+                  minHeight: 46,
                 }}
                 onClick={() =>
-                  setShowProfile(
-                    true
-                  )
+                  setShowProfile(true)
                 }
               >
-                {t(
-                  "edit_profile"
-                )}
+                {t("edit_profile")}
               </button>
 
               {/* 로그아웃 */}
               <button
                 style={{
                   ...logoutButtonStyle,
-
-                  flex:
-                    isMobile ? undefined : "1 1 100px",
-
-                  width:
-                    isMobile ? "100%" : undefined,
-
-                  minWidth:
-                    isMobile ? 0 : 100,
-
-                  minHeight:
-                    isMobile ? 42 : 46,
-
-                  padding:
-                    isMobile ? "8px 10px" : logoutButtonStyle.padding,
-
-                  fontSize:
-                    isMobile ? 14 : logoutButtonStyle.fontSize,
+                  minWidth: 110,
+                  minHeight: 46,
                 }}
-                onClick={
-                  handleLogout
-                }
+                onClick={handleLogout}
               >
-                {t(
-                  "logout"
-                )}
+                {t("logout")}
               </button>
             </>
           ) : (
             <button
               style={{
                 ...mainButtonStyle,
-
-                gridColumn:
-                  isMobile ? "1 / -1" : undefined,
-
-                width:
-                  isMobile ? "100%" : undefined,
-
-                flex:
-                  isMobile ? undefined : "1 1 190px",
-
-                minWidth:
-                  isMobile ? 0 : 190,
-
-                minHeight:
-                  isMobile ? 44 : 46,
-
-                padding:
-                  isMobile ? "9px 10px" : mainButtonStyle.padding,
-
-                fontSize:
-                  isMobile ? 15 : mainButtonStyle.fontSize,
+                minWidth: 190,
+                minHeight: 46,
               }}
               onClick={() =>
                 navigate(
@@ -1517,6 +1325,7 @@ export default function Header({
             </button>
           )}
         </div>
+
 
         {/* 관리자 전용 */}
         {isAdmin && (
