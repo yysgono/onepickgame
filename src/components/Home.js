@@ -1891,16 +1891,7 @@ boxShadow: "none",
     justifyContent: "center",
   }}
 >
-  <span
-    style={{
-      color: "#596579",
-      fontWeight: 800,
-      marginRight: 2,
-      fontSize: isMobile ? 14 : 15,
-    }}
-  >
-    🌐 {t("language_select") || "Language"}
-  </span>
+
 
   {LANGUAGES.map((item) => {
     const active = item.code === lang;

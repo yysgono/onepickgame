@@ -36,6 +36,25 @@ const SORT_VALUES = [
   "mostCreated",
 ];
 
+const LANGUAGES = [
+  { code: "en", label: "English" },
+  { code: "ko", label: "한국어" },
+  { code: "ja", label: "日本語" },
+  { code: "zh", label: "简体中文" },
+  { code: "es", label: "Español" },
+  { code: "fr", label: "Français" },
+  { code: "vi", label: "Tiếng Việt" },
+  { code: "de", label: "Deutsch" },
+  { code: "ru", label: "Русский" },
+  { code: "id", label: "Bahasa Indonesia" },
+  { code: "pt", label: "Português" },
+  { code: "hi", label: "हिन्दी" },
+  { code: "tr", label: "Türkçe" },
+  { code: "th", label: "ภาษาไทย" },
+  { code: "ar", label: "العربية" },
+  { code: "bn", label: "বাংলা" },
+];
+
 const RECOMMENDED_PRESET_TITLE = {
   ko: "⭐ 추천 티어표 만들기",
   en: "⭐ Recommended Tier List Presets",
@@ -97,6 +116,49 @@ function TierListPage({
   const lang = (
     i18n.language || "en"
   ).split("-")[0];
+
+  const changeTierLanguage = async (newLang) => {
+  try {
+    await i18n.changeLanguage(newLang);
+
+    localStorage.setItem(
+      "onepickgame_lang",
+      newLang
+    );
+
+    const parts = location.pathname
+      .split("/")
+      .filter(Boolean);
+
+    if (
+      parts.length > 0 &&
+      LANGUAGES.some(
+        (item) => item.code === parts[0]
+      )
+    ) {
+      parts[0] = newLang;
+    } else {
+      parts.unshift(newLang);
+    }
+
+    const newPath =
+      "/" + parts.join("/");
+
+    navigate(
+      newPath +
+        (location.search || "") +
+        (location.hash || ""),
+      {
+        replace: true,
+      }
+    );
+  } catch (error) {
+    console.error(
+      "언어 변경 실패:",
+      error
+    );
+  }
+};
 
   const mineOnly = useMemo(() => {
     const params = new URLSearchParams(location.search || "");
@@ -1322,7 +1384,70 @@ maxWidth: isMobile ? 430 : 1480,
             </button>
           </form>
 
-          
+          {/* 언어 선택 */}
+<div
+  style={{
+    marginTop: 12,
+    display: "flex",
+    flexWrap: "wrap",
+    justifyContent: "center",
+    alignItems: "center",
+    gap: isMobile ? 6 : 8,
+  }}
+>
+  {LANGUAGES.map((item) => {
+    const active =
+      item.code === lang;
+
+    return (
+      <button
+        key={item.code}
+        type="button"
+        onClick={() =>
+          changeTierLanguage(
+            item.code
+          )
+        }
+        aria-pressed={active}
+        style={{
+          border: active
+            ? "1.5px solid #6650d8"
+            : "1px solid #d6deea",
+
+          background: active
+            ? "#6650d8"
+            : "#ffffff",
+
+          color: active
+            ? "#ffffff"
+            : "#3f4a5a",
+
+          borderRadius: 8,
+
+          padding: isMobile
+            ? "5px 9px"
+            : "6px 11px",
+
+          fontSize: isMobile
+            ? 13
+            : 14,
+
+          fontWeight: active
+            ? 800
+            : 700,
+
+          cursor: "pointer",
+
+          lineHeight: 1.2,
+
+          boxShadow: "none",
+        }}
+      >
+        {item.label}
+      </button>
+    );
+  })}
+</div>
 
           
         </div>
