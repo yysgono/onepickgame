@@ -55,7 +55,7 @@ function WorldcupDetail({ worldcupList }) {
         margin: isMobile ? "18px auto" : "40px auto",
         background: "#fff",
         borderRadius: 16,
-        boxShadow: "0 2px 24px #0001",
+        boxShadow: "0 4px 16px rgba(25,32,52,0.07)",
         padding: isMobile ? 18 : 32,
       }}
     >
@@ -63,7 +63,7 @@ function WorldcupDetail({ worldcupList }) {
         style={{
           marginBottom: 10,
           fontWeight: 800,
-          fontSize: isMobile ? 22 : 30,
+          fontSize: isMobile ? 24 : 32,
         }}
       >
         {displayTitle}
@@ -73,7 +73,7 @@ function WorldcupDetail({ worldcupList }) {
         style={{
           color: "#555",
           marginBottom: 20,
-          fontSize: isMobile ? 15 : 18,
+          fontSize: isMobile ? 17 : 20,
         }}
       >
         {displayDescription}
@@ -112,7 +112,7 @@ function WorldcupDetail({ worldcupList }) {
               />
             </div>
 
-            <div style={{ fontSize: isMobile ? 12 : 16 }}>
+            <div style={{ fontSize: isMobile ? 14 : 18 }}>
               {item.name}
             </div>
           </div>
@@ -154,8 +154,8 @@ function WorldcupDetail({ worldcupList }) {
       <div
         style={{
           marginTop: 20,
-          color: "#888",
-          fontSize: isMobile ? 11 : 13,
+          color: "#596579",
+          fontSize: isMobile ? 13 : 15,
         }}
       >
         <b>{t("share_link") || "공유링크"}: </b>
@@ -169,7 +169,7 @@ function WorldcupDetail({ worldcupList }) {
             border: "1px solid #eee",
             borderRadius: 5,
             padding: "4px 8px",
-            fontSize: isMobile ? 11 : 14,
+            fontSize: isMobile ? 13 : 16,
           }}
         />
       </div>

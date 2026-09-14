@@ -57,7 +57,7 @@ function ImageUploader({ onUpload }) {
         {t("upload_image") || "Upload Image"}
       </button>
       {error && (
-        <div style={{ color: "red", marginTop: 10, fontSize: 15 }}>
+        <div style={{ color: "#b42346", marginTop: 10, fontSize: 17 }}>
           {error}
         </div>
       )}

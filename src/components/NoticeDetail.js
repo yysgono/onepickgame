@@ -110,8 +110,8 @@ export default function NoticeDetail() {
           style={{
             marginTop: 12,
             padding: "8px 14px",
-            background: "#1976ed",
-            color: "#fff",
+            background: "#6650d8",
+            color: "#ffffff",
             border: "none",
             borderRadius: 8,
             cursor: "pointer",
@@ -142,27 +142,27 @@ export default function NoticeDetail() {
           margin: "60px auto",
           background: "#f7fbff",
           borderRadius: 16,
-          boxShadow: "0 2px 16px #1976ed22",
+          boxShadow: "0 4px 16px rgba(25,32,52,0.07)",
           color: "#1c2335",
           padding: 38,
         }}
       >
         <h2
           style={{
-            color: "#1976ed",
+            color: "#5542b8",
             fontWeight: 900,
-            fontSize: 26,
+            fontSize: 28,
             marginBottom: 16,
           }}
         >
           {notice.title}
         </h2>
-        <div style={{ color: "#888", marginBottom: 14, fontSize: 14 }}>
+        <div style={{ color: "#596579", marginBottom: 14, fontSize: 16 }}>
           {createdAtText}
         </div>
         <div
           style={{
-            fontSize: 18,
+            fontSize: 20,
             marginTop: 18,
             lineHeight: 1.88,
             whiteSpace: "pre-line",

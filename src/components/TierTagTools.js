@@ -123,7 +123,7 @@ export function TierTagEditor({
             "0 8px",
 
           fontSize:
-            16,
+            18,
 
           fontWeight:
             800,
@@ -141,7 +141,7 @@ export function TierTagEditor({
       <p
         style={{
           fontSize:
-            12,
+            14,
 
           margin:
             "0 0 10px",
@@ -236,7 +236,7 @@ export function TierTagEditor({
                   "#111827",
 
                 fontSize:
-                  14,
+                  16,
 
                 fontWeight:
                   600,
@@ -333,7 +333,7 @@ export function TierTags({
                 700,
 
               fontSize:
-                13,
+                15,
             }}
           >
             #{tag}

@@ -1,10 +1,10 @@
 const COLORS = {
-  main: "#1976ed",
-  sub: "#45b7fa",
+  main: "#6650d8",
+  sub: "#6650d8",
   lightGray: "#fafdff",
   darkText: "#194893",
-  danger: "#d33",
+  danger: "#c83232",
   gray: "#444",
-  edit: "#1976ed",
+  edit: "#6650d8",
 };
 export default COLORS;

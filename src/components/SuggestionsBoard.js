@@ -119,7 +119,7 @@ export default function SuggestionsBoard({ user, isAdmin }) {
         langPrefix={false}         // ✅ /[lang]/[slug]가 아닌 /[slug]로 canonical/hreflang 생성
         hreflangLangs={["en"]}     // ✅ 영어 전용 페이지
       />
-      <div style={{ maxWidth: 700, margin: "40px auto", color: "#fff" }}>
+      <div style={{ maxWidth: 700, margin: "40px auto", color: "#202534" }}>
         <h2 style={{ fontWeight: 900, marginBottom: 16 }}>
           {t("suggestions_board") || "Suggestions Board"}
         </h2>
@@ -140,7 +140,7 @@ export default function SuggestionsBoard({ user, isAdmin }) {
               marginBottom: 10,
               padding: 10,
               borderRadius: 8,
-              border: "1px solid #335",
+              border: "1px solid #dde2ea",
               color: "#111",
             }}
           />
@@ -160,7 +160,7 @@ export default function SuggestionsBoard({ user, isAdmin }) {
               marginBottom: 10,
               padding: 10,
               borderRadius: 8,
-              border: "1px solid #335",
+              border: "1px solid #dde2ea",
               color: "#111",
             }}
           />
@@ -169,9 +169,9 @@ export default function SuggestionsBoard({ user, isAdmin }) {
             disabled={!user}
             style={{
               padding: "10px 20px",
-              fontSize: 16,
-              background: user ? "#007bff" : "#446",
-              color: "#fff",
+              fontSize: 18,
+              background: user ? "#6650d8" : "#ffffff",
+              color: (user) ? "#ffffff" : "#202534",
               border: "none",
               borderRadius: 8,
               cursor: user ? "pointer" : "not-allowed",
@@ -183,7 +183,7 @@ export default function SuggestionsBoard({ user, isAdmin }) {
         </form>
 
         {!user && (
-          <p style={{ color: "#f77", marginTop: 4 }}>
+          <p style={{ color: "#b42346", marginTop: 4 }}>
             * {t("only_logged_in_can_submit") || "Only logged-in users can submit suggestions."}
           </p>
         )}
@@ -199,20 +199,20 @@ export default function SuggestionsBoard({ user, isAdmin }) {
                 <li
                   key={s.id}
                   style={{
-                    borderBottom: "1px solid #555",
+                    borderBottom: "1px solid #dde2ea",
                     marginBottom: 10,
                     paddingBottom: 10,
                   }}
                 >
                   <strong style={{ display: "block", marginBottom: 4 }}>{s.title}</strong>
                   <p style={{ margin: "4px 0 8px" }}>{s.content}</p>
-                  <div style={{ fontSize: 12, color: "#aaa" }}>
+                  <div style={{ fontSize: 14, color: "#596579" }}>
                     {t("from") || "From"}: {s.user} | {formatDate(s.createdAt)}
                   </div>
                   {s.reply && (
-                    <div style={{ marginTop: 10, color: "#7dff9c" }}>
+                    <div style={{ marginTop: 10, color: "#202534" }}>
                       <strong>{t("admin_reply") || "Admin Reply"}:</strong> {s.reply.content}
-                      <div style={{ fontSize: 12, color: "#9f9" }}>
+                      <div style={{ fontSize: 14, color: "#202534" }}>
                         {t("from") || "From"}: {s.reply.admin} | {formatDate(s.reply.repliedAt)}
                       </div>
                     </div>
@@ -226,7 +226,7 @@ export default function SuggestionsBoard({ user, isAdmin }) {
         {/* 관리자 전체 보기 + 답글 */}
         {isAdmin && (suggestions || []).length > 0 && (
           <div style={{ marginTop: 40 }}>
-            <h3 style={{ color: "#ffcc00", fontWeight: 900 }}>
+            <h3 style={{ color: "#596579", fontWeight: 900 }}>
               {t("admin_view") || "All Suggestions (Admin View)"}
             </h3>
             <ul style={{ listStyle: "none", padding: 0 }}>
@@ -234,21 +234,21 @@ export default function SuggestionsBoard({ user, isAdmin }) {
                 <li
                   key={s.id}
                   style={{
-                    borderBottom: "1px solid #555",
+                    borderBottom: "1px solid #dde2ea",
                     marginBottom: 20,
                     paddingBottom: 10,
                   }}
                 >
                   <strong style={{ display: "block", marginBottom: 4 }}>{s.title}</strong>
                   <p style={{ margin: "4px 0 8px" }}>{s.content}</p>
-                  <div style={{ fontSize: 12, color: "#aaa" }}>
+                  <div style={{ fontSize: 14, color: "#596579" }}>
                     {t("from") || "From"}: {s.user} | {formatDate(s.createdAt)}
                   </div>
 
                   {s.reply && (
-                    <div style={{ marginTop: 10, color: "#7dff9c" }}>
+                    <div style={{ marginTop: 10, color: "#202534" }}>
                       <strong>{t("admin_reply") || "Admin Reply"}:</strong> {s.reply.content}
-                      <div style={{ fontSize: 12, color: "#9f9" }}>
+                      <div style={{ fontSize: 14, color: "#202534" }}>
                         {t("from") || "From"}: {s.reply.admin} | {formatDate(s.reply.repliedAt)}
                       </div>
                     </div>
@@ -275,7 +275,7 @@ export default function SuggestionsBoard({ user, isAdmin }) {
                           marginBottom: 10,
                           padding: 10,
                           borderRadius: 8,
-                          border: "1px solid #335",
+                          border: "1px solid #dde2ea",
                           color: "#111",
                         }}
                       />
@@ -284,7 +284,7 @@ export default function SuggestionsBoard({ user, isAdmin }) {
                         style={{
                           padding: "6px 12px",
                           background: "#28a745",
-                          color: "#fff",
+                          color: "#202534",
                           border: "none",
                           borderRadius: 8,
                           cursor: "pointer",

@@ -150,9 +150,9 @@ export default function MakeWorldcup({ worldcupList, setWorldcupList, onClose })
   return (
     <div style={{
       maxWidth: 520, margin: "40px auto", background: "#fff",
-      borderRadius: 16, padding: 24, boxShadow: "0 4px 18px #1976ed18"
+      borderRadius: 16, padding: 24, boxShadow: "0 4px 16px rgba(25,32,52,0.07)"
     }}>
-      <h2 style={{ textAlign: "center", fontWeight: 900, fontSize: 25, marginBottom: 22 }}>
+      <h2 style={{ textAlign: "center", fontWeight: 900, fontSize: 27, marginBottom: 22 }}>
         {t("makeWorldcup") || "Create Worldcup"}
       </h2>
       <form onSubmit={handleSubmit}>
@@ -162,7 +162,7 @@ export default function MakeWorldcup({ worldcupList, setWorldcupList, onClose })
             onChange={e => setTitle(e.target.value)}
             placeholder={t("worldcup_title") || "Worldcup Title"}
             maxLength={36}
-            style={{ width: "100%", fontSize: 18, padding: 9, borderRadius: 8, border: "1.5px solid #bbb" }}
+            style={{ width: "100%", fontSize: 20, padding: 9, borderRadius: 8, border: "1.5px solid #bbb" }}
             autoFocus
             disabled={loading}
           />
@@ -173,15 +173,15 @@ export default function MakeWorldcup({ worldcupList, setWorldcupList, onClose })
             onChange={e => setDesc(e.target.value)}
             placeholder={t("description_optional") || "Description (optional)"}
             maxLength={400}
-            style={{ width: "100%", fontSize: 16, padding: 8, borderRadius: 8, border: "1.2px solid #bbb" }}
+            style={{ width: "100%", fontSize: 18, padding: 8, borderRadius: 8, border: "1.2px solid #bbb" }}
             disabled={loading}
           />
         </div>
         <div>
-          <div style={{ fontWeight: 700, fontSize: 17, margin: "8px 0 9px 0" }}>
+          <div style={{ fontWeight: 700, fontSize: 19, margin: "8px 0 9px 0" }}>
             {t("candidate_list", { count: candidates.length }) || `Candidates (${candidates.length})`}
           </div>
-          <div style={{ color: "#1976ed", marginBottom: 8, fontSize: 15 }}>
+          <div style={{ color: "#5542b8", marginBottom: 8, fontSize: 17 }}>
             {t("image_video_upload_limit") || "Images: up to 6MB, Videos: up to 20MB."}
           </div>
           {candidates.map((c, idx) => {
@@ -203,23 +203,23 @@ export default function MakeWorldcup({ worldcupList, setWorldcupList, onClose })
                   onChange={e => updateCandidate(idx, "name", e.target.value)}
                   placeholder={t("name") || "Name"}
                   maxLength={22}
-                  style={{ width: 120, fontSize: 15, padding: 7, borderRadius: 7, border: "1.1px solid #bbb" }}
+                  style={{ width: 120, fontSize: 17, padding: 7, borderRadius: 7, border: "1.1px solid #bbb" }}
                   disabled={loading}
                 />
                 <input
                   value={c.image}
                   onChange={e => updateCandidate(idx, "image", e.target.value)}
                   placeholder={t("image_video_url_optional") || "Image/Video URL (optional)"}
-                  style={{ flex: 1, fontSize: 14, padding: 7, borderRadius: 7, border: "1.1px solid #bbb" }}
+                  style={{ flex: 1, fontSize: 16, padding: 7, borderRadius: 7, border: "1.1px solid #bbb" }}
                   disabled={loading}
                 />
                 <button
                   type="button"
                   onClick={() => fileInputRefs.current[idx]?.click()}
                   style={{
-                    background: "linear-gradient(90deg, #1976ed 70%, #45b7fa 100%)",
-                    color: "#fff", border: "none", borderRadius: 7,
-                    padding: "6px 14px", fontWeight: 700, cursor: "pointer", fontSize: 13,
+                    background: "#6650d8",
+                    color: "#ffffff", border: "none", borderRadius: 7,
+                    padding: "6px 14px", fontWeight: 700, cursor: "pointer", fontSize: 15,
                     whiteSpace: "nowrap",
                   }}
                   disabled={loading}
@@ -238,7 +238,7 @@ export default function MakeWorldcup({ worldcupList, setWorldcupList, onClose })
                   <button
                     type="button"
                     onClick={() => removeCandidate(idx)}
-                    style={{ background: "#f5f5f5", color: "#d33", border: "none", borderRadius: 7, padding: "5px 13px", fontWeight: 700 }}
+                    style={{ background: "#f5f5f5", color: "#b42346", border: "none", borderRadius: 7, padding: "5px 13px", fontWeight: 700 }}
                     disabled={loading}
                   >
                     {t("delete") || "Delete"}
@@ -250,7 +250,7 @@ export default function MakeWorldcup({ worldcupList, setWorldcupList, onClose })
                     alt=""
                     style={{
                       width: 32, height: 32, objectFit: "cover", borderRadius: 8, background: "#f2f2f2",
-                      boxShadow: "0 2px 8px #0001", border: "1.2px solid #eee", marginLeft: 8,
+                      boxShadow: "0 4px 16px rgba(25,32,52,0.07)", border: "1.2px solid #eee", marginLeft: 8,
                     }}
                   />
                 )}
@@ -260,18 +260,18 @@ export default function MakeWorldcup({ worldcupList, setWorldcupList, onClose })
           <button
             type="button"
             onClick={addCandidate}
-            style={{ marginTop: 6, background: "#1976ed", color: "#fff", border: "none", borderRadius: 8, padding: "7px 14px", fontWeight: 700 }}
+            style={{ marginTop: 6, background: "#6650d8", color: "#ffffff", border: "none", borderRadius: 8, padding: "7px 14px", fontWeight: 700 }}
             disabled={loading}
           >
             + {t("add_candidate") || "Add Candidate"}
           </button>
         </div>
-        {error && <div style={{ color: "red", marginTop: 15, textAlign: "center" }}>{error}</div>}
-        {ok && <div style={{ color: "#1976ed", marginTop: 15, textAlign: "center" }}>{ok}</div>}
+        {error && <div style={{ color: "#b42346", marginTop: 15, textAlign: "center" }}>{error}</div>}
+        {ok && <div style={{ color: "#5542b8", marginTop: 15, textAlign: "center" }}>{ok}</div>}
         <div style={{ marginTop: 26, textAlign: "center" }}>
           <button
             type="submit"
-            style={{ background: "#1976ed", color: "#fff", border: "none", borderRadius: 10, fontWeight: 800, fontSize: 19, padding: "11px 40px", marginRight: 9 }}
+            style={{ background: "#6650d8", color: "#ffffff", border: "none", borderRadius: 10, fontWeight: 800, fontSize: 21, padding: "11px 40px", marginRight: 9 }}
             disabled={loading}
           >
             {loading ? t("saving") || "Saving..." : t("create") || "Create"}
@@ -280,7 +280,7 @@ export default function MakeWorldcup({ worldcupList, setWorldcupList, onClose })
             <button
               type="button"
               onClick={onClose}
-              style={{ background: "#ddd", color: "#333", border: "none", borderRadius: 8, fontWeight: 600, fontSize: 16, padding: "10px 32px" }}
+              style={{ background: "#ddd", color: "#333", border: "none", borderRadius: 8, fontWeight: 600, fontSize: 18, padding: "10px 32px" }}
               disabled={loading}
             >
               {t("close") || "Close"}

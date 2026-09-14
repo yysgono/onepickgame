@@ -21,22 +21,22 @@ export default function NoticeList() {
 
   return (
     <div style={{ maxWidth: 750, margin: "70px auto", color: "#222", background: "#fff", borderRadius: 13, padding: 30 }}>
-      <h2 style={{ fontWeight: 900, fontSize: 27, marginBottom: 17, color: "#1676ed" }}>공지사항</h2>
-      <Link to="/notice-write" style={{ marginBottom: 15, display: "inline-block", fontWeight: 700, color: "#fff", background: "#1676ed", padding: "6px 16px", borderRadius: 8, textDecoration: "none" }}>
+      <h2 style={{ fontWeight: 900, fontSize: 29, marginBottom: 17, color: "#5542b8" }}>공지사항</h2>
+      <Link to="/notice-write" style={{ marginBottom: 15, display: "inline-block", fontWeight: 700, color: "#ffffff", background: "#6650d8", padding: "6px 16px", borderRadius: 8, textDecoration: "none" }}>
         + 새 공지 쓰기
       </Link>
       {loading ? (
         <div>로딩중...</div>
       ) : notices.length === 0 ? (
-        <div style={{ color: "#888" }}>등록된 공지 없음</div>
+        <div style={{ color: "#596579" }}>등록된 공지 없음</div>
       ) : (
         <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
           {notices.map(n => (
             <li key={n.id} style={{ padding: "13px 0", borderBottom: "1px solid #ddd" }}>
-              <b style={{ fontSize: 18, color: "#195" }}>{n.title}</b>
-              <span style={{ color: "#aaa", fontSize: 13, marginLeft: 12 }}>{(n.created_at || "").slice(0, 10)}</span>
+              <b style={{ fontSize: 20, color: "#167044" }}>{n.title}</b>
+              <span style={{ color: "#596579", fontSize: 15, marginLeft: 12 }}>{(n.created_at || "").slice(0, 10)}</span>
               <br />
-              <Link to={`/notice/${n.id}`} style={{ color: "#1676ed", fontSize: 15, textDecoration: "underline" }}>상세보기</Link>
+              <Link to={`/notice/${n.id}`} style={{ color: "#5542b8", fontSize: 17, textDecoration: "underline" }}>상세보기</Link>
             </li>
           ))}
         </ul>

@@ -571,7 +571,7 @@ if (
           24,
 
         boxShadow:
-          "0 4px 24px #e6ecfa",
+          "0 4px 16px rgba(25,32,52,0.07)",
 
         padding:
           "40px 16px 56px 16px",
@@ -584,10 +584,10 @@ if (
             900,
 
           fontSize:
-            32,
+            34,
 
           color:
-            "#1976ed",
+            "#5542b8",
 
           marginBottom:
             32,
@@ -599,7 +599,7 @@ if (
             "center",
 
           textShadow:
-            "0 1px 10px #b1deff30",
+            "none",
         }}
       >
         관리자 통계 대시보드
@@ -630,13 +630,13 @@ if (
         <div
           style={{
             background:
-              "linear-gradient(120deg, #fafdff 70%, #e3f0fb 100%)",
+              "#f5f6fa",
 
             borderRadius:
               20,
 
             boxShadow:
-              "0 4px 18px #1976ed13",
+              "0 4px 16px rgba(25,32,52,0.07)",
 
             minWidth:
               190,
@@ -657,7 +657,7 @@ if (
           <div
             style={{
               fontSize:
-                17,
+                19,
 
               fontWeight:
                 700,
@@ -675,13 +675,13 @@ if (
           <div
             style={{
               fontSize:
-                40,
+                42,
 
               fontWeight:
                 900,
 
               color:
-                "#1976ed",
+                "#5542b8",
             }}
           >
             {worldcupCount.toLocaleString()}
@@ -692,13 +692,13 @@ if (
         <div
           style={{
             background:
-              "linear-gradient(120deg, #fafdff 70%, #e5f7ef 100%)",
+              "#f5f6fa",
 
             borderRadius:
               20,
 
             boxShadow:
-              "0 4px 18px #38b27a13",
+              "0 4px 16px rgba(25,32,52,0.07)",
 
             minWidth:
               190,
@@ -719,7 +719,7 @@ if (
           <div
             style={{
               fontSize:
-                17,
+                19,
 
               fontWeight:
                 700,
@@ -737,13 +737,13 @@ if (
           <div
             style={{
               fontSize:
-                40,
+                42,
 
               fontWeight:
                 900,
 
               color:
-                "#38b27a",
+                "#167044",
             }}
           >
             {loading
@@ -756,13 +756,13 @@ if (
         <div
           style={{
             background:
-              "linear-gradient(120deg, #fafdff 70%, #fff1dd 100%)",
+              "#f5f6fa",
 
             borderRadius:
               20,
 
             boxShadow:
-              "0 4px 18px #ffab4018",
+              "0 4px 16px rgba(25,32,52,0.07)",
 
             minWidth:
               190,
@@ -783,7 +783,7 @@ if (
           <div
             style={{
               fontSize:
-                17,
+                19,
 
               fontWeight:
                 700,
@@ -801,13 +801,13 @@ if (
           <div
             style={{
               fontSize:
-                40,
+                42,
 
               fontWeight:
                 900,
 
               color:
-                "#f39a22",
+                "#b42346",
             }}
           >
             {loading
@@ -832,7 +832,7 @@ if (
             28,
 
           boxShadow:
-            "0 1px 10px #dde5ef77",
+            "0 4px 16px rgba(25,32,52,0.07)",
 
           marginBottom:
             32,
@@ -847,7 +847,7 @@ if (
               "0 0 26px 0",
 
             fontSize:
-              20,
+              22,
 
             color:
               "#26326b",
@@ -866,7 +866,7 @@ if (
                 "center",
 
               color:
-                "#999",
+                "#596579",
 
               padding:
                 30,
@@ -933,7 +933,7 @@ if (
                     <div
                       style={{
                         fontSize:
-                          14,
+                          16,
 
                         fontWeight:
                           900,
@@ -960,7 +960,7 @@ if (
 
                         background:
                           row.count > 0
-                            ? "linear-gradient(180deg, #4ea2f9 0%, #1976ed 100%)"
+                            ? "#6650d8"
                             : "#dce4ef",
 
                         borderRadius:
@@ -968,7 +968,7 @@ if (
 
                         boxShadow:
                           row.count > 0
-                            ? "0 3px 10px #1976ed22"
+                            ? "0 4px 16px rgba(25,32,52,0.07)"
                             : "none",
 
                         transition:
@@ -983,10 +983,10 @@ if (
                           7,
 
                         fontSize:
-                          12,
+                          14,
 
                         color:
-                          "#8d96aa",
+                          "#5542b8",
 
                         fontWeight:
                           700,
@@ -1015,10 +1015,10 @@ if (
               "center",
 
             color:
-              "#a0a8b9",
+              "#5542b8",
 
             fontSize:
-              12,
+              14,
 
             marginTop:
               18,
@@ -1036,7 +1036,7 @@ if (
     background: "#f9fbff",
     borderRadius: 16,
     padding: 28,
-    boxShadow: "0 1px 10px #dde5ef77",
+    boxShadow: "0 4px 16px rgba(25,32,52,0.07)",
     marginBottom: 32,
   }}
 >
@@ -1045,7 +1045,7 @@ if (
       fontWeight: 800,
       marginBottom: 20,
       marginTop: 0,
-      fontSize: 20,
+      fontSize: 22,
       color: "#26326b",
       textAlign: "center",
     }}
@@ -1057,7 +1057,7 @@ if (
     <div
       style={{
         textAlign: "center",
-        color: "#999",
+        color: "#596579",
         padding: 20,
       }}
     >
@@ -1067,7 +1067,7 @@ if (
     <div
       style={{
         textAlign: "center",
-        color: "#aaa",
+        color: "#596579",
         padding: 20,
       }}
     >
@@ -1107,7 +1107,7 @@ if (
               background: "#fff",
               borderRadius: 10,
               boxShadow:
-                "0 1px 4px #dfe4ec",
+                "0 4px 16px rgba(25,32,52,0.07)",
               cursor: "pointer",
             }}
             title="클릭하면 해당 월드컵 통계로 이동합니다."
@@ -1120,7 +1120,7 @@ if (
             >
               <div
                 style={{
-                  fontSize: 15,
+                  fontSize: 17,
                   fontWeight: 800,
                   color: "#222",
                   overflow: "hidden",
@@ -1136,9 +1136,9 @@ if (
             <div
               style={{
                 flexShrink: 0,
-                fontSize: 12,
+                fontSize: 14,
                 fontWeight: 700,
-                color: "#8d96aa",
+                color: "#5542b8",
                 whiteSpace: "nowrap",
               }}
             >
@@ -1153,8 +1153,8 @@ if (
   <div
     style={{
       textAlign: "center",
-      color: "#a0a8b9",
-      fontSize: 12,
+      color: "#5542b8",
+      fontSize: 14,
       marginTop: 16,
     }}
   >
@@ -1177,7 +1177,7 @@ if (
             28,
 
           boxShadow:
-            "0 1px 10px #dde5ef77",
+            "0 4px 16px rgba(25,32,52,0.07)",
 
           marginBottom:
             32,
@@ -1195,7 +1195,7 @@ if (
               0,
 
             fontSize:
-              20,
+              22,
 
             color:
               "#26326b",
@@ -1216,7 +1216,7 @@ if (
                 "center",
 
               color:
-                "#aaa",
+                "#596579",
 
               padding:
                 20,
@@ -1263,7 +1263,7 @@ if (
                       10,
 
                     boxShadow:
-                      "0 1px 4px #ccc",
+                      "0 4px 16px rgba(25,32,52,0.07)",
 
                     display:
                       "flex",
@@ -1330,10 +1330,10 @@ if (
                     }
                     style={{
                       background:
-                        "#e14444",
+                        "#c83232",
 
                       color:
-                        "#fff",
+                        "#ffffff",
 
                       border:
                         "none",
@@ -1376,13 +1376,13 @@ if (
       <div
         style={{
           color:
-            "#b6bbd2",
+            "#5542b8",
 
           textAlign:
             "center",
 
           fontSize:
-            13,
+            15,
 
           marginTop:
             32,

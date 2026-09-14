@@ -115,11 +115,11 @@ const isMine = (cup) => {
 const isMobile = vw < 600;
 
   // 홈 카드와 동일한 크기
-  const CARD_WIDTH = isMobile ? 320 : 420;
-  const CARD_HEIGHT = isMobile ? 325 : 350;
+ const CARD_WIDTH = isMobile ? 320 : 504;
+  const CARD_HEIGHT = isMobile ? 382 : 398;
   const THUMB_HEIGHT = isMobile ? 148 : 168 * 1.05;
 
-  const mainDark = "#000";
+  const mainDark = "#ffffff";
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -357,12 +357,12 @@ const isMobile = vw < 600;
 
   const buttonStyle = {
     background: mainDark,
-    color: "#fff",
+    color: "#202534",
     fontWeight: 900,
     border: "none",
     borderRadius: 8,
 
-fontSize: isMobile ? 15 : 17,
+fontSize: isMobile ? 17 : 19,
 
 padding: isMobile
   ? "6px 8px"
@@ -391,14 +391,14 @@ const smallButtonStyle = {
     : "7px 8px",
 
   fontSize: isMobile
-    ? 15
-    : 17,
+    ? 17
+    : 19,
 };
 
   const cardDescStyle = {
-    color: "#b9dafb",
+    color: "#202534",
 
-    fontSize: isMobile ? 14 : 16,
+    fontSize: isMobile ? 16 : 18,
 
     lineHeight: 1.35,
     textAlign: "center",
@@ -433,7 +433,7 @@ const smallButtonStyle = {
     height: 4,
 
     background:
-      "linear-gradient(90deg, #1976ed 45%, #25e5fd 100%)",
+      "#6650d8",
 
     borderRadius: "0 0 18px 18px",
 
@@ -441,7 +441,7 @@ const smallButtonStyle = {
     marginTop: "auto",
 
     boxShadow:
-      "0 2px 10px #1976ed44",
+      "0 4px 16px rgba(25,32,52,0.07)",
   };
 
   if (!category) {
@@ -453,9 +453,9 @@ const smallButtonStyle = {
           alignItems: "center",
           justifyContent: "center",
 
-          color: "#fff",
+          color: "#202534",
 
-          fontSize: 20,
+          fontSize: 22,
           fontWeight: 800,
         }}
       >
@@ -480,7 +480,7 @@ const smallButtonStyle = {
         marginLeft: "calc(50% - 50vw)",
         marginRight: "calc(50% - 50vw)",
 
-        background: "#000",
+        background: "#ffffff",
 
         padding: isMobile
           ? "24px 12px 70px"
@@ -488,7 +488,7 @@ const smallButtonStyle = {
 
         boxSizing: "border-box",
 
-        color: "#fff",
+        color: "#202534",
       }}
     >
       {/* 카테고리 제목 */}
@@ -498,11 +498,11 @@ const smallButtonStyle = {
 
           textAlign: "center",
 
-          color: "#ffd43b",
+          color: "#202534",
 
           fontSize: isMobile
-            ? 30
-            : 42,
+            ? 32
+            : 44,
 
           lineHeight: 1.2,
 
@@ -536,14 +536,14 @@ const smallButtonStyle = {
               : "0 24px",
 
             border:
-              "1px solid rgba(45,145,255,0.65)",
+              "1px solid #dde2ea",
 
             borderRadius: 9,
 
-            background: "#176fd1",
-            color: "#fff",
+            background: "#6650d8",
+            color: "#ffffff",
 
-            fontSize: isMobile ? 14 : 17,
+            fontSize: isMobile ? 16 : 19,
             fontWeight: 900,
 
             fontFamily:
@@ -552,7 +552,7 @@ const smallButtonStyle = {
             cursor: "pointer",
 
             boxShadow:
-              "0 4px 12px rgba(23,111,209,0.24)",
+              "0 4px 16px rgba(25,32,52,0.07)",
 
             whiteSpace: "nowrap",
 
@@ -564,19 +564,19 @@ const smallButtonStyle = {
               "translateY(-1px)";
 
             e.currentTarget.style.background =
-              "#1d7be3";
+              "#6650d8";
 
             e.currentTarget.style.boxShadow =
-              "0 6px 16px rgba(23,111,209,0.32)";
+              "0 6px 20px rgba(25,32,52,0.10)";
           }}
           onMouseLeave={(e) => {
             e.currentTarget.style.transform = "";
 
             e.currentTarget.style.background =
-              "#176fd1";
+              "#6650d8";
 
             e.currentTarget.style.boxShadow =
-              "0 4px 12px rgba(23,111,209,0.24)";
+              "0 6px 20px rgba(25,32,52,0.10)";
           }}
         >
           ＋{" "}
@@ -619,19 +619,19 @@ const smallButtonStyle = {
 
             border:
               sort === "popular"
-                ? "1px solid #2f8cff"
+                ? "1px solid #dde2ea"
                 : "1px solid rgba(255,255,255,0.12)",
 
             background:
               sort === "popular"
-                ? "#1677d8"
-                : "#1b2434",
+                ? "#6650d8"
+                : "#ffffff",
 
-            color: "#fff",
+            color: (sort === "popular") ? "#ffffff" : "#202534",
 
             fontSize: isMobile
-              ? 14
-              : 16,
+              ? 16
+              : 18,
 
             fontWeight: 900,
 
@@ -639,7 +639,7 @@ const smallButtonStyle = {
 
             boxShadow:
               sort === "popular"
-                ? "0 3px 10px rgba(22,119,216,0.25)"
+                ? "0 4px 16px rgba(25,32,52,0.07)"
                 : "none",
           }}
         >
@@ -664,19 +664,19 @@ const smallButtonStyle = {
 
             border:
               sort === "latest"
-                ? "1px solid #2f8cff"
+                ? "1px solid #dde2ea"
                 : "1px solid rgba(255,255,255,0.12)",
 
             background:
               sort === "latest"
-                ? "#1677d8"
-                : "#1b2434",
+                ? "#6650d8"
+                : "#ffffff",
 
-            color: "#fff",
+            color: (sort === "latest") ? "#ffffff" : "#202534",
 
             fontSize: isMobile
-              ? 14
-              : 16,
+              ? 16
+              : 18,
 
             fontWeight: 900,
 
@@ -684,7 +684,7 @@ const smallButtonStyle = {
 
             boxShadow:
               sort === "latest"
-                ? "0 3px 10px rgba(22,119,216,0.25)"
+                ? "0 4px 16px rgba(25,32,52,0.07)"
                 : "none",
           }}
         >
@@ -726,20 +726,20 @@ const smallButtonStyle = {
             borderRadius: 10,
 
             border:
-              "1.5px solid rgba(47,140,255,0.7)",
+              "1.5px solid #dde2ea",
 
             background:
-              "rgba(17,28,48,0.92)",
+              "#ffffff",
 
-            color: "#fff",
+            color: "#202534",
 
-            fontSize: isMobile ? 15 : 17,
+            fontSize: isMobile ? 17 : 19,
             fontWeight: 700,
 
             outline: "none",
 
             boxShadow:
-              "0 3px 14px rgba(25,118,237,0.18)",
+              "0 4px 16px rgba(25,32,52,0.07)",
           }}
         />
       </div>
@@ -752,9 +752,9 @@ const smallButtonStyle = {
 
             textAlign: "center",
 
-            color: "#aaa",
+            color: "#596579",
 
-            fontSize: 17,
+            fontSize: 19,
             fontWeight: 700,
           }}
         >
@@ -815,13 +815,13 @@ rowGap: isMobile ? 18 : 26,
                       borderRadius: 18,
 
                       background:
-                        "#000",
+                        "#ffffff",
 
                       boxShadow:
-                        "0 8px 38px 0 #1976ed45, 0 2px 12px #1976ed44",
+                        "0 4px 16px rgba(25,32,52,0.07)",
 
                       border:
-                        "1.5px solid #233a74",
+                        "1.5px solid #dde2ea",
 
                       display: "flex",
                       flexDirection: "column",
@@ -849,14 +849,14 @@ rowGap: isMobile ? 18 : 26,
                         "translateY(-7px) scale(1.025)";
 
                       e.currentTarget.style.boxShadow =
-                        "0 12px 50px 0 #1976ed88, 0 2.5px 16px #4abfff77";
+                        "0 6px 20px rgba(25,32,52,0.10)";
                     }}
                     onMouseLeave={(e) => {
                       e.currentTarget.style.transform =
                         "";
 
                       e.currentTarget.style.boxShadow =
-                        "0 8px 38px 0 #1976ed45, 0 2px 12px #1976ed44";
+                        "0 6px 20px rgba(25,32,52,0.10)";
                     }}
                     onClick={() =>
                       goto(
@@ -897,7 +897,7 @@ rowGap: isMobile ? 18 : 26,
                         zIndex: 0,
 
                         background:
-                          "radial-gradient(circle at 50% 60%, #2a8fff33 0%, #11264c00 90%)",
+                          "none",
 
                         filter:
                           "blur(22px) brightness(1.1)",
@@ -918,7 +918,7 @@ rowGap: isMobile ? 18 : 26,
                         flexDirection: "row",
 
                         background:
-                          "linear-gradient(90deg, #162d52 0%, #284176 100%)",
+                          "#f5f6fa",
 
                         borderTopLeftRadius: 18,
                         borderTopRightRadius: 18,
@@ -935,7 +935,7 @@ rowGap: isMobile ? 18 : 26,
                           width: "50%",
                           height: "100%",
 
-                          background: "#192145",
+                          background: "#ffffff",
 
                           borderTopLeftRadius: 18,
 
@@ -965,7 +965,7 @@ rowGap: isMobile ? 18 : 26,
                               objectPosition:
                                 "center center",
 
-                              background: "#111",
+                              background: "#ffffff",
                             }}
                           />
                         ) : (
@@ -973,7 +973,7 @@ rowGap: isMobile ? 18 : 26,
                             style={{
                               width: "100%",
                               height: "100%",
-                              background: "#222",
+                              background: "#ffffff",
                             }}
                           />
                         )}
@@ -985,7 +985,7 @@ rowGap: isMobile ? 18 : 26,
                           width: "50%",
                           height: "100%",
 
-                          background: "#1f2540",
+                          background: "#ffffff",
 
                           borderTopRightRadius: 18,
 
@@ -1015,7 +1015,7 @@ rowGap: isMobile ? 18 : 26,
                               objectPosition:
                                 "center center",
 
-                              background: "#111",
+                              background: "#ffffff",
                             }}
                           />
                         ) : (
@@ -1023,7 +1023,7 @@ rowGap: isMobile ? 18 : 26,
                             style={{
                               width: "100%",
                               height: "100%",
-                              background: "#15182b",
+                              background: "#ffffff",
                             }}
                           />
                         )}
@@ -1082,8 +1082,8 @@ rowGap: isMobile ? 18 : 26,
                         width: "100%",
 
                         height: isMobile
-                          ? 46
-                          : 50,
+                          ? 60
+                          : 66,
 
                         boxSizing: "border-box",
 
@@ -1131,13 +1131,13 @@ rowGap: isMobile ? 18 : 26,
                           lineHeight: 1.14,
 
                           fontSize: isMobile
-                            ? 17
-                            : 20,
+                            ? 19
+                            : 22,
 
                           letterSpacing:
                             "0.1px",
 
-                          color: "#fff",
+                          color: "#202534",
 
 fontFamily:
   "'Pretendard', sans-serif",
@@ -1145,7 +1145,7 @@ fontFamily:
 fontWeight: 800,
 
                           textShadow:
-                            "0 1.5px 8px #191b25cc",
+                            "none",
 
                           margin: 0,
                           padding: 0,
@@ -1156,9 +1156,9 @@ fontWeight: 800,
                     </div>
 
                     {/* 설명 */}
-                    <div style={cardDescStyle}>
+                    <div className="worldcup-card-description" style={cardDescStyle}><span className="card-description-text">
                       {displayDescription}
-                    </div>
+                    </span></div>
 
                     {/* 참여 횟수 */}
                     <div
@@ -1167,11 +1167,11 @@ fontWeight: 800,
 
                         textAlign: "center",
 
-                        color: "#8fc7ff",
+                        color: "#5542b8",
 
                         fontSize: isMobile
-                          ? 13
-                          : 14,
+                          ? 15
+                          : 16,
 
                         fontWeight: 700,
 
@@ -1238,7 +1238,7 @@ fontWeight: 800,
     style={buttonStyle}
     onMouseOver={(e) => {
       e.currentTarget.style.background =
-        "#1c2232";
+        "#ffffff";
     }}
     onMouseOut={(e) => {
       e.currentTarget.style.background =
@@ -1270,7 +1270,7 @@ fontWeight: 800,
         style={smallButtonStyle}
         onMouseOver={(e) => {
           e.currentTarget.style.background =
-            "#1c2232";
+            "#ffffff";
         }}
         onMouseOut={(e) => {
           e.currentTarget.style.background =
@@ -1305,7 +1305,7 @@ fontWeight: 800,
         style={smallButtonStyle}
         onMouseOver={(e) => {
           e.currentTarget.style.background =
-            "#1c2232";
+            "#ffffff";
         }}
         onMouseOut={(e) => {
           e.currentTarget.style.background =
@@ -1338,7 +1338,7 @@ fontWeight: 800,
     style={buttonStyle}
     onMouseOver={(e) => {
       e.currentTarget.style.background =
-        "#1c2232";
+        "#ffffff";
     }}
     onMouseOut={(e) => {
       e.currentTarget.style.background =
@@ -1391,20 +1391,20 @@ fontWeight: 800,
             }
             style={{
               border:
-                "1px solid #2f8cff",
+                "1px solid #dde2ea",
 
               borderRadius: 9,
 
-              background: "#176fd1",
-              color: "#fff",
+              background: "#6650d8",
+              color: "#ffffff",
 
               padding: isMobile
                 ? "10px 28px"
                 : "12px 36px",
 
               fontSize: isMobile
-                ? 14
-                : 17,
+                ? 16
+                : 19,
 
               fontWeight: 900,
 
@@ -1414,7 +1414,7 @@ fontWeight: 800,
               cursor: "pointer",
 
               boxShadow:
-                "0 4px 12px rgba(23,111,209,0.24)",
+                "0 4px 16px rgba(25,32,52,0.07)",
 
               transition:
                 "transform .15s, background .15s, box-shadow .15s",
@@ -1424,20 +1424,20 @@ fontWeight: 800,
                 "translateY(-1px)";
 
               e.currentTarget.style.background =
-                "#1d7be3";
+                "#6650d8";
 
               e.currentTarget.style.boxShadow =
-                "0 6px 16px rgba(23,111,209,0.32)";
+                "0 6px 20px rgba(25,32,52,0.10)";
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.transform =
                 "";
 
               e.currentTarget.style.background =
-                "#176fd1";
+                "#6650d8";
 
               e.currentTarget.style.boxShadow =
-                "0 4px 12px rgba(23,111,209,0.24)";
+                "0 6px 20px rgba(25,32,52,0.10)";
             }}
           >
             {lang === "ko"
@@ -1449,7 +1449,6 @@ fontWeight: 800,
 
       <style>
         {`
-          @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&display=swap');
 
           button:focus,
           button:active {

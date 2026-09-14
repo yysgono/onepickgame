@@ -1,3 +1,6 @@
+import { Link } from "react-router-dom";
+import "../registerHeaderTranslations";
+import "./OnePickHeader.css";
 import "../registerPresetTranslations";
 // src/components/Header.js
 import React, { useRef, useState, useEffect } from "react";
@@ -44,7 +47,6 @@ export default function Header({
   onLangChange,
   onBackup,
   onRestore,
-  onMakeWorldcup,
   isAdmin,
   user,
   nickname,
@@ -395,289 +397,7 @@ export default function Header({
   const logoImgUrl =
     "/onepick2.png";
 
-  const headerBgUrl =
-    "/onepick3.png";
-
-  const darkBlue =
-    "#171C27";
-
-  const blueMain =
-    "#1976ed";
-
-  const blueGradient =
-    "linear-gradient(90deg,#2999ff,#236de8 100%)";
-
-  const blueNeon =
-    "0 0 16px #2999ff88, 0 2px 12px #1976ed33";
-
-  const gold =
-    "#ffbe3b";
-
-  const adminButtonStyle = (
-    bgColor = darkBlue,
-    color = "#fff"
-  ) => ({
-    background: bgColor,
-    color,
-
-    borderRadius: 8,
-
-    fontWeight: 800,
-
-    padding:
-      "11px 24px",
-
-    border: "none",
-
-    cursor: "pointer",
-
-    fontSize: 18,
-
-    whiteSpace:
-      "nowrap",
-
-    transition:
-      "background .15s, box-shadow .15s, color .12s",
-
-    boxShadow:
-      "0 2px 10px #1976ed33",
-
-    letterSpacing:
-      "0",
-
-    fontFamily:
-      "'Pretendard', 'Noto Sans KR', Arial, sans-serif",
-
-    textShadow:
-      "none",
-
-    outline:
-      "none",
-  });
-
-  const statButtonStyle = {
-    background: gold,
-    color: "#222",
-
-    border: "none",
-    borderRadius: 8,
-
-    fontWeight: 800,
-
-    padding:
-      "11px 24px",
-
-    fontSize: 18,
-
-    boxShadow:
-      "0 0 7px #fffbe34a",
-
-    cursor: "pointer",
-
-    outline: "none",
-
-    letterSpacing:
-      "0",
-
-    fontFamily:
-      "'Pretendard', 'Noto Sans KR', Arial, sans-serif",
-
-    textShadow:
-      "none",
-  };
-
-  const mainButtonStyle = {
-    background:
-      blueGradient,
-
-    color: "#fff",
-
-    border: "none",
-
-    borderRadius: 10,
-
-    fontWeight: 900,
-
-    padding:
-      "11px 24px",
-
-    fontSize: 19,
-
-    boxShadow:
-      blueNeon,
-
-    letterSpacing:
-      "0",
-
-    fontFamily:
-      "'Pretendard', 'Noto Sans KR', Arial, sans-serif",
-
-    textShadow:
-      "none",
-
-    transition:
-      "background .17s, box-shadow .13s, color .12s",
-
-    cursor:
-      "pointer",
-
-    whiteSpace:
-      "nowrap",
-
-    outline:
-      "none",
-  };
-
-  const worldcupButtonStyle = {
-    ...mainButtonStyle,
-
-    background:
-      "linear-gradient(90deg,#d92f55,#b91f46 100%)",
-
-    boxShadow:
-      "0 0 16px #d92f5588, 0 2px 12px #b91f4633",
-  };
-
-  const guessButtonStyle = {
-    ...mainButtonStyle,
-
-    background:
-      "linear-gradient(90deg,#18975b,#0f7043 100%)",
-
-    boxShadow:
-      "0 0 16px #18975b66, 0 2px 12px #0f704333",
-  };
-
-  const blindRankingButtonStyle = {
-    ...mainButtonStyle,
-
-    background:
-      "linear-gradient(90deg,#7b3fc6,#54258f 100%)",
-
-    boxShadow:
-      "0 0 16px #7b3fc666, 0 2px 12px #54258f33",
-  };
-
-  const disabledModeButtonStyle = {
-    cursor:
-      "not-allowed",
-
-    opacity:
-      0.55,
-  };
-
-  const infoButtonStyle = {
-    background:
-      "rgba(30,43,82,0.94)",
-
-    color: "#fff",
-
-    border: "none",
-
-    borderRadius: 8,
-
-    fontWeight: 700,
-
-    padding:
-      "11px 24px",
-
-    fontSize: 18,
-
-    boxShadow:
-      "0 0 7px #1976ed2d",
-
-    transition:
-      "background .14s, color .13s, box-shadow .12s",
-
-    outline:
-      "none",
-
-    marginRight: 0,
-
-    whiteSpace:
-      "nowrap",
-
-    fontFamily:
-      "'Pretendard', 'Noto Sans KR', Arial, sans-serif",
-
-    textShadow:
-      "none",
-  };
-
-  const logoutButtonStyle = {
-    background:
-      "#232c40",
-
-    color: "#fff",
-
-    border: "none",
-
-    borderRadius: 8,
-
-    fontWeight: 700,
-
-    padding:
-      "11px 24px",
-
-    fontSize: 18,
-
-    boxShadow:
-      "0 0 9px #157be940",
-
-    cursor:
-      "pointer",
-
-    outline:
-      "none",
-
-    transition:
-      "background .12s, color .13s",
-
-    fontFamily:
-      "'Pretendard', 'Noto Sans KR', Arial, sans-serif",
-
-    textShadow:
-      "none",
-  };
-
-  const selectStyle = {
-    padding:
-      "10px 16px",
-
-    borderRadius: 8,
-
-    fontWeight: 700,
-
-    fontSize: 18,
-
-    minWidth: 150,
-
-    background:
-      "#222f45",
-
-    color: "#fff",
-
-    border:
-      "1px solid #1258cc",
-
-    cursor:
-      "pointer",
-
-    userSelect:
-      "none",
-
-    outline:
-      "none",
-
-    boxShadow:
-      "0 0 7px #157be94a",
-
-    fontFamily:
-      "'Pretendard', 'Noto Sans KR', Arial, sans-serif",
-
-    textShadow:
-      "none",
-  };
+  const blueMain = "#6650d8";
 
   const modalOverlayStyle = {
     position:
@@ -713,10 +433,10 @@ export default function Header({
 
   const modalContentStyle = {
     background:
-      "#1e293b",
+      "#ffffff",
 
     color:
-      "#fff",
+      "#202534",
 
     borderRadius:
       12,
@@ -734,7 +454,7 @@ export default function Header({
       "100%",
 
     boxShadow:
-      "0 4px 24px rgba(0,0,0,0.15)",
+      "0 4px 16px rgba(25,32,52,0.07)",
 
     display:
       "flex",
@@ -781,16 +501,16 @@ export default function Header({
       7,
 
     background:
-      "#334155",
+      "#ffffff",
 
     color:
-      "#fff",
+      "#202534",
 
     border:
-      "1px solid #475569",
+      "1px solid #dde2ea",
 
     fontSize:
-      16,
+      18,
 
     marginBottom:
       9,
@@ -807,7 +527,7 @@ export default function Header({
       blueMain,
 
     color:
-      "#fff",
+      "#ffffff",
 
     border:
       "none",
@@ -819,7 +539,7 @@ export default function Header({
       800,
 
     fontSize:
-      16,
+      18,
 
     padding:
       "10px 0",
@@ -836,10 +556,10 @@ export default function Header({
       "100%",
 
     background:
-      "#475569",
+      "#f1f3f7",
 
     color:
-      "#fff",
+      "#202534",
 
     border:
       "none",
@@ -851,7 +571,7 @@ export default function Header({
       700,
 
     fontSize:
-      15,
+      17,
 
     padding:
       "8px 0",
@@ -868,10 +588,10 @@ export default function Header({
       "100%",
 
     background:
-      "#e14444",
+      "#c83232",
 
     color:
-      "#fff",
+      "#ffffff",
 
     border:
       "none",
@@ -883,7 +603,7 @@ export default function Header({
       700,
 
     fontSize:
-      15,
+      17,
 
     padding:
       "10px 0",
@@ -927,510 +647,95 @@ export default function Header({
       "none",
   };
 
+  const pathParts = location.pathname.split('/').filter(Boolean);
+  const modePath = pathParts[languages.some(item => item.code === pathParts[0]) ? 1 : 0] || '';
+  const personalPage = modePath === 'my-worldcups' || (modePath === 'tier-list' && new URLSearchParams(location.search).get('mine') === '1');
+  const activeMode = personalPage ? '' : modePath.startsWith('tier-list') ? 'tier-list' : ['','category','select-round','match','result','worldcup-maker','edit-worldcup','stats'].some(key => modePath === key || (key && modePath.startsWith(key))) ? 'worldcup' : '';
+  const headerModes = [
+    {key:'worldcup',icon:'trophy',label:t('gameModeNav.worldcup'),path:`/${currentLang}`},
+    {key:'tier-list',icon:'chart',label:t('gameModeNav.tierList'),path:`/${currentLang}/tier-list`},
+    {key:'quiz',icon:'question',label:t('gameModeNav.quiz'),pending:true},
+    {key:'blind-ranking',icon:'crown',label:t('gameModeNav.blindRanking'),pending:true},
+  ];
+  useEffect(() => {
+    document.querySelectorAll('.onepick-header details[open]').forEach(el => el.removeAttribute('open'));
+  }, [location.pathname, location.search]);
+  useEffect(() => {
+    const closeMenus = event => {
+      document.querySelectorAll('.onepick-header details[open]').forEach(el => {
+        if (event.key === 'Escape' || (event.type === 'pointerdown' && !el.contains(event.target))) el.removeAttribute('open');
+      });
+    };
+    document.addEventListener('pointerdown', closeMenus);
+    document.addEventListener('keydown', closeMenus);
+    return () => { document.removeEventListener('pointerdown', closeMenus); document.removeEventListener('keydown', closeMenus); };
+  }, []);
   return (
-    <header
-      style={{
-        width:
-          "100%",
-
-        background:
-          `linear-gradient(90deg,rgba(20,23,32,0.92) 80%,rgba(20,26,44,0.82)),url('${headerBgUrl}') center/cover no-repeat`,
-
-        boxShadow:
-          "0 2px 22px #000a, 0 1.5px 6px #1e2242cc",
-
-        borderBottom:
-          "4px solid #1976ed",
-
-        position:
-          "relative",
-
-        zIndex:
-          1000,
-
-        padding:
-          isMobile ? "0 0 12px 0" : "0 0 20px 0",
-
-        backdropFilter:
-          "blur(2.5px)",
-
-        WebkitBackdropFilter:
-          "blur(2.5px)",
-      }}
-    >
-      {/* 로고 */}
-      <div
-        style={{
-          width:
-            "100%",
-
-          display:
-            "flex",
-
-          justifyContent:
-            "center",
-
-          alignItems:
-            "center",
-
-          padding:
-            isMobile ? "10px 12px 8px" : "18px 0 14px 0",
-
-          cursor:
-            "pointer",
-
-          userSelect:
-            "none",
-        }}
-        onClick={
-          handleLogoClick
-        }
-      >
-        <img
-          src={
-            logoImgUrl
-          }
-          alt={t(
-            "onepick_logo_alt",
-            "OnePickGame logo"
-          )}
-          style={{
-            width: isMobile ? 46 : 64,
-            height: isMobile ? 46 : 64,
-
-            borderRadius:
-              "50%",
-
-            border:
-              "2.2px solid #1976ed",
-
-            background:
-              "rgba(24,29,42,0.9)",
-
-            marginRight:
-              isMobile ? 7 : 8,
-
-            filter:
-              "drop-shadow(0 0 10px #00c8ffbb)",
-
-            verticalAlign:
-              "middle",
-          }}
-          draggable={
-            false
-          }
-        />
-
-        <span
-          style={{
-            fontWeight:
-              900,
-
-            fontSize:
-              isMobile ? 27 : 34,
-
-            fontFamily:
-              "'Pretendard', 'Noto Sans KR', Arial, sans-serif",
-
-            color:
-              "#fff",
-
-            textShadow:
-              "none",
-
-            letterSpacing:
-              "0.3px",
-
-            lineHeight:
-              1.13,
-
-            marginTop:
-              2,
-          }}
-        >
-          {t(
-            "onepick_brand",
-            "One Pick Game"
-          )}
-        </span>
-      </div>
-
-         {/* 헤더 메뉴 */}
-      <div
-        style={{
-          width: "100%",
-          maxWidth: 1800,
-          margin: "0 auto",
-          padding: "6px 16px 0",
-          boxSizing: "border-box",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          gap: 12,
-        }}
-      >
-        {/* =========================
-            1줄
-            Bracket / Tier List / Quiz / Blind Ranking
-        ========================== */}
-        <div
-          style={{
-            width: "calc(100% - 24px)",
-            maxWidth: 860,
-            display: "grid",
-   gridTemplateColumns:
-  isMobile
-    ? "repeat(2, minmax(0, 1fr))"
-    : "repeat(4, minmax(0, 1fr))",
-            gap: 12,
-            boxSizing: "border-box",
-          }}
-        >
-          {/* Bracket */}
-          <button
-            style={{
-              ...worldcupButtonStyle,
-              width: "100%",
-              minHeight: 46,
-            }}
-            onClick={() =>
-              navigate(`/${currentLang}`)
-            }
-          >
-            {t("gameModeNav.worldcup")}
-          </button>
-
-          {/* Tier List */}
-          <button
-            style={{
-              ...mainButtonStyle,
-              width: "100%",
-              minHeight: 46,
-            }}
-            onClick={() =>
-              navigate(
-                `/${currentLang}/tier-list`
-              )
-            }
-          >
-            {t("gameModeNav.tierList")}
-          </button>
-
-          {/* Quiz */}
-          <button
-            type="button"
-            disabled
-            style={{
-              ...guessButtonStyle,
-              ...disabledModeButtonStyle,
-              width: "100%",
-              minHeight: 46,
-            }}
-            title={t(
-              "gameModeNav.comingSoon"
-            )}
-          >
-            {t("gameModeNav.quiz")}
-          </button>
-
-          {/* Blind Ranking */}
-          <button
-            type="button"
-            disabled
-            style={{
-              ...blindRankingButtonStyle,
-              ...disabledModeButtonStyle,
-              width: "100%",
-              minHeight: 46,
-            }}
-            title={t(
-              "gameModeNav.comingSoon"
-            )}
-          >
-            {t(
-              "gameModeNav.blindRanking"
-            )}
-          </button>
-        </div>
-
-        {/* =========================
-            2줄
-            Blog / 언어 / 계정
-        ========================== */}
-        <div
-          style={{
-            width: "calc(100% - 24px)",
-            maxWidth: 860,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            flexWrap: "wrap",
-            gap: "10px 12px",
-            boxSizing: "border-box",
-          }}
-        >
-          {/* Blog */}
-          <button
-            style={{
-              ...infoButtonStyle,
-              minWidth: 110,
-              minHeight: 46,
-            }}
-            onClick={handleBlog}
-          >
-            Blog
-          </button>
-
-          {/* 언어 */}
-          <select
-            value={
-              (
-                i18n.language ||
-                "en"
-              ).split("-")[0]
-            }
-            onChange={(e) =>
-              changeLanguageAndKeepPath(
-                e.target.value
-              )
-            }
-            style={{
-              ...selectStyle,
-              minWidth: 190,
-              minHeight: 46,
-              boxSizing: "border-box",
-            }}
-            aria-label={t(
-              "language_select",
-              "Select language"
-            )}
-          >
-            {languages.map(
-              (lang) => (
-                <option
-                  key={lang.code}
-                  value={lang.code}
-                >
-                  {lang.label}
-                </option>
-              )
-            )}
-          </select>
-
-          {user ? (
-            <>
-              {/* 닉네임 */}
-              <span
-                style={{
-                  minWidth: 100,
-                  justifyContent:
-                    "center",
-
-                  fontWeight: 900,
-                  color: "#ffffff",
-
-                  background:
-                    "#0f2940",
-
-                  border:
-                    "1px solid #2d6f9f",
-
-                  borderRadius: 9,
-
-                  padding:
-                    "10px 16px",
-
-                  margin: 0,
-
-                  minHeight: 46,
-
-                  display:
-                    "inline-flex",
-
-                  alignItems:
-                    "center",
-
-                  boxSizing:
-                    "border-box",
-
-                  whiteSpace:
-                    "nowrap",
-
-                  userSelect:
-                    "none",
-
-                  textShadow:
-                    "none",
-
-                  fontFamily:
-                    "'Pretendard', 'Noto Sans KR', Arial, sans-serif",
-
-                  fontSize: 18,
-
-                  letterSpacing: 0,
-                }}
-              >
-                {nicknameLoading
-                  ? t(
-                      "loading_nickname"
-                    )
-                  : nickname ||
-                    t(
-                      "no_nickname"
-                    )}
-              </span>
-
-              {/* 프로필 */}
-              <button
-                style={{
-                  ...infoButtonStyle,
-                  minWidth: 140,
-                  minHeight: 46,
-                }}
-                onClick={() =>
-                  setShowProfile(true)
-                }
-              >
-                {t("edit_profile")}
-              </button>
-
-              {/* 로그아웃 */}
-              <button
-                style={{
-                  ...logoutButtonStyle,
-                  minWidth: 110,
-                  minHeight: 46,
-                }}
-                onClick={handleLogout}
-              >
-                {t("logout")}
-              </button>
-            </>
-          ) : (
-            <button
-              style={{
-                ...mainButtonStyle,
-                minWidth: 190,
-                minHeight: 46,
-              }}
-              onClick={() =>
-                navigate(
-                  `/${currentLang}/login`
-                )
-              }
-            >
-              {t(
-                "auth.loginSignup"
-              )}
-            </button>
-          )}
-        </div>
-
-
-        {/* 관리자 전용 */}
-        {isAdmin && (
-          <div
-            style={{
-              width:
-                "100%",
-
-              display:
-                "flex",
-
-              alignItems:
-                "center",
-
-              justifyContent:
-                "center",
-
-              flexWrap:
-                "wrap",
-
-              gap:
-                isMobile ? 8 : "10px 12px",
-
-              paddingTop:
-                2,
-
-              paddingLeft:
-                isMobile ? 12 : 0,
-
-              paddingRight:
-                isMobile ? 12 : 0,
-            }}
-          >
-            <button
-              style={adminButtonStyle(
-                "#1976ed"
-              )}
-              onClick={() =>
-                navigate(
-                  `/${currentLang}/admin`
-                )
-              }
-            >
-              {t(
-                "dashboard"
-              )}
-            </button>
-
-            <button
-              style={
-                statButtonStyle
-              }
-              onClick={() =>
-                navigate(
-                  `/${currentLang}/admin-stats`
-                )
-              }
-            >
-              {t(
-                "stats"
-              )}
-            </button>
-
-            <button
-              style={adminButtonStyle()}
-              onClick={
-                onBackup
-              }
-            >
-              {t(
-                "backupAll"
-              )}
-            </button>
-
-            <button
-              style={adminButtonStyle(
-                "#253253"
-              )}
-              onClick={() =>
-                inputRef.current &&
-                inputRef.current.click()
-              }
-            >
-              {t(
-                "restore"
-              )}
-            </button>
-
-            <input
-              ref={
-                inputRef
-              }
-              type="file"
-              accept="application/json"
-              style={{
-                display:
-                  "none",
-              }}
-              onChange={
-                onRestore
-              }
-            />
+    <header className="onepick-header">
+      <div className="onepick-header-main">
+          <div className="onepick-header-brand-area">
+<button
+  type="button"
+  className="onepick-header-brand"
+  onClick={handleLogoClick}
+>
+  <span className="onepick-logo-frame">
+    <img src={logoImgUrl} alt="" width="72" height="72" />
+  </span>
+
+<span
+  style={{
+    color: "#111111",
+    fontStyle: "italic",
+    fontWeight: 1000,
+    letterSpacing: "-0.03em",
+    display: "inline-block",
+    textShadow: "0 1px 0 rgba(0,0,0,0.08)",
+  }}
+>
+  One Pick Game
+</span>
+</button>
+
+</div>
+<nav className="onepick-header-modes" aria-label={t('lightUi.gameModes', 'Game modes')}>
+          {headerModes.map(mode => <div key={mode.key} className={`onepick-header-mode${activeMode === mode.key ? ' is-active' : ''}${mode.pending ? ' is-pending' : ''}`}>
+            {mode.pending ? <div className="onepick-header-mode-main" aria-disabled="true">
+              <HeaderIcon name={mode.icon} /><span>{mode.label}</span><small>{t('gameModeNav.comingSoon')}</small>
+            </div> : <Link className="onepick-header-mode-main" to={mode.path} aria-current={activeMode === mode.key ? 'page' : undefined}>
+              <HeaderIcon name={mode.icon} /><span>{mode.label}</span>
+            </Link>}
+          </div>)}
+        </nav>
+        <div className="onepick-header-account">
+          <div className="onepick-header-tools">
+            <label className="header-language-control"><span className="header-language-label">🌐 Language</span><select value={currentLang} onChange={e=>changeLanguageAndKeepPath(e.target.value)} aria-label={t('language_select','Select language')}>
+              {languages.map(item=><option key={item.code} value={item.code}>{item.label}</option>)}
+            </select></label>
+            <button type="button" onClick={handleBlog}>Blog</button>
           </div>
-        )}
+          <div className="onepick-header-user">
+            <Link to={`/${currentLang}/my-worldcups`} className={`onepick-header-content-link${personalPage ? ' is-active' : ''}`} aria-current={personalPage ? 'page' : undefined}>
+              <HeaderIcon name="folder" /><span>{t('lightUi.myContent','My content')}</span>
+            </Link>
+            {user ? <details className="onepick-profile-menu">
+              <summary><HeaderIcon name="user" /><span>{t('lightUi.profile','Profile')}</span></summary>
+              <div className="onepick-profile-dropdown">
+                <strong>{nicknameLoading ? t('loading_nickname') : nickname || t('no_nickname')}</strong>
+                <button type="button" onClick={()=>setShowProfile(true)}>{t('edit_profile')}</button>
+                {isAdmin && <>
+                  <button type="button" onClick={()=>navigate(`/${currentLang}/admin`)}>{t('dashboard')}</button>
+                  <button type="button" onClick={()=>navigate(`/${currentLang}/admin-stats`)}>{t('stats')}</button>
+                  <button type="button" onClick={onBackup}>{t('backupAll')}</button>
+                  <button type="button" onClick={()=>inputRef.current?.click()}>{t('restore')}</button>
+                </>}
+                <button type="button" onClick={handleLogout}>{t('logout')}</button>
+              </div>
+            </details> : <Link className="onepick-login-link" to={`/${currentLang}/login`}><HeaderIcon name="user" /><span>{t('auth.loginSignup')}</span></Link>}
+          </div>
+        </div>
       </div>
+      {isAdmin && <input ref={inputRef} type="file" accept="application/json" hidden onChange={onRestore} />}
 
       {/* 프로필 모달 */}
       {showProfile && (
@@ -1445,6 +750,7 @@ export default function Header({
           }
         >
           <div
+            role="dialog" aria-modal="true" aria-label={t("edit_profile")}
             style={
               modalContentStyle
             }
@@ -1460,7 +766,7 @@ export default function Header({
                   800,
 
                 fontSize:
-                  21,
+                  23,
 
                 marginBottom:
                   18,
@@ -1486,7 +792,7 @@ export default function Header({
                     10,
 
                   fontSize:
-                    15,
+                    17,
                 }}
               >
                 <b>
@@ -1505,7 +811,7 @@ export default function Header({
                     10,
 
                   fontSize:
-                    15,
+                    17,
                 }}
               >
                 <b>
@@ -1624,13 +930,13 @@ export default function Header({
                 <div
                   style={{
                     color:
-                      "red",
+                      "#b42346",
 
                     marginTop:
                       7,
 
                     fontSize:
-                      14,
+                      16,
 
                     textAlign:
                       "center",
@@ -1685,7 +991,7 @@ export default function Header({
                   "#555",
 
                 fontSize:
-                  28,
+                  30,
 
                 cursor:
                   "pointer",
@@ -1736,4 +1042,15 @@ export default function Header({
       )}
     </header>
   );
+}
+function HeaderIcon({ name }) {
+  const paths = {
+    trophy: <><path d="M8 3h8v6a4 4 0 0 1-8 0V3Z"/><path d="M8 5H4v2a4 4 0 0 0 4 4m8-6h4v2a4 4 0 0 1-4 4m-4 2v5m-4 3h8m-6-3h4"/></>,
+    chart: <><path d="M4 20h16M5 19v-7h3v7m3 0V8h3v11m3 0V3h3v16"/></>,
+    question: <><circle cx="12" cy="12" r="9"/><path d="M9 9a3 3 0 0 1 6 0c0 2-3 2-3 4m0 3h.01"/></>,
+    crown: <path d="m3 6 4 4 5-6 5 6 4-4-2 13H5L3 6Zm3 10h12"/>,
+    folder: <path d="M3 7V5h6l2 2h10v13H3V7Zm0 3h18"/>,
+    user: <><circle cx="12" cy="12" r="9"/><circle cx="12" cy="9" r="3"/><path d="M6 19v-1a6 5 0 0 1 12 0v1"/></>,
+  };
+  return <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.65" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{paths[name]}</svg>;
 }

@@ -58,19 +58,19 @@ export default function NoticePage() {
           padding: 28,
           background: "#fff",
           borderRadius: 14,
-          boxShadow: "0 2px 14px #2222",
+          boxShadow: "0 4px 16px rgba(25,32,52,0.07)",
           minHeight: 420,
           color: "#1c2335",
         }}
       >
-        <h2 style={{ color: "#1976ed", fontWeight: 900, marginBottom: 18 }}>
+        <h2 style={{ color: "#5542b8", fontWeight: 900, marginBottom: 18 }}>
           📢 {t("notice", "Notice")}
         </h2>
 
-        {loading && <div style={{ color: "#888" }}>{t("loading", "Loading...")}</div>}
+        {loading && <div style={{ color: "#596579" }}>{t("loading", "Loading...")}</div>}
 
         {!loading && (notices || []).length === 0 && (
-          <div style={{ color: "#888" }}>{t("no_notices", "No notices yet.")}</div>
+          <div style={{ color: "#596579" }}>{t("no_notices", "No notices yet.")}</div>
         )}
 
         <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
@@ -82,8 +82,8 @@ export default function NoticePage() {
                 borderBottom: "1px solid #dde5f7",
               }}
             >
-              <b style={{ fontSize: 19, color: "#23366b" }}>{n.title}</b>
-              <span style={{ color: "#aaa", fontSize: 13, marginLeft: 10 }}>
+              <b style={{ fontSize: 21, color: "#23366b" }}>{n.title}</b>
+              <span style={{ color: "#596579", fontSize: 15, marginLeft: 10 }}>
                 {n.created_at ? new Date(n.created_at).toLocaleDateString("en", {
                   year: "numeric",
                   month: "short",
@@ -94,8 +94,8 @@ export default function NoticePage() {
               <Link
                 to={`/notice/${encodeURIComponent(n.id)}`}   // ✅ 언어 프리픽스 제거
                 style={{
-                  color: "#1676ed",
-                  fontSize: 15,
+                  color: "#5542b8",
+                  fontSize: 17,
                   textDecoration: "underline",
                   cursor: "pointer",
                 }}

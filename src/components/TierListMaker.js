@@ -462,10 +462,10 @@ const CandidateCard = memo(
               : 0,
 
           background:
-            "#101d32",
+            "#ffffff",
 
           border:
-            "1px solid #315a8f",
+            "1px solid #dde2ea",
 
           borderRadius:
             8,
@@ -495,7 +495,7 @@ const CandidateCard = memo(
   width: "100%",
   aspectRatio: "1 / 1",
   overflow: "hidden",
-  background: "#07111f",
+  background: "#ffffff",
   pointerEvents: "none",
 }}
         >
@@ -578,7 +578,7 @@ style={{
                   "#607086",
 
                 fontSize:
-                  11,
+                  13,
 
                 fontWeight:
                   800,
@@ -602,8 +602,8 @@ style={{
 
             fontSize:
               compact
-                ? 11
-                : 12,
+                ? 13
+                : 14,
 
             fontWeight:
               800,
@@ -664,16 +664,16 @@ style={{
                 "1px solid rgba(255,255,255,0.28)",
 
               background:
-                "rgba(0,0,0,0.75)",
+                "#ffffff",
 
               color:
-                "#fff",
+                "#202534",
 
               cursor:
                 "pointer",
 
               fontSize:
-                14,
+                16,
 
               fontWeight:
                 900,
@@ -3790,68 +3790,7 @@ if (editingTierListId) {
 ]
     );
 
-  const renderTierHomeButton = () => (
-    <div
-      style={{
-        width: "100%",
-        marginTop: isMobile ? 4 : 8,
-        marginBottom: 0,
-        display: "flex",
-        justifyContent: "center",
-      }}
-    >
-      <button
-        type="button"
-        onClick={() => navigate(`/${lang}/tier-list`)}
-        onMouseEnter={(e) => {
-          if (isMobile) return;
-          e.currentTarget.style.transform = "translateY(-4px)";
-          e.currentTarget.style.boxShadow =
-            "0 10px 28px rgba(25,191,255,0.30)";
-        }}
-        onMouseLeave={(e) => {
-          if (isMobile) return;
-          e.currentTarget.style.transform = "";
-          e.currentTarget.style.boxShadow =
-            "0 0 22px rgba(25,191,255,0.16)";
-        }}
-        style={{
-          width: isMobile ? 110 : 140,
-          height: isMobile ? 110 : 140,
-          padding: 12,
-          borderRadius: 16,
-          border: "1px solid #19bfff",
-          background:
-            "linear-gradient(145deg, #073653 0%, #071a2b 100%)",
-          color: "#fff",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          gap: 9,
-          fontSize: isMobile ? 13 : 15,
-          fontWeight: 900,
-          lineHeight: 1.25,
-          textAlign: "center",
-          cursor: "pointer",
-          boxSizing: "border-box",
-          boxShadow: "0 0 22px rgba(25,191,255,0.16)",
-          transition:
-            "transform 0.16s ease, box-shadow 0.16s ease",
-        }}
-      >
-        <span
-          style={{
-            fontSize: isMobile ? 28 : 36,
-            lineHeight: 1,
-          }}
-        >
-          ←
-        </span>
-        <span>{text.tierHome}</span>
-      </button>
-    </div>
-  );
+  
 
   const seoTitle = t("tierList.seo.makerTitle");
   const seoDescription = t("tierList.seo.makerDescription");
@@ -3880,7 +3819,7 @@ if (editingTierListId) {
         width: "100%",
         minHeight: "100vh",
         background: "transparent",
-        color: "#fff",
+        color: "#202534",
       }}
     >
       <div
@@ -3900,7 +3839,7 @@ if (editingTierListId) {
         }}
       >
 
-        {renderTierHomeButton()}
+        
 
         <div
           style={{
@@ -3913,10 +3852,10 @@ if (editingTierListId) {
               ? "14px 18px"
               : "16px 22px",
             border:
-              "1px solid rgba(49,90,143,0.9)",
+              "1px solid #dde2ea",
             borderRadius: 12,
-            background: "rgba(7,17,31,0.92)",
-            boxShadow: "0 8px 24px rgba(0,0,0,0.28)",
+            background: "#ffffff",
+            boxShadow: "0 4px 16px rgba(25,32,52,0.07)",
             display: "flex",
             flexDirection: "row",
             alignItems: "center",
@@ -3929,12 +3868,12 @@ if (editingTierListId) {
           <div
             style={{
               fontSize: isMobile
-                ? 17
-                : 20,
+                ? 19
+                : 22,
 
               fontWeight: 900,
 
-              color: "#dbeafe",
+              color: "#202534",
             }}
           >
             {text.loadingWorldcup}
@@ -3948,7 +3887,7 @@ if (editingTierListId) {
               borderRadius: "50%",
 
               border:
-                "3px solid #16385c",
+                "3px solid #dde2ea",
 
               borderTopColor:
                 "#19bfff",
@@ -4004,7 +3943,7 @@ if (editingTierListId) {
             justifyContent: "center",
             padding: 24,
             boxSizing: "border-box",
-            color: "#fff",
+            color: "#202534",
           }}
         >
           <div
@@ -4012,20 +3951,20 @@ if (editingTierListId) {
               width: "min(520px, 100%)",
               padding: isMobile ? 22 : 30,
               borderRadius: 16,
-              border: "1px solid #315a8f",
-              background: "#081525",
+              border: "1px solid #dde2ea",
+              background: "#ffffff",
               textAlign: "center",
-              boxShadow: "0 16px 40px rgba(0,0,0,0.28)",
+              boxShadow: "0 4px 16px rgba(25,32,52,0.07)",
             }}
           >
-            <div style={{ fontSize: isMobile ? 20 : 24, fontWeight: 900 }}>
+            <div style={{ fontSize: isMobile ? 22 : 26, fontWeight: 900 }}>
               {selectedCupError || t("not_found")}
             </div>
             <div
               style={{
                 marginTop: 10,
-                color: "#9fb0c7",
-                fontSize: isMobile ? 13 : 15,
+                color: "#5542b8",
+                fontSize: isMobile ? 15 : 17,
                 lineHeight: 1.6,
               }}
             >
@@ -4046,9 +3985,9 @@ if (editingTierListId) {
                 style={{
                   padding: "10px 16px",
                   borderRadius: 9,
-                  border: "1px solid #315a8f",
-                  background: "#101d32",
-                  color: "#fff",
+                  border: "1px solid #dde2ea",
+                  background: "#ffffff",
+                  color: "#202534",
                   fontWeight: 900,
                   cursor: "pointer",
                 }}
@@ -4062,8 +4001,8 @@ if (editingTierListId) {
                   padding: "10px 16px",
                   borderRadius: 9,
                   border: "1px solid #19bfff",
-                  background: "#087aa5",
-                  color: "#fff",
+                  background: "#6650d8",
+                  color: "#ffffff",
                   fontWeight: 900,
                   cursor: "pointer",
                 }}
@@ -4097,7 +4036,7 @@ if (editingTierListId) {
           "transparent",
 
         color:
-          "#fff",
+          "#202534",
       }}
     >
       <div
@@ -4123,7 +4062,7 @@ if (editingTierListId) {
         }}
       >
 
-        {renderTierHomeButton()}
+        
 
         <div
           style={{
@@ -4136,9 +4075,9 @@ if (editingTierListId) {
               ? "14px 16px"
               : "16px 24px",
             boxSizing: "border-box",
-            border: "1px solid rgba(49,90,143,0.72)",
+            border: "1px solid #dde2ea",
             borderRadius: 14,
-            background: "rgba(7,17,31,0.72)",
+            background: "#ffffff",
             backdropFilter: "blur(3px)",
             textAlign: "center",
           }}
@@ -4150,8 +4089,8 @@ if (editingTierListId) {
 
               fontSize:
                 isMobile
-                  ? 27
-                  : 38,
+                  ? 29
+                  : 40,
 
               fontWeight:
                 900,
@@ -4168,12 +4107,12 @@ if (editingTierListId) {
                 10,
 
               color:
-                "#9fb0c7",
+                "#5542b8",
 
               fontSize:
                 isMobile
-                  ? 14
-                  : 17,
+                  ? 16
+                  : 19,
 
               fontWeight:
                 700,
@@ -4239,12 +4178,12 @@ if (editingTierListId) {
                 border:
                   fileDragOver
                     ? "2px solid #19bfff"
-                    : "1px dashed #315a8f",
+                    : "1px dashed #dde2ea",
 
                 background:
                   fileDragOver
-                    ? "rgba(25,191,255,0.08)"
-                    : "#07111f",
+                    ? "#6650d8"
+                    : "#ffffff",
 
                 textAlign:
                   "center",
@@ -4254,8 +4193,8 @@ if (editingTierListId) {
                 style={{
                   fontSize:
                     isMobile
-                      ? 36
-                      : 48,
+                      ? 38
+                      : 50,
                 }}
               >
                 📁
@@ -4269,8 +4208,8 @@ if (editingTierListId) {
 
                   fontSize:
                     isMobile
-                      ? 18
-                      : 22,
+                      ? 20
+                      : 24,
 
                   fontWeight:
                     900,
@@ -4286,12 +4225,12 @@ if (editingTierListId) {
                     6,
 
                   color:
-                    "#8fa6c3",
+                    "#5542b8",
 
                   fontSize:
                     isMobile
-                      ? 13
-                      : 15,
+                      ? 15
+                      : 17,
 
                   fontWeight:
                     700,
@@ -4322,10 +4261,10 @@ if (editingTierListId) {
                     "1px solid #19bfff",
 
                   background:
-                    "#087ba8",
+                    "#6650d8",
 
                   color:
-                    "#fff",
+                    "#ffffff",
 
                   cursor:
                     "pointer",
@@ -4381,7 +4320,7 @@ if (editingTierListId) {
                   12,
 
                 color:
-                  "#74859b",
+                  "#5542b8",
               }}
             >
               <div
@@ -4393,7 +4332,7 @@ if (editingTierListId) {
                     1,
 
                   background:
-                    "#24364e",
+                    "#ffffff",
                 }}
               />
 
@@ -4401,7 +4340,7 @@ if (editingTierListId) {
               <span
                 style={{
                   fontSize:
-                    14,
+                    16,
 
                   fontWeight:
                     900,
@@ -4420,7 +4359,7 @@ if (editingTierListId) {
                     1,
 
                   background:
-                    "#24364e",
+                    "#ffffff",
                 }}
               />
             </div>
@@ -4442,21 +4381,21 @@ if (editingTierListId) {
                   14,
 
                 background:
-                  "rgba(7,26,43,0.78)",
+                  "#ffffff",
               }}
             >
               <div
                 style={{
                   fontSize:
                     isMobile
-                      ? 17
-                      : 20,
+                      ? 19
+                      : 22,
 
                   fontWeight:
                     900,
 
                   color:
-                    "#64d8ff",
+                    "#5542b8",
 
                   textAlign:
                     "center",
@@ -4470,8 +4409,8 @@ if (editingTierListId) {
       <div
   style={{
     marginTop: 6,
-    color: "#9fb0c7",
-    fontSize: isMobile ? 13 : 15,
+    color: "#5542b8",
+    fontSize: isMobile ? 15 : 17,
     fontWeight: 700,
     lineHeight: 1.5,
     textAlign: "center",
@@ -4483,8 +4422,8 @@ if (editingTierListId) {
 <div
   style={{
     marginTop: 10,
-    color: "#64d8ff",
-    fontSize: isMobile ? 14 : 16,
+    color: "#5542b8",
+    fontSize: isMobile ? 16 : 18,
     fontWeight: 900,
     lineHeight: 1.5,
     textAlign: "center",
@@ -4497,10 +4436,10 @@ if (editingTierListId) {
   style={{
     marginTop: 2,
     textAlign: "center",
-    color: "#64d8ff",
+    color: "#5542b8",
     fontSize: isMobile
-      ? 22
-      : 28,
+      ? 24
+      : 30,
     lineHeight: 1,
     fontWeight: 900,
   }}
@@ -4544,16 +4483,16 @@ if (editingTierListId) {
       borderRadius: 8,
 
       border:
-        "1px solid #315a8f",
+        "1px solid #dde2ea",
 
       background:
-        "#0b1628",
+        "#ffffff",
 
-      color: "#fff",
+      color: "#202534",
 
       outline: "none",
 
-      fontSize: 14,
+      fontSize: 16,
 
       fontWeight: 700,
     }}
@@ -4570,7 +4509,7 @@ if (editingTierListId) {
                     "center",
 
                   color:
-                    "#8fb8e8",
+                    "#5542b8",
 
                   fontWeight:
                     800,
@@ -4659,13 +4598,13 @@ if (editingTierListId) {
                           "hidden",
 
                         border:
-                          "1px solid #27466f",
+                          "1px solid #dde2ea",
 
                         background:
-                          "#0b1628",
+                          "#ffffff",
 
                         color:
-                          "#fff",
+                          "#202534",
 
                         cursor:
                           "pointer",
@@ -4683,7 +4622,7 @@ if (editingTierListId) {
                             isMobile ? 145 : 180,
 
                           background:
-                            "#07111f",
+                            "#ffffff",
 
                           overflow:
                             "hidden",
@@ -4754,8 +4693,8 @@ if (editingTierListId) {
 
                           fontSize:
                             isMobile
-                              ? 16
-                              : 19,
+                              ? 18
+                              : 21,
 
                           fontWeight:
                             900,
@@ -4781,10 +4720,10 @@ if (editingTierListId) {
                             "0 14px 13px",
 
                           color:
-                            "#8fb8e8",
+                            "#5542b8",
 
                           fontSize:
-                            13,
+                            15,
 
                           fontWeight:
                             700,
@@ -4825,10 +4764,10 @@ if (editingTierListId) {
         padding: "12px 28px",
         borderRadius: 8,
         border:
-          "1px solid #315a8f",
-        background: "#14243d",
-        color: "#fff",
-        fontSize: 15,
+          "1px solid #dde2ea",
+        background: "#ffffff",
+        color: "#202534",
+        fontSize: 17,
         fontWeight: 900,
         cursor: "pointer",
       }}
@@ -4839,8 +4778,8 @@ if (editingTierListId) {
     <div
       style={{
         marginTop: 7,
-        color: "#7187a3",
-        fontSize: 11,
+        color: "#5542b8",
+        fontSize: 13,
         fontWeight: 700,
       }}
     >
@@ -4879,7 +4818,7 @@ if (editingTierListId) {
                 borderRadius: 18,
                 background: "#f3f4f6",
                 border: "1px solid #d7dce4",
-                boxShadow: "0 14px 34px rgba(0,0,0,0.16)",
+                boxShadow: "0 4px 16px rgba(25,32,52,0.07)",
                 color: "#111827",
               }}
             >
@@ -4918,7 +4857,7 @@ if (editingTierListId) {
                     <div
                       style={{
                         color: "#374151",
-                        fontSize: 14,
+                        fontSize: 16,
                         fontWeight: 800,
                         marginBottom: 6,
                       }}
@@ -4936,7 +4875,7 @@ if (editingTierListId) {
                           borderRadius: 8,
                           background: "#fff",
                           color: "#111827",
-                          fontSize: 14,
+                          fontSize: 16,
                           fontWeight: 700,
                           lineHeight: 1.35,
                           display: "flex",
@@ -4963,7 +4902,7 @@ if (editingTierListId) {
                           borderRadius: 8,
                           background: "#fff",
                           color: "#111827",
-                          fontSize: 14,
+                          fontSize: 16,
                           fontWeight: 700,
                           textAlign: "center",
                           outline: "none",
@@ -4976,7 +4915,7 @@ if (editingTierListId) {
                     <div
                       style={{
                         color: "#374151",
-                        fontSize: 14,
+                        fontSize: 16,
                         fontWeight: 800,
                         marginBottom: 6,
                       }}
@@ -4996,7 +4935,7 @@ if (editingTierListId) {
                         border: "1px solid #cbd5e1",
                         background: "#fff",
                         color: "#111827",
-                        fontSize: 14,
+                        fontSize: 16,
                         fontWeight: 700,
                         outline: "none",
                       }}
@@ -5026,7 +4965,7 @@ if (editingTierListId) {
                   border: "1px solid #cbd5e1",
                   background: "#fff",
                   color: "#111827",
-                  fontSize: isMobile ? 16 : 18,
+                  fontSize: isMobile ? 18 : 20,
                   fontWeight: 700,
                   outline: "none",
                 }}
@@ -5036,7 +4975,7 @@ if (editingTierListId) {
                 style={{
                   marginTop: 8,
                   color: "#4b5563",
-                  fontSize: isMobile ? 13 : 15,
+                  fontSize: isMobile ? 15 : 17,
                   fontWeight: 700,
                   textAlign: "center",
                 }}
@@ -5048,7 +4987,7 @@ if (editingTierListId) {
                 style={{
                   marginTop: 10,
                   color: "#374151",
-                  fontSize: isMobile ? 14 : 17,
+                  fontSize: isMobile ? 16 : 19,
                   fontWeight: 800,
                   lineHeight: 1.45,
                   textAlign: "center",
@@ -5071,7 +5010,7 @@ if (editingTierListId) {
                 >
                   <div
                     style={{
-                      fontSize: 15,
+                      fontSize: 17,
                       fontWeight: 900,
                       color: "#2563eb",
                       marginBottom: 10,
@@ -5096,7 +5035,7 @@ if (editingTierListId) {
                       background: "#f9fafb",
                       color: "#111827",
                       outline: "none",
-                      fontSize: 14,
+                      fontSize: 16,
                       fontWeight: 600,
                     }}
                   />
@@ -5124,7 +5063,7 @@ if (editingTierListId) {
                       background: "#f9fafb",
                       color: "#111827",
                       outline: "none",
-                      fontSize: 14,
+                      fontSize: 16,
                       fontWeight: 600,
                     }}
                   />
@@ -5133,7 +5072,7 @@ if (editingTierListId) {
                     style={{
                       marginTop: 9,
                       color: "#6b7280",
-                      fontSize: 12,
+                      fontSize: 14,
                       fontWeight: 600,
                       lineHeight: 1.6,
                     }}
@@ -5148,7 +5087,7 @@ if (editingTierListId) {
                   style={{
                     marginTop: 10,
                     color: "#2563eb",
-                    fontSize: 14,
+                    fontSize: 16,
                     fontWeight: 900,
                     textAlign: "center",
                   }}
@@ -5176,11 +5115,11 @@ if (editingTierListId) {
                     border: "1px solid #cbd5e1",
                     background: "#fff",
                     color: "#1f2937",
-                    fontSize: isMobile ? 13 : 16,
+                    fontSize: isMobile ? 15 : 18,
                     fontWeight: 800,
                     cursor: saving ? "default" : "pointer",
                     opacity: saving ? 0.5 : 1,
-                    boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
+                    boxShadow: "0 4px 16px rgba(25,32,52,0.07)",
                   }}
                 >
                   {text.changeSource}
@@ -5195,8 +5134,8 @@ if (editingTierListId) {
                     borderRadius: 9,
                     border: "1px solid #fecaca",
                     background: "#fff1f2",
-                    color: "#dc2626",
-                    fontSize: isMobile ? 13 : 16,
+                    color: "#c51f29",
+                    fontSize: isMobile ? 15 : 18,
                     fontWeight: 800,
                     cursor: saving ? "default" : "pointer",
                     opacity: saving ? 0.5 : 1,
@@ -5215,7 +5154,7 @@ if (editingTierListId) {
                     border: "1px solid #bfdbfe",
                     background: "#eff6ff",
                     color: "#2563eb",
-                    fontSize: isMobile ? 13 : 16,
+                    fontSize: isMobile ? 15 : 18,
                     fontWeight: 800,
                     cursor: saving ? "default" : "pointer",
                   }}
@@ -5233,7 +5172,7 @@ if (editingTierListId) {
                     border: "1px solid #bfdbfe",
                     background: "#fff",
                     color: "#2563eb",
-                    fontSize: isMobile ? 13 : 16,
+                    fontSize: isMobile ? 15 : 18,
                     fontWeight: 800,
                     cursor: saving ? "default" : "pointer",
                   }}
@@ -5249,13 +5188,13 @@ if (editingTierListId) {
                     padding: isMobile ? "11px 20px" : "12px 26px",
                     borderRadius: 9,
                     border: "none",
-                    background: "linear-gradient(90deg,#2f80ed,#3b82f6 100%)",
-                    color: "#fff",
-                    fontSize: isMobile ? 14 : 17,
+                    background: "#6650d8",
+                    color: "#ffffff",
+                    fontSize: isMobile ? 16 : 19,
                     fontWeight: 900,
                     cursor: saving ? "default" : "pointer",
                     minWidth: 140,
-                    boxShadow: "0 8px 18px rgba(59,130,246,0.25)",
+                    boxShadow: "0 4px 16px rgba(25,32,52,0.07)",
                     opacity: saving ? 0.7 : 1,
                   }}
                 >
@@ -5286,19 +5225,19 @@ if (editingTierListId) {
                     8,
 
                   border:
-                    "1px solid #b34258",
+                    "1px solid #dde2ea",
 
                   background:
-                    "#35121b",
+                    "#ffffff",
 
                   color:
-                    "#ff9aae",
+                    "#b42346",
 
                   fontWeight:
                     800,
 
                   fontSize:
-                    14,
+                    16,
                 }}
               >
                 {saveError}
@@ -5313,17 +5252,17 @@ if (editingTierListId) {
                 style={{
                   marginBottom: 18,
                   padding: 12,
-                  border: "1px solid #315a8f",
+                  border: "1px solid #dde2ea",
                   borderRadius: 12,
-                  background: "#0b1628",
+                  background: "#ffffff",
                   textAlign: "center",
                 }}
               >
                 <div
                   style={{
                     marginBottom: 9,
-                    color: "#dce9f8",
-                    fontSize: 13,
+                    color: "#202534",
+                    fontSize: 15,
                     fontWeight: 900,
                   }}
                 >
@@ -5350,8 +5289,8 @@ if (editingTierListId) {
                         height: 38,
                         borderRadius: 8,
                         border: `1px solid ${TIER_COLORS[tier]}`,
-                        background: "#07111f",
-                        color: "#fff",
+                        background: "#ffffff",
+                        color: "#202534",
                         fontWeight: 900,
                       }}
                     >
@@ -5372,8 +5311,8 @@ if (editingTierListId) {
                         padding: "0 10px",
                         borderRadius: 8,
                         border: "1px solid #19bfff",
-                        background: "#073653",
-                        color: "#fff",
+                        background: "#ffffff",
+                        color: "#202534",
                         fontWeight: 900,
                       }}
                     >
@@ -5393,9 +5332,9 @@ if (editingTierListId) {
                         height: 38,
                         padding: "0 10px",
                         borderRadius: 8,
-                        border: "1px solid #315a8f",
-                        background: "#101d32",
-                        color: "#fff",
+                        border: "1px solid #dde2ea",
+                        background: "#ffffff",
+                        color: "#202534",
                         fontWeight: 900,
                       }}
                     >
@@ -5432,14 +5371,14 @@ if (editingTierListId) {
                 style={{
                   fontSize:
                     isMobile
-                      ? 22
-                      : 28,
+                      ? 24
+                      : 30,
 
                   fontWeight:
                     900,
 
                   color:
-                    "#fff",
+                    "#202534",
                 }}
               >
                 ⭐{" "}
@@ -5453,12 +5392,12 @@ if (editingTierListId) {
                     6,
 
                   color:
-                    "#8fa6c3",
+                    "#5542b8",
 
                   fontSize:
                     isMobile
-                      ? 12
-                      : 14,
+                      ? 14
+                      : 16,
 
                   fontWeight:
                     700,
@@ -5504,10 +5443,10 @@ if (editingTierListId) {
                     16,
 
                   border:
-                    "2px dashed #19bfff",
+                    "2px dashed #a99bdf",
 
                   background:
-                    "linear-gradient(180deg, rgba(25,191,255,0.11), rgba(7,17,31,0.96))",
+                    "#f5f3ff",
 
                   display:
                     "flex",
@@ -5544,10 +5483,10 @@ if (editingTierListId) {
                           11,
 
                         background:
-                          "#07111f",
+                          "#ffffff",
 
                         border:
-                          "1px solid #315a8f",
+                          "1px solid #dde2ea",
                       }}
                     >
                       {onePick.image ? (
@@ -5643,8 +5582,8 @@ objectPosition: "center",
 
                         fontSize:
                           isMobile
-                            ? 14
-                            : 16,
+                            ? 16
+                            : 18,
 
                         fontWeight:
                           900,
@@ -5679,22 +5618,22 @@ objectPosition: "center",
                           "6px 11px",
 
                         border:
-                          "1px solid #315a8f",
+                          "1px solid #dde2ea",
 
                         borderRadius:
                           7,
 
                         background:
-                          "#101d32",
+                          "#ffffff",
 
                         color:
-                          "#aebdd2",
+                          "#5542b8",
 
                         cursor:
                           "pointer",
 
                         fontSize:
-                          12,
+                          14,
 
                         fontWeight:
                           800,
@@ -5708,12 +5647,12 @@ objectPosition: "center",
                   <div
                     style={{
                       color:
-                        "#6f849f",
+                        "#596579",
 
                       fontSize:
                         isMobile
-                          ? 13
-                          : 14,
+                          ? 15
+                          : 16,
 
                       fontWeight:
                         800,
@@ -5775,10 +5714,10 @@ objectPosition: "center",
                       8,
 
                     border:
-                      "1px solid #27466f",
+                      "1px solid #dde2ea",
 
                     background:
-                      "#0b1628",
+                      "#ffffff",
 
                     borderRadius:
                       8,
@@ -5884,8 +5823,8 @@ objectPosition: "center",
 
                         fontSize:
                           isMobile
-                            ? 20
-                            : 27,
+                            ? 22
+                            : 29,
 
                         fontWeight:
                           900,
@@ -5981,7 +5920,7 @@ objectPosition: "center",
                             "#607086",
 
                           fontSize:
-                            13,
+                            15,
 
                           fontWeight:
                             700,
@@ -6015,14 +5954,14 @@ objectPosition: "center",
                   borderRadius: 10,
                   border: "1px solid #19bfff",
                   background: saving
-                    ? "rgba(57,85,106,0.88)"
-                    : "rgba(8,123,168,0.92)",
-                  color: "#fff",
-                  fontSize: isMobile ? 14 : 16,
+                    ? "#ffffff"
+                    : "#6650d8",
+                  color: saving ? "#596579" : "#ffffff",
+                  fontSize: isMobile ? 16 : 18,
                   fontWeight: 900,
                   cursor: saving ? "default" : "pointer",
                   opacity: saving ? 0.6 : 1,
-                  boxShadow: "0 8px 22px rgba(0,0,0,0.22)",
+                  boxShadow: "0 4px 16px rgba(25,32,52,0.07)",
                   backdropFilter: "blur(3px)",
                 }}
               >
@@ -6063,10 +6002,10 @@ objectPosition: "center",
                   12,
 
                 background:
-                  "#07111f",
+                  "#ffffff",
 
                 border:
-                  "1px solid #27466f",
+                  "1px solid #dde2ea",
               }}
             >
               <div
@@ -6093,7 +6032,7 @@ objectPosition: "center",
                 <div
                   style={{
                     fontSize:
-                      18,
+                      20,
 
                     fontWeight:
                       900,
@@ -6119,13 +6058,13 @@ objectPosition: "center",
                       "1px solid #19bfff",
 
                     background:
-                      "#073653",
+                      "#ffffff",
 
                     color:
-                      "#fff",
+                      "#202534",
 
                     fontSize:
-                      13,
+                      15,
 
                     fontWeight:
                       900,
@@ -6205,19 +6144,19 @@ objectPosition: "center",
                       8,
 
                     border:
-                      "1px solid #315a8f",
+                      "1px solid #dde2ea",
 
                     background:
-                      "#0b1628",
+                      "#ffffff",
 
                     color:
-                      "#fff",
+                      "#202534",
 
                     outline:
                       "none",
 
                     fontSize:
-                      14,
+                      16,
 
                     fontWeight:
                       700,
@@ -6259,16 +6198,16 @@ objectPosition: "center",
                         "50%",
 
                       background:
-                        "#17263a",
+                        "#ffffff",
 
                       color:
-                        "#aebdd2",
+                        "#5542b8",
 
                       cursor:
                         "pointer",
 
                       fontSize:
-                        16,
+                        18,
 
                       fontWeight:
                         900,
@@ -6287,10 +6226,10 @@ objectPosition: "center",
                       10,
 
                     color:
-                      "#7fa8d7",
+                      "#5542b8",
 
                     fontSize:
-                      12,
+                      14,
 
                     fontWeight:
                       800,
@@ -6381,10 +6320,10 @@ objectPosition: "center",
         minWidth: 160,
         padding: "11px 20px",
         borderRadius: 8,
-        border: "1px solid #315a8f",
-        background: "#101d32",
-        color: "#fff",
-        fontSize: 14,
+        border: "1px solid #dde2ea",
+        background: "#ffffff",
+        color: "#202534",
+        fontSize: 16,
         fontWeight: 900,
         cursor: "pointer",
       }}
@@ -6469,12 +6408,12 @@ objectPosition: "center",
                 border:
                   fileDragOver
                     ? "2px solid #19bfff"
-                    : "1px dashed #315a8f",
+                    : "1px dashed #dde2ea",
 
                 background:
                   fileDragOver
-                    ? "rgba(25,191,255,0.08)"
-                    : "#07111f",
+                    ? "#6650d8"
+                    : "#ffffff",
 
                 textAlign:
                   "center",
@@ -6484,8 +6423,8 @@ objectPosition: "center",
                 style={{
                   fontSize:
                     isMobile
-                      ? 36
-                      : 48,
+                      ? 38
+                      : 50,
                 }}
               >
                 📁
@@ -6499,8 +6438,8 @@ objectPosition: "center",
 
                   fontSize:
                     isMobile
-                      ? 18
-                      : 22,
+                      ? 20
+                      : 24,
 
                   fontWeight:
                     900,
@@ -6516,12 +6455,12 @@ objectPosition: "center",
                     6,
 
                   color:
-                    "#8fa6c3",
+                    "#5542b8",
 
                   fontSize:
                     isMobile
-                      ? 13
-                      : 15,
+                      ? 15
+                      : 17,
 
                   fontWeight:
                     700,
@@ -6552,10 +6491,10 @@ objectPosition: "center",
                     "1px solid #19bfff",
 
                   background:
-                    "#087ba8",
+                    "#6650d8",
 
                   color:
-                    "#fff",
+                    "#ffffff",
 
                   cursor:
                     "pointer",
@@ -6611,7 +6550,7 @@ objectPosition: "center",
                   12,
 
                 color:
-                  "#74859b",
+                  "#5542b8",
               }}
             >
               <div
@@ -6623,7 +6562,7 @@ objectPosition: "center",
                     1,
 
                   background:
-                    "#24364e",
+                    "#ffffff",
                 }}
               />
 
@@ -6631,7 +6570,7 @@ objectPosition: "center",
               <span
                 style={{
                   fontSize:
-                    14,
+                    16,
 
                   fontWeight:
                     900,
@@ -6650,7 +6589,7 @@ objectPosition: "center",
                     1,
 
                   background:
-                    "#24364e",
+                    "#ffffff",
                 }}
               />
             </div>
@@ -6672,21 +6611,21 @@ objectPosition: "center",
                   14,
 
                 background:
-                  "rgba(7,26,43,0.78)",
+                  "#ffffff",
               }}
             >
               <div
                 style={{
                   fontSize:
                     isMobile
-                      ? 17
-                      : 20,
+                      ? 19
+                      : 22,
 
                   fontWeight:
                     900,
 
                   color:
-                    "#64d8ff",
+                    "#5542b8",
 
                   textAlign:
                     "center",
@@ -6700,8 +6639,8 @@ objectPosition: "center",
       <div
   style={{
     marginTop: 6,
-    color: "#9fb0c7",
-    fontSize: isMobile ? 13 : 15,
+    color: "#5542b8",
+    fontSize: isMobile ? 15 : 17,
     fontWeight: 700,
     lineHeight: 1.5,
     textAlign: "center",
@@ -6713,8 +6652,8 @@ objectPosition: "center",
 <div
   style={{
     marginTop: 10,
-    color: "#64d8ff",
-    fontSize: isMobile ? 14 : 16,
+    color: "#5542b8",
+    fontSize: isMobile ? 16 : 18,
     fontWeight: 900,
     lineHeight: 1.5,
     textAlign: "center",
@@ -6727,10 +6666,10 @@ objectPosition: "center",
   style={{
     marginTop: 2,
     textAlign: "center",
-    color: "#64d8ff",
+    color: "#5542b8",
     fontSize: isMobile
-      ? 22
-      : 28,
+      ? 24
+      : 30,
     lineHeight: 1,
     fontWeight: 900,
   }}
@@ -6774,16 +6713,16 @@ objectPosition: "center",
       borderRadius: 8,
 
       border:
-        "1px solid #315a8f",
+        "1px solid #dde2ea",
 
       background:
-        "#0b1628",
+        "#ffffff",
 
-      color: "#fff",
+      color: "#202534",
 
       outline: "none",
 
-      fontSize: 14,
+      fontSize: 16,
 
       fontWeight: 700,
     }}
@@ -6800,7 +6739,7 @@ objectPosition: "center",
                     "center",
 
                   color:
-                    "#8fb8e8",
+                    "#5542b8",
 
                   fontWeight:
                     800,
@@ -6889,13 +6828,13 @@ objectPosition: "center",
                           "hidden",
 
                         border:
-                          "1px solid #27466f",
+                          "1px solid #dde2ea",
 
                         background:
-                          "#0b1628",
+                          "#ffffff",
 
                         color:
-                          "#fff",
+                          "#202534",
 
                         cursor:
                           "pointer",
@@ -6913,7 +6852,7 @@ objectPosition: "center",
                             isMobile ? 145 : 180,
 
                           background:
-                            "#07111f",
+                            "#ffffff",
 
                           overflow:
                             "hidden",
@@ -6984,8 +6923,8 @@ objectPosition: "center",
 
                           fontSize:
                             isMobile
-                              ? 16
-                              : 19,
+                              ? 18
+                              : 21,
 
                           fontWeight:
                             900,
@@ -7011,10 +6950,10 @@ objectPosition: "center",
                             "0 14px 13px",
 
                           color:
-                            "#8fb8e8",
+                            "#5542b8",
 
                           fontSize:
-                            13,
+                            15,
 
                           fontWeight:
                             700,
@@ -7055,10 +6994,10 @@ objectPosition: "center",
         padding: "12px 28px",
         borderRadius: 8,
         border:
-          "1px solid #315a8f",
-        background: "#14243d",
-        color: "#fff",
-        fontSize: 15,
+          "1px solid #dde2ea",
+        background: "#ffffff",
+        color: "#202534",
+        fontSize: 17,
         fontWeight: 900,
         cursor: "pointer",
       }}
@@ -7069,8 +7008,8 @@ objectPosition: "center",
     <div
       style={{
         marginTop: 7,
-        color: "#7187a3",
-        fontSize: 11,
+        color: "#5542b8",
+        fontSize: 13,
         fontWeight: 700,
       }}
     >
@@ -7098,11 +7037,11 @@ objectPosition: "center",
                 margin: "18px auto 0",
                 padding: "12px 16px",
                 borderRadius: 10,
-                background: "rgba(7,17,31,0.94)",
+                background: "#ffffff",
                 border: "1px solid rgba(25,191,255,0.42)",
-                boxShadow: "0 5px 18px rgba(0,0,0,0.22)",
-                color: "#c7eaff",
-                fontSize: isMobile ? 13 : 15,
+                boxShadow: "0 4px 16px rgba(25,32,52,0.07)",
+                color: "#202534",
+                fontSize: isMobile ? 15 : 17,
                 fontWeight: 800,
                 lineHeight: 1.6,
                 textAlign: "center",

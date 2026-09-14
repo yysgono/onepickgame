@@ -289,7 +289,7 @@ function AdaptiveTitle({
       ref={ref}
       style={{
         fontWeight: 900,
-        color: "#fff",
+        color: "#202534",
 
         fontSize,
 
@@ -371,7 +371,7 @@ function BackArrowButton({
           "#5fd4f3 100%" +
           ")",
         boxShadow: disabled
-          ? "0 0 0 transparent"
+          ? "0 4px 16px rgba(25,32,52,0.07)"
           : (
               "0 4px 28px 0 " +
               "#1976ed60, " +
@@ -544,7 +544,7 @@ function CandidateBox({
     "'Pretendard', " +
     "sans-serif";
 
-  const mainDark = "#171C27";
+  const mainDark = "#ffffff";
 
   const isYoutube =
     c?.image &&
@@ -589,7 +589,7 @@ function CandidateBox({
         flexDirection: "column",
         alignItems: "center",
         background:
-          "rgba(17, 27, 55, 0.82)",
+          "#ffffff",
         borderRadius: 22,
         boxShadow:
           hover && !isMobile
@@ -606,8 +606,8 @@ function CandidateBox({
                 "#1976ed18"
               ),
         border: selected
-          ? "3.5px solid #5fd4f3"
-          : "1.5px solid #223a74",
+          ? "4px solid #6650d8"
+          : "2px solid #9aa8bf",
         transform:
           hover && !isMobile
             ? (
@@ -714,7 +714,7 @@ function CandidateBox({
     objectFit: "contain",
     width: "100%",
     height: "100%",
-    background: "#21283a",
+    background: "#ffffff",
   }}
 />
         ) : (
@@ -722,7 +722,7 @@ function CandidateBox({
             style={{
               width: "100%",
               height: "100%",
-              background: "#222",
+              background: "#ffffff",
             }}
           />
         )}
@@ -742,9 +742,9 @@ function CandidateBox({
             : "13px 18px 7px",
           fontWeight: 900,
           fontSize: isMobile
-            ? 19
-            : 28,
-          color: "#fff",
+            ? 21
+            : 30,
+          color: "#202534",
           fontFamily: NEON_FONT,
           textAlign: "center",
           wordBreak: "break-all",
@@ -809,10 +809,10 @@ function CandidateBox({
         >
           <span
             style={{
-              color: "#8fe7ff",
+              color: "#202534",
               fontSize: isMobile
-                ? 12
-                : 15,
+                ? 14
+                : 17,
               fontWeight: 900,
             }}
           >
@@ -830,10 +830,10 @@ function CandidateBox({
           {!statsLoading && (
             <span
               style={{
-                color: "#aab7ca",
+                color: "#5542b8",
                 fontSize: isMobile
-                  ? 10
-                  : 12,
+                  ? 12
+                  : 14,
                 fontWeight: 700,
                 whiteSpace: "nowrap",
               }}
@@ -870,7 +870,7 @@ function CandidateBox({
               : 9,
             overflow: "hidden",
             borderRadius: 999,
-            background: "#2d3b54",
+            background: "#ffffff",
             boxShadow:
               "inset 0 1px 3px " +
               "rgba(0, 0, 0, 0.45)",
@@ -909,10 +909,10 @@ function CandidateBox({
           <div
             style={{
               marginTop: 5,
-              color: "#8190a7",
+              color: "#5542b8",
               fontSize: isMobile
-                ? 10
-                : 12,
+                ? 12
+                : 14,
               fontWeight: 700,
               textAlign: "right",
             }}
@@ -945,7 +945,7 @@ function CandidateBox({
           background: mainDark,
           borderTop: "none",
           borderBottom:
-            "2.5px solid #1976ed",
+            "2.5px solid #dde2ea",
           borderRadius: 0,
           marginTop: "auto",
         }}
@@ -953,14 +953,14 @@ function CandidateBox({
         <button
           type="button"
           style={{
-            background: "#1976ed",
-            color: "#fff",
+            background: "#6650d8",
+            color: "#ffffff",
             fontWeight: 900,
             border: "none",
             borderRadius: 13,
             fontSize: isMobile
-              ? 15
-              : 20,
+              ? 17
+              : 22,
             padding: isMobile
               ? "8px 21px"
               : "14px 44px",
@@ -1990,8 +1990,8 @@ useEffect(() => {
         <div
           style={{
             marginTop: 6,
-            fontSize: 20,
-            color: "#1976ed",
+            fontSize: 22,
+            color: "#5542b8",
             fontWeight: 700,
             letterSpacing: "-1px",
           }}
@@ -2019,8 +2019,8 @@ useEffect(() => {
         <div
           style={{
             marginTop: 18,
-            fontSize: 22,
-            color: "#1976ed",
+            fontSize: 24,
+            color: "#5542b8",
             fontWeight: 900,
             letterSpacing: "-1px",
           }}
@@ -2100,7 +2100,7 @@ useEffect(() => {
           marginBottom: isMobile
             ? 5
             : 11,
-          color: "#fff",
+          color: "#202534",
         }}
       >
         {getStageLabel(
@@ -2120,10 +2120,10 @@ useEffect(() => {
       {error && (
         <div
           style={{
-            color: "#d33",
+            color: "#b42346",
             fontWeight: 700,
             marginBottom: 15,
-            fontSize: 18,
+            fontSize: 20,
           }}
         >
           {error}
@@ -2135,7 +2135,7 @@ useEffect(() => {
           0 && (
           <div
             style={{
-              color: "#888",
+              color: "#596579",
               margin:
                 "7px 0 15px",
             }}
@@ -2181,7 +2181,7 @@ useEffect(() => {
                 "center",
               fontSize:
                 STAGE_SIZE,
-              color: "#1976ed",
+              color: "#5542b8",
               gap: 6,
               maxWidth: isMobile
                 ? "90vw"

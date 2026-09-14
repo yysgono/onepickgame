@@ -31,11 +31,11 @@ function TopWinRateWinner({ cupId }) {
         maxWidth: 400,
         borderRadius: 20,
         background: "#fff9dd",
-        boxShadow: "0 4px 16px #eed47344",
+        boxShadow: "0 4px 16px rgba(25,32,52,0.07)",
         textAlign: "center",
       }}
     >
-      <div style={{ fontSize: 21, fontWeight: 800, color: "#c7a200", marginBottom: 10 }}>
+      <div style={{ fontSize: 23, fontWeight: 800, color: "#596579", marginBottom: 10 }}>
         👑 승률 1위
       </div>
       <img
@@ -43,13 +43,13 @@ function TopWinRateWinner({ cupId }) {
         alt={top.name}
         width={90}
         height={90}
-        style={{ borderRadius: "50%", boxShadow: "0 2px 8px #ffd70033", marginBottom: 12 }}
+        style={{ borderRadius: "50%", boxShadow: "0 4px 16px rgba(25,32,52,0.07)", marginBottom: 12 }}
       />
-      <div style={{ fontSize: 23, fontWeight: 700, marginBottom: 6 }}>{top.name}</div>
-      <div style={{ color: "#c7a200", fontWeight: 700, fontSize: 19 }}>
+      <div style={{ fontSize: 25, fontWeight: 700, marginBottom: 6 }}>{top.name}</div>
+      <div style={{ color: "#596579", fontWeight: 700, fontSize: 21 }}>
         승률: {top.win_rate}%
       </div>
-      <div style={{ fontSize: 14, color: "#666", marginTop: 8 }}>
+      <div style={{ fontSize: 16, color: "#666", marginTop: 8 }}>
         {top.match_wins}승 / {top.match_count}전
       </div>
     </div>

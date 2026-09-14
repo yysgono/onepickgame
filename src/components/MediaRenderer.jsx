@@ -177,7 +177,7 @@ function MediaFallback({
         width: "100%",
         height: "100%",
         objectFit: "cover",
-        background: "#222",
+        background: "#ffffff",
         display: "block",
         ...style,
       }}
@@ -379,7 +379,7 @@ const handleImageError = () => {
             width: "100%",
             height: "100%",
             objectFit: "cover",
-            background: "#222",
+            background: "#ffffff",
             display: "block",
             ...style,
           }}
@@ -405,7 +405,7 @@ const handleImageError = () => {
             height: "100%",
             position: "relative",
             overflow: "hidden",
-            background: "#111",
+            background: "#ffffff",
             cursor: "pointer",
             ...style,
           }}
@@ -481,7 +481,7 @@ const handleImageError = () => {
           height: "100%",
           position: "relative",
           overflow: "hidden",
-          background: "#111",
+          background: "#ffffff",
           ...style,
         }}
       >
@@ -600,7 +600,7 @@ const handleImageError = () => {
             height: "100%",
             position: "relative",
             overflow: "hidden",
-            background: "#111",
+            background: "#ffffff",
             cursor: "pointer",
             ...style,
           }}
@@ -653,7 +653,7 @@ const handleImageError = () => {
           height: "100%",
           objectFit: "cover",
           display: "block",
-          background: "#111",
+          background: "#ffffff",
           ...style,
         }}
         muted
@@ -697,7 +697,7 @@ const handleImageError = () => {
           width: "100%",
           height: "100%",
           objectFit: "cover",
-          background: "#222",
+          background: "#ffffff",
           display: "block",
           ...style,
         }}
@@ -732,7 +732,7 @@ onError={
         width: "100%",
         height: "100%",
         objectFit: "cover",
-        background: "#222",
+        background: "#ffffff",
         display: "block",
         ...style,
       }}

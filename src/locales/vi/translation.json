@@ -613,5 +613,12 @@
   "result_discovery_popular_title": "World Cup phổ biến & mới",
   "result_discovery_popular_desc": "Xem chủ đề đang thịnh hành và mới thêm",
   "result_discovery_tier_title": "Tạo Tier List từ chủ đề này",
-  "result_discovery_tier_desc": "Dùng các ứng viên hiện tại để tạo Tier List"
+  "result_discovery_tier_desc": "Dùng các ứng viên hiện tại để tạo Tier List",
+  "lightUi": {
+    "gameModes": "Game modes",
+    "myContent": "My content",
+    "profile": "Profile",
+    "manageContent": "Find and manage your creations in one place.",
+    "loginToView": "Sign in to see your creations."
+  }
 }

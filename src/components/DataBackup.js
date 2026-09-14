@@ -1,12 +1,12 @@
 import React, { useState, useRef } from "react";
 
 const COLORS = {
-  main: "#1976ed",
-  danger: "#d33",
+  main: "#6650d8",
+  danger: "#c83232",
   gray: "#444",
   light: "#fafaff",
   border: "#e3f0fb",
-  sub: "#45b7fa",
+  sub: "#6650d8",
 };
 
 function DataBackup() {
@@ -82,7 +82,7 @@ function DataBackup() {
         background: "#fff",
         borderRadius: 20,
         padding: "34px 22px 30px 22px",
-        boxShadow: "0 2px 18px #1976ed12, 0 1px 6px #45b7fa14",
+        boxShadow: "0 4px 16px rgba(25,32,52,0.07)",
         border: `1.7px solid ${COLORS.border}`,
       }}
     >
@@ -90,7 +90,7 @@ function DataBackup() {
         style={{
           fontWeight: 800,
           color: COLORS.main,
-          fontSize: 26,
+          fontSize: 28,
           marginBottom: 14,
           textAlign: "center",
           letterSpacing: -1,
@@ -101,7 +101,7 @@ function DataBackup() {
       <div
         style={{
           color: "#666",
-          fontSize: 15.2,
+          fontSize: 17.2,
           textAlign: "center",
           marginBottom: 24,
         }}
@@ -118,11 +118,11 @@ function DataBackup() {
             padding: "9px 22px",
             borderRadius: 999,
             border: "none",
-            background: `linear-gradient(90deg, ${COLORS.main} 70%, ${COLORS.sub} 100%)`,
-            color: "#fff",
+            background: COLORS.main,
+            color: "#ffffff",
             fontWeight: 800,
-            fontSize: 16,
-            boxShadow: "0 1.5px 6px #1976ed18",
+            fontSize: 18,
+            boxShadow: "0 4px 16px rgba(25,32,52,0.07)",
             cursor: "pointer",
             letterSpacing: -0.5,
             transition: "background 0.15s",
@@ -137,10 +137,10 @@ function DataBackup() {
             borderRadius: 999,
             border: "none",
             background: COLORS.danger,
-            color: "#fff",
+            color: "#ffffff",
             fontWeight: 800,
-            fontSize: 16,
-            boxShadow: "0 1.5px 6px #d334",
+            fontSize: 18,
+            boxShadow: "0 4px 16px rgba(25,32,52,0.07)",
             cursor: "pointer",
             letterSpacing: -0.5,
             transition: "background 0.15s",
@@ -154,11 +154,11 @@ function DataBackup() {
             padding: "9px 18px",
             borderRadius: 999,
             border: "none",
-            background: "#666",
-            color: "#fff",
+            background: "#f1f3f7",
+            color: "#202534",
             fontWeight: 700,
-            fontSize: 14.5,
-            boxShadow: "0 1.5px 6px #8882",
+            fontSize: 16.5,
+            boxShadow: "0 4px 16px rgba(25,32,52,0.07)",
             cursor: "pointer",
             letterSpacing: -0.5,
             transition: "background 0.15s",
@@ -176,7 +176,7 @@ function DataBackup() {
         style={{
           width: "100%",
           marginTop: 14,
-          fontSize: 15.4,
+          fontSize: 17.4,
           borderRadius: 10,
           border: `1.2px solid ${COLORS.border}`,
           padding: "14px 11px",
@@ -188,10 +188,10 @@ function DataBackup() {
           color: "#222",
         }}
       />
-      <div style={{ color: "#aaa", fontSize: 13, marginTop: 12 }}>
+      <div style={{ color: "#596579", fontSize: 15, marginTop: 12 }}>
         <b>Tip:</b> <span style={{ color: COLORS.main }}>백업 후</span> 텍스트를 복사해서 안전한 곳에 저장하세요.<br />
         <b>복구는</b> 백업 내용을 붙여넣고 <b>복구하기</b>를 누르세요.<br />
-        <span style={{ color: "#888" }}>(다운로드: 파일로 저장 버튼)</span>
+        <span style={{ color: "#596579" }}>(다운로드: 파일로 저장 버튼)</span>
       </div>
     </div>
   );

@@ -235,13 +235,13 @@ async function handleDelete(cup) {
         borderRadius: 12,
         padding: 28,
         boxShadow:
-          "0 2px 12px #0001",
+          "0 4px 16px rgba(25,32,52,0.07)",
       }}
     >
       <h2
         style={{
           fontWeight: 800,
-          fontSize: 28,
+          fontSize: 30,
           marginBottom: 22,
         }}
       >
@@ -267,8 +267,8 @@ async function handleDelete(cup) {
         <button
           onClick={handleBackup}
           style={{
-            background: "#1976ed",
-            color: "#fff",
+            background: "#6650d8",
+            color: "#ffffff",
             padding: "8px 20px",
             borderRadius: 8,
             border: "none",
@@ -282,8 +282,8 @@ async function handleDelete(cup) {
         <button
           onClick={handleDownload}
           style={{
-            background: "#2a313f",
-            color: "#fff",
+            background: "#ffffff",
+            color: "#202534",
             padding: "8px 20px",
             borderRadius: 8,
             border: "none",
@@ -298,7 +298,7 @@ async function handleDelete(cup) {
           onClick={handleRestore}
           style={{
             background: "#d33",
-            color: "#fff",
+            color: "#ffffff",
             padding: "8px 20px",
             borderRadius: 8,
             border: "none",
@@ -345,7 +345,7 @@ async function handleDelete(cup) {
             width: "100%",
             boxSizing: "border-box",
             marginTop: 16,
-            fontSize: 15,
+            fontSize: 17,
             borderRadius: 7,
             border:
               "1px solid #ccc",
@@ -373,7 +373,7 @@ async function handleDelete(cup) {
         0 ? (
           <div
             style={{
-              color: "#bbb",
+              color: "#596579",
               margin:
                 "28px 0 14px",
             }}
@@ -417,7 +417,7 @@ async function handleDelete(cup) {
                     <b
                       style={{
                         fontSize:
-                          17,
+                          19,
                       }}
                     >
                       {cup.title}
@@ -428,10 +428,10 @@ async function handleDelete(cup) {
                       <div
                         style={{
                           color:
-                            "#888",
+                            "#596579",
 
                           fontSize:
-                            14,
+                            16,
 
                           marginTop:
                             4,
@@ -454,7 +454,7 @@ async function handleDelete(cup) {
                         "#d33",
 
                       color:
-                        "#fff",
+                        "#ffffff",
 
                       border:
                         "none",
@@ -466,7 +466,7 @@ async function handleDelete(cup) {
                         700,
 
                       fontSize:
-                        14,
+                        16,
 
                       padding:
                         "6px 14px",

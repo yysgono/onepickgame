@@ -613,5 +613,12 @@
   "result_discovery_popular_title": "জনপ্রিয় ও নতুন ব্র্যাকেট",
   "result_discovery_popular_desc": "জনপ্রিয় ও নতুন যোগ করা বিষয় দেখুন",
   "result_discovery_tier_title": "এই ব্র্যাকেট থেকে Tier List বানান",
-  "result_discovery_tier_desc": "এই প্রার্থীদের দিয়েই Tier List তৈরি করুন"
+  "result_discovery_tier_desc": "এই প্রার্থীদের দিয়েই Tier List তৈরি করুন",
+  "lightUi": {
+    "gameModes": "Game modes",
+    "myContent": "My content",
+    "profile": "Profile",
+    "manageContent": "Find and manage your creations in one place.",
+    "loginToView": "Sign in to see your creations."
+  }
 }

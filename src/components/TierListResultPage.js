@@ -2551,7 +2551,7 @@ if (isAdmin) {
           justifyContent: "center",
           padding: "32px 16px",
           boxSizing: "border-box",
-          color: "#fff",
+          color: "#202534",
         }}
       >
         <div
@@ -2560,11 +2560,11 @@ if (isAdmin) {
             maxWidth: "100%",
             padding: "14px 20px",
             borderRadius: 12,
-            border: "1px solid rgba(49,90,143,0.9)",
-            background: "rgba(7,17,31,0.94)",
-            boxShadow: "0 8px 24px rgba(0,0,0,0.28)",
+            border: "1px solid #dde2ea",
+            background: "#ffffff",
+            boxShadow: "0 4px 16px rgba(25,32,52,0.07)",
             fontWeight: 900,
-            fontSize: 18,
+            fontSize: 20,
             textAlign: "center",
           }}
         >
@@ -2599,10 +2599,10 @@ if (isAdmin) {
             "100vh",
 
           background:
-            "#000",
+            "#ffffff",
 
           color:
-            "#fff",
+            "#202534",
 
           display:
             "flex",
@@ -2629,7 +2629,7 @@ if (isAdmin) {
         <div
           style={{
             fontSize:
-              20,
+              22,
 
             fontWeight:
               900,
@@ -2640,38 +2640,7 @@ if (isAdmin) {
         </div>
 
 
-        <button
-          type="button"
-          onClick={() =>
-            navigate(
-              `/${lang}/tier-list`
-            )
-          }
-          style={{
-            padding:
-              "10px 18px",
-
-            borderRadius:
-              8,
-
-            border:
-              "1px solid #19bfff",
-
-            background:
-              "#073653",
-
-            color:
-              "#fff",
-
-            fontWeight:
-              900,
-
-            cursor:
-              "pointer",
-          }}
-        >
-          {text.tierHome}
-        </button>
+        
       </div>
       </>
     );
@@ -2745,10 +2714,10 @@ const seoResultDescription = t(
     minHeight: "100vh",
 
         background:
-          "#000",
+          "#ffffff",
 
         color:
-          "#fff",
+          "#202534",
       }}
     >
       <div
@@ -2790,9 +2759,9 @@ padding: isMobile
 
     borderRadius: 14,
 
-    border: "1px solid #27466f",
+    border: "1px solid #dde2ea",
 
-    background: "#07111f",
+    background: "#ffffff",
   }}
 >
 <div
@@ -2813,49 +2782,7 @@ padding: isMobile
 
       
 
-  <button
-    type="button"
-    onClick={() =>
-      navigate(`/${lang}/tier-list`)
-    }
-    style={{
-flexShrink: 0,
-
-      width: isMobile ? "100%" : "auto",
-
-      minHeight: isMobile ? 42 : 52,
-
-      padding: isMobile ? "0 14px" : "0 20px",
-
-      borderRadius: 10,
-
-      border: "1px solid #19bfff",
-
-      background: "#073653",
-
-      color: "#fff",
-
-      fontSize: isMobile ? 14 : 15,
-
-      fontWeight: 900,
-
-      cursor: "pointer",
-
-      whiteSpace: "nowrap",
-
-      display: "inline-flex",
-
-      alignItems: "center",
-
-      justifyContent: "center",
-
-      boxShadow:
-        "0 0 14px rgba(25,191,255,0.14)",
-
-        }}
-  >
-    ← {text.tierHome}
-  </button>
+  
 
   {/* =========================
       우측 상단 - 액션
@@ -2890,17 +2817,17 @@ flexShrink: 0,
 
         border: liked
           ? "1px solid #ff6b88"
-          : "1px solid #315a8f",
+          : "1px solid #dde2ea",
 
         background: liked
-          ? "#35121b"
-          : "#101d32",
+          ? "#ffffff"
+          : "#ffffff",
 
         color: liked
-          ? "#ff9aae"
-          : "#fff",
+          ? "#b42346"
+          : "#202534",
 
-        fontSize: isMobile ? 12 : 14,
+        fontSize: isMobile ? 14 : 16,
 
         fontWeight: 900,
 
@@ -2936,16 +2863,16 @@ flexShrink: 0,
         borderRadius: 10,
 
         border:
-          "1px solid #315a8f",
+          "1px solid #dde2ea",
 
         background:
-          "#101d32",
+          "#ffffff",
 
         color:
-          "#fff",
+          "#202534",
 
         fontSize:
-          isMobile ? 12 : 14,
+          isMobile ? 14 : 16,
 
         fontWeight:
           900,
@@ -2989,13 +2916,13 @@ flexShrink: 0,
           "1px solid #19bfff",
 
         background:
-          "#073653",
+          "#ffffff",
 
         color:
-          "#fff",
+          "#202534",
 
         fontSize:
-          isMobile ? 12 : 14,
+          isMobile ? 14 : 16,
 
         fontWeight:
           900,
@@ -3034,16 +2961,16 @@ flexShrink: 0,
             borderRadius: 10,
 
             border:
-              "1px solid #5b79a0",
+              "1px solid #dde2ea",
 
             background:
-              "#14243d",
+              "#ffffff",
 
             color:
-              "#fff",
+              "#202534",
 
             fontSize:
-              isMobile ? 12 : 14,
+              isMobile ? 14 : 16,
 
             fontWeight:
               900,
@@ -3081,16 +3008,16 @@ flexShrink: 0,
             borderRadius: 10,
 
             border:
-              "1px solid #a64359",
+              "1px solid #dde2ea",
 
             background:
-              "#35121b",
+              "#ffffff",
 
             color:
-              "#ff9aae",
+              "#b42346",
 
             fontSize:
-              isMobile ? 12 : 14,
+              isMobile ? 14 : 16,
 
             fontWeight:
               900,
@@ -3144,11 +3071,11 @@ flexShrink: 0,
       style={{
         margin: 0,
 
-        color: "#fff",
+        color: "#202534",
 
         fontSize: isMobile
-          ? 24
-          : 40,
+          ? 26
+          : 42,
 
         fontWeight: 900,
 
@@ -3165,15 +3092,15 @@ flexShrink: 0,
     </h1>
   </div>
 
-  <div style={{display: "flex", flexDirection: isMobile ? "column" : "row", flexWrap: "wrap", justifyContent: isMobile ? "center" : "space-between", alignItems: isMobile ? "center" : "baseline", gap: isMobile ? 6 : 12, marginTop: isMobile ? 10 : 14, color: "#8fa6c3", fontSize: isMobile ? 11 : 14, fontWeight: 700, textAlign: isMobile ? "center" : "left"}}>
+  <div style={{display: "flex", flexDirection: isMobile ? "column" : "row", flexWrap: "wrap", justifyContent: isMobile ? "center" : "space-between", alignItems: isMobile ? "center" : "baseline", gap: isMobile ? 6 : 12, marginTop: isMobile ? 10 : 14, color: "#5542b8", fontSize: isMobile ? 13 : 16, fontWeight: 700, textAlign: isMobile ? "center" : "left"}}>
     <div>
-      👤 {text.author}: <strong style={{color: "#dbe9f8"}}>{authorName || text.unknownAuthor}</strong>
+      👤 {text.author}: <strong style={{color: "#202534"}}>{authorName || text.unknownAuthor}</strong>
       {" · "}{formatDate(tierList.created_at)}
     </div>
     {canBrowsePreset && (
       <div style={{marginLeft: isMobile ? 0 : "auto", minWidth: 0, maxWidth: "100%", textAlign: isMobile ? "center" : "right"}}>
         {t("tierList.result.usedPresetLabel")}{": "}
-        <button type="button" onClick={() => openPresetTierLists(false)} style={{border: 0, background: "transparent", color: "#64d8ff", padding: 0, font: "inherit", textDecoration: "underline", cursor: "pointer", overflowWrap: "anywhere", textAlign: "inherit"}}>
+        <button type="button" onClick={() => openPresetTierLists(false)} style={{border: 0, background: "transparent", color: "#5542b8", padding: 0, font: "inherit", textDecoration: "underline", cursor: "pointer", overflowWrap: "anywhere", textAlign: "inherit"}}>
           <PresetTitle id={tierList.source_worldcup_id} snapshot={sourcePresetName} lang={lang} />
         </button>
       </div>
@@ -3220,8 +3147,8 @@ flexShrink: 0,
                           : 154,
                       display: "flex",
                       marginBottom: 10,
-                      border: "1px solid #27466f",
-                      background: "#0b1628",
+                      border: "1px solid #dde2ea",
+                      background: "#ffffff",
                       borderRadius: 9,
                       overflow: "hidden",
                     }}
@@ -3241,8 +3168,8 @@ flexShrink: 0,
                         justifyContent: "center",
                         fontSize:
                           isMobile
-                            ? 28
-                            : 44,
+                            ? 30
+                            : 46,
                         fontWeight: 900,
                         background:
                           TIER_COLORS[tier],
@@ -3286,8 +3213,8 @@ flexShrink: 0,
                                   : 112,
                               overflow: "hidden",
                               borderRadius: 8,
-                              border: "1px solid #315a8f",
-                              background: "#101d32",
+                              border: "1px solid #dde2ea",
+                              background: "#ffffff",
                             }}
                           >
                             <div
@@ -3295,7 +3222,7 @@ flexShrink: 0,
                                 width: "100%",
                                 aspectRatio: "1 / 1",
                                 overflow: "hidden",
-                                background: "#07111f",
+                                background: "#ffffff",
                               }}
                             >
                               {candidate?.image ? (
@@ -3319,8 +3246,8 @@ objectPosition: "center",
                                     display: "flex",
                                     alignItems: "center",
                                     justifyContent: "center",
-                                    color: "#64758b",
-                                    fontSize: 10,
+                                    color: "#5542b8",
+                                    fontSize: 12,
                                     fontWeight: 800,
                                   }}
                                 >
@@ -3338,8 +3265,8 @@ objectPosition: "center",
                                 textAlign: "center",
                                 fontSize:
                                   isMobile
-                                    ? 11
-                                    : 12,
+                                    ? 13
+                                    : 14,
                                 fontWeight: 800,
                                 overflow: "hidden",
                                 textOverflow: "ellipsis",
@@ -3357,7 +3284,7 @@ objectPosition: "center",
                           style={{
                             alignSelf: "center",
                             color: "#53657d",
-                            fontSize: 13,
+                            fontSize: 15,
                             fontWeight: 700,
                           }}
                         >
@@ -3394,9 +3321,9 @@ objectPosition: "center",
               >
                 <div
                   style={{
-                    fontSize: isMobile ? 21 : 27,
+                    fontSize: isMobile ? 23 : 29,
                     fontWeight: 900,
-                    color: "#fff",
+                    color: "#202534",
                   }}
                 >
                   ⭐ {text.onePickTitle}
@@ -3409,11 +3336,11 @@ objectPosition: "center",
                     padding: 12,
                     boxSizing: "border-box",
                     borderRadius: 16,
-                    border: "2px solid #19bfff",
+                    border: "2px solid #a99bdf",
                     background:
-                      "linear-gradient(180deg, rgba(25,191,255,0.12), rgba(7,17,31,0.98))",
+                      "#f5f3ff",
                     boxShadow:
-                      "0 10px 28px rgba(25,191,255,0.12)",
+                      "0 4px 16px rgba(25,32,52,0.07)",
                   }}
                 >
                   {onePickCandidate ? (
@@ -3424,7 +3351,7 @@ objectPosition: "center",
                           aspectRatio: "1 / 1",
                           overflow: "hidden",
                           borderRadius: 11,
-                          background: "#07111f",
+                          background: "#ffffff",
                         }}
                       >
                         {onePickCandidate?.image ? (
@@ -3460,7 +3387,7 @@ objectPosition: "center",
                       <div
                         style={{
                           marginTop: 9,
-                          fontSize: isMobile ? 14 : 17,
+                          fontSize: isMobile ? 16 : 19,
                           fontWeight: 900,
                           overflow: "hidden",
                           textOverflow: "ellipsis",
@@ -3474,8 +3401,8 @@ objectPosition: "center",
                     <div
                       style={{
                         padding: "32px 10px",
-                        color: "#6f849f",
-                        fontSize: 13,
+                        color: "#596579",
+                        fontSize: 15,
                         fontWeight: 800,
                       }}
                     >
@@ -3496,20 +3423,20 @@ objectPosition: "center",
                     borderRadius: 13,
                     border: "1px solid #ff9f1a",
                     background:
-                      "linear-gradient(180deg, rgba(37,21,0,0.95), rgba(13,31,55,0.95))",
-                    color: "#fff",
-                    fontSize: isMobile ? 14 : 15,
+                      "#f5f6fa",
+                    color: "#202534",
+                    fontSize: isMobile ? 16 : 17,
                     fontWeight: 900,
                     lineHeight: 1.35,
                     cursor: "pointer",
                     boxShadow:
-                      "0 8px 24px rgba(255,159,26,0.16)",
+                      "0 4px 16px rgba(25,32,52,0.07)",
                   }}
                 >
                   {createBracketCtaLabel}
                 </button>
                 {canBrowsePreset && (
-                  <button type="button" onClick={() => openPresetTierLists(false)} style={{marginTop: 10, width: "100%", padding: "13px 14px", borderRadius: 13, border: "1px solid #19bfff", background: "#073653", color: "#fff", fontSize: isMobile ? 14 : 15, fontWeight: 900, lineHeight: 1.4, whiteSpace: "normal", overflowWrap: "anywhere", cursor: "pointer"}}>
+                  <button type="button" onClick={() => openPresetTierLists(false)} style={{marginTop: 10, width: "100%", padding: "13px 14px", borderRadius: 13, border: "1px solid #19bfff", background: "#ffffff", color: "#202534", fontSize: isMobile ? 16 : 17, fontWeight: 900, lineHeight: 1.4, whiteSpace: "normal", overflowWrap: "anywhere", cursor: "pointer"}}>
                     {t("tierList.result.browsePresetTierLists")}
                   </button>
                 )}
@@ -3556,10 +3483,10 @@ objectPosition: "center",
                 "1px solid #19bfff",
 
               background:
-                "#087ba8",
+                "#6650d8",
 
               color:
-                "#fff",
+                "#ffffff",
 
               cursor:
                 "pointer",
@@ -3588,13 +3515,13 @@ objectPosition: "center",
                 9,
 
               border:
-                "1px solid #315a8f",
+                "1px solid #dde2ea",
 
               background:
-                "#101d32",
+                "#ffffff",
 
               color:
-                "#fff",
+                "#202534",
 
               cursor:
                 "pointer",
@@ -3621,13 +3548,13 @@ objectPosition: "center",
                 9,
 
               border:
-                "1px solid #315a8f",
+                "1px solid #dde2ea",
 
               background:
-                "#101d32",
+                "#ffffff",
 
               color:
-                "#fff",
+                "#202534",
 
               cursor:
                 "pointer",
@@ -3662,18 +3589,18 @@ objectPosition: "center",
               14,
 
             border:
-              "1px solid #27466f",
+              "1px solid #dde2ea",
 
             background:
-              "#07111f",
+              "#ffffff",
           }}
         >
           <div
             style={{
               fontSize:
                 isMobile
-                  ? 19
-                  : 22,
+                  ? 21
+                  : 24,
 
               fontWeight:
                 900,
@@ -3702,10 +3629,10 @@ objectPosition: "center",
                 10,
 
               border:
-                "1px solid #27466f",
+                "1px solid #dde2ea",
 
               background:
-                "#0b1628",
+                "#ffffff",
             }}
           >
             <input
@@ -3755,13 +3682,13 @@ objectPosition: "center",
                   7,
 
                 border:
-                  "1px solid #315a8f",
+                  "1px solid #dde2ea",
 
                 background:
-                  "#07111f",
+                  "#ffffff",
 
                 color:
-                  "#fff",
+                  "#202534",
 
                 outline:
                   "none",
@@ -3815,13 +3742,13 @@ objectPosition: "center",
                   8,
 
                 border:
-                  "1px solid #315a8f",
+                  "1px solid #dde2ea",
 
                 background:
-                  "#07111f",
+                  "#ffffff",
 
                 color:
-                  "#fff",
+                  "#202534",
 
                 outline:
                   "none",
@@ -3830,7 +3757,7 @@ objectPosition: "center",
                   "inherit",
 
                 fontSize:
-                  14,
+                  16,
 
                 lineHeight:
                   1.5,
@@ -3859,10 +3786,10 @@ objectPosition: "center",
               <div
                 style={{
                   color:
-                    "#6d8098",
+                    "#5542b8",
 
                   fontSize:
-                    12,
+                    14,
 
                   fontWeight:
                     700,
@@ -3893,11 +3820,11 @@ objectPosition: "center",
 
                   background:
                     commentLoading
-                      ? "#39556a"
-                      : "#087ba8",
+                      ? "#ffffff"
+                      : "#6650d8",
 
                   color:
-                    "#fff",
+                    (commentLoading) ? "#202534" : "#ffffff",
 
                   fontWeight:
                     900,
@@ -3941,7 +3868,7 @@ objectPosition: "center",
                     700,
 
                   fontSize:
-                    14,
+                    16,
                 }}
               >
                 {text.noComments}
@@ -3960,7 +3887,7 @@ objectPosition: "center",
                         "13px 4px",
 
                       borderBottom:
-                        "1px solid #1b2b40",
+                        "1px solid #dde2ea",
                     }}
                   >
                     <div
@@ -3981,10 +3908,10 @@ objectPosition: "center",
                       <span
                         style={{
                           color:
-                            "#d9e6f5",
+                            "#202534",
 
                           fontSize:
-                            14,
+                            16,
 
                           fontWeight:
                             900,
@@ -4001,7 +3928,7 @@ objectPosition: "center",
                             "#566b83",
 
                           fontSize:
-                            11,
+                            13,
 
                           fontWeight:
                             700,
@@ -4021,10 +3948,10 @@ objectPosition: "center",
                           6,
 
                         color:
-                          "#c4cfdd",
+                          "#596579",
 
                         fontSize:
-                          14,
+                          16,
 
                         lineHeight:
                           1.55,

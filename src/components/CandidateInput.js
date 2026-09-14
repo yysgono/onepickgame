@@ -606,7 +606,7 @@ function CandidateInput({
         background:
           "#fafdff",
         boxShadow:
-          "0 1px 8px #b9d8ff28",
+          "0 4px 16px rgba(25,32,52,0.07)",
         flexWrap: "wrap",
       }}
     >
@@ -625,9 +625,9 @@ function CandidateInput({
             "center",
           overflow: "hidden",
           boxShadow:
-            "0 2px 10px #1976ed18",
-          fontSize: 28,
-          color: "#1976ed",
+            "0 4px 16px rgba(25,32,52,0.07)",
+          fontSize: 30,
+          color: "#5542b8",
           userSelect:
             "none",
           flexShrink: 0,
@@ -686,8 +686,8 @@ function CandidateInput({
           <span
             style={{
               color:
-                "#b3d3fc",
-              fontSize: 26,
+                "#5542b8",
+              fontSize: 28,
             }}
           >
             ?
@@ -724,7 +724,7 @@ function CandidateInput({
             borderRadius: 7,
             border:
               "1.2px solid #b4c4e4",
-            fontSize: 15,
+            fontSize: 17,
             fontWeight: 600,
             background:
               "#fff",
@@ -760,7 +760,7 @@ function CandidateInput({
           borderRadius: 7,
           border:
             "1.2px solid #b4c4e4",
-          fontSize: 15,
+          fontSize: 17,
           background:
             "#fff",
           marginRight: 8,
@@ -780,8 +780,8 @@ function CandidateInput({
         }
         style={{
           background:
-            "linear-gradient(90deg, #1976ed 70%, #45b7fa 100%)",
-          color: "#fff",
+            "#6650d8",
+          color: "#ffffff",
           border: "none",
           borderRadius: 8,
           padding:
@@ -791,9 +791,9 @@ function CandidateInput({
             disabled
               ? "not-allowed"
               : "pointer",
-          fontSize: 14.2,
+          fontSize: 16.2,
           boxShadow:
-            "0 2px 7px #1976ed15",
+            "0 4px 16px rgba(25,32,52,0.07)",
           whiteSpace:
             "nowrap",
           marginRight: 6,
@@ -839,11 +839,11 @@ function CandidateInput({
         style={{
           background:
             "#f8d3d3",
-          color: "#d33",
+          color: "#b42346",
           border: "none",
           borderRadius: 8,
           fontWeight: 700,
-          fontSize: 15,
+          fontSize: 17,
           padding:
             "7px 14px",
           cursor:
@@ -851,7 +851,7 @@ function CandidateInput({
               ? "not-allowed"
               : "pointer",
           boxShadow:
-            "0 1px 5px #d33a",
+            "0 4px 16px rgba(25,32,52,0.07)",
           whiteSpace:
             "nowrap",
           opacity:

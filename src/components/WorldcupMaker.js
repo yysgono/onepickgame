@@ -1816,7 +1816,7 @@ setCandidates([
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          color: "#fff",
+          color: "#202534",
         }}
       >
         Loading...
@@ -1868,7 +1868,7 @@ setCandidates([
             marginBottom: 28,
 
             boxShadow:
-              "0 4px 20px #0002",
+              "0 4px 16px rgba(25,32,52,0.07)",
           }}
         >
           <h2
@@ -1880,8 +1880,8 @@ setCandidates([
               marginBottom: 12,
 
               fontSize: mobile
-                ? 22
-                : 27,
+                ? 24
+                : 29,
             }}
           >
             {currentLang ===
@@ -1892,7 +1892,7 @@ setCandidates([
 
           <p
             style={{
-              color: "#64748b",
+              color: "#5542b8",
 
               lineHeight: 1.7,
 
@@ -1921,8 +1921,8 @@ setCandidates([
                 : "12px 28px",
 
               fontSize: mobile
-                ? 15
-                : 17,
+                ? 17
+                : 19,
 
               borderRadius: 10,
 
@@ -1939,11 +1939,11 @@ setCandidates([
         {/* 로그인 안내 */}
         <h2
           style={{
-            color: "#fff",
+            color: "#202534",
 
             fontSize: mobile
-              ? 20
-              : 24,
+              ? 22
+              : 26,
 
             marginBottom: 20,
           }}
@@ -1971,8 +1971,8 @@ setCandidates([
               : "13px 38px",
 
             fontSize: mobile
-              ? 16
-              : 18,
+              ? 18
+              : 20,
 
             borderRadius: 10,
 
@@ -1994,7 +1994,7 @@ setCandidates([
 
           textAlign: "center",
 
-          color: "#d33",
+          color: "#b42346",
 
           fontWeight: 700,
         }}
@@ -2054,7 +2054,7 @@ style={{
   borderRadius: 18,
 
   boxShadow:
-    "0 4px 20px #0002",
+    "0 4px 16px rgba(25,32,52,0.07)",
 
   padding: mobile
     ? 18
@@ -2072,8 +2072,8 @@ style={{
           marginBottom: 20,
 
           fontSize: mobile
-            ? 22
-            : 27,
+            ? 24
+            : 29,
 
           letterSpacing: "-1px",
 
@@ -2108,8 +2108,8 @@ style={{
         <div
           style={{
             fontSize: mobile
-              ? 15
-              : 16,
+              ? 17
+              : 18,
 
             fontWeight: 800,
 
@@ -2128,8 +2128,8 @@ style={{
         <div
           style={{
             fontSize: mobile
-              ? 13
-              : 14,
+              ? 15
+              : 16,
 
             color: "#666",
 
@@ -2158,10 +2158,10 @@ style={{
           style={{
             background: "#fff",
 
-            color: "#1976ed",
+            color: "#5542b8",
 
             border:
-              "1.5px solid #1976ed",
+              "1.5px solid #dde2ea",
 
             borderRadius: 8,
 
@@ -2170,8 +2170,8 @@ style={{
               : "9px 18px",
 
             fontSize: mobile
-              ? 13
-              : 14,
+              ? 15
+              : 16,
 
             fontWeight: 800,
 
@@ -2200,7 +2200,7 @@ style={{
   <label
     style={{
       fontWeight: 700,
-      fontSize: 17,
+      fontSize: 19,
       color: "#223",
       display: "block",
     }}
@@ -2219,7 +2219,7 @@ style={{
         padding: 10,
         borderRadius: 8,
         border: "1.5px solid #bbb",
-        fontSize: mobile ? 14 : 16,
+        fontSize: mobile ? 16 : 18,
         boxSizing: "border-box",
         background: "#fff",
         color: "#000",
@@ -2288,12 +2288,12 @@ style={{
             cursor: "pointer",
 
             fontSize: mobile
-              ? 18
-              : 22,
+              ? 20
+              : 24,
 
             fontWeight: 700,
 
-            color: "#1677ed",
+            color: "#5542b8",
 
             letterSpacing:
               "-0.5px",
@@ -2349,7 +2349,7 @@ style={{
          <span>
   <span
     style={{
-      fontSize: mobile ? 20 : 26,
+      fontSize: mobile ? 22 : 28,
     }}
   >
     📁
@@ -2361,7 +2361,7 @@ style={{
     style={{
       display: "block",
       marginTop: 8,
-      fontSize: mobile ? 16 : 19,
+      fontSize: mobile ? 18 : 21,
       fontWeight: 800,
     }}
   >
@@ -2373,7 +2373,7 @@ style={{
     style={{
       display: "block",
       marginTop: 6,
-      fontSize: mobile ? 12 : 14,
+      fontSize: mobile ? 14 : 16,
       fontWeight: 600,
       opacity: 0.72,
     }}
@@ -2383,10 +2383,10 @@ style={{
   <div
   style={{
     marginTop: 10,
-    fontSize: mobile ? 14 : 16,
+    fontSize: mobile ? 16 : 18,
     fontWeight: 700,
     lineHeight: 1.55,
-  color: "#1976ed",
+  color: "#5542b8",
     wordBreak: "keep-all",
   }}
 >
@@ -2397,7 +2397,7 @@ style={{
     style={{
       display: "block",
       marginTop: 3,
-      fontSize: mobile ? 11 : 13,
+      fontSize: mobile ? 13 : 15,
       fontWeight: 500,
       opacity: 0.58,
     }}
@@ -2437,8 +2437,8 @@ style={{
               "1.5px solid #bbb",
 
             fontSize: mobile
-              ? 15
-              : 18,
+              ? 17
+              : 20,
 
             marginBottom: 16,
 
@@ -2480,8 +2480,8 @@ style={{
               "1.5px solid #bbb",
 
             fontSize: mobile
-              ? 13
-              : 15,
+              ? 15
+              : 17,
 
             marginBottom: 18,
 
@@ -2502,7 +2502,7 @@ style={{
   <div
     style={{
       fontWeight: 700,
-      fontSize: mobile ? 14 : 16,
+      fontSize: mobile ? 16 : 18,
       marginBottom: 7,
       color: "#000",
     }}
@@ -2543,7 +2543,7 @@ style={{
           padding: 10,
           borderRadius: 8,
           border: "1.5px solid #bbb",
-          fontSize: mobile ? 13 : 15,
+          fontSize: mobile ? 15 : 17,
           boxSizing: "border-box",
           background: "#fff",
           color: "#000",
@@ -2555,8 +2555,8 @@ style={{
   <div
     style={{
       marginTop: 6,
-      fontSize: mobile ? 11 : 12,
-      color: "#777",
+      fontSize: mobile ? 13 : 14,
+      color: "#596579",
     }}
   >
     {t("tags_help") ||
@@ -2572,13 +2572,13 @@ style={{
 <div
   style={{
     fontWeight: 700,
-    fontSize: mobile ? 14 : 16,
+    fontSize: mobile ? 16 : 18,
     marginBottom: 7,
     color: "#000",
   }}
 >
   {t("category") || "Category"}{" "}
-  <span style={{ color: "#e14444" }}>*</span>
+  <span style={{ color: "#b42346" }}>*</span>
 </div>
 
           <select
@@ -2592,7 +2592,7 @@ style={{
               padding: 10,
               borderRadius: 8,
 border: "1.5px solid #bbb",
-              fontSize: mobile ? 14 : 16,
+              fontSize: mobile ? 16 : 18,
               boxSizing: "border-box",
        background: "#fff",
 color: "#000",
@@ -2637,13 +2637,13 @@ color: "#000",
 
             <span
               style={{
-                color: "#888",
+                color: "#596579",
 
                 fontWeight: 400,
 
                 fontSize: mobile
-                  ? 13
-                  : 15,
+                  ? 15
+                  : 17,
               }}
             >
               (
@@ -2710,7 +2710,7 @@ color: "#000",
                 mobile
               ),
 
-              fontSize: 15,
+              fontSize: 17,
 
               padding: mobile
                 ? "8px 16px"
@@ -2744,7 +2744,7 @@ color: "#000",
             style={{
               color:
                 COLORS.danger ||
-                "#d33",
+                "#b42346",
 
               marginBottom: 10,
 
@@ -2774,8 +2774,8 @@ color: "#000",
               ),
 
               fontSize: mobile
-                ? 15
-                : 17,
+                ? 17
+                : 19,
 
               borderRadius: 10,
 
@@ -2809,8 +2809,8 @@ color: "#000",
               ),
 
               fontSize: mobile
-                ? 15
-                : 17,
+                ? 17
+                : 19,
 
               borderRadius: 10,
 

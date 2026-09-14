@@ -27,15 +27,15 @@ export default function RecentWorldcups() {
 
   return (
     <div style={{ maxWidth: 950, margin: "40px auto", background: "#fff", borderRadius: 18, padding: 32, minHeight: 400 }}>
-      <h2 style={{ fontWeight: 900, fontSize: 27, marginBottom: 24, letterSpacing: -1, color: "#1976ed" }}>최근에 본 월드컵</h2>
+      <h2 style={{ fontWeight: 900, fontSize: 29, marginBottom: 24, letterSpacing: -1, color: "#5542b8" }}>최근에 본 월드컵</h2>
       {recentList.length === 0 ? (
-        <div style={{ textAlign: "center", color: "#888", marginTop: 70, fontSize: 19 }}>최근에 본 월드컵이 없습니다.</div>
+        <div style={{ textAlign: "center", color: "#596579", marginTop: 70, fontSize: 21 }}>최근에 본 월드컵이 없습니다.</div>
       ) : (
         <div style={{ display: "flex", flexWrap: "wrap", gap: 22, marginTop: 12 }}>
           {recentList.map(wc => (
             <div key={wc.id}
               style={{
-                width: 180, minHeight: 188, background: "#f6f8fa", borderRadius: 13, boxShadow: "0 2px 10px #0001",
+                width: 180, minHeight: 188, background: "#f6f8fa", borderRadius: 13, boxShadow: "0 4px 16px rgba(25,32,52,0.07)",
                 display: "flex", flexDirection: "column", alignItems: "center", cursor: "pointer",
                 transition: "box-shadow .13s", border: "1.2px solid #e6eefb"
               }}
@@ -46,7 +46,7 @@ export default function RecentWorldcups() {
                 alt={wc.title}
                 style={{ width: 128, height: 128, objectFit: "cover", borderRadius: 8, margin: "13px 0 7px 0", background: "#eceff4" }}
               />
-              <div style={{ fontWeight: 700, fontSize: 16, marginBottom: 8, textAlign: "center", color: "#1976ed" }}>{wc.title}</div>
+              <div style={{ fontWeight: 700, fontSize: 18, marginBottom: 8, textAlign: "center", color: "#5542b8" }}>{wc.title}</div>
             </div>
           ))}
         </div>

@@ -1,3 +1,5 @@
+import PageIntro from "./PageIntro";
+import "../registerHeaderTranslations";
 // src/components/Home.js
 import React, { useState, useRef, useEffect } from "react";
 import { useTranslation } from "react-i18next";
@@ -8,7 +10,7 @@ import {
 import { fetchWinnerStatsFromDB } from "../utils";
 import { supabase } from "../utils/supabaseClient";
 import MediaRenderer from "./MediaRenderer";
-import GameModeNav from "./GameModeNav";
+
 
 const LANGUAGES = [
   { code: "en", label: "English" },
@@ -78,6 +80,7 @@ function Home({
   isAdmin,
   fixedWorldcups,
   showFixedWorldcups = true,
+  personalView = false,
 }) {
 const { t, i18n } = useTranslation();
 const navigate = useNavigate();
@@ -341,10 +344,12 @@ if (playCountsCache) {
     return () => window.removeEventListener("resize", onResize);
   }, []);
   const isMobile = vw < 600;
-const CARD_WIDTH = isMobile ? 340 : 500;
-const CARD_HEIGHT = isMobile ? 330 : 365;
+const CARD_WIDTH = isMobile
+  ? Math.min(360, window.innerWidth - 32)
+  : 504;
+const CARD_HEIGHT = 410;
 const CARD_GAP = isMobile ? 7 : 13;
-const THUMB_HEIGHT = isMobile ? 165 : 195;
+const THUMB_HEIGHT = 202;
 
   const [fixedCupsWithStats, setFixedCupsWithStats] = useState([]);
   useEffect(() => {
@@ -579,15 +584,15 @@ const scrollCategoryRow = (rowKey, direction) => {
     );
   }
 
-  const mainDark =  "#000";
+  const mainDark =  "#ffffff";
 const buttonStyle = {
   background: mainDark,
-  color: "#fff",
+  color: "#202534",
   fontWeight: 900,
   border: "none",
   borderRadius: 8,
 
-fontSize: isMobile ? 15 : 17,
+fontSize: isMobile ? 17 : 19,
   padding: isMobile ? "6px 8px" : "7px 11px",
 
   outline: "none",
@@ -611,13 +616,13 @@ fontFamily: "'Pretendard', sans-serif",
 const smallButtonStyle = {
   ...buttonStyle,
   padding: isMobile ? "5px 6px" : "7px 8px",
-fontSize: isMobile ? 15 : 17,
+fontSize: isMobile ? 17 : 19,
 };
 
 
 const cardDescStyle = {
-  color: "#b9dafb",
-  fontSize: isMobile ? 14 : 16,
+  color: "#202534",
+  fontSize: isMobile ? 16 : 18,
   lineHeight: 1.35,
   textAlign: "center",
 
@@ -625,7 +630,7 @@ const cardDescStyle = {
     ? "5px 10px 0 10px"
     : "7px 16px 0 16px",
 
-  height: isMobile ? 42 : 46,
+  height: isMobile ? 54 : 60,
   boxSizing: "border-box",
 
   display: "-webkit-box",
@@ -646,12 +651,12 @@ const cardDescStyle = {
 
   const cardBottomBarStyle = {
     width: "100%",
-    height: 4,
-    background: "linear-gradient(90deg, #1976ed 45%, #25e5fd 100%)",
+    height: 0,
+    background: "#6650d8",
     borderRadius: "0 0 18px 18px",
     margin: 0,
     marginTop: "auto",
-    boxShadow: "0 2px 10px #1976ed44",
+    boxShadow: "0 4px 16px rgba(25,32,52,0.07)",
   };
 
 const goto = (url) => {
@@ -671,6 +676,7 @@ const goto = (url) => {
   
 
 const renderWorldcupCard = (cup) => {
+  const categoryAccent = ({korea:"#6650d8",person:"#de5276",anime_manga:"#db8a20",game:"#1687e8",sports:"#24945d",music:"#9a55cd",movie_drama:"#db6544",food:"#c38b17"})[cup.category] || "#6650d8";
   const winStats = winStatsMap[cup.id] || [];
 
   // 후보들의 누적 우승 횟수 합계 = 총 참여 횟수
@@ -693,14 +699,15 @@ const totalPlays =
   return (
     <div
       key={cup.id}
+      className="worldcup-card"
        style={{
         width: "100%",
         height: CARD_HEIGHT,
         borderRadius: 18,
-        background: "#000",
+        background: "#ffffff",
         boxShadow:
-          "0 8px 38px 0 #1976ed45, 0 2px 12px #1976ed44",
-        border: "1.5px solid #233a74",
+          "0 4px 16px rgba(25,32,52,0.07)",
+        border: "1.5px solid #dde2ea",
         display: "flex",
         flexDirection: "column",
         position: "relative",
@@ -722,13 +729,13 @@ const totalPlays =
           "translateY(-7px) scale(1.025)";
 
         e.currentTarget.style.boxShadow =
-          "0 12px 50px 0 #1976ed88, 0 2.5px 16px #4abfff77";
+          "0 6px 20px rgba(25,32,52,0.10)";
       }}
       onMouseLeave={(e) => {
         e.currentTarget.style.transform = "";
 
         e.currentTarget.style.boxShadow =
-          "0 8px 38px 0 #1976ed45, 0 2px 12px #1976ed44";
+          "0 6px 20px rgba(25,32,52,0.10)";
       }}
       onClick={() => {
         goto(
@@ -770,7 +777,7 @@ const totalPlays =
           height: "180%",
           zIndex: 0,
           background:
-            "radial-gradient(circle at 50% 60%, #2a8fff33 0%, #11264c00 90%)",
+            "none",
           filter:
             "blur(22px) brightness(1.1)",
           opacity: 0.92,
@@ -786,7 +793,7 @@ const totalPlays =
           display: "flex",
           flexDirection: "row",
           background:
-            "linear-gradient(90deg, #162d52 0%, #284176 100%)",
+            "#f5f6fa",
           borderTopLeftRadius: 18,
           borderTopRightRadius: 18,
           overflow: "hidden",
@@ -798,7 +805,7 @@ const totalPlays =
           style={{
             width: "50%",
             height: "100%",
-            background: "#192145",
+            background: "#ffffff",
             borderTopLeftRadius: 18,
             overflow: "hidden",
             position: "relative",
@@ -818,7 +825,7 @@ const totalPlays =
                 objectFit: "cover",
                 objectPosition:
                   "center center",
-                background: "#111",
+                background: "#ffffff",
               }}
             />
           ) : (
@@ -826,7 +833,7 @@ const totalPlays =
               style={{
                 width: "100%",
                 height: "100%",
-                background: "#222",
+                background: "#ffffff",
               }}
             />
           )}
@@ -836,7 +843,7 @@ const totalPlays =
           style={{
             width: "50%",
             height: "100%",
-            background: "#1f2540",
+            background: "#ffffff",
             borderTopRightRadius: 18,
             overflow: "hidden",
             position: "relative",
@@ -856,7 +863,7 @@ const totalPlays =
                 objectFit: "cover",
                 objectPosition:
                   "center center",
-                background: "#111",
+                background: "#ffffff",
               }}
             />
           ) : (
@@ -864,7 +871,7 @@ const totalPlays =
               style={{
                 width: "100%",
                 height: "100%",
-                background: "#15182b",
+                background: "#ffffff",
               }}
             />
           )}
@@ -906,7 +913,7 @@ const totalPlays =
       <div
         style={{
           width: "100%",
-          height: isMobile ? 46 : 50,
+          height: isMobile ? 60 : 66,
           boxSizing: "border-box",
           padding: isMobile
             ? "5px 10px 2px 10px"
@@ -921,6 +928,7 @@ const totalPlays =
         title={displayTitle}
       >
         <span
+          className="worldcup-card-title"
           style={{
             width: "100%",
             display: "-webkit-box",
@@ -937,15 +945,15 @@ const totalPlays =
             textAlign: "center",
             lineHeight: 1.14,
             fontSize:
-              isMobile ? 17 : 20,
+              isMobile ? 19 : 22,
             letterSpacing: "0.1px",
-            color: "#fff",
+            color: "#202534",
 fontFamily:
   "'Pretendard', sans-serif",
 
 fontWeight: 800,
             textShadow:
-              "0 1.5px 8px #191b25cc",
+              "none",
             margin: 0,
             padding: 0,
           }}
@@ -955,7 +963,7 @@ fontWeight: 800,
       </div>
 
       {/* 설명 */}
-      <div style={cardDescStyle}>
+      <div className="worldcup-card-description" style={cardDescStyle}><span className="card-description-text">
         {cup.description_translations?.[
           lang
         ] ||
@@ -964,16 +972,16 @@ fontWeight: 800,
           cup.description ||
           cup.desc ||
           ""}
-      </div>
+      </span></div>
 
       {/* 참여 횟수 */}
       <div
         style={{
           width: "100%",
           textAlign: "center",
-          color: "#8fc7ff",
+          color: "#5542b8",
           fontSize:
-            isMobile ? 13 : 14,
+            isMobile ? 15 : 16,
           fontWeight: 700,
           padding: "2px 0 3px",
           background: mainDark,
@@ -1023,7 +1031,7 @@ fontWeight: 800,
           style={buttonStyle}
           onMouseOver={(e) =>
             (e.currentTarget.style.background =
-              "#1c2232")
+              "#ffffff")
           }
           onMouseOut={(e) =>
             (e.currentTarget.style.background =
@@ -1054,7 +1062,7 @@ fontWeight: 800,
               style={smallButtonStyle}
               onMouseOver={(e) =>
                 (e.currentTarget.style.background =
-                  "#1c2232")
+                  "#ffffff")
               }
               onMouseOut={(e) =>
                 (e.currentTarget.style.background =
@@ -1088,7 +1096,7 @@ fontWeight: 800,
               style={smallButtonStyle}
               onMouseOver={(e) =>
                 (e.currentTarget.style.background =
-                  "#1c2232")
+                  "#ffffff")
               }
               onMouseOut={(e) =>
                 (e.currentTarget.style.background =
@@ -1121,7 +1129,7 @@ fontWeight: 800,
           style={buttonStyle}
           onMouseOver={(e) =>
             (e.currentTarget.style.background =
-              "#1c2232")
+              "#ffffff")
           }
           onMouseOut={(e) =>
             (e.currentTarget.style.background =
@@ -1133,7 +1141,7 @@ fontWeight: 800,
       </div>
 
       <div
-        style={cardBottomBarStyle}
+        className="worldcup-card-accent" style={{...cardBottomBarStyle, background: categoryAccent}}
       />
     </div>
   );
@@ -1154,15 +1162,14 @@ const renderCategorySection = ({
   return (
     <section
       key={rowKey}
-      style={{
-        width: "100%",
-margin: isMobile
-  ? "14px 0 16px"
-  : "18px 0 20px",
-      }}
+      className={`home-category-section${featured ? " is-featured" : ""}`}
+style={{
+  width: "100%",
+  margin: featured ? "2px 0 12px" : (isMobile ? "10px 0 14px" : "14px 0 18px"),
+}}
     >
       {/* 카테고리 제목 */}
-      <div
+      <div className="home-category-heading"
         style={{
           width: "100%",
           maxWidth: 1400,
@@ -1180,8 +1187,8 @@ gap: isMobile ? 8 : 11,
         <h2
           style={{
             margin: 0,
-color: "#ffd43b",
-fontSize: isMobile ? 27 : 36,
+color: "#202534",
+fontSize: isMobile ? 29 : 38,
 fontWeight: 900,
             lineHeight: 1.2,
             fontFamily:
@@ -1201,21 +1208,21 @@ fontWeight: 900,
               padding: 0,
               border: "none",
               background: "transparent",
-              color: "#75b9ff",
-              fontSize: isMobile ? 14 : 17,
+              color: "#5542b8",
+              fontSize: isMobile ? 16 : 19,
               fontWeight: 800,
               cursor: "pointer",
               whiteSpace: "nowrap",
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.color =
-                "#b9ddff";
+                "#5542b8";
               e.currentTarget.style.textDecoration =
                 "underline";
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.color =
-                "#75b9ff";
+                "#5542b8";
               e.currentTarget.style.textDecoration =
                 "none";
             }}
@@ -1246,22 +1253,24 @@ fontWeight: 900,
     }
     style={{
       position: "absolute",
-      left: isMobile ? 3 : 10,
+      left: isMobile ? 6 : 14,
       top: "50%",
       transform: "translateY(-50%)",
       zIndex: 20,
 
-      width: isMobile ? 44 : 72,
-      height: isMobile ? 130 : 240,
+      width: isMobile ? 52 : 68,
+      height: isMobile ? 96 : 140,
 
-      border: "none",
-      borderRadius: 9,
+      border: "2px solid rgba(255,255,255,0.96)",
+      borderRadius: 16,
 
-      background: "rgba(10, 17, 29, 0.88)",
-      color: "#fff",
+      background:
+        "linear-gradient(180deg, rgba(112,88,232,0.98) 0%, rgba(72,49,181,0.98) 100%)",
+      color: "#ffffff",
 
-      fontSize: isMobile ? 32 : 48,
+      fontSize: isMobile ? 42 : 58,
       fontWeight: 900,
+      lineHeight: 1,
 
       cursor: "pointer",
 
@@ -1269,7 +1278,10 @@ fontWeight: 900,
       alignItems: "center",
       justifyContent: "center",
 
-      boxShadow: "0 4px 16px rgba(0,0,0,0.4)",
+      boxShadow:
+        "0 10px 28px rgba(65,45,170,0.42), 0 0 0 4px rgba(102,80,216,0.16)",
+      textShadow: "0 2px 8px rgba(0,0,0,0.35)",
+      transition: "transform .16s ease, box-shadow .16s ease",
     }}
   >
     ‹
@@ -1376,14 +1388,14 @@ justifyContent:
         setOtherVisibleCount((prev) => prev + 8)
       }
       style={{
-        border: "1px solid #2f8cff",
+        border: "1px solid #dde2ea",
         borderRadius: 8,
-        background: "#176fd1",
-        color: "#fff",
+        background: "#6650d8",
+        color: "#ffffff",
         padding: isMobile
           ? "9px 22px"
           : "11px 30px",
-        fontSize: isMobile ? 14 : 16,
+        fontSize: isMobile ? 16 : 18,
         fontWeight: 900,
         cursor: "pointer",
       }}
@@ -1405,22 +1417,24 @@ justifyContent:
     }
     style={{
       position: "absolute",
-      right: isMobile ? 3 : 10,
+      right: isMobile ? 6 : 14,
       top: "50%",
       transform: "translateY(-50%)",
       zIndex: 20,
 
-      width: isMobile ? 44 : 72,
-      height: isMobile ? 130 : 240,
+      width: isMobile ? 52 : 68,
+      height: isMobile ? 96 : 140,
 
-      border: "none",
-      borderRadius: 9,
+      border: "2px solid rgba(255,255,255,0.96)",
+      borderRadius: 16,
 
-      background: "rgba(10, 17, 29, 0.88)",
-      color: "#fff",
+      background:
+        "linear-gradient(180deg, rgba(112,88,232,0.98) 0%, rgba(72,49,181,0.98) 100%)",
+      color: "#ffffff",
 
-      fontSize: isMobile ? 32 : 48,
+      fontSize: isMobile ? 42 : 58,
       fontWeight: 900,
+      lineHeight: 1,
 
       cursor: "pointer",
 
@@ -1428,7 +1442,10 @@ justifyContent:
       alignItems: "center",
       justifyContent: "center",
 
-      boxShadow: "0 4px 16px rgba(0,0,0,0.4)",
+      boxShadow:
+        "0 10px 28px rgba(65,45,170,0.42), 0 0 0 4px rgba(102,80,216,0.16)",
+      textShadow: "0 2px 8px rgba(0,0,0,0.35)",
+      transition: "transform .16s ease, box-shadow .16s ease",
     }}
   >
     ›
@@ -1605,16 +1622,17 @@ useEffect(() => {
   worldcupList,
 ]);
 return (
-  <div
+  <div className={`home-page${personalView ? " is-personal" : ""}`}
     style={{
-      width: "100vw",
+      width: "100%",
       minHeight: "100vh",
-      background: "#000",
+      background: "#ffffff",
       position: "relative",
     }}
   >
 
 
+  <PageIntro icon="🏆" title={t('gameModeNav.worldcup')} description={t('headerPersonal.worldcupDescription')} buttonLabel={t('create_worldcup')} onCreate={() => onMakeWorldcup ? onMakeWorldcup() : goto(`/${lang}/worldcup-maker`)} personal={personalView} />
   {/* 만들기 / 언어 / 검색 / 정렬 */}
 <div
   style={{
@@ -1622,7 +1640,7 @@ return (
     display: "flex",
     justifyContent: "center",
     padding: isMobile ? "0 10px" : "0 16px",
-    margin: isMobile ? "10px 0 14px" : "10px 0 22px",
+    margin: isMobile ? "10px 0 8px" : "10px 0 10px",
     boxSizing: "border-box",
     zIndex: 5,
   }}
@@ -1657,160 +1675,33 @@ WebkitBackdropFilter: "none",
   >
 
 {/* 게임 모드 선택 */}
-<GameModeNav
-  activeMode="worldcup"
-  isMobile={isMobile}
-/>
+
 <div
+  className="home-search-panel"
   style={{
     width: "100%",
     maxWidth: isMobile ? 430 : 980,
-    margin: isMobile ? "0 auto" : "12px auto 0",
+    margin: "0 auto",
 
-    padding: isMobile
-      ? "15px 13px"
-      : "24px 28px",
+    padding: isMobile ? "15px 13px" : "20px 24px",
 
-    background: "rgba(10, 16, 28, 0.72)",
-    border: "1px solid rgba(255,255,255,0.08)",
+    background: "#ffffff",
+    border: "2px solid #cfd9e8",
     borderRadius: 16,
-    boxShadow: "0 8px 24px rgba(0,0,0,0.28)",
-    backdropFilter: "blur(10px)",
-    WebkitBackdropFilter: "blur(10px)",
+    boxShadow: "0 8px 24px rgba(31,50,84,0.10)",
+    backdropFilter: "none",
+    WebkitBackdropFilter: "none",
 
     boxSizing: "border-box",
     display: "flex",
     flexDirection: "column",
-
-    gap: isMobile ? 11 : 18,
+    gap: isMobile ? 10 : 14,
   }}
 >
     {/* =========================
         1줄 : 만들기 + 언어
     ========================== */}
-    <div
-      style={{
-        width: "100%",
-display: "flex",
-alignItems: "center",
-justifyContent: "center",
-gap: isMobile ? 8 : 11,
-      }}
-    >
-      {/* 이상형 월드컵 만들기 */}
-      <button
-        type="button"
-        onClick={() => {
-          if (onMakeWorldcup) {
-            onMakeWorldcup();
-          } else {
-        goto(`/${lang}/worldcup-maker`);
-          }
-        }}
-  style={{
-  flex: 1,
-
-  height: isMobile ? 48 : 60,
-
-  border:
-    "1px solid rgba(45,145,255,0.75)",
-
-  borderRadius: 11,
-
-  background: "#176fd1",
-  color: "#fff",
-
-  fontSize: isMobile ? 15 : 21,
-  fontWeight: 900,
-
-  fontFamily:
-    "'Pretendard', sans-serif",
-
-  cursor: "pointer",
-
-  boxShadow:
-    "0 5px 18px rgba(23,111,209,0.34)",
-
-  letterSpacing: "0.2px",
-
-  whiteSpace: "nowrap",
-
-  transition:
-    "transform .15s, background .15s, box-shadow .15s",
-}}
-        onMouseEnter={(e) => {
-          e.currentTarget.style.transform =
-            "translateY(-1px)";
-
-          e.currentTarget.style.background =
-            "#1d7be3";
-
-          e.currentTarget.style.boxShadow =
-            "0 6px 16px rgba(23,111,209,0.32)";
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.transform = "";
-
-          e.currentTarget.style.background =
-            "#176fd1";
-
-          e.currentTarget.style.boxShadow =
-            "0 4px 12px rgba(23,111,209,0.24)";
-        }}
-      >
-        ＋{" "}
-        {t("create_worldcup", {
-          defaultValue:
-            lang === "ko"
-              ? "이상형 월드컵 만들기"
-              : "Create Bracket",
-        })}
-      </button>
-
-      {/* 언어 선택 */}
-      <select
-        value={lang}
-        onChange={(e) =>
-          changeHomeLanguage(e.target.value)
-        }
-        aria-label="Select language"
-    style={{
-  width: isMobile ? 105 : 135,
-  flexShrink: 0,
-
-  height: isMobile ? 48 : 60,
-
-  background: "#171f2d",
-  color: "#dfe9f8",
-
-  border:
-    "1px solid rgba(68,126,205,0.45)",
-
-  borderRadius: 11,
-
-  padding: isMobile
-    ? "0 9px"
-    : "0 14px",
-
-  boxSizing: "border-box",
-
-  fontSize: isMobile ? 13 : 16,
-  fontWeight: 700,
-
-  cursor: "pointer",
-  outline: "none",
-}}
-      >
-        {LANGUAGES.map((item) => (
-          <option
-            key={item.code}
-            value={item.code}
-          >
-            {item.label}
-          </option>
-        ))}
-      </select>
-    </div>
+    
 
     {/* =========================
         2줄 : 인기 + 최신 + 검색
@@ -1844,7 +1735,7 @@ justifyContent: "center",
 border: "none",
 borderBottom:
   sort === "popular"
-    ? "2px solid #2f8cff"
+    ? "2px solid #dde2ea"
     : "2px solid transparent",
 
 borderRadius: 0,
@@ -1853,10 +1744,10 @@ background: "transparent",
 
 color:
   sort === "popular"
-    ? "#ffffff"
-    : "#8290a5",
+    ? "#202534"
+    : "#5542b8",
 
-          fontSize: isMobile ? 14 : 18,
+          fontSize: isMobile ? 16 : 20,
           fontWeight: 800,
 
           cursor: "pointer",
@@ -1893,7 +1784,7 @@ justifyContent: "center",
 border: "none",
 borderBottom:
   sort === "recent"
-    ? "2px solid #2f8cff"
+    ? "2px solid #dde2ea"
     : "2px solid transparent",
 
 borderRadius: 0,
@@ -1902,10 +1793,10 @@ background: "transparent",
 
 color:
   sort === "recent"
-    ? "#ffffff"
-    : "#8290a5",
+    ? "#202534"
+    : "#5542b8",
 
-        fontSize: isMobile ? 14 : 18,
+        fontSize: isMobile ? 16 : 20,
           fontWeight: 800,
 
           cursor: "pointer",
@@ -1929,56 +1820,50 @@ boxShadow: "none",
     position: "relative",
   }}
 >
-  <input
-    ref={searchInputRef}
-    className="home-search-input"
-    type="text"
-    placeholder={t("search_placeholder")}
-    value={search}
-onChange={(e) =>
-  setSearch(e.target.value)
-}
-onKeyDown={(e) => {
-  if (e.key === "Enter") {
-    recordSearch(search);
-  }
-}}
-    style={{
-      width: "100%",
+<input
+  ref={searchInputRef}
+  className="home-search-input"
+  type="text"
+  placeholder={t("search_placeholder")}
+  value={search}
+  onChange={(e) => setSearch(e.target.value)}
+  onKeyDown={(e) => {
+    if (e.key === "Enter") {
+      recordSearch(search);
+    }
+  }}
+  style={{
+    width: "100%",
+    height: isMobile ? 44 : 50,
 
-      height: isMobile ? 42 : 48,
+    background: "#ffffff",
+    color: "#202534",
 
-      background: "rgba(255,255,255,0.07)",
-      color: "#fff",
+    border: "2px solid #bccae0",
+    borderRadius: 12,
 
-      border: "1px solid rgba(255,255,255,0.10)",
-      borderRadius: 10,
+    padding: isMobile ? "0 38px 0 12px" : "0 46px 0 16px",
 
-  padding: isMobile
-  ? "0 34px 0 12px"
-  : "0 42px 0 16px",
+    boxSizing: "border-box",
 
-      boxSizing: "border-box",
+    fontSize: isMobile ? 16 : 20,
+    fontWeight: 700,
 
-   fontSize: isMobile ? 14 : 18,
-      fontWeight: 700,
-
-      outline: "none",
-
-      boxShadow:
-        "0 2px 8px rgba(0,0,0,0.18)",
-    }}
-  />
+    outline: "none",
+    boxShadow: "inset 0 1px 2px rgba(31,50,84,0.05)",
+  }}
+/>
 
 
-  <style>
-    {`
-      .home-search-input::placeholder {
-        color: #c4ccda;
-        opacity: 1;
-      }
-    `}
-  </style>
+<style>
+  {`
+    .home-search-input::placeholder {
+      color: #8b98ad;
+      opacity: 1;
+      font-weight: 600;
+    }
+  `}
+</style>
         <span
           style={{
             position: "absolute",
@@ -1988,9 +1873,9 @@ onKeyDown={(e) => {
 
             transform: "translateY(-50%)",
 
-            color: "#6c778c",
+            color: "#5542b8",
 
-            fontSize: isMobile ? 13 : 15,
+            fontSize: isMobile ? 15 : 17,
 
             pointerEvents: "none",
           }}
@@ -2014,7 +1899,7 @@ style={{
   >
     <span
       style={{
-        color: "#777",
+        color: "#596579",
         fontWeight: 700,
       }}
     >
@@ -2043,7 +1928,7 @@ style={{
       border: "none",
       background: "transparent",
       padding: 0,
-      color: "#1976ed",
+      color: "#5542b8",
       fontSize: "inherit",
       fontWeight: 700,
       cursor: "pointer",
@@ -2073,8 +1958,8 @@ style={{
       padding: "0 20px",
       boxSizing: "border-box",
       textAlign: "center",
-      color: "#9eb3cc",
-      fontSize: isMobile ? 15 : 18,
+      color: "#5542b8",
+      fontSize: isMobile ? 17 : 20,
       fontWeight: 700,
       lineHeight: 1.6,
     }}
@@ -2127,11 +2012,6 @@ style={{
 
       <style>
         {`
-          @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&display=swap');
-          button:focus, button:active {
-            outline: none !important;
-            box-shadow: none !important;
-          }
             .home-category-scroll {
   scrollbar-width: none;
   -ms-overflow-style: none;

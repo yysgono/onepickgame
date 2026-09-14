@@ -93,7 +93,7 @@ const lang = langMatch
   ? langMatch[1]
   : i18n.language?.split("-")[0] || "ko";
 
-const isStatsOnly = /\/stats\/[^/]+\/?$/.test(location.pathname);
+const isStatsOnly = /\/stats\/\d+/.test(location.pathname);
 
 const bracketTitleMap = {
   en: "Bracket Game",
@@ -326,27 +326,15 @@ title={
   }
 />
 
-    <div
-      style={{
-        width: "100vw",
-        minHeight: "100vh",
-        background: "url('/onepick.png') center center / cover no-repeat",
-        backgroundAttachment: isMobile ? "scroll" : "fixed",
-        position: "relative",
-        boxSizing: "border-box",
-      }}
-    >
-      <div
-        style={{
-          position: "fixed",
-          inset: 0,
-          width: "100vw",
-          height: "100vh",
-          zIndex: 0,
-          pointerEvents: "none",
-          background: "rgba(0,0,0,0.4)",
-        }}
-      />
+<div
+  style={{
+    width: "100vw",
+    minHeight: "100vh",
+    background: "#ffffff",
+    position: "relative",
+    boxSizing: "border-box",
+  }}
+>
 
 <div
   style={{
@@ -407,8 +395,8 @@ title={
                 fontSize: isMobile ? 24 : 29,
                 fontWeight: 700,
                 margin: "8px 0 3px 0",
-                color: "#fff",
-                textShadow: "0 3px 8px #2228",
+            color: "#202534",
+textShadow: "none",
               }}
             >
               🥇 {t("winner")}
@@ -440,8 +428,8 @@ title={
                 wordBreak: "break-all",
                 maxWidth: 260,
                 lineHeight: 1.13,
-                color: "#fff",
-                textShadow: "0 3px 8px #2228",
+          color: "#202534",
+textShadow: "none",
               }}
               title={winner.name}
             >

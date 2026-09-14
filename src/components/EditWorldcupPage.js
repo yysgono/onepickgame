@@ -9,9 +9,9 @@ import { supabase } from "../utils/supabaseClient";
 import { useTranslation } from "react-i18next";
 
 const COLORS = {
-  main: "#1976ed",
-  sub: "#45b7fa",
-  danger: "#d33",
+  main: "#6650d8",
+  sub: "#6650d8",
+  danger: "#c83232",
   gray: "#888",
 };
 
@@ -884,14 +884,14 @@ data: updatedData,
         background: "#fff",
         borderRadius: 20,
         boxShadow:
-          "0 4px 32px #1976ed13, 0 1.5px 10px #0001",
+          "0 4px 16px rgba(25,32,52,0.07)",
       }}
     >
       <h2
         style={{
           textAlign: "center",
           fontWeight: 900,
-          fontSize: mobile ? 23 : 32,
+          fontSize: mobile ? 25 : 34,
           letterSpacing: -1,
           marginBottom: 32,
           color: COLORS.main,
@@ -908,7 +908,7 @@ data: updatedData,
   <label
     style={{
       fontWeight: 700,
-      fontSize: 17,
+      fontSize: 19,
       color: "#223",
       display: "block",
     }}
@@ -927,7 +927,7 @@ data: updatedData,
         padding: 10,
         borderRadius: 8,
         border: "1.5px solid #bbb",
-        fontSize: mobile ? 14 : 16,
+        fontSize: mobile ? 16 : 18,
         boxSizing: "border-box",
         background: "#fff",
         color: "#000",
@@ -950,7 +950,7 @@ data: updatedData,
         <label
           style={{
             fontWeight: 700,
-            fontSize: 17,
+            fontSize: 19,
             color: "#223",
           }}
         >
@@ -966,7 +966,7 @@ data: updatedData,
               padding: 12,
               borderRadius: 9,
               border: `1.7px solid ${COLORS.main}33`,
-              fontSize: 19,
+              fontSize: 21,
               marginTop: 6,
               marginBottom: 4,
               boxSizing: "border-box",
@@ -987,7 +987,7 @@ data: updatedData,
         <label
           style={{
             fontWeight: 700,
-            fontSize: 17,
+            fontSize: 19,
             color: "#223",
           }}
         >
@@ -1003,7 +1003,7 @@ data: updatedData,
               padding: 12,
               borderRadius: 9,
               border: `1.7px solid ${COLORS.main}22`,
-              fontSize: 16,
+              fontSize: 18,
               marginTop: 6,
               resize: "vertical",
               minHeight: 36,
@@ -1025,7 +1025,7 @@ data: updatedData,
   <label
     style={{
       fontWeight: 700,
-      fontSize: 17,
+      fontSize: 19,
       color: "#223",
       display: "block",
     }}
@@ -1066,7 +1066,7 @@ data: updatedData,
             padding: 10,
             borderRadius: 8,
             border: `1.7px solid ${COLORS.main}22`,
-            fontSize: 15,
+            fontSize: 17,
             boxSizing: "border-box",
             background: "#fafdff",
           }}
@@ -1077,9 +1077,9 @@ data: updatedData,
     <div
       style={{
         marginTop: 6,
-        fontSize: 12,
+        fontSize: 14,
         fontWeight: 500,
-        color: "#777",
+        color: "#596579",
       }}
     >
       {t("tags_help") ||
@@ -1093,7 +1093,7 @@ data: updatedData,
         <label
           style={{
             fontWeight: 700,
-            fontSize: 17,
+            fontSize: 19,
             color: "#223",
             display: "block",
           }}
@@ -1112,7 +1112,7 @@ style={{
   padding: 10,
   borderRadius: 8,
   border: "1.5px solid #bbb",
-  fontSize: mobile ? 14 : 16,
+  fontSize: mobile ? 16 : 18,
   boxSizing: "border-box",
   background: "#fff",
   color: "#000",
@@ -1148,7 +1148,7 @@ style={{
         <div
           style={{
             fontWeight: 800,
-            fontSize: 19,
+            fontSize: 21,
             margin: "12px 0 18px",
             color: COLORS.main,
           }}
@@ -1157,7 +1157,7 @@ style={{
           <span
             style={{
               color: COLORS.gray,
-              fontSize: 14,
+              fontSize: 16,
             }}
           >
             ({data.length}
@@ -1189,9 +1189,9 @@ style={{
               ? "#d3eafdcc"
               : "#f3f9ff",
             cursor: "pointer",
-            fontSize: mobile ? 16 : 20,
+            fontSize: mobile ? 18 : 22,
             fontWeight: 700,
-            color: "#1676ed",
+            color: "#5542b8",
             minHeight: mobile ? 40 : 66,
             display: "flex",
             alignItems: "center",
@@ -1214,7 +1214,7 @@ style={{
           <span>
             <span
               style={{
-                fontSize: mobile ? 18 : 23,
+                fontSize: mobile ? 20 : 25,
               }}
             >
               📁
@@ -1241,7 +1241,7 @@ style={{
                 padding: "10px 9px",
                 borderRadius: 12,
                 background: "#fafdff",
-                boxShadow: "0 1.5px 8px #1976ed11",
+                boxShadow: "0 4px 16px rgba(25,32,52,0.07)",
                 flexWrap: mobile ? "wrap" : "nowrap",
               }}
             >
@@ -1261,7 +1261,7 @@ style={{
                   padding: 9,
                   borderRadius: 8,
                   border: "1.3px solid #bbb",
-                  fontSize: 16,
+                  fontSize: 18,
                 }}
                 maxLength={30}
                 disabled={loading}
@@ -1286,7 +1286,7 @@ style={{
                   padding: 9,
                   borderRadius: 8,
                   border: "1.3px solid #bbb",
-                  fontSize: 15,
+                  fontSize: 17,
                   background: "#fafdff",
                 }}
                 disabled={loading}
@@ -1301,13 +1301,13 @@ style={{
                 }
                 style={{
                   background: COLORS.main,
-                  color: "#fff",
+                  color: "#ffffff",
                   border: "none",
                   borderRadius: 8,
                   padding: "7px 14px",
                   fontWeight: 700,
                   cursor: "pointer",
-                  fontSize: 14,
+                  fontSize: 16,
                   whiteSpace: "nowrap",
                 }}
                 disabled={loading}
@@ -1341,7 +1341,7 @@ style={{
                     objectFit: "cover",
                     borderRadius: 8,
                     background: "#f2f2f2",
-                    boxShadow: "0 2px 8px #0001",
+                    boxShadow: "0 4px 16px rgba(25,32,52,0.07)",
                     border: "1.2px solid #eee",
                   }}
                 />
@@ -1356,11 +1356,11 @@ style={{
                   background: COLORS.danger,
                   border: "none",
                   borderRadius: 7,
-                  color: "#fff",
+                  color: "#ffffff",
                   fontWeight: 700,
                   padding: "9px 12px",
                   cursor: "pointer",
-                  fontSize: 14,
+                  fontSize: 16,
                   whiteSpace: "nowrap",
                 }}
                 disabled={loading || data.length <= 2}
@@ -1377,12 +1377,12 @@ style={{
           style={{
             marginTop: 12,
             background: COLORS.main,
-            color: "#fff",
+            color: "#ffffff",
             border: "none",
             borderRadius: 9,
             padding: "11px 24px",
             fontWeight: 800,
-            fontSize: 16,
+            fontSize: 18,
             cursor: "pointer",
           }}
           disabled={loading}
@@ -1415,11 +1415,11 @@ style={{
           onClick={handleSave}
           style={{
             background: COLORS.main,
-            color: "#fff",
+            color: "#ffffff",
             fontWeight: 900,
             border: "none",
             borderRadius: 13,
-            fontSize: 22,
+            fontSize: 24,
             padding: "14px 54px",
             marginRight: 12,
             cursor: "pointer",
@@ -1436,11 +1436,11 @@ style={{
           onClick={() => navigate("/")}
           style={{
             background: "#e7f3fd",
-            color: "#1976ed",
+            color: "#5542b8",
             fontWeight: 800,
             border: "none",
             borderRadius: 11,
-            fontSize: 18,
+            fontSize: 20,
             padding: "13px 34px",
             cursor: "pointer",
           }}

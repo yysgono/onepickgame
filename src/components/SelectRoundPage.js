@@ -344,9 +344,9 @@ useEffect(() => {
 
   const mainBtn = {
     background:
-      "linear-gradient(90deg, #1976ed 80%, #45b7fa 100%)",
+      "#6650d8",
 
-    color: "#fff",
+    color: "#ffffff",
 
     fontWeight: 900,
 
@@ -355,7 +355,7 @@ useEffect(() => {
     borderRadius: 11,
 
     fontSize:
-      isMobile ? 17 : 19,
+      isMobile ? 19 : 21,
 
     padding:
       isMobile
@@ -368,7 +368,7 @@ useEffect(() => {
     cursor: "pointer",
 
     boxShadow:
-      "0 1px 11px #1976ed22",
+      "0 4px 16px rgba(25,32,52,0.07)",
 
     marginLeft: 4,
 
@@ -386,40 +386,67 @@ useEffect(() => {
     justifyContent:
       "center",
   };
-    const selectBtnStyle = {
-    fontSize: isMobile ? 19 : 25,
-    padding: isMobile ? "10px 17px" : "12px 33px",
-    borderRadius: isMobile ? 9 : 12,
-    minWidth: isMobile ? 85 : 130,
-    fontWeight: 900,
-    background: "#16213a",
-    color: "#fff",
-    border: "2px solid #1976ed",
-    height: isMobile ? 48 : 60,
-    textAlign: "left",
-    boxSizing: "border-box",
-    margin: "0 auto",
-    display: "block",
-    cursor: "pointer",
-    direction: "ltr",
-  };
+ const selectBtnStyle = {
+  fontSize: isMobile ? 20 : 25,
+  padding: isMobile
+    ? "10px 42px 10px 16px"
+    : "12px 48px 12px 20px",
 
-  const selectArrowStyle = {
-    position: "absolute",
-    right: isMobile ? 16 : 25,
-    top: "50%",
-    transform: "translateY(-50%)",
-    pointerEvents: "none",
-    color: "#fff",
-    fontSize: isMobile ? 19 : 26,
-    zIndex: 1,
-  };
+  borderRadius: isMobile ? 10 : 12,
+  minWidth: isMobile ? 120 : 150,
+
+  fontWeight: 900,
+
+  background:
+    "linear-gradient(180deg,#ffffff 0%,#f3f0ff 100%)",
+
+  color: "#392a96",
+
+  border:
+    "2px solid #6650d8",
+
+  height: isMobile ? 48 : 60,
+
+  textAlign: "center",
+  boxSizing: "border-box",
+  margin: "0 auto",
+  display: "block",
+
+  cursor: "pointer",
+  direction: "ltr",
+
+  boxShadow:
+    "0 4px 12px rgba(102,80,216,0.18)",
+
+  outline: "none",
+};
+
+const selectArrowStyle = {
+  position: "absolute",
+
+  right: isMobile ? 13 : 18,
+  top: "50%",
+
+  transform:
+    "translateY(-50%)",
+
+  pointerEvents: "none",
+
+  color: "#4d38bd",
+
+  fontSize:
+    isMobile ? 20 : 24,
+
+  fontWeight: 900,
+
+  zIndex: 1,
+};
 
   const candidateCountText = {
-    fontSize: isMobile ? 15 : 19,
+    fontSize: isMobile ? 17 : 21,
     fontWeight: 800,
-    color: "#fff",
-    background: "#243152",
+    color: "#202534",
+    background: "#ffffff",
     borderRadius: 8,
     padding: isMobile ? "6px 16px" : "8px 26px",
     marginLeft: isMobile ? 0 : 8,
@@ -430,7 +457,7 @@ useEffect(() => {
     letterSpacing: "0.07em",
     whiteSpace: "nowrap",
     boxSizing: "border-box",
-    border: "1.5px solid #1976ed33",
+    border: "1.5px solid #dde2ea",
   };
 
   const resultBtn = {
@@ -444,11 +471,11 @@ fontWeight: 1000,
 textShadow: "none",
     border: "none",
     borderRadius: 11,
-    fontSize: isMobile ? 15 : 17,
+    fontSize: isMobile ? 17 : 19,
     padding: isMobile ? "8px 19px" : "10px 30px",
     minWidth: isMobile ? 72 : 110,
     cursor: "pointer",
-    boxShadow: "0 1px 11px #23e6ad22",
+    boxShadow: "0 4px 16px rgba(25,32,52,0.07)",
     outline: "none",
     height: isMobile ? 38 : 44,
     display: "flex",
@@ -471,11 +498,11 @@ fontWeight: 1000,
 textShadow: "none",
     border: "none",
     borderRadius: 11,
-    fontSize: isMobile ? 15 : 17,
+    fontSize: isMobile ? 17 : 19,
     padding: isMobile ? "8px 19px" : "10px 30px",
     minWidth: isMobile ? 72 : 110,
     cursor: "pointer",
-    boxShadow: "0 1px 11px #1976ed22",
+    boxShadow: "0 4px 16px rgba(25,32,52,0.07)",
     outline: "none",
     height: isMobile ? 38 : 44,
     display: "flex",
@@ -653,7 +680,7 @@ const creatorOtherWorldcups =
         )}
 
         {/* 메인 컨텐츠 패널 */}
-        <div
+        <div className="round-detail-panel"
           style={{
             position: "relative",
             textAlign: "center",
@@ -666,14 +693,18 @@ const creatorOtherWorldcups =
               ? "100%"
               : 880,
               boxSizing: "border-box",
-            background:
-              "rgba(20, 24, 37, 0.95)",
-            borderRadius:
-              isMobile ? 0 : 23,
-            boxShadow:
-              isMobile
-                ? "none"
-                : "0 4px 44px #171c2747",
+background: "#ffffff",
+
+border: isMobile
+  ? "none"
+  : "1.5px solid #c9c1ff",
+
+borderRadius: isMobile ? 0 : 23,
+
+boxShadow:
+  isMobile
+    ? "none"
+    : "0 6px 22px rgba(72,56,170,0.12)",
             minHeight:
               isMobile ? 520 : 580,
           }}
@@ -711,17 +742,17 @@ const creatorOtherWorldcups =
     style={{
       width: "100%",
       height: isMobile ? 58 : 68,
-      fontSize: isMobile ? 19 : 24,
+      fontSize: isMobile ? 21 : 26,
       fontWeight: 900,
       borderRadius: 14,
       border: "none",
 background:
-  "linear-gradient(135deg, #ff8a00, #ff3d00)",
-color: "#fff",
+  "#6650d8",
+color: "#ffffff",
 textShadow: "none",
       cursor: "pointer",
       boxShadow:
-        "0 6px 20px rgba(0, 114, 255, 0.5)",
+        "0 4px 16px rgba(25,32,52,0.07)",
     }}
   >
  🚀 {t("start")}
@@ -739,22 +770,52 @@ textShadow: "none",
     onChange={(e) =>
       setSelectedRound(Number(e.target.value))
     }
-    style={{
-      width: "100%",
-      height: isMobile ? 50 : 56,
-      padding: "0 48px 0 16px",
-      fontSize: isMobile ? 17 : 20,
-      fontWeight: 800,
-      textAlign: "center",
-      borderRadius: 11,
-      border: "2px solid #1976ed",
-      background: "#16213a",
-      color: "#fff",
-      cursor: "pointer",
-      boxSizing: "border-box",
-      appearance: "none",
-      WebkitAppearance: "none",
-    }}
+  style={{
+  width: "100%",
+
+  height:
+    isMobile ? 50 : 56,
+
+  padding:
+    "0 48px 0 16px",
+
+  fontSize:
+    isMobile ? 19 : 22,
+
+  fontWeight: 900,
+
+  textAlign:
+    "center",
+
+  borderRadius: 11,
+
+  border:
+    "2px solid #6650d8",
+
+  background:
+    "linear-gradient(180deg,#ffffff 0%,#f3f0ff 100%)",
+
+  color:
+    "#392a96",
+
+  cursor:
+    "pointer",
+
+  boxSizing:
+    "border-box",
+
+  appearance:
+    "none",
+
+  WebkitAppearance:
+    "none",
+
+  outline:
+    "none",
+
+  boxShadow:
+    "0 4px 14px rgba(102,80,216,0.17)",
+}}
   >
     {possibleRounds.map((r) => (
       <option key={r} value={r}>
@@ -769,8 +830,8 @@ textShadow: "none",
       right: 17,
       top: "50%",
       transform: "translateY(-50%)",
-      color: "#ffffff",
-      fontSize: isMobile ? 18 : 21,
+ color: "#4d38bd",
+      fontSize: isMobile ? 20 : 23,
       fontWeight: 900,
       pointerEvents: "none",
     }}
@@ -798,9 +859,9 @@ textShadow: "none",
                   position: "relative",
                   display: "flex",
                   boxShadow:
-                    "0 8px 28px 0 #1e254877, 0 1.5px 8px #1976ed22",
+                    "0 4px 16px rgba(25,32,52,0.07)",
                   background:
-                    "linear-gradient(90deg, #162d52 0%, #284176 100%)",
+                    "#f5f6fa",
                   zIndex: 1,
                 }}
               >
@@ -809,7 +870,7 @@ textShadow: "none",
                   style={{
                     width: "50%",
                     height: "100%",
-                    background: "#192145",
+                    background: "#ffffff",
                   }}
                 >
                   {first?.image ? (
@@ -826,7 +887,7 @@ textShadow: "none",
                         objectFit: "cover",
                         objectPosition:
                           "50% 32%",
-                        background: "#111",
+                        background: "#ffffff",
                       }}
                     />
                   ) : (
@@ -834,7 +895,7 @@ textShadow: "none",
                       style={{
                         width: "100%",
                         height: "100%",
-                        background: "#222",
+                        background: "#ffffff",
                       }}
                     />
                   )}
@@ -845,7 +906,7 @@ textShadow: "none",
                   style={{
                     width: "50%",
                     height: "100%",
-                    background: "#1f2540",
+                    background: "#ffffff",
                   }}
                 >
                   {second?.image ? (
@@ -862,7 +923,7 @@ textShadow: "none",
                         objectFit: "cover",
                         objectPosition:
                           "50% 32%",
-                        background: "#111",
+                        background: "#ffffff",
                       }}
                     />
                   ) : (
@@ -871,7 +932,7 @@ textShadow: "none",
                         width: "100%",
                         height: "100%",
                         background:
-                          "#15182b",
+                          "#ffffff",
                       }}
                     />
                   )}
@@ -917,9 +978,9 @@ textShadow: "none",
                 style={{
                   fontWeight: 900,
                   fontSize: isMobile
-                    ? 23
-                    : 31,
-                  color: "#fff",
+                    ? 25
+                    : 33,
+                  color: "#202534",
                   marginBottom:
                     isMobile
                       ? 20
@@ -929,7 +990,7 @@ textShadow: "none",
                   lineHeight: 1.18,
                   textAlign: "center",
                   background:
-                    "#171C27",
+                    "#ffffff",
                   borderRadius: 14,
                   padding: isMobile
                     ? "12px 0 8px 0"
@@ -944,7 +1005,7 @@ textShadow: "none",
                     ? "98vw"
                     : 710,
                   boxShadow:
-                    "0 2px 16px #1976ed18",
+                    "0 4px 16px rgba(25,32,52,0.07)",
                   marginTop: isMobile
                     ? 12
                     : 16,
@@ -961,13 +1022,13 @@ textShadow: "none",
                     fontWeight: 400,
                     fontSize:
                       isMobile
-                        ? 16
-                        : 20,
-                    color: "#b9d3ff",
+                        ? 18
+                        : 22,
+                    color: "#5542b8",
                     textAlign:
                       "center",
                     background:
-                      "rgba(30,45,70,0.93)",
+                      "#ffffff",
                     borderRadius: 9,
                     padding: isMobile
                       ? "7px 6px 4px 6px"
@@ -1019,24 +1080,22 @@ textShadow: "none",
                 textAlign: "center",
               }}
             >
-              <select
-                value={selectedRound}
-                onChange={(e) =>
-                  setSelectedRound(Number(e.target.value))
-                }
-                style={selectBtnStyle}
-                aria-label={t("round_of", {
-                  count: selectedRound,
-                })}
-              >
-                {possibleRounds.map((r) => (
-                  <option key={r} value={r}>
-                    {t("round_of", { count: r })}
-                  </option>
-                ))}
-              </select>
-
-              <span style={selectArrowStyle}>▼</span>
+      <select
+  value={selectedRound}
+  onChange={(e) =>
+    setSelectedRound(Number(e.target.value))
+  }
+  style={selectBtnStyle}
+  aria-label={t("round_of", {
+    count: selectedRound,
+  })}
+>
+  {possibleRounds.map((r) => (
+    <option key={r} value={r}>
+      {t("round_of", { count: r })}
+    </option>
+  ))}
+</select>
             </span>
 
             <button
@@ -1058,8 +1117,8 @@ textShadow: "none",
                 <span
                   style={{
                     marginLeft: 7,
-                    color: "#FFD740",
-                    fontSize: isMobile ? 12 : 15,
+                    color: "#202534",
+                    fontSize: isMobile ? 14 : 17,
                     fontWeight: 700,
                   }}
                 >
@@ -1080,9 +1139,9 @@ textShadow: "none",
                 color: "#a85c07",
                 background: "#fffbe5",
                 borderRadius: 7,
-                fontSize: isMobile ? 13 : 15,
+                fontSize: isMobile ? 15 : 17,
                 fontWeight: 900,
-                boxShadow: "0 1px 5px #1976ed09",
+                boxShadow: "0 4px 16px rgba(25,32,52,0.07)",
                 display: "inline-block",
                 maxWidth: 400,
                 border: "1.1px solid #ffd452",
@@ -1096,23 +1155,31 @@ textShadow: "none",
           )}
 
           {/* 후보 이름 나열 */}
-          <div
-            style={{
-              margin: "40px auto 0 auto",
-              background: "rgba(32, 37, 59, 0.88)",
-              borderRadius: 18,
-              padding: isMobile
-                ? "15px 9px 20px 9px"
-                : "23px 26px 27px 26px",
-              maxWidth: 670,
-              boxShadow: "0 2px 26px #1976ed19",
-            }}
-          >
+  <div
+  className="round-candidates round-detail-section"
+  style={{
+    margin: "40px auto 0 auto",
+    background: "#ffffff",
+
+    border: "1.5px solid #8d7cff",
+
+    borderRadius: 18,
+
+    padding: isMobile
+      ? "15px 9px 20px 9px"
+      : "23px 26px 27px 26px",
+
+    maxWidth: 670,
+
+    boxShadow:
+      "0 5px 18px rgba(84,66,184,0.10)",
+  }}
+>
 <h2
   style={{
     fontWeight: 700,
-    color: "#ffe067",
-    fontSize: isMobile ? 17 : 21,
+    color: "#202534",
+    fontSize: isMobile ? 19 : 23,
     marginTop: 0,
     marginBottom: 10,
     letterSpacing: "-0.5px",
@@ -1135,16 +1202,19 @@ textShadow: "none",
   <span
     key={idx}
     style={{
-      background: "#181d2c",
-      color: "#fff",
+      background: "#ffffff",
+      color: "#202534",
+
+      border: "1px solid #d2d6e3",
+
       borderRadius: 8,
       padding: isMobile
         ? "5px 11px"
         : "7px 17px",
       fontWeight: 600,
-      fontSize: isMobile ? 14 : 16,
+      fontSize: isMobile ? 16 : 18,
       marginBottom: "5px",
-      boxShadow: "0 2px 8px #11223319",
+      boxShadow: "0 4px 16px rgba(25,32,52,0.07)",
     }}
   >
     {name}
@@ -1158,9 +1228,9 @@ textShadow: "none",
     style={{
       background: "transparent",
       border: "none",
-      color: "#b9d3ff",
+      color: "#5542b8",
       fontWeight: 700,
-      fontSize: isMobile ? 14 : 16,
+      fontSize: isMobile ? 16 : 18,
       padding: isMobile
         ? "5px 11px"
         : "7px 17px",
@@ -1176,24 +1246,26 @@ textShadow: "none",
             </div>
           </div>
 {/* 게임 이용 안내 */}
-<div
+<div className="round-detail-section"
   style={{
     margin: "20px auto 0",
     maxWidth: 670,
-    background: "#20253b",
+    background: "#ffffff",
     borderRadius: 14,
     padding: isMobile ? "14px 16px" : "18px 22px",
-    color: "#fff",
+    color: "#202534",
     boxSizing: "border-box",
+    border: "1.5px solid #8d7cff",
+boxShadow: "0 5px 18px rgba(84,66,184,0.08)",
   }}
 >
   <h2
     style={{
       fontWeight: 800,
-     fontSize: isMobile ? 18 : 20,
+     fontSize: isMobile ? 20 : 22,
       marginTop: 0,
       marginBottom: 12,
-      color: "#ffe067",
+      color: "#202534",
     }}
   >
     {t("game_guide")}
@@ -1201,9 +1273,9 @@ textShadow: "none",
 
   <div
     style={{
-fontSize: isMobile ? 15 : 17,
+fontSize: isMobile ? 17 : 19,
 lineHeight: 1.8,
-      color: "#d7e2f3",
+      color: "#202534",
       textAlign: "left",
       whiteSpace: "pre-line",
       wordBreak: "keep-all", 
@@ -1215,23 +1287,25 @@ lineHeight: 1.8,
   </div>
 </div>
 {/* 게임 정보 */}
-<div
+<div className="round-detail-section"
   style={{
     margin: "20px auto 0",
     maxWidth: 670,
-    background: "#20253b",
+    background: "#ffffff",
     borderRadius: 14,
     padding: 18,
-    color: "#fff",
+    color: "#202534",
+    border: "1.5px solid #8d7cff",
+boxShadow: "0 5px 18px rgba(84,66,184,0.08)",
   }}
 >
 <h2
   style={{
     fontWeight: 800,
-    fontSize: 18,
+    fontSize: 20,
     marginTop: 0,
     marginBottom: 12,
-    color: "#ffe067",
+    color: "#202534",
   }}
 >
    {t("game_info")}
@@ -1243,7 +1317,7 @@ lineHeight: 1.8,
     <span
       style={{
         fontWeight: 800,
-        color: "#69aaff",
+        color: "#5542b8",
       }}
     >
       {creatorNickname}
@@ -1300,12 +1374,12 @@ detailTags.length > 0 && (
             )
           }
           style={{
-            border: "1px solid #3b5680",
-            background: "#181d2c",
-            color: "#69aaff",
+            border: "1px solid #dde2ea",
+            background: "#ffffff",
+            color: "#5542b8",
             borderRadius: 20,
             padding: "5px 10px",
-            fontSize: isMobile ? 12 : 13,
+            fontSize: isMobile ? 14 : 15,
             fontWeight: 700,
             cursor: "pointer",
           }}
@@ -1331,8 +1405,8 @@ detailTags.length > 0 && (
         marginTop: 14,
         border: "none",
         background: "transparent",
-        color: "#b9d3ff",
-        fontSize: isMobile ? 16 : 18,
+        color: "#5542b8",
+        fontSize: isMobile ? 18 : 20,
         fontWeight: 800,
         cursor: "pointer",
         textDecoration: "underline",
@@ -1346,22 +1420,28 @@ detailTags.length > 0 && (
 {/* 관련 월드컵 */}
 {relatedWorldcups.length > 0 && (
   <div
-    style={{
-      margin: "20px auto 0",
-      maxWidth: 670,
-      background: "#20253b",
-      borderRadius: 14,
-      padding: isMobile ? 14 : 18,
-      color: "#fff",
-    }}
+style={{
+  margin: "20px auto 0",
+  maxWidth: 670,
+  background: "#ffffff",
+
+  border: "1.5px solid #8d7cff",
+  borderRadius: 14,
+
+  padding: isMobile ? 14 : 18,
+  color: "#202534",
+
+  boxShadow:
+    "0 5px 18px rgba(84,66,184,0.08)",
+}}
   >
     <h2
       style={{
         fontWeight: 800,
-        fontSize: isMobile ? 17 : 18,
+        fontSize: isMobile ? 19 : 20,
         marginTop: 0,
         marginBottom: 14,
-        color: "#ffe067",
+        color: "#202534",
       }}
 >
   {t("recommended_worldcups")}
@@ -1398,18 +1478,18 @@ detailTags.length > 0 && (
               )
             }
             style={{
-              background: "#181d2c",
+              background: "#ffffff",
               borderRadius: 10,
               overflow: "hidden",
               cursor: "pointer",
-              border: "1px solid #2d3959",
+              border: "1px solid #dde2ea",
             }}
           >
             <div
               style={{
                 width: "100%",
                 height: isMobile ? 80 : 95,
-                background: "#111",
+                background: "#ffffff",
                 overflow: "hidden",
               }}
             >
@@ -1430,10 +1510,10 @@ detailTags.length > 0 && (
             <div
               style={{
                 padding: "8px 7px",
-                fontSize: isMobile ? 12 : 13,
+                fontSize: isMobile ? 14 : 15,
                 fontWeight: 700,
                 lineHeight: 1.3,
-                color: "#fff",
+                color: "#202534",
                 minHeight: isMobile ? 46 : 50,
                 display: "-webkit-box",
                 WebkitLineClamp: 2,

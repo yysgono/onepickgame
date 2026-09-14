@@ -613,5 +613,12 @@
   "result_discovery_popular_title": "Популярные и новые турниры",
   "result_discovery_popular_desc": "Смотрите популярные и новые темы",
   "result_discovery_tier_title": "Создать Tier List по этой теме",
-  "result_discovery_tier_desc": "Используйте текущих кандидатов для Tier List"
+  "result_discovery_tier_desc": "Используйте текущих кандидатов для Tier List",
+  "lightUi": {
+    "gameModes": "Game modes",
+    "myContent": "My content",
+    "profile": "Profile",
+    "manageContent": "Find and manage your creations in one place.",
+    "loginToView": "Sign in to see your creations."
+  }
 }

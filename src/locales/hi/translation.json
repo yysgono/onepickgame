@@ -613,5 +613,12 @@
   "result_discovery_popular_title": "लोकप्रिय और नए ब्रैकेट",
   "result_discovery_popular_desc": "ट्रेंडिंग और नए जोड़े गए विषय देखें",
   "result_discovery_tier_title": "इस ब्रैकेट से Tier List बनाएं",
-  "result_discovery_tier_desc": "इन्हीं उम्मीदवारों से Tier List बनाएं"
+  "result_discovery_tier_desc": "इन्हीं उम्मीदवारों से Tier List बनाएं",
+  "lightUi": {
+    "gameModes": "Game modes",
+    "myContent": "My content",
+    "profile": "Profile",
+    "manageContent": "Find and manage your creations in one place.",
+    "loginToView": "Sign in to see your creations."
+  }
 }

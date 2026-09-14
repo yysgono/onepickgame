@@ -67,18 +67,18 @@ function isAllowedImage(file) {
           padding: "9px 20px",
           borderRadius: 9,
           border: 0,
-          background: "linear-gradient(90deg, #1976ed 65%, #45b7fa 100%)",
-          color: "#fff",
+          background: "#6650d8",
+          color: "#ffffff",
           fontWeight: 800,
-          fontSize: 15.5,
+          fontSize: 17.5,
           cursor: "pointer",
           transition: "all 0.17s",
-          boxShadow: "0 2px 10px #1976ed15",
+          boxShadow: "0 4px 16px rgba(25,32,52,0.07)",
         }}
-        onMouseOver={e => (e.currentTarget.style.background = "#45b7fa")}
+        onMouseOver={e => (e.currentTarget.style.background = "#6650d8")}
         onMouseOut={e =>
           (e.currentTarget.style.background =
-            "linear-gradient(90deg, #1976ed 65%, #45b7fa 100%)")
+            "#6650d8")
         }
         type="button"
       >
@@ -91,7 +91,7 @@ function isAllowedImage(file) {
             height: 48,
             borderRadius: 10,
             overflow: "hidden",
-            boxShadow: "0 2px 8px #1976ed18",
+            boxShadow: "0 4px 16px rgba(25,32,52,0.07)",
             background: "#f3f6fa",
             border: "1.5px solid #e3f0fb",
           }}

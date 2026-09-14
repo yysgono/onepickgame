@@ -613,5 +613,12 @@
   "result_discovery_popular_title": "เวิลด์คัพยอดนิยมและใหม่",
   "result_discovery_popular_desc": "ดูหัวข้อยอดนิยมและหัวข้อที่เพิ่มใหม่",
   "result_discovery_tier_title": "สร้าง Tier List จากหัวข้อนี้",
-  "result_discovery_tier_desc": "ใช้ผู้สมัครชุดนี้สร้าง Tier List ได้ทันที"
+  "result_discovery_tier_desc": "ใช้ผู้สมัครชุดนี้สร้าง Tier List ได้ทันที",
+  "lightUi": {
+    "gameModes": "Game modes",
+    "myContent": "My content",
+    "profile": "Profile",
+    "manageContent": "Find and manage your creations in one place.",
+    "loginToView": "Sign in to see your creations."
+  }
 }

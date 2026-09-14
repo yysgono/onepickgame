@@ -613,5 +613,12 @@
   "result_discovery_popular_title": "인기·최신 월드컵",
   "result_discovery_popular_desc": "인기 콘텐츠와 새로운 주제 둘러보기",
   "result_discovery_tier_title": "이 주제로 티어표 만들기",
-  "result_discovery_tier_desc": "현재 후보를 그대로 불러와 티어표 만들기"
+  "result_discovery_tier_desc": "현재 후보를 그대로 불러와 티어표 만들기",
+  "lightUi": {
+    "gameModes": "게임 모드",
+    "myContent": "내 콘텐츠",
+    "profile": "프로필",
+    "manageContent": "내가 만든 월드컵과 티어표를 한곳에서 관리하세요.",
+    "loginToView": "내 콘텐츠를 보려면 로그인해주세요."
+  }
 }

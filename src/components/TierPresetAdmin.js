@@ -492,19 +492,19 @@ function TierPresetAdmin() {
         padding: 20,
 
         border:
-          "1px solid #315a8f",
+          "1px solid #dde2ea",
 
         borderRadius: 12,
 
-        background: "#07111f",
-        color: "#fff",
+        background: "#ffffff",
+        color: "#202534",
       }}
     >
       <h2
         style={{
           margin: "0 0 8px",
 
-          fontSize: 22,
+          fontSize: 24,
           fontWeight: 900,
         }}
       >
@@ -513,9 +513,9 @@ function TierPresetAdmin() {
 
       <div
         style={{
-          color: "#9fb0c7",
+          color: "#5542b8",
 
-          fontSize: 14,
+          fontSize: 16,
 
           marginBottom: 14,
         }}
@@ -527,7 +527,7 @@ function TierPresetAdmin() {
         현재{" "}
         <strong
           style={{
-            color: "#64d8ff",
+            color: "#5542b8",
           }}
         >
           {selectedCount}/
@@ -564,11 +564,11 @@ function TierPresetAdmin() {
           borderRadius: 8,
 
           border:
-            "1px solid #315a8f",
+            "1px solid #dde2ea",
 
-          background: "#0b1628",
+          background: "#ffffff",
 
-          color: "#fff",
+          color: "#202534",
 
           outline: "none",
 
@@ -589,11 +589,11 @@ function TierPresetAdmin() {
             borderRadius: 8,
 
             background:
-              "#0b2037",
+              "#ffffff",
 
-            color: "#64d8ff",
+            color: "#5542b8",
 
-            fontSize: 13,
+            fontSize: 15,
 
             fontWeight: 800,
           }}
@@ -612,7 +612,7 @@ function TierPresetAdmin() {
             textAlign:
               "center",
 
-            color: "#9fb0c7",
+            color: "#5542b8",
 
             fontWeight: 800,
           }}
@@ -658,16 +658,16 @@ function TierPresetAdmin() {
 
                       border:
                         cup.is_tier_preset
-                          ? "1px solid #3e8dcc"
-                          : "1px solid #24364e",
+                          ? "1px solid #dde2ea"
+                          : "1px solid #dde2ea",
 
                       borderRadius:
                         8,
 
                       background:
                         cup.is_tier_preset
-                          ? "#0c2940"
-                          : "#0b1628",
+                          ? "#ffffff"
+                          : "#ffffff",
                     }}
                   >
                     <input
@@ -688,10 +688,10 @@ function TierPresetAdmin() {
                         minWidth: 0,
 
                         color:
-                          "#fff",
+                          "#202534",
 
                         fontSize:
-                          14,
+                          16,
 
                         fontWeight:
                           800,
@@ -740,13 +740,13 @@ function TierPresetAdmin() {
                             6,
 
                           border:
-                            "1px solid #315a8f",
+                            "1px solid #dde2ea",
 
                           background:
-                            "#07111f",
+                            "#ffffff",
 
                           color:
-                            "#fff",
+                            "#202534",
 
                           fontWeight:
                             800,
@@ -790,12 +790,12 @@ function TierPresetAdmin() {
                     8,
 
                   border:
-                    "1px solid #315a8f",
+                    "1px solid #dde2ea",
 
                   background:
-                    "#14243d",
+                    "#ffffff",
 
-                  color: "#fff",
+                  color: "#202534",
 
                   fontWeight:
                     900,
@@ -812,9 +812,9 @@ function TierPresetAdmin() {
                   marginTop: 6,
 
                   color:
-                    "#7187a3",
+                    "#5542b8",
 
-                  fontSize: 11,
+                  fontSize: 13,
                 }}
               >
                 {Math.min(
@@ -855,9 +855,9 @@ function TierPresetAdmin() {
             "1px solid #19bfff",
 
           background:
-            "#087ba8",
+            "#6650d8",
 
-          color: "#fff",
+          color: "#ffffff",
 
           fontWeight: 900,
 

@@ -83,8 +83,8 @@ function ResurrectionPage({
     selAdv.length <= maxAdv;
 
   const noticeStyle = {
-    fontSize: 17,
-    color: "#fff",
+    fontSize: 19,
+    color: "#202534",
     background: "rgba(0,0,0,0.07)",
     padding: "12px 16px 10px 16px",
     borderRadius: 16,
@@ -129,12 +129,12 @@ function ResurrectionPage({
           onClick={onCancel}
           disabled={isSaving}
           style={{
-            background: isSaving ? "#555" : "#27363e",
-            color: "#fff",
+            background: isSaving ? "#f1f3f7" : "#ffffff",
+            color: "#202534",
             padding: "15px 38px",
             borderRadius: 13,
             fontWeight: 700,
-            fontSize: 20,
+            fontSize: 22,
             border: "none",
             cursor: isSaving ? "not-allowed" : "pointer",
             letterSpacing: "0.7px",
@@ -157,12 +157,12 @@ function ResurrectionPage({
           disabled={!bothReady || isSaving}
           style={{
             background:
-              bothReady && !isSaving ? "#2976ed" : "#b3c5dd",
-            color: "#fff",
+              bothReady && !isSaving ? "#6650d8" : "#b3c5dd",
+            color: (bothReady && !isSaving) ? "#ffffff" : "#202534",
             padding: "15px 38px",
             borderRadius: 13,
             fontWeight: 900,
-            fontSize: 20,
+            fontSize: 22,
             border: "none",
             cursor:
               bothReady && !isSaving ? "pointer" : "not-allowed",
@@ -177,9 +177,9 @@ function ResurrectionPage({
       {saveInProgressMsg && (
         <div
           style={{
-            fontSize: 16,
+            fontSize: 18,
             fontWeight: 600,
-            color: "#aad",
+            color: "#5542b8",
             marginBottom: 18,
           }}
         >
@@ -190,10 +190,10 @@ function ResurrectionPage({
       {/* 타이틀/설명 */}
       <div
         style={{
-          fontSize: 30,
+          fontSize: 32,
           fontWeight: 900,
           margin: "0 0 18px 0",
-          color: "#fff",
+          color: "#202534",
           textAlign: "center",
         }}
       >
@@ -213,7 +213,7 @@ function ResurrectionPage({
 
         <div
           style={{
-            color: "#99e",
+            color: "#5542b8",
             fontWeight: 400,
             marginTop: 10,
           }}
@@ -239,8 +239,8 @@ function ResurrectionPage({
           <div
             style={{
               fontWeight: 800,
-              fontSize: 22,
-              color: "#fff",
+              fontSize: 24,
+              color: "#202534",
               marginBottom: 6,
               textAlign: "left",
             }}
@@ -255,14 +255,14 @@ function ResurrectionPage({
             style={{
               width: "100%",
               maxWidth: 480,
-              fontSize: 16,
+              fontSize: 18,
               marginBottom: 12,
               padding: "8px 12px",
               borderRadius: 10,
-              border: "1.7px solid #1976ed44",
+              border: "2px solid #a5b1c4",
               outline: "none",
-              background: "#101826",
-              color: "#fff",
+              background: "#ffffff",
+              color: "#202534",
             }}
           />
 
@@ -276,7 +276,7 @@ function ResurrectionPage({
               overflowY: "auto",
               paddingBottom: 8,
               borderRadius: 12,
-              background: "rgba(30,40,65,0.52)",
+              background: "#ffffff",
               marginBottom: 8,
             }}
           >
@@ -291,12 +291,12 @@ function ResurrectionPage({
                   onClick={() => toggleElim(c)}
                   style={{
                     background: selected
-                      ? "#2976ed"
-                      : "#202b3d",
-                    color: selected ? "#fff" : "#d6eaff",
+                      ? "#6650d8"
+                      : "#ffffff",
+                    color: selected ? "#ffffff" : "#202534",
                     border: selected
-                      ? "2.5px solid #6fd6fc"
-                      : "2.5px solid #182345",
+                      ? "3px solid #5542b8"
+                      : "2px solid #9aa8bf",
                     borderRadius: 14,
                     cursor: "pointer",
                     minHeight: 70,
@@ -307,14 +307,14 @@ function ResurrectionPage({
                     flexDirection: "column",
                     transition: "all 0.14s",
                     boxShadow: selected
-                      ? "0 4px 18px #1976ed66"
-                      : "0 1px 8px #1976ed33",
+                      ? "0 4px 16px rgba(25,32,52,0.07)"
+                      : "0 4px 16px rgba(25,32,52,0.07)",
                   }}
                 >
                   <span
                     style={{
                       fontWeight: 900,
-                      fontSize: 17,
+                      fontSize: 19,
                       textAlign: "center",
                       maxWidth: 145,
                       display: "-webkit-box",
@@ -335,8 +335,8 @@ function ResurrectionPage({
 
           <div
             style={{
-              fontSize: 14,
-              color: "#d1e0ff",
+              fontSize: 16,
+              color: "#202534",
               margin: "7px 0 0 3px",
               fontWeight: 500,
             }}
@@ -352,8 +352,8 @@ function ResurrectionPage({
           <div
             style={{
               fontWeight: 800,
-              fontSize: 22,
-              color: "#fff",
+              fontSize: 24,
+              color: "#202534",
               marginBottom: 6,
               textAlign: "left",
             }}
@@ -368,14 +368,14 @@ function ResurrectionPage({
             style={{
               width: "100%",
               maxWidth: 480,
-              fontSize: 16,
+              fontSize: 18,
               marginBottom: 12,
               padding: "8px 12px",
               borderRadius: 10,
-              border: "1.7px solid #1976ed44",
+              border: "2px solid #a5b1c4",
               outline: "none",
-              background: "#101826",
-              color: "#fff",
+              background: "#ffffff",
+              color: "#202534",
             }}
           />
 
@@ -389,7 +389,7 @@ function ResurrectionPage({
               overflowY: "auto",
               paddingBottom: 8,
               borderRadius: 12,
-              background: "rgba(30,40,65,0.52)",
+              background: "#ffffff",
               marginBottom: 8,
             }}
           >
@@ -404,12 +404,12 @@ function ResurrectionPage({
                   onClick={() => toggleAdv(c)}
                   style={{
                     background: selected
-                      ? "#2976ed"
-                      : "#202d3d",
-                    color: selected ? "#fff" : "#d6eaff",
+                      ? "#6650d8"
+                      : "#ffffff",
+                    color: selected ? "#ffffff" : "#202534",
                     border: selected
-                      ? "2.5px solid #6fd6fc"
-                      : "2.5px solid #182345",
+                      ? "3px solid #5542b8"
+                      : "2px solid #9aa8bf",
                     borderRadius: 14,
                     cursor: "pointer",
                     minHeight: 70,
@@ -420,14 +420,14 @@ function ResurrectionPage({
                     flexDirection: "column",
                     transition: "all 0.14s",
                     boxShadow: selected
-                      ? "0 4px 18px #1976ed66"
-                      : "0 1px 8px #1976ed33",
+                      ? "0 4px 16px rgba(25,32,52,0.07)"
+                      : "0 4px 16px rgba(25,32,52,0.07)",
                   }}
                 >
                   <span
                     style={{
                       fontWeight: 900,
-                      fontSize: 17,
+                      fontSize: 19,
                       textAlign: "center",
                       maxWidth: 145,
                       display: "-webkit-box",
@@ -448,8 +448,8 @@ function ResurrectionPage({
 
           <div
             style={{
-              fontSize: 14,
-              color: "#d1e0ff",
+              fontSize: 16,
+              color: "#202534",
               margin: "7px 0 0 3px",
               fontWeight: 500,
             }}

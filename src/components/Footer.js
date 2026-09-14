@@ -17,13 +17,13 @@ export default function Footer() {
     maxWidth: "100%",
     boxSizing: "border-box",
     overflowX: "hidden",
-    background: "rgba(18,24,37,0.94)",
-    borderTop: "3px solid #1976ed",
+    background: "#ffffff",
+    borderTop: "3px solid #dde2ea",
     marginTop: 50,
     padding: "30px 0 20px 0",
     position: "relative",
     zIndex: 20,
-    boxShadow: "0 -3px 24px #1976ed19",
+    boxShadow: "0 4px 16px rgba(25,32,52,0.07)",
   }}
 >
 <div
@@ -38,12 +38,12 @@ export default function Footer() {
 >
         <div
           style={{
-            color: "#e7f2ff",
-            fontSize: 16,
+            color: "#202534",
+            fontSize: 18,
             fontWeight: 600,
             marginBottom: 13,
             letterSpacing: 0.12,
-            textShadow: "0 2px 11px #111a, 0 0.5px 2px #157be966",
+            textShadow: "none",
             lineHeight: 1.5,
           }}
         >
@@ -58,9 +58,9 @@ export default function Footer() {
           <Link
             to={`/suggestions-board`}
             style={{
-              color: "#ffd980",
+              color: "#202534",
               textDecoration: "underline",
-              fontSize: 15,
+              fontSize: 17,
               fontWeight: 700,
               margin: "0 12px",
             }}
@@ -76,9 +76,9 @@ export default function Footer() {
           <Link
             to={`/terms-of-service`}
             style={{
-              color: "#7fcaff",
+              color: "#5542b8",
               textDecoration: "underline",
-              fontSize: 15,
+              fontSize: 17,
               fontWeight: 700,
               margin: "0 14px 0 0",
             }}
@@ -88,9 +88,9 @@ export default function Footer() {
           <Link
             to={`/privacy-policy`}
             style={{
-              color: "#7fcaff",
+              color: "#5542b8",
               textDecoration: "underline",
-              fontSize: 15,
+              fontSize: 17,
               fontWeight: 700,
               margin: "0 0 0 0",
             }}
@@ -102,8 +102,8 @@ export default function Footer() {
         <div
           style={{
             marginTop: 14,
-            color: "#b1d5ff",
-            fontSize: 13,
+            color: "#5542b8",
+            fontSize: 15,
             letterSpacing: 0.1,
             fontWeight: 600,
             opacity: 0.86,

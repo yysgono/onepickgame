@@ -608,5 +608,12 @@
   "result_discovery_popular_title": "Popüler ve yeni bracketler",
   "result_discovery_popular_desc": "Popüler ve yeni eklenen konulara göz at",
   "result_discovery_tier_title": "Bu bracket ile Tier List oluştur",
-  "result_discovery_tier_desc": "Bu adayları kullanarak bir Tier List oluştur"
+  "result_discovery_tier_desc": "Bu adayları kullanarak bir Tier List oluştur",
+  "lightUi": {
+    "gameModes": "Game modes",
+    "myContent": "My content",
+    "profile": "Profile",
+    "manageContent": "Find and manage your creations in one place.",
+    "loginToView": "Sign in to see your creations."
+  }
 }

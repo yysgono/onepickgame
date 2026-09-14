@@ -16,13 +16,13 @@ const pageStyle = {
 const cardStyle = {
   width: "100%",
   maxWidth: 430,
-  background: "linear-gradient(180deg, rgba(17,30,49,0.98) 0%, rgba(10,21,37,0.98) 100%)",
-  border: "1px solid rgba(70,145,235,0.5)",
+  background: "#f5f6fa",
+  border: "1px solid #dde2ea",
   borderRadius: 20,
-  boxShadow: "0 24px 70px rgba(0,0,0,0.42), 0 0 28px rgba(25,118,237,0.10)",
+  boxShadow: "0 4px 16px rgba(25,32,52,0.07)",
   padding: "34px 32px 30px",
   boxSizing: "border-box",
-  color: "#fff",
+  color: "#202534",
   fontFamily: "'Pretendard','Noto Sans KR',Arial,sans-serif",
 };
 
@@ -31,10 +31,10 @@ const inputStyle = {
   minHeight: 48,
   padding: "0 14px",
   borderRadius: 10,
-  border: "1px solid #35577e",
-  background: "#0b1728",
-  color: "#fff",
-  fontSize: 16,
+  border: "1px solid #dde2ea",
+  background: "#ffffff",
+  color: "#202534",
+  fontSize: 18,
   outline: "none",
   boxSizing: "border-box",
 };
@@ -42,22 +42,22 @@ const inputStyle = {
 const buttonStyle = {
   width: "100%",
   minHeight: 50,
-  background: "linear-gradient(90deg,#2999ff,#236de8 100%)",
-  color: "#fff",
+  background: "#6650d8",
+  color: "#ffffff",
   fontWeight: 900,
   border: "none",
   borderRadius: 11,
-  fontSize: 17,
+  fontSize: 19,
   padding: "11px 14px",
-  boxShadow: "0 8px 24px rgba(35,109,232,0.3)",
+  boxShadow: "0 4px 16px rgba(25,32,52,0.07)",
   cursor: "pointer",
 };
 
 const labelStyle = {
   display: "block",
   marginBottom: 7,
-  color: "#c7d8eb",
-  fontSize: 14,
+  color: "#202534",
+  fontSize: 16,
   fontWeight: 800,
 };
 
@@ -85,15 +85,15 @@ function FindPwBox() {
   }
 
   return <div style={pageStyle}><div style={cardStyle}>
-    <div style={{textAlign:"center",marginBottom:26}}><h2 style={{margin:0,fontSize:27,fontWeight:950}}>{t("auth.findPw.title")}</h2><p style={{margin:"9px 0 0",color:"#8fa8c2",fontSize:14,lineHeight:1.55}}>{t("auth.findPw.subtitle")}</p></div>
+    <div style={{textAlign:"center",marginBottom:26}}><h2 style={{margin:0,fontSize:29,fontWeight:950}}>{t("auth.findPw.title")}</h2><p style={{margin:"9px 0 0",color:"#5542b8",fontSize:16,lineHeight:1.55}}>{t("auth.findPw.subtitle")}</p></div>
     <form onSubmit={handleFindPw}>
       <label style={labelStyle}>{t("auth.common.email")}</label><input type="email" value={userId} onChange={e=>setUserId(e.target.value)} placeholder={t("auth.common.emailPlaceholder")} style={{...inputStyle,marginBottom:16}} maxLength={50} disabled={loading} autoComplete="username" />
       <label style={labelStyle}>{t("auth.common.nickname")}</label><input type="text" value={nickname} onChange={e=>setNickname(sliceByByte(e.target.value,12))} placeholder={t("auth.common.nicknamePlaceholder")} style={{...inputStyle,marginBottom:20}} autoComplete="off" spellCheck={false} disabled={loading} />
       <button type="submit" style={{...buttonStyle,opacity:loading?.65:1}} disabled={loading}>{loading?t("auth.findPw.loading"):t("auth.findPw.submit")}</button>
     </form>
-    {successMsg&&<div style={{color:"#62e6a7",marginTop:16,textAlign:"center",fontWeight:800,lineHeight:1.5}}>{successMsg}</div>}
-    {error&&<div style={{color:"#ff728e",marginTop:16,textAlign:"center",fontWeight:700}}>{error}</div>}
-    <div style={{marginTop:22,paddingTop:18,borderTop:"1px solid #233b58",textAlign:"center"}}><Link to={`/${lang}/login`} style={{color:"#64d8ff",fontWeight:900,textDecoration:"none"}}>← {t("auth.common.backToLogin")}</Link></div>
+    {successMsg&&<div style={{color:"#167044",marginTop:16,textAlign:"center",fontWeight:800,lineHeight:1.5}}>{successMsg}</div>}
+    {error&&<div style={{color:"#b42346",marginTop:16,textAlign:"center",fontWeight:700}}>{error}</div>}
+    <div style={{marginTop:22,paddingTop:18,borderTop:"1px solid #dde2ea",textAlign:"center"}}><Link to={`/${lang}/login`} style={{color:"#5542b8",fontWeight:900,textDecoration:"none"}}>← {t("auth.common.backToLogin")}</Link></div>
   </div></div>;
 }
 export default FindPwBox;

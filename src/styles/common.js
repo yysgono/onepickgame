@@ -1,9 +1,9 @@
 import COLORS from "./theme";
 
 export const cardBoxStyle = {
-  background: `linear-gradient(145deg, #fff 88%, #e3f0fb 100%)`,
+  background: "#ffffff",
   borderRadius: 20,
-  boxShadow: "0 4px 24px #1976ed22, 0 2px 12px #b4c4e4",
+  boxShadow: "0 4px 16px rgba(25,32,52,0.07)",
   overflow: "hidden",
   minHeight: 360,
   display: "flex",
@@ -18,15 +18,15 @@ export const cardBoxStyle = {
 
 export const mainButtonStyle = (isMobile) => ({
   flex: 1,
-  background: `linear-gradient(90deg, ${COLORS.main} 60%, ${COLORS.sub} 100%)`,
-  color: "#fff",
+  background: COLORS.main,
+  color: "#ffffff",
   fontWeight: 700,
-  fontSize: isMobile ? 14 : 17,
+  fontSize: isMobile ? 16 : 19,
   border: "none",
   borderRadius: 999,
   padding: isMobile ? "10px 0" : "12px 0",
   cursor: "pointer",
-  boxShadow: "0 2px 10px #a5d5ff30",
+  boxShadow: "0 4px 16px rgba(25,32,52,0.07)",
   transition: "background 0.18s",
 });
 
@@ -35,43 +35,43 @@ export const subButtonStyle = (isMobile) => ({
   background: "#e6f1fd",
   color: "#206eb2",
   fontWeight: 700,
-  fontSize: isMobile ? 14 : 17,
+  fontSize: isMobile ? 16 : 19,
   border: "none",
   borderRadius: 999,
   padding: isMobile ? "10px 0" : "12px 0",
   cursor: "pointer",
-  boxShadow: "0 2px 8px #b1d4ff20"
+  boxShadow: "0 4px 16px rgba(25,32,52,0.07)"
 });
 
 export const grayButtonStyle = (isMobile) => ({
   background: COLORS.gray,
-  color: "#fff",
+  color: "#ffffff",
   border: "none",
   borderRadius: 9,
   fontWeight: 700,
-  fontSize: isMobile ? 12 : 14,
+  fontSize: isMobile ? 14 : 16,
   padding: isMobile ? "7px 10px" : "7px 15px",
   cursor: "pointer"
 });
 
 export const editButtonStyle = (isMobile) => ({
   background: COLORS.edit,
-  color: "#fff",
+  color: "#ffffff",
   border: "none",
   borderRadius: 9,
   fontWeight: 700,
-  fontSize: isMobile ? 12 : 14,
+  fontSize: isMobile ? 14 : 16,
   padding: isMobile ? "7px 10px" : "7px 15px",
   cursor: "pointer"
 });
 
 export const delButtonStyle = (isMobile) => ({
   background: COLORS.danger,
-  color: "#fff",
+  color: "#ffffff",
   border: "none",
   borderRadius: 9,
   fontWeight: 700,
-  fontSize: isMobile ? 12 : 14,
+  fontSize: isMobile ? 14 : 16,
   padding: isMobile ? "7px 10px" : "7px 15px",
   cursor: "pointer"
 });
@@ -81,7 +81,7 @@ export const selectStyle = (isMobile) => ({
   background: "#fff",
   borderRadius: isMobile ? 9 : 16,
   fontWeight: 700,
-  fontSize: isMobile ? 14 : 22,
+  fontSize: isMobile ? 16 : 24,
   padding: isMobile ? "8px 15px" : "12px 30px",
   color: "#222",
   cursor: "pointer",

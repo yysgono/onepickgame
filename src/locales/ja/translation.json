@@ -616,5 +616,12 @@
   "result_discovery_popular_title": "人気・新着ワールドカップ",
   "result_discovery_popular_desc": "人気コンテンツと新しいテーマを見る",
   "result_discovery_tier_title": "このテーマでティア表を作る",
-  "result_discovery_tier_desc": "現在の候補をそのまま使ってティア表を作成"
+  "result_discovery_tier_desc": "現在の候補をそのまま使ってティア表を作成",
+  "lightUi": {
+    "gameModes": "Game modes",
+    "myContent": "My content",
+    "profile": "Profile",
+    "manageContent": "Find and manage your creations in one place.",
+    "loginToView": "Sign in to see your creations."
+  }
 }

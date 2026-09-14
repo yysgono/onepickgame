@@ -613,5 +613,12 @@
   "result_discovery_popular_title": "Bracket populer & terbaru",
   "result_discovery_popular_desc": "Jelajahi topik populer dan yang baru ditambahkan",
   "result_discovery_tier_title": "Buat Tier List dari bracket ini",
-  "result_discovery_tier_desc": "Gunakan kandidat ini untuk membuat Tier List"
+  "result_discovery_tier_desc": "Gunakan kandidat ini untuk membuat Tier List",
+  "lightUi": {
+    "gameModes": "Game modes",
+    "myContent": "My content",
+    "profile": "Profile",
+    "manageContent": "Find and manage your creations in one place.",
+    "loginToView": "Sign in to see your creations."
+  }
 }

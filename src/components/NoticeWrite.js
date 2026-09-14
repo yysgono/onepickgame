@@ -23,7 +23,7 @@ export default function NoticeWrite() {
 
   return (
     <div style={{ maxWidth: 600, margin: "70px auto", background: "#fff", padding: 30, borderRadius: 12 }}>
-      <h2 style={{ fontWeight: 800, fontSize: 24, marginBottom: 16 }}>공지 작성</h2>
+      <h2 style={{ fontWeight: 800, fontSize: 26, marginBottom: 16 }}>공지 작성</h2>
       <form onSubmit={handleSubmit}>
         <div style={{ marginBottom: 13 }}>
           <input
@@ -31,7 +31,7 @@ export default function NoticeWrite() {
             value={title}
             onChange={e => setTitle(e.target.value)}
             placeholder="제목"
-            style={{ width: "100%", fontSize: 17, padding: 10, borderRadius: 8, border: "1px solid #bbb" }}
+            style={{ width: "100%", fontSize: 19, padding: 10, borderRadius: 8, border: "1px solid #bbb" }}
           />
         </div>
         <div style={{ marginBottom: 17 }}>
@@ -40,10 +40,10 @@ export default function NoticeWrite() {
             onChange={e => setContent(e.target.value)}
             placeholder="내용"
             rows={8}
-            style={{ width: "100%", fontSize: 16, padding: 12, borderRadius: 8, border: "1px solid #bbb" }}
+            style={{ width: "100%", fontSize: 18, padding: 12, borderRadius: 8, border: "1px solid #bbb" }}
           />
         </div>
-        <button type="submit" disabled={loading} style={{ background: "#1676ed", color: "#fff", border: "none", padding: "9px 24px", borderRadius: 7, fontWeight: 700, fontSize: 17 }}>
+        <button type="submit" disabled={loading} style={{ background: "#6650d8", color: "#ffffff", border: "none", padding: "9px 24px", borderRadius: 7, fontWeight: 700, fontSize: 19 }}>
           {loading ? "등록중..." : "등록"}
         </button>
       </form>

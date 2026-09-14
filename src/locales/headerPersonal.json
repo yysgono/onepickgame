@@ -1,0 +1,114 @@
+{
+  "ko": {
+    "headerPersonal": {
+      "myQuizzes": "내 퀴즈",
+      "myBlindRankings": "내 블라인드 랭킹",
+      "worldcupDescription": "나만의 이상형 월드컵을 만들고, 다른 사람들이 만든 월드컵도 즐겨보세요."
+    }
+  },
+  "en": {
+    "headerPersonal": {
+      "myQuizzes": "My Quizzes",
+      "myBlindRankings": "My Blind Rankings",
+      "worldcupDescription": "Create your own bracket and explore brackets made by others."
+    }
+  },
+  "ja": {
+    "headerPersonal": {
+      "myQuizzes": "マイクイズ",
+      "myBlindRankings": "マイブラインドランキング",
+      "worldcupDescription": "自分だけのトーナメントを作って、みんなのトーナメントも楽しもう。"
+    }
+  },
+  "zh": {
+    "headerPersonal": {
+      "myQuizzes": "我的测验",
+      "myBlindRankings": "我的盲排",
+      "worldcupDescription": "创建自己的淘汰赛，体验其他人制作的淘汰赛。"
+    }
+  },
+  "es": {
+    "headerPersonal": {
+      "myQuizzes": "Mis cuestionarios",
+      "myBlindRankings": "Mis rankings a ciegas",
+      "worldcupDescription": "Crea tu propio torneo y explora los torneos de otras personas."
+    }
+  },
+  "fr": {
+    "headerPersonal": {
+      "myQuizzes": "Mes quiz",
+      "myBlindRankings": "Mes classements à l’aveugle",
+      "worldcupDescription": "Créez votre tournoi et découvrez ceux des autres."
+    }
+  },
+  "vi": {
+    "headerPersonal": {
+      "myQuizzes": "Câu đố của tôi",
+      "myBlindRankings": "Xếp hạng mù của tôi",
+      "worldcupDescription": "Tạo giải đấu của riêng bạn và khám phá giải đấu của mọi người."
+    }
+  },
+  "de": {
+    "headerPersonal": {
+      "myQuizzes": "Meine Quizze",
+      "myBlindRankings": "Meine Blind-Rankings",
+      "worldcupDescription": "Erstelle dein eigenes Turnier und entdecke Turniere von anderen."
+    }
+  },
+  "ru": {
+    "headerPersonal": {
+      "myQuizzes": "Мои викторины",
+      "myBlindRankings": "Мои слепые рейтинги",
+      "worldcupDescription": "Создайте свой турнир и попробуйте турниры других пользователей."
+    }
+  },
+  "id": {
+    "headerPersonal": {
+      "myQuizzes": "Kuis Saya",
+      "myBlindRankings": "Peringkat Buta Saya",
+      "worldcupDescription": "Buat turnamen sendiri dan jelajahi turnamen buatan pengguna lain."
+    }
+  },
+  "pt": {
+    "headerPersonal": {
+      "myQuizzes": "Meus quizzes",
+      "myBlindRankings": "Meus rankings às cegas",
+      "worldcupDescription": "Crie seu próprio torneio e explore os torneios de outras pessoas."
+    }
+  },
+  "hi": {
+    "headerPersonal": {
+      "myQuizzes": "मेरी क्विज़",
+      "myBlindRankings": "मेरी ब्लाइंड रैंकिंग",
+      "worldcupDescription": "अपना टूर्नामेंट बनाएं और दूसरों के बनाए टूर्नामेंट खेलें।"
+    }
+  },
+  "tr": {
+    "headerPersonal": {
+      "myQuizzes": "Testlerim",
+      "myBlindRankings": "Kör Sıralamalarım",
+      "worldcupDescription": "Kendi turnuvanı oluştur ve başkalarının turnuvalarını keşfet."
+    }
+  },
+  "th": {
+    "headerPersonal": {
+      "myQuizzes": "ควิซของฉัน",
+      "myBlindRankings": "จัดอันดับแบบไม่รู้ล่วงหน้าของฉัน",
+      "worldcupDescription": "สร้างทัวร์นาเมนต์ของคุณเอง และลองเล่นทัวร์นาเมนต์ที่คนอื่นสร้าง"
+    }
+  },
+  "ar": {
+    "headerPersonal": {
+      "myQuizzes": "اختباراتي",
+      "myBlindRankings": "تصنيفاتي العمياء",
+      "worldcupDescription": "أنشئ بطولتك الخاصة واستكشف بطولات الآخرين."
+    }
+  },
+  "bn": {
+    "headerPersonal": {
+      "myQuizzes": "আমার কুইজ",
+      "myBlindRankings": "আমার ব্লাইন্ড র‍্যাঙ্কিং",
+      "worldcupDescription": "নিজের টুর্নামেন্ট তৈরি করুন এবং অন্যদের তৈরি টুর্নামেন্ট খেলুন।"
+    }
+  }
+}

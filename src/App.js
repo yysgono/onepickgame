@@ -12,6 +12,7 @@ import {
 } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import Header from "./components/Header";
+import ContentNav from "./components/ContentNav";
 import Home from "./components/Home";
 import SelectRoundPage from "./components/SelectRoundPage";
 import MatchPage from "./components/MatchPage";
@@ -269,6 +270,7 @@ function ScrollToTopButton() {
           behavior: "smooth",
         });
       }}
+className="scroll-top-button"
 style={{
   position: "fixed",
   right: 24,
@@ -281,10 +283,10 @@ style={{
   border: "3px solid #ffd400",
 
   background:
-    "linear-gradient(145deg, #ff9f1c 0%, #ff6b00 100%)",
+    "#6650d8",
 
   color: "#ffffff",
-  fontSize: 40,
+  fontSize: 42,
   fontWeight: 900,
 
   display: "flex",
@@ -295,7 +297,7 @@ style={{
   zIndex: 9999,
 
   boxShadow:
-    "0 0 0 4px rgba(255,212,0,0.18), 0 0 22px rgba(255,166,0,0.75), 0 8px 24px rgba(0,0,0,0.45)",
+    "0 4px 16px rgba(25,32,52,0.07)",
 
   transition: "transform 0.2s ease",
 }}
@@ -308,50 +310,7 @@ style={{
    APP
 ===================================================== */
 
-function RouteBackground() {
-  const { pathname } = useLocation();
-  const isTierListPage = /^\/(?:[^/]+\/)?tier-list(?:\/|$)/.test(pathname);
-
-  if (isTierListPage) {
-    return (
-      <div
-        aria-hidden="true"
-        style={{
-          position: "fixed",
-          inset: 0,
-          zIndex: 0,
-          background: "#000",
-          pointerEvents: "none",
-        }}
-      />
-    );
-  }
-
-  return (
-      <img
-        src="/OnePickGame.avif"
-        alt="OnePickGame 배경"
-        style={{
-          position: "fixed",
-          inset: 0,
-          zIndex: 0,
-          width: "100vw",
-          height: "100vh",
-          minHeight: "100vh",
-          minWidth: "100vw",
-          objectFit: "cover",
-          objectPosition: "center",
-          pointerEvents: "none",
-          userSelect: "none",
-          opacity: 1,
-        }}
-        draggable={false}
-        loading="eager"
-        fetchpriority="high"
-        aria-hidden="true"
-      />
-  );
-}
+function RouteBackground() { return null; }
 
 function App() {
  useIsMobile();
@@ -745,15 +704,14 @@ function App() {
       user?.id;
 
     const myList =
-      worldcupList.filter(
-        (w) =>
-          w.owner === myId ||
-          w.creator === myId ||
-          w.creator_id === myId
-      );
+      worldcupList.filter((w) => myId && [w.owner, w.creator, w.creator_id].some(value => value === myId || (user?.email && value === user.email)));
 
     return (
+      <>
+      <ContentNav active="worldcup" user={user} />
       <Home
+        personalView
+        onMakeWorldcup={() => navigate(getLangPath(i18n, "worldcup-maker"))}
         worldcupList={myList}
         fetchWorldcups={
           fetchWorldcups
@@ -794,6 +752,7 @@ function App() {
           }
         }}
       />
+      </>
     );
   }
 
@@ -981,7 +940,7 @@ function App() {
           style={{
             padding: 60,
             textAlign: "center",
-            color: "#d33",
+            color: "#b42346",
           }}
         >
           {t(
@@ -1203,8 +1162,8 @@ function handleMakeWorldcup() {
               alignItems: "center",
               justifyContent:
                 "center",
-              color: "#fff",
-              fontSize: 18,
+              color: "#202534",
+              fontSize: 20,
               fontWeight: 700,
             }}
           >
@@ -1535,7 +1494,7 @@ const makerDescMap = {
                 "center",
               fontWeight:
                 700,
-              fontSize: 22,
+              fontSize: 24,
             }}
           >
             Loading...
@@ -1552,7 +1511,7 @@ const makerDescMap = {
                 "center",
               fontWeight:
                 700,
-              fontSize: 22,
+              fontSize: 24,
             }}
           >
             {t(
@@ -1609,7 +1568,7 @@ const makerDescMap = {
                 "center",
               fontWeight:
                 700,
-              fontSize: 22,
+              fontSize: 24,
             }}
           >
             Loading...
@@ -1626,7 +1585,7 @@ const makerDescMap = {
                 "center",
               fontWeight:
                 700,
-              fontSize: 22,
+              fontSize: 24,
             }}
           >
             {t(

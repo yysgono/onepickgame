@@ -60,14 +60,14 @@ function UploadCup({ onChange }) {
         onClick={() => fileInput.current.click()}
         style={{
           ...mainButtonStyle(isMobile),
-          fontSize: isMobile ? 15 : 16,
+          fontSize: isMobile ? 17 : 18,
           borderRadius: 10,
           padding: isMobile ? "8px 17px" : "9px 25px"
         }}
       >
         {t("image_upload") || "Upload Image"}
       </button>
-      <span style={{ color: "#1976ed", fontSize: 14, marginLeft: 10 }}>
+      <span style={{ color: "#5542b8", fontSize: 16, marginLeft: 10 }}>
         ({t("image_size_limit_6mb") || "Max 6MB"})
       </span>
       {preview && (
@@ -81,7 +81,7 @@ function UploadCup({ onChange }) {
             borderRadius: 7,
             marginLeft: 10,
             border: "1px solid #eee",
-            boxShadow: "0 1px 6px #1976ed11",
+            boxShadow: "0 4px 16px rgba(25,32,52,0.07)",
             verticalAlign: "middle"
           }}
         />

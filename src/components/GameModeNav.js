@@ -18,9 +18,9 @@ function GameModeNav({
       icon: "🏆",
       label: t("gameModeNav.worldcup"),
       description: t("gameModeNav.worldcupDesc"),
-      border: "#ff3d68",
+      border: "#dde2ea",
       background:
-        "linear-gradient(145deg, #431326 0%, #180b13 100%)",
+        "#f5f6fa",
       shadow: "rgba(255,61,104,0.22)",
       statusColor: "#ff7593",
     },
@@ -31,7 +31,7 @@ function GameModeNav({
       description: t("gameModeNav.tierListDesc"),
       border: "#19bfff",
       background:
-        "linear-gradient(145deg, #073653 0%, #071a2b 100%)",
+        "#f5f6fa",
       shadow: "rgba(25,191,255,0.20)",
       statusColor: "#64d8ff",
     },
@@ -42,7 +42,7 @@ function GameModeNav({
       description: t("gameModeNav.quizDesc"),
       border: "#27df82",
       background:
-        "linear-gradient(145deg, #0b432b 0%, #071c15 100%)",
+        "#f5f6fa",
       shadow: "rgba(39,223,130,0.20)",
       statusColor: "#69efa7",
     },
@@ -51,9 +51,9 @@ function GameModeNav({
       icon: "👑",
       label: t("gameModeNav.blindRanking"),
       description: t("gameModeNav.blindRankingDesc"),
-      border: "#a855f7",
+      border: "#dde2ea",
       background:
-        "linear-gradient(145deg, #35135a 0%, #160b27 100%)",
+        "#f5f6fa",
       shadow: "rgba(168,85,247,0.22)",
       statusColor: "#c68cff",
     },
@@ -81,18 +81,18 @@ function GameModeNav({
           margin: `0 auto ${isMobile ? 14 : 20}px`,
           padding: isMobile ? "8px 12px" : "10px 16px",
           boxSizing: "border-box",
-          border: "1px solid rgba(49,90,143,0.58)",
+          border: "1px solid #dde2ea",
           borderRadius: 10,
-          background: "rgba(7,17,31,0.66)",
+          background: "#ffffff",
           backdropFilter: "blur(3px)",
           textAlign: "center",
-          color: "#f4f7fb",
+          color: "#202534",
           fontFamily: "'Pretendard', sans-serif",
         }}
       >
         <div
           style={{
-            fontSize: isMobile ? 12 : 15,
+            fontSize: isMobile ? 14 : 17,
             fontWeight: 900,
             lineHeight: 1.35,
           }}
@@ -103,10 +103,10 @@ function GameModeNav({
         <div
           style={{
             marginTop: 2,
-            fontSize: isMobile ? 11 : 15,
+            fontSize: isMobile ? 13 : 17,
             fontWeight: 800,
             lineHeight: 1.45,
-            color: "#d7dfeb",
+            color: "#202534",
           }}
         >
           {t("gameModeNav.introLine2")}
@@ -179,7 +179,7 @@ function GameModeNav({
                   ? `0 0 36px ${mode.shadow}`
                   : `0 0 28px ${mode.shadow}`,
 
-                color: "#fff",
+                color: "#202534",
 
                 cursor: live
                   ? "pointer"
@@ -209,7 +209,7 @@ function GameModeNav({
               {/* 아이콘 */}
               <span
                 style={{
-                  fontSize: isMobile ? 25 : 72,
+                  fontSize: isMobile ? 27 : 72,
                   lineHeight: 1,
                 }}
               >
@@ -219,7 +219,7 @@ function GameModeNav({
               {/* 제목 */}
               <span
                 style={{
-                  fontSize: isMobile ? 14 : 32,
+                  fontSize: isMobile ? 16 : 34,
                   fontWeight: 900,
                   lineHeight: 1.15,
 
@@ -251,10 +251,10 @@ function GameModeNav({
                   textAlign: "center",
 
                   color: live
-                    ? "#c8d6e8"
-                    : "#8d9bae",
+                    ? "#202534"
+                    : "#5542b8",
 
-                  fontSize: isMobile ? 10 : 15,
+                  fontSize: isMobile ? 12 : 17,
 
                   fontWeight: 700,
 
@@ -289,9 +289,9 @@ function GameModeNav({
 
                   color: active
                     ? mode.statusColor
-                    : "#b7c4d5",
+                    : "#5542b8",
 
-                  fontSize: isMobile ? 10 : 15,
+                  fontSize: isMobile ? 12 : 17,
 
                   fontWeight: 900,
 
@@ -337,15 +337,15 @@ function GameModeNav({
       width: "100%",
       minHeight: isMobile ? 42 : 46,
 
-      border: "1px solid rgba(255,61,104,0.75)",
+      border: "1px solid #dde2ea",
       borderRadius: 9,
 
       background:
-        "linear-gradient(145deg, #431326 0%, #180b13 100%)",
+        "#f5f6fa",
 
-      color: "#fff",
+      color: "#202534",
 
-      fontSize: isMobile ? 12 : 16,
+      fontSize: isMobile ? 14 : 18,
       fontWeight: 900,
 
       fontFamily: "'Pretendard', sans-serif",
@@ -353,7 +353,7 @@ function GameModeNav({
       cursor: "pointer",
 
       boxShadow:
-        "0 0 14px rgba(255,61,104,0.20)",
+        "0 4px 16px rgba(25,32,52,0.07)",
     }}
   >
     {t("presetNavigation.myBrackets")}
@@ -373,11 +373,11 @@ function GameModeNav({
       borderRadius: 9,
 
       background:
-        "linear-gradient(145deg, #073653 0%, #071a2b 100%)",
+        "#f5f6fa",
 
-      color: "#fff",
+      color: "#202534",
 
-      fontSize: isMobile ? 12 : 16,
+      fontSize: isMobile ? 14 : 18,
       fontWeight: 900,
 
       fontFamily: "'Pretendard', sans-serif",
@@ -385,7 +385,7 @@ function GameModeNav({
       cursor: "pointer",
 
       boxShadow:
-        "0 0 14px rgba(25,191,255,0.20)",
+        "0 4px 16px rgba(25,32,52,0.07)",
     }}
   >
     {t("presetNavigation.myTierLists")}
@@ -403,11 +403,11 @@ function GameModeNav({
       borderRadius: 9,
 
       background:
-        "linear-gradient(145deg, #0b432b 0%, #071c15 100%)",
+        "#f5f6fa",
 
-      color: "#a3b5aa",
+      color: "#596579",
 
-      fontSize: isMobile ? 12 : 16,
+      fontSize: isMobile ? 14 : 18,
       fontWeight: 900,
 
       fontFamily: "'Pretendard', sans-serif",
@@ -417,7 +417,7 @@ function GameModeNav({
       opacity: 0.65,
 
       boxShadow:
-        "0 0 14px rgba(39,223,130,0.12)",
+        "0 4px 16px rgba(25,32,52,0.07)",
     }}
   >
     {t("gameModeNav.quiz")}
@@ -431,15 +431,15 @@ function GameModeNav({
       width: "100%",
       minHeight: isMobile ? 42 : 46,
 
-      border: "1px solid rgba(168,85,247,0.55)",
+      border: "1px solid #dde2ea",
       borderRadius: 9,
 
       background:
-        "linear-gradient(145deg, #35135a 0%, #160b27 100%)",
+        "#f5f6fa",
 
-      color: "#b8a7c8",
+      color: "#596579",
 
-      fontSize: isMobile ? 12 : 16,
+      fontSize: isMobile ? 14 : 18,
       fontWeight: 900,
 
       fontFamily: "'Pretendard', sans-serif",
@@ -449,7 +449,7 @@ function GameModeNav({
       opacity: 0.65,
 
       boxShadow:
-        "0 0 14px rgba(168,85,247,0.12)",
+        "0 4px 16px rgba(25,32,52,0.07)",
     }}
   >
     {t("gameModeNav.blindRanking")}

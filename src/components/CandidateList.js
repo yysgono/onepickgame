@@ -33,17 +33,17 @@ function CandidateList({
         value={query}
         onChange={e => setQuery(e.target.value)}
         style={{
-          width: "100%", maxWidth: 520, fontSize: 16,
+          width: "100%", maxWidth: 520, fontSize: 18,
           marginBottom: 12, padding: "8px 12px",
-          borderRadius: 10, border: "1.7px solid #1976ed44",
-          outline: "none", background: "#101826", color: "#fff",
+          borderRadius: 10, border: "1.7px solid #dde2ea",
+          outline: "none", background: "#ffffff", color: "#202534",
         }}
       />
       <div style={{
         marginBottom: 7,
         fontWeight: 700,
-        color: "#9ed4ff",
-        fontSize: 15,
+        color: "#5542b8",
+        fontSize: 17,
       }}>
         {t("candidates_count", { count: candidates.length })}
         &nbsp;|&nbsp;
@@ -57,12 +57,12 @@ function CandidateList({
         overflowY: "auto",
         paddingBottom: 8,
         borderRadius: 12,
-        background: "rgba(30,40,65,0.52)",
+        background: "#ffffff",
         marginBottom: 8,
       }}>
         {filtered.length === 0 ? (
           <div style={{
-            color: "#ccc", fontWeight: 700, padding: 24, textAlign: "center",
+            color: "#202534", fontWeight: 700, padding: 24, textAlign: "center",
             gridColumn: "1/-1"
           }}>
             {t("no_match_info")}
@@ -73,9 +73,9 @@ function CandidateList({
               key={c.id}
               onClick={() => toggleSelect(c)}
               style={{
-                background: selectedCandidates.some(x => x.id === c.id) ? "#2976ed" : "#202b3d",
-                color: selectedCandidates.some(x => x.id === c.id) ? "#fff" : "#d6eaff",
-                border: selectedCandidates.some(x => x.id === c.id) ? "2.5px solid #6fd6fc" : "2.5px solid #182345",
+                background: selectedCandidates.some(x => x.id === c.id) ? "#6650d8" : "#ffffff",
+                color: selectedCandidates.some(x => x.id === c.id) ? "#ffffff" : "#202534",
+                border: selectedCandidates.some(x => x.id === c.id) ? "2.5px solid #6fd6fc" : "2.5px solid #dde2ea",
                 borderRadius: 14,
                 cursor: "pointer",
                 padding: 12,
@@ -84,8 +84,8 @@ function CandidateList({
                 alignItems: "center",
                 transition: "all 0.14s",
                 boxShadow: selectedCandidates.some(x => x.id === c.id)
-                  ? "0 4px 18px #1976ed66"
-                  : "0 1px 8px #1976ed33",
+                  ? "0 4px 16px rgba(25,32,52,0.07)"
+                  : "0 4px 16px rgba(25,32,52,0.07)",
                 minHeight: 128,
                 minWidth: 0,
               }}
@@ -99,12 +99,12 @@ function CandidateList({
                   borderRadius: 8,
                   marginBottom: 9,
                   objectFit: "cover",
-                  background: "#202030"
+                  background: "#ffffff"
                 }}
               />
               <span style={{
                 fontWeight: 900,
-                fontSize: 17,
+                fontSize: 19,
                 textAlign: "center",
                 maxWidth: 145,
                 display: "-webkit-box",
@@ -122,7 +122,7 @@ function CandidateList({
         )}
       </div>
       {selectedCandidates.length > maxSelectable && (
-        <div style={{ color: "#ff7272", fontWeight: 700 }}>
+        <div style={{ color: "#b42346", fontWeight: 700 }}>
           {t("limit_select", { count: maxSelectable })}
         </div>
       )}

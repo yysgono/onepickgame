@@ -84,7 +84,7 @@ function Result({ winner, cup, onRestart, onStats }) {
 
   return (
     <div style={{ textAlign: "center", padding: 50 }}>
-      <h2 style={{ fontWeight: 700, fontSize: 32, marginBottom: 10 }}>🥇 {t("winner")}</h2>
+      <h2 style={{ fontWeight: 700, fontSize: 34, marginBottom: 10 }}>🥇 {t("winner")}</h2>
 
       <div
         style={{
@@ -93,7 +93,7 @@ function Result({ winner, cup, onRestart, onStats }) {
           borderRadius: 14,
           marginBottom: 12,
           background: "#eee",
-          border: "3px solid #1976ed",
+          border: "3px solid #dde2ea",
           overflow: "hidden",
         }}
       >
@@ -104,7 +104,7 @@ function Result({ winner, cup, onRestart, onStats }) {
 
       <div
         style={{
-          fontSize: 28,
+          fontSize: 30,
           fontWeight: 600,
           marginBottom: 26,
           maxWidth: 380,
@@ -127,11 +127,11 @@ function Result({ winner, cup, onRestart, onStats }) {
         style={{
           padding: "10px 32px",
           borderRadius: 10,
-          background: "#1976ed",
-          color: "#fff",
+          background: "#6650d8",
+          color: "#ffffff",
           fontWeight: 700,
           border: "none",
-          fontSize: 20,
+          fontSize: 22,
           marginTop: 8,
           cursor: "pointer",
         }}
@@ -148,7 +148,7 @@ function Result({ winner, cup, onRestart, onStats }) {
           color: "#333",
           fontWeight: 700,
           border: "none",
-          fontSize: 19,
+          fontSize: 21,
           marginLeft: 20,
           marginTop: 8,
           cursor: "pointer",
@@ -170,7 +170,7 @@ function Result({ winner, cup, onRestart, onStats }) {
                 minHeight: 200,
                 borderRadius: 12,
                 background: "#f6f8fc",
-                boxShadow: "0 2px 12px #0001",
+                boxShadow: "0 4px 16px rgba(25,32,52,0.07)",
               }}
             />
           }

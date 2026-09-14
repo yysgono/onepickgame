@@ -39,26 +39,26 @@ function RecentComments() {
   }, []);
 
   if (loading) {
-    return <div style={{ color: "#aaa", padding: 14 }}>Loading...</div>;
+    return <div style={{ color: "#596579", padding: 14 }}>Loading...</div>;
   }
 
   return (
     <div
       style={{
         borderRadius: 22,
-        background: "linear-gradient(135deg,#181e2a 80%,#1c2335 100%)",
-        boxShadow: "0 6px 28px 0 #12203f77",
+        background: "#f5f6fa",
+        boxShadow: "0 4px 16px rgba(25,32,52,0.07)",
         padding: "20px 20px",
         minHeight: 160,
       }}
     >
       <div style={{
-        fontWeight: 900, fontSize: 21, color: "#3faaff", marginBottom: 10
+        fontWeight: 900, fontSize: 23, color: "#5542b8", marginBottom: 10
       }}>
         Recent Comments
       </div>
       {comments.length === 0 && (
-        <div style={{ color: "#aaa" }}>No comments found.</div>
+        <div style={{ color: "#596579" }}>No comments found.</div>
       )}
       <div>
         {comments.map((cmt) => (
@@ -68,14 +68,14 @@ function RecentComments() {
               display: "flex",
               alignItems: "center",
               gap: 8,
-              background: "#213046",
+              background: "#ffffff",
               borderRadius: 7,
               padding: "6px 10px",
               marginBottom: 4,
               overflow: "hidden",
               whiteSpace: "nowrap",
               textOverflow: "ellipsis",
-              fontSize: 15.5,
+              fontSize: 17.5,
               fontWeight: 800,
               cursor: "pointer"
             }}
@@ -86,7 +86,7 @@ function RecentComments() {
           >
             <span
               style={{
-                color: "#fff",
+                color: "#202534",
                 fontWeight: 900,
                 marginRight: 5,
                 maxWidth: 220,
@@ -97,13 +97,13 @@ function RecentComments() {
             >
               {truncate(cmt.content, 24)}
             </span>
-            <span style={{ color: "#ffe381", fontWeight: 700, marginLeft: 3 }}>
+            <span style={{ color: "#202534", fontWeight: 700, marginLeft: 3 }}>
               {truncate(cmt.nickname, 10)}
             </span>
-            <span style={{ color: "#a3d8ff", fontWeight: 500, marginLeft: 6, maxWidth: 180, overflow: "hidden", textOverflow: "ellipsis", display: "inline-block" }}>
+            <span style={{ color: "#5542b8", fontWeight: 500, marginLeft: 6, maxWidth: 180, overflow: "hidden", textOverflow: "ellipsis", display: "inline-block" }}>
               {truncate(cmt.worldcups?.title || "(No title)", 17)}
             </span>
-            <span style={{ color: "#aaceff", fontWeight: 400, marginLeft: 10 }}>
+            <span style={{ color: "#5542b8", fontWeight: 400, marginLeft: 10 }}>
               {cmt.created_at?.replace("T", " ").slice(0, 16)}
             </span>
           </div>

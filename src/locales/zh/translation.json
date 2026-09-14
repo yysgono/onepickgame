@@ -700,5 +700,12 @@
   "result_discovery_popular_title": "热门·最新世界杯",
   "result_discovery_popular_desc": "浏览热门内容和最新主题",
   "result_discovery_tier_title": "用此主题制作 Tier List",
-  "result_discovery_tier_desc": "直接使用当前候选项制作 Tier List"
+  "result_discovery_tier_desc": "直接使用当前候选项制作 Tier List",
+  "lightUi": {
+    "gameModes": "Game modes",
+    "myContent": "My content",
+    "profile": "Profile",
+    "manageContent": "Find and manage your creations in one place.",
+    "loginToView": "Sign in to see your creations."
+  }
 }

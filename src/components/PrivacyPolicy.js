@@ -20,7 +20,7 @@ export default function PrivacyPolicy() {
           padding: 24,
           background: "#fff",
           borderRadius: 13,
-          boxShadow: "0 2px 10px #0001",
+          boxShadow: "0 4px 16px rgba(25,32,52,0.07)",
           color: "#222",
         }}
       >
@@ -68,7 +68,7 @@ export default function PrivacyPolicy() {
         <p>
           Contact: <a href="mailto:yysgono@gmail.com">yysgono@gmail.com</a>
         </p>
-        <p style={{ color: "#777", fontSize: 14, marginTop: 30 }}>
+        <p style={{ color: "#596579", fontSize: 16, marginTop: 30 }}>
           This policy is effective from July 10, 2025.
         </p>
       </div>

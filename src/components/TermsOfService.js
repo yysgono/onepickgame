@@ -20,7 +20,7 @@ export default function TermsOfService() {
           padding: 24,
           background: "#fff",
           borderRadius: 13,
-          boxShadow: "0 2px 10px #0001",
+          boxShadow: "0 4px 16px rgba(25,32,52,0.07)",
           color: "#222",
         }}
       >
@@ -45,7 +45,7 @@ export default function TermsOfService() {
             For any questions, contact: <a href="mailto:yysgono@gmail.com">yysgono@gmail.com</a>
           </li>
         </ul>
-        <p style={{ marginTop: 28, color: "#777", fontSize: 15 }}>
+        <p style={{ marginTop: 28, color: "#596579", fontSize: 17 }}>
           By using this service, you agree to these terms.
         </p>
       </div>

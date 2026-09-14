@@ -612,5 +612,12 @@
   "result_discovery_popular_title": "بطولات شائعة وجديدة",
   "result_discovery_popular_desc": "تصفح المواضيع الرائجة والمضافة حديثًا",
   "result_discovery_tier_title": "أنشئ Tier List من هذه البطولة",
-  "result_discovery_tier_desc": "استخدم المرشحين الحاليين لإنشاء Tier List"
+  "result_discovery_tier_desc": "استخدم المرشحين الحاليين لإنشاء Tier List",
+  "lightUi": {
+    "gameModes": "Game modes",
+    "myContent": "My content",
+    "profile": "Profile",
+    "manageContent": "Find and manage your creations in one place.",
+    "loginToView": "Sign in to see your creations."
+  }
 }

@@ -117,7 +117,7 @@ export default function AuthBox({ onLogin }) {
       margin: "80px auto",
       background: "#fff",
       borderRadius: 10,
-      boxShadow: "0 2px 12px #1976ed13",
+      boxShadow: "0 4px 16px rgba(25,32,52,0.07)",
       padding: 24
     }}>
       <h2 style={{ textAlign: "center", marginBottom: 18 }}>
@@ -174,7 +174,7 @@ export default function AuthBox({ onLogin }) {
         </button>
       </div>
       <div style={{
-        color: msg.startsWith(t("signup_success", { defaultValue: "가입" })) ? "#1976ed" : "red",
+        color: msg.startsWith(t("signup_success", { defaultValue: "가입" })) ? "#5542b8" : "#b42346",
         marginTop: 9,
         textAlign: "center"
       }}>
@@ -189,25 +189,25 @@ const inputStyle = {
   padding: 9,
   borderRadius: 7,
   border: "1px solid #bbb",
-  fontSize: 16
+  fontSize: 18
 };
 const buttonStyle = {
   width: "100%",
-  background: "#1976ed",
-  color: "#fff",
+  background: "#6650d8",
+  color: "#ffffff",
   borderRadius: 8,
   padding: "11px 0",
   fontWeight: 700,
-  fontSize: 17,
+  fontSize: 19,
   border: "none",
   cursor: "pointer"
 };
 const switchBtnStyle = {
   background: "none",
-  color: "#1976ed",
+  color: "#5542b8",
   border: "none",
   fontWeight: 700,
-  fontSize: 15,
+  fontSize: 17,
   cursor: "pointer",
   textDecoration: "underline"
 };

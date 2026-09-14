@@ -613,5 +613,12 @@
   "result_discovery_popular_title": "Brackets populares y nuevos",
   "result_discovery_popular_desc": "Explora temas populares y recién añadidos",
   "result_discovery_tier_title": "Crear una Tier List con este bracket",
-  "result_discovery_tier_desc": "Usa estos candidatos para crear una Tier List"
+  "result_discovery_tier_desc": "Usa estos candidatos para crear una Tier List",
+  "lightUi": {
+    "gameModes": "Game modes",
+    "myContent": "My content",
+    "profile": "Profile",
+    "manageContent": "Find and manage your creations in one place.",
+    "loginToView": "Sign in to see your creations."
+  }
 }

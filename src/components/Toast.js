@@ -21,14 +21,14 @@ function Toast({ message, onClose, duration = 2000 }) {
       bottom: 40,
       left: "50%",
       transform: "translateX(-50%)",
-      background: "#222",
-      color: "#fff",
+      background: "#ffffff",
+      color: "#202534",
       padding: "14px 28px",
       borderRadius: 12,
       fontWeight: 600,
-      fontSize: 16,
+      fontSize: 18,
       zIndex: 9999,
-      boxShadow: "0 4px 16px #0003",
+      boxShadow: "0 4px 16px rgba(25,32,52,0.07)",
       opacity: visible ? 1 : 0,
       transition: "opacity 0.4s"
     }}>

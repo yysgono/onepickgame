@@ -195,19 +195,19 @@ export default function ReferralBanner({ lang = "en" }) {
         padding: "22px 22px",
         borderRadius: 14,
         background:
-          "linear-gradient(135deg, rgba(30,60,114,0.95), rgba(42,82,152,0.95))",
-        color: "#fff",
-        boxShadow: "0 10px 30px rgba(0,0,0,0.25)",
+          "#f5f6fa",
+        color: "#202534",
+        boxShadow: "0 4px 16px rgba(25,32,52,0.07)",
       }}
     >
-      <h3 style={{ margin: 0, marginBottom: 10, fontSize: 22, fontWeight: 900 }}>
+      <h3 style={{ margin: 0, marginBottom: 10, fontSize: 24, fontWeight: 900 }}>
         🎵 {text.title}
       </h3>
 
       <p
         style={{
           margin: "6px 0 12px",
-          fontSize: 16,
+          fontSize: 18,
           lineHeight: 1.55,
           opacity: 0.95,
         }}
@@ -221,7 +221,7 @@ export default function ReferralBanner({ lang = "en" }) {
             margin: "0 0 14px 18px",
             padding: 0,
             lineHeight: 1.6,
-            fontSize: 15,
+            fontSize: 17,
           }}
         >
           {text.bullets.map((b, i) => (
@@ -238,17 +238,17 @@ export default function ReferralBanner({ lang = "en" }) {
           display: "inline-block",
           padding: "12px 20px",
           background: "#ff4757",
-          color: "#fff",
+          color: "#202534",
           borderRadius: 10,
           textDecoration: "none",
           fontWeight: 900,
-          boxShadow: "0 6px 14px rgba(0,0,0,0.25)",
+          boxShadow: "0 4px 16px rgba(25,32,52,0.07)",
         }}
       >
         {text.cta}
       </a>
 
-      <div style={{ marginTop: 10, fontSize: 12, opacity: 0.8 }}>
+      <div style={{ marginTop: 10, fontSize: 14, opacity: 0.8 }}>
         * This is a sponsored referral link.
       </div>
     </section>

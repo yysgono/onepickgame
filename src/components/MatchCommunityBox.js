@@ -384,13 +384,13 @@ export default function MatchCommunityBox({ cupId }) {
         padding: 20,
         boxSizing: "border-box",
         border:
-          "1px solid rgba(25, 118, 237, 0.5)",
+          "1px solid #dde2ea",
         borderRadius: 16,
         background:
-          "linear-gradient(145deg, rgba(17, 28, 53, 0.96), rgba(20, 35, 68, 0.94))",
+          "#f5f6fa",
         boxShadow:
-          "0 10px 35px rgba(0, 0, 0, 0.35), 0 0 18px rgba(25, 118, 237, 0.12)",
-        color: "#fff",
+          "0 4px 16px rgba(25,32,52,0.07)",
+        color: "#202534",
       }}
     >
       <form onSubmit={handleSubmit}>
@@ -400,7 +400,7 @@ export default function MatchCommunityBox({ cupId }) {
             alignItems: "center",
             gap: 8,
             marginBottom: 12,
-            fontSize: 18,
+            fontSize: 20,
             fontWeight: 900,
           }}
         >
@@ -473,12 +473,12 @@ export default function MatchCommunityBox({ cupId }) {
               borderRadius: 10,
               outline: "none",
               background: inputDisabled
-                ? "#2b3446"
+                ? "#ffffff"
                 : "#f8fafc",
               color: inputDisabled
-                ? "#9ca6b8"
+                ? "#5542b8"
                 : "#172033",
-              fontSize: 15,
+              fontSize: 17,
               fontWeight: 600,
             }}
           />
@@ -494,10 +494,10 @@ export default function MatchCommunityBox({ cupId }) {
               border: "none",
               borderRadius: 10,
               background: submitDisabled
-                ? "#59677f"
-                : "linear-gradient(135deg, #1976ed, #2796f3)",
-              color: "#fff",
-              fontSize: 15,
+                ? "#f1f3f7"
+                : "#6650d8",
+              color: (submitDisabled) ? "#202534" : "#ffffff",
+              fontSize: 17,
               fontWeight: 900,
               whiteSpace: "nowrap",
               cursor: submitDisabled
@@ -505,7 +505,7 @@ export default function MatchCommunityBox({ cupId }) {
                 : "pointer",
               boxShadow: submitDisabled
                 ? "none"
-                : "0 4px 14px rgba(25, 118, 237, 0.3)",
+                : "0 4px 16px rgba(25,32,52,0.07)",
             }}
           >
             {submitting
@@ -530,7 +530,7 @@ export default function MatchCommunityBox({ cupId }) {
             gap: 12,
             minHeight: 18,
             marginTop: 7,
-            fontSize: 12,
+            fontSize: 14,
           }}
         >
           <span
@@ -540,10 +540,10 @@ export default function MatchCommunityBox({ cupId }) {
             style={{
               minWidth: 0,
               color: submitError
-                ? "#ff8c8c"
+                ? "#b42346"
                 : submitMessage
-                  ? "#73e6a4"
-                  : "#94a3b8",
+                  ? "#167044"
+                  : "#5542b8",
               fontWeight:
                 submitError || submitMessage
                   ? 700
@@ -560,8 +560,8 @@ export default function MatchCommunityBox({ cupId }) {
               color:
                 suggestion.length >=
                 MAX_SUGGESTION_LENGTH
-                  ? "#ff8c8c"
-                  : "#94a3b8",
+                  ? "#b42346"
+                  : "#5542b8",
             }}
           >
             {suggestion.length}/
@@ -593,8 +593,8 @@ export default function MatchCommunityBox({ cupId }) {
             display: "flex",
             alignItems: "center",
             gap: 8,
-            color: "#fff",
-            fontSize: 17,
+            color: "#202534",
+            fontSize: 19,
             fontWeight: 900,
           }}
         >
@@ -609,8 +609,8 @@ export default function MatchCommunityBox({ cupId }) {
 
         <span
           style={{
-            color: "#94a3b8",
-            fontSize: 13,
+            color: "#5542b8",
+            fontSize: 15,
             fontWeight: 700,
           }}
         >
@@ -633,8 +633,8 @@ export default function MatchCommunityBox({ cupId }) {
           <div
             style={{
               padding: "28px 0",
-              color: "#9ba8bc",
-              fontSize: 14,
+              color: "#5542b8",
+              fontSize: 16,
               textAlign: "center",
             }}
           >
@@ -651,8 +651,8 @@ export default function MatchCommunityBox({ cupId }) {
               role="alert"
               style={{
                 padding: "24px 0",
-                color: "#ff8c8c",
-                fontSize: 14,
+                color: "#b42346",
+                fontSize: 16,
                 textAlign: "center",
               }}
             >
@@ -666,8 +666,8 @@ export default function MatchCommunityBox({ cupId }) {
                     padding: "8px 14px",
                     border: "none",
                     borderRadius: 8,
-                    background: "#1976ed",
-                    color: "#fff",
+                    background: "#6650d8",
+                    color: "#ffffff",
                     fontWeight: 800,
                     cursor: "pointer",
                   }}
@@ -686,8 +686,8 @@ export default function MatchCommunityBox({ cupId }) {
             <div
               style={{
                 padding: "28px 0",
-                color: "#9ba8bc",
-                fontSize: 14,
+                color: "#5542b8",
+                fontSize: 16,
                 textAlign: "center",
               }}
             >
@@ -732,8 +732,8 @@ export default function MatchCommunityBox({ cupId }) {
                   >
                     <strong
                       style={{
-                        color: "#5fd4f3",
-                        fontSize: 14,
+                        color: "#5542b8",
+                        fontSize: 16,
                       }}
                     >
                       {item.nickname ||
@@ -752,8 +752,8 @@ export default function MatchCommunityBox({ cupId }) {
                         undefined
                       }
                       style={{
-                        color: "#8492a8",
-                        fontSize: 12,
+                        color: "#5542b8",
+                        fontSize: 14,
                       }}
                     >
                       {formatDate(
@@ -765,8 +765,8 @@ export default function MatchCommunityBox({ cupId }) {
 
                   <div
                     style={{
-                      color: "#e7edf7",
-                      fontSize: 14,
+                      color: "#202534",
+                      fontSize: 16,
                       lineHeight: 1.6,
                       whiteSpace: "pre-line",
                       wordBreak: "break-word",
@@ -796,8 +796,8 @@ export default function MatchCommunityBox({ cupId }) {
               border: "none",
               borderRadius: 10,
               background:
-                "#1976ed",
-              color: "#fff",
+                "#6650d8",
+              color: "#ffffff",
               fontWeight: 900,
               cursor: "pointer",
             }}
@@ -820,9 +820,9 @@ export default function MatchCommunityBox({ cupId }) {
           <div
             style={{
               marginTop: 12,
-              color: "#94a3b8",
+              color: "#5542b8",
               textAlign: "center",
-              fontSize: 12,
+              fontSize: 14,
             }}
           >
             {t(

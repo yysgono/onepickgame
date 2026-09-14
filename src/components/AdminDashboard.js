@@ -476,7 +476,7 @@ const unassignedCount = useMemo(() => {
         margin: "40px auto",
         background: "#fff",
         borderRadius: 24,
-        boxShadow: "0 4px 24px #e6ecfa",
+        boxShadow: "0 4px 16px rgba(25,32,52,0.07)",
         padding: 40,
       }}
     >
@@ -484,8 +484,8 @@ const unassignedCount = useMemo(() => {
       <h2
         style={{
           fontWeight: 900,
-          fontSize: 32,
-          color: "#1976ed",
+          fontSize: 34,
+          color: "#5542b8",
           marginBottom: 32,
           letterSpacing: -1,
         }}
@@ -521,7 +521,7 @@ const unassignedCount = useMemo(() => {
           value={unassignedCount}
           valueColor={
             unassignedCount > 0
-              ? "#e14444"
+              ? "#c83232"
               : "#1976ed"
           }
         />
@@ -546,8 +546,8 @@ const unassignedCount = useMemo(() => {
     onClick={() => setShowTrash((prev) => !prev)}
     style={{
       border: "none",
-      background: "#e14444",
-      color: "#fff",
+      background: "#c83232",
+      color: "#ffffff",
       padding: "10px 16px",
       borderRadius: 8,
       fontWeight: 800,
@@ -560,7 +560,7 @@ const unassignedCount = useMemo(() => {
   {showTrash && (
     <div style={{ marginTop: 18 }}>
       {deletedWorldcups.length === 0 ? (
-        <div style={{ color: "#777" }}>
+        <div style={{ color: "#596579" }}>
           휴지통이 비어 있습니다.
         </div>
       ) : (
@@ -588,7 +588,7 @@ const unassignedCount = useMemo(() => {
             >
 <div
   style={{
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: 800,
     color: "#222",
   }}
@@ -603,8 +603,8 @@ const unassignedCount = useMemo(() => {
 
 <div
   style={{
-    fontSize: 11,
-    color: "#999",
+    fontSize: 13,
+    color: "#596579",
     marginTop: 5,
   }}
 >
@@ -613,8 +613,8 @@ const unassignedCount = useMemo(() => {
 
 <div
   style={{
-    fontSize: 12,
-    color: "#e14444",
+    fontSize: 14,
+    color: "#b42346",
     marginTop: 4,
   }}
 >
@@ -633,8 +633,8 @@ const unassignedCount = useMemo(() => {
               }
               style={{
                 border: "none",
-                background: "#1976ed",
-                color: "#fff",
+                background: "#6650d8",
+                color: "#ffffff",
                 padding: "8px 13px",
                 borderRadius: 7,
                 fontWeight: 800,
@@ -652,8 +652,8 @@ const unassignedCount = useMemo(() => {
               }
               style={{
                 border: "none",
-                background: "#333",
-                color: "#fff",
+                background: "#ffffff",
+                color: "#202534",
                 padding: "8px 13px",
                 borderRadius: 7,
                 fontWeight: 800,
@@ -678,14 +678,14 @@ const unassignedCount = useMemo(() => {
           background: "#f9fafe",
           borderRadius: 14,
           padding: 28,
-          boxShadow: "0 1px 8px #dde5ef77",
+          boxShadow: "0 4px 16px rgba(25,32,52,0.07)",
           marginBottom: 32,
         }}
       >
         <div
           style={{
             fontWeight: 900,
-            fontSize: 22,
+            fontSize: 24,
             marginBottom: 8,
             color: "#174cd7",
           }}
@@ -695,8 +695,8 @@ const unassignedCount = useMemo(() => {
 
         <div
           style={{
-            fontSize: 14,
-            color: "#777",
+            fontSize: 16,
+            color: "#596579",
             marginBottom: 22,
           }}
         >
@@ -729,7 +729,7 @@ const unassignedCount = useMemo(() => {
               padding: "10px 13px",
               borderRadius: 8,
               border: "1px solid #cfd6e4",
-              fontSize: 15,
+              fontSize: 17,
               outline: "none",
               background: "#fff",
             }}
@@ -745,7 +745,7 @@ const unassignedCount = useMemo(() => {
               padding: "10px 12px",
               borderRadius: 8,
               border: "1px solid #cfd6e4",
-              fontSize: 14,
+              fontSize: 16,
               background: "#fff",
               cursor: "pointer",
             }}
@@ -773,7 +773,7 @@ const unassignedCount = useMemo(() => {
               display: "flex",
               alignItems: "center",
               gap: 6,
-              fontSize: 14,
+              fontSize: 16,
               fontWeight: 700,
               color: "#555",
               cursor: "pointer",
@@ -801,8 +801,8 @@ const unassignedCount = useMemo(() => {
         <div
           style={{
             marginBottom: 12,
-            fontSize: 14,
-            color: "#777",
+            fontSize: 16,
+            color: "#596579",
             fontWeight: 700,
           }}
         >
@@ -816,7 +816,7 @@ const unassignedCount = useMemo(() => {
             style={{
               padding: 30,
               textAlign: "center",
-              color: "#777",
+              color: "#596579",
             }}
           >
             월드컵 목록을 불러오는 중...
@@ -854,8 +854,8 @@ const unassignedCount = useMemo(() => {
                     ? "1.5px solid #f4c45e"
                     : "1px solid #e1e6ef",
                   boxShadow: values.is_featured
-                    ? "0 2px 10px #f4c45e22"
-                    : "0 1px 5px #0000000a",
+                    ? "0 4px 16px rgba(25,32,52,0.07)"
+                    : "0 4px 16px rgba(25,32,52,0.07)",
                   flexWrap: "wrap",
                 }}
               >
@@ -889,7 +889,7 @@ const unassignedCount = useMemo(() => {
                   <div
                     style={{
                       fontWeight: 800,
-                      fontSize: 15,
+                      fontSize: 17,
                       color: "#222",
                       marginBottom: 5,
                     }}
@@ -898,7 +898,7 @@ const unassignedCount = useMemo(() => {
                       <span
                         style={{
                           marginRight: 5,
-                          color: "#f39c12",
+                          color: "#b42346",
                         }}
                       >
                         ⭐
@@ -910,8 +910,8 @@ const unassignedCount = useMemo(() => {
 
                   <div
                     style={{
-                      fontSize: 11,
-                      color: "#999",
+                      fontSize: 13,
+                      color: "#596579",
                       wordBreak: "break-all",
                     }}
                   >
@@ -930,9 +930,9 @@ const unassignedCount = useMemo(() => {
                 >
                   <span
                     style={{
-                      fontSize: 11,
+                      fontSize: 13,
                       fontWeight: 700,
-                      color: "#777",
+                      color: "#596579",
                     }}
                   >
                     카테고리
@@ -953,9 +953,9 @@ const unassignedCount = useMemo(() => {
                       borderRadius: 7,
                       border: values.category
                         ? "1px solid #ccd4e0"
-                        : "1px solid #e14444",
+                        : "1px solid #dde2ea",
                       background: "#fff",
-                      fontSize: 14,
+                      fontSize: 16,
                       cursor: "pointer",
                     }}
                   >
@@ -987,9 +987,9 @@ const unassignedCount = useMemo(() => {
                 >
                   <span
                     style={{
-                      fontSize: 11,
+                      fontSize: 13,
                       fontWeight: 700,
-                      color: "#777",
+                      color: "#596579",
                     }}
                   >
                     홈 추천
@@ -1007,14 +1007,14 @@ const unassignedCount = useMemo(() => {
                       border: "none",
                       cursor: "pointer",
                       fontWeight: 800,
-                      fontSize: 13,
+                      fontSize: 15,
                       background:
                         values.is_featured
                           ? "#f39c12"
                           : "#e9edf3",
                       color:
                         values.is_featured
-                          ? "#fff"
+                          ? "#202534"
                           : "#555",
                     }}
                   >
@@ -1035,9 +1035,9 @@ const unassignedCount = useMemo(() => {
                 >
                   <span
                     style={{
-                      fontSize: 11,
+                      fontSize: 13,
                       fontWeight: 700,
-                      color: "#777",
+                      color: "#596579",
                     }}
                   >
                     추천 순서
@@ -1065,7 +1065,7 @@ const unassignedCount = useMemo(() => {
                         values.is_featured
                           ? "#fff"
                           : "#f1f3f6",
-                      fontSize: 14,
+                      fontSize: 16,
                       textAlign: "center",
                     }}
                   />
@@ -1083,10 +1083,10 @@ const unassignedCount = useMemo(() => {
                     padding: "9px 16px",
                     borderRadius: 7,
                     border: "none",
-                    background: "#1976ed",
-                    color: "#fff",
+                    background: "#6650d8",
+                    color: "#ffffff",
                     fontWeight: 800,
-                    fontSize: 13,
+                    fontSize: 15,
                     cursor:
                       savingId === wc.id
                         ? "default"
@@ -1126,9 +1126,9 @@ const unassignedCount = useMemo(() => {
                   padding: "10px 20px",
                   border: "none",
                   borderRadius: 8,
-                  background: "#1976ed",
-                  color: "#fff",
-                  fontSize: 14,
+                  background: "#6650d8",
+                  color: "#ffffff",
+                  fontSize: 16,
                   fontWeight: 800,
                   cursor: "pointer",
                 }}
@@ -1139,8 +1139,8 @@ const unassignedCount = useMemo(() => {
               <div
                 style={{
                   marginTop: 7,
-                  fontSize: 12,
-                  color: "#888",
+                  fontSize: 14,
+                  color: "#596579",
                 }}
               >
                 {Math.min(
@@ -1158,7 +1158,7 @@ const unassignedCount = useMemo(() => {
               style={{
                 padding: 35,
                 textAlign: "center",
-                color: "#888",
+                color: "#596579",
               }}
             >
               조건에 맞는 월드컵이 없습니다.
@@ -1174,16 +1174,16 @@ const unassignedCount = useMemo(() => {
           background: "#f9fafe",
           borderRadius: 14,
           padding: 28,
-          boxShadow: "0 1px 8px #dde5ef77",
+          boxShadow: "0 4px 16px rgba(25,32,52,0.07)",
           marginBottom: 32,
         }}
       >
         <div
           style={{
             fontWeight: 900,
-            fontSize: 22,
+            fontSize: 24,
             marginBottom: 8,
-            color: "#087ba8",
+            color: "#5542b8",
           }}
         >
           📊 티어표 카테고리 관리
@@ -1191,8 +1191,8 @@ const unassignedCount = useMemo(() => {
 
         <div
           style={{
-            fontSize: 14,
-            color: "#777",
+            fontSize: 16,
+            color: "#596579",
             marginBottom: 22,
           }}
         >
@@ -1222,7 +1222,7 @@ const unassignedCount = useMemo(() => {
               padding: "10px 13px",
               borderRadius: 8,
               border: "1px solid #cfd6e4",
-              fontSize: 15,
+              fontSize: 17,
               outline: "none",
               background: "#fff",
             }}
@@ -1238,7 +1238,7 @@ const unassignedCount = useMemo(() => {
               padding: "10px 12px",
               borderRadius: 8,
               border: "1px solid #cfd6e4",
-              fontSize: 14,
+              fontSize: 16,
               background: "#fff",
               cursor: "pointer",
             }}
@@ -1255,8 +1255,8 @@ const unassignedCount = useMemo(() => {
         <div
           style={{
             marginBottom: 12,
-            fontSize: 14,
-            color: "#777",
+            fontSize: 16,
+            color: "#596579",
             fontWeight: 700,
           }}
         >
@@ -1286,7 +1286,7 @@ const unassignedCount = useMemo(() => {
                   background: "#fff",
                   borderRadius: 12,
                   border: "1px solid #e1e6ef",
-                  boxShadow: "0 1px 5px #0000000a",
+                  boxShadow: "0 4px 16px rgba(25,32,52,0.07)",
                   flexWrap: "wrap",
                 }}
               >
@@ -1310,7 +1310,7 @@ const unassignedCount = useMemo(() => {
                   <div
                     style={{
                       fontWeight: 800,
-                      fontSize: 15,
+                      fontSize: 17,
                       color: "#222",
                       marginBottom: 5,
                     }}
@@ -1319,8 +1319,8 @@ const unassignedCount = useMemo(() => {
                   </div>
                   <div
                     style={{
-                      fontSize: 11,
-                      color: "#999",
+                      fontSize: 13,
+                      color: "#596579",
                       wordBreak: "break-all",
                     }}
                   >
@@ -1340,9 +1340,9 @@ const unassignedCount = useMemo(() => {
                 >
                   <span
                     style={{
-                      fontSize: 11,
+                      fontSize: 13,
                       fontWeight: 700,
-                      color: "#777",
+                      color: "#596579",
                     }}
                   >
                     카테고리
@@ -1361,7 +1361,7 @@ const unassignedCount = useMemo(() => {
                       borderRadius: 7,
                       border: "1px solid #ccd4e0",
                       background: "#fff",
-                      fontSize: 14,
+                      fontSize: 16,
                       cursor: "pointer",
                     }}
                   >
@@ -1381,10 +1381,10 @@ const unassignedCount = useMemo(() => {
                     padding: "9px 16px",
                     borderRadius: 7,
                     border: "none",
-                    background: "#087ba8",
-                    color: "#fff",
+                    background: "#6650d8",
+                    color: "#ffffff",
                     fontWeight: 800,
-                    fontSize: 13,
+                    fontSize: 15,
                     cursor: tierSavingId === item.id ? "default" : "pointer",
                     opacity: tierSavingId === item.id ? 0.6 : 1,
                   }}
@@ -1404,9 +1404,9 @@ const unassignedCount = useMemo(() => {
                 padding: "10px 20px",
                 border: "none",
                 borderRadius: 8,
-                background: "#087ba8",
-                color: "#fff",
-                fontSize: 14,
+                background: "#6650d8",
+                color: "#ffffff",
+                fontSize: 16,
                 fontWeight: 800,
                 cursor: "pointer",
               }}
@@ -1417,7 +1417,7 @@ const unassignedCount = useMemo(() => {
         )}
 
         {filteredTierLists.length === 0 && (
-          <div style={{ padding: 30, textAlign: "center", color: "#888" }}>
+          <div style={{ padding: 30, textAlign: "center", color: "#596579" }}>
             조건에 맞는 티어표가 없습니다.
           </div>
         )}
@@ -1434,8 +1434,8 @@ const unassignedCount = useMemo(() => {
           background: "#f5f7fb",
           borderRadius: 14,
           padding: 28,
-          boxShadow: "0 1px 8px #dde5ef77",
-          fontSize: 19,
+          boxShadow: "0 4px 16px rgba(25,32,52,0.07)",
+          fontSize: 21,
           color: "#555",
         }}
       >
@@ -1463,7 +1463,7 @@ function StatBox({
       style={{
         background: "#f6f8fc",
         borderRadius: 18,
-        boxShadow: "0 2px 14px #dde4ef",
+        boxShadow: "0 4px 16px rgba(25,32,52,0.07)",
         minWidth: 190,
         padding: "25px 28px",
         textAlign: "center",
@@ -1471,7 +1471,7 @@ function StatBox({
     >
       <div
         style={{
-          fontSize: 17,
+          fontSize: 19,
           fontWeight: 800,
           color: "#666",
         }}
@@ -1481,7 +1481,7 @@ function StatBox({
 
       <div
         style={{
-          fontSize: 34,
+          fontSize: 36,
           fontWeight: 900,
           color: valueColor,
           marginTop: 10,

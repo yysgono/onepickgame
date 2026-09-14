@@ -799,82 +799,200 @@ const top3 = useMemo(() => {
         boxSizing: "border-box",
       }}
     >
-      {/* 상단 타이틀 */}
+ {/* 상단 결과 타이틀 */}
 <div
   style={{
-    width: "100%",
-    display: "flex",
-    justifyContent: "center",
-    margin: "34px 0 12px 0",
+    width: "min(720px, 94vw)",
+
+    margin:
+      isMobile
+        ? "18px auto 16px"
+        : "24px auto 18px",
+
+    padding:
+      isMobile
+        ? "20px 16px 18px"
+        : "25px 28px 22px",
+
+    position:
+      "relative",
+
+    overflow:
+      "hidden",
+
+    background:
+      "linear-gradient(135deg,#ffffff 0%,#f7f5ff 55%,#eef5ff 100%)",
+
+    border:
+      "2px solid #8b78ef",
+
+    borderRadius:
+      isMobile ? 16 : 18,
+
+    textAlign:
+      "center",
+
+    boxSizing:
+      "border-box",
+
+    boxShadow:
+      "0 8px 26px rgba(83,65,184,0.14)",
   }}
 >
+  {/* 상단 포인트 라인 */}
   <div
     style={{
-      fontWeight: 900,
-      fontSize: isMobile ? 22 : 36,
-      color: "#fff",
-      background: "linear-gradient(135deg, #1947e5 22%, #0e1e36 92%)",
-      boxShadow:
-        "0 4px 24px 0 #1976ed26, 0 1px 12px #18317899, 0 0px 0px #111b2522",
-      borderRadius: 18,
-      padding: isMobile ? "11px 14px" : "22px 54px",
-      border: "2px solid #1976ed66",
-      textShadow: "0 2px 12px #1976ed44, 0 1px 8px #111b2599",
-      fontFamily: "'Orbitron', 'Pretendard', sans-serif",
-      letterSpacing: "-1.5px",
-      lineHeight: 1.15,
-      maxWidth: isMobile ? "96vw" : 940,
-      minWidth: 0,
-      overflow: "hidden",
-      textOverflow: "ellipsis",
-      whiteSpace: "nowrap",
-      display: "block",
-      wordBreak: "break-all",
-      textAlign: "center",
-      margin: "0 auto",
-      userSelect: "text",
-    }}
-title={displayCupTitle}
->
-  {displayCupTitle}
-  </div>
-</div>
+      position: "absolute",
+      left: 0,
+      top: 0,
 
-{/* 월드컵 시작 버튼 */}
-<div
-  style={{
-    display: "flex",
-    justifyContent: "center",
-    margin: isMobile ? "10px 0 12px" : "12px 0 14px",
-  }}
->
+      width: "100%",
+      height: 5,
+
+      background:
+        "linear-gradient(90deg,#6650d8,#8c6cff,#4e9cff)",
+    }}
+  />
+
+  {/* 아이콘 */}
+  <div
+    style={{
+      width:
+        isMobile ? 42 : 50,
+
+      height:
+        isMobile ? 42 : 50,
+
+      margin:
+        "0 auto 10px",
+
+      borderRadius:
+        "50%",
+
+      display:
+        "flex",
+
+      alignItems:
+        "center",
+
+      justifyContent:
+        "center",
+
+      background:
+        "#6650d8",
+
+      color:
+        "#ffffff",
+
+      fontSize:
+        isMobile ? 21 : 25,
+
+      boxShadow:
+        "0 5px 16px rgba(102,80,216,0.25)",
+    }}
+  >
+    🏆
+  </div>
+
+  {/* 제목 */}
+  <div
+    style={{
+      fontWeight:
+        900,
+
+      fontSize:
+        isMobile ? 23 : 31,
+
+      color:
+        "#202534",
+
+      lineHeight:
+        1.3,
+
+      letterSpacing:
+        "-0.6px",
+
+      wordBreak:
+        "keep-all",
+
+      textShadow:
+        "0 1px 0 #fff",
+    }}
+    title={displayCupTitle}
+  >
+    {displayCupTitle}
+  </div>
+
+  {/* 제목 아래 포인트 */}
+  <div
+    style={{
+      width:
+        isMobile ? 65 : 85,
+
+      height:
+        3,
+
+      borderRadius:
+        999,
+
+      margin:
+        "12px auto 14px",
+
+      background:
+        "linear-gradient(90deg,#6650d8,#4e9cff)",
+    }}
+  />
+
+  {/* 시작 버튼 */}
   <button
     type="button"
+
     onClick={() => {
       window.location.href =
         `/${lang}/select-round/${selectedCup.id}`;
     }}
+
     style={{
-      minWidth: isMobile ? 190 : 240,
-      padding: isMobile ? "12px 24px" : "15px 38px",
-      borderRadius: 12,
-      border: "2px solid #39c6ff",
+      minWidth:
+        isMobile ? 150 : 185,
+
+      padding:
+        isMobile
+          ? "11px 20px"
+          : "12px 28px",
+
+      borderRadius:
+        10,
+
+      border:
+        "1px solid #5842c7",
+
       background:
-        "linear-gradient(135deg, #1976ed 0%, #1250d8 100%)",
-      color: "#fff",
-      fontSize: isMobile ? 17 : 20,
-      fontWeight: 900,
-      fontFamily: "'Orbitron', 'Pretendard', sans-serif",
-      cursor: "pointer",
+        "linear-gradient(90deg,#6650d8,#785ce7)",
+
+      color:
+        "#ffffff",
+
+      fontSize:
+        isMobile ? 15 : 17,
+
+      fontWeight:
+        900,
+
+      cursor:
+        "pointer",
+
       boxShadow:
-        "0 4px 18px #1976ed77, 0 0 12px #25cfff55",
-      textShadow: "0 1px 4px #0006",
-      letterSpacing: "0.2px",
+        "0 5px 15px rgba(102,80,216,0.24)",
+
+      letterSpacing:
+        "0.1px",
     }}
   >
     ▶ {t("start")}
   </button>
 </div>
+
 
 <ShareAndReportBar />
 
@@ -909,106 +1027,151 @@ title={displayCupTitle}
 
 
 
-      {/* 월드컵 탐색 / 티어표 전환 */}
-      <div
+     {/* 월드컵 탐색 / 티어표 전환 */}
+<div
+  style={{
+    width: "min(960px, 96vw)",
+    margin: isMobile ? "8px auto 18px" : "10px auto 22px",
+    display: "grid",
+    gridTemplateColumns: isMobile
+      ? "1fr"
+      : "repeat(2, minmax(0, 1fr))",
+    gap: isMobile ? 12 : 16,
+  }}
+>
+  {[
+    {
+      icon: "🔎",
+      title: t("result_discovery_search_title"),
+      description: t("result_discovery_search_desc"),
+
+      // 🔥 기존 인기/최신 카드의 주황색 느낌을
+      // 월드컵 검색으로 이동
+      accent: "#ff9f1a",
+
+      onClick: () =>
+        navigate(`/${lang}?focus=search`),
+    },
+
+    {
+      icon: "📊",
+      title: t("result_discovery_tier_title"),
+      description: t("result_discovery_tier_desc"),
+      accent: "#19bfff",
+
+      onClick: () =>
+        navigate(
+          `/${lang}/tier-list/create/${selectedCup.id}`
+        ),
+    },
+  ].map((item) => (
+    <button
+      key={item.title}
+      type="button"
+      onClick={item.onClick}
+      style={{
+        minWidth: 0,
+
+        // 기존보다 크게
+        minHeight: isMobile ? 76 : 92,
+
+        padding: isMobile
+          ? "14px 16px"
+          : "18px 20px",
+
+        borderRadius: 14,
+
+        border:
+          `1px solid ${item.accent}99`,
+
+        background:
+          "linear-gradient(180deg, rgba(13,31,55,0.98), rgba(6,17,31,0.98))",
+
+        color: "#fff",
+
+        cursor: "pointer",
+
+        textAlign: "left",
+
+        boxShadow:
+          `0 8px 24px ${item.accent}25`,
+
+        display: "flex",
+
+        alignItems: "center",
+
+        gap: 14,
+      }}
+    >
+      <span
+        aria-hidden="true"
         style={{
-          width: "min(960px, 96vw)",
-          margin: isMobile ? "8px auto 18px" : "10px auto 22px",
+          flex: "0 0 auto",
+
+          width: isMobile ? 42 : 50,
+          height: isMobile ? 42 : 50,
+
+          borderRadius: 12,
+
           display: "grid",
-          gridTemplateColumns: isMobile ? "1fr" : "repeat(2, minmax(0, 1fr))",
-          gap: isMobile ? 12 : 16,
+          placeItems: "center",
+
+          background:
+            `${item.accent}24`,
+
+          border:
+            `1px solid ${item.accent}66`,
+
+          fontSize:
+            isMobile ? 21 : 24,
+
+          boxShadow:
+            `0 0 18px ${item.accent}2d`,
         }}
       >
-        {[
-          {
-            icon: "🔎",
-            title: t("result_discovery_search_title"),
-            description: t("result_discovery_search_desc"),
-            onClick: () => navigate(
-              "/" + lang + "?focus=search"
-            ),
-            accent: "#ff9f1a",
-          },
-          {
-            icon: "📊",
-            title: t("result_discovery_tier_title"),
-            description: t("result_discovery_tier_desc"),
-            onClick: () =>
-              navigate(
-                "/" + lang + "/tier-list/create/" + selectedCup.id
-              ),
-            accent: "#19bfff",
-          },
-        ].map((item) => (
-          <button
-            key={item.title}
-            type="button"
-            onClick={item.onClick}
-            style={{
-              minWidth: 0,
-              minHeight: isMobile ? 76 : 92,
-              padding: isMobile ? "14px 16px" : "18px 20px",
-              borderRadius: 14,
-              border: 
-                "1px solid " + item.accent + "99",
-              background:
-                "linear-gradient(180deg, rgba(13,31,55,0.98), rgba(6,17,31,0.98))",
-              color: "#fff",
-              cursor: "pointer",
-              textAlign: "left",
-              boxShadow:
-                "0 8px 24px " + item.accent + "25",
-              display: "flex",
-              alignItems: "center",
-              gap: 14,
-            }}
-          >
-            <span
-              aria-hidden="true"
-              style={{
-                flex: "0 0 auto",
-                width: isMobile ? 42 : 50,
-                height: isMobile ? 42 : 50,
-                borderRadius: 12,
-                display: "grid",
-                placeItems: "center",
-                background: item.accent + "24",
-                border: "1px solid " + item.accent + "66",
-                fontSize: isMobile ? 21 : 24,
-                boxShadow:
-                  "0 0 18px " + item.accent + "2d",
-              }}
-            >
-              {item.icon}
-            </span>
-            <span style={{ minWidth: 0 }}>
-              <span
-                style={{
-                  display: "block",
-                  fontSize: isMobile ? 15 : 18,
-                  fontWeight: 900,
-                  lineHeight: 1.25,
-                  color: "#f8fbff",
-                }}
-              >
-                {item.title}
-              </span>
-              <span
-                style={{
-                  display: "block",
-                  marginTop: 4,
-                  fontSize: isMobile ? 11.5 : 13.5,
-                  fontWeight: 700,
-                  lineHeight: 1.4,
-                  color: "#a9bfd8",
-                }}
-              >
-                {item.description}
-              </span>
-            </span>
-          </button>
-        ))}
-      </div>
+        {item.icon}
+      </span>
+
+      <span style={{ minWidth: 0 }}>
+        <span
+          style={{
+            display: "block",
+
+            fontSize:
+              isMobile ? 15 : 18,
+
+            fontWeight: 900,
+
+            lineHeight: 1.25,
+
+            color: "#f8fbff",
+          }}
+        >
+          {item.title}
+        </span>
+
+        <span
+          style={{
+            display: "block",
+
+            marginTop: 4,
+
+            fontSize:
+              isMobile ? 11.5 : 13.5,
+
+            fontWeight: 700,
+
+            lineHeight: 1.4,
+
+            color: "#a9bfd8",
+          }}
+        >
+          {item.description}
+        </span>
+      </span>
+    </button>
+  ))}
+</div>
 
       {/* 회원/전체 탭 */}
       <div

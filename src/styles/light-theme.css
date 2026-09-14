@@ -1,0 +1,105 @@
+/* Shared light-theme tokens. Media overlays and tier rank colors retain their own contrast. */
+:root{color-scheme:light;--page:#fff;--surface:#fff;--surface-soft:#f5f6fa;--text:#202534;--muted:#596579;--border:#e1e5ed;--accent:#6650d8;--accent-text:#5542b8;--accent-soft:#f2efff}
+html,body,#root,.app-main-wrapper{background:var(--page)!important;background-image:none!important;color:var(--text);font-family:'Pretendard','Noto Sans','Apple SD Gothic Neo','Malgun Gothic',Arial,sans-serif;line-height:1.5}
+*,*::before,*::after{box-sizing:border-box}
+body{overflow-x:clip}button,input,textarea,select{font-family:inherit}button,a,input,textarea,select{touch-action:manipulation}
+a{color:var(--accent-text)}button:disabled{cursor:not-allowed}
+button:focus-visible,a:focus-visible,summary:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible,[tabindex]:focus-visible{outline:3px solid #a395ee!important;outline-offset:3px}
+input:not([type=checkbox]):not([type=radio]):not([type=range]):not([type=color]):not([type=file]),textarea,select{color:var(--text);background-color:#fff;border-color:var(--border)}
+input::placeholder,textarea::placeholder{color:#68758a!important;opacity:1}
+::selection{background:#e7e0ff;color:#302360}
+.main-content-box{width:100%;max-width:100%!important;margin:0 auto!important;min-width:0}
+.home-page{max-width:1440px;width:100%!important;margin:0 auto;padding:42px 24px 56px!important;background:#fff!important}
+.home-page h1{color:var(--text);font-size:38px!important;letter-spacing:-1px}
+.home-page.is-personal{padding-top:8px!important}
+.home-page.is-personal .home-introduction{display:none}
+.page-create-button{background:var(--accent)!important;color:#fff!important;min-height:56px!important;max-width:360px!important;border:1px solid var(--accent)!important;border-radius:10px!important;box-shadow:0 5px 14px #6650d81c!important;font-size:20px!important;font-weight:700!important;transition:background .15s,transform .15s}
+.page-create-button:hover{background:#5640c5!important;transform:translateY(-1px)}
+.home-category-heading{justify-content:space-between!important;max-width:none!important;padding:0 0 16px!important}
+.home-category-heading h2{font-size:26px!important;font-weight:800!important;color:var(--text)!important;letter-spacing:-.6px}
+.home-category-section{margin:34px 0!important}
+.home-category-scroll{padding-left:0!important;padding-right:0!important;padding-bottom:12px!important;scrollbar-width:thin;scrollbar-color:#d9d3ec transparent}
+.worldcup-card{background:#fff!important;border:1px solid var(--border)!important;border-radius:12px!important;box-shadow:0 3px 12px #20253406!important;backdrop-filter:none!important;transform:none!important}
+.worldcup-card:hover{border-color:#afa1e9!important;box-shadow:0 8px 24px #2025340d!important}
+.worldcup-card>div:first-child{display:none}
+.worldcup-card button{font-weight:600!important;font-size:15px!important;border-radius:6px!important;line-height:1.4!important}
+.worldcup-card button:hover{background:#f2efff!important;color:#5542b8!important}
+.worldcup-card .worldcup-card-title{text-align:left!important;font-size:18px!important;line-height:1.45!important;color:var(--text)!important;font-weight:700!important}
+.worldcup-card-description{text-align:left!important;color:var(--muted)!important;font-size:15px!important;line-height:1.5!important}
+.home-search-panel{background:#f7f8fb!important;border:1px solid var(--border)!important;box-shadow:none!important;border-radius:12px!important;max-width:760px!important;padding:18px 22px!important}
+.home-search-input{background:#fff!important;color:var(--text)!important;border:1px solid #d9deea!important;border-radius:8px!important}
+.tier-page-container{max-width:1280px!important;padding:42px 24px 64px!important}
+.tier-page-container h1{color:var(--text);font-size:38px!important;letter-spacing:-1px}
+.tier-page.is-personal .tier-introduction{display:none}
+.tier-page.is-personal .tier-page-container{padding-top:8px!important}
+.content-hub{max-width:1280px;margin:0 auto;padding:42px 24px 0;text-align:center}
+.content-hub h1{font-size:36px;letter-spacing:-1px;margin:0 0 10px;color:var(--text)}
+.content-hub p{color:var(--muted);font-size:17px;margin:0 0 24px}
+.content-hub nav{display:flex;justify-content:center;gap:8px;border-bottom:1px solid var(--border);margin-bottom:20px}
+.content-hub nav a{padding:14px 24px;color:#596579;text-decoration:none;font-weight:700;border-bottom:3px solid transparent}
+.content-hub nav a[aria-current=page]{color:#5542b8;border-color:#6650d8}
+.content-login-hint{padding:18px;background:#f5f3ff;border-radius:10px}
+.content-login-hint a{margin-left:10px;font-weight:700}
+.blog-page,.blog-post{background:#fff;color:var(--text)}
+.blog-page-header,.blog-card,.blog-post{border-radius:12px;box-shadow:0 4px 20px #20253408}
+.card,.candidate-card,.game-card{border-radius:12px!important;clip-path:none}
+.neon-btn{background:var(--accent);color:#fff;font-family:inherit;font-weight:700}
+.neon-btn:hover{background:#5542b8}
+.ad-banner,.ad-banner img{border:none!important}
+@media(max-width:700px){.home-page{padding:28px 16px 40px!important}.home-page h1,.tier-page-container h1{font-size:30px!important}.home-category-heading h2{font-size:23px!important}.home-category-section{margin:26px 0!important}.home-search-panel{padding:14px!important}.tier-page-container{padding:28px 16px 40px!important}.page-create-button{min-height:52px!important;font-size:19px!important}.content-hub{padding:28px 16px 0}.content-hub h1{font-size:30px}.content-hub nav a{padding:12px 16px;font-size:16px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
+.scroll-top-button{width:44px!important;height:44px!important;right:22px!important;bottom:26px!important;background:#fff!important;color:#5542b8!important;border:1px solid #d9d1ee!important;box-shadow:0 4px 16px #20253412!important;font-size:26px!important;z-index:900!important}
+.home-introduction p,.tier-introduction:not(h1){color:#596579!important;font-weight:400!important}
+.tier-filter{background:#fff!important;color:#596579!important;border:1px solid #dde2ea!important;font-weight:600!important}
+.tier-filter[aria-pressed=true]{background:#f2efff!important;color:#5542b8!important;border-color:#9d8ce3!important}
+.tier-filter:hover{border-color:#9d8ce3!important}
+/* v2: full-width lists, larger typography and clear section boundaries. */
+.home-page{max-width:none!important;padding:32px 32px 56px!important}
+.tier-page-container{max-width:none!important;padding:32px 32px 56px!important}
+.home-category-section{padding:26px 0 6px;border-top:1px solid #dce1e9;margin:26px 0!important}
+.home-category-heading{padding-bottom:20px!important}
+.home-category-heading h2{font-size:28px!important}
+.worldcup-card{border-color:#d5dce6!important;border-radius:10px!important;box-shadow:none!important}
+.worldcup-card .worldcup-card-title{text-align:center!important;font-size:20px!important;line-height:1.45!important}
+.worldcup-card-description{font-size:15px!important;line-height:1.5!important}
+.worldcup-card button{font-size:15px!important;padding:7px 5px!important}
+.worldcup-card-accent{display:block!important;height:5px!important;min-height:5px!important;flex-shrink:0!important;margin-top:auto!important;border-radius:0!important;box-shadow:none!important}
+.worldcup-card>div:has(>button){border-top:1px solid #e7eaf0!important}
+.tier-list-card{border-bottom:5px solid #1687e8!important;box-shadow:none!important}
+.tier-card-title{text-align:center!important;font-size:20px!important;min-height:58px!important;max-height:58px!important}
+.tier-cards-grid{grid-template-columns:repeat(auto-fill,minmax(290px,1fr))!important;gap:20px!important;border-top:1px solid #dce1e9;padding-top:26px}
+.round-detail-panel{border:1px solid #dce1e9!important;border-radius:12px!important;box-shadow:none!important}
+.round-detail-section{border:1px solid #dce1e9!important;border-top:3px solid #b1a4e5!important;border-radius:10px!important;box-shadow:none!important;padding:24px!important;background:#fff!important;margin-top:28px!important}
+.round-detail-section h2{padding-bottom:14px;border-bottom:1px solid #e3e7ee;margin-bottom:18px!important;font-size:23px!important}
+.round-detail-panel h1{border-bottom:2px solid #ded8ef!important;border-radius:0!important;box-shadow:none!important;padding-bottom:20px!important}
+.round-candidates span{box-shadow:none!important;border:1px solid #e0e5ed}
+.content-hub{max-width:none;border-bottom:1px solid #dce1e9;padding-bottom:8px}
+@media(max-width:700px){.home-page,.tier-page-container{padding:26px 16px 40px!important}.home-category-heading h2{font-size:24px!important}.worldcup-card .worldcup-card-title{font-size:18px!important}.worldcup-card button{font-size:14px!important}.round-detail-section{padding:18px 14px!important}.tier-cards-grid{grid-template-columns:1fr!important}.tier-card-title{font-size:19px!important}}
+/* v3: identical page introduction geometry and true two-line ellipsis. */
+.page-intro{width:100%;max-width:980px;margin:0 auto 24px;padding:0 16px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:0}
+.home-page .page-intro h1,.tier-page-container .page-intro h1{margin:0!important;padding:0!important;font-size:38px!important;font-weight:800!important;line-height:1.35!important;letter-spacing:-.8px}
+.page-intro p{margin:12px 0 20px!important;min-height:54px;display:flex;align-items:center;justify-content:center;color:#596579;font-size:18px!important;font-weight:500!important;line-height:1.5;max-width:900px}
+.page-intro .page-create-button{margin:0!important;width:360px!important;max-width:100%!important;min-height:56px!important;padding:12px 20px!important;font-size:20px!important;line-height:1.5!important;border-radius:10px!important}
+.page-intro.is-personal{margin-bottom:20px}
+.home-page>div:has(.home-search-panel){margin-top:0!important}
+.worldcup-card-description{display:block!important;padding:0!important;margin:6px 14px 4px!important;height:3em!important;min-height:3em!important;max-height:3em!important;flex-shrink:0!important;font-size:16px!important;line-height:1.5!important;text-align:center!important;overflow:hidden!important}
+.card-description-text{display:-webkit-box!important;-webkit-box-orient:vertical!important;-webkit-line-clamp:2!important;line-clamp:2;line-height:1.5!important;height:3em!important;max-height:3em!important;padding:0!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:normal!important;word-break:normal!important;overflow-wrap:anywhere!important}
+@media(max-width:700px){.home-page,.tier-page-container{padding-top:26px!important}.home-page .page-intro h1,.tier-page-container .page-intro h1{font-size:30px!important}.page-intro{padding:0 4px}.page-intro p{font-size:16px!important;min-height:72px;margin:10px 0 18px!important}.page-intro .page-create-button{font-size:18px!important;min-height:52px!important}.worldcup-card-description{font-size:15px!important}}
+/* v4: larger discovery controls and clear game boundaries. */
+.home-category-section.is-featured .home-category-heading{justify-content:center!important;text-align:center}
+.worldcup-card button{font-size:19px!important;min-height:42px!important;padding:8px 7px!important;font-weight:750!important}
+.home-search-panel{max-width:920px!important;padding:20px 24px!important}
+.home-search-input{height:60px!important;font-size:20px!important;padding-left:18px!important}
+.tier-search-form{width:100%!important;max-width:860px!important;display:flex!important;gap:12px!important;margin:0 auto 22px!important}
+.tier-search-form input{height:60px!important;min-width:0!important;flex:1!important;width:100%!important;font-size:20px!important;padding:12px 18px!important;border:1px solid #a5b1c4!important;border-radius:10px!important}
+.tier-search-form button{min-width:88px!important;min-height:60px!important;font-size:19px!important;padding:12px 20px!important}
+.tier-recommendations{max-width:1440px!important;margin:10px auto 34px!important}
+.tier-recommendations>div:last-child{gap:24px!important}
+.tier-cards-grid{grid-template-columns:repeat(auto-fill,minmax(420px,1fr))!important;gap:24px!important;margin-top:12px!important;padding-top:20px!important}
+.tier-list-card{border:1px solid #bbc5d4!important;border-bottom:5px solid #1687e8!important}
+.tier-card-title{font-size:24px!important;line-height:1.4!important;min-height:68px!important;max-height:68px!important}
+.tier-community-filters{width:100%;max-width:none;margin:30px auto 0;padding:22px 16px 8px;border-top:1px solid #cbd3df;text-align:center}
+.tier-community-filters>div{justify-content:center!important;gap:10px!important;margin-top:10px!important}
+.tier-community-filters .tier-filter{font-size:18px!important;min-height:42px;padding:9px 16px!important}
+@media(max-width:900px){.tier-cards-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}.tier-card-title{font-size:21px!important}}
+@media(max-width:600px){.tier-cards-grid{grid-template-columns:1fr!important}.worldcup-card button{font-size:17px!important;min-height:40px!important;padding:7px 4px!important}.home-search-panel{padding:14px!important}.home-search-input,.tier-search-form input{height:54px!important;font-size:17px!important}.tier-search-form button{min-width:66px!important;min-height:54px!important;font-size:17px!important;padding:10px!important}.tier-community-filters .tier-filter{font-size:16px!important;padding:8px 12px!important}.tier-card-title{font-size:22px!important}}

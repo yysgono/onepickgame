@@ -10,7 +10,7 @@ function AdminLogin({ onLogin, error }) {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        background: "linear-gradient(120deg, #fafdff 70%, #e3f0fb 100%)",
+        background: "#f5f6fa",
       }}
     >
       <form
@@ -22,7 +22,7 @@ function AdminLogin({ onLogin, error }) {
           background: "#fff",
           padding: "38px 40px 32px 40px",
           borderRadius: 20,
-          boxShadow: "0 4px 32px #1976ed20",
+          boxShadow: "0 4px 16px rgba(25,32,52,0.07)",
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
@@ -30,7 +30,7 @@ function AdminLogin({ onLogin, error }) {
           gap: 18,
         }}
       >
-        <div style={{ fontWeight: 900, fontSize: 24, color: "#1976ed", marginBottom: 4 }}>
+        <div style={{ fontWeight: 900, fontSize: 26, color: "#5542b8", marginBottom: 4 }}>
           관리자 로그인
         </div>
         <input
@@ -42,7 +42,7 @@ function AdminLogin({ onLogin, error }) {
             padding: "13px 16px",
             borderRadius: 9,
             border: "1.5px solid #b4c4e4",
-            fontSize: 17,
+            fontSize: 19,
             minWidth: 200,
             marginBottom: 6,
             background: "#f8fbff"
@@ -54,20 +54,20 @@ function AdminLogin({ onLogin, error }) {
             padding: "12px 0",
             borderRadius: 9,
             border: "none",
-            background: "linear-gradient(90deg,#1976ed 80%,#45b7fa 100%)",
-            color: "#fff",
+            background: "#6650d8",
+            color: "#ffffff",
             fontWeight: 700,
-            fontSize: 17,
+            fontSize: 19,
             width: "100%",
             marginBottom: 5,
-            boxShadow: "0 2px 8px #1976ed18",
+            boxShadow: "0 4px 16px rgba(25,32,52,0.07)",
             cursor: "pointer"
           }}
         >
           로그인
         </button>
         {error && (
-          <div style={{ color: "#d33", marginTop: 6, fontWeight: 600 }}>
+          <div style={{ color: "#b42346", marginTop: 6, fontWeight: 600 }}>
             {error}
           </div>
         )}

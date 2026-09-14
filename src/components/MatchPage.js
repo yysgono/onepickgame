@@ -89,12 +89,12 @@ const translatedDescription =
           alignItems: "center",
           justifyContent: "center",
           textAlign: "center",
-          color: "#fff",
+          color: "#202534",
         }}
       >
         <div
           style={{
-            fontSize: 18,
+            fontSize: 20,
             fontWeight: 700,
           }}
         >
@@ -111,9 +111,9 @@ const translatedDescription =
             padding: "10px 18px",
             border: "none",
             borderRadius: 8,
-            background: "#1976ed",
-            color: "#fff",
-            fontSize: 15,
+            background: "#6650d8",
+            color: "#ffffff",
+            fontSize: 17,
             fontWeight: 800,
             cursor: "pointer",
           }}

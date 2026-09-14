@@ -1,3 +1,5 @@
+import PageIntro from "./PageIntro";
+import ContentNav from "./ContentNav";
 import { normalizeTags } from "./TierTagTools";
 import React, {
   useCallback,
@@ -10,7 +12,7 @@ import React, {
 import { useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
-import GameModeNav from "./GameModeNav";
+
 import MediaRenderer from "./MediaRenderer";
 import Seo from "../seo/Seo";
 import { supabase } from "../utils/supabaseClient";
@@ -1185,14 +1187,15 @@ const displayTitle =
         indexable={!mineOnly}
       />
 
-    <div
+    {mineOnly && <ContentNav active="tier-list" user={currentUserId} authChecked={authChecked} />}
+    <div className={`tier-page${mineOnly ? " is-personal" : ""}`}
       style={{
         minHeight: "100vh",
         background: "transparent",
-        color: "#fff",
+        color: "#202534",
       }}
     >
-<div
+<div className="tier-page-container"
   style={{
     width: "100%",
 maxWidth: isMobile ? 430 : 1480,
@@ -1203,130 +1206,159 @@ maxWidth: isMobile ? 430 : 1480,
     boxSizing: "border-box",
   }}
 >
-        <GameModeNav
-          activeMode="tier-list"
-          isMobile={
-            isMobile
-          }
-        />
+        
 
-        <div
+        <PageIntro icon="📊" title={t('tierList.page.title')} description={t('tierList.page.description')} buttonLabel={t('tierList.page.createButton')} onCreate={() => navigate(`/${lang}/tier-list/create`)} personal={mineOnly} />
+<div
           style={{
-            width: "fit-content",
-            maxWidth: isMobile ? "100%" : 1180,
-            margin: isMobile
-              ? "22px auto 0"
-              : "30px auto 0",
-            padding: isMobile
-              ? "14px 16px"
-              : "16px 24px",
-            boxSizing: "border-box",
-            border: "1px solid rgba(49,90,143,0.72)",
-            borderRadius: 14,
-            background: "rgba(7,17,31,0.72)",
-            backdropFilter: "blur(3px)",
-            textAlign: "center",
+            width: "100%", maxWidth: 980, margin: "0 auto 4px", boxSizing: "border-box",
+
+            padding:
+              isMobile
+                ? 12
+                : 16,
+
+            border: "none",
+
+            borderRadius: 0,
+
+            background: "transparent",
           }}
         >
-          <h1
-            style={{
-              margin: 0,
-
-              fontSize:
-                isMobile
-                  ? 28
-                  : 40,
-
-              fontWeight: 900,
-            }}
-          >
-            📊{" "}
-            {t(
-              "tierList.page.title"
-            )}
-          </h1>
-
-          <div
-            style={{
-              marginTop: 10,
-              color: "#9fb0c7",
-
-              fontSize:
-                isMobile
-                  ? 14
-                  : 17,
-
-              fontWeight: 700,
-            }}
-          >
-            {t(
-              "tierList.page.description"
-            )}
-          </div>
-
-          <button
-            type="button"
-            onClick={() =>
-              navigate(
-                `/${lang}/tier-list/create`
-              )
+          <form className="tier-search-form"
+            onSubmit={
+              submitSearch
             }
             style={{
-              marginTop: 18,
-              minWidth: isMobile ? 180 : 230,
-              minHeight: isMobile ? 48 : 56,
-              padding: isMobile ? "12px 20px" : "14px 28px",
-              borderRadius: 12,
-              border: "1px solid #38c8ff",
-              background: "linear-gradient(135deg, #0d8fc2 0%, #087ba8 55%, #05698f 100%)",
-              color: "#fff",
-              fontSize: isMobile ? 16 : 19,
-              fontWeight: 900,
-              letterSpacing: "0.1px",
-              boxShadow: "0 7px 20px rgba(25,191,255,0.22)",
-              cursor: "pointer",
-              transition: "transform .16s ease, box-shadow .16s ease",
+              display:
+                "flex",
+
+              gap: 8,
+
+              flexWrap:
+                "wrap",
+
+              justifyContent:
+                "center",
             }}
           >
-            ＋{" "}
-            {t(
-              "tierList.page.createButton"
-            )}
-          </button>
+            <input
+              value={
+                searchInput
+              }
+              onChange={(e) =>
+                setSearchInput(
+                  e.target.value
+                )
+              }
+              placeholder={t(
+                "tierList.page.searchPlaceholder"
+              )}
+              style={{
+                width:
+                  isMobile
+                    ? "100%"
+                    : 420,
 
-          {!mineOnly && recommendedPresets.length >
+                height: 42,
+
+                boxSizing:
+                  "border-box",
+
+                padding:
+                  "0 12px",
+
+                borderRadius:
+                  8,
+
+                border:
+                  "1px solid #dde2ea",
+
+                background:
+                  "#ffffff",
+
+                color:
+                  "#202534",
+
+                outline:
+                  "none",
+
+                fontWeight: 800,
+                fontSize: isMobile ? 16 : 18,
+              }}
+            />
+
+            <button
+              type="submit"
+              style={{
+                height: 42,
+
+                padding:
+                  "0 16px",
+
+                borderRadius:
+                  8,
+
+                border:
+                  "1px solid #dde2ea",
+
+                background:
+                  "#ffffff",
+
+                color:
+                  "#202534",
+
+                fontWeight:
+                  900,
+                fontSize: isMobile ? 16 : 18,
+
+                cursor:
+                  "pointer",
+              }}
+            >
+              {t(
+                "tierList.common.search"
+              )}
+            </button>
+          </form>
+
+          
+
+          
+        </div>
+{!mineOnly && recommendedPresets.length >
             0 && (
-            <div
+            <div className="tier-recommendations"
               style={{
                 width: "100%",
 
-                maxWidth: 1480,
+                maxWidth: 1040,
 
                 margin:
                   isMobile
-                    ? "14px auto 0"
-                    : "16px auto 0",
+                    ? "0 auto"
+                    : "0 auto",
 
                 padding:
                   isMobile
-                    ? "16px 12px"
-                    : "22px 24px",
+                    ? "4px 12px 16px"
+                    : "4px 24px 20px",
 
                 boxSizing:
                   "border-box",
 
                 borderTop:
-                  "1px solid #24364e",
+                  "none",
 
                 borderBottom:
-                  "1px solid #24364e",
+                  "none",
               }}
             >
         <div
   style={{
     textAlign: "center",
-    color: "#64d8ff",
-fontSize: isMobile ? 22 : 32,
+    color: "#5542b8",
+fontSize: isMobile ? 24 : 34,
 fontWeight: 900,
 lineHeight: 1.2,
 marginBottom: isMobile ? 12 : 16,
@@ -1399,7 +1431,7 @@ marginBottom: isMobile ? 12 : 16,
     "translateY(-6px) scale(1.015)";
 
   e.currentTarget.style.boxShadow =
-    "0 12px 30px rgba(25, 118, 237, 0.34)";
+    "0 6px 20px rgba(25,32,52,0.10)";
 
   e.currentTarget.style.borderColor =
     "#4aaeff";
@@ -1411,7 +1443,7 @@ onMouseLeave={(e) => {
   e.currentTarget.style.transform = "";
 
   e.currentTarget.style.boxShadow =
-    "0 4px 18px rgba(25, 118, 237, 0.12)";
+    "0 6px 20px rgba(25,32,52,0.10)";
 
   e.currentTarget.style.borderColor =
     "#315a8f";
@@ -1423,7 +1455,7 @@ style={{
   padding: 0,
 
   boxShadow:
-    "0 4px 18px rgba(25, 118, 237, 0.12)",
+    "0 4px 16px rgba(25,32,52,0.07)",
 
   transition:
     "transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease",
@@ -1432,7 +1464,7 @@ style={{
     "transform",
 
                           border:
-                            "1px solid #315a8f",
+                            "1px solid #dde2ea",
 
                           borderRadius:
                             10,
@@ -1441,10 +1473,10 @@ style={{
                             "hidden",
 
                           background:
-                            "#0b1628",
+                            "#ffffff",
 
                           color:
-                            "#fff",
+                            "#202534",
 
                           cursor:
                             "pointer",
@@ -1473,7 +1505,7 @@ style={{
                               "hidden",
 
                             background:
-                              "#07111f",
+                              "#ffffff",
 
                             position:
                               "relative",
@@ -1491,7 +1523,7 @@ style={{
                                 "hidden",
 
                               background:
-                                "#101d32",
+                                "#ffffff",
                             }}
                           >
                             {firstImage ? (
@@ -1536,7 +1568,7 @@ style={{
                                     "100%",
 
                                   background:
-                                    "#101d32",
+                                    "#ffffff",
                                 }}
                               />
                             )}
@@ -1554,7 +1586,7 @@ style={{
                                 "hidden",
 
                               background:
-                                "#14243d",
+                                "#ffffff",
                             }}
                           >
                             {secondImage ? (
@@ -1652,7 +1684,7 @@ style={{
                                 "50%",
 
                               background:
-                                "rgba(0,0,0,0.72)",
+                                "#ffffff",
 
                               display:
                                 "flex",
@@ -1664,12 +1696,12 @@ style={{
                                 "center",
 
                               color:
-                                "#fff",
+                                "#202534",
 
                               fontSize:
                                 isMobile
-                                  ? 10
-                                  : 12,
+                                  ? 12
+                                  : 14,
 
                               fontWeight:
                                 900,
@@ -1711,8 +1743,8 @@ style={{
 
                             fontSize:
                               isMobile
-                                ? 13
-                                : 17,
+                                ? 15
+                                : 19,
 
                             fontWeight:
                               900,
@@ -1751,127 +1783,9 @@ style={{
               </div>
             </div>
           )}
-        </div>
 
-        <div
-          style={{
-            marginTop:
-              isMobile
-                ? 20
-                : 22,
-
-            padding:
-              isMobile
-                ? 12
-                : 16,
-
-            border:
-              "1px solid #27466f",
-
-            borderRadius: 12,
-
-            background:
-              "#07111f",
-          }}
-        >
-          <form
-            onSubmit={
-              submitSearch
-            }
-            style={{
-              display:
-                "flex",
-
-              gap: 8,
-
-              flexWrap:
-                "wrap",
-
-              justifyContent:
-                "center",
-            }}
-          >
-            <input
-              value={
-                searchInput
-              }
-              onChange={(e) =>
-                setSearchInput(
-                  e.target.value
-                )
-              }
-              placeholder={t(
-                "tierList.page.searchPlaceholder"
-              )}
-              style={{
-                width:
-                  isMobile
-                    ? "100%"
-                    : 420,
-
-                height: 42,
-
-                boxSizing:
-                  "border-box",
-
-                padding:
-                  "0 12px",
-
-                borderRadius:
-                  8,
-
-                border:
-                  "1px solid #315a8f",
-
-                background:
-                  "#0b1628",
-
-                color:
-                  "#fff",
-
-                outline:
-                  "none",
-
-                fontWeight: 800,
-                fontSize: isMobile ? 14 : 16,
-              }}
-            />
-
-            <button
-              type="submit"
-              style={{
-                height: 42,
-
-                padding:
-                  "0 16px",
-
-                borderRadius:
-                  8,
-
-                border:
-                  "1px solid #315a8f",
-
-                background:
-                  "#14243d",
-
-                color:
-                  "#fff",
-
-                fontWeight:
-                  900,
-                fontSize: isMobile ? 14 : 16,
-
-                cursor:
-                  "pointer",
-              }}
-            >
-              {t(
-                "tierList.common.search"
-              )}
-            </button>
-          </form>
-
-          <div
+<section className="tier-community-filters" aria-label={t("tierList.page.title")}>
+<div
             style={{
               display:
                 "flex",
@@ -1895,6 +1809,8 @@ style={{
                     value
                   }
                   type="button"
+                  aria-pressed={category === value}
+                  className="tier-filter"
                   onClick={() =>
                     setCategory(
                       value
@@ -1911,19 +1827,19 @@ style={{
                       category ===
                       value
                         ? "1px solid #19bfff"
-                        : "1px solid #315a8f",
+                        : "1px solid #dde2ea",
 
                     background:
                       category ===
                       value
-                        ? "#073653"
-                        : "#0b1628",
+                        ? "#ffffff"
+                        : "#ffffff",
 
                     color:
-                      "#fff",
+                      "#202534",
 
                     fontSize:
-                      isMobile ? 13 : 14,
+                      isMobile ? 15 : 16,
 
                     fontWeight:
                       900,
@@ -1939,8 +1855,7 @@ style={{
               )
             )}
           </div>
-
-          <div
+<div
             style={{
               display:
                 "flex",
@@ -1964,6 +1879,8 @@ style={{
                     value
                   }
                   type="button"
+                  aria-pressed={sort === value}
+                  className="tier-filter"
                   onClick={() =>
                     setSort(
                       value
@@ -1980,22 +1897,22 @@ style={{
                       sort ===
                       value
                         ? "1px solid #55d6ff"
-                        : "1px solid #27466f",
+                        : "1px solid #dde2ea",
 
                     background:
                       sort ===
                       value
-                        ? "#14243d"
+                        ? "#ffffff"
                         : "transparent",
 
                     color:
                       sort ===
                       value
-                        ? "#fff"
-                        : "#9fb0c7",
+                        ? "#202534"
+                        : "#5542b8",
 
                     fontSize:
-                      isMobile ? 13 : 14,
+                      isMobile ? 15 : 16,
 
                     fontWeight:
                       900,
@@ -2011,8 +1928,7 @@ style={{
               )
             )}
           </div>
-        </div>
-
+</section>
         {loadError && (
           <div
             style={{
@@ -2024,13 +1940,13 @@ style={{
                 8,
 
               background:
-                "#35121b",
+                "#ffffff",
 
               border:
-                "1px solid #b34258",
+                "1px solid #dde2ea",
 
               color:
-                "#ff9aae",
+                "#b42346",
 
               textAlign:
                 "center",
@@ -2043,7 +1959,7 @@ style={{
           </div>
         )}
 
-        {tagFilter && <div style={{textAlign:"center",color:"#64d8ff",margin:12}}><button type="button" onClick={() => navigate(`/${lang}/tier-list`)} style={{color:"inherit",background:"#073653",border:"1px solid #19bfff",borderRadius:20,padding:"6px 12px",cursor:"pointer"}}>#{tagFilter} ×</button></div>}
+        {tagFilter && <div style={{textAlign:"center",color:"#5542b8",margin:12}}><button type="button" onClick={() => navigate(`/${lang}/tier-list`)} style={{color:"inherit",background:"#ffffff",border:"1px solid #19bfff",borderRadius:20,padding:"6px 12px",cursor:"pointer"}}>#{tagFilter} ×</button></div>}
         {loading ? (
           <div
             style={{
@@ -2054,7 +1970,7 @@ style={{
                 "center",
 
               color:
-                "#9fb0c7",
+                "#5542b8",
 
               fontWeight:
                 800,
@@ -2075,7 +1991,7 @@ style={{
                 "center",
 
               color:
-                "#7187a3",
+                "#5542b8",
 
               fontWeight:
                 800,
@@ -2087,7 +2003,7 @@ style={{
           </div>
         ) : (
           <>
-            <div
+            <div className="tier-cards-grid"
               style={{
                 display:
                   "grid",
@@ -2111,7 +2027,7 @@ gap:
             >
               {cards.map(
                 (item) => (
-                  <button
+                  <button className="tier-list-card"
                     key={
                       item.id
                     }
@@ -2126,7 +2042,7 @@ gap:
                         0,
 
                       border:
-                        "1px solid #27466f",
+                        "1px solid #dde2ea",
 
                       borderRadius:
                         12,
@@ -2135,10 +2051,10 @@ gap:
                         "hidden",
 
                       background:
-                        "#0b1628",
+                        "#ffffff",
 
                       color:
-                        "#fff",
+                        "#202534",
 
                       cursor:
                         "pointer",
@@ -2159,7 +2075,7 @@ gap:
                           "relative",
 
                         background:
-                          "#07111f",
+                          "#ffffff",
                       }}
                     >
                 {item.previewImage ? (
@@ -2213,16 +2129,16 @@ gap:
                               999,
 
                             background:
-                              "rgba(0,0,0,0.72)",
+                              "#ffffff",
 
                             border:
                               "1px solid #19bfff",
 
                             color:
-                              "#fff",
+                              "#202534",
 
                             fontSize:
-                              11,
+                              13,
 
                             fontWeight:
                               900,
@@ -2240,9 +2156,9 @@ gap:
                       <div
                         style={{
                           padding: isMobile ? "7px 8px" : "8px 10px",
-                          background: "#081321",
-                          borderTop: "1px solid #203956",
-                          borderBottom: "1px solid #203956",
+                          background: "#ffffff",
+                          borderTop: "1px solid #dde2ea",
+                          borderBottom: "1px solid #dde2ea",
                           display: "grid",
                           gap: 4,
                         }}
@@ -2274,7 +2190,7 @@ gap:
                                 display: "flex",
                                 alignItems: "center",
                                 justifyContent: "center",
-                                fontSize: isMobile ? 10 : 12,
+                                fontSize: isMobile ? 12 : 14,
                                 fontWeight: 950,
                               }}
                             >
@@ -2301,8 +2217,8 @@ gap:
                                     height: isMobile ? 25 : 30,
                                     borderRadius: 5,
                                     overflow: "hidden",
-                                    background: "#14243d",
-                                    border: "1px solid #2c527d",
+                                    background: "#ffffff",
+                                    border: "1px solid #dde2ea",
                                   }}
                                 >
                                   {candidate?.image ? (
@@ -2325,8 +2241,8 @@ gap:
                               {row.remaining > 0 && (
                                 <span
                                   style={{
-                                    color: "#a9c9ef",
-                                    fontSize: isMobile ? 10 : 11,
+                                    color: "#5542b8",
+                                    fontSize: isMobile ? 12 : 13,
                                     fontWeight: 900,
                                     whiteSpace: "nowrap",
                                   }}
@@ -2369,13 +2285,13 @@ gap:
                               999,
 
                             background:
-                              "#14243d",
+                              "#ffffff",
 
                             color:
-                              "#a9c9ef",
+                              "#5542b8",
 
                             fontSize:
-                              10,
+                              12,
 
                             fontWeight:
                               900,
@@ -2392,10 +2308,10 @@ gap:
                         <span
                           style={{
                             color:
-                              "#7187a3",
+                              "#5542b8",
 
                             fontSize:
-                              11,
+                              13,
 
                             fontWeight:
                               700,
@@ -2408,10 +2324,10 @@ gap:
                       </div>
 
                       <div
-                   title={item.displayTitle || ""}
+                   className="tier-card-title" title={item.displayTitle || ""}
                         style={{
                           marginTop: 8,
-                          fontSize: isMobile ? 16 : 18,
+                          fontSize: isMobile ? 18 : 20,
                           fontWeight: 900,
                           lineHeight: 1.35,
                           minHeight: isMobile ? 43 : 49,
@@ -2435,10 +2351,10 @@ gap:
 
     color:
       item.presetName
-        ? "#8fb8e8"
+        ? "#5542b8"
         : "transparent",
 
-    fontSize: isMobile ? 12 : 13,
+    fontSize: isMobile ? 14 : 15,
 
     fontWeight: 800,
 
@@ -2477,10 +2393,10 @@ gap:
                             "wrap",
 
                           color:
-                            "#8fa6c3",
+                            "#5542b8",
 
                           fontSize:
-                            isMobile ? 11 : 12,
+                            isMobile ? 13 : 14,
 
                           fontWeight:
                             800,
@@ -2554,13 +2470,13 @@ gap:
                       8,
 
                     border:
-                      "1px solid #315a8f",
+                      "1px solid #dde2ea",
 
                     background:
-                      "#101d32",
+                      "#ffffff",
 
                     color:
-                      "#fff",
+                      "#202534",
 
                     fontWeight:
                       900,

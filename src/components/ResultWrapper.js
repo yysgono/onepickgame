@@ -28,7 +28,7 @@ function ResultWrapper({ worldcupList = [] }) {
   if (!cup || !winner) {
     return (
       <div style={{ padding: 80, textAlign: "center" }}>
-        <div style={{ fontSize: 18, marginBottom: 16 }}>
+        <div style={{ fontSize: 20, marginBottom: 16 }}>
           {t("cannotShowResult")}
         </div>
         {cup ? (
@@ -42,9 +42,9 @@ function ResultWrapper({ worldcupList = [] }) {
               style={{
                 padding: "10px 18px",
                 borderRadius: 10,
-                border: "1.5px solid #1976ed",
-                background: "#1976ed",
-                color: "#fff",
+                border: "1.5px solid #dde2ea",
+                background: "#6650d8",
+                color: "#ffffff",
                 fontWeight: 700,
                 cursor: "pointer",
               }}
