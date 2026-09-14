@@ -151,7 +151,6 @@ const getDisplayTitle = (cup) => {
 
 const [search, setSearch] = useState("");
 const [sort, setSort] = useState("popular");
-const [popularSearches, setPopularSearches] = useState([]);
 const searchInputRef = useRef(null);
 
 useEffect(() => {
@@ -264,17 +263,13 @@ const recordSearch = async (value) => {
       String(now)
     );
 
-    await loadPopularSearches();
-  } catch (error) {
+      } catch (error) {
     console.error(
       "검색 통계 기록 실패:",
       error
     );
   }
 };
-useEffect(() => {
-  loadPopularSearches();
-}, [lang]);
 
 
 const [winStatsMap, setWinStatsMap] = useState({});
@@ -1885,61 +1880,74 @@ boxShadow: "none",
       </div>
     </div>
 
-    {/* 인기검색어 */}
-    {popularSearches.length > 0 && (
-  <div
-style={{
-  marginTop: 8,
-  display: "flex",
-  flexWrap: "wrap",
-  gap: 8,
-  alignItems: "center",
-  justifyContent: "center",
-}}
-  >
-    <span
-      style={{
-        color: "#596579",
-        fontWeight: 700,
-      }}
-    >
-      {t("popular_searches") || "Popular searches"} :
-    </span>
-
-{popularSearches.slice(0, 4).map((item) => (
-  <button
-    key={item.query}
-    type="button"
-    onClick={() => {
-      setSearch(item.query);
-      recordSearch(item.query);
-
-      const params = new URLSearchParams(
-        window.location.search
-      );
-
-      params.set("search", item.query);
-
-      navigate(
-        `/${lang}?${params.toString()}`
-      );
-    }}
+  {/* 언어 선택 */}
+<div
+  style={{
+    marginTop: 10,
+    display: "flex",
+    flexWrap: "wrap",
+    gap: isMobile ? 6 : 8,
+    alignItems: "center",
+    justifyContent: "center",
+  }}
+>
+  <span
     style={{
-      border: "none",
-      background: "transparent",
-      padding: 0,
-      color: "#5542b8",
-      fontSize: "inherit",
-      fontWeight: 700,
-      cursor: "pointer",
-      textDecoration: "underline",
+      color: "#596579",
+      fontWeight: 800,
+      marginRight: 2,
+      fontSize: isMobile ? 14 : 15,
     }}
   >
-    {item.query}
-  </button>
-))}
-  </div>
-)}
+    🌐 {t("language_select") || "Language"}
+  </span>
+
+  {LANGUAGES.map((item) => {
+    const active = item.code === lang;
+
+    return (
+      <button
+        key={item.code}
+        type="button"
+        onClick={() => changeHomeLanguage(item.code)}
+        aria-pressed={active}
+        style={{
+          border: active
+            ? "1.5px solid #6650d8"
+            : "1px solid #d6deea",
+
+          background: active
+            ? "#6650d8"
+            : "#ffffff",
+
+          color: active
+            ? "#ffffff"
+            : "#3f4a5a",
+
+          borderRadius: 8,
+
+          padding: isMobile
+            ? "5px 9px"
+            : "6px 11px",
+
+          fontSize: isMobile
+            ? 13
+            : 14,
+
+          fontWeight: active
+            ? 800
+            : 700,
+
+          cursor: "pointer",
+          lineHeight: 1.2,
+          boxShadow: "none",
+        }}
+      >
+        {item.label}
+      </button>
+    );
+  })}
+</div>
 
 </div> {/* 만들기/검색 작은 패널 닫기 */}
 
