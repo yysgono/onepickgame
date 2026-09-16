@@ -316,15 +316,15 @@ export default function QuizPage() {
 
 
   /*
-   * �쒓뎅�댁뿉�쒕뒗 湲곗〈
-   * "異붿쿇 �댁쫰 留욏엳湲�"
-   * ���� "異붿쿇 �댁쫰"濡� �쒖떆
+   * 한국어에서는 기존
+   * "추천 퀴즈 맞히기"
+   * 대신 "추천 퀴즈"로 표시
    *
-   * �ㅻⅨ �몄뼱�� 湲곗〈 踰덉뿭 �좎�
+   * 다른 언어는 기존 번역 유지
    */
   const featuredTitle =
     lang === "ko"
-      ? "異붿쿇 �댁쫰"
+      ? "추천 퀴즈"
       : c.featured;
 
 
@@ -365,11 +365,11 @@ export default function QuizPage() {
         }}
       >
         {/* =========================
-            �곷떒 �뚭컻
+            상단 소개
         ========================== */}
 
         <PageIntro
-          icon="��"
+          icon="❓"
 
           title={
             c.title
@@ -394,7 +394,7 @@ export default function QuizPage() {
 
 
         {/* =========================
-            異붿쿇 �댁쫰
+            추천 퀴즈
         ========================== */}
 
         {recommended.length >
@@ -535,7 +535,7 @@ export default function QuizPage() {
                           "100%",
                       }}
                     >
-                      {/* �대�吏� */}
+                      {/* 이미지 */}
 
                       <div
                         style={{
@@ -606,7 +606,7 @@ export default function QuizPage() {
                       </div>
 
 
-                      {/* 移대뱶 �뺣낫 */}
+                      {/* 카드 정보 */}
 
                       <div
                         style={{
@@ -693,10 +693,10 @@ export default function QuizPage() {
                               700,
                           }}
                         >
-                          ��{" "}
+                          ▶{" "}
                           {q.play_count ||
                             0}
-                          {" 쨌 "}
+                          {" · "}
                           {q.question_count ||
                             0}{" "}
                           {
@@ -713,7 +713,7 @@ export default function QuizPage() {
 
 
         {/* =========================
-            寃��� / �꾪꽣
+            검색 / 필터
         ========================== */}
 
         <div
@@ -745,7 +745,7 @@ export default function QuizPage() {
               "transparent",
           }}
         >
-          {/* 寃��됱갹 */}
+          {/* 검색창 */}
 
           <div
             style={{
@@ -811,7 +811,7 @@ export default function QuizPage() {
           </div>
 
 
-          {/* �몄뼱 �좏깮 */}
+          {/* 언어 선택 */}
 
           <div
             style={{
@@ -884,7 +884,7 @@ export default function QuizPage() {
           </div>
 
 
-          {/* 移댄뀒怨좊━ */}
+          {/* 카테고리 */}
 
           <div
             style={{
@@ -947,7 +947,7 @@ export default function QuizPage() {
           </div>
 
 
-          {/* �멸린 / 理쒖떊 */}
+          {/* 인기 / 최신 */}
 
           <div
             style={{
@@ -997,7 +997,7 @@ export default function QuizPage() {
 
 
         {/* =========================
-            �꾩껜 �댁쫰 �쒕ぉ
+            전체 퀴즈 제목
         ========================== */}
 
         <h2
@@ -1023,7 +1023,7 @@ export default function QuizPage() {
         </h2>
 
 
-        {/* �ㅻ쪟 */}
+        {/* 오류 */}
 
         {error && (
           <div
@@ -1046,7 +1046,7 @@ export default function QuizPage() {
 
 
         {/* =========================
-            �꾩껜 �댁쫰 紐⑸줉
+            전체 퀴즈 목록
         ========================== */}
 
         {loading ? (
@@ -1188,7 +1188,7 @@ export default function QuizPage() {
                           : 220,
                     }}
                   >
-                    {/* �몃꽕�� */}
+                    {/* 썸네일 */}
 
                     <div
                       style={{
@@ -1268,7 +1268,7 @@ export default function QuizPage() {
                     </div>
 
 
-                    {/* �쒕ぉ / �ㅻ챸 */}
+                    {/* 제목 / 설명 */}
 
                     <div
                       style={{
@@ -1355,7 +1355,7 @@ export default function QuizPage() {
                     </div>
 
 
-                    {/* PC �듦퀎 */}
+                    {/* PC 통계 */}
 
                     {!mobile && (
                       <div
@@ -1428,7 +1428,7 @@ export default function QuizPage() {
                         </div>
 
                         <div>
-                          ��{" "}
+                          ▣{" "}
                           {q.question_count ||
                             0}{" "}
                           {
@@ -1437,13 +1437,13 @@ export default function QuizPage() {
                         </div>
 
                         <div>
-                          ��{" "}
+                          ▶{" "}
                           {q.play_count ||
                             0}
                         </div>
 
                         <div>
-                          �뮠{" "}
+                          💬{" "}
                           {q.comment_count ||
                             0}
                         </div>
@@ -1451,7 +1451,7 @@ export default function QuizPage() {
                     )}
 
 
-                    {/* PC �쒖옉 踰꾪듉 */}
+                    {/* PC 시작 버튼 */}
 
                     {!mobile && (
                       <div
@@ -1502,7 +1502,7 @@ export default function QuizPage() {
         )}
 
 
-        {/* �붾낫湲� */}
+        {/* 더보기 */}
 
         {!loading &&
           visibleCount <
