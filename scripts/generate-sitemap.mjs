@@ -205,7 +205,7 @@ function generateLanguageSitemap(
 
   // 개인정보 처리방침
   xml += makeUrlEntry({
-    loc: `${BASE_URL}/${lang}/privacy-policy`,
+    loc: `${BASE_URL}/privacy-policy`,
     lastmod: today,
     changefreq: "yearly",
     priority: "0.5",
@@ -213,7 +213,7 @@ function generateLanguageSitemap(
 
   // 이용약관
   xml += makeUrlEntry({
-    loc: `${BASE_URL}/${lang}/terms-of-service`,
+    loc: `${BASE_URL}/terms-of-service`,
     lastmod: today,
     changefreq: "yearly",
     priority: "0.5",
@@ -221,7 +221,7 @@ function generateLanguageSitemap(
 
   // 건의사항
   xml += makeUrlEntry({
-    loc: `${BASE_URL}/${lang}/suggestions`,
+    loc: `${BASE_URL}/suggestions-board`,
     lastmod: today,
     changefreq: "weekly",
     priority: "0.6",
@@ -235,13 +235,7 @@ function generateLanguageSitemap(
     priority: "0.9",
   });
 
-  // 티어표 만들기
-  xml += makeUrlEntry({
-    loc: `${BASE_URL}/${lang}/tier-list/create`,
-    lastmod: today,
-    changefreq: "weekly",
-    priority: "0.8",
-  });
+  // Creation forms are not included in the sitemap.
 
   // ====================================================
   // 개별 월드컵
@@ -303,6 +297,11 @@ function generateSitemapIndex() {
     <loc>${BASE_URL}/sitemaps/sitemap-${lang}-v2.xml</loc>
   </sitemap>`;
   }
+
+  xml += `
+  <sitemap>
+    <loc>${BASE_URL}/api/sitemap-quizzes</loc>
+  </sitemap>`;
 
   // 블로그 sitemap 유지
   xml += `

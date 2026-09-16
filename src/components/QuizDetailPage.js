@@ -12,6 +12,7 @@ import {
   deleteQuiz,
 } from "../utils/supabaseQuizApi";
 import QuizCommentBox from "./QuizCommentBox";
+import Seo from "../seo/Seo";
 // The supplied project contains the completed locale bundle in this folder.
 import { getQuizCopy } from "./components/quizCopy";
 import MediaRenderer from "./MediaRenderer";
@@ -501,7 +502,7 @@ export default function QuizDetailPage() {
 
   if (loading) return <div style={{ padding: 60, textAlign: "center" }}>Loading...</div>;
   if (error || !quiz) {
-    return <div style={{ padding: 60, textAlign: "center", color: "#b42346" }}>{error || "Quiz not found"}</div>;
+    return <><Seo lang={lang} slug={`quiz/${id}`} title="Quiz unavailable | OnePickGame" indexable={false} /><div style={{ padding: 60, textAlign: "center", color: "#b42346" }}>{error || "Quiz not found"}</div></>;
   }
 
   const countOptions = [1, 5, 10, 20, 30, 50, allQuestions.length]
@@ -520,6 +521,14 @@ export default function QuizDetailPage() {
 
   return (
     <div style={{ minHeight: "100vh", background: "#fff", color: "#202534", padding: "28px 16px 72px" }}>
+      <Seo
+        lang={lang}
+        slug={`quiz/${id}`}
+        title={`${title} | ${lang === "ko" ? "원픽게임" : "OnePickGame"}`}
+        description={localize(quiz.description_translations, quiz.description, lang) || `${title} · ${c.intro}`}
+        image={quiz.thumbnail_url || "/onepick-social.png"}
+        hreflangLangs={Array.isArray(quiz.content_languages) && quiz.content_languages.length ? quiz.content_languages : [quiz.original_language || lang]}
+      />
       <div style={{ maxWidth: 1320, margin: "0 auto" }}>
         <button type="button" onClick={() => navigate(`/${lang}/quiz`)} style={{ ...secondaryButton, minHeight: 48, padding: "11px 18px", fontSize: 16 }}>← {c.quizList}</button>
 

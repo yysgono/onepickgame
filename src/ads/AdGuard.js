@@ -51,8 +51,6 @@ export default function AdGuard({ isAdmin = false }) {
           overflow: hidden !important;
         }
       `}</style>
-      {/* 광고만 숨기고 페이지는 인덱싱 허용 */}
-      <meta name="robots" content="index,follow" />
     </Helmet>
   );
 }

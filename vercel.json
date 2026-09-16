@@ -138,6 +138,14 @@
     },
 
     {
+      "src": "/(ko|en|ja|zh|ru|pt|es|fr|id|hi|de|vi|ar|bn|th|tr)/quiz/?$",
+      "dest": "/server.js?seo=quiz-list&lang=$1"
+    },
+    {
+      "src": "/(ko|en|ja|zh|ru|pt|es|fr|id|hi|de|vi|ar|bn|th|tr)/quiz/([0-9a-fA-F-]{36})/?$",
+      "dest": "/server.js?seo=quiz-detail&lang=$1&id=$2"
+    },
+    {
       "handle": "filesystem"
     },
 

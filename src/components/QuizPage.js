@@ -14,6 +14,7 @@ import {
 } from "react-i18next";
 
 import PageIntro from "./PageIntro";
+import Seo from "../seo/Seo";
 
 import {
   getQuizCopy,
@@ -341,6 +342,12 @@ export default function QuizPage() {
           "#202534",
       }}
     >
+      <Seo
+        lang={lang}
+        slug="quiz"
+        title={`${c.title} | ${lang === "ko" ? "원픽게임" : "OnePickGame"}`}
+        description={c.intro}
+      />
       <div
         className="tier-page-container"
         style={{

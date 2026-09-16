@@ -211,7 +211,7 @@ export default function Seo({
         />
       ))}
 
-      {indexable && (
+      {indexable && langsForHreflang.includes("en") && (
         <link
           rel="alternate"
           hrefLang="x-default"

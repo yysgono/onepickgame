@@ -62,6 +62,8 @@ const supabase = createClient(
   }
 );
 
+require("./quiz-seo.cjs")(app, supabase, SITE_URL);
+
 const supabaseAdmin =
   SUPABASE_SERVICE_ROLE_KEY
     ? createClient(
