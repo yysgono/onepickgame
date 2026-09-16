@@ -357,11 +357,23 @@ export default function Header({
         hash,
       } = location;
 
-      const quizPathMatch = pathname.match(/^\/[a-z]{2}\/quiz\/([^/?#]+)\/?$/i);
+      // A locale change remounts the quiz route. Mark an actively displayed
+      // result so QuizDetailPage can restore it after the route changes. This
+      // marker is deliberately created only here: opening the same quiz from
+      // the home page must still show its setup screen.
+      const quizPathMatch = pathname.match(
+        /^\/[a-z]{2}\/quiz\/([^/?#]+)\/?$/i
+      );
       if (quizPathMatch) {
         const quizId = quizPathMatch[1];
-        if (sessionStorage.getItem(`quiz-view-phase:${quizId}`) === "result" && sessionStorage.getItem(`quiz-result:${quizId}`)) {
-          sessionStorage.setItem(`quiz-language-switch:${quizId}`, String(Date.now()));
+        if (
+          sessionStorage.getItem(`quiz-view-phase:${quizId}`) === "result" &&
+          sessionStorage.getItem(`quiz-result:${quizId}`)
+        ) {
+          sessionStorage.setItem(
+            `quiz-language-switch:${quizId}`,
+            String(Date.now())
+          );
         }
       }
 

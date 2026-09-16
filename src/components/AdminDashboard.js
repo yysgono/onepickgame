@@ -60,6 +60,33 @@ async function getAllTierLists() {
   return data || [];
 }
 
+async function getAllQuizzes() {
+  const { data, error } = await supabase
+    .from("quizzes")
+    .select("id,title,title_translations,thumbnail_url,category,question_count,play_count,is_featured,featured_order,created_at,is_published")
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error("퀴즈 목록 불러오기 실패:", error);
+    return [];
+  }
+
+  return data || [];
+}
+
+async function updateQuizFeatured(quizId, isFeatured, featuredOrder) {
+  const { error } = await supabase
+    .from("quizzes")
+    .update({
+      is_featured: Boolean(isFeatured),
+      featured_order:
+        isFeatured && featuredOrder !== "" ? Number(featuredOrder) : null,
+    })
+    .eq("id", quizId);
+
+  if (error) throw error;
+}
+
 async function updateTierListCategory(tierListId, category) {
   const { error } = await supabase
     .from("tier_lists")
@@ -140,6 +167,12 @@ export default function AdminDashboard() {
   const [tierCategoryFilter, setTierCategoryFilter] = useState("all");
   const [tierVisibleCount, setTierVisibleCount] = useState(5);
   const [tierSavingId, setTierSavingId] = useState(null);
+  const [allQuizzes, setAllQuizzes] = useState([]);
+  const [quizSearchTerm, setQuizSearchTerm] = useState("");
+  const [quizFeaturedOnly, setQuizFeaturedOnly] = useState(false);
+  const [quizVisibleCount, setQuizVisibleCount] = useState(10);
+  const [quizSavingId, setQuizSavingId] = useState(null);
+  const [quizEditValues, setQuizEditValues] = useState({});
 
   // 각 월드컵의 관리자 편집값
   const [editValues, setEditValues] = useState({});
@@ -177,14 +210,16 @@ const [trashWorkingId, setTrashWorkingId] = useState(null);
     setLoading(true);
 
     try {
-      const [worldcups, comments, tierLists] = await Promise.all([
+      const [worldcups, comments, tierLists, quizzes] = await Promise.all([
         getAllWorldcups(),
         getTotalComments(),
         getAllTierLists(),
+        getAllQuizzes(),
       ]);
 
 setAllWorldcups(worldcups);
 setAllTierLists(tierLists);
+setAllQuizzes(quizzes);
 setTotalWorldcups(
   worldcups.filter((wc) => !wc.deleted_at).length
 );
@@ -211,6 +246,19 @@ setTotalWorldcups(
         initialTierCategoryValues[item.id] = item.category || "other";
       });
       setTierCategoryValues(initialTierCategoryValues);
+
+
+      const initialQuizEditValues = {};
+      quizzes.forEach((item) => {
+        initialQuizEditValues[item.id] = {
+          is_featured: Boolean(item.is_featured),
+          featured_order:
+            item.featured_order === null || item.featured_order === undefined
+              ? ""
+              : String(item.featured_order),
+        };
+      });
+      setQuizEditValues(initialQuizEditValues);
     } finally {
       setLoading(false);
     }
@@ -385,6 +433,58 @@ async function handlePermanentDelete(id) {
     }
   }
 
+  function handleQuizFeaturedToggle(quizId) {
+    setQuizEditValues((prev) => {
+      const current = prev[quizId] || { is_featured: false, featured_order: "" };
+      const next = !current.is_featured;
+      return {
+        ...prev,
+        [quizId]: {
+          ...current,
+          is_featured: next,
+          featured_order: next ? current.featured_order : "",
+        },
+      };
+    });
+  }
+
+  async function handleQuizFeaturedSave(quizId) {
+    const values = quizEditValues[quizId] || { is_featured: false, featured_order: "" };
+    if (
+      values.is_featured &&
+      values.featured_order !== "" &&
+      Number(values.featured_order) < 1
+    ) {
+      alert("추천 순서는 1 이상의 숫자로 입력해주세요.");
+      return;
+    }
+
+    setQuizSavingId(quizId);
+    try {
+      await updateQuizFeatured(quizId, values.is_featured, values.featured_order);
+      setAllQuizzes((prev) =>
+        prev.map((item) =>
+          String(item.id) === String(quizId)
+            ? {
+                ...item,
+                is_featured: values.is_featured,
+                featured_order:
+                  values.is_featured && values.featured_order !== ""
+                    ? Number(values.featured_order)
+                    : null,
+              }
+            : item
+        )
+      );
+      alert("추천 퀴즈 설정이 저장되었습니다.");
+    } catch (error) {
+      console.error(error);
+      alert("추천 퀴즈 저장 실패: " + error.message);
+    } finally {
+      setQuizSavingId(null);
+    }
+  }
+
   // ========================================
   // 필터링
   // ========================================
@@ -443,6 +543,30 @@ async function handlePermanentDelete(id) {
 
     return list;
   }, [allTierLists, tierSearchTerm, tierCategoryFilter]);
+
+  const filteredQuizzes = useMemo(() => {
+    let list = [...allQuizzes];
+    const keyword = quizSearchTerm.trim().toLowerCase();
+
+    if (keyword) {
+      list = list.filter((item) => {
+        const title = String(item.title || "").toLowerCase();
+        const id = String(item.id || "").toLowerCase();
+        return title.includes(keyword) || id.includes(keyword);
+      });
+    }
+
+    if (quizFeaturedOnly) {
+      list = list.filter((item) => item.is_featured);
+    }
+
+    return list;
+  }, [allQuizzes, quizSearchTerm, quizFeaturedOnly]);
+
+  const quizFeaturedCount = useMemo(
+    () => allQuizzes.filter((item) => item.is_featured).length,
+    [allQuizzes]
+  );
 
   // ========================================
   // 카테고리 미지정 개수
@@ -530,6 +654,12 @@ const unassignedCount = useMemo(() => {
           title="추천 월드컵"
           value={featuredCount}
           valueColor="#f39c12"
+        />
+
+        <StatBox
+          title="추천 퀴즈 맞히기"
+          value={quizFeaturedCount}
+          valueColor="#6650d8"
         />
       </div>
       <div
@@ -1083,7 +1213,7 @@ const unassignedCount = useMemo(() => {
                     padding: "9px 16px",
                     borderRadius: 7,
                     border: "none",
-                    background: "#6650d8",
+                    background: "#E53935",
                     color: "#ffffff",
                     fontWeight: 800,
                     fontSize: 15,
@@ -1404,7 +1534,7 @@ const unassignedCount = useMemo(() => {
                 padding: "10px 20px",
                 border: "none",
                 borderRadius: 8,
-                background: "#6650d8",
+                background: "#E53935",
                 color: "#ffffff",
                 fontSize: 16,
                 fontWeight: 800,
@@ -1419,6 +1549,195 @@ const unassignedCount = useMemo(() => {
         {filteredTierLists.length === 0 && (
           <div style={{ padding: 30, textAlign: "center", color: "#596579" }}>
             조건에 맞는 티어표가 없습니다.
+          </div>
+        )}
+      </div>
+
+
+      <div
+        style={{
+          background: "#f9fafe",
+          borderRadius: 14,
+          padding: 28,
+          marginBottom: 32,
+          border: "1px solid #dce3ef",
+        }}
+      >
+        <div style={{ fontWeight: 900, fontSize: 24, marginBottom: 8, color: "#C62828" }}>
+          ❓ 추천 퀴즈 맞히기 관리
+        </div>
+        <div style={{ fontSize: 16, color: "#596579", marginBottom: 20 }}>
+          퀴즈 맞히기 홈의 ‘추천 퀴즈 맞히기’에 노출할 퀴즈와 순서를 지정합니다.
+        </div>
+
+        <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 18 }}>
+          <input
+            type="text"
+            value={quizSearchTerm}
+            onChange={(e) => {
+              setQuizSearchTerm(e.target.value);
+              setQuizVisibleCount(10);
+            }}
+            placeholder="퀴즈 제목 또는 ID 검색"
+            style={{
+              flex: "1 1 300px",
+              minWidth: 220,
+              padding: "11px 13px",
+              borderRadius: 8,
+              border: "1px solid #cfd6e4",
+              fontSize: 17,
+              background: "#fff",
+            }}
+          />
+          <label style={{ display: "flex", alignItems: "center", gap: 7, fontWeight: 800 }}>
+            <input
+              type="checkbox"
+              checked={quizFeaturedOnly}
+              onChange={(e) => {
+                setQuizFeaturedOnly(e.target.checked);
+                setQuizVisibleCount(10);
+              }}
+            />
+            추천만 보기
+          </label>
+        </div>
+
+        <div style={{ display: "grid", gap: 10 }}>
+          {filteredQuizzes.slice(0, quizVisibleCount).map((quiz) => {
+            const values = quizEditValues[quiz.id] || {
+              is_featured: Boolean(quiz.is_featured),
+              featured_order:
+                quiz.featured_order === null || quiz.featured_order === undefined
+                  ? ""
+                  : String(quiz.featured_order),
+            };
+
+            return (
+              <div
+                key={quiz.id}
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "minmax(240px,1fr) auto auto auto",
+                  gap: 12,
+                  alignItems: "center",
+                  padding: 14,
+                  border: values.is_featured
+                    ? "1.5px solid #EF5350"
+                    : "1px solid #dce3ef",
+                  borderRadius: 10,
+                  background: values.is_featured ? "#FFF5F5" : "#fff",
+                }}
+              >
+                <div style={{ minWidth: 0 }}>
+                  <div style={{ fontWeight: 900, fontSize: 17, color: "#202534", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                    {quiz.title || "제목 없음"}
+                  </div>
+                  <div style={{ marginTop: 4, fontSize: 13, color: "#667085" }}>
+                    문제 {quiz.question_count || 0} · 플레이 {quiz.play_count || 0}
+                  </div>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => handleQuizFeaturedToggle(quiz.id)}
+                  style={{
+                    border: "1px solid #E53935",
+                    background: values.is_featured ? "#E53935" : "#fff",
+                    color: values.is_featured ? "#fff" : "#E53935",
+                    borderRadius: 8,
+                    padding: "9px 12px",
+                    fontWeight: 900,
+                    cursor: "pointer",
+                  }}
+                >
+                  {values.is_featured ? "★ 추천 중" : "☆ 추천"}
+                </button>
+
+                <input
+                  type="number"
+                  min="1"
+                  value={values.featured_order}
+                  disabled={!values.is_featured}
+                  onChange={(e) =>
+                    setQuizEditValues((prev) => ({
+                      ...prev,
+                      [quiz.id]: {
+                        ...values,
+                        featured_order: e.target.value,
+                      },
+                    }))
+                  }
+                  placeholder="순서"
+                  style={{
+                    width: 78,
+                    padding: "9px 8px",
+                    borderRadius: 8,
+                    border: "1px solid #cfd6e4",
+                    background: values.is_featured ? "#fff" : "#f3f4f6",
+                  }}
+                />
+
+                <button
+                  type="button"
+                  disabled={quizSavingId === quiz.id}
+                  onClick={() => handleQuizFeaturedSave(quiz.id)}
+                  style={{
+                    border: "none",
+                    background: "#E53935",
+                    color: "#fff",
+                    borderRadius: 8,
+                    padding: "9px 14px",
+                    fontWeight: 900,
+                    cursor: "pointer",
+                    opacity: quizSavingId === quiz.id ? 0.6 : 1,
+                  }}
+                >
+                  {quizSavingId === quiz.id ? "저장 중..." : "저장"}
+                </button>
+              </div>
+            );
+          })}
+        </div>
+
+        {quizVisibleCount < filteredQuizzes.length && (
+          <div style={{ textAlign: "center", marginTop: 16 }}>
+            <button
+              type="button"
+              onClick={() => setQuizVisibleCount((prev) => prev + 10)}
+              style={{
+                border: "none",
+                background: "#E53935",
+                color: "#fff",
+                borderRadius: 8,
+                padding: "10px 18px",
+                fontWeight: 900,
+                cursor: "pointer",
+              }}
+            >
+              퀴즈 10개 더보기 ↓
+            </button>
+            <button
+              type="button"
+              onClick={() => setQuizVisibleCount(filteredQuizzes.length)}
+              style={{
+                marginLeft: 8,
+                border: "1px solid #d5dde9",
+                background: "#fff",
+                color: "#3f4a5a",
+                borderRadius: 8,
+                padding: "10px 18px",
+                fontWeight: 900,
+                cursor: "pointer",
+              }}
+            >
+              전체 펼치기
+            </button>
+          </div>
+        )}
+
+        {filteredQuizzes.length === 0 && (
+          <div style={{ padding: 24, textAlign: "center", color: "#667085" }}>
+            조건에 맞는 퀴즈가 없습니다.
           </div>
         )}
       </div>

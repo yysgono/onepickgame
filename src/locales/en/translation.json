@@ -476,6 +476,7 @@
       "loadFailed": "Failed to load tier lists.",
       "loadMore": "Load more",
       "recommendedPresetTitle": "⭐ Recommended Tier List Presets",
+      "allTitle": "All Tier Lists",
       "presetLabel": "Preset",
       "fallbackTitle": "TIER LIST"
     },

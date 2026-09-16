@@ -647,7 +647,7 @@ const cardDescStyle = {
   const cardBottomBarStyle = {
     width: "100%",
     height: 0,
-    background: "#6650d8",
+    background: "#F97316",
     borderRadius: "0 0 18px 18px",
     margin: 0,
     marginTop: "auto",
@@ -671,7 +671,7 @@ const goto = (url) => {
   
 
 const renderWorldcupCard = (cup) => {
-  const categoryAccent = ({korea:"#6650d8",person:"#de5276",anime_manga:"#db8a20",game:"#1687e8",sports:"#24945d",music:"#9a55cd",movie_drama:"#db6544",food:"#c38b17"})[cup.category] || "#6650d8";
+  const categoryAccent = ({korea:"#F97316",person:"#de5276",anime_manga:"#db8a20",game:"#1687e8",sports:"#24945d",music:"#9a55cd",movie_drama:"#db6544",food:"#c38b17"})[cup.category] || "#F97316";
   const winStats = winStatsMap[cup.id] || [];
 
   // 후보들의 누적 우승 횟수 합계 = 총 참여 횟수
@@ -974,7 +974,7 @@ fontWeight: 800,
         style={{
           width: "100%",
           textAlign: "center",
-          color: "#5542b8",
+          color: "#C2410C",
           fontSize:
             isMobile ? 15 : 16,
           fontWeight: 700,
@@ -1203,7 +1203,7 @@ fontWeight: 900,
               padding: 0,
               border: "none",
               background: "transparent",
-              color: "#5542b8",
+              color: "#C2410C",
               fontSize: isMobile ? 16 : 19,
               fontWeight: 800,
               cursor: "pointer",
@@ -1211,13 +1211,13 @@ fontWeight: 900,
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.color =
-                "#5542b8";
+                "#C2410C";
               e.currentTarget.style.textDecoration =
                 "underline";
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.color =
-                "#5542b8";
+                "#C2410C";
               e.currentTarget.style.textDecoration =
                 "none";
             }}
@@ -1385,7 +1385,7 @@ justifyContent:
       style={{
         border: "1px solid #dde2ea",
         borderRadius: 8,
-        background: "#6650d8",
+        background: "#F97316",
         color: "#ffffff",
         padding: isMobile
           ? "9px 22px"
@@ -1627,7 +1627,7 @@ return (
   >
 
 
-  <PageIntro icon="🏆" title={t('gameModeNav.worldcup')} description={t('headerPersonal.worldcupDescription')} buttonLabel={t('create_worldcup')} onCreate={() => onMakeWorldcup ? onMakeWorldcup() : goto(`/${lang}/worldcup-maker`)} personal={personalView} />
+  <PageIntro icon="🏆" title={t('gameModeNav.worldcup')} description={t('headerPersonal.worldcupDescription')} buttonLabel={t('create_worldcup')} onCreate={() => onMakeWorldcup ? onMakeWorldcup() : goto(`/${lang}/worldcup-maker`)} personal={personalView} accentColor="#F97316" />
   {/* 만들기 / 언어 / 검색 / 정렬 */}
 <div
   style={{
@@ -1740,7 +1740,7 @@ background: "transparent",
 color:
   sort === "popular"
     ? "#202534"
-    : "#5542b8",
+    : "#C2410C",
 
           fontSize: isMobile ? 16 : 20,
           fontWeight: 800,
@@ -1789,7 +1789,7 @@ background: "transparent",
 color:
   sort === "recent"
     ? "#202534"
-    : "#5542b8",
+    : "#C2410C",
 
         fontSize: isMobile ? 16 : 20,
           fontWeight: 800,
@@ -1868,7 +1868,7 @@ boxShadow: "none",
 
             transform: "translateY(-50%)",
 
-            color: "#5542b8",
+            color: "#C2410C",
 
             fontSize: isMobile ? 15 : 17,
 
@@ -1904,11 +1904,11 @@ boxShadow: "none",
         aria-pressed={active}
         style={{
           border: active
-            ? "1.5px solid #6650d8"
+            ? "1.5px solid #F97316"
             : "1px solid #d6deea",
 
           background: active
-            ? "#6650d8"
+            ? "#F97316"
             : "#ffffff",
 
           color: active
@@ -1957,7 +1957,7 @@ boxShadow: "none",
       padding: "0 20px",
       boxSizing: "border-box",
       textAlign: "center",
-      color: "#5542b8",
+      color: "#C2410C",
       fontSize: isMobile ? 17 : 20,
       fontWeight: 700,
       lineHeight: 1.6,

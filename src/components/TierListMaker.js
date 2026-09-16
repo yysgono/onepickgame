@@ -22,6 +22,7 @@ import imageCompression from "browser-image-compression";
 
 import MediaRenderer from "./MediaRenderer";
 import Seo from "../seo/Seo";
+import { getCreatorSafetyCopy, creatorWarningStyle } from "./creatorSafetyCopy";
 
 import {
   fetchWinnerStatsFromDB,
@@ -4122,6 +4123,10 @@ if (editingTierListId) {
               ? text.builderDesc
               : text.sourceDesc}
           </div>
+        </div>
+
+        <div style={{ ...creatorWarningStyle, maxWidth: isMobile ? "100%" : 820, margin: "14px auto 18px", boxSizing: "border-box", textAlign: "center" }}>
+          ⚠️ {getCreatorSafetyCopy(lang).warning}
         </div>
 
 

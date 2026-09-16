@@ -477,6 +477,7 @@
       "loadFailed": "티어표를 불러오지 못했습니다.",
       "loadMore": "더 보기",
       "recommendedPresetTitle": "⭐ 추천 티어표 만들기",
+      "allTitle": "전체 티어표",
       "presetLabel": "티어표",
       "fallbackTitle": "TIER LIST"
     },

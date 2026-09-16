@@ -10,7 +10,9 @@
 .onepick-header-mode-main{width:100%;min-height:124px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:18px 10px;box-sizing:border-box;text-align:center;text-decoration:none;color:#343c4d;font-weight:700;font-size:18px;line-height:1.4;overflow-wrap:anywhere}
 .onepick-header-mode-main svg{width:29px;height:29px}
 .onepick-header-mode:not(.is-active):not(.is-pending):hover{background:#f3f0ff}
-.onepick-header-mode.is-active{background:#6650d8}
+.onepick-header-mode.mode-worldcup.is-active{background:#F97316}
+.onepick-header-mode.mode-tier-list.is-active{background:#2563EB}
+.onepick-header-mode.mode-quiz.is-active{background:#E53935}
 .onepick-header-mode.is-active .onepick-header-mode-main{color:#fff}
 .onepick-header-mode.is-pending{color:#768091;background:#fcfcfd}
 .onepick-header-mode.is-pending .onepick-header-mode-main{color:#747d8c;gap:6px;font-size:17px}

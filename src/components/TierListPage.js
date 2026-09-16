@@ -1187,7 +1187,7 @@ const displayTitle =
       const previewCandidates = ids
         .map((candidateId) => candidateById.get(String(candidateId)))
         .filter(Boolean)
-        .slice(0, 4);
+        .slice(0, 6);
 
       return {
         tier,
@@ -1270,7 +1270,7 @@ maxWidth: isMobile ? 430 : 1480,
 >
         
 
-        <PageIntro icon="📊" title={t('tierList.page.title')} description={t('tierList.page.description')} buttonLabel={t('tierList.page.createButton')} onCreate={() => navigate(`/${lang}/tier-list/create`)} personal={mineOnly} />
+        <PageIntro icon="📊" title={t('tierList.page.title')} description={t('tierList.page.description')} buttonLabel={t('tierList.page.createButton')} onCreate={() => navigate(`/${lang}/tier-list/create`)} personal={mineOnly} accentColor="#2563EB" />
 <div
           style={{
             width: "100%", maxWidth: 980, margin: "0 auto 4px", boxSizing: "border-box",
@@ -1400,8 +1400,9 @@ maxWidth: isMobile ? 430 : 1480,
       item.code === lang;
 
     return (
+      <React.Fragment key={item.code}>
+      {item.code === "id" && <span aria-hidden="true" style={{ flexBasis: "100%", height: 0 }} />}
       <button
-        key={item.code}
         type="button"
         onClick={() =>
           changeTierLanguage(
@@ -1411,11 +1412,11 @@ maxWidth: isMobile ? 430 : 1480,
         aria-pressed={active}
         style={{
           border: active
-            ? "1.5px solid #6650d8"
+            ? "1.5px solid #2563EB"
             : "1px solid #d6deea",
 
           background: active
-            ? "#6650d8"
+            ? "#2563EB"
             : "#ffffff",
 
           color: active
@@ -1445,6 +1446,7 @@ maxWidth: isMobile ? 430 : 1480,
       >
         {item.label}
       </button>
+      </React.Fragment>
     );
   })}
 </div>
@@ -1482,7 +1484,7 @@ maxWidth: isMobile ? 430 : 1480,
         <div
   style={{
     textAlign: "center",
-    color: "#5542b8",
+    color: "#1D4ED8",
 fontSize: isMobile ? 24 : 34,
 fontWeight: 900,
 lineHeight: 1.2,
@@ -1613,12 +1615,13 @@ style={{
                             "border-box",
                         }}
                       >
+                        <div style={{ display: "grid", gridTemplateColumns: isMobile ? "42% 58%" : "42% 58%", minHeight: isMobile ? 126 : 154, borderBottom: "1px solid #dde2ea" }}>
                         <div
                           style={{
                             width:
                               "100%",
 
-                aspectRatio: "16 / 10",
+                minHeight: isMobile ? 126 : 154,
 
                             display:
                               "grid",
@@ -1839,6 +1842,23 @@ style={{
                           </div>
                         </div>
 
+                        <div style={{ padding: "8px 10px", borderLeft: "1px solid #dde2ea", display: "grid", alignContent: "center", gap: 4, background: "#fff" }}>
+                          {[
+                            { tier: "S", color: "#ff6b6b", candidate: firstCandidate },
+                            { tier: "A", color: "#ff9f43", candidate: secondCandidate },
+                            { tier: "B", color: "#ffd93d", candidate: null },
+                          ].map((row) => (
+                            <div key={row.tier} style={{ minHeight: 28, display: "flex", alignItems: "center", gap: 6 }}>
+                              <span style={{ width: 28, height: 28, borderRadius: 5, display: "grid", placeItems: "center", background: row.color, color: "#111", fontWeight: 950 }}>{row.tier}</span>
+                              {row.candidate?.image ? (
+                                <MediaRenderer url={row.candidate.image} alt={row.candidate.name || ""} playable={false} loading="lazy" style={{ width: 28, height: 28, borderRadius: 5, objectFit: "cover", border: "1px solid #dde2ea" }} />
+                              ) : <span style={{ width: 28, height: 28, borderRadius: 5, border: "1px dashed #cfd8e6", background: "#f8fafc" }} />}
+                              <span style={{ minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", fontSize: 12, fontWeight: 800, color: "#596579" }}>{row.candidate?.name || ""}</span>
+                            </div>
+                          ))}
+                        </div>
+                        </div>
+
                         <div
                           style={{
                             padding:
@@ -1901,6 +1921,9 @@ style={{
                             }
                           </span>
                         </div>
+                        <div style={{ margin: "0 10px 11px", minHeight: 40, display: "grid", placeItems: "center", border: "1px solid #2563EB", borderRadius: 8, background: "#2563EB", color: "#fff", fontSize: 15, fontWeight: 900 }}>
+                          {t("tierList.page.createButton")}
+                        </div>
                       </button>
                     );
                   }
@@ -1910,6 +1933,9 @@ style={{
           )}
 
 <section className="tier-community-filters" aria-label={t("tierList.page.title")}>
+<h2 style={{ margin: "10px 0 4px", textAlign: "center", fontSize: isMobile ? 24 : 30, fontWeight: 950, color: "#202534" }}>
+  {t("tierList.page.allTitle", "전체 티어표")}
+</h2>
 <div
             style={{
               display:
@@ -1945,8 +1971,7 @@ style={{
                     padding:
                       "7px 11px",
 
-                    borderRadius:
-                      999,
+                    borderRadius: 999,
 
                     border:
                       category ===
@@ -1954,14 +1979,9 @@ style={{
                         ? "1px solid #19bfff"
                         : "1px solid #dde2ea",
 
-                    background:
-                      category ===
-                      value
-                        ? "#ffffff"
-                        : "#ffffff",
+                    background: category === value ? "#2563EB" : "#ffffff",
 
-                    color:
-                      "#202534",
+                    color: category === value ? "#ffffff" : "#202534",
 
                     fontSize:
                       isMobile ? 15 : 16,
@@ -2024,17 +2044,9 @@ style={{
                         ? "1px solid #55d6ff"
                         : "1px solid #dde2ea",
 
-                    background:
-                      sort ===
-                      value
-                        ? "#ffffff"
-                        : "transparent",
+                    background: sort === value ? "#2563EB" : "#ffffff",
 
-                    color:
-                      sort ===
-                      value
-                        ? "#202534"
-                        : "#5542b8",
+                    color: sort === value ? "#ffffff" : "#1D4ED8",
 
                     fontSize:
                       isMobile ? 15 : 16,
@@ -2084,7 +2096,7 @@ style={{
           </div>
         )}
 
-        {tagFilter && <div style={{textAlign:"center",color:"#5542b8",margin:12}}><button type="button" onClick={() => navigate(`/${lang}/tier-list`)} style={{color:"inherit",background:"#ffffff",border:"1px solid #19bfff",borderRadius:20,padding:"6px 12px",cursor:"pointer"}}>#{tagFilter} ×</button></div>}
+        {tagFilter && <div style={{textAlign:"center",color:"#1D4ED8",margin:12}}><button type="button" onClick={() => navigate(`/${lang}/tier-list`)} style={{color:"inherit",background:"#ffffff",border:"1px solid #19bfff",borderRadius:20,padding:"6px 12px",cursor:"pointer"}}>#{tagFilter} ×</button></div>}
         {loading ? (
           <div
             style={{
@@ -2095,7 +2107,7 @@ style={{
                 "center",
 
               color:
-                "#5542b8",
+                "#1D4ED8",
 
               fontWeight:
                 800,
@@ -2116,7 +2128,7 @@ style={{
                 "center",
 
               color:
-                "#5542b8",
+                "#1D4ED8",
 
               fontWeight:
                 800,
@@ -2188,13 +2200,13 @@ gap:
                         "left",
                     }}
                   >
+                    <div style={{ display: "grid", gridTemplateColumns: item.hasTierPreview ? "36% 64%" : "1fr", minHeight: isMobile ? 150 : 210, borderBottom: "1px solid #dde2ea" }}>
                     <div
                       style={{
                         width:
                           "100%",
 
-                        aspectRatio:
-                          "16 / 9",
+                        minHeight: isMobile ? 150 : 210,
 
                         position:
                           "relative",
@@ -2238,43 +2250,6 @@ gap:
   </div>
 )}
 
-                      {item.has_one_pick && (
-                        <div
-                          style={{
-                            position:
-                              "absolute",
-
-                            top: 8,
-                            right: 8,
-
-                            padding:
-                              "5px 8px",
-
-                            borderRadius:
-                              999,
-
-                            background:
-                              "#ffffff",
-
-                            border:
-                              "1px solid #19bfff",
-
-                            color:
-                              "#202534",
-
-                            fontSize:
-                              13,
-
-                            fontWeight:
-                              900,
-                          }}
-                        >
-                          ⭐{" "}
-                          {t(
-                            "tierList.common.onePick"
-                          )}
-                        </div>
-                      )}
                     </div>
 
                     {item.hasTierPreview && (
@@ -2282,9 +2257,9 @@ gap:
                         style={{
                           padding: isMobile ? "7px 8px" : "8px 10px",
                           background: "#ffffff",
-                          borderTop: "1px solid #dde2ea",
-                          borderBottom: "1px solid #dde2ea",
+                          borderLeft: "1px solid #dde2ea",
                           display: "grid",
+                          alignContent: "center",
                           gap: 4,
                         }}
                       >
@@ -2292,7 +2267,7 @@ gap:
                           <div
                             key={row.tier}
                             style={{
-                              minHeight: isMobile ? 27 : 31,
+                              minHeight: isMobile ? 36 : 52,
                               display: "flex",
                               alignItems: "center",
                               gap: 5,
@@ -2301,9 +2276,9 @@ gap:
                           >
                             <div
                               style={{
-                                width: isMobile ? 25 : 30,
-                                minWidth: isMobile ? 25 : 30,
-                                height: isMobile ? 25 : 30,
+                                width: isMobile ? 34 : 46,
+                                minWidth: isMobile ? 34 : 46,
+                                height: isMobile ? 34 : 46,
                                 borderRadius: 5,
                                 background:
                                   row.tier === "S"
@@ -2315,7 +2290,7 @@ gap:
                                 display: "flex",
                                 alignItems: "center",
                                 justifyContent: "center",
-                                fontSize: isMobile ? 12 : 14,
+                                fontSize: isMobile ? 14 : 18,
                                 fontWeight: 950,
                               }}
                             >
@@ -2337,9 +2312,9 @@ gap:
                                   key={`${row.tier}-${candidate?.id ?? index}`}
                                   title={candidate?.name || ""}
                                   style={{
-                                    width: isMobile ? 25 : 30,
-                                    minWidth: isMobile ? 25 : 30,
-                                    height: isMobile ? 25 : 30,
+                                    width: isMobile ? 34 : 42,
+                                    minWidth: isMobile ? 34 : 42,
+                                    height: isMobile ? 34 : 42,
                                     borderRadius: 5,
                                     overflow: "hidden",
                                     background: "#ffffff",
@@ -2366,7 +2341,7 @@ gap:
                               {row.remaining > 0 && (
                                 <span
                                   style={{
-                                    color: "#5542b8",
+                                    color: "#1D4ED8",
                                     fontSize: isMobile ? 12 : 13,
                                     fontWeight: 900,
                                     whiteSpace: "nowrap",
@@ -2380,6 +2355,7 @@ gap:
                         ))}
                       </div>
                     )}
+                    </div>
 
                     <div
                       style={{
@@ -2413,7 +2389,7 @@ gap:
                               "#ffffff",
 
                             color:
-                              "#5542b8",
+                              "#1D4ED8",
 
                             fontSize:
                               12,
@@ -2433,7 +2409,7 @@ gap:
                         <span
                           style={{
                             color:
-                              "#5542b8",
+                              "#1D4ED8",
 
                             fontSize:
                               13,
@@ -2476,7 +2452,7 @@ gap:
 
     color:
       item.presetName
-        ? "#5542b8"
+        ? "#1D4ED8"
         : "transparent",
 
     fontSize: isMobile ? 14 : 15,
@@ -2518,7 +2494,7 @@ gap:
                             "wrap",
 
                           color:
-                            "#5542b8",
+                            "#1D4ED8",
 
                           fontSize:
                             isMobile ? 13 : 14,

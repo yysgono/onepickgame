@@ -41,6 +41,9 @@ import CategoryPage from "./components/CategoryPage";
 import TierListPage from "./components/TierListPage";
 import TierListMaker from "./components/TierListMaker";
 import TierListResultPage from "./components/TierListResultPage";
+import QuizPage from "./components/QuizPage";
+import QuizMaker from "./components/QuizMaker";
+import QuizDetailPage from "./components/QuizDetailPage";
 
 import DePage from "./pages/de";
 import EnPage from "./pages/en";
@@ -1812,6 +1815,18 @@ const makerDescMap = {
 <Route
   path="/:lang/tier-list/:id"
   element={<TierListResultPage />}
+/>
+<Route
+  path="/:lang/quiz"
+  element={<QuizPage />}
+/>
+<Route
+  path="/:lang/quiz/create"
+  element={<QuizMaker />}
+/>
+<Route
+  path="/:lang/quiz/:id"
+  element={<QuizDetailPage />}
 />
 <Route
   path="/:lang"

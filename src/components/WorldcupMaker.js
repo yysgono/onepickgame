@@ -27,6 +27,7 @@ import { supabase } from "../utils/supabaseClient";
 
 import useBanCheck from "../hooks/useBanCheck";
 import { useTranslation } from "react-i18next";
+import { getCreatorSafetyCopy, creatorWarningStyle } from "./creatorSafetyCopy";
 
 const DEFAULT_THUMB_URL =
   "/default-thumb.png";
@@ -624,7 +625,7 @@ function WorldcupMaker({
   onCreate,
   onCancel,
 }) {
-  const { t } =
+  const { t, i18n } =
     useTranslation();
 
   const navigate =
@@ -2191,6 +2192,9 @@ style={{
           handleSubmit
         }
       >
+        <div style={{ ...creatorWarningStyle, marginBottom: 20 }}>
+          ⚠️ {getCreatorSafetyCopy(i18n.language).warning}
+        </div>
         {/* 콘텐츠 원본 언어 */}
 <div
   style={{

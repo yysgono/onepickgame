@@ -560,6 +560,7 @@
       "loadFailed": "Failed to load tier lists.",
       "loadMore": "加载更多",
       "recommendedPresetTitle": "⭐ 推荐排行榜模板",
+      "allTitle": "全部排行榜",
       "presetLabel": "预设",
       "fallbackTitle": "等级榜"
     },

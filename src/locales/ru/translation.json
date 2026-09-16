@@ -477,6 +477,7 @@
       "loadFailed": "Failed to load tier lists.",
       "loadMore": "Показать ещё",
       "recommendedPresetTitle": "⭐ Рекомендуемые шаблоны тир-листа",
+      "allTitle": "Все тир-листы",
       "presetLabel": "Пресет",
       "fallbackTitle": "ТИР-ЛИСТ"
     },

@@ -480,6 +480,7 @@
       "loadFailed": "Failed to load tier lists.",
       "loadMore": "もっと見る",
       "recommendedPresetTitle": "⭐ おすすめTier表を作る",
+      "allTitle": "すべてのTier表",
       "presetLabel": "プリセット",
       "fallbackTitle": "Tier表"
     },
