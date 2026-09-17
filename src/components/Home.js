@@ -1797,40 +1797,48 @@ WebkitBackdropFilter: "none",
       alignItems: "center",
     }}
   >
-    {LANGUAGES.map((item) => {
-      const active = item.code === lang;
+  {LANGUAGES.map((item) => {
+  const active = item.code === lang;
 
-      return (
-        <button
-          key={item.code}
-          type="button"
-          onClick={() => changeHomeLanguage(item.code)}
-          aria-pressed={active}
+  return (
+    <React.Fragment key={item.code}>
+      {item.code === "id" && (
+        <span
+          aria-hidden="true"
           style={{
-            border: active
-              ? "1.5px solid #F97316"
-              : "1px solid #d6deea",
-            background: active
-              ? "#F97316"
-              : "#ffffff",
-            color: active
-              ? "#ffffff"
-              : "#3f4a5a",
-            borderRadius: 8,
-            padding: isMobile
-              ? "5px 9px"
-              : "6px 11px",
-            fontSize: isMobile ? 13 : 14,
-            fontWeight: active ? 800 : 700,
-            cursor: "pointer",
-            lineHeight: 1.2,
-            boxShadow: "none",
+            flexBasis: "100%",
+            height: 0,
           }}
-        >
-          {item.label}
-        </button>
-      );
-    })}
+        />
+      )}
+
+      <button
+        type="button"
+        onClick={() => changeHomeLanguage(item.code)}
+        aria-pressed={active}
+        style={{
+          border: active
+            ? "1.5px solid #F97316"
+            : "1px solid #d6deea",
+          background: active
+            ? "#F97316"
+            : "#ffffff",
+          color: active
+            ? "#ffffff"
+            : "#3f4a5a",
+          borderRadius: 8,
+          padding: isMobile ? "5px 9px" : "6px 11px",
+          fontSize: isMobile ? 13 : 14,
+          fontWeight: active ? 800 : 700,
+          cursor: "pointer",
+          lineHeight: 1.2,
+        }}
+      >
+        {item.label}
+      </button>
+    </React.Fragment>
+  );
+})}
   </div>
 </div>
 
