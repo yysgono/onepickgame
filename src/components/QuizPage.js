@@ -443,6 +443,79 @@ export default function QuizPage() {
         </div>
 
 
+        {/* 검색 아래 언어 선택 */}
+
+          <div
+            style={{
+              display:
+                "flex",
+
+              gap:
+                mobile
+                  ? 6
+                  : 8,
+
+              flexWrap:
+                "wrap",
+
+              justifyContent:
+                "center",
+
+              marginTop:
+                12,
+            }}
+          >
+            {QUIZ_LANGUAGES.map(
+              (item) => (
+                <React.Fragment
+                  key={
+                    item.code
+                  }
+                >
+                  {item.code ===
+                    "id" && (
+                    <span
+                      aria-hidden="true"
+                      style={{
+                        flexBasis:
+                          "100%",
+
+                        height:
+                          0,
+                      }}
+                    />
+                  )}
+
+                  <button
+                    type="button"
+
+                    onClick={() =>
+                      setContentLanguage(
+                        item.code
+                      )
+                    }
+
+                    aria-pressed={
+                      contentLanguage ===
+                      item.code
+                    }
+
+                    style={languageButton(
+                      contentLanguage ===
+                        item.code,
+                      mobile
+                    )}
+                  >
+                    {
+                      item.label
+                    }
+                  </button>
+                </React.Fragment>
+              )
+            )}
+          </div>
+
+
         {/* =========================
             추천 퀴즈
         ========================== */}
@@ -790,79 +863,6 @@ export default function QuizPage() {
               "transparent",
           }}
         >
-          {/* 언어 선택 */}
-
-          <div
-            style={{
-              display:
-                "flex",
-
-              gap:
-                mobile
-                  ? 6
-                  : 8,
-
-              flexWrap:
-                "wrap",
-
-              justifyContent:
-                "center",
-
-              marginTop:
-                12,
-            }}
-          >
-            {QUIZ_LANGUAGES.map(
-              (item) => (
-                <React.Fragment
-                  key={
-                    item.code
-                  }
-                >
-                  {item.code ===
-                    "id" && (
-                    <span
-                      aria-hidden="true"
-                      style={{
-                        flexBasis:
-                          "100%",
-
-                        height:
-                          0,
-                      }}
-                    />
-                  )}
-
-                  <button
-                    type="button"
-
-                    onClick={() =>
-                      setContentLanguage(
-                        item.code
-                      )
-                    }
-
-                    aria-pressed={
-                      contentLanguage ===
-                      item.code
-                    }
-
-                    style={languageButton(
-                      contentLanguage ===
-                        item.code,
-                      mobile
-                    )}
-                  >
-                    {
-                      item.label
-                    }
-                  </button>
-                </React.Fragment>
-              )
-            )}
-          </div>
-
-
           {/* 카테고리 */}
 
           <div

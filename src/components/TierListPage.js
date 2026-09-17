@@ -1386,6 +1386,73 @@ maxWidth: isMobile ? 430 : 1480,
 
 
         </div>
+{/* 검색 아래 언어 선택 */}
+<div
+  style={{
+    marginTop: 8,
+    display: "flex",
+    flexWrap: "wrap",
+    justifyContent: "center",
+    alignItems: "center",
+    gap: isMobile ? 6 : 8,
+  }}
+>
+  {LANGUAGES.map((item) => {
+    const active =
+      item.code === lang;
+
+    return (
+      <React.Fragment key={item.code}>
+      {item.code === "id" && <span aria-hidden="true" style={{ flexBasis: "100%", height: 0 }} />}
+      <button
+        type="button"
+        onClick={() =>
+          changeTierLanguage(
+            item.code
+          )
+        }
+        aria-pressed={active}
+        style={{
+          border: active
+            ? "1.5px solid #2563EB"
+            : "1px solid #d6deea",
+
+          background: active
+            ? "#2563EB"
+            : "#ffffff",
+
+          color: active
+            ? "#ffffff"
+            : "#3f4a5a",
+
+          borderRadius: 8,
+
+          padding: isMobile
+            ? "5px 9px"
+            : "6px 11px",
+
+          fontSize: isMobile
+            ? 13
+            : 14,
+
+          fontWeight: active
+            ? 800
+            : 700,
+
+          cursor: "pointer",
+
+          lineHeight: 1.2,
+
+          boxShadow: "none",
+        }}
+      >
+        {item.label}
+      </button>
+      </React.Fragment>
+    );
+  })}
+</div>
+
 {!mineOnly && recommendedPresets.length >
             0 && (
             <div className="tier-recommendations"
@@ -1864,76 +1931,6 @@ style={{
               </div>
             </div>
           )}
-
-{/* 추천 아래 언어 필터 */}
-          {/* 언어 선택 */}
-<div
-  style={{
-    marginTop: 8,
-    display: "flex",
-    flexWrap: "wrap",
-    justifyContent: "center",
-    alignItems: "center",
-    gap: isMobile ? 6 : 8,
-  }}
->
-  {LANGUAGES.map((item) => {
-    const active =
-      item.code === lang;
-
-    return (
-      <React.Fragment key={item.code}>
-      {item.code === "id" && <span aria-hidden="true" style={{ flexBasis: "100%", height: 0 }} />}
-      <button
-        type="button"
-        onClick={() =>
-          changeTierLanguage(
-            item.code
-          )
-        }
-        aria-pressed={active}
-        style={{
-          border: active
-            ? "1.5px solid #2563EB"
-            : "1px solid #d6deea",
-
-          background: active
-            ? "#2563EB"
-            : "#ffffff",
-
-          color: active
-            ? "#ffffff"
-            : "#3f4a5a",
-
-          borderRadius: 8,
-
-          padding: isMobile
-            ? "5px 9px"
-            : "6px 11px",
-
-          fontSize: isMobile
-            ? 13
-            : 14,
-
-          fontWeight: active
-            ? 800
-            : 700,
-
-          cursor: "pointer",
-
-          lineHeight: 1.2,
-
-          boxShadow: "none",
-        }}
-      >
-        {item.label}
-      </button>
-      </React.Fragment>
-    );
-  })}
-</div>
-
-          
 
 <section className="tier-community-filters" aria-label={t("tierList.page.title")}>
 <div

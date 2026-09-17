@@ -1776,6 +1776,64 @@ WebkitBackdropFilter: "none",
   </div>
 </div>
 
+{/* 검색 아래 언어 선택 */}
+<div
+  style={{
+    width: "100%",
+    maxWidth: 980,
+    margin: isMobile
+      ? "10px auto 18px"
+      : "12px auto 22px",
+    padding: isMobile ? "0 12px" : "0 16px",
+    boxSizing: "border-box",
+  }}
+>
+  <div
+    style={{
+      display: "flex",
+      flexWrap: "wrap",
+      gap: isMobile ? 6 : 8,
+      justifyContent: "center",
+      alignItems: "center",
+    }}
+  >
+    {LANGUAGES.map((item) => {
+      const active = item.code === lang;
+
+      return (
+        <button
+          key={item.code}
+          type="button"
+          onClick={() => changeHomeLanguage(item.code)}
+          aria-pressed={active}
+          style={{
+            border: active
+              ? "1.5px solid #F97316"
+              : "1px solid #d6deea",
+            background: active
+              ? "#F97316"
+              : "#ffffff",
+            color: active
+              ? "#ffffff"
+              : "#3f4a5a",
+            borderRadius: 8,
+            padding: isMobile
+              ? "5px 9px"
+              : "6px 11px",
+            fontSize: isMobile ? 13 : 14,
+            fontWeight: active ? 800 : 700,
+            cursor: "pointer",
+            lineHeight: 1.2,
+            boxShadow: "none",
+          }}
+        >
+          {item.label}
+        </button>
+      );
+    })}
+  </div>
+</div>
+
 {/* 검색 결과 없음 */}
 {search.trim() && filtered.length === 0 && (
   <div
@@ -1824,52 +1882,6 @@ WebkitBackdropFilter: "none",
     boxSizing: "border-box",
   }}
 >
-  {/* 언어 */}
-  <div
-    style={{
-      display: "flex",
-      flexWrap: "wrap",
-      gap: isMobile ? 6 : 8,
-      justifyContent: "center",
-      alignItems: "center",
-    }}
-  >
-    {LANGUAGES.map((item) => {
-      const active = item.code === lang;
-
-      return (
-        <button
-          key={item.code}
-          type="button"
-          onClick={() => changeHomeLanguage(item.code)}
-          aria-pressed={active}
-          style={{
-            border: active
-              ? "1.5px solid #F97316"
-              : "1px solid #d6deea",
-            background: active
-              ? "#F97316"
-              : "#ffffff",
-            color: active
-              ? "#ffffff"
-              : "#3f4a5a",
-            borderRadius: 8,
-            padding: isMobile
-              ? "5px 9px"
-              : "6px 11px",
-            fontSize: isMobile ? 13 : 14,
-            fontWeight: active ? 800 : 700,
-            cursor: "pointer",
-            lineHeight: 1.2,
-            boxShadow: "none",
-          }}
-        >
-          {item.label}
-        </button>
-      );
-    })}
-  </div>
-
   {/* 인기 / 최신 */}
   <div
     style={{
