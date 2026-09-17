@@ -1,18 +1,98 @@
 {
-  "ko": { "name": "퀴즈 맞히기", "title": "퀴즈 맞히기 · 퀴즈 만들기 | 원픽게임", "description": "게임, 애니메이션, 연예인, 국기와 상식까지 다양한 퀴즈를 풀어보세요. 이미지와 유튜브 영상으로 나만의 퀴즈를 만들고 정답률과 결과를 친구들과 공유할 수 있습니다." },
-  "en": { "name": "Quiz", "title": "Play and Create Quizzes | OnePickGame", "description": "Test your knowledge with quizzes about games, anime, celebrities, flags and more. Create your own image or YouTube video quiz and share your score with friends." },
-  "ja": { "name": "クイズ", "title": "クイズに挑戦・クイズを作成 | OnePickGame", "description": "ゲーム、アニメ、芸能人、国旗、雑学などのクイズに挑戦。画像やYouTube動画で自分だけのクイズを作り、正答率や結果を友達と共有できます。" },
-  "zh": { "name": "测验", "title": "在线答题与创建测验 | OnePickGame", "description": "挑战游戏、动漫、明星、国旗和常识等主题的测验。使用图片或YouTube视频制作自己的测验，与朋友分享答对率和结果。" },
-  "es": { "name": "Quiz", "title": "Responde y crea quizzes | OnePickGame", "description": "Pon a prueba tus conocimientos sobre juegos, anime, famosos, banderas y cultura general. Crea quizzes con imágenes o vídeos de YouTube y comparte tus resultados." },
-  "fr": { "name": "Quiz", "title": "Jouer et créer des quiz | OnePickGame", "description": "Testez vos connaissances sur les jeux, les animés, les célébrités, les drapeaux et la culture générale. Créez des quiz avec des images ou des vidéos YouTube et partagez vos résultats." },
-  "vi": { "name": "Đố vui", "title": "Chơi và tạo câu đố | OnePickGame", "description": "Thử sức với câu đố về trò chơi, anime, người nổi tiếng, quốc kỳ và kiến thức chung. Tạo câu đố bằng hình ảnh hoặc video YouTube và chia sẻ kết quả với bạn bè." },
-  "de": { "name": "Quiz", "title": "Quiz spielen und erstellen | OnePickGame", "description": "Teste dein Wissen über Spiele, Anime, Prominente, Flaggen und mehr. Erstelle eigene Quiz mit Bildern oder YouTube-Videos und teile deine Ergebnisse mit Freunden." },
-  "ru": { "name": "Викторины", "title": "Играть и создавать викторины | OnePickGame", "description": "Проверьте свои знания об играх, аниме, знаменитостях, флагах и других темах. Создавайте викторины с изображениями или видео YouTube и делитесь результатами с друзьями." },
-  "id": { "name": "Kuis", "title": "Main dan buat kuis | OnePickGame", "description": "Uji pengetahuan tentang gim, anime, selebritas, bendera, dan pengetahuan umum. Buat kuis dengan gambar atau video YouTube dan bagikan hasilnya kepada teman." },
-  "pt": { "name": "Quiz", "title": "Jogue e crie quizzes | OnePickGame", "description": "Teste seus conhecimentos sobre jogos, anime, celebridades, bandeiras e cultura geral. Crie quizzes com imagens ou vídeos do YouTube e compartilhe seus resultados com amigos." },
-  "hi": { "name": "क्विज़", "title": "क्विज़ खेलें और बनाएं | OnePickGame", "description": "गेम, ऐनिमे, मशहूर हस्तियों, झंडों और सामान्य ज्ञान पर क्विज़ खेलें। तस्वीरों या YouTube वीडियो से अपना क्विज़ बनाएं और नतीजे दोस्तों के साथ साझा करें।" },
-  "tr": { "name": "Quiz", "title": "Quiz çöz ve oluştur | OnePickGame", "description": "Oyunlar, anime, ünlüler, bayraklar ve genel kültür hakkında bilgini sına. Görseller veya YouTube videolarıyla kendi quizini oluştur ve sonuçlarını arkadaşlarınla paylaş." },
-  "th": { "name": "ควิซ", "title": "เล่นและสร้างควิซ | OnePickGame", "description": "ทดสอบความรู้เรื่องเกม อนิเมะ คนดัง ธงชาติ และความรู้ทั่วไป สร้างควิซด้วยรูปภาพหรือวิดีโอ YouTube แล้วแชร์คะแนนและผลลัพธ์กับเพื่อน" },
-  "ar": { "name": "اختبارات", "title": "العب وأنشئ الاختبارات | OnePickGame", "description": "اختبر معلوماتك عن الألعاب والأنمي والمشاهير والأعلام والثقافة العامة. أنشئ اختبارات بالصور أو فيديوهات YouTube وشارك نتائجك مع الأصدقاء." },
-  "bn": { "name": "কুইজ", "title": "কুইজ খেলুন ও তৈরি করুন | OnePickGame", "description": "গেম, অ্যানিমে, তারকা, পতাকা ও সাধারণ জ্ঞান নিয়ে কুইজ খেলুন। ছবি বা YouTube ভিডিও দিয়ে নিজের কুইজ তৈরি করুন এবং বন্ধুদের সঙ্গে ফলাফল ভাগ করুন।" }
+  "ko": {
+    "name": "퀴즈 맞히기",
+    "title": "퀴즈 맞히기 · 온라인 퀴즈 사이트 | 원픽게임",
+    "description": "게임, 애니메이션, 연예인, 스포츠, 상식 등 다양한 퀴즈를 무료로 풀어보고, 나만의 퀴즈도 직접 만들어보세요.",
+    "heading": "퀴즈 맞히기 · 온라인 퀴즈 사이트"
+  },
+  "en": {
+    "name": "Quiz",
+    "title": "Online Quizzes · Free Quiz Site | OnePickGame",
+    "description": "Play free quizzes about games, anime, celebrities, sports, trivia and more, or create your own quiz and share it with others.",
+    "heading": "Online Quizzes · Free Quiz Site"
+  },
+  "ja": {
+    "name": "クイズ",
+    "title": "クイズに挑戦 · オンラインクイズサイト | OnePickGame",
+    "description": "ゲーム、アニメ、芸能人、スポーツ、雑学など、さまざまなクイズを無料で楽しめます。自分だけのクイズも作成できます。",
+    "heading": "クイズに挑戦 · オンラインクイズサイト"
+  },
+  "zh": {
+    "name": "测验",
+    "title": "在线测验 · 免费答题网站 | OnePickGame",
+    "description": "免费挑战游戏、动漫、明星、体育、常识等各种在线测验，也可以创建属于自己的测验。",
+    "heading": "在线测验 · 免费答题网站"
+  },
+  "es": {
+    "name": "Quiz",
+    "title": "Quiz online · Sitio de quizzes gratis | OnePickGame",
+    "description": "Disfruta gratis de quizzes sobre juegos, anime, famosos, deportes, cultura general y más, o crea tu propio quiz.",
+    "heading": "Quiz online · Sitio de quizzes gratis"
+  },
+  "fr": {
+    "name": "Quiz",
+    "title": "Quiz en ligne · Site de quiz gratuit | OnePickGame",
+    "description": "Jouez gratuitement à des quiz sur les jeux, les anime, les célébrités, le sport, la culture générale et plus, ou créez votre propre quiz.",
+    "heading": "Quiz en ligne · Site de quiz gratuit"
+  },
+  "vi": {
+    "name": "Đố vui",
+    "title": "Đố vui trực tuyến · Trang quiz miễn phí | OnePickGame",
+    "description": "Chơi miễn phí các câu đố về game, anime, người nổi tiếng, thể thao, kiến thức và nhiều chủ đề khác, hoặc tự tạo câu đố của riêng bạn.",
+    "heading": "Đố vui trực tuyến · Trang quiz miễn phí"
+  },
+  "de": {
+    "name": "Quiz",
+    "title": "Online-Quiz · Kostenlose Quiz-Seite | OnePickGame",
+    "description": "Spiele kostenlose Quizze zu Games, Anime, Prominenten, Sport, Allgemeinwissen und mehr oder erstelle dein eigenes Quiz.",
+    "heading": "Online-Quiz · Kostenlose Quiz-Seite"
+  },
+  "ru": {
+    "name": "Викторины",
+    "title": "Онлайн-викторины · Бесплатный сайт викторин | OnePickGame",
+    "description": "Проходите бесплатные викторины об играх, аниме, знаменитостях, спорте, общих знаниях и других темах или создавайте свои.",
+    "heading": "Онлайн-викторины · Бесплатный сайт викторин"
+  },
+  "id": {
+    "name": "Kuis",
+    "title": "Kuis Online · Situs Kuis Gratis | OnePickGame",
+    "description": "Mainkan kuis gratis tentang game, anime, selebritas, olahraga, pengetahuan umum, dan lainnya, atau buat kuis kamu sendiri.",
+    "heading": "Kuis Online · Situs Kuis Gratis"
+  },
+  "pt": {
+    "name": "Quiz",
+    "title": "Quiz Online · Site de Quiz Grátis | OnePickGame",
+    "description": "Divirta-se com quizzes gratuitos sobre jogos, anime, celebridades, esportes, conhecimentos gerais e muito mais, ou crie o seu próprio quiz.",
+    "heading": "Quiz Online · Site de Quiz Grátis"
+  },
+  "hi": {
+    "name": "क्विज़",
+    "title": "ऑनलाइन क्विज़ · मुफ्त क्विज़ साइट | OnePickGame",
+    "description": "गेम, एनीमे, सेलिब्रिटी, खेल, सामान्य ज्ञान और कई अन्य विषयों पर मुफ्त क्विज़ खेलें या अपना खुद का क्विज़ बनाएं।",
+    "heading": "ऑनलाइन क्विज़ · मुफ्त क्विज़ साइट"
+  },
+  "tr": {
+    "name": "Quiz",
+    "title": "Online Quiz · Ücretsiz Quiz Sitesi | OnePickGame",
+    "description": "Oyunlar, anime, ünlüler, spor, genel kültür ve daha birçok konuda ücretsiz quiz çözün veya kendi quizinizi oluşturun.",
+    "heading": "Online Quiz · Ücretsiz Quiz Sitesi"
+  },
+  "th": {
+    "name": "ควิซ",
+    "title": "ควิซออนไลน์ · เว็บไซต์ควิซฟรี | OnePickGame",
+    "description": "สนุกกับควิซฟรีเกี่ยวกับเกม อนิเมะ คนดัง กีฬา ความรู้รอบตัว และหัวข้ออื่น ๆ หรือสร้างควิซของคุณเอง",
+    "heading": "ควิซออนไลน์ · เว็บไซต์ควิซฟรี"
+  },
+  "ar": {
+    "name": "اختبارات",
+    "title": "اختبارات أونلاين · موقع اختبارات مجاني | OnePickGame",
+    "description": "استمتع باختبارات مجانية عن الألعاب والأنمي والمشاهير والرياضة والمعلومات العامة وغيرها، أو أنشئ اختبارك الخاص.",
+    "heading": "اختبارات أونلاين · موقع اختبارات مجاني"
+  },
+  "bn": {
+    "name": "কুইজ",
+    "title": "অনলাইন কুইজ · ফ্রি কুইজ সাইট | OnePickGame",
+    "description": "গেম, অ্যানিমে, সেলিব্রিটি, খেলাধুলা, সাধারণ জ্ঞানসহ নানা বিষয়ে বিনামূল্যে কুইজ খেলুন অথবা নিজের কুইজ তৈরি করুন।",
+    "heading": "অনলাইন কুইজ · ফ্রি কুইজ সাইট"
+  }
 }

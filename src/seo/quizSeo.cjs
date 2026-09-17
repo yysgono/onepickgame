@@ -48,6 +48,7 @@ function getQuizSeo(language, quiz, origin = SITE_URL) {
   const slug = quiz ? `quiz/${encodeURIComponent(quiz.id)}` : 'quiz';
   return {
     lang, slug, name,
+    heading: quiz ? name : copy.heading || copy.name,
     title: quiz ? `${name} | ${lang === 'ko' ? '원픽게임' : 'OnePickGame'}` : copy.title,
     description: quiz ? localized(quiz.description_translations, quiz.description, lang) || `${name} · ${copy.description}` : copy.description,
     image: socialImage(quiz?.thumbnail_url, origin),

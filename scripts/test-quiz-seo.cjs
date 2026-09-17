@@ -71,7 +71,7 @@ test('all 16 list locales have distinct, matching HTML/OG/Twitter/canonical meta
     assert.equal(d.querySelectorAll('link[rel=canonical]').length, 1);
     assert.equal(d.querySelectorAll('meta[name=description]').length, 1);
     assert.equal(d.querySelectorAll('link[rel=alternate]').length, 17);
-    assert.equal(d.querySelector('h1').textContent, seo.name);
+    assert.equal(d.querySelector('h1').textContent, seo.heading || seo.name);
     assert.ok(d.querySelector('script[src="/static/js/test.js"]'));
     assert.doesNotMatch(html, /Bracket Game|onepick-social\.png|quiz_questions/);
     if (lang !== 'en') assert.notEqual(seo.description, shared.COPY.en.description);

@@ -384,11 +384,11 @@ export default function QuizPage() {
           icon="❓"
 
           title={
-            c.title
+            seo.heading
           }
 
           description={
-            c.intro
+            seo.description
           }
 
           buttonLabel={

@@ -95,7 +95,8 @@ module.exports = function installQuizSeo(app, db, origin, options = {}) {
       const links = detail || creator
         ? '<a href="' + origin + '/' + lang + '/quiz">' + esc(COPY[lang].name) + '</a>'
         : '<ul>' + (data || []).map(q => '<li><a href="' + origin + '/' + lang + '/quiz/' + encodeURIComponent(q.id) + '">' + esc(localized(q.title_translations, q.title, lang)) + '</a></li>').join('') + '</ul>';
-      const body = '<main><h1>' + esc(seo.name) + '</h1><p>' + esc(seo.description) + '</p>' + links + '</main>';
+      const visibleHeading = detail ? seo.name : (seo.heading || seo.name);
+      const body = '<main><h1>' + esc(visibleHeading) + '</h1><p>' + esc(seo.description) + '</p>' + links + '</main>';
       const html = renderHtml(await templateLoader(), seo, body, indexable);
       res.set('Cache-Control', creator ? 'no-store' : PUBLIC_CACHE);
       res.type('html').send(html);

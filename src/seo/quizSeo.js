@@ -133,6 +133,7 @@ export function getQuizSeo(language, quiz, origin = SITE_URL) {
     lang,
     slug,
     name,
+    heading: quiz ? name : copy.heading || copy.name,
     title: quiz
       ? `${name} | ${lang === "ko" ? "원픽게임" : "OnePickGame"}`
       : copy.title,
