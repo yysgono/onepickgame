@@ -1699,179 +1699,70 @@ WebkitBackdropFilter: "none",
     
 
     {/* =========================
-        2줄 : 인기 + 최신 + 검색
+        검색
     ========================== */}
     <div
       style={{
         width: "100%",
         display: "flex",
         alignItems: "center",
-        gap: isMobile ? 6 : 8,
       }}
     >
-      {/* 인기 */}
-      <button
-        type="button"
-        onClick={() => setSort("popular")}
+      <div
         style={{
-          height: isMobile ? 42 : 48,
-
-          padding: isMobile
-            ? "0 11px"
-            : "0 15px",
-
-           width: isMobile ? 66 : 82,
-display: "inline-flex",
-alignItems: "center",
-justifyContent: "center",
-
-          flexShrink: 0,
-
-border: "none",
-borderBottom:
-  sort === "popular"
-    ? "2px solid #dde2ea"
-    : "2px solid transparent",
-
-borderRadius: 0,
-
-background: "transparent",
-
-color:
-  sort === "popular"
-    ? "#202534"
-    : "#C2410C",
-
-          fontSize: isMobile ? 16 : 20,
-          fontWeight: 800,
-
-          cursor: "pointer",
-
-boxShadow: "none",
-
-          whiteSpace: "nowrap",
-
-          transition:
-            "background .15s, border .15s",
+          flex: 1,
+          minWidth: 0,
+          position: "relative",
         }}
       >
-        {t("popular")}
-      </button>
+        <input
+          ref={searchInputRef}
+          className="home-search-input"
+          type="text"
+          placeholder={t("search_placeholder")}
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              recordSearch(search);
+            }
+          }}
+          style={{
+            width: "100%",
+            height: isMobile ? 44 : 50,
+            background: "#ffffff",
+            color: "#202534",
+            border: "2px solid #bccae0",
+            borderRadius: 12,
+            padding: isMobile
+              ? "0 38px 0 12px"
+              : "0 46px 0 16px",
+            boxSizing: "border-box",
+            fontSize: isMobile ? 16 : 20,
+            fontWeight: 700,
+            outline: "none",
+            boxShadow: "inset 0 1px 2px rgba(31,50,84,0.05)",
+          }}
+        />
 
-      {/* 최신 */}
-      <button
-        type="button"
-        onClick={() => setSort("recent")}
-        style={{
-     height: isMobile ? 42 : 48,
+        <style>
+          {`
+            .home-search-input::placeholder {
+              color: #8b98ad;
+              opacity: 1;
+              font-weight: 600;
+            }
+          `}
+        </style>
 
-          padding: isMobile
-            ? "0 11px"
-            : "0 15px",
-
-      width: isMobile ? 66 : 82,
-display: "inline-flex",
-alignItems: "center",
-justifyContent: "center",
-
-          flexShrink: 0,
-
-border: "none",
-borderBottom:
-  sort === "recent"
-    ? "2px solid #dde2ea"
-    : "2px solid transparent",
-
-borderRadius: 0,
-
-background: "transparent",
-
-color:
-  sort === "recent"
-    ? "#202534"
-    : "#C2410C",
-
-        fontSize: isMobile ? 16 : 20,
-          fontWeight: 800,
-
-          cursor: "pointer",
-
-boxShadow: "none",
-
-          whiteSpace: "nowrap",
-
-          transition:
-            "background .15s, border .15s",
-        }}
-      >
-        {t("latest")}
-      </button>
-
-{/* 검색 */}
-<div
-  style={{
-    flex: 1,
-    minWidth: 0,
-    position: "relative",
-  }}
->
-<input
-  ref={searchInputRef}
-  className="home-search-input"
-  type="text"
-  placeholder={t("search_placeholder")}
-  value={search}
-  onChange={(e) => setSearch(e.target.value)}
-  onKeyDown={(e) => {
-    if (e.key === "Enter") {
-      recordSearch(search);
-    }
-  }}
-  style={{
-    width: "100%",
-    height: isMobile ? 44 : 50,
-
-    background: "#ffffff",
-    color: "#202534",
-
-    border: "2px solid #bccae0",
-    borderRadius: 12,
-
-    padding: isMobile ? "0 38px 0 12px" : "0 46px 0 16px",
-
-    boxSizing: "border-box",
-
-    fontSize: isMobile ? 16 : 20,
-    fontWeight: 700,
-
-    outline: "none",
-    boxShadow: "inset 0 1px 2px rgba(31,50,84,0.05)",
-  }}
-/>
-
-
-<style>
-  {`
-    .home-search-input::placeholder {
-      color: #8b98ad;
-      opacity: 1;
-      font-weight: 600;
-    }
-  `}
-</style>
         <span
           style={{
             position: "absolute",
-
             right: isMobile ? 9 : 12,
             top: "50%",
-
             transform: "translateY(-50%)",
-
             color: "#C2410C",
-
             fontSize: isMobile ? 15 : 17,
-
             pointerEvents: "none",
           }}
         >
@@ -1879,66 +1770,6 @@ boxShadow: "none",
         </span>
       </div>
     </div>
-
-  {/* 언어 선택 */}
-<div
-  style={{
-    marginTop: 10,
-    display: "flex",
-    flexWrap: "wrap",
-    gap: isMobile ? 6 : 8,
-    alignItems: "center",
-    justifyContent: "center",
-  }}
->
-
-
-  {LANGUAGES.map((item) => {
-    const active = item.code === lang;
-
-    return (
-      <button
-        key={item.code}
-        type="button"
-        onClick={() => changeHomeLanguage(item.code)}
-        aria-pressed={active}
-        style={{
-          border: active
-            ? "1.5px solid #F97316"
-            : "1px solid #d6deea",
-
-          background: active
-            ? "#F97316"
-            : "#ffffff",
-
-          color: active
-            ? "#ffffff"
-            : "#3f4a5a",
-
-          borderRadius: 8,
-
-          padding: isMobile
-            ? "5px 9px"
-            : "6px 11px",
-
-          fontSize: isMobile
-            ? 13
-            : 14,
-
-          fontWeight: active
-            ? 800
-            : 700,
-
-          cursor: "pointer",
-          lineHeight: 1.2,
-          boxShadow: "none",
-        }}
-      >
-        {item.label}
-      </button>
-    );
-  })}
-</div>
 
 </div> {/* 만들기/검색 작은 패널 닫기 */}
 
@@ -1980,6 +1811,127 @@ boxShadow: "none",
   cups: featuredCups,
   featured: true,
 })}
+
+{/* 추천 아래 필터 */}
+<div
+  style={{
+    width: "100%",
+    maxWidth: 980,
+    margin: isMobile
+      ? "8px auto 18px"
+      : "12px auto 24px",
+    padding: isMobile ? "0 12px" : "0 16px",
+    boxSizing: "border-box",
+  }}
+>
+  {/* 언어 */}
+  <div
+    style={{
+      display: "flex",
+      flexWrap: "wrap",
+      gap: isMobile ? 6 : 8,
+      justifyContent: "center",
+      alignItems: "center",
+    }}
+  >
+    {LANGUAGES.map((item) => {
+      const active = item.code === lang;
+
+      return (
+        <button
+          key={item.code}
+          type="button"
+          onClick={() => changeHomeLanguage(item.code)}
+          aria-pressed={active}
+          style={{
+            border: active
+              ? "1.5px solid #F97316"
+              : "1px solid #d6deea",
+            background: active
+              ? "#F97316"
+              : "#ffffff",
+            color: active
+              ? "#ffffff"
+              : "#3f4a5a",
+            borderRadius: 8,
+            padding: isMobile
+              ? "5px 9px"
+              : "6px 11px",
+            fontSize: isMobile ? 13 : 14,
+            fontWeight: active ? 800 : 700,
+            cursor: "pointer",
+            lineHeight: 1.2,
+            boxShadow: "none",
+          }}
+        >
+          {item.label}
+        </button>
+      );
+    })}
+  </div>
+
+  {/* 인기 / 최신 */}
+  <div
+    style={{
+      display: "flex",
+      justifyContent: "center",
+      gap: 8,
+      marginTop: 12,
+    }}
+  >
+    <button
+      type="button"
+      onClick={() => setSort("popular")}
+      aria-pressed={sort === "popular"}
+      style={{
+        border:
+          sort === "popular"
+            ? "1.5px solid #F97316"
+            : "1px solid #dde2ea",
+        background:
+          sort === "popular"
+            ? "#F97316"
+            : "#ffffff",
+        color:
+          sort === "popular"
+            ? "#ffffff"
+            : "#C2410C",
+        borderRadius: 8,
+        padding: "7px 14px",
+        fontWeight: 900,
+        cursor: "pointer",
+      }}
+    >
+      {t("popular")}
+    </button>
+
+    <button
+      type="button"
+      onClick={() => setSort("recent")}
+      aria-pressed={sort === "recent"}
+      style={{
+        border:
+          sort === "recent"
+            ? "1.5px solid #F97316"
+            : "1px solid #dde2ea",
+        background:
+          sort === "recent"
+            ? "#F97316"
+            : "#ffffff",
+        color:
+          sort === "recent"
+            ? "#ffffff"
+            : "#C2410C",
+        borderRadius: 8,
+        padding: "7px 14px",
+        fontWeight: 900,
+        cursor: "pointer",
+      }}
+    >
+      {t("latest")}
+    </button>
+  </div>
+</div>
 
 
 

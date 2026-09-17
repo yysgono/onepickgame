@@ -406,6 +406,44 @@ export default function QuizPage() {
 
 
         {/* =========================
+            검색
+        ========================== */}
+
+        <div
+          style={{
+            width: "100%",
+            maxWidth: 980,
+            margin: mobile
+              ? "0 auto 20px"
+              : "0 auto 24px",
+            padding: mobile
+              ? "0 12px"
+              : "0 16px",
+            boxSizing: "border-box",
+          }}
+        >
+          <input
+            value={search}
+            onChange={(e) =>
+              setSearch(e.target.value)
+            }
+            placeholder={c.search}
+            style={{
+              width: "100%",
+              height: 44,
+              border: "1.5px solid #bccae0",
+              borderRadius: 8,
+              padding: "0 12px",
+              fontSize: 17,
+              fontWeight: 750,
+              outline: "none",
+              boxSizing: "border-box",
+            }}
+          />
+        </div>
+
+
+        {/* =========================
             추천 퀴즈
         ========================== */}
 
@@ -720,7 +758,7 @@ export default function QuizPage() {
 
 
         {/* =========================
-            검색 / 필터
+            필터
         ========================== */}
 
         <div
@@ -752,72 +790,6 @@ export default function QuizPage() {
               "transparent",
           }}
         >
-          {/* 검색창 */}
-
-          <div
-            style={{
-              display:
-                "flex",
-
-              gap:
-                8,
-
-              flexWrap:
-                "wrap",
-            }}
-          >
-            <input
-              value={
-                search
-              }
-
-              onChange={(
-                e
-              ) =>
-                setSearch(
-                  e.target.value
-                )
-              }
-
-              placeholder={
-                c.search
-              }
-
-              style={{
-                flex:
-                  1,
-
-                minWidth:
-                  220,
-
-                height:
-                  44,
-
-                border:
-                  "1.5px solid #bccae0",
-
-                borderRadius:
-                  8,
-
-                padding:
-                  "0 12px",
-
-                fontSize:
-                  17,
-
-                fontWeight:
-                  750,
-
-                outline:
-                  "none",
-
-                boxSizing:
-                  "border-box",
-              }}
-            />
-          </div>
-
-
           {/* 언어 선택 */}
 
           <div
