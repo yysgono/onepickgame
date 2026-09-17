@@ -71,6 +71,12 @@ import {
 
 import { supabase } from "./utils/supabaseClient";
 import Seo from "./seo/Seo";
+import { DEFAULT_QUIZ_LANGUAGE } from "./seo/quizSeo";
+
+function LegacyQuizRedirect() {
+  const location = useLocation();
+  return <Navigate to={`/${DEFAULT_QUIZ_LANGUAGE}${location.pathname.replace(/\/+$/, "")}${location.search}${location.hash}`} replace />;
+}
 
 /* =====================================================
    모바일 여부
@@ -1704,6 +1710,7 @@ const makerDescMap = {
 
 <div className="main-content-box">
   <Routes>
+            <Route path="/quiz/*" element={<LegacyQuizRedirect />} />
             <Route
               path="/privacy-policy"
               element={

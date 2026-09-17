@@ -4,6 +4,7 @@ const express = require("express");
 const cors = require("cors");
 const jwt = require("jsonwebtoken");
 const { createClient } = require("@supabase/supabase-js");
+const { loadSeoTemplate } = require("./seo-template.cjs");
 require("dotenv").config();
 
 const app = express();
@@ -402,15 +403,7 @@ app.use(async (req, res, next) => {
   const text = BLOG_TEXT[lang] || BLOG_TEXT.en;
 
   try {
-    const baseResponse = await fetch(`${SITE_URL}/`);
-
-    if (!baseResponse.ok) {
-      throw new Error(
-        `Base HTML load failed: ${baseResponse.status}`
-      );
-    }
-
-    let html = await baseResponse.text();
+    let html = await loadSeoTemplate(SITE_URL);
 
     /*
      * 기존 기본 SEO 제거
@@ -1229,17 +1222,7 @@ app.use(async (req, res, next) => {
     HOME_SEO.en;
 
   try {
-    const baseResponse =
-      await fetch(`${SITE_URL}/`);
-
-    if (!baseResponse.ok) {
-      throw new Error(
-        `Base HTML load failed: ${baseResponse.status}`
-      );
-    }
-
-    let html =
-      await baseResponse.text();
+    let html = await loadSeoTemplate(SITE_URL);
 
     /*
      * =====================================================
@@ -1873,17 +1856,7 @@ app.use(async (req, res, next) => {
      * 기본 index.html 가져오기
      */
 
-    const baseResponse =
-      await fetch(`${SITE_URL}/`);
-
-    if (!baseResponse.ok) {
-      throw new Error(
-        `Base HTML load failed: ${baseResponse.status}`
-      );
-    }
-
-    let html =
-      await baseResponse.text();
+    let html = await loadSeoTemplate(SITE_URL);
 
     /*
      * 기존 SEO 태그 제거
@@ -2015,10 +1988,6 @@ if (typeof descriptionTranslations === "string") {
   }
 }
 
-console.log("SEO DEBUG lang:", lang);
-console.log("SEO DEBUG raw:", worldcup.description_translations);
-console.log("SEO DEBUG parsed:", descriptionTranslations);
-console.log("SEO DEBUG ko:", descriptionTranslations.ko);
 
 const translatedDescription =
   descriptionTranslations[lang] ||

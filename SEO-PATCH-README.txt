@@ -1,37 +1,41 @@
-OnePickGame SEO patch — based on onepickgame (5).zip
+OnePickGame SEO 최종 패치 v3 — onepickgame(10).zip 기준 / 2026-09-17
 
 적용 방법
-1. 현재 프로젝트를 백업하세요.
-2. 이 ZIP의 파일을 프로젝트 루트(package.json이 있는 폴더)에 같은 경로로 덮어쓰세요.
-3. quiz-seo.cjs는 새 파일입니다. server.js와 같은 폴더에 반드시 함께 넣으세요.
-4. 기존 방식으로 npm run build 및 Vercel 재배포를 실행하세요.
-5. Google 실시간 URL 검사에서 /ko/quiz와 공개 퀴즈 상세 URL의 noindex 해제,
-   canonical 및 제목을 확인한 후 색인 생성 요청을 하세요.
-6. /api/sitemap-quizzes가 XML을 반환하고 기존 sitemap_index-v2.xml에
-   해당 주소가 포함됐는지 확인하세요. 새 퀴즈는 약 5~15분 캐시 후 반영됩니다.
+1. 현재 프로젝트를 백업합니다.
+2. 이 ZIP의 파일/폴더를 package.json과 server.js가 있는 프로젝트 루트에 그대로 덮어씁니다.
+3. 먼저 npm start 로 로컬 확인합니다.
+4. 로컬에서 /ko/quiz, /ko/quiz/<공개 퀴즈 UUID>, /quiz 를 확인한 뒤에만 git push 합니다.
+5. 배포 후에는 /quiz -> /ko/quiz 영구 리디렉트, 소스의 title/description/canonical, sitemap을 확인합니다.
 
-변경 사항
-- 퀴즈 목록/상세: 클라이언트 title, description, canonical, 언어별 링크 추가.
-- 퀴즈 서버 SEO: 공개 레코드만 조회하고 원시 HTML에도 제목, 설명, 링크 출력.
-  미존재/잘못된 UUID는 404, DB 장애는 500. 정답이나 참가자 정보는 출력하지 않음.
-- Vercel: 퀴즈 목록과 UUID 상세 경로만 서버 SEO에 연결. 생성 페이지는 제외.
-- 공개 퀴즈 자동 사이트맵: 지원 언어만 상세 URL에 포함, 기존 인덱스에 연결.
-- 빌드 사이트맵: 정책/약관/건의 canonical 주소 사용, 티어표 생성 폼 제외.
-- AdGuard: 광고 숨김과 무관한 robots index 태그 제거.
-- Seo: 영어 대체 페이지가 없는 경우 x-default 영어 링크를 만들지 않음.
+핵심 SEO 수정
+- 언어 없는 /quiz 및 하위 주소를 /ko/quiz 쪽으로 영구 연결
+- 퀴즈 목록/상세의 서버 HTML과 React SEO 데이터 통일
+- 16개 언어별 퀴즈 제목/설명/canonical/hreflang/OG/Twitter 메타 적용
+- 공개 퀴즈 상세만 index, 작성 화면 noindex, 미존재/비공개 퀴즈 404
+- 기본 공유 이미지의 잘못된 /onepick-social.png 참조를 실제 /ogimg.png로 교체
+- YouTube URL을 공유 이미지 썸네일 URL로 변환
+- 퀴즈 카드/추천 카드를 실제 href가 있는 Link로 변경
+- 공개 퀴즈 전용 /sitemap-quizzes.xml 추가 및 기존 sitemap index와 통합
+- 구형 src/scripts sitemap 실행 파일을 현재 생성기로 연결
+- 서버 SPA 템플릿 로딩 캐시/중복 요청 합치기
+- original_language를 SEO 언어 목록에 반드시 포함
+- 퀴즈 저장 시 원본 언어가 content_languages에서 빠지지 않도록 보강
+- 월드컵/티어표 sitemap은 실제 updated_at이 있을 때만 lastmod 사용
 
-유지한 사항
-- 월드컵 홈의 LanguageWrapper → 언어별 페이지 → Home 연결과 서버 HOME_SEO.
-- 기존 홈 제목/디자인/게임 기능/DB/번역 데이터.
-- 최신 ZIP에 이미 적용된 SEOManager 퀴즈 허용 수정(따라서 이 파일은 ZIP에 없음).
-- 티어표 생성 페이지의 기존 색인 정책은 유지하며 사이트맵에서만 제외.
-- 카테고리 색인 정책은 임의로 변경하지 않음.
+중요: v2 런타임 오류 수정
+- 이 프로젝트의 CRA/Webpack은 src 안의 .cjs 파일을 JavaScript 모듈이 아니라 static/media 파일 URL로 번들링합니다.
+- 따라서 React 코드에서 src/seo/quizSeo.cjs를 import하면 getQuizSeo가 함수가 아니라 undefined가 되어 런타임 오류가 납니다.
+- v3에서는 브라우저 전용 ESM 모듈 src/seo/quizSeo.js를 추가했습니다.
+- React 파일은 이제 .cjs를 전혀 import하지 않습니다.
+- server.js와 서버 SEO는 기존 src/seo/quizSeo.cjs를 그대로 사용합니다.
 
-검증 및 한계
-- 서버 JS 문법 검사 및 모의 DB로 목록/상세/사이트맵/404/500 테스트.
-- 라이브 DB 쓰기 및 배포는 수행하지 않음.
-- 전체 React production build와 실제 Vercel/Google 렌더링은 배포 환경에서 확인 필요.
-- 파일은 UTF-8. 검색 순위나 노출은 보장하지 않음.
-- 동적 퀴즈 사이트맵이 50,000 URL을 넘으면 분할 필요(오류로 알려줌).
+검증
+- SEO 회귀 테스트: 15/15 통과
+- 새 테스트가 React 클라이언트에서 quizSeo.cjs를 import하지 않는지 확인
+- react-scripts 개발 서버: Compiled successfully
+- 개발 번들 확인: src/seo/quizSeo.js가 실제 JS 모듈로 번들링되고 getQuizSeo named export가 생성됨
+- react-scripts production build: Compiled successfully
 
-원복: 백업한 동일 경로 파일로 복구하고 새 quiz-seo.cjs를 제외한 뒤 재배포.
+주의
+- npm start가 정상이어도 배포 전 /ko/quiz와 상세 페이지를 브라우저에서 직접 열어 최종 확인하세요.
+- public/sitemaps/sitemap-*-v2.xml 같은 DB 기반 생성 산출물은 이 ZIP에 포함하지 않았습니다. build 시 최신 DB 기준으로 생성됩니다.

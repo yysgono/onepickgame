@@ -17,6 +17,11 @@
 
   "redirects": [
     {
+      "source": "/quiz/:path*",
+      "destination": "/ko/quiz/:path*",
+      "permanent": true
+    },
+    {
       "source": "/:path*",
       "has": [
         {
@@ -60,6 +65,14 @@
   ],
 
   "headers": [
+    {
+      "source": "/sitemap-quizzes.xml",
+      "headers": [{ "key": "Content-Type", "value": "application/xml; charset=utf-8" }]
+    },
+    {
+      "source": "/sitemap.xml",
+      "headers": [{ "key": "Content-Type", "value": "application/xml; charset=utf-8" }]
+    },
     {
       "source": "/sitemap_index-v2.xml",
       "headers": [
@@ -113,6 +126,10 @@
 
   "routes": [
     {
+      "src": "/sitemap-quizzes[.]xml",
+      "dest": "/server.js?seo=quiz-sitemap"
+    },
+    {
       "src": "/api/(.*)",
       "dest": "/server.js"
     },
@@ -142,7 +159,11 @@
       "dest": "/server.js?seo=quiz-list&lang=$1"
     },
     {
-      "src": "/(ko|en|ja|zh|ru|pt|es|fr|id|hi|de|vi|ar|bn|th|tr)/quiz/([0-9a-fA-F-]{36})/?$",
+      "src": "/(ko|en|ja|zh|ru|pt|es|fr|id|hi|de|vi|ar|bn|th|tr)/quiz/create/?$",
+      "dest": "/server.js?seo=quiz-create&lang=$1"
+    },
+    {
+      "src": "/(ko|en|ja|zh|ru|pt|es|fr|id|hi|de|vi|ar|bn|th|tr)/quiz/([^/]+)/?$",
       "dest": "/server.js?seo=quiz-detail&lang=$1&id=$2"
     },
     {

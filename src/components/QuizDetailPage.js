@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import {
   getQuiz,
@@ -13,6 +13,7 @@ import {
 } from "../utils/supabaseQuizApi";
 import QuizCommentBox from "./QuizCommentBox";
 import Seo from "../seo/Seo";
+import { getQuizSeo } from "../seo/quizSeo";
 // The supplied project contains the completed locale bundle in this folder.
 import { getQuizCopy } from "./components/quizCopy";
 import MediaRenderer from "./MediaRenderer";
@@ -518,16 +519,18 @@ export default function QuizDetailPage() {
     setResultFilter(nextFilter);
     setResultVisibleCount(10);
   };
+  const seo = getQuizSeo(lang, quiz);
 
   return (
     <div style={{ minHeight: "100vh", background: "#fff", color: "#202534", padding: "28px 16px 72px" }}>
       <Seo
         lang={lang}
         slug={`quiz/${id}`}
-        title={`${title} | ${lang === "ko" ? "원픽게임" : "OnePickGame"}`}
-        description={localize(quiz.description_translations, quiz.description, lang) || `${title} · ${c.intro}`}
-        image={quiz.thumbnail_url || "/onepick-social.png"}
-        hreflangLangs={Array.isArray(quiz.content_languages) && quiz.content_languages.length ? quiz.content_languages : [quiz.original_language || lang]}
+        title={seo.title}
+        description={seo.description}
+        image={seo.image}
+        hreflangLangs={seo.languages}
+        indexable={seo.languages.includes(lang)}
       />
       <div style={{ maxWidth: 1320, margin: "0 auto" }}>
         <button type="button" onClick={() => navigate(`/${lang}/quiz`)} style={{ ...secondaryButton, minHeight: 48, padding: "11px 18px", fontSize: 16 }}>← {c.quizList}</button>
@@ -790,7 +793,7 @@ export default function QuizDetailPage() {
                 <h2 style={{ fontSize: 22, margin: "0 0 12px", textAlign: "center" }}>{c.featured}</h2>
                 <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(220px,280px))", justifyContent: "center", gap: 12 }}>
                   {recommended.map((item) => (
-                    <button key={item.id} type="button" onClick={() => navigate(`/${lang}/quiz/${item.id}`)} style={{ ...cardStyle, padding: 0, overflow: "hidden", textAlign: "left", cursor: "pointer", color: "#202534" }}>
+                    <Link key={item.id} to={`/${lang}/quiz/${item.id}`} style={{ ...cardStyle, textDecoration: "none", padding: 0, overflow: "hidden", textAlign: "left", cursor: "pointer", color: "#202534" }}>
                       <div style={{ aspectRatio: "16/9", background: "#f3f6fb", overflow: "hidden" }}>
                         {item.thumbnail_url ? <MediaRenderer url={item.thumbnail_url} alt="" playable={false} style={{ width: "100%", height: "100%", objectFit: "cover" }} /> : <div style={{ display: "grid", placeItems: "center", height: "100%", fontSize: 36 }}>?</div>}
                       </div>
@@ -798,7 +801,7 @@ export default function QuizDetailPage() {
                         <div style={{ fontWeight: 900, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{localize(item.title_translations, item.title, lang)}</div>
                         <div style={{ marginTop: 5, fontSize: 13, color: "#667085" }}>▶ {item.play_count || 0} · {c.questionWord} {item.question_count || 0}</div>
                       </div>
-                    </button>
+                    </Link>
                   ))}
                 </div>
               </div>

@@ -93,7 +93,7 @@ export default function Seo({
   slug = "",
   title = "OnePickGame",
   description = "Create and play tournament bracket games on OnePickGame.",
-  image = "/onepick-social.png",
+  image = "/ogimg.png",
   indexable = true,
   langPrefix = true,
   hreflangLangs,
@@ -127,8 +127,8 @@ export default function Seo({
     ? toAbsoluteUrl(origin, image)
     : "";
 
-  const langsForHreflang =
-    hreflangLangs ?? SUPPORTED_LANGS;
+  const langsForHreflang = [...new Set(hreflangLangs ?? SUPPORTED_LANGS)]
+    .filter((language) => SUPPORTED_LANGS.includes(language));
 
   const hreflangs = indexable
     ? langsForHreflang.map((language) => ({
@@ -177,7 +177,7 @@ export default function Seo({
   return (
     <Helmet>
       {/* 기본 SEO */}
-      <html lang={normalizedLang} />
+      <html lang={normalizedLang} dir={normalizedLang === "ar" ? "rtl" : "ltr"} />
 
       <title>{safeTitle}</title>
 
@@ -266,17 +266,16 @@ export default function Seo({
       ))}
 
       {absoluteImage && (
-        <>
           <meta
             property="og:image"
             content={absoluteImage}
           />
-
+      )}
+      {absoluteImage && (
           <meta
             property="og:image:alt"
             content={safeTitle}
           />
-        </>
       )}
 
       {/* Twitter */}
@@ -296,22 +295,21 @@ export default function Seo({
       />
 
       {absoluteImage && (
-        <>
           <meta
             name="twitter:image"
             content={absoluteImage}
           />
-
+      )}
+      {absoluteImage && (
           <meta
             name="twitter:image:alt"
             content={safeTitle}
           />
-        </>
       )}
 
       {/* JSON-LD */}
       <script type="application/ld+json">
-        {JSON.stringify(jsonLd)}
+        {JSON.stringify(jsonLd).replace(/</g, "\\u003c")}
       </script>
     </Helmet>
   );

@@ -5,6 +5,7 @@ import React, {
 } from "react";
 
 import {
+  Link,
   useNavigate,
   useParams,
 } from "react-router-dom";
@@ -15,6 +16,7 @@ import {
 
 import PageIntro from "./PageIntro";
 import Seo from "../seo/Seo";
+import { getQuizSeo } from "../seo/quizSeo";
 
 import {
   getQuizCopy,
@@ -83,6 +85,7 @@ export default function QuizPage() {
 
   const c =
     getQuizCopy(lang);
+  const seo = getQuizSeo(lang);
 
 
   const [
@@ -345,8 +348,10 @@ export default function QuizPage() {
       <Seo
         lang={lang}
         slug="quiz"
-        title={`${c.title} | ${lang === "ko" ? "원픽게임" : "OnePickGame"}`}
-        description={c.intro}
+        title={seo.title}
+        description={seo.description}
+        image={seo.image}
+        hreflangLangs={seo.languages}
       />
       <div
         className="tier-page-container"
@@ -482,20 +487,15 @@ export default function QuizPage() {
                 )
                 .map(
                   (q) => (
-                    <button
+                    <Link
                       key={
                         q.id
                       }
 
-                      type="button"
-
-                      onClick={() =>
-                        navigate(
-                          `/${lang}/quiz/${q.id}`
-                        )
-                      }
+                      to={`/${lang}/quiz/${q.id}`}
 
                       style={{
+                        textDecoration: "none",
                         width:
                           "100%",
 
@@ -711,7 +711,7 @@ export default function QuizPage() {
                           }
                         </div>
                       </div>
-                    </button>
+                    </Link>
                   )
                 )}
             </div>
@@ -1126,20 +1126,15 @@ export default function QuizPage() {
               )
               .map(
                 (q) => (
-                  <button
+                  <Link
                     key={
                       q.id
                     }
 
-                    type="button"
-
-                    onClick={() =>
-                      navigate(
-                        `/${lang}/quiz/${q.id}`
-                      )
-                    }
+                    to={`/${lang}/quiz/${q.id}`}
 
                     style={{
+                      textDecoration: "none",
                       width:
                         "100%",
 
@@ -1502,7 +1497,7 @@ export default function QuizPage() {
                         }
                       </div>
                     )}
-                  </button>
+                  </Link>
                 )
               )}
           </div>

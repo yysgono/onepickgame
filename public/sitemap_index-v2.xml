@@ -50,7 +50,9 @@
     <loc>https://www.onepickgame.com/sitemaps/sitemap-tr-v2.xml</loc>
   </sitemap>
   <sitemap>
+    <loc>https://www.onepickgame.com/sitemap-quizzes.xml</loc>
+  </sitemap>
+  <sitemap>
     <loc>https://www.onepickgame.com/api/sitemap-blog</loc>
   </sitemap>
-<sitemap><loc>https://www.onepickgame.com/api/sitemap-quizzes</loc></sitemap>
 </sitemapindex>

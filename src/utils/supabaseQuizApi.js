@@ -177,7 +177,7 @@ export async function createQuiz({
   if (!user?.id) throw new Error("로그인이 필요합니다.");
 
   const uniqueLanguages = Array.from(
-    new Set((contentLanguages || []).filter(Boolean))
+    new Set([lang, ...(contentLanguages || [])].filter(Boolean))
   );
 
   const quizPayload = {

@@ -2,6 +2,9 @@
 
 import fs from "fs";
 import path from "path";
+import { fileURLToPath } from "url";
+import dotenv from "dotenv";
+dotenv.config();
 import { createClient } from "@supabase/supabase-js";
 
 // ======================================================
@@ -10,11 +13,8 @@ import { createClient } from "@supabase/supabase-js";
 
 const BASE_URL = "https://www.onepickgame.com";
 
-const SUPABASE_URL =
-  "https://irfyuvuazhujtlgpkfci.supabase.co";
-
-const SUPABASE_KEY =
-  "sb_publishable__U91j22eqCETuyJ4-O1wUQ_WMu_Hk5r";
+const SUPABASE_URL = process.env.REACT_APP_SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL;
+const SUPABASE_KEY = process.env.REACT_APP_SUPABASE_ANON_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY;
 
 const LANGS = [
   "ko",
@@ -39,7 +39,10 @@ const LANGS = [
 // Supabase
 // ======================================================
 
-const supabase = createClient(
+let supabase;
+function getSupabase() {
+  if (!SUPABASE_URL || !SUPABASE_KEY) throw new Error("Sitemap requires SUPABASE_URL and a public/anon key in the existing environment.");
+  if (!supabase) supabase = createClient(
   SUPABASE_URL,
   SUPABASE_KEY,
   {
@@ -49,6 +52,8 @@ const supabase = createClient(
     },
   }
 );
+  return supabase;
+}
 
 // ======================================================
 // XML escape
@@ -69,9 +74,7 @@ function escapeXml(value = "") {
 
 function formatDate(dateValue) {
   if (!dateValue) {
-    return new Date()
-      .toISOString()
-      .split("T")[0];
+    return "";
   }
 
   try {
@@ -79,9 +82,7 @@ function formatDate(dateValue) {
       .toISOString()
       .split("T")[0];
   } catch {
-    return new Date()
-      .toISOString()
-      .split("T")[0];
+    return "";
   }
 }
 
@@ -98,7 +99,7 @@ function makeUrlEntry({
   return `
   <url>
     <loc>${escapeXml(loc)}</loc>
-    <lastmod>${escapeXml(lastmod)}</lastmod>
+    ${lastmod ? `<lastmod>${escapeXml(lastmod)}</lastmod>` : ""}
     <changefreq>${changefreq}</changefreq>
     <priority>${priority}</priority>
   </url>`;
@@ -115,7 +116,7 @@ async function fetchAllRows({ table, select, applyFilters, label }) {
   let from = 0;
 
   while (true) {
-    let query = supabase
+    let query = getSupabase()
       .from(table)
       .select(select)
       .order("created_at", { ascending: true })
@@ -156,7 +157,7 @@ async function fetchWorldcups() {
 
   return fetchAllRows({
     table: "worldcups",
-    select: "id, created_at",
+    select: "id, created_at, updated_at",
     applyFilters: (query) => query.is("deleted_at", null),
     label: "활성 월드컵",
   });
@@ -171,7 +172,7 @@ async function fetchTierLists() {
 
   return fetchAllRows({
     table: "tier_lists",
-    select: "id, created_at",
+    select: "id, created_at, updated_at",
     label: "티어표",
   });
 }
@@ -180,14 +181,13 @@ async function fetchTierLists() {
 // 언어별 sitemap 생성
 // ======================================================
 
-function generateLanguageSitemap(
+export function generateLanguageSitemap(
   lang,
   worldcups,
   tierLists
 ) {
-  const today = new Date()
-    .toISOString()
-    .split("T")[0];
+  // Do not advertise the build date as a content modification date.
+  const today = "";
 
   let xml =
     `<?xml version="1.0" encoding="UTF-8"?>\n`;
@@ -250,7 +250,7 @@ function generateLanguageSitemap(
         `/select-round/${cup.id}`,
 
       lastmod:
-        formatDate(cup.created_at),
+        formatDate(cup.updated_at),
 
       changefreq: "weekly",
 
@@ -269,7 +269,7 @@ function generateLanguageSitemap(
       loc:
         `${BASE_URL}/${lang}` +
         `/tier-list/${tierList.id}`,
-      lastmod: formatDate(tierList.created_at),
+      lastmod: formatDate(tierList.updated_at),
       changefreq: "weekly",
       priority: "0.75",
     });
@@ -284,7 +284,7 @@ function generateLanguageSitemap(
 // sitemap index 생성
 // ======================================================
 
-function generateSitemapIndex() {
+export function generateSitemapIndex() {
   let xml =
     `<?xml version="1.0" encoding="UTF-8"?>\n`;
 
@@ -300,7 +300,7 @@ function generateSitemapIndex() {
 
   xml += `
   <sitemap>
-    <loc>${BASE_URL}/api/sitemap-quizzes</loc>
+    <loc>${BASE_URL}/sitemap-quizzes.xml</loc>
   </sitemap>`;
 
   // 블로그 sitemap 유지
@@ -397,6 +397,11 @@ async function generateSitemaps() {
 
     fs.renameSync(tempIndexPath, indexPath);
 
+    // Keep old Search Console submissions in sync with the advertised index.
+    const compatibilityPath = path.resolve("public", "sitemap.xml");
+    fs.writeFileSync(`${compatibilityPath}.tmp`, indexXml, "utf8");
+    fs.renameSync(`${compatibilityPath}.tmp`, compatibilityPath);
+
     console.log("");
     console.log(
       "✅ sitemap index 생성 완료:"
@@ -426,4 +431,7 @@ async function generateSitemaps() {
   }
 }
 
-generateSitemaps();
+if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+  generateSitemaps();
+}
+export { generateSitemaps };
