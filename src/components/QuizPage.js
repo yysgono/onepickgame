@@ -210,7 +210,7 @@ export default function QuizPage() {
 
     getFeaturedQuizzes({
       contentLanguage,
-      limit: 3,
+      limit: 4,
     })
       .then((data) => {
         if (alive) {
@@ -458,7 +458,7 @@ export default function QuizPage() {
                 gridTemplateColumns:
                   mobile
                     ? "1fr"
-                    : "repeat(3, minmax(0, 1fr))",
+                    : "repeat(4, minmax(0, 1fr))",
 
                 justifyContent:
                   "center",
@@ -478,7 +478,7 @@ export default function QuizPage() {
               {recommended
                 .slice(
                   0,
-                  3
+                  4
                 )
                 .map(
                   (q) => (
