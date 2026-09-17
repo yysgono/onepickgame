@@ -1222,7 +1222,7 @@ const canManage =
 
         const titleArea =
           onePickCandidate
-            ? 500
+            ? 460
             : 170;
 
         const labelWidth =
@@ -1365,7 +1365,7 @@ const canManage =
         /* 배경 */
 
         ctx.fillStyle =
-          "#05080d";
+          "#ffffff";
 
         ctx.fillRect(
           0,
@@ -1378,7 +1378,7 @@ const canManage =
         /* 제목 */
 
         ctx.fillStyle =
-          "#ffffff";
+          "#182235";
 
         ctx.font =
           "900 48px Arial, sans-serif";
@@ -1397,7 +1397,7 @@ ctx.fillText(
 
 
         ctx.fillStyle =
-          "#8fa6c3";
+          "#5c6f88";
 
         ctx.font =
           "700 22px Arial, sans-serif";
@@ -1441,7 +1441,7 @@ ctx.fillText(
 
 
           ctx.fillStyle =
-            "#ffffff";
+            "#182235";
 
           ctx.font =
             "900 32px Arial, sans-serif";
@@ -1478,7 +1478,7 @@ ctx.fillText(
           );
 
           ctx.fillStyle =
-            "#0b1628";
+            "#f8fbff";
 
           ctx.fill();
 
@@ -1540,7 +1540,7 @@ ctx.fillText(
             ctx.restore();
           } else {
             ctx.fillStyle =
-              "#07111f";
+              "#ffffff";
 
             ctx.fillRect(
               pickX,
@@ -1569,7 +1569,7 @@ ctx.fillText(
 
 
           ctx.fillStyle =
-            "#f4f7fb";
+            "#182235";
 
           ctx.font =
             "800 22px Arial, sans-serif";
@@ -1631,7 +1631,7 @@ ctx.fillText(
           );
 
           ctx.fillStyle =
-            "#0b1628";
+            "#f5f8ff";
 
           ctx.fill();
 
@@ -1754,7 +1754,7 @@ ctx.fillText(
 
 
             ctx.fillStyle =
-              "#101d32";
+              "#f5f8ff";
 
             ctx.fill();
 
@@ -1831,7 +1831,7 @@ ctx.fillText(
               ctx.restore();
             } else {
               ctx.fillStyle =
-                "#07111f";
+                "#ffffff";
 
               ctx.fillRect(
                 x,
@@ -1866,7 +1866,7 @@ ctx.fillText(
 
 
             ctx.fillStyle =
-              "#f4f7fb";
+              "#182235";
 
             ctx.font =
               "700 18px Arial, sans-serif";
@@ -2693,6 +2693,18 @@ const seoResultDescription = t(
     navigate(`/${lang}/tier-list?${params.toString()}`);
   };
 
+  const detailActionLabels = {
+    makeBracket: lang === "ko"
+      ? "이 후보들로 이상형 월드컵 하기"
+      : "Make a bracket with these candidates",
+    browseTierLists: lang === "ko"
+      ? "이 주제의 다른 유저 티어표 보기"
+      : "See other user tier lists on this topic",
+    cloneTierList: lang === "ko"
+      ? "나도 이 티어표 만들기"
+      : "Make this tier list too",
+  };
+
 
   return (
     <>
@@ -3114,334 +3126,327 @@ padding: isMobile
 
         <div
           style={{
-            marginTop: isMobile ? 10 : 14,
-            display: "flex",
-            flexDirection: isMobile ? "column" : "row",
-        alignItems: isMobile ? "center" : "flex-start",
-            gap: isMobile ? 12 : 24,
+            marginTop: isMobile ? 12 : 18,
           }}
         >
           <div
             style={{
-              flex: 1,
-              minWidth: 0,
-              width: "100%",
-            }}
-          >
-            {TIERS.map(
-              (
-                tier
-              ) => {
-                const items =
-                  getTierCandidates(
-                    tier
-                  );
-
-                return (
-                  <div
-                    key={tier}
-                    style={{
-                      minHeight:
-                        isMobile
-                          ? 108
-                          : 154,
-                      display: "flex",
-                      marginBottom: 10,
-                      border: "1px solid #dde2ea",
-                      background: "#ffffff",
-                      borderRadius: 9,
-                      overflow: "hidden",
-                    }}
-                  >
-                    <div
-                      style={{
-                        width:
-                          isMobile
-                            ? 66
-                            : 112,
-                        minWidth:
-                          isMobile
-                            ? 66
-                            : 112,
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        fontSize:
-                          isMobile
-                            ? 30
-                            : 46,
-                        fontWeight: 900,
-                        background:
-                          TIER_COLORS[tier],
-                        color: "#111",
-                      }}
-                    >
-                      {tier}
-                    </div>
-
-                    <div
-                      style={{
-                        flex: 1,
-                        minWidth: 0,
-                        padding:
-                          isMobile
-                            ? 9
-                            : 13,
-                        display: "flex",
-                        flexWrap: "wrap",
-                        alignItems: "flex-start",
-                        gap:
-                          isMobile
-                            ? 7
-                            : 10,
-                      }}
-                    >
-                      {items.map(
-                        (
-                          candidate
-                        ) => (
-                          <div
-                            key={String(candidate.id)}
-                            style={{
-                              width:
-                                isMobile
-                                  ? 72
-                                  : 112,
-                              minWidth:
-                                isMobile
-                                  ? 72
-                                  : 112,
-                              overflow: "hidden",
-                              borderRadius: 8,
-                              border: "1px solid #dde2ea",
-                              background: "#ffffff",
-                            }}
-                          >
-                            <div
-                              style={{
-                                width: "100%",
-                                aspectRatio: "1 / 1",
-                                overflow: "hidden",
-                                background: "#ffffff",
-                              }}
-                            >
-                              {candidate?.image ? (
-                                <MediaRenderer
-                                  url={candidate.image}
-                                  alt={candidate.name || ""}
-                                  playable={false}
-                                  style={{
-                                    width: "100%",
-                                    height: "100%",
-                                 objectFit: "contain",
-objectPosition: "center",
-                                    display: "block",
-                                  }}
-                                />
-                              ) : (
-                                <div
-                                  style={{
-                                    width: "100%",
-                                    height: "100%",
-                                    display: "flex",
-                                    alignItems: "center",
-                                    justifyContent: "center",
-                                    color: "#5542b8",
-                                    fontSize: 12,
-                                    fontWeight: 800,
-                                  }}
-                                >
-                                  NO IMAGE
-                                </div>
-                              )}
-                            </div>
-
-                            <div
-                              style={{
-                                padding:
-                                  isMobile
-                                    ? "5px 4px"
-                                    : "7px 5px",
-                                textAlign: "center",
-                                fontSize:
-                                  isMobile
-                                    ? 13
-                                    : 14,
-                                fontWeight: 800,
-                                overflow: "hidden",
-                                textOverflow: "ellipsis",
-                                whiteSpace: "nowrap",
-                              }}
-                            >
-                              {candidate.name || text.untitled}
-                            </div>
-                          </div>
-                        )
-                      )}
-
-                      {items.length === 0 && (
-                        <div
-                          style={{
-                            alignSelf: "center",
-                            color: "#53657d",
-                            fontSize: 15,
-                            fontWeight: 700,
-                          }}
-                        >
-                          -
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                );
-              }
-            )}
-          </div>
-
-          <div
-            style={{
-              width: isMobile ? "100%" : 250,
-              minWidth: isMobile ? 0 : 250,
-           marginTop: 0,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              textAlign: "center",
+              marginBottom: isMobile ? 14 : 18,
             }}
           >
             <div
               style={{
-                position: "static",
-                top: 18,
+                fontSize: isMobile ? 24 : 28,
+                fontWeight: 900,
+                color: "#202534",
+              }}
+            >
+              ⭐ {text.onePickTitle}
+            </div>
+
+            <div
+              style={{
+                marginTop: 12,
+                display: "flex",
+                flexDirection: isMobile ? "column" : "row",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: isMobile ? 12 : 24,
+                width: "100%",
               }}
             >
               <div
                 style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  textAlign: "center",
+                  width: isMobile ? 180 : 190,
+                  padding: 10,
+                  boxSizing: "border-box",
+                  borderRadius: 16,
+                  border: "2px solid #a99bdf",
+                  background: "#f5f3ff",
+                  boxShadow: "0 4px 16px rgba(25,32,52,0.07)",
                 }}
               >
-                <div
-                  style={{
-                    fontSize: isMobile ? 23 : 29,
-                    fontWeight: 900,
-                    color: "#202534",
-                  }}
-                >
-                  ⭐ {text.onePickTitle}
-                </div>
-
-                <div
-                  style={{
-                    marginTop: 12,
-                    width: isMobile ? 170 : 210,
-                    padding: 12,
-                    boxSizing: "border-box",
-                    borderRadius: 16,
-                    border: "2px solid #a99bdf",
-                    background:
-                      "#f5f3ff",
-                    boxShadow:
-                      "0 4px 16px rgba(25,32,52,0.07)",
-                  }}
-                >
-                  {onePickCandidate ? (
-                    <>
-                      <div
-                        style={{
-                          width: "100%",
-                          aspectRatio: "1 / 1",
-                          overflow: "hidden",
-                          borderRadius: 11,
-                          background: "#ffffff",
-                        }}
-                      >
-                        {onePickCandidate?.image ? (
-                          <MediaRenderer
-                            url={onePickCandidate.image}
-                            alt={onePickCandidate.name || ""}
-                            playable={false}
-                            style={{
-                              width: "100%",
-                              height: "100%",
-                             objectFit: "contain",
-objectPosition: "center",
-                              display: "block",
-                            }}
-                          />
-                        ) : (
-                          <div
-                            style={{
-                              width: "100%",
-                              height: "100%",
-                              display: "flex",
-                              alignItems: "center",
-                              justifyContent: "center",
-                              color: "#607086",
-                              fontWeight: 800,
-                            }}
-                          >
-                            NO IMAGE
-                          </div>
-                        )}
-                      </div>
-
-                      <div
-                        style={{
-                          marginTop: 9,
-                          fontSize: isMobile ? 16 : 19,
-                          fontWeight: 900,
-                          overflow: "hidden",
-                          textOverflow: "ellipsis",
-                          whiteSpace: "nowrap",
-                        }}
-                      >
-                        {onePickCandidate.name || text.untitled}
-                      </div>
-                    </>
-                  ) : (
+                {onePickCandidate ? (
+                  <>
                     <div
                       style={{
-                        padding: "32px 10px",
-                        color: "#596579",
-                        fontSize: 15,
-                        fontWeight: 800,
+                        width: "100%",
+                        aspectRatio: "1 / 1",
+                        overflow: "hidden",
+                        borderRadius: 11,
+                        background: "#ffffff",
                       }}
                     >
-                      ⭐
-                      <br />
-                      {text.onePickEmpty}
+                      {onePickCandidate?.image ? (
+                        <MediaRenderer
+                          url={onePickCandidate.image}
+                          alt={onePickCandidate.name || ""}
+                          playable={false}
+                          style={{
+                            width: "100%",
+                            height: "100%",
+                            objectFit: "contain",
+                            objectPosition: "center",
+                            display: "block",
+                          }}
+                        />
+                      ) : (
+                        <div
+                          style={{
+                            width: "100%",
+                            height: "100%",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            color: "#607086",
+                            fontWeight: 800,
+                          }}
+                        >
+                          NO IMAGE
+                        </div>
+                      )}
                     </div>
-                  )}
-                </div>
 
+                    <div
+                      style={{
+                        marginTop: 9,
+                        fontSize: isMobile ? 16 : 18,
+                        fontWeight: 900,
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        whiteSpace: "nowrap",
+                      }}
+                    >
+                      {onePickCandidate.name || text.untitled}
+                    </div>
+                  </>
+                ) : (
+                  <div
+                    style={{
+                      padding: "32px 10px",
+                      color: "#596579",
+                      fontSize: 15,
+                      fontWeight: 800,
+                    }}
+                  >
+                    ⭐
+                    <br />
+                    {text.onePickEmpty}
+                  </div>
+                )}
+              </div>
+
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 10,
+                  width: isMobile ? "100%" : 260,
+                  maxWidth: "100%",
+                }}
+              >
                 <button
                   type="button"
                   onClick={handleCreateBracketFromTier}
                   style={{
-                    marginTop: 14,
                     width: "100%",
                     padding: isMobile ? "13px 14px" : "14px 16px",
                     borderRadius: 13,
                     border: "1px solid #ff9f1a",
-                    background:
-                      "#f5f6fa",
+                    background: "#ffffff",
                     color: "#202534",
-                    fontSize: isMobile ? 16 : 17,
+                    fontSize: isMobile ? 15 : 16,
                     fontWeight: 900,
-                    lineHeight: 1.35,
+                    lineHeight: 1.25,
                     cursor: "pointer",
-                    boxShadow:
-                      "0 4px 16px rgba(25,32,52,0.07)",
+                    boxShadow: "0 4px 16px rgba(25,32,52,0.07)",
                   }}
                 >
-                  {createBracketCtaLabel}
+                  {detailActionLabels.makeBracket}
                 </button>
+
                 {canBrowsePreset && (
-                  <button type="button" onClick={() => openPresetTierLists(false)} style={{marginTop: 10, width: "100%", padding: "13px 14px", borderRadius: 13, border: "1px solid #19bfff", background: "#ffffff", color: "#202534", fontSize: isMobile ? 16 : 17, fontWeight: 900, lineHeight: 1.4, whiteSpace: "normal", overflowWrap: "anywhere", cursor: "pointer"}}>
-                    {t("tierList.result.browsePresetTierLists")}
+                  <button
+                    type="button"
+                    onClick={() => openPresetTierLists(false)}
+                    style={{
+                      width: "100%",
+                      padding: isMobile ? "13px 14px" : "14px 16px",
+                      borderRadius: 13,
+                      border: "1px solid #19bfff",
+                      background: "#ffffff",
+                      color: "#202534",
+                      fontSize: isMobile ? 15 : 16,
+                      fontWeight: 900,
+                      lineHeight: 1.25,
+                      whiteSpace: "normal",
+                      overflowWrap: "anywhere",
+                      cursor: "pointer",
+                      boxShadow: "0 4px 16px rgba(25,32,52,0.07)",
+                    }}
+                  >
+                    {detailActionLabels.browseTierLists}
                   </button>
                 )}
+
+                <button
+                  type="button"
+                  onClick={handleClone}
+                  style={{
+                    width: "100%",
+                    padding: isMobile ? "13px 14px" : "14px 16px",
+                    borderRadius: 13,
+                    border: "1px solid #7c5cff",
+                    background: "#ffffff",
+                    color: "#202534",
+                    fontSize: isMobile ? 15 : 16,
+                    fontWeight: 900,
+                    lineHeight: 1.25,
+                    cursor: "pointer",
+                    boxShadow: "0 4px 16px rgba(25,32,52,0.07)",
+                  }}
+                >
+                  {detailActionLabels.cloneTierList}
+                </button>
               </div>
             </div>
+          </div>
+
+          <div
+            style={{
+              width: "100%",
+            }}
+          >
+            {TIERS.map((tier) => {
+              const items = getTierCandidates(tier);
+
+              return (
+                <div
+                  key={tier}
+                  style={{
+                    minHeight: isMobile ? 108 : 154,
+                    display: "flex",
+                    marginBottom: 10,
+                    border: "1px solid #dde2ea",
+                    background: "#ffffff",
+                    borderRadius: 9,
+                    overflow: "hidden",
+                  }}
+                >
+                  <div
+                    style={{
+                      width: isMobile ? 66 : 112,
+                      minWidth: isMobile ? 66 : 112,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontSize: isMobile ? 30 : 46,
+                      fontWeight: 900,
+                      background: TIER_COLORS[tier],
+                      color: "#111",
+                    }}
+                  >
+                    {tier}
+                  </div>
+
+                  <div
+                    style={{
+                      flex: 1,
+                      minWidth: 0,
+                      padding: isMobile ? 9 : 13,
+                      display: "flex",
+                      flexWrap: "wrap",
+                      alignItems: "flex-start",
+                      gap: isMobile ? 7 : 10,
+                    }}
+                  >
+                    {items.map((candidate) => (
+                      <div
+                        key={String(candidate.id)}
+                        style={{
+                          width: isMobile ? 72 : 112,
+                          minWidth: isMobile ? 72 : 112,
+                          overflow: "hidden",
+                          borderRadius: 8,
+                          border: "1px solid #dde2ea",
+                          background: "#ffffff",
+                        }}
+                      >
+                        <div
+                          style={{
+                            width: "100%",
+                            aspectRatio: "1 / 1",
+                            overflow: "hidden",
+                            background: "#ffffff",
+                          }}
+                        >
+                          {candidate?.image ? (
+                            <MediaRenderer
+                              url={candidate.image}
+                              alt={candidate.name || ""}
+                              playable={false}
+                              style={{
+                                width: "100%",
+                                height: "100%",
+                                objectFit: "contain",
+                                objectPosition: "center",
+                                display: "block",
+                              }}
+                            />
+                          ) : (
+                            <div
+                              style={{
+                                width: "100%",
+                                height: "100%",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                color: "#5542b8",
+                                fontSize: 12,
+                                fontWeight: 800,
+                              }}
+                            >
+                              NO IMAGE
+                            </div>
+                          )}
+                        </div>
+
+                        <div
+                          style={{
+                            padding: isMobile ? "5px 4px" : "7px 5px",
+                            textAlign: "center",
+                            fontSize: isMobile ? 13 : 14,
+                            fontWeight: 800,
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            whiteSpace: "nowrap",
+                          }}
+                        >
+                          {candidate.name || text.untitled}
+                        </div>
+                      </div>
+                    ))}
+
+                    {items.length === 0 && (
+                      <div
+                        style={{
+                          alignSelf: "center",
+                          color: "#53657d",
+                          fontSize: 15,
+                          fontWeight: 700,
+                        }}
+                      >
+                        -
+                      </div>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
 
