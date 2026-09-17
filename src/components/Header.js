@@ -663,7 +663,6 @@ export default function Header({
     {key:'worldcup',icon:'trophy',label:t('gameModeNav.worldcup'),path:`/${currentLang}`},
     {key:'tier-list',icon:'chart',label:t('gameModeNav.tierList'),path:`/${currentLang}/tier-list`},
     {key:'quiz',icon:'question',label:currentLang === 'ko' ? '퀴즈 맞히기' : t('gameModeNav.quiz'),path:`/${currentLang}/quiz`},
-    {key:'blind-ranking',icon:'crown',label:t('gameModeNav.blindRanking'),pending:true},
   ];
   useEffect(() => {
     document.querySelectorAll('.onepick-header details[open]').forEach(el => el.removeAttribute('open'));
@@ -680,6 +679,30 @@ export default function Header({
   }, []);
   return (
     <header className="onepick-header">
+      <style>{`
+        .onepick-header-modes {
+          grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+        }
+
+        @media (min-width: 1201px) {
+          .onepick-header-main {
+            grid-template-columns: minmax(320px, 1fr) minmax(540px, 2.2fr) minmax(320px, 1fr) !important;
+          }
+
+          .onepick-logo-frame {
+            width: 80px !important;
+            height: 80px !important;
+            min-width: 80px !important;
+            min-height: 80px !important;
+            flex-basis: 80px !important;
+          }
+
+          .onepick-header-brand {
+            font-size: clamp(28px, 1.9vw, 38px) !important;
+            font-weight: 900 !important;
+          }
+        }
+      `}</style>
       <div className="onepick-header-main">
           <div className="onepick-header-brand-area">
 <button
@@ -688,17 +711,20 @@ export default function Header({
   onClick={handleLogoClick}
 >
   <span className="onepick-logo-frame">
-    <img src={logoImgUrl} alt="" width="72" height="72" />
+    <img src={logoImgUrl} alt="" width="80" height="80" />
   </span>
 
 <span
   style={{
     color: "#111111",
     fontStyle: "italic",
-    fontWeight: 1000,
-    letterSpacing: "-0.03em",
+    fontWeight: 900,
+    letterSpacing: "-0.035em",
     display: "inline-block",
-    textShadow: "0 1px 0 rgba(0,0,0,0.08)",
+    lineHeight: 1,
+    WebkitTextStroke: "0.2px #111111",
+    textShadow: "0 1px 0 rgba(0,0,0,0.10)",
+    whiteSpace: "nowrap",
   }}
 >
   One Pick Game
@@ -1056,7 +1082,6 @@ function HeaderIcon({ name }) {
     trophy: <><path d="M8 3h8v6a4 4 0 0 1-8 0V3Z"/><path d="M8 5H4v2a4 4 0 0 0 4 4m8-6h4v2a4 4 0 0 1-4 4m-4 2v5m-4 3h8m-6-3h4"/></>,
     chart: <><path d="M4 20h16M5 19v-7h3v7m3 0V8h3v11m3 0V3h3v16"/></>,
     question: <><circle cx="12" cy="12" r="9"/><path d="M9 9a3 3 0 0 1 6 0c0 2-3 2-3 4m0 3h.01"/></>,
-    crown: <path d="m3 6 4 4 5-6 5 6 4-4-2 13H5L3 6Zm3 10h12"/>,
     folder: <path d="M3 7V5h6l2 2h10v13H3V7Zm0 3h18"/>,
     user: <><circle cx="12" cy="12" r="9"/><circle cx="12" cy="9" r="3"/><path d="M6 19v-1a6 5 0 0 1 12 0v1"/></>,
   };
