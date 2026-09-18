@@ -1352,84 +1352,57 @@ maxWidth: isMobile ? 430 : 1480,
                 "center",
             }}
           >
-            <input
-              value={
-                searchInput
-              }
-              onChange={(e) =>
-                setSearchInput(
-                  e.target.value
-                )
-              }
-              placeholder={t(
-                "tierList.page.searchPlaceholder"
-              )}
+            <div
               style={{
-                width:
-                  isMobile
-                    ? "100%"
-                    : 420,
-
-                height: 42,
-
-                boxSizing:
-                  "border-box",
-
-                padding:
-                  "0 12px",
-
-                borderRadius:
-                  8,
-
-                border:
-                  "1px solid #dde2ea",
-
-                background:
-                  "#ffffff",
-
-                color:
-                  "#202534",
-
-                outline:
-                  "none",
-
-                fontWeight: 800,
-                fontSize: isMobile ? 16 : 18,
-              }}
-            />
-
-            <button
-              type="submit"
-              style={{
-                height: 42,
-
-                padding:
-                  "0 16px",
-
-                borderRadius:
-                  8,
-
-                border:
-                  "1px solid #dde2ea",
-
-                background:
-                  "#ffffff",
-
-                color:
-                  "#202534",
-
-                fontWeight:
-                  900,
-                fontSize: isMobile ? 16 : 18,
-
-                cursor:
-                  "pointer",
+                width: isMobile ? "100%" : 560,
+                position: "relative",
               }}
             >
-              {t(
-                "tierList.common.search"
-              )}
-            </button>
+              <input
+                value={searchInput}
+                onChange={(e) => setSearchInput(e.target.value)}
+                placeholder={t("tierList.page.searchPlaceholder")}
+                style={{
+                  width: "100%",
+                  height: 44,
+                  boxSizing: "border-box",
+                  padding: "0 44px 0 13px",
+                  borderRadius: 8,
+                  border: "1.5px solid #bccae0",
+                  background: "#ffffff",
+                  color: "#202534",
+                  outline: "none",
+                  fontWeight: 800,
+                  fontSize: isMobile ? 16 : 18,
+                }}
+              />
+
+              <button
+                type="submit"
+                aria-label={t("tierList.common.search")}
+                title={t("tierList.common.search")}
+                style={{
+                  position: "absolute",
+                  right: 5,
+                  top: "50%",
+                  transform: "translateY(-50%)",
+                  width: 36,
+                  height: 36,
+                  padding: 0,
+                  border: "none",
+                  borderRadius: 8,
+                  background: "transparent",
+                  color: "#2563EB",
+                  fontSize: 18,
+                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                🔍
+              </button>
+            </div>
           </form>
 
 

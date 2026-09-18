@@ -509,24 +509,44 @@ export default function QuizPage() {
             boxSizing: "border-box",
           }}
         >
-          <input
-            value={search}
-            onChange={(e) =>
-              setSearch(e.target.value)
-            }
-            placeholder={c.search}
+          <div
             style={{
               width: "100%",
-              height: 44,
-              border: "1.5px solid #bccae0",
-              borderRadius: 8,
-              padding: "0 12px",
-              fontSize: 17,
-              fontWeight: 750,
-              outline: "none",
-              boxSizing: "border-box",
+              position: "relative",
             }}
-          />
+          >
+            <input
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder={c.search}
+              style={{
+                width: "100%",
+                height: 44,
+                border: "1.5px solid #bccae0",
+                borderRadius: 8,
+                padding: "0 44px 0 12px",
+                fontSize: 17,
+                fontWeight: 750,
+                outline: "none",
+                boxSizing: "border-box",
+              }}
+            />
+
+            <span
+              aria-hidden="true"
+              style={{
+                position: "absolute",
+                right: 12,
+                top: "50%",
+                transform: "translateY(-50%)",
+                color: "#E53935",
+                fontSize: 17,
+                pointerEvents: "none",
+              }}
+            >
+              🔍
+            </span>
+          </div>
         </div>
 
 

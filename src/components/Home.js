@@ -1164,7 +1164,8 @@ style={{
 }}
     >
       {/* 카테고리 제목 */}
-      <div className="home-category-heading"
+      <div
+        className={featured ? "home-category-heading" : undefined}
         style={{
           width: "100%",
           maxWidth: 1400,
@@ -1175,7 +1176,7 @@ style={{
           boxSizing: "border-box",
 display: "flex",
 alignItems: "center",
-justifyContent: "flex-start",
+justifyContent: featured ? "center" : "flex-start",
 gap: isMobile ? 8 : 11,
         }}
       >
