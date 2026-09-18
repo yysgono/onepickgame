@@ -1168,16 +1168,18 @@ style={{
         className={featured ? "home-category-heading" : undefined}
         style={{
           width: "100%",
-          maxWidth: 1400,
-          margin: "0 auto",
- padding: isMobile
-  ? "0 14px 6px"
-  : "0 24px 8px",
+          maxWidth: featured ? 1400 : "none",
+          margin: featured ? "0 auto" : 0,
+          padding: isMobile
+            ? "0 14px 6px"
+            : featured
+              ? "0 24px 8px"
+              : "0 20px 8px",
           boxSizing: "border-box",
-display: "flex",
-alignItems: "center",
-justifyContent: featured ? "center" : "flex-start",
-gap: isMobile ? 8 : 11,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: featured ? "center" : "flex-start",
+          gap: isMobile ? 8 : 11,
         }}
       >
         <h2
@@ -1633,9 +1635,9 @@ return (
   <div
     style={{
       width: "100%",
-      maxWidth: isMobile ? 430 : 760,
+      maxWidth: isMobile ? 430 : 1000,
       margin: isMobile ? "2px auto 10px" : "2px auto 12px",
-      padding: isMobile ? "0 12px" : "0 16px",
+      padding: isMobile ? "0 12px" : 0,
       boxSizing: "border-box",
     }}
   >
@@ -1691,6 +1693,8 @@ return (
     <div
       style={{
         width: "100%",
+        maxWidth: 760,
+        margin: "0 auto",
         display: "flex",
         alignItems: "center",
       }}
@@ -1716,7 +1720,7 @@ return (
           }}
           style={{
             width: "100%",
-            height: isMobile ? 46 : 52,
+            height: 46,
             background: "#ffffff",
             color: "#202534",
             border: "1.5px solid #bccae0",

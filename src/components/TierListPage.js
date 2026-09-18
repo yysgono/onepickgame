@@ -1325,8 +1325,8 @@ maxWidth: isMobile ? 430 : 1480,
 
             padding:
               isMobile
-                ? 12
-                : 16,
+                ? "0 12px"
+                : 0,
 
             border: "none",
 
@@ -1364,7 +1364,7 @@ maxWidth: isMobile ? 430 : 1480,
                 placeholder={t("tierList.page.searchPlaceholder")}
                 style={{
                   width: "100%",
-                  height: 44,
+                  height: 46,
                   boxSizing: "border-box",
                   padding: "0 44px 0 13px",
                   borderRadius: 8,

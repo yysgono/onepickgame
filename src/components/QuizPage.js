@@ -505,7 +505,7 @@ export default function QuizPage() {
               : "0 auto 24px",
             padding: mobile
               ? "0 12px"
-              : "0 16px",
+              : 0,
             boxSizing: "border-box",
           }}
         >
@@ -521,7 +521,7 @@ export default function QuizPage() {
               placeholder={c.search}
               style={{
                 width: "100%",
-                height: 44,
+                height: 46,
                 border: "1.5px solid #bccae0",
                 borderRadius: 8,
                 padding: "0 44px 0 12px",
