@@ -87,6 +87,17 @@ export default function QuizPage() {
     getQuizCopy(lang);
   const seo = getQuizSeo(lang);
 
+  const changeQuizLanguage = async (newLang) => {
+    try {
+      setContentLanguage(newLang);
+      await i18n.changeLanguage(newLang);
+      localStorage.setItem("onepickgame_lang", newLang);
+      navigate(`/${newLang}/quiz`, { replace: true });
+    } catch (error) {
+      console.error("퀴즈 언어 변경 실패:", error);
+    }
+  };
+
 
   const [
     rows,
@@ -405,6 +416,82 @@ export default function QuizPage() {
         />
 
 
+{/* 검색 위 언어 선택 */}
+
+          <div
+            style={{
+              display:
+                "flex",
+
+              gap:
+                mobile
+                  ? 6
+                  : 8,
+
+              flexWrap:
+                "wrap",
+
+              justifyContent:
+                "center",
+
+              marginTop:
+                6,
+
+              marginBottom:
+                10,
+            }}
+          >
+            {QUIZ_LANGUAGES.map(
+              (item) => (
+                <React.Fragment
+                  key={
+                    item.code
+                  }
+                >
+                  {item.code ===
+                    "id" && (
+                    <span
+                      aria-hidden="true"
+                      style={{
+                        flexBasis:
+                          "100%",
+
+                        height:
+                          0,
+                      }}
+                    />
+                  )}
+
+                  <button
+                    type="button"
+
+                    onClick={() =>
+                      changeQuizLanguage(
+                        item.code
+                      )
+                    }
+
+                    aria-pressed={
+                      contentLanguage ===
+                      item.code
+                    }
+
+                    style={languageButton(
+                      contentLanguage ===
+                        item.code,
+                      mobile
+                    )}
+                  >
+                    {
+                      item.label
+                    }
+                  </button>
+                </React.Fragment>
+              )
+            )}
+          </div>
+
+
         {/* =========================
             검색
         ========================== */}
@@ -443,80 +530,7 @@ export default function QuizPage() {
         </div>
 
 
-        {/* 검색 아래 언어 선택 */}
-
-          <div
-            style={{
-              display:
-                "flex",
-
-              gap:
-                mobile
-                  ? 6
-                  : 8,
-
-              flexWrap:
-                "wrap",
-
-              justifyContent:
-                "center",
-
-              marginTop:
-                12,
-            }}
-          >
-            {QUIZ_LANGUAGES.map(
-              (item) => (
-                <React.Fragment
-                  key={
-                    item.code
-                  }
-                >
-                  {item.code ===
-                    "id" && (
-                    <span
-                      aria-hidden="true"
-                      style={{
-                        flexBasis:
-                          "100%",
-
-                        height:
-                          0,
-                      }}
-                    />
-                  )}
-
-                  <button
-                    type="button"
-
-                    onClick={() =>
-                      setContentLanguage(
-                        item.code
-                      )
-                    }
-
-                    aria-pressed={
-                      contentLanguage ===
-                      item.code
-                    }
-
-                    style={languageButton(
-                      contentLanguage ===
-                        item.code,
-                      mobile
-                    )}
-                  >
-                    {
-                      item.label
-                    }
-                  </button>
-                </React.Fragment>
-              )
-            )}
-          </div>
-
-
-        {/* =========================
+                {/* =========================
             추천 퀴즈
         ========================== */}
 
@@ -1646,8 +1660,8 @@ function languageButton(
 
     fontSize:
       mobile
-        ? 13
-        : 14,
+        ? 14
+        : 15,
 
     fontWeight:
       active
