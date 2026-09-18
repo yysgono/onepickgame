@@ -1175,7 +1175,7 @@ style={{
           boxSizing: "border-box",
 display: "flex",
 alignItems: "center",
-justifyContent: "center",
+justifyContent: "flex-start",
 gap: isMobile ? 8 : 11,
         }}
       >
