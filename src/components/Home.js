@@ -1222,6 +1222,7 @@ fontWeight: 900,
                 "none";
             }}
           >
+            {title}{" "}
             {t("view_all", {
               defaultValue: "View all",
             })}{" "}

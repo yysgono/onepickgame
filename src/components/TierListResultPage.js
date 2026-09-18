@@ -3251,12 +3251,12 @@ padding: isMobile
               >
                 <button
                   type="button"
-                  onClick={handleCreateBracketFromTier}
+                  onClick={handleClone}
                   style={{
                     width: "100%",
                     padding: isMobile ? "13px 14px" : "14px 16px",
                     borderRadius: 13,
-                    border: "1px solid #ff9f1a",
+                    border: "1px solid #7c5cff",
                     background: "#ffffff",
                     color: "#202534",
                     fontSize: isMobile ? 15 : 16,
@@ -3266,7 +3266,7 @@ padding: isMobile
                     boxShadow: "0 4px 16px rgba(25,32,52,0.07)",
                   }}
                 >
-                  {detailActionLabels.makeBracket}
+                  {detailActionLabels.cloneTierList}
                 </button>
 
                 {canBrowsePreset && (
@@ -3295,12 +3295,12 @@ padding: isMobile
 
                 <button
                   type="button"
-                  onClick={handleClone}
+                  onClick={handleCreateBracketFromTier}
                   style={{
                     width: "100%",
                     padding: isMobile ? "13px 14px" : "14px 16px",
                     borderRadius: 13,
-                    border: "1px solid #7c5cff",
+                    border: "1px solid #ff9f1a",
                     background: "#ffffff",
                     color: "#202534",
                     fontSize: isMobile ? 15 : 16,
@@ -3310,7 +3310,7 @@ padding: isMobile
                     boxShadow: "0 4px 16px rgba(25,32,52,0.07)",
                   }}
                 >
-                  {detailActionLabels.cloneTierList}
+                  {detailActionLabels.makeBracket}
                 </button>
               </div>
             </div>
