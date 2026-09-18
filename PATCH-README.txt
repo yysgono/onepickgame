@@ -35,3 +35,14 @@ OnePickGame SEO v3 패치
 
 주의
 - 검색엔진 색인은 즉시 보장되지 않음. 이 패치는 월드컵과 비슷하게 '크롤러가 상세 콘텐츠를 서버 HTML에서 읽을 수 있는 구조'로 맞추는 작업임.
+
+
+[v4] 신규 콘텐츠 원본 언어 자동 감지
+- 사이트 UI가 /en 이어도 제목/설명이 한글이면 신규 퀴즈/티어표 original_language를 ko로 저장
+- 일본어/중국어/아랍어/러시아어/태국어/힌디어/벵골어도 문자셋으로 감지
+- 영어/스페인어/프랑스어/독일어 등 라틴 문자 언어는 문자셋만으로 정확히 구분하기 어려워 현재 UI 언어를 fallback으로 사용
+- 기존 게임 수정 시에는 DB의 original_language를 그대로 유지하여 자동 감지가 원본 언어를 바꾸지 않음
+- 퀴즈 content_languages의 초기 UI 언어가 잘못 들어간 경우 신규 저장 시 감지된 원본 언어로 치환
+- 티어표에서 /en 상태로 한국어 작성 시 title_translations.en에 한국어가 남지 않도록 base key를 감지 언어로 재배치
+
+검증: react-scripts production build Compiled successfully.

@@ -634,12 +634,58 @@ function WorldcupMaker({
   const location =
     useLocation();
 
+  const changeContentLanguageAndPage = (nextLanguage) => {
+    if (!nextLanguage || nextLanguage === contentLanguage) {
+      return;
+    }
+
+    // 현재 언어의 입력값을 먼저 보관한 뒤, 선택한 언어의 번역값을 불러옵니다.
+    const nextTitleTranslations = {
+      ...titleTranslations,
+      [contentLanguage]: title,
+    };
+    const nextDescriptionTranslations = {
+      ...descriptionTranslations,
+      [contentLanguage]: desc,
+    };
+
+    setTitleTranslations(nextTitleTranslations);
+    setDescriptionTranslations(nextDescriptionTranslations);
+    setContentLanguage(nextLanguage);
+    setTitle(nextTitleTranslations[nextLanguage] || "");
+    setDesc(nextDescriptionTranslations[nextLanguage] || "");
+
+    try {
+      i18n.changeLanguage(nextLanguage);
+      localStorage.setItem("onepickgame_lang", nextLanguage);
+
+      const parts = location.pathname.split("/").filter(Boolean);
+      if (parts.length > 0 && /^[a-z]{2}$/i.test(parts[0])) {
+        parts[0] = nextLanguage;
+      } else {
+        parts.unshift(nextLanguage);
+      }
+
+      navigate(`/${parts.join("/")}${location.search || ""}${location.hash || ""}`, {
+        replace: true,
+      });
+    } catch (error) {
+      console.error("Content language sync failed:", error);
+    }
+  };
+
   const [
     contentLanguage,
     setContentLanguage,
   ] = useState(
     getCurrentPageLanguage
   );
+
+  // 생성 페이지에서도 언어별 제목/설명을 임시 보관합니다.
+  // originalLanguage는 최초로 실제 내용을 작성한 언어를 유지합니다.
+  const [originalLanguage, setOriginalLanguage] = useState(null);
+  const [titleTranslations, setTitleTranslations] = useState({});
+  const [descriptionTranslations, setDescriptionTranslations] = useState({});
 
 const [
   title,
@@ -650,6 +696,30 @@ const [
   desc,
   setDesc,
 ] = useState("");
+
+const handleTitleChange = (value) => {
+  setTitle(value);
+  setTitleTranslations((current) => ({
+    ...current,
+    [contentLanguage]: value,
+  }));
+
+  if (!originalLanguage && value.trim()) {
+    setOriginalLanguage(contentLanguage);
+  }
+};
+
+const handleDescriptionChange = (value) => {
+  setDesc(value);
+  setDescriptionTranslations((current) => ({
+    ...current,
+    [contentLanguage]: value,
+  }));
+
+  if (!originalLanguage && value.trim()) {
+    setOriginalLanguage(contentLanguage);
+  }
+};
 
 const [
   category,
@@ -722,9 +792,13 @@ const [
     }
 
     if (payload.title) {
-      setTitle(
-        String(payload.title).trim().slice(0, 100)
-      );
+      const importedTitle = String(payload.title).trim().slice(0, 100);
+      setTitle(importedTitle);
+      setTitleTranslations((current) => ({
+        ...current,
+        [contentLanguage]: importedTitle,
+      }));
+      setOriginalLanguage((current) => current || contentLanguage);
     }
 
     const categoryMap = {
@@ -1700,15 +1774,43 @@ for (
        * 새 월드컵 저장
        * =====================================================
        */
-const newCup = {
-  title:
-    title.trim(),
+const finalTitleTranslations = {
+  ...titleTranslations,
+  [contentLanguage]: title,
+};
+const finalDescriptionTranslations = {
+  ...descriptionTranslations,
+  [contentLanguage]: desc,
+};
+const resolvedOriginalLanguage = originalLanguage || contentLanguage;
+const originalTitle = String(
+  finalTitleTranslations[resolvedOriginalLanguage] || title || ""
+).trim();
+const originalDescription = String(
+  finalDescriptionTranslations[resolvedOriginalLanguage] || ""
+).trim();
 
-  description:
-    desc.trim(),
+const cleanTitleTranslations = Object.fromEntries(
+  Object.entries(finalTitleTranslations)
+    .map(([code, value]) => [code, String(value || "").trim()])
+    .filter(([, value]) => value)
+);
+const cleanDescriptionTranslations = Object.fromEntries(
+  Object.entries(finalDescriptionTranslations)
+    .map(([code, value]) => [code, String(value || "").trim()])
+    .filter(([, value]) => value)
+);
+
+const newCup = {
+  title: originalTitle,
+
+  description: originalDescription,
+
+  title_translations: cleanTitleTranslations,
+  description_translations: cleanDescriptionTranslations,
 
   original_language:
-    contentLanguage,
+    resolvedOriginalLanguage,
 
   category:
     category,
@@ -1769,6 +1871,9 @@ data:
        */
 setTitle("");
 setDesc("");
+setTitleTranslations({});
+setDescriptionTranslations({});
+setOriginalLanguage(null);
 setCategory("etc");
 setTags(["", "", ""]);
 
@@ -2214,7 +2319,7 @@ style={{
     <select
       value={contentLanguage}
       onChange={(event) =>
-        setContentLanguage(event.target.value)
+        changeContentLanguageAndPage(event.target.value)
       }
       disabled={loading}
       style={{
@@ -2418,7 +2523,7 @@ style={{
           onChange={(
             event
           ) =>
-            setTitle(
+            handleTitleChange(
               event.target
                 .value
             )
@@ -2460,7 +2565,7 @@ style={{
           onChange={(
             event
           ) =>
-            setDesc(
+            handleDescriptionChange(
               event.target
                 .value
             )

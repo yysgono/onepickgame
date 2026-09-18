@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 import imageCompression from "browser-image-compression";
 
@@ -301,6 +301,56 @@ function EditWorldcupPage({
   isAdmin,
 }) {
 const { t, i18n } = useTranslation();
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const changeContentLanguageAndPage = (nextLanguage) => {
+    if (!nextLanguage || nextLanguage === contentLanguage) {
+      return;
+    }
+
+    // 현재 언어에서 수정 중인 값을 보관하고 다음 언어 번역을 불러옵니다.
+    const nextTitleTranslations = {
+      ...titleTranslations,
+      [contentLanguage]: title,
+    };
+    const nextDescriptionTranslations = {
+      ...descriptionTranslations,
+      [contentLanguage]: description,
+    };
+
+    setTitleTranslations(nextTitleTranslations);
+    setDescriptionTranslations(nextDescriptionTranslations);
+    setContentLanguage(nextLanguage);
+
+    const nextTitle =
+      nextTitleTranslations[nextLanguage] ||
+      (nextLanguage === originalLanguage ? originalCup?.title || "" : "");
+    const nextDescription =
+      nextDescriptionTranslations[nextLanguage] ||
+      (nextLanguage === originalLanguage ? originalCup?.description || "" : "");
+
+    setTitle(nextTitle);
+    setDescription(nextDescription);
+
+    try {
+      i18n.changeLanguage(nextLanguage);
+      localStorage.setItem("onepickgame_lang", nextLanguage);
+
+      const parts = location.pathname.split("/").filter(Boolean);
+      if (parts.length > 0 && /^[a-z]{2}$/i.test(parts[0])) {
+        parts[0] = nextLanguage;
+      } else {
+        parts.unshift(nextLanguage);
+      }
+
+      navigate(`/${parts.join("/")}${location.search || ""}${location.hash || ""}`, {
+        replace: true,
+      });
+    } catch (error) {
+      console.error("Content language sync failed:", error);
+    }
+  };
  
   const [user, setUser] = useState(null);
   const [nickname, setNickname] = useState("");
@@ -311,6 +361,9 @@ const [description, setDescription] = useState("");
 const [category, setCategory] = useState("");
 const [tags, setTags] = useState(["", "", ""]);
 const [contentLanguage, setContentLanguage] = useState("en");
+const [originalLanguage, setOriginalLanguage] = useState("en");
+const [titleTranslations, setTitleTranslations] = useState({});
+const [descriptionTranslations, setDescriptionTranslations] = useState({});
 const [data, setData] = useState([]);
 
 const normalizeTag = (value) =>
@@ -375,15 +428,59 @@ const getCleanTags = () =>
     );
 
 setOriginalCup(cup || null);
-setTitle(cup?.title || "");
-setDescription(cup?.description || "");
 setCategory(cup?.category || "etc");
 
 const pageLang =
   (i18n.language || "en").split("-")[0];
 
-setContentLanguage(
-  cup?.original_language || pageLang
+// Legacy worldcups may have original_language = null.
+// In that case, infer the original language from the translation whose
+// value exactly matches the base title. Do NOT use the current page/header
+// language as the original language, because that can overwrite a valid
+// translation (e.g. ko) with the English base title.
+const existingTitleTranslations = cup?.title_translations || {};
+const inferredOriginalLanguage = Object.entries(existingTitleTranslations)
+  .find(([, value]) =>
+    String(value || "").trim() === String(cup?.title || "").trim()
+  )?.[0];
+
+const baseLanguage =
+  cup?.original_language ||
+  inferredOriginalLanguage ||
+  "en";
+
+const loadedTitleTranslations = {
+  ...existingTitleTranslations,
+};
+
+// Only backfill the base-language key when it is actually missing/blank.
+// Never overwrite an existing translated value.
+if (cup?.title && !String(loadedTitleTranslations[baseLanguage] || "").trim()) {
+  loadedTitleTranslations[baseLanguage] = cup.title;
+}
+
+const loadedDescriptionTranslations = {
+  ...(cup?.description_translations || {}),
+};
+
+if (
+  cup?.description &&
+  !String(loadedDescriptionTranslations[baseLanguage] || "").trim()
+) {
+  loadedDescriptionTranslations[baseLanguage] = cup.description;
+}
+
+setOriginalLanguage(baseLanguage);
+setTitleTranslations(loadedTitleTranslations);
+setDescriptionTranslations(loadedDescriptionTranslations);
+setContentLanguage(pageLang);
+setTitle(
+  loadedTitleTranslations[pageLang] ||
+  (pageLang === baseLanguage ? cup?.title || "" : "")
+);
+setDescription(
+  loadedDescriptionTranslations[pageLang] ||
+  (pageLang === baseLanguage ? cup?.description || "" : "")
 );
 
 const existingTags = Array.isArray(cup?.tags)
@@ -757,23 +854,43 @@ if (data.length < 2) {
         });
       }
 
-const currentLang =
-  (i18n.language || "en").split("-")[0];
+const finalTitleTranslations = {
+  ...titleTranslations,
+  [contentLanguage]: title,
+};
+const finalDescriptionTranslations = {
+  ...descriptionTranslations,
+  [contentLanguage]: description,
+};
+
+const cleanTitleTranslations = Object.fromEntries(
+  Object.entries(finalTitleTranslations)
+    .map(([code, value]) => [code, String(value || "").trim()])
+    .filter(([, value]) => value)
+);
+const cleanDescriptionTranslations = Object.fromEntries(
+  Object.entries(finalDescriptionTranslations)
+    .map(([code, value]) => [code, String(value || "").trim()])
+    .filter(([, value]) => value)
+);
+
+const baseTitle = String(
+  cleanTitleTranslations[originalLanguage] || originalCup?.title || ""
+).trim();
+const baseDescription = String(
+  cleanDescriptionTranslations[originalLanguage] || originalCup?.description || ""
+).trim();
 
 const updatedCup = {
   ...originalCup,
-  title: title.trim(),
-
-  title_translations: {
-    ...(originalCup?.title_translations || {}),
-    [currentLang]: title.trim(),
-  },
-
-description: description.trim(),
-original_language: contentLanguage,
-category,
-tags: getCleanTags(),
-data: updatedData,
+  title: baseTitle,
+  description: baseDescription,
+  title_translations: cleanTitleTranslations,
+  description_translations: cleanDescriptionTranslations,
+  original_language: originalLanguage,
+  category,
+  tags: getCleanTags(),
+  data: updatedData,
 };
       // 먼저 DB를 새 URL로 안전하게 갱신합니다.
       await updateWorldcupGame(
@@ -918,7 +1035,7 @@ data: updatedData,
     <select
       value={contentLanguage}
       onChange={(event) =>
-        setContentLanguage(event.target.value)
+        changeContentLanguageAndPage(event.target.value)
       }
       disabled={loading}
       style={{
@@ -958,9 +1075,14 @@ data: updatedData,
 
           <input
             value={title}
-            onChange={(event) =>
-              setTitle(event.target.value)
-            }
+            onChange={(event) => {
+              const value = event.target.value;
+              setTitle(value);
+              setTitleTranslations((current) => ({
+                ...current,
+                [contentLanguage]: value,
+              }));
+            }}
             style={{
               width: "100%",
               padding: 12,
@@ -995,9 +1117,14 @@ data: updatedData,
 
           <textarea
             value={description}
-            onChange={(event) =>
-              setDescription(event.target.value)
-            }
+            onChange={(event) => {
+              const value = event.target.value;
+              setDescription(value);
+              setDescriptionTranslations((current) => ({
+                ...current,
+                [contentLanguage]: value,
+              }));
+            }}
             style={{
               width: "100%",
               padding: 12,

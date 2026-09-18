@@ -5,6 +5,7 @@ import MediaRenderer from "./MediaRenderer";
 import { getCreatorSafetyCopy, creatorWarningStyle } from "./creatorSafetyCopy";
 import { getQuizMakerCopy, fillCopy } from "./quizMakerCopy";
 import { supabase } from "../utils/supabaseClient";
+import { detectContentLanguage } from "../utils/detectContentLanguage";
 import {
   createQuiz,
   uploadQuizImage,
@@ -774,19 +775,28 @@ export default function QuizMaker() {
         uploadedQuestions.push({ ...q, imageUrl });
       }
 
+      const saveOriginalLanguage = editQuizId
+        ? originalLanguage
+        : detectContentLanguage(`${title} ${description}`, originalLanguage || lang);
+      const saveContentLanguages = Array.from(new Set(
+        contentLanguages.map((code) =>
+          !editQuizId && code === originalLanguage ? saveOriginalLanguage : code
+        ).concat(saveOriginalLanguage)
+      ));
+
       const id = await createQuiz({
         quizId: editQuizId,
         title,
         titleTranslations: Object.fromEntries([
-          [originalLanguage, title.trim()],
+          [saveOriginalLanguage, title.trim()],
           ...titleTranslations
-            .filter((item) => item.lang && item.lang !== originalLanguage && item.title.trim())
+            .filter((item) => item.lang && item.lang !== saveOriginalLanguage && item.title.trim())
             .map((item) => [item.lang, item.title.trim()]),
         ]),
         descriptionTranslations: Object.fromEntries([
-          [originalLanguage, description.trim()],
+          [saveOriginalLanguage, description.trim()],
           ...titleTranslations
-            .filter((item) => item.lang && item.lang !== originalLanguage && item.description?.trim())
+            .filter((item) => item.lang && item.lang !== saveOriginalLanguage && item.description?.trim())
             .map((item) => [item.lang, item.description.trim()]),
         ]),
         description,
@@ -795,8 +805,8 @@ export default function QuizMaker() {
         questions: uploadedQuestions,
         user,
         nickname,
-        lang: originalLanguage,
-        contentLanguages,
+        lang: saveOriginalLanguage,
+        contentLanguages: saveContentLanguages,
         answerRevealMode: "both",
         sourceWorldcupIds,
       });

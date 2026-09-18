@@ -30,6 +30,7 @@ import {
 } from "../utils";
 
 import { supabase } from "../utils/supabaseClient";
+import { detectContentLanguage, rekeyBaseTranslation } from "../utils/detectContentLanguage";
 
 
 const MAX_UPLOAD = 50;
@@ -3621,6 +3622,27 @@ const finalCandidates =
               : null;
 
 
+          const saveTierOriginalLanguage = editingTierListId
+            ? tierOriginalLanguage
+            : detectContentLanguage(
+                `${cleanTitle} ${tierListDescription}`,
+                tierOriginalLanguage || lang
+              );
+
+          const saveTierTitleTranslations = rekeyBaseTranslation(
+            tierTitleTranslations,
+            tierOriginalLanguage,
+            saveTierOriginalLanguage,
+            cleanTitle
+          );
+
+          const saveTierDescriptionTranslations = rekeyBaseTranslation(
+            tierDescriptionTranslations,
+            tierOriginalLanguage,
+            saveTierOriginalLanguage,
+            tierListDescription
+          );
+
           const savedTierLabels = {
             ...tierLabels,
             _tags: normalizeTags(tierLabels._tags),
@@ -3642,15 +3664,9 @@ if (editingTierListId) {
         .update({
           title: cleanTitle,
           description: tierListDescription.trim(),
-          title_translations: {
-            ...tierTitleTranslations,
-            [tierOriginalLanguage]: cleanTitle,
-          },
-          description_translations: {
-            ...tierDescriptionTranslations,
-            ...(tierListDescription.trim() ? { [tierOriginalLanguage]: tierListDescription.trim() } : {}),
-          },
-          original_language: tierOriginalLanguage,
+          title_translations: saveTierTitleTranslations,
+          description_translations: saveTierDescriptionTranslations,
+          original_language: saveTierOriginalLanguage,
           category: selectedCategory,
           tier_labels: savedTierLabels,
           tiers: finalTiers,
@@ -3708,18 +3724,12 @@ if (editingTierListId) {
             finalCandidates,
           p_description:
             tierListDescription.trim(),
-          p_title_translations: {
-            ...tierTitleTranslations,
-            [tierOriginalLanguage]: cleanTitle,
-          },
-          p_description_translations: {
-            ...tierDescriptionTranslations,
-            ...(tierListDescription.trim()
-              ? { [tierOriginalLanguage]: tierListDescription.trim() }
-              : {}),
-          },
+          p_title_translations:
+            saveTierTitleTranslations,
+          p_description_translations:
+            saveTierDescriptionTranslations,
           p_original_language:
-            tierOriginalLanguage,
+            saveTierOriginalLanguage,
         }
       );
 
@@ -3740,15 +3750,9 @@ if (editingTierListId) {
           guest_nickname: null,
           title: cleanTitle,
           description: tierListDescription.trim(),
-          title_translations: {
-            ...tierTitleTranslations,
-            [tierOriginalLanguage]: cleanTitle,
-          },
-          description_translations: {
-            ...tierDescriptionTranslations,
-            ...(tierListDescription.trim() ? { [tierOriginalLanguage]: tierListDescription.trim() } : {}),
-          },
-          original_language: tierOriginalLanguage,
+          title_translations: saveTierTitleTranslations,
+          description_translations: saveTierDescriptionTranslations,
+          original_language: saveTierOriginalLanguage,
           source_worldcup_id:
             sourceWorldcupId || null,
           category: selectedCategory,
@@ -3815,18 +3819,12 @@ if (editingTierListId) {
         finalCandidates,
       p_description:
         tierListDescription.trim(),
-      p_title_translations: {
-        ...tierTitleTranslations,
-        [tierOriginalLanguage]: cleanTitle,
-      },
-      p_description_translations: {
-        ...tierDescriptionTranslations,
-        ...(tierListDescription.trim()
-          ? { [tierOriginalLanguage]: tierListDescription.trim() }
-          : {}),
-      },
+      p_title_translations:
+        saveTierTitleTranslations,
+      p_description_translations:
+        saveTierDescriptionTranslations,
       p_original_language:
-        tierOriginalLanguage,
+        saveTierOriginalLanguage,
     }
   );
 
