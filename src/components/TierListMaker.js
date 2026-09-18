@@ -978,6 +978,39 @@ const [
   ] =
     useState("");
 
+  const [tierListDescription, setTierListDescription] = useState("");
+  const [tierTitleTranslations, setTierTitleTranslations] = useState({});
+  const [tierDescriptionTranslations, setTierDescriptionTranslations] = useState({});
+  const [tierOriginalLanguage, setTierOriginalLanguage] = useState(lang);
+
+  const activeTierTitle =
+    lang === tierOriginalLanguage
+      ? tierListTitle
+      : (tierTitleTranslations?.[lang] || "");
+
+  const activeTierDescription =
+    lang === tierOriginalLanguage
+      ? tierListDescription
+      : (tierDescriptionTranslations?.[lang] || "");
+
+  const changeActiveTierTitle = (value) => {
+    if (lang === tierOriginalLanguage) {
+      setTierListTitle(value);
+      setTierTitleTranslations((prev) => ({ ...prev, [tierOriginalLanguage]: value }));
+      return;
+    }
+    setTierTitleTranslations((prev) => ({ ...prev, [lang]: value }));
+  };
+
+  const changeActiveTierDescription = (value) => {
+    if (lang === tierOriginalLanguage) {
+      setTierListDescription(value);
+      setTierDescriptionTranslations((prev) => ({ ...prev, [tierOriginalLanguage]: value }));
+      return;
+    }
+    setTierDescriptionTranslations((prev) => ({ ...prev, [lang]: value }));
+  };
+
 
   const [
     selectedCategory,
@@ -1681,6 +1714,10 @@ const sourceCandidates =
 } else if (!cloneTierListId && !editTierListId) {
   setSourceWorldcupId(null);
   setCustomPresetName("");
+  setTierOriginalLanguage(lang);
+  setTierListDescription("");
+  setTierTitleTranslations({});
+  setTierDescriptionTranslations({});
 }
   // 실제 소스가 바뀔 때만 초기화합니다.
   // 언어 변경(getTitle 변경)만으로 작업 중인 티어가 리셋되지 않습니다.
@@ -1843,10 +1880,29 @@ const sourceCandidates =
         ...DEFAULT_TIER_LABELS,
         ...(payload.tier_labels || {}),
       });
+      const incomingTitleTranslations =
+        payload?.title_translations && typeof payload.title_translations === "object"
+          ? payload.title_translations
+          : {};
+      const incomingDescriptionTranslations =
+        payload?.description_translations && typeof payload.description_translations === "object"
+          ? payload.description_translations
+          : {};
+      const inferredOriginalLanguage =
+        payload?.original_language ||
+        Object.keys(incomingTitleTranslations).find(
+          (code) => String(incomingTitleTranslations?.[code] || "").trim() === String(payload?.title || "").trim()
+        ) ||
+        "en";
+
+      setTierOriginalLanguage(mode === "clone" ? lang : inferredOriginalLanguage);
+      setTierTitleTranslations(mode === "clone" ? {} : incomingTitleTranslations);
+      setTierDescriptionTranslations(mode === "clone" ? {} : incomingDescriptionTranslations);
+      setTierListDescription(mode === "clone" ? "" : (payload?.description || incomingDescriptionTranslations?.[inferredOriginalLanguage] || ""));
       setTierListTitle(
         mode === "clone"
           ? `${payload.title || text.newTierList}`
-          : payload.title || text.newTierList
+          : incomingTitleTranslations?.[inferredOriginalLanguage] || payload.title || text.newTierList
       );
       setLocalOnlyMode(true);
       setSearchKeyword("");
@@ -1928,7 +1984,7 @@ const sourceCandidates =
         const { data, error } = await supabase
           .from("tier_lists")
           .select(
-            "id, user_id, guest_nickname, title, source_worldcup_id, category, tier_labels, tiers, candidates"
+            "id, user_id, guest_nickname, title, description, title_translations, description_translations, original_language, source_worldcup_id, category, tier_labels, tiers, candidates"
           )
           .eq("id", targetId)
           .single();
@@ -3042,6 +3098,10 @@ const handleDragEndItem =
           version: 2,
           savedAt: Date.now(),
           title: tierListTitle,
+          description: tierListDescription,
+          titleTranslations: tierTitleTranslations,
+          descriptionTranslations: tierDescriptionTranslations,
+          originalLanguage: tierOriginalLanguage,
           category: selectedCategory,
           tierLabels: {
             ...tierLabels,
@@ -3168,6 +3228,10 @@ const handleDragEndItem =
         allDraftItems.forEach(restoreItem);
 
         setTierListTitle(draft?.title || "");
+        setTierListDescription(draft?.description || "");
+        setTierTitleTranslations(draft?.titleTranslations || {});
+        setTierDescriptionTranslations(draft?.descriptionTranslations || {});
+        setTierOriginalLanguage(draft?.originalLanguage || lang);
         setSelectedCategory(
           normalizeTierCategory(draft?.category)
         );
@@ -3577,6 +3641,16 @@ if (editingTierListId) {
         .from("tier_lists")
         .update({
           title: cleanTitle,
+          description: tierListDescription.trim(),
+          title_translations: {
+            ...tierTitleTranslations,
+            [tierOriginalLanguage]: cleanTitle,
+          },
+          description_translations: {
+            ...tierDescriptionTranslations,
+            ...(tierListDescription.trim() ? { [tierOriginalLanguage]: tierListDescription.trim() } : {}),
+          },
+          original_language: tierOriginalLanguage,
           category: selectedCategory,
           tier_labels: savedTierLabels,
           tiers: finalTiers,
@@ -3632,6 +3706,20 @@ if (editingTierListId) {
             finalTiers,
           p_candidates:
             finalCandidates,
+          p_description:
+            tierListDescription.trim(),
+          p_title_translations: {
+            ...tierTitleTranslations,
+            [tierOriginalLanguage]: cleanTitle,
+          },
+          p_description_translations: {
+            ...tierDescriptionTranslations,
+            ...(tierListDescription.trim()
+              ? { [tierOriginalLanguage]: tierListDescription.trim() }
+              : {}),
+          },
+          p_original_language:
+            tierOriginalLanguage,
         }
       );
 
@@ -3651,6 +3739,16 @@ if (editingTierListId) {
           guest_id: null,
           guest_nickname: null,
           title: cleanTitle,
+          description: tierListDescription.trim(),
+          title_translations: {
+            ...tierTitleTranslations,
+            [tierOriginalLanguage]: cleanTitle,
+          },
+          description_translations: {
+            ...tierDescriptionTranslations,
+            ...(tierListDescription.trim() ? { [tierOriginalLanguage]: tierListDescription.trim() } : {}),
+          },
+          original_language: tierOriginalLanguage,
           source_worldcup_id:
             sourceWorldcupId || null,
           category: selectedCategory,
@@ -3715,6 +3813,20 @@ if (editingTierListId) {
       p_tiers: finalTiers,
       p_candidates:
         finalCandidates,
+      p_description:
+        tierListDescription.trim(),
+      p_title_translations: {
+        ...tierTitleTranslations,
+        [tierOriginalLanguage]: cleanTitle,
+      },
+      p_description_translations: {
+        ...tierDescriptionTranslations,
+        ...(tierListDescription.trim()
+          ? { [tierOriginalLanguage]: tierListDescription.trim() }
+          : {}),
+      },
+      p_original_language:
+        tierOriginalLanguage,
     }
   );
 
@@ -3769,6 +3881,10 @@ if (editingTierListId) {
 [
   saving,
   tierListTitle,
+  tierListDescription,
+  tierTitleTranslations,
+  tierDescriptionTranslations,
+  tierOriginalLanguage,
   lang,
   text,
   allCandidates,
@@ -5557,8 +5673,8 @@ objectPosition: "center",
               }}
             >
               <input
-                value={tierListTitle}
-                onChange={(e) => setTierListTitle(e.target.value)}
+                value={activeTierTitle}
+                onChange={(e) => changeActiveTierTitle(e.target.value)}
                 placeholder={text.titlePlaceholder}
                 maxLength={80}
                 style={{
@@ -5574,6 +5690,30 @@ objectPosition: "center",
                   color: "#111827",
                   fontSize: isMobile ? 18 : 20,
                   fontWeight: 700,
+                  outline: "none",
+                }}
+              />
+
+              <textarea
+                value={activeTierDescription}
+                onChange={(e) => changeActiveTierDescription(e.target.value)}
+                placeholder={t("description")}
+                maxLength={500}
+                rows={3}
+                style={{
+                  width: "100%",
+                  minHeight: 86,
+                  marginBottom: 14,
+                  boxSizing: "border-box",
+                  padding: "12px 14px",
+                  borderRadius: 10,
+                  border: "1px solid #cbd5e1",
+                  background: "#fff",
+                  color: "#111827",
+                  fontSize: 16,
+                  fontWeight: 600,
+                  lineHeight: 1.5,
+                  resize: "vertical",
                   outline: "none",
                 }}
               />

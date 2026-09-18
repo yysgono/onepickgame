@@ -1790,6 +1790,203 @@ app.get(
 
 /*
  * =====================================================
+ * 티어표 상세 페이지 서버 SEO
+ *
+ * /:lang/tier-list/:id
+ * =====================================================
+ */
+
+app.use(async (req, res, next) => {
+  const seoType = String(req.query?.seo || "");
+  if (seoType !== "tier-list") return next();
+
+  const lang = String(req.query?.lang || "en").trim().toLowerCase();
+  const id = String(req.query?.id || "").trim();
+
+  if (!SUPPORTED_LANGS.includes(lang)) {
+    return res.status(400).send("Unsupported language");
+  }
+  if (!id) {
+    return res.status(400).send("Tier list ID required");
+  }
+
+  try {
+    const { data: tierList, error } = await supabase
+      .from("tier_lists")
+      .select("id,title,description,title_translations,description_translations,original_language,thumbnail_url,candidate_count,candidates,updated_at")
+      .eq("id", id)
+      .maybeSingle();
+
+    if (error) throw error;
+    if (!tierList) return res.status(404).send("Tier list not found");
+
+    const parseMap = (value) => {
+      if (!value) return {};
+      if (typeof value === "object" && !Array.isArray(value)) return value;
+      try {
+        const parsed = JSON.parse(value);
+        return parsed && typeof parsed === "object" && !Array.isArray(parsed)
+          ? parsed
+          : {};
+      } catch {
+        return {};
+      }
+    };
+
+    const titleMap = parseMap(tierList.title_translations);
+    const descriptionMap = parseMap(tierList.description_translations);
+    const normalizeLang = (value) => String(value || "").toLowerCase().split("-")[0];
+
+    const tierLanguages = [...new Set([
+      ...Object.keys(titleMap),
+      ...Object.keys(descriptionMap),
+      normalizeLang(tierList.original_language),
+    ].map(normalizeLang))].filter((language) => SUPPORTED_LANGS.includes(language));
+
+    const indexable = tierLanguages.includes(lang);
+
+    const tierTitle = String(
+      titleMap[lang] ||
+      titleMap.en ||
+      tierList.title ||
+      "Tier List"
+    ).replace(/\s+/g, " ").trim();
+
+    let tierDescription = String(
+      descriptionMap[lang] ||
+      descriptionMap.en ||
+      tierList.description ||
+      ""
+    ).replace(/\s+/g, " ").trim();
+
+    const count = Number(tierList.candidate_count || 0);
+    if (!tierDescription) {
+      if (lang === "ko") {
+        tierDescription = `${tierTitle} 티어표를 확인하고 직접 순위를 비교해보세요.${count ? ` 총 ${count}명의 후보가 있습니다.` : ""}`;
+      } else if (lang === "ja") {
+        tierDescription = `${tierTitle}のTier表をチェックして、ランキングを比較してみましょう。${count ? ` 候補は${count}件です。` : ""}`;
+      } else if (lang === "zh") {
+        tierDescription = `查看${tierTitle} Tier榜并比较排名。${count ? ` 共${count}个候选。` : ""}`;
+      } else {
+        tierDescription = `Explore the ${tierTitle} tier list and compare the rankings.${count ? ` ${count} candidates are included.` : ""}`;
+      }
+    }
+
+    const canonical = `${SITE_URL}/${lang}/tier-list/${encodeURIComponent(id)}`;
+
+    let candidates = [];
+    if (Array.isArray(tierList.candidates)) candidates = tierList.candidates;
+    else if (typeof tierList.candidates === "string") {
+      try {
+        const parsed = JSON.parse(tierList.candidates);
+        if (Array.isArray(parsed)) candidates = parsed;
+      } catch {}
+    }
+
+    let image = String(tierList.thumbnail_url || "").trim();
+    if (!image) {
+      for (const candidate of candidates) {
+        const value = String(candidate?.image || candidate?.url || "").trim();
+        if (value) {
+          image = value;
+          break;
+        }
+      }
+    }
+    if (!image) image = "/ogimg.png";
+    if (!/^https?:\/\//i.test(image)) {
+      image = `${SITE_URL}${image.startsWith("/") ? "" : "/"}${image}`;
+    }
+
+    const seoTitle = lang === "ko"
+      ? `${tierTitle} | 티어표 | OnePickGame`
+      : `${tierTitle} | Tier List | OnePickGame`;
+
+    let html = await loadSeoTemplate(SITE_URL);
+    html = html
+      .replace(/<title[\s\S]*?<\/title>/gi, "")
+      .replace(/<meta\s+[^>]*(?:name|property)=["'](?:description|robots|og:[^"']*|twitter:[^"']*)["'][^>]*>/gi, "")
+      .replace(/<link\s+[^>]*rel=["'](?:canonical|alternate)["'][^>]*>/gi, "")
+      .replace(/<html([^>]*)lang=["'][^"']*["']([^>]*)>/i, `<html$1lang="${lang}"$2>`);
+
+    const hreflangTags = indexable
+      ? tierLanguages.map((language) => `\n<link rel="alternate" hreflang="${language}" href="${SITE_URL}/${language}/tier-list/${encodeURIComponent(id)}"/>`).join("")
+      : "";
+
+    const xDefault = indexable && tierLanguages.includes("en")
+      ? `\n<link rel="alternate" hreflang="x-default" href="${SITE_URL}/en/tier-list/${encodeURIComponent(id)}"/>`
+      : "";
+
+    const jsonLd = {
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      name: tierTitle,
+      headline: tierTitle,
+      description: tierDescription,
+      url: canonical,
+      inLanguage: lang,
+      isPartOf: { "@type": "WebSite", name: "OnePickGame", url: SITE_URL },
+      primaryImageOfPage: { "@type": "ImageObject", url: image },
+    };
+
+    const seoHead = `
+<title>${escapeHtml(seoTitle)}</title>
+<meta name="description" content="${escapeHtml(tierDescription)}"/>
+<meta name="robots" content="${indexable ? "index, follow, max-image-preview:large" : "noindex, follow"}"/>
+<link rel="canonical" href="${canonical}"/>
+${hreflangTags}${xDefault}
+<meta property="og:type" content="website"/>
+<meta property="og:title" content="${escapeHtml(seoTitle)}"/>
+<meta property="og:description" content="${escapeHtml(tierDescription)}"/>
+<meta property="og:url" content="${canonical}"/>
+<meta property="og:site_name" content="OnePickGame"/>
+<meta property="og:locale" content="${OG_LOCALE_MAP[lang] || "en_US"}"/>
+<meta property="og:image" content="${escapeHtml(image)}"/>
+<meta property="og:image:alt" content="${escapeHtml(tierTitle)}"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="${escapeHtml(seoTitle)}"/>
+<meta name="twitter:description" content="${escapeHtml(tierDescription)}"/>
+<meta name="twitter:image" content="${escapeHtml(image)}"/>
+<script type="application/ld+json">${safeJson(jsonLd)}</script>
+`;
+
+    const candidateNames = candidates
+      .slice(0, 20)
+      .map((candidate) => String(candidate?.name || candidate?.title || "").trim())
+      .filter(Boolean);
+
+    const candidateList = candidateNames.length
+      ? `<section><h2>${lang === "ko" ? "주요 후보" : "Candidates"}</h2><ul>${candidateNames.map((name) => `<li>${escapeHtml(name)}</li>`).join("")}</ul></section>`
+      : "";
+
+    const seoBody = `
+<main id="seo-content" style="max-width:900px;margin:40px auto;padding:24px;font-family:Arial,sans-serif;">
+  <article>
+    <h1>${escapeHtml(tierTitle)}</h1>
+    <p>${escapeHtml(tierDescription)}</p>
+    ${candidateList}
+  </article>
+</main>`;
+
+    const loadingRoot = /<div\s+id=["']root["']>\s*<div\s+class=["']loading-screen["']>\s*Loading\.\.\.\s*<\/div>\s*<\/div>/i;
+    const emptyRoot = /<div\s+id=["']root["']>\s*<\/div>/i;
+    if (loadingRoot.test(html)) html = html.replace(loadingRoot, `<div id="root">${seoBody}</div>`);
+    else if (emptyRoot.test(html)) html = html.replace(emptyRoot, `<div id="root">${seoBody}</div>`);
+
+    html = html.replace("</head>", `${seoHead}\n</head>`);
+
+    res.setHeader("Cache-Control", "public, s-maxage=300, stale-while-revalidate=3600");
+    res.setHeader("Content-Type", "text/html; charset=utf-8");
+    return res.status(200).send(html);
+  } catch (err) {
+    console.error("티어표 SEO HTML 오류:", err);
+    return res.status(500).send("Tier list temporarily unavailable");
+  }
+});
+
+
+/*
+ * =====================================================
  * 월드컵 선택 페이지 서버 SEO
  *
  * /:lang/select-round/:id

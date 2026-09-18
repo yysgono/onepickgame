@@ -799,200 +799,82 @@ const top3 = useMemo(() => {
         boxSizing: "border-box",
       }}
     >
- {/* 상단 결과 타이틀 */}
+ {/* 상단 결과 타이틀 - 미니멀 */}
 <div
   style={{
-    width: "min(720px, 94vw)",
-
-    margin:
-      isMobile
-        ? "18px auto 16px"
-        : "24px auto 18px",
-
-    padding:
-      isMobile
-        ? "20px 16px 18px"
-        : "25px 28px 22px",
-
-    position:
-      "relative",
-
-    overflow:
-      "hidden",
-
-    background:
-      "linear-gradient(135deg,#ffffff 0%,#f7f5ff 55%,#eef5ff 100%)",
-
-    border:
-      "2px solid #8b78ef",
-
-    borderRadius:
-      isMobile ? 16 : 18,
-
-    textAlign:
-      "center",
-
-    boxSizing:
-      "border-box",
-
-    boxShadow:
-      "0 8px 26px rgba(83,65,184,0.14)",
+    width: "min(760px, 94vw)",
+    margin: isMobile ? "18px auto 14px" : "24px auto 16px",
+    padding: isMobile ? "22px 18px 20px" : "28px 34px 26px",
+    background: "#ffffff",
+    border: "1px solid #e5e7eb",
+    borderRadius: isMobile ? 14 : 16,
+    textAlign: "center",
+    boxSizing: "border-box",
+    boxShadow: "0 8px 24px rgba(15,23,42,0.06)",
   }}
 >
-  {/* 상단 포인트 라인 */}
   <div
+    aria-hidden="true"
     style={{
-      position: "absolute",
-      left: 0,
-      top: 0,
-
-      width: "100%",
-      height: 5,
-
-      background:
-        "linear-gradient(90deg,#6650d8,#8c6cff,#4e9cff)",
-    }}
-  />
-
-  {/* 아이콘 */}
-  <div
-    style={{
-      width:
-        isMobile ? 42 : 50,
-
-      height:
-        isMobile ? 42 : 50,
-
-      margin:
-        "0 auto 10px",
-
-      borderRadius:
-        "50%",
-
-      display:
-        "flex",
-
-      alignItems:
-        "center",
-
-      justifyContent:
-        "center",
-
-      background:
-        "#6650d8",
-
-      color:
-        "#ffffff",
-
-      fontSize:
-        isMobile ? 21 : 25,
-
-      boxShadow:
-        "0 5px 16px rgba(102,80,216,0.25)",
+      fontSize: isMobile ? 23 : 26,
+      lineHeight: 1,
+      marginBottom: 9,
     }}
   >
     🏆
   </div>
 
-  {/* 제목 */}
   <div
     style={{
-      fontWeight:
-        900,
-
-      fontSize:
-        isMobile ? 23 : 31,
-
-      color:
-        "#202534",
-
-      lineHeight:
-        1.3,
-
-      letterSpacing:
-        "-0.6px",
-
-      wordBreak:
-        "keep-all",
-
-      textShadow:
-        "0 1px 0 #fff",
+      marginBottom: 8,
+      color: "#8a94a6",
+      fontSize: isMobile ? 11 : 12,
+      fontWeight: 900,
+      letterSpacing: isMobile ? "0.08em" : "0.11em",
+      textTransform: "uppercase",
     }}
+  >
+    {t("gameModeNav.worldcup")}
+  </div>
+
+  <div
     title={displayCupTitle}
+    style={{
+      color: "#171b26",
+      fontSize: isMobile ? 24 : 32,
+      fontWeight: 950,
+      lineHeight: 1.28,
+      letterSpacing: "-0.7px",
+      wordBreak: "keep-all",
+      overflowWrap: "anywhere",
+    }}
   >
     {displayCupTitle}
   </div>
 
-  {/* 제목 아래 포인트 */}
-  <div
-    style={{
-      width:
-        isMobile ? 65 : 85,
-
-      height:
-        3,
-
-      borderRadius:
-        999,
-
-      margin:
-        "12px auto 14px",
-
-      background:
-        "linear-gradient(90deg,#6650d8,#4e9cff)",
-    }}
-  />
-
-  {/* 시작 버튼 */}
   <button
     type="button"
-
     onClick={() => {
       window.location.href =
         `/${lang}/select-round/${selectedCup.id}`;
     }}
-
     style={{
-      minWidth:
-        isMobile ? 150 : 185,
-
-      padding:
-        isMobile
-          ? "11px 20px"
-          : "12px 28px",
-
-      borderRadius:
-        10,
-
-      border:
-        "1px solid #5842c7",
-
-      background:
-        "linear-gradient(90deg,#6650d8,#785ce7)",
-
-      color:
-        "#ffffff",
-
-      fontSize:
-        isMobile ? 15 : 17,
-
-      fontWeight:
-        900,
-
-      cursor:
-        "pointer",
-
-      boxShadow:
-        "0 5px 15px rgba(102,80,216,0.24)",
-
-      letterSpacing:
-        "0.1px",
+      minWidth: isMobile ? 154 : 178,
+      marginTop: isMobile ? 18 : 21,
+      padding: isMobile ? "11px 20px" : "12px 25px",
+      border: "1px solid #e85f0d",
+      borderRadius: 10,
+      background: "#ff6b12",
+      color: "#ffffff",
+      fontSize: isMobile ? 15 : 16,
+      fontWeight: 900,
+      cursor: "pointer",
+      boxShadow: "0 5px 14px rgba(255,107,18,0.18)",
     }}
   >
     ▶ {t("start")}
   </button>
 </div>
-
 
 <ShareAndReportBar />
 

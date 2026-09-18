@@ -63,6 +63,8 @@ export function localized(map, fallback, lang) {
 }
 
 export function quizLanguages(quiz) {
+  // 검색 노출 언어는 실제 퀴즈 콘텐츠가 준비된 언어만 사용한다.
+  // 제목 번역만 존재하는 언어를 자동으로 indexable 처리하지 않는다.
   const configured = [
     ...(Array.isArray(quiz?.content_languages)
       ? quiz.content_languages

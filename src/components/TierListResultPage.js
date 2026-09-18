@@ -52,6 +52,31 @@ const CLONE_STORAGE_KEY =
 const EDIT_STORAGE_KEY =
   "onepick_tier_edit_v1";
 
+const SEO_SUPPORTED_LANGS = [
+  "en", "ko", "ja", "zh", "ru", "pt", "es", "fr",
+  "id", "hi", "de", "vi", "ar", "bn", "th", "tr",
+];
+
+function getTierListSeoLanguages(tierList) {
+  if (!tierList) return [];
+  let titles = tierList.title_translations || {};
+  let descriptions = tierList.description_translations || {};
+  if (typeof titles === "string") {
+    try { titles = JSON.parse(titles); } catch { titles = {}; }
+  }
+  if (typeof descriptions === "string") {
+    try { descriptions = JSON.parse(descriptions); } catch { descriptions = {}; }
+  }
+  const values = [
+    ...Object.keys(titles || {}),
+    ...Object.keys(descriptions || {}),
+    tierList.original_language,
+  ]
+    .map((value) => String(value || "").toLowerCase().split("-")[0])
+    .filter((value) => SEO_SUPPORTED_LANGS.includes(value));
+  return [...new Set(values)];
+}
+
 const WORLDCUP_FROM_TIER_STORAGE_KEY =
   "onepick_worldcup_from_tier_v1";
 
@@ -75,6 +100,15 @@ const WORLDCUP_FROM_TIER_STORAGE_KEY =
     tierList.title ||
     fallback
   );
+}
+
+function getTierListDescription(tierList, lang) {
+  if (!tierList) return "";
+  let translations = tierList.description_translations || {};
+  if (typeof translations === "string") {
+    try { translations = JSON.parse(translations); } catch { translations = {}; }
+  }
+  return translations?.[lang] || translations?.en || tierList.description || "";
 }
 
 /* =========================================================
@@ -2233,8 +2267,10 @@ ctx.font =
             user_id: tierList.user_id || null,
             guest_nickname: tierList.guest_nickname || "",
             title: tierList.title,
-            title_translations:
-  tierList.title_translations || {},
+            description: tierList.description || "",
+            title_translations: tierList.title_translations || {},
+            description_translations: tierList.description_translations || {},
+            original_language: tierList.original_language || null,
             source_worldcup_id:
               tierList.source_worldcup_id || null,
             category: tierList.category || "other",
@@ -2659,13 +2695,19 @@ const seoResultTitle = t(
   }
 );
 
-const seoResultDescription = t(
+const localizedTierDescription = getTierListDescription(tierList, lang);
+
+const seoResultDescription = localizedTierDescription || t(
   "tierList.seo.resultDescription",
   {
     title: displayTitle,
     count: Number(tierList.candidate_count || 0),
   }
 );
+
+const tierSeoLanguages = getTierListSeoLanguages(tierList);
+const normalizedSeoLang = String(lang || "en").toLowerCase().split("-")[0];
+const tierSeoIndexable = tierSeoLanguages.includes(normalizedSeoLang);
   const seoResultImage =
     tierList.thumbnail_url ||
     onePickCandidate?.image ||
@@ -2714,7 +2756,8 @@ const seoResultDescription = t(
         title={seoResultTitle}
         description={seoResultDescription}
         image={seoResultImage}
-        indexable={true}
+        hreflangLangs={tierSeoLanguages}
+        indexable={tierSeoIndexable}
       />
 <div
   style={{

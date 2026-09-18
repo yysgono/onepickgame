@@ -395,6 +395,27 @@ export default function QuizMaker() {
     setTitleTranslations((prev) => prev.map((item) => item.id === id ? { ...item, ...patch } : item));
   }
 
+  function ensureTitleTranslation(code, patch) {
+    if (code === originalLanguage) {
+      if (Object.prototype.hasOwnProperty.call(patch, "title")) setTitle(patch.title);
+      if (Object.prototype.hasOwnProperty.call(patch, "description")) setDescription(patch.description);
+      return;
+    }
+
+    setTitleTranslations((prev) => {
+      const found = prev.find((item) => item.lang === code);
+      if (found) {
+        return prev.map((item) => item.lang === code ? { ...item, ...patch } : item);
+      }
+      return [...prev, { id: makeId(), lang: code, title: "", description: "", ...patch }];
+    });
+  }
+
+  const activeTitleTranslation =
+    lang === originalLanguage
+      ? { title, description }
+      : titleTranslations.find((item) => item.lang === lang) || { title: "", description: "" };
+
   function questionLocale(q, code) {
     if (code === originalLanguage) return { question: q.question || "", options: q.options || ["", "", "", ""], answers: q.answers || [""], explanation: q.explanation || "" };
     const value = q.translations?.[code] || {};
@@ -847,7 +868,12 @@ export default function QuizMaker() {
         <section style={sectionStyle}>
           <label style={labelStyle}>
             {m.quizTitle}
-            <input value={title} onChange={(e) => setTitle(e.target.value)} maxLength={100} style={inputStyle} />
+            <input
+              value={activeTitleTranslation.title || ""}
+              onChange={(e) => ensureTitleTranslation(lang, { title: e.target.value })}
+              maxLength={100}
+              style={inputStyle}
+            />
           </label>
           <div style={{ margin: "-4px 0 16px" }}>
             <button type="button" onClick={addTitleTranslation} disabled={titleTranslations.length >= QUIZ_LANGUAGES.length - 1} style={{ ...secondaryButton, minHeight: 42, color: "#2459a6", borderColor: "#a9c1e8" }}>＋ {m.addTranslatedTitle}</button>
@@ -869,7 +895,13 @@ export default function QuizMaker() {
           </div>
           <label style={labelStyle}>
             {m.description}
-            <textarea value={description} onChange={(e) => setDescription(e.target.value)} maxLength={500} rows={3} style={{ ...inputStyle, height: "auto", padding: 10 }} />
+            <textarea
+              value={activeTitleTranslation.description || ""}
+              onChange={(e) => ensureTitleTranslation(lang, { description: e.target.value })}
+              maxLength={500}
+              rows={3}
+              style={{ ...inputStyle, height: "auto", padding: 10 }}
+            />
           </label>
 
           <div style={{ marginBottom: 16 }}>

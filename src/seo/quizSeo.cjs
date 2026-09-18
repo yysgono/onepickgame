@@ -18,6 +18,7 @@ function localized(map, fallback, lang) {
   return plainText(translations[lang]) || plainText(translations.en) || plainText(fallback);
 }
 function quizLanguages(quiz) {
+  // Only languages with actual quiz content are indexable.
   const configured = [
     ...(Array.isArray(quiz?.content_languages) ? quiz.content_languages : []),
     quiz?.original_language,

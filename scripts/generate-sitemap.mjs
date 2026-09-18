@@ -172,7 +172,7 @@ async function fetchTierLists() {
 
   return fetchAllRows({
     table: "tier_lists",
-    select: "id, created_at, updated_at",
+    select: "id, created_at, updated_at, original_language, title_translations, description_translations",
     label: "티어표",
   });
 }
@@ -264,6 +264,27 @@ export function generateLanguageSitemap(
 
   for (const tierList of tierLists) {
     if (!tierList?.id) continue;
+
+    const parseMap = (value) => {
+      if (!value) return {};
+      if (typeof value === "object" && !Array.isArray(value)) return value;
+      try {
+        const parsed = JSON.parse(value);
+        return parsed && typeof parsed === "object" && !Array.isArray(parsed) ? parsed : {};
+      } catch {
+        return {};
+      }
+    };
+
+    const titleMap = parseMap(tierList.title_translations);
+    const descriptionMap = parseMap(tierList.description_translations);
+    const availableLanguages = new Set([
+      ...Object.keys(titleMap),
+      ...Object.keys(descriptionMap),
+      String(tierList.original_language || "").toLowerCase().split("-")[0],
+    ].filter(Boolean));
+
+    if (!availableLanguages.has(lang)) continue;
 
     xml += makeUrlEntry({
       loc:
