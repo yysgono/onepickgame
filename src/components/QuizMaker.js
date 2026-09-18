@@ -123,6 +123,7 @@ export default function QuizMaker() {
   const [nickname, setNickname] = useState("");
   const [authChecked, setAuthChecked] = useState(false);
 
+  const [originalLanguage, setOriginalLanguage] = useState(lang);
   const [title, setTitle] = useState("");
   const [titleTranslations, setTitleTranslations] = useState([]);
   const [description, setDescription] = useState("");
@@ -187,11 +188,24 @@ export default function QuizMaker() {
         const baseLang = existing.original_language || lang;
         const titleMap = existing.title_translations || {};
         const descriptionMap = existing.description_translations || {};
+        const translationCodes = new Set([
+          ...Object.keys(titleMap),
+          ...Object.keys(descriptionMap),
+        ]);
+
+        setOriginalLanguage(baseLang);
         setTitle(titleMap[baseLang] || existing.title || "");
         setDescription(descriptionMap[baseLang] || existing.description || "");
-        setTitleTranslations(Object.keys(titleMap).filter((code) => code !== baseLang).map((code) => ({
-      id: makeId(),
-      lang: code, title: titleMap[code] || "", description: descriptionMap[code] || "" })));
+        setTitleTranslations(
+          [...translationCodes]
+            .filter((code) => code !== baseLang)
+            .map((code) => ({
+              id: makeId(),
+              lang: code,
+              title: titleMap[code] || "",
+              description: descriptionMap[code] || "",
+            }))
+        );
         setCategory(existing.category || "knowledge");
         setExistingThumbnailUrl(existing.thumbnail_url || "");
         setContentLanguages(existing.content_languages?.length ? existing.content_languages : [baseLang]);
@@ -361,9 +375,9 @@ export default function QuizMaker() {
   }
 
   const orderedLanguages = useMemo(() => [
-    ...QUIZ_LANGUAGES.filter((item) => item.code === lang),
-    ...QUIZ_LANGUAGES.filter((item) => item.code !== lang),
-  ], [lang]);
+    ...QUIZ_LANGUAGES.filter((item) => item.code === originalLanguage),
+    ...QUIZ_LANGUAGES.filter((item) => item.code !== originalLanguage),
+  ], [originalLanguage]);
 
   function languageLabel(item) {
     const koNames = { en:"영어", ko:"한국어", ja:"일본어", zh:"중국어", es:"스페인어", fr:"프랑스어", vi:"베트남어", de:"독일어", ru:"러시아어", id:"인도네시아어", pt:"포르투갈어", hi:"힌디어", tr:"튀르키예어", th:"태국어", ar:"아랍어", bn:"벵골어" };
@@ -372,7 +386,7 @@ export default function QuizMaker() {
   }
 
   function addTitleTranslation() {
-    const used = new Set([lang, ...titleTranslations.map((item) => item.lang)]);
+    const used = new Set([originalLanguage, ...titleTranslations.map((item) => item.lang)]);
     const next = orderedLanguages.find((item) => !used.has(item.code));
     if (next) setTitleTranslations((prev) => [...prev, { id: makeId(), lang: next.code, title: "", description: "" }]);
   }
@@ -382,7 +396,7 @@ export default function QuizMaker() {
   }
 
   function questionLocale(q, code) {
-    if (code === lang) return { question: q.question || "", options: q.options || ["", "", "", ""], answers: q.answers || [""], explanation: q.explanation || "" };
+    if (code === originalLanguage) return { question: q.question || "", options: q.options || ["", "", "", ""], answers: q.answers || [""], explanation: q.explanation || "" };
     const value = q.translations?.[code] || {};
     return {
       question: value.question || "",
@@ -393,7 +407,7 @@ export default function QuizMaker() {
   }
 
   function patchQuestionLocale(q, code, patch) {
-    if (code === lang) return patchQuestion(q.localId, patch);
+    if (code === originalLanguage) return patchQuestion(q.localId, patch);
     const current = questionLocale(q, code);
     patchQuestion(q.localId, { translations: { ...(q.translations || {}), [code]: { ...current, ...patch } } });
   }
@@ -427,7 +441,7 @@ export default function QuizMaker() {
     return {
       localId: makeId(),
       type: "multiple_choice",
-      question: lang === "ko" ? "이 후보의 이름은?" : "Who is this?",
+      question: originalLanguage === "ko" ? "이 후보의 이름은?" : "Who is this?",
       imageFile: null,
       imageUrl: getYoutubeThumbnail(candidate?.image || ""),
       options: rawOptions.slice(0, 4),
@@ -491,7 +505,7 @@ export default function QuizMaker() {
     setActiveSourceWorldcupId(selectedWorldcup.id);
 
     if (!thumbnailFile && !title && selectedWorldcup.title) {
-      setTitle(`${displayWorldcupTitle(selectedWorldcup, lang)} 이름 맞히기`);
+      setTitle(`${displayWorldcupTitle(selectedWorldcup, originalLanguage)} 이름 맞히기`);
     }
     setImportOpen(false);
     setSelectedWorldcup(null);
@@ -499,7 +513,7 @@ export default function QuizMaker() {
     setTopicPanelOpen(false);
   }
 
-  function randomizeQuestionOptions(q, editLanguage = lang) {
+  function randomizeQuestionOptions(q, editLanguage = originalLanguage) {
     const localized = questionLocale(q, editLanguage);
     const baseAnswer = String(q.sourceAnswer || q.options?.[q.correctIndex] || q.answers?.[0] || "").trim();
     const localizedAnswer = String(localized.options?.[q.correctIndex] || "").trim();
@@ -511,7 +525,7 @@ export default function QuizMaker() {
       .filter((name) => name && !excluded.has(name.toLocaleLowerCase()))));
     const wrong = shuffle(pool).slice(0, 3);
     let next;
-    if (editLanguage === lang) {
+    if (editLanguage === originalLanguage) {
       next = shuffle([answer, ...wrong]);
       while (next.length < 4) next.push("");
     } else {
@@ -525,7 +539,7 @@ export default function QuizMaker() {
     }
     patchQuestionLocale(q, editLanguage, {
       options: next.slice(0, 4),
-      ...(editLanguage === lang ? {
+      ...(editLanguage === originalLanguage ? {
         correctIndex: Math.max(0, next.indexOf(answer)),
         sourceAnswer: answer,
         answers: [answer],
@@ -664,7 +678,7 @@ export default function QuizMaker() {
       await writeQuizDraftFiles(files);
       const safeQuestions = questions.map(({ imageFile, ...question }) => ({ ...question, imageFile: null }));
       localStorage.setItem(QUIZ_DRAFT_STORAGE_KEY, JSON.stringify({
-        version: 1, savedAt: Date.now(), title, titleTranslations, description, category, contentLanguages,
+        version: 1, savedAt: Date.now(), originalLanguage, title, titleTranslations, description, category, contentLanguages,
         questions: safeQuestions, creationMode, currentQuestionIndex, candidatePool,
         sourceWorldcupIds, activeSourceWorldcupId,
       }));
@@ -684,6 +698,7 @@ export default function QuizMaker() {
       const fileMap = new Map(fileEntries.map((entry) => [entry.key, entry.file]));
       const restoredQuestions = (Array.isArray(draft.questions) && draft.questions.length ? draft.questions : [emptyQuestion()])
         .map((question) => ({ ...question, localId: question.localId || makeId(), imageFile: fileMap.get(`question:${question.localId}`) || null }));
+      setOriginalLanguage(draft.originalLanguage || originalLanguage || lang);
       setTitle(draft.title || "");
       setTitleTranslations(Array.isArray(draft.titleTranslations) ? draft.titleTranslations : []);
       setDescription(draft.description || "");
@@ -742,12 +757,16 @@ export default function QuizMaker() {
         quizId: editQuizId,
         title,
         titleTranslations: Object.fromEntries([
-          [lang, title.trim()],
-          ...titleTranslations.filter((item) => item.lang && item.title.trim()).map((item) => [item.lang, item.title.trim()]),
+          [originalLanguage, title.trim()],
+          ...titleTranslations
+            .filter((item) => item.lang && item.lang !== originalLanguage && item.title.trim())
+            .map((item) => [item.lang, item.title.trim()]),
         ]),
         descriptionTranslations: Object.fromEntries([
-          [lang, description.trim()],
-          ...titleTranslations.filter((item) => item.lang && item.description?.trim()).map((item) => [item.lang, item.description.trim()]),
+          [originalLanguage, description.trim()],
+          ...titleTranslations
+            .filter((item) => item.lang && item.lang !== originalLanguage && item.description?.trim())
+            .map((item) => [item.lang, item.description.trim()]),
         ]),
         description,
         category,
@@ -755,7 +774,7 @@ export default function QuizMaker() {
         questions: uploadedQuestions,
         user,
         nickname,
-        lang,
+        lang: originalLanguage,
         contentLanguages,
         answerRevealMode: "both",
         sourceWorldcupIds,
@@ -837,7 +856,7 @@ export default function QuizMaker() {
               return (
                 <div key={row.id} style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "210px minmax(0,1fr) auto", gap: 8, alignItems: "start", marginTop: 9, padding: 10, border: "1px solid #d7e0ed", borderRadius: 9, background: "#f9fbfe" }}>
                   <select value={row.lang} onChange={(e) => patchTitleTranslation(row.id, { lang: e.target.value })} style={{ ...inputStyle, margin: 0 }} aria-label={m.languageSetting}>
-                    {orderedLanguages.filter((item) => item.code !== lang && (item.code === row.lang || !used.has(item.code))).map((item) => <option key={item.code} value={item.code}>{languageLabel(item)}</option>)}
+                    {orderedLanguages.filter((item) => item.code !== originalLanguage && (item.code === row.lang || !used.has(item.code))).map((item) => <option key={item.code} value={item.code}>{languageLabel(item)}</option>)}
                   </select>
                   <div style={{ display: "grid", gap: 8 }}>
                     <input value={row.title} onChange={(e) => patchTitleTranslation(row.id, { title: e.target.value })} maxLength={100} placeholder={m.translatedTitlePlaceholder} style={{ ...inputStyle, margin: 0 }} aria-label={m.quizTitle} />
@@ -978,7 +997,7 @@ export default function QuizMaker() {
 
         {questions.map((q, qi) => {
           if (qi !== currentQuestionIndex) return null;
-          const editLanguage = questionEditLanguages[q.localId] || lang;
+          const editLanguage = questionEditLanguages[q.localId] || originalLanguage;
           const localizedQuestion = questionLocale(q, editLanguage);
           return (
           <section key={q.localId} style={sectionStyle}>
@@ -1032,7 +1051,7 @@ export default function QuizMaker() {
             </div>
 
             <div style={{ display: "flex", gap: 7, flexWrap: "wrap", margin: "18px 0 10px", padding: 10, borderRadius: 9, background: "#f5f7fb", border: "1px solid #d7e0ed" }}>
-              {[lang, ...titleTranslations.map((item) => item.lang)].filter((code, index, list) => code && list.indexOf(code) === index).map((code) => {
+              {[originalLanguage, ...titleTranslations.map((item) => item.lang)].filter((code, index, list) => code && list.indexOf(code) === index).map((code) => {
                 const item = QUIZ_LANGUAGES.find((language) => language.code === code) || { code, label: code };
                 const active = editLanguage === code;
                 return <button key={code} type="button" onClick={() => setQuestionEditLanguages((prev) => ({ ...prev, [q.localId]: code }))} style={pillButton(active)}>{languageLabel(item)}</button>;
@@ -1052,7 +1071,7 @@ export default function QuizMaker() {
                     onChange={(e) => {
                       const value = e.target.value;
                       patchQuestionLocale(q, editLanguage, {
-                        ...(editLanguage === lang ? { sourceAnswer: value, answers: [value], autoChoices: false } : {}),
+                        ...(editLanguage === originalLanguage ? { sourceAnswer: value, answers: [value], autoChoices: false } : {}),
                         options: localizedQuestion.options.map((option, index) => index === q.correctIndex ? value : option),
                       });
                     }}
@@ -1090,7 +1109,7 @@ export default function QuizMaker() {
                       <input
                         value={option}
                         onChange={(e) => {
-                          if (editLanguage === lang) patchOption(q.localId, oi, e.target.value);
+                          if (editLanguage === originalLanguage) patchOption(q.localId, oi, e.target.value);
                           else patchQuestionLocale(q, editLanguage, { options: localizedQuestion.options.map((value, index) => index === oi ? e.target.value : value) });
                         }}
                         placeholder={`${m.choice} ${oi + 1}`}
@@ -1112,7 +1131,7 @@ export default function QuizMaker() {
                 <div style={{ fontWeight: 900, fontSize: 19, marginBottom: 10 }}>{m.multipleAnswers}</div>
                 {localizedQuestion.answers.map((answer, ai) => (
                   <div key={ai} style={{ display: "flex", gap: 8, marginBottom: 8 }}>
-                    <input value={answer} onChange={(e) => editLanguage === lang ? patchAnswer(q.localId, ai, e.target.value) : patchQuestionLocale(q, editLanguage, { answers: localizedQuestion.answers.map((value, index) => index === ai ? e.target.value : value) })} placeholder={`${m.answer} ${ai + 1}`} maxLength={100} style={{ ...inputStyle, margin: 0 }} />
+                    <input value={answer} onChange={(e) => editLanguage === originalLanguage ? patchAnswer(q.localId, ai, e.target.value) : patchQuestionLocale(q, editLanguage, { answers: localizedQuestion.answers.map((value, index) => index === ai ? e.target.value : value) })} placeholder={`${m.answer} ${ai + 1}`} maxLength={100} style={{ ...inputStyle, margin: 0 }} />
                     {localizedQuestion.answers.length > 1 && <button type="button" onClick={() => patchQuestionLocale(q, editLanguage, { answers: localizedQuestion.answers.filter((_, i) => i !== ai) })} style={secondaryButton}>{m.delete}</button>}
                   </div>
                 ))}
