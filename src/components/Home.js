@@ -1629,134 +1629,65 @@ return (
 
 
   <PageIntro icon="🏆" title={t('gameModeNav.worldcup')} description={t('headerPersonal.worldcupDescription')} buttonLabel={t('create_worldcup')} onCreate={() => onMakeWorldcup ? onMakeWorldcup() : goto(`/${lang}/worldcup-maker`)} personal={personalView} accentColor="#F97316" />
-  {/* 만들기 / 언어 / 검색 / 정렬 */}
-<div
-  style={{
-    width: "100%",
-    display: "flex",
-    justifyContent: "center",
-    padding: isMobile ? "0 10px" : "0 16px",
-    margin: isMobile ? "10px 0 8px" : "10px 0 10px",
-    boxSizing: "border-box",
-    zIndex: 5,
-  }}
->
+  {/* 언어 선택 / 검색 */}
   <div
     style={{
       width: "100%",
-maxWidth: isMobile ? 430 : 1180,
-
-      display: "flex",
-      flexDirection: "column",
-
-gap: isMobile ? 9 : 13,
-
-padding: isMobile
-  ? "13px 11px"
-  : "10px 22px",
-
-background: "transparent",
-
-border: "none",
-
-borderRadius: 0,
-
-boxShadow: "none",
-
-backdropFilter: "none",
-WebkitBackdropFilter: "none",
-
+      maxWidth: isMobile ? 430 : 980,
+      margin: isMobile ? "2px auto 10px" : "2px auto 12px",
+      padding: isMobile ? "0 12px" : "0 16px",
       boxSizing: "border-box",
     }}
   >
+    {/* 언어 선택 - 다른 홈과 동일하게 박스 없이 검색창 위 */}
+    <div
+      style={{
+        display: "flex",
+        flexWrap: "wrap",
+        gap: isMobile ? 8 : 10,
+        justifyContent: "center",
+        alignItems: "center",
+        marginBottom: isMobile ? 10 : 12,
+      }}
+    >
+      {LANGUAGES.map((item) => {
+        const active = item.code === lang;
 
-{/* 게임 모드 선택 */}
+        return (
+          <React.Fragment key={item.code}>
+            {item.code === "id" && (
+              <span
+                aria-hidden="true"
+                style={{ flexBasis: "100%", height: 0 }}
+              />
+            )}
 
-<div
-  className="home-search-panel"
-  style={{
-    width: "100%",
-    maxWidth: isMobile ? 430 : 980,
-    margin: "0 auto",
+            <button
+              type="button"
+              onClick={() => changeHomeLanguage(item.code)}
+              aria-pressed={active}
+              style={{
+                border: active
+                  ? "1.5px solid #F97316"
+                  : "1px solid #d6deea",
+                background: active ? "#F97316" : "#ffffff",
+                color: active ? "#ffffff" : "#3f4a5a",
+                borderRadius: 9,
+                padding: isMobile ? "8px 12px" : "9px 15px",
+                fontSize: isMobile ? 15 : 16,
+                fontWeight: active ? 800 : 700,
+                cursor: "pointer",
+                lineHeight: 1.2,
+              }}
+            >
+              {item.label}
+            </button>
+          </React.Fragment>
+        );
+      })}
+    </div>
 
-    padding: isMobile ? "15px 13px" : "20px 24px",
-
-    background: "#ffffff",
-    border: "2px solid #cfd9e8",
-    borderRadius: 16,
-    boxShadow: "0 8px 24px rgba(31,50,84,0.10)",
-    backdropFilter: "none",
-    WebkitBackdropFilter: "none",
-
-    boxSizing: "border-box",
-    display: "flex",
-    flexDirection: "column",
-    gap: isMobile ? 10 : 14,
-  }}
->
-    {/* =========================
-        1줄 : 만들기 + 언어
-    ========================== */}
-    
-
-{/* 검색 위 언어 선택 */}
-<div
-  style={{
-    display: "flex",
-    flexWrap: "wrap",
-    gap: isMobile ? 7 : 9,
-    justifyContent: "center",
-    alignItems: "center",
-    marginBottom: isMobile ? 2 : 4,
-  }}
->
-  {LANGUAGES.map((item) => {
-    const active = item.code === lang;
-
-    return (
-      <React.Fragment key={item.code}>
-        {item.code === "id" && (
-          <span
-            aria-hidden="true"
-            style={{
-              flexBasis: "100%",
-              height: 0,
-            }}
-          />
-        )}
-
-        <button
-          type="button"
-          onClick={() => changeHomeLanguage(item.code)}
-          aria-pressed={active}
-          style={{
-            border: active
-              ? "1.5px solid #F97316"
-              : "1px solid #d6deea",
-            background: active
-              ? "#F97316"
-              : "#ffffff",
-            color: active
-              ? "#ffffff"
-              : "#3f4a5a",
-            borderRadius: 9,
-            padding: isMobile ? "7px 11px" : "8px 14px",
-            fontSize: isMobile ? 14 : 15,
-            fontWeight: active ? 800 : 700,
-            cursor: "pointer",
-            lineHeight: 1.2,
-          }}
-        >
-          {item.label}
-        </button>
-      </React.Fragment>
-    );
-  })}
-</div>
-
-    {/* =========================
-        검색
-    ========================== */}
+    {/* 검색 */}
     <div
       style={{
         width: "100%",
@@ -1785,19 +1716,16 @@ WebkitBackdropFilter: "none",
           }}
           style={{
             width: "100%",
-            height: isMobile ? 44 : 50,
+            height: isMobile ? 46 : 52,
             background: "#ffffff",
             color: "#202534",
-            border: "2px solid #bccae0",
-            borderRadius: 12,
-            padding: isMobile
-              ? "0 38px 0 12px"
-              : "0 46px 0 16px",
+            border: "1.5px solid #bccae0",
+            borderRadius: 9,
+            padding: isMobile ? "0 40px 0 13px" : "0 46px 0 16px",
             boxSizing: "border-box",
-            fontSize: isMobile ? 16 : 20,
+            fontSize: isMobile ? 16 : 18,
             fontWeight: 700,
             outline: "none",
-            boxShadow: "inset 0 1px 2px rgba(31,50,84,0.05)",
           }}
         />
 
@@ -1814,7 +1742,7 @@ WebkitBackdropFilter: "none",
         <span
           style={{
             position: "absolute",
-            right: isMobile ? 9 : 12,
+            right: isMobile ? 10 : 12,
             top: "50%",
             transform: "translateY(-50%)",
             color: "#C2410C",
@@ -1826,11 +1754,7 @@ WebkitBackdropFilter: "none",
         </span>
       </div>
     </div>
-
-</div> {/* 만들기/검색 작은 패널 닫기 */}
-
   </div>
-</div>
 
 {/* 검색 결과 없음 */}
 {search.trim() && filtered.length === 0 && (

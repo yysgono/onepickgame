@@ -1655,13 +1655,13 @@ function languageButton(
 
     padding:
       mobile
-        ? "5px 9px"
-        : "6px 11px",
+        ? "8px 12px"
+        : "9px 15px",
 
     fontSize:
       mobile
-        ? 14
-        : 15,
+        ? 15
+        : 16,
 
     fontWeight:
       active
