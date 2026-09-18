@@ -499,7 +499,7 @@ export default function QuizPage() {
         <div
           style={{
             width: "100%",
-            maxWidth: 980,
+            maxWidth: 760,
             margin: mobile
               ? "0 auto 20px"
               : "0 auto 24px",

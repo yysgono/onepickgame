@@ -1223,7 +1223,6 @@ fontWeight: 900,
                 "none";
             }}
           >
-            {title}{" "}
             {t("view_all", {
               defaultValue: "View all",
             })}{" "}
@@ -1634,7 +1633,7 @@ return (
   <div
     style={{
       width: "100%",
-      maxWidth: isMobile ? 430 : 980,
+      maxWidth: isMobile ? 430 : 760,
       margin: isMobile ? "2px auto 10px" : "2px auto 12px",
       padding: isMobile ? "0 12px" : "0 16px",
       boxSizing: "border-box",

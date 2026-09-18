@@ -1321,7 +1321,7 @@ maxWidth: isMobile ? 430 : 1480,
 </div>
 <div
           style={{
-            width: "100%", maxWidth: 980, margin: "0 auto 4px", boxSizing: "border-box",
+            width: "100%", maxWidth: 760, margin: "0 auto 4px", boxSizing: "border-box",
 
             padding:
               isMobile
@@ -1354,7 +1354,7 @@ maxWidth: isMobile ? 430 : 1480,
           >
             <div
               style={{
-                width: isMobile ? "100%" : 560,
+                width: "100%",
                 position: "relative",
               }}
             >
