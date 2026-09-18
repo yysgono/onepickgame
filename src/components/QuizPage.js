@@ -87,17 +87,6 @@ export default function QuizPage() {
     getQuizCopy(lang);
   const seo = getQuizSeo(lang);
 
-  const changeQuizLanguage = async (newLang) => {
-    try {
-      setContentLanguage(newLang);
-      await i18n.changeLanguage(newLang);
-      localStorage.setItem("onepickgame_lang", newLang);
-      navigate(`/${newLang}/quiz`, { replace: true });
-    } catch (error) {
-      console.error("퀴즈 언어 변경 실패:", error);
-    }
-  };
-
 
   const [
     rows,
@@ -170,12 +159,30 @@ export default function QuizPage() {
   );
 
 
+  const [
+    twoColumn,
+    setTwoColumn,
+  ] = useState(
+    typeof window !==
+      "undefined"
+      ? window.innerWidth >= 1100
+      : true
+  );
+
+
   useEffect(() => {
-    const fn = () =>
+    const fn = () => {
       setMobile(
         window.innerWidth <
           650
       );
+
+      setTwoColumn(
+        window.innerWidth >= 1100
+      );
+    };
+
+    fn();
 
     window.addEventListener(
       "resize",
@@ -416,7 +423,44 @@ export default function QuizPage() {
         />
 
 
-{/* 검색 위 언어 선택 */}
+        {/* =========================
+            검색
+        ========================== */}
+
+        <div
+          style={{
+            width: "100%",
+            maxWidth: 980,
+            margin: mobile
+              ? "0 auto 20px"
+              : "0 auto 24px",
+            padding: mobile
+              ? "0 12px"
+              : "0 16px",
+            boxSizing: "border-box",
+          }}
+        >
+          <input
+            value={search}
+            onChange={(e) =>
+              setSearch(e.target.value)
+            }
+            placeholder={c.search}
+            style={{
+              width: "100%",
+              height: 44,
+              border: "1.5px solid #bccae0",
+              borderRadius: 8,
+              padding: "0 12px",
+              fontSize: 17,
+              fontWeight: 750,
+              outline: "none",
+              boxSizing: "border-box",
+            }}
+          />
+        </div>
+
+     {/* 언어 선택 */}
 
           <div
             style={{
@@ -435,10 +479,7 @@ export default function QuizPage() {
                 "center",
 
               marginTop:
-                6,
-
-              marginBottom:
-                10,
+                12,
             }}
           >
             {QUIZ_LANGUAGES.map(
@@ -466,7 +507,7 @@ export default function QuizPage() {
                     type="button"
 
                     onClick={() =>
-                      changeQuizLanguage(
+                      setContentLanguage(
                         item.code
                       )
                     }
@@ -493,64 +534,6 @@ export default function QuizPage() {
 
 
         {/* =========================
-            검색
-        ========================== */}
-
-        <div
-          style={{
-            width: "100%",
-            maxWidth: 760,
-            margin: mobile
-              ? "0 auto 20px"
-              : "0 auto 24px",
-            padding: mobile
-              ? "0 12px"
-              : 0,
-            boxSizing: "border-box",
-          }}
-        >
-          <div
-            style={{
-              width: "100%",
-              position: "relative",
-            }}
-          >
-            <input
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder={c.search}
-              style={{
-                width: "100%",
-                height: 46,
-                border: "1.5px solid #bccae0",
-                borderRadius: 8,
-                padding: "0 44px 0 12px",
-                fontSize: 17,
-                fontWeight: 750,
-                outline: "none",
-                boxSizing: "border-box",
-              }}
-            />
-
-            <span
-              aria-hidden="true"
-              style={{
-                position: "absolute",
-                right: 12,
-                top: "50%",
-                transform: "translateY(-50%)",
-                color: "#E53935",
-                fontSize: 17,
-                pointerEvents: "none",
-              }}
-            >
-              🔍
-            </span>
-          </div>
-        </div>
-
-
-                {/* =========================
             추천 퀴즈
         ========================== */}
 
@@ -897,6 +880,8 @@ export default function QuizPage() {
               "transparent",
           }}
         >
+  
+
           {/* 카테고리 */}
 
           <div
@@ -1119,7 +1104,9 @@ export default function QuizPage() {
                 "grid",
 
               gridTemplateColumns:
-                "minmax(0,1fr)",
+                twoColumn
+                  ? "repeat(2, minmax(0, 1fr))"
+                  : "minmax(0, 1fr)",
 
               gap:
                 16,
@@ -1177,7 +1164,9 @@ export default function QuizPage() {
                       gridTemplateColumns:
                         mobile
                           ? "118px minmax(0,1fr)"
-                          : "320px minmax(0,1fr) 180px 150px",
+                          : twoColumn
+                            ? "210px minmax(0,1fr)"
+                            : "320px minmax(0,1fr) 180px 150px",
 
                       gap:
                         0,
@@ -1188,12 +1177,16 @@ export default function QuizPage() {
                       minHeight:
                         mobile
                           ? 126
-                          : 220,
+                          : twoColumn
+                            ? 180
+                            : 220,
 
                       height:
                         mobile
                           ? 126
-                          : 220,
+                          : twoColumn
+                            ? 180
+                            : 220,
                     }}
                   >
                     {/* 썸네일 */}
@@ -1203,17 +1196,23 @@ export default function QuizPage() {
                         minHeight:
                           mobile
                             ? 126
-                            : 220,
+                            : twoColumn
+                              ? 180
+                              : 220,
 
                         height:
                           mobile
                             ? 126
-                            : 220,
+                            : twoColumn
+                              ? 180
+                              : 220,
 
                         maxHeight:
                           mobile
                             ? 126
-                            : 220,
+                            : twoColumn
+                              ? 180
+                              : 220,
 
                         background:
                           "#f3f6fb",
@@ -1286,7 +1285,9 @@ export default function QuizPage() {
                         padding:
                           mobile
                             ? "14px 12px"
-                            : "24px 22px",
+                            : twoColumn
+                              ? "16px 16px"
+                              : "24px 22px",
 
                         alignSelf:
                           "center",
@@ -1360,12 +1361,56 @@ export default function QuizPage() {
                         {q.displayDescription ||
                           "\u00A0"}
                       </div>
+
+                      {!mobile && twoColumn && (
+                        <div
+                          style={{
+                            marginTop: 12,
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "space-between",
+                            gap: 10,
+                          }}
+                        >
+                          <div
+                            style={{
+                              minWidth: 0,
+                              color: "#58657a",
+                              fontSize: 13,
+                              fontWeight: 800,
+                              overflow: "hidden",
+                              textOverflow: "ellipsis",
+                              whiteSpace: "nowrap",
+                            }}
+                          >
+                            {c[q.category] || c.other}
+                            {" · "}
+                            ▣ {q.question_count || 0} {c.questions}
+                            {" · "}
+                            ▶ {q.play_count || 0}
+                          </div>
+
+                          <div
+                            style={{
+                              flexShrink: 0,
+                              padding: "8px 12px",
+                              borderRadius: 8,
+                              background: "#E53935",
+                              color: "#fff",
+                              fontSize: 14,
+                              fontWeight: 950,
+                            }}
+                          >
+                            {c.playNow}
+                          </div>
+                        </div>
+                      )}
                     </div>
 
 
                     {/* PC 통계 */}
 
-                    {!mobile && (
+                    {!mobile && !twoColumn && (
                       <div
                         style={{
                           alignSelf:
@@ -1461,7 +1506,7 @@ export default function QuizPage() {
 
                     {/* PC 시작 버튼 */}
 
-                    {!mobile && (
+                    {!mobile && !twoColumn && (
                       <div
                         style={{
                           alignSelf:
@@ -1675,13 +1720,13 @@ function languageButton(
 
     padding:
       mobile
-        ? "8px 12px"
-        : "9px 15px",
+        ? "5px 9px"
+        : "6px 11px",
 
     fontSize:
       mobile
-        ? 15
-        : 16,
+        ? 13
+        : 14,
 
     fontWeight:
       active
