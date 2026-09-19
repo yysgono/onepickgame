@@ -386,61 +386,34 @@ useEffect(() => {
     justifyContent:
       "center",
   };
- const selectBtnStyle = {
-  fontSize: isMobile ? 20 : 25,
-  padding: isMobile
-    ? "10px 42px 10px 16px"
-    : "12px 48px 12px 20px",
+    const selectBtnStyle = {
+    fontSize: isMobile ? 21 : 27,
+    padding: isMobile ? "10px 17px" : "12px 33px",
+    borderRadius: isMobile ? 9 : 12,
+    minWidth: isMobile ? 85 : 130,
+    fontWeight: 900,
+    background: "#ffffff",
+    color: "#202534",
+    border: "2px solid #dde2ea",
+    height: isMobile ? 48 : 60,
+    textAlign: "left",
+    boxSizing: "border-box",
+    margin: "0 auto",
+    display: "block",
+    cursor: "pointer",
+    direction: "ltr",
+  };
 
-  borderRadius: isMobile ? 10 : 12,
-  minWidth: isMobile ? 120 : 150,
-
-  fontWeight: 900,
-
-  background:
-    "linear-gradient(180deg,#ffffff 0%,#f3f0ff 100%)",
-
-  color: "#392a96",
-
-  border:
-    "2px solid #6650d8",
-
-  height: isMobile ? 48 : 60,
-
-  textAlign: "center",
-  boxSizing: "border-box",
-  margin: "0 auto",
-  display: "block",
-
-  cursor: "pointer",
-  direction: "ltr",
-
-  boxShadow:
-    "0 4px 12px rgba(102,80,216,0.18)",
-
-  outline: "none",
-};
-
-const selectArrowStyle = {
-  position: "absolute",
-
-  right: isMobile ? 13 : 18,
-  top: "50%",
-
-  transform:
-    "translateY(-50%)",
-
-  pointerEvents: "none",
-
-  color: "#4d38bd",
-
-  fontSize:
-    isMobile ? 20 : 24,
-
-  fontWeight: 900,
-
-  zIndex: 1,
-};
+  const selectArrowStyle = {
+    position: "absolute",
+    right: isMobile ? 16 : 25,
+    top: "50%",
+    transform: "translateY(-50%)",
+    pointerEvents: "none",
+    color: "#202534",
+    fontSize: isMobile ? 21 : 28,
+    zIndex: 1,
+  };
 
   const candidateCountText = {
     fontSize: isMobile ? 17 : 21,
@@ -770,52 +743,22 @@ textShadow: "none",
     onChange={(e) =>
       setSelectedRound(Number(e.target.value))
     }
-  style={{
-  width: "100%",
-
-  height:
-    isMobile ? 50 : 56,
-
-  padding:
-    "0 48px 0 16px",
-
-  fontSize:
-    isMobile ? 19 : 22,
-
-  fontWeight: 900,
-
-  textAlign:
-    "center",
-
-  borderRadius: 11,
-
-  border:
-    "2px solid #6650d8",
-
-  background:
-    "linear-gradient(180deg,#ffffff 0%,#f3f0ff 100%)",
-
-  color:
-    "#392a96",
-
-  cursor:
-    "pointer",
-
-  boxSizing:
-    "border-box",
-
-  appearance:
-    "none",
-
-  WebkitAppearance:
-    "none",
-
-  outline:
-    "none",
-
-  boxShadow:
-    "0 4px 14px rgba(102,80,216,0.17)",
-}}
+    style={{
+      width: "100%",
+      height: isMobile ? 50 : 56,
+      padding: "0 48px 0 16px",
+      fontSize: isMobile ? 19 : 22,
+      fontWeight: 800,
+      textAlign: "center",
+      borderRadius: 11,
+      border: "2px solid #dde2ea",
+      background: "#ffffff",
+      color: "#202534",
+      cursor: "pointer",
+      boxSizing: "border-box",
+      appearance: "none",
+      WebkitAppearance: "none",
+    }}
   >
     {possibleRounds.map((r) => (
       <option key={r} value={r}>
@@ -830,7 +773,7 @@ textShadow: "none",
       right: 17,
       top: "50%",
       transform: "translateY(-50%)",
- color: "#4d38bd",
+      color: "#202534",
       fontSize: isMobile ? 20 : 23,
       fontWeight: 900,
       pointerEvents: "none",
@@ -1080,22 +1023,24 @@ textShadow: "none",
                 textAlign: "center",
               }}
             >
-      <select
-  value={selectedRound}
-  onChange={(e) =>
-    setSelectedRound(Number(e.target.value))
-  }
-  style={selectBtnStyle}
-  aria-label={t("round_of", {
-    count: selectedRound,
-  })}
->
-  {possibleRounds.map((r) => (
-    <option key={r} value={r}>
-      {t("round_of", { count: r })}
-    </option>
-  ))}
-</select>
+              <select
+                value={selectedRound}
+                onChange={(e) =>
+                  setSelectedRound(Number(e.target.value))
+                }
+                style={selectBtnStyle}
+                aria-label={t("round_of", {
+                  count: selectedRound,
+                })}
+              >
+                {possibleRounds.map((r) => (
+                  <option key={r} value={r}>
+                    {t("round_of", { count: r })}
+                  </option>
+                ))}
+              </select>
+
+              <span style={selectArrowStyle}>▼</span>
             </span>
 
             <button
