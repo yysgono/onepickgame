@@ -837,9 +837,9 @@ function CandidateBox({
 
   const CARD_HEIGHT = isMobile
 
-    ? 500
+    ? 560
 
-    : 665;
+    : 735;
 
 
 
@@ -1237,15 +1237,15 @@ function CandidateBox({
 
           minHeight: isMobile
 
-            ? 58
+            ? 84
 
-            : 54,
+            : 104,
 
           maxHeight: isMobile
 
-            ? 70
+            ? 108
 
-            : 70,
+            : 126,
 
           padding: isMobile
 
@@ -1257,9 +1257,9 @@ function CandidateBox({
 
           fontSize: isMobile
 
-            ? "clamp(15px, 4.5vw, 20px)"
+            ? "clamp(15px, 4.2vw, 20px)"
 
-            : 30,
+            : 28,
 
           color: "#202534",
 
@@ -1305,11 +1305,11 @@ function CandidateBox({
 
             WebkitLineClamp: 3,
 
-            overflow: "hidden",
+            overflow: "visible",
 
             textOverflow:
 
-              "ellipsis",
+              "clip",
 
             textAlign: "center",
 
