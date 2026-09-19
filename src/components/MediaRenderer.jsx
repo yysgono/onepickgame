@@ -235,10 +235,18 @@ function MediaRenderer({
   onPlay,
   active = true,
   loading = "lazy",
+  deferUntilVisible = false,
+  viewportMargin = "240px",
 }) {
   const { t } = useTranslation();
 
   const youtubeRef = useRef(null);
+  const visibilityRef = useRef(null);
+
+  const [
+    shouldRender,
+    setShouldRender,
+  ] = useState(!deferUntilVisible);
 
   const [
     mediaError,
@@ -264,6 +272,63 @@ function MediaRenderer({
     typeof url === "string"
       ? url.trim()
       : "";
+
+  useEffect(() => {
+    if (!deferUntilVisible) {
+      setShouldRender(true);
+      return undefined;
+    }
+
+    setShouldRender(false);
+
+    const node =
+      visibilityRef.current;
+
+    if (!node) {
+      return undefined;
+    }
+
+    if (
+      typeof window ===
+        "undefined" ||
+      !("IntersectionObserver" in window)
+    ) {
+      setShouldRender(true);
+      return undefined;
+    }
+
+    const observer =
+      new IntersectionObserver(
+        (entries) => {
+          if (
+            entries.some(
+              (entry) =>
+                entry.isIntersecting ||
+                entry.intersectionRatio > 0
+            )
+          ) {
+            setShouldRender(true);
+            observer.disconnect();
+          }
+        },
+        {
+          root: null,
+          rootMargin:
+            viewportMargin,
+          threshold: 0.01,
+        }
+      );
+
+    observer.observe(node);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [
+    deferUntilVisible,
+    viewportMargin,
+    safeUrl,
+  ]);
 
   const youtubeId =
     getYoutubeId(safeUrl);
@@ -316,6 +381,25 @@ useEffect(() => {
     youtubeId,
     youtubeStarted,
   ]);
+
+  if (
+    deferUntilVisible &&
+    !shouldRender
+  ) {
+    return (
+      <div
+        ref={visibilityRef}
+        aria-hidden="true"
+        style={{
+          width: "100%",
+          height: "100%",
+          background: "#ffffff",
+          display: "block",
+          ...style,
+        }}
+      />
+    );
+  }
 
   const handleMediaError = () => {
     setMediaError(true);

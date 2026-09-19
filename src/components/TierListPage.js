@@ -1187,7 +1187,7 @@ const displayTitle =
       const previewCandidates = ids
         .map((candidateId) => candidateById.get(String(candidateId)))
         .filter(Boolean)
-        .slice(0, 6);
+        .slice(0, 4);
 
       return {
         tier,
@@ -1619,7 +1619,9 @@ style={{
                                 playable={
                                   false
                                 }
-                                loading="eager"
+                                loading="lazy"
+                                deferUntilVisible
+                                viewportMargin="180px"
                                 style={{
                                   position:
                                     "absolute",
@@ -1682,7 +1684,9 @@ style={{
                                 playable={
                                   false
                                 }
-                                loading="eager"
+                                loading="lazy"
+                                deferUntilVisible
+                                viewportMargin="180px"
                                 style={{
                                   position:
                                     "absolute",
@@ -1714,7 +1718,9 @@ style={{
                                 playable={
                                   false
                                 }
-                                loading="eager"
+                                loading="lazy"
+                                deferUntilVisible
+                                viewportMargin="180px"
                                 style={{
                                   position:
                                     "absolute",
@@ -1805,7 +1811,7 @@ style={{
                             <div key={row.tier} style={{ minHeight: 28, display: "flex", alignItems: "center", gap: 6 }}>
                               <span style={{ width: 28, height: 28, borderRadius: 5, display: "grid", placeItems: "center", background: row.color, color: "#111", fontWeight: 950 }}>{row.tier}</span>
                               {row.candidate?.image ? (
-                                <MediaRenderer url={row.candidate.image} alt={row.candidate.name || ""} playable={false} loading="lazy" style={{ width: 28, height: 28, borderRadius: 5, objectFit: "cover", border: "1px solid #dde2ea" }} />
+                                <MediaRenderer url={row.candidate.image} alt={row.candidate.name || ""} playable={false} loading="lazy" deferUntilVisible viewportMargin="180px" style={{ width: 28, height: 28, borderRadius: 5, objectFit: "cover", border: "1px solid #dde2ea" }} />
                               ) : <span style={{ width: 28, height: 28, borderRadius: 5, border: "1px dashed #cfd8e6", background: "#f8fafc" }} />}
                               <span style={{ minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", fontSize: 12, fontWeight: 800, color: "#596579" }}>{row.candidate?.name || ""}</span>
                             </div>
@@ -2184,6 +2190,8 @@ gap:
    alt={item.displayTitle || ""}
     playable={false}
     loading="lazy"
+    deferUntilVisible
+    viewportMargin="220px"
     style={{
       position: "absolute",
       inset: 0,
@@ -2290,6 +2298,8 @@ gap:
                                       alt={candidate?.name || ""}
                                       playable={false}
                                       loading="lazy"
+                                      deferUntilVisible
+                                      viewportMargin="180px"
                                       style={{
                                         width: "100%",
                                         height: "100%",
