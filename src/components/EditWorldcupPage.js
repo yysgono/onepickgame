@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 import imageCompression from "browser-image-compression";
 
@@ -301,56 +301,6 @@ function EditWorldcupPage({
   isAdmin,
 }) {
 const { t, i18n } = useTranslation();
-  const navigate = useNavigate();
-  const location = useLocation();
-
-  const changeContentLanguageAndPage = (nextLanguage) => {
-    if (!nextLanguage || nextLanguage === contentLanguage) {
-      return;
-    }
-
-    // 현재 언어에서 수정 중인 값을 보관하고 다음 언어 번역을 불러옵니다.
-    const nextTitleTranslations = {
-      ...titleTranslations,
-      [contentLanguage]: title,
-    };
-    const nextDescriptionTranslations = {
-      ...descriptionTranslations,
-      [contentLanguage]: description,
-    };
-
-    setTitleTranslations(nextTitleTranslations);
-    setDescriptionTranslations(nextDescriptionTranslations);
-    setContentLanguage(nextLanguage);
-
-    const nextTitle =
-      nextTitleTranslations[nextLanguage] ||
-      (nextLanguage === originalLanguage ? originalCup?.title || "" : "");
-    const nextDescription =
-      nextDescriptionTranslations[nextLanguage] ||
-      (nextLanguage === originalLanguage ? originalCup?.description || "" : "");
-
-    setTitle(nextTitle);
-    setDescription(nextDescription);
-
-    try {
-      i18n.changeLanguage(nextLanguage);
-      localStorage.setItem("onepickgame_lang", nextLanguage);
-
-      const parts = location.pathname.split("/").filter(Boolean);
-      if (parts.length > 0 && /^[a-z]{2}$/i.test(parts[0])) {
-        parts[0] = nextLanguage;
-      } else {
-        parts.unshift(nextLanguage);
-      }
-
-      navigate(`/${parts.join("/")}${location.search || ""}${location.hash || ""}`, {
-        replace: true,
-      });
-    } catch (error) {
-      console.error("Content language sync failed:", error);
-    }
-  };
  
   const [user, setUser] = useState(null);
   const [nickname, setNickname] = useState("");
@@ -361,10 +311,49 @@ const [description, setDescription] = useState("");
 const [category, setCategory] = useState("");
 const [tags, setTags] = useState(["", "", ""]);
 const [contentLanguage, setContentLanguage] = useState("en");
-const [originalLanguage, setOriginalLanguage] = useState("en");
-const [titleTranslations, setTitleTranslations] = useState({});
-const [descriptionTranslations, setDescriptionTranslations] = useState({});
+const [titleTranslations, setTitleTranslations] = useState([]);
 const [data, setData] = useState([]);
+
+const readTranslationMap = (value) => {
+  if (!value) return {};
+  if (typeof value === "object" && !Array.isArray(value)) return value;
+  if (typeof value === "string") {
+    try {
+      const parsed = JSON.parse(value);
+      return parsed && typeof parsed === "object" && !Array.isArray(parsed)
+        ? parsed
+        : {};
+    } catch {
+      return {};
+    }
+  }
+  return {};
+};
+
+const getAvailableTranslationLanguage = (rows = titleTranslations) => {
+  const used = new Set([contentLanguage, ...rows.map((row) => row.lang)]);
+  return CONTENT_LANGUAGE_OPTIONS.find((item) => !used.has(item.value))?.value || "";
+};
+
+const addTitleTranslation = () => {
+  const nextLang = getAvailableTranslationLanguage();
+  if (!nextLang) return;
+
+  setTitleTranslations((rows) => [
+    ...rows,
+    { id: uuidv4(), lang: nextLang, title: "", description: "" },
+  ]);
+};
+
+const updateTitleTranslation = (id, patch) => {
+  setTitleTranslations((rows) =>
+    rows.map((row) => (row.id === id ? { ...row, ...patch } : row))
+  );
+};
+
+const removeTitleTranslation = (id) => {
+  setTitleTranslations((rows) => rows.filter((row) => row.id !== id));
+};
 
 const normalizeTag = (value) =>
   String(value || "")
@@ -428,59 +417,37 @@ const getCleanTags = () =>
     );
 
 setOriginalCup(cup || null);
-setCategory(cup?.category || "etc");
 
 const pageLang =
   (i18n.language || "en").split("-")[0];
 
-// Legacy worldcups may have original_language = null.
-// In that case, infer the original language from the translation whose
-// value exactly matches the base title. Do NOT use the current page/header
-// language as the original language, because that can overwrite a valid
-// translation (e.g. ko) with the English base title.
-const existingTitleTranslations = cup?.title_translations || {};
-const inferredOriginalLanguage = Object.entries(existingTitleTranslations)
-  .find(([, value]) =>
-    String(value || "").trim() === String(cup?.title || "").trim()
-  )?.[0];
+const baseLang =
+  cup?.original_language || pageLang;
 
-const baseLanguage =
-  cup?.original_language ||
-  inferredOriginalLanguage ||
-  "en";
+const titleMap = readTranslationMap(cup?.title_translations);
+const descriptionMap = readTranslationMap(cup?.description_translations);
 
-const loadedTitleTranslations = {
-  ...existingTitleTranslations,
-};
-
-// Only backfill the base-language key when it is actually missing/blank.
-// Never overwrite an existing translated value.
-if (cup?.title && !String(loadedTitleTranslations[baseLanguage] || "").trim()) {
-  loadedTitleTranslations[baseLanguage] = cup.title;
-}
-
-const loadedDescriptionTranslations = {
-  ...(cup?.description_translations || {}),
-};
-
-if (
-  cup?.description &&
-  !String(loadedDescriptionTranslations[baseLanguage] || "").trim()
-) {
-  loadedDescriptionTranslations[baseLanguage] = cup.description;
-}
-
-setOriginalLanguage(baseLanguage);
-setTitleTranslations(loadedTitleTranslations);
-setDescriptionTranslations(loadedDescriptionTranslations);
-setContentLanguage(pageLang);
-setTitle(
-  loadedTitleTranslations[pageLang] ||
-  (pageLang === baseLanguage ? cup?.title || "" : "")
-);
+setContentLanguage(baseLang);
+setTitle(titleMap?.[baseLang] || cup?.title || "");
 setDescription(
-  loadedDescriptionTranslations[pageLang] ||
-  (pageLang === baseLanguage ? cup?.description || "" : "")
+  descriptionMap?.[baseLang] || cup?.description || cup?.desc || ""
+);
+setCategory(cup?.category || "etc");
+
+const translationCodes = Array.from(
+  new Set([
+    ...Object.keys(titleMap || {}),
+    ...Object.keys(descriptionMap || {}),
+  ])
+).filter((code) => code && code !== baseLang);
+
+setTitleTranslations(
+  translationCodes.map((code) => ({
+    id: uuidv4(),
+    lang: code,
+    title: titleMap?.[code] || "",
+    description: descriptionMap?.[code] || "",
+  }))
 );
 
 const existingTags = Array.isArray(cup?.tags)
@@ -854,40 +821,38 @@ if (data.length < 2) {
         });
       }
 
-const finalTitleTranslations = {
-  ...titleTranslations,
-  [contentLanguage]: title,
-};
-const finalDescriptionTranslations = {
-  ...descriptionTranslations,
-  [contentLanguage]: description,
-};
+const cleanTitleTranslations = {};
+const cleanDescriptionTranslations = {};
 
-const cleanTitleTranslations = Object.fromEntries(
-  Object.entries(finalTitleTranslations)
-    .map(([code, value]) => [code, String(value || "").trim()])
-    .filter(([, value]) => value)
-);
-const cleanDescriptionTranslations = Object.fromEntries(
-  Object.entries(finalDescriptionTranslations)
-    .map(([code, value]) => [code, String(value || "").trim()])
-    .filter(([, value]) => value)
-);
+// 원문 언어도 번역 맵에 함께 저장해서 기존 페이지들의
+// translations[lang] 우선 로직에서도 원문이 정확히 표시되게 합니다.
+cleanTitleTranslations[contentLanguage] = title.trim();
+if (description.trim()) {
+  cleanDescriptionTranslations[contentLanguage] = description.trim();
+}
 
-const baseTitle = String(
-  cleanTitleTranslations[originalLanguage] || originalCup?.title || ""
-).trim();
-const baseDescription = String(
-  cleanDescriptionTranslations[originalLanguage] || originalCup?.description || ""
-).trim();
+titleTranslations.forEach((row) => {
+  const code = String(row?.lang || "").trim();
+  if (!code || code === contentLanguage) return;
+
+  const translatedTitle = String(row?.title || "").trim();
+  const translatedDescription = String(row?.description || "").trim();
+
+  if (translatedTitle) {
+    cleanTitleTranslations[code] = translatedTitle;
+  }
+  if (translatedDescription) {
+    cleanDescriptionTranslations[code] = translatedDescription;
+  }
+});
 
 const updatedCup = {
   ...originalCup,
-  title: baseTitle,
-  description: baseDescription,
+  title: title.trim(),
   title_translations: cleanTitleTranslations,
+  description: description.trim(),
   description_translations: cleanDescriptionTranslations,
-  original_language: originalLanguage,
+  original_language: contentLanguage,
   category,
   tags: getCleanTags(),
   data: updatedData,
@@ -1035,7 +1000,7 @@ const updatedCup = {
     <select
       value={contentLanguage}
       onChange={(event) =>
-        changeContentLanguageAndPage(event.target.value)
+        setContentLanguage(event.target.value)
       }
       disabled={loading}
       style={{
@@ -1075,14 +1040,9 @@ const updatedCup = {
 
           <input
             value={title}
-            onChange={(event) => {
-              const value = event.target.value;
-              setTitle(value);
-              setTitleTranslations((current) => ({
-                ...current,
-                [contentLanguage]: value,
-              }));
-            }}
+            onChange={(event) =>
+              setTitle(event.target.value)
+            }
             style={{
               width: "100%",
               padding: 12,
@@ -1105,6 +1065,169 @@ const updatedCup = {
         </label>
       </div>
 
+      <div style={{ marginTop: -10, marginBottom: 22 }}>
+        <button
+          type="button"
+          onClick={addTitleTranslation}
+          disabled={loading || !getAvailableTranslationLanguage()}
+          style={{
+            padding: "9px 14px",
+            borderRadius: 8,
+            border: `1.5px solid ${COLORS.main}66`,
+            background: "#ffffff",
+            color: COLORS.main,
+            fontSize: mobile ? 14 : 16,
+            fontWeight: 800,
+            cursor:
+              loading || !getAvailableTranslationLanguage()
+                ? "default"
+                : "pointer",
+            opacity: !getAvailableTranslationLanguage() ? 0.55 : 1,
+          }}
+        >
+          + {t("add_other_language_title", { defaultValue: "다른 언어 제목 추가" })}
+        </button>
+
+        {titleTranslations.length > 0 && (
+          <div
+            style={{
+              marginTop: 10,
+              display: "flex",
+              flexDirection: "column",
+              gap: 10,
+            }}
+          >
+            {titleTranslations.map((row) => {
+              const otherUsed = new Set(
+                titleTranslations
+                  .filter((item) => item.id !== row.id)
+                  .map((item) => item.lang)
+              );
+
+              return (
+                <div
+                  key={row.id}
+                  style={{
+                    padding: 10,
+                    border: "1px solid #d8dfeb",
+                    borderRadius: 10,
+                    background: "#f8fafc",
+                  }}
+                >
+                  <div
+                    style={{
+                      display: "grid",
+                      gridTemplateColumns: mobile ? "1fr" : "180px 1fr auto",
+                      gap: 8,
+                      alignItems: "center",
+                    }}
+                  >
+                    <select
+                      value={row.lang}
+                      onChange={(event) =>
+                        updateTitleTranslation(row.id, { lang: event.target.value })
+                      }
+                      disabled={loading}
+                      style={{
+                        height: 42,
+                        padding: "0 10px",
+                        borderRadius: 8,
+                        border: "1px solid #bfcbe0",
+                        background: "#fff",
+                        fontSize: 15,
+                        fontWeight: 700,
+                      }}
+                    >
+                      {CONTENT_LANGUAGE_OPTIONS
+                        .filter(
+                          (item) =>
+                            item.value !== contentLanguage &&
+                            (!otherUsed.has(item.value) || item.value === row.lang)
+                        )
+                        .map((item) => (
+                          <option key={item.value} value={item.value}>
+                            {item.label} ({item.value})
+                          </option>
+                        ))}
+                    </select>
+
+                    <input
+                      value={row.title}
+                      onChange={(event) =>
+                        updateTitleTranslation(row.id, { title: event.target.value })
+                      }
+                      maxLength={80}
+                      placeholder={t("translated_title_placeholder", {
+                        defaultValue: "번역 제목을 입력하세요",
+                      })}
+                      disabled={loading}
+                      style={{
+                        width: "100%",
+                        height: 42,
+                        boxSizing: "border-box",
+                        padding: "0 12px",
+                        borderRadius: 8,
+                        border: "1px solid #bfcbe0",
+                        background: "#fff",
+                        fontSize: 16,
+                        fontWeight: 700,
+                        outlineColor: COLORS.main,
+                      }}
+                    />
+
+                    <button
+                      type="button"
+                      onClick={() => removeTitleTranslation(row.id)}
+                      disabled={loading}
+                      style={{
+                        height: 42,
+                        padding: "0 12px",
+                        borderRadius: 8,
+                        border: "1px solid #efb0b0",
+                        background: "#fff",
+                        color: COLORS.danger,
+                        fontWeight: 800,
+                        cursor: loading ? "default" : "pointer",
+                      }}
+                    >
+                      {t("delete", { defaultValue: "삭제" })}
+                    </button>
+                  </div>
+
+                  <textarea
+                    value={row.description}
+                    onChange={(event) =>
+                      updateTitleTranslation(row.id, {
+                        description: event.target.value,
+                      })
+                    }
+                    rows={2}
+                    maxLength={400}
+                    placeholder={t("translated_description_placeholder", {
+                      defaultValue: "번역 설명을 입력하세요 (선택)",
+                    })}
+                    disabled={loading}
+                    style={{
+                      width: mobile ? "100%" : "calc(100% - 188px)",
+                      marginLeft: mobile ? 0 : 188,
+                      marginTop: 8,
+                      minHeight: 64,
+                      boxSizing: "border-box",
+                      padding: 10,
+                      borderRadius: 8,
+                      border: "1px solid #cbd5e1",
+                      background: "#fff",
+                      fontSize: 15,
+                      resize: "vertical",
+                    }}
+                  />
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
+
       <div style={{ marginBottom: 26 }}>
         <label
           style={{
@@ -1117,14 +1240,9 @@ const updatedCup = {
 
           <textarea
             value={description}
-            onChange={(event) => {
-              const value = event.target.value;
-              setDescription(value);
-              setDescriptionTranslations((current) => ({
-                ...current,
-                [contentLanguage]: value,
-              }));
-            }}
+            onChange={(event) =>
+              setDescription(event.target.value)
+            }
             style={{
               width: "100%",
               padding: 12,

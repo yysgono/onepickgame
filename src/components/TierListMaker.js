@@ -30,7 +30,6 @@ import {
 } from "../utils";
 
 import { supabase } from "../utils/supabaseClient";
-import { detectContentLanguage, rekeyBaseTranslation } from "../utils/detectContentLanguage";
 
 
 const MAX_UPLOAD = 50;
@@ -979,39 +978,6 @@ const [
   ] =
     useState("");
 
-  const [tierListDescription, setTierListDescription] = useState("");
-  const [tierTitleTranslations, setTierTitleTranslations] = useState({});
-  const [tierDescriptionTranslations, setTierDescriptionTranslations] = useState({});
-  const [tierOriginalLanguage, setTierOriginalLanguage] = useState(lang);
-
-  const activeTierTitle =
-    lang === tierOriginalLanguage
-      ? tierListTitle
-      : (tierTitleTranslations?.[lang] || "");
-
-  const activeTierDescription =
-    lang === tierOriginalLanguage
-      ? tierListDescription
-      : (tierDescriptionTranslations?.[lang] || "");
-
-  const changeActiveTierTitle = (value) => {
-    if (lang === tierOriginalLanguage) {
-      setTierListTitle(value);
-      setTierTitleTranslations((prev) => ({ ...prev, [tierOriginalLanguage]: value }));
-      return;
-    }
-    setTierTitleTranslations((prev) => ({ ...prev, [lang]: value }));
-  };
-
-  const changeActiveTierDescription = (value) => {
-    if (lang === tierOriginalLanguage) {
-      setTierListDescription(value);
-      setTierDescriptionTranslations((prev) => ({ ...prev, [tierOriginalLanguage]: value }));
-      return;
-    }
-    setTierDescriptionTranslations((prev) => ({ ...prev, [lang]: value }));
-  };
-
 
   const [
     selectedCategory,
@@ -1715,10 +1681,6 @@ const sourceCandidates =
 } else if (!cloneTierListId && !editTierListId) {
   setSourceWorldcupId(null);
   setCustomPresetName("");
-  setTierOriginalLanguage(lang);
-  setTierListDescription("");
-  setTierTitleTranslations({});
-  setTierDescriptionTranslations({});
 }
   // 실제 소스가 바뀔 때만 초기화합니다.
   // 언어 변경(getTitle 변경)만으로 작업 중인 티어가 리셋되지 않습니다.
@@ -1771,25 +1733,53 @@ const sourceCandidates =
     let cancelled = false;
 
     const makeImportedCandidates = (candidates = []) =>
-      candidates.map((candidate, index) => ({
-        ...candidate,
-        _source: "imported",
-        _tierKey: `imported-${String(candidate?.id ?? index)}-${index}`,
-      }));
+      candidates.map((candidate, index) => {
+        const isSourceCandidate =
+          candidate?._fromSourceWorldcup === true;
+
+        return {
+          ...candidate,
+          _source: isSourceCandidate
+            ? "worldcup"
+            : "imported",
+          _tierKey:
+            isSourceCandidate && candidate?.id != null
+              ? `worldcup-${String(candidate.id)}`
+              : `imported-${String(candidate?.id ?? index)}-${index}`,
+        };
+      });
 
       const mergeWithLatestPresetCandidates = async (payload) => {
-  if (
-    mode !== "edit" ||
-    !payload?.source_worldcup_id
-  ) {
-    return payload;
+  const tierLabelMeta =
+    payload?.tier_labels && typeof payload.tier_labels === "object"
+      ? payload.tier_labels
+      : {};
+
+  const hasStoredSourceId =
+    Object.prototype.hasOwnProperty.call(
+      tierLabelMeta,
+      "_sourceWorldcupId"
+    );
+
+  // 게스트 수정 RPC는 source_worldcup_id를 직접 갱신하지 못할 수 있으므로
+  // tier_labels에 함께 저장한 최신 source id를 우선 사용합니다.
+  const effectiveSourceWorldcupId =
+    hasStoredSourceId
+      ? tierLabelMeta._sourceWorldcupId || null
+      : payload?.source_worldcup_id || null;
+
+  if (!effectiveSourceWorldcupId) {
+    return {
+      ...payload,
+      source_worldcup_id: null,
+    };
   }
 
   try {
     const { data: sourceCup, error } = await supabase
       .from("worldcups")
       .select("id, data")
-      .eq("id", payload.source_worldcup_id)
+      .eq("id", effectiveSourceWorldcupId)
       .maybeSingle();
 
     if (
@@ -1797,7 +1787,10 @@ const sourceCandidates =
       !sourceCup ||
       !Array.isArray(sourceCup.data)
     ) {
-      return payload;
+      return {
+        ...payload,
+        source_worldcup_id: effectiveSourceWorldcupId,
+      };
     }
 
     const savedCandidates = Array.isArray(payload.candidates)
@@ -1831,17 +1824,22 @@ const sourceCandidates =
           ...oldCandidate,
           ...candidate,
           id: oldCandidate.id,
+          source: "worldcup",
+          _fromSourceWorldcup: true,
         });
       } else {
         // 새로 생긴 후보
         candidateMap.set(key, {
           ...candidate,
+          source: "worldcup",
+          _fromSourceWorldcup: true,
         });
       }
     });
 
     return {
       ...payload,
+      source_worldcup_id: effectiveSourceWorldcupId,
       candidates: Array.from(candidateMap.values()),
     };
   } catch (error) {
@@ -1850,7 +1848,10 @@ const sourceCandidates =
       error
     );
 
-    return payload;
+    return {
+      ...payload,
+      source_worldcup_id: effectiveSourceWorldcupId,
+    };
   }
 };
 
@@ -1866,7 +1867,17 @@ const sourceCandidates =
         imported.map((candidate) => [String(candidate.id), candidate])
       );
 
-      setLocalCandidates(imported);
+      // 수정/복제 모드에서 원본 월드컵 후보를 localCandidates에 또 넣으면
+      // sourceCandidates와 중복되어 같은 후보가 2번씩 보이게 됩니다.
+      // 원본 월드컵에 없는 저장 후보(직접 추가/과거 후보)만 별도로 유지합니다.
+      setLocalCandidates(
+        payload.source_worldcup_id
+          ? imported.filter(
+              (candidate) =>
+                candidate?._fromSourceWorldcup !== true
+            )
+          : imported
+      );
       setSourceWorldcupId(payload.source_worldcup_id || null);
       setCustomPresetName(
         payload?.tier_labels?._sourcePresetName || ""
@@ -1881,31 +1892,14 @@ const sourceCandidates =
         ...DEFAULT_TIER_LABELS,
         ...(payload.tier_labels || {}),
       });
-      const incomingTitleTranslations =
-        payload?.title_translations && typeof payload.title_translations === "object"
-          ? payload.title_translations
-          : {};
-      const incomingDescriptionTranslations =
-        payload?.description_translations && typeof payload.description_translations === "object"
-          ? payload.description_translations
-          : {};
-      const inferredOriginalLanguage =
-        payload?.original_language ||
-        Object.keys(incomingTitleTranslations).find(
-          (code) => String(incomingTitleTranslations?.[code] || "").trim() === String(payload?.title || "").trim()
-        ) ||
-        "en";
-
-      setTierOriginalLanguage(mode === "clone" ? lang : inferredOriginalLanguage);
-      setTierTitleTranslations(mode === "clone" ? {} : incomingTitleTranslations);
-      setTierDescriptionTranslations(mode === "clone" ? {} : incomingDescriptionTranslations);
-      setTierListDescription(mode === "clone" ? "" : (payload?.description || incomingDescriptionTranslations?.[inferredOriginalLanguage] || ""));
       setTierListTitle(
         mode === "clone"
           ? `${payload.title || text.newTierList}`
-          : incomingTitleTranslations?.[inferredOriginalLanguage] || payload.title || text.newTierList
+          : payload.title || text.newTierList
       );
-      setLocalOnlyMode(true);
+      setLocalOnlyMode(
+        !payload.source_worldcup_id
+      );
       setSearchKeyword("");
       setSaveError("");
       setSelectedMobileItem(null);
@@ -1985,7 +1979,7 @@ const sourceCandidates =
         const { data, error } = await supabase
           .from("tier_lists")
           .select(
-            "id, user_id, guest_nickname, title, description, title_translations, description_translations, original_language, source_worldcup_id, category, tier_labels, tiers, candidates"
+            "id, user_id, guest_nickname, title, source_worldcup_id, category, tier_labels, tiers, candidates"
           )
           .eq("id", targetId)
           .single();
@@ -3099,10 +3093,6 @@ const handleDragEndItem =
           version: 2,
           savedAt: Date.now(),
           title: tierListTitle,
-          description: tierListDescription,
-          titleTranslations: tierTitleTranslations,
-          descriptionTranslations: tierDescriptionTranslations,
-          originalLanguage: tierOriginalLanguage,
           category: selectedCategory,
           tierLabels: {
             ...tierLabels,
@@ -3229,10 +3219,6 @@ const handleDragEndItem =
         allDraftItems.forEach(restoreItem);
 
         setTierListTitle(draft?.title || "");
-        setTierListDescription(draft?.description || "");
-        setTierTitleTranslations(draft?.titleTranslations || {});
-        setTierDescriptionTranslations(draft?.descriptionTranslations || {});
-        setTierOriginalLanguage(draft?.originalLanguage || lang);
         setSelectedCategory(
           normalizeTierCategory(draft?.category)
         );
@@ -3312,31 +3298,101 @@ const handleDragEndItem =
           createEmptyTiers()
         );
 
-
         setSearchKeyword("");
-
-        setLocalOnlyMode(
-          false
-        );
-
+        setLocalOnlyMode(false);
         setOnePick(null);
+        setSelectedMobileItem(null);
+        setVisibleCandidateCount(80);
 
-
-        setSelectedCategory(
-          "other"
+        // 소스 변경 시 기존 월드컵 후보가 다음 월드컵과 섞이지 않게 제거합니다.
+        // 사용자가 직접 올린 이미지만 유지합니다.
+        setLocalCandidates((prev) =>
+          prev.filter(
+            (item) =>
+              item?._source === "local" ||
+              item?.source === "local"
+          )
         );
 
-
+        setSourceWorldcupId(null);
+        setCustomPresetName("");
+        setSelectedCategory("other");
         setTierLabels({
           ...DEFAULT_TIER_LABELS,
         });
 
+        // 수정 중에는 ?edit=... 를 유지해야 editingTierListId가 끊기지 않습니다.
+        if (editTierListId) {
+          return;
+        }
 
         navigate(
           `/${lang}/tier-list/create`
         );
       },
       [
+        editTierListId,
+        navigate,
+        lang,
+      ]
+    );
+
+
+  const selectSourceWorldcup =
+    useCallback(
+      (cup) => {
+        if (!cup?.id) {
+          return;
+        }
+
+        const nextId = String(cup.id);
+        const currentId =
+          sourceWorldcupId != null
+            ? String(sourceWorldcupId)
+            : "";
+
+        if (currentId === nextId) {
+          return;
+        }
+
+        // 원본 월드컵을 A -> B로 바꾸면 A의 티어 배치와
+        // A에서 따라온 후보를 남기지 않습니다.
+        setTierItems(createEmptyTiers());
+        setOnePick(null);
+        setSearchKeyword("");
+        setSelectedMobileItem(null);
+        setVisibleCandidateCount(80);
+
+        // 저장된 직접 업로드 이미지만 유지합니다.
+        // 이전 월드컵 후보/가져온 후보는 새 소스와 섞이지 않게 제거합니다.
+        setLocalCandidates((prev) =>
+          prev.filter(
+            (item) =>
+              item?._source === "local" ||
+              item?.source === "local"
+          )
+        );
+
+        setSourceWorldcupId(cup.id);
+        setCustomPresetName("");
+        setLocalOnlyMode(false);
+        setSelectedCategory(
+          normalizeTierCategory(cup?.category)
+        );
+
+        // 수정 중에는 ?edit=... 를 없애면 안 됩니다.
+        // URL은 유지하고 원본 월드컵 상태만 교체합니다.
+        if (editTierListId) {
+          return;
+        }
+
+        navigate(
+          `/${lang}/tier-list/create/${cup.id}`
+        );
+      },
+      [
+        sourceWorldcupId,
+        editTierListId,
         navigate,
         lang,
       ]
@@ -3570,8 +3626,8 @@ const finalCandidates =
                     "",
 
                   source:
-                    finalItem
-                      ._source ||
+                    finalItem.source ||
+                    finalItem._source ||
                     "worldcup",
                 };
               }
@@ -3622,33 +3678,16 @@ const finalCandidates =
               : null;
 
 
-          const saveTierOriginalLanguage = editingTierListId
-            ? tierOriginalLanguage
-            : detectContentLanguage(
-                `${cleanTitle} ${tierListDescription}`,
-                tierOriginalLanguage || lang
-              );
-
-          const saveTierTitleTranslations = rekeyBaseTranslation(
-            tierTitleTranslations,
-            tierOriginalLanguage,
-            saveTierOriginalLanguage,
-            cleanTitle
-          );
-
-          const saveTierDescriptionTranslations = rekeyBaseTranslation(
-            tierDescriptionTranslations,
-            tierOriginalLanguage,
-            saveTierOriginalLanguage,
-            tierListDescription
-          );
-
           const savedTierLabels = {
             ...tierLabels,
             _tags: normalizeTags(tierLabels._tags),
             _sourcePresetName: sourceWorldcupId
               ? String(sourcePresetName || "").trim()
               : customPresetName.trim(),
+            // source_worldcup_id와 같은 값을 메타에도 보관합니다.
+            // 게스트 수정 RPC가 DB 컬럼을 직접 갱신하지 못하는 경우에도
+            // 다음 수정 진입에서 최신 소스를 정확히 복원할 수 있습니다.
+            _sourceWorldcupId: sourceWorldcupId || null,
           };
 
 
@@ -3663,10 +3702,8 @@ if (editingTierListId) {
         .from("tier_lists")
         .update({
           title: cleanTitle,
-          description: tierListDescription.trim(),
-          title_translations: saveTierTitleTranslations,
-          description_translations: saveTierDescriptionTranslations,
-          original_language: saveTierOriginalLanguage,
+          source_worldcup_id:
+            sourceWorldcupId || null,
           category: selectedCategory,
           tier_labels: savedTierLabels,
           tiers: finalTiers,
@@ -3722,14 +3759,6 @@ if (editingTierListId) {
             finalTiers,
           p_candidates:
             finalCandidates,
-          p_description:
-            tierListDescription.trim(),
-          p_title_translations:
-            saveTierTitleTranslations,
-          p_description_translations:
-            saveTierDescriptionTranslations,
-          p_original_language:
-            saveTierOriginalLanguage,
         }
       );
 
@@ -3749,10 +3778,6 @@ if (editingTierListId) {
           guest_id: null,
           guest_nickname: null,
           title: cleanTitle,
-          description: tierListDescription.trim(),
-          title_translations: saveTierTitleTranslations,
-          description_translations: saveTierDescriptionTranslations,
-          original_language: saveTierOriginalLanguage,
           source_worldcup_id:
             sourceWorldcupId || null,
           category: selectedCategory,
@@ -3817,14 +3842,6 @@ if (editingTierListId) {
       p_tiers: finalTiers,
       p_candidates:
         finalCandidates,
-      p_description:
-        tierListDescription.trim(),
-      p_title_translations:
-        saveTierTitleTranslations,
-      p_description_translations:
-        saveTierDescriptionTranslations,
-      p_original_language:
-        saveTierOriginalLanguage,
     }
   );
 
@@ -3879,10 +3896,6 @@ if (editingTierListId) {
 [
   saving,
   tierListTitle,
-  tierListDescription,
-  tierTitleTranslations,
-  tierDescriptionTranslations,
-  tierOriginalLanguage,
   lang,
   text,
   allCandidates,
@@ -4704,9 +4717,7 @@ if (editingTierListId) {
                       }
                       type="button"
                       onClick={() =>
-                        navigate(
-                          `/${lang}/tier-list/create/${cup.id}`
-                        )
+                        selectSourceWorldcup(cup)
                       }
                       style={{
                         padding:
@@ -5671,8 +5682,8 @@ objectPosition: "center",
               }}
             >
               <input
-                value={activeTierTitle}
-                onChange={(e) => changeActiveTierTitle(e.target.value)}
+                value={tierListTitle}
+                onChange={(e) => setTierListTitle(e.target.value)}
                 placeholder={text.titlePlaceholder}
                 maxLength={80}
                 style={{
@@ -5688,30 +5699,6 @@ objectPosition: "center",
                   color: "#111827",
                   fontSize: isMobile ? 18 : 20,
                   fontWeight: 700,
-                  outline: "none",
-                }}
-              />
-
-              <textarea
-                value={activeTierDescription}
-                onChange={(e) => changeActiveTierDescription(e.target.value)}
-                placeholder={t("description")}
-                maxLength={500}
-                rows={3}
-                style={{
-                  width: "100%",
-                  minHeight: 86,
-                  marginBottom: 14,
-                  boxSizing: "border-box",
-                  padding: "12px 14px",
-                  borderRadius: 10,
-                  border: "1px solid #cbd5e1",
-                  background: "#fff",
-                  color: "#111827",
-                  fontSize: 16,
-                  fontWeight: 600,
-                  lineHeight: 1.5,
-                  resize: "vertical",
                   outline: "none",
                 }}
               />
