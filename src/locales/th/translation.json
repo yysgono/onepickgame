@@ -333,7 +333,9 @@
     "blinded": "ความคิดเห็นนี้ถูกซ่อน",
     "loading": "กำลังโหลด...",
     "banExpiresAt": "วันสิ้นสุดการแบน",
-    "banReason": "เหตุผลการแบน"
+    "banReason": "เหตุผลการแบน",
+    "deleteConfirm": "ลบความคิดเห็นนี้หรือไม่?",
+    "limit500": "ความคิดเห็นต้องไม่เกิน 500 ตัวอักษร"
   },
   "find_id.enter_nickname": "กรอกชื่อเล่นของคุณ",
   "find_id.result": "อีเมล (ID) ของคุณคือ {{email}}",
@@ -487,17 +489,17 @@
       "notFound": "Tier list not found.",
       "tierHome": "Tier List Home",
       "tierList": "TIER LIST",
-      "onePickEmpty": "No One Pick selected.",
+      "onePickEmpty": "ยังไม่ได้เลือก One Pick",
       "shareText": "Check out {{title}} tier list!",
       "linkCopied": "Link copied.",
-      "download": "Download Image",
+      "download": "ดาวน์โหลดรูปภาพ",
       "downloading": "Creating image...",
       "downloadFailed": "Failed to download image.",
-      "createWithCandidates": "Create with these candidates",
+      "createWithCandidates": "สร้างด้วยผู้สมัครเหล่านี้",
       "deleteConfirm": "Delete this tier list? This cannot be undone.",
       "deleting": "Deleting...",
       "deleteFailed": "Failed to delete tier list.",
-      "createTierList": "Create my own tier list",
+      "createTierList": "สร้าง Tier List ของฉัน",
       "commentPlaceholder": "Write a comment.",
       "nicknameRequired": "Please enter a nickname.",
       "commentRequired": "Please enter a comment.",
@@ -517,7 +519,10 @@
       "noImage": "ไม่มีรูป",
       "createBracketFromTier": "สร้างทัวร์นาเมนต์ด้วยตัวเลือกเหล่านี้",
       "createBracketFromPreset": "สร้างทัวร์นาเมนต์จากพรีเซ็ตนี้",
-      "usedPreset": "พรีเซ็ตที่ใช้"
+      "usedPreset": "พรีเซ็ตที่ใช้",
+      "makeBracketCandidates": "สร้างทัวร์นาเมนต์ด้วยผู้สมัครเหล่านี้",
+      "browseTierLists": "ดู Tier List ของผู้ใช้อื่นในหัวข้อนี้",
+      "cloneTierList": "สร้าง Tier List นี้ด้วย"
     },
     "seo": {
       "listTitle": "Tier List | One Pick Game",
@@ -622,9 +627,10 @@
     "manageContent": "Find and manage your creations in one place.",
     "loginToView": "Sign in to see your creations."
   },
+  "match_back": "ย้อนกลับ",
   "head_to_head": "สถิติการเจอกัน",
   "head_to_head_record": "ชนะ {{leftWins}} : {{rightWins}} ครั้ง",
   "head_to_head_total": "พบกันทั้งหมด {{formattedCount}} ครั้ง",
   "head_to_head_loading": "กำลังโหลดสถิติการเจอกัน…",
-  "match_back": "ย้อนกลับ"
+  "stop_and_view_stats": "หยุดและดูสถิติ"
 }

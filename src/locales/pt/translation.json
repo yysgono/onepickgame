@@ -301,7 +301,9 @@
     "blinded": "Este comentário está oculto.",
     "loading": "Carregando...",
     "banExpiresAt": "Data de desbanimento",
-    "banReason": "Razão do banimento"
+    "banReason": "Razão do banimento",
+    "deleteConfirm": "Excluir este comentário?",
+    "limit500": "O comentário deve ter no máximo 500 caracteres."
   },
   "matchObj": {
     "round": "Rodada de {{n}}",
@@ -484,17 +486,17 @@
       "notFound": "Tier list not found.",
       "tierHome": "Tier List Home",
       "tierList": "TIER LIST",
-      "onePickEmpty": "No One Pick selected.",
+      "onePickEmpty": "Nenhum One Pick selecionado.",
       "shareText": "Check out {{title}} tier list!",
       "linkCopied": "Link copied.",
-      "download": "Download Image",
+      "download": "Baixar imagem",
       "downloading": "Creating image...",
       "downloadFailed": "Failed to download image.",
-      "createWithCandidates": "Create with these candidates",
+      "createWithCandidates": "Criar com estes candidatos",
       "deleteConfirm": "Delete this tier list? This cannot be undone.",
       "deleting": "Deleting...",
       "deleteFailed": "Failed to delete tier list.",
-      "createTierList": "Create my own tier list",
+      "createTierList": "Criar minha Tier List",
       "commentPlaceholder": "Write a comment.",
       "nicknameRequired": "Please enter a nickname.",
       "commentRequired": "Please enter a comment.",
@@ -514,7 +516,10 @@
       "noImage": "SEM IMAGEM",
       "createBracketFromTier": "Criar torneio com estes candidatos",
       "createBracketFromPreset": "Criar torneio com este preset",
-      "usedPreset": "Predefinição utilizada"
+      "usedPreset": "Predefinição utilizada",
+      "makeBracketCandidates": "Criar um torneio com estes candidatos",
+      "browseTierLists": "Ver Tier Lists de outros usuários deste tema",
+      "cloneTierList": "Criar também esta Tier List"
     },
     "seo": {
       "listTitle": "Tier List | One Pick Game",
@@ -619,9 +624,10 @@
     "manageContent": "Find and manage your creations in one place.",
     "loginToView": "Sign in to see your creations."
   },
+  "match_back": "Voltar",
   "head_to_head": "Confronto direto",
   "head_to_head_record": "{{leftWins}} vitórias : {{rightWins}} vitórias",
   "head_to_head_total": "{{formattedCount}} confrontos no total",
   "head_to_head_loading": "Carregando confronto direto…",
-  "match_back": "Voltar"
+  "stop_and_view_stats": "Parar e ver estatísticas"
 }

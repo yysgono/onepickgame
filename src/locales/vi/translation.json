@@ -333,7 +333,9 @@
     "blinded": "Bình luận này đã bị ẩn.",
     "loading": "Đang tải...",
     "banExpiresAt": "Ngày hết hạn cấm",
-    "banReason": "Lý do cấm"
+    "banReason": "Lý do cấm",
+    "deleteConfirm": "Xóa bình luận này?",
+    "limit500": "Bình luận phải có tối đa 500 ký tự."
   },
   "find_id.enter_nickname": "Nhập biệt danh của bạn",
   "find_id.result": "Email (ID) của bạn là {{email}}",
@@ -487,17 +489,17 @@
       "notFound": "Tier list not found.",
       "tierHome": "Tier List Home",
       "tierList": "TIER LIST",
-      "onePickEmpty": "No One Pick selected.",
+      "onePickEmpty": "Chưa chọn One Pick.",
       "shareText": "Check out {{title}} tier list!",
       "linkCopied": "Link copied.",
-      "download": "Download Image",
+      "download": "Tải ảnh xuống",
       "downloading": "Creating image...",
       "downloadFailed": "Failed to download image.",
-      "createWithCandidates": "Create with these candidates",
+      "createWithCandidates": "Tạo với các ứng viên này",
       "deleteConfirm": "Delete this tier list? This cannot be undone.",
       "deleting": "Deleting...",
       "deleteFailed": "Failed to delete tier list.",
-      "createTierList": "Create my own tier list",
+      "createTierList": "Tạo Tier List của tôi",
       "commentPlaceholder": "Write a comment.",
       "nicknameRequired": "Please enter a nickname.",
       "commentRequired": "Please enter a comment.",
@@ -517,7 +519,10 @@
       "noImage": "KHÔNG CÓ ẢNH",
       "createBracketFromTier": "Tạo giải đấu với các ứng viên này",
       "createBracketFromPreset": "Tạo giải đấu từ mẫu này",
-      "usedPreset": "Mẫu đã sử dụng"
+      "usedPreset": "Mẫu đã sử dụng",
+      "makeBracketCandidates": "Tạo vòng đấu với các ứng viên này",
+      "browseTierLists": "Xem Tier List của người khác cùng chủ đề",
+      "cloneTierList": "Tôi cũng muốn tạo Tier List này"
     },
     "seo": {
       "listTitle": "Tier List | One Pick Game",
@@ -622,9 +627,10 @@
     "manageContent": "Find and manage your creations in one place.",
     "loginToView": "Sign in to see your creations."
   },
+  "match_back": "Quay lại",
   "head_to_head": "Đối đầu",
   "head_to_head_record": "{{leftWins}} thắng : {{rightWins}} thắng",
   "head_to_head_total": "Tổng {{formattedCount}} lần đối đầu",
   "head_to_head_loading": "Đang tải thành tích đối đầu…",
-  "match_back": "Quay lại"
+  "stop_and_view_stats": "Dừng và xem thống kê"
 }

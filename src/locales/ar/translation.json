@@ -332,7 +332,9 @@
     "blinded": "تم إخفاء هذا التعليق.",
     "loading": "جارٍ التحميل...",
     "banExpiresAt": "ينتهي الحظر في",
-    "banReason": "سبب الحظر"
+    "banReason": "سبب الحظر",
+    "deleteConfirm": "حذف هذا التعليق؟",
+    "limit500": "يجب ألا يتجاوز التعليق 500 حرف."
   },
   "find_id.enter_nickname": "أدخل لقبك",
   "find_id.result": "بريدك الإلكتروني (ID) هو {{email}}",
@@ -486,17 +488,17 @@
       "notFound": "Tier list not found.",
       "tierHome": "Tier List Home",
       "tierList": "TIER LIST",
-      "onePickEmpty": "No One Pick selected.",
+      "onePickEmpty": "لم يتم اختيار One Pick.",
       "shareText": "Check out {{title}} tier list!",
       "linkCopied": "Link copied.",
-      "download": "Download Image",
+      "download": "تنزيل الصورة",
       "downloading": "Creating image...",
       "downloadFailed": "Failed to download image.",
-      "createWithCandidates": "Create with these candidates",
+      "createWithCandidates": "أنشئ بهذه الخيارات",
       "deleteConfirm": "Delete this tier list? This cannot be undone.",
       "deleting": "Deleting...",
       "deleteFailed": "Failed to delete tier list.",
-      "createTierList": "Create my own tier list",
+      "createTierList": "أنشئ Tier List الخاصة بي",
       "commentPlaceholder": "Write a comment.",
       "nicknameRequired": "Please enter a nickname.",
       "commentRequired": "Please enter a comment.",
@@ -516,7 +518,10 @@
       "noImage": "لا توجد صورة",
       "createBracketFromTier": "إنشاء بطولة بهذه الخيارات",
       "createBracketFromPreset": "إنشاء بطولة من هذا الإعداد",
-      "usedPreset": "الإعداد المسبق المستخدم"
+      "usedPreset": "الإعداد المسبق المستخدم",
+      "makeBracketCandidates": "أنشئ بطولة بهذه الخيارات",
+      "browseTierLists": "عرض قوائم المستخدمين الآخرين لهذا الموضوع",
+      "cloneTierList": "أنشئ هذه القائمة أيضًا"
     },
     "seo": {
       "listTitle": "Tier List | One Pick Game",
@@ -621,9 +626,10 @@
     "manageContent": "Find and manage your creations in one place.",
     "loginToView": "Sign in to see your creations."
   },
+  "match_back": "رجوع",
   "head_to_head": "المواجهات المباشرة",
   "head_to_head_record": "{{leftWins}} فوز : {{rightWins}} فوز",
   "head_to_head_total": "إجمالي {{formattedCount}} مواجهة",
   "head_to_head_loading": "جارٍ تحميل سجل المواجهات…",
-  "match_back": "رجوع"
+  "stop_and_view_stats": "إيقاف وعرض الإحصاءات"
 }

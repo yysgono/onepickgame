@@ -333,7 +333,9 @@
     "blinded": "Ce commentaire est masqué.",
     "loading": "Chargement...",
     "banExpiresAt": "Date de fin de bannissement",
-    "banReason": "Raison du bannissement"
+    "banReason": "Raison du bannissement",
+    "deleteConfirm": "Supprimer ce commentaire ?",
+    "limit500": "Le commentaire doit contenir 500 caractères maximum."
   },
   "find_id.enter_nickname": "Enter your nickname",
   "find_id.result": "Your email (ID) is {{email}}",
@@ -487,17 +489,17 @@
       "notFound": "Tier list not found.",
       "tierHome": "Tier List Home",
       "tierList": "TIER LIST",
-      "onePickEmpty": "No One Pick selected.",
+      "onePickEmpty": "Aucun One Pick sélectionné.",
       "shareText": "Check out {{title}} tier list!",
       "linkCopied": "Link copied.",
-      "download": "Download Image",
+      "download": "Télécharger l’image",
       "downloading": "Creating image...",
       "downloadFailed": "Failed to download image.",
-      "createWithCandidates": "Create with these candidates",
+      "createWithCandidates": "Créer avec ces candidats",
       "deleteConfirm": "Delete this tier list? This cannot be undone.",
       "deleting": "Deleting...",
       "deleteFailed": "Failed to delete tier list.",
-      "createTierList": "Create my own tier list",
+      "createTierList": "Créer ma Tier List",
       "commentPlaceholder": "Write a comment.",
       "nicknameRequired": "Please enter a nickname.",
       "commentRequired": "Please enter a comment.",
@@ -517,7 +519,10 @@
       "noImage": "PAS D’IMAGE",
       "createBracketFromTier": "Créer un tournoi avec ces candidats",
       "createBracketFromPreset": "Créer un tournoi avec ce préréglage",
-      "usedPreset": "Préréglage utilisé"
+      "usedPreset": "Préréglage utilisé",
+      "makeBracketCandidates": "Créer un tournoi avec ces candidats",
+      "browseTierLists": "Voir les Tier Lists des autres sur ce thème",
+      "cloneTierList": "Créer aussi cette Tier List"
     },
     "seo": {
       "listTitle": "Tier List | One Pick Game",
@@ -622,9 +627,10 @@
     "manageContent": "Find and manage your creations in one place.",
     "loginToView": "Sign in to see your creations."
   },
+  "match_back": "Retour",
   "head_to_head": "Face-à-face",
   "head_to_head_record": "{{leftWins}} victoires : {{rightWins}} victoires",
   "head_to_head_total": "{{formattedCount}} confrontations au total",
   "head_to_head_loading": "Chargement du face-à-face…",
-  "match_back": "Retour"
+  "stop_and_view_stats": "Arrêter et voir les statistiques"
 }

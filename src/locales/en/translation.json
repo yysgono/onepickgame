@@ -332,7 +332,9 @@
     "blinded": "This comment has been hidden.",
     "loading": "Loading...",
     "banExpiresAt": "Restriction ends",
-    "banReason": "Ban reason"
+    "banReason": "Ban reason",
+    "deleteConfirm": "Delete this comment?",
+    "limit500": "Comments must be 500 characters or fewer."
   },
   "find_id.enter_nickname": "Enter your nickname",
   "find_id.result": "Your email (ID) is {{email}}",
@@ -516,7 +518,10 @@
       "noImage": "NO IMAGE",
       "createBracketFromTier": "Create a Bracket with These Candidates",
       "createBracketFromPreset": "Create a Bracket from This Preset",
-      "usedPreset": "Preset used"
+      "usedPreset": "Preset used",
+      "makeBracketCandidates": "Make a bracket with these candidates",
+      "browseTierLists": "See other user tier lists on this topic",
+      "cloneTierList": "Make this tier list too"
     },
     "seo": {
       "listTitle": "Tier List | One Pick Game",
@@ -621,9 +626,10 @@
     "manageContent": "Find and manage your creations in one place.",
     "loginToView": "Sign in to see your creations."
   },
+  "match_back": "Back",
   "head_to_head": "Head-to-head",
   "head_to_head_record": "{{leftWins}} wins : {{rightWins}} wins",
   "head_to_head_total": "{{formattedCount}} meetings",
   "head_to_head_loading": "Loading head-to-head record…",
-  "match_back": "Back"
+  "stop_and_view_stats": "Stop and view statistics"
 }

@@ -333,7 +333,9 @@
     "blinded": "이 댓글은 숨겨졌습니다.",
     "loading": "로딩 중...",
     "banExpiresAt": "정지 해제일",
-    "banReason": "정지 사유"
+    "banReason": "정지 사유",
+    "deleteConfirm": "댓글을 삭제할까요?",
+    "limit500": "댓글은 500자 이하로 입력해주세요."
   },
   "find_id.enter_nickname": "닉네임을 입력하세요",
   "find_id.result": "당신의 이메일(ID)은 {{email}}입니다",
@@ -517,7 +519,10 @@
       "noImage": "이미지 없음",
       "createBracketFromTier": "이 티어표 후보들로 이상형 월드컵 하기",
       "createBracketFromPreset": "이 프리셋으로 이상형 월드컵 만들기",
-      "usedPreset": "사용한 프리셋"
+      "usedPreset": "사용한 프리셋",
+      "makeBracketCandidates": "이 후보들로 이상형 월드컵 하기",
+      "browseTierLists": "이 주제의 다른 유저 티어표 보기",
+      "cloneTierList": "나도 이 티어표 만들기"
     },
     "seo": {
       "listTitle": "티어표 | 원픽게임",
@@ -622,9 +627,10 @@
     "manageContent": "내가 만든 월드컵과 티어표를 한곳에서 관리하세요.",
     "loginToView": "내 콘텐츠를 보려면 로그인해주세요."
   },
+  "match_back": "뒤로가기",
   "head_to_head": "상대전적",
   "head_to_head_record": "{{leftWins}}승 : {{rightWins}}승",
   "head_to_head_total": "총 {{formattedCount}}회 대결",
   "head_to_head_loading": "상대전적 불러오는 중…",
-  "match_back": "뒤로가기"
+  "stop_and_view_stats": "중단하고 바로 통계 결과 보기"
 }

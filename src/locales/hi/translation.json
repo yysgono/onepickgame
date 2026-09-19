@@ -333,7 +333,9 @@
     "blinded": "यह टिप्पणी छिपाई गई है।",
     "loading": "लोड हो रहा है...",
     "banExpiresAt": "प्रतिबंध समाप्ति तिथि",
-    "banReason": "प्रतिबंध का कारण"
+    "banReason": "प्रतिबंध का कारण",
+    "deleteConfirm": "यह टिप्पणी हटाएँ?",
+    "limit500": "टिप्पणी 500 अक्षरों या उससे कम होनी चाहिए।"
   },
   "find_id.enter_nickname": "अपना उपनाम दर्ज करें",
   "find_id.result": "आपका ईमेल (आईडी) है {{email}}",
@@ -487,17 +489,17 @@
       "notFound": "Tier list not found.",
       "tierHome": "Tier List Home",
       "tierList": "TIER LIST",
-      "onePickEmpty": "No One Pick selected.",
+      "onePickEmpty": "कोई One Pick चुना नहीं गया।",
       "shareText": "Check out {{title}} tier list!",
       "linkCopied": "Link copied.",
-      "download": "Download Image",
+      "download": "चित्र डाउनलोड करें",
       "downloading": "Creating image...",
       "downloadFailed": "Failed to download image.",
-      "createWithCandidates": "Create with these candidates",
+      "createWithCandidates": "इन उम्मीदवारों से बनाएँ",
       "deleteConfirm": "Delete this tier list? This cannot be undone.",
       "deleting": "Deleting...",
       "deleteFailed": "Failed to delete tier list.",
-      "createTierList": "Create my own tier list",
+      "createTierList": "अपनी Tier List बनाएँ",
       "commentPlaceholder": "Write a comment.",
       "nicknameRequired": "Please enter a nickname.",
       "commentRequired": "Please enter a comment.",
@@ -517,7 +519,10 @@
       "noImage": "चित्र नहीं",
       "createBracketFromTier": "इन उम्मीदवारों से टूर्नामेंट बनाएं",
       "createBracketFromPreset": "इस प्रीसेट से टूर्नामेंट बनाएं",
-      "usedPreset": "इस्तेमाल किया गया प्रीसेट"
+      "usedPreset": "इस्तेमाल किया गया प्रीसेट",
+      "makeBracketCandidates": "इन उम्मीदवारों से टूर्नामेंट बनाएँ",
+      "browseTierLists": "इस विषय की अन्य उपयोगकर्ता Tier Lists देखें",
+      "cloneTierList": "मैं भी यह Tier List बनाऊँ"
     },
     "seo": {
       "listTitle": "Tier List | One Pick Game",
@@ -622,9 +627,10 @@
     "manageContent": "Find and manage your creations in one place.",
     "loginToView": "Sign in to see your creations."
   },
+  "match_back": "वापस",
   "head_to_head": "आमने-सामने रिकॉर्ड",
   "head_to_head_record": "{{leftWins}} जीत : {{rightWins}} जीत",
   "head_to_head_total": "कुल {{formattedCount}} मुकाबले",
   "head_to_head_loading": "आमने-सामने रिकॉर्ड लोड हो रहा है…",
-  "match_back": "वापस"
+  "stop_and_view_stats": "रोकें और आँकड़े देखें"
 }

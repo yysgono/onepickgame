@@ -333,7 +333,9 @@
     "blinded": "এই মন্তব্যটি লুকানো হয়েছে।",
     "loading": "লোড হচ্ছে...",
     "banExpiresAt": "ব্যান মুক্তির তারিখ",
-    "banReason": "ব্যানের কারণ"
+    "banReason": "ব্যানের কারণ",
+    "deleteConfirm": "এই মন্তব্যটি মুছবেন?",
+    "limit500": "মন্তব্য 500 অক্ষর বা তার কম হতে হবে।"
   },
   "find_id.enter_nickname": "আপনার নিকনেম লিখুন",
   "find_id.result": "আপনার ইমেইল (আইডি) হলো {{email}}",
@@ -487,17 +489,17 @@
       "notFound": "Tier list not found.",
       "tierHome": "Tier List Home",
       "tierList": "TIER LIST",
-      "onePickEmpty": "No One Pick selected.",
+      "onePickEmpty": "কোনো One Pick নির্বাচন করা হয়নি।",
       "shareText": "Check out {{title}} tier list!",
       "linkCopied": "Link copied.",
-      "download": "Download Image",
+      "download": "ছবি ডাউনলোড করুন",
       "downloading": "Creating image...",
       "downloadFailed": "Failed to download image.",
-      "createWithCandidates": "Create with these candidates",
+      "createWithCandidates": "এই প্রার্থীদের দিয়ে তৈরি করুন",
       "deleteConfirm": "Delete this tier list? This cannot be undone.",
       "deleting": "Deleting...",
       "deleteFailed": "Failed to delete tier list.",
-      "createTierList": "Create my own tier list",
+      "createTierList": "আমার Tier List তৈরি করুন",
       "commentPlaceholder": "Write a comment.",
       "nicknameRequired": "Please enter a nickname.",
       "commentRequired": "Please enter a comment.",
@@ -517,7 +519,10 @@
       "noImage": "ছবি নেই",
       "createBracketFromTier": "এই প্রার্থীদের দিয়ে টুর্নামেন্ট তৈরি করুন",
       "createBracketFromPreset": "এই প্রিসেট থেকে টুর্নামেন্ট তৈরি করুন",
-      "usedPreset": "ব্যবহৃত প্রিসেট"
+      "usedPreset": "ব্যবহৃত প্রিসেট",
+      "makeBracketCandidates": "এই প্রার্থীদের দিয়ে টুর্নামেন্ট তৈরি করুন",
+      "browseTierLists": "এই বিষয়ের অন্য ব্যবহারকারীদের Tier List দেখুন",
+      "cloneTierList": "আমিও এই Tier List তৈরি করি"
     },
     "seo": {
       "listTitle": "Tier List | One Pick Game",
@@ -622,9 +627,10 @@
     "manageContent": "Find and manage your creations in one place.",
     "loginToView": "Sign in to see your creations."
   },
+  "match_back": "পিছনে",
   "head_to_head": "মুখোমুখি রেকর্ড",
   "head_to_head_record": "{{leftWins}} জয় : {{rightWins}} জয়",
   "head_to_head_total": "মোট {{formattedCount}} বার মুখোমুখি",
   "head_to_head_loading": "মুখোমুখি রেকর্ড লোড হচ্ছে…",
-  "match_back": "পিছনে"
+  "stop_and_view_stats": "থামুন এবং পরিসংখ্যান দেখুন"
 }

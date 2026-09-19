@@ -333,7 +333,9 @@
     "blinded": "Этот комментарий скрыт.",
     "loading": "Загрузка...",
     "banExpiresAt": "Дата разблокировки",
-    "banReason": "Причина блокировки"
+    "banReason": "Причина блокировки",
+    "deleteConfirm": "Удалить этот комментарий?",
+    "limit500": "Комментарий должен содержать не более 500 символов."
   },
   "find_id.enter_nickname": "Введите ваш никнейм",
   "find_id.result": "Ваш email (ID): {{email}}",
@@ -487,17 +489,17 @@
       "notFound": "Tier list not found.",
       "tierHome": "Tier List Home",
       "tierList": "TIER LIST",
-      "onePickEmpty": "No One Pick selected.",
+      "onePickEmpty": "One Pick не выбран.",
       "shareText": "Check out {{title}} tier list!",
       "linkCopied": "Link copied.",
-      "download": "Download Image",
+      "download": "Скачать изображение",
       "downloading": "Creating image...",
       "downloadFailed": "Failed to download image.",
-      "createWithCandidates": "Create with these candidates",
+      "createWithCandidates": "Создать с этими кандидатами",
       "deleteConfirm": "Delete this tier list? This cannot be undone.",
       "deleting": "Deleting...",
       "deleteFailed": "Failed to delete tier list.",
-      "createTierList": "Create my own tier list",
+      "createTierList": "Создать свой тир-лист",
       "commentPlaceholder": "Write a comment.",
       "nicknameRequired": "Please enter a nickname.",
       "commentRequired": "Please enter a comment.",
@@ -517,7 +519,10 @@
       "noImage": "НЕТ ИЗОБРАЖЕНИЯ",
       "createBracketFromTier": "Создать турнир с этими участниками",
       "createBracketFromPreset": "Создать турнир из этого пресета",
-      "usedPreset": "Использованный пресет"
+      "usedPreset": "Использованный пресет",
+      "makeBracketCandidates": "Создать турнир с этими кандидатами",
+      "browseTierLists": "Посмотреть другие тир-листы по теме",
+      "cloneTierList": "Создать такой же тир-лист"
     },
     "seo": {
       "listTitle": "Tier List | One Pick Game",
@@ -622,9 +627,10 @@
     "manageContent": "Find and manage your creations in one place.",
     "loginToView": "Sign in to see your creations."
   },
+  "match_back": "Назад",
   "head_to_head": "Личные встречи",
   "head_to_head_record": "{{leftWins}} побед : {{rightWins}} побед",
   "head_to_head_total": "Всего {{formattedCount}} встреч",
   "head_to_head_loading": "Загрузка личных встреч…",
-  "match_back": "Назад"
+  "stop_and_view_stats": "Завершить и посмотреть статистику"
 }
