@@ -139,25 +139,6 @@ export default function QuizPage() {
           accentColor="#E53935"
         />
 
-        {recommended.length > 0 && (
-          <section style={{ width: "100%", maxWidth: 1440, margin: "0 auto 28px", boxSizing: "border-box" }}>
-            <h2 style={{ margin: "0 0 16px", fontSize: mobile ? 22 : 29, textAlign: "center" }}>{c.featured}</h2>
-            <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "repeat(auto-fit,minmax(459px,544px))", justifyContent: "center", gap: 18 }}>
-              {recommended.slice(0, 3).map((q) => (
-                <button key={q.id} type="button" onClick={() => navigate(`/${lang}/quiz/${q.id}`)} style={{ padding: 0, border: "1.5px solid #cfd8e6", borderBottom: "4px solid #E53935", borderRadius: 12, overflow: "hidden", background: "#fff", textAlign: "left", cursor: "pointer", color: "#202534" }}>
-                  <div style={{ aspectRatio: "16/9", background: "#f3f6fb", overflow: "hidden" }}>
-                    {q.thumbnail_url ? <MediaRenderer url={q.thumbnail_url} alt="" playable={false} style={{ width: "100%", height: "100%", objectFit: "cover" }} /> : <div style={{ display: "grid", placeItems: "center", height: "100%", fontSize: 42 }}>?</div>}
-                  </div>
-                  <div style={{ padding: mobile ? 14 : 13 }}>
-                    <div style={{ fontSize: mobile ? 20 : 18, fontWeight: 950, lineHeight: 1.35, minHeight: mobile ? 54 : 49, overflow: "hidden", display: "-webkit-box", WebkitBoxOrient: "vertical", WebkitLineClamp: 2 }}>{localized(q.title_translations, q.title, lang)}</div>
-                    <div style={{ marginTop: 7, color: "#667085", fontSize: mobile ? 15 : 14 }}>▶ {q.play_count || 0} · {q.question_count || 0} {c.questions}</div>
-                  </div>
-                </button>
-              ))}
-            </div>
-          </section>
-        )}
-
         <div
           style={{
             width: "100%",
@@ -170,30 +151,7 @@ export default function QuizPage() {
             background: "transparent",
           }}
         >
-          <div
-            style={{
-              display: "flex",
-              gap: mobile ? 6 : 8,
-              flexWrap: "wrap",
-              justifyContent: "center",
-            }}
-          >
-            {QUIZ_LANGUAGES.map((item) => (
-              <React.Fragment key={item.code}>
-              {item.code === "id" && <span aria-hidden="true" style={{ flexBasis: "100%", height: 0 }} />}
-              <button
-                type="button"
-                onClick={() => setContentLanguage(item.code)}
-                aria-pressed={contentLanguage === item.code}
-                style={languageButton(contentLanguage === item.code, mobile)}
-              >
-                {item.label}
-              </button>
-              </React.Fragment>
-            ))}
-          </div>
-
-          <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginTop: 12 }}>
+          <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
             <input
               value={search}
               onChange={(e) => setSearch(e.target.value)}
@@ -210,6 +168,30 @@ export default function QuizPage() {
                 outline: "none",
               }}
             />
+          </div>
+
+          <div
+            style={{
+              display: "flex",
+              gap: mobile ? 6 : 8,
+              flexWrap: "wrap",
+              justifyContent: "center",
+              marginTop: 12,
+            }}
+          >
+            {QUIZ_LANGUAGES.map((item) => (
+              <React.Fragment key={item.code}>
+              {item.code === "id" && <span aria-hidden="true" style={{ flexBasis: "100%", height: 0 }} />}
+              <button
+                type="button"
+                onClick={() => setContentLanguage(item.code)}
+                aria-pressed={contentLanguage === item.code}
+                style={languageButton(contentLanguage === item.code, mobile)}
+              >
+                {item.label}
+              </button>
+              </React.Fragment>
+            ))}
           </div>
 
           <div
@@ -244,6 +226,26 @@ export default function QuizPage() {
             ))}
           </div>
         </div>
+
+
+        {recommended.length > 0 && (
+          <section style={{ width: "100%", maxWidth: 1440, margin: "0 auto 28px", boxSizing: "border-box" }}>
+            <h2 style={{ margin: "0 0 16px", fontSize: mobile ? 22 : 29, textAlign: "center" }}>{c.featured}</h2>
+            <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "repeat(auto-fit,minmax(459px,544px))", justifyContent: "center", gap: 18 }}>
+              {recommended.slice(0, 3).map((q) => (
+                <button key={q.id} type="button" onClick={() => navigate(`/${lang}/quiz/${q.id}`)} style={{ padding: 0, border: "1.5px solid #cfd8e6", borderBottom: "4px solid #E53935", borderRadius: 12, overflow: "hidden", background: "#fff", textAlign: "left", cursor: "pointer", color: "#202534" }}>
+                  <div style={{ aspectRatio: "16/9", background: "#f3f6fb", overflow: "hidden" }}>
+                    {q.thumbnail_url ? <MediaRenderer url={q.thumbnail_url} alt="" playable={false} style={{ width: "100%", height: "100%", objectFit: "cover" }} /> : <div style={{ display: "grid", placeItems: "center", height: "100%", fontSize: 42 }}>?</div>}
+                  </div>
+                  <div style={{ padding: mobile ? 14 : 13 }}>
+                    <div style={{ fontSize: mobile ? 20 : 18, fontWeight: 950, lineHeight: 1.35, minHeight: mobile ? 54 : 49, overflow: "hidden", display: "-webkit-box", WebkitBoxOrient: "vertical", WebkitLineClamp: 2 }}>{localized(q.title_translations, q.title, lang)}</div>
+                    <div style={{ marginTop: 7, color: "#667085", fontSize: mobile ? 15 : 14 }}>▶ {q.play_count || 0} · {q.question_count || 0} {c.questions}</div>
+                  </div>
+                </button>
+              ))}
+            </div>
+          </section>
+        )}
 
         <h2 style={{ maxWidth: 1440, margin: "22px auto 14px", fontSize: mobile ? 22 : 27, textAlign: "center" }}>{c.allQuizzes}</h2>
 
