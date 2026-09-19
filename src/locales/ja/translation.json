@@ -624,5 +624,6 @@
     "profile": "Profile",
     "manageContent": "Find and manage your creations in one place.",
     "loginToView": "Sign in to see your creations."
-  }
+  },
+  "stop_and_view_stats": "中断して統計を見る"
 }

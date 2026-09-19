@@ -621,5 +621,6 @@
     "profile": "Profile",
     "manageContent": "Find and manage your creations in one place.",
     "loginToView": "Sign in to see your creations."
-  }
+  },
+  "stop_and_view_stats": "Остановить и посмотреть статистику"
 }

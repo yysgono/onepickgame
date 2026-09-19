@@ -708,5 +708,6 @@
     "profile": "Profile",
     "manageContent": "Find and manage your creations in one place.",
     "loginToView": "Sign in to see your creations."
-  }
+  },
+  "stop_and_view_stats": "中断并查看统计结果"
 }

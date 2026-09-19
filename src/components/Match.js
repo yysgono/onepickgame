@@ -521,7 +521,7 @@ function CandidateBox({
   const CARD_MAX_WIDTH = 520;
 
   const CARD_WIDTH = isMobile
-    ? "97vw"
+    ? "calc(50vw - 14px)"
     : `min(
         ${CARD_MAX_WIDTH}px,
         calc(
@@ -532,11 +532,11 @@ function CandidateBox({
       )`;
 
   const CARD_HEIGHT = isMobile
-    ? 470
+    ? 500
     : 665;
 
   const THUMB_HEIGHT = isMobile
-    ? 280
+    ? 275
     : 480;
 
   const NEON_FONT =
@@ -732,23 +732,25 @@ function CandidateBox({
         style={{
           width: "100%",
           minHeight: isMobile
-            ? 38
+            ? 58
             : 54,
           maxHeight: isMobile
-            ? 44
+            ? 70
             : 70,
           padding: isMobile
-            ? "4px 10px 0"
+            ? "7px 8px 6px"
             : "13px 18px 7px",
           fontWeight: 900,
           fontSize: isMobile
-            ? 21
+            ? "clamp(15px, 4.5vw, 20px)"
             : 30,
           color: "#202534",
           fontFamily: NEON_FONT,
           textAlign: "center",
-          wordBreak: "break-all",
-          lineHeight: 1.16,
+          wordBreak: "normal",
+          overflowWrap: "anywhere",
+          lineHeight: 1.12,
+          flexShrink: 0,
           letterSpacing: "0.4px",
           boxSizing: "border-box",
           background: mainDark,
@@ -768,11 +770,12 @@ function CandidateBox({
             textOverflow:
               "ellipsis",
             textAlign: "center",
-            lineHeight: 1.15,
+            lineHeight: 1.12,
             margin: 0,
             padding: 0,
             whiteSpace: "normal",
             wordBreak: "keep-all",
+            overflowWrap: "anywhere",
             fontFamily: NEON_FONT,
             fontWeight: 900,
           }}
@@ -2409,6 +2412,62 @@ useEffect(() => {
           </div>
         </div>
       </div>
+
+      <button
+        type="button"
+        onClick={() => {
+          const langMatch =
+            location.pathname.match(
+              /^\/([a-z]{2})(\/|$)/
+            );
+
+          const lang = langMatch
+            ? langMatch[1]
+            : "en";
+
+          navigate(
+            `/${lang}/result/${cup.id}`,
+            {
+              state: { cup },
+            }
+          );
+        }}
+        disabled={saving}
+        style={{
+          margin: isMobile
+            ? "10px 12px 18px"
+            : "16px 0 24px",
+          width: isMobile
+            ? "calc(100% - 24px)"
+            : "min(520px, 92%)",
+          minHeight: 46,
+          padding: isMobile
+            ? "11px 14px"
+            : "13px 18px",
+          borderRadius: 12,
+          border: "1.5px solid #6650d8",
+          background: "#ffffff",
+          color: "#5542b8",
+          fontSize: isMobile
+            ? 15
+            : 17,
+          fontWeight: 800,
+          cursor: saving
+            ? "default"
+            : "pointer",
+          opacity: saving ? 0.55 : 1,
+          boxShadow:
+            "0 2px 10px rgba(102,80,216,0.10)",
+        }}
+      >
+        {t(
+          "stop_and_view_stats",
+          {
+            defaultValue:
+              "Stop and view statistics",
+          }
+        )}
+      </button>
 
       <style>
         {`
