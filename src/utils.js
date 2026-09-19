@@ -492,3 +492,109 @@ export const fetchWinnerStatsFast =
 
 export const fetchWinnerStatsFromDB_SLOW =
   fetchWinnerStatsFromDB;
+
+/* ================= Head-to-head stats ================= */
+
+/**
+ * 현재 두 후보의 누적 상대전적을 가져옵니다.
+ * RPC가 없거나 오류가 나면 호출부에서 UI만 0전적으로 처리할 수 있도록 예외를 전달합니다.
+ */
+export async function fetchHeadToHead(
+  cup_id,
+  candidate1_id,
+  candidate2_id
+) {
+  if (
+    !cup_id ||
+    candidate1_id === null ||
+    candidate1_id === undefined ||
+    candidate2_id === null ||
+    candidate2_id === undefined
+  ) {
+    return {
+      candidate1_wins: 0,
+      candidate2_wins: 0,
+      total_matches: 0,
+    };
+  }
+
+  const { data, error } = await supabase.rpc(
+    "get_worldcup_head_to_head",
+    {
+      p_cup_id: String(cup_id),
+      p_candidate_1: String(candidate1_id),
+      p_candidate_2: String(candidate2_id),
+    }
+  );
+
+  if (error) throw error;
+
+  const row = Array.isArray(data)
+    ? data[0]
+    : data;
+
+  return {
+    candidate1_wins: Number(
+      row?.candidate1_wins || 0
+    ),
+    candidate2_wins: Number(
+      row?.candidate2_wins || 0
+    ),
+    total_matches: Number(
+      row?.total_matches || 0
+    ),
+  };
+}
+
+/**
+ * 플레이 도중 DB를 건드리지 않고, 월드컵이 정상 종료된 뒤
+ * 최종 matchHistory를 한 번에 RPC로 넘겨 상대전적을 누적합니다.
+ */
+export async function saveHeadToHeadStats(
+  cup_id,
+  matchHistory = []
+) {
+  if (
+    !cup_id ||
+    !Array.isArray(matchHistory)
+  ) {
+    return false;
+  }
+
+  const matches = matchHistory
+    .map(({ c1, c2, winner }) => {
+      if (
+        c1?.id === null ||
+        c1?.id === undefined ||
+        c2?.id === null ||
+        c2?.id === undefined ||
+        winner?.id === null ||
+        winner?.id === undefined
+      ) {
+        return null;
+      }
+
+      return {
+        candidate_1_id: String(c1.id),
+        candidate_2_id: String(c2.id),
+        winner_id: String(winner.id),
+      };
+    })
+    .filter(Boolean);
+
+  if (matches.length === 0) {
+    return true;
+  }
+
+  const { error } = await supabase.rpc(
+    "record_worldcup_head_to_head",
+    {
+      p_cup_id: String(cup_id),
+      p_matches: matches,
+    }
+  );
+
+  if (error) throw error;
+
+  return true;
+}

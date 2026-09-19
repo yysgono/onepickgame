@@ -617,6 +617,9 @@
     "manageContent": "Find and manage your creations in one place.",
     "loginToView": "Sign in to see your creations."
   },
-  "stop_and_view_stats": "Durdur ve istatistikleri gör",
-  "show_more_categories": "Daha fazla kategori göster"
+  "head_to_head": "İkili rekabet",
+  "head_to_head_record": "{{leftWins}} galibiyet : {{rightWins}} galibiyet",
+  "head_to_head_total": "Toplam {{formattedCount}} karşılaşma",
+  "head_to_head_loading": "İkili rekabet yükleniyor…",
+  "match_back": "Geri dön"
 }

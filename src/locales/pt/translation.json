@@ -619,6 +619,9 @@
     "manageContent": "Find and manage your creations in one place.",
     "loginToView": "Sign in to see your creations."
   },
-  "stop_and_view_stats": "Parar e ver estatísticas",
-  "show_more_categories": "Ver mais categorias"
+  "head_to_head": "Confronto direto",
+  "head_to_head_record": "{{leftWins}} vitórias : {{rightWins}} vitórias",
+  "head_to_head_total": "{{formattedCount}} confrontos no total",
+  "head_to_head_loading": "Carregando confronto direto…",
+  "match_back": "Voltar"
 }

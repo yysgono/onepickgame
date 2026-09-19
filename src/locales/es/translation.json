@@ -622,6 +622,9 @@
     "manageContent": "Find and manage your creations in one place.",
     "loginToView": "Sign in to see your creations."
   },
-  "stop_and_view_stats": "Detener y ver estadísticas",
-  "show_more_categories": "Ver más categorías"
+  "head_to_head": "Enfrentamientos directos",
+  "head_to_head_record": "{{leftWins}} victorias : {{rightWins}} victorias",
+  "head_to_head_total": "{{formattedCount}} enfrentamientos en total",
+  "head_to_head_loading": "Cargando enfrentamientos directos…",
+  "match_back": "Volver"
 }

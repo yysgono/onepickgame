@@ -709,6 +709,9 @@
     "manageContent": "Find and manage your creations in one place.",
     "loginToView": "Sign in to see your creations."
   },
-  "stop_and_view_stats": "中断并查看统计结果",
-  "show_more_categories": "查看更多分类"
+  "head_to_head": "交手记录",
+  "head_to_head_record": "{{leftWins}}胜 : {{rightWins}}胜",
+  "head_to_head_total": "共交手 {{formattedCount}} 次",
+  "head_to_head_loading": "正在加载交手记录…",
+  "match_back": "返回"
 }

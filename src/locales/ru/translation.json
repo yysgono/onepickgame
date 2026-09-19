@@ -622,6 +622,9 @@
     "manageContent": "Find and manage your creations in one place.",
     "loginToView": "Sign in to see your creations."
   },
-  "stop_and_view_stats": "Остановить и посмотреть статистику",
-  "show_more_categories": "Показать больше категорий"
+  "head_to_head": "Личные встречи",
+  "head_to_head_record": "{{leftWins}} побед : {{rightWins}} побед",
+  "head_to_head_total": "Всего {{formattedCount}} встреч",
+  "head_to_head_loading": "Загрузка личных встреч…",
+  "match_back": "Назад"
 }

@@ -625,6 +625,9 @@
     "manageContent": "Find and manage your creations in one place.",
     "loginToView": "Sign in to see your creations."
   },
-  "stop_and_view_stats": "中断して統計を見る",
-  "show_more_categories": "さらにカテゴリーを見る"
+  "head_to_head": "直接対決",
+  "head_to_head_record": "{{leftWins}}勝 : {{rightWins}}勝",
+  "head_to_head_total": "通算{{formattedCount}}回対戦",
+  "head_to_head_loading": "直接対決の成績を読み込み中…",
+  "match_back": "戻る"
 }

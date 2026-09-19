@@ -622,6 +622,9 @@
     "manageContent": "Find and manage your creations in one place.",
     "loginToView": "Sign in to see your creations."
   },
-  "stop_and_view_stats": "বন্ধ করে পরিসংখ্যান দেখুন",
-  "show_more_categories": "আরও বিভাগ দেখুন"
+  "head_to_head": "মুখোমুখি রেকর্ড",
+  "head_to_head_record": "{{leftWins}} জয় : {{rightWins}} জয়",
+  "head_to_head_total": "মোট {{formattedCount}} বার মুখোমুখি",
+  "head_to_head_loading": "মুখোমুখি রেকর্ড লোড হচ্ছে…",
+  "match_back": "পিছনে"
 }

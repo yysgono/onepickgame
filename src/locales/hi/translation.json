@@ -622,6 +622,9 @@
     "manageContent": "Find and manage your creations in one place.",
     "loginToView": "Sign in to see your creations."
   },
-  "stop_and_view_stats": "रोकें और आँकड़े देखें",
-  "show_more_categories": "और श्रेणियाँ देखें"
+  "head_to_head": "आमने-सामने रिकॉर्ड",
+  "head_to_head_record": "{{leftWins}} जीत : {{rightWins}} जीत",
+  "head_to_head_total": "कुल {{formattedCount}} मुकाबले",
+  "head_to_head_loading": "आमने-सामने रिकॉर्ड लोड हो रहा है…",
+  "match_back": "वापस"
 }
