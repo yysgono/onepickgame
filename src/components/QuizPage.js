@@ -170,7 +170,30 @@ export default function QuizPage() {
             background: "transparent",
           }}
         >
-          <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+          <div
+            style={{
+              display: "flex",
+              gap: mobile ? 6 : 8,
+              flexWrap: "wrap",
+              justifyContent: "center",
+            }}
+          >
+            {QUIZ_LANGUAGES.map((item) => (
+              <React.Fragment key={item.code}>
+              {item.code === "id" && <span aria-hidden="true" style={{ flexBasis: "100%", height: 0 }} />}
+              <button
+                type="button"
+                onClick={() => setContentLanguage(item.code)}
+                aria-pressed={contentLanguage === item.code}
+                style={languageButton(contentLanguage === item.code, mobile)}
+              >
+                {item.label}
+              </button>
+              </React.Fragment>
+            ))}
+          </div>
+
+          <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginTop: 12 }}>
             <input
               value={search}
               onChange={(e) => setSearch(e.target.value)}
@@ -187,30 +210,6 @@ export default function QuizPage() {
                 outline: "none",
               }}
             />
-          </div>
-
-          <div
-            style={{
-              display: "flex",
-              gap: mobile ? 6 : 8,
-              flexWrap: "wrap",
-              justifyContent: "center",
-              marginTop: 12,
-            }}
-          >
-            {QUIZ_LANGUAGES.map((item) => (
-              <React.Fragment key={item.code}>
-              {item.code === "id" && <span aria-hidden="true" style={{ flexBasis: "100%", height: 0 }} />}
-              <button
-                type="button"
-                onClick={() => setContentLanguage(item.code)}
-                aria-pressed={contentLanguage === item.code}
-                style={languageButton(contentLanguage === item.code, mobile)}
-              >
-                {item.label}
-              </button>
-              </React.Fragment>
-            ))}
           </div>
 
           <div
