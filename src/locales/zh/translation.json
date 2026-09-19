@@ -747,5 +747,6 @@
   "head_to_head_record": "{{leftWins}}胜 : {{rightWins}}胜",
   "head_to_head_total": "共交手 {{formattedCount}} 次",
   "head_to_head_loading": "正在加载交手记录…",
-  "stop_and_view_stats": "结束并查看统计结果"
+  "stop_and_view_stats": "结束并查看统计结果",
+  "add_other_language_title": "添加其他语言标题"
 }

@@ -632,5 +632,6 @@
   "head_to_head_record": "{{leftWins}} Siege : {{rightWins}} Siege",
   "head_to_head_total": "Insgesamt {{formattedCount}} Duelle",
   "head_to_head_loading": "Direkter Vergleich wird geladen…",
-  "stop_and_view_stats": "Beenden und Statistiken ansehen"
+  "stop_and_view_stats": "Beenden und Statistiken ansehen",
+  "add_other_language_title": "Titel in einer anderen Sprache hinzufügen"
 }

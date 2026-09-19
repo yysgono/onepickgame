@@ -632,5 +632,6 @@
   "head_to_head_record": "{{leftWins}} побед : {{rightWins}} побед",
   "head_to_head_total": "Всего {{formattedCount}} встреч",
   "head_to_head_loading": "Загрузка личных встреч…",
-  "stop_and_view_stats": "Завершить и посмотреть статистику"
+  "stop_and_view_stats": "Завершить и посмотреть статистику",
+  "add_other_language_title": "Добавить название на другом языке"
 }

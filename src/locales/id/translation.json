@@ -632,5 +632,6 @@
   "head_to_head_record": "{{leftWins}} menang : {{rightWins}} menang",
   "head_to_head_total": "Total {{formattedCount}} pertemuan",
   "head_to_head_loading": "Memuat rekor pertemuan…",
-  "stop_and_view_stats": "Berhenti dan lihat statistik"
+  "stop_and_view_stats": "Berhenti dan lihat statistik",
+  "add_other_language_title": "Tambahkan judul dalam bahasa lain"
 }

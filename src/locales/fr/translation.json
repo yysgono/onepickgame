@@ -632,5 +632,6 @@
   "head_to_head_record": "{{leftWins}} victoires : {{rightWins}} victoires",
   "head_to_head_total": "{{formattedCount}} confrontations au total",
   "head_to_head_loading": "Chargement du face-à-face…",
-  "stop_and_view_stats": "Arrêter et voir les statistiques"
+  "stop_and_view_stats": "Arrêter et voir les statistiques",
+  "add_other_language_title": "Ajouter un titre dans une autre langue"
 }

@@ -632,5 +632,6 @@
   "head_to_head_record": "{{leftWins}} thắng : {{rightWins}} thắng",
   "head_to_head_total": "Tổng {{formattedCount}} lần đối đầu",
   "head_to_head_loading": "Đang tải thành tích đối đầu…",
-  "stop_and_view_stats": "Dừng và xem thống kê"
+  "stop_and_view_stats": "Dừng và xem thống kê",
+  "add_other_language_title": "Thêm tiêu đề bằng ngôn ngữ khác"
 }

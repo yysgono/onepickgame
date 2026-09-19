@@ -355,6 +355,43 @@ const removeTitleTranslation = (id) => {
   setTitleTranslations((rows) => rows.filter((row) => row.id !== id));
 };
 
+const handleContentLanguageChange = (nextLanguage) => {
+  const nextLang = String(nextLanguage || "").trim();
+  const previousLang = String(contentLanguage || "").trim();
+
+  if (!nextLang || nextLang === previousLang) return;
+
+  setTitleTranslations((rows) => {
+    const nextRows = Array.isArray(rows) ? [...rows] : [];
+    const targetIndex = nextRows.findIndex((row) => row.lang === nextLang);
+    const targetRow = targetIndex >= 0 ? nextRows[targetIndex] : null;
+
+    // 현재 메인 입력칸의 내용을 이전 언어 번역으로 보관합니다.
+    // 이렇게 해야 언어를 바꿔도 작성 중인 제목/설명이 사라지지 않습니다.
+    const previousPayload = {
+      id: uuidv4(),
+      lang: previousLang,
+      title: title,
+      description: description,
+    };
+
+    const withoutPreviousAndTarget = nextRows.filter(
+      (row) => row.lang !== previousLang && row.lang !== nextLang
+    );
+
+    if (previousLang) {
+      withoutPreviousAndTarget.push(previousPayload);
+    }
+
+    setTitle(targetRow?.title || "");
+    setDescription(targetRow?.description || "");
+
+    return withoutPreviousAndTarget;
+  });
+
+  setContentLanguage(nextLang);
+};
+
 const normalizeTag = (value) =>
   String(value || "")
     .replace(/^#+/, "")
@@ -1000,7 +1037,7 @@ const updatedCup = {
     <select
       value={contentLanguage}
       onChange={(event) =>
-        setContentLanguage(event.target.value)
+        handleContentLanguageChange(event.target.value)
       }
       disabled={loading}
       style={{

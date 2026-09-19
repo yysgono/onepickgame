@@ -631,5 +631,6 @@
   "head_to_head_record": "{{leftWins}} wins : {{rightWins}} wins",
   "head_to_head_total": "{{formattedCount}} meetings",
   "head_to_head_loading": "Loading head-to-head record…",
-  "stop_and_view_stats": "Stop and view statistics"
+  "stop_and_view_stats": "Stop and view statistics",
+  "add_other_language_title": "Add title in another language"
 }

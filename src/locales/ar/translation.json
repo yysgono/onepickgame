@@ -631,5 +631,6 @@
   "head_to_head_record": "{{leftWins}} فوز : {{rightWins}} فوز",
   "head_to_head_total": "إجمالي {{formattedCount}} مواجهة",
   "head_to_head_loading": "جارٍ تحميل سجل المواجهات…",
-  "stop_and_view_stats": "إيقاف وعرض الإحصاءات"
+  "stop_and_view_stats": "إيقاف وعرض الإحصاءات",
+  "add_other_language_title": "إضافة عنوان بلغة أخرى"
 }
