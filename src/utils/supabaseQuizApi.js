@@ -1,6 +1,44 @@
 import { supabase } from "./supabaseClient";
 import imageCompression from "browser-image-compression";
 
+const QUIZ_LIST_CACHE_TTL = 5000;
+const quizListCache = new Map();
+const quizListInflight = new Map();
+
+async function getCachedQuizList(key, loader) {
+  const now = Date.now();
+  const cached = quizListCache.get(key);
+
+  if (cached && now - cached.at < QUIZ_LIST_CACHE_TTL) {
+    return cached.data;
+  }
+
+  if (quizListInflight.has(key)) {
+    return quizListInflight.get(key);
+  }
+
+  const request = Promise.resolve()
+    .then(loader)
+    .then((data) => {
+      quizListCache.set(key, {
+        at: Date.now(),
+        data,
+      });
+      return data;
+    })
+    .finally(() => {
+      quizListInflight.delete(key);
+    });
+
+  quizListInflight.set(key, request);
+  return request;
+}
+
+function clearQuizListCache() {
+  quizListCache.clear();
+  quizListInflight.clear();
+}
+
 export const QUIZ_LANGUAGES = [
   { code: "en", label: "English" },
   { code: "ko", label: "한국어" },
@@ -27,37 +65,48 @@ export async function getQuizzes({
   contentLanguage = "",
   limit = 60,
 } = {}) {
-  let query = supabase
-    .from("quizzes")
-    .select(
-      "id,user_id,guest_nickname,title,title_translations,description,description_translations,original_language,content_languages,category,thumbnail_url,question_count,play_count,like_count,comment_count,answer_reveal_mode,is_featured,featured_order,created_at,is_published"
-    )
-    .eq("is_published", true)
-    .order(sort === "latest" ? "created_at" : "play_count", {
-      ascending: false,
-    })
-    .limit(limit);
+  const key = JSON.stringify({
+    type: "list",
+    search: String(search || "").trim(),
+    category,
+    sort,
+    contentLanguage,
+    limit,
+  });
 
-  if (category && category !== "all") {
-    query = query.eq("category", category);
-  }
+  return getCachedQuizList(key, async () => {
+    let query = supabase
+      .from("quizzes")
+      .select(
+        "id,user_id,guest_nickname,title,title_translations,description,description_translations,original_language,content_languages,category,thumbnail_url,question_count,play_count,like_count,comment_count,answer_reveal_mode,is_featured,featured_order,created_at,is_published"
+      )
+      .eq("is_published", true)
+      .order(sort === "latest" ? "created_at" : "play_count", {
+        ascending: false,
+      })
+      .limit(limit);
 
-  if (contentLanguage) {
-    query = query.contains("content_languages", [contentLanguage]);
-  }
-
-  if (search.trim()) {
-    const safe = search.trim().replace(/[%_,()]/g, " ").trim();
-    if (safe) {
-      query = query.or(
-        `title.ilike.%${safe}%,description.ilike.%${safe}%`
-      );
+    if (category && category !== "all") {
+      query = query.eq("category", category);
     }
-  }
 
-  const { data, error } = await query;
-  if (error) throw error;
-  return data || [];
+    if (contentLanguage) {
+      query = query.contains("content_languages", [contentLanguage]);
+    }
+
+    if (search.trim()) {
+      const safe = search.trim().replace(/[%_,()]/g, " ").trim();
+      if (safe) {
+        query = query.or(
+          `title.ilike.%${safe}%,description.ilike.%${safe}%`
+        );
+      }
+    }
+
+    const { data, error } = await query;
+    if (error) throw error;
+    return data || [];
+  });
 }
 
 
@@ -65,25 +114,34 @@ export async function getFeaturedQuizzes({
   contentLanguage = "",
   limit = 8,
 } = {}) {
-  let query = supabase
-    .from("quizzes")
-    .select(
-      "id,user_id,guest_nickname,title,title_translations,description,description_translations,original_language,content_languages,category,thumbnail_url,question_count,play_count,like_count,comment_count,answer_reveal_mode,is_featured,featured_order,created_at,is_published"
-    )
-    .eq("is_published", true)
-    .eq("is_featured", true)
-    .order("featured_order", { ascending: true, nullsFirst: false })
-    .order("play_count", { ascending: false })
-    .limit(limit);
+  const key = JSON.stringify({
+    type: "featured",
+    contentLanguage,
+    limit,
+  });
 
-  if (contentLanguage) {
-    query = query.contains("content_languages", [contentLanguage]);
-  }
+  return getCachedQuizList(key, async () => {
+    let query = supabase
+      .from("quizzes")
+      .select(
+        "id,user_id,guest_nickname,title,title_translations,description,description_translations,original_language,content_languages,category,thumbnail_url,question_count,play_count,like_count,comment_count,answer_reveal_mode,is_featured,featured_order,created_at,is_published"
+      )
+      .eq("is_published", true)
+      .eq("is_featured", true)
+      .order("featured_order", { ascending: true, nullsFirst: false })
+      .order("play_count", { ascending: false })
+      .limit(limit);
 
-  const { data, error } = await query;
-  if (error) throw error;
-  return data || [];
+    if (contentLanguage) {
+      query = query.contains("content_languages", [contentLanguage]);
+    }
+
+    const { data, error } = await query;
+    if (error) throw error;
+    return data || [];
+  });
 }
+
 
 export async function getQuiz(id) {
   const { data, error } = await supabase
@@ -118,6 +176,7 @@ export async function deleteQuiz(quizId) {
     .eq("id", quizId)
     .eq("user_id", userId);
   if (error) throw error;
+  clearQuizListCache();
 }
 
 export async function searchWorldcupsForQuiz({ search = "", limit = 1000 } = {}) {
@@ -280,6 +339,7 @@ export async function createQuiz({
   }
   if (questionError) throw questionError;
 
+  clearQuizListCache();
   return quiz.id;
 }
 

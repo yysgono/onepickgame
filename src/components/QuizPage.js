@@ -701,6 +701,9 @@ export default function QuizPage() {
                             playable={
                               false
                             }
+                            loading="lazy"
+                            deferUntilVisible
+                            viewportMargin="180px"
 
                             style={{
                               display:
@@ -1247,6 +1250,9 @@ export default function QuizPage() {
                           playable={
                             false
                           }
+                          loading="lazy"
+                          deferUntilVisible
+                          viewportMargin="180px"
 
                           style={{
                             width:

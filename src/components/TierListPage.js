@@ -19,6 +19,38 @@ import { supabase } from "../utils/supabaseClient";
 import { fetchWinnerStatsFromDB } from "../utils";
 
 const PAGE_SIZE = 12;
+const TIER_LIST_CACHE_TTL = 5000;
+const tierListPageCache = new Map();
+const tierListPageInflight = new Map();
+
+async function getCachedTierListRows(key, loader) {
+  const now = Date.now();
+  const cached = tierListPageCache.get(key);
+
+  if (cached && now - cached.at < TIER_LIST_CACHE_TTL) {
+    return cached.data;
+  }
+
+  if (tierListPageInflight.has(key)) {
+    return tierListPageInflight.get(key);
+  }
+
+  const request = Promise.resolve()
+    .then(loader)
+    .then((data) => {
+      tierListPageCache.set(key, {
+        at: Date.now(),
+        data,
+      });
+      return data;
+    })
+    .finally(() => {
+      tierListPageInflight.delete(key);
+    });
+
+  tierListPageInflight.set(key, request);
+  return request;
+}
 
 const CATEGORY_VALUES = [
   "all",
@@ -931,27 +963,40 @@ if (cleanSearch) {
               );
           }
 
-          const {
-            data,
-            error,
-          } =
-            await query.range(
-              from,
-              to
-            );
+          const requestKey = JSON.stringify({
+            nextPage,
+            category,
+            searchKeyword,
+            sort,
+            mineOnly,
+            currentUserId: currentUserId || "",
+            tagFilter: tagFilter || "",
+            sourceWorldcupFilter: sourceWorldcupFilter || "",
+            presetNameFilter: presetNameFilter || "",
+          });
+
+          const rows = await getCachedTierListRows(
+            requestKey,
+            async () => {
+              const { data, error } =
+                await query.range(
+                  from,
+                  to
+                );
+
+              if (error) {
+                throw error;
+              }
+
+              return Array.isArray(data)
+                ? data
+                : [];
+            }
+          );
 
           if (requestSeq !== tierListRequestSeqRef.current) {
             return;
           }
-
-          if (error) {
-            throw error;
-          }
-
-          const rows =
-            Array.isArray(data)
-              ? data
-              : [];
 
           const visibleRows =
             rows.slice(

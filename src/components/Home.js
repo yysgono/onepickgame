@@ -43,6 +43,12 @@ const HOME_CATEGORIES = [
   { key: "etc", slug: "etc", label: "Other" },
 ];
 
+const PRIMARY_HOME_CATEGORY_KEYS = new Set([
+  "korea",
+  "person",
+  "anime_manga",
+]);
+
 let playCountsPromise = null;
 let playCountsCache = null;
 
@@ -183,6 +189,7 @@ useEffect(() => {
 
   const [otherVisibleCount, setOtherVisibleCount] = useState(8);
   const [rowVisibleCounts, setRowVisibleCounts] = useState({});
+  const [showMoreCategories, setShowMoreCategories] = useState(false);
   const [vw, setVw] = useState(
     typeof window !== "undefined" ? window.innerWidth : 1200
   );
@@ -455,17 +462,18 @@ return (
 
   const categoryRowRefs = useRef({});
   const [categoryScrollState, setCategoryScrollState] = useState({});
-const ROW_INITIAL_COUNT = 6;
-const ROW_LOAD_MORE_COUNT = 6;
-
 const getInitialRowCount = () => {
-  const cardsForScreen = Math.ceil(
-    vw / (CARD_WIDTH + CARD_GAP)
+  const horizontalPadding = isMobile ? 84 : 152;
+  const availableWidth = Math.max(
+    CARD_WIDTH,
+    vw - horizontalPadding
   );
 
   return Math.max(
-    ROW_INITIAL_COUNT,
-    cardsForScreen + 2
+    1,
+    Math.ceil(
+      availableWidth / (CARD_WIDTH + CARD_GAP)
+    )
   );
 };
 
@@ -488,7 +496,7 @@ const current =
     return {
       ...prev,
       [rowKey]: Math.min(
-        current + ROW_LOAD_MORE_COUNT,
+        current + getInitialRowCount(),
         totalCount
       ),
     };
@@ -528,7 +536,11 @@ const updateCategoryScrollState = (rowKey) => {
   });
 };
 
-const scrollCategoryRow = (rowKey, direction) => {
+const scrollCategoryRow = (
+  rowKey,
+  direction,
+  totalCount = 0
+) => {
   const el = categoryRowRefs.current[rowKey];
   if (!el) return;
 
@@ -536,10 +548,30 @@ const scrollCategoryRow = (rowKey, direction) => {
     ? CARD_WIDTH + CARD_GAP
     : (CARD_WIDTH + CARD_GAP) * 2;
 
-  el.scrollBy({
-    left: direction * amount,
-    behavior: "smooth",
-  });
+  const doScroll = () => {
+    const target = categoryRowRefs.current[rowKey];
+    if (!target) return;
+
+    target.scrollBy({
+      left: direction * amount,
+      behavior: "smooth",
+    });
+  };
+
+  if (
+    direction > 0 &&
+    getRowVisibleCount(rowKey) < totalCount
+  ) {
+    loadMoreRow(rowKey, totalCount);
+
+    requestAnimationFrame(() => {
+      requestAnimationFrame(doScroll);
+    });
+
+    return;
+  }
+
+  doScroll();
 };
 
   const currentUserId = user?.id || "";
@@ -814,6 +846,7 @@ const totalPlays =
               url={first.image}
               alt={t("first_place")}
               playable={false}
+              loading="lazy"
               style={{
                 width: "100%",
                 height: "100%",
@@ -852,6 +885,7 @@ const totalPlays =
               url={second.image}
               alt={t("second_place")}
               playable={false}
+              loading="lazy"
               style={{
                 width: "100%",
                 height: "100%",
@@ -1247,7 +1281,7 @@ fontWeight: 900,
     type="button"
     aria-label="Scroll left"
     onClick={() =>
-      scrollCategoryRow(rowKey, -1)
+      scrollCategoryRow(rowKey, -1, cups.length)
     }
     style={{
       position: "absolute",
@@ -1406,12 +1440,15 @@ justifyContent:
 </div>
 
      {/* 오른쪽 화살표 */}
-{categoryScrollState[rowKey]?.canScrollRight && (
+{(
+  getRowVisibleCount(rowKey) < cups.length ||
+  categoryScrollState[rowKey]?.canScrollRight
+) && (
   <button
     type="button"
     aria-label="Scroll right"
     onClick={() =>
-      scrollCategoryRow(rowKey, 1)
+      scrollCategoryRow(rowKey, 1, cups.length)
     }
     style={{
       position: "absolute",
@@ -1536,6 +1573,26 @@ const categorySections = HOME_CATEGORIES.map(
 const visibleCategorySections = categorySections.filter(
   (section) => section.cups.length > 0
 );
+
+const shouldShowAllCategories =
+  showMoreCategories ||
+  Boolean(search.trim()) ||
+  Boolean(creatorFilter) ||
+  personalView;
+
+const primaryCategorySections =
+  visibleCategorySections.filter((section) =>
+    PRIMARY_HOME_CATEGORY_KEYS.has(section.key)
+  );
+
+const deferredCategorySections =
+  visibleCategorySections.filter((section) =>
+    !PRIMARY_HOME_CATEGORY_KEYS.has(section.key)
+  );
+
+const renderedCategorySections = shouldShowAllCategories
+  ? visibleCategorySections
+  : primaryCategorySections;
 useEffect(() => {
   const visibleCups = [];
 
@@ -1548,7 +1605,7 @@ useEffect(() => {
       visibleCups.push(cup);
     });
 
-  visibleCategorySections.forEach(
+  renderedCategorySections.forEach(
     (section) => {
       const visible =
         section.key === "etc"
@@ -1618,6 +1675,9 @@ useEffect(() => {
   sort,
   playCountMap,
   worldcupList,
+  showMoreCategories,
+  creatorFilter,
+  personalView,
 ]);
 return (
   <div className={`home-page${personalView ? " is-personal" : ""}`}
@@ -1874,7 +1934,7 @@ return (
 
 
 {/* 카테고리 */}
-{visibleCategorySections.map((section, index) => (
+{renderedCategorySections.map((section, index) => (
   <React.Fragment key={section.key}>
     {renderCategorySection({
       rowKey: section.key,
@@ -1897,6 +1957,38 @@ return (
   </React.Fragment>
 ))}
 
+{!shouldShowAllCategories && deferredCategorySections.length > 0 && (
+  <div
+    style={{
+      width: "100%",
+      display: "flex",
+      justifyContent: "center",
+      padding: isMobile ? "8px 16px 24px" : "14px 24px 34px",
+      boxSizing: "border-box",
+    }}
+  >
+    <button
+      type="button"
+      onClick={() => setShowMoreCategories(true)}
+      style={{
+        minWidth: isMobile ? 220 : 280,
+        minHeight: 48,
+        padding: isMobile ? "11px 18px" : "13px 24px",
+        borderRadius: 12,
+        border: "1.5px solid #F97316",
+        background: "#ffffff",
+        color: "#C2410C",
+        fontSize: isMobile ? 16 : 18,
+        fontWeight: 900,
+        cursor: "pointer",
+      }}
+    >
+      {t("show_more_categories", {
+        defaultValue: "More categories",
+      })} ↓
+    </button>
+  </div>
+)}
 
 
       <style>

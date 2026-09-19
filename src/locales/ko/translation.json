@@ -622,5 +622,6 @@
     "manageContent": "내가 만든 월드컵과 티어표를 한곳에서 관리하세요.",
     "loginToView": "내 콘텐츠를 보려면 로그인해주세요."
   },
-  "stop_and_view_stats": "중단하고 바로 통계 결과 보기"
+  "stop_and_view_stats": "중단하고 바로 통계 결과 보기",
+  "show_more_categories": "더 많은 카테고리 보기"
 }
