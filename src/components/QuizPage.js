@@ -11,13 +11,10 @@ import React, {
 
 
 import {
-
   Link,
-
+  useLocation,
   useNavigate,
-
   useParams,
-
 } from "react-router-dom";
 
 
@@ -152,6 +149,8 @@ export default function QuizPage() {
 
     useNavigate();
 
+    const location = useLocation();
+
 
 
   const lang =
@@ -165,6 +164,49 @@ export default function QuizPage() {
       "en"
 
     ).split("-")[0];
+
+    const changeQuizLanguage = async (newLang) => {
+  try {
+    await i18n.changeLanguage(newLang);
+
+    localStorage.setItem(
+      "onepickgame_lang",
+      newLang
+    );
+
+    const parts = location.pathname
+      .split("/")
+      .filter(Boolean);
+
+    if (
+      parts.length > 0 &&
+      QUIZ_LANGUAGES.some(
+        (item) => item.code === parts[0]
+      )
+    ) {
+      parts[0] = newLang;
+    } else {
+      parts.unshift(newLang);
+    }
+
+    const newPath =
+      "/" + parts.join("/");
+
+    navigate(
+      newPath +
+        (location.search || "") +
+        (location.hash || ""),
+      {
+        replace: true,
+      }
+    );
+  } catch (error) {
+    console.error(
+      "퀴즈 언어 변경 실패:",
+      error
+    );
+  }
+};
 
 
 
@@ -940,37 +982,24 @@ export default function QuizPage() {
 
 
 
-                    onClick={() =>
-
-                      setContentLanguage(
-
-                        item.code
-
-                      )
-
-                    }
+           onClick={() =>
+  changeQuizLanguage(
+    item.code
+  )
+}
 
 
 
-                    aria-pressed={
-
-                      contentLanguage ===
-
-                      item.code
-
-                    }
+         aria-pressed={
+  lang === item.code
+}
 
 
 
-                    style={languageButton(
-
-                      contentLanguage ===
-
-                        item.code,
-
-                      mobile
-
-                    )}
+          style={languageButton(
+  lang === item.code,
+  mobile
+)}
 
                   >
 
