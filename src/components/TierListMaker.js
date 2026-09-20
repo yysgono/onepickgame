@@ -1047,6 +1047,7 @@ const [
 
   const [titleTranslations, setTitleTranslations] = useState({});
   const [titleTranslationLanguages, setTitleTranslationLanguages] = useState([]);
+  const [originalContentLanguage, setOriginalContentLanguage] = useState(lang);
 
   const titleTranslationCopy =
     TITLE_TRANSLATION_COPY[lang] || TITLE_TRANSLATION_COPY.en;
@@ -1107,6 +1108,12 @@ const [
 
   const builderUiHydratedRef =
     useRef(false);
+
+  // 이 페이지에 처음 들어왔을 때의 언어.
+  // 일반 페이지 이동이면 임시 입력값을 지우고,
+  // 헤더 언어 변경으로 언어가 바뀐 뒤 unmount 되는 경우에만 보존합니다.
+  const builderInitialLangRef =
+    useRef(lang);
 
   useEffect(() => {
     if (typeof window === "undefined") {
@@ -1192,6 +1199,20 @@ const [
             )
           );
         }
+
+        if (
+          typeof saved?.originalContentLanguage ===
+          "string" &&
+          TITLE_TRANSLATION_LANGUAGES.some(
+            (item) =>
+              item.code ===
+              saved.originalContentLanguage
+          )
+        ) {
+          setOriginalContentLanguage(
+            saved.originalContentLanguage
+          );
+        }
       }
     } catch (error) {
       console.warn(
@@ -1221,6 +1242,7 @@ const [
           titleTranslationLanguages,
           tierLabels,
           selectedCategory,
+          originalContentLanguage,
         })
       );
     } catch (error) {
@@ -1235,7 +1257,39 @@ const [
     titleTranslationLanguages,
     tierLabels,
     selectedCategory,
+    originalContentLanguage,
   ]);
+
+
+  useEffect(() => {
+    return () => {
+      if (typeof window === "undefined") {
+        return;
+      }
+
+      const currentI18nLang =
+        (
+          i18n.language ||
+          "en"
+        ).split("-")[0];
+
+      // 같은 언어에서 다른 페이지로 이동한 경우:
+      // 이전 작성 제목/태그가 다음 새 티어표에 따라오지 않도록 삭제.
+      //
+      // 헤더 언어 변경 직후에는 i18n.language가 처음 들어온 언어와 달라지므로
+      // 이 값을 남겨 두고, 다음 언어의 동일 작성 페이지에서 복원합니다.
+      if (
+        currentI18nLang ===
+        builderInitialLangRef.current
+      ) {
+        try {
+          sessionStorage.removeItem(
+            TIER_BUILDER_UI_STORAGE_KEY
+          );
+        } catch {}
+      }
+    };
+  }, [i18n]);
 
 
   const [
@@ -2159,6 +2213,10 @@ const sourceCandidates =
         ...DEFAULT_TIER_LABELS,
         ...(payload.tier_labels || {}),
       });
+      setOriginalContentLanguage(
+        payload?.tier_labels?._originalLanguage ||
+        lang
+      );
       setTierListTitle(
         mode === "clone"
           ? `${payload.title || text.newTierList}`
@@ -3987,6 +4045,12 @@ const finalCandidates =
             // 게스트 RPC가 title_translations 컬럼을 직접 받지 않는 배포에서도
             // 수정 화면에서 번역 제목을 잃지 않도록 메타에 함께 보관합니다.
             _titleTranslations: cleanTitleTranslations,
+            // 제목이 처음 작성된 언어를 별도 DB 컬럼 없이 tier_labels 메타에 보관합니다.
+            // 헤더 언어를 바꿔도 이 값은 바뀌지 않습니다.
+            _originalLanguage:
+              tierLabels?._originalLanguage ||
+              originalContentLanguage ||
+              lang,
           };
 
 
