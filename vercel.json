@@ -149,20 +149,30 @@
       "dest": "/server.js?seo=blog-post&lang=$1&slug=$2"
     },
 
-    {
-      "src": "/(ko|en|ja|zh|ru|pt|es|fr|id|hi|de|vi|ar|bn|th|tr)/select-round/([^/]+)/?$",
-      "dest": "/server.js?seo=worldcup&lang=$1&id=$2"
-    },
+{
+  "src": "/(ko|en|ja|zh|ru|pt|es|fr|id|hi|de|vi|ar|bn|th|tr)/select-round/([^/]+)/?$",
+  "dest": "/server.js?seo=worldcup&lang=$1&id=$2"
+},
 
-    {
-      "src": "/(ko|en|ja|zh|ru|pt|es|fr|id|hi|de|vi|ar|bn|th|tr)/tier-list/([^/]+)/?$",
-      "dest": "/server.js?seo=tier-list&lang=$1&id=$2"
-    },
+{
+  "src": "/(ko|en|ja|zh|ru|pt|es|fr|id|hi|de|vi|ar|bn|th|tr)/tier-list/create/?$",
+  "dest": "/"
+},
 
-    {
-      "src": "/(ko|en|ja|zh|ru|pt|es|fr|id|hi|de|vi|ar|bn|th|tr)/quiz/?$",
-      "dest": "/server.js?seo=quiz-list&lang=$1"
-    },
+{
+  "src": "/(ko|en|ja|zh|ru|pt|es|fr|id|hi|de|vi|ar|bn|th|tr)/tier-list/create/([^/]+)/?$",
+  "dest": "/"
+},
+
+{
+  "src": "/(ko|en|ja|zh|ru|pt|es|fr|id|hi|de|vi|ar|bn|th|tr)/tier-list/([^/]+)/?$",
+  "dest": "/server.js?seo=tier-list&lang=$1&id=$2"
+},
+
+{
+  "src": "/(ko|en|ja|zh|ru|pt|es|fr|id|hi|de|vi|ar|bn|th|tr)/quiz/?$",
+  "dest": "/server.js?seo=quiz-list&lang=$1"
+},
     {
       "src": "/(ko|en|ja|zh|ru|pt|es|fr|id|hi|de|vi|ar|bn|th|tr)/quiz/create/?$",
       "dest": "/server.js?seo=quiz-create&lang=$1"
