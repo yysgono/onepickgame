@@ -4952,7 +4952,25 @@ if (editingTierListId) {
 
 <div
   style={{
-    marginTop: 16,
+    width: isMobile
+      ? "100%"
+      : "min(1380px, calc(100vw - 56px))",
+    margin: isMobile
+      ? "16px auto 0"
+      : "20px auto 0",
+    padding: isMobile
+      ? "16px 12px 20px"
+      : "22px 28px 26px",
+    boxSizing: "border-box",
+    border: "1.5px solid #d9e3f0",
+    borderRadius: 16,
+    background: "#ffffff",
+    boxShadow: "0 8px 24px rgba(32,37,52,0.06)",
+  }}
+>
+<div
+  style={{
+    marginTop: 0,
     display: "flex",
     justifyContent: "center",
   }}
@@ -7700,6 +7718,7 @@ objectPosition: "center",
             >
               {text.imageReuseNotice}
             </div>
+</div>
           </div>
         )}
       </div>
