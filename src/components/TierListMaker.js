@@ -5078,6 +5078,416 @@ if (editingTierListId) {
             )}
 
             {/* ============================================
+                제목 / 태그 / 프리셋 / 카테고리 / 저장 설정
+                My One Pick 위에 표시
+                ============================================ */}
+
+            <div
+              style={{
+                width: "100%",
+                maxWidth: 980,
+                margin: isMobile ? "18px auto 18px" : "24px auto 20px",
+                padding: isMobile ? "16px 14px" : "22px",
+                boxSizing: "border-box",
+                borderRadius: 18,
+                background: "#f3f4f6",
+                border: "1px solid #d7dce4",
+                boxShadow: "0 4px 16px rgba(25,32,52,0.07)",
+                color: "#111827",
+              }}
+            >
+              <input
+                value={tierListTitle}
+                onChange={(e) => setTierListTitle(e.target.value)}
+                placeholder={text.titlePlaceholder}
+                maxLength={80}
+                style={{
+                  width: "100%",
+                  height: isMobile ? 48 : 52,
+                  marginTop: 0,
+                  marginBottom: 14,
+                  boxSizing: "border-box",
+                  padding: "0 14px",
+                  borderRadius: 10,
+                  border: "1px solid #cbd5e1",
+                  background: "#fff",
+                  color: "#111827",
+                  fontSize: isMobile ? 18 : 20,
+                  fontWeight: 700,
+                  outline: "none",
+                }}
+              />
+
+              <div
+                style={{
+                  width: "100%",
+                  display: "grid",
+                  gridTemplateColumns: isMobile ? "1fr" : "1.25fr 0.85fr",
+                  gap: isMobile ? 12 : 14,
+                  alignItems: "stretch",
+                }}
+              >
+                <TierTagEditor
+                  value={tierLabels._tags}
+                  onChange={(tags) =>
+                    setTierLabels((prev) => ({
+                      ...prev,
+                      _tags: tags,
+                    }))
+                  }
+                />
+
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 10,
+                    padding: "12px 14px 14px",
+                    boxSizing: "border-box",
+                    border: "1px solid #d7dce4",
+                    borderRadius: 12,
+                    background: "#f8fafc",
+                  }}
+                >
+                  <div>
+                    <div
+                      style={{
+                        color: "#374151",
+                        fontSize: 16,
+                        fontWeight: 800,
+                        marginBottom: 6,
+                      }}
+                    >
+                      {text.sourcePresetLabel}
+                    </div>
+
+                    {sourceWorldcupId ? (
+                      <div
+                        style={{
+                          minHeight: 42,
+                          padding: "10px 12px",
+                          boxSizing: "border-box",
+                          border: "1px solid #cbd5e1",
+                          borderRadius: 8,
+                          background: "#fff",
+                          color: "#111827",
+                          fontSize: 16,
+                          fontWeight: 700,
+                          lineHeight: 1.35,
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          textAlign: "center",
+                        }}
+                      >
+                        {sourcePresetName}
+                      </div>
+                    ) : (
+                      <input
+                        type="text"
+                        value={customPresetName}
+                        onChange={(e) => setCustomPresetName(e.target.value)}
+                        placeholder={text.customPresetPlaceholder}
+                        maxLength={60}
+                        style={{
+                          width: "100%",
+                          height: 42,
+                          padding: "0 12px",
+                          boxSizing: "border-box",
+                          border: "1px solid #cbd5e1",
+                          borderRadius: 8,
+                          background: "#fff",
+                          color: "#111827",
+                          fontSize: 16,
+                          fontWeight: 700,
+                          textAlign: "center",
+                          outline: "none",
+                        }}
+                      />
+                    )}
+                  </div>
+
+                  <div>
+                    <div
+                      style={{
+                        color: "#374151",
+                        fontSize: 16,
+                        fontWeight: 800,
+                        marginBottom: 6,
+                      }}
+                    >
+                      {text.categoryLabel}
+                    </div>
+
+                    <select
+                      value={selectedCategory}
+                      onChange={(e) => setSelectedCategory(e.target.value)}
+                      disabled={saving}
+                      style={{
+                        width: "100%",
+                        height: 42,
+                        padding: "0 12px",
+                        borderRadius: 8,
+                        border: "1px solid #cbd5e1",
+                        background: "#fff",
+                        color: "#111827",
+                        fontSize: 16,
+                        fontWeight: 700,
+                        outline: "none",
+                      }}
+                    >
+                      {CATEGORY_OPTIONS.map((option) => (
+                        <option key={option.value} value={option.value}>
+                          {t(`tierList.categories.${option.value}`)}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+
+
+              <div
+                style={{
+                  marginTop: 8,
+                  color: "#4b5563",
+                  fontSize: isMobile ? 15 : 17,
+                  fontWeight: 700,
+                  textAlign: "center",
+                }}
+              >
+                {allCandidates.length} {text.candidates} · {placedCount} {text.ranked}
+              </div>
+
+              <div
+                style={{
+                  marginTop: 10,
+                  color: "#374151",
+                  fontSize: isMobile ? 16 : 19,
+                  fontWeight: 800,
+                  lineHeight: 1.45,
+                  textAlign: "center",
+                }}
+              >
+                {text.tierNameGuide}
+              </div>
+
+              {authReady && !currentUser && (
+                <div
+                  style={{
+                    width: "100%",
+                    marginTop: 16,
+                    padding: 14,
+                    boxSizing: "border-box",
+                    border: "1px solid #d7dce4",
+                    borderRadius: 12,
+                    background: "#fff",
+                  }}
+                >
+                  <div
+                    style={{
+                      fontSize: 17,
+                      fontWeight: 900,
+                      color: "#2563eb",
+                      marginBottom: 10,
+                    }}
+                  >
+                    {editingTierListId ? text.guestEditTitle : text.guestPublishTitle}
+                  </div>
+
+                  <input
+                    type="text"
+                    value={guestNickname}
+                    onChange={(e) => setGuestNickname(e.target.value.slice(0, 20))}
+                    placeholder={text.guestNicknamePlaceholder}
+                    autoComplete="nickname"
+                    style={{
+                      width: "100%",
+                      height: 42,
+                      boxSizing: "border-box",
+                      padding: "0 12px",
+                      borderRadius: 8,
+                      border: "1px solid #cbd5e1",
+                      background: "#f9fafb",
+                      color: "#111827",
+                      outline: "none",
+                      fontSize: 16,
+                      fontWeight: 600,
+                    }}
+                  />
+
+                  <input
+                    type="password"
+                    value={editingTierListId ? guestEditPassword : guestPassword}
+                    onChange={(e) => {
+                      const value = e.target.value.slice(0, 50);
+                      setGuestPassword(value);
+                      if (editingTierListId) {
+                        setGuestEditPassword(value);
+                      }
+                    }}
+                    placeholder={text.guestPasswordPlaceholder}
+                    autoComplete="new-password"
+                    style={{
+                      width: "100%",
+                      height: 42,
+                      marginTop: 8,
+                      boxSizing: "border-box",
+                      padding: "0 12px",
+                      borderRadius: 8,
+                      border: "1px solid #cbd5e1",
+                      background: "#f9fafb",
+                      color: "#111827",
+                      outline: "none",
+                      fontSize: 16,
+                      fontWeight: 600,
+                    }}
+                  />
+
+                  <div
+                    style={{
+                      marginTop: 9,
+                      color: "#6b7280",
+                      fontSize: 14,
+                      fontWeight: 600,
+                      lineHeight: 1.6,
+                    }}
+                  >
+                    {text.guestPasswordGuide}
+                  </div>
+                </div>
+              )}
+
+              {draftMessage && (
+                <div
+                  style={{
+                    marginTop: 10,
+                    color: "#2563eb",
+                    fontSize: 16,
+                    fontWeight: 900,
+                    textAlign: "center",
+                  }}
+                >
+                  {draftMessage}
+                </div>
+              )}
+
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  gap: isMobile ? 8 : 10,
+                  flexWrap: "wrap",
+                  marginTop: 14,
+                }}
+              >
+                <button
+                  type="button"
+                  onClick={backToSourceSelection}
+                  disabled={saving}
+                  style={{
+                    padding: isMobile ? "11px 14px" : "12px 18px",
+                    borderRadius: 9,
+                    border: "1px solid #cbd5e1",
+                    background: "#fff",
+                    color: "#1f2937",
+                    fontSize: isMobile ? 15 : 18,
+                    fontWeight: 800,
+                    cursor: saving ? "default" : "pointer",
+                    opacity: saving ? 0.5 : 1,
+                    boxShadow: "0 4px 16px rgba(25,32,52,0.07)",
+                  }}
+                >
+                  {text.changeSource}
+                </button>
+
+                <button
+                  type="button"
+                  onClick={resetRanking}
+                  disabled={saving}
+                  style={{
+                    padding: isMobile ? "11px 14px" : "12px 18px",
+                    borderRadius: 9,
+                    border: "1px solid #fecaca",
+                    background: "#fff1f2",
+                    color: "#c51f29",
+                    fontSize: isMobile ? 15 : 18,
+                    fontWeight: 800,
+                    cursor: saving ? "default" : "pointer",
+                    opacity: saving ? 0.5 : 1,
+                  }}
+                >
+                  {text.reset}
+                </button>
+
+                <button
+                  type="button"
+                  onClick={saveDraft}
+                  disabled={saving}
+                  style={{
+                    padding: isMobile ? "11px 14px" : "12px 18px",
+                    borderRadius: 9,
+                    border: "1px solid #bfdbfe",
+                    background: "#eff6ff",
+                    color: "#2563eb",
+                    fontSize: isMobile ? 15 : 18,
+                    fontWeight: 800,
+                    cursor: saving ? "default" : "pointer",
+                  }}
+                >
+                  {t("tierListMakerUi.draftSave")}
+                </button>
+
+                <button
+                  type="button"
+                  onClick={loadDraft}
+                  disabled={saving}
+                  style={{
+                    padding: isMobile ? "11px 14px" : "12px 18px",
+                    borderRadius: 9,
+                    border: "1px solid #bfdbfe",
+                    background: "#fff",
+                    color: "#2563eb",
+                    fontSize: isMobile ? 15 : 18,
+                    fontWeight: 800,
+                    cursor: saving ? "default" : "pointer",
+                  }}
+                >
+                  {t("tierListMakerUi.draftLoad")}
+                </button>
+
+                <button
+                  type="button"
+                  onClick={saveTierList}
+                  disabled={saving}
+                  style={{
+                    padding: isMobile ? "11px 20px" : "12px 26px",
+                    borderRadius: 9,
+                    border: "none",
+                    background: "#6650d8",
+                    color: "#ffffff",
+                    fontSize: isMobile ? 16 : 19,
+                    fontWeight: 900,
+                    cursor: saving ? "default" : "pointer",
+                    minWidth: 140,
+                    boxShadow: "0 4px 16px rgba(25,32,52,0.07)",
+                    opacity: saving ? 0.7 : 1,
+                  }}
+                >
+                  {saving
+                    ? editingTierListId
+                      ? text.updateSaving
+                      : text.saving
+                    : editingTierListId
+                      ? text.saveChanges
+                      : text.publish}
+                </button>
+              </div>
+            </div>
+
+
+            {/* ============================================
                 나만의 원픽
                 ============================================ */}
 
@@ -5667,409 +6077,6 @@ objectPosition: "center",
             )}
 
 
-            <div
-              style={{
-                width: "100%",
-                maxWidth: 980,
-                margin: isMobile ? "18px auto 18px" : "24px auto 20px",
-                padding: isMobile ? "16px 14px" : "22px",
-                boxSizing: "border-box",
-                borderRadius: 18,
-                background: "#f3f4f6",
-                border: "1px solid #d7dce4",
-                boxShadow: "0 4px 16px rgba(25,32,52,0.07)",
-                color: "#111827",
-              }}
-            >
-              <input
-                value={tierListTitle}
-                onChange={(e) => setTierListTitle(e.target.value)}
-                placeholder={text.titlePlaceholder}
-                maxLength={80}
-                style={{
-                  width: "100%",
-                  height: isMobile ? 48 : 52,
-                  marginTop: 0,
-                  marginBottom: 14,
-                  boxSizing: "border-box",
-                  padding: "0 14px",
-                  borderRadius: 10,
-                  border: "1px solid #cbd5e1",
-                  background: "#fff",
-                  color: "#111827",
-                  fontSize: isMobile ? 18 : 20,
-                  fontWeight: 700,
-                  outline: "none",
-                }}
-              />
-
-              <div
-                style={{
-                  width: "100%",
-                  display: "grid",
-                  gridTemplateColumns: isMobile ? "1fr" : "1.25fr 0.85fr",
-                  gap: isMobile ? 12 : 14,
-                  alignItems: "stretch",
-                }}
-              >
-                <TierTagEditor
-                  value={tierLabels._tags}
-                  onChange={(tags) =>
-                    setTierLabels((prev) => ({
-                      ...prev,
-                      _tags: tags,
-                    }))
-                  }
-                />
-
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: 10,
-                    padding: "12px 14px 14px",
-                    boxSizing: "border-box",
-                    border: "1px solid #d7dce4",
-                    borderRadius: 12,
-                    background: "#f8fafc",
-                  }}
-                >
-                  <div>
-                    <div
-                      style={{
-                        color: "#374151",
-                        fontSize: 16,
-                        fontWeight: 800,
-                        marginBottom: 6,
-                      }}
-                    >
-                      {text.sourcePresetLabel}
-                    </div>
-
-                    {sourceWorldcupId ? (
-                      <div
-                        style={{
-                          minHeight: 42,
-                          padding: "10px 12px",
-                          boxSizing: "border-box",
-                          border: "1px solid #cbd5e1",
-                          borderRadius: 8,
-                          background: "#fff",
-                          color: "#111827",
-                          fontSize: 16,
-                          fontWeight: 700,
-                          lineHeight: 1.35,
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          textAlign: "center",
-                        }}
-                      >
-                        {sourcePresetName}
-                      </div>
-                    ) : (
-                      <input
-                        type="text"
-                        value={customPresetName}
-                        onChange={(e) => setCustomPresetName(e.target.value)}
-                        placeholder={text.customPresetPlaceholder}
-                        maxLength={60}
-                        style={{
-                          width: "100%",
-                          height: 42,
-                          padding: "0 12px",
-                          boxSizing: "border-box",
-                          border: "1px solid #cbd5e1",
-                          borderRadius: 8,
-                          background: "#fff",
-                          color: "#111827",
-                          fontSize: 16,
-                          fontWeight: 700,
-                          textAlign: "center",
-                          outline: "none",
-                        }}
-                      />
-                    )}
-                  </div>
-
-                  <div>
-                    <div
-                      style={{
-                        color: "#374151",
-                        fontSize: 16,
-                        fontWeight: 800,
-                        marginBottom: 6,
-                      }}
-                    >
-                      {text.categoryLabel}
-                    </div>
-
-                    <select
-                      value={selectedCategory}
-                      onChange={(e) => setSelectedCategory(e.target.value)}
-                      disabled={saving}
-                      style={{
-                        width: "100%",
-                        height: 42,
-                        padding: "0 12px",
-                        borderRadius: 8,
-                        border: "1px solid #cbd5e1",
-                        background: "#fff",
-                        color: "#111827",
-                        fontSize: 16,
-                        fontWeight: 700,
-                        outline: "none",
-                      }}
-                    >
-                      {CATEGORY_OPTIONS.map((option) => (
-                        <option key={option.value} value={option.value}>
-                          {t(`tierList.categories.${option.value}`)}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
-              </div>
-
-
-
-              <div
-                style={{
-                  marginTop: 8,
-                  color: "#4b5563",
-                  fontSize: isMobile ? 15 : 17,
-                  fontWeight: 700,
-                  textAlign: "center",
-                }}
-              >
-                {allCandidates.length} {text.candidates} · {placedCount} {text.ranked}
-              </div>
-
-              <div
-                style={{
-                  marginTop: 10,
-                  color: "#374151",
-                  fontSize: isMobile ? 16 : 19,
-                  fontWeight: 800,
-                  lineHeight: 1.45,
-                  textAlign: "center",
-                }}
-              >
-                {text.tierNameGuide}
-              </div>
-
-              {authReady && !currentUser && (
-                <div
-                  style={{
-                    width: "100%",
-                    marginTop: 16,
-                    padding: 14,
-                    boxSizing: "border-box",
-                    border: "1px solid #d7dce4",
-                    borderRadius: 12,
-                    background: "#fff",
-                  }}
-                >
-                  <div
-                    style={{
-                      fontSize: 17,
-                      fontWeight: 900,
-                      color: "#2563eb",
-                      marginBottom: 10,
-                    }}
-                  >
-                    {editingTierListId ? text.guestEditTitle : text.guestPublishTitle}
-                  </div>
-
-                  <input
-                    type="text"
-                    value={guestNickname}
-                    onChange={(e) => setGuestNickname(e.target.value.slice(0, 20))}
-                    placeholder={text.guestNicknamePlaceholder}
-                    autoComplete="nickname"
-                    style={{
-                      width: "100%",
-                      height: 42,
-                      boxSizing: "border-box",
-                      padding: "0 12px",
-                      borderRadius: 8,
-                      border: "1px solid #cbd5e1",
-                      background: "#f9fafb",
-                      color: "#111827",
-                      outline: "none",
-                      fontSize: 16,
-                      fontWeight: 600,
-                    }}
-                  />
-
-                  <input
-                    type="password"
-                    value={editingTierListId ? guestEditPassword : guestPassword}
-                    onChange={(e) => {
-                      const value = e.target.value.slice(0, 50);
-                      setGuestPassword(value);
-                      if (editingTierListId) {
-                        setGuestEditPassword(value);
-                      }
-                    }}
-                    placeholder={text.guestPasswordPlaceholder}
-                    autoComplete="new-password"
-                    style={{
-                      width: "100%",
-                      height: 42,
-                      marginTop: 8,
-                      boxSizing: "border-box",
-                      padding: "0 12px",
-                      borderRadius: 8,
-                      border: "1px solid #cbd5e1",
-                      background: "#f9fafb",
-                      color: "#111827",
-                      outline: "none",
-                      fontSize: 16,
-                      fontWeight: 600,
-                    }}
-                  />
-
-                  <div
-                    style={{
-                      marginTop: 9,
-                      color: "#6b7280",
-                      fontSize: 14,
-                      fontWeight: 600,
-                      lineHeight: 1.6,
-                    }}
-                  >
-                    {text.guestPasswordGuide}
-                  </div>
-                </div>
-              )}
-
-              {draftMessage && (
-                <div
-                  style={{
-                    marginTop: 10,
-                    color: "#2563eb",
-                    fontSize: 16,
-                    fontWeight: 900,
-                    textAlign: "center",
-                  }}
-                >
-                  {draftMessage}
-                </div>
-              )}
-
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  gap: isMobile ? 8 : 10,
-                  flexWrap: "wrap",
-                  marginTop: 14,
-                }}
-              >
-                <button
-                  type="button"
-                  onClick={backToSourceSelection}
-                  disabled={saving}
-                  style={{
-                    padding: isMobile ? "11px 14px" : "12px 18px",
-                    borderRadius: 9,
-                    border: "1px solid #cbd5e1",
-                    background: "#fff",
-                    color: "#1f2937",
-                    fontSize: isMobile ? 15 : 18,
-                    fontWeight: 800,
-                    cursor: saving ? "default" : "pointer",
-                    opacity: saving ? 0.5 : 1,
-                    boxShadow: "0 4px 16px rgba(25,32,52,0.07)",
-                  }}
-                >
-                  {text.changeSource}
-                </button>
-
-                <button
-                  type="button"
-                  onClick={resetRanking}
-                  disabled={saving}
-                  style={{
-                    padding: isMobile ? "11px 14px" : "12px 18px",
-                    borderRadius: 9,
-                    border: "1px solid #fecaca",
-                    background: "#fff1f2",
-                    color: "#c51f29",
-                    fontSize: isMobile ? 15 : 18,
-                    fontWeight: 800,
-                    cursor: saving ? "default" : "pointer",
-                    opacity: saving ? 0.5 : 1,
-                  }}
-                >
-                  {text.reset}
-                </button>
-
-                <button
-                  type="button"
-                  onClick={saveDraft}
-                  disabled={saving}
-                  style={{
-                    padding: isMobile ? "11px 14px" : "12px 18px",
-                    borderRadius: 9,
-                    border: "1px solid #bfdbfe",
-                    background: "#eff6ff",
-                    color: "#2563eb",
-                    fontSize: isMobile ? 15 : 18,
-                    fontWeight: 800,
-                    cursor: saving ? "default" : "pointer",
-                  }}
-                >
-                  {t("tierListMakerUi.draftSave")}
-                </button>
-
-                <button
-                  type="button"
-                  onClick={loadDraft}
-                  disabled={saving}
-                  style={{
-                    padding: isMobile ? "11px 14px" : "12px 18px",
-                    borderRadius: 9,
-                    border: "1px solid #bfdbfe",
-                    background: "#fff",
-                    color: "#2563eb",
-                    fontSize: isMobile ? 15 : 18,
-                    fontWeight: 800,
-                    cursor: saving ? "default" : "pointer",
-                  }}
-                >
-                  {t("tierListMakerUi.draftLoad")}
-                </button>
-
-                <button
-                  type="button"
-                  onClick={saveTierList}
-                  disabled={saving}
-                  style={{
-                    padding: isMobile ? "11px 20px" : "12px 26px",
-                    borderRadius: 9,
-                    border: "none",
-                    background: "#6650d8",
-                    color: "#ffffff",
-                    fontSize: isMobile ? 16 : 19,
-                    fontWeight: 900,
-                    cursor: saving ? "default" : "pointer",
-                    minWidth: 140,
-                    boxShadow: "0 4px 16px rgba(25,32,52,0.07)",
-                    opacity: saving ? 0.7 : 1,
-                  }}
-                >
-                  {saving
-                    ? editingTierListId
-                      ? text.updateSaving
-                      : text.saving
-                    : editingTierListId
-                      ? text.saveChanges
-                      : text.publish}
-                </button>
-              </div>
-            </div>
 
 
             {/* ============================================
