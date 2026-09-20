@@ -458,11 +458,11 @@ const RankCard = React.memo(function RankCard(props) {
 
   const bgColors = ["#fcf5cd", "#eef3fa", "#fff3f3"];
 
-  const cardWidth = isMobile ? 270 : 320;
+  const cardWidth = isMobile ? 285 : 350;
 
-  const cardHeight = isMobile ? 420 : 480;
+  const cardHeight = isMobile ? 440 : 500;
 
-  const thumbSize = isMobile ? 140 : 180;
+  const thumbSize = isMobile ? 145 : 190;
 
 
 
@@ -621,6 +621,7 @@ const RankCard = React.memo(function RankCard(props) {
           fontWeight: 900,
 
           fontSize: isMobile ? 14 : 16,
+            whiteSpace: "nowrap",
 
           color: "#716500",
 
