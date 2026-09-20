@@ -261,6 +261,25 @@ const TITLE_TRANSLATION_COPY = {
   bn: { add: "＋ অন্য ভাষায় শিরোনাম যোগ করুন", placeholder: "অনূদিত শিরোনাম", remove: "মুছুন" },
 };
 
+const TIER_CANDIDATE_IMAGE_HELP_COPY = {
+  ko: "※ 후보 이미지가 안 보일 경우, 후보를 티어표 안으로 드래그해 넣어보세요.",
+  en: "※ If a candidate image is not visible, try dragging the candidate into the Tier List.",
+  ja: "※ 候補画像が表示されない場合は、候補をTier表の中へドラッグしてみてください。",
+  zh: "※ 如果候选图片未显示，请尝试将候选项拖入排行榜中。",
+  es: "※ Si no se muestra la imagen de un candidato, prueba a arrastrarlo a la Tier List.",
+  fr: "※ Si l’image d’un candidat ne s’affiche pas, essayez de le faire glisser dans la Tier List.",
+  vi: "※ Nếu ảnh ứng viên không hiển thị, hãy thử kéo ứng viên vào Tier List.",
+  de: "※ Wenn ein Kandidatenbild nicht angezeigt wird, ziehe den Kandidaten testweise in die Tier List.",
+  ru: "※ Если изображение кандидата не отображается, попробуйте перетащить кандидата в Tier List.",
+  id: "※ Jika gambar kandidat tidak terlihat, coba seret kandidat ke dalam Tier List.",
+  pt: "※ Se a imagem de um candidato não aparecer, tente arrastá-lo para a Tier List.",
+  hi: "※ यदि किसी उम्मीदवार की तस्वीर दिखाई नहीं दे रही है, तो उसे Tier List में खींचकर डालकर देखें।",
+  tr: "※ Bir adayın görseli görünmüyorsa, adayı Tier List içine sürüklemeyi deneyin.",
+  th: "※ หากรูปผู้สมัครไม่แสดง ให้ลองลากผู้สมัครเข้าไปใน Tier List",
+  ar: "※ إذا لم تظهر صورة أحد المرشحين، فجرّب سحب المرشح إلى داخل Tier List.",
+  bn: "※ কোনো প্রার্থীর ছবি দেখা না গেলে, প্রার্থীটিকে Tier List-এর মধ্যে টেনে এনে দেখুন।",
+};
+
 // 월드컵 관리자 카테고리 -> 티어표 카테고리 변환
 // worldcups: person/korea/music/game/sports/anime_manga/movie_drama/food/etc
 // tier_lists: game/entertainment/animation/food/sports/other
@@ -754,6 +773,11 @@ function TierListMaker({
       i18n.language ||
       "en"
     ).split("-")[0];
+
+
+  const candidateImageHelp =
+    TIER_CANDIDATE_IMAGE_HELP_COPY[lang] ||
+    TIER_CANDIDATE_IMAGE_HELP_COPY.en;
 
 
   const text =
@@ -1741,35 +1765,26 @@ const sourceCandidates =
 
 
   useEffect(() => {
+    // 프리셋/원본 월드컵을 바꿀 때 후보 배치만 초기화합니다.
+    // 사용자가 이미 입력한 티어표 제목, 번역 제목, 태그/티어명은 유지합니다.
     setTierItems(
       createEmptyTiers()
     );
 
     setOnePick(null);
-
-    setTierLabels({
-      ...DEFAULT_TIER_LABELS,
-    });
-
     setSearchKeyword("");
-
     setSaveError("");
 
+    if (selectedCup) {
+      setSourceWorldcupId(selectedCup.id);
+      setCustomPresetName("");
+    } else if (!cloneTierListId && !editTierListId) {
+      setSourceWorldcupId(null);
+      setCustomPresetName("");
+    }
 
-   if (selectedCup) {
-  setTierListTitle("");
-  setTitleTranslations({});
-  setTitleTranslationLanguages([]);
-  setSourceWorldcupId(selectedCup.id);
-  setCustomPresetName("");
-} else if (!cloneTierListId && !editTierListId) {
-  setTitleTranslations({});
-  setTitleTranslationLanguages([]);
-  setSourceWorldcupId(null);
-  setCustomPresetName("");
-}
-  // 실제 소스가 바뀔 때만 초기화합니다.
-  // 언어 변경(getTitle 변경)만으로 작업 중인 티어가 리셋되지 않습니다.
+    // 실제 소스가 바뀔 때만 후보 배치를 초기화합니다.
+    // 언어 변경(getTitle 변경)만으로 작업 중인 입력값이 리셋되지 않습니다.
   }, [
     id,
     selectedCup?.id,
@@ -3425,9 +3440,8 @@ const handleDragEndItem =
         setSourceWorldcupId(null);
         setCustomPresetName("");
         setSelectedCategory("other");
-        setTierLabels({
-          ...DEFAULT_TIER_LABELS,
-        });
+
+        // 제목/번역 제목/태그/티어명은 프리셋을 다시 고르는 동안 유지합니다.
 
         // 수정 중에는 ?edit=... 를 유지해야 editingTierListId가 끊기지 않습니다.
         if (editTierListId) {
@@ -6318,6 +6332,62 @@ objectPosition: "center",
             )}
 
 
+
+
+            {/* 티어 배치 후 바로 제출 */}
+            <div
+              style={{
+                width: "100%",
+                marginTop: 22,
+                marginBottom: 12,
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                gap: 9,
+              }}
+            >
+              <button
+                type="button"
+                onClick={saveTierList}
+                disabled={saving}
+                style={{
+                  minWidth: isMobile ? 190 : 260,
+                  minHeight: isMobile ? 48 : 54,
+                  padding: isMobile ? "11px 22px" : "13px 30px",
+                  borderRadius: 10,
+                  border: "none",
+                  background: "#6650d8",
+                  color: "#ffffff",
+                  fontSize: isMobile ? 17 : 20,
+                  fontWeight: 900,
+                  cursor: saving ? "default" : "pointer",
+                  boxShadow: "0 5px 16px rgba(102,80,216,0.18)",
+                  opacity: saving ? 0.7 : 1,
+                }}
+              >
+                {saving
+                  ? editingTierListId
+                    ? text.updateSaving
+                    : text.saving
+                  : editingTierListId
+                    ? text.saveChanges
+                    : text.publish}
+              </button>
+
+              <div
+                style={{
+                  maxWidth: 760,
+                  padding: "0 10px",
+                  color: "#667085",
+                  fontSize: isMobile ? 13 : 14,
+                  fontWeight: 700,
+                  lineHeight: 1.5,
+                  textAlign: "center",
+                }}
+              >
+                {candidateImageHelp}
+              </div>
+            </div>
 
 
             {/* ============================================
