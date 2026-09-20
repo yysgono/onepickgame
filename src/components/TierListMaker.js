@@ -1964,7 +1964,11 @@ const sourceCandidates =
     );
 
 
-  const isBuilderMode = true;
+ const isBuilderMode =
+  Boolean(id) ||
+  localOnlyMode ||
+  Boolean(cloneTierListId) ||
+  Boolean(editTierListId);
 
 
   const placedCount =
