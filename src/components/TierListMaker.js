@@ -5314,6 +5314,8 @@ if (editingTierListId) {
     </div>
   </div>
 )}
+
+</div>
           </>
         ) : (
   /* =================================================
@@ -7718,7 +7720,6 @@ objectPosition: "center",
             >
               {text.imageReuseNotice}
             </div>
-</div>
           </div>
         )}
       </div>
