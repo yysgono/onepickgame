@@ -223,6 +223,44 @@ const CATEGORY_OPTIONS = [
   "other",
 ].map((value) => ({ value }));
 
+const TITLE_TRANSLATION_LANGUAGES = [
+  { code: "en", label: "English" },
+  { code: "ko", label: "한국어" },
+  { code: "ja", label: "日本語" },
+  { code: "zh", label: "简体中文" },
+  { code: "es", label: "Español" },
+  { code: "fr", label: "Français" },
+  { code: "vi", label: "Tiếng Việt" },
+  { code: "de", label: "Deutsch" },
+  { code: "ru", label: "Русский" },
+  { code: "id", label: "Bahasa Indonesia" },
+  { code: "pt", label: "Português" },
+  { code: "hi", label: "हिन्दी" },
+  { code: "tr", label: "Türkçe" },
+  { code: "th", label: "ภาษาไทย" },
+  { code: "ar", label: "العربية" },
+  { code: "bn", label: "বাংলা" },
+];
+
+const TITLE_TRANSLATION_COPY = {
+  ko: { add: "＋ 다른 언어 제목 추가", placeholder: "번역 제목", remove: "삭제" },
+  en: { add: "＋ Add title in another language", placeholder: "Translated title", remove: "Remove" },
+  ja: { add: "＋ 他の言語のタイトルを追加", placeholder: "翻訳タイトル", remove: "削除" },
+  zh: { add: "＋ 添加其他语言标题", placeholder: "翻译标题", remove: "删除" },
+  es: { add: "＋ Añadir título en otro idioma", placeholder: "Título traducido", remove: "Eliminar" },
+  fr: { add: "＋ Ajouter un titre dans une autre langue", placeholder: "Titre traduit", remove: "Supprimer" },
+  vi: { add: "＋ Thêm tiêu đề bằng ngôn ngữ khác", placeholder: "Tiêu đề đã dịch", remove: "Xóa" },
+  de: { add: "＋ Titel in einer anderen Sprache hinzufügen", placeholder: "Übersetzter Titel", remove: "Entfernen" },
+  ru: { add: "＋ Добавить название на другом языке", placeholder: "Переведённое название", remove: "Удалить" },
+  id: { add: "＋ Tambahkan judul dalam bahasa lain", placeholder: "Judul terjemahan", remove: "Hapus" },
+  pt: { add: "＋ Adicionar título em outro idioma", placeholder: "Título traduzido", remove: "Remover" },
+  hi: { add: "＋ दूसरी भाषा में शीर्षक जोड़ें", placeholder: "अनुवादित शीर्षक", remove: "हटाएँ" },
+  tr: { add: "＋ Başka dilde başlık ekle", placeholder: "Çevrilmiş başlık", remove: "Sil" },
+  th: { add: "＋ เพิ่มชื่อเรื่องภาษาอื่น", placeholder: "ชื่อเรื่องที่แปลแล้ว", remove: "ลบ" },
+  ar: { add: "＋ إضافة عنوان بلغة أخرى", placeholder: "العنوان المترجم", remove: "حذف" },
+  bn: { add: "＋ অন্য ভাষায় শিরোনাম যোগ করুন", placeholder: "অনূদিত শিরোনাম", remove: "মুছুন" },
+};
+
 // 월드컵 관리자 카테고리 -> 티어표 카테고리 변환
 // worldcups: person/korea/music/game/sports/anime_manga/movie_drama/food/etc
 // tier_lists: game/entertainment/animation/food/sports/other
@@ -979,6 +1017,50 @@ const [
     useState("");
 
 
+  const [titleTranslations, setTitleTranslations] = useState({});
+  const [titleTranslationLanguages, setTitleTranslationLanguages] = useState([]);
+
+  const titleTranslationCopy =
+    TITLE_TRANSLATION_COPY[lang] || TITLE_TRANSLATION_COPY.en;
+
+  const addTitleTranslation = useCallback(() => {
+    const used = new Set(titleTranslationLanguages);
+    const next = TITLE_TRANSLATION_LANGUAGES.find(
+      (item) => item.code !== lang && !used.has(item.code)
+    );
+
+    if (!next) return;
+
+    setTitleTranslationLanguages((prev) => [...prev, next.code]);
+    setTitleTranslations((prev) => ({ ...prev, [next.code]: prev[next.code] || "" }));
+  }, [titleTranslationLanguages, lang]);
+
+  const changeTitleTranslationLanguage = useCallback((oldCode, newCode) => {
+    if (!newCode || oldCode === newCode) return;
+    if (titleTranslationLanguages.includes(newCode)) return;
+
+    setTitleTranslationLanguages((prev) =>
+      prev.map((code) => (code === oldCode ? newCode : code))
+    );
+    setTitleTranslations((prev) => {
+      const next = { ...prev };
+      const value = next[oldCode] || "";
+      delete next[oldCode];
+      next[newCode] = value;
+      return next;
+    });
+  }, [titleTranslationLanguages]);
+
+  const removeTitleTranslation = useCallback((code) => {
+    setTitleTranslationLanguages((prev) => prev.filter((item) => item !== code));
+    setTitleTranslations((prev) => {
+      const next = { ...prev };
+      delete next[code];
+      return next;
+    });
+  }, []);
+
+
   const [
     selectedCategory,
     setSelectedCategory,
@@ -1676,9 +1758,13 @@ const sourceCandidates =
 
    if (selectedCup) {
   setTierListTitle("");
+  setTitleTranslations({});
+  setTitleTranslationLanguages([]);
   setSourceWorldcupId(selectedCup.id);
   setCustomPresetName("");
 } else if (!cloneTierListId && !editTierListId) {
+  setTitleTranslations({});
+  setTitleTranslationLanguages([]);
   setSourceWorldcupId(null);
   setCustomPresetName("");
 }
@@ -1897,6 +1983,15 @@ const sourceCandidates =
           ? `${payload.title || text.newTierList}`
           : payload.title || text.newTierList
       );
+      const hydratedTitleTranslations = readTranslationMap(
+        payload?.title_translations || payload?.tier_labels?._titleTranslations
+      );
+      setTitleTranslations(hydratedTitleTranslations);
+      setTitleTranslationLanguages(
+        Object.keys(hydratedTitleTranslations).filter((code) =>
+          TITLE_TRANSLATION_LANGUAGES.some((item) => item.code === code)
+        )
+      );
       setLocalOnlyMode(
         !payload.source_worldcup_id
       );
@@ -1979,7 +2074,7 @@ const sourceCandidates =
         const { data, error } = await supabase
           .from("tier_lists")
           .select(
-            "id, user_id, guest_nickname, title, source_worldcup_id, category, tier_labels, tiers, candidates"
+            "id, user_id, guest_nickname, title, title_translations, source_worldcup_id, category, tier_labels, tiers, candidates"
           )
           .eq("id", targetId)
           .single();
@@ -3093,6 +3188,8 @@ const handleDragEndItem =
           version: 2,
           savedAt: Date.now(),
           title: tierListTitle,
+          titleTranslations,
+          titleTranslationLanguages,
           category: selectedCategory,
           tierLabels: {
             ...tierLabels,
@@ -3126,6 +3223,8 @@ const handleDragEndItem =
       }
     }, [
       tierListTitle,
+      titleTranslations,
+      titleTranslationLanguages,
       selectedCategory,
       tierLabels,
       sourceWorldcupId,
@@ -3219,6 +3318,15 @@ const handleDragEndItem =
         allDraftItems.forEach(restoreItem);
 
         setTierListTitle(draft?.title || "");
+        const draftTitleTranslations = readTranslationMap(draft?.titleTranslations);
+        setTitleTranslations(draftTitleTranslations);
+        setTitleTranslationLanguages(
+          Array.isArray(draft?.titleTranslationLanguages)
+            ? draft.titleTranslationLanguages.filter((code) =>
+                TITLE_TRANSLATION_LANGUAGES.some((item) => item.code === code)
+              )
+            : Object.keys(draftTitleTranslations)
+        );
         setSelectedCategory(
           normalizeTierCategory(draft?.category)
         );
@@ -3479,6 +3587,14 @@ const handleDragEndItem =
           tierListTitle
             .trim();
 
+        const cleanTitleTranslations = Object.fromEntries(
+          Object.entries(titleTranslations || {})
+            .map(([code, value]) => [code, String(value || "").trim()])
+            .filter(([code, value]) =>
+              value && TITLE_TRANSLATION_LANGUAGES.some((item) => item.code === code)
+            )
+        );
+
 
         if (!cleanTitle) {
           setSaveError(
@@ -3688,6 +3804,9 @@ const finalCandidates =
             // 게스트 수정 RPC가 DB 컬럼을 직접 갱신하지 못하는 경우에도
             // 다음 수정 진입에서 최신 소스를 정확히 복원할 수 있습니다.
             _sourceWorldcupId: sourceWorldcupId || null,
+            // 게스트 RPC가 title_translations 컬럼을 직접 받지 않는 배포에서도
+            // 수정 화면에서 번역 제목을 잃지 않도록 메타에 함께 보관합니다.
+            _titleTranslations: cleanTitleTranslations,
           };
 
 
@@ -3702,6 +3821,7 @@ if (editingTierListId) {
         .from("tier_lists")
         .update({
           title: cleanTitle,
+          title_translations: cleanTitleTranslations,
           source_worldcup_id:
             sourceWorldcupId || null,
           category: selectedCategory,
@@ -3778,6 +3898,7 @@ if (editingTierListId) {
           guest_id: null,
           guest_nickname: null,
           title: cleanTitle,
+          title_translations: cleanTitleTranslations,
           source_worldcup_id:
             sourceWorldcupId || null,
           category: selectedCategory,
@@ -3896,6 +4017,7 @@ if (editingTierListId) {
 [
   saving,
   tierListTitle,
+  titleTranslations,
   lang,
   text,
   allCandidates,
@@ -5117,6 +5239,125 @@ if (editingTierListId) {
                   outline: "none",
                 }}
               />
+
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 10,
+                  marginTop: -4,
+                  marginBottom: 14,
+                }}
+              >
+                {titleTranslationLanguages.map((translationLang) => (
+                  <div
+                    key={translationLang}
+                    style={{
+                      display: "grid",
+                      gridTemplateColumns: isMobile
+                        ? "112px minmax(0,1fr) 42px"
+                        : "150px minmax(0,1fr) 52px",
+                      gap: 8,
+                      alignItems: "center",
+                    }}
+                  >
+                    <select
+                      value={translationLang}
+                      onChange={(e) =>
+                        changeTitleTranslationLanguage(translationLang, e.target.value)
+                      }
+                      style={{
+                        width: "100%",
+                        height: 42,
+                        borderRadius: 8,
+                        border: "1px solid #cbd5e1",
+                        background: "#fff",
+                        color: "#111827",
+                        padding: "0 8px",
+                        fontWeight: 800,
+                      }}
+                    >
+                      {TITLE_TRANSLATION_LANGUAGES.map((item) => (
+                        <option
+                          key={item.code}
+                          value={item.code}
+                          disabled={
+                            item.code !== translationLang &&
+                            titleTranslationLanguages.includes(item.code)
+                          }
+                        >
+                          {item.label}
+                        </option>
+                      ))}
+                    </select>
+
+                    <input
+                      value={titleTranslations[translationLang] || ""}
+                      onChange={(e) =>
+                        setTitleTranslations((prev) => ({
+                          ...prev,
+                          [translationLang]: e.target.value,
+                        }))
+                      }
+                      placeholder={titleTranslationCopy.placeholder}
+                      maxLength={80}
+                      style={{
+                        width: "100%",
+                        height: 42,
+                        boxSizing: "border-box",
+                        padding: "0 12px",
+                        borderRadius: 8,
+                        border: "1px solid #cbd5e1",
+                        background: "#fff",
+                        color: "#111827",
+                        fontSize: isMobile ? 15 : 16,
+                        fontWeight: 700,
+                        outline: "none",
+                      }}
+                    />
+
+                    <button
+                      type="button"
+                      onClick={() => removeTitleTranslation(translationLang)}
+                      title={titleTranslationCopy.remove}
+                      aria-label={titleTranslationCopy.remove}
+                      style={{
+                        height: 42,
+                        borderRadius: 8,
+                        border: "1px solid #d7dce4",
+                        background: "#fff",
+                        color: "#6b7280",
+                        cursor: "pointer",
+                        fontSize: 20,
+                        fontWeight: 900,
+                      }}
+                    >
+                      ×
+                    </button>
+                  </div>
+                ))}
+
+                {titleTranslationLanguages.length < TITLE_TRANSLATION_LANGUAGES.length - 1 && (
+                  <button
+                    type="button"
+                    onClick={addTitleTranslation}
+                    style={{
+                      alignSelf: "flex-start",
+                      minHeight: 40,
+                      padding: "0 12px",
+                      borderRadius: 8,
+                      border: "1px solid #2563EB",
+                      background: "#fff",
+                      color: "#1D4ED8",
+                      cursor: "pointer",
+                      fontSize: isMobile ? 14 : 15,
+                      fontWeight: 900,
+                    }}
+                  >
+                    {titleTranslationCopy.add}
+                  </button>
+                )}
+              </div>
 
               <div
                 style={{
