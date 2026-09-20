@@ -340,6 +340,10 @@ const EDIT_STORAGE_KEY =
 const TIER_DRAFT_STORAGE_KEY =
   "onepick_tier_draft_v1";
 
+
+const TIER_BUILDER_UI_STORAGE_KEY =
+  "onepick_tier_builder_ui_v1";
+
 // 임시저장용 직접 업로드 이미지는 localStorage가 아니라 IndexedDB에 보관합니다.
 // File/Blob 객체를 그대로 저장할 수 있어 새로고침/다른 프리셋 이동 후에도 복원 가능합니다.
 const TIER_DRAFT_DB_NAME = "onepick_tier_draft_assets_v1";
@@ -1101,6 +1105,139 @@ const [
     }));
 
 
+  const builderUiHydratedRef =
+    useRef(false);
+
+  useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    try {
+      const raw =
+        sessionStorage.getItem(
+          TIER_BUILDER_UI_STORAGE_KEY
+        );
+
+      if (raw) {
+        const saved =
+          JSON.parse(raw);
+
+        if (
+          typeof saved?.tierListTitle ===
+          "string"
+        ) {
+          setTierListTitle(
+            saved.tierListTitle
+          );
+        }
+
+        const savedTranslations =
+          readTranslationMap(
+            saved?.titleTranslations
+          );
+
+        setTitleTranslations(
+          savedTranslations
+        );
+
+        if (
+          Array.isArray(
+            saved?.titleTranslationLanguages
+          )
+        ) {
+          setTitleTranslationLanguages(
+            saved.titleTranslationLanguages.filter(
+              (code) =>
+                TITLE_TRANSLATION_LANGUAGES.some(
+                  (item) =>
+                    item.code === code
+                )
+            )
+          );
+        } else {
+          setTitleTranslationLanguages(
+            Object.keys(
+              savedTranslations
+            ).filter((code) =>
+              TITLE_TRANSLATION_LANGUAGES.some(
+                (item) =>
+                  item.code === code
+              )
+            )
+          );
+        }
+
+        if (
+          saved?.tierLabels &&
+          typeof saved.tierLabels ===
+            "object" &&
+          !Array.isArray(
+            saved.tierLabels
+          )
+        ) {
+          setTierLabels((prev) => ({
+            ...prev,
+            ...saved.tierLabels,
+          }));
+        }
+
+        if (
+          typeof saved?.selectedCategory ===
+          "string"
+        ) {
+          setSelectedCategory(
+            normalizeTierCategory(
+              saved.selectedCategory
+            )
+          );
+        }
+      }
+    } catch (error) {
+      console.warn(
+        "티어표 입력값 복원 실패:",
+        error
+      );
+    } finally {
+      builderUiHydratedRef.current =
+        true;
+    }
+  }, []);
+
+  useEffect(() => {
+    if (
+      typeof window === "undefined" ||
+      !builderUiHydratedRef.current
+    ) {
+      return;
+    }
+
+    try {
+      sessionStorage.setItem(
+        TIER_BUILDER_UI_STORAGE_KEY,
+        JSON.stringify({
+          tierListTitle,
+          titleTranslations,
+          titleTranslationLanguages,
+          tierLabels,
+          selectedCategory,
+        })
+      );
+    } catch (error) {
+      console.warn(
+        "티어표 입력값 임시 보존 실패:",
+        error
+      );
+    }
+  }, [
+    tierListTitle,
+    titleTranslations,
+    titleTranslationLanguages,
+    tierLabels,
+    selectedCategory,
+  ]);
+
+
   const [
     searchKeyword,
     setSearchKeyword,
@@ -1303,13 +1440,42 @@ const list =
 
     return list.filter(
       (cup) => {
-        const title =
-          String(
-            getTitle(cup) || ""
-          ).toLowerCase();
+        const titleTranslations =
+          readTranslationMap(
+            cup?.title_translations
+          );
 
-        return title.includes(
-          keyword
+        const legacyTitleTranslations =
+          readTranslationMap(
+            cup?.translations?.title
+          );
+
+        const languageFieldTitles =
+          TITLE_TRANSLATION_LANGUAGES.map(
+            (item) =>
+              cup?.[`title_${item.code}`]
+          );
+
+        const searchableTitles = [
+          cup?.title,
+          cup?.title_en,
+          getTitle(cup),
+          ...Object.values(
+            titleTranslations
+          ),
+          ...Object.values(
+            legacyTitleTranslations
+          ),
+          ...languageFieldTitles,
+        ]
+          .filter(Boolean)
+          .map((value) =>
+            String(value).toLowerCase()
+          );
+
+        return searchableTitles.some(
+          (title) =>
+            title.includes(keyword)
         );
       }
     );
@@ -3999,6 +4165,10 @@ if (editingTierListId) {
 
             sessionStorage.removeItem(
               EDIT_STORAGE_KEY
+            );
+
+            sessionStorage.removeItem(
+              TIER_BUILDER_UI_STORAGE_KEY
             );
           } catch {}
 
