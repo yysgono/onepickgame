@@ -276,6 +276,8 @@ export default function BlogPostPage() {
     useState("");
   const [viewCount, setViewCount] =
     useState(0);
+  const [hreflangLangs, setHreflangLangs] =
+    useState([currentLang]);
   const [
     viewCountLoading,
     setViewCountLoading,
@@ -291,21 +293,52 @@ export default function BlogPostPage() {
       setViewCount(0);
 
       try {
-        const { data, error } =
-          await supabase
-            .from("blog_posts")
-            .select(
-              "id, language, slug, title, description, content, created_at"
-            )
-            .eq(
-              "language",
-              currentLang
-            )
-            .eq("slug", slug)
-            .maybeSingle();
+        const [postResult, alternateResult] =
+          await Promise.all([
+            supabase
+              .from("blog_posts")
+              .select(
+                "id, language, slug, title, description, content, created_at"
+              )
+              .eq(
+                "language",
+                currentLang
+              )
+              .eq("slug", slug)
+              .maybeSingle(),
+            supabase
+              .from("blog_posts")
+              .select("language")
+              .eq("slug", slug),
+          ]);
 
         if (!mounted) {
           return;
+        }
+
+        const { data, error } = postResult;
+
+        const alternateLanguages = [
+          ...new Set(
+            (alternateResult.data || [])
+              .map((item) => item?.language)
+              .filter((language) =>
+                SUPPORTED_LANGS.includes(language)
+              )
+          ),
+        ];
+
+        setHreflangLangs(
+          alternateLanguages.length > 0
+            ? alternateLanguages
+            : [currentLang]
+        );
+
+        if (alternateResult.error) {
+          console.warn(
+            "Blog hreflang fetch error:",
+            alternateResult.error
+          );
         }
 
         if (error) {
@@ -543,6 +576,8 @@ export default function BlogPostPage() {
           post.description ||
           `${post.title} - ${brandName}`
         }
+        hreflangLangs={hreflangLangs}
+        type="article"
       />
 
       <main className="blog-page">

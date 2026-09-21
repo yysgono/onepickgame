@@ -761,11 +761,22 @@ ${safeJson(jsonLd)}
       );
     }
 
-    const validAlternates = (
-      alternatePosts || []
-    ).filter((item) =>
-      SUPPORTED_LANGS.includes(item.language)
+    const validAlternates = Array.from(
+      new Map(
+        (alternatePosts || [])
+          .filter((item) =>
+            SUPPORTED_LANGS.includes(item.language)
+          )
+          .map((item) => [item.language, item])
+      ).values()
     );
+
+    if (!validAlternates.some((item) => item.language === lang)) {
+      validAlternates.push({
+        language: lang,
+        slug: post.slug,
+      });
+    }
 
     const hreflangTags = validAlternates
       .map(
@@ -985,6 +996,12 @@ ${safeJson(jsonLd)}
       "Cache-Control",
       "public, s-maxage=300, stale-while-revalidate=3600"
     );
+
+    // Search engines should receive the same representative-URL signals
+    // in both the HTML head and the HTTP response.
+    res.setHeader("Content-Language", lang);
+    res.setHeader("X-Robots-Tag", "index, follow");
+    res.setHeader("Link", `<${canonical}>; rel="canonical"`);
 
     res.setHeader(
       "Content-Type",
