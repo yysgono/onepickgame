@@ -2107,6 +2107,16 @@ useEffect(() => {
 
     });
 
+  const matchStateKey =
+    cup?.id
+      ? `match-state:${cup.id}:${selectedCount || "all"}`
+      : "";
+
+  const matchLanguageSwitchKey =
+    cup?.id
+      ? `match-language-switch:${cup.id}:${selectedCount || "all"}`
+      : "";
+
 
 
   useEffect(() => {
@@ -2138,6 +2148,68 @@ useEffect(() => {
       setLoading(true);
 
       setError("");
+
+      const languageSwitchAt = Number(
+        sessionStorage.getItem(
+          matchLanguageSwitchKey
+        ) || 0
+      );
+
+      const shouldRestoreAfterLanguageSwitch =
+        languageSwitchAt &&
+        Date.now() - languageSwitchAt < 30000;
+
+      if (shouldRestoreAfterLanguageSwitch) {
+        try {
+          const savedState = JSON.parse(
+            sessionStorage.getItem(
+              matchStateKey
+            ) || "null"
+          );
+
+          if (
+            savedState &&
+            String(savedState.cupId) ===
+              String(cup.id) &&
+            Number(savedState.selectedCount) ===
+              Number(selectedCount) &&
+            Array.isArray(savedState.bracket)
+          ) {
+            setBracket(savedState.bracket || []);
+            setPendingWinners(savedState.pendingWinners || []);
+            setIdx(Number(savedState.idx) || 0);
+            setRoundNum(Number(savedState.roundNum) || 1);
+            setMatchHistory(savedState.matchHistory || []);
+            setHistoryStack(savedState.historyStack || []);
+            setSelectedIdx(null);
+            setShowResurrect(Boolean(savedState.showResurrect));
+            setResurrectUsed(Boolean(savedState.resurrectUsed));
+            setEliminatedCandidates(savedState.eliminatedCandidates || []);
+            setAdvanceCandidates(savedState.advanceCandidates || []);
+            setSaving(false);
+            setStatsLoading(false);
+            setSelElim(savedState.selElim || []);
+            setSelAdv(savedState.selAdv || []);
+
+            autoByeIdxRef.current = -1;
+            pickingGuardRef.current = {
+              idx: -1,
+              running: false,
+            };
+
+            sessionStorage.removeItem(
+              matchLanguageSwitchKey
+            );
+            setLoading(false);
+
+            return;
+          }
+        } catch {
+          sessionStorage.removeItem(
+            matchStateKey
+          );
+        }
+      }
 
 
 
@@ -2535,6 +2607,63 @@ useEffect(() => {
 
     selectedCount,
 
+    matchLanguageSwitchKey,
+
+    matchStateKey,
+
+  ]);
+
+  useEffect(() => {
+    if (
+      loading ||
+      !matchStateKey ||
+      !cup?.id ||
+      !Array.isArray(bracket) ||
+      bracket.length === 0
+    ) {
+      return;
+    }
+
+    try {
+      sessionStorage.setItem(
+        matchStateKey,
+        JSON.stringify({
+          cupId: cup.id,
+          selectedCount,
+          bracket,
+          idx,
+          roundNum,
+          pendingWinners,
+          matchHistory,
+          historyStack,
+          showResurrect,
+          resurrectUsed,
+          eliminatedCandidates,
+          advanceCandidates,
+          selElim,
+          selAdv,
+        })
+      );
+    } catch {
+      // Session storage can be unavailable in private modes; the game still works.
+    }
+  }, [
+    loading,
+    matchStateKey,
+    cup?.id,
+    selectedCount,
+    bracket,
+    idx,
+    roundNum,
+    pendingWinners,
+    matchHistory,
+    historyStack,
+    showResurrect,
+    resurrectUsed,
+    eliminatedCandidates,
+    advanceCandidates,
+    selElim,
+    selAdv,
   ]);
 
 
@@ -3061,7 +3190,13 @@ useEffect(() => {
 
       setSaving(false);
 
+      if (matchStateKey) {
+        sessionStorage.removeItem(matchStateKey);
+      }
 
+      if (matchLanguageSwitchKey) {
+        sessionStorage.removeItem(matchLanguageSwitchKey);
+      }
 
       setShouldRedirect({
 
@@ -3767,6 +3902,20 @@ useEffect(() => {
 
     }, 180);
 
+  }
+
+  function handleRandomPick() {
+    if (
+      autoPlaying ||
+      selectedIdx !== null ||
+      !c1 ||
+      !c2 ||
+      showResurrect
+    ) {
+      return;
+    }
+
+    handlePick(Math.random() < 0.5 ? 0 : 1);
   }
 
 
@@ -4785,6 +4934,168 @@ useEffect(() => {
 
                 margin: isMobile
 
+                  ? "10px auto 0"
+
+                  : "14px auto 0",
+
+                display: "flex",
+
+                justifyContent: "center",
+
+                alignItems: "center",
+
+                gap: 10,
+
+                flexWrap: "wrap",
+
+              }}
+
+            >
+
+              <BackArrowButton
+
+                onClick={handleBack}
+
+                disabled={
+
+                  showResurrect ||
+
+                  (
+
+                    resurrectUsed &&
+
+                    roundNum === 3 &&
+
+                    idx === 0
+
+                  ) ||
+
+                  historyStack.length === 0 ||
+
+                  selectedIdx !== null
+
+                }
+
+                style={{
+
+                  minWidth: isMobile ? 132 : 150,
+
+                }}
+
+              />
+
+              <button
+
+                type="button"
+
+                onClick={handleRandomPick}
+
+                disabled={
+
+                  autoPlaying ||
+
+                  selectedIdx !== null ||
+
+                  !c1 ||
+
+                  !c2 ||
+
+                  showResurrect
+
+                }
+
+                style={{
+
+                  display: "inline-flex",
+
+                  justifyContent: "center",
+
+                  alignItems: "center",
+
+                  minWidth: isMobile ? 132 : 150,
+
+                  minHeight: 46,
+
+                  padding: "0 22px",
+
+                  borderRadius: 11,
+
+                  border:
+
+                    selectedIdx !== null || showResurrect
+
+                      ? "1px solid #d1d5db"
+
+                      : "1.5px solid #6650d8",
+
+                  background:
+
+                    selectedIdx !== null || showResurrect
+
+                      ? "#f3f4f6"
+
+                      : "#6650d8",
+
+                  color:
+
+                    selectedIdx !== null || showResurrect
+
+                      ? "#9ca3af"
+
+                      : "#ffffff",
+
+                  fontSize: 16,
+
+                  fontWeight: 900,
+
+                  lineHeight: 1,
+
+                  cursor:
+
+                    selectedIdx !== null || showResurrect
+
+                      ? "not-allowed"
+
+                      : "pointer",
+
+                  boxShadow:
+
+                    selectedIdx !== null || showResurrect
+
+                      ? "none"
+
+                      : "0 4px 16px rgba(102,80,216,0.20)",
+
+                }}
+
+              >
+
+                {t("match_random_select", {
+
+                  defaultValue: "랜덤 선택",
+
+                })}
+
+              </button>
+
+            </div>
+
+          )}
+
+
+
+          {c1 && c2 && (
+
+            <div
+
+              style={{
+
+                width: "100%",
+
+                maxWidth: 720,
+
+                margin: isMobile
+
                   ? "8px auto 0"
 
                   : "12px auto 0",
@@ -5046,52 +5357,6 @@ useEffect(() => {
           )}
 
 
-
-          <div
-
-            style={{
-
-              display: "flex",
-
-              justifyContent: "center",
-
-              marginTop: isMobile
-
-                ? 12
-
-                : 16,
-
-            }}
-
-          >
-
-            <BackArrowButton
-
-              onClick={handleBack}
-
-              disabled={
-
-                showResurrect ||
-
-                (
-
-                  resurrectUsed &&
-
-                  roundNum === 3 &&
-
-                  idx === 0
-
-                ) ||
-
-                historyStack.length === 0 ||
-
-                selectedIdx !== null
-
-              }
-
-            />
-
-          </div>
 
         </div>
 

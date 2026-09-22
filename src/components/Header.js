@@ -365,6 +365,14 @@ export default function Header({
         }
       }
 
+      const matchPathMatch = pathname.match(/^\/[a-z]{2}\/match\/([^/?#]+)\/([^/?#]+)\/?$/i);
+      if (matchPathMatch) {
+        sessionStorage.setItem(
+          `match-language-switch:${matchPathMatch[1]}:${matchPathMatch[2]}`,
+          String(Date.now())
+        );
+      }
+
       const parts =
         pathname
           .split("/")
