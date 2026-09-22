@@ -94,28 +94,6 @@ function GameModeNav({
 
     },
 
-    {
-
-      key: "blind-ranking",
-
-      icon: "👑",
-
-      label: t("gameModeNav.blindRanking"),
-
-      description: t("gameModeNav.blindRankingDesc"),
-
-      border: "#dde2ea",
-
-      background:
-
-        "#f5f6fa",
-
-      shadow: "rgba(168,85,247,0.22)",
-
-      statusColor: "#c68cff",
-
-    },
-
   ];
 
 
@@ -234,9 +212,9 @@ function GameModeNav({
 
           gridTemplateColumns: isMobile
 
-            ? "repeat(2, minmax(0, 1fr))"
+            ? "repeat(3, minmax(0, 1fr))"
 
-            : "repeat(4, 210px)",
+            : "repeat(3, 210px)",
 
           justifyContent: "center",
 
@@ -629,9 +607,9 @@ function GameModeNav({
 
     gridTemplateColumns: isMobile
 
-      ? "repeat(2, minmax(0, 1fr))"
+      ? "repeat(3, minmax(0, 1fr))"
 
-      : "repeat(4, 210px)",
+      : "repeat(3, 210px)",
 
 
 
@@ -793,68 +771,6 @@ function GameModeNav({
     }}
   >
     {t("gameModeNav.quiz")}
-  </button>
-
-{/* 블라인드 랭킹 - 준비 중 */}
-
-  <button
-
-    type="button"
-
-    disabled
-
-    style={{
-
-      width: "100%",
-
-      minHeight: isMobile ? 42 : 46,
-
-
-
-      border: "1px solid #dde2ea",
-
-      borderRadius: 9,
-
-
-
-      background:
-
-        "#f5f6fa",
-
-
-
-      color: "#596579",
-
-
-
-      fontSize: isMobile ? 14 : 18,
-
-      fontWeight: 900,
-
-
-
-      fontFamily: "'Pretendard', sans-serif",
-
-
-
-      cursor: "not-allowed",
-
-
-
-      opacity: 0.65,
-
-
-
-      boxShadow:
-
-        "0 4px 16px rgba(25,32,52,0.07)",
-
-    }}
-
-  >
-
-    {t("gameModeNav.blindRanking")}
-
   </button>
 
 </div>

@@ -1429,7 +1429,7 @@ export default function Header({
 
     letterSpacing: "-0.035em",
 
-    display: "inline-block",
+    display: isMobile ? "none" : "inline-block",
 
     lineHeight: 1,
 
