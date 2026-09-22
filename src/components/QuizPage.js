@@ -57,6 +57,7 @@ import {
 
 
 import PageIntro from "./PageIntro";
+import ContentNav from "./ContentNav";
 
 
 
@@ -162,6 +163,27 @@ const CATEGORIES = [
 
 ];
 
+const SORTS = [
+  "popular",
+  "latest",
+];
+
+function getAllowedParam(search, key, allowed, fallback) {
+  const value = new URLSearchParams(search || "").get(key);
+  return allowed.includes(value) ? value : fallback;
+}
+
+function buildFilterSlug(base, filters) {
+  const params = new URLSearchParams();
+
+  Object.entries(filters).forEach(([key, value]) => {
+    if (value) params.set(key, value);
+  });
+
+  const query = params.toString();
+  return query ? `${base}?${query}` : base;
+}
+
 
 
 
@@ -256,7 +278,7 @@ function localized(
 
 
 
-export default function QuizPage() {
+export default function QuizPage({ user = null }) {
 
 
 
@@ -431,6 +453,21 @@ export default function QuizPage() {
 
 
   const seo = getQuizSeo(lang);
+  const mineOnly = new URLSearchParams(location.search || "").get("mine") === "1";
+
+  const initialCategory = getAllowedParam(
+    location.search,
+    "category",
+    CATEGORIES,
+    "all"
+  );
+
+  const initialSort = getAllowedParam(
+    location.search,
+    "sort",
+    SORTS,
+    "popular"
+  );
 
 
 
@@ -514,7 +551,7 @@ export default function QuizPage() {
 
 
 
-  ] = useState("all");
+  ] = useState(initialCategory);
 
 
 
@@ -534,15 +571,7 @@ export default function QuizPage() {
 
 
 
-  ] = useState(
-
-
-
-    "popular"
-
-
-
-  );
+  ] = useState(initialSort);
 
 
 
@@ -759,6 +788,86 @@ export default function QuizPage() {
 
 
   );
+
+  const updateQuizFilterUrl = (nextCategory, nextSort) => {
+    const params = new URLSearchParams(location.search || "");
+
+    if (nextCategory && nextCategory !== "all") {
+      params.set("category", nextCategory);
+    } else {
+      params.delete("category");
+    }
+
+    if (nextSort && nextSort !== "popular") {
+      params.set("sort", nextSort);
+    } else {
+      params.delete("sort");
+    }
+
+    const query = params.toString();
+
+    navigate(
+      `${location.pathname}${query ? `?${query}` : ""}${location.hash || ""}`,
+      { replace: false }
+    );
+  };
+
+  const changeCategory = (nextCategory) => {
+    setCategory(nextCategory);
+    updateQuizFilterUrl(nextCategory, sort);
+  };
+
+  const changeSort = (nextSort) => {
+    setSort(nextSort);
+    updateQuizFilterUrl(category, nextSort);
+  };
+
+  useEffect(() => {
+    const nextCategory = getAllowedParam(
+      location.search,
+      "category",
+      CATEGORIES,
+      "all"
+    );
+    const nextSort = getAllowedParam(
+      location.search,
+      "sort",
+      SORTS,
+      "popular"
+    );
+
+    if (nextCategory !== category) {
+      setCategory(nextCategory);
+    }
+
+    if (nextSort !== sort) {
+      setSort(nextSort);
+    }
+  }, [location.search]);
+
+  const activeCategoryLabel = c[category] || c.all;
+  const isFilteredQuizPage =
+    category !== "all" || sort !== "popular";
+
+  const quizSeoSlug = buildFilterSlug("quiz", {
+    mine: mineOnly ? "1" : "",
+    category: category !== "all" ? category : "",
+    sort: sort !== "popular" ? sort : "",
+  });
+
+  const quizSeoTitle = isFilteredQuizPage
+    ? lang === "ko"
+      ? `${activeCategoryLabel} 퀴즈 맞히기 | 원픽게임`
+      : `${activeCategoryLabel} Quizzes | OnePickGame`
+    : seo.title;
+
+  const quizSeoIndexable = !mineOnly;
+
+  const quizSeoDescription = isFilteredQuizPage
+    ? lang === "ko"
+      ? `${activeCategoryLabel} 카테고리의 인기 퀴즈와 최신 퀴즈를 원픽게임에서 무료로 풀어보세요.`
+      : `Play popular and latest ${activeCategoryLabel} quizzes for free on OnePickGame.`
+    : seo.description;
 
 
 
@@ -1012,8 +1121,6 @@ export default function QuizPage() {
 
       contentLanguage,
 
-
-
       limit: 4,
 
 
@@ -1116,6 +1223,14 @@ export default function QuizPage() {
 
     setError("");
 
+    if (mineOnly && !user?.id) {
+      setRows([]);
+      setLoading(false);
+      return () => {
+        alive = false;
+      };
+    }
+
 
 
 
@@ -1155,6 +1270,8 @@ export default function QuizPage() {
 
 
       contentLanguage,
+
+      ownerId: mineOnly ? user?.id || "" : "",
 
 
 
@@ -1275,6 +1392,10 @@ export default function QuizPage() {
 
 
     contentLanguage,
+
+    mineOnly,
+
+    user?.id,
 
 
 
@@ -1550,15 +1671,15 @@ export default function QuizPage() {
 
 
 
-        slug="quiz"
+        slug={quizSeoSlug}
 
 
 
-        title={seo.title}
+        title={quizSeoTitle}
 
 
 
-        description={seo.description}
+        description={quizSeoDescription}
 
 
 
@@ -1568,9 +1689,15 @@ export default function QuizPage() {
 
         hreflangLangs={seo.languages}
 
+        indexable={quizSeoIndexable}
+
 
 
       />
+
+      {mineOnly && (
+        <ContentNav active="quiz" user={user} />
+      )}
 
 
 
@@ -2192,7 +2319,7 @@ export default function QuizPage() {
 
 
 
-        {recommended.length >
+        {!mineOnly && recommended.length >
 
 
 
@@ -3725,7 +3852,7 @@ export default function QuizPage() {
 
 
 
-                    setCategory(
+                    changeCategory(
 
 
 
@@ -3953,7 +4080,7 @@ export default function QuizPage() {
 
 
 
-                    setSort(
+                    changeSort(
 
 
 

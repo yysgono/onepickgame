@@ -32,6 +32,90 @@
     <priority>0.9</priority>
   </url>
   <url>
+    <loc>https://www.onepickgame.com/de/quiz</loc>
+    
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://www.onepickgame.com/de/quiz?category=game</loc>
+    
+    <changefreq>daily</changefreq>
+    <priority>0.82</priority>
+  </url>
+  <url>
+    <loc>https://www.onepickgame.com/de/quiz?category=entertainment</loc>
+    
+    <changefreq>daily</changefreq>
+    <priority>0.82</priority>
+  </url>
+  <url>
+    <loc>https://www.onepickgame.com/de/quiz?category=animation</loc>
+    
+    <changefreq>daily</changefreq>
+    <priority>0.82</priority>
+  </url>
+  <url>
+    <loc>https://www.onepickgame.com/de/quiz?category=food</loc>
+    
+    <changefreq>daily</changefreq>
+    <priority>0.82</priority>
+  </url>
+  <url>
+    <loc>https://www.onepickgame.com/de/quiz?category=sports</loc>
+    
+    <changefreq>daily</changefreq>
+    <priority>0.82</priority>
+  </url>
+  <url>
+    <loc>https://www.onepickgame.com/de/quiz?category=knowledge</loc>
+    
+    <changefreq>daily</changefreq>
+    <priority>0.82</priority>
+  </url>
+  <url>
+    <loc>https://www.onepickgame.com/de/quiz?category=other</loc>
+    
+    <changefreq>daily</changefreq>
+    <priority>0.82</priority>
+  </url>
+  <url>
+    <loc>https://www.onepickgame.com/de/tier-list?category=game</loc>
+    
+    <changefreq>daily</changefreq>
+    <priority>0.82</priority>
+  </url>
+  <url>
+    <loc>https://www.onepickgame.com/de/tier-list?category=entertainment</loc>
+    
+    <changefreq>daily</changefreq>
+    <priority>0.82</priority>
+  </url>
+  <url>
+    <loc>https://www.onepickgame.com/de/tier-list?category=animation</loc>
+    
+    <changefreq>daily</changefreq>
+    <priority>0.82</priority>
+  </url>
+  <url>
+    <loc>https://www.onepickgame.com/de/tier-list?category=food</loc>
+    
+    <changefreq>daily</changefreq>
+    <priority>0.82</priority>
+  </url>
+  <url>
+    <loc>https://www.onepickgame.com/de/tier-list?category=sports</loc>
+    
+    <changefreq>daily</changefreq>
+    <priority>0.82</priority>
+  </url>
+  <url>
+    <loc>https://www.onepickgame.com/de/tier-list?category=other</loc>
+    
+    <changefreq>daily</changefreq>
+    <priority>0.82</priority>
+  </url>
+  <url>
     <loc>https://www.onepickgame.com/de/category/korea</loc>
     
     <changefreq>daily</changefreq>
@@ -867,7 +951,7 @@
   </url>
   <url>
     <loc>https://www.onepickgame.com/de/select-round/ff87a4d4-702e-4910-87bb-ddec4fb724e2</loc>
-    <lastmod>2026-09-21</lastmod>
+    <lastmod>2026-09-22</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -998,6 +1082,12 @@
     <priority>0.75</priority>
   </url>
   <url>
+    <loc>https://www.onepickgame.com/de/tier-list/188c5fa4-87b9-4651-8d4f-72771e2f63a2</loc>
+    <lastmod>2026-09-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
     <loc>https://www.onepickgame.com/de/tier-list/57637935-6677-4171-98ae-e448084632ed</loc>
     <lastmod>2026-09-18</lastmod>
     <changefreq>weekly</changefreq>
@@ -1014,5 +1104,161 @@
     <lastmod>2026-09-20</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://www.onepickgame.com/de/quiz/90048422-97ed-4564-b1df-85af4b75ebcf</loc>
+    
+    <changefreq>weekly</changefreq>
+    <priority>0.74</priority>
+  </url>
+  <url>
+    <loc>https://www.onepickgame.com/de/quiz/9eee8753-9d9e-490d-93f4-9bb7e0b73d77</loc>
+    
+    <changefreq>weekly</changefreq>
+    <priority>0.74</priority>
+  </url>
+  <url>
+    <loc>https://www.onepickgame.com/de/quiz/5a34eb9b-4609-4a0d-b378-2d0fe4b84483</loc>
+    
+    <changefreq>weekly</changefreq>
+    <priority>0.74</priority>
+  </url>
+  <url>
+    <loc>https://www.onepickgame.com/de/quiz/47a73852-cc47-4b84-8539-088aea47df2d</loc>
+    
+    <changefreq>weekly</changefreq>
+    <priority>0.74</priority>
+  </url>
+  <url>
+    <loc>https://www.onepickgame.com/de/quiz/afbce14e-065c-4f86-8830-6416e5d3ef9a</loc>
+    
+    <changefreq>weekly</changefreq>
+    <priority>0.74</priority>
+  </url>
+  <url>
+    <loc>https://www.onepickgame.com/de/quiz/b8932287-1001-4e46-817c-73f2286bf8c6</loc>
+    
+    <changefreq>weekly</changefreq>
+    <priority>0.74</priority>
+  </url>
+  <url>
+    <loc>https://www.onepickgame.com/de/quiz/a049b9d8-ed83-4db1-a80b-a5e91d648674</loc>
+    
+    <changefreq>weekly</changefreq>
+    <priority>0.74</priority>
+  </url>
+  <url>
+    <loc>https://www.onepickgame.com/de/quiz/5cc9c959-d9c6-472d-a302-1f8f86e41431</loc>
+    
+    <changefreq>weekly</changefreq>
+    <priority>0.74</priority>
+  </url>
+  <url>
+    <loc>https://www.onepickgame.com/de/quiz/79e3b959-b37d-4aaf-9de4-05ceee06ff14</loc>
+    
+    <changefreq>weekly</changefreq>
+    <priority>0.74</priority>
+  </url>
+  <url>
+    <loc>https://www.onepickgame.com/de/quiz/01ed95c8-a611-4bc2-baa0-28ffd55188d8</loc>
+    
+    <changefreq>weekly</changefreq>
+    <priority>0.74</priority>
+  </url>
+  <url>
+    <loc>https://www.onepickgame.com/de/quiz/b7882e70-f408-4a3a-a982-abced024f93e</loc>
+    
+    <changefreq>weekly</changefreq>
+    <priority>0.74</priority>
+  </url>
+  <url>
+    <loc>https://www.onepickgame.com/de/quiz/8133accc-413a-4f74-9d35-08040b7b172c</loc>
+    
+    <changefreq>weekly</changefreq>
+    <priority>0.74</priority>
+  </url>
+  <url>
+    <loc>https://www.onepickgame.com/de/quiz/2092fa3e-7380-4d2a-a1a8-20cba151e1af</loc>
+    
+    <changefreq>weekly</changefreq>
+    <priority>0.74</priority>
+  </url>
+  <url>
+    <loc>https://www.onepickgame.com/de/quiz/4c469e03-41d3-4b79-a115-f14655af32d5</loc>
+    
+    <changefreq>weekly</changefreq>
+    <priority>0.74</priority>
+  </url>
+  <url>
+    <loc>https://www.onepickgame.com/de/quiz/77e71849-02e4-4ebd-9742-6685dd77e8e3</loc>
+    
+    <changefreq>weekly</changefreq>
+    <priority>0.74</priority>
+  </url>
+  <url>
+    <loc>https://www.onepickgame.com/de/quiz/437bc380-4a12-467d-b6df-9622a55cc03f</loc>
+    
+    <changefreq>weekly</changefreq>
+    <priority>0.74</priority>
+  </url>
+  <url>
+    <loc>https://www.onepickgame.com/de/quiz/6eb935d1-0e67-439f-9a4b-06ddc251ef88</loc>
+    
+    <changefreq>weekly</changefreq>
+    <priority>0.74</priority>
+  </url>
+  <url>
+    <loc>https://www.onepickgame.com/de/quiz/f763fded-49e2-49f1-816e-ee0b027b3338</loc>
+    
+    <changefreq>weekly</changefreq>
+    <priority>0.74</priority>
+  </url>
+  <url>
+    <loc>https://www.onepickgame.com/de/quiz/87a42bbb-d2f7-45dd-95ad-2aafcdb8f580</loc>
+    
+    <changefreq>weekly</changefreq>
+    <priority>0.74</priority>
+  </url>
+  <url>
+    <loc>https://www.onepickgame.com/de/quiz/dff67f90-736b-43e5-8338-fb0ab12ba920</loc>
+    
+    <changefreq>weekly</changefreq>
+    <priority>0.74</priority>
+  </url>
+  <url>
+    <loc>https://www.onepickgame.com/de/quiz/631a4968-c367-46d7-980c-754761fd6415</loc>
+    
+    <changefreq>weekly</changefreq>
+    <priority>0.74</priority>
+  </url>
+  <url>
+    <loc>https://www.onepickgame.com/de/quiz/6b8d552e-ba7e-48d0-aa94-3e84448aa8dc</loc>
+    
+    <changefreq>weekly</changefreq>
+    <priority>0.74</priority>
+  </url>
+  <url>
+    <loc>https://www.onepickgame.com/de/quiz/a85c4e20-39b1-49f9-b1dd-f3e42089c535</loc>
+    
+    <changefreq>weekly</changefreq>
+    <priority>0.74</priority>
+  </url>
+  <url>
+    <loc>https://www.onepickgame.com/de/quiz/205dc4d9-7390-4c52-a52e-619a8516effd</loc>
+    
+    <changefreq>weekly</changefreq>
+    <priority>0.74</priority>
+  </url>
+  <url>
+    <loc>https://www.onepickgame.com/de/quiz/3181c4f8-fbba-481e-8178-dc3fc4a4f005</loc>
+    
+    <changefreq>weekly</changefreq>
+    <priority>0.74</priority>
+  </url>
+  <url>
+    <loc>https://www.onepickgame.com/de/quiz/c08b9dcd-c7b9-4a47-8849-aad21b4c0004</loc>
+    
+    <changefreq>weekly</changefreq>
+    <priority>0.74</priority>
   </url>
 </urlset>

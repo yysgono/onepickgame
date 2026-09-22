@@ -10,6 +10,7 @@ export default function ContentNav({ active, user, authChecked = true }) {
     <nav aria-label={t('lightUi.myContent', 'My content')}>
       <Link to={`/${lang}/my-worldcups`} aria-current={active === 'worldcup' ? 'page' : undefined}>{t('presetNavigation.myBrackets')}</Link>
       <Link to={`/${lang}/tier-list?mine=1`} aria-current={active === 'tier-list' ? 'page' : undefined}>{t('presetNavigation.myTierLists')}</Link>
+      <Link to={`/${lang}/quiz?mine=1`} aria-current={active === 'quiz' ? 'page' : undefined}>{t('headerPersonal.myQuizzes')}</Link>
     </nav>
     {authChecked && !user && <p className="content-login-hint">{t('lightUi.loginToView', 'Sign in to see your creations.')} <Link to={`/${lang}/login`}>{t('auth.loginSignup')}</Link></p>}
   </section>;

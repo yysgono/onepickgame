@@ -1823,7 +1823,7 @@ const makerDescMap = {
 />
 <Route
   path="/:lang/quiz"
-  element={<QuizPage />}
+  element={<QuizPage user={user} />}
 />
 <Route
   path="/:lang/quiz/create"

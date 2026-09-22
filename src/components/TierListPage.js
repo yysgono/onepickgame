@@ -68,6 +68,20 @@ const SORT_VALUES = [
   "mostCreated",
 ];
 
+function getAllowedParam(search, key, allowed, fallback) {
+  const value = new URLSearchParams(search || "").get(key);
+  return allowed.includes(value) ? value : fallback;
+}
+
+function buildFilterSlug(base, filters) {
+  const params = new URLSearchParams();
+  Object.entries(filters).forEach(([key, value]) => {
+    if (value) params.set(key, value);
+  });
+  const query = params.toString();
+  return query ? `${base}?${query}` : base;
+}
+
 const LANGUAGES = [
   { code: "en", label: "English" },
   { code: "ko", label: "한국어" },
@@ -210,6 +224,18 @@ function TierListPage({
   const excludedTierId = useMemo(() => new URLSearchParams(location.search).get("exclude") || "", [location.search]);
 
   const tagFilter = useMemo(() => normalizeTags([new URLSearchParams(location.search).get("tag") || ""])[0] || "", [location.search]);
+  const initialCategory = getAllowedParam(
+    location.search,
+    "category",
+    CATEGORY_VALUES,
+    "all"
+  );
+  const initialSort = getAllowedParam(
+    location.search,
+    "sort",
+    SORT_VALUES,
+    "popular"
+  );
   const [currentUserId, setCurrentUserId] = useState(null);
   const [authChecked, setAuthChecked] = useState(false);
 
@@ -281,12 +307,12 @@ function TierListPage({
   const [
     category,
     setCategory,
-  ] = useState("all");
+  ] = useState(initialCategory);
 
   const [
     sort,
     setSort,
-  ] = useState("popular");
+  ] = useState(initialSort);
 
   const [
     page,
@@ -317,6 +343,61 @@ function TierListPage({
     tierPresetLoaded,
     setTierPresetLoaded,
   ] = useState(false);
+
+  const updateTierFilterUrl = (nextCategory, nextSort) => {
+    const params = new URLSearchParams(location.search || "");
+
+    if (nextCategory && nextCategory !== "all") {
+      params.set("category", nextCategory);
+    } else {
+      params.delete("category");
+    }
+
+    if (nextSort && nextSort !== "popular") {
+      params.set("sort", nextSort);
+    } else {
+      params.delete("sort");
+    }
+
+    const query = params.toString();
+    navigate(
+      `${location.pathname}${query ? `?${query}` : ""}${location.hash || ""}`,
+      { replace: false }
+    );
+  };
+
+  const changeCategory = (nextCategory) => {
+    setCategory(nextCategory);
+    updateTierFilterUrl(nextCategory, sort);
+  };
+
+  const changeSort = (nextSort) => {
+    setSort(nextSort);
+    updateTierFilterUrl(category, nextSort);
+  };
+
+  useEffect(() => {
+    const nextCategory = getAllowedParam(
+      location.search,
+      "category",
+      CATEGORY_VALUES,
+      "all"
+    );
+    const nextSort = getAllowedParam(
+      location.search,
+      "sort",
+      SORT_VALUES,
+      "popular"
+    );
+
+    if (nextCategory !== category) {
+      setCategory(nextCategory);
+    }
+
+    if (nextSort !== sort) {
+      setSort(nextSort);
+    }
+  }, [location.search]);
 
   /* =====================================================
      추천 프리셋 인기순 fallback용 참여 횟수
@@ -1281,17 +1362,45 @@ const displayTitle =
   t,
 ]);
 
-  const seoTitle = t("tierList.seo.listTitle");
-  const seoDescription = t("tierList.seo.listDescription");
+  const activeCategoryLabel = t(
+    `tierList.categories.${category}`,
+    { defaultValue: category }
+  );
+
+  const isFilteredTierPage =
+    category !== "all" || sort !== "popular";
+
+  const seoSlug = buildFilterSlug("tier-list", {
+    category: category !== "all" ? category : "",
+    sort: sort !== "popular" ? sort : "",
+  });
+
+  const seoTitle = isFilteredTierPage
+    ? lang === "ko"
+      ? `${activeCategoryLabel} 티어표 모음 | 원픽게임`
+      : `${activeCategoryLabel} Tier Lists | OnePickGame`
+    : t("tierList.seo.listTitle");
+
+  const seoDescription = isFilteredTierPage
+    ? lang === "ko"
+      ? `${activeCategoryLabel} 카테고리의 인기 티어표와 최신 티어표를 원픽게임에서 둘러보세요.`
+      : `Browse popular and latest ${activeCategoryLabel} tier lists on OnePickGame.`
+    : t("tierList.seo.listDescription");
+
+  const seoIndexable =
+    !mineOnly &&
+    !sourceWorldcupFilter &&
+    !presetNameFilter &&
+    !tagFilter;
 
   return (
     <>
       <Seo
         lang={lang}
-        slug="tier-list"
+        slug={seoSlug}
         title={seoTitle}
         description={seoDescription}
-        indexable={!mineOnly}
+        indexable={seoIndexable}
       />
 
     {mineOnly && <ContentNav active="tier-list" user={currentUserId} authChecked={authChecked} />}
@@ -1971,7 +2080,7 @@ style={{
                   aria-pressed={category === value}
                   className="tier-filter"
                   onClick={() =>
-                    setCategory(
+                    changeCategory(
                       value
                     )
                   }
@@ -2035,7 +2144,7 @@ style={{
                   aria-pressed={sort === value}
                   className="tier-filter"
                   onClick={() =>
-                    setSort(
+                    changeSort(
                       value
                     )
                   }

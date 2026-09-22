@@ -63,6 +63,7 @@ export async function getQuizzes({
   category = "all",
   sort = "popular",
   contentLanguage = "",
+  ownerId = "",
   limit = 60,
 } = {}) {
   const key = JSON.stringify({
@@ -71,6 +72,7 @@ export async function getQuizzes({
     category,
     sort,
     contentLanguage,
+    ownerId,
     limit,
   });
 
@@ -92,6 +94,10 @@ export async function getQuizzes({
 
     if (contentLanguage) {
       query = query.contains("content_languages", [contentLanguage]);
+    }
+
+    if (ownerId) {
+      query = query.eq("user_id", ownerId);
     }
 
     if (search.trim()) {

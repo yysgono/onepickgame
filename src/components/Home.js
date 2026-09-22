@@ -1209,6 +1209,58 @@ const scrollCategoryRow = (
 
   }
 
+  function getCandidateName(candidate) {
+    return (
+      candidate?.name_translations?.[lang] ||
+      candidate?.name_translations?.en ||
+      candidate?.name ||
+      candidate?.title ||
+      ""
+    ).toString().trim();
+  }
+
+  function getPopularCandidateLine(cup, winStats) {
+    const candidates = Array.isArray(cup?.data) ? cup.data : [];
+
+    if (!candidates.length) {
+      return getWorldcupDescription(cup, lang);
+    }
+
+    const rankedFromStats = Array.isArray(winStats) && winStats.length
+      ? [...winStats]
+          .map((row, index) => ({ ...row, _originIdx: index }))
+          .sort((a, b) => {
+            if ((b.win_count || 0) !== (a.win_count || 0)) {
+              return (b.win_count || 0) - (a.win_count || 0);
+            }
+            if ((b.match_wins || 0) !== (a.match_wins || 0)) {
+              return (b.match_wins || 0) - (a.match_wins || 0);
+            }
+            return a._originIdx - b._originIdx;
+          })
+          .map((row) =>
+            candidates.find((candidate) => String(candidate.id) === String(row.candidate_id))
+          )
+          .filter(Boolean)
+      : [];
+
+    const rankedIds = new Set(rankedFromStats.map((candidate) => String(candidate.id)));
+    const ranked = [
+      ...rankedFromStats,
+      ...candidates.filter((candidate) => !rankedIds.has(String(candidate.id))),
+    ];
+
+    const names = ranked
+      .map(getCandidateName)
+      .filter(Boolean);
+
+    if (!names.length) {
+      return getWorldcupDescription(cup, lang);
+    }
+
+    return names.join(" · ");
+  }
+
 
 
   function isMine(cup) {
@@ -2036,21 +2088,7 @@ fontWeight: 800,
 
       <div className="worldcup-card-description" style={cardDescStyle}><span className="card-description-text">
 
-        {cup.description_translations?.[
-
-          lang
-
-        ] ||
-
-          cup.description_translations
-
-            ?.en ||
-
-          cup.description ||
-
-          cup.desc ||
-
-          ""}
+        {getPopularCandidateLine(cup, winStats)}
 
       </span></div>
 

@@ -47,6 +47,25 @@ const CATEGORY_SLUGS = [
   "etc",
 ];
 
+const QUIZ_CATEGORY_SLUGS = [
+  "game",
+  "entertainment",
+  "animation",
+  "food",
+  "sports",
+  "knowledge",
+  "other",
+];
+
+const TIER_CATEGORY_SLUGS = [
+  "game",
+  "entertainment",
+  "animation",
+  "food",
+  "sports",
+  "other",
+];
+
 // ======================================================
 // Supabase
 // ======================================================
@@ -99,7 +118,7 @@ function formatDate(dateValue) {
 }
 
 function getContentLastmod(item) {
-  return formatDate(item?.updated_at || item?.modified_at || item?.created_at);
+  return formatDate(item?.updated_at || item?.modified_at);
 }
 
 // ======================================================
@@ -194,13 +213,29 @@ async function fetchTierLists() {
 }
 
 // ======================================================
+// 퀴즈 데이터 가져오기
+// ======================================================
+
+async function fetchQuizzes() {
+  console.log("🔎 Supabase quizzes 전체 조회 중...");
+
+  return fetchAllRows({
+    table: "quizzes",
+    select: "id, created_at, original_language, content_languages, title_translations, description_translations",
+    applyFilters: (query) => query.eq("is_published", true),
+    label: "공개 퀴즈",
+  });
+}
+
+// ======================================================
 // 언어별 sitemap 생성
 // ======================================================
 
 export function generateLanguageSitemap(
   lang,
   worldcups,
-  tierLists
+  tierLists,
+  quizzes = []
 ) {
   // Do not advertise the build date as a content modification date.
   const today = "";
@@ -250,6 +285,32 @@ export function generateLanguageSitemap(
     changefreq: "daily",
     priority: "0.9",
   });
+
+  // 퀴즈 목록
+  xml += makeUrlEntry({
+    loc: `${BASE_URL}/${lang}/quiz`,
+    lastmod: today,
+    changefreq: "daily",
+    priority: "0.9",
+  });
+
+  for (const categorySlug of QUIZ_CATEGORY_SLUGS) {
+    xml += makeUrlEntry({
+      loc: `${BASE_URL}/${lang}/quiz?category=${categorySlug}`,
+      lastmod: today,
+      changefreq: "daily",
+      priority: "0.82",
+    });
+  }
+
+  for (const categorySlug of TIER_CATEGORY_SLUGS) {
+    xml += makeUrlEntry({
+      loc: `${BASE_URL}/${lang}/tier-list?category=${categorySlug}`,
+      lastmod: today,
+      changefreq: "daily",
+      priority: "0.82",
+    });
+  }
 
   for (const categorySlug of CATEGORY_SLUGS) {
     xml += makeUrlEntry({
@@ -309,7 +370,7 @@ export function generateLanguageSitemap(
       String(tierList.original_language || "").toLowerCase().split("-")[0],
     ].filter(Boolean));
 
-    if (!availableLanguages.has(lang)) continue;
+    if (availableLanguages.size > 0 && !availableLanguages.has(lang)) continue;
 
     xml += makeUrlEntry({
       loc:
@@ -318,6 +379,32 @@ export function generateLanguageSitemap(
       lastmod: getContentLastmod(tierList),
       changefreq: "weekly",
       priority: "0.75",
+    });
+  }
+
+  // ====================================================
+  // 개별 퀴즈
+  // ====================================================
+
+  for (const quiz of quizzes) {
+    if (!quiz?.id) continue;
+
+    const availableLanguages = new Set([
+      ...(Array.isArray(quiz.content_languages)
+        ? quiz.content_languages
+        : []),
+      String(quiz.original_language || "").toLowerCase().split("-")[0],
+    ].map((value) => String(value || "").toLowerCase().split("-")[0]).filter(Boolean));
+
+    if (!availableLanguages.has(lang)) continue;
+
+    xml += makeUrlEntry({
+      loc:
+        `${BASE_URL}/${lang}` +
+        `/quiz/${quiz.id}`,
+      lastmod: getContentLastmod(quiz),
+      changefreq: "weekly",
+      priority: "0.74",
     });
   }
 
@@ -393,13 +480,17 @@ async function generateSitemaps() {
     const tierLists =
       await fetchTierLists();
 
+    const quizzes =
+      await fetchQuizzes();
+
     // 언어별 sitemap 생성
     for (const lang of LANGS) {
       const xml =
         generateLanguageSitemap(
           lang,
           worldcups,
-          tierLists
+          tierLists,
+          quizzes
         );
 
       const filePath =
@@ -419,7 +510,7 @@ async function generateSitemaps() {
       fs.renameSync(tempPath, filePath);
 
       console.log(
-        `✅ ${lang}: ${worldcups.length}개 월드컵 + ${tierLists.length}개 티어표 → ${filePath}`
+        `✅ ${lang}: ${worldcups.length}개 월드컵 + ${tierLists.length}개 티어표 + ${quizzes.length}개 퀴즈 → ${filePath}`
       );
     }
 
@@ -457,7 +548,7 @@ async function generateSitemaps() {
 
     console.log("");
     console.log(
-      `🎉 총 ${worldcups.length}개 월드컵 + ${tierLists.length}개 티어표 × ${LANGS.length}개 언어`
+      `🎉 총 ${worldcups.length}개 월드컵 + ${tierLists.length}개 티어표 + ${quizzes.length}개 퀴즈 × ${LANGS.length}개 언어`
     );
 
     console.log(
