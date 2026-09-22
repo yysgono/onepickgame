@@ -1,0 +1,152 @@
+.content-hub {
+  width: min(1080px, calc(100% - 32px));
+  margin: 34px auto 72px;
+  color: #202534;
+}
+
+.content-hub-heading {
+  margin-bottom: 22px;
+}
+
+.content-hub-heading h1 {
+  margin: 0;
+  font-size: clamp(28px, 4vw, 40px);
+  line-height: 1.15;
+  font-weight: 900;
+  letter-spacing: -0.04em;
+}
+
+.content-hub-heading p {
+  margin: 8px 0 0;
+  color: #6b7280;
+  font-size: 16px;
+  font-weight: 650;
+}
+
+.content-type-nav {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.content-type-card {
+  min-height: 112px;
+  padding: 18px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  border-radius: 17px;
+  color: #202534;
+  text-decoration: none;
+  box-sizing: border-box;
+  transition: transform 0.16s ease, box-shadow 0.16s ease;
+}
+
+.content-type-card:hover {
+  transform: translateY(-3px);
+}
+
+.content-type-worldcup {
+  border: 2px solid #806cf0;
+  background: #f1efff;
+  box-shadow: 0 8px 24px rgba(102, 80, 216, 0.14);
+}
+
+.content-type-tier-list {
+  border: 2px solid #19bfff;
+  background: #ecfaff;
+  box-shadow: 0 8px 24px rgba(25, 191, 255, 0.14);
+}
+
+.content-type-quiz {
+  border: 2px solid #27df82;
+  background: #edfff5;
+  box-shadow: 0 8px 24px rgba(39, 223, 130, 0.14);
+}
+
+.content-type-card.is-active {
+  box-shadow: 0 0 0 4px rgba(102, 80, 216, 0.13), 0 9px 26px rgba(25, 32, 52, 0.12);
+}
+
+.content-type-icon {
+  flex: 0 0 56px;
+  width: 56px;
+  height: 56px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 15px;
+  background: #ffffff;
+  box-shadow: 0 3px 10px rgba(25, 32, 52, 0.08);
+  font-size: 30px;
+}
+
+.content-type-copy {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.content-type-copy strong {
+  font-size: 20px;
+  font-weight: 900;
+  line-height: 1.25;
+}
+
+.content-type-copy small {
+  color: #697386;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.content-type-arrow {
+  margin-left: auto;
+  color: #7c8493;
+  font-size: 34px;
+  line-height: 1;
+}
+
+.content-login-hint {
+  margin: 18px 0 0;
+  padding: 13px 16px;
+  border-radius: 11px;
+  background: #fff8dd;
+  color: #665b31;
+  font-weight: 700;
+}
+
+.content-login-hint a {
+  color: #5542b8;
+  font-weight: 900;
+}
+
+@media (max-width: 760px) {
+  .content-hub {
+    width: min(100% - 20px, 1080px);
+    margin-top: 22px;
+  }
+
+  .content-type-nav {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .content-type-card {
+    min-height: 84px;
+    padding: 13px 14px;
+  }
+
+  .content-type-icon {
+    flex-basis: 48px;
+    width: 48px;
+    height: 48px;
+    border-radius: 13px;
+    font-size: 25px;
+  }
+
+  .content-type-copy strong {
+    font-size: 17px;
+  }
+}
