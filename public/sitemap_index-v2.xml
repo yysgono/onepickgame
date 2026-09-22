@@ -53,6 +53,6 @@
     <loc>https://www.onepickgame.com/sitemap-quizzes.xml</loc>
   </sitemap>
   <sitemap>
-    <loc>https://www.onepickgame.com/api/sitemap-blog</loc>
+    <loc>https://www.onepickgame.com/sitemaps/sitemap-blog.xml</loc>
   </sitemap>
 </sitemapindex>

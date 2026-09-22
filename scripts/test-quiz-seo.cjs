@@ -206,8 +206,15 @@ test('canonical sitemap generation preserves cups/tiers without fabricated updat
   const generator = await import(pathToFileURL(path.join(root, 'scripts/generate-sitemap.mjs')));
   const index = generator.generateSitemapIndex();
   assert.match(index, /\/sitemap-quizzes\.xml/);
-  assert.match(index, /\/api\/sitemap-blog/);
+  assert.match(index, /\/sitemaps\/sitemap-blog\.xml/);
   assert.equal((index.match(/<sitemap>/g) || []).length, 18);
+  const blogXml = generator.generateBlogSitemap([
+    { language: 'ko', slug: 'hello-blog', created_at: '2026-09-20T00:00:00Z' },
+    { language: 'xx', slug: 'hidden-blog', created_at: '2026-09-20T00:00:00Z' },
+  ]);
+  assert.match(blogXml, /\/ko\/blog<\/loc>/);
+  assert.match(blogXml, /\/ko\/blog\/hello-blog/);
+  assert.doesNotMatch(blogXml, /hidden-blog|\/admin|\/login|\/backup/);
   const xml = generator.generateLanguageSitemap('ko', [{ id, created_at: '2000-01-01' }], [{ id: id2, created_at: '2000-01-01' }]);
   assert.match(xml, /\/ko\/select-round\//);
   assert.match(xml, /\/ko\/tier-list\//);

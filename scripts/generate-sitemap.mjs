@@ -228,6 +228,20 @@ async function fetchQuizzes() {
 }
 
 // ======================================================
+// 블로그 데이터 가져오기
+// ======================================================
+
+async function fetchBlogPosts() {
+  console.log("🔎 Supabase blog_posts 전체 조회 중...");
+
+  return fetchAllRows({
+    table: "blog_posts",
+    select: "id, language, slug, created_at",
+    label: "블로그 글",
+  });
+}
+
+// ======================================================
 // 언어별 sitemap 생성
 // ======================================================
 
@@ -414,6 +428,49 @@ export function generateLanguageSitemap(
 }
 
 // ======================================================
+// 블로그 sitemap 생성
+// ======================================================
+
+export function generateBlogSitemap(blogPosts = []) {
+  let xml =
+    `<?xml version="1.0" encoding="UTF-8"?>\n`;
+
+  xml +=
+    `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n`;
+
+  for (const lang of LANGS) {
+    xml += makeUrlEntry({
+      loc: `${BASE_URL}/${lang}/blog`,
+      changefreq: "daily",
+      priority: "0.8",
+    });
+  }
+
+  for (const post of blogPosts) {
+    const lang =
+      String(post?.language || "")
+        .toLowerCase()
+        .split("-")[0];
+    const slug = String(post?.slug || "").trim();
+
+    if (!LANGS.includes(lang) || !slug) {
+      continue;
+    }
+
+    xml += makeUrlEntry({
+      loc: `${BASE_URL}/${lang}/blog/${encodeURIComponent(slug)}`,
+      lastmod: formatDate(post.created_at),
+      changefreq: "weekly",
+      priority: "0.7",
+    });
+  }
+
+  xml += `\n</urlset>\n`;
+
+  return xml;
+}
+
+// ======================================================
 // sitemap index 생성
 // ======================================================
 
@@ -436,10 +493,10 @@ export function generateSitemapIndex() {
     <loc>${BASE_URL}/sitemap-quizzes.xml</loc>
   </sitemap>`;
 
-  // 블로그 sitemap 유지
+  // 네이버/검색엔진이 안정적으로 읽을 수 있도록 정적 블로그 sitemap을 광고한다.
   xml += `
   <sitemap>
-    <loc>${BASE_URL}/api/sitemap-blog</loc>
+    <loc>${BASE_URL}/sitemaps/sitemap-blog.xml</loc>
   </sitemap>`;
 
   xml += `\n</sitemapindex>\n`;
@@ -483,6 +540,9 @@ async function generateSitemaps() {
     const quizzes =
       await fetchQuizzes();
 
+    const blogPosts =
+      await fetchBlogPosts();
+
     // 언어별 sitemap 생성
     for (const lang of LANGS) {
       const xml =
@@ -513,6 +573,30 @@ async function generateSitemaps() {
         `✅ ${lang}: ${worldcups.length}개 월드컵 + ${tierLists.length}개 티어표 + ${quizzes.length}개 퀴즈 → ${filePath}`
       );
     }
+
+    const blogSitemapXml =
+      generateBlogSitemap(blogPosts);
+
+    const blogSitemapPath =
+      path.join(
+        sitemapDir,
+        "sitemap-blog.xml"
+      );
+
+    fs.writeFileSync(
+      `${blogSitemapPath}.tmp`,
+      blogSitemapXml,
+      "utf8"
+    );
+
+    fs.renameSync(
+      `${blogSitemapPath}.tmp`,
+      blogSitemapPath
+    );
+
+    console.log(
+      `✅ 블로그 sitemap: ${blogPosts.length}개 글 → ${blogSitemapPath}`
+    );
 
     // sitemap index 생성
     const indexXml =
@@ -548,7 +632,7 @@ async function generateSitemaps() {
 
     console.log("");
     console.log(
-      `🎉 총 ${worldcups.length}개 월드컵 + ${tierLists.length}개 티어표 + ${quizzes.length}개 퀴즈 × ${LANGS.length}개 언어`
+      `🎉 총 ${worldcups.length}개 월드컵 + ${tierLists.length}개 티어표 + ${quizzes.length}개 퀴즈 × ${LANGS.length}개 언어 + 블로그 ${blogPosts.length}개`
     );
 
     console.log(
