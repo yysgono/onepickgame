@@ -2410,7 +2410,7 @@ gap:
                               "#1D4ED8",
 
                             fontSize:
-                              12,
+                              14,
 
                             fontWeight:
                               900,
@@ -2430,7 +2430,7 @@ gap:
                               "#1D4ED8",
 
                             fontSize:
-                              13,
+                              15,
 
                             fontWeight:
                               700,

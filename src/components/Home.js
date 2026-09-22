@@ -347,7 +347,46 @@ const getDisplayTitle = (cup) => {
 
 const [search, setSearch] = useState("");
 
-const [sort, setSort] = useState("popular");
+const [categorySorts, setCategorySorts] = useState({});
+
+const getCategorySort = (categoryKey) =>
+  categorySorts[categoryKey] || "popular";
+
+const setCategorySort = (categoryKey, nextSort) => {
+  setCategorySorts((current) => ({
+    ...current,
+    [categoryKey]: nextSort,
+  }));
+};
+
+const sortCategoryCups = (cups, categoryKey) => {
+  const selectedSort =
+    getCategorySort(categoryKey);
+
+  return [...(cups || [])].sort((a, b) => {
+    if (selectedSort === "recent") {
+      const aDate =
+        a?.created_at || "";
+      const bDate =
+        b?.created_at || "";
+
+      if (aDate === bDate) {
+        return String(b?.id || "").localeCompare(
+          String(a?.id || "")
+        );
+      }
+
+      return bDate > aDate ? 1 : -1;
+    }
+
+    const aPlays =
+      playCountMap[String(a?.id)] || 0;
+    const bPlays =
+      playCountMap[String(b?.id)] || 0;
+
+    return bPlays - aPlays;
+  });
+};
 
 const searchInputRef = useRef(null);
 
@@ -363,7 +402,6 @@ useEffect(() => {
 
   const searchParam = params.get("search");
 
-  const sortParam = params.get("sort");
 
   const focusParam = params.get("focus");
 
@@ -374,18 +412,7 @@ useEffect(() => {
     setSearch(searchParam);
 
   }
-
-
-
-  if (sortParam === "popular" || sortParam === "latest") {
-
-    setSort(sortParam);
-
-  }
-
-
-
-  if (focusParam === "search") {
+if (focusParam === "search") {
 
     window.setTimeout(() => {
 
@@ -733,7 +760,7 @@ const CARD_WIDTH = isMobile
 
   : 504;
 
-const CARD_HEIGHT = 410;
+const CARD_HEIGHT = isMobile ? 418 : 452;
 
 const CARD_GAP = isMobile ? 7 : 13;
 
@@ -918,36 +945,6 @@ return (
 );
 
 })
-
-      .sort((a, b) => {
-
-        if (sort === "recent") {
-
-          return (b.created_at || b.id) > (a.created_at || a.id)
-
-            ? 1
-
-            : -1;
-
-} else {
-
-  const aw =
-
-    playCountMap[String(a.id)] || 0;
-
-
-
-  const bw =
-
-    playCountMap[String(b.id)] || 0;
-
-
-
-  return bw - aw;
-
-}
-
-      })
 
   : [];
 
@@ -1349,7 +1346,7 @@ const cardDescStyle = {
 
 
 
-  height: isMobile ? 54 : 60,
+  height: isMobile ? 54 : 72,
 
   boxSizing: "border-box",
 
@@ -1754,9 +1751,7 @@ const totalPlays =
 
                 objectFit: "cover",
 
-                objectPosition:
-
-                  "center center",
+                objectPosition: "center 20%",
 
                 background: "#ffffff",
 
@@ -1832,9 +1827,7 @@ const totalPlays =
 
                 objectFit: "cover",
 
-                objectPosition:
-
-                  "center center",
+                objectPosition: "center 20%",
 
                 background: "#ffffff",
 
@@ -2068,15 +2061,16 @@ fontWeight: 800,
           flexWrap: isMobile ? "wrap" : "nowrap",
           gap: isMobile ? "3px 8px" : "0 10px",
           color: "#596579",
-          fontSize: isMobile ? 13 : 14,
-          fontWeight: 700,
-          lineHeight: 1.25,
+          fontSize: isMobile ? 14 : 16,
+          fontWeight: 800,
+          lineHeight: 1.3,
           padding: isMobile
-            ? "3px 10px 5px"
-            : "3px 12px 5px",
+            ? "6px 10px 6px"
+            : "8px 12px 7px",
           background: mainDark,
           boxSizing: "border-box",
           whiteSpace: isMobile ? "normal" : "nowrap",
+          marginTop: isMobile ? 2 : 4,
         }}
       >
         <span>
@@ -2127,19 +2121,12 @@ fontWeight: 800,
             "space-between",
 
           padding: isMobile
-
-            ? "4px 7px 7px 7px"
-
-            : "6px 10px 8px 10px",
-
+            ? "9px 7px 7px 7px"
+            : "12px 10px 8px 10px",
           minHeight:
-
-            isMobile ? 32 : 34,
-
+            isMobile ? 38 : 42,
           background: mainDark,
-
           boxSizing: "border-box",
-
           marginTop: "auto",
 
           borderTop: "none",
@@ -2154,6 +2141,8 @@ fontWeight: 800,
 
       >
 
+
+
         <button
 
           onClick={(e) => {
@@ -2166,7 +2155,7 @@ fontWeight: 800,
 
               getRoute(
 
-                "/select-round",
+                "/stats",
 
                 cup.id
 
@@ -2196,7 +2185,7 @@ fontWeight: 800,
 
         >
 
-          {t("start")}
+          {t("stats_comment")}
 
         </button>
 
@@ -2348,8 +2337,6 @@ fontWeight: 800,
 
         )}
 
-
-
         <button
 
           onClick={(e) => {
@@ -2362,7 +2349,7 @@ fontWeight: 800,
 
               getRoute(
 
-                "/stats",
+                "/select-round",
 
                 cup.id
 
@@ -2392,7 +2379,7 @@ fontWeight: 800,
 
         >
 
-          {t("stats_comment")}
+          {t("start")}
 
         </button>
 
@@ -2590,6 +2577,105 @@ fontWeight: 900,
 
           </button>
 
+        )}
+
+        {!featured && (
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 6,
+              marginLeft: isMobile ? 0 : 4,
+            }}
+          >
+            <button
+              type="button"
+              onClick={() =>
+                setCategorySort(
+                  rowKey,
+                  "popular"
+                )
+              }
+              aria-pressed={
+                getCategorySort(rowKey) ===
+                "popular"
+              }
+              style={{
+                border:
+                  getCategorySort(rowKey) ===
+                  "popular"
+                    ? "1.5px solid #F97316"
+                    : "1px solid #dde2ea",
+                background:
+                  getCategorySort(rowKey) ===
+                  "popular"
+                    ? "#F97316"
+                    : "#ffffff",
+                color:
+                  getCategorySort(rowKey) ===
+                  "popular"
+                    ? "#ffffff"
+                    : "#C2410C",
+                borderRadius: 7,
+                padding: isMobile
+                  ? "5px 9px"
+                  : "6px 11px",
+                fontSize: isMobile
+                  ? 13
+                  : 14,
+                fontWeight: 900,
+                cursor: "pointer",
+                lineHeight: 1.1,
+                whiteSpace: "nowrap",
+              }}
+            >
+              {t("popular")}
+            </button>
+
+            <button
+              type="button"
+              onClick={() =>
+                setCategorySort(
+                  rowKey,
+                  "recent"
+                )
+              }
+              aria-pressed={
+                getCategorySort(rowKey) ===
+                "recent"
+              }
+              style={{
+                border:
+                  getCategorySort(rowKey) ===
+                  "recent"
+                    ? "1.5px solid #F97316"
+                    : "1px solid #dde2ea",
+                background:
+                  getCategorySort(rowKey) ===
+                  "recent"
+                    ? "#F97316"
+                    : "#ffffff",
+                color:
+                  getCategorySort(rowKey) ===
+                  "recent"
+                    ? "#ffffff"
+                    : "#C2410C",
+                borderRadius: 7,
+                padding: isMobile
+                  ? "5px 9px"
+                  : "6px 11px",
+                fontSize: isMobile
+                  ? 13
+                  : 14,
+                fontWeight: 900,
+                cursor: "pointer",
+                lineHeight: 1.1,
+                whiteSpace: "nowrap",
+              }}
+            >
+              {t("latest")}
+            </button>
+          </div>
         )}
 
       </div>
@@ -3186,14 +3272,13 @@ const categorySections = HOME_CATEGORIES.map(
 
 
 
-    cups: filtered.filter(
-
-      (cup) =>
-
-        (cup.category || "etc") ===
-
-        category.key
-
+    cups: sortCategoryCups(
+      filtered.filter(
+        (cup) =>
+          (cup.category || "etc") ===
+          category.key
+      ),
+      category.key
     ),
 
   })
@@ -3406,7 +3491,7 @@ useEffect(() => {
 
   search,
 
-  sort,
+  categorySorts,
 
   playCountMap,
 
@@ -3771,160 +3856,6 @@ return (
   featured: true,
 
 })}
-
-
-
-{/* 추천 아래 필터 */}
-
-<div
-
-  style={{
-
-    width: "100%",
-
-    maxWidth: 980,
-
-    margin: isMobile
-
-      ? "8px auto 18px"
-
-      : "12px auto 24px",
-
-    padding: isMobile ? "0 12px" : "0 16px",
-
-    boxSizing: "border-box",
-
-  }}
-
->
-
-  {/* 인기 / 최신 */}
-
-  <div
-
-    style={{
-
-      display: "flex",
-
-      justifyContent: "center",
-
-      gap: 8,
-
-      marginTop: 12,
-
-    }}
-
-  >
-
-    <button
-
-      type="button"
-
-      onClick={() => setSort("popular")}
-
-      aria-pressed={sort === "popular"}
-
-      style={{
-
-        border:
-
-          sort === "popular"
-
-            ? "1.5px solid #F97316"
-
-            : "1px solid #dde2ea",
-
-        background:
-
-          sort === "popular"
-
-            ? "#F97316"
-
-            : "#ffffff",
-
-        color:
-
-          sort === "popular"
-
-            ? "#ffffff"
-
-            : "#C2410C",
-
-        borderRadius: 8,
-
-        padding: "7px 14px",
-
-        fontWeight: 900,
-
-        cursor: "pointer",
-
-      }}
-
-    >
-
-      {t("popular")}
-
-    </button>
-
-
-
-    <button
-
-      type="button"
-
-      onClick={() => setSort("recent")}
-
-      aria-pressed={sort === "recent"}
-
-      style={{
-
-        border:
-
-          sort === "recent"
-
-            ? "1.5px solid #F97316"
-
-            : "1px solid #dde2ea",
-
-        background:
-
-          sort === "recent"
-
-            ? "#F97316"
-
-            : "#ffffff",
-
-        color:
-
-          sort === "recent"
-
-            ? "#ffffff"
-
-            : "#C2410C",
-
-        borderRadius: 8,
-
-        padding: "7px 14px",
-
-        fontWeight: 900,
-
-        cursor: "pointer",
-
-      }}
-
-    >
-
-      {t("latest")}
-
-    </button>
-
-  </div>
-
-</div>
-
-
-
-
 
 
 
