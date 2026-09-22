@@ -74,7 +74,7 @@ const shuffle = (arr) => {
 function getYoutubeThumbnail(url = "") {
   const text = String(url || "");
   const match = text.match(
-    /(?:youtu\.be\/|youtube\.com\/(?:embed\/|shorts\/|live\/|watch\?(?:.*&)?v=))([A-Za-z0-9_-]{11})/i
+    /(?:youtu.be\/|youtube.com\/(?:embed\/|shorts\/|live\/|watch\?(?:.*&)?v=))([A-Za-z0-9_-]{11})/i
   );
   return match ? `https://img.youtube.com/vi/${match[1]}/mqdefault.jpg` : text;
 }
@@ -995,7 +995,7 @@ export default function QuizMaker() {
                       return (
                         <button key={key} type="button" onPointerDown={(event) => beginCandidateDrag(event, key, checked)} onPointerEnter={() => enterCandidateDuringDrag(key)} style={{ border: checked ? "2px solid #E53935" : "1px solid #d5dde9", background: checked ? "#fff1f1" : "#fff", borderRadius: 8, padding: 6, cursor: "pointer", color: "#202534", touchAction: "pan-y" }}>
                           <div style={{ aspectRatio: "1 / 1", background: "#f3f5f8", overflow: "hidden", borderRadius: 6 }}>
-                            {candidate?.image && <img src={getYoutubeThumbnail(candidate.image)} alt="" draggable={false} style={{ width: "100%", height: "100%", objectFit: "cover", pointerEvents: "none" }} />}
+                            {candidate?.image && <img src={getYoutubeThumbnail(candidate.image)} alt={candidate?.name || m.unnamed || "Candidate"} draggable={false} style={{ width: "100%", height: "100%", objectFit: "cover", pointerEvents: "none" }} />}
                           </div>
                           <div style={{ fontSize: 12, fontWeight: 800, marginTop: 5, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{candidate?.name || m.unnamed}</div>
                         </button>
@@ -1072,7 +1072,7 @@ export default function QuizMaker() {
 
             {q.imageUrl && (
               <div style={{ marginTop: 12, width: 150 }}>
-                <MediaRenderer url={q.imageUrl} alt="" playable={false} style={{ width: 150, height: 150, objectFit: "cover", border: "1.5px solid #cfd8e6", borderRadius: 10, display: "block" }} />
+                <MediaRenderer url={q.imageUrl} alt={q.question || `${m.question} ${qi + 1}`} playable={false} style={{ width: 150, height: 150, objectFit: "cover", border: "1.5px solid #cfd8e6", borderRadius: 10, display: "block" }} />
                 <div style={{ marginTop: 7, fontSize: 14, fontWeight: 900, lineHeight: 1.4 }}>
                   {m.answer}: {getQuestionAnswer(q) || m.notEntered}
                 </div>
