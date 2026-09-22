@@ -1490,7 +1490,7 @@ export default function Header({
 
         <div
           className="onepick-header-account"
-          style={!isMobile ? { marginLeft: "auto", position: "relative", zIndex: 2 } : undefined}
+          style={!isMobile ? { position: "absolute", right: 0, top: 0, bottom: 0, marginLeft: 0, zIndex: 3 } : undefined}
         >
 
           <div className="onepick-header-tools">
