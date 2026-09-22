@@ -1485,45 +1485,69 @@ export default function Header({
 
           </div>
 
-  <div className="onepick-header-user">
-  <Link
-    to={
-      user
-        ? `/${currentLang}/my-content`
-        : `/${currentLang}/login`
-    }
-    className={`onepick-header-content-link${personalPage ? ' is-active' : ''}`}
-    aria-current={personalPage ? 'page' : undefined}
-    style={{
-      flex: "0 0 206px",
-      width: 206,
-      minWidth: 206,
-      maxWidth: 206,
-      height: 38,
-      minHeight: 0,
-      margin: 0,
-      padding: "0 14px",
-      boxSizing: "border-box",
-      display: "flex",
-      flexDirection: "row",
-      alignItems: "center",
-      justifyContent: "center",
-      gap: 0,
-      background: "#111111",
-      color: "#ffffff",
-      border: "none",
-      borderRadius: 3,
-      boxShadow: "none",
-      fontWeight: 800,
-      fontSize: 14,
-      lineHeight: 1,
-      textDecoration: "none",
-      whiteSpace: "nowrap",
-      overflow: "hidden",
-    }}
-  >
-    <span>{t('lightUi.myContent', '내 콘텐츠')}</span>
-  </Link>
+          <div className="onepick-header-user">
+
+            <Link
+              to={user ? `/${currentLang}/my-content` : `/${currentLang}/login`}
+              className={`onepick-header-content-link${personalPage ? ' is-active' : ''}`}
+              aria-current={personalPage ? 'page' : undefined}
+              style={isMobile ? {
+                flex: "0 0 auto",
+                width: "auto",
+                minWidth: 0,
+                maxWidth: "none",
+                height: "auto",
+                minHeight: 0,
+                margin: 0,
+                padding: 0,
+                boxSizing: "border-box",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: 2,
+                background: "transparent",
+                color: "#202534",
+                border: "none",
+                borderRadius: 0,
+                boxShadow: "none",
+                fontWeight: 800,
+                fontSize: 12,
+                lineHeight: 1.15,
+                textDecoration: "none",
+                whiteSpace: "nowrap",
+                overflow: "visible",
+              } : {
+                flex: "0 0 206px",
+                width: 206,
+                minWidth: 206,
+                maxWidth: 206,
+                height: 38,
+                minHeight: 0,
+                margin: 0,
+                padding: "0 14px",
+                boxSizing: "border-box",
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: 0,
+                background: "#111111",
+                color: "#ffffff",
+                border: "none",
+                borderRadius: 3,
+                boxShadow: "none",
+                fontWeight: 800,
+                fontSize: 14,
+                lineHeight: 1,
+                textDecoration: "none",
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+              }}
+            >
+              {isMobile && <HeaderIcon name="folder" />}
+              <span>{t('lightUi.myContent', '내 콘텐츠')}</span>
+            </Link>
 
             {user ? <details className="onepick-profile-menu">
 
