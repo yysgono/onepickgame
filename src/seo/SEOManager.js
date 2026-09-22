@@ -36,6 +36,7 @@ export default function SEOManager() {
   const ALLOW_PATTERNS = [
     /^blog\/[^/]+$/,
     /^notice\/[^/]+$/,
+    /^category\/[^/]+$/,
     /^select-round\/[^/]+$/,
     /^result\/[^/]+(?:\/[^/]+)?$/,
     /^stats\/[^/]+$/,

@@ -6,6 +6,7 @@ import { getCreatorSafetyCopy, creatorWarningStyle } from "./creatorSafetyCopy";
 import { getQuizMakerCopy, fillCopy } from "./quizMakerCopy";
 import { supabase } from "../utils/supabaseClient";
 import { detectContentLanguage } from "../utils/detectContentLanguage";
+import { getWorldcupTitle } from "../utils/localization";
 import {
   createQuiz,
   uploadQuizImage,
@@ -107,7 +108,7 @@ function emptyQuestion() {
 }
 
 function displayWorldcupTitle(cup, lang) {
-  return cup?.title_translations?.[lang] || cup?.title_translations?.en || cup?.title || "";
+  return getWorldcupTitle(cup, lang);
 }
 
 export default function QuizMaker() {

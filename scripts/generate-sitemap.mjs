@@ -35,6 +35,18 @@ const LANGS = [
   "tr",
 ];
 
+const CATEGORY_SLUGS = [
+  "korea",
+  "person",
+  "anime-manga",
+  "game",
+  "sports",
+  "music",
+  "movie-drama",
+  "food",
+  "etc",
+];
+
 // ======================================================
 // Supabase
 // ======================================================
@@ -84,6 +96,10 @@ function formatDate(dateValue) {
   } catch {
     return "";
   }
+}
+
+function getContentLastmod(item) {
+  return formatDate(item?.updated_at || item?.modified_at || item?.created_at);
 }
 
 // ======================================================
@@ -205,7 +221,7 @@ export function generateLanguageSitemap(
 
   // 개인정보 처리방침
   xml += makeUrlEntry({
-    loc: `${BASE_URL}/privacy-policy`,
+    loc: `${BASE_URL}/${lang}/privacy-policy`,
     lastmod: today,
     changefreq: "yearly",
     priority: "0.5",
@@ -213,7 +229,7 @@ export function generateLanguageSitemap(
 
   // 이용약관
   xml += makeUrlEntry({
-    loc: `${BASE_URL}/terms-of-service`,
+    loc: `${BASE_URL}/${lang}/terms-of-service`,
     lastmod: today,
     changefreq: "yearly",
     priority: "0.5",
@@ -221,7 +237,7 @@ export function generateLanguageSitemap(
 
   // 건의사항
   xml += makeUrlEntry({
-    loc: `${BASE_URL}/suggestions-board`,
+    loc: `${BASE_URL}/${lang}/suggestions`,
     lastmod: today,
     changefreq: "weekly",
     priority: "0.6",
@@ -234,6 +250,15 @@ export function generateLanguageSitemap(
     changefreq: "daily",
     priority: "0.9",
   });
+
+  for (const categorySlug of CATEGORY_SLUGS) {
+    xml += makeUrlEntry({
+      loc: `${BASE_URL}/${lang}/category/${categorySlug}`,
+      lastmod: today,
+      changefreq: "daily",
+      priority: "0.85",
+    });
+  }
 
   // Creation forms are not included in the sitemap.
 
@@ -250,7 +275,7 @@ export function generateLanguageSitemap(
         `/select-round/${cup.id}`,
 
       lastmod:
-        formatDate(cup.updated_at),
+        getContentLastmod(cup),
 
       changefreq: "weekly",
 
@@ -290,7 +315,7 @@ export function generateLanguageSitemap(
       loc:
         `${BASE_URL}/${lang}` +
         `/tier-list/${tierList.id}`,
-      lastmod: formatDate(tierList.updated_at),
+      lastmod: getContentLastmod(tierList),
       changefreq: "weekly",
       priority: "0.75",
     });

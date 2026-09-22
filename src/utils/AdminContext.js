@@ -7,12 +7,7 @@ export function AdminProvider({ children }) {
     return localStorage.getItem("onepickgame_isAdmin") === "true";
   });
 
-  function login(pw) {
-    if (pw === "1234") {
-      setIsAdmin(true);
-      localStorage.setItem("onepickgame_isAdmin", "true");
-      return true;
-    }
+  function login() {
     return false;
   }
 

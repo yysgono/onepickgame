@@ -6,6 +6,10 @@ import MediaRenderer from "./MediaRenderer";
 import AdsenseSide from "./AdsenseSide";
 import { fetchWinnerStatsFromDB, pushRecentWorldcup } from "../utils.js"; // ✅ 통계/최근본
 import { supabase } from "../utils/supabaseClient";
+import {
+  getWorldcupDescription,
+  getWorldcupTitle,
+} from "../utils/localization";
 
 function useIsMobile() {
   const [isMobile, setIsMobile] = React.useState(
@@ -258,11 +262,7 @@ useEffect(() => {
   // ======================================================
 
   const translatedTitle =
-    cup?.title_translations?.[
-      normalizedLang
-    ] ||
-    cup?.title_translations?.en ||
-    cup?.title ||
+    getWorldcupTitle(cup, normalizedLang) ||
     "";
 
   // ======================================================
@@ -270,13 +270,7 @@ useEffect(() => {
   // ======================================================
 
   const translatedDescription =
-    cup?.description_translations?.[
-      normalizedLang
-    ] ||
-    cup?.description_translations?.en ||
-    cup?.description ||
-    cup?.desc ||
-    "";
+    getWorldcupDescription(cup, normalizedLang);
 
  
   const possibleRounds =
@@ -1403,9 +1397,7 @@ style={{
     >
       {relatedWorldcups.map((item) => {
         const relatedTitle =
-          item?.title_translations?.[normalizedLang] ||
-          item?.title_translations?.en ||
-          item?.title ||
+          getWorldcupTitle(item, normalizedLang) ||
           "";
 
         const relatedImage =

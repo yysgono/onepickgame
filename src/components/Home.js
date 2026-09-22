@@ -21,6 +21,10 @@ import { fetchWinnerStatsFromDB } from "../utils";
 import { supabase } from "../utils/supabaseClient";
 
 import MediaRenderer from "./MediaRenderer";
+import {
+  getWorldcupDescription,
+  getWorldcupTitle,
+} from "../utils/localization";
 
 
 
@@ -302,18 +306,7 @@ const changeHomeLanguage = async (newLang) => {
 
 
 const getDisplayTitle = (cup) => {
-
-  return (
-
-    cup?.title_translations?.[lang] ||
-
-    cup?.title_translations?.en ||
-
-    cup?.title ||
-
-    ""
-
-  );
+  return getWorldcupTitle(cup, lang);
 
 };
 
@@ -764,7 +757,7 @@ const CARD_HEIGHT = isMobile ? 418 : 452;
 
 const CARD_GAP = isMobile ? 7 : 13;
 
-const THUMB_HEIGHT = 202;
+const THUMB_HEIGHT = isMobile ? 196 : 214;
 
 
 
@@ -870,19 +863,7 @@ const keyword =
 
 
 
-  const displayDescription = (
-
-    cup.description_translations?.[lang] ||
-
-    cup.description_translations?.en ||
-
-    cup.description ||
-
-    cup.desc ||
-
-    ""
-
-  ).toLowerCase();
+  const displayDescription = getWorldcupDescription(cup, lang).toLowerCase();
 
 
 
@@ -1254,17 +1235,17 @@ const scrollCategoryRow = (
 
 
 
-  const mainDark =  "#ffffff";
+  const mainDark =  "#fffaf7";
 
 const buttonStyle = {
 
-  background: mainDark,
+  background: "#fff7ed",
 
-  color: "#202534",
+  color: "#9A3412",
 
   fontWeight: 900,
 
-  border: "none",
+  border: "1px solid #fed7aa",
 
   borderRadius: 8,
 
@@ -1286,9 +1267,9 @@ fontFamily: "'Pretendard', sans-serif",
 
   margin: "0 1px",
 
-  boxShadow: "none",
+  boxShadow: "0 4px 12px rgba(234,88,12,0.10)",
 
-  transition: "background 0.15s",
+  transition: "background 0.15s, color 0.15s, transform 0.15s, box-shadow 0.15s",
 
   marginTop: 0,
 
@@ -1322,13 +1303,27 @@ fontSize: isMobile ? 17 : 19,
 
 };
 
+const startButtonStyle = {
+
+  ...buttonStyle,
+
+  background: "#F97316",
+
+  color: "#ffffff",
+
+  border: "1px solid #F97316",
+
+  boxShadow: "0 8px 18px rgba(249,115,22,0.26)",
+
+};
+
 
 
 
 
 const cardDescStyle = {
 
-  color: "#202534",
+  color: "#475569",
 
   fontSize: isMobile ? 16 : 18,
 
@@ -1388,7 +1383,7 @@ const cardDescStyle = {
 
     width: "100%",
 
-    height: 0,
+    height: 5,
 
     background: "#F97316",
 
@@ -1398,7 +1393,7 @@ const cardDescStyle = {
 
     marginTop: "auto",
 
-    boxShadow: "0 4px 16px rgba(25,32,52,0.07)",
+    boxShadow: "none",
 
   };
 
@@ -1509,15 +1504,15 @@ const totalPlays =
 
         height: CARD_HEIGHT,
 
-        borderRadius: 18,
+        borderRadius: 16,
 
         background: "#ffffff",
 
         boxShadow:
 
-          "0 4px 16px rgba(25,32,52,0.07)",
+          "0 16px 38px rgba(15,23,42,0.11)",
 
-        border: "1.5px solid #dde2ea",
+        border: "1px solid #fed7aa",
 
         display: "flex",
 
@@ -1529,7 +1524,7 @@ const totalPlays =
 
         transition:
 
-          "box-shadow 0.18s, transform 0.16s",
+          "box-shadow 0.18s, transform 0.16s, border-color 0.18s",
 
         marginBottom: 0,
 
@@ -1561,7 +1556,11 @@ const totalPlays =
 
         e.currentTarget.style.boxShadow =
 
-          "0 6px 20px rgba(25,32,52,0.10)";
+          "0 22px 48px rgba(15,23,42,0.16)";
+
+        e.currentTarget.style.borderColor =
+
+          "#fb923c";
 
       }}
 
@@ -1573,7 +1572,11 @@ const totalPlays =
 
         e.currentTarget.style.boxShadow =
 
-          "0 6px 20px rgba(25,32,52,0.10)";
+          "0 16px 38px rgba(15,23,42,0.11)";
+
+        e.currentTarget.style.borderColor =
+
+          "#fed7aa";
 
       }}
 
@@ -1689,7 +1692,7 @@ const totalPlays =
 
           background:
 
-            "#f5f6fa",
+            "linear-gradient(135deg, #fff7ed 0%, #eef6ff 100%)",
 
           borderTopLeftRadius: 18,
 
@@ -1713,7 +1716,7 @@ const totalPlays =
 
             height: "100%",
 
-            background: "#ffffff",
+            background: "#fff7ed",
 
             borderTopLeftRadius: 18,
 
@@ -1789,7 +1792,7 @@ const totalPlays =
 
             height: "100%",
 
-            background: "#ffffff",
+            background: "#eef6ff",
 
             borderTopRightRadius: 18,
 
@@ -1935,11 +1938,13 @@ const totalPlays =
 
           padding: isMobile
 
-            ? "5px 10px 2px 10px"
+            ? "7px 11px 3px 11px"
 
-            : "6px 14px 2px 14px",
+            : "8px 15px 3px 15px",
 
-          background: mainDark,
+          background: "#fff7ed",
+          borderTop: "1px solid #ffedd5",
+          borderBottom: "1px solid #ffedd5",
 
           display: "flex",
 
@@ -1997,7 +2002,7 @@ const totalPlays =
 
             letterSpacing: "0.1px",
 
-            color: "#202534",
+            color: "#111827",
 
 fontFamily:
 
@@ -2067,7 +2072,7 @@ fontWeight: 800,
           padding: isMobile
             ? "6px 10px 6px"
             : "8px 12px 7px",
-          background: mainDark,
+          background: "#fffaf7",
           boxSizing: "border-box",
           whiteSpace: isMobile ? "normal" : "nowrap",
           marginTop: isMobile ? 2 : 4,
@@ -2171,7 +2176,7 @@ fontWeight: 800,
 
             (e.currentTarget.style.background =
 
-              "#ffffff")
+              "#ffedd5")
 
           }
 
@@ -2179,7 +2184,7 @@ fontWeight: 800,
 
             (e.currentTarget.style.background =
 
-              mainDark)
+              "#fff7ed")
 
           }
 
@@ -2359,13 +2364,13 @@ fontWeight: 800,
 
           }}
 
-          style={buttonStyle}
+          style={startButtonStyle}
 
           onMouseOver={(e) =>
 
             (e.currentTarget.style.background =
 
-              "#ffffff")
+              "#ea580c")
 
           }
 
@@ -2373,7 +2378,7 @@ fontWeight: 800,
 
             (e.currentTarget.style.background =
 
-              mainDark)
+              "#F97316")
 
           }
 
@@ -3166,22 +3171,8 @@ const featuredCups = Array.isArray(worldcupList)
 
 
 
-  const description = (
-
-    cup.description_translations?.[lang] ||
-
-    cup.description_translations?.en ||
-
-    cup.description ||
-
-    cup.desc ||
-
-    ""
-
-  )
-
+  const description = getWorldcupDescription(cup, lang)
     .toString()
-
     .toLowerCase();
 
 
@@ -3515,7 +3506,7 @@ return (
 
       minHeight: "100vh",
 
-      background: "#ffffff",
+      background: "linear-gradient(180deg, #fff7ed 0%, #ffffff 220px, #f8fafc 100%)",
 
       position: "relative",
 
@@ -3539,9 +3530,9 @@ return (
 
       maxWidth: isMobile ? 430 : 1000,
 
-      margin: isMobile ? "2px auto 10px" : "2px auto 12px",
+      margin: isMobile ? "4px auto 14px" : "6px auto 18px",
 
-      padding: isMobile ? "0 12px" : 0,
+      padding: isMobile ? "0 12px" : "0 16px",
 
       boxSizing: "border-box",
 
@@ -3609,23 +3600,26 @@ return (
 
                   ? "1.5px solid #F97316"
 
-                  : "1px solid #d6deea",
+                  : "1px solid #fed7aa",
 
-                background: active ? "#F97316" : "#ffffff",
+                background: active ? "#F97316" : "#fffaf7",
 
-                color: active ? "#ffffff" : "#3f4a5a",
+                color: active ? "#ffffff" : "#9A3412",
 
-                borderRadius: 9,
+                borderRadius: 999,
 
                 padding: isMobile ? "8px 12px" : "9px 15px",
 
                 fontSize: isMobile ? 15 : 16,
 
-                fontWeight: active ? 800 : 700,
+                fontWeight: active ? 900 : 800,
 
                 cursor: "pointer",
 
                 lineHeight: 1.2,
+                boxShadow: active
+                  ? "0 8px 16px rgba(249,115,22,0.22)"
+                  : "0 3px 10px rgba(234,88,12,0.08)",
 
               }}
 
@@ -3707,25 +3701,26 @@ return (
 
             width: "100%",
 
-            height: 46,
+            height: isMobile ? 50 : 56,
 
             background: "#ffffff",
 
             color: "#202534",
 
-            border: "1.5px solid #bccae0",
+            border: "1.5px solid #fb923c",
 
-            borderRadius: 9,
+            borderRadius: 14,
 
             padding: isMobile ? "0 40px 0 13px" : "0 46px 0 16px",
 
             boxSizing: "border-box",
 
-            fontSize: isMobile ? 16 : 18,
+            fontSize: isMobile ? 16 : 19,
 
             fontWeight: 700,
 
             outline: "none",
+            boxShadow: "0 12px 30px rgba(249,115,22,0.15)",
 
           }}
 

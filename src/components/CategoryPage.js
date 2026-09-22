@@ -23,6 +23,11 @@ import { fetchWinnerStatsFromDB } from "../utils";
 
 
 import MediaRenderer from "./MediaRenderer";
+import Seo from "../seo/Seo";
+import {
+  getWorldcupDescription,
+  getWorldcupTitle,
+} from "../utils/localization";
 
 
 
@@ -135,9 +140,6 @@ textAlign: "center",
 
 
     </div>
-
-
-
   );
 
 
@@ -318,6 +320,77 @@ const WORLDCUP_CARD_META_COPY = {
   ar: { candidates: "المرشحون", plays: "مرات اللعب", updated: "تحديث" },
   bn: { candidates: "প্রার্থী", plays: "খেলা", updated: "আপডেট" },
 };
+
+const CATEGORY_SEO_COPY = {
+  ko: {
+    title: "{category} 이상형 월드컵 모음 | 원픽게임",
+    description: "{category} 카테고리의 이상형 월드컵을 인기순과 최신순으로 찾아보고 플레이하세요.",
+  },
+  en: {
+    title: "{category} Bracket Games | OnePickGame",
+    description: "Browse and play popular and latest {category} tournament bracket games on OnePickGame.",
+  },
+  ja: {
+    title: "{category} 人気投票トーナメント | OnePickGame",
+    description: "{category}カテゴリの人気投票トーナメントを人気順・最新順で探してプレイできます。",
+  },
+  zh: {
+    title: "{category} 人气投票淘汰赛 | OnePickGame",
+    description: "在OnePickGame按热门和最新浏览并游玩{category}人气投票淘汰赛。",
+  },
+  ru: {
+    title: "{category}: турниры голосований | OnePickGame",
+    description: "Играйте в популярные и новые турниры голосований категории {category} на OnePickGame.",
+  },
+  pt: {
+    title: "Jogos de torneio {category} | OnePickGame",
+    description: "Explore e jogue torneios de votação populares e recentes de {category} no OnePickGame.",
+  },
+  es: {
+    title: "Torneos de {category} | OnePickGame",
+    description: "Explora y juega torneos de votación populares y recientes de {category} en OnePickGame.",
+  },
+  fr: {
+    title: "Tournois {category} | OnePickGame",
+    description: "Parcourez et jouez aux tournois de vote {category} populaires et récents sur OnePickGame.",
+  },
+  id: {
+    title: "Game Turnamen {category} | OnePickGame",
+    description: "Jelajahi dan mainkan turnamen voting {category} populer dan terbaru di OnePickGame.",
+  },
+  hi: {
+    title: "{category} वोटिंग टूर्नामेंट | OnePickGame",
+    description: "OnePickGame पर {category} के लोकप्रिय और नए वोटिंग टूर्नामेंट खोजें और खेलें।",
+  },
+  de: {
+    title: "{category} Abstimmungsturniere | OnePickGame",
+    description: "Entdecke und spiele beliebte und neue {category}-Abstimmungsturniere auf OnePickGame.",
+  },
+  vi: {
+    title: "Trò chơi bình chọn {category} | OnePickGame",
+    description: "Khám phá và chơi các giải đấu bình chọn {category} phổ biến và mới nhất trên OnePickGame.",
+  },
+  ar: {
+    title: "بطولات تصويت {category} | OnePickGame",
+    description: "تصفح والعب بطولات التصويت الشائعة والأحدث في فئة {category} على OnePickGame.",
+  },
+  bn: {
+    title: "{category} ভোটিং টুর্নামেন্ট | OnePickGame",
+    description: "OnePickGame-এ {category} বিভাগের জনপ্রিয় ও নতুন ভোটিং টুর্নামেন্ট খুঁজুন এবং খেলুন।",
+  },
+  th: {
+    title: "เกมโหวต {category} | OnePickGame",
+    description: "ค้นหาและเล่นเกมโหวตแบบทัวร์นาเมนต์หมวด {category} ทั้งยอดนิยมและล่าสุดบน OnePickGame",
+  },
+  tr: {
+    title: "{category} Oylama Turnuvaları | OnePickGame",
+    description: "OnePickGame'de popüler ve en yeni {category} oylama turnuvalarını keşfet ve oyna.",
+  },
+};
+
+function fillCategorySeo(template, categoryTitle) {
+  return String(template || "").replace(/\{category\}/g, categoryTitle);
+}
 
 function formatWorldcupCardDate(value) {
   if (!value) return "-";
@@ -507,7 +580,7 @@ const isMobile = vw < 600;
 
   const CARD_GAP = isMobile ? 7 : 13;
 
-  const THUMB_HEIGHT = 202;
+  const THUMB_HEIGHT = isMobile ? 196 : 214;
 
 
 
@@ -515,7 +588,7 @@ const isMobile = vw < 600;
 
 
 
-  const mainDark = "#ffffff";
+  const mainDark = "#fffaf7";
 
 
 
@@ -1160,33 +1233,7 @@ const isMobile = vw < 600;
 
 
   const getDisplayTitle = (cup) => {
-
-
-
-    return (
-
-
-
-      cup?.title_translations?.[lang] ||
-
-
-
-      cup?.title_translations?.en ||
-
-
-
-      cup?.title ||
-
-
-
-      ""
-
-
-
-    );
-
-
-
+    return getWorldcupTitle(cup, lang);
   };
 
 
@@ -1196,26 +1243,8 @@ const isMobile = vw < 600;
 
 
   const getDisplayDescription = (cup) => {
-
-
-
     return (
-
-
-
-      cup?.description_translations?.[lang] ||
-
-
-
-      cup?.description_translations?.en ||
-
-
-
-      cup?.description ||
-
-
-
-      cup?.desc ||
+      getWorldcupDescription(cup, lang) ||
 
 
 
@@ -1463,11 +1492,11 @@ const isMobile = vw < 600;
 
 
 
-    background: mainDark,
+    background: "#fff7ed",
 
 
 
-    color: "#202534",
+    color: "#9A3412",
 
 
 
@@ -1475,7 +1504,7 @@ const isMobile = vw < 600;
 
 
 
-    border: "none",
+    border: "1px solid #fed7aa",
 
 
 
@@ -1565,9 +1594,27 @@ padding: isMobile
 
     lineHeight: 1.05,
 
+    boxShadow: "0 4px 12px rgba(234,88,12,0.10)",
+
+    transition: "background 0.15s, color 0.15s, transform 0.15s, box-shadow 0.15s",
+
 
 
   };
+
+const startButtonStyle = {
+
+  ...buttonStyle,
+
+  background: "#F97316",
+
+  color: "#ffffff",
+
+  border: "1px solid #F97316",
+
+  boxShadow: "0 8px 18px rgba(249,115,22,0.26)",
+
+};
 
 
 
@@ -1623,7 +1670,7 @@ const smallButtonStyle = {
 
 
 
-    color: "#202534",
+    color: "#475569",
 
 
 
@@ -1759,7 +1806,7 @@ const smallButtonStyle = {
 
 
 
-    height: 4,
+    height: 5,
 
 
 
@@ -1771,7 +1818,7 @@ const smallButtonStyle = {
 
 
 
-      "#6650d8",
+      "#F97316",
 
 
 
@@ -1803,7 +1850,7 @@ const smallButtonStyle = {
 
 
 
-      "0 4px 16px rgba(25,32,52,0.07)",
+      "none",
 
 
 
@@ -1917,6 +1964,19 @@ const smallButtonStyle = {
 
   );
 
+  const categorySeoCopy =
+    CATEGORY_SEO_COPY[lang] || CATEGORY_SEO_COPY.en;
+
+  const categorySeoTitle = fillCategorySeo(
+    categorySeoCopy.title,
+    categoryTitle
+  );
+
+  const categorySeoDescription = fillCategorySeo(
+    categorySeoCopy.description,
+    categoryTitle
+  );
+
 
 
 
@@ -1924,8 +1984,14 @@ const smallButtonStyle = {
 
 
   return (
-
-
+    <>
+      <Seo
+        lang={lang}
+        slug={`category/${categorySlug}`}
+        title={categorySeoTitle}
+        description={categorySeoDescription}
+        image="/ogimg.png"
+      />
 
     <div
 
@@ -1959,7 +2025,7 @@ const smallButtonStyle = {
 
 
 
-        background: "#ffffff",
+        background: "linear-gradient(180deg, #fff7ed 0%, #ffffff 260px, #f8fafc 100%)",
 
 
 
@@ -2031,7 +2097,7 @@ const smallButtonStyle = {
 
 
 
-          color: "#202534",
+          color: "#111827",
 
 
 
@@ -2199,7 +2265,7 @@ const smallButtonStyle = {
 
 
 
-            background: "#6650d8",
+            background: "#F97316",
 
 
 
@@ -2295,7 +2361,7 @@ const smallButtonStyle = {
 
 
 
-              "#6650d8";
+              "#ea580c";
 
 
 
@@ -2331,7 +2397,7 @@ const smallButtonStyle = {
 
 
 
-              "#6650d8";
+              "#F97316";
 
 
 
@@ -2515,7 +2581,7 @@ const smallButtonStyle = {
 
 
 
-                ? "1px solid #dde2ea"
+                ? "1px solid #F97316"
 
 
 
@@ -2535,7 +2601,7 @@ const smallButtonStyle = {
 
 
 
-                ? "#6650d8"
+                ? "#F97316"
 
 
 
@@ -2595,7 +2661,7 @@ const smallButtonStyle = {
 
 
 
-                ? "0 4px 16px rgba(25,32,52,0.07)"
+                ? "0 8px 16px rgba(249,115,22,0.22)"
 
 
 
@@ -2695,7 +2761,7 @@ const smallButtonStyle = {
 
 
 
-                ? "1px solid #dde2ea"
+                ? "1px solid #F97316"
 
 
 
@@ -2715,7 +2781,7 @@ const smallButtonStyle = {
 
 
 
-                ? "#6650d8"
+                ? "#F97316"
 
 
 
@@ -2775,7 +2841,7 @@ const smallButtonStyle = {
 
 
 
-                ? "0 4px 16px rgba(25,32,52,0.07)"
+                ? "0 8px 16px rgba(249,115,22,0.22)"
 
 
 
@@ -2943,7 +3009,7 @@ const smallButtonStyle = {
 
 
 
-              "1.5px solid #dde2ea",
+              "1.5px solid #fb923c",
 
 
 
@@ -2995,7 +3061,7 @@ const smallButtonStyle = {
 
 
 
-              "0 4px 16px rgba(25,32,52,0.07)",
+              "0 12px 30px rgba(249,115,22,0.15)",
 
 
 
@@ -3296,7 +3362,7 @@ rowGap: isMobile ? 18 : 26,
 
 
 
-                      borderRadius: 18,
+                      borderRadius: 16,
 
 
 
@@ -3320,7 +3386,7 @@ rowGap: isMobile ? 18 : 26,
 
 
 
-                        "0 4px 16px rgba(25,32,52,0.07)",
+                        "0 16px 38px rgba(15,23,42,0.11)",
 
 
 
@@ -3332,7 +3398,7 @@ rowGap: isMobile ? 18 : 26,
 
 
 
-                        "1.5px solid #dde2ea",
+                        "1px solid #fed7aa",
 
 
 
@@ -3372,7 +3438,7 @@ rowGap: isMobile ? 18 : 26,
 
 
 
-                        "box-shadow 0.18s, transform 0.16s",
+                        "box-shadow 0.18s, transform 0.16s, border-color 0.18s",
 
 
 
@@ -3444,7 +3510,11 @@ rowGap: isMobile ? 18 : 26,
 
 
 
-                        "0 6px 20px rgba(25,32,52,0.10)";
+                        "0 22px 48px rgba(15,23,42,0.16)";
+
+                      e.currentTarget.style.borderColor =
+
+                        "#fb923c";
 
 
 
@@ -3472,7 +3542,11 @@ rowGap: isMobile ? 18 : 26,
 
 
 
-                        "0 6px 20px rgba(25,32,52,0.10)";
+                        "0 16px 38px rgba(15,23,42,0.11)";
+
+                      e.currentTarget.style.borderColor =
+
+                        "#fed7aa";
 
 
 
@@ -3720,7 +3794,7 @@ rowGap: isMobile ? 18 : 26,
 
 
 
-                          "#f5f6fa",
+                          "linear-gradient(135deg, #fff7ed 0%, #eef6ff 100%)",
 
 
 
@@ -3788,7 +3862,7 @@ rowGap: isMobile ? 18 : 26,
 
 
 
-                          background: "#ffffff",
+                          background: "#fff7ed",
 
 
 
@@ -3984,7 +4058,7 @@ rowGap: isMobile ? 18 : 26,
 
 
 
-                          background: "#ffffff",
+                          background: "#eef6ff",
 
 
 
@@ -4392,11 +4466,11 @@ rowGap: isMobile ? 18 : 26,
 
 
 
-                          ? "5px 10px 2px 10px"
+                          ? "7px 11px 3px 11px"
 
 
 
-                          : "6px 14px 2px 14px",
+                          : "8px 15px 3px 15px",
 
 
 
@@ -4404,7 +4478,7 @@ rowGap: isMobile ? 18 : 26,
 
 
 
-                        background: mainDark,
+                        background: "#fff7ed",
 
 
 
@@ -4588,7 +4662,7 @@ rowGap: isMobile ? 18 : 26,
 
 
 
-                          color: "#202534",
+                          color: "#111827",
 
 
 
@@ -4696,7 +4770,7 @@ fontWeight: 800,
                         padding: isMobile
                           ? "6px 10px 6px"
                           : "8px 12px 7px",
-                        background: mainDark,
+                        background: "#fffaf7",
                         boxSizing: "border-box",
                         whiteSpace: isMobile ? "normal" : "nowrap",
                         marginTop: isMobile ? 2 : 4,
@@ -4715,7 +4789,7 @@ fontWeight: 800,
 
                       <span>
                         ▶ {cardMetaCopy.plays}{" "}
-                        <strong style={{ color: "#5542b8" }}>
+                        <strong style={{ color: "#C2410C" }}>
                           {totalPlays.toLocaleString()}
                         </strong>
                       </span>
@@ -4788,7 +4862,7 @@ fontWeight: 800,
 
 
 
-    background: mainDark,
+    background: "#fffaf7",
 
 
 
@@ -4892,7 +4966,7 @@ fontWeight: 800,
 
 
 
-        "#ffffff";
+        "#ffedd5";
 
 
 
@@ -4908,7 +4982,7 @@ fontWeight: 800,
 
 
 
-        mainDark;
+        "#fff7ed";
 
 
 
@@ -5280,7 +5354,7 @@ fontWeight: 800,
 
 
 
-    style={buttonStyle}
+    style={startButtonStyle}
 
 
 
@@ -5292,7 +5366,7 @@ fontWeight: 800,
 
 
 
-        "#ffffff";
+        "#ea580c";
 
 
 
@@ -5308,7 +5382,7 @@ fontWeight: 800,
 
 
 
-        mainDark;
+        "#F97316";
 
 
 
@@ -5499,7 +5573,7 @@ fontWeight: 800,
 
 
 
-              background: "#6650d8",
+              background: "#F97316",
 
 
 
@@ -5615,7 +5689,7 @@ fontWeight: 800,
 
 
 
-                "#6650d8";
+                "#ea580c";
 
 
 
@@ -5655,7 +5729,7 @@ fontWeight: 800,
 
 
 
-                "#6650d8";
+                "#F97316";
 
 
 
@@ -5667,7 +5741,7 @@ fontWeight: 800,
 
 
 
-                "0 6px 20px rgba(25,32,52,0.10)";
+                "0 8px 18px rgba(249,115,22,0.26)";
 
 
 
@@ -5744,9 +5818,7 @@ fontWeight: 800,
 
 
     </div>
-
-
-
+    </>
   );
 
 

@@ -5,6 +5,10 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { mainButtonStyle, grayButtonStyle } from "../styles/common";
 import MediaRenderer from "./MediaRenderer";
+import {
+  getWorldcupDescription,
+  getWorldcupTitle,
+} from "../utils/localization";
 
 const DEFAULT_IMAGE = "/default-thumb.png";
 
@@ -26,17 +30,11 @@ function WorldcupDetail({ worldcupList }) {
   const language = (i18n.language || "en").split("-")[0];
 
   const displayTitle =
-    cup.title_translations?.[language] ||
-    cup.title_translations?.en ||
-    cup.title ||
+    getWorldcupTitle(cup, language) ||
     "";
 
   const displayDescription =
-    cup.description_translations?.[language] ||
-    cup.description_translations?.en ||
-    cup.description ||
-    cup.desc ||
-    "";
+    getWorldcupDescription(cup, language);
 
   const shareUrl = `${window.location.origin}/worldcup/${cup.id}`;
 

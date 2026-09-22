@@ -2072,7 +2072,7 @@ export default function QuizPage() {
 
     maxWidth: 760,
 
-    margin: "12px auto 14px",
+    margin: mobile ? "8px auto 10px" : "8px auto 12px",
 
     padding: mobile ? "0 12px" : 0,
 
@@ -2110,15 +2110,15 @@ export default function QuizPage() {
 
         width: "100%",
 
-        height: 61,
+	        height: mobile ? 50 : 52,
 
         boxSizing: "border-box",
 
         padding: "0 44px 0 13px",
 
-        borderRadius: 8,
+        borderRadius: 14,
 
-        border: "1.5px solid #bccae0",
+        border: "1.5px solid #ef4444",
 
         background: "#ffffff",
 
@@ -2128,7 +2128,9 @@ export default function QuizPage() {
 
         fontWeight: 800,
 
-        fontSize: mobile ? 19 : 21,
+	        fontSize: mobile ? 17 : 19,
+
+        boxShadow: "0 12px 30px rgba(239,68,68,0.14)",
 
       }}
 
@@ -2222,7 +2224,7 @@ export default function QuizPage() {
 
 
 
-                1240,
+                1420,
 
 
 
@@ -2234,7 +2236,7 @@ export default function QuizPage() {
 
 
 
-                "0 auto 26px",
+                mobile ? "0 auto 12px" : "0 auto 10px",
 
 
 
@@ -2406,7 +2408,7 @@ export default function QuizPage() {
 
 
 
-                    : "repeat(4, minmax(0, 1fr))",
+                    : "repeat(4, minmax(260px, 1fr))",
 
 
 
@@ -2450,7 +2452,7 @@ export default function QuizPage() {
 
 
 
-                    : 16,
+                    : 18,
 
 
 
@@ -2578,7 +2580,7 @@ export default function QuizPage() {
 
 
 
-                          "1.5px solid #cfd8e6",
+                          "1px solid #fecaca",
 
 
 
@@ -2602,7 +2604,7 @@ export default function QuizPage() {
 
 
 
-                          12,
+                          14,
 
 
 
@@ -2626,7 +2628,7 @@ export default function QuizPage() {
 
 
 
-                          "#fff",
+                          "#ffffff",
 
 
 
@@ -2712,6 +2714,12 @@ export default function QuizPage() {
 
                           "100%",
 
+                        boxShadow:
+                          "0 16px 34px rgba(15,23,42,0.11)",
+
+                        transition:
+                          "transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease",
+
 
 
                       }}
@@ -2754,7 +2762,7 @@ export default function QuizPage() {
 
 
 
-                            "16/9",
+                            "16/10",
 
 
 
@@ -2766,7 +2774,7 @@ export default function QuizPage() {
 
 
 
-                            "#f3f6fb",
+                            "linear-gradient(135deg, #fef2f2 0%, #eef6ff 100%)",
 
 
 
@@ -2895,6 +2903,9 @@ export default function QuizPage() {
 
 
                                 "cover",
+
+                              objectPosition:
+                                "center 20%",
 
 
 
@@ -3034,7 +3045,7 @@ export default function QuizPage() {
 
 
 
-                              : "12px 13px 13px",
+	                              : "16px 17px 17px",
 
 
 
@@ -3126,7 +3137,7 @@ export default function QuizPage() {
 
 
 
-                                : 17,
+	                                : 20,
 
 
 
@@ -3170,7 +3181,7 @@ export default function QuizPage() {
 
 
 
-                                : 46,
+	                                : 52,
 
 
 
@@ -3330,7 +3341,7 @@ export default function QuizPage() {
 
 
 
-                                : 13,
+                                : 14,
 
 
 
@@ -3482,7 +3493,7 @@ export default function QuizPage() {
 
 
 
-              "0 auto 4px",
+              "0 auto",
 
 
 
@@ -3534,11 +3545,11 @@ export default function QuizPage() {
 
 
 
-                ? 12
+                ? 6
 
 
 
-                : 16,
+                : 8,
 
 
 
@@ -3638,7 +3649,7 @@ export default function QuizPage() {
 
 
 
-                12,
+                4,
 
 
 
@@ -3650,7 +3661,7 @@ export default function QuizPage() {
 
 
 
-                12,
+                4,
 
 
 
@@ -3662,7 +3673,7 @@ export default function QuizPage() {
 
 
 
-                "1px solid #e4e9f0",
+                "none",
 
 
 
@@ -3878,7 +3889,7 @@ export default function QuizPage() {
 
 
 
-                10,
+                6,
 
 
 
@@ -4058,7 +4069,7 @@ export default function QuizPage() {
 
 
 
-              "22px auto 14px",
+              mobile ? "14px auto 12px" : "16px auto 14px",
 
 
 
@@ -4594,7 +4605,7 @@ export default function QuizPage() {
 
 
 
-                        "1.5px solid #d5dde9",
+                        "1px solid #dde2ea",
 
 
 
@@ -4702,11 +4713,11 @@ export default function QuizPage() {
 
 
 
-                            ? "210px minmax(0,1fr)"
+                            ? "230px minmax(0,1fr)"
 
 
 
-                            : "320px minmax(0,1fr) 180px 150px",
+                            : "360px minmax(0,1fr) 190px 160px",
 
 
 
@@ -4754,11 +4765,17 @@ export default function QuizPage() {
 
 
 
-                            ? 180
+                            ? 196
 
 
 
-                            : 220,
+                            : 240,
+
+                      boxShadow:
+                        "0 14px 32px rgba(15,23,42,0.10)",
+
+                      transition:
+                        "transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease",
 
 
 
@@ -4782,11 +4799,11 @@ export default function QuizPage() {
 
 
 
-                            ? 180
+                            ? 196
 
 
 
-                            : 220,
+                            : 240,
 
 
 
@@ -4830,11 +4847,11 @@ export default function QuizPage() {
 
 
 
-                              ? 180
+                              ? 196
 
 
 
-                              : 220,
+                              : 240,
 
 
 
@@ -4858,11 +4875,11 @@ export default function QuizPage() {
 
 
 
-                              ? 180
+                              ? 196
 
 
 
-                              : 220,
+                              : 240,
 
 
 
@@ -4902,7 +4919,7 @@ export default function QuizPage() {
 
 
 
-                          "#f3f6fb",
+                          "linear-gradient(135deg, #fef2f2 0%, #eef6ff 100%)",
 
 
 
@@ -5067,6 +5084,9 @@ export default function QuizPage() {
 
 
                               "cover",
+
+                            objectPosition:
+                              "center 20%",
 
 
 
@@ -5234,7 +5254,7 @@ export default function QuizPage() {
 
 
 
-                              : 23,
+                              : 22,
 
 
 
@@ -5546,7 +5566,7 @@ export default function QuizPage() {
 
 
 
-                              fontSize: 13,
+	                              fontSize: 14,
 
 
 

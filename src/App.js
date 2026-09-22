@@ -44,6 +44,10 @@ import TierListResultPage from "./components/TierListResultPage";
 import QuizPage from "./components/QuizPage";
 import QuizMaker from "./components/QuizMaker";
 import QuizDetailPage from "./components/QuizDetailPage";
+import {
+  getWorldcupDescription,
+  getWorldcupTitle,
+} from "./utils/localization";
 
 import DePage from "./pages/de";
 import EnPage from "./pages/en";
@@ -1190,9 +1194,7 @@ function handleMakeWorldcup() {
           .split("-")[0];
 
  const translatedTitle =
-  cup?.title_translations?.[normalizedLang] ||
-  cup?.title_translations?.en ||
-  cup?.title ||
+  getWorldcupTitle(cup, normalizedLang) ||
   "";
 
 const worldCupKeywordMap = {
@@ -1229,11 +1231,7 @@ const pageSeoTitle =
       ? `${worldCupKeyword} - ${translatedTitle} | 원픽게임`
       : `${worldCupKeyword} - ${translatedTitle} | OnePickGame`;
      const savedDescription =
-  cup?.description_translations?.[normalizedLang] ||
-  cup?.description_translations?.en ||
-  cup?.description ||
-  cup?.desc ||
-  "";
+  getWorldcupDescription(cup, normalizedLang);
 
 const descriptionFallbackMap = {
   ko: `${translatedTitle} 이상형 월드컵을 원픽게임에서 플레이하세요. 좋아하는 후보를 선택하고 최종 우승자를 확인해보세요.`,

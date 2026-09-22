@@ -15,6 +15,10 @@ import { supabase } from "../utils/supabaseClient";
 import { pushRecentWorldcup } from "../utils";
 
 import Seo from "../seo/Seo";
+import {
+  getWorldcupDescription,
+  getWorldcupTitle,
+} from "../utils/localization";
 
 
 
@@ -589,28 +593,13 @@ const bracketTitle =
 
 
 const translatedTitle =
-
-  cup?.title_translations?.[normalizedLang] ||
-
-  cup?.title_translations?.en ||
-
-  cup?.title ||
-
+  getWorldcupTitle(cup, normalizedLang) ||
   "";
 
 
 
 const translatedDescription =
-
-  cup?.description_translations?.[normalizedLang] ||
-
-  cup?.description_translations?.en ||
-
-  cup?.description ||
-
-  cup?.desc ||
-
-  "";
+  getWorldcupDescription(cup, normalizedLang);
 
 
 

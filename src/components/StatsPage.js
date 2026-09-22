@@ -23,6 +23,7 @@ import { fetchWinnerStatsFromDB } from "../utils";
 import { useTranslation } from "react-i18next";
 
 import { supabase } from "../utils/supabaseClient";
+import { getWorldcupTitle } from "../utils/localization";
 
 
 
@@ -758,13 +759,7 @@ export default function StatsPage({
 
 
 const displayCupTitle =
-
-  selectedCup?.title_translations?.[normalizedLang] ||
-
-  selectedCup?.title_translations?.en ||
-
-  selectedCup?.title ||
-
+  getWorldcupTitle(selectedCup, normalizedLang) ||
   "";
 
 

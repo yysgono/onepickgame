@@ -1298,7 +1298,7 @@ const displayTitle =
     <div className={`tier-page${mineOnly ? " is-personal" : ""}`}
       style={{
         minHeight: "100vh",
-        background: "transparent",
+        background: "linear-gradient(180deg, #eff6ff 0%, #ffffff 230px, #f8fafc 100%)",
         color: "#202534",
       }}
     >
@@ -1342,20 +1342,22 @@ maxWidth: isMobile ? 430 : 1480,
           style={{
             border: active
               ? "1.5px solid #2563EB"
-              : "1px solid #d6deea",
+              : "1px solid #bfdbfe",
             background: active
               ? "#2563EB"
               : "#ffffff",
             color: active
               ? "#ffffff"
-              : "#3f4a5a",
-            borderRadius: 9,
+              : "#1D4ED8",
+            borderRadius: 999,
             padding: isMobile ? "8px 12px" : "9px 15px",
             fontSize: isMobile ? 15 : 16,
-            fontWeight: active ? 800 : 700,
+            fontWeight: active ? 900 : 800,
             cursor: "pointer",
             lineHeight: 1.2,
-            boxShadow: "none",
+            boxShadow: active
+              ? "0 8px 16px rgba(37,99,235,0.22)"
+              : "0 3px 10px rgba(37,99,235,0.08)",
           }}
         >
           {item.label}
@@ -1409,16 +1411,17 @@ maxWidth: isMobile ? 430 : 1480,
                 placeholder={t("tierList.page.searchPlaceholder")}
                 style={{
                   width: "100%",
-                  height: 46,
+                  height: isMobile ? 50 : 56,
                   boxSizing: "border-box",
                   padding: "0 44px 0 13px",
-                  borderRadius: 8,
-                  border: "1.5px solid #bccae0",
+                  borderRadius: 14,
+                  border: "1.5px solid #3B82F6",
                   background: "#ffffff",
                   color: "#202534",
                   outline: "none",
                   fontWeight: 800,
-                  fontSize: isMobile ? 16 : 18,
+                  fontSize: isMobile ? 16 : 19,
+                  boxShadow: "0 12px 30px rgba(37,99,235,0.14)",
                 }}
               />
 
@@ -1458,7 +1461,7 @@ maxWidth: isMobile ? 430 : 1480,
               style={{
                 width: "100%",
 
-                maxWidth: 1040,
+                maxWidth: 1220,
 
                 margin:
                   isMobile
@@ -1467,8 +1470,8 @@ maxWidth: isMobile ? 430 : 1480,
 
                 padding:
                   isMobile
-                    ? "4px 12px 16px"
-                    : "4px 24px 20px",
+                    ? "4px 12px 14px"
+                    : "6px 24px 18px",
 
                 boxSizing:
                   "border-box",
@@ -1499,7 +1502,7 @@ marginBottom: isMobile ? 12 : 16,
     gridTemplateColumns: isMobile
       ? "1fr"
       : "repeat(3, minmax(0, 1fr))",
-    gap: isMobile ? 12 : 22,
+    gap: isMobile ? 12 : 20,
     alignItems: "stretch",
   }}
 >
@@ -1557,7 +1560,7 @@ marginBottom: isMobile ? 12 : 16,
     "translateY(-6px) scale(1.015)";
 
   e.currentTarget.style.boxShadow =
-    "0 6px 20px rgba(25,32,52,0.10)";
+    "0 18px 38px rgba(15,23,42,0.14)";
 
   e.currentTarget.style.borderColor =
     "#4aaeff";
@@ -1569,7 +1572,7 @@ onMouseLeave={(e) => {
   e.currentTarget.style.transform = "";
 
   e.currentTarget.style.boxShadow =
-    "0 6px 20px rgba(25,32,52,0.10)";
+    "0 12px 28px rgba(15,23,42,0.10)";
 
   e.currentTarget.style.borderColor =
     "#315a8f";
@@ -1580,8 +1583,8 @@ style={{
   maxWidth: "none",
   padding: 0,
 
-  boxShadow:
-    "0 4px 16px rgba(25,32,52,0.07)",
+	  boxShadow:
+	    "0 12px 28px rgba(15,23,42,0.10)",
 
   transition:
     "transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease",
@@ -1590,10 +1593,10 @@ style={{
     "transform",
 
                           border:
-                            "1px solid #dde2ea",
+                            "1px solid #bfdbfe",
 
-                          borderRadius:
-                            10,
+	                          borderRadius:
+	                            12,
 
                           overflow:
                             "hidden",
@@ -1614,13 +1617,13 @@ style={{
                             "border-box",
                         }}
                       >
-                        <div style={{ display: "grid", gridTemplateColumns: isMobile ? "42% 58%" : "42% 58%", minHeight: isMobile ? 126 : 154, borderBottom: "1px solid #dde2ea" }}>
+                        <div style={{ display: "grid", gridTemplateColumns: isMobile ? "42% 58%" : "42% 58%", minHeight: isMobile ? 132 : 170, borderBottom: "1px solid #dbeafe" }}>
                         <div
                           style={{
                             width:
                               "100%",
 
-                minHeight: isMobile ? 126 : 154,
+                minHeight: isMobile ? 132 : 170,
 
                             display:
                               "grid",
@@ -1680,8 +1683,11 @@ style={{
                                   height:
                                     "100%",
 
-                                  objectFit:
-                                    "cover",
+	                                  objectFit:
+	                                    "cover",
+
+	                                  objectPosition:
+	                                    "center 20%",
 
                                   display:
                                     "block",
@@ -1926,7 +1932,7 @@ style={{
                             }
                           </span>
                         </div>
-                        <div style={{ margin: "0 10px 11px", minHeight: 40, display: "grid", placeItems: "center", border: "1px solid #2563EB", borderRadius: 8, background: "#2563EB", color: "#fff", fontSize: 15, fontWeight: 900 }}>
+	                        <div style={{ margin: "0 10px 11px", minHeight: 42, display: "grid", placeItems: "center", border: "1px solid #2563EB", borderRadius: 8, background: "#2563EB", color: "#fff", fontSize: isMobile ? 15 : 16, fontWeight: 900 }}>
                           {t("tierList.page.createButton")}
                         </div>
                       </button>
@@ -2162,7 +2168,7 @@ style={{
 gridTemplateColumns:
   isMobile
     ? "1fr"
-    : "repeat(4, minmax(0, 1fr))",
+    : "repeat(3, minmax(300px, 1fr))",
 
 justifyContent:
   "center",
@@ -2170,7 +2176,7 @@ justifyContent:
 gap:
   isMobile
     ? 12
-    : 14,
+    : 18,
 
                 marginTop:
                   20,
@@ -2193,7 +2199,7 @@ gap:
                         0,
 
                       border:
-                        "1px solid #dde2ea",
+                        "1px solid #bfdbfe",
 
                       borderRadius:
                         12,
@@ -2210,17 +2216,23 @@ gap:
                       cursor:
                         "pointer",
 
-                      textAlign:
-                        "left",
-                    }}
-                  >
-                    <div style={{ display: "grid", gridTemplateColumns: item.hasTierPreview ? "36% 64%" : "1fr", minHeight: isMobile ? 150 : 210, borderBottom: "1px solid #dde2ea" }}>
+	                      textAlign:
+	                        "left",
+
+	                      boxShadow:
+	                        "0 14px 32px rgba(15,23,42,0.10)",
+
+	                      transition:
+	                        "transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease",
+	                    }}
+	                  >
+                    <div style={{ display: "grid", gridTemplateColumns: item.hasTierPreview ? "36% 64%" : "1fr", minHeight: isMobile ? 154 : 230, borderBottom: "1px solid #dbeafe" }}>
                     <div
                       style={{
                         width:
                           "100%",
 
-                        minHeight: isMobile ? 150 : 210,
+                        minHeight: isMobile ? 154 : 230,
 
                         position:
                           "relative",
@@ -2244,8 +2256,9 @@ gap:
       width: "100%",
       height: "100%",
 
-      objectFit: "cover",
-      display: "block",
+	      objectFit: "cover",
+	      objectPosition: "center 20%",
+	      display: "block",
     }}
   />
 ) : (
@@ -2272,8 +2285,8 @@ gap:
                       <div
                         style={{
                           padding: isMobile ? "7px 8px" : "8px 10px",
-                          background: "#ffffff",
-                          borderLeft: "1px solid #dde2ea",
+                          background: "#f8fbff",
+                          borderLeft: "1px solid #dbeafe",
                           display: "grid",
                           alignContent: "center",
                           gap: 4,
@@ -2377,8 +2390,8 @@ gap:
 
                     <div
                       style={{
-                        padding:
-                          13,
+	                          padding:
+	                            isMobile ? 13 : 14,
                       }}
                     >
                       <div
@@ -2410,7 +2423,7 @@ gap:
                               "#1D4ED8",
 
                             fontSize:
-                              14,
+	                              isMobile ? 14 : 15,
 
                             fontWeight:
                               900,
@@ -2430,7 +2443,7 @@ gap:
                               "#1D4ED8",
 
                             fontSize:
-                              15,
+	                              isMobile ? 15 : 16,
 
                             fontWeight:
                               700,
@@ -2446,7 +2459,7 @@ gap:
                    className="tier-card-title" title={item.displayTitle || ""}
                         style={{
                           marginTop: 8,
-                          fontSize: isMobile ? 18 : 20,
+	                          fontSize: isMobile ? 18 : 21,
                           fontWeight: 900,
                           lineHeight: 1.35,
                           minHeight: isMobile ? 43 : 49,
@@ -2515,7 +2528,7 @@ gap:
                             "#1D4ED8",
 
                           fontSize:
-                            isMobile ? 13 : 14,
+	                            isMobile ? 14 : 15,
 
                           fontWeight:
                             800,
