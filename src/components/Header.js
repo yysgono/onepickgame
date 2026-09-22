@@ -1425,11 +1425,11 @@ export default function Header({
 
     fontWeight: 900,
 
-    fontSize: "clamp(28px, 1.9vw, 38px)",
+    fontSize: isMobile ? "19px" : "clamp(28px, 1.9vw, 38px)",
 
-    letterSpacing: "-0.035em",
+    letterSpacing: isMobile ? "-0.02em" : "-0.035em",
 
-    display: isMobile ? "none" : "inline-block",
+    display: "inline-block",
 
     lineHeight: 1,
 
@@ -1453,7 +1453,11 @@ export default function Header({
 
 </div>
 
-<nav className="onepick-header-modes" aria-label={t('lightUi.gameModes', 'Game modes')}>
+<nav
+  className="onepick-header-modes"
+  aria-label={t('lightUi.gameModes', 'Game modes')}
+  style={isMobile ? { gridTemplateColumns: "repeat(3, minmax(0, 1fr))" } : undefined}
+>
 
           {headerModes.map(mode => <div key={mode.key} className={`onepick-header-mode mode-${mode.key}${activeMode === mode.key ? ' is-active' : ''}${mode.pending ? ' is-pending' : ''}`}>
 
