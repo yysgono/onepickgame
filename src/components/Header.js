@@ -1393,7 +1393,7 @@ export default function Header({
 
     <header className="onepick-header">
 
-      <div className="onepick-header-main">
+      <div className="onepick-header-main" style={!isMobile ? { position: "relative" } : undefined}>
 
           <div className="onepick-header-brand-area">
 
@@ -1456,7 +1456,20 @@ export default function Header({
 <nav
   className="onepick-header-modes"
   aria-label={t('lightUi.gameModes', 'Game modes')}
-  style={isMobile ? { gridTemplateColumns: "repeat(3, minmax(0, 1fr))" } : undefined}
+  style={
+    isMobile
+      ? { gridTemplateColumns: "repeat(3, minmax(0, 1fr))" }
+      : {
+          position: "absolute",
+          left: "50%",
+          top: 0,
+          bottom: 0,
+          transform: "translateX(-50%)",
+          width: "min(740px, 42vw)",
+          gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
+          margin: 0,
+        }
+  }
 >
 
           {headerModes.map(mode => <div key={mode.key} className={`onepick-header-mode mode-${mode.key}${activeMode === mode.key ? ' is-active' : ''}${mode.pending ? ' is-pending' : ''}`}>
