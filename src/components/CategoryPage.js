@@ -499,15 +499,15 @@ const isMobile = vw < 600;
 
 
 
- const CARD_WIDTH = isMobile ? 320 : 504;
-
-
+ const CARD_WIDTH = isMobile
+  ? Math.min(360, vw - 32)
+  : 504;
 
   const CARD_HEIGHT = isMobile ? 418 : 452;
 
+  const CARD_GAP = isMobile ? 7 : 13;
 
-
-  const THUMB_HEIGHT = isMobile ? 148 : 168 * 1.05;
+  const THUMB_HEIGHT = 202;
 
 
 
@@ -3147,7 +3147,7 @@ alignItems: "flex-start",
 
 
 
-columnGap: isMobile ? 0 : 18,
+columnGap: CARD_GAP,
 
 
 
@@ -5372,30 +5372,6 @@ fontWeight: 800,
 
 
 
-
-
-
-
-                  {/* 6번째 카드 뒤 광고 */}
-
-
-
-                  {index === 5 &&
-
-
-
-                    cups.length > 6 && (
-
-
-
-                      <AdsenseCategory />
-
-
-
-                    )}
-
-
-
                 </React.Fragment>
 
 
@@ -5415,6 +5391,9 @@ fontWeight: 800,
       )}
 
 
+
+
+      {cups.length > 6 && <AdsenseCategory />}
 
             {/* 더보기 */}
 
