@@ -2771,7 +2771,9 @@ useEffect(() => {
 
     pendingWinners,
 
-    cup,
+    cup?.id,
+
+    cup?.data,
 
     roundNum,
 

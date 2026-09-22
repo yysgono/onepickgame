@@ -33,10 +33,6 @@ function useViewport() {
   };
 }
 
-/**
- * props:
- * - worldcupList: App에서 내려준 전체 월드컵 목록
- */
 export default function MatchPage({ worldcupList = [] }) {
   const { id, round } = useParams();
   const navigate = useNavigate();
@@ -45,32 +41,30 @@ export default function MatchPage({ worldcupList = [] }) {
 
   const lang = (i18n.language || "en").split("-")[0];
 
-const cup = useMemo(() => {
-  return worldcupList.find(
-    (item) => String(item.id) === String(id)
-  );
-}, [worldcupList, id]);
+  const cup = useMemo(() => {
+    return worldcupList.find(
+      (item) => String(item.id) === String(id)
+    );
+  }, [worldcupList, id]);
 
-const translatedTitle =
-  cup?.title_translations?.[lang] ||
-  cup?.title_translations?.en ||
-  cup?.title ||
-  "";
+  const translatedTitle =
+    cup?.title_translations?.[lang] ||
+    cup?.title_translations?.en ||
+    cup?.title ||
+    "";
 
-const translatedDescription =
-  cup?.description_translations?.[lang] ||
-  cup?.description_translations?.en ||
-  cup?.description ||
-  cup?.desc ||
-  "";
+  const translatedDescription =
+    cup?.description_translations?.[lang] ||
+    cup?.description_translations?.en ||
+    cup?.description ||
+    cup?.desc ||
+    "";
 
   useEffect(() => {
-  if (cup?.id) {
-    pushRecentWorldcup(cup.id);
-  }
-}, [cup?.id]);
-  
-  
+    if (cup?.id) {
+      pushRecentWorldcup(cup.id);
+    }
+  }, [cup?.id]);
 
   const selectedCount = Math.max(
     2,
@@ -78,6 +72,62 @@ const translatedDescription =
   );
 
   if (!cup) {
+    const waitingForWorldcupList =
+      !Array.isArray(worldcupList) ||
+      worldcupList.length === 0;
+
+    if (waitingForWorldcupList) {
+      return (
+        <div
+          style={{
+            minHeight: "60vh",
+            padding: 40,
+            boxSizing: "border-box",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            textAlign: "center",
+            color: "#202534",
+          }}
+        >
+          <div
+            aria-hidden="true"
+            style={{
+              width: 54,
+              height: 54,
+              border: "6px solid #e3f0fb",
+              borderTop: "6px solid #1976ed",
+              borderRadius: "50%",
+              animation: "match-page-spin 1s linear infinite",
+            }}
+          />
+
+          <div
+            style={{
+              marginTop: 16,
+              fontSize: 20,
+              fontWeight: 800,
+              color: "#5542b8",
+            }}
+          >
+            {t("shuffling_candidates", {
+              defaultValue: "Preparing candidates...",
+            })}
+          </div>
+
+          <style>
+            {`
+              @keyframes match-page-spin {
+                from { transform: rotate(0deg); }
+                to { transform: rotate(360deg); }
+              }
+            `}
+          </style>
+        </div>
+      );
+    }
+
     return (
       <div
         style={{
@@ -92,12 +142,7 @@ const translatedDescription =
           color: "#202534",
         }}
       >
-        <div
-          style={{
-            fontSize: 20,
-            fontWeight: 700,
-          }}
-        >
+        <div style={{ fontSize: 20, fontWeight: 700 }}>
           {t("not_found", {
             defaultValue: "Bracket not found.",
           })}
@@ -131,28 +176,28 @@ const translatedDescription =
     defaultValue: "Round of {{count}}",
   });
 
-const seoDescription =
-  translatedDescription ||
-  t("match_page_description", {
-    title: translatedTitle,
-    defaultValue: "Choose your favorite from {{title}}.",
-  });
+  const seoDescription =
+    translatedDescription ||
+    t("match_page_description", {
+      title: translatedTitle,
+      defaultValue: "Choose your favorite from {{title}}.",
+    });
 
   return (
     <>
-<Seo
-  lang={lang}
-  slug={`match/${cup.id}/${selectedCount}`}
-  title={`${translatedTitle} ${roundLabel} | OnePickGame`}
-  description={seoDescription}
-  image={
-    cup.thumbnail ||
-    cup.image ||
-    cup.data?.[0]?.image ||
-    "/onepick-social.png"
-  }
-  indexable={false}
-/>
+      <Seo
+        lang={lang}
+        slug={`match/${cup.id}/${selectedCount}`}
+        title={`${translatedTitle} ${roundLabel} | OnePickGame`}
+        description={seoDescription}
+        image={
+          cup.thumbnail ||
+          cup.image ||
+          cup.data?.[0]?.image ||
+          "/onepick-social.png"
+        }
+        indexable={false}
+      />
 
       <div
         style={{
@@ -191,14 +236,14 @@ const seoDescription =
               boxSizing: "border-box",
             }}
           >
- <Match
-  cup={{
-    ...cup,
-    title: translatedTitle,
-  }}
-  onResult={() => {}}
-  selectedCount={selectedCount}
-/>
+            <Match
+              cup={{
+                ...cup,
+                title: translatedTitle,
+              }}
+              onResult={() => {}}
+              selectedCount={selectedCount}
+            />
 
             <MatchCommunityBox cupId={cup.id} />
           </main>
