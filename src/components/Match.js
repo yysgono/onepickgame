@@ -1815,9 +1815,12 @@ function Match({
 
 }) {
 
-  const { t } =
+  const { t, i18n } =
 
     useTranslation();
+
+  const matchLanguage =
+    (i18n.language || "en").split("-")[0];
 
 
 
@@ -5072,7 +5075,7 @@ useEffect(() => {
 
                 {t("match_random_select", {
 
-                  defaultValue: lang === "ko" ? "랜덤 선택" : "Random pick",
+                  defaultValue: matchLanguage === "ko" ? "랜덤 선택" : "Random pick",
 
                 })}
 
