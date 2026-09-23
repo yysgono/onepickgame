@@ -5072,7 +5072,7 @@ useEffect(() => {
 
                 {t("match_random_select", {
 
-                  defaultValue: "랜덤 선택",
+                  defaultValue: lang === "ko" ? "랜덤 선택" : "Random pick",
 
                 })}
 

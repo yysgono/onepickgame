@@ -3370,6 +3370,111 @@ const handleDragEndItem =
     );
 
 
+  const renderMobilePlacementPanel =
+    useCallback(
+      (styleOverride = {}) => {
+        if (!isMobile || !selectedMobileItem) {
+          return null;
+        }
+
+        return (
+          <div
+            style={{
+              padding: 12,
+              border: "1px solid #dde2ea",
+              borderRadius: 12,
+              background: "#ffffff",
+              textAlign: "center",
+              ...styleOverride,
+            }}
+          >
+            <div
+              style={{
+                marginBottom: 9,
+                color: "#202534",
+                fontSize: 15,
+                fontWeight: 900,
+              }}
+            >
+              {text.mobileSelectGuide}: {selectedMobileItem.name || text.untitledCandidate}
+            </div>
+
+            <div
+              style={{
+                display: "flex",
+                gap: 6,
+                justifyContent: "center",
+                flexWrap: "wrap",
+              }}
+            >
+              {TIERS.map((tier) => (
+                <button
+                  key={tier}
+                  type="button"
+                  onClick={() => handleMobilePlacement(tier)}
+                  style={{
+                    minWidth: 44,
+                    height: 38,
+                    borderRadius: 8,
+                    border: `1px solid ${TIER_COLORS[tier]}`,
+                    background: "#ffffff",
+                    color: "#202534",
+                    fontWeight: 900,
+                  }}
+                >
+                  {tier}
+                </button>
+              ))}
+
+              {placedKeys.has(selectedMobileItem._tierKey) && (
+                <button
+                  type="button"
+                  onClick={() => handleMobilePlacement("ONE_PICK")}
+                  style={{
+                    height: 38,
+                    padding: "0 10px",
+                    borderRadius: 8,
+                    border: "1px solid #19bfff",
+                    background: "#ffffff",
+                    color: "#202534",
+                    fontWeight: 900,
+                  }}
+                >
+                  ⭐ {text.onePickTitle}
+                </button>
+              )}
+
+              {placedKeys.has(selectedMobileItem._tierKey) && (
+                <button
+                  type="button"
+                  onClick={() => handleMobilePlacement("UNRANKED")}
+                  style={{
+                    height: 38,
+                    padding: "0 10px",
+                    borderRadius: 8,
+                    border: "1px solid #dde2ea",
+                    background: "#ffffff",
+                    color: "#202534",
+                    fontWeight: 900,
+                  }}
+                >
+                  {text.moveUnranked}
+                </button>
+              )}
+            </div>
+          </div>
+        );
+      },
+      [
+        isMobile,
+        selectedMobileItem,
+        text,
+        handleMobilePlacement,
+        placedKeys,
+      ]
+    );
+
+
   const saveDraft =
     useCallback(async () => {
       if (typeof window === "undefined") return;
@@ -5372,104 +5477,7 @@ if (editingTierListId) {
 
 
 
-            {isMobile &&
-              selectedMobileItem && (
-              <div
-                style={{
-                  marginBottom: 18,
-                  padding: 12,
-                  border: "1px solid #dde2ea",
-                  borderRadius: 12,
-                  background: "#ffffff",
-                  textAlign: "center",
-                }}
-              >
-                <div
-                  style={{
-                    marginBottom: 9,
-                    color: "#202534",
-                    fontSize: 15,
-                    fontWeight: 900,
-                  }}
-                >
-                  {text.mobileSelectGuide}: {selectedMobileItem.name || text.untitledCandidate}
-                </div>
-
-                <div
-                  style={{
-                    display: "flex",
-                    gap: 6,
-                    justifyContent: "center",
-                    flexWrap: "wrap",
-                  }}
-                >
-                  {TIERS.map((tier) => (
-                    <button
-                      key={tier}
-                      type="button"
-                      onClick={() =>
-                        handleMobilePlacement(tier)
-                      }
-                      style={{
-                        minWidth: 44,
-                        height: 38,
-                        borderRadius: 8,
-                        border: `1px solid ${TIER_COLORS[tier]}`,
-                        background: "#ffffff",
-                        color: "#202534",
-                        fontWeight: 900,
-                      }}
-                    >
-                      {tier}
-                    </button>
-                  ))}
-
-                  {placedKeys.has(
-                    selectedMobileItem._tierKey
-                  ) && (
-                    <button
-                      type="button"
-                      onClick={() =>
-                        handleMobilePlacement("ONE_PICK")
-                      }
-                      style={{
-                        height: 38,
-                        padding: "0 10px",
-                        borderRadius: 8,
-                        border: "1px solid #19bfff",
-                        background: "#ffffff",
-                        color: "#202534",
-                        fontWeight: 900,
-                      }}
-                    >
-                      ⭐ {text.onePickTitle}
-                    </button>
-                  )}
-
-                  {placedKeys.has(
-                    selectedMobileItem._tierKey
-                  ) && (
-                    <button
-                      type="button"
-                      onClick={() =>
-                        handleMobilePlacement("UNRANKED")
-                      }
-                      style={{
-                        height: 38,
-                        padding: "0 10px",
-                        borderRadius: 8,
-                        border: "1px solid #dde2ea",
-                        background: "#ffffff",
-                        color: "#202534",
-                        fontWeight: 900,
-                      }}
-                    >
-                      {text.moveUnranked}
-                    </button>
-                  )}
-                </div>
-              </div>
-            )}
+            {renderMobilePlacementPanel({ marginBottom: 18 })}
 
             {/* ============================================
                 제목 / 태그 / 프리셋 / 카테고리 / 저장 설정
@@ -6913,6 +6921,15 @@ objectPosition: "center",
                   )}
                 </div>
               )}
+
+
+              {renderMobilePlacementPanel({
+                margin: "12px 0 14px",
+                position: "sticky",
+                top: 8,
+                zIndex: 5,
+                boxShadow: "0 10px 22px rgba(25,32,52,0.12)",
+              })}
 
 
               {/* 후보 그리드 */}

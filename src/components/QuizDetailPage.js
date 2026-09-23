@@ -306,7 +306,25 @@ export default function QuizDetailPage() {
 
   const [deletingQuiz, setDeletingQuiz] = useState(false);
 
+  const [quizViewportWidth, setQuizViewportWidth] = useState(
+    typeof window !== "undefined" ? window.innerWidth : 1200
+  );
+
   const timerRef = useRef(null);
+
+  const isQuizMobile = quizViewportWidth < 700;
+
+  useEffect(() => {
+    if (typeof window === "undefined") return undefined;
+
+    const handleResize = () => {
+      setQuizViewportWidth(window.innerWidth || 1200);
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const deadlineRef = useRef(0);
 
@@ -1298,7 +1316,11 @@ export default function QuizDetailPage() {
 
             {current.image_url && (
 
-              <MediaRenderer url={current.image_url} alt={localize(current.question_translations, current.question_text, lang) || title || "Quiz question"} playable active style={{ display: "block", width: "100%", height: 540, maxHeight: "65vh", objectFit: "contain", background: "#f6f8fb", border: "1.5px solid #cfd8e6", borderRadius: 10, marginBottom: 22 }} />
+              <div style={{ width: "100%", height: isQuizMobile ? undefined : 540, aspectRatio: isQuizMobile ? "4 / 3" : undefined, maxHeight: isQuizMobile ? undefined : "65vh", background: "#f6f8fb", border: "1.5px solid #cfd8e6", borderRadius: 10, marginBottom: 22, overflow: "hidden" }}>
+
+                <MediaRenderer url={current.image_url} alt={localize(current.question_translations, current.question_text, lang) || title || "Quiz question"} playable active style={{ display: "block", width: "100%", height: "100%", objectFit: "contain", background: "#f6f8fb" }} />
+
+              </div>
 
             )}
 
