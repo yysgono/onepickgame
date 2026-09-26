@@ -1696,6 +1696,182 @@ app.get(
 
 /*
  * =====================================================
+ * 티어표 목록 페이지 서버 SEO
+ *
+ * /:lang/tier-list
+ * =====================================================
+ */
+
+const TIER_LIST_SEO_COPY = {
+  ko: {
+    title: "티어표 만들기 · 인기 티어표 모음 | 원픽게임",
+    description:
+      "원픽게임에서 게임, 애니, K-POP, 음식, 스포츠 등 다양한 주제의 티어표를 만들고 인기 티어표와 최신 티어표를 둘러보세요.",
+    heading: "티어표 만들기",
+    latest: "인기 티어표",
+  },
+  en: {
+    title: "Tier List Maker · Popular Tier Lists | OnePickGame",
+    description:
+      "Create tier lists on OnePickGame and browse popular or latest rankings for games, anime, celebrities, food, sports, characters and more.",
+    heading: "Tier List Maker",
+    latest: "Popular Tier Lists",
+  },
+  ja: {
+    title: "Tier表メーカー・人気Tierリスト | OnePickGame",
+    description:
+      "OnePickGameでゲーム、アニメ、芸能人、食べ物、スポーツなどのTier表を作成し、人気のTierリストをチェックできます。",
+    heading: "Tier表メーカー",
+    latest: "人気Tierリスト",
+  },
+  zh: {
+    title: "Tier List 制作器・热门排行 | OnePickGame",
+    description:
+      "在 OnePickGame 创建 Tier List，并浏览游戏、动漫、明星、美食、体育、角色等主题的热门排行。",
+    heading: "Tier List 制作器",
+    latest: "热门 Tier List",
+  },
+};
+
+app.use(async (req, res, next) => {
+  const seoType = String(req.query?.seo || "");
+  if (seoType !== "tier-list-list") return next();
+
+  const lang = String(req.query?.lang || "en").trim().toLowerCase();
+
+  if (!SUPPORTED_LANGS.includes(lang)) {
+    return res.status(400).send("Unsupported language");
+  }
+
+  const text = TIER_LIST_SEO_COPY[lang] || TIER_LIST_SEO_COPY.en;
+  const canonical = `${SITE_URL}/${lang}/tier-list`;
+  const image = `${SITE_URL}/ogimg.png`;
+
+  try {
+    let tierLists = [];
+
+    const { data, error } = await supabase
+      .from("tier_lists")
+      .select("id,title,title_translations,original_language,updated_at,candidate_count")
+      .order("updated_at", { ascending: false })
+      .limit(60);
+
+    if (error) {
+      console.warn("티어표 목록 SEO 데이터 조회 실패:", error);
+    } else {
+      tierLists = data || [];
+    }
+
+    const parseMap = (value) => {
+      if (!value) return {};
+      if (typeof value === "object" && !Array.isArray(value)) return value;
+      try {
+        const parsed = JSON.parse(value);
+        return parsed && typeof parsed === "object" && !Array.isArray(parsed)
+          ? parsed
+          : {};
+      } catch {
+        return {};
+      }
+    };
+
+    const localizedTitle = (item) => {
+      const map = parseMap(item?.title_translations);
+      return String(
+        map[lang] ||
+          map.en ||
+          item?.title ||
+          "Tier List"
+      )
+        .replace(/\s+/g, " ")
+        .trim();
+    };
+
+    const tierItems = tierLists
+      .filter((item) => item?.id)
+      .slice(0, 40)
+      .map((item) => `
+<li>
+  <a href="${SITE_URL}/${lang}/tier-list/${encodeURIComponent(item.id)}">
+    ${escapeHtml(localizedTitle(item))}
+  </a>
+</li>`)
+      .join("\n");
+
+    let html = await loadSeoTemplate(SITE_URL);
+
+    html = html
+      .replace(/<title[\s\S]*?<\/title>/gi, "")
+      .replace(/<meta\s+[^>]*(?:name|property)=["'](?:description|robots|og:[^"']*|twitter:[^"']*)["'][^>]*>/gi, "")
+      .replace(/<link\s+[^>]*rel=["'](?:canonical|alternate)["'][^>]*>/gi, "")
+      .replace(/<html([^>]*)lang=["'][^"']*["']([^>]*)>/i, `<html$1lang="${lang}"$2>`);
+
+    const hreflangTags = SUPPORTED_LANGS.map(
+      (language) => `\n<link rel="alternate" hreflang="${language}" href="${SITE_URL}/${language}/tier-list"/>`
+    ).join("");
+
+    const jsonLd = {
+      "@context": "https://schema.org",
+      "@type": "CollectionPage",
+      name: text.title,
+      description: text.description,
+      url: canonical,
+      inLanguage: lang,
+      isPartOf: { "@type": "WebSite", name: "OnePickGame", url: SITE_URL },
+    };
+
+    const seoHead = `
+<title>${escapeHtml(text.title)}</title>
+<meta name="description" content="${escapeHtml(text.description)}"/>
+<meta name="robots" content="index, follow, max-image-preview:large"/>
+<link rel="canonical" href="${canonical}"/>
+${hreflangTags}
+<link rel="alternate" hreflang="x-default" href="${SITE_URL}/en/tier-list"/>
+<meta property="og:type" content="website"/>
+<meta property="og:title" content="${escapeHtml(text.title)}"/>
+<meta property="og:description" content="${escapeHtml(text.description)}"/>
+<meta property="og:url" content="${canonical}"/>
+<meta property="og:site_name" content="OnePickGame"/>
+<meta property="og:locale" content="${OG_LOCALE_MAP[lang] || "en_US"}"/>
+<meta property="og:image" content="${image}"/>
+<meta property="og:image:alt" content="${escapeHtml(text.heading)}"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="${escapeHtml(text.title)}"/>
+<meta name="twitter:description" content="${escapeHtml(text.description)}"/>
+<meta name="twitter:image" content="${image}"/>
+<script type="application/ld+json">${safeJson(jsonLd)}</script>
+`;
+
+    const seoBody = `
+<main id="seo-content" style="max-width:900px;margin:40px auto;padding:24px;font-family:Arial,sans-serif;">
+  <h1>${escapeHtml(text.heading)}</h1>
+  <p>${escapeHtml(text.description)}</p>
+  ${
+    tierItems
+      ? `<section><h2>${escapeHtml(text.latest)}</h2><ul>${tierItems}</ul></section>`
+      : ""
+  }
+</main>`;
+
+    const loadingRoot = /<div\s+id=["']root["']>\s*<div\s+class=["']loading-screen["']>\s*Loading\.\.\.\s*<\/div>\s*<\/div>/i;
+    const emptyRoot = /<div\s+id=["']root["']>\s*<\/div>/i;
+    if (loadingRoot.test(html)) html = html.replace(loadingRoot, `<div id="root">${seoBody}</div>`);
+    else if (emptyRoot.test(html)) html = html.replace(emptyRoot, `<div id="root">${seoBody}</div>`);
+
+    html = html.replace("</head>", `${seoHead}\n</head>`);
+
+    res.setHeader("Cache-Control", "public, s-maxage=300, stale-while-revalidate=3600");
+    res.setHeader("Content-Type", "text/html; charset=utf-8");
+    return res.status(200).send(html);
+  } catch (err) {
+    console.error("티어표 목록 SEO HTML 오류:", err);
+    return res.status(500).send("Tier list page temporarily unavailable");
+  }
+});
+
+
+/*
+ * =====================================================
  * 티어표 상세 페이지 서버 SEO
  *
  * /:lang/tier-list/:id
