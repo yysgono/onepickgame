@@ -94,6 +94,9 @@ export default function SelectRoundPage({
   maxRound,
   candidates,
   onSelect,
+  onDelete,
+  user,
+  isAdmin = false,
   worldcupList = [],
 }) {
   const { t, i18n } = useTranslation();
@@ -108,6 +111,7 @@ export default function SelectRoundPage({
   const [detailTags, setDetailTags] = useState(
   Array.isArray(cup?.tags) ? cup.tags : []
 );
+  const [deletingWorldcup, setDeletingWorldcup] = useState(false);
 
 useEffect(() => {
   let mounted = true;
@@ -153,6 +157,9 @@ useEffect(() => {
 
 
   const { lang: langParam } = useParams();
+
+  const currentUserId = user?.id || "";
+  const currentUserEmail = user?.email || "";
 
   // ✅ 통계 가져오기
   useEffect(() => {
@@ -477,6 +484,20 @@ textShadow: "none",
     justifyContent: "center",
   };
 
+  const ownerActionBtn = {
+    minWidth: isMobile ? 72 : 84,
+    height: isMobile ? 36 : 40,
+    padding: isMobile ? "7px 14px" : "8px 18px",
+    borderRadius: 10,
+    border: "1px solid #d7dce8",
+    background: "#ffffff",
+    color: "#202534",
+    fontSize: isMobile ? 14 : 15,
+    fontWeight: 900,
+    cursor: "pointer",
+    boxShadow: "0 4px 14px rgba(25,32,52,0.08)",
+  };
+
   // ======================================================
   // 공유 URL
   // ======================================================
@@ -512,6 +533,56 @@ textShadow: "none",
   function handleShowStats() {
     if (cup?.id && normalizedLang) {
       navigate(`/${normalizedLang}/stats/${cup.id}`);
+    }
+  }
+
+  const isOwner =
+    Boolean(isAdmin) ||
+    Boolean(
+      cup &&
+        (
+          cup.owner === currentUserId ||
+          cup.creator === currentUserId ||
+          cup.creator_id === currentUserId ||
+          cup.user_id === currentUserId ||
+          cup.owner === currentUserEmail ||
+          cup.creator === currentUserEmail ||
+          cup.creator_id === currentUserEmail ||
+          cup.user_id === currentUserEmail
+        )
+    );
+
+  function handleEditWorldcup() {
+    if (!cup?.id || !normalizedLang) return;
+
+    navigate(`/${normalizedLang}/edit-worldcup/${cup.id}`);
+  }
+
+  async function handleDeleteWorldcup() {
+    if (!cup?.id || deletingWorldcup) return;
+
+    const confirmed = window.confirm(
+      t("delete_confirm") ||
+        "Are you sure you want to delete?"
+    );
+
+    if (!confirmed) return;
+
+    try {
+      setDeletingWorldcup(true);
+
+      if (onDelete) {
+        await onDelete(cup.id);
+      }
+
+      navigate(`/${normalizedLang || "en"}`);
+    } catch (error) {
+      console.error("월드컵 삭제 실패:", error);
+      alert(
+        t("delete_failed", { defaultValue: "Delete failed." })
+      );
+    } finally {
+      setDeletingWorldcup(false);
     }
   }
 
@@ -694,6 +765,47 @@ boxShadow:
 >
   {t("show_result")}
 </button>
+          {isOwner && (
+            <div
+              style={{
+                position: "absolute",
+                top: isMobile ? 12 : 24,
+                left: "50%",
+                transform: "translateX(-50%)",
+                zIndex: 22,
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                gap: isMobile ? 6 : 8,
+              }}
+            >
+              <button
+                type="button"
+                onClick={handleEditWorldcup}
+                style={ownerActionBtn}
+              >
+                {t("edit", { defaultValue: "Edit" })}
+              </button>
+
+              <button
+                type="button"
+                onClick={handleDeleteWorldcup}
+                disabled={deletingWorldcup}
+                style={{
+                  ...ownerActionBtn,
+                  color: "#b42346",
+                  borderColor: "#efb8c2",
+                  background: "#fff7f8",
+                  opacity: deletingWorldcup ? 0.65 : 1,
+                  cursor: deletingWorldcup ? "default" : "pointer",
+                }}
+              >
+                {deletingWorldcup
+                  ? t("deleting", { defaultValue: "Deleting..." })
+                  : t("delete", { defaultValue: "Delete" })}
+              </button>
+            </div>
+          )}
       {/* 상단 START NOW + 라운드 선택 */}
 <div
   style={{

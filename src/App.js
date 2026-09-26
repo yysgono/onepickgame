@@ -1294,6 +1294,9 @@ const translatedDescription =
   <SelectRoundPage
   cup={cup}
   worldcupList={worldcupList}
+  user={user}
+  isAdmin={isAdmin}
+  onDelete={handleWorldcupDelete}
             maxRound={
               cup.data.length
             }
