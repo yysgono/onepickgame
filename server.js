@@ -1241,49 +1241,6 @@ app.use(async (req, res, next) => {
   try {
     let html = await loadSeoTemplate(SITE_URL);
 
-    /*
-     * =====================================================
-     * 추천 월드컵 조회
-     * =====================================================
-     */
-
-    const {
-      data: featuredWorldcups,
-      error: featuredWorldcupsError,
-    } = await supabase
-      .from("worldcups")
-      .select(
-        "id, title, title_translations"
-      )
-      .in("id", FEATURED_WORLDCUP_IDS)
-      .is("deleted_at", null);
-
-    if (featuredWorldcupsError) {
-      console.warn(
-        "홈 추천 월드컵 조회 실패:",
-        featuredWorldcupsError
-      );
-    }
-
-    /*
-     * Supabase 조회 순서와 상관없이
-     * FEATURED_WORLDCUP_IDS 순서 유지
-     */
-
-    const featuredWorldcupMap =
-      new Map(
-        (featuredWorldcups || []).map(
-          (cup) => [cup.id, cup]
-        )
-      );
-
-const orderedFeaturedWorldcups =
-  FEATURED_WORLDCUP_IDS
-    .map((id) =>
-      featuredWorldcupMap.get(id)
-    )
-    .filter(Boolean);
-
 /*
  * 기존 기본 SEO 제거
  */
@@ -1590,55 +1547,6 @@ const defaultHomeBody = {
       HOME_BODY_TEXT[lang] ||
       defaultHomeBody;
 
-    /*
-     * =====================================================
-     * 추천 월드컵 HTML
-     * =====================================================
-     */
-
-    const featuredWorldcupLinks =
-      orderedFeaturedWorldcups
-        .map((cup) => {
-          let titleTranslations =
-            cup.title_translations || {};
-
-          if (
-            typeof titleTranslations ===
-            "string"
-          ) {
-            try {
-              titleTranslations =
-                JSON.parse(
-                  titleTranslations
-                );
-            } catch {
-              titleTranslations = {};
-            }
-          }
-
-          const localizedTitle =
-            String(
-              titleTranslations?.[lang] ||
-              titleTranslations?.en ||
-              cup.title ||
-              "Tournament"
-            )
-              .replace(/\s+/g, " ")
-              .trim();
-
-          const href =
-            `${SITE_URL}/${lang}/select-round/` +
-            encodeURIComponent(cup.id);
-
-          return `
-<li>
-  <a href="${href}">
-    ${escapeHtml(localizedTitle)}
-  </a>
-</li>`;
-        })
-        .join("\n");
-
 const seoBody = `
 <main
   id="seo-content"
@@ -1670,25 +1578,6 @@ const seoBody = `
         ${escapeHtml(homeBody.playText)}
       </p>
     </section>
-    ${
-      featuredWorldcupLinks
-        ? `
-    <section>
-
-      <h2>
-        ${escapeHtml(
-          homeBody.featuredTitle
-        )}
-      </h2>
-
-      <ul>
-        ${featuredWorldcupLinks}
-      </ul>
-
-    </section>
-`
-        : ""
-    }
     <section>
       <h2>
         ${escapeHtml(homeBody.createTitle)}

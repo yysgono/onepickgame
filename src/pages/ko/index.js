@@ -37,11 +37,11 @@ export default function KoPage(props) {
   return (
     <>
       <Helmet htmlAttributes={{ lang: "ko" }}>
-        <title>이상형 월드컵 해외 사이트 - 토너먼트 원픽 게임 | OnePickGame</title>
+        <title>One Pick Game - 이상형 월드컵, 티어표, 퀴즈 사이트 | 원픽게임</title>
 
         <meta
           name="description"
-          content="OnePickGame(원픽 게임)에서 다양한 이상형 월드컵과 토너먼트 게임을 즐겨보세요. 직접 월드컵을 만들고, 최애를 선택하고, 결과를 친구들과 공유할 수 있습니다."
+          content="원픽게임에서 이상형 월드컵, 티어표, 퀴즈를 만들고 플레이해보세요. 애니, K-POP, 게임, 영화 등 다양한 주제의 콘텐츠를 무료로 즐길 수 있습니다."
         />
 
         <meta
@@ -55,19 +55,19 @@ export default function KoPage(props) {
         {/* Open Graph */}
         <meta
           property="og:title"
-          content="이상형 월드컵 - 토너먼트 원픽 게임 | OnePickGame"
+          content="One Pick Game - 이상형 월드컵, 티어표, 퀴즈 사이트 | 원픽게임"
         />
 
         <meta
           property="og:description"
-          content="OnePickGame에서 다양한 이상형 월드컵과 토너먼트 게임을 즐겨보세요. 직접 만들고 최애를 선택해 결과를 공유할 수 있습니다."
+          content="원픽게임에서 이상형 월드컵, 티어표, 퀴즈를 만들고 플레이해보세요. 애니, K-POP, 게임, 영화 등 다양한 주제의 콘텐츠를 무료로 즐길 수 있습니다."
         />
 
         <meta property="og:image" content={`${base}/ogimg.png`} />
 
         <meta
           property="og:image:alt"
-          content="OnePickGame - 이상형 월드컵 토너먼트 게임"
+          content="OnePickGame - 이상형 월드컵, 티어표, 퀴즈 사이트"
         />
 
         <meta property="og:url" content={self} />
@@ -80,19 +80,19 @@ export default function KoPage(props) {
 
         <meta
           name="twitter:title"
-          content="이상형 월드컵 - 토너먼트 원픽 게임 | OnePickGame"
+          content="One Pick Game - 이상형 월드컵, 티어표, 퀴즈 사이트 | 원픽게임"
         />
 
         <meta
           name="twitter:description"
-          content="OnePickGame에서 이상형 월드컵을 만들고 플레이하세요. 최애를 선택하고 토너먼트 결과를 친구들과 공유할 수 있습니다."
+          content="원픽게임에서 이상형 월드컵, 티어표, 퀴즈를 만들고 플레이해보세요. 애니, K-POP, 게임, 영화 등 다양한 주제의 콘텐츠를 무료로 즐길 수 있습니다."
         />
 
         <meta name="twitter:image" content={`${base}/ogimg.png`} />
 
         <meta
           name="twitter:image:alt"
-          content="OnePickGame - 이상형 월드컵 토너먼트 게임 원픽"
+          content="OnePickGame - 이상형 월드컵, 티어표, 퀴즈 사이트"
         />
 
         {/* hreflang */}
