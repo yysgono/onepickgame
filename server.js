@@ -2417,17 +2417,70 @@ function getOgImageFromCandidate(candidate) {
 }
 
 /*
- * 이미지가 있는 첫 번째 후보
+ * winner_stats 기준 우승 후보 이미지 우선 사용
  */
 let image = "";
 
-for (const candidate of candidates) {
-  const candidateImage =
-    getOgImageFromCandidate(candidate);
+try {
+  const { data: winnerRows, error: winnerError } =
+    await supabase
+      .from("winner_stats")
+      .select("candidate_id, win_count, match_wins, match_count, total_games, name, image")
+      .eq("cup_id", id)
+      .order("win_count", { ascending: false })
+      .order("match_wins", { ascending: false })
+      .order("total_games", { ascending: false })
+      .limit(1);
 
-  if (candidateImage) {
-    image = candidateImage;
-    break;
+  if (winnerError) {
+    throw winnerError;
+  }
+
+  const topWinnerRow =
+    Array.isArray(winnerRows) && winnerRows.length
+      ? winnerRows[0]
+      : null;
+
+  const statImage =
+    getOgImageFromCandidate({
+      image: topWinnerRow?.image,
+    });
+
+  if (statImage) {
+    image = statImage;
+  }
+
+  if (!image && topWinnerRow?.candidate_id) {
+    const topWinnerCandidate =
+      candidates.find(
+        (candidate) =>
+          String(candidate?.id) ===
+          String(topWinnerRow.candidate_id)
+      ) || null;
+
+    const candidateImage =
+      getOgImageFromCandidate(topWinnerCandidate);
+
+    if (candidateImage) {
+      image = candidateImage;
+    }
+  }
+} catch (error) {
+  console.warn(
+    "월드컵 SEO 우승자 이미지 조회 실패:",
+    error
+  );
+}
+
+if (!image) {
+  for (const candidate of candidates) {
+    const candidateImage =
+      getOgImageFromCandidate(candidate);
+
+    if (candidateImage) {
+      image = candidateImage;
+      break;
+    }
   }
 }
 
