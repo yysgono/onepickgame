@@ -85,6 +85,89 @@ const WORLDCUP_CARD_META_COPY = {
   bn: { candidates: "প্রার্থী", plays: "খেলা", updated: "আপডেট" },
 };
 
+const HOME_SIDE_PANEL_COPY = {
+  ko: {
+    recentCreated: "최근 만들어진 월드컵",
+    recentPlayed: "최근 플레이",
+    empty: "표시할 월드컵이 없습니다.",
+  },
+  en: {
+    recentCreated: "Recently Created Brackets",
+    recentPlayed: "Recent Plays",
+    empty: "No brackets to show yet.",
+  },
+  ja: {
+    recentCreated: "最近作成されたワールドカップ",
+    recentPlayed: "最近のプレイ",
+    empty: "表示できるワールドカップがありません。",
+  },
+  zh: {
+    recentCreated: "最近创建的淘汰赛",
+    recentPlayed: "最近游玩",
+    empty: "暂无可显示的淘汰赛。",
+  },
+  es: {
+    recentCreated: "Torneos creados recientemente",
+    recentPlayed: "Jugadas recientes",
+    empty: "No hay torneos para mostrar.",
+  },
+  fr: {
+    recentCreated: "Tournois créés récemment",
+    recentPlayed: "Parties récentes",
+    empty: "Aucun tournoi à afficher.",
+  },
+  vi: {
+    recentCreated: "Bracket mới tạo",
+    recentPlayed: "Lượt chơi gần đây",
+    empty: "Chưa có bracket để hiển thị.",
+  },
+  de: {
+    recentCreated: "Neu erstellte Turniere",
+    recentPlayed: "Letzte Spiele",
+    empty: "Noch keine Turniere vorhanden.",
+  },
+  ru: {
+    recentCreated: "Недавно созданные турниры",
+    recentPlayed: "Недавние игры",
+    empty: "Пока нечего показать.",
+  },
+  id: {
+    recentCreated: "Bracket Terbaru",
+    recentPlayed: "Baru Dimainkan",
+    empty: "Belum ada bracket untuk ditampilkan.",
+  },
+  pt: {
+    recentCreated: "Torneios recentes",
+    recentPlayed: "Jogadas recentes",
+    empty: "Nenhum torneio para mostrar.",
+  },
+  hi: {
+    recentCreated: "हाल में बनाए गए ब्रैकेट",
+    recentPlayed: "हाल की खेलें",
+    empty: "दिखाने के लिए कोई ब्रैकेट नहीं है।",
+  },
+  tr: {
+    recentCreated: "Yeni Oluşturulan Turnuvalar",
+    recentPlayed: "Son Oynananlar",
+    empty: "Gösterilecek turnuva yok.",
+  },
+  th: {
+    recentCreated: "เวิลด์คัพที่สร้างล่าสุด",
+    recentPlayed: "เล่นล่าสุด",
+    empty: "ยังไม่มีรายการให้แสดง",
+  },
+  ar: {
+    recentCreated: "بطولات أُنشئت حديثًا",
+    recentPlayed: "آخر مرات اللعب",
+    empty: "لا توجد بطولات لعرضها.",
+  },
+  bn: {
+    recentCreated: "সাম্প্রতিক তৈরি ব্র্যাকেট",
+    recentPlayed: "সাম্প্রতিক খেলা",
+    empty: "দেখানোর মতো কোনো ব্র্যাকেট নেই।",
+  },
+};
+
 function formatWorldcupCardDate(value) {
   if (!value) return "-";
 
@@ -617,6 +700,8 @@ const [winStatsMap, setWinStatsMap] = useState({});
 
 const [playCountMap, setPlayCountMap] = useState({});
 
+const [recentPlayLogs, setRecentPlayLogs] = useState([]);
+
 
 
 const requestedStatsRef = useRef(new Set());
@@ -729,6 +814,36 @@ if (playCountsCache) {
 
   };
 
+}, []);
+
+useEffect(() => {
+  let mounted = true;
+
+  async function fetchRecentPlays() {
+    try {
+      const { data, error } = await supabase
+        .from("winner_logs")
+        .select("cup_id, created_at")
+        .order("created_at", { ascending: false })
+        .limit(30);
+
+      if (error) {
+        throw error;
+      }
+
+      if (mounted) {
+        setRecentPlayLogs(data || []);
+      }
+    } catch (error) {
+      console.error("최근 플레이 조회 오류:", error);
+    }
+  }
+
+  fetchRecentPlays();
+
+  return () => {
+    mounted = false;
+  };
 }, []);
 
 
@@ -928,6 +1043,46 @@ return (
 })
 
   : [];
+
+const sidePanelCopy =
+  HOME_SIDE_PANEL_COPY[lang] ||
+  HOME_SIDE_PANEL_COPY.en;
+
+const cupById = new Map(
+  (Array.isArray(worldcupList) ? worldcupList : [])
+    .filter((cup) => cup?.id)
+    .map((cup) => [String(cup.id), cup])
+);
+
+const recentCreatedCups = [...cupById.values()]
+  .sort(
+    (a, b) =>
+      new Date(b?.created_at || 0).getTime() -
+      new Date(a?.created_at || 0).getTime()
+  )
+  .slice(0, 8)
+  .map((cup) => ({
+    cup,
+    time: cup?.created_at,
+  }));
+
+const seenRecentPlayIds = new Set();
+const recentPlayedCups = (recentPlayLogs || [])
+  .map((log) => {
+    const cup = cupById.get(String(log?.cup_id));
+    if (!cup) return null;
+
+    const key = String(cup.id);
+    if (seenRecentPlayIds.has(key)) return null;
+    seenRecentPlayIds.add(key);
+
+    return {
+      cup,
+      time: log?.created_at,
+    };
+  })
+  .filter(Boolean)
+  .slice(0, 8);
 
 
 
@@ -1477,6 +1632,120 @@ const goto = (url) => {
 
   });
 
+};
+
+const renderHomeActivityPanel = ({
+  title,
+  items,
+}) => {
+  return (
+    <aside
+      className="home-activity-panel"
+      style={{
+        minWidth: 0,
+        background: "#ffffff",
+        border: "1px solid #fed7aa",
+        borderRadius: 10,
+        padding: "14px 14px 12px",
+        boxSizing: "border-box",
+        boxShadow: "0 12px 28px rgba(249,115,22,0.10)",
+      }}
+    >
+      <h2
+        style={{
+          margin: "0 0 10px",
+          color: "#202534",
+          fontSize: 18,
+          lineHeight: 1.25,
+          fontWeight: 900,
+          textAlign: "left",
+        }}
+      >
+        {title}
+      </h2>
+
+      {items.length ? (
+        <ul
+          style={{
+            listStyle: "none",
+            padding: 0,
+            margin: 0,
+            display: "flex",
+            flexDirection: "column",
+            gap: 7,
+          }}
+        >
+          {items.map(({ cup, time }) => {
+            const titleText = getDisplayTitle(cup);
+
+            return (
+              <li key={`${title}-${cup.id}`}>
+                <button
+                  type="button"
+                  onClick={() =>
+                    goto(
+                      `/${lang}/select-round/${cup.id}`
+                    )
+                  }
+                  title={titleText}
+                  style={{
+                    width: "100%",
+                    border: "1px solid #ffedd5",
+                    borderRadius: 8,
+                    background: "#fffaf7",
+                    color: "#202534",
+                    padding: "9px 10px",
+                    cursor: "pointer",
+                    textAlign: "left",
+                    display: "grid",
+                    gridTemplateColumns: "1fr auto",
+                    gap: 10,
+                    alignItems: "center",
+                  }}
+                >
+                  <span
+                    style={{
+                      minWidth: 0,
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      whiteSpace: "nowrap",
+                      fontSize: 14,
+                      fontWeight: 900,
+                    }}
+                  >
+                    {titleText}
+                  </span>
+
+                  <span
+                    style={{
+                      color: "#C2410C",
+                      fontSize: 12,
+                      fontWeight: 800,
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    {formatWorldcupCardDate(time)}
+                  </span>
+                </button>
+              </li>
+            );
+          })}
+        </ul>
+      ) : (
+        <p
+          style={{
+            margin: 0,
+            color: "#64748b",
+            fontSize: 14,
+            lineHeight: 1.45,
+            fontWeight: 700,
+          }}
+        >
+          {sidePanelCopy.empty}
+        </p>
+      )}
+    </aside>
+  );
 };
 
 
@@ -3817,6 +4086,33 @@ return (
     </div>
 
   </div>
+
+
+{!isMobile && !personalView && !search.trim() && (
+  <div
+    className="home-activity-panels"
+    style={{
+      width: "100%",
+      maxWidth: 1480,
+      margin: "0 auto 18px",
+      padding: "0 24px",
+      boxSizing: "border-box",
+      display: "grid",
+      gridTemplateColumns: "minmax(0, 1fr) minmax(0, 1fr)",
+      gap: 22,
+    }}
+  >
+    {renderHomeActivityPanel({
+      title: sidePanelCopy.recentCreated,
+      items: recentCreatedCups,
+    })}
+
+    {renderHomeActivityPanel({
+      title: sidePanelCopy.recentPlayed,
+      items: recentPlayedCups,
+    })}
+  </div>
+)}
 
 
 
