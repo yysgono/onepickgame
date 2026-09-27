@@ -1060,7 +1060,7 @@ const recentCreatedCups = [...cupById.values()]
       new Date(b?.created_at || 0).getTime() -
       new Date(a?.created_at || 0).getTime()
   )
-  .slice(0, 8)
+  .slice(0, 6)
   .map((cup) => ({
     cup,
     time: cup?.created_at,
@@ -1082,7 +1082,12 @@ const recentPlayedCups = (recentPlayLogs || [])
     };
   })
   .filter(Boolean)
-  .slice(0, 8);
+  .slice(0, 6);
+
+const showHomeActivityPanels =
+  !isMobile &&
+  !personalView &&
+  !search.trim();
 
 
 
@@ -1637,6 +1642,7 @@ const goto = (url) => {
 const renderHomeActivityPanel = ({
   title,
   items,
+  accentColor = "#F97316",
 }) => {
   return (
     <aside
@@ -1646,19 +1652,22 @@ const renderHomeActivityPanel = ({
         background: "#ffffff",
         border: "1px solid #fed7aa",
         borderRadius: 10,
-        padding: "14px 14px 12px",
-        boxSizing: "border-box",
-        boxShadow: "0 12px 28px rgba(249,115,22,0.10)",
+padding: "16px 16px 14px",
+boxSizing: "border-box",
+height: 365,
+boxShadow: "0 12px 28px rgba(249,115,22,0.10)",
       }}
     >
       <h2
         style={{
-          margin: "0 0 10px",
-          color: "#202534",
-          fontSize: 18,
+          margin: "0 0 13px",
+          color: accentColor,
+          fontSize: 20,
           lineHeight: 1.25,
           fontWeight: 900,
           textAlign: "left",
+          borderLeft: `4px solid ${accentColor}`,
+          paddingLeft: 9,
         }}
       >
         {title}
@@ -1672,7 +1681,7 @@ const renderHomeActivityPanel = ({
             margin: 0,
             display: "flex",
             flexDirection: "column",
-            gap: 7,
+            gap: 9,
           }}
         >
           {items.map(({ cup, time }) => {
@@ -1694,7 +1703,7 @@ const renderHomeActivityPanel = ({
                     borderRadius: 8,
                     background: "#fffaf7",
                     color: "#202534",
-                    padding: "9px 10px",
+                    padding: "11px 11px",
                     cursor: "pointer",
                     textAlign: "left",
                     display: "grid",
@@ -1709,7 +1718,7 @@ const renderHomeActivityPanel = ({
                       overflow: "hidden",
                       textOverflow: "ellipsis",
                       whiteSpace: "nowrap",
-                      fontSize: 14,
+                      fontSize: 16,
                       fontWeight: 900,
                     }}
                   >
@@ -1719,7 +1728,7 @@ const renderHomeActivityPanel = ({
                   <span
                     style={{
                       color: "#C2410C",
-                      fontSize: 12,
+                      fontSize: 13,
                       fontWeight: 800,
                       whiteSpace: "nowrap",
                     }}
@@ -3825,27 +3834,54 @@ return (
 
 
 
-  <PageIntro icon="🏆" title={t('gameModeNav.worldcup')} description={t('headerPersonal.worldcupDescription')} buttonLabel={t('create_worldcup')} onCreate={() => onMakeWorldcup ? onMakeWorldcup() : goto(`/${lang}/worldcup-maker`)} personal={personalView} accentColor="#F97316" />
-
-  {/* 언어 선택 / 검색 */}
-
   <div
-
+    className="home-top-layout"
     style={{
-
       width: "100%",
-
-      maxWidth: isMobile ? 430 : 1000,
-
-      margin: isMobile ? "4px auto 14px" : "6px auto 18px",
-
-      padding: isMobile ? "0 12px" : "0 16px",
-
+      maxWidth: showHomeActivityPanels ? 1900 : isMobile ? 430 : 1000,
+      margin: "0 auto",
+      padding: showHomeActivityPanels ? "0 32px" : isMobile ? "0 12px" : "0 16px",
       boxSizing: "border-box",
-
+      display: showHomeActivityPanels ? "grid" : "block",
+      gridTemplateColumns: showHomeActivityPanels
+        ? "minmax(280px, 1fr) minmax(660px, 860px) minmax(280px, 1fr)"
+        : undefined,
+      gap: showHomeActivityPanels ? 28 : undefined,
+      alignItems: showHomeActivityPanels ? "start" : undefined,
     }}
-
   >
+    {showHomeActivityPanels && (
+      <div style={{ paddingTop: 18 }}>
+        {renderHomeActivityPanel({
+          title: sidePanelCopy.recentCreated,
+          items: recentCreatedCups,
+          accentColor: "#EA580C",
+        })}
+      </div>
+    )}
+
+    <div style={{ minWidth: 0 }}>
+      <PageIntro icon="🏆" title={t('gameModeNav.worldcup')} description={t('headerPersonal.worldcupDescription')} buttonLabel={t('create_worldcup')} onCreate={() => onMakeWorldcup ? onMakeWorldcup() : goto(`/${lang}/worldcup-maker`)} personal={personalView} accentColor="#F97316" />
+
+      {/* 언어 선택 / 검색 */}
+
+      <div
+
+        style={{
+
+          width: "100%",
+
+          maxWidth: isMobile ? 430 : 1000,
+
+          margin: isMobile ? "4px auto 14px" : "6px auto 18px",
+
+          padding: showHomeActivityPanels ? "0" : isMobile ? "0 12px" : "0 16px",
+
+          boxSizing: "border-box",
+
+        }}
+
+      >
 
     {/* 언어 선택 - 다른 홈과 동일하게 박스 없이 검색창 위 */}
 
@@ -3879,13 +3915,13 @@ return (
 
           <React.Fragment key={item.code}>
 
-            {item.code === "id" && (
+            {item.code === "de" && (
 
               <span
 
                 aria-hidden="true"
 
-                style={{ flexBasis: "100%", height: 0 }}
+                style={{ flexBasis: isMobile ? "100%" : 0, height: 0 }}
 
               />
 
@@ -4085,34 +4121,19 @@ return (
 
     </div>
 
+      </div>
+    </div>
+
+    {showHomeActivityPanels && (
+      <div style={{ paddingTop: 18 }}>
+        {renderHomeActivityPanel({
+          title: sidePanelCopy.recentPlayed,
+          items: recentPlayedCups,
+          accentColor: "#7C3AED",
+        })}
+      </div>
+    )}
   </div>
-
-
-{!isMobile && !personalView && !search.trim() && (
-  <div
-    className="home-activity-panels"
-    style={{
-      width: "100%",
-      maxWidth: 1480,
-      margin: "0 auto 18px",
-      padding: "0 24px",
-      boxSizing: "border-box",
-      display: "grid",
-      gridTemplateColumns: "minmax(0, 1fr) minmax(0, 1fr)",
-      gap: 22,
-    }}
-  >
-    {renderHomeActivityPanel({
-      title: sidePanelCopy.recentCreated,
-      items: recentCreatedCups,
-    })}
-
-    {renderHomeActivityPanel({
-      title: sidePanelCopy.recentPlayed,
-      items: recentPlayedCups,
-    })}
-  </div>
-)}
 
 
 
