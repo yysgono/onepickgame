@@ -37,7 +37,7 @@ export default function KoPage(props) {
   return (
     <>
       <Helmet htmlAttributes={{ lang: "ko" }}>
-        <title>One Pick Game - 이상형 월드컵, 티어표, 퀴즈 사이트 | 원픽게임</title>
+        <title>이상형 월드컵 해외사이트 - 원픽게임 | OnePickGame</title>
 
         <meta
           name="description"
@@ -55,7 +55,7 @@ export default function KoPage(props) {
         {/* Open Graph */}
         <meta
           property="og:title"
-          content="One Pick Game - 이상형 월드컵, 티어표, 퀴즈 사이트 | 원픽게임"
+          content="이상형 월드컵 해외사이트 - 원픽게임 | OnePickGame"
         />
 
         <meta
@@ -80,7 +80,7 @@ export default function KoPage(props) {
 
         <meta
           name="twitter:title"
-          content="One Pick Game - 이상형 월드컵, 티어표, 퀴즈 사이트 | 원픽게임"
+          content="이상형 월드컵 해외사이트 - 원픽게임 | OnePickGame"
         />
 
         <meta

@@ -135,6 +135,11 @@
     },
 
     {
+      "src": "/?$",
+      "dest": "/server.js?seo=home&lang=ko"
+    },
+
+    {
       "src": "/(ko|en|ja|zh|ru|pt|es|fr|id|hi|de|vi|ar|bn|th|tr)/?$",
       "dest": "/server.js?seo=home&lang=$1"
     },
