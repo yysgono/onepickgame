@@ -11,38 +11,14 @@ create table if not exists public.quiz_attempts (
   created_at timestamp with time zone not null default now()
 );
 
-alter table public.quiz_attempts
-  add column if not exists id uuid default gen_random_uuid();
-
-alter table public.quiz_attempts
-  add column if not exists quiz_id uuid references public.quizzes(id) on delete cascade;
-
-alter table public.quiz_attempts
-  add column if not exists participant_id text;
-
-alter table public.quiz_attempts
-  add column if not exists attempt_token text;
-
-alter table public.quiz_attempts
-  add column if not exists answered_count integer not null default 0;
-
-alter table public.quiz_attempts
-  add column if not exists correct_count integer not null default 0;
-
-alter table public.quiz_attempts
-  add column if not exists answers jsonb not null default '[]'::jsonb;
-
-alter table public.quiz_attempts
-  add column if not exists created_at timestamp with time zone not null default now();
-
-create unique index if not exists quiz_attempts_attempt_token_idx
-  on public.quiz_attempts (attempt_token);
-
 create index if not exists quiz_attempts_created_at_idx
   on public.quiz_attempts (created_at desc);
 
 create index if not exists quiz_attempts_quiz_id_created_at_idx
   on public.quiz_attempts (quiz_id, created_at desc);
+
+create unique index if not exists quiz_attempts_attempt_token_idx
+  on public.quiz_attempts (attempt_token);
 
 alter table public.quiz_attempts enable row level security;
 

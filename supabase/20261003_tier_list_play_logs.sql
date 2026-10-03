@@ -6,15 +6,6 @@ create table if not exists public.tier_list_play_logs (
   created_at timestamp with time zone not null default now()
 );
 
-alter table public.tier_list_play_logs
-  add column if not exists id uuid default gen_random_uuid();
-
-alter table public.tier_list_play_logs
-  add column if not exists tier_list_id uuid references public.tier_lists(id) on delete cascade;
-
-alter table public.tier_list_play_logs
-  add column if not exists created_at timestamp with time zone not null default now();
-
 create index if not exists tier_list_play_logs_created_at_idx
   on public.tier_list_play_logs (created_at desc);
 

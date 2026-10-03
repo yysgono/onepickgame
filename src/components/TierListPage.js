@@ -1288,6 +1288,175 @@ const displayTitle =
   t,
 ]);
 
+  const tierActivityCopy =
+    lang === "ko"
+      ? {
+          recentCreated: "최근 등록된 티어표",
+          recentPlayed: "최근 플레이된 티어표",
+          empty: "표시할 티어표가 없습니다.",
+        }
+      : {
+          recentCreated: "Recently Added Tier Lists",
+          recentPlayed: "Recently Played Tier Lists",
+          empty: "No tier lists to show.",
+        };
+
+  const formatTierActivityDate = (value) => {
+    if (!value) return "-";
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return "-";
+    return date.toISOString().slice(0, 10).replace(/-/g, ".");
+  };
+
+  const recentCreatedTierItems = useMemo(
+    () =>
+      [...cards]
+        .sort(
+          (a, b) =>
+            new Date(b?.created_at || 0).getTime() -
+            new Date(a?.created_at || 0).getTime()
+        )
+        .slice(0, 5),
+    [cards]
+  );
+
+  const [recentPlayedTierItems, setRecentPlayedTierItems] = useState([]);
+
+  useEffect(() => {
+    let alive = true;
+
+    async function loadRecentPlayedTierLists() {
+      if (mineOnly) {
+        setRecentPlayedTierItems([]);
+        return;
+      }
+
+      const { data: logs, error: logError } = await supabase
+        .from("tier_list_play_logs")
+        .select("tier_list_id, created_at")
+        .order("created_at", { ascending: false })
+        .limit(40);
+
+      if (logError) {
+        console.warn("Failed to load recent tier list plays", logError);
+        if (alive) setRecentPlayedTierItems([]);
+        return;
+      }
+
+      const seen = new Set();
+      const recentIds = [];
+      const playedAtById = new Map();
+
+      (logs || []).forEach((log) => {
+        const tierListId = String(log?.tier_list_id || "");
+        if (!tierListId || seen.has(tierListId)) return;
+        seen.add(tierListId);
+        recentIds.push(tierListId);
+        playedAtById.set(tierListId, log?.created_at);
+      });
+
+      if (!recentIds.length) {
+        if (alive) setRecentPlayedTierItems([]);
+        return;
+      }
+
+      const { data: tierRows, error: tierError } = await supabase
+        .from("tier_lists")
+        .select("id,title,title_translations,created_at")
+        .in("id", recentIds);
+
+      if (tierError) {
+        console.warn("Failed to load recent played tier lists", tierError);
+        if (alive) setRecentPlayedTierItems([]);
+        return;
+      }
+
+      const tierById = new Map(
+        (tierRows || []).map((tierList) => [String(tierList.id), tierList])
+      );
+
+      const ordered = recentIds
+        .map((tierListId) => {
+          const tierList = tierById.get(tierListId);
+          if (!tierList) return null;
+          const titleTranslations = readTranslationMap(tierList?.title_translations);
+          return {
+            ...tierList,
+            lastPlayedAt: playedAtById.get(tierListId),
+            displayTitle:
+              titleTranslations?.[lang] ||
+              titleTranslations?.en ||
+              tierList?.title ||
+              "Tier List",
+          };
+        })
+        .filter(Boolean)
+        .slice(0, 5);
+
+      if (alive) setRecentPlayedTierItems(ordered);
+    }
+
+    loadRecentPlayedTierLists();
+
+    return () => {
+      alive = false;
+    };
+  }, [lang, mineOnly]);
+
+  const showTierActivityPanels =
+    !mineOnly &&
+    !isMobile &&
+    !searchInput.trim();
+
+  const renderTierActivityPanel = ({
+    title,
+    items,
+    accentColor,
+    dateField = "created_at",
+  }) => (
+    <aside
+      style={{
+        minWidth: 0,
+        background: "#ffffff",
+        border: "1px solid #bfdbfe",
+        borderRadius: 10,
+        padding: "15px 15px 13px",
+        boxSizing: "border-box",
+        minHeight: 244,
+        boxShadow: "0 12px 28px rgba(37,99,235,0.12)",
+      }}
+    >
+      <h2 style={{ margin: "0 0 10px", color: accentColor, fontSize: 20, lineHeight: 1.25, fontWeight: 950, textAlign: "left", borderLeft: `4px solid ${accentColor}`, paddingLeft: 8 }}>
+        {title}
+      </h2>
+      {items.length ? (
+        <ul style={{ listStyle: "none", margin: 0, padding: 0, display: "flex", flexDirection: "column", gap: 8 }}>
+          {items.map((item) => (
+            <li key={`${title}-${item.id}`}>
+              <button
+                type="button"
+                onClick={() => navigate(`/${lang}/tier-list/${item.id}`)}
+                title={item.displayTitle || ""}
+                style={{ width: "100%", border: "1px solid #dbeafe", borderRadius: 8, background: "#f8fbff", color: "#202534", padding: "10px 11px", cursor: "pointer", textAlign: "left", display: "grid", gridTemplateColumns: "1fr auto", gap: 10, alignItems: "center" }}
+              >
+                <span style={{ minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", fontSize: 15, fontWeight: 900 }}>
+                  {item.displayTitle}
+                </span>
+                <span style={{ color: accentColor, fontSize: 13, fontWeight: 850, whiteSpace: "nowrap" }}>
+                  {formatTierActivityDate(item[dateField] || item.created_at)}
+                </span>
+              </button>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p style={{ margin: 0, color: "#64748b", fontSize: 13, fontWeight: 750 }}>
+          {tierActivityCopy.empty}
+        </p>
+      )}
+    </aside>
+  );
+
   const activeCategoryLabel = t(
     `tierList.categories.${category}`,
     { defaultValue: category }
@@ -1547,6 +1716,32 @@ maxWidth: isMobile ? 430 : 1480,
 
 
         </div>
+{showTierActivityPanels && (
+  <div
+    style={{
+      width: "100%",
+      maxWidth: 760,
+      margin: "12px auto 18px",
+      display: "grid",
+      gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+      gap: 14,
+    }}
+  >
+    {renderTierActivityPanel({
+      title: tierActivityCopy.recentCreated,
+      items: recentCreatedTierItems,
+      accentColor: "#2563EB",
+      dateField: "created_at",
+    })}
+    {renderTierActivityPanel({
+      title: tierActivityCopy.recentPlayed,
+      items: recentPlayedTierItems,
+      accentColor: "#7C3AED",
+      dateField: "lastPlayedAt",
+    })}
+  </div>
+)}
+
 {!mineOnly && recommendedPresets.length >
             0 && (
             <div className="tier-recommendations"
