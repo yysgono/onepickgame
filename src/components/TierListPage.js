@@ -81,15 +81,6 @@ function buildFilterSlug(base, filters) {
   return query ? `${base}?${query}` : base;
 }
 
-function formatActivityDate(value) {
-  if (!value) return "";
-
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return "";
-
-  return date.toISOString().slice(0, 10).replace(/-/g, ".");
-}
-
 const LANGUAGES = [
   { code: "en", label: "English" },
   { code: "ko", label: "한국어" },
@@ -275,13 +266,6 @@ function TierListPage({
       typeof window !== "undefined"
         ? window.innerWidth < 600
         : false
-    );
-
-  const [viewportWidth, setViewportWidth] =
-    useState(
-      typeof window !== "undefined"
-        ? window.innerWidth
-        : 1440
     );
 
   const [
@@ -803,9 +787,6 @@ function TierListPage({
       setIsMobile(
         window.innerWidth < 600
       );
-      setViewportWidth(
-        window.innerWidth
-      );
     };
 
     window.addEventListener(
@@ -1307,228 +1288,6 @@ const displayTitle =
   t,
 ]);
 
-  const tierActivityCopy =
-    lang === "ko"
-      ? {
-          recentCreated: "최근 등록된 티어표",
-          recentPlayed: "최근 플레이된 티어표",
-          empty: "표시할 티어표가 없습니다.",
-        }
-      : {
-          recentCreated: "Recently Added Tier Lists",
-          recentPlayed: "Recently Played Tier Lists",
-          empty: "No tier lists to show.",
-        };
-
-  const recentCreatedTierItems = useMemo(
-    () =>
-      [...cards]
-        .sort(
-          (a, b) =>
-            new Date(b?.created_at || 0).getTime() -
-            new Date(a?.created_at || 0).getTime()
-        )
-        .slice(0, 5),
-    [cards]
-  );
-
-  const [recentPlayedTierItems, setRecentPlayedTierItems] = useState([]);
-
-  useEffect(() => {
-    let alive = true;
-
-    async function loadRecentPlayedTierLists() {
-      if (mineOnly) {
-        setRecentPlayedTierItems([]);
-        return;
-      }
-
-      const { data: logs, error: logError } = await supabase
-        .from("tier_list_play_logs")
-        .select("tier_list_id, created_at")
-        .order("created_at", { ascending: false })
-        .limit(40);
-
-      if (logError) {
-        console.warn("Failed to load recent tier list plays", logError);
-        if (alive) setRecentPlayedTierItems([]);
-        return;
-      }
-
-      const seen = new Set();
-      const recentIds = [];
-      const playedAtById = new Map();
-
-      (logs || []).forEach((log) => {
-        const tierListId = String(log?.tier_list_id || "");
-        if (!tierListId || seen.has(tierListId)) return;
-        seen.add(tierListId);
-        recentIds.push(tierListId);
-        playedAtById.set(tierListId, log?.created_at);
-      });
-
-      if (!recentIds.length) {
-        if (alive) setRecentPlayedTierItems([]);
-        return;
-      }
-
-      const { data: tierRows, error: tierError } = await supabase
-        .from("tier_lists")
-        .select(
-          "id, title, title_translations, category, thumbnail_url, candidate_count, view_count, created_at"
-        )
-        .in("id", recentIds);
-
-      if (tierError) {
-        console.warn("Failed to load recent played tier lists", tierError);
-        if (alive) setRecentPlayedTierItems([]);
-        return;
-      }
-
-      const tierById = new Map(
-        (tierRows || []).map((tierList) => [String(tierList.id), tierList])
-      );
-
-      const ordered = recentIds
-        .map((tierListId) => {
-          const tierList = tierById.get(tierListId);
-          if (!tierList) return null;
-
-          const titleTranslations = readTranslationMap(
-            tierList?.title_translations
-          );
-
-          return {
-            ...tierList,
-            lastPlayedAt: playedAtById.get(tierListId),
-            displayTitle:
-              titleTranslations?.[lang] ||
-              titleTranslations?.en ||
-              tierList?.title ||
-              "Tier List",
-          };
-        })
-        .filter(Boolean)
-        .slice(0, 6);
-
-      if (alive) setRecentPlayedTierItems(ordered);
-    }
-
-    loadRecentPlayedTierLists();
-
-    return () => {
-      alive = false;
-    };
-  }, [lang, mineOnly]);
-
-  const showTierActivityPanels =
-    !mineOnly &&
-    !isMobile &&
-    !searchInput.trim();
-
-  const useSideTierActivityPanels =
-    showTierActivityPanels &&
-    viewportWidth >= 1680;
-
-  const renderTierActivityPanel = ({
-    title,
-    items,
-    accentColor = "#2563EB",
-    metric = "date",
-  }) => (
-    <aside
-      style={{
-        minWidth: 0,
-        background: "#ffffff",
-        border: "1px solid #bfdbfe",
-        borderRadius: 10,
-        padding: "17px 17px 15px",
-        boxSizing: "border-box",
-        boxShadow: "0 12px 28px rgba(37,99,235,0.12)",
-      }}
-    >
-      <h2
-        style={{
-          margin: "0 0 11px",
-          color: accentColor,
-          fontSize: 20,
-          lineHeight: 1.25,
-          fontWeight: 950,
-          textAlign: "left",
-          borderLeft: `4px solid ${accentColor}`,
-          paddingLeft: 8,
-        }}
-      >
-        {title}
-      </h2>
-      {items.length ? (
-        <ul
-          style={{
-            listStyle: "none",
-            margin: 0,
-            padding: 0,
-            display: "flex",
-            flexDirection: "column",
-            gap: 9,
-          }}
-        >
-          {items.map((item) => (
-            <li key={`${title}-${item.id}`}>
-              <button
-                type="button"
-                onClick={() => navigate(`/${lang}/tier-list/${item.id}`)}
-                title={item.displayTitle || ""}
-                style={{
-                  width: "100%",
-                  border: "1px solid #dbeafe",
-                  borderRadius: 8,
-                  background: "#f8fbff",
-                  color: "#202534",
-                  padding: "11px 11px",
-                  cursor: "pointer",
-                  textAlign: "left",
-                  display: "grid",
-                  gridTemplateColumns: "1fr auto",
-                  gap: 10,
-                  alignItems: "center",
-                }}
-              >
-                <span
-                  style={{
-                    minWidth: 0,
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                    whiteSpace: "nowrap",
-                    fontSize: 15,
-                    fontWeight: 900,
-                  }}
-                >
-                  {item.displayTitle}
-                </span>
-                <span
-                  style={{
-                    color: accentColor,
-                    fontSize: 13,
-                    fontWeight: 850,
-                    whiteSpace: "nowrap",
-                  }}
-                >
-                  {metric === "playedAt"
-                    ? formatActivityDate(item.lastPlayedAt || item.created_at)
-                    : formatActivityDate(item.created_at)}
-                </span>
-              </button>
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p style={{ margin: 0, color: "#64748b", fontSize: 13, fontWeight: 750 }}>
-          {tierActivityCopy.empty}
-        </p>
-      )}
-    </aside>
-  );
-
   const activeCategoryLabel = t(
     `tierList.categories.${category}`,
     { defaultValue: category }
@@ -1581,51 +1340,14 @@ const displayTitle =
 <div className="tier-page-container"
   style={{
     width: "100%",
-maxWidth: isMobile ? 430 : 1780,
+maxWidth: isMobile ? 430 : 1480,
     margin: "0 auto",
     padding: isMobile
       ? "20px 10px"
       : "22px 22px",
     boxSizing: "border-box",
-    position: "relative",
   }}
 >
-{useSideTierActivityPanels && (
-  <>
-    <div
-      style={{
-        position: "absolute",
-        left: "max(24px, calc((100% - 1120px) / 2 - 364px))",
-        top: 34,
-        width: 340,
-        zIndex: 1,
-      }}
-    >
-      {renderTierActivityPanel({
-        title: tierActivityCopy.recentCreated,
-        items: recentCreatedTierItems,
-        accentColor: "#2563EB",
-        metric: "date",
-      })}
-    </div>
-    <div
-      style={{
-        position: "absolute",
-        right: "max(24px, calc((100% - 1120px) / 2 - 364px))",
-        top: 34,
-        width: 340,
-        zIndex: 1,
-      }}
-    >
-      {renderTierActivityPanel({
-        title: tierActivityCopy.recentPlayed,
-        items: recentPlayedTierItems,
-        accentColor: "#7C3AED",
-        metric: "playedAt",
-      })}
-    </div>
-  </>
-)}
         
 
         <section
@@ -1634,19 +1356,13 @@ maxWidth: isMobile ? 430 : 1780,
             maxWidth: 1120,
             margin: isMobile ? "0 auto 12px" : "0 auto 14px",
             padding: isMobile ? "8px 8px 4px" : "8px 12px 4px",
-display: "flex",
-flexDirection: "column",
-alignItems: "center",
-                      gap: isMobile ? 12 : 22,
+            display: "grid",
+            gridTemplateColumns: isMobile ? "1fr" : "minmax(0, 1fr) auto",
+            alignItems: "center",
+            gap: isMobile ? 12 : 22,
           }}
         >
-        <div
-  style={{
-    width: "100%",
-    textAlign: "center",
-    minWidth: 0,
-  }}
->
+          <div style={{ textAlign: isMobile ? "center" : "left", minWidth: 0 }}>
             <h1
               id="tier-list-page-title"
               style={{
@@ -1659,10 +1375,10 @@ alignItems: "center",
               }}
             >
               📊 {t("tierList.page.title")}
-            </h1>fgap: isMobile ? 12 : 22,
+            </h1>
             <p
               style={{
-           margin: "8px auto 0",
+                margin: isMobile ? "8px auto 0" : "8px 0 0",
                 maxWidth: 720,
                 color: "#596579",
                 fontSize: isMobile ? 16 : 18,
@@ -1831,31 +1547,6 @@ alignItems: "center",
 
 
         </div>
-{showTierActivityPanels && !useSideTierActivityPanels && (
-  <div
-    style={{
-      width: "100%",
-      maxWidth: 760,
-      margin: "14px auto 16px",
-      display: "grid",
-      gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
-      gap: 14,
-    }}
-  >
-    {renderTierActivityPanel({
-      title: tierActivityCopy.recentCreated,
-      items: recentCreatedTierItems,
-      accentColor: "#2563EB",
-      metric: "date",
-    })}
-    {renderTierActivityPanel({
-      title: tierActivityCopy.recentPlayed,
-      items: recentPlayedTierItems,
-      accentColor: "#7C3AED",
-      metric: "playedAt",
-    })}
-  </div>
-)}
 {!mineOnly && recommendedPresets.length >
             0 && (
             <div className="tier-recommendations"

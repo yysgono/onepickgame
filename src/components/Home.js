@@ -168,6 +168,25 @@ const HOME_SIDE_PANEL_COPY = {
   },
 };
 
+const HOME_SEO_SUMMARY_COPY = {
+  ko: "이상형 월드컵 원픽게임은 전 세계 사용자가 함께 즐기는 이상형 월드컵 및 투표 플랫폼입니다. 원픽게임에서 나만의 이상형 월드컵을 만들고, 인기 후보를 비교하며 결과를 공유해보세요.",
+  en: "One Pick Game is a global platform for bracket games, voting, tier lists, and quizzes. Create your own tournament, compare popular candidates, and share the results.",
+  ja: "One Pick Gameは、世界中のユーザーが楽しめるワールドカップ形式の投票・トーナメントプラットフォームです。自分だけのトーナメントを作成し、人気候補を比較して結果を共有できます。",
+  zh: "One Pick Game 是面向全球用户的淘汰赛投票平台。你可以创建自己的主题比赛，比较热门候选，并分享结果。",
+  es: "One Pick Game es una plataforma global para torneos, votaciones, tier lists y quizzes. Crea tu propio torneo, compara candidatos populares y comparte los resultados.",
+  fr: "One Pick Game est une plateforme mondiale de tournois, votes, tier lists et quiz. Créez votre propre tournoi, comparez les candidats populaires et partagez les résultats.",
+  vi: "One Pick Game là nền tảng toàn cầu cho bracket game, bình chọn, tier list và quiz. Tạo giải đấu của riêng bạn, so sánh các ứng viên phổ biến và chia sẻ kết quả.",
+  de: "One Pick Game ist eine globale Plattform für Turniere, Abstimmungen, Tier Lists und Quizze. Erstelle dein eigenes Turnier, vergleiche beliebte Kandidaten und teile Ergebnisse.",
+  ru: "One Pick Game — глобальная платформа для турнирных игр, голосований, тир-листов и квизов. Создавайте свои турниры, сравнивайте популярных кандидатов и делитесь результатами.",
+  id: "One Pick Game adalah platform global untuk bracket game, voting, tier list, dan kuis. Buat turnamen sendiri, bandingkan kandidat populer, lalu bagikan hasilnya.",
+  pt: "One Pick Game é uma plataforma global para torneios, votações, tier lists e quizzes. Crie seu próprio torneio, compare candidatos populares e compartilhe resultados.",
+  hi: "One Pick Game bracket games, voting, tier lists और quizzes के लिए एक global platform है। अपना tournament बनाएं, popular candidates की तुलना करें और results शेयर करें।",
+  tr: "One Pick Game; turnuva oyunları, oylamalar, tier listler ve quizler için global bir platformdur. Kendi turnuvanı oluştur, popüler adayları karşılaştır ve sonuçları paylaş.",
+  th: "One Pick Game คือแพลตฟอร์มระดับโลกสำหรับ bracket game การโหวต tier list และ quiz สร้างทัวร์นาเมนต์ของคุณ เปรียบเทียบตัวเลือกยอดนิยม และแชร์ผลลัพธ์ได้",
+  ar: "One Pick Game منصة عالمية لألعاب البطولات والتصويت وقوائم التصنيف والاختبارات. أنشئ بطولتك، قارن المرشحين الشائعين وشارك النتائج.",
+  bn: "One Pick Game হলো bracket game, voting, tier list এবং quiz-এর জন্য একটি global platform। নিজের tournament তৈরি করুন, popular candidates তুলনা করুন এবং result শেয়ার করুন।",
+};
+
 function formatWorldcupCardDate(value) {
   if (!value) return "-";
 
@@ -1160,7 +1179,7 @@ const recentCreatedCups = [...cupById.values()]
       new Date(b?.created_at || 0).getTime() -
       new Date(a?.created_at || 0).getTime()
   )
-  .slice(0, 6)
+  .slice(0, 5)
   .map((cup) => ({
     cup,
     time: cup?.created_at,
@@ -1182,16 +1201,12 @@ const recentPlayedCups = (recentPlayLogs || [])
     };
   })
   .filter(Boolean)
-  .slice(0, 6);
+  .slice(0, 5);
 
 const showHomeActivityPanels =
   !isMobile &&
   !personalView &&
   !search.trim();
-
-const useSideHomeActivityPanels =
-  showHomeActivityPanels &&
-  vw >= 1360;
 
 
 
@@ -1756,9 +1771,9 @@ const renderHomeActivityPanel = ({
         background: "#ffffff",
         border: "1px solid #fed7aa",
         borderRadius: 10,
-        padding: "18px 18px 16px",
+        padding: "16px 16px 14px",
         boxSizing: "border-box",
-        minHeight: 302,
+        minHeight: 242,
         boxShadow: "0 12px 28px rgba(249,115,22,0.10)",
       }}
     >
@@ -1766,7 +1781,7 @@ const renderHomeActivityPanel = ({
         style={{
           margin: "0 0 13px",
           color: accentColor,
-          fontSize: 22,
+          fontSize: 20,
           lineHeight: 1.25,
           fontWeight: 900,
           textAlign: "left",
@@ -1785,7 +1800,7 @@ const renderHomeActivityPanel = ({
             margin: 0,
             display: "flex",
             flexDirection: "column",
-            gap: 10,
+            gap: 9,
           }}
         >
           {items.map(({ cup, time }) => {
@@ -1807,7 +1822,7 @@ const renderHomeActivityPanel = ({
                     borderRadius: 8,
                     background: "#fffaf7",
                     color: "#202534",
-                    padding: "12px 12px",
+                    padding: "11px 11px",
                     cursor: "pointer",
                     textAlign: "left",
                     display: "grid",
@@ -1822,7 +1837,7 @@ const renderHomeActivityPanel = ({
                       overflow: "hidden",
                       textOverflow: "ellipsis",
                       whiteSpace: "nowrap",
-                      fontSize: 16,
+                      fontSize: 15,
                       fontWeight: 900,
                     }}
                   >
@@ -1832,7 +1847,7 @@ const renderHomeActivityPanel = ({
                   <span
                     style={{
                       color: "#C2410C",
-                      fontSize: 14,
+                      fontSize: 13,
                       fontWeight: 800,
                       whiteSpace: "nowrap",
                     }}
@@ -3672,6 +3687,10 @@ const worldcupIntroDescription =
           "Create and play tournament bracket games, tier lists, quizzes, and blind rankings on One Pick Game.",
       });
 
+const homeSeoSummary =
+  HOME_SEO_SUMMARY_COPY[lang] ||
+  HOME_SEO_SUMMARY_COPY.en;
+
 useEffect(() => {
 
   const visibleCups = [];
@@ -3864,25 +3883,51 @@ return (
 
 
 
+  {!personalView && !search.trim() && (
+    <section
+      aria-label={lang === "ko" ? "원픽게임 소개" : "One Pick Game introduction"}
+      style={{
+        width: "100%",
+        maxWidth: isMobile ? 430 : 1060,
+        margin: isMobile ? "0 auto 8px" : "0 auto 10px",
+        padding: isMobile ? "14px 18px 0" : "18px 24px 0",
+        boxSizing: "border-box",
+        textAlign: "center",
+      }}
+    >
+      <p
+        style={{
+          margin: 0,
+          color: "#475569",
+          fontSize: isMobile ? 14 : 15,
+          lineHeight: 1.65,
+          fontWeight: 750,
+        }}
+      >
+        {homeSeoSummary}
+      </p>
+    </section>
+  )}
+
 
 
   <div
     className="home-top-layout"
     style={{
       width: "100%",
-      maxWidth: useSideHomeActivityPanels ? 1900 : isMobile ? 430 : 1000,
+      maxWidth: showHomeActivityPanels ? 1900 : isMobile ? 430 : 1000,
       margin: "0 auto",
-      padding: useSideHomeActivityPanels ? "0 32px" : isMobile ? "0 12px" : "0 16px",
+      padding: showHomeActivityPanels ? "0 32px" : isMobile ? "0 12px" : "0 16px",
       boxSizing: "border-box",
-      display: useSideHomeActivityPanels ? "grid" : "block",
-      gridTemplateColumns: useSideHomeActivityPanels
+      display: showHomeActivityPanels ? "grid" : "block",
+      gridTemplateColumns: showHomeActivityPanels
         ? "minmax(280px, 1fr) minmax(660px, 860px) minmax(280px, 1fr)"
         : undefined,
-      gap: useSideHomeActivityPanels ? 28 : undefined,
-      alignItems: useSideHomeActivityPanels ? "start" : undefined,
+      gap: showHomeActivityPanels ? 28 : undefined,
+      alignItems: showHomeActivityPanels ? "start" : undefined,
     }}
   >
-    {useSideHomeActivityPanels && (
+    {showHomeActivityPanels && (
       <div style={{ paddingTop: 18 }}>
         {renderHomeActivityPanel({
           title: sidePanelCopy.recentCreated,
@@ -3907,7 +3952,7 @@ return (
 
           margin: isMobile ? "4px auto 14px" : "6px auto 18px",
 
-          padding: useSideHomeActivityPanels ? "0" : isMobile ? "0 12px" : "0 16px",
+          padding: showHomeActivityPanels ? "0" : isMobile ? "0 12px" : "0 16px",
 
           boxSizing: "border-box",
 
@@ -4154,33 +4199,9 @@ return (
     </div>
 
       </div>
-
-      {showHomeActivityPanels && !useSideHomeActivityPanels && (
-        <div
-          style={{
-            width: "100%",
-            maxWidth: 760,
-            margin: "18px auto 0",
-            display: "grid",
-            gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
-            gap: 14,
-          }}
-        >
-          {renderHomeActivityPanel({
-            title: sidePanelCopy.recentCreated,
-            items: recentCreatedCups,
-            accentColor: "#EA580C",
-          })}
-          {renderHomeActivityPanel({
-            title: sidePanelCopy.recentPlayed,
-            items: recentPlayedCups,
-            accentColor: "#7C3AED",
-          })}
-        </div>
-      )}
     </div>
 
-    {useSideHomeActivityPanels && (
+    {showHomeActivityPanels && (
       <div style={{ paddingTop: 18 }}>
         {renderHomeActivityPanel({
           title: sidePanelCopy.recentPlayed,
