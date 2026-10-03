@@ -1186,6 +1186,7 @@ const recentPlayedCups = (recentPlayLogs || [])
 
 const showHomeActivityPanels =
   !isMobile &&
+  vw >= 1360 &&
   !personalView &&
   !search.trim();
 
