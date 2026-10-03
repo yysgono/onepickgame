@@ -277,6 +277,13 @@ function TierListPage({
         : false
     );
 
+  const [viewportWidth, setViewportWidth] =
+    useState(
+      typeof window !== "undefined"
+        ? window.innerWidth
+        : 1440
+    );
+
   const [
     tierLists,
     setTierLists,
@@ -795,6 +802,9 @@ function TierListPage({
     const handleResize = () => {
       setIsMobile(
         window.innerWidth < 600
+      );
+      setViewportWidth(
+        window.innerWidth
       );
     };
 
@@ -1335,6 +1345,15 @@ const displayTitle =
     [cards]
   );
 
+  const showTierActivityPanels =
+    !mineOnly &&
+    !isMobile &&
+    !searchInput.trim();
+
+  const useSideTierActivityPanels =
+    showTierActivityPanels &&
+    viewportWidth >= 1360;
+
   const renderTierActivityPanel = ({
     title,
     items,
@@ -1492,8 +1511,45 @@ maxWidth: isMobile ? 430 : 1480,
       ? "20px 10px"
       : "22px 22px",
     boxSizing: "border-box",
+    position: "relative",
   }}
 >
+{useSideTierActivityPanels && (
+  <>
+    <div
+      style={{
+        position: "absolute",
+        left: 22,
+        top: 34,
+        width: 300,
+        zIndex: 1,
+      }}
+    >
+      {renderTierActivityPanel({
+        title: tierActivityCopy.recentCreated,
+        items: recentCreatedTierItems,
+        accentColor: "#2563EB",
+        metric: "date",
+      })}
+    </div>
+    <div
+      style={{
+        position: "absolute",
+        right: 22,
+        top: 34,
+        width: 300,
+        zIndex: 1,
+      }}
+    >
+      {renderTierActivityPanel({
+        title: tierActivityCopy.recentPlayed,
+        items: recentPlayedTierItems,
+        accentColor: "#7C3AED",
+        metric: "plays",
+      })}
+    </div>
+  </>
+)}
         
 
         <section
@@ -1693,7 +1749,7 @@ maxWidth: isMobile ? 430 : 1480,
 
 
         </div>
-{!mineOnly && !isMobile && !searchInput.trim() && (
+{showTierActivityPanels && !useSideTierActivityPanels && (
   <div
     style={{
       width: "100%",

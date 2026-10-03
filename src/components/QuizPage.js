@@ -754,6 +754,40 @@ export default function QuizPage({ user = null }) {
 
   );
 
+  const [
+
+
+
+    viewportWidth,
+
+
+
+    setViewportWidth,
+
+
+
+  ] = useState(
+
+
+
+    typeof window !==
+
+
+
+      "undefined"
+
+
+
+      ? window.innerWidth
+
+
+
+      : 1440
+
+
+
+  );
+
 
 
 
@@ -921,6 +955,16 @@ export default function QuizPage({ user = null }) {
 
 
         window.innerWidth >= 1100
+
+
+
+      );
+
+      setViewportWidth(
+
+
+
+        window.innerWidth
 
 
 
@@ -1630,6 +1674,16 @@ export default function QuizPage({ user = null }) {
     [cards]
   );
 
+  const showQuizActivityPanels =
+    !mineOnly &&
+    !mobile &&
+    !search.trim();
+
+  const useSideQuizActivityPanels =
+    showQuizActivityPanels &&
+    twoColumn &&
+    viewportWidth >= 1360;
+
   const renderQuizActivityPanel = ({
     title,
     items,
@@ -1925,6 +1979,12 @@ export default function QuizPage({ user = null }) {
 
             "border-box",
 
+          position:
+
+
+
+            "relative",
+
 
 
         }}
@@ -1932,6 +1992,42 @@ export default function QuizPage({ user = null }) {
 
 
       >
+{useSideQuizActivityPanels && (
+  <>
+    <div
+      style={{
+        position: "absolute",
+        left: 22,
+        top: 34,
+        width: 300,
+        zIndex: 1,
+      }}
+    >
+      {renderQuizActivityPanel({
+        title: quizActivityCopy.recentCreated,
+        items: recentCreatedQuizItems,
+        accentColor: "#E53935",
+        metric: "date",
+      })}
+    </div>
+    <div
+      style={{
+        position: "absolute",
+        right: 22,
+        top: 34,
+        width: 300,
+        zIndex: 1,
+      }}
+    >
+      {renderQuizActivityPanel({
+        title: quizActivityCopy.recentPlayed,
+        items: recentPlayedQuizItems,
+        accentColor: "#7C3AED",
+        metric: "plays",
+      })}
+    </div>
+  </>
+)}
 
 
 
@@ -2435,7 +2531,7 @@ export default function QuizPage({ user = null }) {
 
 </div>
 
-{!mineOnly && !mobile && !search.trim() && (
+{showQuizActivityPanels && !useSideQuizActivityPanels && (
   <div
     style={{
       width: "100%",
