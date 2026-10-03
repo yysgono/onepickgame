@@ -1311,12 +1311,12 @@ const displayTitle =
     lang === "ko"
       ? {
           recentCreated: "최근 등록된 티어표",
-          recentPlayed: "많이 플레이된 티어표",
+          recentPlayed: "최근 플레이된 티어표",
           empty: "표시할 티어표가 없습니다.",
         }
       : {
           recentCreated: "Recently Added Tier Lists",
-          recentPlayed: "Most Played Tier Lists",
+          recentPlayed: "Recently Played Tier Lists",
           empty: "No tier lists to show.",
         };
 
@@ -1332,18 +1332,94 @@ const displayTitle =
     [cards]
   );
 
-  const recentPlayedTierItems = useMemo(
-    () =>
-      [...cards]
-        .sort(
-          (a, b) =>
-            Number(b?.view_count || 0) - Number(a?.view_count || 0) ||
-            new Date(b?.created_at || 0).getTime() -
-              new Date(a?.created_at || 0).getTime()
+  const [recentPlayedTierItems, setRecentPlayedTierItems] = useState([]);
+
+  useEffect(() => {
+    let alive = true;
+
+    async function loadRecentPlayedTierLists() {
+      if (mineOnly) {
+        setRecentPlayedTierItems([]);
+        return;
+      }
+
+      const { data: logs, error: logError } = await supabase
+        .from("tier_list_play_logs")
+        .select("tier_list_id, created_at")
+        .order("created_at", { ascending: false })
+        .limit(40);
+
+      if (logError) {
+        console.warn("Failed to load recent tier list plays", logError);
+        if (alive) setRecentPlayedTierItems([]);
+        return;
+      }
+
+      const seen = new Set();
+      const recentIds = [];
+      const playedAtById = new Map();
+
+      (logs || []).forEach((log) => {
+        const tierListId = String(log?.tier_list_id || "");
+        if (!tierListId || seen.has(tierListId)) return;
+        seen.add(tierListId);
+        recentIds.push(tierListId);
+        playedAtById.set(tierListId, log?.created_at);
+      });
+
+      if (!recentIds.length) {
+        if (alive) setRecentPlayedTierItems([]);
+        return;
+      }
+
+      const { data: tierRows, error: tierError } = await supabase
+        .from("tier_lists")
+        .select(
+          "id, title, title_translations, category, thumbnail_url, candidate_count, view_count, created_at"
         )
-        .slice(0, 6),
-    [cards]
-  );
+        .in("id", recentIds);
+
+      if (tierError) {
+        console.warn("Failed to load recent played tier lists", tierError);
+        if (alive) setRecentPlayedTierItems([]);
+        return;
+      }
+
+      const tierById = new Map(
+        (tierRows || []).map((tierList) => [String(tierList.id), tierList])
+      );
+
+      const ordered = recentIds
+        .map((tierListId) => {
+          const tierList = tierById.get(tierListId);
+          if (!tierList) return null;
+
+          const titleTranslations = readTranslationMap(
+            tierList?.title_translations
+          );
+
+          return {
+            ...tierList,
+            lastPlayedAt: playedAtById.get(tierListId),
+            displayTitle:
+              titleTranslations?.[lang] ||
+              titleTranslations?.en ||
+              tierList?.title ||
+              "Tier List",
+          };
+        })
+        .filter(Boolean)
+        .slice(0, 6);
+
+      if (alive) setRecentPlayedTierItems(ordered);
+    }
+
+    loadRecentPlayedTierLists();
+
+    return () => {
+      alive = false;
+    };
+  }, [lang, mineOnly]);
 
   const showTierActivityPanels =
     !mineOnly &&
@@ -1438,8 +1514,8 @@ const displayTitle =
                     whiteSpace: "nowrap",
                   }}
                 >
-                  {metric === "plays"
-                    ? `${Number(item.view_count || 0).toLocaleString()}`
+                  {metric === "playedAt"
+                    ? formatActivityDate(item.lastPlayedAt || item.created_at)
                     : formatActivityDate(item.created_at)}
                 </span>
               </button>
@@ -1506,7 +1582,7 @@ const displayTitle =
 <div className="tier-page-container"
   style={{
     width: "100%",
-maxWidth: isMobile ? 430 : 1480,
+maxWidth: isMobile ? 430 : 1780,
     margin: "0 auto",
     padding: isMobile
       ? "20px 10px"
@@ -1546,7 +1622,7 @@ maxWidth: isMobile ? 430 : 1480,
         title: tierActivityCopy.recentPlayed,
         items: recentPlayedTierItems,
         accentColor: "#7C3AED",
-        metric: "plays",
+        metric: "playedAt",
       })}
     </div>
   </>
@@ -1771,7 +1847,7 @@ maxWidth: isMobile ? 430 : 1480,
       title: tierActivityCopy.recentPlayed,
       items: recentPlayedTierItems,
       accentColor: "#7C3AED",
-      metric: "plays",
+      metric: "playedAt",
     })}
   </div>
 )}

@@ -115,6 +115,8 @@ import {
 
 } from "../utils/supabaseQuizApi";
 
+import { supabase } from "../utils/supabaseClient";
+
 
 
 
@@ -1640,12 +1642,12 @@ export default function QuizPage({ user = null }) {
     lang === "ko"
       ? {
           recentCreated: "최근 등록된 퀴즈",
-          recentPlayed: "많이 플레이된 퀴즈",
+          recentPlayed: "최근 플레이된 퀴즈",
           empty: "표시할 퀴즈가 없습니다.",
         }
       : {
           recentCreated: "Recently Added Quizzes",
-          recentPlayed: "Most Played Quizzes",
+          recentPlayed: "Recently Played Quizzes",
           empty: "No quizzes to show.",
         };
 
@@ -1661,18 +1663,96 @@ export default function QuizPage({ user = null }) {
     [cards]
   );
 
-  const recentPlayedQuizItems = useMemo(
-    () =>
-      [...cards]
-        .sort(
-          (a, b) =>
-            Number(b?.play_count || 0) - Number(a?.play_count || 0) ||
-            new Date(b?.created_at || 0).getTime() -
-              new Date(a?.created_at || 0).getTime()
+  const [recentPlayedQuizItems, setRecentPlayedQuizItems] = useState([]);
+
+  useEffect(() => {
+    let alive = true;
+
+    async function loadRecentPlayedQuizzes() {
+      if (mineOnly) {
+        setRecentPlayedQuizItems([]);
+        return;
+      }
+
+      const { data: attempts, error: attemptError } = await supabase
+        .from("quiz_attempts")
+        .select("quiz_id, created_at")
+        .order("created_at", { ascending: false })
+        .limit(40);
+
+      if (attemptError) {
+        console.warn("Failed to load recent quiz plays", attemptError);
+        if (alive) setRecentPlayedQuizItems([]);
+        return;
+      }
+
+      const seen = new Set();
+      const recentIds = [];
+      const playedAtById = new Map();
+
+      (attempts || []).forEach((attempt) => {
+        const quizId = String(attempt?.quiz_id || "");
+        if (!quizId || seen.has(quizId)) return;
+        seen.add(quizId);
+        recentIds.push(quizId);
+        playedAtById.set(quizId, attempt?.created_at);
+      });
+
+      if (!recentIds.length) {
+        if (alive) setRecentPlayedQuizItems([]);
+        return;
+      }
+
+      const { data: quizzes, error: quizError } = await supabase
+        .from("quizzes")
+        .select(
+          "id,user_id,guest_nickname,title,title_translations,description,description_translations,original_language,content_languages,category,thumbnail_url,question_count,play_count,like_count,comment_count,answer_reveal_mode,is_featured,featured_order,created_at,is_published"
         )
-        .slice(0, 6),
-    [cards]
-  );
+        .in("id", recentIds)
+        .eq("is_published", true);
+
+      if (quizError) {
+        console.warn("Failed to load recent played quizzes", quizError);
+        if (alive) setRecentPlayedQuizItems([]);
+        return;
+      }
+
+      const quizById = new Map(
+        (quizzes || []).map((quiz) => [String(quiz.id), quiz])
+      );
+
+      const ordered = recentIds
+        .map((quizId) => {
+          const quiz = quizById.get(quizId);
+          if (!quiz) return null;
+
+          return {
+            ...quiz,
+            lastPlayedAt: playedAtById.get(quizId),
+            displayTitle: localized(
+              quiz.title_translations,
+              quiz.title,
+              lang
+            ),
+            displayDescription: localized(
+              quiz.description_translations,
+              quiz.description,
+              lang
+            ),
+          };
+        })
+        .filter(Boolean)
+        .slice(0, 6);
+
+      if (alive) setRecentPlayedQuizItems(ordered);
+    }
+
+    loadRecentPlayedQuizzes();
+
+    return () => {
+      alive = false;
+    };
+  }, [lang, mineOnly]);
 
   const showQuizActivityPanels =
     !mineOnly &&
@@ -1768,8 +1848,8 @@ export default function QuizPage({ user = null }) {
                     whiteSpace: "nowrap",
                   }}
                 >
-                  {metric === "plays"
-                    ? `${Number(item.play_count || 0).toLocaleString()}`
+                  {metric === "playedAt"
+                    ? formatActivityDate(item.lastPlayedAt || item.created_at)
                     : formatActivityDate(item.created_at)}
                 </span>
               </button>
@@ -2024,7 +2104,7 @@ export default function QuizPage({ user = null }) {
         title: quizActivityCopy.recentPlayed,
         items: recentPlayedQuizItems,
         accentColor: "#7C3AED",
-        metric: "plays",
+        metric: "playedAt",
       })}
     </div>
   </>
@@ -2553,7 +2633,7 @@ export default function QuizPage({ user = null }) {
       title: quizActivityCopy.recentPlayed,
       items: recentPlayedQuizItems,
       accentColor: "#7C3AED",
-      metric: "plays",
+      metric: "playedAt",
     })}
   </div>
 )}
