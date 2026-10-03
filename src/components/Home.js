@@ -1186,9 +1186,12 @@ const recentPlayedCups = (recentPlayLogs || [])
 
 const showHomeActivityPanels =
   !isMobile &&
-  vw >= 1360 &&
   !personalView &&
   !search.trim();
+
+const useSideHomeActivityPanels =
+  showHomeActivityPanels &&
+  vw >= 1360;
 
 
 
@@ -3867,19 +3870,19 @@ return (
     className="home-top-layout"
     style={{
       width: "100%",
-      maxWidth: showHomeActivityPanels ? 1900 : isMobile ? 430 : 1000,
+      maxWidth: useSideHomeActivityPanels ? 1900 : isMobile ? 430 : 1000,
       margin: "0 auto",
-      padding: showHomeActivityPanels ? "0 32px" : isMobile ? "0 12px" : "0 16px",
+      padding: useSideHomeActivityPanels ? "0 32px" : isMobile ? "0 12px" : "0 16px",
       boxSizing: "border-box",
-      display: showHomeActivityPanels ? "grid" : "block",
-      gridTemplateColumns: showHomeActivityPanels
+      display: useSideHomeActivityPanels ? "grid" : "block",
+      gridTemplateColumns: useSideHomeActivityPanels
         ? "minmax(280px, 1fr) minmax(660px, 860px) minmax(280px, 1fr)"
         : undefined,
-      gap: showHomeActivityPanels ? 28 : undefined,
-      alignItems: showHomeActivityPanels ? "start" : undefined,
+      gap: useSideHomeActivityPanels ? 28 : undefined,
+      alignItems: useSideHomeActivityPanels ? "start" : undefined,
     }}
   >
-    {showHomeActivityPanels && (
+    {useSideHomeActivityPanels && (
       <div style={{ paddingTop: 18 }}>
         {renderHomeActivityPanel({
           title: sidePanelCopy.recentCreated,
@@ -3904,7 +3907,7 @@ return (
 
           margin: isMobile ? "4px auto 14px" : "6px auto 18px",
 
-          padding: showHomeActivityPanels ? "0" : isMobile ? "0 12px" : "0 16px",
+          padding: useSideHomeActivityPanels ? "0" : isMobile ? "0 12px" : "0 16px",
 
           boxSizing: "border-box",
 
@@ -4151,9 +4154,33 @@ return (
     </div>
 
       </div>
+
+      {showHomeActivityPanels && !useSideHomeActivityPanels && (
+        <div
+          style={{
+            width: "100%",
+            maxWidth: 760,
+            margin: "18px auto 0",
+            display: "grid",
+            gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+            gap: 14,
+          }}
+        >
+          {renderHomeActivityPanel({
+            title: sidePanelCopy.recentCreated,
+            items: recentCreatedCups,
+            accentColor: "#EA580C",
+          })}
+          {renderHomeActivityPanel({
+            title: sidePanelCopy.recentPlayed,
+            items: recentPlayedCups,
+            accentColor: "#7C3AED",
+          })}
+        </div>
+      )}
     </div>
 
-    {showHomeActivityPanels && (
+    {useSideHomeActivityPanels && (
       <div style={{ paddingTop: 18 }}>
         {renderHomeActivityPanel({
           title: sidePanelCopy.recentPlayed,
