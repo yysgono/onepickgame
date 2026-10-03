@@ -1634,13 +1634,19 @@ maxWidth: isMobile ? 430 : 1780,
             maxWidth: 1120,
             margin: isMobile ? "0 auto 12px" : "0 auto 14px",
             padding: isMobile ? "8px 8px 4px" : "8px 12px 4px",
-            display: "grid",
-            gridTemplateColumns: isMobile ? "1fr" : "minmax(0, 1fr) auto",
-            alignItems: "center",
-            gap: isMobile ? 12 : 22,
+display: "flex",
+flexDirection: "column",
+alignItems: "center",
+                      gap: isMobile ? 12 : 22,
           }}
         >
-          <div style={{ textAlign: isMobile ? "center" : "left", minWidth: 0 }}>
+        <div
+  style={{
+    width: "100%",
+    textAlign: "center",
+    minWidth: 0,
+  }}
+>
             <h1
               id="tier-list-page-title"
               style={{
@@ -1653,10 +1659,10 @@ maxWidth: isMobile ? 430 : 1780,
               }}
             >
               📊 {t("tierList.page.title")}
-            </h1>
+            </h1>fgap: isMobile ? 12 : 22,
             <p
               style={{
-                margin: isMobile ? "8px auto 0" : "8px 0 0",
+           margin: "8px auto 0",
                 maxWidth: 720,
                 color: "#596579",
                 fontSize: isMobile ? 16 : 18,
