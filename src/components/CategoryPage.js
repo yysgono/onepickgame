@@ -1258,6 +1258,71 @@ const isMobile = vw < 600;
 
   };
 
+  const normalizeCategorySearchQuery = (value) =>
+    String(value || "")
+      .trim()
+      .replace(/^#+/, "")
+      .toLowerCase()
+      .slice(0, 50);
+
+  const collectCategorySearchTextValues = (...values) => {
+    const result = [];
+
+    const visit = (value) => {
+      if (value == null) return;
+
+      if (Array.isArray(value)) {
+        value.forEach(visit);
+        return;
+      }
+
+      if (typeof value === "object") {
+        Object.values(value).forEach(visit);
+        return;
+      }
+
+      const text = normalizeCategorySearchQuery(value);
+      if (text) result.push(text);
+    };
+
+    values.forEach(visit);
+    return result;
+  };
+
+  const categorySearchTextMatches = (keyword, ...values) =>
+    collectCategorySearchTextValues(...values).some((value) =>
+      value.includes(keyword)
+    );
+
+  const cupMatchesCategorySearch = (cup, keyword) => {
+    if (!keyword) return true;
+
+    const hasMatchingMainText = categorySearchTextMatches(
+      keyword,
+      getDisplayTitle(cup),
+      getDisplayDescription(cup),
+      cup?.title,
+      cup?.description,
+      cup?.desc,
+      cup?.title_translations,
+      cup?.description_translations
+    );
+
+    const hasMatchingCandidate =
+      Array.isArray(cup?.data) &&
+      cup.data.some((candidate) =>
+        categorySearchTextMatches(
+          keyword,
+          candidate?.name,
+          candidate?.title,
+          candidate?.name_translations,
+          candidate?.title_translations
+        )
+      );
+
+    return hasMatchingMainText || hasMatchingCandidate;
+  };
+
 
 
 
@@ -1272,15 +1337,7 @@ const isMobile = vw < 600;
 
 
 
-    const keyword = search
-
-
-
-      .trim()
-
-
-
-      .toLowerCase();
+    const keyword = normalizeCategorySearchQuery(search);
 
 
 
@@ -1340,7 +1397,11 @@ const isMobile = vw < 600;
 
 
 
-          description.includes(keyword)
+          description.includes(keyword) ||
+
+
+
+          cupMatchesCategorySearch(cup, keyword)
 
 
 
