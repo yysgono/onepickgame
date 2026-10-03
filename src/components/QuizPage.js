@@ -186,6 +186,15 @@ function buildFilterSlug(base, filters) {
   return query ? `${base}?${query}` : base;
 }
 
+function formatActivityDate(value) {
+  if (!value) return "";
+
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "";
+
+  return date.toISOString().slice(0, 10).replace(/-/g, ".");
+}
+
 
 
 
@@ -747,6 +756,40 @@ export default function QuizPage({ user = null }) {
 
   );
 
+  const [
+
+
+
+    viewportWidth,
+
+
+
+    setViewportWidth,
+
+
+
+  ] = useState(
+
+
+
+    typeof window !==
+
+
+
+      "undefined"
+
+
+
+      ? window.innerWidth
+
+
+
+      : 1440
+
+
+
+  );
+
 
 
 
@@ -919,6 +962,16 @@ export default function QuizPage({ user = null }) {
 
       );
 
+      setViewportWidth(
+
+
+
+        window.innerWidth
+
+
+
+      );
+
 
 
     };
@@ -950,10 +1003,6 @@ export default function QuizPage({ user = null }) {
 
 
     );
-
-
-
-
 
 
 
@@ -1589,20 +1638,6 @@ export default function QuizPage({ user = null }) {
 
 
 
-  const featuredTitle =
-
-
-
-    lang === "ko"
-
-
-
-      ? "추천 퀴즈"
-
-
-
-      : c.featured;
-
   const quizActivityCopy =
     lang === "ko"
       ? {
@@ -1615,13 +1650,6 @@ export default function QuizPage({ user = null }) {
           recentPlayed: "Recently Played Quizzes",
           empty: "No quizzes to show.",
         };
-
-  const formatQuizActivityDate = (value) => {
-    if (!value) return "-";
-    const date = new Date(value);
-    if (Number.isNaN(date.getTime())) return "-";
-    return date.toISOString().slice(0, 10).replace(/-/g, ".");
-  };
 
   const recentCreatedQuizItems = useMemo(
     () =>
@@ -1678,7 +1706,7 @@ export default function QuizPage({ user = null }) {
       const { data: quizzes, error: quizError } = await supabase
         .from("quizzes")
         .select(
-          "id,title,title_translations,description,description_translations,created_at,is_published"
+          "id,user_id,guest_nickname,title,title_translations,description,description_translations,original_language,content_languages,category,thumbnail_url,question_count,play_count,like_count,comment_count,answer_reveal_mode,is_featured,featured_order,created_at,is_published"
         )
         .in("id", recentIds)
         .eq("is_published", true);
@@ -1697,10 +1725,20 @@ export default function QuizPage({ user = null }) {
         .map((quizId) => {
           const quiz = quizById.get(quizId);
           if (!quiz) return null;
+
           return {
             ...quiz,
             lastPlayedAt: playedAtById.get(quizId),
-            displayTitle: localized(quiz.title_translations, quiz.title, lang),
+            displayTitle: localized(
+              quiz.title_translations,
+              quiz.title,
+              lang
+            ),
+            displayDescription: localized(
+              quiz.description_translations,
+              quiz.description,
+              lang
+            ),
           };
         })
         .filter(Boolean)
@@ -1716,13 +1754,21 @@ export default function QuizPage({ user = null }) {
     };
   }, [lang, mineOnly]);
 
-  const showQuizActivityPanels = !mineOnly && !mobile && !search.trim();
+  const showQuizActivityPanels =
+    !mineOnly &&
+    !mobile &&
+    !search.trim();
+
+  const useSideQuizActivityPanels =
+    showQuizActivityPanels &&
+    twoColumn &&
+    viewportWidth >= 1680;
 
   const renderQuizActivityPanel = ({
     title,
     items,
-    accentColor,
-    dateField = "created_at",
+    accentColor = "#E53935",
+    metric = "date",
   }) => (
     <aside
       style={{
@@ -1730,15 +1776,15 @@ export default function QuizPage({ user = null }) {
         background: "#ffffff",
         border: "1px solid #fecaca",
         borderRadius: 10,
-        padding: "15px 15px 13px",
+        padding: "17px 17px 15px",
         boxSizing: "border-box",
-        minHeight: 244,
+        minHeight: 292,
         boxShadow: "0 12px 28px rgba(239,68,68,0.12)",
       }}
     >
       <h2
         style={{
-          margin: "0 0 10px",
+          margin: "0 0 11px",
           color: accentColor,
           fontSize: 20,
           lineHeight: 1.25,
@@ -1751,7 +1797,16 @@ export default function QuizPage({ user = null }) {
         {title}
       </h2>
       {items.length ? (
-        <ul style={{ listStyle: "none", margin: 0, padding: 0, display: "flex", flexDirection: "column", gap: 8 }}>
+        <ul
+          style={{
+            listStyle: "none",
+            margin: 0,
+            padding: 0,
+            display: "flex",
+            flexDirection: "column",
+            gap: 9,
+          }}
+        >
           {items.map((item) => (
             <li key={`${title}-${item.id}`}>
               <button
@@ -1764,7 +1819,7 @@ export default function QuizPage({ user = null }) {
                   borderRadius: 8,
                   background: "#fffafa",
                   color: "#202534",
-                  padding: "10px 11px",
+                  padding: "11px 11px",
                   cursor: "pointer",
                   textAlign: "left",
                   display: "grid",
@@ -1773,11 +1828,29 @@ export default function QuizPage({ user = null }) {
                   alignItems: "center",
                 }}
               >
-                <span style={{ minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", fontSize: 15, fontWeight: 900 }}>
+                <span
+                  style={{
+                    minWidth: 0,
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap",
+                    fontSize: 15,
+                    fontWeight: 900,
+                  }}
+                >
                   {item.displayTitle}
                 </span>
-                <span style={{ color: accentColor, fontSize: 13, fontWeight: 850, whiteSpace: "nowrap" }}>
-                  {formatQuizActivityDate(item[dateField] || item.created_at)}
+                <span
+                  style={{
+                    color: accentColor,
+                    fontSize: 13,
+                    fontWeight: 850,
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  {metric === "playedAt"
+                    ? formatActivityDate(item.lastPlayedAt || item.created_at)
+                    : formatActivityDate(item.created_at)}
                 </span>
               </button>
             </li>
@@ -1790,6 +1863,20 @@ export default function QuizPage({ user = null }) {
       )}
     </aside>
   );
+
+  const featuredTitle =
+
+
+
+    lang === "ko"
+
+
+
+      ? "추천 퀴즈"
+
+
+
+      : c.featured;
 
 
 
@@ -1973,6 +2060,12 @@ export default function QuizPage({ user = null }) {
 
             "border-box",
 
+          position:
+
+
+
+            "relative",
+
 
 
         }}
@@ -1980,6 +2073,42 @@ export default function QuizPage({ user = null }) {
 
 
       >
+{useSideQuizActivityPanels && (
+  <>
+    <div
+      style={{
+        position: "absolute",
+        left: "max(24px, calc((100% - 1120px) / 2 - 364px))",
+        top: 34,
+        width: 340,
+        zIndex: 1,
+      }}
+    >
+      {renderQuizActivityPanel({
+        title: quizActivityCopy.recentCreated,
+        items: recentCreatedQuizItems,
+        accentColor: "#E53935",
+        metric: "date",
+      })}
+    </div>
+    <div
+      style={{
+        position: "absolute",
+        right: "max(24px, calc((100% - 1120px) / 2 - 364px))",
+        top: 34,
+        width: 340,
+        zIndex: 1,
+      }}
+    >
+      {renderQuizActivityPanel({
+        title: quizActivityCopy.recentPlayed,
+        items: recentPlayedQuizItems,
+        accentColor: "#7C3AED",
+        metric: "playedAt",
+      })}
+    </div>
+  </>
+)}
 
 
 
@@ -1992,10 +2121,6 @@ export default function QuizPage({ user = null }) {
 
 
         ========================== */}
-
-
-
-
 
 
 
@@ -2487,12 +2612,12 @@ export default function QuizPage({ user = null }) {
 
 </div>
 
-{showQuizActivityPanels && (
+{showQuizActivityPanels && !useSideQuizActivityPanels && (
   <div
     style={{
       width: "100%",
       maxWidth: 760,
-      margin: "12px auto 18px",
+      margin: "14px auto 16px",
       display: "grid",
       gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
       gap: 14,
@@ -2502,16 +2627,22 @@ export default function QuizPage({ user = null }) {
       title: quizActivityCopy.recentCreated,
       items: recentCreatedQuizItems,
       accentColor: "#E53935",
-      dateField: "created_at",
+      metric: "date",
     })}
     {renderQuizActivityPanel({
       title: quizActivityCopy.recentPlayed,
       items: recentPlayedQuizItems,
       accentColor: "#7C3AED",
-      dateField: "lastPlayedAt",
+      metric: "playedAt",
     })}
   </div>
 )}
+
+
+
+
+
+
 
         {/* =========================
 
