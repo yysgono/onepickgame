@@ -1,4 +1,3 @@
-import PageIntro from "./PageIntro";
 import ContentNav from "./ContentNav";
 import { normalizeTags } from "./TierTagTools";
 import React, {
@@ -1305,7 +1304,64 @@ maxWidth: isMobile ? 430 : 1480,
 >
         
 
-        <PageIntro icon="📊" title={t('tierList.page.title')} description={t('tierList.page.description')} buttonLabel={t('tierList.page.createButton')} onCreate={() => navigate(`/${lang}/tier-list/create`)} personal={mineOnly} accentColor="#2563EB" />
+        <section
+          aria-labelledby="tier-list-page-title"
+          style={{
+            maxWidth: 1120,
+            margin: isMobile ? "0 auto 12px" : "0 auto 14px",
+            padding: isMobile ? "8px 8px 4px" : "8px 12px 4px",
+            display: "grid",
+            gridTemplateColumns: isMobile ? "1fr" : "minmax(0, 1fr) auto",
+            alignItems: "center",
+            gap: isMobile ? 12 : 22,
+          }}
+        >
+          <div style={{ textAlign: isMobile ? "center" : "left", minWidth: 0 }}>
+            <h1
+              id="tier-list-page-title"
+              style={{
+                margin: 0,
+                color: "#202534",
+                fontSize: isMobile ? 32 : 42,
+                fontWeight: 950,
+                lineHeight: 1.15,
+                letterSpacing: "-0.035em",
+              }}
+            >
+              📊 {t("tierList.page.title")}
+            </h1>
+            <p
+              style={{
+                margin: isMobile ? "8px auto 0" : "8px 0 0",
+                maxWidth: 720,
+                color: "#596579",
+                fontSize: isMobile ? 16 : 18,
+                fontWeight: 700,
+                lineHeight: 1.45,
+              }}
+            >
+              {t("tierList.page.description")}
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={() => navigate(`/${lang}/tier-list/create`)}
+            style={{
+              width: isMobile ? "100%" : 260,
+              minHeight: isMobile ? 52 : 56,
+              border: "none",
+              borderRadius: 12,
+              background: "#2563EB",
+              color: "#ffffff",
+              fontSize: isMobile ? 18 : 20,
+              fontWeight: 950,
+              cursor: "pointer",
+              boxShadow: "0 14px 28px rgba(37,99,235,0.22)",
+            }}
+          >
+            + {t("tierList.page.createButton")}
+          </button>
+        </section>
 {/* 검색 위 언어 선택 */}
 <div
   style={{
