@@ -1328,7 +1328,7 @@ const displayTitle =
             new Date(b?.created_at || 0).getTime() -
             new Date(a?.created_at || 0).getTime()
         )
-        .slice(0, 5),
+        .slice(0, 6),
     [cards]
   );
 
@@ -1341,7 +1341,7 @@ const displayTitle =
             new Date(b?.created_at || 0).getTime() -
               new Date(a?.created_at || 0).getTime()
         )
-        .slice(0, 5),
+        .slice(0, 6),
     [cards]
   );
 
@@ -1352,7 +1352,7 @@ const displayTitle =
 
   const useSideTierActivityPanels =
     showTierActivityPanels &&
-    viewportWidth >= 1360;
+    viewportWidth >= 1540;
 
   const renderTierActivityPanel = ({
     title,
@@ -1366,16 +1366,17 @@ const displayTitle =
         background: "#ffffff",
         border: "1px solid #bfdbfe",
         borderRadius: 10,
-        padding: "14px 14px 12px",
+        padding: "17px 17px 15px",
         boxSizing: "border-box",
-        boxShadow: "0 10px 24px rgba(37,99,235,0.10)",
+        minHeight: 292,
+        boxShadow: "0 12px 28px rgba(37,99,235,0.12)",
       }}
     >
       <h2
         style={{
           margin: "0 0 11px",
           color: accentColor,
-          fontSize: 18,
+          fontSize: 20,
           lineHeight: 1.25,
           fontWeight: 950,
           textAlign: "left",
@@ -1393,7 +1394,7 @@ const displayTitle =
             padding: 0,
             display: "flex",
             flexDirection: "column",
-            gap: 8,
+            gap: 9,
           }}
         >
           {items.map((item) => (
@@ -1408,7 +1409,7 @@ const displayTitle =
                   borderRadius: 8,
                   background: "#f8fbff",
                   color: "#202534",
-                  padding: "9px 10px",
+                  padding: "11px 11px",
                   cursor: "pointer",
                   textAlign: "left",
                   display: "grid",
@@ -1423,7 +1424,7 @@ const displayTitle =
                     overflow: "hidden",
                     textOverflow: "ellipsis",
                     whiteSpace: "nowrap",
-                    fontSize: 14,
+                    fontSize: 15,
                     fontWeight: 900,
                   }}
                 >
@@ -1432,7 +1433,7 @@ const displayTitle =
                 <span
                   style={{
                     color: accentColor,
-                    fontSize: 12,
+                    fontSize: 13,
                     fontWeight: 850,
                     whiteSpace: "nowrap",
                   }}
@@ -1519,9 +1520,9 @@ maxWidth: isMobile ? 430 : 1480,
     <div
       style={{
         position: "absolute",
-        left: 22,
+        left: "max(40px, calc((100% - 760px) / 2 - 374px))",
         top: 34,
-        width: 300,
+        width: 340,
         zIndex: 1,
       }}
     >
@@ -1535,9 +1536,9 @@ maxWidth: isMobile ? 430 : 1480,
     <div
       style={{
         position: "absolute",
-        right: 22,
+        right: "max(40px, calc((100% - 760px) / 2 - 374px))",
         top: 34,
-        width: 300,
+        width: 340,
         zIndex: 1,
       }}
     >

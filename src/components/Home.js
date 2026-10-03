@@ -1160,7 +1160,7 @@ const recentCreatedCups = [...cupById.values()]
       new Date(b?.created_at || 0).getTime() -
       new Date(a?.created_at || 0).getTime()
   )
-  .slice(0, 5)
+  .slice(0, 6)
   .map((cup) => ({
     cup,
     time: cup?.created_at,
@@ -1182,7 +1182,7 @@ const recentPlayedCups = (recentPlayLogs || [])
     };
   })
   .filter(Boolean)
-  .slice(0, 5);
+  .slice(0, 6);
 
 const showHomeActivityPanels =
   !isMobile &&
@@ -1756,9 +1756,9 @@ const renderHomeActivityPanel = ({
         background: "#ffffff",
         border: "1px solid #fed7aa",
         borderRadius: 10,
-        padding: "16px 16px 14px",
+        padding: "18px 18px 16px",
         boxSizing: "border-box",
-        minHeight: 242,
+        minHeight: 302,
         boxShadow: "0 12px 28px rgba(249,115,22,0.10)",
       }}
     >
@@ -1766,7 +1766,7 @@ const renderHomeActivityPanel = ({
         style={{
           margin: "0 0 13px",
           color: accentColor,
-          fontSize: 20,
+          fontSize: 22,
           lineHeight: 1.25,
           fontWeight: 900,
           textAlign: "left",
@@ -1785,7 +1785,7 @@ const renderHomeActivityPanel = ({
             margin: 0,
             display: "flex",
             flexDirection: "column",
-            gap: 9,
+            gap: 10,
           }}
         >
           {items.map(({ cup, time }) => {
@@ -1807,7 +1807,7 @@ const renderHomeActivityPanel = ({
                     borderRadius: 8,
                     background: "#fffaf7",
                     color: "#202534",
-                    padding: "11px 11px",
+                    padding: "12px 12px",
                     cursor: "pointer",
                     textAlign: "left",
                     display: "grid",
@@ -1822,7 +1822,7 @@ const renderHomeActivityPanel = ({
                       overflow: "hidden",
                       textOverflow: "ellipsis",
                       whiteSpace: "nowrap",
-                      fontSize: 15,
+                      fontSize: 16,
                       fontWeight: 900,
                     }}
                   >
@@ -1832,7 +1832,7 @@ const renderHomeActivityPanel = ({
                   <span
                     style={{
                       color: "#C2410C",
-                      fontSize: 13,
+                      fontSize: 14,
                       fontWeight: 800,
                       whiteSpace: "nowrap",
                     }}

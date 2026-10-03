@@ -1657,7 +1657,7 @@ export default function QuizPage({ user = null }) {
             new Date(b?.created_at || 0).getTime() -
             new Date(a?.created_at || 0).getTime()
         )
-        .slice(0, 5),
+        .slice(0, 6),
     [cards]
   );
 
@@ -1670,7 +1670,7 @@ export default function QuizPage({ user = null }) {
             new Date(b?.created_at || 0).getTime() -
               new Date(a?.created_at || 0).getTime()
         )
-        .slice(0, 5),
+        .slice(0, 6),
     [cards]
   );
 
@@ -1682,7 +1682,7 @@ export default function QuizPage({ user = null }) {
   const useSideQuizActivityPanels =
     showQuizActivityPanels &&
     twoColumn &&
-    viewportWidth >= 1360;
+    viewportWidth >= 1540;
 
   const renderQuizActivityPanel = ({
     title,
@@ -1696,16 +1696,17 @@ export default function QuizPage({ user = null }) {
         background: "#ffffff",
         border: "1px solid #fecaca",
         borderRadius: 10,
-        padding: "14px 14px 12px",
+        padding: "17px 17px 15px",
         boxSizing: "border-box",
-        boxShadow: "0 10px 24px rgba(239,68,68,0.10)",
+        minHeight: 292,
+        boxShadow: "0 12px 28px rgba(239,68,68,0.12)",
       }}
     >
       <h2
         style={{
           margin: "0 0 11px",
           color: accentColor,
-          fontSize: 18,
+          fontSize: 20,
           lineHeight: 1.25,
           fontWeight: 950,
           textAlign: "left",
@@ -1723,7 +1724,7 @@ export default function QuizPage({ user = null }) {
             padding: 0,
             display: "flex",
             flexDirection: "column",
-            gap: 8,
+            gap: 9,
           }}
         >
           {items.map((item) => (
@@ -1738,7 +1739,7 @@ export default function QuizPage({ user = null }) {
                   borderRadius: 8,
                   background: "#fffafa",
                   color: "#202534",
-                  padding: "9px 10px",
+                  padding: "11px 11px",
                   cursor: "pointer",
                   textAlign: "left",
                   display: "grid",
@@ -1753,7 +1754,7 @@ export default function QuizPage({ user = null }) {
                     overflow: "hidden",
                     textOverflow: "ellipsis",
                     whiteSpace: "nowrap",
-                    fontSize: 14,
+                    fontSize: 15,
                     fontWeight: 900,
                   }}
                 >
@@ -1762,7 +1763,7 @@ export default function QuizPage({ user = null }) {
                 <span
                   style={{
                     color: accentColor,
-                    fontSize: 12,
+                    fontSize: 13,
                     fontWeight: 850,
                     whiteSpace: "nowrap",
                   }}
@@ -1997,9 +1998,9 @@ export default function QuizPage({ user = null }) {
     <div
       style={{
         position: "absolute",
-        left: 22,
+        left: "max(40px, calc((100% - 760px) / 2 - 374px))",
         top: 34,
-        width: 300,
+        width: 340,
         zIndex: 1,
       }}
     >
@@ -2013,9 +2014,9 @@ export default function QuizPage({ user = null }) {
     <div
       style={{
         position: "absolute",
-        right: 22,
+        right: "max(40px, calc((100% - 760px) / 2 - 374px))",
         top: 34,
-        width: 300,
+        width: 340,
         zIndex: 1,
       }}
     >
