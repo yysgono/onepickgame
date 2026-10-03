@@ -1179,7 +1179,7 @@ const recentCreatedCups = [...cupById.values()]
       new Date(b?.created_at || 0).getTime() -
       new Date(a?.created_at || 0).getTime()
   )
-  .slice(0, 5)
+  .slice(0, 6)
   .map((cup) => ({
     cup,
     time: cup?.created_at,
@@ -1201,7 +1201,7 @@ const recentPlayedCups = (recentPlayLogs || [])
     };
   })
   .filter(Boolean)
-  .slice(0, 5);
+  .slice(0, 6);
 
 const showHomeActivityPanels =
   !isMobile &&
@@ -1771,9 +1771,9 @@ const renderHomeActivityPanel = ({
         background: "#ffffff",
         border: "1px solid #fed7aa",
         borderRadius: 10,
-        padding: "16px 16px 14px",
+       padding: "18px 18px 16px",
         boxSizing: "border-box",
-        minHeight: 242,
+        minHeight: 302,
         boxShadow: "0 12px 28px rgba(249,115,22,0.10)",
       }}
     >
@@ -1781,7 +1781,7 @@ const renderHomeActivityPanel = ({
         style={{
           margin: "0 0 13px",
           color: accentColor,
-          fontSize: 20,
+          fontSize: 22,
           lineHeight: 1.25,
           fontWeight: 900,
           textAlign: "left",
@@ -3690,12 +3690,9 @@ const worldcupIntroDescription =
 const homeSeoSummary =
   HOME_SEO_SUMMARY_COPY[lang] ||
   HOME_SEO_SUMMARY_COPY.en;
-
-const homeSeoSummaryParts =
-  homeSeoSummary
-    .split(/(?<=\.|。|।)\s+/)
-    .filter(Boolean);
-
+const homeSeoSummaryParts = homeSeoSummary
+  .split(/(?<=\.|。|।)\s+/)
+  .filter(Boolean);
 useEffect(() => {
 
   const visibleCups = [];
@@ -3900,22 +3897,21 @@ return (
         textAlign: "center",
       }}
     >
-      <p
-        style={{
-          margin: 0,
-          color: "#475569",
-          fontSize: isMobile ? 14 : 15,
-          lineHeight: 1.65,
-          fontWeight: 750,
-        }}
-      >
-        {homeSeoSummaryParts.map((line, index) => (
-          <React.Fragment key={`${line}-${index}`}>
-            {index > 0 && <br />}
-            {line}
-          </React.Fragment>
-        ))}
-      </p>
+<p
+  style={{
+    margin: 0,
+    color: "#475569",
+    fontSize: isMobile ? 14 : 15,
+    lineHeight: 1.65,
+    fontWeight: 750,
+  }}
+>
+  {homeSeoSummaryParts.map((line, index) => (
+    <span key={`${line}-${index}`} style={{ display: "block" }}>
+      {line}
+    </span>
+  ))}
+</p>
     </section>
   )}
 

@@ -81,6 +81,15 @@ function buildFilterSlug(base, filters) {
   return query ? `${base}?${query}` : base;
 }
 
+function formatActivityDate(value) {
+  if (!value) return "";
+
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "";
+
+  return date.toISOString().slice(0, 10).replace(/-/g, ".");
+}
+
 const LANGUAGES = [
   { code: "en", label: "English" },
   { code: "ko", label: "한국어" },
@@ -266,6 +275,13 @@ function TierListPage({
       typeof window !== "undefined"
         ? window.innerWidth < 600
         : false
+    );
+
+  const [viewportWidth, setViewportWidth] =
+    useState(
+      typeof window !== "undefined"
+        ? window.innerWidth
+        : 1440
     );
 
   const [
@@ -787,6 +803,9 @@ function TierListPage({
       setIsMobile(
         window.innerWidth < 600
       );
+      setViewportWidth(
+        window.innerWidth
+      );
     };
 
     window.addEventListener(
@@ -1239,7 +1258,7 @@ const displayTitle =
       const previewCandidates = ids
         .map((candidateId) => candidateById.get(String(candidateId)))
         .filter(Boolean)
-        .slice(0, 4);
+        .slice(0, 5);
 
       return {
         tier,
@@ -1301,13 +1320,6 @@ const displayTitle =
           empty: "No tier lists to show.",
         };
 
-  const formatTierActivityDate = (value) => {
-    if (!value) return "-";
-    const date = new Date(value);
-    if (Number.isNaN(date.getTime())) return "-";
-    return date.toISOString().slice(0, 10).replace(/-/g, ".");
-  };
-
   const recentCreatedTierItems = useMemo(
     () =>
       [...cards]
@@ -1316,7 +1328,7 @@ const displayTitle =
             new Date(b?.created_at || 0).getTime() -
             new Date(a?.created_at || 0).getTime()
         )
-        .slice(0, 5),
+        .slice(0, 6),
     [cards]
   );
 
@@ -1362,7 +1374,9 @@ const displayTitle =
 
       const { data: tierRows, error: tierError } = await supabase
         .from("tier_lists")
-        .select("id,title,title_translations,created_at")
+        .select(
+          "id, title, title_translations, category, thumbnail_url, candidate_count, view_count, created_at"
+        )
         .in("id", recentIds);
 
       if (tierError) {
@@ -1379,7 +1393,11 @@ const displayTitle =
         .map((tierListId) => {
           const tierList = tierById.get(tierListId);
           if (!tierList) return null;
-          const titleTranslations = readTranslationMap(tierList?.title_translations);
+
+          const titleTranslations = readTranslationMap(
+            tierList?.title_translations
+          );
+
           return {
             ...tierList,
             lastPlayedAt: playedAtById.get(tierListId),
@@ -1391,7 +1409,7 @@ const displayTitle =
           };
         })
         .filter(Boolean)
-        .slice(0, 5);
+        .slice(0, 6);
 
       if (alive) setRecentPlayedTierItems(ordered);
     }
@@ -1408,42 +1426,97 @@ const displayTitle =
     !isMobile &&
     !searchInput.trim();
 
+  const useSideTierActivityPanels =
+    showTierActivityPanels &&
+    viewportWidth >= 1680;
+
   const renderTierActivityPanel = ({
     title,
     items,
-    accentColor,
-    dateField = "created_at",
+    accentColor = "#2563EB",
+    metric = "date",
   }) => (
-    <aside
-      style={{
-        minWidth: 0,
-        background: "#ffffff",
-        border: "1px solid #bfdbfe",
-        borderRadius: 10,
-        padding: "15px 15px 13px",
-        boxSizing: "border-box",
-        minHeight: 244,
-        boxShadow: "0 12px 28px rgba(37,99,235,0.12)",
-      }}
-    >
-      <h2 style={{ margin: "0 0 10px", color: accentColor, fontSize: 20, lineHeight: 1.25, fontWeight: 950, textAlign: "left", borderLeft: `4px solid ${accentColor}`, paddingLeft: 8 }}>
-        {title}
-      </h2>
+ <aside
+  style={{
+    minWidth: 0,
+    background: "#ffffff",
+    border: "1px solid #bfdbfe",
+    borderRadius: 10,
+    padding: "18px 18px 16px",
+    boxSizing: "border-box",
+    minHeight: 280,
+    boxShadow: "0 12px 28px rgba(37,99,235,0.12)",
+  }}
+>
+  <h2
+    style={{
+      margin: "0 0 12px",
+      color: accentColor,
+      fontSize: 22,
+      lineHeight: 1.25,
+      fontWeight: 950,
+      textAlign: "left",
+      borderLeft: `4px solid ${accentColor}`,
+      paddingLeft: 8,
+    }}
+  >
+    {title}
+  </h2>
       {items.length ? (
-        <ul style={{ listStyle: "none", margin: 0, padding: 0, display: "flex", flexDirection: "column", gap: 8 }}>
+        <ul
+          style={{
+            listStyle: "none",
+            margin: 0,
+            padding: 0,
+            display: "flex",
+            flexDirection: "column",
+            gap: 9,
+          }}
+        >
           {items.map((item) => (
             <li key={`${title}-${item.id}`}>
               <button
                 type="button"
                 onClick={() => navigate(`/${lang}/tier-list/${item.id}`)}
                 title={item.displayTitle || ""}
-                style={{ width: "100%", border: "1px solid #dbeafe", borderRadius: 8, background: "#f8fbff", color: "#202534", padding: "10px 11px", cursor: "pointer", textAlign: "left", display: "grid", gridTemplateColumns: "1fr auto", gap: 10, alignItems: "center" }}
+                style={{
+                  width: "100%",
+                  border: "1px solid #dbeafe",
+                  borderRadius: 8,
+                  background: "#f8fbff",
+                  color: "#202534",
+                  padding: "11px 11px",
+                  cursor: "pointer",
+                  textAlign: "left",
+                  display: "grid",
+                  gridTemplateColumns: "1fr auto",
+                  gap: 10,
+                  alignItems: "center",
+                }}
               >
-                <span style={{ minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", fontSize: 15, fontWeight: 900 }}>
+                <span
+                  style={{
+                    minWidth: 0,
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap",
+                    fontSize: 15,
+                    fontWeight: 900,
+                  }}
+                >
                   {item.displayTitle}
                 </span>
-                <span style={{ color: accentColor, fontSize: 13, fontWeight: 850, whiteSpace: "nowrap" }}>
-                  {formatTierActivityDate(item[dateField] || item.created_at)}
+                <span
+                  style={{
+                    color: accentColor,
+                    fontSize: 13,
+                    fontWeight: 850,
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  {metric === "playedAt"
+                    ? formatActivityDate(item.lastPlayedAt || item.created_at)
+                    : formatActivityDate(item.created_at)}
                 </span>
               </button>
             </li>
@@ -1509,74 +1582,121 @@ const displayTitle =
 <div className="tier-page-container"
   style={{
     width: "100%",
-maxWidth: isMobile ? 430 : 1480,
+maxWidth: isMobile ? 430 : 1780,
     margin: "0 auto",
     padding: isMobile
       ? "20px 10px"
       : "22px 22px",
     boxSizing: "border-box",
+    position: "relative",
   }}
 >
+{useSideTierActivityPanels && (
+  <>
+    <div
+      style={{
+        position: "absolute",
+        left: "max(24px, calc((100% - 1120px) / 2 - 364px))",
+        top: 34,
+        width: 340,
+        zIndex: 1,
+      }}
+    >
+      {renderTierActivityPanel({
+        title: tierActivityCopy.recentCreated,
+        items: recentCreatedTierItems,
+        accentColor: "#2563EB",
+        metric: "date",
+      })}
+    </div>
+    <div
+      style={{
+        position: "absolute",
+        right: "max(24px, calc((100% - 1120px) / 2 - 364px))",
+        top: 34,
+        width: 340,
+        zIndex: 1,
+      }}
+    >
+      {renderTierActivityPanel({
+        title: tierActivityCopy.recentPlayed,
+        items: recentPlayedTierItems,
+        accentColor: "#7C3AED",
+        metric: "playedAt",
+      })}
+    </div>
+  </>
+)}
         
 
-        <section
-          aria-labelledby="tier-list-page-title"
-          style={{
-            maxWidth: 1120,
-            margin: isMobile ? "0 auto 12px" : "0 auto 14px",
-            padding: isMobile ? "8px 8px 4px" : "8px 12px 4px",
-            display: "grid",
-            gridTemplateColumns: isMobile ? "1fr" : "minmax(0, 1fr) auto",
-            alignItems: "center",
-            gap: isMobile ? 12 : 22,
-          }}
-        >
-          <div style={{ textAlign: isMobile ? "center" : "left", minWidth: 0 }}>
-            <h1
-              id="tier-list-page-title"
-              style={{
-                margin: 0,
-                color: "#202534",
-                fontSize: isMobile ? 32 : 42,
-                fontWeight: 950,
-                lineHeight: 1.15,
-                letterSpacing: "-0.035em",
-              }}
-            >
-              📊 {t("tierList.page.title")}
-            </h1>
-            <p
-              style={{
-                margin: isMobile ? "8px auto 0" : "8px 0 0",
-                maxWidth: 720,
-                color: "#596579",
-                fontSize: isMobile ? 16 : 18,
-                fontWeight: 700,
-                lineHeight: 1.45,
-              }}
-            >
-              {t("tierList.page.description")}
-            </p>
-          </div>
-          <button
-            type="button"
-            onClick={() => navigate(`/${lang}/tier-list/create`)}
-            style={{
-              width: isMobile ? "100%" : 260,
-              minHeight: isMobile ? 52 : 56,
-              border: "none",
-              borderRadius: 12,
-              background: "#2563EB",
-              color: "#ffffff",
-              fontSize: isMobile ? 18 : 20,
-              fontWeight: 950,
-              cursor: "pointer",
-              boxShadow: "0 14px 28px rgba(37,99,235,0.22)",
-            }}
-          >
-            + {t("tierList.page.createButton")}
-          </button>
-        </section>
+      <section
+  aria-labelledby="tier-list-page-title"
+  style={{
+    maxWidth: 860,
+    margin: isMobile ? "0 auto 12px" : "0 auto 14px",
+    padding: isMobile ? "8px 8px 4px" : "8px 12px 4px",
+    display: "grid",
+    gridTemplateColumns: "1fr",
+    alignItems: "center",
+    justifyItems: "center",
+    gap: isMobile ? 12 : 18,
+  }}
+>
+  <div
+    style={{
+      width: "100%",
+      textAlign: "center",
+      minWidth: 0,
+    }}
+  >
+    <h1
+      id="tier-list-page-title"
+      style={{
+        margin: 0,
+        color: "#202534",
+        fontSize: isMobile ? 32 : 42,
+        fontWeight: 950,
+        lineHeight: 1.15,
+        letterSpacing: "-0.035em",
+      }}
+    >
+      📊 {t("tierList.page.title")}
+    </h1>
+
+    <p
+      style={{
+        margin: "8px auto 0",
+        maxWidth: 720,
+        color: "#596579",
+        fontSize: isMobile ? 16 : 18,
+        fontWeight: 700,
+        lineHeight: 1.45,
+      }}
+    >
+      {t("tierList.page.description")}
+    </p>
+  </div>
+
+  <button
+    type="button"
+    onClick={() => navigate(`/${lang}/tier-list/create`)}
+    style={{
+      width: isMobile ? "100%" : 260,
+      maxWidth: "100%",
+      padding: isMobile ? "13px 18px" : "14px 22px",
+      border: 0,
+      borderRadius: 12,
+      background: "#2563EB",
+      color: "#fff",
+      fontSize: isMobile ? 18 : 20,
+      fontWeight: 900,
+      cursor: "pointer",
+      boxShadow: "0 12px 24px rgba(37,99,235,0.22)",
+    }}
+  >
+    + {t("tierList.page.createButton")}
+  </button>
+</section>
 {/* 검색 위 언어 선택 */}
 <div
   style={{
@@ -1716,12 +1836,12 @@ maxWidth: isMobile ? 430 : 1480,
 
 
         </div>
-{showTierActivityPanels && (
+{showTierActivityPanels && !useSideTierActivityPanels && (
   <div
     style={{
       width: "100%",
       maxWidth: 760,
-      margin: "12px auto 18px",
+      margin: "14px auto 16px",
       display: "grid",
       gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
       gap: 14,
@@ -1731,17 +1851,16 @@ maxWidth: isMobile ? 430 : 1480,
       title: tierActivityCopy.recentCreated,
       items: recentCreatedTierItems,
       accentColor: "#2563EB",
-      dateField: "created_at",
+      metric: "date",
     })}
     {renderTierActivityPanel({
       title: tierActivityCopy.recentPlayed,
       items: recentPlayedTierItems,
       accentColor: "#7C3AED",
-      dateField: "lastPlayedAt",
+      metric: "playedAt",
     })}
   </div>
 )}
-
 {!mineOnly && recommendedPresets.length >
             0 && (
             <div className="tier-recommendations"
