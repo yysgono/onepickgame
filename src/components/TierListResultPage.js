@@ -670,7 +670,7 @@ if (mounted) {
                 "tier_lists"
               )
               .select(
-                "*"
+                "id, user_id, guest_nickname, title, title_translations, source_worldcup_id, category, thumbnail_url, candidate_count, has_one_pick, view_count, like_count, comment_count, clone_count, created_at, tier_labels, tiers, candidates"
               )
               .eq(
                 "id",
@@ -2670,7 +2670,7 @@ if (isAdmin) {
           slug={`tier-list/${id}`}
           title={t("tierList.seo.resultFallbackTitle")}
           description={t("tierList.seo.resultFallbackDescription")}
-          indexable={false}
+          indexable={true}
         />
       <div
         style={{
@@ -3526,6 +3526,8 @@ padding: isMobile
                               url={candidate.image}
                               alt={candidate.name || ""}
                               playable={false}
+                              deferUntilVisible
+                              viewportMargin="360px"
                               style={{
                                 width: "100%",
                                 height: "100%",

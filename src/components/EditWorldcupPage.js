@@ -30,6 +30,34 @@ const COLORS = {
 
 };
 
+const WORLDCUP_TITLE_MAX_LENGTH = 60;
+
+const WORLDCUP_DESCRIPTION_MAX_LENGTH = 400;
+
+function buildCandidateDescriptionFallback(candidates) {
+  const names = Array.from(
+    new Set(
+      (Array.isArray(candidates) ? candidates : [])
+        .map((candidate) => String(candidate?.name || "").trim())
+        .filter(Boolean)
+    )
+  );
+
+  let description = "";
+
+  for (const name of names) {
+    const next = description ? `${description}, ${name}` : name;
+
+    if (next.length > WORLDCUP_DESCRIPTION_MAX_LENGTH) {
+      break;
+    }
+
+    description = next;
+  }
+
+  return description;
+}
+
 
 
 const CATEGORY_OPTIONS = [
@@ -118,6 +146,10 @@ const MAX_IMAGE_OUTPUT_BYTES = 1 * 1024 * 1024;
 
 const MAX_VIDEO_BYTES = 20 * 1024 * 1024;
 
+const EDIT_WORLDCUP_DRAFT_PREFIX =
+
+  "onepick_edit_worldcup_draft_v2:";
+
 
 
 const IMAGE_EXTENSION_RE = /\.(jpe?g|png|webp|avif)$/i;
@@ -195,6 +227,20 @@ function getYoutubeThumb(url = "") {
     ? `https://img.youtube.com/vi/${match[1]}/mqdefault.jpg`
 
     : null;
+
+}
+
+function getYoutubeVideoId(url = "") {
+
+  const match = String(url || "").match(
+
+    /(?:youtu\.be\/|youtube\.com\/(?:embed\/|shorts\/|watch\?(?:.*&)?v=))([\w-]{11})/i
+
+  );
+
+
+
+  return match?.[1] || "";
 
 }
 
@@ -846,6 +892,16 @@ const getCleanTags = () =>
 
   const fileInputRef = useRef(null);
 
+  const editDraftReadyRef = useRef(false);
+
+  const loadedCupIdRef = useRef("");
+
+  const youtubeTitleRequestRef = useRef(0);
+
+  const editDraftKey =
+
+    `${EDIT_WORLDCUP_DRAFT_PREFIX}${String(cupId || "")}`;
+
 
 
   useEffect(() => {
@@ -920,15 +976,34 @@ const getCleanTags = () =>
 
   useEffect(() => {
 
+    const currentCupId = String(cupId || "");
+
+    if (
+      currentCupId &&
+      loadedCupIdRef.current === currentCupId
+    ) {
+      return;
+    }
+
+    editDraftReadyRef.current = false;
+
     const cup = (worldcupList || []).find(
 
       (item) => String(item.id) === String(cupId)
 
     );
 
+if (!cup) {
+
+  return;
+
+}
+
 
 
 setOriginalCup(cup || null);
+
+loadedCupIdRef.current = currentCupId;
 
 
 
@@ -950,17 +1025,15 @@ const descriptionMap = readTranslationMap(cup?.description_translations);
 
 
 
-setContentLanguage(baseLang);
+let nextContentLanguage = baseLang;
 
-setTitle(titleMap?.[baseLang] || cup?.title || "");
+let nextTitle = titleMap?.[baseLang] || cup?.title || "";
 
-setDescription(
+let nextDescription =
 
-  descriptionMap?.[baseLang] || cup?.description || cup?.desc || ""
+  descriptionMap?.[baseLang] || cup?.description || cup?.desc || "";
 
-);
-
-setCategory(cup?.category || "etc");
+let nextCategory = cup?.category || "etc";
 
 
 
@@ -978,7 +1051,7 @@ const translationCodes = Array.from(
 
 
 
-setTitleTranslations(
+let nextTitleTranslations =
 
   translationCodes.map((code) => ({
 
@@ -990,9 +1063,7 @@ setTitleTranslations(
 
     description: descriptionMap?.[code] || "",
 
-  }))
-
-);
+  }));
 
 
 
@@ -1004,7 +1075,7 @@ const existingTags = Array.isArray(cup?.tags)
 
 
 
-setTags([
+let nextTags = [
 
   existingTags[0] || "",
 
@@ -1012,11 +1083,9 @@ setTags([
 
   existingTags[2] || "",
 
-]);
+];
 
-
-
-setData(
+let nextData =
 
       Array.isArray(cup?.data)
 
@@ -1028,11 +1097,121 @@ setData(
 
           }))
 
-        : []
+        : [];
 
-    );
+try {
 
-  }, [worldcupList, cupId]);
+  const rawDraft =
+
+    sessionStorage.getItem(editDraftKey);
+
+  if (rawDraft) {
+
+    const draft =
+
+      JSON.parse(rawDraft);
+
+    if (draft && typeof draft === "object") {
+
+      nextContentLanguage =
+
+        draft.contentLanguage || nextContentLanguage;
+
+      nextTitle =
+
+        String(draft.title || "");
+
+      nextDescription =
+
+        String(draft.description || "");
+
+      nextCategory =
+
+        draft.category || nextCategory;
+
+      nextTags =
+
+        Array.isArray(draft.tags)
+
+          ? draft.tags.slice(0, 3)
+
+          : nextTags;
+
+      nextTitleTranslations =
+
+        Array.isArray(draft.titleTranslations)
+
+          ? draft.titleTranslations
+
+          : nextTitleTranslations;
+
+      nextData =
+
+        Array.isArray(draft.data)
+
+          ? draft.data.map((candidate) => ({
+
+              id:
+
+                candidate?.id ||
+
+                uuidv4(),
+
+              name:
+
+                String(candidate?.name || ""),
+
+              image:
+
+                String(candidate?.image || ""),
+
+              file: null,
+
+            }))
+
+          : nextData;
+
+    }
+
+  }
+
+} catch (draftError) {
+
+  console.error(
+
+    "월드컵 수정 임시저장 복구 실패:",
+
+    draftError
+
+  );
+
+}
+
+setContentLanguage(nextContentLanguage);
+
+setTitle(nextTitle);
+
+setDescription(nextDescription);
+
+setCategory(nextCategory);
+
+setTitleTranslations(nextTitleTranslations);
+
+setTags([
+
+  nextTags[0] || "",
+
+  nextTags[1] || "",
+
+  nextTags[2] || "",
+
+]);
+
+setData(nextData);
+
+editDraftReadyRef.current = true;
+
+  }, [worldcupList, cupId, editDraftKey]);
 
 
 
@@ -1055,6 +1234,124 @@ setData(
     ]);
 
   }
+
+  useEffect(() => {
+
+    if (!editDraftReadyRef.current || !originalCup) {
+
+      return undefined;
+
+    }
+
+
+
+    const timer =
+
+      window.setTimeout(() => {
+
+        try {
+
+          const draft = {
+
+            contentLanguage,
+
+            title,
+
+            description,
+
+            category,
+
+            tags,
+
+            titleTranslations,
+
+            data:
+
+              data.map((candidate) => ({
+
+                id:
+
+                  candidate?.id ||
+
+                  uuidv4(),
+
+                name:
+
+                  String(
+
+                    candidate?.name || ""
+
+                  ),
+
+                image:
+
+                  String(
+
+                    candidate?.image || ""
+
+                  ),
+
+              })),
+
+            savedAt:
+
+              Date.now(),
+
+          };
+
+
+
+          sessionStorage.setItem(
+
+            editDraftKey,
+
+            JSON.stringify(draft)
+
+          );
+
+        } catch (draftError) {
+
+          console.error(
+
+            "월드컵 수정 임시저장 실패:",
+
+            draftError
+
+          );
+
+        }
+
+      }, 250);
+
+
+
+    return () => {
+
+      window.clearTimeout(timer);
+
+    };
+
+  }, [
+
+    editDraftKey,
+
+    originalCup,
+
+    contentLanguage,
+
+    title,
+
+    description,
+
+    category,
+
+    tags,
+
+    titleTranslations,
+
+    data,
+
+  ]);
 
 
 
@@ -1105,6 +1402,202 @@ setData(
           : item
 
       )
+
+    );
+
+  }
+
+  async function fetchYoutubeTitle(url) {
+
+    if (!getYoutubeVideoId(url)) {
+
+      return "";
+
+    }
+
+
+
+    const requestId =
+
+      ++youtubeTitleRequestRef.current;
+
+
+
+    const endpoints = [
+
+      `https://www.youtube.com/oembed?url=${encodeURIComponent(
+
+        url
+
+      )}&format=json`,
+
+      `https://noembed.com/embed?url=${encodeURIComponent(
+
+        url
+
+      )}`,
+
+    ];
+
+
+
+    for (const endpoint of endpoints) {
+
+      try {
+
+        const response =
+
+          await fetch(endpoint);
+
+
+
+        if (
+
+          requestId !==
+
+          youtubeTitleRequestRef.current
+
+        ) {
+
+          return "";
+
+        }
+
+
+
+        if (!response.ok) {
+
+          continue;
+
+        }
+
+
+
+        const data =
+
+          await response.json();
+
+        const youtubeTitle =
+
+          String(data?.title || "").trim();
+
+
+
+        if (youtubeTitle) {
+
+          return youtubeTitle.slice(0, 62);
+
+        }
+
+      } catch (error) {
+
+        console.error(
+
+          "YouTube 제목 조회 실패:",
+
+          error
+
+        );
+
+      }
+
+    }
+
+
+
+    return "";
+
+  }
+
+  async function handleCandidateImageChange(index, value) {
+
+    handleCandidateChange(index, "image", value);
+
+
+
+    const videoId =
+
+      getYoutubeVideoId(value);
+
+
+
+    if (!videoId) {
+
+      return;
+
+    }
+
+
+
+    const currentCandidate =
+
+      data[index];
+
+
+
+    if (
+
+      String(currentCandidate?.name || "").trim()
+
+    ) {
+
+      return;
+
+    }
+
+
+
+    const youtubeTitle =
+
+      await fetchYoutubeTitle(value);
+
+
+
+    if (!youtubeTitle) {
+
+      return;
+
+    }
+
+
+
+    setData((current) =>
+
+      current.map((item, itemIndex) => {
+
+        if (itemIndex !== index) {
+
+          return item;
+
+        }
+
+
+
+        if (
+
+          String(item.name || "").trim() ||
+
+          String(item.image || "") !==
+
+            String(value || "")
+
+        ) {
+
+          return item;
+
+        }
+
+
+
+        return {
+
+          ...item,
+
+          name: youtubeTitle,
+
+        };
+
+      })
 
     );
 
@@ -1614,9 +2107,37 @@ if (!category) {
 
 }
 
+const activeData = data
+
+  .map((item) => ({
+
+    ...item,
+
+    name:
+
+      String(item?.name || "").trim(),
+
+    image:
+
+      String(item?.image || "").trim(),
+
+  }))
+
+  .filter(
+
+    (item) =>
+
+      item.name ||
+
+      item.image ||
+
+      item.file instanceof File
+
+  );
 
 
-if (data.length < 2) {
+
+if (activeData.length < 2) {
 
       setError(
 
@@ -1632,7 +2153,7 @@ if (data.length < 2) {
 
 
 
-    if (data.some((item) => !String(item.name || "").trim())) {
+    if (activeData.some((item) => !String(item.name || "").trim())) {
 
       setError(
 
@@ -1652,7 +2173,7 @@ if (data.length < 2) {
 
 
 
-    for (const item of data) {
+    for (const item of activeData) {
 
       const normalized = item.name.trim().toLowerCase();
 
@@ -1704,7 +2225,7 @@ if (data.length < 2) {
 
       // Promise.all보다 느릴 수 있지만 모바일 메모리 폭증을 줄입니다.
 
-      for (const item of data) {
+      for (const item of activeData) {
 
         const oldImageValue = item.image;
 
@@ -1758,6 +2279,10 @@ const cleanTitleTranslations = {};
 
 const cleanDescriptionTranslations = {};
 
+const resolvedDescription =
+  description.trim() ||
+  buildCandidateDescriptionFallback(updatedData);
+
 
 
 // 원문 언어도 번역 맵에 함께 저장해서 기존 페이지들의
@@ -1766,9 +2291,9 @@ const cleanDescriptionTranslations = {};
 
 cleanTitleTranslations[contentLanguage] = title.trim();
 
-if (description.trim()) {
+if (resolvedDescription) {
 
-  cleanDescriptionTranslations[contentLanguage] = description.trim();
+  cleanDescriptionTranslations[contentLanguage] = resolvedDescription;
 
 }
 
@@ -1812,7 +2337,7 @@ const updatedCup = {
 
   title_translations: cleanTitleTranslations,
 
-  description: description.trim(),
+  description: resolvedDescription,
 
   description_translations: cleanDescriptionTranslations,
 
@@ -1871,6 +2396,26 @@ const updatedCup = {
       if (fetchWorldcups) {
 
         await fetchWorldcups();
+
+      }
+
+      try {
+
+        sessionStorage.removeItem(
+
+          editDraftKey
+
+        );
+
+      } catch (draftClearError) {
+
+        console.error(
+
+          "월드컵 수정 임시저장 삭제 실패:",
+
+          draftClearError
+
+        );
 
       }
 
@@ -2029,6 +2574,22 @@ const updatedCup = {
   return (
 
     <div
+
+      onKeyDown={(event) => {
+
+        if (
+
+          event.key === "Enter" &&
+
+          event.target?.tagName !== "TEXTAREA"
+
+        ) {
+
+          event.preventDefault();
+
+        }
+
+      }}
 
       style={{
 
@@ -2222,7 +2783,7 @@ const updatedCup = {
 
             }}
 
-            maxLength={80}
+            maxLength={WORLDCUP_TITLE_MAX_LENGTH}
 
             placeholder={
 
@@ -2424,7 +2985,7 @@ const updatedCup = {
 
                       }
 
-                      maxLength={80}
+                      maxLength={WORLDCUP_TITLE_MAX_LENGTH}
 
                       placeholder={t("translated_title_placeholder", {
 
@@ -3167,11 +3728,9 @@ style={{
 
                 onChange={(event) =>
 
-                  handleCandidateChange(
+                  handleCandidateImageChange(
 
                     index,
-
-                    "image",
 
                     event.target.value
 

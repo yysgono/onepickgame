@@ -70,6 +70,34 @@ const MAX_UPLOAD = 3000;
 
 const MAX_CANDIDATES = 3000;
 
+const WORLDCUP_TITLE_MAX_LENGTH = 60;
+
+const WORLDCUP_DESCRIPTION_MAX_LENGTH = 400;
+
+function buildCandidateDescriptionFallback(candidates) {
+  const names = Array.from(
+    new Set(
+      (Array.isArray(candidates) ? candidates : [])
+        .map((candidate) => String(candidate?.name || "").trim())
+        .filter(Boolean)
+    )
+  );
+
+  let description = "";
+
+  for (const name of names) {
+    const next = description ? `${description}, ${name}` : name;
+
+    if (next.length > WORLDCUP_DESCRIPTION_MAX_LENGTH) {
+      break;
+    }
+
+    description = next;
+  }
+
+  return description;
+}
+
 
 
 const CATEGORY_OPTIONS = [
@@ -157,6 +185,10 @@ const OTHER_LANGUAGE_TITLE_COPY = {
 const WORLDCUP_FROM_TIER_STORAGE_KEY =
 
   "onepick_worldcup_from_tier_v1";
+
+const WORLDCUP_MAKER_DRAFT_KEY =
+
+  "onepick_worldcup_maker_draft_v2";
 
 
 
@@ -1685,7 +1717,7 @@ const [
 
     if (payload.title) {
 
-      const importedTitle = String(payload.title).trim().slice(0, 100);
+      const importedTitle = String(payload.title).trim().slice(0, WORLDCUP_TITLE_MAX_LENGTH);
 
       setTitle(importedTitle);
 
@@ -1851,6 +1883,10 @@ const [
 
     useRef(false);
 
+  const draftReadyRef =
+
+    useRef(false);
+
 
 
   const candidatesRef =
@@ -1864,6 +1900,242 @@ const [
       candidates;
 
   }, [candidates]);
+
+
+
+  useEffect(() => {
+
+    try {
+
+      if (
+
+        sessionStorage.getItem(
+
+          WORLDCUP_FROM_TIER_STORAGE_KEY
+
+        ) ||
+
+        location.state?.prefillFromTier
+
+      ) {
+
+        draftReadyRef.current =
+
+          true;
+
+        return;
+
+      }
+
+
+
+      const raw =
+
+        sessionStorage.getItem(
+
+          WORLDCUP_MAKER_DRAFT_KEY
+
+        );
+
+
+
+      if (!raw) {
+
+        draftReadyRef.current =
+
+          true;
+
+        return;
+
+      }
+
+
+
+      const draft =
+
+        JSON.parse(raw);
+
+
+
+      if (!draft || typeof draft !== "object") {
+
+        draftReadyRef.current =
+
+          true;
+
+        return;
+
+      }
+
+
+
+      const draftLanguage =
+
+        draft.contentLanguage ||
+
+        contentLanguage;
+
+
+
+      if (draftLanguage) {
+
+        setContentLanguage(draftLanguage);
+
+      }
+
+
+
+      setTitle(
+
+        String(draft.title || "")
+
+      );
+
+      setDesc(
+
+        String(draft.desc || "")
+
+      );
+
+      setTitleTranslations(
+
+        draft.titleTranslations &&
+
+          typeof draft.titleTranslations === "object"
+
+          ? draft.titleTranslations
+
+          : {}
+
+      );
+
+      setDescriptionTranslations(
+
+        draft.descriptionTranslations &&
+
+          typeof draft.descriptionTranslations === "object"
+
+          ? draft.descriptionTranslations
+
+          : {}
+
+      );
+
+      setTitleTranslationLanguages(
+
+        Array.isArray(
+
+          draft.titleTranslationLanguages
+
+        )
+
+          ? draft.titleTranslationLanguages
+
+          : []
+
+      );
+
+      setOriginalLanguage(
+
+        draft.originalLanguage || null
+
+      );
+
+      setCategory(
+
+        draft.category || "etc"
+
+      );
+
+      setTags(
+
+        Array.isArray(draft.tags)
+
+          ? draft.tags.slice(0, 3)
+
+          : ["", "", ""]
+
+      );
+
+
+
+      const restoredCandidates =
+
+        Array.isArray(draft.candidates)
+
+          ? draft.candidates
+
+              .map((candidate) => ({
+
+                id:
+
+                  candidate?.id ||
+
+                  uuidv4(),
+
+                name:
+
+                  String(
+
+                    candidate?.name || ""
+
+                  ),
+
+                image:
+
+                  String(
+
+                    candidate?.image || ""
+
+                  ),
+
+                file: null,
+
+              }))
+
+              .filter(
+
+                (candidate) =>
+
+                  candidate.name ||
+
+                  candidate.image
+
+              )
+
+          : [];
+
+
+
+      if (restoredCandidates.length >= 2) {
+
+        setCandidates(
+
+          restoredCandidates
+
+        );
+
+      }
+
+    } catch (draftError) {
+
+      console.error(
+
+        "월드컵 임시저장 복구 실패:",
+
+        draftError
+
+      );
+
+    } finally {
+
+      draftReadyRef.current =
+
+        true;
+
+    }
+
+  }, []);
 
 
 
@@ -2010,6 +2282,180 @@ const [
     }
 
   }, [location.state]);
+
+
+
+  useEffect(() => {
+
+    if (!draftReadyRef.current) {
+
+      return undefined;
+
+    }
+
+
+
+    const hasMeaningfulInput =
+
+      Boolean(String(title || "").trim()) ||
+
+      Boolean(String(desc || "").trim()) ||
+
+      getCleanTags().length > 0 ||
+
+      category !== "etc" ||
+
+      candidates.some(
+
+        (candidate) =>
+
+          String(
+
+            candidate?.name || ""
+
+          ).trim() ||
+
+          String(
+
+            candidate?.image || ""
+
+          ).trim() ||
+
+          candidate?.file instanceof File
+
+      );
+
+
+
+    const timer =
+
+      window.setTimeout(() => {
+
+        try {
+
+          if (!hasMeaningfulInput) {
+
+            sessionStorage.removeItem(
+
+              WORLDCUP_MAKER_DRAFT_KEY
+
+            );
+
+            return;
+
+          }
+
+
+
+          const draft = {
+
+            contentLanguage,
+
+            title,
+
+            desc,
+
+            titleTranslations,
+
+            descriptionTranslations,
+
+            titleTranslationLanguages,
+
+            originalLanguage,
+
+            category,
+
+            tags,
+
+            candidates:
+
+              candidates.map((candidate) => ({
+
+                id:
+
+                  candidate?.id ||
+
+                  uuidv4(),
+
+                name:
+
+                  String(
+
+                    candidate?.name || ""
+
+                  ),
+
+                image:
+
+                  String(
+
+                    candidate?.image || ""
+
+                  ),
+
+              })),
+
+            savedAt:
+
+              Date.now(),
+
+          };
+
+
+
+          sessionStorage.setItem(
+
+            WORLDCUP_MAKER_DRAFT_KEY,
+
+            JSON.stringify(draft)
+
+          );
+
+        } catch (draftError) {
+
+          console.error(
+
+            "월드컵 임시저장 실패:",
+
+            draftError
+
+          );
+
+        }
+
+      }, 250);
+
+
+
+    return () => {
+
+      window.clearTimeout(timer);
+
+    };
+
+  }, [
+
+    contentLanguage,
+
+    title,
+
+    desc,
+
+    titleTranslations,
+
+    descriptionTranslations,
+
+    titleTranslationLanguages,
+
+    originalLanguage,
+
+    category,
+
+    tags,
+
+    candidates,
+
+  ]);
 
 
 
@@ -3661,7 +4107,9 @@ const finalDescriptionTranslations = {
 
   ...descriptionTranslations,
 
-  [contentLanguage]: desc,
+  [contentLanguage]:
+    String(desc || "").trim() ||
+    buildCandidateDescriptionFallback(updatedList),
 
 };
 
@@ -3675,7 +4123,9 @@ const originalTitle = String(
 
 const originalDescription = String(
 
-  finalDescriptionTranslations[resolvedOriginalLanguage] || ""
+  finalDescriptionTranslations[resolvedOriginalLanguage] ||
+    finalDescriptionTranslations[contentLanguage] ||
+    ""
 
 ).trim();
 
@@ -3770,6 +4220,26 @@ data:
           newCup
 
         );
+
+      try {
+
+        sessionStorage.removeItem(
+
+          WORLDCUP_MAKER_DRAFT_KEY
+
+        );
+
+      } catch (draftClearError) {
+
+        console.error(
+
+          "월드컵 임시저장 삭제 실패:",
+
+          draftClearError
+
+        );
+
+      }
 
 
 
@@ -4695,6 +5165,15 @@ style={{
 
         }
 
+        onKeyDown={(event) => {
+          if (
+            event.key === "Enter" &&
+            event.target?.tagName !== "TEXTAREA"
+          ) {
+            event.preventDefault();
+          }
+        }}
+
       >
 
         <div style={{ ...creatorWarningStyle, marginBottom: 20 }}>
@@ -5171,7 +5650,7 @@ style={{
 
           }
 
-          maxLength={70}
+          maxLength={WORLDCUP_TITLE_MAX_LENGTH}
 
           style={{
 
@@ -5325,7 +5804,7 @@ style={{
                           }))
                         }
                         placeholder={otherLanguageCopy.title}
-                        maxLength={70}
+                        maxLength={WORLDCUP_TITLE_MAX_LENGTH}
                         disabled={loading}
                         style={{
                           width: "100%",

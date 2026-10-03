@@ -823,7 +823,17 @@ textShadow: "none",
 
               <Suspense fallback={<div style={{ width: "100%", height: "100%", background: "#f3f4f9" }} />}>
 
-                <MediaRenderer url={winner.image} alt={winner.name} loading="lazy" />
+                <MediaRenderer
+                  url={winner.image}
+                  alt={winner.name}
+                  loading="lazy"
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
+                    objectPosition: "50% 22%",
+                  }}
+                />
 
               </Suspense>
 

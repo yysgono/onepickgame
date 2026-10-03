@@ -935,7 +935,7 @@ textShadow: "none",
                         height: "100%",
                         objectFit: "cover",
                         objectPosition:
-                          "50% 32%",
+                          "50% 22%",
                         background: "#ffffff",
                       }}
                     />
@@ -971,7 +971,7 @@ textShadow: "none",
                         height: "100%",
                         objectFit: "cover",
                         objectPosition:
-                          "50% 32%",
+                          "50% 22%",
                         background: "#ffffff",
                       }}
                     />

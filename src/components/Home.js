@@ -206,6 +206,28 @@ const HOME_CATEGORIES = [
 
 ];
 
+const HOME_CATEGORY_SHORTCUT_KEYS = [
+  "game",
+  "anime_manga",
+  "music",
+  "movie_drama",
+  "korea",
+  "person",
+  "sports",
+  "food",
+];
+
+const KO_HOME_CATEGORY_SHORTCUT_LABELS = {
+  game: "게임 월드컵",
+  anime_manga: "애니 이상형 월드컵",
+  music: "음악 월드컵",
+  movie_drama: "영화·드라마 월드컵",
+  korea: "K-POP 아이돌 월드컵",
+  person: "인물 이상형 월드컵",
+  sports: "스포츠 월드컵",
+  food: "음식 이상형 월드컵",
+};
+
 
 
 const PRIMARY_HOME_CATEGORY_KEYS = new Set([
@@ -543,6 +565,154 @@ const normalizeSearchQuery = (value) =>
     .toLowerCase()
 
     .slice(0, 50);
+
+const collectSearchTextValues = (...values) => {
+
+  const result = [];
+
+
+
+  const visit = (value) => {
+
+    if (value == null) {
+
+      return;
+
+    }
+
+
+
+    if (Array.isArray(value)) {
+
+      value.forEach(visit);
+
+      return;
+
+    }
+
+
+
+    if (typeof value === "object") {
+
+      Object.values(value).forEach(visit);
+
+      return;
+
+    }
+
+
+
+    const text =
+
+      normalizeSearchQuery(value);
+
+
+
+    if (text) {
+
+      result.push(text);
+
+    }
+
+  };
+
+
+
+  values.forEach(visit);
+
+  return result;
+
+};
+
+const searchTextMatches = (keyword, ...values) =>
+
+  collectSearchTextValues(...values).some((value) =>
+
+    value.includes(keyword)
+
+  );
+
+const cupMatchesSearch = (cup, keyword, lang) => {
+
+  if (!keyword) {
+
+    return true;
+
+  }
+
+
+
+  const hasMatchingMainText =
+
+    searchTextMatches(
+
+      keyword,
+
+      getDisplayTitle(cup),
+
+      getWorldcupDescription(cup, lang),
+
+      cup?.title,
+
+      cup?.description,
+
+      cup?.desc,
+
+      cup?.title_translations,
+
+      cup?.description_translations
+
+    );
+
+
+
+  const hasMatchingCandidate =
+
+    Array.isArray(cup?.data) &&
+
+    cup.data.some((candidate) =>
+
+      searchTextMatches(
+
+        keyword,
+
+        candidate?.name,
+
+        candidate?.title,
+
+        candidate?.name_translations,
+
+        candidate?.title_translations
+
+      )
+
+    );
+
+
+
+  const hasMatchingTag =
+
+    Array.isArray(cup?.tags) &&
+
+    cup.tags.some((tag) =>
+
+      normalizeSearchQuery(tag).includes(keyword)
+
+    );
+
+
+
+  return (
+
+    hasMatchingMainText ||
+
+    hasMatchingCandidate ||
+
+    hasMatchingTag
+
+  );
+
+};
 
 
 
@@ -968,77 +1138,7 @@ const keyword =
 
 
 
-  if (!keyword) return true;
-
-
-
-  const displayTitle =
-
-    getDisplayTitle(cup).toLowerCase();
-
-
-
-  const displayDescription = getWorldcupDescription(cup, lang).toLowerCase();
-
-
-
-  // 후보 이름 검색
-
-  const hasMatchingCandidate =
-
-    Array.isArray(cup.data) &&
-
-    cup.data.some((candidate) => {
-
-      const candidateName = (
-
-        candidate?.name_translations?.[lang] ||
-
-        candidate?.name_translations?.en ||
-
-        candidate?.name ||
-
-        candidate?.title ||
-
-        ""
-
-      )
-
-        .toString()
-
-        .toLowerCase();
-
-
-
-      return candidateName.includes(keyword);
-
-    });
-
-const hasMatchingTag =
-
-  Array.isArray(cup.tags) &&
-
-  cup.tags.some((tag) =>
-
-    normalizeSearchQuery(tag).includes(
-
-      keyword
-
-    )
-
-  );
-
-return (
-
-  displayTitle.includes(keyword) ||
-
-  displayDescription.includes(keyword) ||
-
-  hasMatchingCandidate ||
-
-  hasMatchingTag
-
-);
+  return cupMatchesSearch(cup, keyword, lang);
 
 })
 
@@ -1060,7 +1160,7 @@ const recentCreatedCups = [...cupById.values()]
       new Date(b?.created_at || 0).getTime() -
       new Date(a?.created_at || 0).getTime()
   )
-  .slice(0, 6)
+  .slice(0, 5)
   .map((cup) => ({
     cup,
     time: cup?.created_at,
@@ -1082,7 +1182,7 @@ const recentPlayedCups = (recentPlayLogs || [])
     };
   })
   .filter(Boolean)
-  .slice(0, 6);
+  .slice(0, 5);
 
 const showHomeActivityPanels =
   !isMobile &&
@@ -1652,10 +1752,10 @@ const renderHomeActivityPanel = ({
         background: "#ffffff",
         border: "1px solid #fed7aa",
         borderRadius: 10,
-padding: "16px 16px 14px",
-boxSizing: "border-box",
-height: 365,
-boxShadow: "0 12px 28px rgba(249,115,22,0.10)",
+        padding: "16px 16px 14px",
+        boxSizing: "border-box",
+        minHeight: 242,
+        boxShadow: "0 12px 28px rgba(249,115,22,0.10)",
       }}
     >
       <h2
@@ -1718,7 +1818,7 @@ boxShadow: "0 12px 28px rgba(249,115,22,0.10)",
                       overflow: "hidden",
                       textOverflow: "ellipsis",
                       whiteSpace: "nowrap",
-                      fontSize: 16,
+                      fontSize: 15,
                       fontWeight: 900,
                     }}
                   >
@@ -3467,91 +3567,11 @@ const featuredCups = Array.isArray(worldcupList)
 
 
 
-  const keyword = search.trim().toLowerCase();
+  const keyword = normalizeSearchQuery(search);
 
 
 
-  if (!keyword) {
-
-    return true;
-
-  }
-
-
-
-  const title = getDisplayTitle(cup)
-
-    .toString()
-
-    .toLowerCase();
-
-
-
-  const description = getWorldcupDescription(cup, lang)
-    .toString()
-    .toLowerCase();
-
-
-
-  const hasMatchingCandidate =
-
-    Array.isArray(cup.data) &&
-
-    cup.data.some((candidate) => {
-
-      const candidateName = (
-
-        candidate?.name_translations?.[lang] ||
-
-        candidate?.name_translations?.en ||
-
-        candidate?.name ||
-
-        candidate?.title ||
-
-        ""
-
-      )
-
-        .toString()
-
-        .toLowerCase();
-
-
-
-      return candidateName.includes(keyword);
-
-    });
-
-
-
-  const hasMatchingTag =
-
-    Array.isArray(cup.tags) &&
-
-    cup.tags.some((tag) =>
-
-      normalizeSearchQuery(tag).includes(
-
-        normalizeSearchQuery(keyword)
-
-      )
-
-    );
-
-
-
-  return (
-
-    title.includes(keyword) ||
-
-    description.includes(keyword) ||
-
-    hasMatchingCandidate ||
-
-    hasMatchingTag
-
-  );
+  return cupMatchesSearch(cup, keyword, lang);
 
 })
 
@@ -3639,6 +3659,14 @@ const renderedCategorySections = shouldShowAllCategories
   ? visibleCategorySections
 
   : primaryCategorySections;
+
+const worldcupIntroDescription =
+  lang === "ko"
+    ? "이상형 월드컵을 만들고 플레이하는 원픽게임입니다. 아이돌, 애니, 게임, 영화, 음식 등 다양한 주제의 월드컵을 무료로 즐기고 공유해보세요."
+    : t("gameModeNav.introLine2", {
+        defaultValue:
+          "Create and play tournament bracket games, tier lists, quizzes, and blind rankings on One Pick Game.",
+      });
 
 useEffect(() => {
 
@@ -3861,7 +3889,7 @@ return (
     )}
 
     <div style={{ minWidth: 0 }}>
-      <PageIntro icon="🏆" title={t('gameModeNav.worldcup')} description={t('headerPersonal.worldcupDescription')} buttonLabel={t('create_worldcup')} onCreate={() => onMakeWorldcup ? onMakeWorldcup() : goto(`/${lang}/worldcup-maker`)} personal={personalView} accentColor="#F97316" />
+      <PageIntro icon="🏆" title={t('gameModeNav.worldcup')} description={worldcupIntroDescription} buttonLabel={t('create_worldcup')} onCreate={() => onMakeWorldcup ? onMakeWorldcup() : goto(`/${lang}/worldcup-maker`)} personal={false} accentColor="#F97316" />
 
       {/* 언어 선택 / 검색 */}
 
@@ -4191,6 +4219,68 @@ return (
 
 {/* 추천 */}
 
+<section
+  aria-label={
+    lang === "ko"
+      ? "월드컵 카테고리 바로가기"
+      : "Worldcup category shortcuts"
+  }
+  style={{
+    width: "100%",
+    maxWidth: 1400,
+    margin: isMobile ? "2px auto 10px" : "4px auto 14px",
+    padding: isMobile ? "0 14px" : "0 24px",
+    boxSizing: "border-box",
+  }}
+>
+  <div
+    style={{
+      display: "flex",
+      flexWrap: "wrap",
+      justifyContent: "center",
+      gap: isMobile ? 8 : 10,
+    }}
+  >
+    {HOME_CATEGORY_SHORTCUT_KEYS.map((categoryKey) => {
+      const category = HOME_CATEGORIES.find(
+        (item) => item.key === categoryKey
+      );
+
+      if (!category) return null;
+
+      return (
+        <button
+          key={category.key}
+          type="button"
+          onClick={() => goto(`/${lang}/category/${category.slug}`)}
+          style={{
+            minHeight: isMobile ? 36 : 40,
+            padding: isMobile ? "8px 13px" : "9px 16px",
+            borderRadius: 999,
+            border: "1px solid #fed7aa",
+            background: "#fff7ed",
+            color: "#9A3412",
+            fontSize: isMobile ? 14 : 15,
+            fontWeight: 900,
+            lineHeight: 1.15,
+            cursor: "pointer",
+            boxShadow: "0 5px 14px rgba(249,115,22,0.08)",
+          }}
+        >
+          {lang === "ko"
+            ? KO_HOME_CATEGORY_SHORTCUT_LABELS[category.key] ||
+              t(`category_${category.key}`, {
+                defaultValue: category.label,
+              })
+            : t(`category_${category.key}`, {
+                defaultValue: category.label,
+              })}
+        </button>
+      );
+    })}
+  </div>
+</section>
+
 {renderCategorySection({
 
   rowKey: "featured",
@@ -4324,6 +4414,167 @@ return (
 
 
 
+
+{lang === "ko" && !personalView && (
+  <section
+    aria-label="이상형 월드컵 소개"
+    style={{
+      width: "100%",
+      maxWidth: 1000,
+      margin: isMobile ? "4px auto 30px" : "10px auto 44px",
+      padding: isMobile ? "0 18px" : "0 24px",
+      boxSizing: "border-box",
+      color: "#202534",
+    }}
+  >
+    <div
+      style={{
+        borderTop: "1px solid #fed7aa",
+        paddingTop: isMobile ? 20 : 26,
+      }}
+    >
+      <h2
+        style={{
+          margin: "0 0 10px",
+          fontSize: isMobile ? 22 : 28,
+          fontWeight: 900,
+          lineHeight: 1.25,
+          letterSpacing: 0,
+        }}
+      >
+        이상형 월드컵이란?
+      </h2>
+      <p
+        style={{
+          margin: "0 0 14px",
+          fontSize: isMobile ? 15 : 17,
+          lineHeight: 1.75,
+          color: "#475569",
+          fontWeight: 700,
+        }}
+      >
+        이상형 월드컵은 두 후보 중 더 마음에 드는 쪽을 선택하며 최종
+        우승자를 고르는 토너먼트 게임입니다. 원픽게임에서는 아이돌,
+        애니, 게임, 영화, 음식, 스포츠 등 다양한 주제의 이상형 월드컵을
+        무료로 플레이하고 직접 만들 수 있습니다.
+      </p>
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: isMobile ? "1fr" : "repeat(3, 1fr)",
+          gap: isMobile ? 10 : 14,
+          marginTop: 18,
+        }}
+      >
+        {[
+          {
+            title: "무료 이상형 월드컵 만들기",
+            body:
+              "사진과 후보 이름을 추가하면 나만의 월드컵을 만들고 링크로 공유할 수 있습니다.",
+          },
+          {
+            title: "카테고리별 월드컵 탐색",
+            body:
+              "게임 월드컵, 애니 이상형 월드컵, 음식 이상형 월드컵처럼 관심 주제별로 찾을 수 있습니다.",
+          },
+          {
+            title: "결과와 통계 확인",
+            body:
+              "플레이 후 우승 후보와 순위를 확인하고 다른 사람들의 선택과 비교할 수 있습니다.",
+          },
+        ].map((item) => (
+          <article
+            key={item.title}
+            style={{
+              border: "1px solid #fed7aa",
+              borderRadius: 10,
+              background: "#fffaf7",
+              padding: isMobile ? "14px 14px" : "16px 16px",
+              boxSizing: "border-box",
+            }}
+          >
+            <h3
+              style={{
+                margin: "0 0 8px",
+                fontSize: isMobile ? 16 : 18,
+                fontWeight: 900,
+                lineHeight: 1.3,
+                color: "#9A3412",
+              }}
+            >
+              {item.title}
+            </h3>
+            <p
+              style={{
+                margin: 0,
+                fontSize: isMobile ? 14 : 15,
+                lineHeight: 1.65,
+                color: "#64748b",
+                fontWeight: 700,
+              }}
+            >
+              {item.body}
+            </p>
+          </article>
+        ))}
+      </div>
+      <div
+        style={{
+          marginTop: 22,
+          display: "grid",
+          gap: 10,
+        }}
+      >
+        {[
+          {
+            q: "로그인 없이 이상형 월드컵을 플레이할 수 있나요?",
+            a: "네. 공개된 월드컵은 로그인 없이 바로 플레이할 수 있습니다.",
+          },
+          {
+            q: "직접 월드컵을 만들 수 있나요?",
+            a: "네. 월드컵 만들기에서 후보를 추가해 나만의 이상형 월드컵을 만들 수 있습니다.",
+          },
+          {
+            q: "티어표나 퀴즈도 이용할 수 있나요?",
+            a: "네. 원픽게임에서는 이상형 월드컵뿐 아니라 티어표와 퀴즈도 함께 만들고 즐길 수 있습니다.",
+          },
+        ].map((item) => (
+          <details
+            key={item.q}
+            style={{
+              border: "1px solid #e2e8f0",
+              borderRadius: 8,
+              background: "#ffffff",
+              padding: isMobile ? "12px 13px" : "13px 15px",
+            }}
+          >
+            <summary
+              style={{
+                cursor: "pointer",
+                fontSize: isMobile ? 15 : 16,
+                fontWeight: 900,
+                color: "#202534",
+              }}
+            >
+              {item.q}
+            </summary>
+            <p
+              style={{
+                margin: "9px 0 0",
+                fontSize: isMobile ? 14 : 15,
+                lineHeight: 1.65,
+                color: "#64748b",
+                fontWeight: 700,
+              }}
+            >
+              {item.a}
+            </p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+)}
 
       <style>
 

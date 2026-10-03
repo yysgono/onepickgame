@@ -917,7 +917,7 @@ function TierListPage({
                 "tier_lists"
               )
        .select(
-  "id, user_id, guest_nickname, title, title_translations, source_worldcup_id, category, thumbnail_url, candidate_count, has_one_pick, view_count, like_count, comment_count, clone_count, created_at, tier_labels, tiers, candidates"
+  "id, user_id, guest_nickname, title, title_translations, source_worldcup_id, category, thumbnail_url, candidate_count, has_one_pick, view_count, like_count, comment_count, clone_count, created_at, tier_labels"
 );
 
 
@@ -1179,94 +1179,8 @@ const displayTitle =
   titleTranslations?.en ||
   item?.title ||
   "Tier List";
-    const candidates =
-      Array.isArray(item?.candidates)
-        ? item.candidates
-        : [];
-
-    /* =========================================
-       1. 나만의 원픽 후보 찾기
-    ========================================= */
-
-    const onePickValue =
-      item?.tiers?.ONE_PICK;
-
-    let onePickCandidate = null;
-
-    // ONE_PICK이 후보 id 하나인 경우
-    if (
-      onePickValue !== null &&
-      onePickValue !== undefined
-    ) {
-      onePickCandidate =
-        candidates.find(
-          (candidate) =>
-            String(candidate?.id) ===
-            String(onePickValue)
-        ) || null;
-    }
-
-    /* =========================================
-       2. S/A/B/C/D에 들어간 첫 후보 찾기
-    ========================================= */
-
-    const rankedIds = [
-      ...(Array.isArray(item?.tiers?.S)
-        ? item.tiers.S
-        : []),
-
-      ...(Array.isArray(item?.tiers?.A)
-        ? item.tiers.A
-        : []),
-
-      ...(Array.isArray(item?.tiers?.B)
-        ? item.tiers.B
-        : []),
-
-      ...(Array.isArray(item?.tiers?.C)
-        ? item.tiers.C
-        : []),
-
-      ...(Array.isArray(item?.tiers?.D)
-        ? item.tiers.D
-        : []),
-    ];
-
-    const firstRankedCandidate =
-      rankedIds.length > 0
-        ? candidates.find(
-            (candidate) =>
-              String(candidate?.id) ===
-              String(rankedIds[0])
-          ) || null
-        : null;
-
-    /* =========================================
-       3. 그냥 이미지가 있는 첫 후보
-    ========================================= */
-
-    const firstImageCandidate =
-      candidates.find(
-        (candidate) =>
-          Boolean(candidate?.image)
-      ) || null;
-
-    /* =========================================
-       카드 미리보기 이미지
-
-       우선순위:
-       1. thumbnail_url
-       2. 원픽
-       3. 티어에 넣은 첫 후보
-       4. 후보 중 첫 이미지
-    ========================================= */
-
     const previewImage =
-      item?.thumbnail_url ||
-      onePickCandidate?.image ||
-      firstRankedCandidate?.image ||
-      firstImageCandidate?.image ||
-      "";
+      item?.thumbnail_url || "";
 
     /* =========================================
        사용한 원본 월드컵 / 프리셋 찾기
@@ -1294,39 +1208,6 @@ const displayTitle =
           ).trim();
 
     /* =========================================
-       목록 카드용 축약 티어 미리보기
-       각 티어의 앞 4명만 보여주고 나머지는 +N으로 표시
-    ========================================= */
-
-    const candidateById = new Map(
-      candidates.map((candidate) => [
-        String(candidate?.id),
-        candidate,
-      ])
-    );
-
-    const tierPreview = ["S", "A", "B"].map((tier) => {
-      const ids = Array.isArray(item?.tiers?.[tier])
-        ? item.tiers[tier]
-        : [];
-
-      const previewCandidates = ids
-        .map((candidateId) => candidateById.get(String(candidateId)))
-        .filter(Boolean)
-        .slice(0, 4);
-
-      return {
-        tier,
-        candidates: previewCandidates,
-        remaining: Math.max(0, ids.length - previewCandidates.length),
-      };
-    });
-
-    const hasTierPreview = tierPreview.some(
-      (row) => row.candidates.length > 0 || row.remaining > 0
-    );
-
-    /* =========================================
        최종 카드 데이터
     ========================================= */
 
@@ -1337,8 +1218,8 @@ const displayTitle =
 
   previewImage,
   presetName,
-  tierPreview,
-  hasTierPreview,
+  tierPreview: [],
+  hasTierPreview: false,
 
       author:
         item.user_id

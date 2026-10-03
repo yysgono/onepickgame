@@ -201,6 +201,9 @@ function CandidateInput({
   const latestUrlRef =
     useRef("");
 
+  const latestValueRef =
+    useRef(value);
+
   const requestIdRef =
     useRef(0);
 
@@ -213,6 +216,11 @@ function CandidateInput({
     youtubeLoading,
     setYoutubeLoading,
   ] = useState(false);
+
+  useEffect(() => {
+    latestValueRef.current =
+      value;
+  }, [value]);
 
   // ====================================================
   // 파일 미리보기 URL
@@ -338,6 +346,12 @@ function CandidateInput({
     });
   }
 
+  function preventEnterSubmit(event) {
+    if (event.key === "Enter") {
+      event.preventDefault();
+    }
+  }
+
   // ====================================================
   // YouTube 제목 가져오기
   // ====================================================
@@ -352,9 +366,12 @@ function CandidateInput({
     }
 
     // 이미 이름이 있으면 자동 제목 입력 안 함
+    const currentValue =
+      latestValueRef.current || {};
+
     if (
       String(
-        value.name || ""
+        currentValue.name || ""
       ).trim()
     ) {
       return;
@@ -368,26 +385,51 @@ function CandidateInput({
         true
       );
 
-      const response =
-        await fetch(
-          `https://www.youtube.com/oembed?url=${encodeURIComponent(
-            url
-          )}&format=json`
-        );
+      const oembedUrl =
+        `https://www.youtube.com/oembed?url=${encodeURIComponent(
+          url
+        )}&format=json`;
 
-      if (
-        !response.ok
-      ) {
+      const noembedUrl =
+        `https://noembed.com/embed?url=${encodeURIComponent(
+          url
+        )}`;
+
+      let data = null;
+
+      for (const endpoint of [
+        oembedUrl,
+        noembedUrl,
+      ]) {
+        try {
+          const response =
+            await fetch(endpoint);
+
+          if (!response.ok) {
+            continue;
+          }
+
+          data =
+            await response.json();
+
+          if (data?.title) {
+            break;
+          }
+        } catch (requestError) {
+          console.error(
+            "YouTube title endpoint failed:",
+            requestError
+          );
+        }
+      }
+
+      if (!data?.title) {
         console.error(
-          "YouTube oEmbed 실패:",
-          response.status
+          "YouTube 제목 조회 실패"
         );
 
         return;
       }
-
-      const data =
-        await response.json();
 
       if (
         myRequestId !==
@@ -416,8 +458,11 @@ function CandidateInput({
        * 사용자 이름이 비어 있을 때만
        * YouTube 제목 자동 입력
        */
+      const nextValue =
+        latestValueRef.current || {};
+
       onChange({
-        ...value,
+        ...nextValue,
         name:
           youtubeTitle.slice(
             0,
@@ -456,13 +501,7 @@ function CandidateInput({
     const url =
       event.target.value;
 
-    latestUrlRef.current =
-      url;
-
-    /*
-     * URL은 즉시 화면에 반영
-     */
-    onChange({
+    const nextValue = {
       ...value,
       image:
         url,
@@ -470,7 +509,18 @@ function CandidateInput({
         undefined,
       fileName:
         undefined,
-    });
+    };
+
+    latestUrlRef.current =
+      url;
+
+    latestValueRef.current =
+      nextValue;
+
+    /*
+     * URL은 즉시 화면에 반영
+     */
+    onChange(nextValue);
 
     const videoId =
       getYoutubeVideoId(url);
@@ -710,6 +760,9 @@ function CandidateInput({
           onChange={
             handleNameChange
           }
+          onKeyDown={
+            preventEnterSubmit
+          }
           placeholder={
             youtubeLoading
               ? "Loading..."
@@ -745,6 +798,9 @@ function CandidateInput({
         }
         onChange={
           handleImageUrlChange
+        }
+        onKeyDown={
+          preventEnterSubmit
         }
         placeholder={
           t(
