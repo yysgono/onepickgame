@@ -916,7 +916,7 @@ function TierListPage({
                 "tier_lists"
               )
        .select(
-  "id, user_id, guest_nickname, title, title_translations, source_worldcup_id, category, thumbnail_url, candidate_count, has_one_pick, view_count, like_count, comment_count, clone_count, created_at, tier_labels"
+  "id, user_id, guest_nickname, title, title_translations, source_worldcup_id, category, thumbnail_url, candidate_count, has_one_pick, view_count, like_count, comment_count, clone_count, created_at, tier_labels, tiers, candidates"
 );
 
 
@@ -1178,8 +1178,33 @@ const displayTitle =
   titleTranslations?.en ||
   item?.title ||
   "Tier List";
+    const candidates = Array.isArray(item?.candidates)
+      ? item.candidates
+      : [];
+
+    const candidateById = new Map(
+      candidates.map((candidate) => [
+        String(candidate?.id),
+        candidate,
+      ])
+    );
+
+    const firstRankedCandidate =
+      ["S", "A", "B", "C", "D"]
+        .flatMap((tier) =>
+          Array.isArray(item?.tiers?.[tier]) ? item.tiers[tier] : []
+        )
+        .map((candidateId) => candidateById.get(String(candidateId)))
+        .find((candidate) => candidate?.image);
+
+    const firstImageCandidate =
+      candidates.find((candidate) => candidate?.image);
+
     const previewImage =
-      item?.thumbnail_url || "";
+      item?.thumbnail_url ||
+      firstRankedCandidate?.image ||
+      firstImageCandidate?.image ||
+      "";
 
     /* =========================================
        사용한 원본 월드컵 / 프리셋 찾기
@@ -1206,6 +1231,27 @@ const displayTitle =
             item?.tier_labels?._sourcePresetName || ""
           ).trim();
 
+    const tierPreview = ["S", "A", "B"].map((tier) => {
+      const ids = Array.isArray(item?.tiers?.[tier])
+        ? item.tiers[tier]
+        : [];
+
+      const previewCandidates = ids
+        .map((candidateId) => candidateById.get(String(candidateId)))
+        .filter(Boolean)
+        .slice(0, 4);
+
+      return {
+        tier,
+        candidates: previewCandidates,
+        remaining: Math.max(0, ids.length - previewCandidates.length),
+      };
+    });
+
+    const hasTierPreview = tierPreview.some(
+      (row) => row.candidates.length > 0 || row.remaining > 0
+    );
+
     /* =========================================
        최종 카드 데이터
     ========================================= */
@@ -1217,8 +1263,8 @@ const displayTitle =
 
   previewImage,
   presetName,
-  tierPreview: [],
-  hasTierPreview: false,
+  tierPreview,
+  hasTierPreview,
 
       author:
         item.user_id
