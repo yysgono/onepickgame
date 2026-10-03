@@ -3691,6 +3691,11 @@ const homeSeoSummary =
   HOME_SEO_SUMMARY_COPY[lang] ||
   HOME_SEO_SUMMARY_COPY.en;
 
+const homeSeoSummaryParts =
+  homeSeoSummary
+    .split(/(?<=\.|。|।)\s+/)
+    .filter(Boolean);
+
 useEffect(() => {
 
   const visibleCups = [];
@@ -3904,7 +3909,12 @@ return (
           fontWeight: 750,
         }}
       >
-        {homeSeoSummary}
+        {homeSeoSummaryParts.map((line, index) => (
+          <React.Fragment key={`${line}-${index}`}>
+            {index > 0 && <br />}
+            {line}
+          </React.Fragment>
+        ))}
       </p>
     </section>
   )}
