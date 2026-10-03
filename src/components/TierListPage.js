@@ -1328,7 +1328,7 @@ const displayTitle =
             new Date(b?.created_at || 0).getTime() -
             new Date(a?.created_at || 0).getTime()
         )
-        .slice(0, 6),
+        .slice(0, 5),
     [cards]
   );
 
@@ -1444,7 +1444,6 @@ const displayTitle =
         borderRadius: 10,
         padding: "17px 17px 15px",
         boxSizing: "border-box",
-        minHeight: 292,
         boxShadow: "0 12px 28px rgba(37,99,235,0.12)",
       }}
     >
