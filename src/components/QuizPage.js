@@ -184,6 +184,15 @@ function buildFilterSlug(base, filters) {
   return query ? `${base}?${query}` : base;
 }
 
+function formatActivityDate(value) {
+  if (!value) return "";
+
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "";
+
+  return date.toISOString().slice(0, 10).replace(/-/g, ".");
+}
+
 
 
 
@@ -951,10 +960,6 @@ export default function QuizPage({ user = null }) {
 
 
 
-
-
-
-
     return () =>
 
 
@@ -1587,6 +1592,143 @@ export default function QuizPage({ user = null }) {
 
 
 
+  const quizActivityCopy =
+    lang === "ko"
+      ? {
+          recentCreated: "최근 등록된 퀴즈",
+          recentPlayed: "많이 플레이된 퀴즈",
+          empty: "표시할 퀴즈가 없습니다.",
+        }
+      : {
+          recentCreated: "Recently Added Quizzes",
+          recentPlayed: "Most Played Quizzes",
+          empty: "No quizzes to show.",
+        };
+
+  const recentCreatedQuizItems = useMemo(
+    () =>
+      [...cards]
+        .sort(
+          (a, b) =>
+            new Date(b?.created_at || 0).getTime() -
+            new Date(a?.created_at || 0).getTime()
+        )
+        .slice(0, 5),
+    [cards]
+  );
+
+  const recentPlayedQuizItems = useMemo(
+    () =>
+      [...cards]
+        .sort(
+          (a, b) =>
+            Number(b?.play_count || 0) - Number(a?.play_count || 0) ||
+            new Date(b?.created_at || 0).getTime() -
+              new Date(a?.created_at || 0).getTime()
+        )
+        .slice(0, 5),
+    [cards]
+  );
+
+  const renderQuizActivityPanel = ({
+    title,
+    items,
+    accentColor = "#E53935",
+    metric = "date",
+  }) => (
+    <aside
+      style={{
+        minWidth: 0,
+        background: "#ffffff",
+        border: "1px solid #fecaca",
+        borderRadius: 10,
+        padding: "14px 14px 12px",
+        boxSizing: "border-box",
+        boxShadow: "0 10px 24px rgba(239,68,68,0.10)",
+      }}
+    >
+      <h2
+        style={{
+          margin: "0 0 11px",
+          color: accentColor,
+          fontSize: 18,
+          lineHeight: 1.25,
+          fontWeight: 950,
+          textAlign: "left",
+          borderLeft: `4px solid ${accentColor}`,
+          paddingLeft: 8,
+        }}
+      >
+        {title}
+      </h2>
+      {items.length ? (
+        <ul
+          style={{
+            listStyle: "none",
+            margin: 0,
+            padding: 0,
+            display: "flex",
+            flexDirection: "column",
+            gap: 8,
+          }}
+        >
+          {items.map((item) => (
+            <li key={`${title}-${item.id}`}>
+              <button
+                type="button"
+                onClick={() => navigate(`/${lang}/quiz/${item.id}`)}
+                title={item.displayTitle || ""}
+                style={{
+                  width: "100%",
+                  border: "1px solid #fee2e2",
+                  borderRadius: 8,
+                  background: "#fffafa",
+                  color: "#202534",
+                  padding: "9px 10px",
+                  cursor: "pointer",
+                  textAlign: "left",
+                  display: "grid",
+                  gridTemplateColumns: "1fr auto",
+                  gap: 10,
+                  alignItems: "center",
+                }}
+              >
+                <span
+                  style={{
+                    minWidth: 0,
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap",
+                    fontSize: 14,
+                    fontWeight: 900,
+                  }}
+                >
+                  {item.displayTitle}
+                </span>
+                <span
+                  style={{
+                    color: accentColor,
+                    fontSize: 12,
+                    fontWeight: 850,
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  {metric === "plays"
+                    ? `${Number(item.play_count || 0).toLocaleString()}`
+                    : formatActivityDate(item.created_at)}
+                </span>
+              </button>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p style={{ margin: 0, color: "#64748b", fontSize: 13, fontWeight: 750 }}>
+          {quizActivityCopy.empty}
+        </p>
+      )}
+    </aside>
+  );
+
   const featuredTitle =
 
 
@@ -1802,10 +1944,6 @@ export default function QuizPage({ user = null }) {
 
 
         ========================== */}
-
-
-
-
 
 
 
@@ -2296,6 +2434,32 @@ export default function QuizPage({ user = null }) {
   </div>
 
 </div>
+
+{!mineOnly && !mobile && !search.trim() && (
+  <div
+    style={{
+      width: "100%",
+      maxWidth: 760,
+      margin: "14px auto 16px",
+      display: "grid",
+      gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+      gap: 14,
+    }}
+  >
+    {renderQuizActivityPanel({
+      title: quizActivityCopy.recentCreated,
+      items: recentCreatedQuizItems,
+      accentColor: "#E53935",
+      metric: "date",
+    })}
+    {renderQuizActivityPanel({
+      title: quizActivityCopy.recentPlayed,
+      items: recentPlayedQuizItems,
+      accentColor: "#7C3AED",
+      metric: "plays",
+    })}
+  </div>
+)}
 
 
 

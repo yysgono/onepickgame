@@ -81,6 +81,15 @@ function buildFilterSlug(base, filters) {
   return query ? `${base}?${query}` : base;
 }
 
+function formatActivityDate(value) {
+  if (!value) return "";
+
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "";
+
+  return date.toISOString().slice(0, 10).replace(/-/g, ".");
+}
+
 const LANGUAGES = [
   { code: "en", label: "English" },
   { code: "ko", label: "한국어" },
@@ -1288,6 +1297,143 @@ const displayTitle =
   t,
 ]);
 
+  const tierActivityCopy =
+    lang === "ko"
+      ? {
+          recentCreated: "최근 등록된 티어표",
+          recentPlayed: "많이 플레이된 티어표",
+          empty: "표시할 티어표가 없습니다.",
+        }
+      : {
+          recentCreated: "Recently Added Tier Lists",
+          recentPlayed: "Most Played Tier Lists",
+          empty: "No tier lists to show.",
+        };
+
+  const recentCreatedTierItems = useMemo(
+    () =>
+      [...cards]
+        .sort(
+          (a, b) =>
+            new Date(b?.created_at || 0).getTime() -
+            new Date(a?.created_at || 0).getTime()
+        )
+        .slice(0, 5),
+    [cards]
+  );
+
+  const recentPlayedTierItems = useMemo(
+    () =>
+      [...cards]
+        .sort(
+          (a, b) =>
+            Number(b?.view_count || 0) - Number(a?.view_count || 0) ||
+            new Date(b?.created_at || 0).getTime() -
+              new Date(a?.created_at || 0).getTime()
+        )
+        .slice(0, 5),
+    [cards]
+  );
+
+  const renderTierActivityPanel = ({
+    title,
+    items,
+    accentColor = "#2563EB",
+    metric = "date",
+  }) => (
+    <aside
+      style={{
+        minWidth: 0,
+        background: "#ffffff",
+        border: "1px solid #bfdbfe",
+        borderRadius: 10,
+        padding: "14px 14px 12px",
+        boxSizing: "border-box",
+        boxShadow: "0 10px 24px rgba(37,99,235,0.10)",
+      }}
+    >
+      <h2
+        style={{
+          margin: "0 0 11px",
+          color: accentColor,
+          fontSize: 18,
+          lineHeight: 1.25,
+          fontWeight: 950,
+          textAlign: "left",
+          borderLeft: `4px solid ${accentColor}`,
+          paddingLeft: 8,
+        }}
+      >
+        {title}
+      </h2>
+      {items.length ? (
+        <ul
+          style={{
+            listStyle: "none",
+            margin: 0,
+            padding: 0,
+            display: "flex",
+            flexDirection: "column",
+            gap: 8,
+          }}
+        >
+          {items.map((item) => (
+            <li key={`${title}-${item.id}`}>
+              <button
+                type="button"
+                onClick={() => navigate(`/${lang}/tier-list/${item.id}`)}
+                title={item.displayTitle || ""}
+                style={{
+                  width: "100%",
+                  border: "1px solid #dbeafe",
+                  borderRadius: 8,
+                  background: "#f8fbff",
+                  color: "#202534",
+                  padding: "9px 10px",
+                  cursor: "pointer",
+                  textAlign: "left",
+                  display: "grid",
+                  gridTemplateColumns: "1fr auto",
+                  gap: 10,
+                  alignItems: "center",
+                }}
+              >
+                <span
+                  style={{
+                    minWidth: 0,
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap",
+                    fontSize: 14,
+                    fontWeight: 900,
+                  }}
+                >
+                  {item.displayTitle}
+                </span>
+                <span
+                  style={{
+                    color: accentColor,
+                    fontSize: 12,
+                    fontWeight: 850,
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  {metric === "plays"
+                    ? `${Number(item.view_count || 0).toLocaleString()}`
+                    : formatActivityDate(item.created_at)}
+                </span>
+              </button>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p style={{ margin: 0, color: "#64748b", fontSize: 13, fontWeight: 750 }}>
+          {tierActivityCopy.empty}
+        </p>
+      )}
+    </aside>
+  );
+
   const activeCategoryLabel = t(
     `tierList.categories.${category}`,
     { defaultValue: category }
@@ -1547,6 +1693,31 @@ maxWidth: isMobile ? 430 : 1480,
 
 
         </div>
+{!mineOnly && !isMobile && !searchInput.trim() && (
+  <div
+    style={{
+      width: "100%",
+      maxWidth: 760,
+      margin: "14px auto 16px",
+      display: "grid",
+      gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+      gap: 14,
+    }}
+  >
+    {renderTierActivityPanel({
+      title: tierActivityCopy.recentCreated,
+      items: recentCreatedTierItems,
+      accentColor: "#2563EB",
+      metric: "date",
+    })}
+    {renderTierActivityPanel({
+      title: tierActivityCopy.recentPlayed,
+      items: recentPlayedTierItems,
+      accentColor: "#7C3AED",
+      metric: "plays",
+    })}
+  </div>
+)}
 {!mineOnly && recommendedPresets.length >
             0 && (
             <div className="tier-recommendations"
