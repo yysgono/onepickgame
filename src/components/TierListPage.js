@@ -1428,7 +1428,7 @@ const displayTitle =
 
   const useSideTierActivityPanels =
     showTierActivityPanels &&
-    viewportWidth >= 1540;
+    viewportWidth >= 1680;
 
   const renderTierActivityPanel = ({
     title,
@@ -1596,7 +1596,7 @@ maxWidth: isMobile ? 430 : 1780,
     <div
       style={{
         position: "absolute",
-        left: "max(40px, calc((100% - 760px) / 2 - 374px))",
+        left: "max(24px, calc((100% - 1120px) / 2 - 364px))",
         top: 34,
         width: 340,
         zIndex: 1,
@@ -1612,7 +1612,7 @@ maxWidth: isMobile ? 430 : 1780,
     <div
       style={{
         position: "absolute",
-        right: "max(40px, calc((100% - 760px) / 2 - 374px))",
+        right: "max(24px, calc((100% - 1120px) / 2 - 364px))",
         top: 34,
         width: 340,
         zIndex: 1,

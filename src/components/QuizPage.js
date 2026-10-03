@@ -1762,7 +1762,7 @@ export default function QuizPage({ user = null }) {
   const useSideQuizActivityPanels =
     showQuizActivityPanels &&
     twoColumn &&
-    viewportWidth >= 1540;
+    viewportWidth >= 1680;
 
   const renderQuizActivityPanel = ({
     title,
@@ -2078,7 +2078,7 @@ export default function QuizPage({ user = null }) {
     <div
       style={{
         position: "absolute",
-        left: "max(40px, calc((100% - 760px) / 2 - 374px))",
+        left: "max(24px, calc((100% - 1120px) / 2 - 364px))",
         top: 34,
         width: 340,
         zIndex: 1,
@@ -2094,7 +2094,7 @@ export default function QuizPage({ user = null }) {
     <div
       style={{
         position: "absolute",
-        right: "max(40px, calc((100% - 760px) / 2 - 374px))",
+        right: "max(24px, calc((100% - 1120px) / 2 - 364px))",
         top: 34,
         width: 340,
         zIndex: 1,
