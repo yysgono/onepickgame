@@ -1,3 +1,4 @@
+import { resolveOriginalContentLanguage, originalTitleLabel } from "../utils/originalContentLanguage";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -187,7 +188,7 @@ export default function QuizMaker() {
       .then(([existing, rows]) => {
         if (!alive) return;
         if (String(existing.user_id) !== String(user.id)) throw new Error(m.editForbidden || "You can only edit your own quiz.");
-        const baseLang = existing.original_language || lang;
+        const baseLang = resolveOriginalContentLanguage(existing);
         const titleMap = existing.title_translations || {};
         const descriptionMap = existing.description_translations || {};
         const translationCodes = new Set([
@@ -196,8 +197,8 @@ export default function QuizMaker() {
         ]);
 
         setOriginalLanguage(baseLang);
-        setTitle(titleMap[baseLang] || existing.title || "");
-        setDescription(descriptionMap[baseLang] || existing.description || "");
+        setTitle(existing.title || titleMap[baseLang] || "");
+        setDescription(existing.description || descriptionMap[baseLang] || "");
         setTitleTranslations(
           [...translationCodes]
             .filter((code) => code !== baseLang)
@@ -413,10 +414,7 @@ export default function QuizMaker() {
     });
   }
 
-  const activeTitleTranslation =
-    lang === originalLanguage
-      ? { title, description }
-      : titleTranslations.find((item) => item.lang === lang) || { title: "", description: "" };
+  const activeTitleTranslation = { title, description };
 
   function questionLocale(q, code) {
     if (code === originalLanguage) return { question: q.question || "", options: q.options || ["", "", "", ""], answers: q.answers || [""], explanation: q.explanation || "" };
@@ -878,10 +876,10 @@ export default function QuizMaker() {
 
         <section style={sectionStyle}>
           <label style={labelStyle}>
-            {m.quizTitle}
+            {originalTitleLabel(lang, originalLanguage)}
             <input
               value={activeTitleTranslation.title || ""}
-              onChange={(e) => ensureTitleTranslation(lang, { title: e.target.value })}
+              onChange={(e) => ensureTitleTranslation(originalLanguage, { title: e.target.value })}
               maxLength={100}
               style={inputStyle}
             />
@@ -908,7 +906,7 @@ export default function QuizMaker() {
             {m.description}
             <textarea
               value={activeTitleTranslation.description || ""}
-              onChange={(e) => ensureTitleTranslation(lang, { description: e.target.value })}
+              onChange={(e) => ensureTitleTranslation(originalLanguage, { description: e.target.value })}
               maxLength={500}
               rows={3}
               style={{ ...inputStyle, height: "auto", padding: 10 }}

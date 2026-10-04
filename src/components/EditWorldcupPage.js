@@ -1,3 +1,4 @@
+import { resolveOriginalContentLanguage, originalTitleLabel } from "../utils/originalContentLanguage";
 import React, { useEffect, useRef, useState } from "react";
 
 import { useNavigate } from "react-router-dom";
@@ -1007,15 +1008,9 @@ loadedCupIdRef.current = currentCupId;
 
 
 
-const pageLang =
-
-  (i18n.language || "en").split("-")[0];
-
-
-
 const baseLang =
 
-  cup?.original_language || pageLang;
+  resolveOriginalContentLanguage(cup);
 
 
 
@@ -1027,11 +1022,11 @@ const descriptionMap = readTranslationMap(cup?.description_translations);
 
 let nextContentLanguage = baseLang;
 
-let nextTitle = titleMap?.[baseLang] || cup?.title || "";
+let nextTitle = cup?.title || titleMap?.[baseLang] || "";
 
 let nextDescription =
 
-  descriptionMap?.[baseLang] || cup?.description || cup?.desc || "";
+  cup?.description || cup?.desc || descriptionMap?.[baseLang] || "";
 
 let nextCategory = cup?.category || "etc";
 
@@ -2745,7 +2740,7 @@ const updatedCup = {
 
         >
 
-          {t("title") || "제목"}
+          {originalTitleLabel(i18n.language, contentLanguage)}
 
 
 

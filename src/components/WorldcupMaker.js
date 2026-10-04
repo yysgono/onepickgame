@@ -1,3 +1,4 @@
+import { originalTitleLabel } from "../utils/originalContentLanguage";
 // src/components/WorldcupMaker.js
 
 
@@ -5618,6 +5619,9 @@ style={{
 
         {/* 제목 */}
 
+        <div style={{ fontWeight: 800, marginBottom: 8 }}>
+          {originalTitleLabel(i18n.language, contentLanguage)}
+        </div>
         <input
 
           value={title}

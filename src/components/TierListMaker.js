@@ -1,3 +1,4 @@
+import { resolveOriginalContentLanguage, originalTitleLabel } from "../utils/originalContentLanguage";
 import { TierTagEditor, normalizeTags } from "./TierTagTools";
 import "../registerTierListMakerTranslations";
 // TierListMaker.js — 전체코드 1/2
@@ -1055,14 +1056,14 @@ const [
   const addTitleTranslation = useCallback(() => {
     const used = new Set(titleTranslationLanguages);
     const next = TITLE_TRANSLATION_LANGUAGES.find(
-      (item) => item.code !== lang && !used.has(item.code)
+      (item) => item.code !== originalContentLanguage && !used.has(item.code)
     );
 
     if (!next) return;
 
     setTitleTranslationLanguages((prev) => [...prev, next.code]);
     setTitleTranslations((prev) => ({ ...prev, [next.code]: prev[next.code] || "" }));
-  }, [titleTranslationLanguages, lang]);
+  }, [titleTranslationLanguages, originalContentLanguage]);
 
   const changeTitleTranslationLanguage = useCallback((oldCode, newCode) => {
     if (!newCode || oldCode === newCode) return;
@@ -2217,10 +2218,8 @@ const sourceCandidates =
         ...DEFAULT_TIER_LABELS,
         ...(payload.tier_labels || {}),
       });
-      setOriginalContentLanguage(
-        payload?.tier_labels?._originalLanguage ||
-        lang
-      );
+      const loadedOriginalLanguage = resolveOriginalContentLanguage(payload);
+      setOriginalContentLanguage(loadedOriginalLanguage);
       setTierListTitle(
         mode === "clone"
           ? `${payload.title || text.newTierList}`
@@ -2232,7 +2231,7 @@ const sourceCandidates =
       setTitleTranslations(hydratedTitleTranslations);
       setTitleTranslationLanguages(
         Object.keys(hydratedTitleTranslations).filter((code) =>
-          TITLE_TRANSLATION_LANGUAGES.some((item) => item.code === code)
+          code !== loadedOriginalLanguage && TITLE_TRANSLATION_LANGUAGES.some((item) => item.code === code)
         )
       );
       setLocalOnlyMode(
@@ -3665,6 +3664,12 @@ const handleDragEndItem =
         ].filter(Boolean);
         allDraftItems.forEach(restoreItem);
 
+        setOriginalContentLanguage(resolveOriginalContentLanguage({
+          title: draft?.title,
+          title_translations: draft?.titleTranslations,
+          tier_labels: draft?.tierLabels,
+          original_language: draft?.originalContentLanguage,
+        }));
         setTierListTitle(draft?.title || "");
         const draftTitleTranslations = readTranslationMap(draft?.titleTranslations);
         setTitleTranslations(draftTitleTranslations);
@@ -3942,6 +3947,8 @@ const handleDragEndItem =
             )
         );
 
+
+        cleanTitleTranslations[originalContentLanguage] = cleanTitle;
 
         if (!cleanTitle) {
           setSaveError(
@@ -5498,7 +5505,11 @@ if (editingTierListId) {
                 color: "#111827",
               }}
             >
+              <label htmlFor="tier-original-title" style={{ display: "block", fontWeight: 800, marginBottom: 8 }}>
+                {originalTitleLabel(lang, originalContentLanguage)}
+              </label>
               <input
+                id="tier-original-title"
                 value={tierListTitle}
                 onChange={(e) => setTierListTitle(e.target.value)}
                 placeholder={text.titlePlaceholder}
@@ -5529,7 +5540,7 @@ if (editingTierListId) {
                   marginBottom: 14,
                 }}
               >
-                {titleTranslationLanguages.map((translationLang) => (
+                {titleTranslationLanguages.filter((code) => code !== originalContentLanguage).map((translationLang) => (
                   <div
                     key={translationLang}
                     style={{
@@ -5562,6 +5573,7 @@ if (editingTierListId) {
                           key={item.code}
                           value={item.code}
                           disabled={
+                            item.code === originalContentLanguage ||
                             item.code !== translationLang &&
                             titleTranslationLanguages.includes(item.code)
                           }
