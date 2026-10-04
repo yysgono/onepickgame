@@ -2956,7 +2956,7 @@ export default function QuizPage({ user = null }) {
 
 
 
-                  4
+                  6
 
 
 
