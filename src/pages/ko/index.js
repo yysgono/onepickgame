@@ -15,8 +15,8 @@ export default function KoPage(props) {
 
   const base = "https://www.onepickgame.com";
   const self = `${base}/ko`;
-  const pageTitle = "원픽게임 | 이상형 월드컵·티어표·퀴즈";
-  const pageDescription = "원픽게임에서 이상형 월드컵, 티어표, 퀴즈를 무료로 만들고 즐겨보세요. 결과를 친구들과 공유할 수 있습니다.";
+  const pageTitle = "이상형 월드컵 사이트 · 티어표 · 퀴즈 맞히기 | 원픽게임";
+  const pageDescription = "원픽게임은 이상형 월드컵을 무료로 만들고 즐기는 사이트입니다. 티어표와 퀴즈도 만들고 친구들과 공유해보세요.";
   const pageKeywords =
     "이상형 월드컵, 이상형월드컵, 원픽게임, OnePickGame, 월드컵 만들기, 무료 이상형 월드컵, 티어표, 퀴즈";
 

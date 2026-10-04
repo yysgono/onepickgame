@@ -1039,11 +1039,11 @@ const HOME_SEO = {
     description: "Create and play free tournament brackets, tier lists and quizzes on OnePickGame.",
     locale: "en_US",
   },
-  ko: {
-    title: "원픽게임 | 이상형 월드컵·티어표·퀴즈",
-    description: "원픽게임에서 이상형 월드컵, 티어표, 퀴즈를 무료로 만들고 즐겨보세요. 결과를 친구들과 공유할 수 있습니다.",
-    locale: "ko_KR",
-  },
+ko: {
+  title: "이상형 월드컵 사이트 · 티어표 · 퀴즈 맞히기 | 원픽게임",
+  description: "원픽게임은 이상형 월드컵을 무료로 만들고 즐기는 사이트입니다. 티어표와 퀴즈도 만들고 친구들과 공유해보세요.",
+  locale: "ko_KR",
+},
 
   ja: {
     title:
