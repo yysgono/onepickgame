@@ -1925,7 +1925,7 @@ app.use(async (req, res, next) => {
       normalizeLang(tierList.original_language),
     ].map(normalizeLang))].filter((language) => SUPPORTED_LANGS.includes(language));
 
-    const indexable = tierLanguages.includes(lang);
+const indexable = true;
 
     const tierTitle = String(
       titleMap[lang] ||
