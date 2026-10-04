@@ -1068,7 +1068,7 @@ function handleMakeWorldcup() {
 
     function HomeWrapper() {
       return (
-        <Home
+        <EnPage
           worldcupList={
             worldcupList
           }
@@ -2085,12 +2085,7 @@ const makerDescMap = {
 
             <Route
               path="/"
-              element={
-                <Navigate
-                  to="/en"
-                  replace
-                />
-              }
+              element={<HomeWrapper />}
             />
 
             <Route

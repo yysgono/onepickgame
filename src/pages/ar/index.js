@@ -92,7 +92,7 @@ export default function ArPage(props) {
         <link rel="alternate" hrefLang="ar" href={`${base}/ar`} />
         <link rel="alternate" hrefLang="bn" href={`${base}/bn`} />
         <link rel="alternate" hrefLang="de" href={`${base}/de`} />
-        <link rel="alternate" hrefLang="en" href={`${base}/en`} />
+        <link rel="alternate" hrefLang="en" href={`${base}/`} />
         <link rel="alternate" hrefLang="es" href={`${base}/es`} />
         <link rel="alternate" hrefLang="fr" href={`${base}/fr`} />
         <link rel="alternate" hrefLang="hi" href={`${base}/hi`} />
@@ -105,7 +105,7 @@ export default function ArPage(props) {
         <link rel="alternate" hrefLang="tr" href={`${base}/tr`} />
         <link rel="alternate" hrefLang="vi" href={`${base}/vi`} />
         <link rel="alternate" hrefLang="zh" href={`${base}/zh`} />
-        <link rel="alternate" hrefLang="x-default" href={`${base}/en`} />
+        <link rel="alternate" hrefLang="x-default" href={`${base}/`} />
 
         {/* JSON-LD */}
         <script type="application/ld+json">

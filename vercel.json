@@ -136,7 +136,7 @@
 
     {
       "src": "/?$",
-      "dest": "/server.js?seo=home&lang=ko"
+      "dest": "/server.js?seo=home&lang=en"
     },
 
     {

@@ -15,9 +15,8 @@ export default function KoPage(props) {
 
   const base = "https://www.onepickgame.com";
   const self = `${base}/ko`;
-  const pageTitle = "이상형 월드컵 사이트 | 원픽게임 - 무료 월드컵 만들기";
-  const pageDescription =
-    "원픽게임은 이상형 월드컵을 만들고 플레이하는 무료 이상형 월드컵 사이트입니다. K-POP, 애니, 게임, 영화, 음식 등 다양한 주제의 월드컵과 티어표, 퀴즈를 즐길 수 있습니다.";
+  const pageTitle = "원픽게임 | 이상형 월드컵·티어표·퀴즈";
+  const pageDescription = "원픽게임에서 이상형 월드컵, 티어표, 퀴즈를 무료로 만들고 즐겨보세요. 결과를 친구들과 공유할 수 있습니다.";
   const pageKeywords =
     "이상형 월드컵, 이상형월드컵, 원픽게임, OnePickGame, 월드컵 만들기, 무료 이상형 월드컵, 티어표, 퀴즈";
 
@@ -109,7 +108,7 @@ export default function KoPage(props) {
         <link rel="alternate" hrefLang="ar" href={`${base}/ar`} />
         <link rel="alternate" hrefLang="bn" href={`${base}/bn`} />
         <link rel="alternate" hrefLang="de" href={`${base}/de`} />
-        <link rel="alternate" hrefLang="en" href={`${base}/en`} />
+        <link rel="alternate" hrefLang="en" href={`${base}/`} />
         <link rel="alternate" hrefLang="es" href={`${base}/es`} />
         <link rel="alternate" hrefLang="fr" href={`${base}/fr`} />
         <link rel="alternate" hrefLang="hi" href={`${base}/hi`} />
@@ -122,7 +121,7 @@ export default function KoPage(props) {
         <link rel="alternate" hrefLang="tr" href={`${base}/tr`} />
         <link rel="alternate" hrefLang="vi" href={`${base}/vi`} />
         <link rel="alternate" hrefLang="zh" href={`${base}/zh`} />
-        <link rel="alternate" hrefLang="x-default" href={`${base}/en`} />
+        <link rel="alternate" hrefLang="x-default" href={`${base}/`} />
 
         {/* JSON-LD */}
         <script type="application/ld+json">

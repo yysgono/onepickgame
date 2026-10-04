@@ -14,7 +14,7 @@ export default function EnPage(props) {
   }, [i18n]);
 
   const base = "https://www.onepickgame.com";
-  const self = `${base}/en`;
+  const self = `${base}/`;
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -38,12 +38,12 @@ export default function EnPage(props) {
       <Helmet htmlAttributes={{ lang: "en" }}>
         {/* 기본 SEO */}
         <title>
-          Tournament Bracket Game & Ideal Type World Cup | OnePickGame
+          OnePickGame | Brackets, Tiers & Quizzes
         </title>
 
         <meta
           name="description"
-          content="Create and play tournament bracket games on OnePickGame, also known as 이상형 월드컵. Build brackets, vote for your favorites, and share your results."
+          content="Create and play free tournament brackets, tier lists and quizzes on OnePickGame."
         />
 
         <meta
@@ -57,12 +57,12 @@ export default function EnPage(props) {
         {/* Open Graph */}
         <meta
           property="og:title"
-          content="Tournament Bracket Game & Ideal Type World Cup | OnePickGame"
+          content="OnePickGame | Brackets, Tiers & Quizzes"
         />
 
         <meta
           property="og:description"
-          content="Create and play tournament bracket games on OnePickGame. Build brackets, vote for your favorites, play tournaments, and share your results."
+          content="Create and play free tournament brackets, tier lists and quizzes on OnePickGame."
         />
 
         <meta
@@ -103,12 +103,12 @@ export default function EnPage(props) {
 
         <meta
           name="twitter:title"
-          content="Tournament Bracket Game & Ideal Type World Cup | OnePickGame"
+          content="OnePickGame | Brackets, Tiers & Quizzes"
         />
 
         <meta
           name="twitter:description"
-          content="Create and play tournament bracket games on OnePickGame. Build brackets, vote for your favorites, and share your results."
+          content="Create and play free tournament brackets, tier lists and quizzes on OnePickGame."
         />
 
         <meta
@@ -143,7 +143,7 @@ export default function EnPage(props) {
         <link
           rel="alternate"
           hrefLang="en"
-          href={`${base}/en`}
+          href={`${base}/`}
         />
 
         <link
@@ -221,7 +221,7 @@ export default function EnPage(props) {
         <link
           rel="alternate"
           hrefLang="x-default"
-          href={`${base}/en`}
+          href={`${base}/`}
         />
 
         {/* JSON-LD */}

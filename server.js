@@ -1035,22 +1035,13 @@ ${safeJson(jsonLd)}
 
 const HOME_SEO = {
   en: {
-    title:
-      "Tournament Bracket Game & Ideal Type World Cup | OnePickGame",
-
-    description:
-      "Create and play tournament bracket games on OnePickGame, also known as 이상형 월드컵. Build brackets, vote for your favorites, and share your results.",
-
+    title: "OnePickGame | Brackets, Tiers & Quizzes",
+    description: "Create and play free tournament brackets, tier lists and quizzes on OnePickGame.",
     locale: "en_US",
   },
-
   ko: {
-    title:
-      "이상형 월드컵 해외사이트 | 원픽게임",
-
-    description:
-      "OnePickGame(원픽 게임)에서 다양한 이상형 월드컵과 토너먼트 게임을 즐겨보세요. 직접 월드컵을 만들고, 최애를 선택하고, 결과를 친구들과 공유할 수 있습니다.",
-
+    title: "원픽게임 | 이상형 월드컵·티어표·퀴즈",
+    description: "원픽게임에서 이상형 월드컵, 티어표, 퀴즈를 무료로 만들고 즐겨보세요. 결과를 친구들과 공유할 수 있습니다.",
     locale: "ko_KR",
   },
 
@@ -1322,7 +1313,7 @@ html = html.replace(
 );
 
     const canonical =
-      `${SITE_URL}/${lang}`;
+      lang === "en" ? `${SITE_URL}/` : `${SITE_URL}/${lang}`;
 
     const image =
       `${SITE_URL}/ogimg.png`;
@@ -1330,10 +1321,10 @@ html = html.replace(
     const hreflangTags =
       SUPPORTED_LANGS.map(
         (language) => `
-<link
+<link data-rh="true"
   rel="alternate"
   hreflang="${language}"
-  href="${SITE_URL}/${language}"
+  href="${language === "en" ? `${SITE_URL}/` : `${SITE_URL}/${language}`}"
 />`
       ).join("");
 
@@ -1367,101 +1358,101 @@ html = html.replace(
     };
 
     const seoHead = `
-<title>${escapeHtml(
+<title data-rh="true">${escapeHtml(
       seo.title
     )}</title>
 
-<meta
+<meta data-rh="true"
   name="description"
   content="${escapeHtml(
     seo.description
   )}"
 />
 
-<meta
+<meta data-rh="true"
   name="robots"
   content="index, follow, max-image-preview:large"
 />
 
-<link
+<link data-rh="true"
   rel="canonical"
   href="${canonical}"
 />
 
 ${hreflangTags}
 
-<link
+<link data-rh="true"
   rel="alternate"
   hreflang="x-default"
-  href="${SITE_URL}/en"
+  href="${SITE_URL}/"
 />
 
-<meta
+<meta data-rh="true"
   property="og:type"
   content="website"
 />
 
-<meta
+<meta data-rh="true"
   property="og:title"
   content="${escapeHtml(
     seo.title
   )}"
 />
 
-<meta
+<meta data-rh="true"
   property="og:description"
   content="${escapeHtml(
     seo.description
   )}"
 />
 
-<meta
+<meta data-rh="true"
   property="og:url"
   content="${canonical}"
 />
 
-<meta
+<meta data-rh="true"
   property="og:site_name"
   content="OnePickGame"
 />
 
-<meta
+<meta data-rh="true"
   property="og:locale"
   content="${seo.locale}"
 />
 
-<meta
+<meta data-rh="true"
   property="og:image"
   content="${image}"
 />
 
-<meta
+<meta data-rh="true"
   property="og:image:alt"
   content="${escapeHtml(
     seo.title
   )}"
 />
 
-<meta
+<meta data-rh="true"
   name="twitter:card"
   content="summary_large_image"
 />
 
-<meta
+<meta data-rh="true"
   name="twitter:title"
   content="${escapeHtml(
     seo.title
   )}"
 />
 
-<meta
+<meta data-rh="true"
   name="twitter:description"
   content="${escapeHtml(
     seo.description
   )}"
 />
 
-<meta
+<meta data-rh="true"
   name="twitter:image"
   content="${image}"
 />
@@ -1480,7 +1471,7 @@ ${safeJson(jsonLd)}
 
     const HOME_BODY_TEXT = {
       ko: {
-        h1: "이상형 월드컵 해외사이트 - 원픽게임",
+        h1: "원픽게임 — 이상형 월드컵·티어표·퀴즈",
         intro:
           "OnePickGame에서 다양한 이상형 월드컵과 토너먼트 게임을 즐겨보세요. 좋아하는 후보를 선택해 최종 우승자를 결정하고, 직접 이상형 월드컵을 만들어 친구들과 공유할 수 있습니다.",
         playTitle: "이상형 월드컵 즐기기",
@@ -1493,7 +1484,7 @@ ${safeJson(jsonLd)}
       },
 
       en: {
-        h1: "Ideal Type World Cup & Tournament Bracket",
+        h1: "OnePickGame — Brackets, Tier Lists & Quizzes",
         intro:
           "Play tournament bracket games on OnePickGame. Compare your favorite characters, celebrities, games, sports stars, and more to choose the ultimate winner.",
         playTitle: "Play Tournament Bracket Games",
