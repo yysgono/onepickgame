@@ -2417,17 +2417,46 @@ function getOgImageFromCandidate(candidate) {
 }
 
 /*
- * 이미지가 있는 첫 번째 후보
+ * 누적 우승 횟수가 가장 많은 현재 후보를 SEO 이미지로 사용합니다.
+ * 통계가 없거나 조회에 실패하면 기존 후보 이미지로 대체합니다.
  */
 let image = "";
 
-for (const candidate of candidates) {
-  const candidateImage =
-    getOgImageFromCandidate(candidate);
+try {
+  const { data: winnerStats, error: winnerStatsError } = await supabase.rpc(
+    "get_winner_stats",
+    { p_cup_id: id, p_from: null, p_to: null }
+  );
 
-  if (candidateImage) {
-    image = candidateImage;
-    break;
+  if (winnerStatsError) throw winnerStatsError;
+
+  const candidateById = new Map(
+    candidates.map((candidate) => [String(candidate.id), candidate])
+  );
+  let topCandidate = null;
+  let topWinCount = 0;
+
+  for (const stat of winnerStats || []) {
+    const candidate = candidateById.get(String(stat.candidate_id));
+    const winCount = Number(stat.win_count || 0);
+    if (candidate && winCount > topWinCount) {
+      topCandidate = candidate;
+      topWinCount = winCount;
+    }
+  }
+
+  image = getOgImageFromCandidate(topCandidate);
+} catch (winnerStatsError) {
+  console.warn("Failed to load world cup winner for SEO image", winnerStatsError);
+}
+
+if (!image) {
+  for (const candidate of candidates) {
+    const candidateImage = getOgImageFromCandidate(candidate);
+    if (candidateImage) {
+      image = candidateImage;
+      break;
+    }
   }
 }
 
