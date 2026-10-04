@@ -1678,7 +1678,7 @@ export default function QuizPage({ user = null }) {
         .from("quiz_attempts")
         .select("quiz_id, created_at")
         .order("created_at", { ascending: false })
-        .limit(40);
+        .limit(200);
 
       if (attemptError) {
         console.warn("Failed to load recent quiz plays", attemptError);
