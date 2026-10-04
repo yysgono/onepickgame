@@ -319,6 +319,553 @@ const AdsenseMid = () => {
 
 
 
+const WORLDCUP_INFO_COPY = {
+  "ko": {
+    "ariaLabel": "이상형 월드컵이란?",
+    "title": "이상형 월드컵이란?",
+    "description": "이상형 월드컵은 두 후보 중 더 마음에 드는 쪽을 선택하며 최종 우승자를 고르는 토너먼트 게임입니다. 원픽게임에서는 아이돌, 애니, 게임, 영화, 음식, 스포츠 등 다양한 주제의 이상형 월드컵을 무료로 플레이하고 직접 만들 수 있습니다.",
+    "cards": [
+      {
+        "title": "무료 이상형 월드컵 만들기",
+        "body": "사진과 후보 이름을 추가하면 나만의 월드컵을 만들고 링크로 공유할 수 있습니다.",
+        "blogSlug": "how-to-create-ideal-type-world-cup"
+      },
+      {
+        "title": "카테고리별 월드컵 탐색",
+        "body": "게임, 애니, 음식 등 관심 주제별로 월드컵을 찾을 수 있습니다."
+      },
+      {
+        "title": "결과와 통계 확인",
+        "body": "우승 후보와 순위를 확인하고 다른 사람들의 선택과 비교할 수 있습니다."
+      }
+    ],
+    "faqs": [
+      {
+        "q": "로그인 없이 플레이할 수 있나요?",
+        "a": "네. 공개된 월드컵은 로그인 없이 바로 플레이할 수 있습니다."
+      },
+      {
+        "q": "직접 월드컵을 만들 수 있나요?",
+        "a": "네. 월드컵 만들기에서 후보를 추가해 나만의 월드컵을 만들 수 있습니다."
+      },
+      {
+        "q": "티어표나 퀴즈도 이용할 수 있나요?",
+        "a": "네. 원픽게임에서는 티어표와 퀴즈도 만들고 즐길 수 있습니다."
+      }
+    ]
+  },
+  "en": {
+    "ariaLabel": "What is an Ideal Type World Cup?",
+    "title": "What is an Ideal Type World Cup?",
+    "description": "Choose your favorite of two candidates in each round until one winner remains. On OnePickGame, play and create free tournaments about idols, anime, games, movies, food, sports and more.",
+    "cards": [
+      {
+        "title": "Create a free World Cup",
+        "body": "Add images and candidate names, then share your tournament with a link.",
+        "blogSlug": "how-to-create-ideal-type-world-cup"
+      },
+      {
+        "title": "Explore by category",
+        "body": "Find tournaments about games, anime, food and other interests."
+      },
+      {
+        "title": "View results and statistics",
+        "body": "Check winners and rankings and compare your choices with others."
+      }
+    ],
+    "faqs": [
+      {
+        "q": "Can I play without signing in?",
+        "a": "Yes. Public tournaments can be played without signing in."
+      },
+      {
+        "q": "Can I create my own tournament?",
+        "a": "Yes. Add candidates in Create World Cup to make your own tournament."
+      },
+      {
+        "q": "Are tier lists and quizzes available?",
+        "a": "Yes. You can also create and enjoy tier lists and quizzes on OnePickGame."
+      }
+    ]
+  },
+  "ja": {
+    "ariaLabel": "理想のタイプワールドカップとは？",
+    "title": "理想のタイプワールドカップとは？",
+    "description": "2つの候補から好きな方を選び、最後の優勝者を決めるトーナメントゲームです。OnePickGameではアイドル、アニメ、ゲーム、映画、食べ物、スポーツなどの大会を無料で遊んだり作ったりできます。",
+    "cards": [
+      {
+        "title": "無料でワールドカップを作成",
+        "body": "画像と候補名を追加し、リンクで大会を共有できます。",
+        "blogSlug": "how-to-create-ideal-type-world-cup"
+      },
+      {
+        "title": "カテゴリ別に探す",
+        "body": "ゲーム、アニメ、食べ物など好きなテーマの大会を探せます。"
+      },
+      {
+        "title": "結果と統計を見る",
+        "body": "優勝者や順位を確認し、他の人の選択と比較できます。"
+      }
+    ],
+    "faqs": [
+      {
+        "q": "ログインせずに遊べますか？",
+        "a": "はい。公開された大会はログインなしで遊べます。"
+      },
+      {
+        "q": "自分で大会を作れますか？",
+        "a": "はい。ワールドカップ作成で候補を追加して作れます。"
+      },
+      {
+        "q": "ティアリストやクイズもありますか？",
+        "a": "はい。OnePickGameではティアリストやクイズも作成して楽しめます。"
+      }
+    ]
+  },
+  "zh": {
+    "ariaLabel": "什么是理想型世界杯？",
+    "title": "什么是理想型世界杯？",
+    "description": "每轮从两个候选中选择更喜欢的一个，直到选出冠军。在OnePickGame，你可以免费游玩和创建偶像、动漫、游戏、电影、美食、体育等主题的比赛。",
+    "cards": [
+      {
+        "title": "免费创建世界杯",
+        "body": "添加图片和候选名称，通过链接分享比赛。",
+        "blogSlug": "how-to-create-ideal-type-world-cup"
+      },
+      {
+        "title": "按类别探索",
+        "body": "查找游戏、动漫、美食等感兴趣的主题。"
+      },
+      {
+        "title": "查看结果与统计",
+        "body": "查看冠军和排名，并与其他人的选择比较。"
+      }
+    ],
+    "faqs": [
+      {
+        "q": "不登录也能玩吗？",
+        "a": "可以。公开比赛无需登录即可游玩。"
+      },
+      {
+        "q": "能创建自己的比赛吗？",
+        "a": "可以。在创建世界杯中添加候选即可。"
+      },
+      {
+        "q": "也有等级榜和测验吗？",
+        "a": "有。你也可以在OnePickGame创建和体验等级榜与测验。"
+      }
+    ]
+  },
+  "es": {
+    "ariaLabel": "¿Qué es un Mundial de favoritos?",
+    "title": "¿Qué es un Mundial de favoritos?",
+    "description": "Elige tu favorito entre dos candidatos en cada ronda hasta encontrar al ganador. En OnePickGame puedes jugar y crear torneos gratis sobre ídolos, anime, juegos, cine, comida y deportes.",
+    "cards": [
+      {
+        "title": "Crea un Mundial gratis",
+        "body": "Añade imágenes y nombres y comparte tu torneo con un enlace.",
+        "blogSlug": "how-to-create-ideal-type-world-cup"
+      },
+      {
+        "title": "Explora por categoría",
+        "body": "Encuentra torneos de juegos, anime, comida y otros temas."
+      },
+      {
+        "title": "Consulta resultados y estadísticas",
+        "body": "Mira ganadores y clasificaciones y compara tus elecciones."
+      }
+    ],
+    "faqs": [
+      {
+        "q": "¿Puedo jugar sin iniciar sesión?",
+        "a": "Sí. Los torneos públicos no requieren iniciar sesión."
+      },
+      {
+        "q": "¿Puedo crear mi propio torneo?",
+        "a": "Sí. Añade candidatos en Crear Mundial."
+      },
+      {
+        "q": "¿Hay listas de niveles y cuestionarios?",
+        "a": "Sí. También puedes crearlos y disfrutarlos en OnePickGame."
+      }
+    ]
+  },
+  "fr": {
+    "ariaLabel": "Qu’est-ce qu’un tournoi de favoris ?",
+    "title": "Qu’est-ce qu’un tournoi de favoris ?",
+    "description": "Choisissez votre favori entre deux candidats à chaque tour jusqu’au vainqueur. OnePickGame propose des tournois gratuits à jouer et à créer sur les idoles, les animés, les jeux, le cinéma, la cuisine et le sport.",
+    "cards": [
+      {
+        "title": "Créer un tournoi gratuit",
+        "body": "Ajoutez des images et des noms, puis partagez le lien du tournoi.",
+        "blogSlug": "how-to-create-ideal-type-world-cup"
+      },
+      {
+        "title": "Explorer par catégorie",
+        "body": "Trouvez des tournois sur les jeux, les animés, la cuisine et vos centres d’intérêt."
+      },
+      {
+        "title": "Voir les résultats et statistiques",
+        "body": "Consultez les gagnants et classements et comparez vos choix."
+      }
+    ],
+    "faqs": [
+      {
+        "q": "Puis-je jouer sans me connecter ?",
+        "a": "Oui. Les tournois publics sont accessibles sans connexion."
+      },
+      {
+        "q": "Puis-je créer mon tournoi ?",
+        "a": "Oui. Ajoutez des candidats dans Créer un tournoi."
+      },
+      {
+        "q": "Y a-t-il des tier lists et des quiz ?",
+        "a": "Oui. Vous pouvez aussi les créer et y jouer sur OnePickGame."
+      }
+    ]
+  },
+  "vi": {
+    "ariaLabel": "World Cup sở thích là gì?",
+    "title": "World Cup sở thích là gì?",
+    "description": "Chọn ứng viên bạn thích hơn trong mỗi cặp cho đến khi tìm ra người chiến thắng. Trên OnePickGame, bạn có thể chơi và tạo miễn phí các giải đấu về thần tượng, anime, trò chơi, phim, món ăn và thể thao.",
+    "cards": [
+      {
+        "title": "Tạo World Cup miễn phí",
+        "body": "Thêm ảnh và tên ứng viên rồi chia sẻ giải đấu bằng liên kết.",
+        "blogSlug": "how-to-create-ideal-type-world-cup"
+      },
+      {
+        "title": "Khám phá theo danh mục",
+        "body": "Tìm giải đấu về trò chơi, anime, món ăn và chủ đề yêu thích."
+      },
+      {
+        "title": "Xem kết quả và thống kê",
+        "body": "Xem người chiến thắng, thứ hạng và so sánh lựa chọn với người khác."
+      }
+    ],
+    "faqs": [
+      {
+        "q": "Có thể chơi mà không đăng nhập không?",
+        "a": "Có. Giải đấu công khai không yêu cầu đăng nhập."
+      },
+      {
+        "q": "Tôi có thể tự tạo giải đấu không?",
+        "a": "Có. Thêm ứng viên trong mục Tạo World Cup."
+      },
+      {
+        "q": "Có bảng xếp hạng tier và câu đố không?",
+        "a": "Có. Bạn cũng có thể tạo và chơi chúng trên OnePickGame."
+      }
+    ]
+  },
+  "de": {
+    "ariaLabel": "Was ist ein Favoriten-Turnier?",
+    "title": "Was ist ein Favoriten-Turnier?",
+    "description": "Wähle in jeder Runde deinen Favoriten aus zwei Kandidaten, bis ein Sieger feststeht. Auf OnePickGame kannst du kostenlos Turniere über Idole, Anime, Spiele, Filme, Essen und Sport spielen und erstellen.",
+    "cards": [
+      {
+        "title": "Kostenloses Turnier erstellen",
+        "body": "Füge Bilder und Namen hinzu und teile dein Turnier per Link.",
+        "blogSlug": "how-to-create-ideal-type-world-cup"
+      },
+      {
+        "title": "Nach Kategorie entdecken",
+        "body": "Finde Turniere über Spiele, Anime, Essen und weitere Interessen."
+      },
+      {
+        "title": "Ergebnisse und Statistiken ansehen",
+        "body": "Sieh dir Sieger und Ranglisten an und vergleiche deine Auswahl."
+      }
+    ],
+    "faqs": [
+      {
+        "q": "Kann ich ohne Anmeldung spielen?",
+        "a": "Ja. Öffentliche Turniere sind ohne Anmeldung spielbar."
+      },
+      {
+        "q": "Kann ich ein eigenes Turnier erstellen?",
+        "a": "Ja. Füge unter Turnier erstellen Kandidaten hinzu."
+      },
+      {
+        "q": "Gibt es auch Tierlisten und Quiz?",
+        "a": "Ja. Auf OnePickGame kannst du diese ebenfalls erstellen und spielen."
+      }
+    ]
+  },
+  "ru": {
+    "ariaLabel": "Что такое турнир предпочтений?",
+    "title": "Что такое турнир предпочтений?",
+    "description": "В каждом раунде выбирайте одного из двух кандидатов, пока не останется победитель. На OnePickGame можно бесплатно играть и создавать турниры об айдолах, аниме, играх, кино, еде и спорте.",
+    "cards": [
+      {
+        "title": "Создать бесплатный турнир",
+        "body": "Добавьте изображения и имена кандидатов и поделитесь ссылкой.",
+        "blogSlug": "how-to-create-ideal-type-world-cup"
+      },
+      {
+        "title": "Поиск по категориям",
+        "body": "Находите турниры об играх, аниме, еде и других интересах."
+      },
+      {
+        "title": "Результаты и статистика",
+        "body": "Смотрите победителей и рейтинги и сравнивайте свой выбор с другими."
+      }
+    ],
+    "faqs": [
+      {
+        "q": "Можно играть без входа?",
+        "a": "Да. Публичные турниры доступны без входа."
+      },
+      {
+        "q": "Можно создать свой турнир?",
+        "a": "Да. Добавьте кандидатов в разделе создания турнира."
+      },
+      {
+        "q": "Есть тир-листы и викторины?",
+        "a": "Да. На OnePickGame их тоже можно создавать и проходить."
+      }
+    ]
+  },
+  "id": {
+    "ariaLabel": "Apa itu World Cup favorit?",
+    "title": "Apa itu World Cup favorit?",
+    "description": "Pilih favorit dari dua kandidat di setiap ronde hingga tersisa satu pemenang. Di OnePickGame, mainkan dan buat turnamen gratis tentang idol, anime, gim, film, makanan dan olahraga.",
+    "cards": [
+      {
+        "title": "Buat World Cup gratis",
+        "body": "Tambahkan gambar dan nama kandidat, lalu bagikan tautan turnamen.",
+        "blogSlug": "how-to-create-ideal-type-world-cup"
+      },
+      {
+        "title": "Jelajahi berdasarkan kategori",
+        "body": "Temukan turnamen gim, anime, makanan dan minat lainnya."
+      },
+      {
+        "title": "Lihat hasil dan statistik",
+        "body": "Lihat pemenang dan peringkat serta bandingkan pilihan dengan orang lain."
+      }
+    ],
+    "faqs": [
+      {
+        "q": "Bisakah bermain tanpa masuk?",
+        "a": "Ya. Turnamen publik dapat dimainkan tanpa masuk."
+      },
+      {
+        "q": "Bisakah membuat turnamen sendiri?",
+        "a": "Ya. Tambahkan kandidat di Buat World Cup."
+      },
+      {
+        "q": "Apakah ada tier list dan kuis?",
+        "a": "Ya. Kamu juga dapat membuat dan memainkannya di OnePickGame."
+      }
+    ]
+  },
+  "pt": {
+    "ariaLabel": "O que é uma Copa de favoritos?",
+    "title": "O que é uma Copa de favoritos?",
+    "description": "Escolha seu favorito entre dois candidatos em cada rodada até chegar ao vencedor. No OnePickGame, jogue e crie torneios gratuitos sobre ídolos, anime, jogos, filmes, comida e esportes.",
+    "cards": [
+      {
+        "title": "Crie uma Copa grátis",
+        "body": "Adicione imagens e nomes e compartilhe seu torneio por um link.",
+        "blogSlug": "how-to-create-ideal-type-world-cup"
+      },
+      {
+        "title": "Explore por categoria",
+        "body": "Encontre torneios de jogos, anime, comida e outros interesses."
+      },
+      {
+        "title": "Veja resultados e estatísticas",
+        "body": "Confira vencedores e classificações e compare suas escolhas."
+      }
+    ],
+    "faqs": [
+      {
+        "q": "Posso jogar sem entrar?",
+        "a": "Sim. Torneios públicos podem ser jogados sem entrar."
+      },
+      {
+        "q": "Posso criar meu próprio torneio?",
+        "a": "Sim. Adicione candidatos em Criar Copa."
+      },
+      {
+        "q": "Há listas de tiers e quizzes?",
+        "a": "Sim. Você também pode criá-los e jogá-los no OnePickGame."
+      }
+    ]
+  },
+  "hi": {
+    "ariaLabel": "पसंदीदा विकल्पों का विश्व कप क्या है?",
+    "title": "पसंदीदा विकल्पों का विश्व कप क्या है?",
+    "description": "हर दौर में दो विकल्पों में से अपना पसंदीदा चुनें और अंत में विजेता तय करें। OnePickGame पर आइडल, एनीमे, गेम, फ़िल्म, भोजन और खेल के टूर्नामेंट मुफ़्त खेलें और बनाएँ।",
+    "cards": [
+      {
+        "title": "मुफ़्त विश्व कप बनाएँ",
+        "body": "तस्वीरें और विकल्पों के नाम जोड़ें, फिर लिंक से टूर्नामेंट साझा करें।",
+        "blogSlug": "how-to-create-ideal-type-world-cup"
+      },
+      {
+        "title": "श्रेणी के अनुसार खोजें",
+        "body": "गेम, एनीमे, भोजन और अपनी रुचि के विषयों के टूर्नामेंट खोजें।"
+      },
+      {
+        "title": "नतीजे और आँकड़े देखें",
+        "body": "विजेता और रैंकिंग देखें और दूसरों की पसंद से तुलना करें।"
+      }
+    ],
+    "faqs": [
+      {
+        "q": "क्या बिना लॉगिन के खेल सकते हैं?",
+        "a": "हाँ। सार्वजनिक टूर्नामेंट बिना लॉगिन के खेल सकते हैं।"
+      },
+      {
+        "q": "क्या मैं अपना टूर्नामेंट बना सकता हूँ?",
+        "a": "हाँ। विश्व कप बनाएँ में विकल्प जोड़ें।"
+      },
+      {
+        "q": "क्या टियर सूची और क्विज़ भी हैं?",
+        "a": "हाँ। OnePickGame पर उन्हें भी बना और खेल सकते हैं।"
+      }
+    ]
+  },
+  "tr": {
+    "ariaLabel": "Favoriler Dünya Kupası nedir?",
+    "title": "Favoriler Dünya Kupası nedir?",
+    "description": "Her turda iki adaydan favorini seçerek kazananı belirle. OnePickGame’de idoller, anime, oyunlar, filmler, yemek ve spor hakkında ücretsiz turnuvalar oyna ve oluştur.",
+    "cards": [
+      {
+        "title": "Ücretsiz Dünya Kupası oluştur",
+        "body": "Görseller ve aday adları ekleyip turnuvanı bağlantıyla paylaş.",
+        "blogSlug": "how-to-create-ideal-type-world-cup"
+      },
+      {
+        "title": "Kategoriye göre keşfet",
+        "body": "Oyun, anime, yemek ve diğer ilgi alanlarına ait turnuvaları bul."
+      },
+      {
+        "title": "Sonuçları ve istatistikleri gör",
+        "body": "Kazananları ve sıralamaları gör, seçimlerini başkalarıyla karşılaştır."
+      }
+    ],
+    "faqs": [
+      {
+        "q": "Giriş yapmadan oynayabilir miyim?",
+        "a": "Evet. Herkese açık turnuvalar giriş yapmadan oynanabilir."
+      },
+      {
+        "q": "Kendi turnuvamı oluşturabilir miyim?",
+        "a": "Evet. Dünya Kupası oluştur bölümünde aday ekle."
+      },
+      {
+        "q": "Tier listeleri ve testler de var mı?",
+        "a": "Evet. OnePickGame’de bunları da oluşturabilir ve oynayabilirsin."
+      }
+    ]
+  },
+  "th": {
+    "ariaLabel": "เวิลด์คัพตัวเลือกที่ชอบคืออะไร?",
+    "title": "เวิลด์คัพตัวเลือกที่ชอบคืออะไร?",
+    "description": "เลือกตัวเลือกที่ชอบมากกว่าจากสองตัวเลือกในแต่ละรอบจนได้ผู้ชนะ บน OnePickGame คุณเล่นและสร้างการแข่งขันเกี่ยวกับไอดอล อนิเมะ เกม หนัง อาหาร และกีฬาได้ฟรี",
+    "cards": [
+      {
+        "title": "สร้างเวิลด์คัพฟรี",
+        "body": "เพิ่มรูปภาพและชื่อตัวเลือก แล้วแชร์การแข่งขันด้วยลิงก์",
+        "blogSlug": "how-to-create-ideal-type-world-cup"
+      },
+      {
+        "title": "ค้นหาตามหมวดหมู่",
+        "body": "ค้นหาการแข่งขันเกี่ยวกับเกม อนิเมะ อาหาร และเรื่องที่สนใจ"
+      },
+      {
+        "title": "ดูผลลัพธ์และสถิติ",
+        "body": "ดูผู้ชนะและอันดับ แล้วเปรียบเทียบกับตัวเลือกของคนอื่น"
+      }
+    ],
+    "faqs": [
+      {
+        "q": "เล่นโดยไม่เข้าสู่ระบบได้ไหม?",
+        "a": "ได้ การแข่งขันสาธารณะเล่นได้โดยไม่ต้องเข้าสู่ระบบ"
+      },
+      {
+        "q": "สร้างการแข่งขันเองได้ไหม?",
+        "a": "ได้ เพิ่มตัวเลือกในหน้าสร้างเวิลด์คัพ"
+      },
+      {
+        "q": "มีเทียร์ลิสต์และแบบทดสอบไหม?",
+        "a": "มี คุณสร้างและเล่นได้บน OnePickGame เช่นกัน"
+      }
+    ]
+  },
+  "ar": {
+    "ariaLabel": "ما هي بطولة الخيارات المفضلة؟",
+    "title": "ما هي بطولة الخيارات المفضلة؟",
+    "description": "اختر المفضل لديك من بين مرشحين في كل جولة حتى يتبقى فائز واحد. على OnePickGame يمكنك لعب وإنشاء بطولات مجانية عن النجوم والأنمي والألعاب والأفلام والطعام والرياضة.",
+    "cards": [
+      {
+        "title": "أنشئ بطولة مجانية",
+        "body": "أضف الصور وأسماء المرشحين ثم شارك البطولة عبر رابط.",
+        "blogSlug": "how-to-create-ideal-type-world-cup"
+      },
+      {
+        "title": "استكشف حسب الفئة",
+        "body": "ابحث عن بطولات الألعاب والأنمي والطعام وغيرها من اهتماماتك."
+      },
+      {
+        "title": "شاهد النتائج والإحصاءات",
+        "body": "اطّلع على الفائزين والترتيب وقارن اختياراتك بالآخرين."
+      }
+    ],
+    "faqs": [
+      {
+        "q": "هل يمكن اللعب دون تسجيل الدخول؟",
+        "a": "نعم. يمكن لعب البطولات العامة دون تسجيل الدخول."
+      },
+      {
+        "q": "هل يمكنني إنشاء بطولتي؟",
+        "a": "نعم. أضف المرشحين في صفحة إنشاء البطولة."
+      },
+      {
+        "q": "هل توجد قوائم تصنيف واختبارات؟",
+        "a": "نعم. يمكنك أيضًا إنشاؤها ولعبها على OnePickGame."
+      }
+    ]
+  },
+  "bn": {
+    "ariaLabel": "পছন্দের বিশ্বকাপ কী?",
+    "title": "পছন্দের বিশ্বকাপ কী?",
+    "description": "প্রতি রাউন্ডে দুটি প্রার্থীর মধ্যে পছন্দেরটি বেছে নিন, যতক্ষণ না একজন বিজয়ী থাকে। OnePickGame-এ আইডল, অ্যানিমে, গেম, সিনেমা, খাবার ও খেলাধুলার টুর্নামেন্ট বিনামূল্যে খেলুন এবং তৈরি করুন।",
+    "cards": [
+      {
+        "title": "বিনামূল্যে বিশ্বকাপ তৈরি করুন",
+        "body": "ছবি ও প্রার্থীর নাম যোগ করে লিংকের মাধ্যমে টুর্নামেন্ট শেয়ার করুন।",
+        "blogSlug": "how-to-create-ideal-type-world-cup"
+      },
+      {
+        "title": "বিভাগ অনুযায়ী খুঁজুন",
+        "body": "গেম, অ্যানিমে, খাবার ও আগ্রহের বিষয়ের টুর্নামেন্ট খুঁজুন।"
+      },
+      {
+        "title": "ফলাফল ও পরিসংখ্যান দেখুন",
+        "body": "বিজয়ী ও র‌্যাঙ্কিং দেখুন এবং অন্যদের পছন্দের সঙ্গে তুলনা করুন।"
+      }
+    ],
+    "faqs": [
+      {
+        "q": "লগইন ছাড়া খেলা যায়?",
+        "a": "হ্যাঁ। প্রকাশ্য টুর্নামেন্ট লগইন ছাড়াই খেলা যায়।"
+      },
+      {
+        "q": "নিজের টুর্নামেন্ট তৈরি করা যায়?",
+        "a": "হ্যাঁ। বিশ্বকাপ তৈরি পাতায় প্রার্থী যোগ করুন।"
+      },
+      {
+        "q": "টিয়ার তালিকা ও কুইজও আছে?",
+        "a": "হ্যাঁ। OnePickGame-এ সেগুলোও তৈরি ও খেলা যায়।"
+      }
+    ]
+  }
+};
+
 function Home({
 
   worldcupList,
@@ -348,6 +895,7 @@ const location = useLocation();
 
 
 const lang = (i18n.language || "en").split("-")[0];
+const worldcupInfoCopy = WORLDCUP_INFO_COPY[lang] || WORLDCUP_INFO_COPY.en;
 
 
 
@@ -4470,9 +5018,10 @@ return (
 
 
 
-{lang === "ko" && !personalView && (
+{!personalView && (
   <section
-    aria-label="이상형 월드컵 소개"
+    aria-label={worldcupInfoCopy.ariaLabel}
+    dir={lang === "ar" ? "rtl" : undefined}
     style={{
       width: "100%",
       maxWidth: 1000,
@@ -4497,7 +5046,7 @@ return (
           letterSpacing: 0,
         }}
       >
-        이상형 월드컵이란?
+        {worldcupInfoCopy.title}
       </h2>
       <p
         style={{
@@ -4508,10 +5057,7 @@ return (
           fontWeight: 700,
         }}
       >
-        이상형 월드컵은 두 후보 중 더 마음에 드는 쪽을 선택하며 최종
-        우승자를 고르는 토너먼트 게임입니다. 원픽게임에서는 아이돌,
-        애니, 게임, 영화, 음식, 스포츠 등 다양한 주제의 이상형 월드컵을
-        무료로 플레이하고 직접 만들 수 있습니다.
+        {worldcupInfoCopy.description}
       </p>
       <div
         style={{
@@ -4521,23 +5067,7 @@ return (
           marginTop: 18,
         }}
       >
-        {[
-          {
-            title: "무료 이상형 월드컵 만들기",
-            body:
-              "사진과 후보 이름을 추가하면 나만의 월드컵을 만들고 링크로 공유할 수 있습니다.",
-          },
-          {
-            title: "카테고리별 월드컵 탐색",
-            body:
-              "게임 월드컵, 애니 이상형 월드컵, 음식 이상형 월드컵처럼 관심 주제별로 찾을 수 있습니다.",
-          },
-          {
-            title: "결과와 통계 확인",
-            body:
-              "플레이 후 우승 후보와 순위를 확인하고 다른 사람들의 선택과 비교할 수 있습니다.",
-          },
-        ].map((item) => (
+        {worldcupInfoCopy.cards.map((item) => (
           <article
             key={item.title}
             style={{
@@ -4557,7 +5087,14 @@ return (
                 color: "#9A3412",
               }}
             >
-              {item.title}
+              {item.blogSlug ? (
+                <a
+                  href={`/${lang}/blog/${item.blogSlug}`}
+                  style={{ color: "inherit", textDecoration: "underline", textUnderlineOffset: 3 }}
+                >
+                  {item.title}
+                </a>
+              ) : item.title}
             </h3>
             <p
               style={{
@@ -4580,20 +5117,7 @@ return (
           gap: 10,
         }}
       >
-        {[
-          {
-            q: "로그인 없이 이상형 월드컵을 플레이할 수 있나요?",
-            a: "네. 공개된 월드컵은 로그인 없이 바로 플레이할 수 있습니다.",
-          },
-          {
-            q: "직접 월드컵을 만들 수 있나요?",
-            a: "네. 월드컵 만들기에서 후보를 추가해 나만의 이상형 월드컵을 만들 수 있습니다.",
-          },
-          {
-            q: "티어표나 퀴즈도 이용할 수 있나요?",
-            a: "네. 원픽게임에서는 이상형 월드컵뿐 아니라 티어표와 퀴즈도 함께 만들고 즐길 수 있습니다.",
-          },
-        ].map((item) => (
+        {worldcupInfoCopy.faqs.map((item) => (
           <details
             key={item.q}
             style={{

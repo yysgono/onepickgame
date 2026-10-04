@@ -760,6 +760,15 @@ if (mounted) {
           );
         }
       });
+
+    supabase
+      .from("tier_list_play_logs")
+      .insert({ tier_list_id: id })
+      .then(({ error: logError }) => {
+        if (logError) {
+          console.warn("Failed to record tier list view log", logError);
+        }
+      });
   }, [id]);
 
 

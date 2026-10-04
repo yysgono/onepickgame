@@ -1311,12 +1311,12 @@ const displayTitle =
     lang === "ko"
       ? {
           recentCreated: "최근 등록된 티어표",
-          recentPlayed: "최근 플레이된 티어표",
+          recentPlayed: "최근 조회된 티어표",
           empty: "표시할 티어표가 없습니다.",
         }
       : {
           recentCreated: "Recently Added Tier Lists",
-          recentPlayed: "Recently Played Tier Lists",
+          recentPlayed: "Recently Viewed Tier Lists",
           empty: "No tier lists to show.",
         };
 
