@@ -1,3 +1,5 @@
+import WorldcupDetailSeo from "./seo/WorldcupDetailSeo";
+import worldcupMetadata from "./seo/worldcupMetadata.cjs";
 import "./i18n";
 import "./App.css";
 import React, { useState, useEffect } from "react";
@@ -1228,7 +1230,7 @@ const pageSeoTitle =
   normalizedLang === "en"
     ? `${cleanEnglishTitle} Tournament Bracket Game | Ideal Type World Cup | OnePickGame`
     : normalizedLang === "ko"
-      ? `${worldCupKeyword} - ${translatedTitle} | 원픽게임`
+      ? `이상형 월드컵 | ${translatedTitle} | OnePickGame 원픽게임`
       : `${worldCupKeyword} - ${translatedTitle} | OnePickGame`;
      const savedDescription =
   getWorldcupDescription(cup, normalizedLang);
@@ -1268,12 +1270,13 @@ const descriptionFallbackMap = {
 };
 
 const translatedDescription =
-  savedDescription ||
+  String(savedDescription || "").trim() ||
+  worldcupMetadata.candidateDescription(cup) ||
   descriptionFallbackMap[normalizedLang] ||
   descriptionFallbackMap.en;
       return (
         <>
-          <Seo
+          <WorldcupDetailSeo cup={cup}
             lang={
               normalizedLang
             }
@@ -1281,13 +1284,6 @@ const translatedDescription =
        title={pageSeoTitle}
             description={
               translatedDescription
-            }
-            image={
-              cup.thumbnail ||
-              cup.image ||
-              cup.data?.[0]
-                ?.image ||
-              "/onepick-social.png"
             }
           />
 

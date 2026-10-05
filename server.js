@@ -1,3 +1,4 @@
+const worldcupMetadata = require("./src/seo/worldcupMetadata.cjs");
 /// server.js
 
 const express = require("express");
@@ -2404,10 +2405,14 @@ let worldcupDescription =
   String(
     translatedDescription ||
     worldcup.description ||
+    worldcup.desc ||
+    worldcupMetadata.candidateDescription(worldcup) ||
     ""
   )
     .replace(/\s+/g, " ")
     .trim();
+
+if (!worldcupDescription) worldcupDescription = worldcupMetadata.candidateDescription(worldcup);
 
 if (!worldcupDescription) {
   if (lang === "ko") {
@@ -2457,13 +2462,7 @@ if (!worldcupDescription) {
  * 후보 이미지 / YouTube 썸네일 찾기
  */
 
-let candidates = [];
-
-if (Array.isArray(worldcup.data)) {
-  candidates = worldcup.data;
-} else if (Array.isArray(worldcup.candidates)) {
-  candidates = worldcup.candidates;
-}
+let candidates = worldcupMetadata.candidatesOf(worldcup);
 
 /*
  * YouTube URL에서 video ID 추출
@@ -2645,7 +2644,7 @@ let seoTitle;
 
 if (lang === "ko") {
   seoTitle =
-    `이상형 월드컵 | ${worldcupTitle} | OnePickGame`;
+    `이상형 월드컵 | ${worldcupTitle} | OnePickGame 원픽게임`;
 } else if (lang === "ja") {
   seoTitle =
     `${worldcupTitle} トーナメント | OnePickGame`;
@@ -2877,7 +2876,7 @@ ${safeJson(jsonLd)}
     max-width:900px;
     margin:40px auto;
     padding:24px;
-    color:#ffffff;
+    color:#202534;
     font-family:Arial,sans-serif;
   "
 >
