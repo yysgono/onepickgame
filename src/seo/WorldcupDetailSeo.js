@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Seo from './Seo';
 import { fetchWinnerStatsFromDB } from '../utils';
-import metadata from './worldcupMetadata.cjs';
+import metadata from './worldcupMetadata.js';
 
 function initialImage(cup) {
   if (typeof document !== 'undefined') {

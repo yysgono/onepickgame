@@ -1,4 +1,4 @@
-const worldcupMetadata = require("./src/seo/worldcupMetadata.cjs");
+const worldcupMetadata = require("./src/seo/worldcupMetadata.js");
 /// server.js
 
 const express = require("express");

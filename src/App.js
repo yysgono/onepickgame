@@ -1,5 +1,5 @@
 import WorldcupDetailSeo from "./seo/WorldcupDetailSeo";
-import worldcupMetadata from "./seo/worldcupMetadata.cjs";
+import worldcupMetadata from "./seo/worldcupMetadata.js";
 import "./i18n";
 import "./App.css";
 import React, { useState, useEffect } from "react";
