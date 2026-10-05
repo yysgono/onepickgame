@@ -52,7 +52,7 @@ function getQuizSeo(language, quiz, origin = SITE_URL) {
     heading: quiz ? name : copy.heading || copy.name,
     title: quiz ? `${name} | ${lang === 'ko' ? '원픽게임' : 'OnePickGame'}` : copy.title,
     description: quiz ? localized(quiz.description_translations, quiz.description, lang) || `${name} · ${copy.description}` : copy.description,
-    image: socialImage(quiz?.thumbnail_url, origin),
+    image: socialImage(quiz?.seo_image_url || quiz?.thumbnail_url, origin),
     canonical: `${origin}/${lang}/${slug}`,
     languages: quiz ? quizLanguages(quiz) : LANGS,
     locale: OG_LOCALES[lang],

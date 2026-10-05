@@ -1,3 +1,4 @@
+import { socialImage } from "../seo/quizSeo";
 import { TierTags, PresetTitle } from "./TierTagTools";
 import "../registerPresetTranslations";
 import React, {
@@ -2811,13 +2812,12 @@ const seoHreflangLangs =
     lang
   );
 
-  const seoResultImage =
-    tierList.thumbnail_url ||
-    onePickCandidate?.image ||
-    (Array.isArray(tierList.candidates)
-      ? tierList.candidates.find((candidate) => candidate?.image)?.image
-      : "") ||
-    "/onepick-social.png";
+  const seoImageFallback = socialImage("");
+  const seoResultImage = [
+    tierList.thumbnail_url,
+    ...(Array.isArray(tierList.candidates) ? tierList.candidates : [])
+      .map(candidate => candidate?.image || candidate?.url),
+  ].map(value => socialImage(value)).find(value => value !== seoImageFallback) || seoImageFallback;
 
   const createBracketCtaLabel =
     tierList.source_worldcup_id

@@ -1,5 +1,5 @@
-// Public metadata only: never select questions, answers or participant records.
-const { COPY, LANGS, UUID, DEFAULT_QUIZ_LANGUAGE, getQuizSeo, quizLanguages, localized } = require('./src/seo/quizSeo.cjs');
+// Public metadata and question image URLs only; never select answers or participant records.
+const { COPY, LANGS, UUID, DEFAULT_QUIZ_LANGUAGE, getQuizSeo, quizLanguages, localized, socialImage } = require('./src/seo/quizSeo.cjs');
 const { loadSeoTemplate } = require('./seo-template.cjs');
 const fields = 'id,title,title_translations,description,description_translations,original_language,content_languages,thumbnail_url';
 const esc = (s = '') => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -13,7 +13,7 @@ function renderHtml(template, seo, body, indexable = true) {
     .replace(/<link\b[^>]*rel\s*=\s*(?:["'](?:canonical|alternate)["']|(?:canonical|alternate)(?=[\s/>]))[^>]*>/gi, '')
     .replace(/<html\b[^>]*>/i, '<html lang="' + seo.lang + '" dir="' + (seo.lang === 'ar' ? 'rtl' : 'ltr') + '">');
   const meta = (attribute, key, value) => '<meta data-rh="true" ' + attribute + '="' + key + '" content="' + esc(value) + '">';
-  const jsonLd = { '@context': 'https://schema.org', '@type': 'WebPage', name: seo.title, description: seo.description, url: seo.canonical, inLanguage: seo.lang, isPartOf: { '@type': 'WebSite', name: 'OnePickGame', url: new URL(seo.canonical).origin } };
+  const jsonLd = { '@context': 'https://schema.org', '@type': 'WebPage', name: seo.title, description: seo.description, url: seo.canonical, inLanguage: seo.lang, primaryImageOfPage: { '@type': 'ImageObject', url: seo.image }, isPartOf: { '@type': 'WebSite', name: 'OnePickGame', url: new URL(seo.canonical).origin } };
   const head = [
     '<title data-rh="true">' + esc(seo.title) + '</title>',
     meta('name', 'description', seo.description),
@@ -89,6 +89,19 @@ module.exports = function installQuizSeo(app, db, origin, options = {}) {
         data = result.data;
         if (detail && !data) return res.set('Cache-Control', 'no-store').status(404).send('Quiz not found');
       }
+      if (detail && socialImage(data.thumbnail_url, origin) === socialImage("", origin)) {
+        // A missing image must not prevent the public quiz page from loading.
+        try {
+          const { data: images, error: imageError } = await db.from('quiz_questions')
+            .select('image_url').eq('quiz_id', id).not('image_url', 'is', null)
+            .neq('image_url', '').order('sort_order', { ascending: true }).limit(20);
+          if (imageError) throw imageError;
+          data.seo_image_url = (images || []).map(q => socialImage(q.image_url, origin))
+            .find(image => image !== socialImage("", origin));
+        } catch (error) {
+          console.warn('Quiz SEO image fallback failed:', error.message);
+        }
+      }
       const seo = getQuizSeo(lang, detail ? data : undefined, origin);
       if (creator) { seo.slug = 'quiz/create'; seo.canonical = origin + '/' + lang + '/quiz/create'; }
       const indexable = !creator && (!detail || seo.languages.includes(lang));
@@ -96,7 +109,7 @@ module.exports = function installQuizSeo(app, db, origin, options = {}) {
         ? '<a href="' + origin + '/' + lang + '/quiz">' + esc(COPY[lang].name) + '</a>'
         : '<ul>' + (data || []).map(q => '<li><a href="' + origin + '/' + lang + '/quiz/' + encodeURIComponent(q.id) + '">' + esc(localized(q.title_translations, q.title, lang)) + '</a></li>').join('') + '</ul>';
       const visibleHeading = detail ? seo.name : (seo.heading || seo.name);
-      const body = '<main><h1>' + esc(visibleHeading) + '</h1><p>' + esc(seo.description) + '</p>' + links + '</main>';
+      const body = '<main><h1>' + esc(visibleHeading) + '</h1><p>' + esc(seo.description) + '</p>' + (detail ? '<img src="' + esc(seo.image) + '" alt="' + esc(seo.name) + '" style="max-width:100%;height:auto;">' : '') + links + '</main>';
       const html = renderHtml(await templateLoader(), seo, body, indexable);
       res.set('Cache-Control', creator ? 'no-store' : PUBLIC_CACHE);
       res.type('html').send(html);

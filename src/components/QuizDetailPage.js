@@ -28,7 +28,7 @@ import QuizCommentBox from "./QuizCommentBox";
 
 import Seo from "../seo/Seo";
 
-import { getQuizSeo } from "../seo/quizSeo";
+import { getQuizSeo, socialImage } from "../seo/quizSeo";
 
 // The supplied project contains the completed locale bundle in this folder.
 
@@ -1058,7 +1058,11 @@ export default function QuizDetailPage() {
 
   };
 
-  const seo = getQuizSeo(lang, quiz);
+  const fallbackSeoImage = socialImage("");
+  const quizSeoImage = [quiz.thumbnail_url, ...allQuestions.map(question => question?.image_url)]
+    .map(value => socialImage(value))
+    .find(value => value !== fallbackSeoImage) || fallbackSeoImage;
+  const seo = getQuizSeo(lang, { ...quiz, seo_image_url: quizSeoImage });
 
 
 

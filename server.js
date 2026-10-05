@@ -1,3 +1,4 @@
+const { socialImage: gameSocialImage } = require("./src/seo/quizSeo.cjs");
 const worldcupMetadata = require("./src/seo/worldcupMetadata.js");
 /// server.js
 
@@ -2093,20 +2094,10 @@ const indexable = true;
       } catch {}
     }
 
-    let image = String(tierList.thumbnail_url || "").trim();
-    if (!image) {
-      for (const candidate of candidates) {
-        const value = String(candidate?.image || candidate?.url || "").trim();
-        if (value) {
-          image = value;
-          break;
-        }
-      }
-    }
-    if (!image) image = "/ogimg.png";
-    if (!/^https?:\/\//i.test(image)) {
-      image = `${SITE_URL}${image.startsWith("/") ? "" : "/"}${image}`;
-    }
+    const imageFallback = gameSocialImage("", SITE_URL);
+    const image = [tierList.thumbnail_url, ...candidates.map(candidate => candidate?.image || candidate?.url)]
+      .map(value => gameSocialImage(value, SITE_URL))
+      .find(value => value !== imageFallback) || imageFallback;
 
     const seoTitle = lang === "ko"
       ? `${tierTitle} | 티어표 | OnePickGame`
@@ -2174,6 +2165,7 @@ ${hreflangTags}${xDefault}
   <article>
     <h1>${escapeHtml(tierTitle)}</h1>
     <p>${escapeHtml(tierDescription)}</p>
+    <img src="${escapeHtml(image)}" alt="${escapeHtml(tierTitle)}" style="max-width:100%;height:auto;" />
     ${candidateList}
   </article>
 </main>`;

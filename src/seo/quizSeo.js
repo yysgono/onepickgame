@@ -143,7 +143,7 @@ export function getQuizSeo(language, quiz, origin = SITE_URL) {
       ? localized(quiz.description_translations, quiz.description, lang) ||
         `${name} · ${copy.description}`
       : copy.description,
-    image: socialImage(quiz?.thumbnail_url, origin),
+    image: socialImage(quiz?.seo_image_url || quiz?.thumbnail_url, origin),
     canonical: `${origin}/${lang}/${slug}`,
     languages: quiz ? quizLanguages(quiz) : LANGS,
     locale: OG_LOCALES[lang],
