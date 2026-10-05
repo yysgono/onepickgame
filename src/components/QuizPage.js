@@ -1742,7 +1742,7 @@ export default function QuizPage({ user = null }) {
           };
         })
         .filter(Boolean)
-        .slice(0, 7);
+        .slice(0, 6);
 
       if (alive) setRecentPlayedQuizItems(ordered);
     }
