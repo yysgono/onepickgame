@@ -1320,16 +1320,50 @@ const displayTitle =
           empty: "No tier lists to show.",
         };
 
+  const [recentCreatedTierRows, setRecentCreatedTierRows] = useState([]);
+
+  useEffect(() => {
+    let alive = true;
+
+    async function loadRecentCreatedTierLists() {
+      if (mineOnly) {
+        setRecentCreatedTierRows([]);
+        return;
+      }
+
+      try {
+        const { data: rows, error } = await supabase
+          .from("tier_lists")
+          .select("id, title, title_translations, created_at")
+          .order("created_at", { ascending: false })
+          .order("id", { ascending: false })
+          .limit(6);
+
+        if (error) throw error;
+        if (alive) setRecentCreatedTierRows(rows || []);
+      } catch (error) {
+        console.warn("Failed to load recently created tier lists", error);
+        if (alive) setRecentCreatedTierRows([]);
+      }
+    }
+
+    loadRecentCreatedTierLists();
+    return () => { alive = false; };
+  }, [mineOnly]);
+
   const recentCreatedTierItems = useMemo(
-    () =>
-      [...cards]
-        .sort(
-          (a, b) =>
-            new Date(b?.created_at || 0).getTime() -
-            new Date(a?.created_at || 0).getTime()
-        )
-        .slice(0, 6),
-    [cards]
+    () => recentCreatedTierRows.map((tierList) => {
+      const titleTranslations = readTranslationMap(tierList.title_translations);
+      return {
+        ...tierList,
+        displayTitle:
+          titleTranslations?.[lang] ||
+          titleTranslations?.en ||
+          tierList.title ||
+          "Tier List",
+      };
+    }),
+    [recentCreatedTierRows, lang]
   );
 
   const [recentPlayedTierItems, setRecentPlayedTierItems] = useState([]);
