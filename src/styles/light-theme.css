@@ -103,3 +103,7 @@ input::placeholder,textarea::placeholder{color:#68758a!important;opacity:1}
 .tier-community-filters .tier-filter{font-size:18px!important;min-height:42px;padding:9px 16px!important}
 @media(max-width:900px){.tier-cards-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}.tier-card-title{font-size:21px!important}}
 @media(max-width:600px){.tier-cards-grid{grid-template-columns:1fr!important}.worldcup-card button{font-size:17px!important;min-height:40px!important;padding:7px 4px!important}.home-search-panel{padding:14px!important}.home-search-input,.tier-search-form input{height:54px!important;font-size:17px!important}.tier-search-form button{min-width:66px!important;min-height:54px!important;font-size:17px!important;padding:10px!important}.tier-community-filters .tier-filter{font-size:16px!important;padding:8px 12px!important}.tier-card-title{font-size:22px!important}}
+
+/* Keep the World Cup search field visible before focus. */
+.home-search-input{border:2px solid #a78bfa!important;box-sizing:border-box!important;box-shadow:0 0 0 1px rgba(167,139,250,.12)!important}
+.home-search-input:focus{border-color:#7c3aed!important;box-shadow:0 0 0 3px rgba(124,58,237,.14)!important}
