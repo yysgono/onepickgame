@@ -2124,7 +2124,7 @@ export default function QuizPage({ user = null }) {
 
 
 
-        <PageIntro
+        <PageIntro createTo={`/${lang}/quiz/create`}
 
 
 

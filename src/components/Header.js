@@ -303,36 +303,6 @@ export default function Header({
       "en"
     ).split("-")[0];
 
-  function handleLogoClick() {
-    const homePath =
-      `/${currentLang}`;
-
-    if (
-      location.pathname ===
-      homePath
-    ) {
-      navigate(
-        homePath,
-        {
-          replace: true,
-        }
-      );
-
-      window.scrollTo({
-        top: 0,
-        behavior: "smooth",
-      });
-    } else {
-      navigate(homePath);
-    }
-  }
-
-  function handleBlog() {
-    navigate(
-      `/${currentLang}/blog`
-    );
-  }
-
   function changeLanguageAndKeepPath(
     lng
   ) {
@@ -672,7 +642,7 @@ export default function Header({
     (modePath === 'quiz' && headerSearchParams.get('mine') === '1');
   const activeMode = personalPage ? '' : modePath.startsWith('tier-list') ? 'tier-list' : modePath.startsWith('quiz') ? 'quiz' : ['','category','select-round','match','result','worldcup-maker','edit-worldcup','stats'].some(key => modePath === key || (key && modePath.startsWith(key))) ? 'worldcup' : '';
   const headerModes = [
-    {key:'worldcup',icon:'trophy',label:t('gameModeNav.worldcup'),path:`/${currentLang}`},
+    {key:'worldcup',icon:'trophy',label:t('gameModeNav.worldcup'),path:currentLang === 'en' ? '/' : `/${currentLang}`},
     {key:'tier-list',icon:'chart',label:t('gameModeNav.tierList'),path:`/${currentLang}/tier-list`},
     {key:'quiz',icon:'question',label:currentLang === 'ko' ? '퀴즈 맞히기' : t('gameModeNav.quiz'),path:`/${currentLang}/quiz`},
   ];
@@ -717,10 +687,17 @@ export default function Header({
       `}</style>
       <div className="onepick-header-main">
           <div className="onepick-header-brand-area">
-<button
-  type="button"
+<Link
+  to={currentLang === "en" ? "/" : `/${currentLang}`}
+  style={{ textDecoration: "none" }}
   className="onepick-header-brand"
-  onClick={handleLogoClick}
+  onClick={(event) => {
+    const homePath = currentLang === "en" ? "/" : `/${currentLang}`;
+    if (location.pathname === homePath && !event.ctrlKey && !event.metaKey && !event.shiftKey && !event.altKey) {
+      event.preventDefault();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  }}
 >
   <span className="onepick-logo-frame">
     <img src={logoImgUrl} alt="" width="80" height="80" />
@@ -741,7 +718,7 @@ export default function Header({
 >
   One Pick Game
 </span>
-</button>
+</Link>
 
 </div>
 <nav className="onepick-header-modes" aria-label={t('lightUi.gameModes', 'Game modes')}>
@@ -758,7 +735,7 @@ export default function Header({
             <label className="header-language-control"><span className="header-language-label">🌐 Language</span><select value={currentLang} onChange={e=>changeLanguageAndKeepPath(e.target.value)} aria-label={t('language_select','Select language')}>
               {languages.map(item=><option key={item.code} value={item.code}>{item.label}</option>)}
             </select></label>
-            <button type="button" onClick={handleBlog}>Blog</button>
+            <Link className="onepick-header-blog-link" to={`/${currentLang}/blog`}>Blog</Link>
           </div>
           <div className="onepick-header-user">
             <Link to={`/${currentLang}/my-worldcups`} className={`onepick-header-content-link${personalPage ? ' is-active' : ''}`} aria-current={personalPage ? 'page' : undefined}>

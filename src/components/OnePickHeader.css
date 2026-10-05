@@ -145,3 +145,7 @@
     grid-row:4!important;
   }
 }
+
+.onepick-header-tools .onepick-header-blog-link{border:0;border-left:1px solid #e5e8ef;background:#fff;color:#596579;font-size:14px;font-weight:600;cursor:pointer;padding:5px 5px 5px 12px;min-width:0;max-width:120px;text-decoration:none}
+
+@media(max-width:600px){.onepick-header-tools .onepick-header-blog-link{display:none}}

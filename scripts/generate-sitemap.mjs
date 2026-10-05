@@ -207,7 +207,7 @@ async function fetchTierLists() {
 
   return fetchAllRows({
     table: "tier_lists",
-    select: "id, created_at, updated_at, original_language, title_translations, description_translations",
+    select: "id, created_at, updated_at, original_language, title_translations, description_translations, tier_labels",
     label: "티어표",
   });
 }
@@ -262,7 +262,7 @@ export function generateLanguageSitemap(
 
   // 홈
   xml += makeUrlEntry({
-    loc: `${BASE_URL}/${lang}`,
+    loc: lang === "en" ? `${BASE_URL}/` : `${BASE_URL}/${lang}`,
     lastmod: today,
     changefreq: "daily",
     priority: "1.0",
@@ -376,12 +376,16 @@ export function generateLanguageSitemap(
       }
     };
 
-    const titleMap = parseMap(tierList.title_translations);
+    const tierLabels = parseMap(tierList.tier_labels);
+    const titleMap = {
+      ...parseMap(tierLabels._titleTranslations),
+      ...parseMap(tierList.title_translations),
+    };
     const descriptionMap = parseMap(tierList.description_translations);
     const availableLanguages = new Set([
       ...Object.keys(titleMap),
       ...Object.keys(descriptionMap),
-      String(tierList.original_language || "").toLowerCase().split("-")[0],
+      String(tierLabels._originalLanguage || tierList.original_language || "").toLowerCase().split(/[-_]/)[0],
     ].filter(Boolean));
 
     if (availableLanguages.size > 0 && !availableLanguages.has(lang)) continue;

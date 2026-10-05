@@ -8,7 +8,7 @@ import React, {
   useState,
 } from "react";
 
-import { useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
 
@@ -1677,10 +1677,10 @@ maxWidth: isMobile ? 430 : 1780,
     </p>
   </div>
 
-  <button
-    type="button"
-    onClick={() => navigate(`/${lang}/tier-list/create`)}
+  <Link
+    to={`/${lang}/tier-list/create`}
     style={{
+      display: "inline-flex", alignItems: "center", justifyContent: "center", textDecoration: "none", boxSizing: "border-box",
       width: isMobile ? "100%" : 260,
       maxWidth: "100%",
       padding: isMobile ? "13px 18px" : "14px 22px",
@@ -1695,7 +1695,7 @@ maxWidth: isMobile ? 430 : 1780,
     }}
   >
     + {t("tierList.page.createButton")}
-  </button>
+  </Link>
 </section>
 {/* 검색 위 언어 선택 */}
 <div
