@@ -1722,44 +1722,51 @@ try {
 } catch (error) { console.warn("Home SEO game links unavailable", error.message); }
 
 const seoBody = `
-<main
-  id="seo-content"
-  style="max-width:1000px;margin:24px auto;padding:0 20px;line-height:1.7"
->
-  <nav aria-label="${escapeHtml(navCopy[0])}">
+<style>
+#seo-content.seo-home{box-sizing:border-box;max-width:1160px;margin:0 auto;padding:28px 24px 48px;color:#252735;font-family:"Noto Sans",Arial,sans-serif;font-size:16px;line-height:1.65;text-align:start}
+#seo-content.seo-home *{box-sizing:border-box}
+#seo-content.seo-home a{color:inherit;text-decoration:none}
+#seo-content.seo-home a:focus-visible{outline:3px solid #f57c32;outline-offset:4px}
+#seo-content .seo-brand{display:inline-block;margin-bottom:24px;color:#ec6e24;font-size:25px;font-weight:900;letter-spacing:-.8px}
+#seo-content .seo-hero{padding:30px 32px;border:1px solid #f4decf;border-radius:20px;background:#fff8f2}
+#seo-content.seo-home h1{margin:0 0 12px;font-size:clamp(25px,3.5vw,38px);line-height:1.3;letter-spacing:-.8px}
+#seo-content .seo-hero p{max-width:820px;margin:0;color:#616574;font-size:17px}
+#seo-content .seo-navigation{margin:22px 0 30px}
+#seo-content.seo-home ul{list-style:none;padding:0;margin:0}
+#seo-content .seo-navigation ul{display:flex;flex-wrap:wrap;gap:10px}
+#seo-content .seo-navigation a{display:block;padding:10px 18px;border:1px solid #e2e4eb;border-radius:12px;background:#fff;font-weight:700}
+#seo-content .seo-navigation a:hover{border-color:#ef9a63;background:#fff8f2}
+#seo-content.seo-home h2{margin:0 0 16px;font-size:22px;line-height:1.4;letter-spacing:-.4px}
+#seo-content .seo-featured ul{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+#seo-content .seo-featured a{display:flex;align-items:center;min-height:90px;height:100%;padding:18px 20px;border:1px solid #e5e7ee;border-radius:14px;background:#fff;box-shadow:0 3px 12px rgba(30,35,60,.04);font-weight:700;overflow-wrap:anywhere}
+#seo-content .seo-featured a:hover{border-color:#ef9a63;background:#fffbf7}
+#seo-content .seo-info{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin-top:30px}
+#seo-content .seo-info section{padding:22px;border:1px solid #edf0f5;border-radius:16px;background:#f8f9fc}
+#seo-content .seo-info h2{font-size:19px;margin-bottom:10px}
+#seo-content .seo-info p{margin:0;color:#646978}
+@media(max-width:760px){#seo-content.seo-home{padding:20px 16px 32px}#seo-content .seo-brand{margin-bottom:18px;font-size:23px}#seo-content .seo-hero{padding:24px 20px}#seo-content .seo-featured ul{grid-template-columns:repeat(2,minmax(0,1fr))}#seo-content .seo-info{grid-template-columns:1fr}#seo-content .seo-navigation a{padding:9px 13px;font-size:14px}}
+@media(max-width:420px){#seo-content .seo-featured ul{grid-template-columns:1fr}#seo-content .seo-featured a{min-height:72px}}
+</style>
+<main id="seo-content" class="seo-home">
+  <a class="seo-brand" href="${escapeHtml(homePath)}">OnePickGame</a>
+  <header class="seo-hero">
+    <h1>${escapeHtml(homeBody.h1)}</h1>
+    <p>${escapeHtml(homeBody.intro)}</p>
+  </header>
+  <nav class="seo-navigation" aria-label="${escapeHtml(navCopy[0])}">
     <ul>${homeNavigation}</ul>
   </nav>
-  ${homeGameLinks ? `<section><h2>${escapeHtml(homeBody.featuredTitle)}</h2><ul>${homeGameLinks}</ul></section>` : ""}
-  <article>
-
-    <h1>
-      ${escapeHtml(homeBody.h1)}
-    </h1>
-
-    <p>
-      ${escapeHtml(homeBody.intro)}
-    </p>
-
+  ${homeGameLinks ? `<section class="seo-featured"><h2>${escapeHtml(homeBody.featuredTitle)}</h2><ul>${homeGameLinks}</ul></section>` : ""}
+  <div class="seo-info">
     <section>
-      <h2>
-        ${escapeHtml(homeBody.playTitle)}
-      </h2>
-
-      <p>
-        ${escapeHtml(homeBody.playText)}
-      </p>
+      <h2>${escapeHtml(homeBody.playTitle)}</h2>
+      <p>${escapeHtml(homeBody.playText)}</p>
     </section>
     <section>
-      <h2>
-        ${escapeHtml(homeBody.createTitle)}
-      </h2>
-
-      <p>
-        ${escapeHtml(homeBody.createText)}
-      </p>
+      <h2>${escapeHtml(homeBody.createTitle)}</h2>
+      <p>${escapeHtml(homeBody.createText)}</p>
     </section>
-
-  </article>
+  </div>
 </main>
 `;
 
