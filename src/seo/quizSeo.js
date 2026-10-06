@@ -1,3 +1,4 @@
+import contentDescription from "./contentDescription";
 // Browser-safe quiz SEO helpers.
 // IMPORTANT: this is the client-side ESM version.
 // CRA/Webpack treats .cjs files as static assets in this project, so React code
@@ -140,7 +141,7 @@ export function getQuizSeo(language, quiz, origin = SITE_URL) {
       ? `${name} | ${lang === "ko" ? "원픽게임" : "OnePickGame"}`
       : copy.title,
     description: quiz
-      ? localized(quiz.description_translations, quiz.description, lang) ||
+      ? contentDescription.quizDescription(quiz, quiz.seo_questions, lang) ||
         `${name} · ${copy.description}`
       : copy.description,
     image: socialImage(quiz?.seo_image_url || quiz?.thumbnail_url, origin),

@@ -1,3 +1,4 @@
+import contentDescription from "../seo/contentDescription";
 import { socialImage } from "../seo/quizSeo";
 import { TierTags, PresetTitle } from "./TierTagTools";
 import "../registerPresetTranslations";
@@ -671,7 +672,7 @@ if (mounted) {
                 "tier_lists"
               )
               .select(
-                "id, user_id, guest_nickname, title, title_translations, source_worldcup_id, category, thumbnail_url, candidate_count, has_one_pick, view_count, like_count, comment_count, clone_count, created_at, tier_labels, tiers, candidates"
+                "id, user_id, guest_nickname, title, title_translations, description, description_translations, source_worldcup_id, category, thumbnail_url, candidate_count, has_one_pick, view_count, like_count, comment_count, clone_count, created_at, tier_labels, tiers, candidates"
               )
               .eq(
                 "id",
@@ -2798,7 +2799,7 @@ const seoResultTitle = t(
   }
 );
 
-const seoResultDescription = t(
+const seoResultDescription = contentDescription.tierDescription(tierList, lang) || t(
   "tierList.seo.resultDescription",
   {
     title: displayTitle,

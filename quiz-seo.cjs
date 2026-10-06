@@ -13,7 +13,8 @@ function renderHtml(template, seo, body, indexable = true) {
     .replace(/<link\b[^>]*rel\s*=\s*(?:["'](?:canonical|alternate)["']|(?:canonical|alternate)(?=[\s/>]))[^>]*>/gi, '')
     .replace(/<html\b[^>]*>/i, '<html lang="' + seo.lang + '" dir="' + (seo.lang === 'ar' ? 'rtl' : 'ltr') + '">');
   const meta = (attribute, key, value) => '<meta data-rh="true" ' + attribute + '="' + key + '" content="' + esc(value) + '">';
-  const jsonLd = { '@context': 'https://schema.org', '@type': 'WebPage', name: seo.title, description: seo.description, url: seo.canonical, inLanguage: seo.lang, primaryImageOfPage: { '@type': 'ImageObject', url: seo.image }, isPartOf: { '@type': 'WebSite', name: 'OnePickGame', url: new URL(seo.canonical).origin } };
+  const jsonLd = { '@context': 'https://schema.org', '@type': seo.slug === 'quiz' ? 'CollectionPage' : 'WebPage', name: seo.title, description: seo.description, url: seo.canonical, inLanguage: seo.lang, primaryImageOfPage: { '@type': 'ImageObject', url: seo.image }, isPartOf: { '@type': 'WebSite', name: 'OnePickGame', url: new URL(seo.canonical).origin } };
+  if (seo.items) jsonLd.mainEntity = { '@type': 'ItemList', itemListElement: seo.items.map((q, index) => ({ '@type': 'ListItem', position: index + 1, name: localized(q.title_translations, q.title, seo.lang), url: new URL('/' + seo.lang + '/quiz/' + encodeURIComponent(q.id), seo.canonical).href })) };
   const head = [
     '<title data-rh="true">' + esc(seo.title) + '</title>',
     meta('name', 'description', seo.description),
@@ -89,13 +90,14 @@ module.exports = function installQuizSeo(app, db, origin, options = {}) {
         data = result.data;
         if (detail && !data) return res.set('Cache-Control', 'no-store').status(404).send('Quiz not found');
       }
-      if (detail && socialImage(data.thumbnail_url, origin) === socialImage("", origin)) {
+      if (detail && (!localized(data.description_translations, data.description, lang) || socialImage(data.thumbnail_url, origin) === socialImage("", origin))) {
         // A missing image must not prevent the public quiz page from loading.
         try {
           const { data: images, error: imageError } = await db.from('quiz_questions')
-            .select('image_url').eq('quiz_id', id).not('image_url', 'is', null)
-            .neq('image_url', '').order('sort_order', { ascending: true }).limit(20);
+            .select('image_url,question_text,question_translations').eq('quiz_id', id)
+            .order('sort_order', { ascending: true }).limit(20);
           if (imageError) throw imageError;
+          data.seo_questions = images || [];
           data.seo_image_url = (images || []).map(q => socialImage(q.image_url, origin))
             .find(image => image !== socialImage("", origin));
         } catch (error) {
@@ -103,6 +105,7 @@ module.exports = function installQuizSeo(app, db, origin, options = {}) {
         }
       }
       const seo = getQuizSeo(lang, detail ? data : undefined, origin);
+      if (!detail && !creator) seo.items = data || [];
       if (creator) { seo.slug = 'quiz/create'; seo.canonical = origin + '/' + lang + '/quiz/create'; }
       const indexable = !creator && (!detail || seo.languages.includes(lang));
       const links = detail || creator

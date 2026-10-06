@@ -1,3 +1,4 @@
+const contentDescription = require("./src/seo/contentDescription.js");
 const { socialImage: gameSocialImage } = require("./src/seo/quizSeo.cjs");
 const worldcupMetadata = require("./src/seo/worldcupMetadata.js");
 /// server.js
@@ -1946,6 +1947,7 @@ app.use(async (req, res, next) => {
       description: text.description,
       url: canonical,
       inLanguage: lang,
+      mainEntity: { "@type": "ItemList", itemListElement: tierLists.filter(item => item?.id).slice(0, 40).map((item, index) => ({ "@type": "ListItem", position: index + 1, name: localizedTitle(item), url: `${SITE_URL}/${lang}/tier-list/${encodeURIComponent(item.id)}` })) },
       isPartOf: { "@type": "WebSite", name: "OnePickGame", url: SITE_URL },
     };
 
@@ -2070,6 +2072,7 @@ const indexable = true;
       ""
     ).replace(/\s+/g, " ").trim();
 
+    tierDescription = contentDescription.tierDescription(tierList, lang);
     const count = Number(tierList.candidate_count || 0);
     if (!tierDescription) {
       if (lang === "ko") {

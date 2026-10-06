@@ -1062,7 +1062,7 @@ export default function QuizDetailPage() {
   const quizSeoImage = [quiz.thumbnail_url, ...allQuestions.map(question => question?.image_url)]
     .map(value => socialImage(value))
     .find(value => value !== fallbackSeoImage) || fallbackSeoImage;
-  const seo = getQuizSeo(lang, { ...quiz, seo_image_url: quizSeoImage });
+  const seo = getQuizSeo(lang, { ...quiz, seo_image_url: quizSeoImage, seo_questions: allQuestions });
 
 
 

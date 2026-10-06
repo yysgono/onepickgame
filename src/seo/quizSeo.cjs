@@ -1,3 +1,4 @@
+const contentDescription = require("./contentDescription.js");
 // One source for server HTML, client metadata and quiz sitemap languages.
 const COPY = require('./quizSeoData.json');
 const LANGS = Object.keys(COPY);
@@ -51,7 +52,7 @@ function getQuizSeo(language, quiz, origin = SITE_URL) {
     lang, slug, name,
     heading: quiz ? name : copy.heading || copy.name,
     title: quiz ? `${name} | ${lang === 'ko' ? '원픽게임' : 'OnePickGame'}` : copy.title,
-    description: quiz ? localized(quiz.description_translations, quiz.description, lang) || `${name} · ${copy.description}` : copy.description,
+    description: quiz ? contentDescription.quizDescription(quiz, quiz.seo_questions, lang) || `${name} · ${copy.description}` : copy.description,
     image: socialImage(quiz?.seo_image_url || quiz?.thumbnail_url, origin),
     canonical: `${origin}/${lang}/${slug}`,
     languages: quiz ? quizLanguages(quiz) : LANGS,
