@@ -2626,7 +2626,7 @@ let seoTitle;
 
 if (lang === "ko") {
   seoTitle =
-    `이상형 월드컵 | ${worldcupTitle} | OnePickGame 원픽게임`;
+    `이상형 월드컵 | ${worldcupTitle} | 원픽게임`;
 } else if (lang === "ja") {
   seoTitle =
     `${worldcupTitle} トーナメント | OnePickGame`;

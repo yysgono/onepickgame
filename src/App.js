@@ -1230,7 +1230,7 @@ const pageSeoTitle =
   normalizedLang === "en"
     ? `${cleanEnglishTitle} Tournament Bracket Game | Ideal Type World Cup | OnePickGame`
     : normalizedLang === "ko"
-      ? `이상형 월드컵 | ${translatedTitle} | OnePickGame 원픽게임`
+      ? `이상형 월드컵 | ${translatedTitle} | 원픽게임`
       : `${worldCupKeyword} - ${translatedTitle} | OnePickGame`;
      const savedDescription =
   getWorldcupDescription(cup, normalizedLang);
