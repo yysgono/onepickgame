@@ -1,7 +1,7 @@
 // Public metadata and question image URLs only; never select answers or participant records.
 const { COPY, LANGS, UUID, DEFAULT_QUIZ_LANGUAGE, getQuizSeo, quizLanguages, localized, socialImage } = require('./src/seo/quizSeo.cjs');
 const { loadSeoTemplate } = require('./seo-template.cjs');
-const fields = 'id,title,title_translations,description,description_translations,original_language,content_languages,thumbnail_url';
+const fields = 'id,title,title_translations,description,description_translations,original_language,content_languages,thumbnail_url,question_count';
 const esc = (s = '') => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const safeJson = value => JSON.stringify(value).replace(/</g, '\\u003c');
 const PUBLIC_CACHE = 'public, max-age=0, s-maxage=300, stale-while-revalidate=600';
@@ -94,7 +94,7 @@ module.exports = function installQuizSeo(app, db, origin, options = {}) {
         // A missing image must not prevent the public quiz page from loading.
         try {
           const { data: images, error: imageError } = await db.from('quiz_questions')
-            .select('image_url,question_text,question_translations').eq('quiz_id', id)
+            .select('image_url,question_text,question_translations,question_type').eq('quiz_id', id)
             .order('sort_order', { ascending: true }).limit(20);
           if (imageError) throw imageError;
           data.seo_questions = images || [];
