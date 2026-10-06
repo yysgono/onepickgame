@@ -1723,6 +1723,11 @@ try {
 
 const seoBody = `
 <style>
+#onepick-home-loader{position:fixed;inset:0;z-index:2147483000;display:flex;align-items:center;justify-content:center;background:#fff;animation:onepick-loader-fallback .01s step-end 8s forwards}
+#onepick-home-loader .onepick-spinner{width:42px;height:42px;border:4px solid #f4e6dd;border-top-color:#ec6e24;border-radius:50%;animation:onepick-loader-spin .8s linear infinite}
+@keyframes onepick-loader-spin{to{transform:rotate(360deg)}}
+@keyframes onepick-loader-fallback{to{visibility:hidden;pointer-events:none}}
+@media(prefers-reduced-motion:reduce){#onepick-home-loader .onepick-spinner{animation:none}}
 #seo-content.seo-home{box-sizing:border-box;max-width:1160px;margin:0 auto;padding:28px 24px 48px;color:#252735;font-family:"Noto Sans",Arial,sans-serif;font-size:16px;line-height:1.65;text-align:start}
 #seo-content.seo-home *{box-sizing:border-box}
 #seo-content.seo-home a{color:inherit;text-decoration:none}
@@ -1747,6 +1752,8 @@ const seoBody = `
 @media(max-width:760px){#seo-content.seo-home{padding:20px 16px 32px}#seo-content .seo-brand{margin-bottom:18px;font-size:23px}#seo-content .seo-hero{padding:24px 20px}#seo-content .seo-featured ul{grid-template-columns:repeat(2,minmax(0,1fr))}#seo-content .seo-info{grid-template-columns:1fr}#seo-content .seo-navigation a{padding:9px 13px;font-size:14px}}
 @media(max-width:420px){#seo-content .seo-featured ul{grid-template-columns:1fr}#seo-content .seo-featured a{min-height:72px}}
 </style>
+<noscript><style>#onepick-home-loader{display:none}</style></noscript>
+<div id="onepick-home-loader" aria-hidden="true"><span class="onepick-spinner"></span></div>
 <main id="seo-content" class="seo-home">
   <a class="seo-brand" href="${escapeHtml(homePath)}">OnePickGame</a>
   <header class="seo-hero">
