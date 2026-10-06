@@ -1,3 +1,4 @@
+const { selectImage: selectWorldcupSeoImage } = require("./worldcup-seo-image.cjs");
 const contentDescription = require("./src/seo/contentDescription.js");
 const { socialImage: gameSocialImage } = require("./src/seo/quizSeo.cjs");
 const worldcupMetadata = require("./src/seo/worldcupMetadata.js");
@@ -67,6 +68,32 @@ const supabase = createClient(
 );
 
 require("./quiz-seo.cjs")(app, supabase, SITE_URL);
+const worldcupImageCache = new Map();
+async function resolveWorldcupSeoImage(cup) {
+  const key = String(cup.id);
+  const cached = worldcupImageCache.get(key);
+  if (cached && cached.until > Date.now()) return cached.promise;
+  const promise = (async () => {
+    let stats = [];
+    try { const result = await supabase.rpc("get_winner_stats", { p_cup_id: cup.id, p_from: null, p_to: null }); if (!result.error) stats = result.data || []; } catch {}
+    return selectWorldcupSeoImage(cup, stats, SITE_URL, SUPABASE_URL);
+  })().catch(() => "");
+  if (worldcupImageCache.size >= 500) worldcupImageCache.delete(worldcupImageCache.keys().next().value);
+  worldcupImageCache.set(key, { until: Date.now() + 300000, promise });
+  return promise;
+}
+app.get("/api/worldcup-seo-image", async (req, res) => {
+  const id = String(req.query.id || "");
+  if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id)) return res.status(400).json({ image: "" });
+  try {
+    const { data, error } = await supabase.from("worldcups").select("*").eq("id", id).is("deleted_at", null).maybeSingle();
+    if (error) throw error;
+    if (!data) return res.status(404).json({ image: "" });
+    res.setHeader("Cache-Control", "public, max-age=0, s-maxage=300");
+    return res.json({ image: await resolveWorldcupSeoImage(data) });
+  } catch { return res.status(200).json({ image: "" }); }
+});
+
 
 const supabaseAdmin =
   SUPABASE_SERVICE_ROLE_KEY
@@ -2541,77 +2568,7 @@ function getOgImageFromCandidate(candidate) {
  * 누적 우승 횟수가 가장 많은 현재 후보를 SEO 이미지로 사용합니다.
  * 통계가 없거나 조회에 실패하면 기존 후보 이미지로 대체합니다.
  */
-let image = "";
-
-try {
-  const { data: winnerStats, error: winnerStatsError } = await supabase.rpc(
-    "get_winner_stats",
-    { p_cup_id: id, p_from: null, p_to: null }
-  );
-
-  if (winnerStatsError) throw winnerStatsError;
-
-  const candidateById = new Map(
-    candidates.map((candidate) => [String(candidate.id), candidate])
-  );
-  let topCandidate = null;
-  let topWinCount = 0;
-
-  for (const stat of winnerStats || []) {
-    const candidate = candidateById.get(String(stat.candidate_id));
-    const winCount = Number(stat.win_count || 0);
-    if (candidate && winCount > topWinCount) {
-      topCandidate = candidate;
-      topWinCount = winCount;
-    }
-  }
-
-  image = getOgImageFromCandidate(topCandidate);
-} catch (winnerStatsError) {
-  console.warn("Failed to load world cup winner for SEO image", winnerStatsError);
-}
-
-if (!image) {
-  for (const candidate of candidates) {
-    const candidateImage = getOgImageFromCandidate(candidate);
-    if (candidateImage) {
-      image = candidateImage;
-      break;
-    }
-  }
-}
-
-/*
- * 후보에서 못 찾았으면 월드컵 대표 이미지 사용
- */
-if (!image) {
-  image =
-    worldcup.image ||
-    worldcup.thumbnail ||
-    "/ogimg.png";
-}
-
-/*
- * worldcup.image 자체가 YouTube URL일 수도 있으므로
- * 한 번 더 체크
- */
-const youtubeId =
-  extractYouTubeId(image);
-
-if (youtubeId) {
-  image =
-    `https://i.ytimg.com/vi/${youtubeId}/hqdefault.jpg`;
-}
-
-/*
- * 상대 경로라면 절대 URL로 변환
- */
-if (!/^https?:\/\//i.test(image)) {
-  image =
-    `${SITE_URL}${
-      image.startsWith("/") ? "" : "/"
-    }${image}`;
-}
+const image = await resolveWorldcupSeoImage(worldcup);
 
     /*
      * hreflang
@@ -2688,20 +2645,14 @@ if (lang === "ko") {
           SITE_URL,
       },
 
-      primaryImageOfPage: {
-        "@type":
-          "ImageObject",
-
-        url:
-          image,
-      },
+      ...(image ? { primaryImageOfPage: { "@type": "ImageObject", url: image } } : {}),
     };
 
     /*
      * 서버에서 삽입할 SEO head
      */
 
-    const seoHead = `
+    let seoHead = `
 <title data-rh="true">${escapeHtml(
       seoTitle
     )}</title>
@@ -2818,6 +2769,8 @@ ${safeJson(jsonLd)}
 </script>
 `;
 
+    if (!image) seoHead = seoHead.replace(/<meta\s+[^>]*(?:property|name)="(?:og:image(?::alt)?|twitter:image(?::alt)?)"[^>]*\/?>/gi, "").replace('content="summary_large_image"', 'content="summary"');
+
     /*
      * 검색엔진이 JS 실행 전에도
      * 게임 제목/설명을 읽을 수 있게
@@ -2889,6 +2842,7 @@ ${safeJson(jsonLd)}
       )}
     </p>
 
+    ${image ? `<img src="${escapeHtml(image)}" alt="${escapeHtml(worldcupTitle)}" width="600" style="max-width:100%;height:auto;" />` : ""}
     ${candidateList}
 
   </article>

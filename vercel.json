@@ -125,6 +125,7 @@
   ],
 
   "routes": [
+    { "src": "/api/worldcup-seo-image", "dest": "/server.js" },
     {
       "src": "/sitemap-quizzes[.]xml",
       "dest": "/server.js?seo=quiz-sitemap"

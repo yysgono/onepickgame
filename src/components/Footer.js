@@ -10,6 +10,8 @@ export default function Footer() {
   const langMatch = location.pathname.match(/^\/([a-z]{2})(\/|$)/);
   const lang = langMatch ? langMatch[1] : (i18n.language || "en").split("-")[0];
 
+  const gameDetail = /^\/[a-z]{2}\/(select-round|tier-list|quiz)\/[0-9a-f-]{36}(?:\/|$)/i.test(location.pathname);
+
   return (
 <footer
   style={{
@@ -36,6 +38,7 @@ export default function Footer() {
     textAlign: "center",
   }}
 >
+        {!gameDetail && (
         <div
           style={{
             color: "#202534",
@@ -52,6 +55,7 @@ export default function Footer() {
             bracket, enjoy fun matchups, and play with users around the world!
           </Trans>
         </div>
+        )}
 
         {/* 제안 게시판: 영어 전용 루트 경로 */}
         <div style={{ marginBottom: 10 }}>

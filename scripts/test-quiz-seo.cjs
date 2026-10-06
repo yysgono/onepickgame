@@ -229,6 +229,7 @@ function loadJsx(relative) {
   const babel = require('@babel/core');
   const result = babel.transformSync(fs.readFileSync(filename, 'utf8'), { filename, configFile: false, babelrc: false, presets: [require.resolve('@babel/preset-react')], plugins: [require.resolve('@babel/plugin-transform-modules-commonjs')] });
   const instance = new Module(filename, module);
+  instance.filename = filename;
   instance.paths = Module._nodeModulePaths(path.dirname(filename));
   instance._compile(result.code, filename);
   return instance.exports.default;
@@ -271,6 +272,7 @@ test('browser quiz SEO uses an ESM .js module instead of importing .cjs as a CRA
     plugins: [require.resolve('@babel/plugin-transform-modules-commonjs')],
   });
   const instance = new Module(filename, module);
+  instance.filename = filename;
   instance.paths = Module._nodeModulePaths(path.dirname(filename));
   instance._compile(result.code, filename);
 
