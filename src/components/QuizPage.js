@@ -1,3 +1,4 @@
+import listSeo from "../seo/listSeo";
 import React, {
 
 
@@ -890,29 +891,12 @@ export default function QuizPage({ user = null }) {
     }
   }, [location.search]);
 
-  const activeCategoryLabel = c[category] || c.all;
-  const isFilteredQuizPage =
-    category !== "all" || sort !== "popular";
+  const listMetadata = listSeo.getListSeo("quiz", lang, location.search);
+  const quizSeoSlug = listMetadata.slug;
+  const quizSeoTitle = listMetadata.title;
+  const quizSeoDescription = listMetadata.description;
+  const quizSeoIndexable = listMetadata.indexable;
 
-  const quizSeoSlug = buildFilterSlug("quiz", {
-    mine: mineOnly ? "1" : "",
-    category: category !== "all" ? category : "",
-    sort: sort !== "popular" ? sort : "",
-  });
-
-  const quizSeoTitle = isFilteredQuizPage
-    ? lang === "ko"
-      ? `${activeCategoryLabel} 퀴즈 맞히기 | 원픽게임`
-      : `${activeCategoryLabel} Quizzes | OnePickGame`
-    : seo.title;
-
-  const quizSeoIndexable = !mineOnly;
-
-  const quizSeoDescription = isFilteredQuizPage
-    ? lang === "ko"
-      ? `${activeCategoryLabel} 카테고리의 인기 퀴즈와 최신 퀴즈를 원픽게임에서 무료로 풀어보세요.`
-      : `Play popular and latest ${activeCategoryLabel} quizzes for free on OnePickGame.`
-    : seo.description;
 
 
 

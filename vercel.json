@@ -125,6 +125,7 @@
   ],
 
   "routes": [
+    { "src": "/seo-shell[.]html", "dest": "/seo-shell.html" },
     { "src": "/api/worldcup-seo-image", "dest": "/server.js" },
     {
       "src": "/sitemap-quizzes[.]xml",

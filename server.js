@@ -1,3 +1,4 @@
+const { getListSeo } = require("./src/seo/listSeo.js");
 const { selectImage: selectWorldcupSeoImage } = require("./worldcup-seo-image.cjs");
 const contentDescription = require("./src/seo/contentDescription.js");
 const { socialImage: gameSocialImage } = require("./src/seo/quizSeo.cjs");
@@ -1708,6 +1709,18 @@ const homeNavigation = [
   [`/${lang}/blog`, navCopy[5]],
 ].map(([href, label]) => `<li><a href="${escapeHtml(href)}">${escapeHtml(label)}</a></li>`).join("\n");
 
+let homeGameLinks = "";
+try {
+  const { data, error } = await supabase.from("worldcups").select("id,title,title_translations")
+    .is("deleted_at", null).order("created_at", { ascending: false }).limit(12);
+  if (!error) homeGameLinks = (data || []).map(cup => {
+    let translations = cup.title_translations || {};
+    if (typeof translations === "string") { try { translations = JSON.parse(translations); } catch { translations = {}; } }
+    const title = translations[lang] || translations.en || cup.title || "World Cup";
+    return `<li><a href="${SITE_URL}/${lang}/select-round/${encodeURIComponent(cup.id)}">${escapeHtml(title)}</a></li>`;
+  }).join("");
+} catch (error) { console.warn("Home SEO game links unavailable", error.message); }
+
 const seoBody = `
 <main
   id="seo-content"
@@ -1716,6 +1729,7 @@ const seoBody = `
   <nav aria-label="${escapeHtml(navCopy[0])}">
     <ul>${homeNavigation}</ul>
   </nav>
+  ${homeGameLinks ? `<section><h2>${escapeHtml(homeBody.featuredTitle)}</h2><ul>${homeGameLinks}</ul></section>` : ""}
   <article>
 
     <h1>
@@ -1900,18 +1914,20 @@ app.use(async (req, res, next) => {
     return res.status(400).send("Unsupported language");
   }
 
-  const text = TIER_LIST_SEO_COPY[lang] || TIER_LIST_SEO_COPY.en;
-  const canonical = `${SITE_URL}/${lang}/tier-list`;
+  const listMeta = getListSeo("tier-list", lang, new URLSearchParams({ ...Object.fromEntries(new URL(req.originalUrl || "/", SITE_URL).searchParams), ...req.query }));
+  const text = { ...(TIER_LIST_SEO_COPY[lang] || TIER_LIST_SEO_COPY.en), ...listMeta };
+  const canonical = `${SITE_URL}/${lang}/${listMeta.slug}`;
   const image = `${SITE_URL}/ogimg.png`;
 
   try {
     let tierLists = [];
 
-    const { data, error } = await supabase
+    let listQuery = supabase
       .from("tier_lists")
       .select("id,title,title_translations,original_language,updated_at,candidate_count")
-      .order("updated_at", { ascending: false })
-      .limit(60);
+      ;
+    if (listMeta.category !== "all") listQuery = listQuery.eq("category", listMeta.category);
+    const { data, error } = await listQuery.order("updated_at", { ascending: false }).limit(60);
 
     if (error) {
       console.warn("티어표 목록 SEO 데이터 조회 실패:", error);
@@ -1963,9 +1979,9 @@ app.use(async (req, res, next) => {
       .replace(/<link\s+[^>]*rel=["'](?:canonical|alternate)["'][^>]*>/gi, "")
       .replace(/<html([^>]*)lang=["'][^"']*["']([^>]*)>/i, `<html$1lang="${lang}"$2>`);
 
-    const hreflangTags = SUPPORTED_LANGS.map(
-      (language) => `\n<link data-rh="true" rel="alternate" hreflang="${language}" href="${SITE_URL}/${language}/tier-list"/>`
-    ).join("");
+    const hreflangTags = listMeta.indexable ? SUPPORTED_LANGS.map(
+      (language) => `\n<link data-rh="true" rel="alternate" hreflang="${language}" href="${SITE_URL}/${language}/${listMeta.slug}"/>`
+    ).join("") : "";
 
     const jsonLd = {
       "@context": "https://schema.org",
@@ -1981,10 +1997,10 @@ app.use(async (req, res, next) => {
     const seoHead = `
 <title data-rh="true">${escapeHtml(text.title)}</title>
 <meta data-rh="true" name="description" content="${escapeHtml(text.description)}"/>
-<meta data-rh="true" name="robots" content="index, follow, max-image-preview:large"/>
+<meta data-rh="true" name="robots" content="${listMeta.indexable ? "index, follow, max-image-preview:large" : "noindex, follow"}"/>
 <link data-rh="true" rel="canonical" href="${canonical}"/>
 ${hreflangTags}
-<link data-rh="true" rel="alternate" hreflang="x-default" href="${SITE_URL}/en/tier-list"/>
+${listMeta.indexable ? `<link data-rh="true" rel="alternate" hreflang="x-default" href="${SITE_URL}/en/${listMeta.slug}"/>` : ""}
 <meta data-rh="true" property="og:type" content="website"/>
 <meta data-rh="true" property="og:title" content="${escapeHtml(text.title)}"/>
 <meta data-rh="true" property="og:description" content="${escapeHtml(text.description)}"/>

@@ -10,6 +10,7 @@ import { useTranslation } from "react-i18next";
 
 import {
 
+  Link,
   useNavigate,
 
   useLocation,
@@ -2959,11 +2960,11 @@ const totalPlays =
 
       >
 
-        <span
+        <Link to={`/${lang}/select-round/${cup.id}`} onClick={(event) => event.stopPropagation()}
 
           className="worldcup-card-title"
 
-          style={{
+          style={{ textDecoration: "none",
 
             width: "100%",
 
@@ -3023,7 +3024,7 @@ fontWeight: 800,
 
           {displayTitle}
 
-        </span>
+        </Link>
 
       </div>
 
@@ -4852,11 +4853,10 @@ return (
       if (!category) return null;
 
       return (
-        <button
+        <Link
           key={category.key}
-          type="button"
-          onClick={() => goto(`/${lang}/category/${category.slug}`)}
-          style={{
+          to={`/${lang}/category/${category.slug}`}
+          style={{ textDecoration: "none", display: "inline-flex", alignItems: "center",
             minHeight: isMobile ? 36 : 40,
             padding: isMobile ? "8px 13px" : "9px 16px",
             borderRadius: 999,
@@ -4878,7 +4878,7 @@ return (
             : t(`category_${category.key}`, {
                 defaultValue: category.label,
               })}
-        </button>
+        </Link>
       );
     })}
   </div>

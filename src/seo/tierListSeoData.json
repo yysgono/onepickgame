@@ -1,0 +1,226 @@
+{
+  "ko": {
+    "title": "티어표 만들기 · 인기 티어표 모음 | 원픽게임",
+    "description": "원픽게임에서 티어표를 만들고 게임, 애니, 연예인, 음식, 스포츠 등 다양한 주제의 티어표와 랭킹을 확인해보세요.",
+    "categories": {
+      "all": "전체",
+      "game": "게임",
+      "entertainment": "연예인",
+      "animation": "애니",
+      "food": "음식",
+      "sports": "스포츠",
+      "other": "기타",
+      "knowledge": "상식"
+    }
+  },
+  "en": {
+    "title": "Tier List Maker · Popular Tier Lists | OnePickGame",
+    "description": "Create and explore tier lists on One Pick Game. Rank games, anime, celebrities, food, sports, characters, and more with ready-made tier list presets.",
+    "categories": {
+      "all": "All",
+      "game": "Games",
+      "entertainment": "Celebrities",
+      "animation": "Animation",
+      "food": "Food",
+      "sports": "Sports",
+      "other": "Other",
+      "knowledge": "Knowledge"
+    }
+  },
+  "ja": {
+    "title": "Tier List | One Pick Game",
+    "description": "One Pick GameでTier Listを作成・閲覧できます。ゲーム、アニメ、有名人、食べ物、スポーツ、キャラクターなどをランク付けしましょう。",
+    "categories": {
+      "all": "すべて",
+      "game": "ゲーム",
+      "entertainment": "芸能人",
+      "animation": "アニメ",
+      "food": "食べ物",
+      "sports": "スポーツ",
+      "other": "その他",
+      "knowledge": "知識"
+    }
+  },
+  "zh": {
+    "title": "Tier List | One Pick Game",
+    "description": "在 One Pick Game 创建和浏览 Tier List，为游戏、动漫、明星、美食、体育、角色等主题进行分级排名。",
+    "categories": {
+      "all": "全部",
+      "game": "游戏",
+      "entertainment": "明星",
+      "animation": "动漫",
+      "food": "美食",
+      "sports": "体育",
+      "other": "其他",
+      "knowledge": "知识"
+    }
+  },
+  "ru": {
+    "title": "Tier List | One Pick Game",
+    "description": "Создавайте и смотрите tier list на One Pick Game. Оценивайте игры, аниме, знаменитостей, еду, спорт, персонажей и многое другое.",
+    "categories": {
+      "all": "Все",
+      "game": "Игры",
+      "entertainment": "Знаменитости",
+      "animation": "Анимация",
+      "food": "Еда",
+      "sports": "Спорт",
+      "other": "Другое",
+      "knowledge": "Знания"
+    }
+  },
+  "pt": {
+    "title": "Tier List | One Pick Game",
+    "description": "Crie e explore tier lists no One Pick Game. Classifique jogos, anime, celebridades, comida, esportes, personagens e muito mais.",
+    "categories": {
+      "all": "Todos",
+      "game": "Jogos",
+      "entertainment": "Celebridades",
+      "animation": "Animação",
+      "food": "Comida",
+      "sports": "Esportes",
+      "other": "Outros",
+      "knowledge": "Conhecimento"
+    }
+  },
+  "es": {
+    "title": "Tier List | One Pick Game",
+    "description": "Crea y explora tier lists en One Pick Game. Clasifica juegos, anime, famosos, comida, deportes, personajes y más.",
+    "categories": {
+      "all": "Todo",
+      "game": "Juegos",
+      "entertainment": "Celebridades",
+      "animation": "Animación",
+      "food": "Comida",
+      "sports": "Deportes",
+      "other": "Otros",
+      "knowledge": "Cultura"
+    }
+  },
+  "fr": {
+    "title": "Tier List | One Pick Game",
+    "description": "Créez et explorez des tier lists sur One Pick Game. Classez jeux, anime, célébrités, nourriture, sports, personnages et plus encore.",
+    "categories": {
+      "all": "Tout",
+      "game": "Jeux",
+      "entertainment": "Célébrités",
+      "animation": "Animation",
+      "food": "Nourriture",
+      "sports": "Sports",
+      "other": "Autres",
+      "knowledge": "Culture"
+    }
+  },
+  "id": {
+    "title": "Tier List | One Pick Game",
+    "description": "Buat dan jelajahi tier list di One Pick Game. Peringkatkan game, anime, selebritas, makanan, olahraga, karakter, dan lainnya.",
+    "categories": {
+      "all": "Semua",
+      "game": "Game",
+      "entertainment": "Selebritas",
+      "animation": "Animasi",
+      "food": "Makanan",
+      "sports": "Olahraga",
+      "other": "Lainnya",
+      "knowledge": "Pengetahuan"
+    }
+  },
+  "hi": {
+    "title": "Tier List | One Pick Game",
+    "description": "One Pick Game पर tier list बनाएं और देखें। गेम, एनीमे, सेलिब्रिटी, भोजन, खेल, पात्र और बहुत कुछ रैंक करें।",
+    "categories": {
+      "all": "सभी",
+      "game": "गेम",
+      "entertainment": "सेलिब्रिटी",
+      "animation": "एनीमेशन",
+      "food": "खाना",
+      "sports": "खेल",
+      "other": "अन्य",
+      "knowledge": "ज्ञान"
+    }
+  },
+  "de": {
+    "title": "Tier List | One Pick Game",
+    "description": "Erstelle und entdecke Tier Lists auf One Pick Game. Bewerte Games, Anime, Promis, Essen, Sport, Charaktere und mehr.",
+    "categories": {
+      "all": "Alle",
+      "game": "Spiele",
+      "entertainment": "Promis",
+      "animation": "Animation",
+      "food": "Essen",
+      "sports": "Sport",
+      "other": "Sonstiges",
+      "knowledge": "Wissen"
+    }
+  },
+  "vi": {
+    "title": "Tier List | One Pick Game",
+    "description": "Tạo và khám phá tier list trên One Pick Game. Xếp hạng game, anime, người nổi tiếng, đồ ăn, thể thao, nhân vật và nhiều chủ đề khác.",
+    "categories": {
+      "all": "Tất cả",
+      "game": "Trò chơi",
+      "entertainment": "Người nổi tiếng",
+      "animation": "Hoạt hình",
+      "food": "Ẩm thực",
+      "sports": "Thể thao",
+      "other": "Khác",
+      "knowledge": "Kiến thức"
+    }
+  },
+  "ar": {
+    "title": "Tier List | One Pick Game",
+    "description": "أنشئ واستكشف Tier List على One Pick Game ورتّب الألعاب والأنمي والمشاهير والطعام والرياضة والشخصيات والمزيد.",
+    "categories": {
+      "all": "الكل",
+      "game": "ألعاب",
+      "entertainment": "مشاهير",
+      "animation": "رسوم متحركة",
+      "food": "طعام",
+      "sports": "رياضة",
+      "other": "أخرى",
+      "knowledge": "معرفة"
+    }
+  },
+  "bn": {
+    "title": "Tier List | One Pick Game",
+    "description": "One Pick Game-এ tier list তৈরি ও দেখুন। গেম, অ্যানিমে, সেলিব্রিটি, খাবার, খেলাধুলা, চরিত্র এবং আরও অনেক কিছু র‍্যাঙ্ক করুন।",
+    "categories": {
+      "all": "সব",
+      "game": "গেম",
+      "entertainment": "সেলিব্রিটি",
+      "animation": "অ্যানিমেশন",
+      "food": "খাবার",
+      "sports": "খেলাধুলা",
+      "other": "অন্যান্য",
+      "knowledge": "জ্ঞান"
+    }
+  },
+  "th": {
+    "title": "Tier List | One Pick Game",
+    "description": "สร้างและสำรวจ tier list บน One Pick Game จัดอันดับเกม อนิเมะ คนดัง อาหาร กีฬา ตัวละคร และอีกมากมาย",
+    "categories": {
+      "all": "ทั้งหมด",
+      "game": "เกม",
+      "entertainment": "คนดัง",
+      "animation": "แอนิเมชัน",
+      "food": "อาหาร",
+      "sports": "กีฬา",
+      "other": "อื่นๆ",
+      "knowledge": "ความรู้"
+    }
+  },
+  "tr": {
+    "title": "Tier List | One Pick Game",
+    "description": "One Pick Game üzerinde tier list oluştur ve keşfet. Oyunları, animeleri, ünlüleri, yemekleri, sporları, karakterleri ve daha fazlasını sırala.",
+    "categories": {
+      "all": "Tümü",
+      "game": "Oyunlar",
+      "entertainment": "Ünlüler",
+      "animation": "Animasyon",
+      "food": "Yemek",
+      "sports": "Spor",
+      "other": "Diğer",
+      "knowledge": "Bilgi"
+    }
+  }
+}

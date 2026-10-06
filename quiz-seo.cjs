@@ -1,3 +1,4 @@
+const { getListSeo } = require("./src/seo/listSeo.js");
 // Public metadata and question image URLs only; never select answers or participant records.
 const { COPY, LANGS, UUID, DEFAULT_QUIZ_LANGUAGE, getQuizSeo, quizLanguages, localized, socialImage } = require('./src/seo/quizSeo.cjs');
 const { loadSeoTemplate } = require('./seo-template.cjs');
@@ -81,9 +82,11 @@ module.exports = function installQuizSeo(app, db, origin, options = {}) {
     const creator = kind === 'quiz-create';
     if (detail && !UUID.test(id)) return res.set('Cache-Control', 'no-store').status(404).send('Quiz not found');
     try {
+      const listMeta = getListSeo('quiz', lang, new URLSearchParams({ ...Object.fromEntries(new URL(req.originalUrl || '/', origin).searchParams), ...req.query }));
       let data = null;
       if (!creator) {
         let query = db.from('quizzes').select(fields).eq('is_published', true);
+        if (!detail && listMeta.category !== 'all') query = query.eq('category', listMeta.category);
         query = detail ? query.eq('id', id).maybeSingle() : query.contains('content_languages', [lang]).order('play_count', { ascending: false }).order('id').limit(60);
         const result = await query;
         if (result.error) throw result.error;
@@ -105,9 +108,9 @@ module.exports = function installQuizSeo(app, db, origin, options = {}) {
         }
       }
       const seo = getQuizSeo(lang, detail ? data : undefined, origin);
-      if (!detail && !creator) seo.items = data || [];
+      if (!detail && !creator) { Object.assign(seo, listMeta); seo.canonical = origin + '/' + lang + '/' + listMeta.slug; seo.items = data || []; }
       if (creator) { seo.slug = 'quiz/create'; seo.canonical = origin + '/' + lang + '/quiz/create'; }
-      const indexable = !creator && (!detail || seo.languages.includes(lang));
+      const indexable = !creator && (detail ? seo.languages.includes(lang) : listMeta.indexable);
       const links = detail || creator
         ? '<a href="' + origin + '/' + lang + '/quiz">' + esc(COPY[lang].name) + '</a>'
         : '<ul>' + (data || []).map(q => '<li><a href="' + origin + '/' + lang + '/quiz/' + encodeURIComponent(q.id) + '">' + esc(localized(q.title_translations, q.title, lang)) + '</a></li>').join('') + '</ul>';

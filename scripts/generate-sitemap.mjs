@@ -268,29 +268,13 @@ export function generateLanguageSitemap(
     priority: "1.0",
   });
 
-  // 개인정보 처리방침
-  xml += makeUrlEntry({
-    loc: `${BASE_URL}/${lang}/privacy-policy`,
-    lastmod: today,
-    changefreq: "yearly",
-    priority: "0.5",
-  });
-
-  // 이용약관
-  xml += makeUrlEntry({
-    loc: `${BASE_URL}/${lang}/terms-of-service`,
-    lastmod: today,
-    changefreq: "yearly",
-    priority: "0.5",
-  });
-
-  // 건의사항
-  xml += makeUrlEntry({
-    loc: `${BASE_URL}/${lang}/suggestions`,
-    lastmod: today,
-    changefreq: "weekly",
-    priority: "0.6",
-  });
+  // These documents have a single English canonical; omit redirected language aliases.
+  if (lang === "en") {
+    for (const slug of ["privacy-policy", "terms-of-service"]) {
+      xml += makeUrlEntry({ loc: `${BASE_URL}/en/${slug}`, changefreq: "yearly", priority: "0.5" });
+    }
+    xml += makeUrlEntry({ loc: `${BASE_URL}/suggestions-board`, changefreq: "weekly", priority: "0.6" });
+  }
 
   // 티어표 목록
   xml += makeUrlEntry({

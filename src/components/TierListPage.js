@@ -1,3 +1,4 @@
+import listSeo from "../seo/listSeo";
 import ContentNav from "./ContentNav";
 import { normalizeTags } from "./TierTagTools";
 import React, {
@@ -1564,36 +1565,11 @@ const displayTitle =
     </aside>
   );
 
-  const activeCategoryLabel = t(
-    `tierList.categories.${category}`,
-    { defaultValue: category }
-  );
-
-  const isFilteredTierPage =
-    category !== "all" || sort !== "popular";
-
-  const seoSlug = buildFilterSlug("tier-list", {
-    category: category !== "all" ? category : "",
-    sort: sort !== "popular" ? sort : "",
-  });
-
-  const seoTitle = isFilteredTierPage
-    ? lang === "ko"
-      ? `${activeCategoryLabel} 티어표 모음 | 원픽게임`
-      : `${activeCategoryLabel} Tier Lists | OnePickGame`
-    : t("tierList.seo.listTitle");
-
-  const seoDescription = isFilteredTierPage
-    ? lang === "ko"
-      ? `${activeCategoryLabel} 카테고리의 인기 티어표와 최신 티어표를 원픽게임에서 둘러보세요.`
-      : `Browse popular and latest ${activeCategoryLabel} tier lists on OnePickGame.`
-    : t("tierList.seo.listDescription");
-
-  const seoIndexable =
-    !mineOnly &&
-    !sourceWorldcupFilter &&
-    !presetNameFilter &&
-    !tagFilter;
+  const listMetadata = listSeo.getListSeo("tier-list", lang, location.search);
+  const seoSlug = listMetadata.slug;
+  const seoTitle = listMetadata.title;
+  const seoDescription = listMetadata.description;
+  const seoIndexable = listMetadata.indexable && !mineOnly && !sourceWorldcupFilter && !presetNameFilter && !tagFilter;
 
   return (
     <>
