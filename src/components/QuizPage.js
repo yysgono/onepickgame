@@ -2224,11 +2224,7 @@ export default function QuizPage({ user = null }) {
 
 
 
-              display:
-
-
-
-                "flex",
+              display: mobile ? "none" : "flex",
 
 
 

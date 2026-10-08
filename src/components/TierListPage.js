@@ -1711,7 +1711,7 @@ maxWidth: isMobile ? 430 : 1780,
 <div
   style={{
     margin: isMobile ? "6px 0 10px" : "8px 0 12px",
-    display: "flex",
+    display: isMobile ? "none" : "flex",
     flexWrap: "wrap",
     justifyContent: "center",
     alignItems: "center",
