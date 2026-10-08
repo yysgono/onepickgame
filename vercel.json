@@ -1,6 +1,5 @@
 {
   "version": 2,
-
   "builds": [
     {
       "src": "server.js",
@@ -14,7 +13,6 @@
       }
     }
   ],
-
   "redirects": [
     {
       "source": "/quiz/:path*",
@@ -32,46 +30,50 @@
       "destination": "https://www.onepickgame.com/:path*",
       "permanent": true
     },
-
     {
       "source": "/(ar|bn|de|es|fr|hi|id|ja|ko|pt|ru|th|tr|vi|zh)/privacy-policy",
       "destination": "/en/privacy-policy",
       "permanent": true
     },
-
     {
       "source": "/(ar|bn|de|es|fr|hi|id|ja|ko|pt|ru|th|tr|vi|zh)/terms-of-service",
       "destination": "/en/terms-of-service",
       "permanent": true
     },
-
     {
       "source": "/(ar|bn|de|es|fr|hi|id|ja|ko|pt|ru|th|tr|vi|zh)/suggestions-board",
       "destination": "/en/suggestions-board",
       "permanent": true
     },
-
     {
       "source": "/(ar|bn|de|es|fr|hi|id|ja|ko|pt|ru|th|tr|vi|zh)/suggestions",
       "destination": "/en/suggestions-board",
       "permanent": true
     },
-
     {
       "source": "/(ar|bn|de|es|fr|hi|id|ja|ko|pt|ru|th|tr|vi|zh)/notice",
       "destination": "/en/notice",
       "permanent": true
     }
   ],
-
   "headers": [
     {
       "source": "/sitemap-quizzes.xml",
-      "headers": [{ "key": "Content-Type", "value": "application/xml; charset=utf-8" }]
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/xml; charset=utf-8"
+        }
+      ]
     },
     {
       "source": "/sitemap.xml",
-      "headers": [{ "key": "Content-Type", "value": "application/xml; charset=utf-8" }]
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/xml; charset=utf-8"
+        }
+      ]
     },
     {
       "source": "/sitemap_index-v2.xml",
@@ -82,7 +84,6 @@
         }
       ]
     },
-
     {
       "source": "/sitemaps/(.*)\\.xml",
       "headers": [
@@ -92,7 +93,6 @@
         }
       ]
     },
-
     {
       "source": "/api/sitemap-blog",
       "headers": [
@@ -102,7 +102,6 @@
         }
       ]
     },
-
     {
       "source": "/robots\\.txt",
       "headers": [
@@ -112,7 +111,6 @@
         }
       ]
     },
-
     {
       "source": "/ads\\.txt",
       "headers": [
@@ -123,10 +121,19 @@
       ]
     }
   ],
-
   "routes": [
-    { "src": "/seo-shell[.]html", "dest": "/seo-shell.html" },
-    { "src": "/api/worldcup-seo-image", "dest": "/server.js" },
+    {
+      "src": "/seo-shell[.]html",
+      "dest": "/seo-shell.html"
+    },
+    {
+      "src": "/api/worldcup-seo-image",
+      "dest": "/server.js"
+    },
+    {
+      "src": "/(ko|en|ja|zh|ru|pt|es|fr|id|hi|de|vi|ar|bn|th|tr)/category/([^/]+)/?$",
+      "dest": "/server.js?seo=category&lang=$1&category=$2"
+    },
     {
       "src": "/sitemap-quizzes[.]xml",
       "dest": "/server.js?seo=quiz-sitemap"
@@ -135,56 +142,46 @@
       "src": "/api/(.*)",
       "dest": "/server.js"
     },
-
     {
       "src": "/?$",
       "dest": "/server.js?seo=home&lang=en"
     },
-
     {
       "src": "/(ko|en|ja|zh|ru|pt|es|fr|id|hi|de|vi|ar|bn|th|tr)/?$",
       "dest": "/server.js?seo=home&lang=$1"
     },
-
     {
       "src": "/(ko|en|ja|zh|ru|pt|es|fr|id|hi|de|vi|ar|bn|th|tr)/blog/?$",
       "dest": "/server.js?seo=blog-list&lang=$1"
     },
-
     {
       "src": "/(ko|en|ja|zh|ru|pt|es|fr|id|hi|de|vi|ar|bn|th|tr)/blog/([^/]+)/?$",
       "dest": "/server.js?seo=blog-post&lang=$1&slug=$2"
     },
-
-{
-  "src": "/(ko|en|ja|zh|ru|pt|es|fr|id|hi|de|vi|ar|bn|th|tr)/select-round/([^/]+)/?$",
-  "dest": "/server.js?seo=worldcup&lang=$1&id=$2"
-},
-
-{
-  "src": "/(ko|en|ja|zh|ru|pt|es|fr|id|hi|de|vi|ar|bn|th|tr)/tier-list/?$",
-  "dest": "/server.js?seo=tier-list-list&lang=$1"
-},
-
-{
-  "src": "/(ko|en|ja|zh|ru|pt|es|fr|id|hi|de|vi|ar|bn|th|tr)/tier-list/create/?$",
-  "dest": "/"
-},
-
-{
-  "src": "/(ko|en|ja|zh|ru|pt|es|fr|id|hi|de|vi|ar|bn|th|tr)/tier-list/create/([^/]+)/?$",
-  "dest": "/"
-},
-
-{
-  "src": "/(ko|en|ja|zh|ru|pt|es|fr|id|hi|de|vi|ar|bn|th|tr)/tier-list/([^/]+)/?$",
-  "dest": "/server.js?seo=tier-list&lang=$1&id=$2"
-},
-
-{
-  "src": "/(ko|en|ja|zh|ru|pt|es|fr|id|hi|de|vi|ar|bn|th|tr)/quiz/?$",
-  "dest": "/server.js?seo=quiz-list&lang=$1"
-},
+    {
+      "src": "/(ko|en|ja|zh|ru|pt|es|fr|id|hi|de|vi|ar|bn|th|tr)/select-round/([^/]+)/?$",
+      "dest": "/server.js?seo=worldcup&lang=$1&id=$2"
+    },
+    {
+      "src": "/(ko|en|ja|zh|ru|pt|es|fr|id|hi|de|vi|ar|bn|th|tr)/tier-list/?$",
+      "dest": "/server.js?seo=tier-list-list&lang=$1"
+    },
+    {
+      "src": "/(ko|en|ja|zh|ru|pt|es|fr|id|hi|de|vi|ar|bn|th|tr)/tier-list/create/?$",
+      "dest": "/"
+    },
+    {
+      "src": "/(ko|en|ja|zh|ru|pt|es|fr|id|hi|de|vi|ar|bn|th|tr)/tier-list/create/([^/]+)/?$",
+      "dest": "/"
+    },
+    {
+      "src": "/(ko|en|ja|zh|ru|pt|es|fr|id|hi|de|vi|ar|bn|th|tr)/tier-list/([^/]+)/?$",
+      "dest": "/server.js?seo=tier-list&lang=$1&id=$2"
+    },
+    {
+      "src": "/(ko|en|ja|zh|ru|pt|es|fr|id|hi|de|vi|ar|bn|th|tr)/quiz/?$",
+      "dest": "/server.js?seo=quiz-list&lang=$1"
+    },
     {
       "src": "/(ko|en|ja|zh|ru|pt|es|fr|id|hi|de|vi|ar|bn|th|tr)/quiz/create/?$",
       "dest": "/server.js?seo=quiz-create&lang=$1"
@@ -196,13 +193,11 @@
     {
       "handle": "filesystem"
     },
-
     {
       "src": "/(.*)",
-      "dest": "/"
+      "dest": "/server.js?seo=spa&path=$1"
     }
   ],
-
   "trailingSlash": false,
   "cleanUrls": true
 }

@@ -69,6 +69,7 @@ const supabase = createClient(
 );
 
 require("./quiz-seo.cjs")(app, supabase, SITE_URL);
+require("./category-routes.cjs")(app, supabase, SITE_URL);
 const worldcupImageCache = new Map();
 async function resolveWorldcupSeoImage(cup) {
   const key = String(cup.id);

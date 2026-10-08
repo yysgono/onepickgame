@@ -1,3 +1,5 @@
+import categoryLabels from "./seo/categoryLabels.json";
+import NotFoundPage from "./components/NotFoundPage";
 import WorldcupDetailSeo from "./seo/WorldcupDetailSeo";
 import worldcupMetadata from "./seo/worldcupMetadata.js";
 import "./i18n";
@@ -1834,7 +1836,7 @@ const makerDescMap = {
 />
 <Route
   path="/:lang"
-  element={
+  element={Object.prototype.hasOwnProperty.call(categoryLabels, location.pathname.split("/")[1]) ? (
                 <>
                                     <LanguageWrapper
                     worldcupList={
@@ -1884,7 +1886,7 @@ const makerDescMap = {
                     }
                   />
                 </>
-              }
+              ) : <NotFoundPage />}
             />
 
 {/* ID 없는 잘못된 게임 URL → 해당 언어 홈으로 이동 */}
@@ -2087,10 +2089,7 @@ const makerDescMap = {
             <Route
               path="*"
               element={
-                <Navigate
-                  to="/en"
-                  replace
-                />
+                <NotFoundPage />
               }
             />
           </Routes>

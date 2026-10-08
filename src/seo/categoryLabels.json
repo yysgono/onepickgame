@@ -1,0 +1,178 @@
+{
+  "en": {
+    "person": "People",
+    "music": "Music",
+    "korea": "K-Celeb",
+    "game": "Games",
+    "sports": "Sports",
+    "anime_manga": "Anime / Manga",
+    "movie_drama": "Movies / TV",
+    "food": "Food",
+    "etc": "Other"
+  },
+  "ko": {
+    "person": "인물",
+    "music": "음악",
+    "korea": "K-셀럽",
+    "game": "게임",
+    "sports": "스포츠",
+    "anime_manga": "애니 / 만화",
+    "movie_drama": "영화 / 드라마",
+    "food": "음식",
+    "etc": "기타"
+  },
+  "ja": {
+    "person": "人物",
+    "music": "音楽",
+    "korea": "韓国芸能人",
+    "game": "ゲーム",
+    "sports": "スポーツ",
+    "anime_manga": "アニメ / 漫画",
+    "movie_drama": "映画 / ドラマ",
+    "food": "グルメ",
+    "etc": "その他"
+  },
+  "zh": {
+    "person": "人物",
+    "music": "音乐",
+    "korea": "韩国明星",
+    "game": "游戏",
+    "sports": "体育",
+    "anime_manga": "动漫 / 漫画",
+    "movie_drama": "电影 / 电视剧",
+    "food": "美食",
+    "etc": "其他"
+  },
+  "ru": {
+    "person": "Люди",
+    "music": "Музыка",
+    "korea": "Корейские знаменитости",
+    "game": "Игры",
+    "sports": "Спорт",
+    "anime_manga": "Аниме / Манга",
+    "movie_drama": "Фильмы / Сериалы",
+    "food": "Еда",
+    "etc": "Другое"
+  },
+  "pt": {
+    "person": "Pessoas",
+    "music": "Música",
+    "korea": "Celebridades coreanas",
+    "game": "Jogos",
+    "sports": "Esportes",
+    "anime_manga": "Anime / Mangá",
+    "movie_drama": "Filmes / Séries",
+    "food": "Comida",
+    "etc": "Outros"
+  },
+  "es": {
+    "person": "Personas",
+    "music": "Música",
+    "korea": "Celebridades coreanas",
+    "game": "Videojuegos",
+    "sports": "Deportes",
+    "anime_manga": "Anime / Manga",
+    "movie_drama": "Películas / Series",
+    "food": "Comida",
+    "etc": "Otros"
+  },
+  "fr": {
+    "person": "Personnalités",
+    "music": "Musique",
+    "korea": "Célébrités coréennes",
+    "game": "Jeux vidéo",
+    "sports": "Sports",
+    "anime_manga": "Anime / Manga",
+    "movie_drama": "Films / Séries",
+    "food": "Cuisine",
+    "etc": "Autres"
+  },
+  "id": {
+    "person": "Tokoh",
+    "music": "Musik",
+    "korea": "Selebritas Korea",
+    "game": "Game",
+    "sports": "Olahraga",
+    "anime_manga": "Anime / Manga",
+    "movie_drama": "Film / Serial",
+    "food": "Makanan",
+    "etc": "Lainnya"
+  },
+  "hi": {
+    "person": "लोग",
+    "music": "संगीत",
+    "korea": "कोरियाई सेलिब्रिटी",
+    "game": "गेम्स",
+    "sports": "खेल",
+    "anime_manga": "एनीमे / मंगा",
+    "movie_drama": "फ़िल्में / सीरीज़",
+    "food": "खाना",
+    "etc": "अन्य"
+  },
+  "de": {
+    "person": "Personen",
+    "music": "Musik",
+    "korea": "Koreanische Stars",
+    "game": "Games",
+    "sports": "Sport",
+    "anime_manga": "Anime / Manga",
+    "movie_drama": "Filme / Serien",
+    "food": "Essen",
+    "etc": "Sonstiges"
+  },
+  "vi": {
+    "person": "Nhân vật",
+    "music": "Âm nhạc",
+    "korea": "Người nổi tiếng Hàn Quốc",
+    "game": "Trò chơi",
+    "sports": "Thể thao",
+    "anime_manga": "Anime / Manga",
+    "movie_drama": "Phim / Truyền hình",
+    "food": "Ẩm thực",
+    "etc": "Khác"
+  },
+  "ar": {
+    "person": "شخصيات",
+    "music": "موسيقى",
+    "korea": "مشاهير كوريا",
+    "game": "ألعاب",
+    "sports": "رياضة",
+    "anime_manga": "أنمي / مانغا",
+    "movie_drama": "أفلام / مسلسلات",
+    "food": "طعام",
+    "etc": "أخرى"
+  },
+  "bn": {
+    "person": "ব্যক্তিত্ব",
+    "music": "সঙ্গীত",
+    "korea": "কোরিয়ান সেলিব্রিটি",
+    "game": "গেম",
+    "sports": "খেলাধুলা",
+    "anime_manga": "অ্যানিমে / মাঙ্গা",
+    "movie_drama": "সিনেমা / টিভি",
+    "food": "খাবার",
+    "etc": "অন্যান্য"
+  },
+  "th": {
+    "person": "บุคคล",
+    "music": "เพลง",
+    "korea": "คนดังเกาหลี",
+    "game": "เกม",
+    "sports": "กีฬา",
+    "anime_manga": "อนิเมะ / มังงะ",
+    "movie_drama": "ภาพยนตร์ / ซีรีส์",
+    "food": "อาหาร",
+    "etc": "อื่นๆ"
+  },
+  "tr": {
+    "person": "Kişiler",
+    "music": "Müzik",
+    "korea": "Koreli Ünlüler",
+    "game": "Oyunlar",
+    "sports": "Spor",
+    "anime_manga": "Anime / Manga",
+    "movie_drama": "Film / Diziler",
+    "food": "Yemek",
+    "etc": "Diğer"
+  }
+}
