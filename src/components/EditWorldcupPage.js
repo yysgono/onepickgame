@@ -35,32 +35,6 @@ const WORLDCUP_TITLE_MAX_LENGTH = 60;
 
 const WORLDCUP_DESCRIPTION_MAX_LENGTH = 400;
 
-function buildCandidateDescriptionFallback(candidates) {
-  const names = Array.from(
-    new Set(
-      (Array.isArray(candidates) ? candidates : [])
-        .map((candidate) => String(candidate?.name || "").trim())
-        .filter(Boolean)
-    )
-  );
-
-  let description = "";
-
-  for (const name of names) {
-    const next = description ? `${description}, ${name}` : name;
-
-    if (next.length > WORLDCUP_DESCRIPTION_MAX_LENGTH) {
-      break;
-    }
-
-    description = next;
-  }
-
-  return description;
-}
-
-
-
 const CATEGORY_OPTIONS = [
 
   { value: "person", labelKey: "category_person" },
@@ -2275,8 +2249,7 @@ const cleanTitleTranslations = {};
 const cleanDescriptionTranslations = {};
 
 const resolvedDescription =
-  description.trim() ||
-  buildCandidateDescriptionFallback(updatedData);
+  description.trim();
 
 
 

@@ -27,7 +27,10 @@ function worldcupDescription(cup = {}, language = 'en') {
  const original = String(cup.original_language || '').toLowerCase().split(/[-_]/)[0];
  const descriptions = translationMap(cup.description_translations);
  const saved = (lang === original ? [cup.description, descriptions[lang], cup.desc] : [descriptions[lang], cup.description, descriptions.en, cup.desc]).map(cleanText).find(Boolean) || ''; 
- if (saved) return saved;
+ // Old create/edit forms saved this exact candidate-list fallback as the description.
+ // Recognize that format without overwriting the stored text.
+ const legacyDescription = cleanText(candidateDescription(cup));
+ if (saved && (!legacyDescription || saved !== legacyDescription)) return saved;
  const titles = translationMap(cup.title_translations);
  const title = cleanText((lang === original ? cup.title : titles[lang]) || cup.title || titles.en || 'OnePickGame');
  const candidates = candidatesOf(cup);
