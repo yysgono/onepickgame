@@ -294,6 +294,7 @@ export async function getMyWinnerStats({ cup_id } = {}) {
  * - 5분 TTL 캐시(sessionStorage 우선, localStorage 보조)
  */
 const STATS_CACHE_TTL = 5 * 60 * 1000;
+const statsRequests = new Map();
 
 function readStatsCache(key) {
   try {
@@ -356,6 +357,12 @@ export async function fetchWinnerStatsFromDB(
     : "all";
 
 
+  const cacheKey = `onepick_winner_stats_v1:${cup_id}:${sinceKey}`;
+  const cached = readStatsCache(cacheKey);
+  if (Array.isArray(cached)) return cached;
+  if (statsRequests.has(cacheKey)) return statsRequests.get(cacheKey);
+
+  const request = (async () => {
   let p_from = null;
   let p_to = null;
 
@@ -404,7 +411,16 @@ export async function fetchWinnerStatsFromDB(
     ),
   }));
 
+  writeStatsCache(cacheKey, result);
   return result;
+  })();
+
+  statsRequests.set(cacheKey, request);
+  try {
+    return await request;
+  } finally {
+    statsRequests.delete(cacheKey);
+  }
 }
 /* ================ 계산 함수 ================ */
 export function calcStatsFromMatchHistory(

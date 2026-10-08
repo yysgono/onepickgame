@@ -1614,52 +1614,6 @@ const THUMB_HEIGHT = isMobile ? 196 : 214;
 
 
 
-  const [fixedCupsWithStats, setFixedCupsWithStats] = useState([]);
-
-  useEffect(() => {
-
-    let mounted = true;
-
-    async function fillFixedStats() {
-
-      if (!fixedWorldcups || !fixedWorldcups.length) {
-
-        setFixedCupsWithStats([]);
-
-        return;
-
-      }
-
-      const list = await Promise.all(
-
-        fixedWorldcups.map(async (cup) => {
-
-          if (Array.isArray(cup.winStats) && cup.winStats.length > 0) return cup;
-
-          const statsArr = await fetchWinnerStatsFromDB(cup.id);
-
-          return { ...cup, winStats: statsArr };
-
-        })
-
-      );
-
-      if (mounted) setFixedCupsWithStats(list);
-
-    }
-
-    fillFixedStats();
-
-    return () => {
-
-      mounted = false;
-
-    };
-
-  }, [fixedWorldcups]);
-
-
-
 const creatorFilter =
 
   new URLSearchParams(
@@ -4518,6 +4472,7 @@ return (
     {/* 언어 선택 - 다른 홈과 동일하게 박스 없이 검색창 위 */}
 
     <div
+      className="worldcup-home-language-shortcuts"
 
       style={{
 
@@ -4829,6 +4784,7 @@ return (
       ? "월드컵 카테고리 바로가기"
       : "Worldcup category shortcuts"
   }
+  className="worldcup-home-category-shortcuts"
   style={{
     width: "100%",
     maxWidth: 1400,
@@ -5158,6 +5114,13 @@ return (
       <style>
 
         {`
+
+            @media (max-width: 599px) {
+              .worldcup-home-language-shortcuts,
+              .worldcup-home-category-shortcuts {
+                display: none !important;
+              }
+            }
 
             .home-category-scroll {
 
