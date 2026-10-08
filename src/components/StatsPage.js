@@ -495,7 +495,7 @@ const RankCard = React.memo(function RankCard(props) {
 
         position: "relative",
 
-        border: "2.2px solid #faf7ee",
+        border: `2.5px solid ${["#d6a400", "#94a3b8", "#c77b49"][rank - 1] || "#c77b49"}`,
 
         boxSizing: "border-box",
 
@@ -1328,6 +1328,10 @@ const top3 = useMemo(() => {
 
 
 
+  const selectedCandidate = highlightCandidateId == null ? null : rankedStats.find(
+    (row) => String(row.candidate_id) === String(highlightCandidateId)
+  );
+
   /* ===== 페이지네이션 UI ===== */
 
   function Pagination() {
@@ -1815,6 +1819,12 @@ const top3 = useMemo(() => {
 
 
 
+
+     {selectedCandidate && (
+       <div role="status" style={{ width: "fit-content", maxWidth: "94%", margin: "0 auto 16px", padding: "10px 18px", border: "1.5px solid #86cfa5", borderRadius: 10, background: "#e8f5ee", color: "#166534", fontWeight: 800 }}>
+         ✓ {selectedCandidate.name} · #{selectedCandidate.rank}
+       </div>
+     )}
 
      {/* 월드컵 탐색 / 티어표 전환 */}
 
@@ -2614,7 +2624,9 @@ onClick={() => {
 
                   const isHighlighted =
 
-                    highlightCandidateId && row.candidate_id === highlightCandidateId;
+                    highlightCandidateId != null && String(row.candidate_id) === String(highlightCandidateId);
+
+                  const selectedCell = isHighlighted ? { background: "#e8f5ee", color: "#166534", fontWeight: 800, boxShadow: "inset 0 1px #86cfa5, inset 0 -1px #86cfa5" } : {};
 
                   const highlightStyle = isHighlighted
 
@@ -2650,13 +2662,14 @@ onClick={() => {
 
                     <tr key={row.candidate_id} style={highlightStyle}>
 
-                      <td style={ivoryCell}>{row.rank}</td>
+                      <td style={{ ...ivoryCell, ...selectedCell }}>{row.rank}</td>
 
                       <td
 
                         style={{
 
                           ...normalCell,
+                          ...selectedCell,
 
                           fontWeight: 700,
 
@@ -2676,19 +2689,19 @@ onClick={() => {
 
                       >
 
-                        {row.name}
+                        {isHighlighted ? "✓ " : ""}{row.name}
 
                       </td>
 
-                      <td style={normalCell}>{row.win_count}</td>
+                      <td style={{ ...normalCell, ...selectedCell }}>{row.win_count}</td>
 
-                      <td style={ivoryCell}>{winRateStr ?? "-"}</td>
+                      <td style={{ ...ivoryCell, ...selectedCell }}>{winRateStr ?? "-"}</td>
 
-                      <td style={normalCell}>{row.match_wins}</td>
+                      <td style={{ ...normalCell, ...selectedCell }}>{row.match_wins}</td>
 
-                      <td style={normalCell}>{row.match_count}</td>
+                      <td style={{ ...normalCell, ...selectedCell }}>{row.match_count}</td>
 
-                      <td style={ivoryCell}>{matchWinRateStr ?? "-"}</td>
+                      <td style={{ ...ivoryCell, ...selectedCell }}>{matchWinRateStr ?? "-"}</td>
 
                     </tr>
 

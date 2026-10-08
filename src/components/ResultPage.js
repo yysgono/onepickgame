@@ -909,6 +909,8 @@ textShadow: "none",
 
                   showCommentBox={true}
 
+                  highlightCandidateId={!isStatsOnly ? locationWinner?.id : null}
+
                   winner={winner || null}
 
                   showShareAndReport={true}
