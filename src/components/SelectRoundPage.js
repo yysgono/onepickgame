@@ -1,7 +1,7 @@
 // src/components/SelectRoundPage.js
 import React, { useState, useEffect, useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import MediaRenderer from "./MediaRenderer";
 import AdsenseSide from "./AdsenseSide";
 import { fetchWinnerStatsFromDB, pushRecentWorldcup } from "../utils.js"; // ✅ 통계/최근본
@@ -1378,9 +1378,9 @@ boxShadow: "0 5px 18px rgba(84,66,184,0.08)",
 
   <div>
     {t("category")} :{" "}
-    {t(`category_${cup?.category || "etc"}`, {
-      defaultValue: cup?.category || "etc",
-    })}
+    <Link to={`/${normalizedLang}/category/${({anime_manga: "anime-manga", movie_drama: "movie-drama"})[cup?.category] || cup?.category || "etc"}`}>
+      {t(`category_${cup?.category || "etc"}`, { defaultValue: cup?.category || "etc" })}
+    </Link>
   </div>
 
   <div>{t("candidate_count")} : {candidates.length}</div>
@@ -1519,14 +1519,13 @@ style={{
           "";
 
         return (
-          <div
+          <Link
             key={item.id}
-            onClick={() =>
-              navigate(
-                `/${normalizedLang}/select-round/${item.id}`
-              )
-            }
+            to={`/${normalizedLang}/select-round/${item.id}`}
             style={{
+              textDecoration: "none",
+              color: "inherit",
+              display: "block",
               background: "#ffffff",
               borderRadius: 10,
               overflow: "hidden",
@@ -1572,7 +1571,7 @@ style={{
             >
               {relatedTitle}
             </div>
-          </div>
+          </Link>
         );
       })}
     </div>

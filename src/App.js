@@ -49,7 +49,6 @@ import QuizPage from "./components/QuizPage";
 import QuizMaker from "./components/QuizMaker";
 import QuizDetailPage from "./components/QuizDetailPage";
 import {
-  getWorldcupDescription,
   getWorldcupTitle,
 } from "./utils/localization";
 
@@ -1234,48 +1233,7 @@ const pageSeoTitle =
     : normalizedLang === "ko"
       ? `이상형 월드컵 | ${translatedTitle} | 원픽게임`
       : `${worldCupKeyword} - ${translatedTitle} | OnePickGame`;
-     const savedDescription =
-  getWorldcupDescription(cup, normalizedLang);
-
-const descriptionFallbackMap = {
-  ko: `${translatedTitle} 이상형 월드컵을 원픽게임에서 플레이하세요. 좋아하는 후보를 선택하고 최종 우승자를 확인해보세요.`,
-
-  en: `Play the ${cleanEnglishTitle} tournament bracket game on OnePickGame. Choose your favorites and find the ultimate winner.`,
-
-  ja: `${translatedTitle}の人気投票トーナメントをOnePickGameでプレイしよう。お気に入りを選んで、最後の勝者を決めよう。`,
-
-  zh: `在OnePickGame参加${translatedTitle}人气投票淘汰赛。选择你最喜欢的候选项，看看谁能成为最终赢家。`,
-
-  es: `Juega el torneo de votación ${translatedTitle} en OnePickGame. Elige tus favoritos y descubre quién será el ganador final.`,
-
-  fr: `Jouez au tournoi de vote ${translatedTitle} sur OnePickGame. Choisissez vos favoris et découvrez le grand gagnant.`,
-
-  de: `Spiele das ${translatedTitle} Abstimmungsturnier auf OnePickGame. Wähle deine Favoriten und finde den endgültigen Gewinner.`,
-
-  pt: `Jogue o torneio de votação ${translatedTitle} no OnePickGame. Escolha seus favoritos e descubra o grande vencedor.`,
-
-  ru: `Играйте в турнир голосований ${translatedTitle} на OnePickGame. Выбирайте фаворитов и определите итогового победителя.`,
-
-  id: `Mainkan turnamen voting ${translatedTitle} di OnePickGame. Pilih favoritmu dan temukan pemenang akhirnya.`,
-
-  hi: `OnePickGame पर ${translatedTitle} वोटिंग टूर्नामेंट खेलें। अपने पसंदीदा विकल्प चुनें और अंतिम विजेता का फैसला करें।`,
-
-  vi: `Chơi giải đấu bình chọn ${translatedTitle} trên OnePickGame. Chọn mục yêu thích và tìm ra người chiến thắng cuối cùng.`,
-
-  ar: `العب بطولة التصويت ${translatedTitle} على OnePickGame. اختر مفضلاتك واكتشف الفائز النهائي.`,
-
-  bn: `OnePickGame-এ ${translatedTitle} ভোটিং টুর্নামেন্ট খেলুন। আপনার পছন্দের প্রতিযোগী বেছে নিন এবং চূড়ান্ত বিজয়ী নির্ধারণ করুন।`,
-
-  th: `เล่นเกมโหวตแบบทัวร์นาเมนต์ ${translatedTitle} บน OnePickGame เลือกรายการโปรดและค้นหาผู้ชนะสุดท้าย`,
-
-  tr: `OnePickGame'de ${translatedTitle} oylama turnuvasını oyna. Favorilerini seç ve final kazananını belirle.`,
-};
-
-const translatedDescription =
-  String(savedDescription || "").trim() ||
-  worldcupMetadata.candidateDescription(cup) ||
-  descriptionFallbackMap[normalizedLang] ||
-  descriptionFallbackMap.en;
+const translatedDescription = worldcupMetadata.worldcupDescription(cup, normalizedLang);
       return (
         <>
           <WorldcupDetailSeo cup={cup}

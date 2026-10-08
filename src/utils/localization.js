@@ -1,3 +1,4 @@
+import worldcupMetadata from "../seo/worldcupMetadata";
 export const SUPPORTED_LANGS = [
   "en",
   "ko",
@@ -59,9 +60,5 @@ export function getWorldcupTitle(cup, lang) {
 }
 
 export function getWorldcupDescription(cup, lang) {
-  return (
-    getLocalizedField(cup, lang, "description", "description_translations") ||
-    cup?.desc ||
-    ""
-  );
+  return worldcupMetadata.worldcupDescription(cup, lang);
 }

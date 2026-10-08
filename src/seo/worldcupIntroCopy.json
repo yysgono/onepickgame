@@ -1,0 +1,82 @@
+{
+  "ko": [
+    "{title}에서 최애를 골라보세요.",
+    "총 {n}명의 후보를 비교해 최종 우승자를 선택하는 이상형 월드컵입니다.",
+    "대표 후보: {names}."
+  ],
+  "en": [
+    "Choose your favorite in {title}.",
+    "Compare {n} candidates and pick the ultimate winner.",
+    "Featured candidates: {names}."
+  ],
+  "ja": [
+    "{title}でお気に入りを選びましょう。",
+    "全{n}候補を比較して最終優勝者を決めるトーナメントです。",
+    "主な候補：{names}。"
+  ],
+  "zh": [
+    "在{title}中选出你的最爱。",
+    "比较{n}个候选，选出最终冠军。",
+    "代表候选：{names}。"
+  ],
+  "es": [
+    "Elige tu favorito en {title}.",
+    "Compara {n} candidatos y elige al ganador final.",
+    "Candidatos destacados: {names}."
+  ],
+  "fr": [
+    "Choisissez votre favori dans {title}.",
+    "Comparez {n} candidats et désignez le vainqueur final.",
+    "Candidats présentés : {names}."
+  ],
+  "vi": [
+    "Chọn mục yêu thích trong {title}.",
+    "So sánh {n} ứng viên và chọn người chiến thắng cuối cùng.",
+    "Ứng viên tiêu biểu: {names}."
+  ],
+  "de": [
+    "Wähle deinen Favoriten in {title}.",
+    "Vergleiche {n} Kandidaten und bestimme den endgültigen Sieger.",
+    "Ausgewählte Kandidaten: {names}."
+  ],
+  "ru": [
+    "Выберите своего фаворита в {title}.",
+    "Сравните {n} кандидатов и определите победителя.",
+    "Среди кандидатов: {names}."
+  ],
+  "id": [
+    "Pilih favoritmu di {title}.",
+    "Bandingkan {n} kandidat dan tentukan pemenang akhir.",
+    "Kandidat pilihan: {names}."
+  ],
+  "pt": [
+    "Escolha seu favorito em {title}.",
+    "Compare {n} candidatos e escolha o vencedor final.",
+    "Candidatos em destaque: {names}."
+  ],
+  "hi": [
+    "{title} में अपना पसंदीदा चुनें।",
+    "{n} उम्मीदवारों की तुलना करें और अंतिम विजेता चुनें।",
+    "प्रमुख उम्मीदवार: {names}।"
+  ],
+  "tr": [
+    "{title} oyununda favorini seç.",
+    "{n} adayı karşılaştır ve final kazananını belirle.",
+    "Öne çıkan adaylar: {names}."
+  ],
+  "th": [
+    "เลือกตัวเลือกที่คุณชอบใน {title}",
+    "เปรียบเทียบผู้เข้าร่วม {n} รายและเลือกผู้ชนะสุดท้าย",
+    "ผู้เข้าร่วมตัวอย่าง: {names}"
+  ],
+  "ar": [
+    "اختر المفضل لديك في {title}.",
+    "قارن بين {n} مرشحًا واختر الفائز النهائي.",
+    "من بين المرشحين: {names}."
+  ],
+  "bn": [
+    "{title}-এ আপনার পছন্দের প্রার্থী বেছে নিন।",
+    "{n} জন প্রার্থীর তুলনা করে চূড়ান্ত বিজয়ী নির্বাচন করুন।",
+    "উল্লেখযোগ্য প্রার্থী: {names}।"
+  ]
+}

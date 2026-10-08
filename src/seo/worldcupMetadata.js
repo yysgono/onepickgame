@@ -15,6 +15,31 @@ function candidateDescription(cup, maxLength = 400) {
   }
   return text;
 }
+const introCopy = require('./worldcupIntroCopy.json');
+function cleanText(value) { return String(value || '').replace(/\s+/g, ' ').trim(); }
+function translationMap(value) {
+ if (typeof value === 'string') { try { value = JSON.parse(value); } catch { return {}; } }
+ return value && typeof value === 'object' && !Array.isArray(value) ? value : {};
+}
+function worldcupDescription(cup = {}, language = 'en') {
+ cup = cup || {};
+ const lang = String(language || 'en').toLowerCase().split(/[-_]/)[0];
+ const original = String(cup.original_language || '').toLowerCase().split(/[-_]/)[0];
+ const descriptions = translationMap(cup.description_translations);
+ const saved = (lang === original ? [cup.description, descriptions[lang], cup.desc] : [descriptions[lang], cup.description, descriptions.en, cup.desc]).map(cleanText).find(Boolean) || ''; 
+ if (saved) return saved;
+ const titles = translationMap(cup.title_translations);
+ const title = cleanText((lang === original ? cup.title : titles[lang]) || cup.title || titles.en || 'OnePickGame');
+ const candidates = candidatesOf(cup);
+ const names = [];
+ for (const name of [...new Set(candidates.map(c => cleanText(c?.name || c?.title)).filter(Boolean))]) {
+  if (names.length >= 3) break;
+  if ([...names, name].join(', ').length > 160) continue;
+  names.push(name);
+ }
+ const copy = introCopy[lang] || introCopy.en;
+ return [copy[0].replace('{title}', title), candidates.length ? copy[1].replace('{n}', String(candidates.length)) : '', names.length ? copy[2].replace('{names}', names.join(', ')) : ''].filter(Boolean).join(' ');
+}
 function imageOf(candidate) {
   const source = String(candidate?.image || candidate?.url || candidate?.videoUrl || candidate?.video_url || candidate?.youtubeUrl || candidate?.youtube_url || '').trim();
   const match = source.match(/youtu\.be\/([\w-]+)/i) || source.match(/[?&]v=([\w-]+)/i) || source.match(/youtube(?:-nocookie)?\.com\/(?:embed|shorts)\/([\w-]+)/i);
@@ -33,4 +58,4 @@ function winnerImage(cup, stats) {
   }
   return imageOf(winner) || fallbackImage(cup);
 }
-module.exports = { candidatesOf, candidateDescription, imageOf, fallbackImage, winnerImage };
+module.exports = { candidatesOf, candidateDescription, worldcupDescription, imageOf, fallbackImage, winnerImage };

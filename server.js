@@ -3,6 +3,7 @@ const { selectImage: selectWorldcupSeoImage } = require("./worldcup-seo-image.cj
 const contentDescription = require("./src/seo/contentDescription.js");
 const { socialImage: gameSocialImage } = require("./src/seo/quizSeo.cjs");
 const worldcupMetadata = require("./src/seo/worldcupMetadata.js");
+const { getCategorySeo } = require("./src/seo/categorySeo.js");
 /// server.js
 
 const express = require("express");
@@ -2438,70 +2439,7 @@ const worldcupTitle =
  * 언어별 설명
  * 해당 언어 번역 → 영어 번역 → 기본 설명
  */
-let descriptionTranslations = worldcup.description_translations || {};
-
-if (typeof descriptionTranslations === "string") {
-  try {
-    descriptionTranslations = JSON.parse(descriptionTranslations);
-  } catch {
-    descriptionTranslations = {};
-  }
-}
-
-
-const translatedDescription =
-  descriptionTranslations[lang] ||
-  descriptionTranslations.en ||
-  "";
-
-let worldcupDescription =
-  String(
-    translatedDescription ||
-    worldcup.description ||
-    worldcup.desc ||
-    worldcupMetadata.candidateDescription(worldcup) ||
-    ""
-  )
-    .replace(/\s+/g, " ")
-    .trim();
-
-if (!worldcupDescription) worldcupDescription = worldcupMetadata.candidateDescription(worldcup);
-
-if (!worldcupDescription) {
-  if (lang === "ko") {
-    worldcupDescription =
-      `${worldcupTitle}을 플레이해보세요. ` +
-      `후보들을 비교하고 최애를 선택해 최종 우승자를 결정할 수 있습니다.`;
-  } else if (lang === "ja") {
-    worldcupDescription =
-      `${worldcupTitle}をプレイしよう。` +
-      `候補を比較してお気に入りを選び、最終優勝者を決めましょう。`;
-  } else if (lang === "zh") {
-    worldcupDescription =
-      `来玩${worldcupTitle}。` +
-      `比较候选人，选择你最喜欢的选项并决出最终冠军。`;
-  } else if (lang === "es") {
-    worldcupDescription =
-      `Juega ${worldcupTitle} en OnePickGame. ` +
-      `Compara candidatos, elige tus favoritos y descubre al ganador final.`;
-  } else if (lang === "pt") {
-    worldcupDescription =
-      `Jogue ${worldcupTitle} no OnePickGame. ` +
-      `Compare os candidatos, escolha seus favoritos e descubra o vencedor final.`;
-  } else if (lang === "fr") {
-    worldcupDescription =
-      `Jouez à ${worldcupTitle} sur OnePickGame. ` +
-      `Comparez les candidats, choisissez vos favoris et découvrez le gagnant final.`;
-  } else if (lang === "de") {
-    worldcupDescription =
-      `Spiele ${worldcupTitle} auf OnePickGame. ` +
-      `Vergleiche die Kandidaten, wähle deine Favoriten und bestimme den Sieger.`;
-  } else {
-    worldcupDescription =
-      `Play ${worldcupTitle} on OnePickGame. ` +
-      `Compare candidates, choose your favorites, and discover the ultimate winner.`;
-  }
-}
+const worldcupDescription = worldcupMetadata.worldcupDescription(worldcup, lang);
 
     /*
      * Canonical
@@ -2848,6 +2786,10 @@ ${safeJson(jsonLd)}
 `
         : "";
 
+    const categorySlug = ({ anime_manga: "anime-manga", movie_drama: "movie-drama" })[worldcup.category] || worldcup.category || "etc";
+    const categorySeo = getCategorySeo(lang, categorySlug);
+    const navigationLinks = `<nav aria-label="OnePickGame"><a href="${lang === "en" ? "/" : `/${lang}`}">OnePickGame</a>${categorySeo ? ` · <a href="/${escapeHtml(lang)}/category/${escapeHtml(categorySlug)}">${escapeHtml(categorySeo.label)}</a>` : ""}</nav>`;
+
     const seoBody = `
 <main
   id="seo-content"
@@ -2875,6 +2817,7 @@ ${safeJson(jsonLd)}
 
     ${image ? `<img src="${escapeHtml(image)}" alt="${escapeHtml(worldcupTitle)}" width="600" style="max-width:100%;height:auto;" />` : ""}
     ${candidateList}
+    ${navigationLinks}
 
   </article>
 </main>
