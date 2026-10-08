@@ -4709,6 +4709,67 @@ return (
     </div>
 
       </div>
+<section
+  aria-label={
+    lang === "ko"
+      ? "월드컵 카테고리 바로가기"
+      : "Worldcup category shortcuts"
+  }
+  className="worldcup-home-category-shortcuts"
+  style={{
+    width: "100%",
+    maxWidth: 1400,
+    margin: isMobile ? "2px auto 10px" : "10px auto 8px",
+    padding: isMobile ? "0 14px" : "0",
+    boxSizing: "border-box",
+  }}
+>
+  <div
+    style={{
+      display: "flex",
+      flexWrap: "wrap",
+      justifyContent: "center",
+      gap: isMobile ? 8 : 10,
+    }}
+  >
+    {HOME_CATEGORY_SHORTCUT_KEYS.map((categoryKey) => {
+      const category = HOME_CATEGORIES.find(
+        (item) => item.key === categoryKey
+      );
+
+      if (!category) return null;
+
+      return (
+        <Link
+          key={category.key}
+          to={`/${lang}/category/${category.slug}`}
+          style={{ textDecoration: "none", display: "inline-flex", alignItems: "center",
+            minHeight: isMobile ? 36 : 40,
+            padding: isMobile ? "8px 13px" : "9px 16px",
+            borderRadius: 999,
+            border: "1px solid #fed7aa",
+            background: "#fff7ed",
+            color: "#9A3412",
+            fontSize: isMobile ? 14 : 15,
+            fontWeight: 900,
+            lineHeight: 1.15,
+            cursor: "pointer",
+            boxShadow: "0 5px 14px rgba(249,115,22,0.08)",
+          }}
+        >
+          {lang === "ko"
+            ? KO_HOME_CATEGORY_SHORTCUT_LABELS[category.key] ||
+              t(`category_${category.key}`, {
+                defaultValue: category.label,
+              })
+            : t(`category_${category.key}`, {
+                defaultValue: category.label,
+              })}
+        </Link>
+      );
+    })}
+  </div>
+</section>
     </div>
 
     {showHomeActivityPanels && (
@@ -4778,67 +4839,7 @@ return (
 
 {/* 추천 */}
 
-<section
-  aria-label={
-    lang === "ko"
-      ? "월드컵 카테고리 바로가기"
-      : "Worldcup category shortcuts"
-  }
-  className="worldcup-home-category-shortcuts"
-  style={{
-    width: "100%",
-    maxWidth: 1400,
-    margin: isMobile ? "2px auto 10px" : "4px auto 14px",
-    padding: isMobile ? "0 14px" : "0 24px",
-    boxSizing: "border-box",
-  }}
->
-  <div
-    style={{
-      display: "flex",
-      flexWrap: "wrap",
-      justifyContent: "center",
-      gap: isMobile ? 8 : 10,
-    }}
-  >
-    {HOME_CATEGORY_SHORTCUT_KEYS.map((categoryKey) => {
-      const category = HOME_CATEGORIES.find(
-        (item) => item.key === categoryKey
-      );
 
-      if (!category) return null;
-
-      return (
-        <Link
-          key={category.key}
-          to={`/${lang}/category/${category.slug}`}
-          style={{ textDecoration: "none", display: "inline-flex", alignItems: "center",
-            minHeight: isMobile ? 36 : 40,
-            padding: isMobile ? "8px 13px" : "9px 16px",
-            borderRadius: 999,
-            border: "1px solid #fed7aa",
-            background: "#fff7ed",
-            color: "#9A3412",
-            fontSize: isMobile ? 14 : 15,
-            fontWeight: 900,
-            lineHeight: 1.15,
-            cursor: "pointer",
-            boxShadow: "0 5px 14px rgba(249,115,22,0.08)",
-          }}
-        >
-          {lang === "ko"
-            ? KO_HOME_CATEGORY_SHORTCUT_LABELS[category.key] ||
-              t(`category_${category.key}`, {
-                defaultValue: category.label,
-              })
-            : t(`category_${category.key}`, {
-                defaultValue: category.label,
-              })}
-        </Link>
-      );
-    })}
-  </div>
-</section>
 
 {renderCategorySection({
 
@@ -5114,6 +5115,10 @@ return (
       <style>
 
         {`
+
+            @media (min-width: 600px) {
+              .home-page .home-category-section.is-featured { margin-top: 14px !important; }
+            }
 
             @media (max-width: 599px) {
               .worldcup-home-language-shortcuts,

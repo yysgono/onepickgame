@@ -576,8 +576,8 @@ const CandidateCard = memo(
                 draggable={
                   false
                 }
-                loading="lazy"
-                decoding="async"
+                loading="eager"
+                decoding="auto"
 style={{
   position: "absolute",
   inset: 0,
@@ -594,6 +594,7 @@ style={{
                   item.image
                 }
                 loading="eager"
+                decoding="auto"
                 alt={
                   item.name ||
                   ""
@@ -602,6 +603,8 @@ style={{
                   false
                 }
                 style={{
+                  position: "absolute",
+                  inset: 0,
                   width:
                     "100%",
 

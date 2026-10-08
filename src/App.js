@@ -1,3 +1,4 @@
+import { subscribeToAuthProfile } from "./utils/authSession";
 import categoryLabels from "./seo/categoryLabels.json";
 import NotFoundPage from "./components/NotFoundPage";
 import WorldcupDetailSeo from "./seo/WorldcupDetailSeo";
@@ -353,86 +354,12 @@ function App() {
      로그인 사용자 + 프로필 확인
   =================================================== */
 
-  useEffect(() => {
-    let isMounted = true;
-
-    async function fetchUserAndProfile() {
-      setNicknameLoading(true);
-
-      try {
-        const { data, error } =
-          await supabase.auth.getUser();
-
-        if (error) {
-          console.error(
-            "사용자 정보 조회 실패:",
-            error
-          );
-        }
-
-        const currentUser = data?.user || null;
-
-        if (isMounted) {
-          setUser(currentUser);
-        }
-
-        if (currentUser) {
-          const {
-            data: profile,
-            error: profileError,
-          } = await supabase
-            .from("profiles")
-            .select("nickname")
-            .eq("id", currentUser.id)
-            .single();
-
-          if (profileError) {
-            console.error(
-              "프로필 조회 실패:",
-              profileError
-            );
-          }
-
-          if (isMounted) {
-            const currentNickname =
-              profile?.nickname || "";
-
-            setNickname(currentNickname);
-
-            setIsAdmin(
-              currentNickname === "admin"
-            );
-          }
-        } else {
-          if (isMounted) {
-            setNickname("");
-            setIsAdmin(false);
-          }
-        }
-      } catch (error) {
-        console.error(
-          "사용자 확인 중 오류:",
-          error
-        );
-
-        if (isMounted) {
-          setUser(null);
-          setNickname("");
-          setIsAdmin(false);
-        }
-      } finally {
-        if (isMounted) {
-          setNicknameLoading(false);
-        }
-      }
-    }
-
-    fetchUserAndProfile();
-
-    return () => {
-      isMounted = false;
-    };
-  }, []);
+  useEffect(() => subscribeToAuthProfile(supabase, {
+    setUser,
+    setNickname,
+    setNicknameLoading,
+    setIsAdmin,
+  }), []);
 
   /* ===================================================
      닉네임 변경

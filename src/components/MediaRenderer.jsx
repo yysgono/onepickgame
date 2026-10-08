@@ -235,6 +235,7 @@ function MediaRenderer({
   onPlay,
   active = true,
   loading = "lazy",
+  decoding = "async",
   deferUntilVisible = false,
   viewportMargin = "240px",
 }) {
@@ -468,8 +469,8 @@ const handleImageError = () => {
             ...style,
           }}
           draggable={false}
-          loading="lazy"
-          decoding="async"
+          loading={loading}
+          decoding={decoding}
           referrerPolicy="no-referrer"
           onError={
             handleMediaError
@@ -536,8 +537,8 @@ const handleImageError = () => {
                 display: "block",
               }}
               draggable={false}
-              loading="lazy"
-              decoding="async"
+              loading={loading}
+              decoding={decoding}
               referrerPolicy="no-referrer"
               onError={
                 handleMediaError
@@ -596,7 +597,7 @@ const handleImageError = () => {
             "picture-in-picture"
           }
           allowFullScreen
-          loading="lazy"
+          loading={loading}
           referrerPolicy={
             "strict-origin-when-cross-origin"
           }
@@ -787,7 +788,7 @@ const handleImageError = () => {
         }}
         draggable={false}
         loading={loading}
-        decoding="async"
+        decoding={decoding}
 onError={
   handleImageError
 }
@@ -822,7 +823,7 @@ onError={
       }}
       draggable={false}
   loading={loading}
-      decoding="async"
+      decoding={decoding}
 onError={
   handleImageError
 }
