@@ -1,4 +1,6 @@
 // Keep the UI synchronized with the SDK session. DB authorization remains in RLS.
+const AUTH_DEBUG_VERSION = "2026-10-10-v2";
+
 export function subscribeToAuthProfile(client, state) {
   let active = true;
   let revision = 0;
@@ -13,7 +15,7 @@ export function subscribeToAuthProfile(client, state) {
       stored = Boolean(window.localStorage.getItem("sb-irfyuvuazhujtlgpkfci-auth-token"));
     } catch {}
     const records = Array.isArray(window.__onepickAuthDebug) ? window.__onepickAuthDebug : [];
-    records.push({ time: new Date().toISOString(), event, origin: window.location?.origin,
+    records.push({ version: AUTH_DEBUG_VERSION, time: new Date().toISOString(), event, origin: window.location?.origin,
       visible: typeof document === "undefined" ? null : document.visibilityState,
       storedSession: stored, ...details });
     window.__onepickAuthDebug = records.slice(-40);
