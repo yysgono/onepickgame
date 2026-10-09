@@ -1,3 +1,4 @@
+import { readStatsCache, writeStatsCache } from "../utils/statsCache";
 import React, {
 
   useState,
@@ -53,7 +54,7 @@ const PERIODS = [
 
 
 
-const CACHE_TTL_MS = 5 * 60 * 1000; // 5분 캐시
+
 
 
 
@@ -179,43 +180,8 @@ function normalizeStats(arr) {
 
 /* ========================= 세션 캐시 ========================= */
 
-function readCache(key) {
-
-  try {
-
-    const raw = sessionStorage.getItem(key);
-
-    if (!raw) return null;
-
-    const parsed = JSON.parse(raw);
-
-    if (!parsed || typeof parsed !== "object") return null;
-
-    if (Date.now() - parsed.savedAt > CACHE_TTL_MS) return null;
-
-    return parsed.data || null;
-
-  } catch {
-
-    return null;
-
-  }
-
-}
-
-function writeCache(key, data) {
-
-  try {
-
-    const payload = JSON.stringify({ savedAt: Date.now(), data });
-
-    sessionStorage.setItem(key, payload);
-
-  } catch {}
-
-}
-
-
+const readCache = readStatsCache;
+const writeCache = writeStatsCache;
 
 /* ========================= 신고 버튼 ========================= */
 

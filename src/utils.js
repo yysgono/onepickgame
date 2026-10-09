@@ -1,5 +1,6 @@
 // src/utils.js
 import { supabase } from "./utils/supabaseClient";
+import { readStatsCache, writeStatsCache } from "./utils/statsCache";
 
 /* ======================= YouTube 유틸 ======================= */
 export function getYoutubeId(url = "") {
@@ -291,52 +292,9 @@ export async function getMyWinnerStats({ cup_id } = {}) {
  * Supabase Database Function(get_winner_stats)에서 통계를 집계해 가져옵니다.
  * - 전체 winner_stats 행을 브라우저로 내려받지 않습니다.
  * - 기간 필터(All / 최근 N일 / 사용자 지정 기간)를 지원합니다.
- * - 5분 TTL 캐시(sessionStorage 우선, localStorage 보조)
+ * - 5분 TTL 캐시(sessionStorage만 사용, 용량·개수 제한)
  */
-const STATS_CACHE_TTL = 5 * 60 * 1000;
 const statsRequests = new Map();
-
-function readStatsCache(key) {
-  try {
-    const raw =
-      sessionStorage.getItem(key) ||
-      localStorage.getItem(key);
-
-    if (!raw) return null;
-
-    const parsed = JSON.parse(raw);
-
-    if (!parsed || typeof parsed !== "object") {
-      return null;
-    }
-
-    if (
-      Date.now() - parsed.savedAt >
-      STATS_CACHE_TTL
-    ) {
-      return null;
-    }
-
-    return parsed.data || null;
-  } catch {
-    return null;
-  }
-}
-
-function writeStatsCache(key, data) {
-  try {
-    const payload = JSON.stringify({
-      savedAt: Date.now(),
-      data,
-    });
-
-    sessionStorage.setItem(key, payload);
-
-    try {
-      localStorage.setItem(key, payload);
-    } catch {}
-  } catch {}
-}
 
 export async function fetchWinnerStatsFromDB(
   cup_id,
