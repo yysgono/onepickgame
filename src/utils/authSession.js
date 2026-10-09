@@ -55,24 +55,60 @@ export function subscribeToAuthProfile(client, state) {
       applySession(session);
     }
   });
-  const initialRevision = revision;
-  client.auth.getSession().then(({ data, error }) => {
-    if (!active || revision !== initialRevision) return;
-    if (error) {
+  let recoveryInFlight = null;
+  function reconcileSession() {
+    if (!active || recoveryInFlight) return recoveryInFlight;
+    const requestRevision = revision;
+    recoveryInFlight = client.auth.getSession().then(({ data, error }) => {
+      if (!active || revision !== requestRevision) return;
+      if (error) {
+        console.warn("Session restore failed", error);
+        state.setNicknameLoading(false);
+        return;
+      }
+      applySession(data?.session);
+    }).catch((error) => {
+      if (!active || revision !== requestRevision) return;
       console.warn("Session restore failed", error);
       state.setNicknameLoading(false);
-      return;
+    }).finally(() => { recoveryInFlight = null; });
+    return recoveryInFlight;
+  }
+  function onVisible() {
+    if (typeof document === "undefined" || document.visibilityState !== "hidden") {
+      reconcileSession();
     }
-    applySession(data?.session);
-  }).catch((error) => {
-    if (!active || revision !== initialRevision) return;
-    console.warn("Session restore failed", error);
-    state.setNicknameLoading(false);
-  });
+  }
+  function onStorage(event) {
+    // Storage events are emitted for changes made by other tabs.
+    if (event.key === null || /^sb-.+-auth-token$/.test(event.key || "")) {
+      onVisible();
+    }
+  }
+  reconcileSession();
+  if (typeof window !== "undefined") {
+    window.addEventListener("focus", onVisible);
+    window.addEventListener("pageshow", onVisible);
+    window.addEventListener("storage", onStorage);
+  }
+  if (typeof document !== "undefined") {
+    document.addEventListener("visibilitychange", onVisible);
+  }
+  // Read the SDK's stored session; this does not query the profile on every tick.
+  const recoveryTimer = setInterval(onVisible, 60000);
 
   return () => {
     active = false;
     clearTimeout(profileTimer);
+    clearInterval(recoveryTimer);
+    if (typeof window !== "undefined") {
+      window.removeEventListener("focus", onVisible);
+      window.removeEventListener("pageshow", onVisible);
+      window.removeEventListener("storage", onStorage);
+    }
+    if (typeof document !== "undefined") {
+      document.removeEventListener("visibilitychange", onVisible);
+    }
     data.subscription.unsubscribe();
   };
 }
