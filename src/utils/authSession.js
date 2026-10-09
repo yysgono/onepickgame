@@ -10,7 +10,14 @@ export function subscribeToAuthProfile(client, state) {
     if (!active) return;
     const user = session?.user || null;
     const id = user?.id || null;
-    state.setUser(user);
+    state.setUser((previous) => {
+      if (previous === user) return previous;
+      // getSession returns new objects even when the user has not changed.
+      // Preserve React identity to avoid rebuilding the route tree on focus/ticks.
+      if (previous && user && previous.id === user.id &&
+          JSON.stringify(previous) === JSON.stringify(user)) return previous;
+      return user;
+    });
     if (id !== currentId || !id) {
       currentId = id;
       profileId = null;
