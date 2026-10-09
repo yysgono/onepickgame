@@ -6,11 +6,27 @@ export function subscribeToAuthProfile(client, state) {
   let profileId = null;
   let profileTimer;
 
+  function trace(event, details = {}) {
+    if (typeof window === "undefined") return;
+    let stored = null;
+    try {
+      stored = Boolean(window.localStorage.getItem("sb-irfyuvuazhujtlgpkfci-auth-token"));
+    } catch {}
+    const records = Array.isArray(window.__onepickAuthDebug) ? window.__onepickAuthDebug : [];
+    records.push({ time: new Date().toISOString(), event, origin: window.location?.origin,
+      visible: typeof document === "undefined" ? null : document.visibilityState,
+      storedSession: stored, ...details });
+    window.__onepickAuthDebug = records.slice(-40);
+  }
+  trace("listener-start");
+
   function applySession(session) {
     if (!active) return;
     const user = session?.user || null;
     const id = user?.id || null;
+    trace("apply-session", { hasUser: Boolean(user) });
     state.setUser((previous) => {
+      trace("ui-user-update", { hadUser: Boolean(previous), hasUser: Boolean(user) });
       if (previous === user) return previous;
       // getSession returns new objects even when the user has not changed.
       // Preserve React identity to avoid rebuilding the route tree on focus/ticks.
@@ -57,6 +73,7 @@ export function subscribeToAuthProfile(client, state) {
 
   state.setNicknameLoading(true);
   const { data } = client.auth.onAuthStateChange((event, session) => {
+    trace("auth-event", { action: event, hasSession: Boolean(session), hasUser: Boolean(session?.user) });
     revision += 1;
     if (event === "SIGNED_OUT" || session?.user || event === "INITIAL_SESSION") {
       applySession(session);
@@ -66,7 +83,9 @@ export function subscribeToAuthProfile(client, state) {
   function reconcileSession() {
     if (!active || recoveryInFlight) return recoveryInFlight;
     const requestRevision = revision;
+    trace("session-check-start");
     recoveryInFlight = client.auth.getSession().then(({ data, error }) => {
+      trace("session-check-result", { hasSession: Boolean(data?.session), hasUser: Boolean(data?.session?.user), errorCode: error?.code || null, status: error?.status || null, superseded: revision !== requestRevision });
       if (!active || revision !== requestRevision) return;
       if (error) {
         console.warn("Session restore failed", error);
@@ -75,6 +94,7 @@ export function subscribeToAuthProfile(client, state) {
       }
       applySession(data?.session);
     }).catch((error) => {
+      trace("session-check-error", { errorCode: error?.code || null, status: error?.status || null });
       if (!active || revision !== requestRevision) return;
       console.warn("Session restore failed", error);
       state.setNicknameLoading(false);
@@ -105,6 +125,7 @@ export function subscribeToAuthProfile(client, state) {
   const recoveryTimer = setInterval(onVisible, 60000);
 
   return () => {
+    trace("listener-stop");
     active = false;
     clearTimeout(profileTimer);
     clearInterval(recoveryTimer);
