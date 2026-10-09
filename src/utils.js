@@ -1,6 +1,7 @@
 // src/utils.js
 import { supabase } from "./utils/supabaseClient";
-import { readStatsCache, writeStatsCache } from "./utils/statsCache";
+import { readStatsCache, writeStatsCache, invalidateStatsCache, getStatsRevision } from "./utils/statsCache";
+export { invalidateStatsCache } from "./utils/statsCache";
 
 /* ======================= YouTube 유틸 ======================= */
 export function getYoutubeId(url = "") {
@@ -161,6 +162,7 @@ export async function deleteOldWinnerLogAndStats(cup_id) {
   }
 
   await statsDelete;
+  invalidateStatsCache(cup_id);
 }
 
 export async function insertWinnerLog(cup_id, winner_id = null) {
@@ -318,7 +320,9 @@ export async function fetchWinnerStatsFromDB(
   const cacheKey = `onepick_winner_stats_v1:${cup_id}:${sinceKey}`;
   const cached = readStatsCache(cacheKey);
   if (Array.isArray(cached)) return cached;
-  if (statsRequests.has(cacheKey)) return statsRequests.get(cacheKey);
+  const revision = getStatsRevision(cup_id);
+  const existing = statsRequests.get(cacheKey);
+  if (existing?.revision === revision) return existing.request;
 
   const request = (async () => {
   let p_from = null;
@@ -369,15 +373,15 @@ export async function fetchWinnerStatsFromDB(
     ),
   }));
 
-  writeStatsCache(cacheKey, result);
+  if (getStatsRevision(cup_id) === revision) writeStatsCache(cacheKey, result);
   return result;
   })();
 
-  statsRequests.set(cacheKey, request);
+  statsRequests.set(cacheKey, { revision, request });
   try {
     return await request;
   } finally {
-    statsRequests.delete(cacheKey);
+    if (statsRequests.get(cacheKey)?.request === request) statsRequests.delete(cacheKey);
   }
 }
 /* ================ 계산 함수 ================ */

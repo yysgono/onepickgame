@@ -24,6 +24,8 @@ import {
 
   insertWinnerLog,
 
+  invalidateStatsCache,
+
   saveHeadToHeadStats,
 
   upsertMyWinnerStat_parallel,
@@ -3160,6 +3162,9 @@ useEffect(() => {
       ]);
 
 
+
+      // Fetch statistics after both result writes have completed.
+      invalidateStatsCache(cup.id);
 
       try {
 

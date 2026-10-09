@@ -53,3 +53,19 @@ export function writeStatsCache(key, data) {
     sessionStorage.setItem(key, payload);
   } catch {} // Cache failure must not interrupt statistics rendering.
 }
+
+// A completed play invalidates all period variants for this game only.
+const revisions = new Map();
+export function getStatsRevision(cupId) {
+  return revisions.get(String(cupId)) || 0;
+}
+export function invalidateStatsCache(cupId) {
+  const id = String(cupId || "");
+  if (!id) return;
+  revisions.set(id, getStatsRevision(id) + 1);
+  try {
+    Object.keys(sessionStorage)
+      .filter(key => key.startsWith(`onepick_winner_stats_v1:${id}:`) || key.startsWith(`stats:${id}:`))
+      .forEach(key => sessionStorage.removeItem(key));
+  } catch {}
+}
