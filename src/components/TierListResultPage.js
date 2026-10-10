@@ -33,19 +33,23 @@ import {
 
 const TIERS = [
   "S",
+  "A+",
   "A",
   "B",
   "C",
   "D",
+  "F",
 ];
 
 
 const TIER_COLORS = {
   S: "#ff6b6b",
+  "A+": "#ff8052",
   A: "#ff9f43",
   B: "#ffd93d",
   C: "#6bcb77",
   D: "#4d96ff",
+  F: "#a78bda",
 };
 
 

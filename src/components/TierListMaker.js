@@ -190,28 +190,34 @@ async function normalizeImageFile(file) {
 
 const TIERS = [
   "S",
+  "A+",
   "A",
   "B",
   "C",
   "D",
+  "F",
 ];
 
 
 const TIER_COLORS = {
   S: "#ff6b6b",
+  "A+": "#ff8052",
   A: "#ff9f43",
   B: "#ffd93d",
   C: "#6bcb77",
   D: "#4d96ff",
+  F: "#a78bda",
 };
 
 
 const DEFAULT_TIER_LABELS = {
   S: "S",
+  "A+": "A+",
   A: "A",
   B: "B",
   C: "C",
   D: "D",
+  F: "F",
 };
 
 
@@ -419,13 +425,13 @@ async function loadTierDraftFiles() {
 }
 
 
-const createEmptyTiers = () => ({
-  S: [],
-  A: [],
-  B: [],
-  C: [],
-  D: [],
-});
+const createEmptyTiers = () => Object.fromEntries(TIERS.map(tier => [tier, []]));
+
+function removeCandidateFromTiers(tiers, key) {
+  return Object.fromEntries(TIERS.map(tier => [tier,
+    (Array.isArray(tiers[tier]) ? tiers[tier] : []).filter(item => item._tierKey !== key),
+  ]));
+}
 
 
 function readWinnerCache() {
@@ -2864,22 +2870,6 @@ const addLocalFiles =
     );
 
 
-  const removeFromTier =
-    useCallback(
-      (
-        items,
-        key
-      ) => {
-        return items.filter(
-          (item) =>
-            item._tierKey !==
-            key
-        );
-      },
-      []
-    );
-
-
   const moveItemToTier =
     useCallback(
       (
@@ -2896,38 +2886,7 @@ const addLocalFiles =
 
         setTierItems(
           (prev) => {
-            const next = {
-              S:
-                removeFromTier(
-                  prev.S,
-                  item._tierKey
-                ),
-
-              A:
-                removeFromTier(
-                  prev.A,
-                  item._tierKey
-                ),
-
-              B:
-                removeFromTier(
-                  prev.B,
-                  item._tierKey
-                ),
-
-              C:
-                removeFromTier(
-                  prev.C,
-                  item._tierKey
-                ),
-
-              D:
-                removeFromTier(
-                  prev.D,
-                  item._tierKey
-                ),
-            };
-
+            const next = removeCandidateFromTiers(prev, item._tierKey);
 
             next[
               targetTier
@@ -2943,9 +2902,7 @@ const addLocalFiles =
           }
         );
       },
-      [
-        removeFromTier,
-      ]
+      []
     );
 
 
@@ -2956,13 +2913,7 @@ const addLocalFiles =
           return;
         }
 
-        setTierItems((prev) => ({
-          S: removeFromTier(prev.S, item._tierKey),
-          A: removeFromTier(prev.A, item._tierKey),
-          B: removeFromTier(prev.B, item._tierKey),
-          C: removeFromTier(prev.C, item._tierKey),
-          D: removeFromTier(prev.D, item._tierKey),
-        }));
+        setTierItems(prev => removeCandidateFromTiers(prev, item._tierKey));
 
         setOnePick((current) =>
           current?._tierKey === item._tierKey
@@ -2970,7 +2921,7 @@ const addLocalFiles =
             : current
         );
       },
-      [removeFromTier]
+      []
     );
 
   const removeLocalCandidate =
@@ -2986,40 +2937,7 @@ const addLocalFiles =
         }
 
 
-        setTierItems(
-          (prev) => ({
-            S:
-              removeFromTier(
-                prev.S,
-                item._tierKey
-              ),
-
-            A:
-              removeFromTier(
-                prev.A,
-                item._tierKey
-              ),
-
-            B:
-              removeFromTier(
-                prev.B,
-                item._tierKey
-              ),
-
-            C:
-              removeFromTier(
-                prev.C,
-                item._tierKey
-              ),
-
-            D:
-              removeFromTier(
-                prev.D,
-                item._tierKey
-              ),
-          })
-        );
-
+        setTierItems(prev => removeCandidateFromTiers(prev, item._tierKey));
 
         setOnePick(
           (current) =>
@@ -3062,9 +2980,7 @@ const addLocalFiles =
             )
         );
       },
-      [
-        removeFromTier,
-      ]
+      []
     );
 
 
