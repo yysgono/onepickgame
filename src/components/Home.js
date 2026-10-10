@@ -2271,6 +2271,8 @@ const renderHomeActivityPanel = ({
       className="home-activity-panel"
       style={{
         minWidth: 0,
+        position: "relative",
+        zIndex: 1,
         background: "#ffffff",
         border: "1px solid #fed7aa",
         borderRadius: 10,
@@ -2311,16 +2313,14 @@ const renderHomeActivityPanel = ({
 
             return (
               <li key={`${title}-${cup.id}`}>
-                <button
-                  type="button"
-                  onClick={() =>
-                    goto(
-                      `/${lang}/select-round/${cup.id}`
-                    )
-                  }
+                <Link
+                  to={`/${lang}/select-round/${cup.id}`}
                   title={titleText}
                   style={{
                     width: "100%",
+                    minWidth: 0,
+                    boxSizing: "border-box",
+                    textDecoration: "none",
                     border: "1px solid #ffedd5",
                     borderRadius: 8,
                     background: "#fffaf7",
@@ -2329,7 +2329,7 @@ const renderHomeActivityPanel = ({
                     cursor: "pointer",
                     textAlign: "left",
                     display: "grid",
-                    gridTemplateColumns: "1fr auto",
+                    gridTemplateColumns: "minmax(0, 1fr) auto",
                     gap: 10,
                     alignItems: "center",
                   }}
@@ -2357,7 +2357,7 @@ const renderHomeActivityPanel = ({
                   >
                     {formatWorldcupCardDate(time)}
                   </span>
-                </button>
+                </Link>
               </li>
             );
           })}
