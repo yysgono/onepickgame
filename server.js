@@ -2799,6 +2799,10 @@ ${safeJson(jsonLd)}
 });
 
 
+// Restore category HTML and known React pages before the final 404 handler.
+require("./category-routes.cjs")(app, supabase, SITE_URL);
+
+
 /*
  * =====================================================
  * 404
