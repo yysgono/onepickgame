@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import MediaRenderer from "./MediaRenderer";
 import { getCreatorSafetyCopy, creatorWarningStyle } from "./creatorSafetyCopy";
 import { getQuizMakerCopy, fillCopy } from "./quizMakerCopy";
+import descriptionEditorCopy from "../seo/quizDescriptionEditorCopy.json";
 import { supabase } from "../utils/supabaseClient";
 import { detectContentLanguage } from "../utils/detectContentLanguage";
 import { getWorldcupTitle } from "../utils/localization";
@@ -121,6 +122,7 @@ export default function QuizMaker() {
   const lang = routeLang || (i18n.language || "en").split("-")[0];
   const safetyCopy = getCreatorSafetyCopy(lang);
   const m = getQuizMakerCopy(lang);
+  const descriptionCopy = descriptionEditorCopy[lang] || descriptionEditorCopy.en;
 
   const [user, setUser] = useState(null);
   const [nickname, setNickname] = useState("");
@@ -884,6 +886,20 @@ export default function QuizMaker() {
               style={inputStyle}
             />
           </label>
+          <label htmlFor="quiz-description" style={labelStyle}>
+            {descriptionCopy[0]}
+            <textarea
+              id="quiz-description"
+              value={activeTitleTranslation.description || ""}
+              onChange={(e) => ensureTitleTranslation(originalLanguage, { description: e.target.value })}
+              placeholder={descriptionCopy[1]}
+              aria-describedby="quiz-description-help"
+              maxLength={500}
+              rows={4}
+              style={{ ...inputStyle, minHeight: 110, height: "auto", padding: "12px 14px", lineHeight: 1.6, resize: "vertical" }}
+            />
+          </label>
+          <p id="quiz-description-help" style={{ margin: "-8px 0 18px", color: "#596579", fontSize: 13, lineHeight: 1.5 }}>{descriptionCopy[2]}</p>
           <div style={{ margin: "-4px 0 16px" }}>
             <button type="button" onClick={addTitleTranslation} disabled={titleTranslations.length >= QUIZ_LANGUAGES.length - 1} style={{ ...secondaryButton, minHeight: 42, color: "#2459a6", borderColor: "#a9c1e8" }}>＋ {m.addTranslatedTitle}</button>
             {titleTranslations.map((row) => {
@@ -902,16 +918,6 @@ export default function QuizMaker() {
               );
             })}
           </div>
-          <label style={labelStyle}>
-            {m.description}
-            <textarea
-              value={activeTitleTranslation.description || ""}
-              onChange={(e) => ensureTitleTranslation(originalLanguage, { description: e.target.value })}
-              maxLength={500}
-              rows={3}
-              style={{ ...inputStyle, height: "auto", padding: 10 }}
-            />
-          </label>
 
           <div style={{ marginBottom: 16 }}>
             <div style={labelStyle}>{m.languages}</div>

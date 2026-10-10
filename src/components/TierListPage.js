@@ -1210,7 +1210,7 @@ const displayTitle =
     );
 
     const firstRankedCandidate =
-      ["S", "A", "B", "C", "D"]
+      ["S", "A+", "A", "B", "C", "D", "F"]
         .flatMap((tier) =>
           Array.isArray(item?.tiers?.[tier]) ? item.tiers[tier] : []
         )
@@ -1251,7 +1251,7 @@ const displayTitle =
             item?.tier_labels?._sourcePresetName || ""
           ).trim();
 
-    const tierPreview = ["S", "A", "B"].map((tier) => {
+    const tierPreview = ["S", "A+", "A", "B"].map((tier) => {
       const ids = Array.isArray(item?.tiers?.[tier])
         ? item.tiers[tier]
         : [];
@@ -2272,6 +2272,7 @@ style={{
                         <div style={{ padding: "8px 10px", borderLeft: "1px solid #dde2ea", display: "grid", alignContent: "center", gap: 4, background: "#fff" }}>
                           {[
                             { tier: "S", color: "#ff6b6b", candidate: firstCandidate },
+                            { tier: "A+", color: "#ff8052", candidate: null },
                             { tier: "A", color: "#ff9f43", candidate: secondCandidate },
                             { tier: "B", color: "#ffd93d", candidate: null },
                           ].map((row) => (
@@ -2721,21 +2722,17 @@ gap:
                           >
                             <div
                               style={{
-                                width: isMobile ? 34 : 46,
-                                minWidth: isMobile ? 34 : 46,
-                                height: isMobile ? 34 : 46,
+                                width: isMobile ? 28 : 42,
+                                minWidth: isMobile ? 28 : 42,
+                                height: isMobile ? 28 : 42,
                                 borderRadius: 5,
                                 background:
-                                  row.tier === "S"
-                                    ? "#ff6b6b"
-                                    : row.tier === "A"
-                                      ? "#ff9f43"
-                                      : "#ffd93d",
+                                  ({ S: "#ff6b6b", "A+": "#ff8052", A: "#ff9f43", B: "#ffd93d" })[row.tier],
                                 color: "#111",
                                 display: "flex",
                                 alignItems: "center",
                                 justifyContent: "center",
-                                fontSize: isMobile ? 14 : 18,
+                                fontSize: isMobile ? 12 : 16,
                                 fontWeight: 950,
                               }}
                             >
@@ -2757,9 +2754,9 @@ gap:
                                   key={`${row.tier}-${candidate?.id ?? index}`}
                                   title={candidate?.name || ""}
                                   style={{
-                                    width: isMobile ? 34 : 42,
-                                    minWidth: isMobile ? 34 : 42,
-                                    height: isMobile ? 34 : 42,
+                                    width: isMobile ? 28 : 38,
+                                    minWidth: isMobile ? 28 : 38,
+                                    height: isMobile ? 28 : 38,
                                     borderRadius: 5,
                                     overflow: "hidden",
                                     background: "#ffffff",

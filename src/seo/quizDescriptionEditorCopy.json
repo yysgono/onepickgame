@@ -1,0 +1,82 @@
+{
+  "ko": [
+    "설명 (선택)",
+    "퀴즈의 주제와 진행 방식을 소개해주세요.",
+    "비워두면 질문 정보를 바탕으로 소개가 자동 표시됩니다."
+  ],
+  "en": [
+    "Description (optional)",
+    "Introduce the topic and how to play this quiz.",
+    "Leave blank to show an introduction based on the questions."
+  ],
+  "ja": [
+    "説明（任意）",
+    "クイズのテーマと遊び方を紹介してください。",
+    "空欄の場合は問題情報から紹介文が自動表示されます。"
+  ],
+  "zh": [
+    "说明（可选）",
+    "介绍测验的主题和玩法。",
+    "留空时将根据题目信息自动显示介绍。"
+  ],
+  "es": [
+    "Descripción (opcional)",
+    "Presenta el tema y cómo jugar este quiz.",
+    "Si lo dejas vacío, se mostrará una introducción basada en las preguntas."
+  ],
+  "fr": [
+    "Description (facultatif)",
+    "Présentez le thème et les règles de ce quiz.",
+    "Laissez vide pour afficher une introduction basée sur les questions."
+  ],
+  "vi": [
+    "Mô tả (không bắt buộc)",
+    "Giới thiệu chủ đề và cách chơi đố vui.",
+    "Để trống để tự động hiển thị giới thiệu dựa trên các câu hỏi."
+  ],
+  "de": [
+    "Beschreibung (optional)",
+    "Beschreibe das Thema und den Ablauf dieses Quiz.",
+    "Ohne Beschreibung erscheint eine Einführung anhand der Fragen."
+  ],
+  "ru": [
+    "Описание (необязательно)",
+    "Расскажите о теме и правилах викторины.",
+    "Если оставить поле пустым, появится описание на основе вопросов."
+  ],
+  "id": [
+    "Deskripsi (opsional)",
+    "Jelaskan topik dan cara memainkan kuis ini.",
+    "Biarkan kosong untuk menampilkan pengantar berdasarkan pertanyaan."
+  ],
+  "pt": [
+    "Descrição (opcional)",
+    "Apresente o tema e como jogar este quiz.",
+    "Deixe em branco para mostrar uma introdução baseada nas perguntas."
+  ],
+  "hi": [
+    "विवरण (वैकल्पिक)",
+    "क्विज़ के विषय और खेलने के तरीके का परिचय दें।",
+    "खाली छोड़ने पर प्रश्नों के आधार पर परिचय दिखाई देगा।"
+  ],
+  "tr": [
+    "Açıklama (isteğe bağlı)",
+    "Bu quizin konusunu ve nasıl oynandığını açıkla.",
+    "Boş bırakılırsa sorulara göre bir tanıtım gösterilir."
+  ],
+  "th": [
+    "คำอธิบาย (ไม่บังคับ)",
+    "แนะนำหัวข้อและวิธีเล่นควิซนี้",
+    "หากเว้นว่าง จะแสดงบทนำจากข้อมูลคำถามโดยอัตโนมัติ"
+  ],
+  "ar": [
+    "الوصف (اختياري)",
+    "قدّم موضوع الاختبار وطريقة اللعب.",
+    "اتركه فارغًا لعرض مقدمة مبنية على الأسئلة."
+  ],
+  "bn": [
+    "বিবরণ (ঐচ্ছিক)",
+    "কুইজের বিষয় এবং খেলার নিয়ম পরিচয় করিয়ে দিন।",
+    "খালি রাখলে প্রশ্নের ভিত্তিতে একটি পরিচিতি দেখানো হবে।"
+  ]
+}

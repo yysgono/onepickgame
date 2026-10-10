@@ -1045,7 +1045,7 @@ export default function QuizDetailPage() {
 
               <h1 style={{ fontSize: 34, margin: "18px 0 8px" }}>{title}</h1>
 
-              <p style={{ color: "#637086", lineHeight: 1.6 }}>{localize(quiz.description_translations, quiz.description, lang)}</p>
+              <p style={{ color: "#637086", lineHeight: 1.6 }}>{seo.description}</p>
 
               <div style={{ color: "#E53935", fontWeight: 800, margin: "12px 0" }}>{formatCopy(c.totalQuestions, { count: allQuestions.length })} · ▶ {quiz.play_count || 0}</div>
 

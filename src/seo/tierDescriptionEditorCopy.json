@@ -1,0 +1,82 @@
+{
+  "ko": [
+    "설명 (선택)",
+    "어떤 기준으로 순위를 정하는 티어표인지 소개해주세요.",
+    "비워두면 후보 정보를 바탕으로 소개가 자동 표시됩니다."
+  ],
+  "en": [
+    "Description (optional)",
+    "Explain what this tier list ranks and which criteria to use.",
+    "Leave blank to show an introduction based on the candidates."
+  ],
+  "ja": [
+    "説明（任意）",
+    "何をどの基準で評価するTier表か紹介してください。",
+    "空欄の場合は候補情報から紹介文が自動表示されます。"
+  ],
+  "zh": [
+    "说明（可选）",
+    "介绍此榜单的内容和评价标准。",
+    "留空时将根据候选信息自动显示介绍。"
+  ],
+  "es": [
+    "Descripción (opcional)",
+    "Explica qué clasifica esta lista y qué criterios utilizar.",
+    "Si lo dejas vacío, se mostrará una introducción basada en los candidatos."
+  ],
+  "fr": [
+    "Description (facultatif)",
+    "Présentez le contenu et les critères de classement.",
+    "Laissez vide pour afficher une introduction basée sur les candidats."
+  ],
+  "vi": [
+    "Mô tả (không bắt buộc)",
+    "Giới thiệu nội dung và tiêu chí xếp hạng.",
+    "Để trống để tự động hiển thị giới thiệu dựa trên các ứng viên."
+  ],
+  "de": [
+    "Beschreibung (optional)",
+    "Beschreibe den Inhalt und die Bewertungskriterien.",
+    "Ohne Beschreibung erscheint eine Einführung anhand der Kandidaten."
+  ],
+  "ru": [
+    "Описание (необязательно)",
+    "Расскажите, что оценивается и по каким критериям.",
+    "Если оставить поле пустым, появится описание на основе участников."
+  ],
+  "id": [
+    "Deskripsi (opsional)",
+    "Jelaskan isi daftar dan kriteria penilaiannya.",
+    "Biarkan kosong untuk menampilkan pengantar berdasarkan kandidat."
+  ],
+  "pt": [
+    "Descrição (opcional)",
+    "Explique o conteúdo da lista e os critérios de avaliação.",
+    "Deixe em branco para mostrar uma introdução baseada nos candidatos."
+  ],
+  "hi": [
+    "विवरण (वैकल्पिक)",
+    "बताएँ कि यह सूची किन चीज़ों को किस आधार पर रैंक करती है।",
+    "खाली छोड़ने पर उम्मीदवारों के आधार पर परिचय दिखाई देगा।"
+  ],
+  "tr": [
+    "Açıklama (isteğe bağlı)",
+    "Listenin içeriğini ve değerlendirme ölçütlerini açıkla.",
+    "Boş bırakılırsa adaylara göre bir tanıtım gösterilir."
+  ],
+  "th": [
+    "คำอธิบาย (ไม่บังคับ)",
+    "อธิบายสิ่งที่จัดอันดับและเกณฑ์ที่ใช้",
+    "หากเว้นว่าง จะแสดงบทนำจากข้อมูลตัวเลือกโดยอัตโนมัติ"
+  ],
+  "ar": [
+    "الوصف (اختياري)",
+    "وضّح محتوى القائمة ومعايير التقييم.",
+    "اتركه فارغًا لعرض مقدمة مبنية على المرشحين."
+  ],
+  "bn": [
+    "বিবরণ (ঐচ্ছিক)",
+    "তালিকার বিষয় এবং মূল্যায়নের মানদণ্ড ব্যাখ্যা করুন।",
+    "খালি রাখলে প্রার্থীদের ভিত্তিতে একটি পরিচিতি দেখানো হবে।"
+  ]
+}

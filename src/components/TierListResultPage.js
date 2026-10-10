@@ -2288,6 +2288,8 @@ ctx.font =
 
               title:
                 tierList.title,
+              description: tierList.description || "",
+              description_translations: tierList.description_translations || {},
 
               category:
                 tierList.category ||
@@ -2378,6 +2380,8 @@ ctx.font =
             user_id: tierList.user_id || null,
             guest_nickname: tierList.guest_nickname || "",
             title: tierList.title,
+            description: tierList.description || "",
+            description_translations: tierList.description_translations || {},
             title_translations:
   tierList.title_translations || {},
             source_worldcup_id:

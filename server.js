@@ -1888,7 +1888,7 @@ app.use(async (req, res, next) => {
   try {
     const { data: tierList, error } = await supabase
       .from("tier_lists")
-      .select("id,title,description,title_translations,description_translations,original_language,thumbnail_url,candidate_count,candidates,updated_at,category,source_worldcup_id")
+      .select("id,title,description,title_translations,description_translations,original_language,thumbnail_url,candidate_count,candidates,updated_at,category,source_worldcup_id,tier_labels")
       .eq("id", id)
       .maybeSingle();
 

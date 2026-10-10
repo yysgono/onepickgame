@@ -18,9 +18,19 @@ function join(values, max = 400) {
   return result;
 }
 const DETAIL_COPY = require('./detailCopy.json');
+function tierDescriptionFields(tier) {
+  const labels = tier?.tier_labels;
+  const hasMeta = labels && Object.prototype.hasOwnProperty.call(labels, '_description');
+  return {
+    description: hasMeta ? String(labels._description || '') : String(tier?.description || ''),
+    description_translations: hasMeta ? (labels._descriptionTranslations || {}) : (tier?.description_translations || {}),
+  };
+}
+
 function tierDescription(tier, language) {
   const lang = String(language || 'en').toLowerCase().split(/[-_]/)[0];
-  const saved = localized(tier?.description_translations, tier?.description, lang);
+  const fields = tierDescriptionFields(tier);
+  const saved = localized(fields.description_translations, fields.description, lang);
   if (saved) return saved;
   const copy = DETAIL_COPY[lang] || DETAIL_COPY.en;
   const title = localized(tier?.title_translations, tier?.title, lang) || copy[5];
@@ -72,4 +82,4 @@ function quizDescription(quiz, questions, language) {
   return [title + '.', count > 0 ? copy[1].replace('{n}', String(count)) : '',
     rows.some(q => text(q?.image_url)) ? copy[3] : '', copy[mode]].filter(Boolean).join(' ');
 }
-module.exports = { tierDescription, quizDescription };
+module.exports = { tierDescription, tierDescriptionFields, quizDescription };

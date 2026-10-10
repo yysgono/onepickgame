@@ -1,3 +1,5 @@
+import contentDescription from "../seo/contentDescription";
+import descriptionEditorCopy from "../seo/tierDescriptionEditorCopy.json";
 import { resolveOriginalContentLanguage, originalTitleLabel } from "../utils/originalContentLanguage";
 import { TierTagEditor, normalizeTags } from "./TierTagTools";
 import "../registerTierListMakerTranslations";
@@ -1055,6 +1057,17 @@ const [
     useState("");
 
 
+  const [tierListDescription, setTierListDescription] = useState("");
+  const loadedDescriptionRef = useRef("");
+  const descriptionTranslationsRef = useRef({});
+  const descriptionCopy = descriptionEditorCopy[lang] || descriptionEditorCopy.en;
+  const hydrateDescription = useCallback((payload) => {
+    const fields = contentDescription.tierDescriptionFields(payload);
+    loadedDescriptionRef.current = fields.description.trim();
+    descriptionTranslationsRef.current = readTranslationMap(fields.description_translations);
+    setTierListDescription(fields.description);
+  }, []);
+
   const [titleTranslations, setTitleTranslations] = useState({});
   const [titleTranslationLanguages, setTitleTranslationLanguages] = useState([]);
   const [originalContentLanguage, setOriginalContentLanguage] = useState(lang);
@@ -1147,6 +1160,10 @@ const [
           setTierListTitle(
             saved.tierListTitle
           );
+        }
+
+        if (typeof saved?.tierListDescription === "string") {
+          hydrateDescription({ description: saved.tierListDescription, description_translations: saved.descriptionTranslations });
         }
 
         const savedTranslations =
@@ -1248,6 +1265,8 @@ const [
         TIER_BUILDER_UI_STORAGE_KEY,
         JSON.stringify({
           tierListTitle,
+          tierListDescription,
+          descriptionTranslations: tierListDescription.trim() === loadedDescriptionRef.current ? descriptionTranslationsRef.current : {},
           titleTranslations,
           titleTranslationLanguages,
           tierLabels,
@@ -1263,6 +1282,7 @@ const [
     }
   }, [
     tierListTitle,
+    tierListDescription,
     titleTranslations,
     titleTranslationLanguages,
     tierLabels,
@@ -2227,6 +2247,7 @@ const sourceCandidates =
         ...DEFAULT_TIER_LABELS,
         ...(payload.tier_labels || {}),
       });
+      hydrateDescription(payload);
       const loadedOriginalLanguage = resolveOriginalContentLanguage(payload);
       setOriginalContentLanguage(loadedOriginalLanguage);
       setTierListTitle(
@@ -2301,7 +2322,7 @@ const sourceCandidates =
                 "tier_labels"
               );
 
-      if (hasSourceMeta) {
+      if (hasSourceMeta && (Object.prototype.hasOwnProperty.call(stored, "description") || Object.prototype.hasOwnProperty.call(stored.tier_labels || {}, "_description"))) {
   const mergedStored =
     await mergeWithLatestPresetCandidates(stored);
 
@@ -2325,7 +2346,7 @@ const sourceCandidates =
         const { data, error } = await supabase
           .from("tier_lists")
           .select(
-            "id, user_id, guest_nickname, title, title_translations, source_worldcup_id, category, tier_labels, tiers, candidates"
+            "id, user_id, guest_nickname, title, title_translations, description, description_translations, source_worldcup_id, category, tier_labels, tiers, candidates"
           )
           .eq("id", targetId)
           .single();
@@ -3454,6 +3475,8 @@ const handleDragEndItem =
           version: 2,
           savedAt: Date.now(),
           title: tierListTitle,
+          description: tierListDescription,
+          descriptionTranslations: tierListDescription.trim() === loadedDescriptionRef.current ? descriptionTranslationsRef.current : {},
           titleTranslations,
           titleTranslationLanguages,
           category: selectedCategory,
@@ -3489,6 +3512,7 @@ const handleDragEndItem =
       }
     }, [
       tierListTitle,
+      tierListDescription,
       titleTranslations,
       titleTranslationLanguages,
       selectedCategory,
@@ -3590,6 +3614,7 @@ const handleDragEndItem =
           original_language: draft?.originalContentLanguage,
         }));
         setTierListTitle(draft?.title || "");
+        hydrateDescription({ description: draft?.description || "", description_translations: draft?.descriptionTranslations || {} });
         const draftTitleTranslations = readTranslationMap(draft?.titleTranslations);
         setTitleTranslations(draftTitleTranslations);
         setTitleTranslationLanguages(
@@ -4067,8 +4092,14 @@ const finalCandidates =
               : null;
 
 
+          const cleanDescription = tierListDescription.trim();
+          const cleanDescriptionTranslations = cleanDescription === loadedDescriptionRef.current
+            ? descriptionTranslationsRef.current : {};
+
           const savedTierLabels = {
             ...tierLabels,
+            _description: cleanDescription,
+            _descriptionTranslations: cleanDescriptionTranslations,
             _tags: normalizeTags(tierLabels._tags),
             _sourcePresetName: sourceWorldcupId
               ? String(sourcePresetName || "").trim()
@@ -4100,6 +4131,8 @@ if (editingTierListId) {
         .from("tier_lists")
         .update({
           title: cleanTitle,
+          description: cleanDescription,
+          description_translations: cleanDescriptionTranslations,
           title_translations: cleanTitleTranslations,
           source_worldcup_id:
             sourceWorldcupId || null,
@@ -4177,6 +4210,8 @@ if (editingTierListId) {
           guest_id: null,
           guest_nickname: null,
           title: cleanTitle,
+          description: cleanDescription,
+          description_translations: cleanDescriptionTranslations,
           title_translations: cleanTitleTranslations,
           source_worldcup_id:
             sourceWorldcupId || null,
@@ -4300,6 +4335,7 @@ if (editingTierListId) {
 [
   saving,
   tierListTitle,
+  tierListDescription,
   titleTranslations,
   lang,
   text,
@@ -5449,6 +5485,21 @@ if (editingTierListId) {
                   outline: "none",
                 }}
               />
+
+              <label htmlFor="tier-description" style={{ display: "block", fontWeight: 800, marginBottom: 8 }}>
+                {descriptionCopy[0]}
+              </label>
+              <textarea
+                id="tier-description"
+                value={tierListDescription}
+                onChange={event => setTierListDescription(event.target.value)}
+                placeholder={descriptionCopy[1]}
+                rows={4}
+                maxLength={2000}
+                style={{ width: "100%", minHeight: 110, boxSizing: "border-box", padding: "12px 14px", borderRadius: 10, border: "1px solid #cbd5e1", background: "#fff", color: "#111827", font: "inherit", fontSize: 16, lineHeight: 1.6, resize: "vertical" }}
+              />
+              <p style={{ margin: "6px 0 18px", color: "#596579", fontSize: 13, lineHeight: 1.5 }}>{descriptionCopy[2]}</p>
+
 
               <div
                 style={{
