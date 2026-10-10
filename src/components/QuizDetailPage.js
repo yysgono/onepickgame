@@ -1,3 +1,4 @@
+import RelatedContentLinks from "./RelatedContentLinks";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 
 import { Link, useNavigate, useParams } from "react-router-dom";
@@ -38,8 +39,6 @@ import MediaRenderer from "./MediaRenderer";
 
 import { supabase } from "../utils/supabaseClient";
 
-
-
 function localize(map, fallback, lang) {
 
   return map && typeof map === "object"
@@ -49,8 +48,6 @@ function localize(map, fallback, lang) {
     : fallback || "";
 
 }
-
-
 
 function shuffle(arr) {
 
@@ -68,8 +65,6 @@ function shuffle(arr) {
 
 }
 
-
-
 function normalizeAnswer(value, settings = {}) {
 
   let text = String(value || "").trim();
@@ -82,15 +77,11 @@ function normalizeAnswer(value, settings = {}) {
 
 }
 
-
-
 function formatCopy(text, values = {}) {
 
   return Object.entries(values).reduce((result, [key, value]) => result.replaceAll(`{{${key}}}`, String(value)), text || "");
 
 }
-
-
 
 function ensureFourOptions(options, choiceLabel = "Choice") {
 
@@ -105,8 +96,6 @@ function ensureFourOptions(options, choiceLabel = "Choice") {
   return result.map((value, index) => value || `${choiceLabel} ${index + 1}`);
 
 }
-
-
 
 function preloadQuestionImages(questions) {
 
@@ -136,8 +125,6 @@ function preloadQuestionImages(questions) {
 
 }
 
-
-
 function buildSession(allQuestions, count, shuffleOrder = true, choiceLabel = "Choice") {
 
   const answerPool = allQuestions
@@ -159,8 +146,6 @@ function buildSession(allQuestions, count, shuffleOrder = true, choiceLabel = "C
     .map((q) => String(q.options[q.correct_index]).trim())
 
     .filter(Boolean);
-
-
 
   const orderedQuestions = shuffleOrder ? shuffle(allQuestions) : [...allQuestions];
 
@@ -224,8 +209,6 @@ function buildSession(allQuestions, count, shuffleOrder = true, choiceLabel = "C
 
 }
 
-
-
 export default function QuizDetailPage() {
 
   const { id, lang: routeLang } = useParams();
@@ -237,8 +220,6 @@ export default function QuizDetailPage() {
   const lang = routeLang || (i18n.language || "en").split("-")[0];
 
   const c = getQuizCopy(lang);
-
-
 
   const [quiz, setQuiz] = useState(null);
 
@@ -307,7 +288,9 @@ export default function QuizDetailPage() {
   const [deletingQuiz, setDeletingQuiz] = useState(false);
 
   const [quizViewportWidth, setQuizViewportWidth] = useState(
+
     typeof window !== "undefined" ? window.innerWidth : 1200
+
   );
 
   const timerRef = useRef(null);
@@ -315,20 +298,22 @@ export default function QuizDetailPage() {
   const isQuizMobile = quizViewportWidth < 700;
 
   useEffect(() => {
+
     if (typeof window === "undefined") return undefined;
 
     const handleResize = () => {
+
       setQuizViewportWidth(window.innerWidth || 1200);
+
     };
 
     window.addEventListener("resize", handleResize);
 
     return () => window.removeEventListener("resize", handleResize);
+
   }, []);
 
   const deadlineRef = useRef(0);
-
-
 
   useEffect(() => {
 
@@ -336,11 +321,7 @@ export default function QuizDetailPage() {
 
   }, []);
 
-
-
   const isOwner = Boolean(currentUserId && quiz?.user_id && String(currentUserId) === String(quiz.user_id));
-
-
 
   async function removeOwnedQuiz() {
 
@@ -370,8 +351,6 @@ export default function QuizDetailPage() {
 
   }
 
-
-
   const ownerControls = isOwner ? (
 
     <div style={{ display: "flex", justifyContent: "center", gap: 10, flexWrap: "wrap", marginTop: 14 }}>
@@ -383,8 +362,6 @@ export default function QuizDetailPage() {
     </div>
 
   ) : null;
-
-
 
   useEffect(() => {
 
@@ -474,15 +451,11 @@ export default function QuizDetailPage() {
 
   }, [id]);
 
-
-
   useEffect(() => {
 
     if (id) sessionStorage.setItem(`quiz-view-phase:${id}`, phase);
 
   }, [id, phase]);
-
-
 
   useEffect(() => {
 
@@ -496,8 +469,6 @@ export default function QuizDetailPage() {
 
   }, [quiz, lang, id]);
 
-
-
   const title = useMemo(
 
     () => localize(quiz?.title_translations, quiz?.title, lang),
@@ -505,8 +476,6 @@ export default function QuizDetailPage() {
     [quiz, lang]
 
   );
-
-
 
   const current = sessionQuestions[index];
 
@@ -518,8 +487,6 @@ export default function QuizDetailPage() {
 
   const showAnswersInResult = revealMode === "both" || revealMode === "final";
 
-
-
   useEffect(() => {
 
     if (phase !== "playing" || !current || timerSeconds <= 0 || locked) {
@@ -530,8 +497,6 @@ export default function QuizDetailPage() {
 
     }
 
-
-
     const totalMs = timerSeconds * 1000;
 
     deadlineRef.current = Date.now() + totalMs;
@@ -539,8 +504,6 @@ export default function QuizDetailPage() {
     setTimeRemainingMs(totalMs);
 
     setTimeLeft(timerSeconds);
-
-
 
     const tick = () => {
 
@@ -562,8 +525,6 @@ export default function QuizDetailPage() {
 
     };
 
-
-
     timerRef.current = setInterval(tick, 100);
 
     return () => {
@@ -573,8 +534,6 @@ export default function QuizDetailPage() {
     };
 
   }, [phase, index, timerSeconds, locked, current?.id]);
-
-
 
   async function start(customQuestions = null) {
 
@@ -634,8 +593,6 @@ export default function QuizDetailPage() {
 
   }
 
-
-
   useEffect(() => {
 
     if (phase !== "result" || !records.length || !attemptToken) return;
@@ -665,8 +622,6 @@ export default function QuizDetailPage() {
     return () => { alive = false; };
 
   }, [phase, records, attemptToken, id]);
-
-
 
   function evaluate(q, forcedTimeout = false) {
 
@@ -698,8 +653,6 @@ export default function QuizDetailPage() {
 
     }
 
-
-
     const options = Array.isArray(q.options) ? q.options : [];
 
     const correct = !forcedTimeout && selected === q.correct_index;
@@ -717,8 +670,6 @@ export default function QuizDetailPage() {
     };
 
   }
-
-
 
   function submitAnswer(forcedTimeout = false, skipped = false) {
 
@@ -754,11 +705,7 @@ export default function QuizDetailPage() {
 
     }
 
-
-
     setShortAnswerWarning("");
-
-
 
     const judged = evaluate(current, forcedTimeout);
 
@@ -776,8 +723,6 @@ export default function QuizDetailPage() {
 
     setLocked(true);
 
-
-
     if (!revealImmediately) {
 
       setTimeout(() => moveNext(), 120);
@@ -785,8 +730,6 @@ export default function QuizDetailPage() {
     }
 
   }
-
-
 
   function moveNext() {
 
@@ -812,8 +755,6 @@ export default function QuizDetailPage() {
 
   }
 
-
-
   function retryWrong() {
 
     const wrong = records.filter((x) => !x.correct).map((x) => x.question);
@@ -823,8 +764,6 @@ export default function QuizDetailPage() {
     start(wrong);
 
   }
-
-
 
   function showPreviousResult() {
 
@@ -852,8 +791,6 @@ export default function QuizDetailPage() {
 
   }
 
-
-
   function restartCurrentQuiz() {
 
     if (!window.confirm(c.restartConfirm)) return;
@@ -861,8 +798,6 @@ export default function QuizDetailPage() {
     start(sessionQuestions);
 
   }
-
-
 
   function finishEarly() {
 
@@ -893,8 +828,6 @@ export default function QuizDetailPage() {
     setPhase("result");
 
   }
-
-
 
   async function playRandomQuiz() {
 
@@ -936,8 +869,6 @@ export default function QuizDetailPage() {
 
   }
 
-
-
   function openQuestionReport(question) {
 
     setReportTarget(question);
@@ -949,8 +880,6 @@ export default function QuizDetailPage() {
     setReportStatus("");
 
   }
-
-
 
   async function submitQuestionReport() {
 
@@ -990,8 +919,6 @@ export default function QuizDetailPage() {
 
   }
 
-
-
   async function shareResult() {
 
     const rate = records.length ? Math.round((score / records.length) * 100) : 0;
@@ -1020,8 +947,6 @@ export default function QuizDetailPage() {
 
   }
 
-
-
   if (loading) return <div style={{ padding: 60, textAlign: "center" }}>Loading...</div>;
 
   if (error || !quiz) {
@@ -1030,13 +955,9 @@ export default function QuizDetailPage() {
 
   }
 
-
-
   const countOptions = [1, 5, 10, 20, 30, 50, allQuestions.length]
 
     .filter((v, i, arr) => v > 0 && v <= allQuestions.length && arr.indexOf(v) === i);
-
-
 
   const filteredRecords = records.filter((r) => {
 
@@ -1048,8 +969,6 @@ export default function QuizDetailPage() {
 
   });
 
-
-
   const changeResultFilter = (nextFilter) => {
 
     setResultFilter(nextFilter);
@@ -1059,12 +978,14 @@ export default function QuizDetailPage() {
   };
 
   const fallbackSeoImage = socialImage("");
+
   const quizSeoImage = [quiz.thumbnail_url, ...allQuestions.map(question => question?.image_url)]
+
     .map(value => socialImage(value))
+
     .find(value => value !== fallbackSeoImage) || fallbackSeoImage;
+
   const seo = getQuizSeo(lang, { ...quiz, seo_image_url: quizSeoImage, seo_questions: allQuestions });
-
-
 
   return (
 
@@ -1091,8 +1012,6 @@ export default function QuizDetailPage() {
       <div style={{ maxWidth: 1320, margin: "0 auto" }}>
 
         <button type="button" onClick={() => navigate(`/${lang}/quiz`)} style={{ ...secondaryButton, minHeight: 48, padding: "11px 18px", fontSize: 16 }}>← {c.quizList}</button>
-
-
 
         {phase === "setup" && (
 
@@ -1133,8 +1052,6 @@ export default function QuizDetailPage() {
               {ownerControls}
 
             </div>
-
-
 
             <div style={{ ...cardStyle, maxWidth: 820, margin: "0 auto 20px", padding: 26 }}>
 
@@ -1256,8 +1173,6 @@ export default function QuizDetailPage() {
 
         )}
 
-
-
         {phase === "preparing" && (
 
           <div style={{ ...cardStyle, maxWidth: 680, margin: "70px auto", padding: 34, textAlign: "center" }}>
@@ -1269,8 +1184,6 @@ export default function QuizDetailPage() {
           </div>
 
         )}
-
-
 
         {phase === "playing" && current && (
 
@@ -1329,8 +1242,6 @@ export default function QuizDetailPage() {
             )}
 
             <h2 style={{ fontSize: 25, lineHeight: 1.45, margin: "8px 0 18px" }}>{localize(current.question_translations, current.question_text, lang)}</h2>
-
-
 
             {current.question_type === "short_answer" ? (
 
@@ -1394,15 +1305,11 @@ export default function QuizDetailPage() {
 
             )}
 
-
-
             {current.question_type === "multiple_choice" && !locked && selected !== null && (
 
               <button type="button" onClick={() => submitAnswer(false)} style={{ ...primaryButton, width: "100%", marginTop: 14, minHeight: 54, padding: "14px 18px", fontSize: 19 }}>{c.submitChoice}</button>
 
             )}
-
-
 
             {locked && revealImmediately && records.length > 0 && (
 
@@ -1425,8 +1332,6 @@ export default function QuizDetailPage() {
           </div>
 
         )}
-
-
 
         {phase === "result" && (
 
@@ -1518,8 +1423,6 @@ export default function QuizDetailPage() {
 
             </div>
 
-
-
             <div style={{ ...buttonRow, justifyContent: "center", marginBottom: 14 }}>
 
               <button type="button" onClick={() => changeResultFilter("all")} style={choiceButton(resultFilter === "all")}>{c.all} {records.length}</button>
@@ -1529,8 +1432,6 @@ export default function QuizDetailPage() {
               <button type="button" onClick={() => changeResultFilter("wrong")} style={choiceButton(resultFilter === "wrong")}>{c.wrong} {records.length - score}</button>
 
             </div>
-
-
 
             <div style={{ display: "grid", gap: 12 }}>
 
@@ -1580,8 +1481,6 @@ export default function QuizDetailPage() {
 
             </div>
 
-
-
             {resultVisibleCount < filteredRecords.length && (
 
               <div style={{ display: "flex", justifyContent: "center", gap: 10, flexWrap: "wrap", marginTop: 18 }}>
@@ -1601,8 +1500,6 @@ export default function QuizDetailPage() {
               </div>
 
             )}
-
-
 
             {recommended.length > 0 && (
 
@@ -1640,15 +1537,11 @@ export default function QuizDetailPage() {
 
             )}
 
-
-
             <div style={{ marginTop: 28 }}>
 
               <QuizCommentBox quizId={id} />
 
             </div>
-
-
 
             {reportTarget && (
 
@@ -1700,6 +1593,8 @@ export default function QuizDetailPage() {
 
         )}
 
+        {phase !== "playing" && <RelatedContentLinks lang={lang} category={quiz.category} />}
+
       </div>
 
     </div>
@@ -1707,8 +1602,6 @@ export default function QuizDetailPage() {
   );
 
 }
-
-
 
 const cardStyle = {
 

@@ -1,3 +1,4 @@
+import RelatedContentLinks from "./RelatedContentLinks";
 import contentDescription from "../seo/contentDescription";
 import { socialImage } from "../seo/quizSeo";
 import { TierTags, PresetTitle } from "./TierTagTools";
@@ -3266,6 +3267,7 @@ padding: isMobile
     )}
   </div>
   <TierTags value={tierList.tier_labels?._tags} lang={lang} />
+  <p style={{ margin: "10px auto 0", maxWidth: 900, color: "#596579", fontSize: isMobile ? 14 : 16, lineHeight: 1.65, overflowWrap: "anywhere" }}>{seoResultDescription}</p>
 </div>
         {/* =============================================
             티어표 / 나만의 원픽
@@ -4125,6 +4127,7 @@ padding: isMobile
             )}
           </div>
         </div>
+        <RelatedContentLinks lang={lang} category={tierList.category} sourceWorldcupId={tierList.source_worldcup_id} />
       </div>
     </div>
     </>

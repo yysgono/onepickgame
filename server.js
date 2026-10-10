@@ -1,9 +1,5 @@
-const { getListSeo } = require("./src/seo/listSeo.js");
-const { selectImage: selectWorldcupSeoImage } = require("./worldcup-seo-image.cjs");
 const contentDescription = require("./src/seo/contentDescription.js");
-const { socialImage: gameSocialImage } = require("./src/seo/quizSeo.cjs");
-const worldcupMetadata = require("./src/seo/worldcupMetadata.js");
-const { getCategorySeo } = require("./src/seo/categorySeo.js");
+const { renderDetailLinks } = require("./src/seo/detailLinks.js");
 /// server.js
 
 const express = require("express");
@@ -70,33 +66,6 @@ const supabase = createClient(
 );
 
 require("./quiz-seo.cjs")(app, supabase, SITE_URL);
-require("./category-routes.cjs")(app, supabase, SITE_URL);
-const worldcupImageCache = new Map();
-async function resolveWorldcupSeoImage(cup) {
-  const key = String(cup.id);
-  const cached = worldcupImageCache.get(key);
-  if (cached && cached.until > Date.now()) return cached.promise;
-  const promise = (async () => {
-    let stats = [];
-    try { const result = await supabase.rpc("get_winner_stats", { p_cup_id: cup.id, p_from: null, p_to: null }); if (!result.error) stats = result.data || []; } catch {}
-    return selectWorldcupSeoImage(cup, stats, SITE_URL, SUPABASE_URL);
-  })().catch(() => "");
-  if (worldcupImageCache.size >= 500) worldcupImageCache.delete(worldcupImageCache.keys().next().value);
-  worldcupImageCache.set(key, { until: Date.now() + 300000, promise });
-  return promise;
-}
-app.get("/api/worldcup-seo-image", async (req, res) => {
-  const id = String(req.query.id || "");
-  if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id)) return res.status(400).json({ image: "" });
-  try {
-    const { data, error } = await supabase.from("worldcups").select("*").eq("id", id).is("deleted_at", null).maybeSingle();
-    if (error) throw error;
-    if (!data) return res.status(404).json({ image: "" });
-    res.setHeader("Cache-Control", "public, max-age=0, s-maxage=300");
-    return res.json({ image: await resolveWorldcupSeoImage(data) });
-  } catch { return res.status(200).json({ image: "" }); }
-});
-
 
 const supabaseAdmin =
   SUPABASE_SERVICE_ROLE_KEY
@@ -549,7 +518,7 @@ app.use(async (req, res, next) => {
 
       const hreflangTags = SUPPORTED_LANGS.map(
         (language) => `
-<link data-rh="true"
+<link
   rel="alternate"
   hreflang="${language}"
   href="${SITE_URL}/${language}/blog"
@@ -557,7 +526,7 @@ app.use(async (req, res, next) => {
       ).join("");
 
       const xDefaultTag = `
-<link data-rh="true"
+<link
   rel="alternate"
   hreflang="x-default"
   href="${SITE_URL}/en/blog"
@@ -578,19 +547,19 @@ app.use(async (req, res, next) => {
       };
 
       const seoHead = `
-<title data-rh="true">${escapeHtml(seoTitle)}</title>
+<title>${escapeHtml(seoTitle)}</title>
 
-<meta data-rh="true"
+<meta
   name="description"
   content="${escapeHtml(text.description)}"
 />
 
-<meta data-rh="true"
+<meta
   name="robots"
   content="index, follow, max-image-preview:large"
 />
 
-<link data-rh="true"
+<link
   rel="canonical"
   href="${canonical}"
 />
@@ -599,59 +568,59 @@ ${hreflangTags}
 
 ${xDefaultTag}
 
-<meta data-rh="true" property="og:type" content="website" />
+<meta property="og:type" content="website" />
 
-<meta data-rh="true"
+<meta
   property="og:title"
   content="${escapeHtml(seoTitle)}"
 />
 
-<meta data-rh="true"
+<meta
   property="og:description"
   content="${escapeHtml(text.description)}"
 />
 
-<meta data-rh="true"
+<meta
   property="og:url"
   content="${canonical}"
 />
 
-<meta data-rh="true"
+<meta
   property="og:site_name"
   content="OnePickGame"
 />
 
-<meta data-rh="true"
+<meta
   property="og:locale"
   content="${OG_LOCALE_MAP[lang] || "en_US"}"
 />
 
-<meta data-rh="true"
+<meta
   property="og:image"
   content="${image}"
 />
 
-<meta data-rh="true"
+<meta
   property="og:image:alt"
   content="${escapeHtml(seoTitle)}"
 />
 
-<meta data-rh="true"
+<meta
   name="twitter:card"
   content="summary_large_image"
 />
 
-<meta data-rh="true"
+<meta
   name="twitter:title"
   content="${escapeHtml(seoTitle)}"
 />
 
-<meta data-rh="true"
+<meta
   name="twitter:description"
   content="${escapeHtml(text.description)}"
 />
 
-<meta data-rh="true"
+<meta
   name="twitter:image"
   content="${image}"
 />
@@ -814,7 +783,7 @@ ${safeJson(jsonLd)}
     const hreflangTags = validAlternates
       .map(
         (item) => `
-<link data-rh="true"
+<link
   rel="alternate"
   hreflang="${item.language}"
   href="${SITE_URL}/${item.language}/blog/${encodeURIComponent(
@@ -831,7 +800,7 @@ ${safeJson(jsonLd)}
 
     const xDefaultTag = englishAlternate
       ? `
-<link data-rh="true"
+<link
   rel="alternate"
   hreflang="x-default"
   href="${SITE_URL}/en/blog/${encodeURIComponent(
@@ -871,19 +840,19 @@ ${safeJson(jsonLd)}
     };
 
     const seoHead = `
-<title data-rh="true">${escapeHtml(seoTitle)}</title>
+<title>${escapeHtml(seoTitle)}</title>
 
-<meta data-rh="true"
+<meta
   name="description"
   content="${escapeHtml(description)}"
 />
 
-<meta data-rh="true"
+<meta
   name="robots"
   content="index, follow, max-image-preview:large"
 />
 
-<link data-rh="true"
+<link
   rel="canonical"
   href="${canonical}"
 />
@@ -892,62 +861,62 @@ ${hreflangTags}
 
 ${xDefaultTag}
 
-<meta data-rh="true"
+<meta
   property="og:type"
   content="article"
 />
 
-<meta data-rh="true"
+<meta
   property="og:title"
   content="${escapeHtml(seoTitle)}"
 />
 
-<meta data-rh="true"
+<meta
   property="og:description"
   content="${escapeHtml(description)}"
 />
 
-<meta data-rh="true"
+<meta
   property="og:url"
   content="${canonical}"
 />
 
-<meta data-rh="true"
+<meta
   property="og:site_name"
   content="OnePickGame"
 />
 
-<meta data-rh="true"
+<meta
   property="og:locale"
   content="${OG_LOCALE_MAP[lang] || "en_US"}"
 />
 
-<meta data-rh="true"
+<meta
   property="og:image"
   content="${image}"
 />
 
-<meta data-rh="true"
+<meta
   property="og:image:alt"
   content="${escapeHtml(post.title)}"
 />
 
-<meta data-rh="true"
+<meta
   name="twitter:card"
   content="summary_large_image"
 />
 
-<meta data-rh="true"
+<meta
   name="twitter:title"
   content="${escapeHtml(seoTitle)}"
 />
 
-<meta data-rh="true"
+<meta
   name="twitter:description"
   content="${escapeHtml(description)}"
 />
 
-<meta data-rh="true"
+<meta
   name="twitter:image"
   content="${image}"
 />
@@ -1571,211 +1540,48 @@ const defaultHomeBody = {
       HOME_BODY_TEXT[lang] ||
       defaultHomeBody;
 
-const homeNavigationCopy = {
-  "ko": [
-    "주요 메뉴",
-    "월드컵 탐색",
-    "월드컵 만들기",
-    "티어표",
-    "퀴즈 맞히기",
-    "블로그"
-  ],
-  "en": [
-    "Main navigation",
-    "Explore World Cups",
-    "Create World Cup",
-    "Tier Lists",
-    "Quizzes",
-    "Blog"
-  ],
-  "ja": [
-    "メインメニュー",
-    "ワールドカップを探す",
-    "ワールドカップ作成",
-    "ティアリスト",
-    "クイズ",
-    "ブログ"
-  ],
-  "zh": [
-    "主要菜单",
-    "探索世界杯",
-    "创建世界杯",
-    "等级榜",
-    "测验",
-    "博客"
-  ],
-  "es": [
-    "Menú principal",
-    "Explorar torneos",
-    "Crear torneo",
-    "Listas de niveles",
-    "Cuestionarios",
-    "Blog"
-  ],
-  "fr": [
-    "Menu principal",
-    "Explorer les tournois",
-    "Créer un tournoi",
-    "Tier lists",
-    "Quiz",
-    "Blog"
-  ],
-  "vi": [
-    "Menu chính",
-    "Khám phá World Cup",
-    "Tạo World Cup",
-    "Bảng xếp hạng tier",
-    "Câu đố",
-    "Blog"
-  ],
-  "de": [
-    "Hauptmenü",
-    "Turniere entdecken",
-    "Turnier erstellen",
-    "Tierlisten",
-    "Quiz",
-    "Blog"
-  ],
-  "ru": [
-    "Главное меню",
-    "Найти турниры",
-    "Создать турнир",
-    "Тир-листы",
-    "Викторины",
-    "Блог"
-  ],
-  "id": [
-    "Menu utama",
-    "Jelajahi World Cup",
-    "Buat World Cup",
-    "Tier List",
-    "Kuis",
-    "Blog"
-  ],
-  "pt": [
-    "Menu principal",
-    "Explorar torneios",
-    "Criar torneio",
-    "Listas de tiers",
-    "Quizzes",
-    "Blog"
-  ],
-  "hi": [
-    "मुख्य मेनू",
-    "विश्व कप खोजें",
-    "विश्व कप बनाएँ",
-    "टियर सूचियाँ",
-    "क्विज़",
-    "ब्लॉग"
-  ],
-  "tr": [
-    "Ana menü",
-    "Turnuvaları keşfet",
-    "Turnuva oluştur",
-    "Tier listeleri",
-    "Testler",
-    "Blog"
-  ],
-  "th": [
-    "เมนูหลัก",
-    "ค้นหาเวิลด์คัพ",
-    "สร้างเวิลด์คัพ",
-    "เทียร์ลิสต์",
-    "แบบทดสอบ",
-    "บล็อก"
-  ],
-  "ar": [
-    "القائمة الرئيسية",
-    "استكشف البطولات",
-    "أنشئ بطولة",
-    "قوائم التصنيف",
-    "الاختبارات",
-    "المدونة"
-  ],
-  "bn": [
-    "প্রধান মেনু",
-    "বিশ্বকাপ খুঁজুন",
-    "বিশ্বকাপ তৈরি করুন",
-    "টিয়ার তালিকা",
-    "কুইজ",
-    "ব্লগ"
-  ]
-};
-const navCopy = homeNavigationCopy[lang] || homeNavigationCopy.en;
-const homePath = lang === "en" ? "/" : `/${lang}`;
-const homeNavigation = [
-  [homePath, navCopy[1]],
-  [`/${lang}/worldcup-maker`, navCopy[2]],
-  [`/${lang}/tier-list`, navCopy[3]],
-  [`/${lang}/quiz`, navCopy[4]],
-  [`/${lang}/blog`, navCopy[5]],
-].map(([href, label]) => `<li><a href="${escapeHtml(href)}">${escapeHtml(label)}</a></li>`).join("\n");
-
-let homeGameLinks = "";
-try {
-  const { data, error } = await supabase.from("worldcups").select("id,title,title_translations")
-    .is("deleted_at", null).order("created_at", { ascending: false }).limit(12);
-  if (!error) homeGameLinks = (data || []).map(cup => {
-    let translations = cup.title_translations || {};
-    if (typeof translations === "string") { try { translations = JSON.parse(translations); } catch { translations = {}; } }
-    const title = translations[lang] || translations.en || cup.title || "World Cup";
-    return `<li><a href="${SITE_URL}/${lang}/select-round/${encodeURIComponent(cup.id)}">${escapeHtml(title)}</a></li>`;
-  }).join("");
-} catch (error) { console.warn("Home SEO game links unavailable", error.message); }
-
 const seoBody = `
-<style>
-#onepick-home-loader{position:fixed;inset:0;z-index:2147483000;display:flex;align-items:center;justify-content:center;background:#fff;animation:onepick-loader-fallback .01s step-end 8s forwards}
-#onepick-home-loader .onepick-spinner{width:42px;height:42px;border:4px solid #f4e6dd;border-top-color:#ec6e24;border-radius:50%;animation:onepick-loader-spin .8s linear infinite}
-@keyframes onepick-loader-spin{to{transform:rotate(360deg)}}
-@keyframes onepick-loader-fallback{to{visibility:hidden;pointer-events:none}}
-@media(prefers-reduced-motion:reduce){#onepick-home-loader .onepick-spinner{animation:none}}
-#seo-content.seo-home{box-sizing:border-box;max-width:1160px;margin:0 auto;padding:28px 24px 48px;color:#252735;font-family:"Noto Sans",Arial,sans-serif;font-size:16px;line-height:1.65;text-align:start}
-#seo-content.seo-home *{box-sizing:border-box}
-#seo-content.seo-home a{color:inherit;text-decoration:none}
-#seo-content.seo-home a:focus-visible{outline:3px solid #f57c32;outline-offset:4px}
-#seo-content .seo-brand{display:inline-block;margin-bottom:24px;color:#ec6e24;font-size:25px;font-weight:900;letter-spacing:-.8px}
-#seo-content .seo-hero{padding:30px 32px;border:1px solid #f4decf;border-radius:20px;background:#fff8f2}
-#seo-content.seo-home h1{margin:0 0 12px;font-size:clamp(25px,3.5vw,38px);line-height:1.3;letter-spacing:-.8px}
-#seo-content .seo-hero p{max-width:820px;margin:0;color:#616574;font-size:17px}
-#seo-content .seo-navigation{margin:22px 0 30px}
-#seo-content.seo-home ul{list-style:none;padding:0;margin:0}
-#seo-content .seo-navigation ul{display:flex;flex-wrap:wrap;gap:10px}
-#seo-content .seo-navigation a{display:block;padding:10px 18px;border:1px solid #e2e4eb;border-radius:12px;background:#fff;font-weight:700}
-#seo-content .seo-navigation a:hover{border-color:#ef9a63;background:#fff8f2}
-#seo-content.seo-home h2{margin:0 0 16px;font-size:22px;line-height:1.4;letter-spacing:-.4px}
-#seo-content .seo-featured ul{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
-#seo-content .seo-featured a{display:flex;align-items:center;min-height:90px;height:100%;padding:18px 20px;border:1px solid #e5e7ee;border-radius:14px;background:#fff;box-shadow:0 3px 12px rgba(30,35,60,.04);font-weight:700;overflow-wrap:anywhere}
-#seo-content .seo-featured a:hover{border-color:#ef9a63;background:#fffbf7}
-#seo-content .seo-info{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin-top:30px}
-#seo-content .seo-info section{padding:22px;border:1px solid #edf0f5;border-radius:16px;background:#f8f9fc}
-#seo-content .seo-info h2{font-size:19px;margin-bottom:10px}
-#seo-content .seo-info p{margin:0;color:#646978}
-@media(max-width:760px){#seo-content.seo-home{padding:20px 16px 32px}#seo-content .seo-brand{margin-bottom:18px;font-size:23px}#seo-content .seo-hero{padding:24px 20px}#seo-content .seo-featured ul{grid-template-columns:repeat(2,minmax(0,1fr))}#seo-content .seo-info{grid-template-columns:1fr}#seo-content .seo-navigation a{padding:9px 13px;font-size:14px}}
-@media(max-width:420px){#seo-content .seo-featured ul{grid-template-columns:1fr}#seo-content .seo-featured a{min-height:72px}}
-</style>
-<noscript><style>#onepick-home-loader{display:none}</style></noscript>
-<div id="onepick-home-loader" aria-hidden="true"><span class="onepick-spinner"></span></div>
-<main id="seo-content" class="seo-home">
-  <a class="seo-brand" href="${escapeHtml(homePath)}">OnePickGame</a>
-  <header class="seo-hero">
-    <h1>${escapeHtml(homeBody.h1)}</h1>
-    <p>${escapeHtml(homeBody.intro)}</p>
-  </header>
-  <nav class="seo-navigation" aria-label="${escapeHtml(navCopy[0])}">
-    <ul>${homeNavigation}</ul>
-  </nav>
-  ${homeGameLinks ? `<section class="seo-featured"><h2>${escapeHtml(homeBody.featuredTitle)}</h2><ul>${homeGameLinks}</ul></section>` : ""}
-  <div class="seo-info">
+<main
+  id="seo-content"
+  style="
+    position:absolute;
+    width:1px;
+    height:1px;
+    overflow:hidden;
+    clip:rect(0 0 0 0);
+    white-space:nowrap;
+  "
+>
+  <article>
+
+    <h1>
+      ${escapeHtml(homeBody.h1)}
+    </h1>
+
+    <p>
+      ${escapeHtml(homeBody.intro)}
+    </p>
+
     <section>
-      <h2>${escapeHtml(homeBody.playTitle)}</h2>
-      <p>${escapeHtml(homeBody.playText)}</p>
+      <h2>
+        ${escapeHtml(homeBody.playTitle)}
+      </h2>
+
+      <p>
+        ${escapeHtml(homeBody.playText)}
+      </p>
     </section>
     <section>
-      <h2>${escapeHtml(homeBody.createTitle)}</h2>
-      <p>${escapeHtml(homeBody.createText)}</p>
+      <h2>
+        ${escapeHtml(homeBody.createTitle)}
+      </h2>
+
+      <p>
+        ${escapeHtml(homeBody.createText)}
+      </p>
     </section>
-  </div>
+
+  </article>
 </main>
 `;
 
@@ -1930,20 +1736,18 @@ app.use(async (req, res, next) => {
     return res.status(400).send("Unsupported language");
   }
 
-  const listMeta = getListSeo("tier-list", lang, new URLSearchParams({ ...Object.fromEntries(new URL(req.originalUrl || "/", SITE_URL).searchParams), ...req.query }));
-  const text = { ...(TIER_LIST_SEO_COPY[lang] || TIER_LIST_SEO_COPY.en), ...listMeta };
-  const canonical = `${SITE_URL}/${lang}/${listMeta.slug}`;
+  const text = TIER_LIST_SEO_COPY[lang] || TIER_LIST_SEO_COPY.en;
+  const canonical = `${SITE_URL}/${lang}/tier-list`;
   const image = `${SITE_URL}/ogimg.png`;
 
   try {
     let tierLists = [];
 
-    let listQuery = supabase
+    const { data, error } = await supabase
       .from("tier_lists")
       .select("id,title,title_translations,original_language,updated_at,candidate_count")
-      ;
-    if (listMeta.category !== "all") listQuery = listQuery.eq("category", listMeta.category);
-    const { data, error } = await listQuery.order("updated_at", { ascending: false }).limit(60);
+      .order("updated_at", { ascending: false })
+      .limit(60);
 
     if (error) {
       console.warn("티어표 목록 SEO 데이터 조회 실패:", error);
@@ -1995,9 +1799,9 @@ app.use(async (req, res, next) => {
       .replace(/<link\s+[^>]*rel=["'](?:canonical|alternate)["'][^>]*>/gi, "")
       .replace(/<html([^>]*)lang=["'][^"']*["']([^>]*)>/i, `<html$1lang="${lang}"$2>`);
 
-    const hreflangTags = listMeta.indexable ? SUPPORTED_LANGS.map(
-      (language) => `\n<link data-rh="true" rel="alternate" hreflang="${language}" href="${SITE_URL}/${language}/${listMeta.slug}"/>`
-    ).join("") : "";
+    const hreflangTags = SUPPORTED_LANGS.map(
+      (language) => `\n<link rel="alternate" hreflang="${language}" href="${SITE_URL}/${language}/tier-list"/>`
+    ).join("");
 
     const jsonLd = {
       "@context": "https://schema.org",
@@ -2006,29 +1810,28 @@ app.use(async (req, res, next) => {
       description: text.description,
       url: canonical,
       inLanguage: lang,
-      mainEntity: { "@type": "ItemList", itemListElement: tierLists.filter(item => item?.id).slice(0, 40).map((item, index) => ({ "@type": "ListItem", position: index + 1, name: localizedTitle(item), url: `${SITE_URL}/${lang}/tier-list/${encodeURIComponent(item.id)}` })) },
       isPartOf: { "@type": "WebSite", name: "OnePickGame", url: SITE_URL },
     };
 
     const seoHead = `
-<title data-rh="true">${escapeHtml(text.title)}</title>
-<meta data-rh="true" name="description" content="${escapeHtml(text.description)}"/>
-<meta data-rh="true" name="robots" content="${listMeta.indexable ? "index, follow, max-image-preview:large" : "noindex, follow"}"/>
-<link data-rh="true" rel="canonical" href="${canonical}"/>
+<title>${escapeHtml(text.title)}</title>
+<meta name="description" content="${escapeHtml(text.description)}"/>
+<meta name="robots" content="index, follow, max-image-preview:large"/>
+<link rel="canonical" href="${canonical}"/>
 ${hreflangTags}
-${listMeta.indexable ? `<link data-rh="true" rel="alternate" hreflang="x-default" href="${SITE_URL}/en/${listMeta.slug}"/>` : ""}
-<meta data-rh="true" property="og:type" content="website"/>
-<meta data-rh="true" property="og:title" content="${escapeHtml(text.title)}"/>
-<meta data-rh="true" property="og:description" content="${escapeHtml(text.description)}"/>
-<meta data-rh="true" property="og:url" content="${canonical}"/>
-<meta data-rh="true" property="og:site_name" content="OnePickGame"/>
-<meta data-rh="true" property="og:locale" content="${OG_LOCALE_MAP[lang] || "en_US"}"/>
-<meta data-rh="true" property="og:image" content="${image}"/>
-<meta data-rh="true" property="og:image:alt" content="${escapeHtml(text.heading)}"/>
-<meta data-rh="true" name="twitter:card" content="summary_large_image"/>
-<meta data-rh="true" name="twitter:title" content="${escapeHtml(text.title)}"/>
-<meta data-rh="true" name="twitter:description" content="${escapeHtml(text.description)}"/>
-<meta data-rh="true" name="twitter:image" content="${image}"/>
+<link rel="alternate" hreflang="x-default" href="${SITE_URL}/en/tier-list"/>
+<meta property="og:type" content="website"/>
+<meta property="og:title" content="${escapeHtml(text.title)}"/>
+<meta property="og:description" content="${escapeHtml(text.description)}"/>
+<meta property="og:url" content="${canonical}"/>
+<meta property="og:site_name" content="OnePickGame"/>
+<meta property="og:locale" content="${OG_LOCALE_MAP[lang] || "en_US"}"/>
+<meta property="og:image" content="${image}"/>
+<meta property="og:image:alt" content="${escapeHtml(text.heading)}"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="${escapeHtml(text.title)}"/>
+<meta name="twitter:description" content="${escapeHtml(text.description)}"/>
+<meta name="twitter:image" content="${image}"/>
 <script type="application/ld+json">${safeJson(jsonLd)}</script>
 `;
 
@@ -2085,7 +1888,7 @@ app.use(async (req, res, next) => {
   try {
     const { data: tierList, error } = await supabase
       .from("tier_lists")
-      .select("id,title,description,title_translations,description_translations,original_language,thumbnail_url,candidate_count,candidates,updated_at")
+      .select("id,title,description,title_translations,description_translations,original_language,thumbnail_url,candidate_count,candidates,updated_at,category,source_worldcup_id")
       .eq("id", id)
       .maybeSingle();
 
@@ -2124,26 +1927,7 @@ const indexable = true;
       "Tier List"
     ).replace(/\s+/g, " ").trim();
 
-    let tierDescription = String(
-      descriptionMap[lang] ||
-      descriptionMap.en ||
-      tierList.description ||
-      ""
-    ).replace(/\s+/g, " ").trim();
-
-    tierDescription = contentDescription.tierDescription(tierList, lang);
-    const count = Number(tierList.candidate_count || 0);
-    if (!tierDescription) {
-      if (lang === "ko") {
-        tierDescription = `${tierTitle} 티어표를 확인하고 직접 순위를 비교해보세요.${count ? ` 총 ${count}명의 후보가 있습니다.` : ""}`;
-      } else if (lang === "ja") {
-        tierDescription = `${tierTitle}のTier表をチェックして、ランキングを比較してみましょう。${count ? ` 候補は${count}件です。` : ""}`;
-      } else if (lang === "zh") {
-        tierDescription = `查看${tierTitle} Tier榜并比较排名。${count ? ` 共${count}个候选。` : ""}`;
-      } else {
-        tierDescription = `Explore the ${tierTitle} tier list and compare the rankings.${count ? ` ${count} candidates are included.` : ""}`;
-      }
-    }
+    const tierDescription = contentDescription.tierDescription(tierList, lang);
 
     const canonical = `${SITE_URL}/${lang}/tier-list/${encodeURIComponent(id)}`;
 
@@ -2156,10 +1940,20 @@ const indexable = true;
       } catch {}
     }
 
-    const imageFallback = gameSocialImage("", SITE_URL);
-    const image = [tierList.thumbnail_url, ...candidates.map(candidate => candidate?.image || candidate?.url)]
-      .map(value => gameSocialImage(value, SITE_URL))
-      .find(value => value !== imageFallback) || imageFallback;
+    let image = String(tierList.thumbnail_url || "").trim();
+    if (!image) {
+      for (const candidate of candidates) {
+        const value = String(candidate?.image || candidate?.url || "").trim();
+        if (value) {
+          image = value;
+          break;
+        }
+      }
+    }
+    if (!image) image = "/ogimg.png";
+    if (!/^https?:\/\//i.test(image)) {
+      image = `${SITE_URL}${image.startsWith("/") ? "" : "/"}${image}`;
+    }
 
     const seoTitle = lang === "ko"
       ? `${tierTitle} | 티어표 | OnePickGame`
@@ -2173,11 +1967,11 @@ const indexable = true;
       .replace(/<html([^>]*)lang=["'][^"']*["']([^>]*)>/i, `<html$1lang="${lang}"$2>`);
 
     const hreflangTags = indexable
-      ? tierLanguages.map((language) => `\n<link data-rh="true" rel="alternate" hreflang="${language}" href="${SITE_URL}/${language}/tier-list/${encodeURIComponent(id)}"/>`).join("")
+      ? tierLanguages.map((language) => `\n<link rel="alternate" hreflang="${language}" href="${SITE_URL}/${language}/tier-list/${encodeURIComponent(id)}"/>`).join("")
       : "";
 
     const xDefault = indexable && tierLanguages.includes("en")
-      ? `\n<link data-rh="true" rel="alternate" hreflang="x-default" href="${SITE_URL}/en/tier-list/${encodeURIComponent(id)}"/>`
+      ? `\n<link rel="alternate" hreflang="x-default" href="${SITE_URL}/en/tier-list/${encodeURIComponent(id)}"/>`
       : "";
 
     const jsonLd = {
@@ -2193,23 +1987,23 @@ const indexable = true;
     };
 
     const seoHead = `
-<title data-rh="true">${escapeHtml(seoTitle)}</title>
-<meta data-rh="true" name="description" content="${escapeHtml(tierDescription)}"/>
-<meta data-rh="true" name="robots" content="${indexable ? "index, follow, max-image-preview:large" : "noindex, follow"}"/>
-<link data-rh="true" rel="canonical" href="${canonical}"/>
+<title>${escapeHtml(seoTitle)}</title>
+<meta name="description" content="${escapeHtml(tierDescription)}"/>
+<meta name="robots" content="${indexable ? "index, follow, max-image-preview:large" : "noindex, follow"}"/>
+<link rel="canonical" href="${canonical}"/>
 ${hreflangTags}${xDefault}
-<meta data-rh="true" property="og:type" content="website"/>
-<meta data-rh="true" property="og:title" content="${escapeHtml(seoTitle)}"/>
-<meta data-rh="true" property="og:description" content="${escapeHtml(tierDescription)}"/>
-<meta data-rh="true" property="og:url" content="${canonical}"/>
-<meta data-rh="true" property="og:site_name" content="OnePickGame"/>
-<meta data-rh="true" property="og:locale" content="${OG_LOCALE_MAP[lang] || "en_US"}"/>
-<meta data-rh="true" property="og:image" content="${escapeHtml(image)}"/>
-<meta data-rh="true" property="og:image:alt" content="${escapeHtml(tierTitle)}"/>
-<meta data-rh="true" name="twitter:card" content="summary_large_image"/>
-<meta data-rh="true" name="twitter:title" content="${escapeHtml(seoTitle)}"/>
-<meta data-rh="true" name="twitter:description" content="${escapeHtml(tierDescription)}"/>
-<meta data-rh="true" name="twitter:image" content="${escapeHtml(image)}"/>
+<meta property="og:type" content="website"/>
+<meta property="og:title" content="${escapeHtml(seoTitle)}"/>
+<meta property="og:description" content="${escapeHtml(tierDescription)}"/>
+<meta property="og:url" content="${canonical}"/>
+<meta property="og:site_name" content="OnePickGame"/>
+<meta property="og:locale" content="${OG_LOCALE_MAP[lang] || "en_US"}"/>
+<meta property="og:image" content="${escapeHtml(image)}"/>
+<meta property="og:image:alt" content="${escapeHtml(tierTitle)}"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="${escapeHtml(seoTitle)}"/>
+<meta name="twitter:description" content="${escapeHtml(tierDescription)}"/>
+<meta name="twitter:image" content="${escapeHtml(image)}"/>
 <script type="application/ld+json">${safeJson(jsonLd)}</script>
 `;
 
@@ -2227,8 +2021,8 @@ ${hreflangTags}${xDefault}
   <article>
     <h1>${escapeHtml(tierTitle)}</h1>
     <p>${escapeHtml(tierDescription)}</p>
-    <img src="${escapeHtml(image)}" alt="${escapeHtml(tierTitle)}" style="max-width:100%;height:auto;" />
     ${candidateList}
+    ${renderDetailLinks(lang, tierList.category, tierList.source_worldcup_id)}
   </article>
 </main>`;
 
@@ -2439,7 +2233,66 @@ const worldcupTitle =
  * 언어별 설명
  * 해당 언어 번역 → 영어 번역 → 기본 설명
  */
-const worldcupDescription = worldcupMetadata.worldcupDescription(worldcup, lang);
+let descriptionTranslations = worldcup.description_translations || {};
+
+if (typeof descriptionTranslations === "string") {
+  try {
+    descriptionTranslations = JSON.parse(descriptionTranslations);
+  } catch {
+    descriptionTranslations = {};
+  }
+}
+
+
+const translatedDescription =
+  descriptionTranslations[lang] ||
+  descriptionTranslations.en ||
+  "";
+
+let worldcupDescription =
+  String(
+    translatedDescription ||
+    worldcup.description ||
+    ""
+  )
+    .replace(/\s+/g, " ")
+    .trim();
+
+if (!worldcupDescription) {
+  if (lang === "ko") {
+    worldcupDescription =
+      `${worldcupTitle}을 플레이해보세요. ` +
+      `후보들을 비교하고 최애를 선택해 최종 우승자를 결정할 수 있습니다.`;
+  } else if (lang === "ja") {
+    worldcupDescription =
+      `${worldcupTitle}をプレイしよう。` +
+      `候補を比較してお気に入りを選び、最終優勝者を決めましょう。`;
+  } else if (lang === "zh") {
+    worldcupDescription =
+      `来玩${worldcupTitle}。` +
+      `比较候选人，选择你最喜欢的选项并决出最终冠军。`;
+  } else if (lang === "es") {
+    worldcupDescription =
+      `Juega ${worldcupTitle} en OnePickGame. ` +
+      `Compara candidatos, elige tus favoritos y descubre al ganador final.`;
+  } else if (lang === "pt") {
+    worldcupDescription =
+      `Jogue ${worldcupTitle} no OnePickGame. ` +
+      `Compare os candidatos, escolha seus favoritos e descubra o vencedor final.`;
+  } else if (lang === "fr") {
+    worldcupDescription =
+      `Jouez à ${worldcupTitle} sur OnePickGame. ` +
+      `Comparez les candidats, choisissez vos favoris et découvrez le gagnant final.`;
+  } else if (lang === "de") {
+    worldcupDescription =
+      `Spiele ${worldcupTitle} auf OnePickGame. ` +
+      `Vergleiche die Kandidaten, wähle deine Favoriten und bestimme den Sieger.`;
+  } else {
+    worldcupDescription =
+      `Play ${worldcupTitle} on OnePickGame. ` +
+      `Compare candidates, choose your favorites, and discover the ultimate winner.`;
+  }
+}
 
     /*
      * Canonical
@@ -2453,7 +2306,13 @@ const worldcupDescription = worldcupMetadata.worldcupDescription(worldcup, lang)
  * 후보 이미지 / YouTube 썸네일 찾기
  */
 
-let candidates = worldcupMetadata.candidatesOf(worldcup);
+let candidates = [];
+
+if (Array.isArray(worldcup.data)) {
+  candidates = worldcup.data;
+} else if (Array.isArray(worldcup.candidates)) {
+  candidates = worldcup.candidates;
+}
 
 /*
  * YouTube URL에서 video ID 추출
@@ -2537,7 +2396,77 @@ function getOgImageFromCandidate(candidate) {
  * 누적 우승 횟수가 가장 많은 현재 후보를 SEO 이미지로 사용합니다.
  * 통계가 없거나 조회에 실패하면 기존 후보 이미지로 대체합니다.
  */
-const image = await resolveWorldcupSeoImage(worldcup);
+let image = "";
+
+try {
+  const { data: winnerStats, error: winnerStatsError } = await supabase.rpc(
+    "get_winner_stats",
+    { p_cup_id: id, p_from: null, p_to: null }
+  );
+
+  if (winnerStatsError) throw winnerStatsError;
+
+  const candidateById = new Map(
+    candidates.map((candidate) => [String(candidate.id), candidate])
+  );
+  let topCandidate = null;
+  let topWinCount = 0;
+
+  for (const stat of winnerStats || []) {
+    const candidate = candidateById.get(String(stat.candidate_id));
+    const winCount = Number(stat.win_count || 0);
+    if (candidate && winCount > topWinCount) {
+      topCandidate = candidate;
+      topWinCount = winCount;
+    }
+  }
+
+  image = getOgImageFromCandidate(topCandidate);
+} catch (winnerStatsError) {
+  console.warn("Failed to load world cup winner for SEO image", winnerStatsError);
+}
+
+if (!image) {
+  for (const candidate of candidates) {
+    const candidateImage = getOgImageFromCandidate(candidate);
+    if (candidateImage) {
+      image = candidateImage;
+      break;
+    }
+  }
+}
+
+/*
+ * 후보에서 못 찾았으면 월드컵 대표 이미지 사용
+ */
+if (!image) {
+  image =
+    worldcup.image ||
+    worldcup.thumbnail ||
+    "/ogimg.png";
+}
+
+/*
+ * worldcup.image 자체가 YouTube URL일 수도 있으므로
+ * 한 번 더 체크
+ */
+const youtubeId =
+  extractYouTubeId(image);
+
+if (youtubeId) {
+  image =
+    `https://i.ytimg.com/vi/${youtubeId}/hqdefault.jpg`;
+}
+
+/*
+ * 상대 경로라면 절대 URL로 변환
+ */
+if (!/^https?:\/\//i.test(image)) {
+  image =
+    `${SITE_URL}${
+      image.startsWith("/") ? "" : "/"
+    }${image}`;
+}
 
     /*
      * hreflang
@@ -2548,7 +2477,7 @@ const image = await resolveWorldcupSeoImage(worldcup);
     const hreflangTags =
       SUPPORTED_LANGS.map(
         (language) => `
-<link data-rh="true"
+<link
   rel="alternate"
   hreflang="${language}"
   href="${SITE_URL}/${language}/select-round/${encodeURIComponent(
@@ -2565,7 +2494,7 @@ let seoTitle;
 
 if (lang === "ko") {
   seoTitle =
-    `이상형 월드컵 | ${worldcupTitle} | 원픽게임`;
+  `이상형 월드컵 | ${worldcupTitle} | 원픽게임`;
 } else if (lang === "ja") {
   seoTitle =
     `${worldcupTitle} トーナメント | OnePickGame`;
@@ -2614,38 +2543,44 @@ if (lang === "ko") {
           SITE_URL,
       },
 
-      ...(image ? { primaryImageOfPage: { "@type": "ImageObject", url: image } } : {}),
+      primaryImageOfPage: {
+        "@type":
+          "ImageObject",
+
+        url:
+          image,
+      },
     };
 
     /*
      * 서버에서 삽입할 SEO head
      */
 
-    let seoHead = `
-<title data-rh="true">${escapeHtml(
+    const seoHead = `
+<title>${escapeHtml(
       seoTitle
     )}</title>
 
-<meta data-rh="true"
+<meta
   name="description"
   content="${escapeHtml(
     worldcupDescription
   )}"
 />
 
-<meta data-rh="true"
+<meta
   name="robots"
   content="index, follow, max-image-preview:large"
 />
 
-<link data-rh="true"
+<link
   rel="canonical"
   href="${canonical}"
 />
 
 ${hreflangTags}
 
-<link data-rh="true"
+<link
   rel="alternate"
   hreflang="x-default"
   href="${SITE_URL}/en/select-round/${encodeURIComponent(
@@ -2653,36 +2588,36 @@ ${hreflangTags}
     )}"
 />
 
-<meta data-rh="true"
+<meta
   property="og:type"
   content="website"
 />
 
-<meta data-rh="true"
+<meta
   property="og:title"
   content="${escapeHtml(
     seoTitle
   )}"
 />
 
-<meta data-rh="true"
+<meta
   property="og:description"
   content="${escapeHtml(
     worldcupDescription
   )}"
 />
 
-<meta data-rh="true"
+<meta
   property="og:url"
   content="${canonical}"
 />
 
-<meta data-rh="true"
+<meta
   property="og:site_name"
   content="OnePickGame"
 />
 
-<meta data-rh="true"
+<meta
   property="og:locale"
   content="${
     OG_LOCALE_MAP[lang] ||
@@ -2690,43 +2625,43 @@ ${hreflangTags}
   }"
 />
 
-<meta data-rh="true"
+<meta
   property="og:image"
   content="${escapeHtml(image)}"
 />
 
-<meta data-rh="true"
+<meta
   property="og:image:alt"
   content="${escapeHtml(
     worldcupTitle
   )}"
 />
 
-<meta data-rh="true"
+<meta
   name="twitter:card"
   content="summary_large_image"
 />
 
-<meta data-rh="true"
+<meta
   name="twitter:title"
   content="${escapeHtml(
     seoTitle
   )}"
 />
 
-<meta data-rh="true"
+<meta
   name="twitter:description"
   content="${escapeHtml(
     worldcupDescription
   )}"
 />
 
-<meta data-rh="true"
+<meta
   name="twitter:image"
   content="${escapeHtml(image)}"
 />
 
-<meta data-rh="true"
+<meta
   name="twitter:image:alt"
   content="${escapeHtml(
     worldcupTitle
@@ -2737,8 +2672,6 @@ ${hreflangTags}
 ${safeJson(jsonLd)}
 </script>
 `;
-
-    if (!image) seoHead = seoHead.replace(/<meta\s+[^>]*(?:property|name)="(?:og:image(?::alt)?|twitter:image(?::alt)?)"[^>]*\/?>/gi, "").replace('content="summary_large_image"', 'content="summary"');
 
     /*
      * 검색엔진이 JS 실행 전에도
@@ -2786,10 +2719,6 @@ ${safeJson(jsonLd)}
 `
         : "";
 
-    const categorySlug = ({ anime_manga: "anime-manga", movie_drama: "movie-drama" })[worldcup.category] || worldcup.category || "etc";
-    const categorySeo = getCategorySeo(lang, categorySlug);
-    const navigationLinks = `<nav aria-label="OnePickGame"><a href="${lang === "en" ? "/" : `/${lang}`}">OnePickGame</a>${categorySeo ? ` · <a href="/${escapeHtml(lang)}/category/${escapeHtml(categorySlug)}">${escapeHtml(categorySeo.label)}</a>` : ""}</nav>`;
-
     const seoBody = `
 <main
   id="seo-content"
@@ -2797,7 +2726,7 @@ ${safeJson(jsonLd)}
     max-width:900px;
     margin:40px auto;
     padding:24px;
-    color:#202534;
+    color:#ffffff;
     font-family:Arial,sans-serif;
   "
 >
@@ -2815,9 +2744,8 @@ ${safeJson(jsonLd)}
       )}
     </p>
 
-    ${image ? `<img src="${escapeHtml(image)}" alt="${escapeHtml(worldcupTitle)}" width="600" style="max-width:100%;height:auto;" />` : ""}
     ${candidateList}
-    ${navigationLinks}
+    ${renderDetailLinks(lang, worldcup.category)}
 
   </article>
 </main>

@@ -17,9 +17,21 @@ function join(values, max = 400) {
   }
   return result;
 }
-function tierDescription(tier, lang) {
-  return localized(tier?.description_translations, tier?.description, lang) ||
-    join(list(tier?.candidates).map(c => c?.name || c?.title));
+const DETAIL_COPY = require('./detailCopy.json');
+function tierDescription(tier, language) {
+  const lang = String(language || 'en').toLowerCase().split(/[-_]/)[0];
+  const saved = localized(tier?.description_translations, tier?.description, lang);
+  if (saved) return saved;
+  const copy = DETAIL_COPY[lang] || DETAIL_COPY.en;
+  const title = localized(tier?.title_translations, tier?.title, lang) || copy[5];
+  const candidates = list(tier?.candidates);
+  const rawCount = Number(tier?.candidate_count);
+  const count = Number.isInteger(rawCount) && rawCount > 0 ? rawCount : candidates.length;
+  // Candidate names stay fixed across languages, as configured by the creator.
+  const names = [...new Set(candidates.map(c => text(c?.name || c?.title)).filter(Boolean))].slice(0, 3);
+  const featured = join(names, 120);
+  return [copy[6].replace('{title}', title), count ? copy[7].replace('{n}', String(count)) : '',
+    copy[8], featured ? `${copy[9]}: ${featured}.` : ''].filter(Boolean).join(' ');
 }
 const QUIZ_INTRO = {
   ko: ['퀴즈', '총 {n}문제.', '퀴즈를 풀어보세요.', '이미지를 보고 답을 맞혀보세요.', '객관식 문제를 풀어보세요.', '답을 직접 입력해보세요.', '객관식·주관식 문제에 도전해보세요.'],
