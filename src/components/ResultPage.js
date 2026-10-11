@@ -831,7 +831,7 @@ textShadow: "none",
                     width: "100%",
                     height: "100%",
                     objectFit: "cover",
-                    objectPosition: "50% 22%",
+                    objectPosition: "50% 0%",
                   }}
                 />
 

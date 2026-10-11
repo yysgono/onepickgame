@@ -545,7 +545,7 @@ const RankCard = React.memo(function RankCard(props) {
 
         <Suspense fallback={<div style={{ width: "100%", height: "100%", background: "#f3f4f9" }} />}>
 
-          <MediaRenderer url={image} alt={name} loading="lazy" decoding="async" />
+          <MediaRenderer url={image} alt={name} loading="lazy" decoding="async" style={{ objectPosition: "50% 0%" }} />
 
         </Suspense>
 

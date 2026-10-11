@@ -1603,7 +1603,7 @@ textShadow: "none",
 
                         objectPosition:
 
-                          "50% 22%",
+                          "50% 0%",
 
                         background: "#ffffff",
 
@@ -1673,7 +1673,7 @@ textShadow: "none",
 
                         objectPosition:
 
-                          "50% 22%",
+                          "50% 0%",
 
                         background: "#ffffff",
 
