@@ -1582,6 +1582,7 @@ textShadow: "none",
                     <MediaRenderer
 
                       url={first.image}
+                      previewCrop
 
                       alt={t(
 
@@ -1599,7 +1600,7 @@ textShadow: "none",
 
                         height: "100%",
 
-                        objectFit: "contain",
+                        objectFit: "cover",
 
                         objectPosition:
 
@@ -1652,6 +1653,7 @@ textShadow: "none",
                     <MediaRenderer
 
                       url={second.image}
+                      previewCrop
 
                       alt={t(
 
@@ -1669,7 +1671,7 @@ textShadow: "none",
 
                         height: "100%",
 
-                        objectFit: "contain",
+                        objectFit: "cover",
 
                         objectPosition:
 

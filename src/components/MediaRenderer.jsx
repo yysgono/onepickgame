@@ -238,8 +238,16 @@ function MediaRenderer({
   decoding = "async",
   deferUntilVisible = false,
   viewportMargin = "240px",
+  previewCrop = false,
 }) {
   const { t } = useTranslation();
+
+  function handlePreviewImageLoad(event) {
+    if (!previewCrop) return;
+    const image = event.currentTarget;
+    image.style.objectPosition = image.naturalHeight > image.naturalWidth
+      ? "50% 0%" : "center";
+  }
 
   const youtubeRef = useRef(null);
   const visibilityRef = useRef(null);
@@ -451,7 +459,7 @@ const handleImageError = () => {
       }
 
       return (
-        <img
+        <img onLoad={handlePreviewImageLoad}
           src={youtubeThumbnail}
           alt={
             alt ||
@@ -520,7 +528,7 @@ const handleImageError = () => {
           }}
         >
           {!mediaError ? (
-            <img
+            <img onLoad={handlePreviewImageLoad}
               src={youtubeThumbnail}
               alt={
                 alt ||
@@ -774,7 +782,7 @@ const handleImageError = () => {
     }
 
     return (
-<img
+<img onLoad={handlePreviewImageLoad}
   key={`${safeUrl}-${imageRetry}`}
   src={safeUrl}
         alt={alt}
@@ -809,7 +817,7 @@ onError={
   }
 
   return (
-<img
+<img onLoad={handlePreviewImageLoad}
   key={`${safeUrl}-${imageRetry}`}
   src={safeUrl}
       alt={alt}

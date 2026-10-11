@@ -825,12 +825,13 @@ textShadow: "none",
 
                 <MediaRenderer
                   url={winner.image}
+                  previewCrop
                   alt={winner.name}
                   loading="lazy"
                   style={{
                     width: "100%",
                     height: "100%",
-                    objectFit: "contain",
+                    objectFit: "cover",
                     objectPosition: "center",
                   }}
                 />
