@@ -1,3 +1,4 @@
+import { getGuestQuizCopy } from "./guestQuizCopy";
 import RelatedContentLinks from "./RelatedContentLinks";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 
@@ -361,6 +362,10 @@ export default function QuizDetailPage() {
 
     </div>
 
+  ) : quiz && !quiz.user_id && quiz.guest_nickname ? (
+    <div style={{ textAlign: "center", marginTop: 14 }}>
+      <button type="button" onClick={() => navigate(`/${lang}/quiz/create?edit=${id}`)} style={secondaryButton}>✏️ {getGuestQuizCopy(lang).edit}</button>
+    </div>
   ) : null;
 
   useEffect(() => {
@@ -1708,3 +1713,4 @@ const choiceButton = (active) => ({
   cursor: "pointer",
 
 });
+

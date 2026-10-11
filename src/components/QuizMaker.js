@@ -1,3 +1,4 @@
+import { getGuestQuizCopy, validGuestQuizCredentials, guestQuizError } from "./guestQuizCopy";
 import { resolveOriginalContentLanguage, originalTitleLabel } from "../utils/originalContentLanguage";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
@@ -16,6 +17,8 @@ import {
   QUIZ_LANGUAGES,
   getQuiz,
   getQuizQuestions,
+  getGuestQuizForEdit,
+  isSavedGuestMedia,
 } from "../utils/supabaseQuizApi";
 
 const CATEGORIES = ["game", "entertainment", "animation", "food", "sports", "knowledge", "other"];
@@ -122,11 +125,19 @@ export default function QuizMaker() {
   const lang = routeLang || (i18n.language || "en").split("-")[0];
   const safetyCopy = getCreatorSafetyCopy(lang);
   const m = getQuizMakerCopy(lang);
+  const guestCopy = getGuestQuizCopy(lang);
   const descriptionCopy = descriptionEditorCopy[lang] || descriptionEditorCopy.en;
 
   const [user, setUser] = useState(null);
   const [nickname, setNickname] = useState("");
   const [authChecked, setAuthChecked] = useState(false);
+  const [guestNickname, setGuestNickname] = useState("");
+  const [guestPassword, setGuestPassword] = useState("");
+  const [guestEdit, setGuestEdit] = useState(false);
+  const [editReady, setEditReady] = useState(!editQuizId);
+  const [verifyingGuest, setVerifyingGuest] = useState(false);
+  const guestMode = guestEdit || !user?.id;
+
 
   const [originalLanguage, setOriginalLanguage] = useState(lang);
   const [title, setTitle] = useState("");
@@ -165,6 +176,7 @@ export default function QuizMaker() {
 
   function validateImageFile(file) {
     if (!file) return true;
+    if (!user?.id) { setError(guestCopy.upload); return false; }
     if (!file.type?.startsWith("image/")) {
       setError(m.imageOnly);
       return false;
@@ -183,13 +195,7 @@ export default function QuizMaker() {
     return () => window.removeEventListener("resize", fn);
   }, []);
 
-  useEffect(() => {
-    if (!editQuizId || !user?.id) return;
-    let alive = true;
-    Promise.all([getQuiz(editQuizId), getQuizQuestions(editQuizId)])
-      .then(([existing, rows]) => {
-        if (!alive) return;
-        if (String(existing.user_id) !== String(user.id)) throw new Error(m.editForbidden || "You can only edit your own quiz.");
+  function hydrateQuiz(existing, rows) {
         const baseLang = resolveOriginalContentLanguage(existing);
         const titleMap = existing.title_translations || {};
         const descriptionMap = existing.description_translations || {};
@@ -218,12 +224,48 @@ export default function QuizMaker() {
         setQuestions((rows || []).map((q) => {
           const translationCodes = new Set([...Object.keys(q.question_translations || {}), ...Object.keys(q.options_translations || {}), ...Object.keys(q.explanation_translations || {})]);
           const translations = Object.fromEntries([...translationCodes].filter((code) => code !== baseLang).map((code) => [code, { question: q.question_translations?.[code] || "", options: q.options_translations?.[code] || ["", "", "", ""], explanation: q.explanation_translations?.[code] || "", answers: [] }]));
-          return { localId: makeId(), type: q.question_type === "short_answer" ? "short_answer" : "multiple_choice", question: q.question_translations?.[baseLang] || q.question_text || "", imageFile: null, imageUrl: q.image_url || "", options: q.options_translations?.[baseLang] || q.options || ["", "", "", ""], correctIndex: Number(q.correct_index || 0), answers: q.answers?.length ? q.answers : [""], ignoreCase: q.answer_match_options?.ignore_case !== false, ignoreSpaces: Boolean(q.answer_match_options?.ignore_spaces), explanation: q.explanation_translations?.[baseLang] || q.explanation || "", sourceWorldcupId: q.source_worldcup_id || null, sourceCandidateId: q.source_candidate_id || null, sourceAnswer: "", autoChoices: Boolean(q.auto_choices), translations };
+          return { localId: makeId(), savedGuestMedia: { quizId: existing.id, imageUrl: q.image_url || "", sourceWorldcupId: q.source_worldcup_id || null }, type: q.question_type === "short_answer" ? "short_answer" : "multiple_choice", question: q.question_translations?.[baseLang] || q.question_text || "", imageFile: null, imageUrl: q.image_url || "", options: q.options_translations?.[baseLang] || q.options || ["", "", "", ""], correctIndex: Number(q.correct_index || 0), answers: q.answers?.length ? q.answers : [""], ignoreCase: q.answer_match_options?.ignore_case !== false, ignoreSpaces: Boolean(q.answer_match_options?.ignore_spaces), explanation: q.explanation_translations?.[baseLang] || q.explanation || "", sourceWorldcupId: q.source_worldcup_id || null, sourceCandidateId: q.source_candidate_id || null, sourceAnswer: "", autoChoices: Boolean(q.auto_choices), translations };
         }));
-      })
-      .catch((e) => alive && setError(e.message || String(e)));
+  }
+
+  useEffect(() => {
+    if (!editQuizId || !authChecked) return;
+    let alive = true;
+    setEditReady(false);
+    getQuiz(editQuizId).then(async existing => {
+      if (!alive) return;
+      if (!existing.user_id) {
+        setGuestEdit(true);
+        setCreationMode("preset");
+        setGuestNickname(existing.guest_nickname || "");
+        return;
+      }
+      setGuestEdit(false);
+      if (!user?.id || String(existing.user_id) !== String(user.id)) throw new Error(m.editForbidden || m.loginRequired);
+      const rows = await getQuizQuestions(editQuizId);
+      if (!alive) return;
+      hydrateQuiz(existing, rows);
+      setEditReady(true);
+    }).catch(e => alive && setError(e.message || String(e)));
     return () => { alive = false; };
-  }, [editQuizId, user?.id]);
+    // Language changes must not reset the quiz being edited.
+  }, [editQuizId, authChecked, user?.id]);
+
+  async function verifyGuest() {
+    if (!validGuestQuizCredentials(guestNickname, guestPassword)) return setError(guestCopy.credentials);
+    setVerifyingGuest(true);
+    setError("");
+    try {
+      const result = await getGuestQuizForEdit(editQuizId, guestNickname, guestPassword);
+      hydrateQuiz(result.quiz, result.questions);
+      setEditReady(true);
+    } catch (e) { setError(guestQuizError(e, guestCopy)); }
+    finally { setVerifyingGuest(false); }
+  }
+
+  useEffect(() => {
+    if (authChecked && !user?.id && !editQuizId) setCreationMode("preset");
+  }, [authChecked, user?.id, editQuizId]);
 
   useEffect(() => {
     const stopDrag = () => { dragSelectRef.current.active = false; };
@@ -248,7 +290,7 @@ export default function QuizMaker() {
         setNickname(p?.nickname || "");
       }
       setAuthChecked(true);
-    });
+    }).catch(() => setAuthChecked(true));
   }, []);
 
   useEffect(() => {
@@ -321,6 +363,7 @@ export default function QuizMaker() {
   }
 
   function addBlankQuestion() {
+    if (!user?.id) { openWorldcupImport(); return; }
     setQuestions((prev) => [...prev, emptyQuestion()]);
     setCurrentQuestionIndex(questions.length);
   }
@@ -745,7 +788,9 @@ export default function QuizMaker() {
   async function submit(event) {
     event.preventDefault();
     setError("");
-    if (!user) return setError(m.loginRequired);
+    if (editQuizId && !editReady) return;
+    if (guestMode && !validGuestQuizCredentials(guestNickname, guestPassword)) return setError(guestCopy.credentials);
+    if (!user?.id && (thumbnailFile || questions.some(q => q.imageFile))) return setError(guestCopy.upload);
     if (!title.trim()) return setError(m.titleRequired);
     if (!contentLanguages.length) return setError(m.languageRequired);
     const incompleteTouchedIndex = questions.findIndex(
@@ -761,10 +806,12 @@ export default function QuizMaker() {
       return setError(m.completeRequired);
     }
 
+    if (!user?.id && completedQuestions.some(q => !q.sourceWorldcupId && !isSavedGuestMedia(q, editQuizId))) return setError(guestCopy.source);
     setSaving(true);
     try {
       let thumbnailUrl = existingThumbnailUrl;
       if (thumbnailFile) thumbnailUrl = await uploadQuizImage(thumbnailFile, user.id);
+      if (!user?.id && !guestEdit && !completedQuestions.some(q => q.imageUrl === thumbnailUrl)) thumbnailUrl = "";
       if (!thumbnailUrl) {
         thumbnailUrl = getYoutubeThumbnail(completedQuestions.find((q) => q.imageUrl)?.imageUrl || "");
       }
@@ -810,12 +857,13 @@ export default function QuizMaker() {
         contentLanguages: saveContentLanguages,
         answerRevealMode: "both",
         sourceWorldcupIds,
+        guestCredentials: guestMode ? { nickname: guestNickname, password: guestPassword } : null,
       });
-      localStorage.removeItem(QUIZ_DRAFT_STORAGE_KEY);
+      try { localStorage.removeItem(QUIZ_DRAFT_STORAGE_KEY); } catch {}
       await writeQuizDraftFiles([]).catch(() => {});
       navigate(`/${lang}/quiz/${id}`);
     } catch (e) {
-      setError(e.message || String(e));
+      setError(guestMode ? guestQuizError(e, guestCopy) : e.message || String(e));
     } finally {
       setSaving(false);
     }
@@ -825,19 +873,23 @@ export default function QuizMaker() {
     return <div style={{ padding: 60, textAlign: "center" }}>Loading...</div>;
   }
 
-  if (!user) {
-    return (
-      <div style={{ padding: 60, textAlign: "center" }}>
-        <h2>{m.loginRequired}</h2>
-        <button
-          type="button"
-          onClick={() => navigate(`/${lang}/login`)}
-          style={primaryButton}
-        >
-          {m.login}
-        </button>
-      </div>
-    );
+  const guestFields = <section style={sectionStyle}>
+    <p>{guestCopy.intro}</p>
+    <label style={labelStyle}>{guestCopy.nickname}<input readOnly={guestEdit && editReady} autoComplete="off" value={guestNickname} onChange={e => setGuestNickname(e.target.value)} maxLength={20} style={inputStyle} /></label>
+    <label style={labelStyle}>{guestCopy.password}<input readOnly={guestEdit && editReady} type="password" autoComplete="new-password" value={guestPassword} onChange={e => setGuestPassword(e.target.value)} maxLength={50} style={inputStyle} /></label>
+    <p>{guestCopy.remember}</p>
+    {!user?.id && <button type="button" onClick={() => navigate(`/${lang}/login`)} style={secondaryButton}>{m.login}</button>}
+  </section>;
+
+  if (editQuizId && !editReady) {
+    return <div style={{ padding: "24px 12px", maxWidth: 980, margin: "0 auto" }}>
+      <h1>{guestEdit ? guestCopy.edit : guestCopy.loading}</h1>
+      {guestEdit && guestFields}
+      {error && <p role="alert">{error}</p>}
+      {guestEdit && <button type="button" disabled={verifyingGuest} onClick={verifyGuest} style={primaryButton}>{verifyingGuest ? guestCopy.loading : guestCopy.verify}</button>}
+      <button type="button" onClick={() => navigate(`/${lang}/quiz`)} style={secondaryButton}>{m.back}</button>
+      {!guestEdit && error && <button type="button" onClick={() => navigate(`/${lang}/login`)} style={secondaryButton}>{m.login}</button>}
+    </div>;
   }
 
   return (
@@ -849,6 +901,7 @@ export default function QuizMaker() {
         <h1 style={{ textAlign: "center", fontSize: mobile ? 28 : 36, marginBottom: 22 }}>
           {m.title}
         </h1>
+        {guestMode && guestFields}
         <div style={{ ...creatorWarningStyle, marginBottom: 18 }}>⚠️ {safetyCopy.warning}</div>
 
         <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: 10, flexWrap: "wrap", marginBottom: 18 }}>
@@ -860,6 +913,7 @@ export default function QuizMaker() {
         <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "1fr 1fr", gap: 12, marginBottom: 18 }}>
           <button
             type="button"
+            disabled={!user?.id}
             onClick={() => { setCreationMode("direct"); setImportOpen(false); }}
             style={creationModeButton(creationMode === "direct")}
           >
@@ -948,8 +1002,8 @@ export default function QuizMaker() {
           <div style={labelStyle}>
             {m.thumbnail}
             <div style={{ display: "flex", alignItems: "center", gap: 10, marginTop: 8 }}>
-              <input id="quiz-thumbnail-file" type="file" accept="image/*" onChange={(e) => { const file = e.target.files?.[0] || null; if (validateImageFile(file)) setThumbnailFile(file); e.target.value = ""; }} style={{ display: "none" }} />
-            <button type="button" onClick={() => document.getElementById("quiz-thumbnail-file")?.click()} style={fileButton}>{m.chooseImage}</button>
+              <input id="quiz-thumbnail-file" type="file" disabled={!user?.id} accept="image/*" onChange={(e) => { const file = e.target.files?.[0] || null; if (validateImageFile(file)) setThumbnailFile(file); e.target.value = ""; }} style={{ display: "none" }} />
+            <button type="button" onClick={() => document.getElementById("quiz-thumbnail-file")?.click()} disabled={!user?.id} style={fileButton}>{m.chooseImage}</button>
               <span style={{ color: "#667085", fontWeight: 600 }}>{thumbnailFile?.name || m.noFile}</span>
             </div>
             <div style={{ marginTop: 7, color: "#667085", fontSize: 14 }}>{safetyCopy.imageLimit}</div>
@@ -1086,13 +1140,13 @@ export default function QuizMaker() {
             <div style={labelStyle}>
               {m.questionMedia} {q.imageUrl && <span style={{ color: "#667085", fontWeight: 600 }}>({m.importedMedia})</span>}
               <div style={{ display: "flex", alignItems: "center", gap: 10, marginTop: 8 }}>
-                <input id={`quiz-question-file-${q.localId}`} type="file" accept="image/*" onChange={(e) => { const file = e.target.files?.[0] || null; if (validateImageFile(file)) patchQuestion(q.localId, { imageFile: file }); e.target.value = ""; }} style={{ display: "none" }} />
-                <button type="button" onClick={() => document.getElementById(`quiz-question-file-${q.localId}`)?.click()} style={fileButton}>{m.chooseImage}</button>
+                <input id={`quiz-question-file-${q.localId}`} type="file" disabled={!user?.id} accept="image/*" onChange={(e) => { const file = e.target.files?.[0] || null; if (validateImageFile(file)) patchQuestion(q.localId, { imageFile: file }); e.target.value = ""; }} style={{ display: "none" }} />
+                <button type="button" onClick={() => document.getElementById(`quiz-question-file-${q.localId}`)?.click()} disabled={!user?.id} style={fileButton}>{m.chooseImage}</button>
                 <span style={{ color: "#667085", fontWeight: 600 }}>{q.imageFile?.name || m.noFile}</span>
               </div>
               <div style={{ marginTop: 7, color: "#667085", fontSize: 14 }}>{safetyCopy.imageLimit}</div>
               {!q.sourceWorldcupId && <>
-                <input value={q.imageUrl || ""} onChange={(e) => patchQuestion(q.localId, { imageUrl: e.target.value, imageFile: null })} placeholder={m.mediaUrl} maxLength={1000} style={{ ...inputStyle, marginTop: 10, marginBottom: 6 }} />
+                <input disabled={!user?.id} value={q.imageUrl || ""} onChange={(e) => patchQuestion(q.localId, { imageUrl: e.target.value, imageFile: null })} placeholder={m.mediaUrl} maxLength={1000} style={{ ...inputStyle, marginTop: 10, marginBottom: 6 }} />
                 <div style={{ color: "#667085", fontSize: 14, fontWeight: 650 }}>{m.mediaHelp}</div>
               </>}
             </div>
@@ -1336,3 +1390,4 @@ const pillButton = (active) => ({
   fontWeight: 800,
   cursor: "pointer",
 });
+

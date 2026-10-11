@@ -223,6 +223,14 @@ export async function searchWorldcupsForQuiz({ search = "", limit = 1000 } = {})
     .slice(0, limit);
 }
 
+// Client-side hint only. The RPC independently compares against saved DB images.
+export function isSavedGuestMedia(question, quizId) {
+  const saved = question?.savedGuestMedia;
+  return Boolean(quizId && saved && saved.quizId === quizId &&
+    saved.imageUrl === (question.imageUrl || "") &&
+    (saved.sourceWorldcupId || null) === (question.sourceWorldcupId || null));
+}
+
 export async function createQuiz({
   quizId = "",
   title,
@@ -238,15 +246,17 @@ export async function createQuiz({
   contentLanguages,
   answerRevealMode,
   sourceWorldcupIds = [],
+  guestCredentials = null,
 }) {
-  if (!user?.id) throw new Error("로그인이 필요합니다.");
+  const guestMode = Boolean(guestCredentials) || !user?.id;
+  if (guestMode && !guestCredentials) throw new Error("GUEST_CREDENTIALS_INVALID");
 
   const uniqueLanguages = Array.from(
     new Set([lang, ...(contentLanguages || [])].filter(Boolean))
   );
 
   const quizPayload = {
-      user_id: user.id,
+      user_id: guestMode ? null : user.id,
       guest_nickname: nickname || null,
       title: title.trim(),
       title_translations: {
@@ -271,15 +281,6 @@ export async function createQuiz({
       is_published: true,
     };
 
-  const quizQuery = quizId
-    ? supabase.from("quizzes").update(quizPayload).eq("id", quizId).eq("user_id", user.id)
-    : supabase.from("quizzes").insert(quizPayload);
-  const { data: quiz, error: quizError } = await quizQuery
-    .select("id")
-    .single();
-
-  if (quizError) throw quizError;
-
   const rows = questions.map((q, index) => {
     const questionType =
       q.type === "short_answer" ? "short_answer" : "multiple_choice";
@@ -297,7 +298,7 @@ export async function createQuiz({
     const translatedAnswers = translatedEntries.flatMap(([, value]) => Array.isArray(value?.answers) ? value.answers : []).map((value) => String(value || "").trim()).filter(Boolean);
 
     return {
-      quiz_id: quiz.id,
+      quiz_id: quizId || null,
       question_type: questionType,
       question_text: String(q.question || "").trim(),
       question_translations: {
@@ -328,6 +329,32 @@ export async function createQuiz({
     };
   });
 
+  if (guestMode) {
+    if (!user?.id && questions.some(q => q.imageFile || (!q.sourceWorldcupId && !isSavedGuestMedia(q, quizId)))) throw new Error("GUEST_SOURCE_REQUIRED");
+    const { data, error } = await supabase.rpc("save_guest_quiz", {
+      p_quiz_id: quizId || null,
+      p_guest_nickname: guestCredentials.nickname.trim(),
+      p_password: guestCredentials.password,
+      p_quiz: quizPayload,
+      p_questions: rows,
+    });
+    if (error) throw error;
+    if (!data?.id) throw new Error(data?.error || "GUEST_SETUP_REQUIRED");
+    clearQuizListCache();
+    return data.id;
+  }
+
+  const quizQuery = quizId
+    ? supabase.from("quizzes").update(quizPayload).eq("id", quizId).eq("user_id", user.id)
+    : supabase.from("quizzes").insert(quizPayload);
+  const { data: quiz, error: quizError } = await quizQuery
+    .select("id")
+    .single();
+
+  if (quizError) throw quizError;
+
+  rows.forEach(row => { row.quiz_id = quiz.id; });
+
   if (quizId) {
     const { error: deleteQuestionError } = await supabase
       .from("quiz_questions")
@@ -350,6 +377,7 @@ export async function createQuiz({
 }
 
 export async function uploadQuizImage(file, userId) {
+  if (!userId) throw new Error("LOGIN_REQUIRED");
   if (!file) return "";
   if (!file.type?.startsWith("image/")) {
     throw new Error("이미지 파일만 업로드할 수 있습니다.");
@@ -452,4 +480,14 @@ export async function reportQuizQuestion({ quizId, questionId, ownerId, issueTyp
     reason,
   });
   if (error) throw error;
+}
+
+
+export async function getGuestQuizForEdit(quizId, nickname, password) {
+  const { data, error } = await supabase.rpc("get_guest_quiz_for_edit", {
+    p_quiz_id: quizId, p_guest_nickname: nickname.trim(), p_password: password,
+  });
+  if (error) throw error;
+  if (!data?.quiz) throw new Error(data?.error || "GUEST_AUTH_FAILED");
+  return data;
 }
