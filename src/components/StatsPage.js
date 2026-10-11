@@ -427,9 +427,9 @@ const RankCard = React.memo(function RankCard(props) {
 
   const cardWidth = isMobile ? 285 : 390;
 
-  const cardHeight = isMobile ? 440 : 510;
+  const cardHeight = isMobile ? 475 : 550;
 
-  const thumbSize = isMobile ? 145 : 200;
+  const thumbSize = isMobile ? 180 : 240;
 
 
 
@@ -2772,4 +2772,5 @@ function periodBtnStyle(selected) {
   };
 
 }
+
 

@@ -1033,7 +1033,7 @@ const remainingCandidateCount = Math.max(
 
  const topSpacerH = isMobile ? 58 : 25;
 
-  const thumbH = isMobile ? 150 : 190;
+  const thumbH = isMobile ? 220 : 300;
 
   // ======================================================
 
@@ -2856,4 +2856,5 @@ style={{
   );
 
 }
+
 
