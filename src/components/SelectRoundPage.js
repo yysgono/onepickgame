@@ -1599,11 +1599,11 @@ textShadow: "none",
 
                         height: "100%",
 
-                        objectFit: "cover",
+                        objectFit: "contain",
 
                         objectPosition:
 
-                          "50% 0%",
+                          "center",
 
                         background: "#ffffff",
 
@@ -1669,11 +1669,11 @@ textShadow: "none",
 
                         height: "100%",
 
-                        objectFit: "cover",
+                        objectFit: "contain",
 
                         objectPosition:
 
-                          "50% 0%",
+                          "center",
 
                         background: "#ffffff",
 
@@ -2854,3 +2854,4 @@ style={{
   );
 
 }
+

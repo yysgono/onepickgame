@@ -830,8 +830,8 @@ textShadow: "none",
                   style={{
                     width: "100%",
                     height: "100%",
-                    objectFit: "cover",
-                    objectPosition: "50% 0%",
+                    objectFit: "contain",
+                    objectPosition: "center",
                   }}
                 />
 
@@ -956,3 +956,4 @@ textShadow: "none",
   );
 
 }
+
