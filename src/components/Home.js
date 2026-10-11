@@ -208,9 +208,9 @@ const HOME_CATEGORIES = [
 
   { key: "korea", slug: "korea", label: "K-Celeb" },
 
-  { key: "person", slug: "person", label: "People" },
-
   { key: "anime_manga", slug: "anime-manga", label: "Anime / Manga" },
+
+  { key: "person", slug: "person", label: "People" },
 
   { key: "game", slug: "game", label: "Games" },
 
@@ -5156,3 +5156,4 @@ return (
 
 
 export default Home;
+
