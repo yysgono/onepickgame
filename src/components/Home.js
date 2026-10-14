@@ -1,3 +1,4 @@
+import useWorldcupHomePages from "../hooks/useWorldcupHomePages";
 import PageIntro from "./PageIntro";
 
 import "../registerHeaderTranslations";
@@ -869,7 +870,7 @@ const WORLDCUP_INFO_COPY = {
 
 function Home({
 
-  worldcupList,
+  worldcupList: suppliedWorldcupList,
 
   onMakeWorldcup,
 
@@ -896,6 +897,8 @@ const location = useLocation();
 
 
 const lang = (i18n.language || "en").split("-")[0];
+const remoteHome = !personalView && /^\/(?:en|ko|ja|zh|es|fr|vi|de|ru|id|pt|hi|tr|th|ar|bn)?\/?$/.test(location.pathname);
+
 const worldcupInfoCopy = WORLDCUP_INFO_COPY[lang] || WORLDCUP_INFO_COPY.en;
 
 
@@ -1453,6 +1456,7 @@ useEffect(() => {
 
 
   async function fetchPlayCounts() {
+    if (remoteHome) return;
 
     try {
 
@@ -1558,6 +1562,7 @@ useEffect(() => {
   let mounted = true;
 
   async function fetchRecentPlays() {
+    if (remoteHome) return;
     try {
       const { data, error } = await supabase
         .from("winner_logs")
@@ -1624,6 +1629,22 @@ const creatorFilter =
 
 
 
+const initialPageCount = Math.max(1, Math.ceil(Math.max(CARD_WIDTH, vw - (isMobile ? 84 : 152)) / (CARD_WIDTH + CARD_GAP)));
+const homePages = useWorldcupHomePages({
+  enabled: remoteHome,
+  search: normalizeSearchQuery(search),
+  creator: creatorFilter || "",
+  sorts: categorySorts,
+  pageSize: initialPageCount,
+  includeDeferred: showMoreCategories || Boolean(search.trim()) || Boolean(creatorFilter),
+  includeActivity: !isMobile && !search.trim() && !creatorFilter,
+});
+const worldcupList = remoteHome ? homePages.cups : suppliedWorldcupList;
+useEffect(() => {
+  setRowVisibleCounts({});
+  setOtherVisibleCount(8);
+}, [search, creatorFilter, categorySorts]);
+
 const filtered = Array.isArray(worldcupList)
 
   ? (worldcupList || [])
@@ -1676,7 +1697,7 @@ const cupById = new Map(
     .map((cup) => [String(cup.id), cup])
 );
 
-const recentCreatedCups = [...cupById.values()]
+const recentCreatedCups = remoteHome ? homePages.activity.created : [...cupById.values()]
   .sort(
     (a, b) =>
       new Date(b?.created_at || 0).getTime() -
@@ -1689,7 +1710,7 @@ const recentCreatedCups = [...cupById.values()]
   }));
 
 const seenRecentPlayIds = new Set();
-const recentPlayedCups = (recentPlayLogs || [])
+const recentPlayedCups = remoteHome ? homePages.activity.played : (recentPlayLogs || [])
   .map((log) => {
     const cup = cupById.get(String(log?.cup_id));
     if (!cup) return null;
@@ -1763,43 +1784,15 @@ const getRowVisibleCount = (rowKey) => {
 
 
 
-const loadMoreRow = (rowKey, totalCount) => {
-
-  setRowVisibleCounts((prev) => {
-
-const current =
-
-  prev[rowKey] || getInitialRowCount();
-
-
-
-    if (current >= totalCount) {
-
-      return prev;
-
-    }
-
-
-
-    return {
-
-      ...prev,
-
-      [rowKey]: Math.min(
-
-        current + getInitialRowCount(),
-
-        totalCount
-
-      ),
-
-    };
-
-  });
-
+const loadMoreRow = async (rowKey, totalCount) => {
+  const current = rowKey === "etc" ? otherVisibleCount : getRowVisibleCount(rowKey);
+  const next = Math.min(current + (rowKey === "etc" ? 8 : getInitialRowCount()), totalCount);
+  if (next <= current) return true;
+  if (remoteHome && !await homePages.loadMore(rowKey, next)) return false;
+  if (rowKey === "etc") setOtherVisibleCount(next);
+  else setRowVisibleCounts(prev => ({ ...prev, [rowKey]: next }));
+  return true;
 };
-
-
 
 const updateCategoryScrollState = (rowKey) => {
 
@@ -1867,7 +1860,7 @@ const updateCategoryScrollState = (rowKey) => {
 
 
 
-const scrollCategoryRow = (
+const scrollCategoryRow = async (
 
   rowKey,
 
@@ -1919,7 +1912,7 @@ const scrollCategoryRow = (
 
   ) {
 
-    loadMoreRow(rowKey, totalCount);
+    if (!await loadMoreRow(rowKey, totalCount)) return;
 
 
 
@@ -2396,6 +2389,8 @@ const renderWorldcupCard = (cup) => {
 const totalPlays =
 
   playCountMap[String(cup.id)] ??
+
+  cup.play_count ??
 
   winStats.reduce(
 
@@ -3360,6 +3355,7 @@ const renderCategorySection = ({
 
 }) => {
 
+  const totalCount = remoteHome ? (homePages.totals[rowKey] || 0) : cups.length;
   if (!Array.isArray(cups) || cups.length === 0) {
 
     return null;
@@ -3653,7 +3649,7 @@ fontWeight: 900,
 
     onClick={() =>
 
-      scrollCategoryRow(rowKey, -1, cups.length)
+      scrollCategoryRow(rowKey, -1, totalCount)
 
     }
 
@@ -3781,7 +3777,7 @@ onScroll={(e) => {
 
 
 
-  if (remaining < CARD_WIDTH * 2) {
+  if (!remoteHome && remaining < CARD_WIDTH * 2) {
 
     loadMoreRow(
 
@@ -3901,7 +3897,7 @@ justifyContent:
 
 
 
-{rowKey === "etc" && otherVisibleCount < cups.length && (
+{rowKey === "etc" && otherVisibleCount < totalCount && (
 
   <div
 
@@ -3925,7 +3921,7 @@ justifyContent:
 
       onClick={() =>
 
-        setOtherVisibleCount((prev) => prev + 8)
+        loadMoreRow("etc", totalCount)
 
       }
 
@@ -3973,7 +3969,7 @@ justifyContent:
 
 {(
 
-  getRowVisibleCount(rowKey) < cups.length ||
+  getRowVisibleCount(rowKey) < totalCount ||
 
   categoryScrollState[rowKey]?.canScrollRight
 
@@ -3987,7 +3983,7 @@ justifyContent:
 
     onClick={() =>
 
-      scrollCategoryRow(rowKey, 1, cups.length)
+      scrollCategoryRow(rowKey, 1, totalCount)
 
     }
 
@@ -4075,70 +4071,18 @@ justifyContent:
 
 
 
-const featuredCups = Array.isArray(worldcupList)
+const featuredCups = remoteHome
+  ? (homePages.rows.featured?.items || [])
+  : (Array.isArray(worldcupList) ? [...worldcupList].filter(cup => cup.is_featured === true && cupMatchesSearch(cup, normalizeSearchQuery(search), lang)).sort((a,b) => (a.featured_order ?? 999999) - (b.featured_order ?? 999999)) : []);
 
-  ? [...worldcupList]
-
-     .filter((cup) => {
-
-  if (cup.is_featured !== true) {
-
-    return false;
-
-  }
-
-
-
-  const keyword = normalizeSearchQuery(search);
-
-
-
-  return cupMatchesSearch(cup, keyword, lang);
-
-})
-
-.sort((a, b) => {
-
-  const aOrder = a.featured_order ?? 999999;
-
-  const bOrder = b.featured_order ?? 999999;
-
-
-
-  return aOrder - bOrder;
-
-})
-
-  : [];
-
-
-
-const categorySections = HOME_CATEGORIES.map(
-
-  (category) => ({
-
-    ...category,
-
-
-
-    cups: sortCategoryCups(
-      filtered.filter(
-        (cup) =>
-          (cup.category || "etc") ===
-          category.key
-      ),
-      category.key
-    ),
-
-  })
-
-);
-
-
+const categorySections = HOME_CATEGORIES.map(category => ({
+  ...category,
+  cups: remoteHome ? (homePages.rows[category.key]?.items || []) : sortCategoryCups(filtered.filter(cup => (cup.category || "etc") === category.key), category.key),
+}));
 
 const visibleCategorySections = categorySections.filter(
 
-  (section) => section.cups.length > 0
+  (section) => remoteHome ? (homePages.totals[section.key] || 0) > 0 : section.cups.length > 0
 
 );
 
@@ -4785,9 +4729,14 @@ return (
 
 
 
+{remoteHome && homePages.loading && <p role="status" style={{ textAlign: "center", padding: 16 }}>{t("loading", { defaultValue: "Loading..." })}</p>}
+{remoteHome && homePages.error && <div role="alert" style={{ textAlign: "center", padding: 16 }}>
+  <p>{lang === "ko" ? "게임 목록을 불러오지 못했습니다. 다시 시도해 주세요." : "Could not load games. Please try again."}</p>
+  <button type="button" onClick={homePages.retry}>{t("retry", { defaultValue: lang === "ko" ? "다시 시도" : "Retry" })}</button>
+</div>}
 {/* 검색 결과 없음 */}
 
-{search.trim() && filtered.length === 0 && (
+{search.trim() && filtered.length === 0 && !homePages.loading && !homePages.error && (
 
   <div
 
@@ -5156,4 +5105,5 @@ return (
 
 
 export default Home;
+
 

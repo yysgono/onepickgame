@@ -1,3 +1,5 @@
+import { fetchWorldcupRelatedCards } from "./utils/worldcupHomeApi";
+import WorldcupRouteDataLoader from "./components/WorldcupRouteDataLoader";
 import { subscribeToAuthProfile } from "./utils/authSession";
 import categoryLabels from "./seo/categoryLabels.json";
 import NotFoundPage from "./components/NotFoundPage";
@@ -5,7 +7,7 @@ import WorldcupDetailSeo from "./seo/WorldcupDetailSeo";
 import worldcupMetadata from "./seo/worldcupMetadata.js";
 import "./i18n";
 import "./App.css";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   BrowserRouter as Router,
   Routes,
@@ -332,6 +334,8 @@ function RouteBackground() { return null; }
 function App() {
  useIsMobile();
   const [worldcupList, setWorldcupList] = useState([]);
+  const [worldcupAllLoaded, setWorldcupAllLoaded] = useState(false);
+  const [relatedWorldcupsById, setRelatedWorldcupsById] = useState({});
 
   const { t, i18n } = useTranslation();
 
@@ -377,21 +381,27 @@ function App() {
      월드컵 목록 다시 가져오기
   =================================================== */
 
-  const fetchWorldcups = async () => {
-    try {
-      const list =
-        await getWorldcupGames();
+  const fetchWorldcups = useCallback(async () => {
+    const list = await getWorldcupGames();
+    setWorldcupList(list);
+    setWorldcupAllLoaded(true);
+    return list;
+  }, []);
 
-      setWorldcupList(list);
-    } catch (error) {
-      console.error(
-        "월드컵 목록 로딩 실패:",
-        error
-      );
-
-      setWorldcupList([]);
-    }
-  };
+  const fetchOneWorldcup = useCallback(async (id) => {
+    const [cup, related] = await Promise.all([
+      getWorldcupGame(id),
+      fetchWorldcupRelatedCards(id).catch(error => { console.warn("Related games could not be loaded", error); return []; }),
+    ]);
+    setRelatedWorldcupsById(previous => ({ ...previous, [id]: related }));
+    setWorldcupList(previous => {
+      const games = new Map(previous.map(item => [String(item.id), item]));
+      games.set(String(id), cup);
+      related.forEach(item => { if (!games.has(String(item.id)) || games.get(String(item.id))._homeCardOnly) games.set(String(item.id), item); });
+      return [...games.values()];
+    });
+    return cup;
+  }, []);
 
   /* ===================================================
      월드컵 삭제
@@ -450,9 +460,7 @@ function App() {
      최초 월드컵 로딩
   =================================================== */
 
-  useEffect(() => {
-    fetchWorldcups();
-  }, []);
+  // Data is requested by WorldcupRouteDataLoader only when the active route needs it.
 
   /* ===================================================
      운영자 PICK ID 로딩
@@ -1176,7 +1184,7 @@ const translatedDescription = worldcupMetadata.worldcupDescription(cup, normaliz
 
   <SelectRoundPage
   cup={cup}
-  worldcupList={worldcupList}
+  worldcupList={relatedWorldcupsById[id] || worldcupList}
   user={user}
   isAdmin={isAdmin}
   onDelete={handleWorldcupDelete}
@@ -1297,9 +1305,8 @@ const makerDescMap = {
         fetchWorldcups={
           fetchWorldcups
         }
- onCreate={async () => {
-  await fetchWorldcups();
-
+ onCreate={() => {
+  setWorldcupAllLoaded(false);
   navigate(
     getLangPath(
       i18n
@@ -2029,7 +2036,9 @@ overflowX: "hidden",
         >
   <ScrollToTopOnRouteChange />
 
-  <AppRoutes />
+  <WorldcupRouteDataLoader worldcupList={worldcupList} allLoaded={worldcupAllLoaded} loadAll={fetchWorldcups} loadOne={fetchOneWorldcup}>
+    <AppRoutes />
+  </WorldcupRouteDataLoader>
 
   <ScrollToTopButton />
 
@@ -2042,3 +2051,4 @@ overflowX: "hidden",
 }
 
 export default App;
+
