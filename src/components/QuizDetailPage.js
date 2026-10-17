@@ -1,3 +1,4 @@
+import GameBrandLabel from "./GameBrandLabel";
 import { getGuestQuizCopy } from "./guestQuizCopy";
 import RelatedContentLinks from "./RelatedContentLinks";
 import React, { useEffect, useMemo, useRef, useState } from "react";
@@ -1066,6 +1067,7 @@ export default function QuizDetailPage() {
 
               )}
 
+              <GameBrandLabel />
               <h1 style={{ fontSize: 34, margin: "18px 0 8px" }}>{title}</h1>
 
               <p style={{ color: "#637086", lineHeight: 1.6 }}>{seo.description}</p>
@@ -1215,6 +1217,8 @@ export default function QuizDetailPage() {
         {phase === "playing" && current && (
 
           <div style={{ maxWidth: 1080, margin: "26px auto" }}>
+
+            <GameBrandLabel />
 
             <div style={{ display: "flex", justifyContent: "space-between", gap: 10, flexWrap: "wrap", marginBottom: 12, padding: 12, border: "1.5px solid #FFCDD2", borderRadius: 10, background: "#FFF8F8" }}>
 

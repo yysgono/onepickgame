@@ -1,3 +1,4 @@
+import GameBrandLabel from "./GameBrandLabel";
 import RelatedContentLinks from "./RelatedContentLinks";
 // src/components/SelectRoundPage.js
 
@@ -1772,6 +1773,8 @@ textShadow: "none",
                 </div>
 
               </div>
+
+              <GameBrandLabel />
 
               {/* 제목 */}
 

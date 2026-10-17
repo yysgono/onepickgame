@@ -1,3 +1,4 @@
+import GameBrandLabel from "./GameBrandLabel";
 // src/components/Match.js
 
 import React, {
@@ -4357,6 +4358,8 @@ useEffect(() => {
       }}
 
     >
+
+      <GameBrandLabel />
 
       <AdaptiveTitle
 
