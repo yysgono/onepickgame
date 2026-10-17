@@ -23,7 +23,7 @@ export default function GameBrandLabel() {
           width: "100%",
           boxSizing: "border-box",
           textAlign: "center",
-          color: "#202534",
+          color: "#2563eb",
           fontFamily: 'Arial, "Noto Sans", sans-serif',
           fontSize: "clamp(24px, 2.4vw, 32px)",
           fontWeight: 900,

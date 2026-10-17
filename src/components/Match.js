@@ -1259,7 +1259,7 @@ function CandidateBox({
 
           color: "#202534",
 
-          fontFamily: NEON_FONT,
+          fontFamily: "inherit",
 
           textAlign: "center",
 
@@ -1321,7 +1321,7 @@ function CandidateBox({
 
             overflowWrap: "anywhere",
 
-            fontFamily: NEON_FONT,
+            fontFamily: "inherit",
 
             fontWeight: 900,
 
