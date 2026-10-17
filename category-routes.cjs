@@ -1,5 +1,6 @@
 const { loadSeoTemplate } = require('./seo-template.cjs');
 const { getCategorySeo } = require('./src/seo/categorySeo.js');
+const { getPrivatePageSeo } = require('./src/seo/privatePageSeo.js');
 const paths = require('./spa-paths.json');
 const languages = Object.keys(require('./src/seo/categoryLabels.json'));
 const escape = value => String(value || '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
@@ -42,6 +43,13 @@ module.exports = (app, supabase, origin) => {
         if (!isKnownPath(rawPath)) return await notFound(res, origin, lang);
         const html = await loadSeoTemplate(origin);
         res.setHeader('Cache-Control', 'no-store');
+        if (rawPath.replace(/\/+$/, '') === `/${lang}/my-worldcups`) {
+          const meta = getPrivatePageSeo(lang);
+          const canonical = `${origin}/${lang}/my-worldcups`;
+          const head = `<title data-rh="true">${escape(meta.title)}</title><meta data-rh="true" name="description" content="${escape(meta.description)}"><meta data-rh="true" name="robots" content="noindex, follow"><link data-rh="true" rel="canonical" href="${canonical}">`;
+          res.setHeader('X-Robots-Tag', 'noindex, follow');
+          return res.send(inject(html, head, '<div class="loading-screen" role="status">Loading...</div>', lang));
+        }
         return res.send(html);
       }
       const slug = String(req.query.category || '');
@@ -74,3 +82,4 @@ module.exports = (app, supabase, origin) => {
   });
 };
 module.exports.isKnownPath = isKnownPath;
+

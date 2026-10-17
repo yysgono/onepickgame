@@ -1,3 +1,4 @@
+import { moveTierItem, tierDropPosition } from "../utils/tierItemOrder";
 import contentDescription from "../seo/contentDescription";
 import descriptionEditorCopy from "../seo/tierDescriptionEditorCopy.json";
 import { resolveOriginalContentLanguage, originalTitleLabel } from "../utils/originalContentLanguage";
@@ -2895,33 +2896,10 @@ const addLocalFiles =
     useCallback(
       (
         item,
-        targetTier
+        targetTier,
+        position
       ) => {
-        if (
-          !item ||
-          !targetTier
-        ) {
-          return;
-        }
-
-
-        setTierItems(
-          (prev) => {
-            const next = removeCandidateFromTiers(prev, item._tierKey);
-
-            next[
-              targetTier
-            ] = [
-              ...next[
-                targetTier
-              ],
-              item,
-            ];
-
-
-            return next;
-          }
-        );
+        setTierItems(prev => moveTierItem(prev, item, targetTier, position));
       },
       []
     );
@@ -3172,34 +3150,15 @@ const handleDragEndItem =
   }, [draggedItem, isMobile]);
 
 
-  const handleTierDrop =
-    useCallback(
-      (
-        e,
-        tier
-      ) => {
-        e.preventDefault();
-
-
-        if (
-          draggedItem
-        ) {
-          moveItemToTier(
-            draggedItem,
-            tier
-          );
-
-
-          setDraggedItem(
-            null
-          );
-        }
-      },
-      [
-        draggedItem,
-        moveItemToTier,
-      ]
-    );
+  const handleTierDrop = useCallback((event, tier) => {
+    event.preventDefault();
+    event.stopPropagation();
+    // The ref is set synchronously at dragstart, even before React commits state.
+    const item = draggedItemRef.current || draggedItem;
+    if (!item) return;
+    moveItemToTier(item, tier, tierDropPosition(event));
+    handleDragEndItem();
+  }, [draggedItem, moveItemToTier, handleDragEndItem]);
 
 
  const handleOnePickDrop =
@@ -3247,30 +3206,14 @@ const handleDragEndItem =
     ]
   );
 
-  const handleUnrankedDrop =
-    useCallback(
-      (e) => {
-        e.preventDefault();
-
-
-        if (
-          draggedItem
-        ) {
-          returnToUnranked(
-            draggedItem
-          );
-
-
-          setDraggedItem(
-            null
-          );
-        }
-      },
-      [
-        draggedItem,
-        returnToUnranked,
-      ]
-    );
+  const handleUnrankedDrop = useCallback((event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    const item = draggedItemRef.current || draggedItem;
+    if (!item) return;
+    returnToUnranked(item);
+    handleDragEndItem();
+  }, [draggedItem, returnToUnranked, handleDragEndItem]);
 
 
   const handleMobilePlacement =
@@ -6517,6 +6460,7 @@ objectPosition: "center",
                           key={
                             item._tierKey
                           }
+                          data-tier-candidate-key={item._tierKey}
                           onDoubleClick={() =>
                             returnToUnranked(
                               item
@@ -7733,3 +7677,4 @@ objectPosition: "center",
 
 
 export default TierListMaker;
+

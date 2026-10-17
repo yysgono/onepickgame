@@ -11,7 +11,9 @@
       "sports": "스포츠",
       "other": "기타",
       "knowledge": "상식"
-    }
+    },
+    "categoryDescription": "{category} 티어표를 둘러보고 나만의 순위를 만들어보세요. 후보를 등급별로 배치하고 결과를 공유할 수 있습니다.",
+    "mineTitle": "내 티어표 | 원픽게임"
   },
   "en": {
     "title": "Tier List Maker · Popular Tier Lists | OnePickGame",
@@ -25,10 +27,12 @@
       "sports": "Sports",
       "other": "Other",
       "knowledge": "Knowledge"
-    }
+    },
+    "categoryDescription": "Explore {category} tier lists, arrange candidates into tiers, and share your own rankings.",
+    "mineTitle": "My Tier Lists | OnePickGame"
   },
   "ja": {
-    "title": "Tier List | One Pick Game",
+    "title": "Tier表メーカー・人気Tierリスト | OnePickGame",
     "description": "One Pick GameでTier Listを作成・閲覧できます。ゲーム、アニメ、有名人、食べ物、スポーツ、キャラクターなどをランク付けしましょう。",
     "categories": {
       "all": "すべて",
@@ -39,10 +43,12 @@
       "sports": "スポーツ",
       "other": "その他",
       "knowledge": "知識"
-    }
+    },
+    "categoryDescription": "{category}のTier表を探して、自分だけのランキングを作成しましょう。候補をランク別に並べて結果を共有できます。",
+    "mineTitle": "自分のTier表 | OnePickGame"
   },
   "zh": {
-    "title": "Tier List | One Pick Game",
+    "title": "等级榜制作工具・热门排名 | OnePickGame",
     "description": "在 One Pick Game 创建和浏览 Tier List，为游戏、动漫、明星、美食、体育、角色等主题进行分级排名。",
     "categories": {
       "all": "全部",
@@ -53,10 +59,12 @@
       "sports": "体育",
       "other": "其他",
       "knowledge": "知识"
-    }
+    },
+    "categoryDescription": "浏览{category}等级榜，将候选项目分级，制作并分享你自己的排名。",
+    "mineTitle": "我的等级榜 | OnePickGame"
   },
   "ru": {
-    "title": "Tier List | One Pick Game",
+    "title": "Создать тир-лист · Популярные рейтинги | OnePickGame",
     "description": "Создавайте и смотрите tier list на One Pick Game. Оценивайте игры, аниме, знаменитостей, еду, спорт, персонажей и многое другое.",
     "categories": {
       "all": "Все",
@@ -67,10 +75,12 @@
       "sports": "Спорт",
       "other": "Другое",
       "knowledge": "Знания"
-    }
+    },
+    "categoryDescription": "Смотрите тир-листы в категории «{category}», распределяйте участников по уровням и делитесь своим рейтингом.",
+    "mineTitle": "Мои тир-листы | OnePickGame"
   },
   "pt": {
-    "title": "Tier List | One Pick Game",
+    "title": "Criador de Tier Lists · Rankings populares | OnePickGame",
     "description": "Crie e explore tier lists no One Pick Game. Classifique jogos, anime, celebridades, comida, esportes, personagens e muito mais.",
     "categories": {
       "all": "Todos",
@@ -81,10 +91,12 @@
       "sports": "Esportes",
       "other": "Outros",
       "knowledge": "Conhecimento"
-    }
+    },
+    "categoryDescription": "Explore tier lists de {category}, organize os candidatos por nível e compartilhe seu próprio ranking.",
+    "mineTitle": "Minhas Tier Lists | OnePickGame"
   },
   "es": {
-    "title": "Tier List | One Pick Game",
+    "title": "Creador de Tier Lists · Rankings populares | OnePickGame",
     "description": "Crea y explora tier lists en One Pick Game. Clasifica juegos, anime, famosos, comida, deportes, personajes y más.",
     "categories": {
       "all": "Todo",
@@ -95,10 +107,12 @@
       "sports": "Deportes",
       "other": "Otros",
       "knowledge": "Cultura"
-    }
+    },
+    "categoryDescription": "Explora tier lists de {category}, organiza los candidatos por niveles y comparte tu propia clasificación.",
+    "mineTitle": "Mis Tier Lists | OnePickGame"
   },
   "fr": {
-    "title": "Tier List | One Pick Game",
+    "title": "Créer une tier list · Classements populaires | OnePickGame",
     "description": "Créez et explorez des tier lists sur One Pick Game. Classez jeux, anime, célébrités, nourriture, sports, personnages et plus encore.",
     "categories": {
       "all": "Tout",
@@ -109,10 +123,12 @@
       "sports": "Sports",
       "other": "Autres",
       "knowledge": "Culture"
-    }
+    },
+    "categoryDescription": "Découvrez les tier lists de la catégorie {category}, classez les candidats par niveau et partagez votre classement.",
+    "mineTitle": "Mes tier lists | OnePickGame"
   },
   "id": {
-    "title": "Tier List | One Pick Game",
+    "title": "Pembuat Tier List · Peringkat populer | OnePickGame",
     "description": "Buat dan jelajahi tier list di One Pick Game. Peringkatkan game, anime, selebritas, makanan, olahraga, karakter, dan lainnya.",
     "categories": {
       "all": "Semua",
@@ -123,10 +139,12 @@
       "sports": "Olahraga",
       "other": "Lainnya",
       "knowledge": "Pengetahuan"
-    }
+    },
+    "categoryDescription": "Jelajahi tier list {category}, susun kandidat berdasarkan tingkat, dan bagikan peringkat buatanmu.",
+    "mineTitle": "Tier List Saya | OnePickGame"
   },
   "hi": {
-    "title": "Tier List | One Pick Game",
+    "title": "टियर लिस्ट बनाएं · लोकप्रिय रैंकिंग | OnePickGame",
     "description": "One Pick Game पर tier list बनाएं और देखें। गेम, एनीमे, सेलिब्रिटी, भोजन, खेल, पात्र और बहुत कुछ रैंक करें।",
     "categories": {
       "all": "सभी",
@@ -137,10 +155,12 @@
       "sports": "खेल",
       "other": "अन्य",
       "knowledge": "ज्ञान"
-    }
+    },
+    "categoryDescription": "{category} की टियर लिस्ट देखें, विकल्पों को स्तरों में रखें और अपनी रैंकिंग साझा करें।",
+    "mineTitle": "मेरी टियर लिस्ट | OnePickGame"
   },
   "de": {
-    "title": "Tier List | One Pick Game",
+    "title": "Tier Lists erstellen · Beliebte Ranglisten | OnePickGame",
     "description": "Erstelle und entdecke Tier Lists auf One Pick Game. Bewerte Games, Anime, Promis, Essen, Sport, Charaktere und mehr.",
     "categories": {
       "all": "Alle",
@@ -151,10 +171,12 @@
       "sports": "Sport",
       "other": "Sonstiges",
       "knowledge": "Wissen"
-    }
+    },
+    "categoryDescription": "Entdecke Tier Lists in der Kategorie {category}, ordne die Kandidaten in Stufen ein und teile deine Rangliste.",
+    "mineTitle": "Meine Tier Lists | OnePickGame"
   },
   "vi": {
-    "title": "Tier List | One Pick Game",
+    "title": "Tạo bảng xếp hạng · Tier list phổ biến | OnePickGame",
     "description": "Tạo và khám phá tier list trên One Pick Game. Xếp hạng game, anime, người nổi tiếng, đồ ăn, thể thao, nhân vật và nhiều chủ đề khác.",
     "categories": {
       "all": "Tất cả",
@@ -165,10 +187,12 @@
       "sports": "Thể thao",
       "other": "Khác",
       "knowledge": "Kiến thức"
-    }
+    },
+    "categoryDescription": "Khám phá tier list về {category}, xếp các ứng viên theo hạng và chia sẻ bảng xếp hạng của bạn.",
+    "mineTitle": "Tier list của tôi | OnePickGame"
   },
   "ar": {
-    "title": "Tier List | One Pick Game",
+    "title": "إنشاء قوائم تصنيف · التصنيفات الشائعة | OnePickGame",
     "description": "أنشئ واستكشف Tier List على One Pick Game ورتّب الألعاب والأنمي والمشاهير والطعام والرياضة والشخصيات والمزيد.",
     "categories": {
       "all": "الكل",
@@ -179,10 +203,12 @@
       "sports": "رياضة",
       "other": "أخرى",
       "knowledge": "معرفة"
-    }
+    },
+    "categoryDescription": "استكشف قوائم تصنيف {category}، ورتّب المرشحين حسب المستويات وشارك ترتيبك الخاص.",
+    "mineTitle": "قوائم التصنيف الخاصة بي | OnePickGame"
   },
   "bn": {
-    "title": "Tier List | One Pick Game",
+    "title": "টিয়ার লিস্ট তৈরি করুন · জনপ্রিয় র‍্যাঙ্কিং | OnePickGame",
     "description": "One Pick Game-এ tier list তৈরি ও দেখুন। গেম, অ্যানিমে, সেলিব্রিটি, খাবার, খেলাধুলা, চরিত্র এবং আরও অনেক কিছু র‍্যাঙ্ক করুন।",
     "categories": {
       "all": "সব",
@@ -193,10 +219,12 @@
       "sports": "খেলাধুলা",
       "other": "অন্যান্য",
       "knowledge": "জ্ঞান"
-    }
+    },
+    "categoryDescription": "{category} বিষয়ের টিয়ার লিস্ট দেখুন, প্রার্থীদের বিভিন্ন স্তরে সাজান এবং নিজের র‍্যাঙ্কিং শেয়ার করুন।",
+    "mineTitle": "আমার টিয়ার লিস্ট | OnePickGame"
   },
   "th": {
-    "title": "Tier List | One Pick Game",
+    "title": "สร้าง Tier List · อันดับยอดนิยม | OnePickGame",
     "description": "สร้างและสำรวจ tier list บน One Pick Game จัดอันดับเกม อนิเมะ คนดัง อาหาร กีฬา ตัวละคร และอีกมากมาย",
     "categories": {
       "all": "ทั้งหมด",
@@ -207,10 +235,12 @@
       "sports": "กีฬา",
       "other": "อื่นๆ",
       "knowledge": "ความรู้"
-    }
+    },
+    "categoryDescription": "สำรวจ Tier List หมวด{category} จัดผู้เข้าแข่งขันตามระดับ แล้วแชร์อันดับของคุณ",
+    "mineTitle": "Tier List ของฉัน | OnePickGame"
   },
   "tr": {
-    "title": "Tier List | One Pick Game",
+    "title": "Tier List Oluştur · Popüler Sıralamalar | OnePickGame",
     "description": "One Pick Game üzerinde tier list oluştur ve keşfet. Oyunları, animeleri, ünlüleri, yemekleri, sporları, karakterleri ve daha fazlasını sırala.",
     "categories": {
       "all": "Tümü",
@@ -221,6 +251,8 @@
       "sports": "Spor",
       "other": "Diğer",
       "knowledge": "Bilgi"
-    }
+    },
+    "categoryDescription": "{category} tier listelerini keşfet, adayları seviyelere yerleştir ve kendi sıralamanı paylaş.",
+    "mineTitle": "Tier Listelerim | OnePickGame"
   }
 }

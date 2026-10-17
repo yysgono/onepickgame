@@ -16,6 +16,6 @@ const loadModule=relative=>import('data:text/javascript;base64,'+Buffer.from(fs.
  fail=false;await pager.loadMore('korea',6);assert.equal(pager.snapshot().rows.korea.items.length,6);assert.equal(pager.snapshot().error,null);
  const eventsBefore=emitCount;pager.dispose();assert.equal(await pager.loadMore('person',4),false);assert.equal(emitCount,eventsBefore);
  const {worldcupRouteData:route}=await loadModule('src/utils/worldcupRouteData.js');
- assert.equal(route('/ko').kind,'none');assert.equal(route('/').kind,'none');assert.equal(route('/ja/quiz').kind,'none');assert.equal(route('/ko/select-round/abc').kind,'one');assert.equal(route('/ko/select-round/abc').id,'abc');assert.equal(route('/en/match/abc/16').kind,'one');assert.equal(route('/ko/category/game').kind,'all');assert.equal(route('/ko/my-worldcups').kind,'all');assert.equal(route('/en/manage').kind,'all');
+ assert.equal(route('/ko').kind,'none');assert.equal(route('/').kind,'none');assert.equal(route('/ja/quiz').kind,'none');assert.equal(route('/ko/select-round/abc').kind,'one');assert.equal(route('/ko/select-round/abc').id,'abc');assert.equal(route('/en/match/abc/16').kind,'one');assert.equal(route('/ko/category/game').kind,'none');assert.equal(route('/ko/my-worldcups').kind,'all');assert.equal(route('/en/manage').kind,'all');
  console.log('PASS: no hidden page fetch, next-page ranges, deferred categories, concurrent click deduplication, retry preservation, disposed requests, home vs single-game vs catalogue routing');
 })().catch(error=>{console.error(error);process.exitCode=1});

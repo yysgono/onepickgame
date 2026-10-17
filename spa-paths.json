@@ -17,8 +17,6 @@
   "/:lang/quiz/create",
   "/:lang/quiz/:id",
   "/:lang",
-  "/:lang/select-round",
-  "/:lang/result",
   "/:lang/select-round/:id",
   "/:lang/match/:id/:round",
   "/:lang/result/:id",

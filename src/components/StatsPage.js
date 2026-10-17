@@ -1456,19 +1456,23 @@ const top3 = useMemo(() => {
 
           justifyContent: "center",
 
+          alignItems: "center",
+
+          flexWrap: "wrap",
+
           gap: 10,
 
-          marginBottom: 18,
+          marginBottom: 24,
 
-          marginTop: 0,
+          marginTop: 8,
 
         }}
 
       >
 
-        <ReportButton cupId={selectedCup.id} size="md" />
-
         <button
+
+          type="button"
 
           onClick={() => {
 
@@ -1490,31 +1494,39 @@ const top3 = useMemo(() => {
 
           style={{
 
-            color: "#1976ed",
+            color: "#ffffff",
 
-            background: "#e8f2fe",
+            background: "#2563eb",
 
-            border: "1.5px solid #b8dafe",
+            border: "2px solid #1d4ed8",
 
-            borderRadius: 8,
+            borderRadius: 12,
 
-            padding: "6px 18px",
+            padding: "13px 26px",
 
-            fontWeight: 700,
+            fontWeight: 900,
 
             cursor: "pointer",
 
-            fontSize: 17,
+            fontSize: 18,
 
-            minWidth: 72,
+            minWidth: 220,
+
+            maxWidth: "100%",
+
+            minHeight: 54,
+
+            boxShadow: "0 5px 16px rgba(37,99,235,.28)",
 
           }}
 
         >
 
-          📢 {t("share_worldcup")}
+          🔗 {t("share_worldcup")}
 
         </button>
+
+        <ReportButton cupId={selectedCup.id} size="md" />
 
       </div>
 
@@ -2772,5 +2784,6 @@ function periodBtnStyle(selected) {
   };
 
 }
+
 
 

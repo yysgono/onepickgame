@@ -71,7 +71,7 @@ const MAX_UPLOAD = 3000;
 
 const MAX_CANDIDATES = 3000;
 
-const WORLDCUP_TITLE_MAX_LENGTH = 60;
+const WORLDCUP_TITLE_MAX_LENGTH = 120;
 
 const WORLDCUP_DESCRIPTION_MAX_LENGTH = 400;
 
@@ -6612,3 +6612,4 @@ color: "#000",
 
 
 export default WorldcupMaker;
+

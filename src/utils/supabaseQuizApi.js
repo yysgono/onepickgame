@@ -65,6 +65,7 @@ export async function getQuizzes({
   contentLanguage = "",
   ownerId = "",
   limit = 60,
+  offset = 0,
 } = {}) {
   const key = JSON.stringify({
     type: "list",
@@ -74,6 +75,7 @@ export async function getQuizzes({
     contentLanguage,
     ownerId,
     limit,
+    offset,
   });
 
   return getCachedQuizList(key, async () => {
@@ -86,7 +88,8 @@ export async function getQuizzes({
       .order(sort === "latest" ? "created_at" : "play_count", {
         ascending: false,
       })
-      .limit(limit);
+      .order("id", { ascending: true })
+      .range(offset, offset + limit - 1);
 
     if (category && category !== "all") {
       query = query.eq("category", category);
@@ -101,11 +104,12 @@ export async function getQuizzes({
     }
 
     if (search.trim()) {
-      const safe = search.trim().replace(/[%_,()]/g, " ").trim();
+      const safe = search.trim().replace(/[%*_,()"\\\r\n]/g, " ").trim();
       if (safe) {
-        query = query.or(
-          `title.ilike.%${safe}%,description.ilike.%${safe}%`
-        );
+        const fields = ["title", "description", ...QUIZ_LANGUAGES.flatMap(({ code }) => [
+          `title_translations->>${code}`, `description_translations->>${code}`,
+        ])];
+        query = query.or(fields.map(field => `${field}.ilike.%${safe}%`).join(","));
       }
     }
 
@@ -115,6 +119,29 @@ export async function getQuizzes({
   });
 }
 
+
+export async function getQuizPage({ offset = 0, pageSize = 10, ...filters } = {}) {
+  const start = Math.max(0, Math.floor(Number(offset) || 0));
+  const size = Math.max(1, Math.min(40, Math.floor(Number(pageSize) || 10)));
+  // One extra row checks whether another page exists; it is not displayed yet.
+  const rows = await getQuizzes({ ...filters, offset: start, limit: size + 1 });
+  const items = rows.slice(0, size);
+  return { items, hasMore: rows.length > size, nextOffset: start + items.length };
+}
+
+export async function getRecentCreatedQuizCards({ contentLanguage = "", category = "all" } = {}) {
+  const key = JSON.stringify({ type: "recent-created-cards", contentLanguage, category });
+  return getCachedQuizList(key, async () => {
+    let query = supabase.from("quizzes").select("id,title,title_translations,created_at")
+      .eq("is_published", true).order("created_at", { ascending: false })
+      .order("id", { ascending: true }).limit(6);
+    if (contentLanguage) query = query.contains("content_languages", [contentLanguage]);
+    if (category && category !== "all") query = query.eq("category", category);
+    const { data, error } = await query;
+    if (error) throw error;
+    return data || [];
+  });
+}
 
 export async function getFeaturedQuizzes({
   contentLanguage = "",
@@ -491,3 +518,4 @@ export async function getGuestQuizForEdit(quizId, nickname, password) {
   if (!data?.quiz) throw new Error(data?.error || "GUEST_AUTH_FAILED");
   return data;
 }
+

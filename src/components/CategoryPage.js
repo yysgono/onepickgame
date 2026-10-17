@@ -1,3 +1,4 @@
+import useWorldcupCategoryPages from "../hooks/useWorldcupCategoryPages";
 // src/components/CategoryPage.js
 
 
@@ -6,7 +7,7 @@
 
 
 
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 
 
@@ -351,7 +352,6 @@ export default function CategoryPage({
 
 
 
-  worldcupList = [],
 
 
 
@@ -395,7 +395,7 @@ export default function CategoryPage({
 
 
 
-  const [visibleCount, setVisibleCount] = useState(12);
+  const statsRequestsRef = useRef(new Map());
 
 
 
@@ -428,6 +428,7 @@ export default function CategoryPage({
 
 
 const category = CATEGORY_MAP[categorySlug];
+const categoryPages = useWorldcupCategoryPages({ categoryKey: category?.key, search, sort });
 
 
 
@@ -631,7 +632,7 @@ const isMobile = vw < 600;
 
 
 
-    setVisibleCount(12);
+
 
 
 
@@ -643,293 +644,44 @@ const isMobile = vw < 600;
 
 
 
-  // 검색 / 정렬 변경 시 다시 처음 12개부터
+  // The server searches and sorts the whole category before returning each page.
+  const categoryCups = categoryPages.cups;
 
-
-
+  // Only cards already returned for display need winner previews.
+  // Reuse in-flight/resolved requests when another page is appended.
   useEffect(() => {
-
-
-
-    setVisibleCount(12);
-
-
-
-  }, [search, sort]);
-
-
-
-
-
-
-
-  // 현재 카테고리의 월드컵만 추출
-
-
-
-  const categoryCups = useMemo(() => {
-
-
-
-    if (!category) return [];
-
-
-
-
-
-
-
-    return (worldcupList || []).filter(
-
-
-
-      (cup) =>
-
-
-
-        (cup.category || "etc") ===
-
-
-
-        category.key
-
-
-
-    );
-
-
-
-  }, [worldcupList, category]);
-
-
-
-
-
-
-
-  // 실제 우승 통계 불러오기
-
-
-
-  useEffect(() => {
-
-
-
     let mounted = true;
-
-
-
-
-
-
-
-    setWinStatsMap({});
-
-
-
-
-
-
-
-    if (!categoryCups.length) {
-
-
-
-      return () => {
-
-
-
-        mounted = false;
-
-
-
-      };
-
-
-
-    }
-
-
-
-
-
-
-
-    categoryCups.forEach((cup) => {
-
-
-
-      fetchWinnerStatsFromDB(cup.id)
-
-
-
-        .then((statsArr) => {
-
-
-
-          if (!mounted) return;
-
-
-
-
-
-
-
-          setWinStatsMap((prev) => ({
-
-
-
-            ...prev,
-
-
-
-            [cup.id]: Array.isArray(statsArr)
-
-
-
-              ? statsArr
-
-
-
-              : [],
-
-
-
-          }));
-
-
-
-        })
-
-
-
-        .catch((error) => {
-
-
-
-          console.error(
-
-
-
-            "카테고리 통계 불러오기 실패:",
-
-
-
-            cup.id,
-
-
-
-            error
-
-
-
-          );
-
-
-
-
-
-
-
-          if (!mounted) return;
-
-
-
-
-
-
-
-          setWinStatsMap((prev) => ({
-
-
-
-            ...prev,
-
-
-
-            [cup.id]: [],
-
-
-
-          }));
-
-
-
-        });
-
-
-
+    const requests = statsRequestsRef.current;
+    const ready = {};
+    categoryCups.forEach(cup => {
+      const cached = requests.get(String(cup.id));
+      if (cached?.settled) ready[cup.id] = cached.value;
     });
-
-
-
-
-
-
-
-    return () => {
-
-
-
-      mounted = false;
-
-
-
-    };
-
-
-
+    setWinStatsMap(ready);
+    categoryCups.forEach(cup => {
+      const id = String(cup.id);
+      let entry = requests.get(id);
+      if (!entry) {
+        entry = { settled: false, value: [] };
+        entry.promise = Promise.resolve().then(() => fetchWinnerStatsFromDB(cup.id))
+          .then(stats => { entry.value = Array.isArray(stats) ? stats : []; })
+          .catch(error => { console.warn("Category winner preview unavailable:", cup.id, error); })
+          .then(() => { entry.settled = true; return entry.value; });
+        requests.set(id, entry);
+      }
+      if (entry.settled) return;
+      entry.promise.then(stats => {
+        if (mounted) setWinStatsMap(previous => ({ ...previous, [cup.id]: stats }));
+      });
+    });
+    return () => { mounted = false; };
   }, [categoryCups]);
 
-
-
-
-
-
-
-  // 실제 참여 횟수
-
-
-
-  const getTotalPlays = (cupId) => {
-
-
-
-    const stats = winStatsMap[cupId] || [];
-
-
-
-
-
-
-
-    return stats.reduce(
-
-
-
-      (sum, row) =>
-
-
-
-        sum + (row.win_count || 0),
-
-
-
-      0
-
-
-
-    );
-
-
-
+  const getTotalPlays = cupId => {
+    const cup = categoryCups.find(value => String(value.id) === String(cupId));
+    if (cup?.play_count != null) return Number(cup.play_count) || 0;
+    return (winStatsMap[cupId] || []).reduce((sum, row) => sum + (row.win_count || 0), 0);
   };
-
-
-
-
-
-
 
   // 1위 / 2위 후보 계산
 
@@ -1193,264 +945,8 @@ const isMobile = vw < 600;
 
   };
 
-  const normalizeCategorySearchQuery = (value) =>
-    String(value || "")
-      .trim()
-      .replace(/^#+/, "")
-      .toLowerCase()
-      .slice(0, 50);
-
-  const collectCategorySearchTextValues = (...values) => {
-    const result = [];
-
-    const visit = (value) => {
-      if (value == null) return;
-
-      if (Array.isArray(value)) {
-        value.forEach(visit);
-        return;
-      }
-
-      if (typeof value === "object") {
-        Object.values(value).forEach(visit);
-        return;
-      }
-
-      const text = normalizeCategorySearchQuery(value);
-      if (text) result.push(text);
-    };
-
-    values.forEach(visit);
-    return result;
-  };
-
-  const categorySearchTextMatches = (keyword, ...values) =>
-    collectCategorySearchTextValues(...values).some((value) =>
-      value.includes(keyword)
-    );
-
-  const cupMatchesCategorySearch = (cup, keyword) => {
-    if (!keyword) return true;
-
-    const hasMatchingMainText = categorySearchTextMatches(
-      keyword,
-      getDisplayTitle(cup),
-      getDisplayDescription(cup),
-      cup?.title,
-      cup?.description,
-      cup?.desc,
-      cup?.title_translations,
-      cup?.description_translations
-    );
-
-    const hasMatchingCandidate =
-      Array.isArray(cup?.data) &&
-      cup.data.some((candidate) =>
-        categorySearchTextMatches(
-          keyword,
-          candidate?.name,
-          candidate?.title,
-          candidate?.name_translations,
-          candidate?.title_translations
-        )
-      );
-
-    return hasMatchingMainText || hasMatchingCandidate;
-  };
-
-
-
-
-
-
-
-  // 인기순 / 최신순
-
-
-
-  const cups = useMemo(() => {
-
-
-
-    const keyword = normalizeCategorySearchQuery(search);
-
-
-
-
-
-
-
-    let list = [...categoryCups];
-
-
-
-
-
-
-
-    // 검색
-
-
-
-    if (keyword) {
-
-
-
-      list = list.filter((cup) => {
-
-
-
-        const title =
-
-
-
-          getDisplayTitle(cup).toLowerCase();
-
-
-
-
-
-
-
-        const description =
-
-
-
-          getDisplayDescription(cup).toLowerCase();
-
-
-
-
-
-
-
-        return (
-
-
-
-          title.includes(keyword) ||
-
-
-
-          description.includes(keyword) ||
-
-
-
-          cupMatchesCategorySearch(cup, keyword)
-
-
-
-        );
-
-
-
-      });
-
-
-
-    }
-
-
-
-
-
-
-
-    // 최신순
-
-
-
-    if (sort === "latest") {
-
-
-
-      return list.sort((a, b) => {
-
-
-
-        return (
-
-
-
-          new Date(b.created_at || 0) -
-
-
-
-          new Date(a.created_at || 0)
-
-
-
-        );
-
-
-
-      });
-
-
-
-    }
-
-
-
-        // 인기순
-
-
-
-    return list.sort((a, b) => {
-
-
-
-      return (
-
-
-
-        getTotalPlays(b.id) -
-
-
-
-        getTotalPlays(a.id)
-
-
-
-      );
-
-
-
-    });
-
-
-
-  }, [
-
-
-
-    categoryCups,
-
-
-
-    sort,
-
-
-
-    search,
-
-
-
-    winStatsMap,
-
-
-
-    lang,
-
-
-
-  ]);
-
-
-
-
-
-
+  // Keep the database order stable while preview statistics arrive.
+  const cups = categoryCups;
 
   const goto = (url) => {
 
@@ -3077,11 +2573,17 @@ const smallButtonStyle = {
 
 
 
+      {categoryPages.loading && <p role="status" style={{ textAlign: "center", padding: 16 }}>{t("loading", { defaultValue: "Loading..." })}</p>}
+      {categoryPages.error && <div role="alert" style={{ textAlign: "center", padding: 16 }}>
+        <p>{t("error_loading", { defaultValue: "Could not load games. Please try again." })}</p>
+        <button type="button" onClick={categoryPages.retry} disabled={categoryPages.loading}>{t("retry", { defaultValue: "Retry" })}</button>
+      </div>}
+
       {/* 월드컵 목록 */}
 
 
 
-      {cups.length === 0 ? (
+      {cups.length === 0 && !categoryPages.loading && !categoryPages.error ? (
 
 
 
@@ -3225,15 +2727,7 @@ rowGap: isMobile ? 18 : 26,
 
 
 
-          {cups
-
-
-
-            .slice(0, visibleCount)
-
-
-
-            .map((cup, index) => {
+          {cups.map((cup, index) => {
 
 
 
@@ -5146,7 +4640,7 @@ fontWeight: 800,
 
 
 
-        onClick={(e) => {
+        onClick={async (e) => {
 
 
 
@@ -5194,25 +4688,17 @@ fontWeight: 800,
 
 
 
-          if (onDelete) {
-
-
-
-            onDelete(cup.id);
-
-
-
-          } else {
-
-
-
-            window.location.reload();
-
-
-
+          try {
+            if (onDelete) {
+              await onDelete(cup.id);
+              categoryPages.reload();
+            } else {
+              window.location.reload();
+            }
+          } catch (error) {
+            console.error("Category deletion failed:", error);
+            alert(t("delete_failed", { defaultValue: "Could not delete this game." }));
           }
-
-
 
         }}
 
@@ -5469,7 +4955,7 @@ fontWeight: 800,
 
 
 
-      {cups.length > visibleCount && (
+      {cups.length < categoryPages.total && (
 
 
 
@@ -5525,25 +5011,9 @@ fontWeight: 800,
 
 
 
-            onClick={() =>
-
-
-
-              setVisibleCount(
-
-
-
-                (prev) => prev + 12
-
-
-
-              )
-
-
-
-            }
-
-
+            onClick={categoryPages.loadMore}
+            disabled={categoryPages.loading}
+            aria-busy={categoryPages.loading}
 
             style={{
 
@@ -5820,3 +5290,4 @@ fontWeight: 800,
 
 
 }
+

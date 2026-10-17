@@ -134,13 +134,20 @@ module.exports = function installQuizSeo(app, db, origin, options = {}) {
 
       let data = null;
 
-      if (!creator) {
+      if (!creator && (detail || listMeta.indexable)) {
 
         let query = db.from('quizzes').select(fields).eq('is_published', true);
 
         if (!detail && listMeta.category !== 'all') query = query.eq('category', listMeta.category);
 
-        query = detail ? query.eq('id', id).maybeSingle() : query.contains('content_languages', [lang]).order('play_count', { ascending: false }).order('id').limit(60);
+        if (detail) query = query.eq('id', id).maybeSingle();
+        else {
+          const params = new URL(req.originalUrl || '/', origin).searchParams;
+          const sort = String(req.query?.sort || params.get('sort') || 'popular');
+          query = query.contains('content_languages', [lang])
+            .order(sort === 'latest' ? 'created_at' : 'play_count', { ascending: false })
+            .order('id', { ascending: true }).limit(10);
+        }
 
         const result = await query;
 
@@ -200,7 +207,7 @@ module.exports = function installQuizSeo(app, db, origin, options = {}) {
 
       const html = renderHtml(await templateLoader(), seo, body, indexable);
 
-      res.set('Cache-Control', creator ? 'no-store' : PUBLIC_CACHE);
+      res.set('Cache-Control', creator || !indexable ? 'no-store' : PUBLIC_CACHE);
 
       res.type('html').send(html);
 
@@ -217,3 +224,4 @@ module.exports = function installQuizSeo(app, db, origin, options = {}) {
 };
 
 module.exports.renderHtml = renderHtml;
+

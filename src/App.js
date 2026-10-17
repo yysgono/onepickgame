@@ -1,3 +1,4 @@
+import { getPrivatePageSeo } from "./seo/privatePageSeo";
 import { fetchWorldcupRelatedCards } from "./utils/worldcupHomeApi";
 import WorldcupRouteDataLoader from "./components/WorldcupRouteDataLoader";
 import { subscribeToAuthProfile } from "./utils/authSession";
@@ -659,6 +660,7 @@ function App() {
 
     return (
       <>
+      <Seo {...getPrivatePageSeo((i18n.language || "en").split("-")[0])} slug="my-worldcups" indexable={false} />
       <ContentNav active="worldcup" user={user} />
       <Home
         personalView
@@ -1781,15 +1783,15 @@ const makerDescMap = {
               ) : <NotFoundPage />}
             />
 
-{/* ID 없는 잘못된 게임 URL → 해당 언어 홈으로 이동 */}
+{/* A game ID is required for these pages. */}
 <Route
   path="/:lang/select-round"
-  element={<Navigate to=".." replace relative="path" />}
+  element={<NotFoundPage />}
 />
 
 <Route
   path="/:lang/result"
-  element={<Navigate to=".." replace relative="path" />}
+  element={<NotFoundPage />}
 />
 
             <Route
@@ -2051,4 +2053,5 @@ overflowX: "hidden",
 }
 
 export default App;
+
 

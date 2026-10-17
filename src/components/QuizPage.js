@@ -1,3 +1,4 @@
+import useQuizPages from "../hooks/useQuizPages";
 import listSeo from "../seo/listSeo";
 import React, {
 
@@ -102,7 +103,7 @@ import {
 
 
 
-  getQuizzes,
+  getRecentCreatedQuizCards,
 
 
 
@@ -315,6 +316,7 @@ export default function QuizPage({ user = null }) {
 
 
     i18n,
+    t,
 
 
 
@@ -491,19 +493,7 @@ export default function QuizPage({ user = null }) {
 
 
 
-  const [
 
-
-
-    rows,
-
-
-
-    setRows,
-
-
-
-  ] = useState([]);
 
 
 
@@ -639,19 +629,7 @@ export default function QuizPage({ user = null }) {
 
 
 
-  const [
 
-
-
-    loading,
-
-
-
-    setLoading,
-
-
-
-  ] = useState(true);
 
 
 
@@ -699,19 +677,7 @@ export default function QuizPage({ user = null }) {
 
 
 
-  const [
 
-
-
-    error,
-
-
-
-    setError,
-
-
-
-  ] = useState("");
 
 
 
@@ -896,6 +862,13 @@ export default function QuizPage({ user = null }) {
   const quizSeoTitle = listMetadata.title;
   const quizSeoDescription = listMetadata.description;
   const quizSeoIndexable = listMetadata.indexable;
+  const quizPages = useQuizPages({
+    enabled: !mineOnly || Boolean(user?.id),
+    search: debounced, category, sort, contentLanguage,
+    ownerId: mineOnly ? user?.id || "" : "",
+  });
+  const { rows, loading, error } = quizPages;
+
 
 
 
@@ -1150,6 +1123,7 @@ export default function QuizPage({ user = null }) {
 
 
 
+    if (mineOnly) { setRecommended([]); return undefined; }
     getFeaturedQuizzes({
 
 
@@ -1228,213 +1202,7 @@ export default function QuizPage({ user = null }) {
 
 
 
-  }, [contentLanguage]);
-
-
-
-
-
-
-
-
-
-
-
-  useEffect(() => {
-
-
-
-    let alive = true;
-
-
-
-
-
-
-
-    setLoading(true);
-
-
-
-    setError("");
-
-    if (mineOnly && !user?.id) {
-      setRows([]);
-      setLoading(false);
-      return () => {
-        alive = false;
-      };
-    }
-
-
-
-
-
-
-
-    getQuizzes({
-
-
-
-      search:
-
-
-
-        debounced,
-
-
-
-
-
-
-
-      category,
-
-
-
-
-
-
-
-      sort,
-
-
-
-
-
-
-
-      contentLanguage,
-
-      ownerId: mineOnly ? user?.id || "" : "",
-
-
-
-    })
-
-
-
-      .then((data) => {
-
-
-
-        if (alive) {
-
-
-
-          setRows(
-
-
-
-            data || []
-
-
-
-          );
-
-
-
-        }
-
-
-
-      })
-
-
-
-      .catch((e) => {
-
-
-
-        if (alive) {
-
-
-
-          setError(
-
-
-
-            e?.message ||
-
-
-
-              String(e)
-
-
-
-          );
-
-
-
-        }
-
-
-
-      })
-
-
-
-      .finally(() => {
-
-
-
-        if (alive) {
-
-
-
-          setLoading(false);
-
-
-
-        }
-
-
-
-      });
-
-
-
-
-
-
-
-    return () => {
-
-
-
-      alive = false;
-
-
-
-    };
-
-
-
-  }, [
-
-
-
-    debounced,
-
-
-
-    category,
-
-
-
-    sort,
-
-
-
-    contentLanguage,
-
-    mineOnly,
-
-    user?.id,
-
-
-
-  ]);
+  }, [contentLanguage, mineOnly]);
 
 
 
@@ -1635,17 +1403,20 @@ export default function QuizPage({ user = null }) {
           empty: "No quizzes to show.",
         };
 
-  const recentCreatedQuizItems = useMemo(
-    () =>
-      [...cards]
-        .sort(
-          (a, b) =>
-            new Date(b?.created_at || 0).getTime() -
-            new Date(a?.created_at || 0).getTime()
-        )
-        .slice(0, 6),
-    [cards]
-  );
+  const showQuizActivityPanels = !mineOnly && !mobile && !search.trim();
+  const [recentCreatedQuizRows, setRecentCreatedQuizRows] = useState([]);
+  useEffect(() => {
+    let alive = true;
+    if (!showQuizActivityPanels) { setRecentCreatedQuizRows([]); return undefined; }
+    setRecentCreatedQuizRows([]);
+    getRecentCreatedQuizCards({ contentLanguage, category })
+      .then(data => { if (alive) setRecentCreatedQuizRows(data || []); })
+      .catch(error => { console.warn("Recent quiz cards unavailable:", error); });
+    return () => { alive = false; };
+  }, [showQuizActivityPanels, contentLanguage, category]);
+  const recentCreatedQuizItems = useMemo(() => recentCreatedQuizRows.map(quiz => ({
+    ...quiz, displayTitle: localized(quiz.title_translations, quiz.title, lang),
+  })), [recentCreatedQuizRows, lang]);
 
   const [recentPlayedQuizItems, setRecentPlayedQuizItems] = useState([]);
 
@@ -1653,7 +1424,7 @@ export default function QuizPage({ user = null }) {
     let alive = true;
 
     async function loadRecentPlayedQuizzes() {
-      if (mineOnly) {
+      if (!showQuizActivityPanels) {
         setRecentPlayedQuizItems([]);
         return;
       }
@@ -1690,7 +1461,7 @@ export default function QuizPage({ user = null }) {
       const { data: quizzes, error: quizError } = await supabase
         .from("quizzes")
         .select(
-          "id,user_id,guest_nickname,title,title_translations,description,description_translations,original_language,content_languages,category,thumbnail_url,question_count,play_count,like_count,comment_count,answer_reveal_mode,is_featured,featured_order,created_at,is_published"
+          "id,title,title_translations,created_at"
         )
         .in("id", recentIds)
         .eq("is_published", true);
@@ -1718,11 +1489,6 @@ export default function QuizPage({ user = null }) {
               quiz.title,
               lang
             ),
-            displayDescription: localized(
-              quiz.description_translations,
-              quiz.description,
-              lang
-            ),
           };
         })
         .filter(Boolean)
@@ -1736,12 +1502,9 @@ export default function QuizPage({ user = null }) {
     return () => {
       alive = false;
     };
-  }, [lang, mineOnly]);
+  }, [lang, showQuizActivityPanels]);
 
-  const showQuizActivityPanels =
-    !mineOnly &&
-    !mobile &&
-    !search.trim();
+
 
   const useSideQuizActivityPanels =
     showQuizActivityPanels &&
@@ -4597,7 +4360,7 @@ export default function QuizPage({ user = null }) {
 
 
 
-          <div
+          <div role="alert"
 
 
 
@@ -4657,6 +4420,10 @@ export default function QuizPage({ user = null }) {
 
 
 
+            <button type="button" disabled={loading} onClick={async () => {
+              const count = await quizPages.loadMore();
+              if (count !== false) setVisibleCount(count);
+            }} style={{ ...primaryButton, marginLeft: 12 }}>{t("retry", { defaultValue: "Retry" })}</button>
           </div>
 
 
@@ -4689,7 +4456,7 @@ export default function QuizPage({ user = null }) {
 
 
 
-        {loading ? (
+        {loading && !cards.length ? (
 
 
 
@@ -6730,6 +6497,8 @@ export default function QuizPage({ user = null }) {
 
 
 
+        {loading && cards.length > 0 && <p role="status" style={{ textAlign: "center", padding: 16 }}>{c.loading}</p>}
+
         {/* 더보기 */}
 
 
@@ -6738,15 +6507,7 @@ export default function QuizPage({ user = null }) {
 
 
 
-        {!loading &&
-
-
-
-          visibleCount <
-
-
-
-            cards.length && (
+        {!loading && (quizPages.hasMore || visibleCount < cards.length) && (
 
 
 
@@ -6834,39 +6595,11 @@ export default function QuizPage({ user = null }) {
 
 
 
-                onClick={() =>
-
-
-
-                  setVisibleCount(
-
-
-
-                    (
-
-
-
-                      count
-
-
-
-                    ) =>
-
-
-
-                      count +
-
-
-
-                      10
-
-
-
-                  )
-
-
-
-                }
+                onClick={async () => {
+                  const count = await quizPages.loadMore(visibleCount + 10);
+                  if (count !== false) setVisibleCount(count);
+                }}
+                disabled={loading}
 
 
 
@@ -6922,23 +6655,11 @@ export default function QuizPage({ user = null }) {
 
 
 
-                onClick={() =>
-
-
-
-                  setVisibleCount(
-
-
-
-                    cards.length
-
-
-
-                  )
-
-
-
-                }
+                onClick={async () => {
+                  const count = await quizPages.loadAll();
+                  if (count !== false) setVisibleCount(count);
+                }}
+                disabled={loading}
 
 
 
@@ -7479,3 +7200,4 @@ function languageButton(
 
 
 }
+

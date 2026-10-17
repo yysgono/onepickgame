@@ -31,7 +31,7 @@ const COLORS = {
 
 };
 
-const WORLDCUP_TITLE_MAX_LENGTH = 60;
+const WORLDCUP_TITLE_MAX_LENGTH = 120;
 
 const WORLDCUP_DESCRIPTION_MAX_LENGTH = 400;
 
@@ -4061,3 +4061,4 @@ style={{
 
 
 export default EditWorldcupPage;
+
