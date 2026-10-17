@@ -4729,7 +4729,7 @@ return (
 
 
 
-{remoteHome && homePages.loading && <p role="status" style={{ textAlign: "center", padding: 16 }}>{t("loading", { defaultValue: "Loading..." })}</p>}
+{remoteHome && homePages.loading && homePages.cups.length === 0 && <p role="status" style={{ textAlign: "center", padding: 16 }}>{t("loading", { defaultValue: "Loading..." })}</p>}
 {remoteHome && homePages.error && <div role="alert" style={{ textAlign: "center", padding: 16 }}>
   <p>{lang === "ko" ? "게임 목록을 불러오지 못했습니다. 다시 시도해 주세요." : "Could not load games. Please try again."}</p>
   <button type="button" onClick={homePages.retry}>{t("retry", { defaultValue: lang === "ko" ? "다시 시도" : "Retry" })}</button>

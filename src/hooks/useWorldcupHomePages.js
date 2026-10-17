@@ -8,12 +8,13 @@ export default function useWorldcupHomePages({ enabled, search, creator, sorts, 
   const [retryTick, setRetryTick] = useState(0);
   const pagerRef = useRef(null);
   const latest = useRef(null);
-  latest.current = { includeDeferred, includeActivity };
-  const queryKey = JSON.stringify([search, creator, sorts, pageSize]);
+  latest.current = { includeDeferred, includeActivity, pageSize };
+  const queryKey = JSON.stringify([search, creator, sorts]);
   useEffect(() => {
     if (!enabled) { setState(EMPTY); return undefined; }
     setState({ ...EMPTY, loading: true });
-    const [querySearch, queryCreator, querySorts, querySize] = JSON.parse(queryKey);
+    const [querySearch, queryCreator, querySorts] = JSON.parse(queryKey);
+    const querySize = latest.current.pageSize;
     const pager = createWorldcupHomePager({ fetchRows: fetchWorldcupHomeRows, search: querySearch, creator: queryCreator, sorts: querySorts, pageSize: querySize, onChange: setState });
     pagerRef.current = pager;
     const timer = setTimeout(() => {
@@ -25,6 +26,23 @@ export default function useWorldcupHomePages({ enabled, search, creator, sorts, 
   useEffect(() => {
     if (enabled && includeDeferred) pagerRef.current?.ensureRows(HOME_ROW_KEYS, includeActivity);
   }, [enabled, includeDeferred, includeActivity]);
+  // A viewport change must not dispose the pager or clear loaded / expanded rows.
+  useEffect(() => {
+    if (!enabled) return undefined;
+    const pager = pagerRef.current;
+    if (!pager) return undefined;
+    pager.setPageSize(pageSize);
+    const timer = setTimeout(async () => {
+      if (pagerRef.current !== pager || pager.snapshot().error) return;
+      const config = latest.current;
+      const keys = config.includeDeferred ? HOME_ROW_KEYS : PRIMARY_HOME_ROWS;
+      if (keys.some(key => !pager.snapshot().rows[key]) &&
+          !await pager.ensureRows(keys, config.includeActivity)) return;
+      if (pagerRef.current !== pager) return;
+      await Promise.all(keys.filter(key => key !== 'etc').map(key => pager.loadMore(key, pageSize)));
+    }, 250);
+    return () => clearTimeout(timer);
+  }, [enabled, queryKey, pageSize, retryTick]);
   const loadMore = useCallback((key, desired) => pagerRef.current?.loadMore(key, desired) || Promise.resolve(false), []);
   const retry = useCallback(() => setRetryTick(value => value + 1), []);
   const cups = [...new Map(Object.values(state.rows).flatMap(row => row.items).map(cup => [String(cup.id), cup])).values()];

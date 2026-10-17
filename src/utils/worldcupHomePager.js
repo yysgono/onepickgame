@@ -45,6 +45,7 @@ export function createWorldcupHomePager({ fetchRows, search = '', creator = '', 
     return Promise.all([operation, ...waiting]).then(values => values.every(Boolean));
   };
   return {
+    setPageSize(value) { pageSize = Math.max(1, Math.min(40, Number(value) || 1)); },
     snapshot: () => ({ ...state, loading: pending.size > 0 }),
     ensureRows(keys, includeActivity = false) {
       const requests = keys.filter(key => HOME_ROW_KEYS.includes(key) && !state.rows[key]).map(key => ({ key, offset: 0, limit: defaultLimit(key), sort: sorts[key] || 'popular' }));
