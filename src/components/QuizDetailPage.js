@@ -1068,7 +1068,7 @@ export default function QuizDetailPage() {
               )}
 
               <GameBrandLabel />
-              <h1 style={{ fontSize: 34, margin: "18px 0 8px" }}>{title}</h1>
+              <h1 className="onepick-brand-game-title" style={{ fontSize: 34, margin: "18px 0 8px" }}>{title}</h1>
 
               <p style={{ color: "#637086", lineHeight: 1.6 }}>{seo.description}</p>
 

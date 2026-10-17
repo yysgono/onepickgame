@@ -1779,6 +1779,7 @@ textShadow: "none",
               {/* 제목 */}
 
               <h1
+                className="onepick-brand-game-title"
 
                 style={{
 

@@ -515,7 +515,7 @@ function AdaptiveTitle({
 
 
 
-    // 제목은 최대 2줄까지만 허용
+    // Aim for a compact title while allowing every glyph and long title to remain visible.
 
     const boxHeight =
 
@@ -582,6 +582,7 @@ function AdaptiveTitle({
     <div
 
       ref={ref}
+      className="onepick-brand-game-title"
 
       style={{
 
@@ -603,7 +604,7 @@ function AdaptiveTitle({
 
           : "-1px",
 
-        lineHeight: 1.15,
+        lineHeight: 1.24,
 
 
 
@@ -611,7 +612,7 @@ function AdaptiveTitle({
 
         wordBreak: "keep-all",
 
-        overflowWrap: "normal",
+        overflowWrap: "anywhere",
 
         whiteSpace: "normal",
 
@@ -621,17 +622,9 @@ function AdaptiveTitle({
 
 
 
-        // 최대 2줄
-
-        display: "-webkit-box",
-
-        WebkitLineClamp: 2,
-
-        WebkitBoxOrient: "vertical",
-
-        overflow: "hidden",
-
-
+        // Do not clip descenders or truncate a long game title.
+        display: "block",
+        overflow: "visible",
 
         // ★ 기존 900보다 넓게
 
@@ -649,9 +642,9 @@ function AdaptiveTitle({
 
         padding: isMobile
 
-          ? "0 10px"
+          ? "0 10px 4px"
 
-          : "0 20px",
+          : "0 20px 4px",
 
 
 
