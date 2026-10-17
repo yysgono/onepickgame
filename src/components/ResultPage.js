@@ -1,3 +1,4 @@
+import WinnerStatsSummary from "./WinnerStatsSummary";
 // src/components/ResultPage.js
 
 import React, { useEffect, useState, lazy, Suspense, useRef } from "react";
@@ -287,6 +288,7 @@ const bracketTitle =
   const [cup, setCup] = useState(null);
 
   const [winner, setWinner] = useState(null);
+  const [winnerStatsSummary, setWinnerStatsSummary] = useState(null);
 
   const [loading, setLoading] = useState(true);
 
@@ -763,7 +765,7 @@ title={
 
               justifyContent: "center",
 
-              margin: "0 auto 28px auto",
+              margin: "0 auto 10px auto",
 
               width: "100%",
 
@@ -878,6 +880,8 @@ textShadow: "none",
 
             </div>
 
+            <WinnerStatsSummary summary={winnerStatsSummary} cupId={cup?.id} candidateId={winner.id} lang={lang} />
+
           </div>
 
         )}
@@ -910,7 +914,8 @@ textShadow: "none",
 
                   showCommentBox={true}
 
-                  highlightCandidateId={!isStatsOnly ? locationWinner?.id : null}
+                  highlightCandidateId={!isStatsOnly ? winner?.id : null}
+                  onWinnerStatsChange={setWinnerStatsSummary}
 
                   winner={winner || null}
 

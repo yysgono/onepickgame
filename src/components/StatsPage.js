@@ -706,6 +706,7 @@ export default function StatsPage({
   showCommentBox = false,
 
   highlightCandidateId,
+  onWinnerStatsChange,
 
 }) {
 
@@ -752,6 +753,8 @@ const displayCupTitle =
   const [customTo, setCustomTo] = useState("");
 
   const [loading, setLoading] = useState(true);
+  const [statsLoadError, setStatsLoadError] = useState(false);
+  const [statsLoadedCupId, setStatsLoadedCupId] = useState(null);
 
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -808,6 +811,7 @@ const displayCupTitle =
       }
 
       setLoading(true);
+      setStatsLoadError(false);
 
 
 
@@ -904,6 +908,7 @@ const normalized =
 
 
 setStats(normalized);
+setStatsLoadedCupId(String(selectedCup.id));
 
         setLoading(false);
 
@@ -912,6 +917,7 @@ setStats(normalized);
         if (!alive || seq !== fetchSeqRef.current) return;
 
         console.error("stats fetch error:", e);
+        setStatsLoadError(true);
 
         setLoading(false);
 
@@ -1299,6 +1305,22 @@ const top3 = useMemo(() => {
     (row) => String(row.candidate_id) === String(highlightCandidateId)
   );
 
+  useEffect(() => {
+    if (!onWinnerStatsChange) return;
+    if (!selectedCup?.id || highlightCandidateId == null) {
+      onWinnerStatsChange(null);
+      return;
+    }
+    const identity = { cupId: String(selectedCup.id), candidateId: String(highlightCandidateId) };
+    if (loading) onWinnerStatsChange({ ...identity, status: "loading" });
+    else if (statsLoadError) onWinnerStatsChange({ ...identity, status: "error" });
+    else if (statsLoadedCupId !== String(selectedCup.id)) onWinnerStatsChange({ ...identity, status: "loading" });
+    else if (!selectedCandidate) onWinnerStatsChange({ ...identity, status: "empty" });
+    else onWinnerStatsChange({ ...identity, status: "ready", rank: selectedCandidate.rank,
+      winCount: selectedCandidate.win_count, winRate: selectedCandidate._display.winRateAll,
+      matchRate: selectedCandidate._display.matchRateAll });
+  }, [onWinnerStatsChange, selectedCup?.id, highlightCandidateId, loading, statsLoadError, statsLoadedCupId, selectedCandidate]);
+
   /* ===== 페이지네이션 UI ===== */
 
   function Pagination() {
@@ -1587,9 +1609,9 @@ const top3 = useMemo(() => {
 
     width: "min(760px, 94vw)",
 
-    margin: isMobile ? "18px auto 14px" : "24px auto 16px",
+    margin: isMobile ? "8px auto 14px" : "8px auto 16px",
 
-    padding: isMobile ? "22px 18px 20px" : "28px 34px 26px",
+    padding: isMobile ? "18px 18px 20px" : "20px 34px 22px",
 
     background: "#ffffff",
 
@@ -1606,54 +1628,6 @@ const top3 = useMemo(() => {
   }}
 
 >
-
-  <div
-
-    aria-hidden="true"
-
-    style={{
-
-      fontSize: isMobile ? 23 : 26,
-
-      lineHeight: 1,
-
-      marginBottom: 9,
-
-    }}
-
-  >
-
-    🏆
-
-  </div>
-
-
-
-  <div
-
-    style={{
-
-      marginBottom: 8,
-
-      color: "#8a94a6",
-
-      fontSize: isMobile ? 11 : 12,
-
-      fontWeight: 900,
-
-      letterSpacing: isMobile ? "0.08em" : "0.11em",
-
-      textTransform: "uppercase",
-
-    }}
-
-  >
-
-    {t("gameModeNav.worldcup")}
-
-  </div>
-
-
 
   <div
 
@@ -1699,11 +1673,12 @@ const top3 = useMemo(() => {
 
     style={{
 
-      minWidth: isMobile ? 154 : 178,
+      minWidth: isMobile ? 200 : 220,
+      minHeight: isMobile ? 54 : 58,
 
       marginTop: isMobile ? 18 : 21,
 
-      padding: isMobile ? "11px 20px" : "12px 25px",
+      padding: isMobile ? "13px 24px" : "14px 30px",
 
       border: "1px solid #e85f0d",
 
@@ -1713,7 +1688,7 @@ const top3 = useMemo(() => {
 
       color: "#ffffff",
 
-      fontSize: isMobile ? 15 : 16,
+      fontSize: isMobile ? 18 : 19,
 
       fontWeight: 900,
 

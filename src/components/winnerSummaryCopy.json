@@ -1,0 +1,82 @@
+{
+  "ko": [
+    "통계를 불러오지 못했습니다.",
+    "해당 기간에 집계된 기록이 없습니다.",
+    "선택한 기간 · 전체 참여자 기준"
+  ],
+  "en": [
+    "Could not load statistics.",
+    "No recorded statistics for this period.",
+    "Selected period · All players"
+  ],
+  "ja": [
+    "統計を読み込めませんでした。",
+    "この期間の集計記録はありません。",
+    "選択期間・全参加者対象"
+  ],
+  "zh": [
+    "无法加载统计。",
+    "此期间暂无统计记录。",
+    "所选期间 · 全部参与者"
+  ],
+  "es": [
+    "No se pudieron cargar las estadísticas.",
+    "No hay registros para este período.",
+    "Período seleccionado · Todos los jugadores"
+  ],
+  "fr": [
+    "Impossible de charger les statistiques.",
+    "Aucune statistique pour cette période.",
+    "Période sélectionnée · Tous les joueurs"
+  ],
+  "vi": [
+    "Không tải được thống kê.",
+    "Không có thống kê trong khoảng thời gian này.",
+    "Khoảng thời gian đã chọn · Tất cả người chơi"
+  ],
+  "de": [
+    "Statistiken konnten nicht geladen werden.",
+    "Keine Statistiken für diesen Zeitraum.",
+    "Gewählter Zeitraum · Alle Spieler"
+  ],
+  "ru": [
+    "Не удалось загрузить статистику.",
+    "За этот период записей нет.",
+    "Выбранный период · Все игроки"
+  ],
+  "id": [
+    "Statistik tidak dapat dimuat.",
+    "Tidak ada statistik untuk periode ini.",
+    "Periode pilihan · Semua pemain"
+  ],
+  "pt": [
+    "Não foi possível carregar as estatísticas.",
+    "Não há registros neste período.",
+    "Período selecionado · Todos os jogadores"
+  ],
+  "hi": [
+    "आँकड़े लोड नहीं हुए।",
+    "इस अवधि के लिए कोई रिकॉर्ड नहीं है।",
+    "चुनी गई अवधि · सभी खिलाड़ी"
+  ],
+  "tr": [
+    "İstatistikler yüklenemedi.",
+    "Bu dönem için kayıt yok.",
+    "Seçilen dönem · Tüm oyuncular"
+  ],
+  "th": [
+    "โหลดสถิติไม่ได้",
+    "ไม่มีสถิติในช่วงเวลานี้",
+    "ช่วงเวลาที่เลือก · ผู้เล่นทั้งหมด"
+  ],
+  "ar": [
+    "تعذر تحميل الإحصاءات.",
+    "لا توجد سجلات لهذه الفترة.",
+    "الفترة المحددة · جميع اللاعبين"
+  ],
+  "bn": [
+    "পরিসংখ্যান লোড করা যায়নি।",
+    "এই সময়ের কোনো রেকর্ড নেই।",
+    "নির্বাচিত সময়কাল · সব খেলোয়াড়"
+  ]
+}
