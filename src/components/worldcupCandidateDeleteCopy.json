@@ -1,0 +1,66 @@
+{
+  "ko": [
+    "저장하면 삭제한 후보의 우승 기록·개별 통계·연결된 상대전적도 영구 삭제됩니다. 다른 후보의 누적 통계는 유지됩니다.",
+    "후보 {count}명과 해당 후보의 통계 기록을 삭제하고 저장할까요? 통계 삭제는 되돌릴 수 없습니다."
+  ],
+  "en": [
+    "Saving permanently deletes removed candidates’ win logs, individual statistics and related head-to-head records. Other candidates keep their historical totals.",
+    "Save and delete {count} candidates and their statistics? Deleted statistics cannot be restored."
+  ],
+  "ja": [
+    "保存すると削除した候補の優勝記録・個別統計・関連対戦成績も完全に削除されます。他の候補の累積統計は保持されます。",
+    "候補{count}人とその統計を削除して保存しますか？統計の削除は元に戻せません。"
+  ],
+  "zh": [
+    "保存时会永久删除已移除候选的夺冠记录、个人统计及相关对战记录。其他候选的历史累计统计会保留。",
+    "保存并删除{count}名候选及其统计？已删除的统计无法恢复。"
+  ],
+  "es": [
+    "Al guardar se eliminan permanentemente los registros de victoria, las estadísticas individuales y los enfrentamientos relacionados de los candidatos eliminados. Se conservan los totales históricos de los demás.",
+    "¿Guardar y eliminar {count} candidatos y sus estadísticas? No se pueden restaurar las estadísticas eliminadas."
+  ],
+  "fr": [
+    "La sauvegarde supprime définitivement les victoires, statistiques individuelles et confrontations des candidats retirés. Les totaux historiques des autres sont conservés.",
+    "Enregistrer et supprimer {count} candidats et leurs statistiques ? La suppression des statistiques est irréversible."
+  ],
+  "vi": [
+    "Khi lưu, lịch sử vô địch, thống kê cá nhân và đối đầu liên quan của ứng viên đã xóa sẽ bị xóa vĩnh viễn. Tổng thống kê của ứng viên khác được giữ nguyên.",
+    "Lưu và xóa {count} ứng viên cùng thống kê của họ? Không thể khôi phục thống kê đã xóa."
+  ],
+  "de": [
+    "Beim Speichern werden Siegprotokolle, Einzelstatistiken und direkte Duelle entfernter Kandidaten endgültig gelöscht. Die historischen Gesamtwerte anderer Kandidaten bleiben erhalten.",
+    "{count} Kandidaten und ihre Statistiken löschen und speichern? Gelöschte Statistiken lassen sich nicht wiederherstellen."
+  ],
+  "ru": [
+    "При сохранении победы, индивидуальная статистика и связанные личные встречи удалённых кандидатов удаляются навсегда. Итоги остальных кандидатов сохраняются.",
+    "Сохранить и удалить кандидатов ({count}) и их статистику? Удалённую статистику нельзя восстановить."
+  ],
+  "id": [
+    "Saat disimpan, catatan kemenangan, statistik individu, dan rekor pertemuan kandidat yang dihapus akan dihapus permanen. Total historis kandidat lain tetap ada.",
+    "Simpan dan hapus {count} kandidat beserta statistiknya? Statistik yang dihapus tidak dapat dipulihkan."
+  ],
+  "pt": [
+    "Ao salvar, os registros de vitória, estatísticas individuais e confrontos dos candidatos removidos serão excluídos permanentemente. Os totais históricos dos demais serão mantidos.",
+    "Salvar e excluir {count} candidatos e suas estatísticas? As estatísticas excluídas não podem ser restauradas."
+  ],
+  "hi": [
+    "सहेजने पर हटाए गए उम्मीदवारों के जीत रिकॉर्ड, व्यक्तिगत आँकड़े और संबंधित आमने-सामने के रिकॉर्ड स्थायी रूप से मिटेंगे। अन्य उम्मीदवारों के पुराने कुल आँकड़े सुरक्षित रहेंगे।",
+    "{count} उम्मीदवारों और उनके आँकड़ों को हटाकर सहेजें? हटाए गए आँकड़े वापस नहीं मिलेंगे।"
+  ],
+  "tr": [
+    "Kaydedince kaldırılan adayların zafer kayıtları, bireysel istatistikleri ve ilgili karşılaşmaları kalıcı olarak silinir. Diğer adayların geçmiş toplamları korunur.",
+    "{count} adayı ve istatistiklerini silip kaydetmek istiyor musun? Silinen istatistikler geri getirilemez."
+  ],
+  "th": [
+    "เมื่อบันทึก ระบบจะลบประวัติแชมป์ สถิติรายบุคคล และสถิติพบกันของผู้เข้าแข่งขันที่นำออกอย่างถาวร ยอดสะสมของคนอื่นจะคงเดิม",
+    "บันทึกและลบผู้เข้าแข่งขัน {count} คนพร้อมสถิติหรือไม่? สถิติที่ลบแล้วกู้คืนไม่ได้"
+  ],
+  "ar": [
+    "عند الحفظ تُحذف نهائيًا سجلات الفوز والإحصاءات الفردية والمواجهات المرتبطة بالمرشحين المحذوفين. تبقى المجاميع السابقة للمرشحين الآخرين.",
+    "هل تريد الحفظ وحذف {count} مرشحين وإحصاءاتهم؟ لا يمكن استعادة الإحصاءات المحذوفة."
+  ],
+  "bn": [
+    "সংরক্ষণ করলে বাদ দেওয়া প্রার্থীদের জয়ের রেকর্ড, ব্যক্তিগত পরিসংখ্যান ও সংশ্লিষ্ট মুখোমুখি রেকর্ড স্থায়ীভাবে মুছে যাবে। অন্য প্রার্থীদের আগের মোট পরিসংখ্যান থাকবে।",
+    "{count} জন প্রার্থী ও তাঁদের পরিসংখ্যান মুছে সংরক্ষণ করবেন? মুছে ফেলা পরিসংখ্যান ফেরানো যাবে না।"
+  ]
+}

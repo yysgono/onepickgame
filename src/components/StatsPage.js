@@ -1,3 +1,4 @@
+import { filterCurrentCandidateStats } from "../utils/worldcupCandidateChanges";
 import { readStatsCache, writeStatsCache } from "../utils/statsCache";
 import React, {
 
@@ -898,7 +899,7 @@ const rowsWithCurrentNames = (rows || []).map((row) => {
 
 const normalized =
 
-  normalizeStats(rowsWithCurrentNames);
+  normalizeStats(filterCurrentCandidateStats(rowsWithCurrentNames, selectedCup?.data));
 
 
 

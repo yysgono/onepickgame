@@ -1,3 +1,5 @@
+import { removedWorldcupCandidateIds } from "../utils/worldcupCandidateChanges";
+import candidateDeleteCopy from "./worldcupCandidateDeleteCopy.json";
 import { resolveOriginalContentLanguage, originalTitleLabel } from "../utils/originalContentLanguage";
 import React, { useEffect, useRef, useState } from "react";
 
@@ -94,22 +96,22 @@ const CONTENT_LANGUAGE_OPTIONS = [
 ];
 
 const DELETE_ALL_CANDIDATES_COPY = {
-  ko: { button: "후보 전체 삭제", confirm: "모든 후보를 목록에서 삭제할까요?\n저장하기 전까지는 DB에 반영되지 않습니다.\n기존 월드컵 통계는 삭제되지 않습니다." },
-  en: { button: "Delete all candidates", confirm: "Delete all candidates from this list?\nNothing is saved to the database until you save the page.\nExisting bracket statistics will not be deleted." },
-  ja: { button: "候補をすべて削除", confirm: "候補をすべて一覧から削除しますか？\n保存するまではDBに反映されません。\n既存の統計データは削除されません。" },
-  zh: { button: "删除全部候选项", confirm: "要从列表中删除全部候选项吗？\n保存前不会写入数据库。\n现有统计数据不会被删除。" },
-  es: { button: "Eliminar todos los candidatos", confirm: "¿Eliminar todos los candidatos de la lista?\nNo se guardará en la base de datos hasta que guardes la página.\nLas estadísticas existentes no se eliminarán." },
-  fr: { button: "Supprimer tous les candidats", confirm: "Supprimer tous les candidats de la liste ?\nRien ne sera enregistré dans la base de données avant l’enregistrement de la page.\nLes statistiques existantes ne seront pas supprimées." },
-  vi: { button: "Xóa tất cả ứng viên", confirm: "Xóa tất cả ứng viên khỏi danh sách?\nDữ liệu sẽ chưa được lưu vào cơ sở dữ liệu cho đến khi bạn lưu trang.\nThống kê hiện có sẽ không bị xóa." },
-  de: { button: "Alle Kandidaten löschen", confirm: "Alle Kandidaten aus der Liste löschen?\nBis zum Speichern wird nichts in die Datenbank übernommen.\nVorhandene Statistiken werden nicht gelöscht." },
-  ru: { button: "Удалить всех кандидатов", confirm: "Удалить всех кандидатов из списка?\nДо сохранения изменения не попадут в базу данных.\nСуществующая статистика не будет удалена." },
-  id: { button: "Hapus semua kandidat", confirm: "Hapus semua kandidat dari daftar?\nPerubahan belum disimpan ke database sampai Anda menyimpan halaman.\nStatistik yang ada tidak akan dihapus." },
-  pt: { button: "Excluir todos os candidatos", confirm: "Excluir todos os candidatos da lista?\nNada será salvo no banco de dados até você salvar a página.\nAs estatísticas existentes não serão excluídas." },
-  hi: { button: "सभी उम्मीदवार हटाएँ", confirm: "सूची से सभी उम्मीदवार हटाएँ?\nपेज सेव करने तक डेटाबेस में बदलाव लागू नहीं होगा।\nमौजूदा आँकड़े हटाए नहीं जाएँगे।" },
-  tr: { button: "Tüm adayları sil", confirm: "Listedeki tüm adaylar silinsin mi?\nSayfayı kaydedene kadar veritabanına uygulanmaz.\nMevcut istatistikler silinmez." },
-  th: { button: "ลบผู้สมัครทั้งหมด", confirm: "ลบผู้สมัครทั้งหมดออกจากรายการหรือไม่?\nจะยังไม่บันทึกลงฐานข้อมูลจนกว่าคุณจะกดบันทึกหน้า\nสถิติเดิมจะไม่ถูกลบ" },
-  ar: { button: "حذف جميع المرشحين", confirm: "هل تريد حذف جميع المرشحين من القائمة؟\nلن تُحفظ التغييرات في قاعدة البيانات حتى تحفظ الصفحة.\nلن يتم حذف الإحصاءات الحالية." },
-  bn: { button: "সব প্রার্থী মুছুন", confirm: "তালিকা থেকে সব প্রার্থী মুছবেন?\nপৃষ্ঠা সংরক্ষণ না করা পর্যন্ত ডেটাবেসে পরিবর্তন প্রয়োগ হবে না।\nবিদ্যমান পরিসংখ্যান মুছে যাবে না।" },
+  ko: { button: "후보 전체 삭제", confirm: "모든 후보를 목록에서 삭제할까요?\n저장하기 전까지는 DB에 반영되지 않습니다." },
+  en: { button: "Delete all candidates", confirm: "Delete all candidates from this list?\nNothing is saved to the database until you save the page." },
+  ja: { button: "候補をすべて削除", confirm: "候補をすべて一覧から削除しますか？\n保存するまではDBに反映されません。" },
+  zh: { button: "删除全部候选项", confirm: "要从列表中删除全部候选项吗？\n保存前不会写入数据库。" },
+  es: { button: "Eliminar todos los candidatos", confirm: "¿Eliminar todos los candidatos de la lista?\nNo se guardará en la base de datos hasta que guardes la página." },
+  fr: { button: "Supprimer tous les candidats", confirm: "Supprimer tous les candidats de la liste ?\nRien ne sera enregistré dans la base de données avant l’enregistrement de la page." },
+  vi: { button: "Xóa tất cả ứng viên", confirm: "Xóa tất cả ứng viên khỏi danh sách?\nDữ liệu sẽ chưa được lưu vào cơ sở dữ liệu cho đến khi bạn lưu trang." },
+  de: { button: "Alle Kandidaten löschen", confirm: "Alle Kandidaten aus der Liste löschen?\nBis zum Speichern wird nichts in die Datenbank übernommen." },
+  ru: { button: "Удалить всех кандидатов", confirm: "Удалить всех кандидатов из списка?\nДо сохранения изменения не попадут в базу данных." },
+  id: { button: "Hapus semua kandidat", confirm: "Hapus semua kandidat dari daftar?\nPerubahan belum disimpan ke database sampai Anda menyimpan halaman." },
+  pt: { button: "Excluir todos os candidatos", confirm: "Excluir todos os candidatos da lista?\nNada será salvo no banco de dados até você salvar a página." },
+  hi: { button: "सभी उम्मीदवार हटाएँ", confirm: "सूची से सभी उम्मीदवार हटाएँ?\nपेज सेव करने तक डेटाबेस में बदलाव लागू नहीं होगा।" },
+  tr: { button: "Tüm adayları sil", confirm: "Listedeki tüm adaylar silinsin mi?\nSayfayı kaydedene kadar veritabanına uygulanmaz." },
+  th: { button: "ลบผู้สมัครทั้งหมด", confirm: "ลบผู้สมัครทั้งหมดออกจากรายการหรือไม่?\nจะยังไม่บันทึกลงฐานข้อมูลจนกว่าคุณจะกดบันทึกหน้า" },
+  ar: { button: "حذف جميع المرشحين", confirm: "هل تريد حذف جميع المرشحين من القائمة؟\nلن تُحفظ التغييرات في قاعدة البيانات حتى تحفظ الصفحة." },
+  bn: { button: "সব প্রার্থী মুছুন", confirm: "তালিকা থেকে সব প্রার্থী মুছবেন?\nপৃষ্ঠা সংরক্ষণ না করা পর্যন্ত ডেটাবেসে পরিবর্তন প্রয়োগ হবে না।" },
 };
 
 
@@ -644,6 +646,7 @@ function EditWorldcupPage({
 }) {
 
 const { t, i18n } = useTranslation();
+const navigate = useNavigate();
 
 
 
@@ -1344,7 +1347,7 @@ editDraftReadyRef.current = true;
       DELETE_ALL_CANDIDATES_COPY[normalizedLang] ||
       DELETE_ALL_CANDIDATES_COPY.en;
 
-    if (!window.confirm(copy.confirm)) return;
+    if (!window.confirm(copy.confirm + "\n" + (candidateDeleteCopy[normalizedLang] || candidateDeleteCopy.en)[0])) return;
 
     setData([]);
   }
@@ -2173,6 +2176,13 @@ if (activeData.length < 2) {
     }
 
 
+
+    const removedIds = removedWorldcupCandidateIds(originalCup?.data, activeData);
+    if (removedIds.length) {
+      const language = (i18n.language || "en").split("-")[0];
+      const copy = candidateDeleteCopy[language] || candidateDeleteCopy.en;
+      if (!window.confirm(copy[1].replace("{count}", String(removedIds.length)))) return;
+    }
 
     setLoading(true);
 
@@ -3438,6 +3448,9 @@ style={{
               color: COLORS.main,
             }}
           >
+            <span style={{ display: "block", fontSize: 13, lineHeight: 1.6, color: "#9c3b42", marginBottom: 10 }}>
+              {(candidateDeleteCopy[(i18n.language || "en").split("-")[0]] || candidateDeleteCopy.en)[0]}
+            </span>
             {t("candidate_list") || "후보 목록"}{" "}
             <span
               style={{

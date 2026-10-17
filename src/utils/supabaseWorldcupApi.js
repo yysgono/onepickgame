@@ -1,3 +1,4 @@
+import { invalidateStatsCache } from "./statsCache";
 import { supabase } from "./supabaseClient";
 
 const WORLDCUP_TABLE = "worldcups";
@@ -191,6 +192,7 @@ export async function updateWorldcupGame(id, updates) {
     throw error;
   }
 
+  invalidateStatsCache(id);
   return true;
 }
 
