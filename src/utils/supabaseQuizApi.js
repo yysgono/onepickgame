@@ -212,6 +212,16 @@ export async function deleteQuiz(quizId) {
   clearQuizListCache();
 }
 
+export async function getQuizSourceWorldcups(ids = []) {
+  const uniqueIds = [...new Set(ids.filter(Boolean).map(String))];
+  if (!uniqueIds.length) return [];
+  const { data, error } = await supabase.from("worldcups")
+    .select("id,title,title_translations,category,original_language,data,created_at")
+    .in("id", uniqueIds).is("deleted_at", null);
+  if (error) throw error;
+  return Array.isArray(data) ? data : [];
+}
+
 export async function searchWorldcupsForQuiz({ search = "", limit = 1000 } = {}) {
   let query = supabase
     .from("worldcups")
@@ -340,6 +350,7 @@ export async function createQuiz({
         questionType === "multiple_choice" ? Number(q.correctIndex || 0) : null,
       answers: questionType === "short_answer" ? Array.from(new Set([...answers, ...translatedAnswers])) : [],
       answer_match_options: {
+        source_name: String(q.sourceName || "").trim(),
         ignore_case: q.ignoreCase !== false,
         ignore_spaces: Boolean(q.ignoreSpaces),
       },

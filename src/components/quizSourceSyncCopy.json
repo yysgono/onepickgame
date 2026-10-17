@@ -1,0 +1,98 @@
+{
+  "ko": [
+    "전체 문제 삭제",
+    "현재 문제를 모두 삭제할까요? 저장 전까지 기존 퀴즈는 바뀌지 않습니다. 최신 월드컵 후보를 다시 전체 선택해 가져올 수 있습니다.",
+    "원본 월드컵을 불러오지 못해 기존 문제를 유지했습니다. 잠시 후 수정 화면을 다시 열어주세요.",
+    "원본과 연결된 후보 이름·정답을 확인했습니다. 변경 사항은 저장 후 적용됩니다."
+  ],
+  "en": [
+    "Delete all questions",
+    "Delete all current questions? The saved quiz stays unchanged until you save. You can select all candidates from the latest world cup again.",
+    "Could not load source world cups. Existing questions were kept. Please reopen the editor later.",
+    "Linked candidate names and answers have been checked. Changes take effect when you save."
+  ],
+  "ja": [
+    "全問題を削除",
+    "全問題を削除しますか？保存するまで元のクイズは変わりません。最新の候補を全選択して取り込めます。",
+    "元のワールドカップを読み込めなかったため、問題を保持しました。後で編集画面を開き直してください。",
+    "連携した候補名と正解を確認しました。変更は保存後に適用されます。"
+  ],
+  "zh": [
+    "删除全部题目",
+    "删除全部题目？保存前原测验不会改变。你可以重新全选并导入最新候选。",
+    "无法加载来源世界杯，已保留原题目。请稍后重新打开编辑页面。",
+    "已检查关联候选名称和答案，保存后生效。"
+  ],
+  "es": [
+    "Eliminar todas las preguntas",
+    "¿Eliminar todas las preguntas? El quiz guardado no cambia hasta que guardes. Puedes volver a seleccionar e importar todos los candidatos actualizados.",
+    "No se pudieron cargar los torneos de origen. Se conservaron las preguntas. Vuelve a abrir el editor más tarde.",
+    "Se revisaron los nombres y las respuestas vinculados. Los cambios se aplican al guardar."
+  ],
+  "fr": [
+    "Supprimer toutes les questions",
+    "Supprimer toutes les questions ? Le quiz enregistré reste inchangé avant la sauvegarde. Vous pourrez réimporter tous les candidats à jour.",
+    "Impossible de charger les tournois sources. Les questions sont conservées. Rouvrez l’éditeur plus tard.",
+    "Les noms et réponses liés ont été vérifiés. Les modifications seront appliquées à la sauvegarde."
+  ],
+  "vi": [
+    "Xóa tất cả câu hỏi",
+    "Xóa tất cả câu hỏi? Bài đã lưu không đổi cho đến khi bạn lưu. Bạn có thể chọn lại toàn bộ ứng viên mới nhất để nhập.",
+    "Không tải được world cup nguồn. Đã giữ nguyên câu hỏi. Vui lòng mở lại trình sửa sau.",
+    "Đã kiểm tra tên và đáp án được liên kết. Thay đổi có hiệu lực khi lưu."
+  ],
+  "de": [
+    "Alle Fragen löschen",
+    "Alle Fragen löschen? Das gespeicherte Quiz bleibt bis zum Speichern unverändert. Du kannst alle aktuellen Kandidaten erneut importieren.",
+    "Die Quellturniere konnten nicht geladen werden. Die Fragen bleiben erhalten. Öffne den Editor später erneut.",
+    "Verknüpfte Namen und Antworten wurden geprüft. Änderungen gelten nach dem Speichern."
+  ],
+  "ru": [
+    "Удалить все вопросы",
+    "Удалить все вопросы? Сохранённая викторина изменится только после сохранения. Можно заново выбрать и импортировать всех актуальных участников.",
+    "Не удалось загрузить исходные турниры. Вопросы сохранены. Откройте редактор позже.",
+    "Связанные имена и ответы проверены. Изменения вступят в силу после сохранения."
+  ],
+  "id": [
+    "Hapus semua pertanyaan",
+    "Hapus semua pertanyaan? Kuis tersimpan tidak berubah sebelum disimpan. Kamu dapat memilih dan mengimpor semua kandidat terbaru lagi.",
+    "World cup sumber tidak dapat dimuat. Pertanyaan lama tetap disimpan. Buka kembali editor nanti.",
+    "Nama kandidat dan jawaban terkait telah diperiksa. Perubahan berlaku setelah disimpan."
+  ],
+  "pt": [
+    "Excluir todas as perguntas",
+    "Excluir todas as perguntas? O quiz salvo só muda ao salvar. Você pode selecionar e importar todos os candidatos atualizados novamente.",
+    "Não foi possível carregar os torneios de origem. As perguntas foram mantidas. Reabra o editor mais tarde.",
+    "Os nomes e as respostas vinculados foram verificados. As alterações entram em vigor ao salvar."
+  ],
+  "hi": [
+    "सभी प्रश्न हटाएँ",
+    "सभी प्रश्न हटाएँ? सहेजने तक पुराना क्विज़ नहीं बदलेगा। आप सभी नए उम्मीदवार फिर चुनकर आयात कर सकते हैं।",
+    "मूल वर्ल्ड कप लोड नहीं हुआ। पुराने प्रश्न रखे गए हैं। बाद में संपादक फिर खोलें।",
+    "जुड़े उम्मीदवारों के नाम और उत्तर जाँचे गए हैं। बदलाव सहेजने पर लागू होंगे।"
+  ],
+  "tr": [
+    "Tüm soruları sil",
+    "Tüm sorular silinsin mi? Kaydedene kadar mevcut quiz değişmez. Güncel adayların tümünü yeniden seçip içe aktarabilirsin.",
+    "Kaynak turnuvalar yüklenemedi. Sorular korundu. Düzenleyiciyi daha sonra yeniden aç.",
+    "Bağlı aday adları ve cevaplar kontrol edildi. Değişiklikler kaydedince uygulanır."
+  ],
+  "th": [
+    "ลบคำถามทั้งหมด",
+    "ลบคำถามทั้งหมดหรือไม่? ควิซเดิมจะไม่เปลี่ยนจนกว่าจะบันทึก คุณสามารถเลือกผู้เข้าแข่งขันล่าสุดทั้งหมดแล้วนำเข้าใหม่ได้",
+    "โหลดเวิลด์คัพต้นทางไม่ได้ จึงเก็บคำถามเดิมไว้ โปรดเปิดหน้าแก้ไขใหม่ภายหลัง",
+    "ตรวจสอบชื่อและคำตอบที่เชื่อมโยงแล้ว การเปลี่ยนแปลงจะมีผลเมื่อบันทึก"
+  ],
+  "ar": [
+    "حذف جميع الأسئلة",
+    "هل تريد حذف جميع الأسئلة؟ لن يتغير الاختبار المحفوظ حتى تحفظ. يمكنك تحديد جميع المرشحين المحدثين واستيرادهم مجددًا.",
+    "تعذر تحميل البطولات الأصلية. تم الاحتفاظ بالأسئلة. أعد فتح المحرر لاحقًا.",
+    "تم التحقق من أسماء المرشحين والإجابات المرتبطة. تسري التغييرات عند الحفظ."
+  ],
+  "bn": [
+    "সব প্রশ্ন মুছুন",
+    "সব প্রশ্ন মুছবেন? সংরক্ষণ না করা পর্যন্ত পুরোনো কুইজ বদলাবে না। হালনাগাদ সব প্রার্থী আবার নির্বাচন করে আমদানি করতে পারবেন।",
+    "মূল ওয়ার্ল্ড কাপ লোড করা যায়নি। পুরোনো প্রশ্ন রাখা হয়েছে। পরে সম্পাদক আবার খুলুন।",
+    "যুক্ত প্রার্থীর নাম ও উত্তর যাচাই করা হয়েছে। সংরক্ষণ করলে পরিবর্তন কার্যকর হবে।"
+  ]
+}

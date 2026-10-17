@@ -1,3 +1,5 @@
+import { syncSourceQuestions, sourceCandidatePool, mergeSourceQuestions } from "../utils/quizSourceSync";
+import sourceSyncCopy from "./quizSourceSyncCopy.json";
 import { getGuestQuizCopy, validGuestQuizCredentials, guestQuizError } from "./guestQuizCopy";
 import { resolveOriginalContentLanguage, originalTitleLabel } from "../utils/originalContentLanguage";
 import React, { useEffect, useMemo, useRef, useState } from "react";
@@ -14,6 +16,7 @@ import {
   createQuiz,
   uploadQuizImage,
   searchWorldcupsForQuiz,
+  getQuizSourceWorldcups,
   QUIZ_LANGUAGES,
   getQuiz,
   getQuizQuestions,
@@ -195,7 +198,19 @@ export default function QuizMaker() {
     return () => window.removeEventListener("resize", fn);
   }, []);
 
-  function hydrateQuiz(existing, rows) {
+  async function hydrateQuiz(existing, rows, isActive = () => true) {
+        const ids = [...new Set([...(Array.isArray(existing.source_worldcup_ids) ? existing.source_worldcup_ids : []), ...(rows || []).map(q => q.source_worldcup_id)].filter(Boolean))];
+        let sourceCups = [];
+        let sourceError = false;
+        if (ids.length) {
+          try {
+            sourceCups = await getQuizSourceWorldcups(ids);
+          } catch { sourceError = true; }
+        }
+        if (!isActive()) return;
+        if (sourceError) setError((sourceSyncCopy[lang] || sourceSyncCopy.en)[2]);
+        setCandidatePool(sourceCandidatePool(sourceCups));
+        setActiveSourceWorldcupId(sourceCups[0]?.id || "");
         const baseLang = resolveOriginalContentLanguage(existing);
         const titleMap = existing.title_translations || {};
         const descriptionMap = existing.description_translations || {};
@@ -220,12 +235,12 @@ export default function QuizMaker() {
         setCategory(existing.category || "knowledge");
         setExistingThumbnailUrl(existing.thumbnail_url || "");
         setContentLanguages(existing.content_languages?.length ? existing.content_languages : [baseLang]);
-        setSourceWorldcupIds(existing.source_worldcup_ids || []);
-        setQuestions((rows || []).map((q) => {
+        setSourceWorldcupIds(ids);
+        setQuestions(syncSourceQuestions((rows || []).map((q) => {
           const translationCodes = new Set([...Object.keys(q.question_translations || {}), ...Object.keys(q.options_translations || {}), ...Object.keys(q.explanation_translations || {})]);
           const translations = Object.fromEntries([...translationCodes].filter((code) => code !== baseLang).map((code) => [code, { question: q.question_translations?.[code] || "", options: q.options_translations?.[code] || ["", "", "", ""], explanation: q.explanation_translations?.[code] || "", answers: [] }]));
-          return { localId: makeId(), savedGuestMedia: { quizId: existing.id, imageUrl: q.image_url || "", sourceWorldcupId: q.source_worldcup_id || null }, type: q.question_type === "short_answer" ? "short_answer" : "multiple_choice", question: q.question_translations?.[baseLang] || q.question_text || "", imageFile: null, imageUrl: q.image_url || "", options: q.options_translations?.[baseLang] || q.options || ["", "", "", ""], correctIndex: Number(q.correct_index || 0), answers: q.answers?.length ? q.answers : [""], ignoreCase: q.answer_match_options?.ignore_case !== false, ignoreSpaces: Boolean(q.answer_match_options?.ignore_spaces), explanation: q.explanation_translations?.[baseLang] || q.explanation || "", sourceWorldcupId: q.source_worldcup_id || null, sourceCandidateId: q.source_candidate_id || null, sourceAnswer: "", autoChoices: Boolean(q.auto_choices), translations };
-        }));
+          return { localId: makeId(), savedGuestMedia: { quizId: existing.id, imageUrl: q.image_url || "", sourceWorldcupId: q.source_worldcup_id || null }, type: q.question_type === "short_answer" ? "short_answer" : "multiple_choice", question: q.question_translations?.[baseLang] || q.question_text || "", imageFile: null, imageUrl: q.image_url || "", options: q.options_translations?.[baseLang] || q.options || ["", "", "", ""], correctIndex: Number(q.correct_index || 0), answers: q.answers?.length ? q.answers : [""], ignoreCase: q.answer_match_options?.ignore_case !== false, ignoreSpaces: Boolean(q.answer_match_options?.ignore_spaces), explanation: q.explanation_translations?.[baseLang] || q.explanation || "", sourceWorldcupId: q.source_worldcup_id || null, sourceCandidateId: q.source_candidate_id || null, sourceAnswer: "", sourceName: q.answer_match_options?.source_name || "", autoChoices: Boolean(q.auto_choices), translations };
+        }), sourceCups));
   }
 
   useEffect(() => {
@@ -244,8 +259,8 @@ export default function QuizMaker() {
       if (!user?.id || String(existing.user_id) !== String(user.id)) throw new Error(m.editForbidden || m.loginRequired);
       const rows = await getQuizQuestions(editQuizId);
       if (!alive) return;
-      hydrateQuiz(existing, rows);
-      setEditReady(true);
+      await hydrateQuiz(existing, rows, () => alive);
+      if (alive) setEditReady(true);
     }).catch(e => alive && setError(e.message || String(e)));
     return () => { alive = false; };
     // Language changes must not reset the quiz being edited.
@@ -257,7 +272,7 @@ export default function QuizMaker() {
     setError("");
     try {
       const result = await getGuestQuizForEdit(editQuizId, guestNickname, guestPassword);
-      hydrateQuiz(result.quiz, result.questions);
+      await hydrateQuiz(result.quiz, result.questions);
       setEditReady(true);
     } catch (e) { setError(guestQuizError(e, guestCopy)); }
     finally { setVerifyingGuest(false); }
@@ -299,17 +314,20 @@ export default function QuizMaker() {
     setWorldcupsLoading(true);
     // 서버 검색이 원본 title만 보는 경우 한글 title_translations 검색이 빠질 수 있으므로
     // 가져오기 창에서는 목록을 받은 뒤 클라이언트에서 모든 번역 제목까지 검색한다.
-    searchWorldcupsForQuiz({ search: "", limit: 1000 })
-      .then((rows) => {
+    Promise.all([
+      searchWorldcupsForQuiz({ search: "", limit: 1000 }),
+      getQuizSourceWorldcups(sourceWorldcupIds),
+    ])
+      .then(([rows, sources]) => {
         if (!alive) return;
-        const list = Array.isArray(rows) ? rows : [];
+        const list = [...new Map([...(Array.isArray(rows) ? rows : []), ...sources].map(cup => [String(cup.id), cup])).values()];
         setAllWorldcups(list);
         setWorldcups(list);
       })
       .catch((e) => alive && setError(e.message || String(e)))
       .finally(() => alive && setWorldcupsLoading(false));
     return () => { alive = false; };
-  }, [importOpen]);
+  }, [importOpen, sourceWorldcupIds]);
 
   useEffect(() => {
     const keyword = worldcupSearch.trim().toLocaleLowerCase();
@@ -519,6 +537,7 @@ export default function QuizMaker() {
       sourceWorldcupId: worldcupId,
       sourceCandidateId: candidate?.id ?? String(index),
       sourceAnswer: name,
+      sourceName: name,
       autoChoices: true,
     };
   }
@@ -530,7 +549,7 @@ export default function QuizMaker() {
     if (!addList.length) return setError(m.selectCandidateRequired);
 
     const generated = addList.map((candidate, index) =>
-      makeMultipleChoiceQuestion(candidate, all, selectedWorldcup.id, index)
+      makeMultipleChoiceQuestion(candidate, all, selectedWorldcup.id, all.indexOf(candidate))
     );
 
     const hasOnlyBlank =
@@ -543,25 +562,14 @@ export default function QuizMaker() {
         (questions[0].options[0] === "A" && questions[0].options.slice(1).every((x) => !x)));
 
     setQuestions((prev) => {
-      return hasOnlyBlank ? generated : [...prev, ...generated];
+      return hasOnlyBlank ? generated : mergeSourceQuestions(prev, generated, [selectedWorldcup]);
     });
-    setCurrentQuestionIndex(hasOnlyBlank ? 0 : questions.length);
+    setCurrentQuestionIndex(0);
 
-    setCandidatePool((prev) => {
-      const map = new Map(prev.map((x) => [String(x.name), x]));
-      all.forEach((candidate) => {
-        const name = String(candidate?.name || "").trim();
-        if (name && !map.has(name)) {
-          map.set(name, {
-            name,
-            image: getYoutubeThumbnail(candidate?.image || ""),
-            sourceWorldcupId: selectedWorldcup.id,
-            sourceCandidateId: candidate?.id || null,
-          });
-        }
-      });
-      return [...map.values()];
-    });
+    setCandidatePool(prev => [
+      ...prev.filter(item => String(item.sourceWorldcupId) !== String(selectedWorldcup.id)),
+      ...sourceCandidatePool([selectedWorldcup]),
+    ]);
 
     setSourceWorldcupIds((prev) =>
       prev.includes(selectedWorldcup.id)
@@ -901,6 +909,7 @@ export default function QuizMaker() {
         <h1 style={{ textAlign: "center", fontSize: mobile ? 28 : 36, marginBottom: 22 }}>
           {m.title}
         </h1>
+        {editQuizId && sourceWorldcupIds.length > 0 && !error && <p role="status" style={{ color: "#596579", lineHeight: 1.6 }}>{(sourceSyncCopy[lang] || sourceSyncCopy.en)[3]}</p>}
         {guestMode && guestFields}
         <div style={{ ...creatorWarningStyle, marginBottom: 18 }}>⚠️ {safetyCopy.warning}</div>
 
@@ -1093,6 +1102,12 @@ export default function QuizMaker() {
           <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginTop: 10 }}>
             <button type="button" onClick={() => setAllTypes("multiple_choice")} style={typeBatchButton(questions.length > 0 && questions.every((q) => q.type === "multiple_choice"))}>{m.allMultiple}</button>
             <button type="button" onClick={() => setAllTypes("short_answer")} style={typeBatchButton(questions.length > 0 && questions.every((q) => q.type === "short_answer"))}>{m.allShort}</button>
+            <button type="button" disabled={saving} onClick={() => {
+              if (!window.confirm((sourceSyncCopy[lang] || sourceSyncCopy.en)[1])) return;
+              setQuestions([emptyQuestion()]); setCurrentQuestionIndex(0);
+              setSelectedCandidateKeys([]); setNextTopicCandidateId(""); setTopicPanelOpen(false);
+              openWorldcupImport();
+            }} style={{ ...secondaryButton, color: "#b42318" }}>{(sourceSyncCopy[lang] || sourceSyncCopy.en)[0]}</button>
           </div>
         </div>
 
