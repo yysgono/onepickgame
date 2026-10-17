@@ -1,4 +1,5 @@
-import React, { useEffect, useMemo, useState } from "react";
+import { getAllAdminWorldcups as getAllWorldcups, getAllAdminTierLists as getAllTierLists, getAllAdminQuizzes as getAllQuizzes, getAdminCommentCount as getTotalComments, adminTitleMatches } from "../utils/adminReadApi";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { supabase } from "../utils/supabaseClient";
 import TierPresetAdmin from "./TierPresetAdmin";
 
@@ -31,49 +32,6 @@ const TIER_CATEGORY_OPTIONS = [
 // 데이터
 // ========================================
 
-// 월드컵 전체 목록
-async function getAllWorldcups() {
-  const { data, error } = await supabase
-    .from("worldcups")
-    .select("*")
-    .order("created_at", { ascending: false });
-
-  if (error) {
-    console.error("월드컵 목록 불러오기 실패:", error);
-    return [];
-  }
-
-  return data || [];
-}
-
-async function getAllTierLists() {
-  const { data, error } = await supabase
-    .from("tier_lists")
-    .select("id, title, category, thumbnail_url, candidate_count, candidates, created_at")
-    .order("created_at", { ascending: false });
-
-  if (error) {
-    console.error("티어표 목록 불러오기 실패:", error);
-    return [];
-  }
-
-  return data || [];
-}
-
-async function getAllQuizzes() {
-  const { data, error } = await supabase
-    .from("quizzes")
-    .select("id,title,title_translations,thumbnail_url,category,question_count,play_count,is_featured,featured_order,created_at,is_published")
-    .order("created_at", { ascending: false });
-
-  if (error) {
-    console.error("퀴즈 목록 불러오기 실패:", error);
-    return [];
-  }
-
-  return data || [];
-}
-
 async function updateQuizFeatured(quizId, isFeatured, featuredOrder) {
   const { error } = await supabase
     .from("quizzes")
@@ -94,20 +52,6 @@ async function updateTierListCategory(tierListId, category) {
     .eq("id", tierListId);
 
   if (error) throw error;
-}
-
-// 댓글 총 개수
-async function getTotalComments() {
-  const { count, error } = await supabase
-    .from("comments")
-    .select("id", { count: "exact", head: true });
-
-  if (error) {
-    console.error("댓글 개수 불러오기 실패:", error);
-    return 0;
-  }
-
-  return count || 0;
 }
 
 // 월드컵 관리 정보 저장
@@ -157,7 +101,9 @@ async function permanentlyDeleteWorldcup(worldcupId) {
 // ========================================
 
 export default function AdminDashboard() {
-  const [totalWorldcups, setTotalWorldcups] = useState(0);
+  const mountedRef = useRef(false);
+  const loadSequenceRef = useRef(0);
+  const [sectionErrors, setSectionErrors] = useState({});
   const [totalComments, setTotalComments] = useState(0);
 
   const [allWorldcups, setAllWorldcups] = useState([]);
@@ -203,65 +149,51 @@ const [trashWorkingId, setTrashWorkingId] = useState(null);
   // ========================================
 
   useEffect(() => {
+    mountedRef.current = true;
     loadDashboard();
+    return () => { mountedRef.current = false; loadSequenceRef.current += 1; };
   }, []);
 
   async function loadDashboard() {
+    const sequence = ++loadSequenceRef.current;
     setLoading(true);
-
-    try {
-      const [worldcups, comments, tierLists, quizzes] = await Promise.all([
-        getAllWorldcups(),
-        getTotalComments(),
-        getAllTierLists(),
-        getAllQuizzes(),
-      ]);
-
-setAllWorldcups(worldcups);
-setAllTierLists(tierLists);
-setAllQuizzes(quizzes);
-setTotalWorldcups(
-  worldcups.filter((wc) => !wc.deleted_at).length
-);
-      setTotalComments(comments);
-
-      const initialEditValues = {};
-
-      worldcups.forEach((wc) => {
-        initialEditValues[wc.id] = {
-          category: wc.category || "",
-          is_featured: Boolean(wc.is_featured),
-          featured_order:
-            wc.featured_order === null ||
-            wc.featured_order === undefined
-              ? ""
-              : String(wc.featured_order),
-        };
-      });
-
-      setEditValues(initialEditValues);
-
-      const initialTierCategoryValues = {};
-      tierLists.forEach((item) => {
-        initialTierCategoryValues[item.id] = item.category || "other";
-      });
-      setTierCategoryValues(initialTierCategoryValues);
-
-
-      const initialQuizEditValues = {};
-      quizzes.forEach((item) => {
-        initialQuizEditValues[item.id] = {
-          is_featured: Boolean(item.is_featured),
-          featured_order:
-            item.featured_order === null || item.featured_order === undefined
-              ? ""
-              : String(item.featured_order),
-        };
-      });
-      setQuizEditValues(initialQuizEditValues);
-    } finally {
-      setLoading(false);
+    const keys = ["worldcups", "comments", "tiers", "quizzes"];
+    const results = await Promise.allSettled([
+      getAllWorldcups(), getTotalComments(), getAllTierLists(), getAllQuizzes(),
+    ]);
+    if (!mountedRef.current || sequence !== loadSequenceRef.current) return;
+    const errors = {};
+    results.forEach((result, index) => {
+      if (result.status === "rejected") {
+        errors[keys[index]] = result.reason?.message || "조회 실패";
+        console.warn("Admin section unavailable:", keys[index], result.reason);
+      }
+    });
+    setSectionErrors(errors);
+    if (results[0].status === "fulfilled") {
+      const rows = results[0].value;
+      setAllWorldcups(rows);
+      setEditValues(previous => Object.fromEntries(rows.map(wc => [wc.id, previous[wc.id] || {
+        category: wc.category || "", is_featured: Boolean(wc.is_featured),
+        featured_order: wc.featured_order == null ? "" : String(wc.featured_order),
+      }])));
     }
+    if (results[1].status === "fulfilled") setTotalComments(results[1].value);
+    if (results[2].status === "fulfilled") {
+      const rows = results[2].value;
+      setAllTierLists(rows);
+      setTierCategoryValues(previous => Object.fromEntries(rows.map(item => [item.id,
+        Object.prototype.hasOwnProperty.call(previous, item.id) ? previous[item.id] : item.category || "other",
+      ])));
+    }
+    if (results[3].status === "fulfilled") {
+      const rows = results[3].value;
+      setAllQuizzes(rows);
+      setQuizEditValues(previous => Object.fromEntries(rows.map(item => [item.id, previous[item.id] || {
+        is_featured: Boolean(item.is_featured), featured_order: item.featured_order == null ? "" : String(item.featured_order),
+      }])));
+    }
+    setLoading(false);
   }
 
   // ========================================
@@ -379,7 +311,7 @@ async function handleRestoreWorldcup(id) {
 
   try {
     await restoreWorldcup(id);
-    await loadDashboard();
+    setAllWorldcups(previous => previous.map(cup => String(cup.id) === String(id) ? { ...cup, deleted_at: null } : cup));
     alert("복구되었습니다.");
   } catch (error) {
     console.error(error);
@@ -402,7 +334,7 @@ async function handlePermanentDelete(id) {
 
   try {
     await permanentlyDeleteWorldcup(id);
-    await loadDashboard();
+    setAllWorldcups(previous => previous.filter(cup => String(cup.id) !== String(id)));
     alert("영구 삭제되었습니다.");
   } catch (error) {
     console.error(error);
@@ -496,10 +428,7 @@ async function handlePermanentDelete(id) {
 
     if (keyword) {
       list = list.filter((wc) => {
-        const title = String(wc.title || "").toLowerCase();
-        const id = String(wc.id || "").toLowerCase();
-
-        return title.includes(keyword) || id.includes(keyword);
+        return adminTitleMatches(wc, keyword);
       });
     }
 
@@ -529,9 +458,7 @@ async function handlePermanentDelete(id) {
 
     if (keyword) {
       list = list.filter((item) => {
-        const title = String(item.title || "").toLowerCase();
-        const id = String(item.id || "").toLowerCase();
-        return title.includes(keyword) || id.includes(keyword);
+        return adminTitleMatches(item, keyword);
       });
     }
 
@@ -550,9 +477,7 @@ async function handlePermanentDelete(id) {
 
     if (keyword) {
       list = list.filter((item) => {
-        const title = String(item.title || "").toLowerCase();
-        const id = String(item.id || "").toLowerCase();
-        return title.includes(keyword) || id.includes(keyword);
+        return adminTitleMatches(item, keyword);
       });
     }
 
@@ -583,11 +508,10 @@ const unassignedCount = useMemo(() => {
   // 추천 개수
   // ========================================
 
+  const totalWorldcups = activeWorldcups.length;
   const featuredCount = useMemo(() => {
-    return allWorldcups.filter(
-      (wc) => wc.is_featured
-    ).length;
-  }, [allWorldcups]);
+    return activeWorldcups.filter(wc => wc.is_featured).length;
+  }, [activeWorldcups]);
 
   // ========================================
   // 렌더
@@ -616,6 +540,12 @@ const unassignedCount = useMemo(() => {
       >
         🛡️ 관리자 대시보드
       </h2>
+      {Object.keys(sectionErrors).length > 0 && <div role="alert" style={{ padding: 16, marginBottom: 20, border: "1px solid #f3b4b4", borderRadius: 10, color: "#a12626", background: "#fff5f5" }}>
+        <strong>일부 데이터를 불러오지 못했습니다. 기존 목록과 편집값은 유지됩니다.</strong>
+        <ul>{Object.keys(sectionErrors).map(key => <li key={key}>{{ worldcups: "월드컵", comments: "댓글 수", tiers: "티어표", quizzes: "퀴즈" }[key]} 조회 실패</li>)}</ul>
+        <button type="button" disabled={loading} onClick={loadDashboard}>{loading ? "불러오는 중..." : "다시 시도"}</button>
+      </div>}
+
 
       {/* ========================================
           통계
@@ -632,17 +562,17 @@ const unassignedCount = useMemo(() => {
       >
         <StatBox
           title="전체 월드컵 수"
-          value={totalWorldcups}
+          value={loading ? "..." : sectionErrors.worldcups ? "조회 실패" : totalWorldcups}
         />
 
         <StatBox
           title="전체 댓글 수"
-          value={totalComments}
+          value={loading ? "..." : sectionErrors.comments ? "조회 실패" : totalComments}
         />
 
         <StatBox
           title="카테고리 미지정"
-          value={unassignedCount}
+          value={loading ? "..." : sectionErrors.worldcups ? "조회 실패" : unassignedCount}
           valueColor={
             unassignedCount > 0
               ? "#c83232"
@@ -652,13 +582,13 @@ const unassignedCount = useMemo(() => {
 
         <StatBox
           title="추천 월드컵"
-          value={featuredCount}
+          value={loading ? "..." : sectionErrors.worldcups ? "조회 실패" : featuredCount}
           valueColor="#f39c12"
         />
 
         <StatBox
           title="추천 퀴즈 맞히기"
-          value={quizFeaturedCount}
+          value={loading ? "..." : sectionErrors.quizzes ? "조회 실패" : quizFeaturedCount}
           valueColor="#6650d8"
         />
       </div>
@@ -684,7 +614,7 @@ const unassignedCount = useMemo(() => {
       cursor: "pointer",
     }}
   >
-    🗑️ 휴지통 ({deletedWorldcups.length})
+    🗑️ 휴지통 ({loading ? "..." : sectionErrors.worldcups ? "조회 실패" : deletedWorldcups.length})
   </button>
 
   {showTrash && (
@@ -697,6 +627,7 @@ const unassignedCount = useMemo(() => {
         deletedWorldcups.map((wc) => (
           <div
             key={wc.id}
+            data-admin-worldcup-id={wc.id}
             style={{
               display: "flex",
               alignItems: "center",
@@ -757,7 +688,7 @@ const unassignedCount = useMemo(() => {
 
             <button
               type="button"
-              disabled={trashWorkingId === wc.id}
+              disabled={Boolean(trashWorkingId)}
               onClick={() =>
                 handleRestoreWorldcup(wc.id)
               }
@@ -776,7 +707,7 @@ const unassignedCount = useMemo(() => {
 
             <button
               type="button"
-              disabled={trashWorkingId === wc.id}
+              disabled={Boolean(trashWorkingId)}
               onClick={() =>
                 handlePermanentDelete(wc.id)
               }
@@ -966,12 +897,13 @@ const unassignedCount = useMemo(() => {
             };
 
             const firstImage =
-              wc.data?.[0]?.image ||
+              wc.preview_image ||
               "/default-thumb.png";
 
             return (
               <div
                 key={wc.id}
+            data-admin-worldcup-id={wc.id}
                 style={{
                   display: "flex",
                   alignItems: "center",
@@ -1283,7 +1215,7 @@ const unassignedCount = useMemo(() => {
           )}
 
         {!loading &&
-          filteredWorldcups.length === 0 && (
+          !loading && !sectionErrors.worldcups && filteredWorldcups.length === 0 && (
             <div
               style={{
                 padding: 35,
@@ -1546,7 +1478,7 @@ const unassignedCount = useMemo(() => {
           </div>
         )}
 
-        {filteredTierLists.length === 0 && (
+        {!loading && !sectionErrors.tiers && filteredTierLists.length === 0 && (
           <div style={{ padding: 30, textAlign: "center", color: "#596579" }}>
             조건에 맞는 티어표가 없습니다.
           </div>
@@ -1735,7 +1667,7 @@ const unassignedCount = useMemo(() => {
           </div>
         )}
 
-        {filteredQuizzes.length === 0 && (
+        {!loading && !sectionErrors.quizzes && filteredQuizzes.length === 0 && (
           <div style={{ padding: 24, textAlign: "center", color: "#667085" }}>
             조건에 맞는 퀴즈가 없습니다.
           </div>
@@ -1800,7 +1732,7 @@ function StatBox({
 
       <div
         style={{
-          fontSize: 36,
+          fontSize: typeof value === "number" ? 36 : 21,
           fontWeight: 900,
           color: valueColor,
           marginTop: 10,
@@ -1811,3 +1743,4 @@ function StatBox({
     </div>
   );
 }
+

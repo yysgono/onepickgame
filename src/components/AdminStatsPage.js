@@ -1,192 +1,7 @@
+import { getAdminWorldcupCount, getAdminTotalCompletions, getAdminRecent7Completions, getAdminRecentPlays, getAdminRecentComments, getTodayKstDateString } from "../utils/adminReadApi";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../utils/supabaseClient";
-
-// ======================================================
-// KST 날짜 유틸
-// ======================================================
-
-// 현재 한국 날짜 YYYY-MM-DD
-function getTodayKstDateString() {
-  const now = new Date();
-
-  const kst = new Date(
-    now.getTime() + 9 * 60 * 60 * 1000
-  );
-
-  return kst
-    .toISOString()
-    .slice(0, 10);
-}
-
-// YYYY-MM-DD에서 days 만큼 이동
-function addDays(dateString, days) {
-  const [year, month, day] = dateString
-    .split("-")
-    .map(Number);
-
-  const date = new Date(
-    Date.UTC(
-      year,
-      month - 1,
-      day + days
-    )
-  );
-
-  return date
-    .toISOString()
-    .slice(0, 10);
-}
-
-// 한국 날짜 00:00 ~ 다음날 00:00을 UTC ISO로 변환
-function getKstDayRangeUtc(dateString) {
-  const [year, month, day] = dateString
-    .split("-")
-    .map(Number);
-
-  // KST 00:00 = UTC 전날 15:00
-  const startUtc = new Date(
-    Date.UTC(
-      year,
-      month - 1,
-      day,
-      0,
-      0,
-      0
-    ) -
-      9 * 60 * 60 * 1000
-  );
-
-  const endUtc = new Date(
-    startUtc.getTime() +
-      24 * 60 * 60 * 1000
-  );
-
-  return {
-    start: startUtc.toISOString(),
-    end: endUtc.toISOString(),
-  };
-}
-
-// ======================================================
-// 총 월드컵 참여 수
-// winner_logs 1행 = 월드컵 1회 완료
-// ======================================================
-async function getTotalPlays() {
-  try {
-    const { count, error } =
-      await supabase
-        .from("winner_logs")
-        .select("id", {
-          count: "exact",
-          head: true,
-        });
-
-    if (error) {
-      console.error(
-        "총 참여 수 조회 실패:",
-        error
-      );
-
-      return 0;
-    }
-
-    return count || 0;
-  } catch (error) {
-    console.error(
-      "총 참여 수 조회 오류:",
-      error
-    );
-
-    return 0;
-  }
-}
-
-// ======================================================
-// 특정 한국 날짜 참여 수
-// ======================================================
-async function getDailyPlayCount(
-  dateString
-) {
-  try {
-    const { start, end } =
-      getKstDayRangeUtc(dateString);
-
-    const { count, error } =
-      await supabase
-        .from("winner_logs")
-        .select("id", {
-          count: "exact",
-          head: true,
-        })
-        .gte(
-          "created_at",
-          start
-        )
-        .lt(
-          "created_at",
-          end
-        );
-
-    if (error) {
-      console.error(
-        `${dateString} 참여 수 조회 실패:`,
-        error
-      );
-
-      return 0;
-    }
-
-    return count || 0;
-  } catch (error) {
-    console.error(
-      `${dateString} 참여 수 조회 오류:`,
-      error
-    );
-
-    return 0;
-  }
-}
-
-// ======================================================
-// 최근 7일 참여 수
-// 한국시간 기준
-// ======================================================
-async function getRecent7Plays() {
-  const today =
-    getTodayKstDateString();
-
-  const dates = [];
-
-  // 6일 전 → 오늘
-  for (let i = 6; i >= 0; i--) {
-    dates.push(
-      addDays(
-        today,
-        -i
-      )
-    );
-  }
-
-  const result =
-    await Promise.all(
-      dates.map(
-        async (date) => {
-          const count =
-            await getDailyPlayCount(
-              date
-            );
-
-          return {
-            date,
-            count,
-          };
-        }
-      )
-    );
-
-  return result;
-}
 
 export default function AdminStatsPage() {
   const navigate =
@@ -195,17 +10,17 @@ export default function AdminStatsPage() {
   const [
     worldcupCount,
     setWorldcupCount,
-  ] = useState(0);
+  ] = useState(null);
 
   const [
     totalPlays,
     setTotalPlays,
-  ] = useState(0);
+  ] = useState(null);
 
   const [
     todayPlays,
     setTodayPlays,
-  ] = useState(0);
+  ] = useState(null);
 
   const [
     recent7,
@@ -232,242 +47,44 @@ export default function AdminStatsPage() {
     setLoading,
   ] = useState(true);
 
+  const [sectionErrors, setSectionErrors] = useState({});
+  const [refreshTick, setRefreshTick] = useState(0);
+
   // ======================================================
   // 통계 불러오기
   // ======================================================
   useEffect(() => {
     let mounted = true;
-
-    async function fetchStats() {
-      setLoading(true);
-
-      try {
-        // ----------------------------------------------
-        // 월드컵 수
-        // ----------------------------------------------
-        const {
-          data: wcData,
-          error: wcError,
-          count: wcCount,
-        } = await supabase
-          .from("worldcups")
-          .select("id", {
-            count: "exact",
-          });
-
-        if (mounted) {
-          if (wcError) {
-            console.error(
-              "월드컵 수 조회 실패:",
-              wcError
-            );
-
-            setWorldcupCount(0);
-          } else {
-            setWorldcupCount(
-              wcCount ??
-                (
-                  Array.isArray(
-                    wcData
-                  )
-                    ? wcData.length
-                    : 0
-                )
-            );
-          }
+    const today = getTodayKstDateString();
+    setLoading(true);
+    const keys = ["worldcups", "total", "recent7", "plays", "comments"];
+    Promise.allSettled([
+      getAdminWorldcupCount(), getAdminTotalCompletions(), getAdminRecent7Completions(today),
+      getAdminRecentPlays(), getAdminRecentComments(),
+    ]).then(results => {
+      if (!mounted) return;
+      const errors = {};
+      results.forEach((result, index) => {
+        if (result.status === "rejected") {
+          errors[keys[index]] = result.reason?.message || "조회 실패";
+          console.warn("Admin statistics unavailable:", keys[index], result.reason);
         }
-
-        // ----------------------------------------------
-        // 총 참여 수
-        // ----------------------------------------------
-        const total =
-          await getTotalPlays();
-
-        if (mounted) {
-          setTotalPlays(
-            total
-          );
-        }
-
-        // ----------------------------------------------
-        // 최근 7일 참여 수
-        // ----------------------------------------------
-        const recent =
-          await getRecent7Plays();
-
-        if (mounted) {
-          setRecent7(
-            recent
-          );
-
-          const today =
-            getTodayKstDateString();
-
-          const todayRow =
-            recent.find(
-              (row) =>
-                row.date ===
-                today
-            );
-
-          setTodayPlays(
-            todayRow?.count ||
-              0
-          );
-        }
-
-        // ----------------------------------------------
-        // 최근 7일 댓글 최대 30개
-        // ----------------------------------------------
-// ----------------------------------------------
-// 최근 완료된 월드컵 최대 30개
-// ----------------------------------------------
-const {
-  data: recentPlayData,
-  error: recentPlayError,
-} = await supabase
-  .from("winner_logs")
-  .select("id, cup_id, winner_id, created_at")
-  .order("created_at", { ascending: false })
-  .limit(30);
-
-if (
-  !recentPlayError &&
-  Array.isArray(recentPlayData)
-) {
-  const cupIds = [
-    ...new Set(
-      recentPlayData
-        .map((row) => row.cup_id)
-        .filter(Boolean)
-    ),
-  ];
-
-  let titleMap = {};
-
-  if (cupIds.length > 0) {
-    const {
-      data: cupData,
-      error: cupError,
-    } = await supabase
-      .from("worldcups")
-      .select("id, title")
-      .in("id", cupIds);
-
-    if (cupError) {
-      console.error(
-        "최근 플레이 월드컵 제목 조회 실패:",
-        cupError
-      );
-    } else {
-      titleMap = Object.fromEntries(
-        (cupData || []).map((cup) => [
-          cup.id,
-          cup.title,
-        ])
-      );
-    }
-  }
-
-  if (mounted) {
-    setRecentPlays(
-      recentPlayData.map((row) => ({
-        ...row,
-        worldcup_title:
-          titleMap[row.cup_id] ||
-          "삭제되었거나 제목 없는 월드컵",
-      }))
-    );
-  }
-} else {
-  if (recentPlayError) {
-    console.error(
-      "최근 플레이 조회 실패:",
-      recentPlayError
-    );
-  }
-
-  if (mounted) {
-    setRecentPlays([]);
-  }
-}
-
-        const sevenDaysAgo =
-          new Date();
-
-        sevenDaysAgo.setDate(
-          sevenDaysAgo.getDate() -
-            7
-        );
-
-        const isoSevenDaysAgo =
-          sevenDaysAgo.toISOString();
-
-        const {
-          data: commentsData,
-          error: commentError,
-        } = await supabase
-          .from("comments")
-          .select(
-            "id, content, created_at, cup_id"
-          )
-          .gte(
-            "created_at",
-            isoSevenDaysAgo
-          )
-          .order(
-            "created_at",
-            {
-              ascending: false,
-            }
-          )
-          .limit(30);
-
-        if (!mounted) {
-          return;
-        }
-
-        if (
-          !commentError &&
-          Array.isArray(
-            commentsData
-          )
-        ) {
-          setRecentComments(
-            commentsData
-          );
-        } else {
-          if (commentError) {
-            console.error(
-              "댓글 조회 실패:",
-              commentError
-            );
-          }
-
-          setRecentComments(
-            []
-          );
-        }
-      } catch (error) {
-        console.error(
-          "관리자 통계 조회 실패:",
-          error
-        );
-      } finally {
-        if (mounted) {
-          setLoading(false);
-        }
-      }
-    }
-
-    fetchStats();
-
-    return () => {
-      mounted = false;
-    };
-  }, []);
-
-  
+      });
+      setWorldcupCount(results[0].status === "fulfilled" ? results[0].value : null);
+      setTotalPlays(results[1].status === "fulfilled" ? results[1].value : null);
+      if (results[2].status === "fulfilled") {
+        const rows = results[2].value;
+        setRecent7(rows);
+        setTodayPlays(rows.find(row => row.date === today)?.count ?? null);
+        if (rows.some(row => row.count == null)) errors.recent7 = "일부 날짜 집계 실패";
+      } else setTodayPlays(null);
+      if (results[3].status === "fulfilled") setRecentPlays(results[3].value);
+      if (results[4].status === "fulfilled") setRecentComments(results[4].value);
+      setSectionErrors(errors);
+      setLoading(false);
+    });
+    return () => { mounted = false; };
+  }, [refreshTick]);
 
   // ======================================================
   // 댓글 삭제
@@ -604,6 +221,15 @@ if (
       >
         관리자 통계 대시보드
       </h2>
+      <div style={{ textAlign: "center", marginBottom: 20 }}>
+        <button type="button" disabled={loading} onClick={() => setRefreshTick(value => value + 1)}>{loading ? "불러오는 중..." : "통계 새로고침"}</button>
+      </div>
+      {Object.keys(sectionErrors).length > 0 && <div role="alert" style={{ padding: 16, marginBottom: 20, background: "#fff5f5", color: "#a12626", border: "1px solid #f3b4b4", borderRadius: 10 }}>
+        <strong>일부 통계를 불러오지 못했습니다. 실패한 수치는 0회로 표시하지 않습니다.</strong>
+        <ul>{Object.keys(sectionErrors).map(key => <li key={key}>{{ worldcups: "월드컵 수", total: "총 완료 수", recent7: "최근 7일 집계", plays: "최근 완료 목록", comments: "최근 댓글" }[key]} 조회 실패</li>)}</ul>
+        <button type="button" disabled={loading} onClick={() => setRefreshTick(value => value + 1)}>다시 시도</button>
+      </div>}
+
 
       {/* ==================================================
           상단 통계
@@ -684,7 +310,7 @@ if (
                 "#5542b8",
             }}
           >
-            {worldcupCount.toLocaleString()}
+            {loading ? "..." : worldcupCount == null ? "집계 실패" : worldcupCount.toLocaleString()}
           </div>
         </div>
 
@@ -731,7 +357,7 @@ if (
                 8,
             }}
           >
-            총 월드컵 참여 수
+            총 월드컵 완료 수
           </div>
 
           <div
@@ -748,11 +374,11 @@ if (
           >
             {loading
               ? "..."
-              : totalPlays.toLocaleString()}
+              : totalPlays == null ? "집계 실패" : totalPlays.toLocaleString()}
           </div>
         </div>
 
-        {/* 오늘 참여 수 */}
+        {/* 오늘 완료 수 */}
         <div
           style={{
             background:
@@ -795,7 +421,7 @@ if (
                 8,
             }}
           >
-            오늘 참여 수
+            오늘 완료 수
           </div>
 
           <div
@@ -812,7 +438,7 @@ if (
           >
             {loading
               ? "..."
-              : todayPlays.toLocaleString()}
+              : todayPlays == null ? "집계 실패" : todayPlays.toLocaleString()}
           </div>
         </div>
       </div>
@@ -856,7 +482,7 @@ if (
               "center",
           }}
         >
-          최근 7일 월드컵 참여 수
+          최근 7일 월드컵 완료 수
         </h4>
 
         {loading ? (
@@ -893,7 +519,7 @@ if (
             {recent7.map(
               (row) => {
                 const barHeight =
-                  row.count === 0
+                  row.count == null ? 0 : row.count === 0
                     ? 8
                     : Math.max(
                         18,
@@ -945,12 +571,12 @@ if (
                           6,
                       }}
                     >
-                      {row.count.toLocaleString()}
+                      {row.count == null ? "집계 실패" : row.count.toLocaleString()}
                     </div>
 
                     {/* 막대 */}
                     <div
-                      title={`${row.date}: ${row.count}회`}
+                      title={`${row.date}: ${row.count == null ? "집계 실패" : `${row.count}회`}`}
                       style={{
                         width:
                           "clamp(18px, 45%, 34px)",
@@ -1071,7 +697,7 @@ if (
         padding: 20,
       }}
     >
-      최근 플레이 기록이 없습니다.
+      {sectionErrors.plays ? "최근 완료 기록 조회에 실패했습니다." : "최근 플레이 기록이 없습니다."}
     </div>
   ) : (
     <div
@@ -1222,7 +848,7 @@ if (
                 20,
             }}
           >
-            댓글이 없습니다.
+            {loading ? "댓글을 불러오는 중..." : sectionErrors.comments ? "댓글 조회에 실패했습니다." : "댓글이 없습니다."}
           </div>
         ) : (
           <ul
