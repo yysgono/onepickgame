@@ -1,4 +1,4 @@
-const contentDescription = require("./src/seo/contentDescription.js");
+const tierDetailSeo = require("./src/seo/tierDetailSeo.js");
 const { renderDetailLinks } = require("./src/seo/detailLinks.js");
 /// server.js
 
@@ -1723,46 +1723,27 @@ app.use(async (req, res, next) => {
   try {
     const { data: tierList, error } = await supabase
       .from("tier_lists")
-      .select("id,title,description,title_translations,description_translations,original_language,thumbnail_url,candidate_count,candidates,updated_at,category,source_worldcup_id,tier_labels")
+      .select("id,user_id,guest_nickname,title,description,title_translations,description_translations,original_language,thumbnail_url,candidate_count,candidates,tiers,updated_at,category,source_worldcup_id,tier_labels")
       .eq("id", id)
       .maybeSingle();
 
     if (error) throw error;
     if (!tierList) return res.status(404).send("Tier list not found");
 
-    const parseMap = (value) => {
-      if (!value) return {};
-      if (typeof value === "object" && !Array.isArray(value)) return value;
+    let authorNickname = "";
+    if (tierList.user_id) {
       try {
-        const parsed = JSON.parse(value);
-        return parsed && typeof parsed === "object" && !Array.isArray(parsed)
-          ? parsed
-          : {};
-      } catch {
-        return {};
-      }
-    };
-
-    const titleMap = parseMap(tierList.title_translations);
-    const descriptionMap = parseMap(tierList.description_translations);
-    const normalizeLang = (value) => String(value || "").toLowerCase().split("-")[0];
-
-    const tierLanguages = [...new Set([
-      ...Object.keys(titleMap),
-      ...Object.keys(descriptionMap),
-      normalizeLang(tierList.original_language),
-    ].map(normalizeLang))].filter((language) => SUPPORTED_LANGS.includes(language));
-
-const indexable = true;
-
-    const tierTitle = String(
-      titleMap[lang] ||
-      titleMap.en ||
-      tierList.title ||
-      "Tier List"
-    ).replace(/\s+/g, " ").trim();
-
-    const tierDescription = contentDescription.tierDescription(tierList, lang);
+        const { data: profile, error: profileError } = await supabase.from("profiles")
+          .select("nickname").eq("id", tierList.user_id).maybeSingle();
+        if (!profileError) authorNickname = profile?.nickname || "";
+      } catch { /* A missing public nickname must not make a tier list unavailable. */ }
+    }
+    const detailMeta = tierDetailSeo.getTierListDetailSeo(tierList, lang, authorNickname);
+    const tierTitle = detailMeta.name;
+    const tierDescription = detailMeta.description;
+    const tierLanguages = detailMeta.languages;
+    const seoTitle = detailMeta.title;
+    const indexable = true;
 
     const canonical = `${SITE_URL}/${lang}/tier-list/${encodeURIComponent(id)}`;
 
@@ -1789,10 +1770,6 @@ const indexable = true;
     if (!/^https?:\/\//i.test(image)) {
       image = `${SITE_URL}${image.startsWith("/") ? "" : "/"}${image}`;
     }
-
-    const seoTitle = lang === "ko"
-      ? `${tierTitle} | 티어표 | OnePickGame`
-      : `${tierTitle} | Tier List | OnePickGame`;
 
     let html = await loadSeoTemplate(SITE_URL);
     html = html
@@ -1863,10 +1840,10 @@ ${hreflangTags}${xDefault}
 
     const loadingRoot = /<div\s+id=["']root["']>\s*<div\s+class=["']loading-screen["']>\s*Loading\.\.\.\s*<\/div>\s*<\/div>/i;
     const emptyRoot = /<div\s+id=["']root["']>\s*<\/div>/i;
-    if (loadingRoot.test(html)) html = html.replace(loadingRoot, `<div id="root">${seoBody}</div>`);
-    else if (emptyRoot.test(html)) html = html.replace(emptyRoot, `<div id="root">${seoBody}</div>`);
+    if (loadingRoot.test(html)) html = html.replace(loadingRoot, () => `<div id="root">${seoBody}</div>`);
+    else if (emptyRoot.test(html)) html = html.replace(emptyRoot, () => `<div id="root">${seoBody}</div>`);
 
-    html = html.replace("</head>", `${seoHead}\n</head>`);
+    html = html.replace("</head>", () => `${seoHead}\n</head>`);
 
     res.setHeader("Cache-Control", "public, s-maxage=300, stale-while-revalidate=3600");
     res.setHeader("Content-Type", "text/html; charset=utf-8");

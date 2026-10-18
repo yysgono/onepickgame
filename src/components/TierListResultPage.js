@@ -1,5 +1,5 @@
 import RelatedContentLinks from "./RelatedContentLinks";
-import contentDescription from "../seo/contentDescription";
+import tierDetailSeo from "../seo/tierDetailSeo";
 import { socialImage } from "../seo/quizSeo";
 import { TierTags, PresetTitle } from "./TierTagTools";
 import "../registerPresetTranslations";
@@ -62,156 +62,7 @@ const EDIT_STORAGE_KEY =
 const WORLDCUP_FROM_TIER_STORAGE_KEY =
   "onepick_worldcup_from_tier_v1";
 
-const TIER_SEO_LANGUAGES = [
-  "en",
-  "ko",
-  "ja",
-  "zh",
-  "es",
-  "fr",
-  "vi",
-  "de",
-  "ru",
-  "id",
-  "pt",
-  "hi",
-  "tr",
-  "th",
-  "ar",
-  "bn",
-];
-
-function readTierTitleTranslations(value) {
-  if (!value) return {};
-
-  if (
-    typeof value === "object" &&
-    !Array.isArray(value)
-  ) {
-    return value;
-  }
-
-  if (typeof value === "string") {
-    try {
-      const parsed = JSON.parse(value);
-
-      return (
-        parsed &&
-        typeof parsed === "object" &&
-        !Array.isArray(parsed)
-      )
-        ? parsed
-        : {};
-    } catch {
-      return {};
-    }
-  }
-
-  return {};
-}
-
-function getTierListOriginalLanguage(tierList) {
-  const stored =
-    tierList?.tier_labels?._originalLanguage ||
-    tierList?.original_language ||
-    "";
-
-  return TIER_SEO_LANGUAGES.includes(stored)
-    ? stored
-    : "";
-}
-
-function getTierListTitle(tierList, lang, fallback = "Tier List") {
-  if (!tierList) return fallback;
-
-  const translations =
-    readTierTitleTranslations(
-      tierList.title_translations ||
-      tierList?.tier_labels?._titleTranslations
-    );
-
-  const originalLanguage =
-    getTierListOriginalLanguage(tierList);
-
-  // 원본 언어 페이지에서는 번역값보다 실제 원본 title을 우선합니다.
-  if (
-    originalLanguage &&
-    lang === originalLanguage
-  ) {
-    return (
-      tierList.title ||
-      translations?.[lang] ||
-      fallback
-    );
-  }
-
-  // 요청 언어 번역이 없으면 영어 번역보다 원본 제목을 먼저 보여줍니다.
-  // 이렇게 해야 한국어 원본 + 영어 번역만 있는 예전 글도
-  // /ko/... 에서 영어 제목으로 뒤집히지 않습니다.
-  return (
-    translations?.[lang] ||
-    tierList.title ||
-    translations?.en ||
-    fallback
-  );
-}
-
-function getTierListHreflangLanguages(
-  tierList,
-  currentLang
-) {
-  const translations =
-    readTierTitleTranslations(
-      tierList?.title_translations ||
-      tierList?.tier_labels?._titleTranslations
-    );
-
-  const originalLanguage =
-    getTierListOriginalLanguage(tierList);
-
-  const available = new Set();
-
-  if (
-    TIER_SEO_LANGUAGES.includes(
-      currentLang
-    )
-  ) {
-    available.add(currentLang);
-  }
-
-  if (originalLanguage) {
-    available.add(originalLanguage);
-  }
-
-  TIER_SEO_LANGUAGES.forEach(
-    (code) => {
-      if (
-        String(
-          translations?.[code] || ""
-        ).trim()
-      ) {
-        available.add(code);
-      }
-    }
-  );
-
-  // 오래된 데이터에 원본 언어 메타가 없고 번역도 없으면
-  // 현재 언어 페이지 하나는 항상 self hreflang으로 남깁니다.
-  if (available.size === 0) {
-    available.add(
-      TIER_SEO_LANGUAGES.includes(
-        currentLang
-      )
-        ? currentLang
-        : "en"
-    );
-  }
-
-  return TIER_SEO_LANGUAGES.filter(
-    (code) =>
-      available.has(code)
-  );
-}
+const { getTierListTitle } = tierDetailSeo;
 
 /* =========================================================
    Canvas export helpers
@@ -460,6 +311,8 @@ const [
   isAdmin,
   setIsAdmin,
 ] = useState(false);
+
+  const [seoAuthor, setSeoAuthor] = useState({ tierId: null, nickname: "" });
 
   const [
     authorName,
@@ -877,95 +730,27 @@ if (mounted) {
     };
 
 
-  /* =========================
-     작성자
-     ========================= */
-
+  /* Public author lookup is reused for UI and SEO, not repeated on like/view updates. */
   useEffect(() => {
-    let cancelled =
-      false;
-
-
-    async function loadAuthor() {
-      if (
-        !tierList
-      ) {
-        return;
-      }
-
-
-      if (
-        !tierList.user_id
-      ) {
-        setAuthorName(
-          tierList.guest_nickname ||
-          text.guestAuthor
-        );
-
-        return;
-      }
-
-
-      try {
-        const {
-          data,
-        } =
-          await supabase
-            .from(
-              "profiles"
-            )
-            .select(
-              "nickname"
-            )
-            .eq(
-              "id",
-              tierList.user_id
-            )
-            .maybeSingle();
-
-
-        if (
-          !cancelled
-        ) {
-          setAuthorName(
-            data
-              ?.nickname ||
-            text.unknownAuthor
-          );
-        }
-      } catch (
-        authorError
-      ) {
-        console.error(
-          "티어표 작성자 조회 실패:",
-          authorError
-        );
-
-
-        if (
-          !cancelled
-        ) {
-          setAuthorName(
-            text.unknownAuthor
-          );
-        }
-      }
-    }
-
-
-    loadAuthor();
-
-
-    return () => {
-      cancelled =
-        true;
+    let cancelled = false;
+    setAuthorName("");
+    setSeoAuthor({ tierId: null, nickname: "" });
+    if (!tierList?.id) return undefined;
+    const tierId = String(tierList.id);
+    const apply = raw => {
+      if (cancelled) return;
+      const name = String(raw || "").trim();
+      setAuthorName(name || (tierList.user_id ? text.unknownAuthor : text.guestAuthor));
+      setSeoAuthor({ tierId, nickname: name });
     };
-  }, [
-    tierList,
-    text.guestAuthor,
-    text.unknownAuthor,
-  ]);
-
+    if (!tierList.user_id) apply(tierList.guest_nickname);
+    else {
+      supabase.from("profiles").select("nickname").eq("id", tierList.user_id).maybeSingle()
+        .then(({ data, error }) => apply(error ? "" : data?.nickname))
+        .catch(() => apply(""));
+    }
+    return () => { cancelled = true; };
+  }, [tierList?.id, tierList?.user_id, tierList?.guest_nickname, text.guestAuthor, text.unknownAuthor]);
 
   /* =========================
      본인 글 여부
@@ -2685,13 +2470,7 @@ if (isAdmin) {
   ) {
     return (
       <>
-        <Seo
-          lang={lang}
-          slug={`tier-list/${id}`}
-          title={t("tierList.seo.resultFallbackTitle")}
-          description={t("tierList.seo.resultFallbackDescription")}
-          indexable={true}
-        />
+
       <div
         style={{
           minHeight: "55vh",
@@ -2801,26 +2580,11 @@ const displayTitle = getTierListTitle(
   t("tierList.result.tierList")
 );
 
-const seoResultTitle = t(
-  "tierList.seo.resultTitle",
-  {
-    title: displayTitle,
-  }
-);
-
-const seoResultDescription = contentDescription.tierDescription(tierList, lang) || t(
-  "tierList.seo.resultDescription",
-  {
-    title: displayTitle,
-    count: Number(tierList.candidate_count || 0),
-  }
-);
-
-const seoHreflangLangs =
-  getTierListHreflangLanguages(
-    tierList,
-    lang
-  );
+const detailMeta = tierDetailSeo.getTierListDetailSeo(tierList, lang, seoAuthor.nickname);
+const seoResultTitle = detailMeta.title;
+const seoResultDescription = detailMeta.description;
+const seoHreflangLangs = detailMeta.languages;
+const seoAuthorReady = seoAuthor.tierId === String(tierList.id);
 
   const seoImageFallback = socialImage("");
   const seoResultImage = [
@@ -2863,7 +2627,7 @@ const seoHreflangLangs =
 
   return (
     <>
-      <Seo
+      {seoAuthorReady && <Seo
         lang={lang}
         slug={`tier-list/${id}`}
         title={seoResultTitle}
@@ -2871,7 +2635,7 @@ const seoHreflangLangs =
         image={seoResultImage}
         hreflangLangs={seoHreflangLangs}
         indexable={true}
-      />
+      />}
 <div
   style={{
     width: "100vw",

@@ -1,0 +1,293 @@
+{
+  "ko": {
+    "brand": "원픽게임",
+    "fallbackTitle": "티어표",
+    "unknownAuthor": "사용자",
+    "guestAuthor": "비회원",
+    "ownedTitle": "{author}의 티어표",
+    "ranking": "순위",
+    "characterRank": "캐릭터 순위",
+    "intro": "{author}의 {title}입니다.",
+    "outro": "등급별 순위를 확인해보세요.",
+    "candidates": "대표 후보",
+    "tier": "{tier}등급",
+    "onePick": "원픽",
+    "rankWords": [
+      "순위",
+      "랭킹"
+    ]
+  },
+  "en": {
+    "brand": "OnePickGame",
+    "fallbackTitle": "Tier List",
+    "unknownAuthor": "User",
+    "guestAuthor": "Guest",
+    "ownedTitle": "{author}’s Tier List",
+    "ranking": "Rankings",
+    "characterRank": "Character Rankings",
+    "intro": "{title}, ranked by {author}.",
+    "outro": "Explore the full tier rankings.",
+    "candidates": "Featured candidates",
+    "tier": "Tier {tier}",
+    "onePick": "One Pick",
+    "rankWords": [
+      "ranking",
+      "ranked",
+      "rankings"
+    ]
+  },
+  "ja": {
+    "brand": "OnePickGame",
+    "fallbackTitle": "Tierリスト",
+    "unknownAuthor": "ユーザー",
+    "guestAuthor": "ゲスト",
+    "ownedTitle": "{author}のTierリスト",
+    "ranking": "ランキング",
+    "characterRank": "キャラクターランキング",
+    "intro": "{author}が作成した「{title}」です。",
+    "outro": "各ランクの順位を確認しましょう。",
+    "candidates": "主な候補",
+    "tier": "{tier}ランク",
+    "onePick": "ワンピック",
+    "rankWords": [
+      "ランキング",
+      "順位"
+    ]
+  },
+  "zh": {
+    "brand": "OnePickGame",
+    "fallbackTitle": "等级榜",
+    "unknownAuthor": "用户",
+    "guestAuthor": "访客",
+    "ownedTitle": "{author}的等级榜",
+    "ranking": "排名",
+    "characterRank": "角色排名",
+    "intro": "{author}制作的《{title}》。",
+    "outro": "查看完整等级排名。",
+    "candidates": "代表候选",
+    "tier": "{tier}级",
+    "onePick": "首选",
+    "rankWords": [
+      "排名",
+      "排行"
+    ]
+  },
+  "es": {
+    "brand": "OnePickGame",
+    "fallbackTitle": "Tier List",
+    "unknownAuthor": "Usuario",
+    "guestAuthor": "Invitado",
+    "ownedTitle": "Tier List de {author}",
+    "ranking": "Clasificación",
+    "characterRank": "Clasificación de personajes",
+    "intro": "{title}, creada por {author}.",
+    "outro": "Consulta la clasificación completa.",
+    "candidates": "Candidatos destacados",
+    "tier": "Nivel {tier}",
+    "onePick": "Favorito",
+    "rankWords": [
+      "clasificación",
+      "ranking",
+      "rankings"
+    ]
+  },
+  "fr": {
+    "brand": "OnePickGame",
+    "fallbackTitle": "Tier List",
+    "unknownAuthor": "Utilisateur",
+    "guestAuthor": "Invité",
+    "ownedTitle": "Tier List de {author}",
+    "ranking": "Classement",
+    "characterRank": "Classement des personnages",
+    "intro": "{title}, créée par {author}.",
+    "outro": "Découvrez le classement complet.",
+    "candidates": "Candidats présentés",
+    "tier": "Rang {tier}",
+    "onePick": "Favori",
+    "rankWords": [
+      "classement",
+      "ranking"
+    ]
+  },
+  "vi": {
+    "brand": "OnePickGame",
+    "fallbackTitle": "Bảng xếp hạng",
+    "unknownAuthor": "Người dùng",
+    "guestAuthor": "Khách",
+    "ownedTitle": "Bảng xếp hạng của {author}",
+    "ranking": "Xếp hạng",
+    "characterRank": "Xếp hạng nhân vật",
+    "intro": "{title} do {author} tạo.",
+    "outro": "Xem toàn bộ bảng xếp hạng.",
+    "candidates": "Ứng viên tiêu biểu",
+    "tier": "Hạng {tier}",
+    "onePick": "Lựa chọn số một",
+    "rankWords": [
+      "xếp hạng",
+      "ranking"
+    ]
+  },
+  "de": {
+    "brand": "OnePickGame",
+    "fallbackTitle": "Tier-Liste",
+    "unknownAuthor": "Nutzer",
+    "guestAuthor": "Gast",
+    "ownedTitle": "Tier-Liste von {author}",
+    "ranking": "Rangliste",
+    "characterRank": "Charakter-Rangliste",
+    "intro": "{title}, erstellt von {author}.",
+    "outro": "Entdecke die vollständige Rangliste.",
+    "candidates": "Ausgewählte Kandidaten",
+    "tier": "Stufe {tier}",
+    "onePick": "Favorit",
+    "rankWords": [
+      "rangliste",
+      "ranking"
+    ]
+  },
+  "ru": {
+    "brand": "OnePickGame",
+    "fallbackTitle": "Тир-лист",
+    "unknownAuthor": "Пользователь",
+    "guestAuthor": "Гость",
+    "ownedTitle": "Тир-лист от {author}",
+    "ranking": "Рейтинг",
+    "characterRank": "Рейтинг персонажей",
+    "intro": "{title} от {author}.",
+    "outro": "Посмотрите полный рейтинг по уровням.",
+    "candidates": "Основные участники",
+    "tier": "Уровень {tier}",
+    "onePick": "Фаворит",
+    "rankWords": [
+      "рейтинг",
+      "ranking"
+    ]
+  },
+  "id": {
+    "brand": "OnePickGame",
+    "fallbackTitle": "Tier List",
+    "unknownAuthor": "Pengguna",
+    "guestAuthor": "Tamu",
+    "ownedTitle": "Tier List {author}",
+    "ranking": "Peringkat",
+    "characterRank": "Peringkat karakter",
+    "intro": "{title} dibuat oleh {author}.",
+    "outro": "Lihat peringkat lengkapnya.",
+    "candidates": "Kandidat unggulan",
+    "tier": "Tier {tier}",
+    "onePick": "Pilihan utama",
+    "rankWords": [
+      "peringkat",
+      "ranking"
+    ]
+  },
+  "pt": {
+    "brand": "OnePickGame",
+    "fallbackTitle": "Tier List",
+    "unknownAuthor": "Usuário",
+    "guestAuthor": "Visitante",
+    "ownedTitle": "Tier List de {author}",
+    "ranking": "Classificação",
+    "characterRank": "Classificação de personagens",
+    "intro": "{title}, criada por {author}.",
+    "outro": "Confira a classificação completa.",
+    "candidates": "Candidatos em destaque",
+    "tier": "Nível {tier}",
+    "onePick": "Favorito",
+    "rankWords": [
+      "classificação",
+      "ranking"
+    ]
+  },
+  "hi": {
+    "brand": "OnePickGame",
+    "fallbackTitle": "टियर सूची",
+    "unknownAuthor": "उपयोगकर्ता",
+    "guestAuthor": "अतिथि",
+    "ownedTitle": "{author} की टियर सूची",
+    "ranking": "रैंकिंग",
+    "characterRank": "पात्रों की रैंकिंग",
+    "intro": "{author} द्वारा बनाई गई {title}।",
+    "outro": "पूरी टियर रैंकिंग देखें।",
+    "candidates": "प्रमुख उम्मीदवार",
+    "tier": "{tier} टियर",
+    "onePick": "पहली पसंद",
+    "rankWords": [
+      "रैंकिंग",
+      "ranking"
+    ]
+  },
+  "tr": {
+    "brand": "OnePickGame",
+    "fallbackTitle": "Tier Listesi",
+    "unknownAuthor": "Kullanıcı",
+    "guestAuthor": "Misafir",
+    "ownedTitle": "{author} adlı kullanıcının Tier Listesi",
+    "ranking": "Sıralama",
+    "characterRank": "Karakter sıralaması",
+    "intro": "{author} tarafından oluşturulan {title}.",
+    "outro": "Tüm seviye sıralamasına göz at.",
+    "candidates": "Öne çıkan adaylar",
+    "tier": "{tier} seviyesi",
+    "onePick": "Favori",
+    "rankWords": [
+      "sıralama",
+      "ranking"
+    ]
+  },
+  "th": {
+    "brand": "OnePickGame",
+    "fallbackTitle": "รายการเทียร์",
+    "unknownAuthor": "ผู้ใช้",
+    "guestAuthor": "ผู้เยี่ยมชม",
+    "ownedTitle": "รายการเทียร์ของ {author}",
+    "ranking": "อันดับ",
+    "characterRank": "อันดับตัวละคร",
+    "intro": "{title} จัดโดย {author}",
+    "outro": "ดูอันดับทั้งหมดตามระดับ",
+    "candidates": "ผู้เข้าแข่งขันเด่น",
+    "tier": "ระดับ {tier}",
+    "onePick": "ตัวเลือกอันดับหนึ่ง",
+    "rankWords": [
+      "อันดับ",
+      "ranking"
+    ]
+  },
+  "ar": {
+    "brand": "OnePickGame",
+    "fallbackTitle": "قائمة مستويات",
+    "unknownAuthor": "مستخدم",
+    "guestAuthor": "زائر",
+    "ownedTitle": "قائمة مستويات {author}",
+    "ranking": "الترتيب",
+    "characterRank": "ترتيب الشخصيات",
+    "intro": "{title} من إعداد {author}.",
+    "outro": "شاهد الترتيب الكامل حسب المستويات.",
+    "candidates": "مرشحون بارزون",
+    "tier": "المستوى {tier}",
+    "onePick": "الخيار الأول",
+    "rankWords": [
+      "ترتيب",
+      "ranking"
+    ]
+  },
+  "bn": {
+    "brand": "OnePickGame",
+    "fallbackTitle": "টিয়ার তালিকা",
+    "unknownAuthor": "ব্যবহারকারী",
+    "guestAuthor": "অতিথি",
+    "ownedTitle": "{author} এর টিয়ার তালিকা",
+    "ranking": "র‍্যাঙ্কিং",
+    "characterRank": "চরিত্রের র‍্যাঙ্কিং",
+    "intro": "{author} তৈরি করেছেন {title}।",
+    "outro": "সম্পূর্ণ টিয়ার র‍্যাঙ্কিং দেখুন।",
+    "candidates": "প্রধান প্রার্থী",
+    "tier": "{tier} টিয়ার",
+    "onePick": "প্রথম পছন্দ",
+    "rankWords": [
+      "র‍্যাঙ্কিং",
+      "র‌্যাঙ্কিং",
+      "ranking"
+    ]
+  }
+}
