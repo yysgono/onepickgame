@@ -1,4 +1,5 @@
 import { supabase } from '../../utils/supabaseClient';
+import { importedCupCache } from './importCache';
 import { normalizeCandidates } from '../../utils/randomPickCore';
 export async function searchCups(search, offset, signal, category = '', recommended = false) {
   const {data,error} = await supabase.rpc('browse_random_pick_worldcups', {p_search:search.trim().slice(0,100),p_offset:offset,p_category:category,p_recommended:recommended}).abortSignal(signal);
@@ -6,11 +7,17 @@ export async function searchCups(search, offset, signal, category = '', recommen
   return Array.isArray(data) ? data : [];
 }
 export async function importCup(id, signal) {
+  if(signal?.aborted)throw new DOMException('Aborted','AbortError');
+  const cached=importedCupCache.get(id);
+  if(cached)return cached;
   const {data,error} = await supabase.from('worldcups').select('id,title,data').eq('id',id).is('deleted_at',null).abortSignal(signal).single();
   if (error) throw error;
   let raw = data.data;
   if (typeof raw === 'string') { try { raw = JSON.parse(raw); } catch { raw = []; } }
-  return {sourceCupId:data.id,rows:normalizeCandidates(raw, id),truncated:Array.isArray(raw) && raw.length > 200};
+  const result={sourceCupId:data.id,rows:normalizeCandidates(raw, id),truncated:Array.isArray(raw) && raw.length > 200};
+  if(signal?.aborted)throw new DOMException('Aborted','AbortError');
+  importedCupCache.set(id,result);
+  return result;
 }
 export async function loadTemplates(signal) {
   const {data,error} = await supabase.from('random_pick_templates').select('id,title,mode,created_at').order('created_at',{ascending:false}).limit(24).abortSignal(signal);

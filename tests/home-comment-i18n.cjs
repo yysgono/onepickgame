@@ -1,0 +1,6 @@
+const fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict'),babel=require('@babel/core');
+(async()=>{const source=fs.readFileSync('src/i18n.js','utf8');const code=babel.transformSync(source,{presets:[['@babel/preset-env',{targets:{node:'current'}}]],babelrc:false,configFile:false}).code;
+const mod={exports:{}};const req=name=>name.startsWith('.')?require(path.resolve('src',name)):require(name);new Function('require','module','exports',code)(req,mod,mod.exports);const i18n=mod.exports.default;
+const extras=require('../src/locales/homeCommentUi.json');for(const [lang,copy] of Object.entries(extras)){await i18n.changeLanguage(lang);assert.equal(i18n.t('show_more_categories'),copy.show_more_categories);for(const key of ['loginRequired','unknownUser']){const translated=i18n.t('comment.'+key);assert(translated&&translated!=='comment.'+key,`${lang}: ${key}`);}assert(i18n.t('comment.loginRequired').length>3);}
+await i18n.changeLanguage('ko');assert.equal(i18n.t('show_more_categories',{defaultValue:'More categories'}),'더보기');assert.equal(i18n.t('comment.loginRequired'),'로그인 후 댓글 작성이 가능합니다.');assert.equal(i18n.t('comment.unknownUser'),'사용자');
+console.log('PASS: real i18next resources, 16 locales, more categories and comment keys resolved');})().catch(error=>{console.error(error);process.exitCode=1;});

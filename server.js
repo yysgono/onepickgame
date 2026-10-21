@@ -65,6 +65,7 @@ const supabase = createClient(
   }
 );
 
+require("./random-pick-routes.cjs")(app, SITE_URL);
 require("./quiz-seo.cjs")(app, supabase, SITE_URL);
 
 const supabaseAdmin =

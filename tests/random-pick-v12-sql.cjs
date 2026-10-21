@@ -1,0 +1,20 @@
+const fs=require('fs'),assert=require('node:assert/strict');
+const {PGlite}=require(require.resolve('@electric-sql/pglite',{paths:[process.cwd()+'/tests/deps',process.cwd()+'/../onepickgame/tests/deps']}));
+(async()=>{const db=new PGlite();await db.exec(`CREATE ROLE anon;CREATE ROLE authenticated;
+CREATE TABLE worldcups(id uuid PRIMARY KEY,title text,title_translations jsonb,category text,deleted_at timestamptz,created_at timestamptz DEFAULT now(),is_public boolean DEFAULT true,visibility text DEFAULT 'public');
+CREATE TABLE play_counts(cup_id uuid,play_count bigint);GRANT SELECT ON worldcups,play_counts TO anon,authenticated;
+CREATE FUNCTION get_worldcup_play_counts() RETURNS TABLE(cup_id uuid,play_count bigint) LANGUAGE sql AS $$ SELECT * FROM play_counts $$;
+CREATE FUNCTION is_random_pick_admin() RETURNS boolean LANGUAGE sql AS $$ SELECT current_setting('test.admin',true)='yes' $$;`);
+const sql=fs.readFileSync('supabase/20261021_random_pick_v12.sql','utf8');await db.exec(sql);await db.exec(sql);
+const ids=Array.from({length:15},(_,i)=>`00000000-0000-4000-8000-${String(i+1).padStart(12,'0')}`);
+for(let i=0;i<ids.length;i++){await db.query('INSERT INTO worldcups(id,title,title_translations,category,is_public) VALUES($1,$2,$3,$4,$5)',[ids[i],`Title ${i}`,JSON.stringify({ko:`한글 ${i}`,en:`English ${i}`}),i%2?'game':'food',i!==14]);await db.query('INSERT INTO play_counts VALUES($1,$2)',[ids[i],i*10]);}
+await db.exec("SET ROLE authenticated;SET test.admin='yes'");await db.query('SELECT save_random_pick_recommendations($1::uuid[])',[ids.slice(0,10)]);
+let result=(await db.query("SELECT * FROM browse_random_pick_worldcups('',0,'',true)")).rows;assert.equal(result.length,10);assert.equal(result[0].id,ids[9]);
+result=(await db.query("SELECT * FROM browse_random_pick_worldcups('한글 1',0,'food',false)")).rows;assert.equal(result.length,5);assert.equal(result[0].id,ids[13]);
+assert.equal((await db.query("SELECT * FROM browse_random_pick_worldcups('',0,'',false)")).rows.length,13);
+assert.equal((await db.query("SELECT * FROM browse_random_pick_worldcups('',12,'',false)")).rows.length,2);
+await assert.rejects(db.query('SELECT save_random_pick_recommendations($1::uuid[])',[ids.slice(0,11)]));await assert.rejects(db.query('SELECT save_random_pick_recommendations($1::uuid[])',[[ids[14]]]));
+assert.equal((await db.query('SELECT * FROM random_pick_recommendations')).rows.length,10);
+await db.exec("SET test.admin='no'");await assert.rejects(db.query('SELECT save_random_pick_recommendations($1::uuid[])',[[]]));
+await db.exec('SET ROLE anon');assert.equal((await db.query("SELECT * FROM browse_random_pick_worldcups('',0,'',true)")).rows.length,10);await assert.rejects(db.query('SELECT save_random_pick_recommendations($1::uuid[])',[[]]));
+await db.close();console.log('PASS: repeated migration, recommendation save, popularity, global multilingual search, paging, private exclusion, atomic rollback and permissions');})().catch(e=>{console.error(e);process.exitCode=1;});
