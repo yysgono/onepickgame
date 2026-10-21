@@ -8,7 +8,7 @@ import WorldcupDetailSeo from "./seo/WorldcupDetailSeo";
 import worldcupMetadata from "./seo/worldcupMetadata.js";
 import "./i18n";
 import "./App.css";
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, lazy, Suspense } from "react";
 import {
   BrowserRouter as Router,
   Routes,
@@ -233,6 +233,8 @@ function LanguageWrapper(props) {
 /* =====================================================
    페이지 이동 시 스크롤 최상단
 ===================================================== */
+
+const RandomPickPage = lazy(() => import('./components/randomPick/RandomPickPage'));
 
 function ScrollToTopOnRouteChange() {
   const location = useLocation();
@@ -1687,6 +1689,8 @@ const makerDescMap = {
 />
   }
 />
+<Route path="/:lang/random-pick" element={<Suspense fallback={<div role="status" style={{padding:32,textAlign:"center"}}>◌</div>}><RandomPickPage user={user} /></Suspense>} />
+<Route path="/:lang/random-pick/:mode" element={<Suspense fallback={<div role="status" style={{padding:32,textAlign:"center"}}>◌</div>}><RandomPickPage user={user} /></Suspense>} />
 <Route
   path="/:lang/tier-list"
   element={

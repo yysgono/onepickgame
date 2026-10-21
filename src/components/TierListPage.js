@@ -3009,13 +3009,18 @@ gap:
                   }
                   style={{
                     padding:
-                      "10px 18px",
+                      "16px 36px",
+
+                    minWidth: 240,
+                    maxWidth: "100%",
+                    minHeight: 58,
+                    fontSize: 18,
 
                     borderRadius:
-                      8,
+                      12,
 
                     border:
-                      "1px solid #dde2ea",
+                      "2px solid #667085",
 
                     background:
                       "#ffffff",

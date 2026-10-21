@@ -276,6 +276,11 @@ export function generateLanguageSitemap(
     xml += makeUrlEntry({ loc: `${BASE_URL}/suggestions-board`, changefreq: "weekly", priority: "0.6" });
   }
 
+  // Random Pick: stable public tool URLs; operator templates use the tool canonical.
+  for (const mode of ["", "wheel", "lotto", "pinball", "ladder", "boxes", "cards", "order", "dice", "teams"]) {
+    xml += makeUrlEntry({loc: `${BASE_URL}/${lang}/random-pick${mode ? "/" + mode : ""}`, changefreq: "monthly", priority: "0.7"});
+  }
+
   // 티어표 목록
   xml += makeUrlEntry({
     loc: `${BASE_URL}/${lang}/tier-list`,

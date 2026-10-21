@@ -6611,7 +6611,7 @@ export default function QuizPage({ user = null }) {
 
 
 
-                  primaryButton
+                  { ...primaryButton, border: "2px solid #9f2421" }
 
 
 

@@ -1,6 +1,7 @@
 import { getAllAdminWorldcups as getAllWorldcups, getAllAdminTierLists as getAllTierLists, getAllAdminQuizzes as getAllQuizzes, getAdminCommentCount as getTotalComments, adminTitleMatches } from "../utils/adminReadApi";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { supabase } from "../utils/supabaseClient";
+import RecommendationAdmin from "./randomPick/RecommendationAdmin";
 import TierPresetAdmin from "./TierPresetAdmin";
 
 // ========================================
@@ -1674,6 +1675,7 @@ const unassignedCount = useMemo(() => {
         )}
       </div>
 
+      <RecommendationAdmin />
       <TierPresetAdmin />
 
       {/* ========================================

@@ -1,0 +1,3 @@
+export const STEP=1/60;
+export function makeOrderRace(pool,seed){let state=seed>>>0;const rng=()=>{state=(Math.imul(state,1664525)+1013904223)>>>0;return state/4294967296;};return{time:0,runners:pool.map(row=>({row,distance:0,speed:35+rng()*35,phase:rng()*6,done:false})),order:[]};}
+export function stepOrderRace(race){race.time+=STEP;const crossing=[];race.runners.forEach(r=>{if(r.done)return;const speed=55+25*Math.sin(race.time*1.1+r.phase)+r.speed,previous=r.distance;r.distance+=speed*STEP;if(r.distance>=1400){r.done=true;crossing.push({r,fraction:(1400-previous)/(speed*STEP)});}});crossing.sort((a,b)=>a.fraction-b.fraction).forEach(({r})=>race.order.push(r.row));}

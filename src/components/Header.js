@@ -1,3 +1,4 @@
+import randomPickLabels from "./randomPick/randomPickLabels.json";
 import { Link } from "react-router-dom";
 import "../registerHeaderTranslations";
 import "./OnePickHeader.css";
@@ -640,11 +641,12 @@ export default function Header({
     modePath === 'my-worldcups' ||
     (modePath === 'tier-list' && headerSearchParams.get('mine') === '1') ||
     (modePath === 'quiz' && headerSearchParams.get('mine') === '1');
-  const activeMode = personalPage ? '' : modePath.startsWith('tier-list') ? 'tier-list' : modePath.startsWith('quiz') ? 'quiz' : ['','category','select-round','match','result','worldcup-maker','edit-worldcup','stats'].some(key => modePath === key || (key && modePath.startsWith(key))) ? 'worldcup' : '';
+  const activeMode = personalPage ? '' : modePath === 'random-pick' ? 'random-pick' : modePath.startsWith('tier-list') ? 'tier-list' : modePath.startsWith('quiz') ? 'quiz' : ['','category','select-round','match','result','worldcup-maker','edit-worldcup','stats'].some(key => modePath === key || (key && modePath.startsWith(key))) ? 'worldcup' : '';
   const headerModes = [
     {key:'worldcup',icon:'trophy',label:t('gameModeNav.worldcup'),path:currentLang === 'en' ? '/' : `/${currentLang}`},
     {key:'tier-list',icon:'chart',label:t('gameModeNav.tierList'),path:`/${currentLang}/tier-list`},
     {key:'quiz',icon:'question',label:currentLang === 'ko' ? '퀴즈 맞히기' : t('gameModeNav.quiz'),path:`/${currentLang}/quiz`},
+    {key:'random-pick',icon:'dice',label:randomPickLabels[currentLang] || randomPickLabels.en,path:`/${currentLang}/random-pick`},
   ];
   useEffect(() => {
     document.querySelectorAll('.onepick-header details[open]').forEach(el => el.removeAttribute('open'));
@@ -663,12 +665,12 @@ export default function Header({
     <header className="onepick-header">
       <style>{`
         .onepick-header-modes {
-          grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+          grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
         }
 
         @media (min-width: 1201px) {
           .onepick-header-main {
-            grid-template-columns: minmax(320px, 1fr) minmax(540px, 2.2fr) minmax(320px, 1fr) !important;
+            grid-template-columns: minmax(230px, 1fr) minmax(420px, 2.2fr) minmax(280px, 1fr) !important;
           }
 
           .onepick-logo-frame {
@@ -1068,6 +1070,7 @@ export default function Header({
 }
 function HeaderIcon({ name }) {
   const paths = {
+    dice: <><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M7 7h.01M12 12h.01M17 17h.01M7 17h.01M17 7h.01"/></>,
     trophy: <><path d="M8 3h8v6a4 4 0 0 1-8 0V3Z"/><path d="M8 5H4v2a4 4 0 0 0 4 4m8-6h4v2a4 4 0 0 1-4 4m-4 2v5m-4 3h8m-6-3h4"/></>,
     chart: <><path d="M4 20h16M5 19v-7h3v7m3 0V8h3v11m3 0V3h3v16"/></>,
     question: <><circle cx="12" cy="12" r="9"/><path d="M9 9a3 3 0 0 1 6 0c0 2-3 2-3 4m0 3h.01"/></>,

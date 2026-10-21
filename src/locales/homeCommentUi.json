@@ -1,0 +1,66 @@
+{
+  "ko": {
+    "show_more_categories": "더보기",
+    "unknownUser": "사용자"
+  },
+  "en": {
+    "show_more_categories": "More categories",
+    "unknownUser": "User"
+  },
+  "ja": {
+    "show_more_categories": "もっと見る",
+    "unknownUser": "ユーザー"
+  },
+  "zh": {
+    "show_more_categories": "更多分类",
+    "unknownUser": "用户"
+  },
+  "es": {
+    "show_more_categories": "Más categorías",
+    "unknownUser": "Usuario"
+  },
+  "fr": {
+    "show_more_categories": "Plus de catégories",
+    "unknownUser": "Utilisateur"
+  },
+  "vi": {
+    "show_more_categories": "Thêm danh mục",
+    "unknownUser": "Người dùng"
+  },
+  "de": {
+    "show_more_categories": "Weitere Kategorien",
+    "unknownUser": "Benutzer"
+  },
+  "ru": {
+    "show_more_categories": "Больше категорий",
+    "unknownUser": "Пользователь"
+  },
+  "id": {
+    "show_more_categories": "Kategori lainnya",
+    "unknownUser": "Pengguna"
+  },
+  "pt": {
+    "show_more_categories": "Mais categorias",
+    "unknownUser": "Usuário"
+  },
+  "hi": {
+    "show_more_categories": "और श्रेणियाँ",
+    "unknownUser": "उपयोगकर्ता"
+  },
+  "tr": {
+    "show_more_categories": "Daha fazla kategori",
+    "unknownUser": "Kullanıcı"
+  },
+  "th": {
+    "show_more_categories": "หมวดหมู่เพิ่มเติม",
+    "unknownUser": "ผู้ใช้"
+  },
+  "ar": {
+    "show_more_categories": "المزيد من الفئات",
+    "unknownUser": "مستخدم"
+  },
+  "bn": {
+    "show_more_categories": "আরও বিভাগ",
+    "unknownUser": "ব্যবহারকারী"
+  }
+}

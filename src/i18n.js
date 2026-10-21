@@ -1,3 +1,4 @@
+import homeCommentUi from "./locales/homeCommentUi.json";
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
 import LanguageDetector from "i18next-browser-languagedetector";
@@ -38,6 +39,21 @@ const resources = {
   id: { translation: translationID },
   es: { translation: translationES },
 };
+
+// Fill the UI keys used by Home and CommentBox without replacing existing translations.
+for (const [language, extra] of Object.entries(homeCommentUi)) {
+  const bundle = resources[language]?.translation;
+  if (!bundle) continue;
+  resources[language].translation = {
+    ...bundle,
+    show_more_categories: bundle.show_more_categories || extra.show_more_categories,
+    comment: {
+      ...bundle.comment,
+      loginRequired: bundle.comment?.loginRequired || bundle.comment?.needLogin,
+      unknownUser: bundle.comment?.unknownUser || extra.unknownUser,
+    },
+  };
+}
 
 // 라우터와 정확히 맞추기 위한 지원 언어 목록
 const SUPPORTED_LANGS = [

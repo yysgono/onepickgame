@@ -1,3 +1,4 @@
+import quizTranslationHint from "./quizTranslationHint";
 import GameBrandLabel from "./GameBrandLabel";
 import { getGuestQuizCopy } from "./guestQuizCopy";
 import RelatedContentLinks from "./RelatedContentLinks";
@@ -1272,7 +1273,7 @@ export default function QuizDetailPage() {
 
             )}
 
-            <h2 style={{ fontSize: 25, lineHeight: 1.45, margin: "8px 0 18px" }}>{localize(current.question_translations, current.question_text, lang)}</h2>
+            <h2 style={{ fontSize: 25, lineHeight: 1.45, margin: "8px 0 18px" }}>{localize(current.question_translations, current.question_text, lang)}{current.question_type !== "short_answer" && <small style={{ display: "block", fontSize: 16, lineHeight: 1.7, fontWeight: 600, color: "#354f86", marginTop: 10, padding: "12px 16px", background: "#eef3ff", border: "1px solid #c6d4f1", borderRadius: 10 }}>({quizTranslationHint(lang)})</small>}</h2>
 
             {current.question_type === "short_answer" ? (
 

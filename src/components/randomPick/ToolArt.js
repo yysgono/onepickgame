@@ -1,0 +1,17 @@
+import React from 'react';
+// Original vector illustrations; no downloaded icons, fonts or game artwork.
+export default function ToolArt({mode}){
+ const ball=(x,y,r,c,key)=> <g key={key}><circle cx={x} cy={y} r={r} fill={c}/><circle cx={x-r*.25} cy={y-r*.3} r={r*.22} fill="#fff" stroke="none" opacity=".7"/></g>;
+ return <svg viewBox="0 0 240 160" fill="none" stroke="#394568" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><ellipse cx="120" cy="143" rx="76" ry="9" fill="#dde1ee" stroke="none"/>
+ {mode==='pinball'&&<><path d="M60 18h120l16 118H44Z" fill="#ecfff6"/><path d="m70 112 28 10m72-10-28 10" stroke="#ec9e54" strokeWidth="9"/>{[0,1,2].map(y=>[0,1,2,3].map(x=>ball(73+x*31+(y%2)*8,49+y*24,4,'#4bbd9b',`${x}:${y}`)))}{ball(113,34,13,'#fbd477')}</>}
+ {mode==='lotto'&&<><path d="M80 123h80l12 18H68Z" fill="#a486d4"/><circle cx="120" cy="73" r="55" fill="#f3fff9"/>{[[94,93,'#7fc8f8'],[127,100,'#f5b8cc'],[145,74,'#fbd477'],[108,63,'#84d9b6'],[133,40,'#bba8eb']].map(([x,y,c],i)=>ball(x,y,15,c,i))}<path d="M103 124v10h34v-10" fill="#fff"/></>}
+ {mode==='wheel'&&<><path d="M104 124h32l12 17H92Z" fill="#eda96b"/><circle cx="120" cy="77" r="57" fill="#b9ead7"/>{['#fbd477','#9ad8f5','#eebbd1','#c9b7ef','#75cfae','#ffddae'].map((c,i)=><path key={c} d="M120 77 120 20 A57 57 0 0 1 169.36 48.5Z" fill={c} transform={`rotate(${i*60} 120 77)`}/>)}<circle cx="120" cy="77" r="12" fill="#fff"/><path d="m109 13 11 23 11-23Z" fill="#214e43"/></>}
+ {mode==='cards'&&<>{[-18,0,18].map((a,i)=><g key={a} transform={`rotate(${a} 120 120)`}><rect x="83" y="28" width="74" height="104" rx="10" fill={['#91b4ec','#e8e8ff','#e7b5dd'][i]}/><path d="m120 55 16 23-16 23-16-23Z" fill="#fff"/></g>)}</>}
+ {mode==='slots'&&<><rect x="47" y="30" width="146" height="107" rx="18" fill="#b378ba"/><rect x="58" y="54" width="124" height="59" rx="8" fill="#fff"/>{[78,120,162].map(x=><g key={x}><path d={`M${x-8} 70h17l-13 29`} stroke="#eaa54e" strokeWidth="7"/></g>)}<path d="M193 106h15V58"/>{ball(208,48,11,'#f9ca71')}<path d="M74 125h82" stroke="#e7fff4"/></>}
+ {mode==='teams'&&<>{[77,163].map((x,i)=><g key={x}><rect x={x-36} y="76" width="72" height="56" rx="14" fill={i?'#fbd477':'#a0dfc4'}/>{ball(x,49,20,i?'#ffe3aa':'#d5f5e5')}<path d={`m${x-13} 106 10 10 18-22`} stroke="#fff" strokeWidth="6"/></g>)}</>}
+ {mode==='ladder'&&<><path d="M66 28v104M120 28v104M174 28v104M66 55h54m0 30h54m-108 29h54" stroke="#8193c6" strokeWidth="8"/><path d="M66 28v27h54v30h54v47" stroke="#e7ab53" strokeWidth="5"/>{[66,120,174].map(x=>ball(x,22,9,'#fff',x))}</>}
+ {mode==='order'&&<>{[0,1,2].map((i)=><g key={i}><rect x={60+i*7} y={25+i*37} width="120" height="29" rx="8" fill={['#fbd477','#9ad8f5','#b9ead7'][i]}/><circle cx={77+i*7} cy={39+i*37} r="7" fill="#fff" stroke="none"/><path d={`M${96+i*7} ${39+i*37}h57`} stroke="#fff" strokeWidth="5"/></g>)}</>}
+ {mode==='dice'&&<>{[0,1].map((i)=><g key={i} transform={`translate(${i*78} ${i*26}) rotate(${i?12:-10} 80 70)`}><rect x="39" y="23" width="82" height="82" rx="15" fill={i?'#d0eafa':'#fff0cd'}/>{[[58,42],[101,42],[80,64],[58,87],[101,87]].slice(0,i?5:3).map(([x,y],j)=><circle key={j} cx={x} cy={y} r="6" fill="#3b6454" stroke="none"/>)}</g>)}</>}
+ {mode==='boxes'&&<>{[0,1,2,3,4,5].map(i=><g key={i}><rect x={36+i%3*58} y={24+Math.floor(i/3)*57} width="49" height="49" rx="8" fill={['#a5dfc8','#f4cf80','#c6b5e8'][i%3]}/><path d={`M${48+i%3*58} ${47+Math.floor(i/3)*57}h25`} stroke="#fff" strokeWidth="6"/></g>)}</>}
+ </svg>;
+}
