@@ -1,3 +1,6 @@
+import {rememberCandidates} from "./randomPick/previousCandidates";
+import {normalizeCandidates} from "../utils/randomPickCore";
+import {getCopy as getRandomPickCopy} from "./randomPick/copy";
 import { filterCurrentCandidateStats } from "../utils/worldcupCandidateChanges";
 import { readStatsCache, writeStatsCache } from "../utils/statsCache";
 import React, {
@@ -1780,6 +1783,13 @@ const top3 = useMemo(() => {
        </div>
      )}
 
+     <div style={{width:"min(960px, 94vw)",margin:"18px auto",textAlign:"center"}}>
+       <button style={{width:"100%",padding:"20px 16px",border:"2px solid #056b45",borderRadius:12,background:"#078657",color:"#fff",fontSize:18,fontWeight:800,cursor:"pointer"}} onClick={()=>{
+         const candidates=normalizeCandidates(selectedCup?.data,selectedCup?.id);
+         rememberCandidates(candidates,selectedCup?.id);
+         navigate(`/${normalizedLang}/random-pick`);
+       }}>{getRandomPickCopy(normalizedLang).worldcupToRandom}</button>
+     </div>
      {/* 월드컵 탐색 / 티어표 전환 */}
 
 <div

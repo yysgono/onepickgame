@@ -1,5 +1,5 @@
 // One short-lived, bounded snapshot per tab. Never writes to browser storage.
-export function createImportCache({ttl=5*60*1000,maxBytes=200000,now=()=>Date.now()}={}) {
+export function createImportCache({ttl=30*60*1000,maxBytes=200000,now=()=>Date.now()}={}) {
  let entry=null;
  const clone=result=>({...result,rows:result.rows.map(row=>({...row}))});
  return {

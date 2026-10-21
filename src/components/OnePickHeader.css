@@ -152,3 +152,8 @@
 
 .onepick-header-mode.mode-random-pick.is-active{background:#078657}
 .onepick-header-mode.mode-random-pick:not(.is-active):hover{background:#e7f8ef}
+
+/* Slightly larger game-mode icons and names */
+.onepick-header-mode-main{font-size:24px}
+.onepick-header-mode-main svg{width:35px;height:35px}
+@media(max-width:600px){.onepick-header-mode-main{font-size:17px}.onepick-header-mode-main svg{width:27px;height:27px}}

@@ -1,3 +1,4 @@
+import useHeaderLanguage, {rememberHeaderLanguage} from "../utils/useHeaderLanguage";
 import randomPickLabels from "./randomPick/randomPickLabels.json";
 import { Link } from "react-router-dom";
 import "../registerHeaderTranslations";
@@ -59,6 +60,7 @@ export default function Header({
 
   const navigate = useNavigate();
   const location = useLocation();
+  const currentLang = useHeaderLanguage(i18n);
   const inputRef = useRef();
 
   const [showProfile, setShowProfile] =
@@ -298,15 +300,10 @@ export default function Header({
     setShowProfile(false);
   }
 
-  const currentLang =
-    (
-      i18n.language ||
-      "en"
-    ).split("-")[0];
-
   function changeLanguageAndKeepPath(
     lng
   ) {
+    rememberHeaderLanguage(lng);
     try {
       i18n.changeLanguage(lng);
 

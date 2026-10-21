@@ -11,7 +11,7 @@ export default function WheelStage({values,draw,stop,onFinish,copy}){
   function tick(now){if(!live)return;const s=state.current,dt=document.visibilityState==='hidden'?0:Math.min(.05,(now-last)/1000);last=now;
    if(draw&&!s.finished){
     s.elapsed+=dt;
-    if((stop||s.elapsed>=10)&&!s.stop){const distance=TAU*(3+randomInt(0x100000000)/0x100000000);s.stop={from:s.angle,distance,elapsed:0,duration:3*distance/s.velocity};}
+    if((stop||s.elapsed>=5)&&!s.stop){const distance=TAU*(3+randomInt(0x100000000)/0x100000000);s.stop={from:s.angle,distance,elapsed:0,duration:3*distance/s.velocity};}
     if(s.stop){s.stop.elapsed+=dt;const t=Math.min(1,s.stop.elapsed/s.stop.duration);s.angle=s.stop.from+s.stop.distance*(1-(1-t)**3);if(t===1){s.finished=true;callback.current(wheelWinner(values,s.angle),draw.token);}}
     else s.angle+=s.velocity*dt;
    }
