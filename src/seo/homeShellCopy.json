@@ -7,7 +7,7 @@
       "랜덤 뽑기"
     ],
     "create": "이상형 월드컵 만들기",
-    "recent": "최근 만들어진 월드컵"
+    "popular": "인기 이상형 월드컵"
   },
   "en": {
     "modes": [
@@ -17,7 +17,7 @@
       "Random Picker"
     ],
     "create": "Create Bracket",
-    "recent": "Recently Viewed Brackets"
+    "popular": "Popular Brackets"
   },
   "ja": {
     "modes": [
@@ -27,7 +27,7 @@
       "ランダム抽選"
     ],
     "create": "トーナメント作成",
-    "recent": "最近見たトーナメント"
+    "popular": "人気のトーナメント"
   },
   "zh": {
     "modes": [
@@ -37,7 +37,7 @@
       "随机抽签"
     ],
     "create": "创建理想型世界杯",
-    "recent": "最近浏览的理想型世界杯"
+    "popular": "热门淘汰赛"
   },
   "es": {
     "modes": [
@@ -47,7 +47,7 @@
       "Sorteo aleatorio"
     ],
     "create": "Crear torneo",
-    "recent": "Torneos vistos recientemente"
+    "popular": "Torneos populares"
   },
   "fr": {
     "modes": [
@@ -57,7 +57,7 @@
       "Tirage au sort"
     ],
     "create": "Créer un tournoi",
-    "recent": "Tournois consultés récemment"
+    "popular": "Tournois populaires"
   },
   "vi": {
     "modes": [
@@ -67,7 +67,7 @@
       "Bốc thăm ngẫu nhiên"
     ],
     "create": "Tạo giải đấu",
-    "recent": "Giải đấu đã xem gần đây"
+    "popular": "Giải đấu phổ biến"
   },
   "de": {
     "modes": [
@@ -77,7 +77,7 @@
       "Zufallsauswahl"
     ],
     "create": "Turnier erstellen",
-    "recent": "Zuletzt angesehene Turniere"
+    "popular": "Beliebte Turniere"
   },
   "ru": {
     "modes": [
@@ -87,7 +87,7 @@
       "Случайный выбор"
     ],
     "create": "Создать турнир",
-    "recent": "Недавно просмотренные турниры"
+    "popular": "Популярные турниры"
   },
   "id": {
     "modes": [
@@ -97,7 +97,7 @@
       "Pilihan Acak"
     ],
     "create": "Buat turnamen",
-    "recent": "Turnamen yang baru dilihat"
+    "popular": "Turnamen populer"
   },
   "pt": {
     "modes": [
@@ -107,7 +107,7 @@
       "Sorteio aleatório"
     ],
     "create": "Criar torneio",
-    "recent": "Torneios vistos recentemente"
+    "popular": "Torneios populares"
   },
   "hi": {
     "modes": [
@@ -117,7 +117,7 @@
       "रैंडम चयन"
     ],
     "create": "टूर्नामेंट बनाएं",
-    "recent": "हाल ही में देखे गए टूर्नामेंट"
+    "popular": "लोकप्रिय टूर्नामेंट"
   },
   "tr": {
     "modes": [
@@ -127,7 +127,7 @@
       "Rastgele Seçim"
     ],
     "create": "Turnuva oluştur",
-    "recent": "Son görüntülenen turnuvalar"
+    "popular": "Popüler turnuvalar"
   },
   "th": {
     "modes": [
@@ -137,7 +137,7 @@
       "สุ่มเลือก"
     ],
     "create": "สร้างทัวร์นาเมนต์",
-    "recent": "ทัวร์นาเมนต์ที่ดูล่าสุด"
+    "popular": "ทัวร์นาเมนต์ยอดนิยม"
   },
   "ar": {
     "modes": [
@@ -147,7 +147,7 @@
       "اختيار عشوائي"
     ],
     "create": "إنشاء كأس العالم",
-    "recent": "كؤوس العالم التي تمت مشاهدتها مؤخرًا"
+    "popular": "البطولات الشائعة"
   },
   "bn": {
     "modes": [
@@ -157,6 +157,6 @@
       "এলোমেলো বাছাই"
     ],
     "create": "টুর্নামেন্ট তৈরি করুন",
-    "recent": "সাম্প্রতিক দেখা টুর্নামেন্ট"
+    "popular": "জনপ্রিয় টুর্নামেন্ট"
   }
 }

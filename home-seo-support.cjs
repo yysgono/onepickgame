@@ -1,4 +1,4 @@
-// Initial home content only. No candidate data, statistics or image downloads.
+// Initial home content only. No candidate data or image downloads; reuse the existing play-count RPC.
 const escape = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function insertRoot(html, body) {
   const opening = /<div\b[^>]*\bid\s*=\s*(?:"root"|'root'|root(?=[\s>]))[^>]*>/i.exec(html);
@@ -13,19 +13,25 @@ function insertRoot(html, body) {
   }
   throw new Error('SEO shell root closing tag missing');
 }
-function makeRecentLoader(client, now = Date.now) {
+function makePopularLoader(client, now = Date.now) {
   let rows = [], expires = 0, pending;
   return async function load() {
     if (now() < expires) return rows;
     if (pending) return pending;
     pending = (async () => {
       try {
+        const signal = AbortSignal.timeout(1500);
+        const {data:counts,error:countError} = await client.rpc('get_worldcup_play_counts')
+          .order('play_count',{ascending:false}).order('cup_id',{ascending:true}).limit(24).abortSignal(signal);
+        if (countError) throw countError;
+        const ids = [...new Set((counts || []).map(row=>String(row.cup_id || '')).filter(id=>/^[0-9a-f-]{36}$/i.test(id)))];
+        if (!ids.length) { rows=[];expires=now()+300000;return rows; }
         const {data,error} = await client.from('worldcups').select('id,title,title_translations')
-          .is('deleted_at',null).order('created_at',{ascending:false}).order('id',{ascending:false})
-          .limit(6).abortSignal(AbortSignal.timeout(1500));
+          .is('deleted_at',null).in('id',ids).limit(24).abortSignal(signal);
         if (error) throw error;
-        rows = Array.isArray(data) ? data : [];
-        expires = now() + 60000;
+        const byId = new Map((data || []).map(row=>[String(row.id),row]));
+        rows = ids.map(id=>byId.get(id)).filter(Boolean).slice(0,6);
+        expires = now() + 300000;
       } catch { expires = now() + 15000; }
       return rows;
     })();
@@ -58,10 +64,10 @@ function renderHomeBody(rows, lang, copy) {
 </style>
 <header class="home-shell-header"><a class="home-shell-brand" href="${paths[0]}"><img src="/onepick2.png" alt="" width="72" height="72">One Pick Game</a><nav class="home-shell-nav">${ui.modes.map((name,i)=>`<a href="${paths[i]}"${i===0?' aria-current="page"':''}><span aria-hidden="true">${icons[i]}</span>${escape(name)}</a>`).join('')}</nav></header>
 <p class="home-shell-summary">${escape(copy.description)}</p>
-<main class="home-shell-main"><section class="home-shell-intro"><h1>🏆 ${escape(ui.modes[0])}</h1><a class="home-shell-create" href="/${lang}/worldcup-maker">＋ ${escape(ui.create)}</a></section>${links?`<h2 class="home-shell-list-title">${escape(ui.recent)}</h2><ul class="home-shell-list">${links}</ul>`:''}</main></div>`;
+<main class="home-shell-main"><section class="home-shell-intro"><h1>🏆 ${escape(ui.modes[0])}</h1><a class="home-shell-create" href="/${lang}/worldcup-maker">＋ ${escape(ui.create)}</a></section>${links?`<h2 class="home-shell-list-title">${escape(ui.popular)}</h2><ul class="home-shell-list">${links}</ul>`:''}</main></div>`;
 }
 function verifyHome(html) {
   if (!/id="seo-content"/.test(html) || (html.match(/<title\b/gi)||[]).length !== 1 || !/<link\b[^>]*rel=["']canonical["']/i.test(html)) throw new Error('Home SEO output incomplete');
   return html;
 }
-module.exports = {insertRoot, makeRecentLoader, renderHomeBody, verifyHome};
+module.exports = {insertRoot, makePopularLoader, renderHomeBody, verifyHome};

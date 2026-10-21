@@ -1,4 +1,4 @@
-const { insertRoot, makeRecentLoader, renderHomeBody, verifyHome } = require("./home-seo-support.cjs");
+const { insertRoot, makePopularLoader, renderHomeBody, verifyHome } = require("./home-seo-support.cjs");
 const SITE_HOME_COPY = require("./src/seo/siteHomeCopy.json");
 const tierDetailSeo = require("./src/seo/tierDetailSeo.js");
 const { renderDetailLinks } = require("./src/seo/detailLinks.js");
@@ -1198,7 +1198,7 @@ ko: {
 
 // Public client respects RLS; never use the service role for this extra home query.
 const homePublicClient = SUPABASE_ANON_KEY ? createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {auth:{persistSession:false,autoRefreshToken:false}}) : null;
-const loadRecentHome = homePublicClient ? makeRecentLoader(homePublicClient) : async () => [];
+const loadPopularHome = homePublicClient ? makePopularLoader(homePublicClient) : async () => [];
 
 app.use(async (req, res, next) => {
   if (req.query?.seo !== "home") {
@@ -1459,8 +1459,8 @@ ${safeJson(jsonLd)}
      * =====================================================
      */
 
-const recentHomeRows = await loadRecentHome();
-const seoBody = renderHomeBody(recentHomeRows, lang, seo);
+const popularHomeRows = await loadPopularHome();
+const seoBody = renderHomeBody(popularHomeRows, lang, seo);
 html = insertRoot(html, seoBody);
 
     /*
