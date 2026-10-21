@@ -1,3 +1,4 @@
+import SITE_HOME_COPY from "../../seo/siteHomeCopy.json";
 import React, { useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import Home from "../../components/Home";
@@ -36,11 +37,11 @@ export default function TrPage(props) {
   return (
     <>
       <Helmet htmlAttributes={{ lang: "tr" }}>
-        <title>Turnuva ve Eşleşme Oyunu | OnePickGame</title>
+        <title>{SITE_HOME_COPY.tr.title}</title>
 
         <meta
           name="description"
-          content="OnePickGame'de turnuva ve eşleşme oyunları oluşturun ve oynayın. Favorilerinizi seçin, her turda oy verin, kendi turnuvanızı oluşturun ve sonuçları paylaşın."
+          content={SITE_HOME_COPY.tr.description}
         />
 
         <meta
@@ -54,12 +55,12 @@ export default function TrPage(props) {
         {/* Open Graph */}
         <meta
           property="og:title"
-          content="Turnuva ve Eşleşme Oyunu | OnePickGame"
+          content={SITE_HOME_COPY.tr.title}
         />
 
         <meta
           property="og:description"
-          content="OnePickGame'de turnuvalar oluşturun ve oynayın. Favorilerinizi seçin, eşleşmelerde oy verin ve sonuçlarınızı paylaşın."
+          content={SITE_HOME_COPY.tr.description}
         />
 
         <meta property="og:image" content={`${base}/ogimg.png`} />
@@ -79,12 +80,12 @@ export default function TrPage(props) {
 
         <meta
           name="twitter:title"
-          content="Turnuva ve Eşleşme Oyunu | OnePickGame"
+          content={SITE_HOME_COPY.tr.title}
         />
 
         <meta
           name="twitter:description"
-          content="OnePickGame'de kendi turnuvanızı oluşturun, favorilerinize oy verin ve sonuçlarınızı paylaşın."
+          content={SITE_HOME_COPY.tr.description}
         />
 
         <meta name="twitter:image" content={`${base}/ogimg.png`} />

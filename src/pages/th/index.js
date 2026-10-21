@@ -1,3 +1,4 @@
+import SITE_HOME_COPY from "../../seo/siteHomeCopy.json";
 import React, { useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import Home from "../../components/Home";
@@ -36,11 +37,11 @@ export default function ThPage(props) {
   return (
     <>
       <Helmet htmlAttributes={{ lang: "th" }}>
-        <title>เกมทัวร์นาเมนต์และสายการแข่งขัน | OnePickGame</title>
+        <title>{SITE_HOME_COPY.th.title}</title>
 
         <meta
           name="description"
-          content="สร้างและเล่นเกมทัวร์นาเมนต์บน OnePickGame เลือกรายการโปรด โหวตในแต่ละรอบ สร้างสายการแข่งขันของคุณเอง และแชร์ผลลัพธ์กับเพื่อน ๆ"
+          content={SITE_HOME_COPY.th.description}
         />
 
         <meta
@@ -54,12 +55,12 @@ export default function ThPage(props) {
         {/* Open Graph */}
         <meta
           property="og:title"
-          content="เกมทัวร์นาเมนต์และสายการแข่งขัน | OnePickGame"
+          content={SITE_HOME_COPY.th.title}
         />
 
         <meta
           property="og:description"
-          content="สร้างและเล่นเกมทัวร์นาเมนต์บน OnePickGame เลือกรายการโปรด โหวตในแต่ละรอบ และแชร์ผลลัพธ์ของคุณ"
+          content={SITE_HOME_COPY.th.description}
         />
 
         <meta property="og:image" content={`${base}/ogimg.png`} />
@@ -79,12 +80,12 @@ export default function ThPage(props) {
 
         <meta
           name="twitter:title"
-          content="เกมทัวร์นาเมนต์และสายการแข่งขัน | OnePickGame"
+          content={SITE_HOME_COPY.th.title}
         />
 
         <meta
           name="twitter:description"
-          content="สร้างทัวร์นาเมนต์ของคุณเองบน OnePickGame โหวตตัวเลือกที่ชื่นชอบ และแชร์ผลการแข่งขัน"
+          content={SITE_HOME_COPY.th.description}
         />
 
         <meta name="twitter:image" content={`${base}/ogimg.png`} />

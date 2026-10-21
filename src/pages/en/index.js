@@ -1,3 +1,4 @@
+import SITE_HOME_COPY from "../../seo/siteHomeCopy.json";
 import React, { useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import Home from "../../components/Home";
@@ -37,13 +38,11 @@ export default function EnPage(props) {
     <>
       <Helmet htmlAttributes={{ lang: "en" }}>
         {/* 기본 SEO */}
-        <title>
-          OnePickGame | Brackets, Tiers & Quizzes
-        </title>
+        <title>{SITE_HOME_COPY.en.title}</title>
 
         <meta
           name="description"
-          content="Create and play free tournament brackets, tier lists and quizzes on OnePickGame."
+          content={SITE_HOME_COPY.en.description}
         />
 
         <meta
@@ -57,12 +56,12 @@ export default function EnPage(props) {
         {/* Open Graph */}
         <meta
           property="og:title"
-          content="OnePickGame | Brackets, Tiers & Quizzes"
+          content={SITE_HOME_COPY.en.title}
         />
 
         <meta
           property="og:description"
-          content="Create and play free tournament brackets, tier lists and quizzes on OnePickGame."
+          content={SITE_HOME_COPY.en.description}
         />
 
         <meta
@@ -103,12 +102,12 @@ export default function EnPage(props) {
 
         <meta
           name="twitter:title"
-          content="OnePickGame | Brackets, Tiers & Quizzes"
+          content={SITE_HOME_COPY.en.title}
         />
 
         <meta
           name="twitter:description"
-          content="Create and play free tournament brackets, tier lists and quizzes on OnePickGame."
+          content={SITE_HOME_COPY.en.description}
         />
 
         <meta

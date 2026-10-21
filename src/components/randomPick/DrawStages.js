@@ -6,10 +6,10 @@ const colors=['#68caa7','#f5bd67','#d69dcc','#78bcee','#ada2e8','#e98e87'];
 export function CandidatePicture({row}){const [bad,setBad]=useState(false);useEffect(()=>setBad(false),[row?.image]);return row?.image&&!bad?<img src={row.image} alt="" onError={()=>setBad(true)}/>:<span className="rp-picture-text">{row?.name||'?'}</span>;}
 export function CardStage({rows,draw,done,onDone,copy}){
  const [position,setPosition]=useState(0),[animate,setAnimate]=useState(false),callback=useRef(onDone);callback.current=onDone;
- const target=28,duration=6;
+ const target=40,duration=9;
  const cards=draw?reelSequence(draw.pool,draw.winner,target,target+6):rows;
- useEffect(()=>{setAnimate(false);setPosition(0);if(!draw)return;let raf,timer;raf=requestAnimationFrame(()=>{raf=requestAnimationFrame(()=>{setAnimate(true);setPosition(target);});});timer=setTimeout(()=>callback.current(),duration*1000+200);return()=>{cancelAnimationFrame(raf);clearTimeout(timer);};},[draw?.token]);
- return <div className="rp-carousel"><div className="rp-carousel-pointer">▼</div><div className="rp-carousel-track" style={{transform:`translateX(calc(50% - 110px - ${done?target:position} * 238px))`,transition:animate&&!done?`transform ${duration}s cubic-bezier(.12,.5,.12,1)`:'none'}}>{cards.map((row,i)=><article key={`${row.id}:${i}`} className={done&&i===target?'winner':''}><CandidatePicture row={row}/>{row.image&&<strong>{row.name}</strong>}<small>ONE PICK GAME</small></article>)}</div>{!rows.length&&<p className="rp-empty-stage">{copy.minimum}</p>}</div>;
+ useEffect(()=>{setAnimate(false);setPosition(0);if(!draw)return;let first,second,timer;first=requestAnimationFrame(()=>{second=requestAnimationFrame(()=>{setAnimate(true);setPosition(target);});});timer=setTimeout(()=>callback.current(),duration*1000+200);return()=>{cancelAnimationFrame(first);cancelAnimationFrame(second);clearTimeout(timer);};},[draw?.token]);
+ return <div className="rp-carousel"><div className="rp-carousel-pointer">▼</div><div className="rp-carousel-track" style={{transform:`translateX(calc(50% - 110px - ${done?target:position} * 238px))`,transition:animate&&!done?`transform ${duration}s cubic-bezier(.15,.45,.2,1)`:'none'}}>{cards.map((row,i)=><article key={`${row.id}:${i}`} className={done&&i===target?'winner':''}><CandidatePicture row={row}/>{row.image&&<strong>{row.name}</strong>}<small>ONE PICK GAME</small></article>)}</div>{!rows.length&&<p className="rp-empty-stage">{copy.minimum}</p>}</div>;
 }
 const faceTurns={1:[0,0],2:[0,-90],3:[-90,0],4:[90,0],5:[0,90],6:[0,180]};
 const pips={1:[5],2:[1,9],3:[1,5,9],4:[1,3,7,9],5:[1,3,5,7,9],6:[1,3,4,6,7,9]};

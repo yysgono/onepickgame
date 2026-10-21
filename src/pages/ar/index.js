@@ -1,3 +1,4 @@
+import SITE_HOME_COPY from "../../seo/siteHomeCopy.json";
 import React, { useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import Home from "../../components/Home";
@@ -33,11 +34,11 @@ export default function ArPage(props) {
   return (
     <>
       <Helmet htmlAttributes={{ lang: "ar", dir: "rtl" }}>
-        <title>لعبة بطولات ومنافسات بنظام Bracket | OnePickGame</title>
+        <title>{SITE_HOME_COPY.ar.title}</title>
 
         <meta
           name="description"
-          content="أنشئ والعب بطولات ومنافسات بنظام Bracket على OnePickGame. اختر المفضل لديك، صوّت في المواجهات، وشارك نتائجك مع الآخرين."
+          content={SITE_HOME_COPY.ar.description}
         />
 
         <meta
@@ -51,12 +52,12 @@ export default function ArPage(props) {
         {/* Open Graph */}
         <meta
           property="og:title"
-          content="لعبة بطولات ومنافسات بنظام Bracket | OnePickGame"
+          content={SITE_HOME_COPY.ar.title}
         />
 
         <meta
           property="og:description"
-          content="أنشئ والعب بطولات ومنافسات بنظام Bracket على OnePickGame. اختر المفضل لديك، صوّت في المواجهات، وشارك نتائجك."
+          content={SITE_HOME_COPY.ar.description}
         />
 
         <meta property="og:image" content={`${base}/ogimg.png`} />
@@ -74,12 +75,12 @@ export default function ArPage(props) {
 
         <meta
           name="twitter:title"
-          content="لعبة بطولات ومنافسات بنظام Bracket | OnePickGame"
+          content={SITE_HOME_COPY.ar.title}
         />
 
         <meta
           name="twitter:description"
-          content="أنشئ بطولاتك الخاصة على OnePickGame، صوّت للمفضل لديك، والعب منافسات ممتعة وشارك النتائج."
+          content={SITE_HOME_COPY.ar.description}
         />
 
         <meta name="twitter:image" content={`${base}/ogimg.png`} />

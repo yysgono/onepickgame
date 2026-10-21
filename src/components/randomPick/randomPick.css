@@ -93,3 +93,7 @@
 .rp .rp-pinball-stage canvas{height:820px}
 .rp .rp-live-arrivals ol{max-height:360px;min-height:100px;line-height:1.8}
 @media(max-width:700px){.rp .rp-pinball-stage canvas{height:640px}.rp .rp-live-arrivals ol{max-height:300px}}
+
+.rp-featured-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px;margin:24px 0 36px}.rp-featured-grid .rp-mode-art{position:relative}.rp-featured-grid .rp-mode-art>span{font-size:48px;position:absolute;top:12px;left:18px}.rp-featured-movie .rp-mode-art{background:#fff3d5}.rp-featured-anime .rp-mode-art{background:#f6e9ff}.rp-featured-food .rp-mode-art{background:#e4f6ec}.rp-mode p{font-size:15px;line-height:1.65;color:#475569;margin:8px 0 18px}.rp-featured-admin{margin:24px 0;padding:20px;border:2px solid #078657;border-radius:14px}.rp-featured-admin label{display:block;margin:12px 0}.rp-featured-admin textarea{width:100%;box-sizing:border-box;border:2px solid #64748b;border-radius:8px;padding:12px}.rp .rp-heading>p{max-width:1000px;margin:12px auto;line-height:1.8}@media(max-width:700px){.rp-featured-grid{grid-template-columns:1fr}}
+
+.rp .rp-share-link{box-sizing:border-box;width:100%;max-width:800px;border:2px solid #078657;padding:12px;border-radius:8px;margin-top:12px}

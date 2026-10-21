@@ -1,3 +1,4 @@
+import SITE_HOME_COPY from "../../seo/siteHomeCopy.json";
 import React, { useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import Home from "../../components/Home";
@@ -33,11 +34,11 @@ export default function JaPage(props) {
   return (
     <>
       <Helmet htmlAttributes={{ lang: "ja" }}>
-        <title>トーナメント・ブラケットゲーム | OnePickGame</title>
+        <title>{SITE_HOME_COPY.ja.title}</title>
 
         <meta
           name="description"
-          content="OnePickGameでトーナメントやブラケットゲームを作成して遊べます。お気に入りに投票し、対戦を勝ち抜くトーナメントを楽しみ、結果をシェアしましょう。"
+          content={SITE_HOME_COPY.ja.description}
         />
 
         <meta
@@ -51,12 +52,12 @@ export default function JaPage(props) {
         {/* Open Graph */}
         <meta
           property="og:title"
-          content="トーナメント・ブラケットゲーム | OnePickGame"
+          content={SITE_HOME_COPY.ja.title}
         />
 
         <meta
           property="og:description"
-          content="OnePickGameでトーナメントやブラケットゲームを作成して遊ぼう。お気に入りに投票して、結果をシェアできます。"
+          content={SITE_HOME_COPY.ja.description}
         />
 
         <meta property="og:image" content={`${base}/ogimg.png`} />
@@ -76,12 +77,12 @@ export default function JaPage(props) {
 
         <meta
           name="twitter:title"
-          content="トーナメント・ブラケットゲーム | OnePickGame"
+          content={SITE_HOME_COPY.ja.title}
         />
 
         <meta
           name="twitter:description"
-          content="OnePickGameで自分だけのトーナメントを作成し、お気に入りに投票してブラケットゲームを楽しもう。"
+          content={SITE_HOME_COPY.ja.description}
         />
 
         <meta name="twitter:image" content={`${base}/ogimg.png`} />

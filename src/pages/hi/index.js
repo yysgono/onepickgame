@@ -1,3 +1,4 @@
+import SITE_HOME_COPY from "../../seo/siteHomeCopy.json";
 import React, { useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import Home from "../../components/Home";
@@ -33,11 +34,11 @@ export default function HiPage(props) {
   return (
     <>
       <Helmet htmlAttributes={{ lang: "hi" }}>
-        <title>टूर्नामेंट और ब्रैकेट गेम | OnePickGame</title>
+        <title>{SITE_HOME_COPY.hi.title}</title>
 
         <meta
           name="description"
-          content="OnePickGame पर टूर्नामेंट और ब्रैकेट गेम बनाएं और खेलें। अपने पसंदीदा विकल्प चुनें, मुकाबलों में वोट करें, अपना टूर्नामेंट बनाएं और नतीजे शेयर करें।"
+          content={SITE_HOME_COPY.hi.description}
         />
 
         <meta
@@ -51,12 +52,12 @@ export default function HiPage(props) {
         {/* Open Graph */}
         <meta
           property="og:title"
-          content="टूर्नामेंट और ब्रैकेट गेम | OnePickGame"
+          content={SITE_HOME_COPY.hi.title}
         />
 
         <meta
           property="og:description"
-          content="OnePickGame पर टूर्नामेंट और ब्रैकेट गेम बनाएं और खेलें। अपने पसंदीदा विकल्पों को वोट दें और नतीजे शेयर करें।"
+          content={SITE_HOME_COPY.hi.description}
         />
 
         <meta property="og:image" content={`${base}/ogimg.png`} />
@@ -76,12 +77,12 @@ export default function HiPage(props) {
 
         <meta
           name="twitter:title"
-          content="टूर्नामेंट और ब्रैकेट गेम | OnePickGame"
+          content={SITE_HOME_COPY.hi.title}
         />
 
         <meta
           name="twitter:description"
-          content="OnePickGame पर अपना टूर्नामेंट और ब्रैकेट बनाएं, पसंदीदा विकल्पों को वोट दें और अपने नतीजे शेयर करें।"
+          content={SITE_HOME_COPY.hi.description}
         />
 
         <meta name="twitter:image" content={`${base}/ogimg.png`} />

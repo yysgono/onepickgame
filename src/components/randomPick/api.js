@@ -49,3 +49,16 @@ export async function saveRecommendations(ids) {
  const {error}=await supabase.rpc('save_random_pick_recommendations',{p_ids:ids});
  if(error) throw error;
 }
+
+export async function loadFeatured(signal){
+ const {data,error}=await supabase.from('random_pick_featured').select('slot,title,title_translations,candidate_count').abortSignal(signal);
+ if(error)throw error;return data||[];
+}
+export async function loadFeaturedOne(slot,signal){
+ const {data,error}=await supabase.from('random_pick_featured').select('slot,title,title_translations,candidates,source_cup_id').eq('slot',slot).single().abortSignal(signal);
+ if(error)throw error;return data;
+}
+export async function saveFeatured(slot,entry){
+ const {data,error}=await supabase.from('random_pick_featured').update({...entry,updated_at:new Date().toISOString()}).eq('slot',slot).select('slot');
+ if(error||!data?.length)throw error||Error('Not permitted');
+}

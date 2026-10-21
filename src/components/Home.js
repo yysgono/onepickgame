@@ -1,3 +1,4 @@
+import SITE_HOME_COPY from "../seo/siteHomeCopy.json";
 import useWorldcupHomePages from "../hooks/useWorldcupHomePages";
 import PageIntro from "./PageIntro";
 
@@ -170,24 +171,6 @@ const HOME_SIDE_PANEL_COPY = {
   },
 };
 
-const HOME_SEO_SUMMARY_COPY = {
-  ko: "이상형 월드컵 원픽게임은 전 세계 사용자가 함께 즐기는 이상형 월드컵 및 투표 플랫폼입니다. 원픽게임에서 나만의 이상형 월드컵을 만들고, 인기 후보를 비교하며 결과를 공유해보세요.",
-  en: "One Pick Game is a global platform for bracket games, voting, tier lists, and quizzes. Create your own tournament, compare popular candidates, and share the results.",
-  ja: "One Pick Gameは、世界中のユーザーが楽しめるワールドカップ形式の投票・トーナメントプラットフォームです。自分だけのトーナメントを作成し、人気候補を比較して結果を共有できます。",
-  zh: "One Pick Game 是面向全球用户的淘汰赛投票平台。你可以创建自己的主题比赛，比较热门候选，并分享结果。",
-  es: "One Pick Game es una plataforma global para torneos, votaciones, tier lists y quizzes. Crea tu propio torneo, compara candidatos populares y comparte los resultados.",
-  fr: "One Pick Game est une plateforme mondiale de tournois, votes, tier lists et quiz. Créez votre propre tournoi, comparez les candidats populaires et partagez les résultats.",
-  vi: "One Pick Game là nền tảng toàn cầu cho bracket game, bình chọn, tier list và quiz. Tạo giải đấu của riêng bạn, so sánh các ứng viên phổ biến và chia sẻ kết quả.",
-  de: "One Pick Game ist eine globale Plattform für Turniere, Abstimmungen, Tier Lists und Quizze. Erstelle dein eigenes Turnier, vergleiche beliebte Kandidaten und teile Ergebnisse.",
-  ru: "One Pick Game — глобальная платформа для турнирных игр, голосований, тир-листов и квизов. Создавайте свои турниры, сравнивайте популярных кандидатов и делитесь результатами.",
-  id: "One Pick Game adalah platform global untuk bracket game, voting, tier list, dan kuis. Buat turnamen sendiri, bandingkan kandidat populer, lalu bagikan hasilnya.",
-  pt: "One Pick Game é uma plataforma global para torneios, votações, tier lists e quizzes. Crie seu próprio torneio, compare candidatos populares e compartilhe resultados.",
-  hi: "One Pick Game bracket games, voting, tier lists और quizzes के लिए एक global platform है। अपना tournament बनाएं, popular candidates की तुलना करें और results शेयर करें।",
-  tr: "One Pick Game; turnuva oyunları, oylamalar, tier listler ve quizler için global bir platformdur. Kendi turnuvanı oluştur, popüler adayları karşılaştır ve sonuçları paylaş.",
-  th: "One Pick Game คือแพลตฟอร์มระดับโลกสำหรับ bracket game การโหวต tier list และ quiz สร้างทัวร์นาเมนต์ของคุณ เปรียบเทียบตัวเลือกยอดนิยม และแชร์ผลลัพธ์ได้",
-  ar: "One Pick Game منصة عالمية لألعاب البطولات والتصويت وقوائم التصنيف والاختبارات. أنشئ بطولتك، قارن المرشحين الشائعين وشارك النتائج.",
-  bn: "One Pick Game হলো bracket game, voting, tier list এবং quiz-এর জন্য একটি global platform। নিজের tournament তৈরি করুন, popular candidates তুলনা করুন এবং result শেয়ার করুন।",
-};
 
 function formatWorldcupCardDate(value) {
   if (!value) return "-";
@@ -4135,8 +4118,8 @@ const worldcupIntroDescription =
       });
 
 const homeSeoSummary =
-  HOME_SEO_SUMMARY_COPY[lang] ||
-  HOME_SEO_SUMMARY_COPY.en;
+  SITE_HOME_COPY[lang]?.description ||
+  SITE_HOME_COPY.en.description;
 const homeSeoSummaryParts = homeSeoSummary
   .split(/(?<=\.|。|।)\s+/)
   .filter(Boolean);

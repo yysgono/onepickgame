@@ -1,3 +1,4 @@
+import SITE_HOME_COPY from "../../seo/siteHomeCopy.json";
 import React, { useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import Home from "../../components/Home";
@@ -36,11 +37,11 @@ export default function ViPage(props) {
   return (
     <>
       <Helmet htmlAttributes={{ lang: "vi" }}>
-        <title>Trò Chơi Giải Đấu và Bảng Đấu | OnePickGame</title>
+        <title>{SITE_HOME_COPY.vi.title}</title>
 
         <meta
           name="description"
-          content="Tạo và chơi các trò chơi giải đấu trên OnePickGame. Chọn ứng viên yêu thích, bình chọn qua từng vòng, tạo bảng đấu của riêng bạn và chia sẻ kết quả."
+          content={SITE_HOME_COPY.vi.description}
         />
 
         <meta
@@ -54,12 +55,12 @@ export default function ViPage(props) {
         {/* Open Graph */}
         <meta
           property="og:title"
-          content="Trò Chơi Giải Đấu và Bảng Đấu | OnePickGame"
+          content={SITE_HOME_COPY.vi.title}
         />
 
         <meta
           property="og:description"
-          content="Tạo và chơi các giải đấu trên OnePickGame. Chọn ứng viên yêu thích, bình chọn qua từng vòng và chia sẻ kết quả của bạn."
+          content={SITE_HOME_COPY.vi.description}
         />
 
         <meta property="og:image" content={`${base}/ogimg.png`} />
@@ -79,12 +80,12 @@ export default function ViPage(props) {
 
         <meta
           name="twitter:title"
-          content="Trò Chơi Giải Đấu và Bảng Đấu | OnePickGame"
+          content={SITE_HOME_COPY.vi.title}
         />
 
         <meta
           name="twitter:description"
-          content="Tạo giải đấu của riêng bạn trên OnePickGame, bình chọn cho ứng viên yêu thích và chia sẻ kết quả."
+          content={SITE_HOME_COPY.vi.description}
         />
 
         <meta name="twitter:image" content={`${base}/ogimg.png`} />

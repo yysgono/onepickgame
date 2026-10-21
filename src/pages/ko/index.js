@@ -1,3 +1,4 @@
+import SITE_HOME_COPY from "../../seo/siteHomeCopy.json";
 import React, { useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import Home from "../../components/Home";
@@ -15,8 +16,6 @@ export default function KoPage(props) {
 
   const base = "https://www.onepickgame.com";
   const self = `${base}/ko`;
-  const pageTitle = "이상형 월드컵 사이트 · 티어표 · 퀴즈 맞히기 | 원픽게임";
-  const pageDescription = "원픽게임은 이상형 월드컵을 무료로 만들고 즐기는 사이트입니다. 티어표와 퀴즈도 만들고 친구들과 공유해보세요.";
   const pageKeywords =
     "이상형 월드컵, 이상형월드컵, 원픽게임, OnePickGame, 월드컵 만들기, 무료 이상형 월드컵, 티어표, 퀴즈";
 
@@ -41,11 +40,11 @@ export default function KoPage(props) {
   return (
     <>
       <Helmet htmlAttributes={{ lang: "ko" }}>
-        <title>{pageTitle}</title>
+        <title>{SITE_HOME_COPY.ko.title}</title>
 
         <meta
           name="description"
-          content={pageDescription}
+          content={SITE_HOME_COPY.ko.description}
         />
 
         <meta
@@ -64,12 +63,12 @@ export default function KoPage(props) {
         {/* Open Graph */}
         <meta
           property="og:title"
-          content={pageTitle}
+          content={SITE_HOME_COPY.ko.title}
         />
 
         <meta
           property="og:description"
-          content={pageDescription}
+          content={SITE_HOME_COPY.ko.description}
         />
 
         <meta property="og:image" content={`${base}/ogimg.png`} />
@@ -89,12 +88,12 @@ export default function KoPage(props) {
 
         <meta
           name="twitter:title"
-          content={pageTitle}
+          content={SITE_HOME_COPY.ko.title}
         />
 
         <meta
           name="twitter:description"
-          content={pageDescription}
+          content={SITE_HOME_COPY.ko.description}
         />
 
         <meta name="twitter:image" content={`${base}/ogimg.png`} />

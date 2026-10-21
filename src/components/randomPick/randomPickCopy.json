@@ -1,6 +1,6 @@
 {
   "ko": {
-    "intro": "후보를 넣고, 원하는 방식으로 뽑아보세요.",
+    "intro": "이름을 직접 입력하거나 월드컵 후보를 불러와 랜덤으로 뽑아보세요. 룰렛, 공 이름 뽑기, 핀볼, 카드, 사다리, 제비뽑기, 팀 나누기로 선택하는 재미를 즐기고 결과를 공유할 수 있습니다.",
     "choose": "어떻게 뽑을까요?",
     "import": "추천 후보들 불러오기",
     "search": "월드컵 검색",
@@ -42,8 +42,8 @@
     "heading": "랜덤 뽑기 사이트",
     "modes": {
       "pinball": "핀볼 뽑기",
-      "lotto": "랜덤 공 뽑기",
-      "wheel": "돌림판",
+      "lotto": "랜덤 공 이름 뽑기",
+      "wheel": "랜덤 룰렛 뽑기 돌림판",
       "ladder": "사다리 타기",
       "boxes": "제비뽑기",
       "cards": "랜덤 카드 뽑기",
@@ -100,10 +100,28 @@
     "scrollDown": "아래로 이동",
     "importBack": "뒤로가기",
     "worldcupToRandom": "이 월드컵 후보들로 랜덤 뽑기하러 가기",
-    "saveResultImage": "결과 이미지 저장"
+    "saveResultImage": "결과 이미지 저장",
+    "seoTitle": "랜덤 뽑기 룰렛 사이트 | 원픽게임",
+    "featuredTitles": [
+      "랜덤 영화 뽑기",
+      "랜덤 애니 뽑기",
+      "랜덤 음식 뽑기"
+    ],
+    "shareTooLong": "후보 이름이 너무 길어 공유 링크를 만들 수 없습니다. 명단을 줄여 주세요.",
+    "modeDescriptions": {
+      "wheel": "랜덤 룰렛 뽑기 돌림판. 정지를 누르거나 5초가 지나면 서서히 감속합니다. 멈춘 위치로 결과를 결정합니다. 참여할 후보를 체크하세요. 체크를 해제하면 제외돼요.",
+      "lotto": "뽑을 인원은 1명부터 선택한 후보 수까지 설정할 수 있어요. 최대 200개. 숫자를 만들면 기존 후보를 교체합니다.",
+      "pinball": "핀볼 뽑기. 선택한 모든 후보가 실제 충돌 경주에 참여합니다. 전원이 도착할 때까지 진행하고 도착 순서를 기록합니다. 물리 경주는 동일한 당첨 확률을 보장하지 않습니다. 참여할 후보를 체크하세요. 체크를 해제하면 제외돼요.",
+      "ladder": "사다리 타기. 위·아래 내용을 직접 쓰고, 위쪽 후보 버튼을 눌러 이동 경로를 확인하세요. 참여할 후보를 체크하세요. 체크를 해제하면 제외돼요.",
+      "boxes": "박스 수를 정하고 꽝을 추가해보세요. 번호를 누르면 숨겨진 후보 또는 꽝이 나타납니다.",
+      "cards": "이름이나 사진이 담긴 카드가 좌우로 움직이다 멈춥니다. 직접 후보를 넣거나 추천 명단을 불러와 뽑아보세요.",
+      "order": "후보들이 결승선을 향해 달립니다. 도착한 순서대로 전체 순위를 확인하고 결과를 공유하세요.",
+      "dice": "주사위 1~3개를 선택해 굴려보세요. 각 주사위의 눈과 합계를 확인할 수 있습니다.",
+      "teams": "두 후보를 선택해 조건을 추가하세요. 팀별 인원 차이는 최대 1명입니다."
+    }
   },
   "en": {
-    "intro": "Add candidates and choose how to pick.",
+    "intro": "Enter names or import World Cup candidates and let chance choose. Try the wheel, name ball draw, pinball, cards, ladder, lots and team generator, then share the results.",
     "choose": "How will you pick?",
     "import": "Import recommended candidates",
     "search": "Search World Cups",
@@ -145,8 +163,8 @@
     "heading": "Random Picker",
     "modes": {
       "pinball": "Pinball Drop",
-      "lotto": "Draw Machine",
-      "wheel": "Spin the Wheel",
+      "lotto": "Random Name Ball Picker",
+      "wheel": "Random Wheel Spinner",
       "ladder": "Ladder Game",
       "boxes": "Lucky Boxes",
       "cards": "Random Card Picker",
@@ -203,10 +221,28 @@
     "scrollDown": "Scroll down",
     "importBack": "Back",
     "worldcupToRandom": "Random picks with these World Cup candidates",
-    "saveResultImage": "Save result image"
+    "saveResultImage": "Save result image",
+    "seoTitle": "Random Picker & Wheel Spinner | OnePickGame",
+    "featuredTitles": [
+      "Random Movie Picker",
+      "Random Anime Picker",
+      "Random Food Picker"
+    ],
+    "shareTooLong": "The candidate list is too long for a share link. Please shorten it.",
+    "modeDescriptions": {
+      "wheel": "Random Wheel Spinner. Press Stop, or wait 5 seconds for automatic deceleration. The final pointer position determines the result. Check participants. Uncheck to exclude.",
+      "lotto": "Choose between 1 and the number of selected candidates. Up to 200 numbers. A new range replaces the current candidates.",
+      "pinball": "Pinball Drop. All selected candidates take part in the collision race. The race continues until everyone finishes, recording arrival order. Physics races do not guarantee equal winning chances. Check participants. Uncheck to exclude.",
+      "ladder": "Ladder Game. Edit the top and bottom labels, then click a top candidate to trace their path. Check participants. Uncheck to exclude.",
+      "boxes": "Choose the number of boxes and add blanks. Open numbered boxes to reveal candidates or blanks.",
+      "cards": "Name or photo cards slide back and forth before stopping. Add your own candidates or import a list.",
+      "order": "Watch candidates race to the finish. See every finishing position and share the order.",
+      "dice": "Roll one to three dice and see each face and the total.",
+      "teams": "Choose two candidates per rule. Team sizes differ by at most one."
+    }
   },
   "ja": {
-    "intro": "候補を追加して抽選方法を選びましょう。",
+    "intro": "名前を入力するかワールドカップの候補を読み込んで抽選しましょう。ルーレット、ボール抽選、ピンボール、カード、あみだくじ、チーム分けの結果を共有できます。",
     "choose": "抽選方法を選択",
     "import": "おすすめの候補を読み込む",
     "search": "検索",
@@ -248,8 +284,8 @@
     "heading": "ランダム抽選",
     "modes": {
       "pinball": "ピンボール抽選",
-      "lotto": "抽選機",
-      "wheel": "ルーレット",
+      "lotto": "名前ボール抽選",
+      "wheel": "ランダム抽選ルーレット",
       "ladder": "あみだくじ",
       "boxes": "くじ引き",
       "cards": "ランダムカード抽選",
@@ -306,10 +342,28 @@
     "scrollDown": "下へ移動",
     "importBack": "戻る",
     "worldcupToRandom": "この候補でランダム抽選",
-    "saveResultImage": "結果画像を保存"
+    "saveResultImage": "結果画像を保存",
+    "seoTitle": "ランダム抽選・ルーレットサイト | OnePickGame",
+    "featuredTitles": [
+      "映画ランダム抽選",
+      "アニメランダム抽選",
+      "食べ物ランダム抽選"
+    ],
+    "shareTooLong": "The candidate list is too long for a share link. Please shorten it.",
+    "modeDescriptions": {
+      "wheel": "ランダム抽選ルーレット. Slice sizes follow your percentages. Stop slows the wheel down; the final pointer position determines the result. 参加する候補にチェックしてください。",
+      "lotto": "Choose between 1 and the number of selected candidates. Up to 200 numbers. A new range replaces the current candidates.",
+      "pinball": "ピンボール抽選. 選択した全候補が衝突するレースに参加します。最初にゴールした候補が当選します。当選確率の均等は保証されません。 参加する候補にチェックしてください。",
+      "ladder": "あみだくじ. Edit the top and bottom labels, then click a top candidate to trace their path. 参加する候補にチェックしてください。",
+      "boxes": "箱の数を決めてはずれを追加できます。番号を押して候補を確認しましょう。",
+      "cards": "名前や写真のカードが左右に動いて止まります。候補を入力するか読み込んで抽選しましょう。",
+      "order": "候補がゴールへ走ります。全員の到着順を確認して共有しましょう。",
+      "dice": "サイコロを1〜3個選んで振り、各目と合計を確認できます。",
+      "teams": "候補を2人選んで条件を追加。人数差は最大1人です。"
+    }
   },
   "zh": {
-    "intro": "添加候选项，选择抽签方式。",
+    "intro": "输入名字或导入世界杯候选项，让随机抽选帮你决定。尝试转盘、姓名球、弹珠、卡牌、梯子、抽签和分组，并分享结果。",
     "choose": "选择抽签方式",
     "import": "导入推荐候选项",
     "search": "搜索世界杯",
@@ -351,8 +405,8 @@
     "heading": "随机抽签",
     "modes": {
       "pinball": "弹球抽签",
-      "lotto": "抽奖机",
-      "wheel": "幸运转盘",
+      "lotto": "随机姓名球抽选",
+      "wheel": "随机抽奖转盘",
       "ladder": "爬梯抽签",
       "boxes": "抽签盒",
       "cards": "随机卡片抽签",
@@ -409,10 +463,28 @@
     "scrollDown": "向下滚动",
     "importBack": "返回",
     "worldcupToRandom": "使用这些候选项随机抽选",
-    "saveResultImage": "保存结果图片"
+    "saveResultImage": "保存结果图片",
+    "seoTitle": "随机抽签与转盘网站 | OnePickGame",
+    "featuredTitles": [
+      "随机选电影",
+      "随机选动漫",
+      "随机选美食"
+    ],
+    "shareTooLong": "The candidate list is too long for a share link. Please shorten it.",
+    "modeDescriptions": {
+      "wheel": "随机抽奖转盘. Slice sizes follow your percentages. Stop slows the wheel down; the final pointer position determines the result. 勾选参加项，取消勾选即可排除。",
+      "lotto": "Choose between 1 and the number of selected candidates. Up to 200 numbers. A new range replaces the current candidates.",
+      "pinball": "弹球抽签. 所有选中的候选人参与物理碰撞比赛，最先到达终点者获胜。物理比赛不保证相同的获胜概率。 勾选参加项，取消勾选即可排除。",
+      "ladder": "爬梯抽签. Edit the top and bottom labels, then click a top candidate to trace their path. 勾选参加项，取消勾选即可排除。",
+      "boxes": "设置箱子数量并添加空奖。点击编号揭晓候选项或空奖。",
+      "cards": "姓名或照片卡牌左右滑动后停下。输入候选项或导入名单开始抽选。",
+      "order": "观看候选项冲向终点，查看所有名次并分享顺序。",
+      "dice": "选择1至3颗骰子，查看每颗点数及总和。",
+      "teams": "每条规则选择两人。各队人数相差最多一人。"
+    }
   },
   "es": {
-    "intro": "Añade candidatos y elige cómo sortear.",
+    "intro": "Escribe nombres o importa candidatos de un torneo. Prueba la ruleta, bolas con nombres, pinball, cartas, escalera, sorteos y equipos, y comparte el resultado.",
     "choose": "¿Cómo quieres elegir?",
     "import": "Importar candidatos recomendados",
     "search": "Buscar World Cups",
@@ -454,8 +526,8 @@
     "heading": "Sorteo aleatorio",
     "modes": {
       "pinball": "Pinball",
-      "lotto": "Máquina de sorteo",
-      "wheel": "Ruleta",
+      "lotto": "Sorteo de bolas con nombres",
+      "wheel": "Ruleta de selección aleatoria",
       "ladder": "Juego de escaleras",
       "boxes": "Cajas sorpresa",
       "cards": "Sorteo aleatorio de cartas",
@@ -512,10 +584,28 @@
     "scrollDown": "Bajar",
     "importBack": "Atrás",
     "worldcupToRandom": "Sorteo con estos candidatos",
-    "saveResultImage": "Guardar imagen"
+    "saveResultImage": "Guardar imagen",
+    "seoTitle": "Sorteos y Ruleta Aleatoria | OnePickGame",
+    "featuredTitles": [
+      "Película aleatoria",
+      "Anime aleatorio",
+      "Comida aleatoria"
+    ],
+    "shareTooLong": "The candidate list is too long for a share link. Please shorten it.",
+    "modeDescriptions": {
+      "wheel": "Ruleta de selección aleatoria. Slice sizes follow your percentages. Stop slows the wheel down; the final pointer position determines the result. Marca los participantes. Desmarca para excluir.",
+      "lotto": "Choose between 1 and the number of selected candidates. Up to 200 numbers. A new range replaces the current candidates.",
+      "pinball": "Pinball. Todos los participantes seleccionados compiten con colisiones físicas. Gana quien llegue primero. No se garantizan probabilidades iguales. Marca los participantes. Desmarca para excluir.",
+      "ladder": "Juego de escaleras. Edit the top and bottom labels, then click a top candidate to trace their path. Marca los participantes. Desmarca para excluir.",
+      "boxes": "Elige cuántas cajas habrá y añade casillas sin premio. Abre un número para ver el resultado.",
+      "cards": "Las cartas con nombres o fotos se deslizan y se detienen. Añade candidatos o importa una lista.",
+      "order": "Mira la carrera hasta la meta y comparte el orden de llegada de todos.",
+      "dice": "Lanza de uno a tres dados y consulta sus caras y la suma.",
+      "teams": "Elige dos candidatos por regla. La diferencia de tamaño será como máximo uno."
+    }
   },
   "fr": {
-    "intro": "Ajoutez des candidats et choisissez le tirage.",
+    "intro": "Saisissez des noms ou importez les candidats d’un tournoi. Essayez la roue, les boules, le flipper, les cartes, l’échelle et les équipes, puis partagez les résultats.",
     "choose": "Comment choisir ?",
     "import": "Importer les candidats recommandés",
     "search": "Rechercher",
@@ -557,8 +647,8 @@
     "heading": "Tirage au sort",
     "modes": {
       "pinball": "Flipper",
-      "lotto": "Machine de tirage",
-      "wheel": "Roue de la chance",
+      "lotto": "Tirage de boules avec noms",
+      "wheel": "Roue de tirage au sort",
       "ladder": "Jeu des échelles",
       "boxes": "Boîtes surprises",
       "cards": "Tirage aléatoire de cartes",
@@ -615,10 +705,28 @@
     "scrollDown": "Descendre",
     "importBack": "Retour",
     "worldcupToRandom": "Tirage avec ces candidats",
-    "saveResultImage": "Enregistrer l’image"
+    "saveResultImage": "Enregistrer l’image",
+    "seoTitle": "Tirage au sort et Roue aléatoire | OnePickGame",
+    "featuredTitles": [
+      "Film au hasard",
+      "Anime au hasard",
+      "Plat au hasard"
+    ],
+    "shareTooLong": "The candidate list is too long for a share link. Please shorten it.",
+    "modeDescriptions": {
+      "wheel": "Roue de tirage au sort. Slice sizes follow your percentages. Stop slows the wheel down; the final pointer position determines the result. Cochez les participants. Décochez pour exclure.",
+      "lotto": "Choose between 1 and the number of selected candidates. Up to 200 numbers. A new range replaces the current candidates.",
+      "pinball": "Flipper. Tous les participants sélectionnés courent avec des collisions physiques. Le premier à l’arrivée gagne. Les chances ne sont pas garanties égales. Cochez les participants. Décochez pour exclure.",
+      "ladder": "Jeu des échelles. Edit the top and bottom labels, then click a top candidate to trace their path. Cochez les participants. Décochez pour exclure.",
+      "boxes": "Choisissez le nombre de cases et ajoutez des cases perdantes. Ouvrez un numéro pour voir le résultat.",
+      "cards": "Les cartes avec noms ou photos défilent avant de s’arrêter. Saisissez ou importez les candidats.",
+      "order": "Regardez la course et partagez l’ordre d’arrivée de tous les candidats.",
+      "dice": "Lancez un à trois dés et consultez chaque face et le total.",
+      "teams": "Choisissez deux candidats par règle. L’écart entre équipes est de un au maximum."
+    }
   },
   "vi": {
-    "intro": "Thêm ứng viên và chọn cách bốc thăm.",
+    "intro": "Nhập tên hoặc tải ứng viên từ World Cup để chọn ngẫu nhiên. Thử vòng quay, bóng tên, pinball, thẻ, thang, rút thăm và chia đội rồi chia sẻ kết quả.",
     "choose": "Bạn muốn chọn thế nào?",
     "import": "Nhập ứng viên được đề xuất",
     "search": "Tìm World Cup",
@@ -660,8 +768,8 @@
     "heading": "Bốc thăm ngẫu nhiên",
     "modes": {
       "pinball": "Thả bóng",
-      "lotto": "Máy rút thăm",
-      "wheel": "Vòng quay",
+      "lotto": "Bốc bóng tên ngẫu nhiên",
+      "wheel": "Vòng quay bốc thăm ngẫu nhiên",
       "ladder": "Trò chơi bậc thang",
       "boxes": "Hộp may mắn",
       "cards": "Bốc thẻ ngẫu nhiên",
@@ -718,10 +826,28 @@
     "scrollDown": "Cuộn xuống",
     "importBack": "Quay lại",
     "worldcupToRandom": "Bốc thăm với các ứng viên này",
-    "saveResultImage": "Lưu ảnh kết quả"
+    "saveResultImage": "Lưu ảnh kết quả",
+    "seoTitle": "Bốc thăm và Vòng quay ngẫu nhiên | OnePickGame",
+    "featuredTitles": [
+      "Chọn phim ngẫu nhiên",
+      "Chọn anime ngẫu nhiên",
+      "Chọn món ăn ngẫu nhiên"
+    ],
+    "shareTooLong": "The candidate list is too long for a share link. Please shorten it.",
+    "modeDescriptions": {
+      "wheel": "Vòng quay bốc thăm ngẫu nhiên. Slice sizes follow your percentages. Stop slows the wheel down; the final pointer position determines the result. Đánh dấu người tham gia. Bỏ dấu để loại.",
+      "lotto": "Choose between 1 and the number of selected candidates. Up to 200 numbers. A new range replaces the current candidates.",
+      "pinball": "Thả bóng. Mọi ứng viên được chọn đều tham gia cuộc đua có va chạm vật lý. Người về đích đầu tiên thắng. Xác suất thắng không được bảo đảm bằng nhau. Đánh dấu người tham gia. Bỏ dấu để loại.",
+      "ladder": "Trò chơi bậc thang. Edit the top and bottom labels, then click a top candidate to trace their path. Đánh dấu người tham gia. Bỏ dấu để loại.",
+      "boxes": "Chọn số hộp và thêm ô không trúng. Nhấn số để xem ứng viên hoặc ô trống.",
+      "cards": "Thẻ tên hoặc ảnh trượt qua lại rồi dừng. Nhập ứng viên hoặc tải danh sách để bốc thăm.",
+      "order": "Xem các ứng viên đua đến đích và chia sẻ toàn bộ thứ tự về đích.",
+      "dice": "Tung từ một đến ba xúc xắc và xem từng mặt cùng tổng điểm.",
+      "teams": "Chọn hai người cho mỗi quy tắc. Số người giữa các đội lệch tối đa một."
+    }
   },
   "de": {
-    "intro": "Füge Kandidaten hinzu und wähle eine Methode.",
+    "intro": "Gib Namen ein oder importiere Kandidaten aus einem Turnier. Probiere Glücksrad, Namenskugeln, Flipper, Karten, Leiter, Lose und Teams aus und teile die Ergebnisse.",
     "choose": "Wie möchtest du wählen?",
     "import": "Empfohlene Kandidaten importieren",
     "search": "World Cups suchen",
@@ -763,8 +889,8 @@
     "heading": "Zufallsauswahl",
     "modes": {
       "pinball": "Flipper",
-      "lotto": "Ziehungsmaschine",
-      "wheel": "Glücksrad",
+      "lotto": "Zufällige Namenskugel-Ziehung",
+      "wheel": "Zufalls-Glücksrad",
       "ladder": "Leiterspiel",
       "boxes": "Losboxen",
       "cards": "Zufällige Kartenauswahl",
@@ -821,10 +947,28 @@
     "scrollDown": "Nach unten",
     "importBack": "Zurück",
     "worldcupToRandom": "Zufallsauswahl mit diesen Kandidaten",
-    "saveResultImage": "Ergebnisbild speichern"
+    "saveResultImage": "Ergebnisbild speichern",
+    "seoTitle": "Zufallsauswahl & Glücksrad | OnePickGame",
+    "featuredTitles": [
+      "Zufälliger Film",
+      "Zufälliger Anime",
+      "Zufälliges Essen"
+    ],
+    "shareTooLong": "The candidate list is too long for a share link. Please shorten it.",
+    "modeDescriptions": {
+      "wheel": "Zufalls-Glücksrad. Slice sizes follow your percentages. Stop slows the wheel down; the final pointer position determines the result. Teilnehmer markieren. Abwählen zum Ausschließen.",
+      "lotto": "Choose between 1 and the number of selected candidates. Up to 200 numbers. A new range replaces the current candidates.",
+      "pinball": "Flipper. Alle ausgewählten Teilnehmer treten mit physikalischen Kollisionen an. Wer zuerst das Ziel erreicht, gewinnt. Gleiche Gewinnchancen sind nicht garantiert. Teilnehmer markieren. Abwählen zum Ausschließen.",
+      "ladder": "Leiterspiel. Edit the top and bottom labels, then click a top candidate to trace their path. Teilnehmer markieren. Abwählen zum Ausschließen.",
+      "boxes": "Lege die Zahl der Kästchen fest und füge Nieten hinzu. Öffne eine Nummer für das Ergebnis.",
+      "cards": "Namens- oder Bildkarten gleiten hin und her und halten an. Gib Kandidaten ein oder importiere eine Liste.",
+      "order": "Verfolge das Rennen und teile die vollständige Reihenfolge im Ziel.",
+      "dice": "Wirf ein bis drei Würfel und sieh die einzelnen Augen und ihre Summe.",
+      "teams": "Zwei Kandidaten je Regel wählen. Teamgrößen unterscheiden sich höchstens um eins."
+    }
   },
   "ru": {
-    "intro": "Добавьте участников и выберите способ.",
+    "intro": "Введите имена или загрузите кандидатов турнира. Попробуйте колесо, шары с именами, пинбол, карты, лестницу, жребий и команды и поделитесь результатами.",
     "choose": "Как будем выбирать?",
     "import": "Загрузить рекомендуемых участников",
     "search": "Поиск World Cup",
@@ -866,8 +1010,8 @@
     "heading": "Случайный выбор",
     "modes": {
       "pinball": "Пинбол",
-      "lotto": "Лототрон",
-      "wheel": "Колесо удачи",
+      "lotto": "Случайный выбор шара с именем",
+      "wheel": "Колесо случайного выбора",
       "ladder": "Лесенки",
       "boxes": "Коробки удачи",
       "cards": "Случайный выбор карты",
@@ -924,10 +1068,28 @@
     "scrollDown": "Прокрутить вниз",
     "importBack": "Назад",
     "worldcupToRandom": "Жеребьёвка с этими кандидатами",
-    "saveResultImage": "Сохранить изображение"
+    "saveResultImage": "Сохранить изображение",
+    "seoTitle": "Случайный выбор и Колесо удачи | OnePickGame",
+    "featuredTitles": [
+      "Случайный фильм",
+      "Случайное аниме",
+      "Случайное блюдо"
+    ],
+    "shareTooLong": "The candidate list is too long for a share link. Please shorten it.",
+    "modeDescriptions": {
+      "wheel": "Колесо случайного выбора. Slice sizes follow your percentages. Stop slows the wheel down; the final pointer position determines the result. Отметьте участников. Снимите отметку для исключения.",
+      "lotto": "Choose between 1 and the number of selected candidates. Up to 200 numbers. A new range replaces the current candidates.",
+      "pinball": "Пинбол. Все выбранные участники участвуют в гонке с физическими столкновениями. Побеждает первый на финише. Равные шансы не гарантируются. Отметьте участников. Снимите отметку для исключения.",
+      "ladder": "Лесенки. Edit the top and bottom labels, then click a top candidate to trace their path. Отметьте участников. Снимите отметку для исключения.",
+      "boxes": "Выберите число коробок и добавьте пустые. Нажмите номер, чтобы увидеть результат.",
+      "cards": "Карточки с именами или фото движутся и останавливаются. Введите кандидатов или загрузите список.",
+      "order": "Наблюдайте за гонкой и поделитесь полным порядком финиша.",
+      "dice": "Бросьте от одного до трёх кубиков и посмотрите грани и сумму.",
+      "teams": "Выберите двоих для каждого правила. Разница размеров команд — не более одного."
+    }
   },
   "id": {
-    "intro": "Tambahkan peserta dan pilih caranya.",
+    "intro": "Masukkan nama atau impor kandidat World Cup. Coba roda, bola nama, pinball, kartu, tangga, undian dan pembagian tim, lalu bagikan hasilnya.",
     "choose": "Bagaimana cara memilih?",
     "import": "Impor kandidat rekomendasi",
     "search": "Cari World Cup",
@@ -969,8 +1131,8 @@
     "heading": "Pilihan Acak",
     "modes": {
       "pinball": "Pinball",
-      "lotto": "Mesin undian",
-      "wheel": "Roda Putar",
+      "lotto": "Undian Bola Nama Acak",
+      "wheel": "Roda Undian Acak",
       "ladder": "Permainan Tangga",
       "boxes": "Kotak undian",
       "cards": "Pemilih Kartu Acak",
@@ -1027,10 +1189,28 @@
     "scrollDown": "Gulir ke bawah",
     "importBack": "Kembali",
     "worldcupToRandom": "Undi dengan kandidat ini",
-    "saveResultImage": "Simpan gambar hasil"
+    "saveResultImage": "Simpan gambar hasil",
+    "seoTitle": "Pengacak Nama & Roda Undian | OnePickGame",
+    "featuredTitles": [
+      "Film Acak",
+      "Anime Acak",
+      "Makanan Acak"
+    ],
+    "shareTooLong": "The candidate list is too long for a share link. Please shorten it.",
+    "modeDescriptions": {
+      "wheel": "Roda Undian Acak. Slice sizes follow your percentages. Stop slows the wheel down; the final pointer position determines the result. Centang peserta. Hapus centang untuk mengecualikan.",
+      "lotto": "Choose between 1 and the number of selected candidates. Up to 200 numbers. A new range replaces the current candidates.",
+      "pinball": "Pinball. Semua peserta terpilih berlomba dengan tumbukan fisik. Yang pertama mencapai garis akhir menang. Peluang menang tidak dijamin sama. Centang peserta. Hapus centang untuk mengecualikan.",
+      "ladder": "Permainan Tangga. Edit the top and bottom labels, then click a top candidate to trace their path. Centang peserta. Hapus centang untuk mengecualikan.",
+      "boxes": "Atur jumlah kotak dan tambahkan kotak kosong. Klik nomor untuk membuka hasilnya.",
+      "cards": "Kartu nama atau foto bergerak bolak-balik lalu berhenti. Masukkan kandidat atau impor daftar.",
+      "order": "Saksikan perlombaan sampai finis dan bagikan seluruh urutan kedatangan.",
+      "dice": "Lempar satu hingga tiga dadu dan lihat setiap angka serta jumlahnya.",
+      "teams": "Pilih dua kandidat per aturan. Selisih ukuran tim maksimal satu."
+    }
   },
   "pt": {
-    "intro": "Adicione candidatos e escolha como sortear.",
+    "intro": "Digite nomes ou importe candidatos de um torneio. Experimente roleta, bolas com nomes, pinball, cartas, escada, sorteios e equipes e compartilhe os resultados.",
     "choose": "Como deseja escolher?",
     "import": "Importar candidatos recomendados",
     "search": "Buscar World Cups",
@@ -1072,8 +1252,8 @@
     "heading": "Sorteio aleatório",
     "modes": {
       "pinball": "Pinball",
-      "lotto": "Máquina de sorteio",
-      "wheel": "Roleta",
+      "lotto": "Sorteio de Bolas com Nomes",
+      "wheel": "Roleta de Sorteio Aleatório",
       "ladder": "Jogo de escadas",
       "boxes": "Caixas da sorte",
       "cards": "Sorteio aleatório de cartas",
@@ -1130,10 +1310,28 @@
     "scrollDown": "Rolar para baixo",
     "importBack": "Voltar",
     "worldcupToRandom": "Sorteio com estes candidatos",
-    "saveResultImage": "Salvar imagem"
+    "saveResultImage": "Salvar imagem",
+    "seoTitle": "Sorteio Aleatório e Roleta | OnePickGame",
+    "featuredTitles": [
+      "Filme Aleatório",
+      "Anime Aleatório",
+      "Comida Aleatória"
+    ],
+    "shareTooLong": "The candidate list is too long for a share link. Please shorten it.",
+    "modeDescriptions": {
+      "wheel": "Roleta de Sorteio Aleatório. Slice sizes follow your percentages. Stop slows the wheel down; the final pointer position determines the result. Marque os participantes. Desmarque para excluir.",
+      "lotto": "Choose between 1 and the number of selected candidates. Up to 200 numbers. A new range replaces the current candidates.",
+      "pinball": "Pinball. Todos os participantes selecionados competem com colisões físicas. Quem cruzar a chegada primeiro vence. Chances iguais não são garantidas. Marque os participantes. Desmarque para excluir.",
+      "ladder": "Jogo de escadas. Edit the top and bottom labels, then click a top candidate to trace their path. Marque os participantes. Desmarque para excluir.",
+      "boxes": "Escolha o número de caixas e acrescente caixas sem prêmio. Abra um número para ver o resultado.",
+      "cards": "Cartas com nomes ou fotos deslizam até parar. Digite candidatos ou importe uma lista.",
+      "order": "Assista à corrida e compartilhe a ordem de chegada de todos os candidatos.",
+      "dice": "Lance de um a três dados e veja cada face e a soma.",
+      "teams": "Escolha dois candidatos por regra. A diferença entre equipes será de no máximo um."
+    }
   },
   "hi": {
-    "intro": "प्रतिभागी जोड़ें और तरीका चुनें।",
+    "intro": "नाम लिखें या World Cup से उम्मीदवार लाएँ। पहिया, नाम वाली गेंदें, पिनबॉल, कार्ड, सीढ़ी, पर्ची और टीम चयन आज़माएँ और परिणाम साझा करें।",
     "choose": "कैसे चुनेंगे?",
     "import": "सुझाए गए उम्मीदवार जोड़ें",
     "search": "World Cup खोजें",
@@ -1175,8 +1373,8 @@
     "heading": "रैंडम चयन",
     "modes": {
       "pinball": "पिनबॉल",
-      "lotto": "ड्रॉ मशीन",
-      "wheel": "पहिया घुमाएँ",
+      "lotto": "रैंडम नाम गेंद चयन",
+      "wheel": "रैंडम चयन स्पिन व्हील",
       "ladder": "सीढ़ी खेल",
       "boxes": "लकी बॉक्स",
       "cards": "रैंडम कार्ड चयन",
@@ -1233,10 +1431,28 @@
     "scrollDown": "नीचे स्क्रॉल करें",
     "importBack": "वापस",
     "worldcupToRandom": "इन उम्मीदवारों से यादृच्छिक चयन",
-    "saveResultImage": "परिणाम की तस्वीर सहेजें"
+    "saveResultImage": "परिणाम की तस्वीर सहेजें",
+    "seoTitle": "रैंडम चयन और स्पिन व्हील | OnePickGame",
+    "featuredTitles": [
+      "रैंडम फ़िल्म",
+      "रैंडम एनीमे",
+      "रैंडम खाना"
+    ],
+    "shareTooLong": "The candidate list is too long for a share link. Please shorten it.",
+    "modeDescriptions": {
+      "wheel": "रैंडम चयन स्पिन व्हील. Slice sizes follow your percentages. Stop slows the wheel down; the final pointer position determines the result. भाग लेने वालों को चुनें। हटाने के लिए चयन हटाएँ।",
+      "lotto": "Choose between 1 and the number of selected candidates. Up to 200 numbers. A new range replaces the current candidates.",
+      "pinball": "पिनबॉल. सभी चुने गए प्रतिभागी भौतिक टक्करों वाली दौड़ में भाग लेते हैं। पहले पहुँचने वाला जीतता है। जीत की समान संभावना की गारंटी नहीं है। भाग लेने वालों को चुनें। हटाने के लिए चयन हटाएँ।",
+      "ladder": "सीढ़ी खेल. Edit the top and bottom labels, then click a top candidate to trace their path. भाग लेने वालों को चुनें। हटाने के लिए चयन हटाएँ।",
+      "boxes": "बॉक्स की संख्या चुनें और खाली बॉक्स जोड़ें। परिणाम देखने के लिए नंबर दबाएँ।",
+      "cards": "नाम या फोटो वाले कार्ड आगे-पीछे चलकर रुकते हैं। उम्मीदवार लिखें या सूची लाएँ।",
+      "order": "उम्मीदवारों की दौड़ देखें और सभी के पहुँचने का क्रम साझा करें।",
+      "dice": "एक से तीन पासे फेंकें और हर पासे का अंक तथा कुल देखें।",
+      "teams": "हर नियम के लिए दो उम्मीदवार चुनें। टीमों में अधिकतम एक व्यक्ति का अंतर होगा।"
+    }
   },
   "tr": {
-    "intro": "Katılımcıları ekle ve seçim yöntemini belirle.",
+    "intro": "İsimleri yaz veya turnuva adaylarını içe aktar. Çark, isim topları, pinball, kartlar, merdiven, kura ve takım oluşturmayı dene, sonuçları paylaş.",
     "choose": "Nasıl seçeceksin?",
     "import": "Önerilen adayları içe aktar",
     "search": "World Cup ara",
@@ -1278,8 +1494,8 @@
     "heading": "Rastgele Seçim",
     "modes": {
       "pinball": "Pinball",
-      "lotto": "Çekiliş makinesi",
-      "wheel": "Çark Çevir",
+      "lotto": "Rastgele İsim Topu Çekilişi",
+      "wheel": "Rastgele Seçim Çarkı",
       "ladder": "Merdiven Oyunu",
       "boxes": "Şans kutuları",
       "cards": "Rastgele Kart Seçimi",
@@ -1336,10 +1552,28 @@
     "scrollDown": "Aşağı kaydır",
     "importBack": "Geri",
     "worldcupToRandom": "Bu adaylarla rastgele seçim",
-    "saveResultImage": "Sonuç görselini kaydet"
+    "saveResultImage": "Sonuç görselini kaydet",
+    "seoTitle": "Rastgele Seçim ve Çark | OnePickGame",
+    "featuredTitles": [
+      "Rastgele Film",
+      "Rastgele Anime",
+      "Rastgele Yemek"
+    ],
+    "shareTooLong": "The candidate list is too long for a share link. Please shorten it.",
+    "modeDescriptions": {
+      "wheel": "Rastgele Seçim Çarkı. Slice sizes follow your percentages. Stop slows the wheel down; the final pointer position determines the result. Katılımcıları işaretle. Çıkarmak için işareti kaldır.",
+      "lotto": "Choose between 1 and the number of selected candidates. Up to 200 numbers. A new range replaces the current candidates.",
+      "pinball": "Pinball. Seçilen tüm katılımcılar fiziksel çarpışmalarla yarışır. Bitişe ilk ulaşan kazanır. Eşit kazanma olasılığı garanti edilmez. Katılımcıları işaretle. Çıkarmak için işareti kaldır.",
+      "ladder": "Merdiven Oyunu. Edit the top and bottom labels, then click a top candidate to trace their path. Katılımcıları işaretle. Çıkarmak için işareti kaldır.",
+      "boxes": "Kutu sayısını seç ve boş kutu ekle. Sonucu görmek için numaraya bas.",
+      "cards": "İsim veya fotoğraf kartları ileri geri kayıp durur. Aday ekle veya listeyi içe aktar.",
+      "order": "Adayların yarışını izle ve tüm bitiş sırasını paylaş.",
+      "dice": "Bir ila üç zar at ve her yüzü ve toplamı gör.",
+      "teams": "Her kural için iki aday seçin. Takım boyutları en fazla bir kişi farklı olur."
+    }
   },
   "th": {
-    "intro": "เพิ่มผู้เข้าร่วมแล้วเลือกวิธีสุ่ม",
+    "intro": "พิมพ์ชื่อหรือนำเข้าจากเวิลด์คัพ ลองวงล้อ ลูกบอลชื่อ พินบอล ไพ่ บันได จับฉลากและแบ่งทีม แล้วแชร์ผลลัพธ์",
     "choose": "จะสุ่มแบบไหนดี?",
     "import": "นำเข้าผู้เข้าร่วมที่แนะนำ",
     "search": "ค้นหา World Cup",
@@ -1381,8 +1615,8 @@
     "heading": "สุ่มเลือก",
     "modes": {
       "pinball": "พินบอล",
-      "lotto": "เครื่องจับรางวัล",
-      "wheel": "วงล้อสุ่ม",
+      "lotto": "สุ่มลูกบอลรายชื่อ",
+      "wheel": "วงล้อสุ่มเลือก",
       "ladder": "เกมบันได",
       "boxes": "กล่องจับฉลาก",
       "cards": "สุ่มเลือกการ์ด",
@@ -1439,10 +1673,28 @@
     "scrollDown": "เลื่อนลง",
     "importBack": "ย้อนกลับ",
     "worldcupToRandom": "สุ่มด้วยรายชื่อเหล่านี้",
-    "saveResultImage": "บันทึกภาพผลลัพธ์"
+    "saveResultImage": "บันทึกภาพผลลัพธ์",
+    "seoTitle": "เว็บสุ่มเลือกและวงล้อ | OnePickGame",
+    "featuredTitles": [
+      "สุ่มภาพยนตร์",
+      "สุ่มอนิเมะ",
+      "สุ่มอาหาร"
+    ],
+    "shareTooLong": "The candidate list is too long for a share link. Please shorten it.",
+    "modeDescriptions": {
+      "wheel": "วงล้อสุ่มเลือก. Slice sizes follow your percentages. Stop slows the wheel down; the final pointer position determines the result. เลือกผู้เข้าร่วม ยกเลิกเพื่อไม่นำมาสุ่ม",
+      "lotto": "Choose between 1 and the number of selected candidates. Up to 200 numbers. A new range replaces the current candidates.",
+      "pinball": "พินบอล. ผู้เข้าร่วมที่เลือกทุกคนแข่งด้วยการชนทางฟิสิกส์ ผู้เข้าเส้นชัยก่อนชนะ ไม่รับประกันโอกาสชนะที่เท่ากัน เลือกผู้เข้าร่วม ยกเลิกเพื่อไม่นำมาสุ่ม",
+      "ladder": "เกมบันได. Edit the top and bottom labels, then click a top candidate to trace their path. เลือกผู้เข้าร่วม ยกเลิกเพื่อไม่นำมาสุ่ม",
+      "boxes": "กำหนดจำนวนกล่องและเพิ่มกล่องไม่ได้รางวัล กดหมายเลขเพื่อดูผล",
+      "cards": "การ์ดชื่อหรือภาพเลื่อนไปมาแล้วหยุด พิมพ์หรือนำเข้ารายชื่อเพื่อสุ่ม",
+      "order": "ดูรายชื่อแข่งเข้าเส้นชัยแล้วแชร์ลำดับทั้งหมด",
+      "dice": "ทอยลูกเต๋าหนึ่งถึงสามลูก ดูแต้มแต่ละลูกและผลรวม",
+      "teams": "เลือกสองคนต่อเงื่อนไข จำนวนสมาชิกแต่ละทีมต่างกันไม่เกินหนึ่งคน"
+    }
   },
   "ar": {
-    "intro": "أضف المشاركين واختر طريقة السحب.",
+    "intro": "أدخل الأسماء أو استورد مرشحي البطولة. جرّب العجلة وكرات الأسماء والبينبول والبطاقات والسلم والقرعة وتقسيم الفرق ثم شارك النتائج.",
     "choose": "كيف ستختار؟",
     "import": "استيراد المرشحين الموصى بهم",
     "search": "البحث عن World Cup",
@@ -1484,8 +1736,8 @@
     "heading": "اختيار عشوائي",
     "modes": {
       "pinball": "بينبول",
-      "lotto": "آلة السحب",
-      "wheel": "عجلة الحظ",
+      "lotto": "سحب كرات الأسماء عشوائيًا",
+      "wheel": "عجلة الاختيار العشوائي",
       "ladder": "لعبة السلالم",
       "boxes": "صناديق الحظ",
       "cards": "اختيار بطاقة عشوائية",
@@ -1542,10 +1794,28 @@
     "scrollDown": "تمرير لأسفل",
     "importBack": "رجوع",
     "worldcupToRandom": "اختيار عشوائي بهذه الأسماء",
-    "saveResultImage": "حفظ صورة النتيجة"
+    "saveResultImage": "حفظ صورة النتيجة",
+    "seoTitle": "موقع الاختيار العشوائي وعجلة الحظ | OnePickGame",
+    "featuredTitles": [
+      "اختيار فيلم عشوائي",
+      "اختيار أنمي عشوائي",
+      "اختيار طعام عشوائي"
+    ],
+    "shareTooLong": "The candidate list is too long for a share link. Please shorten it.",
+    "modeDescriptions": {
+      "wheel": "عجلة الاختيار العشوائي. Slice sizes follow your percentages. Stop slows the wheel down; the final pointer position determines the result. حدد المشاركين وأزل التحديد للاستبعاد.",
+      "lotto": "Choose between 1 and the number of selected candidates. Up to 200 numbers. A new range replaces the current candidates.",
+      "pinball": "بينبول. يتسابق جميع المشاركين المختارين بتصادمات فيزيائية. يفوز أول من يعبر خط النهاية. لا تُضمن فرص فوز متساوية. حدد المشاركين وأزل التحديد للاستبعاد.",
+      "ladder": "لعبة السلالم. Edit the top and bottom labels, then click a top candidate to trace their path. حدد المشاركين وأزل التحديد للاستبعاد.",
+      "boxes": "حدد عدد الصناديق وأضف صناديق فارغة. اضغط الرقم لكشف النتيجة.",
+      "cards": "تتحرك بطاقات الأسماء أو الصور ثم تتوقف. أدخل المرشحين أو استورد قائمة.",
+      "order": "شاهد السباق وشارك ترتيب وصول جميع المرشحين.",
+      "dice": "ارمِ من نرد واحد إلى ثلاثة واعرض كل وجه والمجموع.",
+      "teams": "اختر مرشحين لكل قاعدة. لا يتجاوز فرق حجم الفرق شخصًا واحدًا."
+    }
   },
   "bn": {
-    "intro": "অংশগ্রহণকারী যোগ করুন এবং পদ্ধতি বাছুন।",
+    "intro": "নাম লিখুন বা World Cup থেকে প্রার্থী আনুন। চাকা, নামের বল, পিনবল, কার্ড, মই, লটারি ও দল ভাগ করে ফলাফল শেয়ার করুন।",
     "choose": "কীভাবে বাছবেন?",
     "import": "প্রস্তাবিত প্রার্থীদের আনুন",
     "search": "World Cup খুঁজুন",
@@ -1587,8 +1857,8 @@
     "heading": "এলোমেলো বাছাই",
     "modes": {
       "pinball": "পিনবল",
-      "lotto": "ড্র মেশিন",
-      "wheel": "চাকা ঘোরান",
+      "lotto": "এলোমেলো নামের বল বাছাই",
+      "wheel": "এলোমেলো বাছাই চাকা",
       "ladder": "সিঁড়ি খেলা",
       "boxes": "লাকি বক্স",
       "cards": "এলোমেলো কার্ড বাছাই",
@@ -1645,6 +1915,24 @@
     "scrollDown": "নিচে স্ক্রল করুন",
     "importBack": "ফিরে যান",
     "worldcupToRandom": "এই প্রার্থীদের দিয়ে এলোমেলো বাছাই",
-    "saveResultImage": "ফলাফলের ছবি সংরক্ষণ"
+    "saveResultImage": "ফলাফলের ছবি সংরক্ষণ",
+    "seoTitle": "এলোমেলো বাছাই ও স্পিন হুইল | OnePickGame",
+    "featuredTitles": [
+      "এলোমেলো চলচ্চিত্র",
+      "এলোমেলো অ্যানিমে",
+      "এলোমেলো খাবার"
+    ],
+    "shareTooLong": "The candidate list is too long for a share link. Please shorten it.",
+    "modeDescriptions": {
+      "wheel": "এলোমেলো বাছাই চাকা. Slice sizes follow your percentages. Stop slows the wheel down; the final pointer position determines the result. অংশগ্রহণকারী নির্বাচন করুন। বাদ দিতে টিক সরান।",
+      "lotto": "Choose between 1 and the number of selected candidates. Up to 200 numbers. A new range replaces the current candidates.",
+      "pinball": "পিনবল. সব নির্বাচিত অংশগ্রহণকারী ভৌত সংঘর্ষসহ দৌড়ে অংশ নেয়। প্রথমে শেষ রেখা পার হওয়া ব্যক্তি জেতে। সমান জয়ের সম্ভাবনা নিশ্চিত নয়। অংশগ্রহণকারী নির্বাচন করুন। বাদ দিতে টিক সরান।",
+      "ladder": "সিঁড়ি খেলা. Edit the top and bottom labels, then click a top candidate to trace their path. অংশগ্রহণকারী নির্বাচন করুন। বাদ দিতে টিক সরান।",
+      "boxes": "বাক্সের সংখ্যা বেছে খালি বাক্স যোগ করুন। ফল দেখতে নম্বর চাপুন।",
+      "cards": "নাম বা ছবির কার্ড সামনে-পেছনে চলে থামে। প্রার্থী লিখুন বা তালিকা আনুন।",
+      "order": "প্রার্থীদের দৌড় দেখুন এবং সবার শেষ করার ক্রম শেয়ার করুন।",
+      "dice": "এক থেকে তিনটি পাশা ছুড়ে প্রতিটি সংখ্যা ও যোগফল দেখুন।",
+      "teams": "প্রতি নিয়মে দুজন বাছুন। দলের আকারের পার্থক্য সর্বোচ্চ একজন।"
+    }
   }
 }

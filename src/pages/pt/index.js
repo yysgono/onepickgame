@@ -1,3 +1,4 @@
+import SITE_HOME_COPY from "../../seo/siteHomeCopy.json";
 import React, { useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import Home from "../../components/Home";
@@ -36,11 +37,11 @@ export default function PtPage(props) {
   return (
     <>
       <Helmet htmlAttributes={{ lang: "pt" }}>
-        <title>Jogo de Torneio e Chaveamento | OnePickGame</title>
+        <title>{SITE_HOME_COPY.pt.title}</title>
 
         <meta
           name="description"
-          content="Crie e jogue torneios e jogos de chaveamento no OnePickGame. Vote nos seus favoritos, monte seu próprio torneio e compartilhe os resultados com seus amigos."
+          content={SITE_HOME_COPY.pt.description}
         />
 
         <meta
@@ -54,12 +55,12 @@ export default function PtPage(props) {
         {/* Open Graph */}
         <meta
           property="og:title"
-          content="Jogo de Torneio e Chaveamento | OnePickGame"
+          content={SITE_HOME_COPY.pt.title}
         />
 
         <meta
           property="og:description"
-          content="Crie e jogue torneios no OnePickGame. Escolha seus favoritos, vote em cada confronto e compartilhe os resultados."
+          content={SITE_HOME_COPY.pt.description}
         />
 
         <meta property="og:image" content={`${base}/ogimg.png`} />
@@ -79,12 +80,12 @@ export default function PtPage(props) {
 
         <meta
           name="twitter:title"
-          content="Jogo de Torneio e Chaveamento | OnePickGame"
+          content={SITE_HOME_COPY.pt.title}
         />
 
         <meta
           name="twitter:description"
-          content="Crie seu próprio torneio no OnePickGame, vote nos seus favoritos e compartilhe os resultados."
+          content={SITE_HOME_COPY.pt.description}
         />
 
         <meta name="twitter:image" content={`${base}/ogimg.png`} />

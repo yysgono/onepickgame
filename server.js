@@ -1,3 +1,4 @@
+const SITE_HOME_COPY = require("./src/seo/siteHomeCopy.json");
 const tierDetailSeo = require("./src/seo/tierDetailSeo.js");
 const { renderDetailLinks } = require("./src/seo/detailLinks.js");
 /// server.js
@@ -65,7 +66,6 @@ const supabase = createClient(
   }
 );
 
-require("./random-pick-routes.cjs")(app, SITE_URL);
 require("./quiz-seo.cjs")(app, supabase, SITE_URL);
 
 const supabaseAdmin =
@@ -1228,9 +1228,7 @@ app.use(async (req, res, next) => {
       .send("Unsupported language");
   }
 
-  const seo =
-    HOME_SEO[lang] ||
-    HOME_SEO.en;
+  const seo = { ...(HOME_SEO[lang] || HOME_SEO.en), ...(SITE_HOME_COPY[lang] || SITE_HOME_COPY.en) };
 
   try {
     let html = await loadSeoTemplate(SITE_URL);
@@ -2613,6 +2611,7 @@ ${safeJson(jsonLd)}
 
 
 // Restore category HTML and known React pages before the final 404 handler.
+require("./random-pick-routes.cjs")(app, SITE_URL);
 require("./category-routes.cjs")(app, supabase, SITE_URL);
 
 

@@ -1,3 +1,4 @@
+import SITE_HOME_COPY from "../../seo/siteHomeCopy.json";
 import React, { useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import Home from "../../components/Home";
@@ -33,11 +34,11 @@ export default function BnPage(props) {
   return (
     <>
       <Helmet htmlAttributes={{ lang: "bn" }}>
-        <title>ভোটিং টুর্নামেন্ট ও ব্র্যাকেট গেম | OnePickGame</title>
+        <title>{SITE_HOME_COPY.bn.title}</title>
 
         <meta
           name="description"
-          content="OnePickGame-এ ভোটিং টুর্নামেন্ট ও ব্র্যাকেট গেম তৈরি করুন এবং খেলুন। আপনার পছন্দের প্রতিযোগী বেছে নিন, ভোট দিন, নিজের টুর্নামেন্ট তৈরি করুন এবং ফলাফল শেয়ার করুন।"
+          content={SITE_HOME_COPY.bn.description}
         />
 
         <meta
@@ -51,12 +52,12 @@ export default function BnPage(props) {
         {/* Open Graph */}
         <meta
           property="og:title"
-          content="ভোটিং টুর্নামেন্ট ও ব্র্যাকেট গেম | OnePickGame"
+          content={SITE_HOME_COPY.bn.title}
         />
 
         <meta
           property="og:description"
-          content="OnePickGame-এ ভোটিং টুর্নামেন্ট ও ব্র্যাকেট গেম খেলুন। পছন্দের প্রতিযোগী বেছে নিন, নিজের টুর্নামেন্ট তৈরি করুন এবং ফলাফল শেয়ার করুন।"
+          content={SITE_HOME_COPY.bn.description}
         />
 
         <meta property="og:image" content={`${base}/ogimg.png`} />
@@ -76,12 +77,12 @@ export default function BnPage(props) {
 
         <meta
           name="twitter:title"
-          content="ভোটিং টুর্নামেন্ট ও ব্র্যাকেট গেম | OnePickGame"
+          content={SITE_HOME_COPY.bn.title}
         />
 
         <meta
           name="twitter:description"
-          content="OnePickGame-এ নিজের ভোটিং টুর্নামেন্ট তৈরি করুন, পছন্দের প্রতিযোগীকে ভোট দিন এবং মজার ব্র্যাকেট গেম খেলুন।"
+          content={SITE_HOME_COPY.bn.description}
         />
 
         <meta name="twitter:image" content={`${base}/ogimg.png`} />

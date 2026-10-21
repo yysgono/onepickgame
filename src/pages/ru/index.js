@@ -1,3 +1,4 @@
+import SITE_HOME_COPY from "../../seo/siteHomeCopy.json";
 import React, { useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import Home from "../../components/Home";
@@ -36,11 +37,11 @@ export default function RuPage(props) {
   return (
     <>
       <Helmet htmlAttributes={{ lang: "ru" }}>
-        <title>Турнирная игра и турнирная сетка | OnePickGame</title>
+        <title>{SITE_HOME_COPY.ru.title}</title>
 
         <meta
           name="description"
-          content="Создавайте и проходите турниры на OnePickGame. Выбирайте фаворитов, голосуйте в каждом раунде, создавайте свою турнирную сетку и делитесь результатами."
+          content={SITE_HOME_COPY.ru.description}
         />
 
         <meta
@@ -54,12 +55,12 @@ export default function RuPage(props) {
         {/* Open Graph */}
         <meta
           property="og:title"
-          content="Турнирная игра и турнирная сетка | OnePickGame"
+          content={SITE_HOME_COPY.ru.title}
         />
 
         <meta
           property="og:description"
-          content="Создавайте и проходите турниры на OnePickGame. Выбирайте фаворитов, голосуйте в каждом раунде и делитесь результатами."
+          content={SITE_HOME_COPY.ru.description}
         />
 
         <meta property="og:image" content={`${base}/ogimg.png`} />
@@ -79,12 +80,12 @@ export default function RuPage(props) {
 
         <meta
           name="twitter:title"
-          content="Турнирная игра и турнирная сетка | OnePickGame"
+          content={SITE_HOME_COPY.ru.title}
         />
 
         <meta
           name="twitter:description"
-          content="Создайте свой турнир на OnePickGame, голосуйте за фаворитов и делитесь результатами."
+          content={SITE_HOME_COPY.ru.description}
         />
 
         <meta name="twitter:image" content={`${base}/ogimg.png`} />

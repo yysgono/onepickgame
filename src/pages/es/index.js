@@ -1,3 +1,4 @@
+import SITE_HOME_COPY from "../../seo/siteHomeCopy.json";
 import React, { useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import Home from "../../components/Home";
@@ -33,11 +34,11 @@ export default function EsPage(props) {
   return (
     <>
       <Helmet htmlAttributes={{ lang: "es" }}>
-        <title>Juego de Torneos y Brackets | OnePickGame</title>
+        <title>{SITE_HOME_COPY.es.title}</title>
 
         <meta
           name="description"
-          content="Crea y juega torneos y brackets en OnePickGame. Elige a tus favoritos, vota en cada enfrentamiento, crea tus propios torneos y comparte los resultados."
+          content={SITE_HOME_COPY.es.description}
         />
 
         <meta
@@ -51,12 +52,12 @@ export default function EsPage(props) {
         {/* Open Graph */}
         <meta
           property="og:title"
-          content="Juego de Torneos y Brackets | OnePickGame"
+          content={SITE_HOME_COPY.es.title}
         />
 
         <meta
           property="og:description"
-          content="Crea y juega torneos y brackets en OnePickGame. Vota por tus favoritos, disfruta de cada enfrentamiento y comparte tus resultados."
+          content={SITE_HOME_COPY.es.description}
         />
 
         <meta property="og:image" content={`${base}/ogimg.png`} />
@@ -76,12 +77,12 @@ export default function EsPage(props) {
 
         <meta
           name="twitter:title"
-          content="Juego de Torneos y Brackets | OnePickGame"
+          content={SITE_HOME_COPY.es.title}
         />
 
         <meta
           name="twitter:description"
-          content="Crea tus propios torneos y brackets en OnePickGame, vota por tus favoritos y comparte los resultados."
+          content={SITE_HOME_COPY.es.description}
         />
 
         <meta name="twitter:image" content={`${base}/ogimg.png`} />

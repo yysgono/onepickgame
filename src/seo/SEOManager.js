@@ -30,10 +30,12 @@ export default function SEOManager() {
     "tier-list",
     "tier-list/create",
     "quiz",
+    "random-pick",
   ]);
 
   // 색인을 허용하는 동적 경로
   const ALLOW_PATTERNS = [
+    /^random-pick\/(wheel|lotto|pinball|ladder|boxes|cards|order|dice|teams)$/,
     /^blog\/[^/]+$/,
     /^notice\/[^/]+$/,
     /^category\/[^/]+$/,

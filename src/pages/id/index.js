@@ -1,3 +1,4 @@
+import SITE_HOME_COPY from "../../seo/siteHomeCopy.json";
 import React, { useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import Home from "../../components/Home";
@@ -33,11 +34,11 @@ export default function IdPage(props) {
   return (
     <>
       <Helmet htmlAttributes={{ lang: "id" }}>
-        <title>Game Turnamen dan Bracket | OnePickGame</title>
+        <title>{SITE_HOME_COPY.id.title}</title>
 
         <meta
           name="description"
-          content="Buat dan mainkan game turnamen dan bracket di OnePickGame. Pilih favoritmu, beri suara dalam setiap pertandingan, buat turnamen sendiri, dan bagikan hasilnya."
+          content={SITE_HOME_COPY.id.description}
         />
 
         <meta
@@ -51,12 +52,12 @@ export default function IdPage(props) {
         {/* Open Graph */}
         <meta
           property="og:title"
-          content="Game Turnamen dan Bracket | OnePickGame"
+          content={SITE_HOME_COPY.id.title}
         />
 
         <meta
           property="og:description"
-          content="Buat dan mainkan game turnamen dan bracket di OnePickGame. Pilih favoritmu, beri suara, dan bagikan hasil turnamenmu."
+          content={SITE_HOME_COPY.id.description}
         />
 
         <meta property="og:image" content={`${base}/ogimg.png`} />
@@ -76,12 +77,12 @@ export default function IdPage(props) {
 
         <meta
           name="twitter:title"
-          content="Game Turnamen dan Bracket | OnePickGame"
+          content={SITE_HOME_COPY.id.title}
         />
 
         <meta
           name="twitter:description"
-          content="Buat turnamen dan bracket sendiri di OnePickGame, pilih favoritmu, beri suara, dan bagikan hasilnya."
+          content={SITE_HOME_COPY.id.description}
         />
 
         <meta name="twitter:image" content={`${base}/ogimg.png`} />

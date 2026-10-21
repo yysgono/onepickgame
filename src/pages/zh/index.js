@@ -1,3 +1,4 @@
+import SITE_HOME_COPY from "../../seo/siteHomeCopy.json";
 import React, { useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import Home from "../../components/Home";
@@ -36,11 +37,11 @@ export default function ZhPage(props) {
   return (
     <>
       <Helmet htmlAttributes={{ lang: "zh" }}>
-        <title>淘汰赛游戏和对阵表 | OnePickGame</title>
+        <title>{SITE_HOME_COPY.zh.title}</title>
 
         <meta
           name="description"
-          content="在 OnePickGame 创建和游玩淘汰赛游戏。选择你最喜欢的选项，在每轮对决中投票，创建自己的对阵表，并与朋友分享最终结果。"
+          content={SITE_HOME_COPY.zh.description}
         />
 
         <meta
@@ -54,12 +55,12 @@ export default function ZhPage(props) {
         {/* Open Graph */}
         <meta
           property="og:title"
-          content="淘汰赛游戏和对阵表 | OnePickGame"
+          content={SITE_HOME_COPY.zh.title}
         />
 
         <meta
           property="og:description"
-          content="在 OnePickGame 创建和游玩淘汰赛游戏，选择你最喜欢的选项，在每轮对决中投票并分享最终结果。"
+          content={SITE_HOME_COPY.zh.description}
         />
 
         <meta property="og:image" content={`${base}/ogimg.png`} />
@@ -79,12 +80,12 @@ export default function ZhPage(props) {
 
         <meta
           name="twitter:title"
-          content="淘汰赛游戏和对阵表 | OnePickGame"
+          content={SITE_HOME_COPY.zh.title}
         />
 
         <meta
           name="twitter:description"
-          content="在 OnePickGame 创建自己的淘汰赛，为喜欢的选项投票，并分享最终结果。"
+          content={SITE_HOME_COPY.zh.description}
         />
 
         <meta name="twitter:image" content={`${base}/ogimg.png`} />
