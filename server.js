@@ -1,3 +1,4 @@
+const { insertRoot, makeRecentLoader, renderHomeBody, verifyHome } = require("./home-seo-support.cjs");
 const SITE_HOME_COPY = require("./src/seo/siteHomeCopy.json");
 const tierDetailSeo = require("./src/seo/tierDetailSeo.js");
 const { renderDetailLinks } = require("./src/seo/detailLinks.js");
@@ -1195,21 +1196,9 @@ ko: {
  * =====================================================
  */
 
-const FEATURED_WORLDCUP_IDS = [
-  "70e27e0e-1112-4785-b2f6-7aee5f508b0e",
-  "2142cd10-468b-4fd9-8bf3-a09c4aeffc77",
-  "db749ee3-2de3-4ceb-a5e8-e5ed239e9167",
-  "4e2f1bfd-8ecc-4fd7-a9de-be369c370bf4",
-  "172f7127-cc23-40bb-92f0-188d7fb90670",
-  "d3cece18-68d7-4ecf-ad40-b08bd44ca992",
-  "9e9495b4-9f16-4f0e-b615-d6df55c78d4a",
-  "b83f8f15-2935-480f-9e87-f7e4275e83a6",
-  "c257e2f1-7b2f-4a32-b9c6-6093755f58b8",
-  "90af1d97-559b-4706-8878-e878dc3cd43f",
-  "d389ef73-bb86-46ba-b7f6-6c3e454271e8",
-  "3828b32f-ecaf-4d60-bca7-1c09e5527394",
-  "91b47d8c-72ec-4f4d-94bf-b88537d7da02",
-];
+// Public client respects RLS; never use the service role for this extra home query.
+const homePublicClient = SUPABASE_ANON_KEY ? createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {auth:{persistSession:false,autoRefreshToken:false}}) : null;
+const loadRecentHome = homePublicClient ? makeRecentLoader(homePublicClient) : async () => [];
 
 app.use(async (req, res, next) => {
   if (req.query?.seo !== "home") {
@@ -1470,128 +1459,9 @@ ${safeJson(jsonLd)}
      * =====================================================
      */
 
-    const HOME_BODY_TEXT = {
-      ko: {
-        h1: "원픽게임 — 이상형 월드컵·티어표·퀴즈",
-        intro:
-          "OnePickGame에서 다양한 이상형 월드컵과 토너먼트 게임을 즐겨보세요. 좋아하는 후보를 선택해 최종 우승자를 결정하고, 직접 이상형 월드컵을 만들어 친구들과 공유할 수 있습니다.",
-        playTitle: "이상형 월드컵 즐기기",
-        playText:
-          "애니메이션, 게임, 스포츠, 연예인 등 다양한 주제의 이상형 월드컵에서 후보들을 비교하고 나만의 최애를 선택해보세요.",
-            featuredTitle: "추천 이상형 월드컵",
-        createTitle: "나만의 이상형 월드컵 만들기",
-        createText:
-          "원하는 후보와 이미지를 등록해 직접 토너먼트를 만들고 다른 사람들과 공유할 수 있습니다.",
-      },
-
-      en: {
-        h1: "OnePickGame — Brackets, Tier Lists & Quizzes",
-        intro:
-          "Play tournament bracket games on OnePickGame. Compare your favorite characters, celebrities, games, sports stars, and more to choose the ultimate winner.",
-        playTitle: "Play Tournament Bracket Games",
-        playText:
-          "Explore tournament brackets across anime, games, sports, celebrities, and many other topics. Choose your favorite in each matchup and find your ultimate winner.",
-       featuredTitle: "Featured Tournament Brackets",
-          createTitle: "Create Your Own Tournament",
-        createText:
-          "Create your own bracket with custom candidates and images, then share it with friends and other players.",
-      },
-
-      ja: {
-        h1: "理想のタイプワールドカップ・トーナメント",
-        intro:
-          "OnePickGameでさまざまな理想のタイプワールドカップやトーナメントを楽しもう。お気に入りの候補を選び、最後の優勝者を決めることができます。",
-        playTitle: "トーナメントを楽しむ",
-        playText:
-          "アニメ、ゲーム、スポーツ、芸能人など、さまざまなテーマの候補を比較して自分だけのお気に入りを選ぼう。",
-       featuredTitle: "おすすめトーナメント",
-          createTitle: "自分だけのトーナメントを作成",
-        createText:
-          "好きな候補と画像を登録してオリジナルのトーナメントを作成し、他のユーザーと共有できます。",
-      },
-
-      zh: {
-        h1: "理想型世界杯・淘汰赛游戏",
-        intro:
-          "在OnePickGame体验各种理想型世界杯和淘汰赛游戏。比较你喜欢的角色、明星、游戏和体育选手，选出最终冠军。",
-        playTitle: "体验淘汰赛游戏",
-        playText:
-          "探索动漫、游戏、体育、明星等不同主题的淘汰赛，在每轮对决中选择你更喜欢的候选人。",
-      featuredTitle: "推荐淘汰赛",
-          createTitle: "创建自己的淘汰赛",
-        createText:
-          "添加自己喜欢的候选人和图片，创建专属淘汰赛并与其他玩家分享。",
-      },
-    };
-
-const defaultHomeBody = {
-  h1: seo.title.replace(/\s*\|\s*OnePickGame\s*$/i, ""),
-  intro: seo.description,
-  playTitle: "Tournament Bracket Games",
-  playText:
-    "Compare candidates in head-to-head matchups, choose your favorites, and discover your ultimate winner.",
-  featuredTitle: "Featured Tournament Brackets",
-  createTitle: "Create Your Own Tournament",
-  createText:
-    "Create your own tournament bracket with custom candidates and share it with other players.",
-};
-    const homeBody =
-      HOME_BODY_TEXT[lang] ||
-      defaultHomeBody;
-
-const seoBody = `
-<main
-  id="seo-content"
-  style="
-    position:absolute;
-    width:1px;
-    height:1px;
-    overflow:hidden;
-    clip:rect(0 0 0 0);
-    white-space:nowrap;
-  "
->
-  <article>
-
-    <h1>
-      ${escapeHtml(homeBody.h1)}
-    </h1>
-
-    <p>
-      ${escapeHtml(homeBody.intro)}
-    </p>
-
-    <section>
-      <h2>
-        ${escapeHtml(homeBody.playTitle)}
-      </h2>
-
-      <p>
-        ${escapeHtml(homeBody.playText)}
-      </p>
-    </section>
-    <section>
-      <h2>
-        ${escapeHtml(homeBody.createTitle)}
-      </h2>
-
-      <p>
-        ${escapeHtml(homeBody.createText)}
-      </p>
-    </section>
-
-  </article>
-</main>
-`;
-
-    /*
-     * 기존 Loading 화면을 서버 SEO 콘텐츠로 교체
-     */
-
-    html = html.replace(
-      /<div\s+id=["']root["']>\s*<div\s+class=["']loading-screen["']>\s*Loading\.\.\.\s*<\/div>\s*<\/div>/i,
-      `<div id="root">${seoBody}</div>`
-    );
+const recentHomeRows = await loadRecentHome();
+const seoBody = renderHomeBody(recentHomeRows, lang, seo);
+html = insertRoot(html, seoBody);
 
     /*
      * SEO head 삽입
@@ -1601,6 +1471,8 @@ html = html.replace(
   "</head>",
   `${seoHead}\n</head>`
 );
+
+    verifyHome(html);
 
     res.setHeader(
       "Cache-Control",

@@ -106,3 +106,11 @@
 .rp-mode-description>span{display:block}
 .rp-modes>.rp-mode>.rp-mode-start{margin-top:auto;flex-shrink:0}
 @media(max-width:600px){.rp-modes>.rp-mode>.rp-mode-description{padding:0 12px}}
+
+/* Mobile: configure candidates first, then play. */
+@media(max-width:800px){
+  .rp .rp-tool-nav{display:none}
+  .rp .rp-workspace{display:flex;flex-direction:column;gap:20px;min-width:0}
+  .rp .rp-workspace>.rp-editor{order:-1;width:100%;min-width:0;max-width:none}
+  .rp .rp-workspace>.rp-play{order:0;width:100%;min-width:0}
+}
