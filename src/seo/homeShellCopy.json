@@ -1,0 +1,162 @@
+{
+  "ko": {
+    "modes": [
+      "이상형 월드컵",
+      "티어표",
+      "퀴즈 맞히기",
+      "랜덤 뽑기"
+    ],
+    "create": "이상형 월드컵 만들기",
+    "recent": "최근 만들어진 월드컵"
+  },
+  "en": {
+    "modes": [
+      "Bracket",
+      "Tier List",
+      "Quiz",
+      "Random Picker"
+    ],
+    "create": "Create Bracket",
+    "recent": "Recently Viewed Brackets"
+  },
+  "ja": {
+    "modes": [
+      "トーナメント",
+      "Tier表",
+      "クイズ",
+      "ランダム抽選"
+    ],
+    "create": "トーナメント作成",
+    "recent": "最近見たトーナメント"
+  },
+  "zh": {
+    "modes": [
+      "淘汰赛",
+      "等级榜",
+      "竞猜",
+      "随机抽签"
+    ],
+    "create": "创建理想型世界杯",
+    "recent": "最近浏览的理想型世界杯"
+  },
+  "es": {
+    "modes": [
+      "Torneo",
+      "Tier List",
+      "Quiz",
+      "Sorteo aleatorio"
+    ],
+    "create": "Crear torneo",
+    "recent": "Torneos vistos recientemente"
+  },
+  "fr": {
+    "modes": [
+      "Tournoi",
+      "Tier List",
+      "Quiz",
+      "Tirage au sort"
+    ],
+    "create": "Créer un tournoi",
+    "recent": "Tournois consultés récemment"
+  },
+  "vi": {
+    "modes": [
+      "Đấu loại",
+      "Tier List",
+      "Đố vui",
+      "Bốc thăm ngẫu nhiên"
+    ],
+    "create": "Tạo giải đấu",
+    "recent": "Giải đấu đã xem gần đây"
+  },
+  "de": {
+    "modes": [
+      "Turnier",
+      "Tier-Liste",
+      "Quiz",
+      "Zufallsauswahl"
+    ],
+    "create": "Turnier erstellen",
+    "recent": "Zuletzt angesehene Turniere"
+  },
+  "ru": {
+    "modes": [
+      "Турнир",
+      "Тир-лист",
+      "Викторина",
+      "Случайный выбор"
+    ],
+    "create": "Создать турнир",
+    "recent": "Недавно просмотренные турниры"
+  },
+  "id": {
+    "modes": [
+      "Turnamen",
+      "Tier List",
+      "Kuis",
+      "Pilihan Acak"
+    ],
+    "create": "Buat turnamen",
+    "recent": "Turnamen yang baru dilihat"
+  },
+  "pt": {
+    "modes": [
+      "Torneio",
+      "Tier List",
+      "Quiz",
+      "Sorteio aleatório"
+    ],
+    "create": "Criar torneio",
+    "recent": "Torneios vistos recentemente"
+  },
+  "hi": {
+    "modes": [
+      "टूर्नामेंट",
+      "टियर लिस्ट",
+      "क्विज़",
+      "रैंडम चयन"
+    ],
+    "create": "टूर्नामेंट बनाएं",
+    "recent": "हाल ही में देखे गए टूर्नामेंट"
+  },
+  "tr": {
+    "modes": [
+      "Turnuva",
+      "Tier Listesi",
+      "Quiz",
+      "Rastgele Seçim"
+    ],
+    "create": "Turnuva oluştur",
+    "recent": "Son görüntülenen turnuvalar"
+  },
+  "th": {
+    "modes": [
+      "ทัวร์นาเมนต์",
+      "Tier List",
+      "ควิซ",
+      "สุ่มเลือก"
+    ],
+    "create": "สร้างทัวร์นาเมนต์",
+    "recent": "ทัวร์นาเมนต์ที่ดูล่าสุด"
+  },
+  "ar": {
+    "modes": [
+      "بطولة",
+      "قائمة مستويات",
+      "اختبار",
+      "اختيار عشوائي"
+    ],
+    "create": "إنشاء كأس العالم",
+    "recent": "كؤوس العالم التي تمت مشاهدتها مؤخرًا"
+  },
+  "bn": {
+    "modes": [
+      "টুর্নামেন্ট",
+      "Tier List",
+      "কুইজ",
+      "এলোমেলো বাছাই"
+    ],
+    "create": "টুর্নামেন্ট তৈরি করুন",
+    "recent": "সাম্প্রতিক দেখা টুর্নামেন্ট"
+  }
+}
