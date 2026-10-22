@@ -157,35 +157,15 @@ function sendYoutubeCommand(
   }
 }
 
-function MediaFallback({
-  alt,
-  style = {},
-}) {
-  const { t } = useTranslation();
-
-  return (
-    <img
-      src={DEFAULT_IMAGE}
-      alt={
-        alt ||
-        t(
-          "default_thumbnail",
-          "Default thumbnail"
-        )
-      }
-      style={{
-        width: "100%",
-        height: "100%",
-        objectFit: "cover",
-        background: "#ffffff",
-        display: "block",
-        ...style,
-      }}
-      draggable={false}
-      loading="lazy"
-      decoding="async"
-    />
-  );
+function MediaFallback({alt,style={}}) {
+  const {t}=useTranslation();
+  const name=alt||t("default_thumbnail","Default thumbnail");
+  return <div className="media-name-fallback" role="img" aria-label={name} style={{
+    width:"100%",height:"100%",...style,background:"#08090b",color:"#fff",
+    display:"flex",alignItems:"center",justifyContent:"center",textAlign:"center",
+    padding:12,boxSizing:"border-box",overflow:"hidden",fontFamily:"inherit",fontWeight:750,
+    lineHeight:1.45,fontSize:"clamp(12px,2.2vw,28px)",overflowWrap:"anywhere"
+  }}><span>{name}</span></div>;
 }
 
 function PlayOverlay() {

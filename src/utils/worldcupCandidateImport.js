@@ -22,7 +22,7 @@ export function mergeImportedCandidates(existing, selected, makeId, max = 3000) 
     const signature=key({name,image});
     if (seen.has(signature)) { duplicates++;continue; }
     if (rows.length>=max) { overflow++;continue; }
-    rows.push({id:makeId(),name,image,file:null});seen.add(signature);added++;
+    rows.push({id:makeId(),name,image,file:null,image_reused:true});seen.add(signature);added++;
   }
   return {rows:rows.length?rows:existing,added,duplicates,overflow};
 }

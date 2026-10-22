@@ -1,3 +1,4 @@
+import { deleteWorldcupGame as deleteWorldcupAndImages } from "./supabaseWorldcupApi";
 import { supabase } from "./supabaseClient";
 
 // 유튜브 등 부가함수
@@ -76,11 +77,7 @@ export async function updateWorldcupGame(id, updates) {
   return true;
 }
 export async function deleteWorldcupGame(id) {
-  const { error } = await supabase
-    .from("worldcups")
-    .delete()
-    .eq("id", id);
-  if (error) throw error;
+  await deleteWorldcupAndImages(id);
   return true;
 }
 

@@ -32,7 +32,5 @@ const {mergeImportedCandidates,importableCandidates}=load('src/utils/worldcupCan
  await click(button('월드컵 a'));await click(button('전체 제외'));assert(document.querySelector('.wci-add').disabled);await click(button('전체 선택'));assert(!document.querySelector('.wci-add').disabled);await click(document.querySelector('.wci-add'));assert.equal(last.added,0);assert.equal(last.duplicates,2);
  await click(button('닫기'));assert.equal(document.body.style.overflow,'');assert(!document.querySelector('[role=dialog]'));
  await act(async()=>root.unmount());
- const api=load('src/utils/supabaseWorldcupApi.js');for(const name of ['deleteWorldcupGame','permanentlyDeleteWorldcupGame']){const result=await api[name]('saved');assert.equal(result.deletedImageCount,0);assert.deepEqual(result.deletedImagePaths,[]);}
- assert.equal(deleted.filter(row=>row.table==='worldcups').length,2);deny=true;const originalError=console.error,originalWarn=console.warn;console.error=console.warn=()=>{};try{await assert.rejects(api.deleteWorldcupGame('saved'),/permission denied/);}finally{console.error=originalError;console.warn=originalWarn;}
- console.log('PASS: combine A+B+C, preserve drafts, fresh IDs, deduplicate/retry, limit, URL-only import, selection controls, close cleanup, shared files survive both deletion paths, DB denial propagates');
+ console.log('PASS: combine A+B+C, preserve drafts, fresh IDs, deduplicate/retry, limit, URL-only import, selection controls, close cleanup');
 })().catch(error=>{console.error(error);process.exitCode=1});

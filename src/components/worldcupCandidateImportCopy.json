@@ -2,7 +2,7 @@
   "ko": {
     "open": "기존 월드컵에서 후보 가져오기",
     "title": "월드컵 후보 가져오기",
-    "help": "월드컵을 선택하고 원하는 후보를 추가하세요. 여러 월드컵에서 이어서 가져올 수 있습니다. 기존 사진 주소를 재사용합니다.",
+    "help": "월드컵을 선택하고 원하는 후보를 추가하세요. 여러 월드컵에서 이어서 가져올 수 있습니다. 기존 사진 주소를 재사용합니다. 원본 사진이 삭제되면 검은 배경에 이름만 표시됩니다.",
     "search": "월드컵 제목 검색 · 모든 언어",
     "loading": "불러오는 중…",
     "empty": "검색 결과가 없습니다.",
@@ -22,7 +22,7 @@
   "en": {
     "open": "Import candidates from existing brackets",
     "title": "Import bracket candidates",
-    "help": "Choose a bracket and add candidates. Repeat with other brackets to combine them. Existing image URLs are reused.",
+    "help": "Choose a bracket and add candidates. Repeat with other brackets to combine them. Existing image URLs are reused. If an original image is deleted, only its name appears on a black background.",
     "search": "Search bracket titles in any language",
     "loading": "Loading…",
     "empty": "No results.",
@@ -42,7 +42,7 @@
   "ja": {
     "open": "既存のトーナメントから候補を追加",
     "title": "候補をインポート",
-    "help": "トーナメントと候補を選んで追加できます。他のトーナメントからも続けて追加できます。画像URLを再利用します。",
+    "help": "トーナメントと候補を選んで追加できます。他のトーナメントからも続けて追加できます。画像URLを再利用します。 元の画像が削除されると、黒い背景に名前だけ表示されます。",
     "search": "全言語のタイトルを検索",
     "loading": "読み込み中…",
     "empty": "結果がありません。",
@@ -62,7 +62,7 @@
   "zh": {
     "open": "从已有淘汰赛导入候选",
     "title": "导入候选",
-    "help": "选择淘汰赛和候选并添加。可继续从其他淘汰赛添加，复用原图片链接。",
+    "help": "选择淘汰赛和候选并添加。可继续从其他淘汰赛添加，复用原图片链接。 原图片被删除后，将在黑色背景上仅显示名字。",
     "search": "搜索所有语言的标题",
     "loading": "加载中…",
     "empty": "没有结果。",
@@ -82,7 +82,7 @@
   "es": {
     "open": "Importar candidatos de torneos existentes",
     "title": "Importar candidatos",
-    "help": "Elige un torneo y añade candidatos. Puedes combinar varios torneos reutilizando las URL de sus imágenes.",
+    "help": "Elige un torneo y añade candidatos. Puedes combinar varios torneos reutilizando las URL de sus imágenes. Si se elimina la imagen original, solo aparecerá el nombre sobre fondo negro.",
     "search": "Buscar títulos en cualquier idioma",
     "loading": "Cargando…",
     "empty": "Sin resultados.",
@@ -102,7 +102,7 @@
   "fr": {
     "open": "Importer des candidats de tournois existants",
     "title": "Importer des candidats",
-    "help": "Choisissez un tournoi et ajoutez des candidats. Combinez plusieurs tournois en réutilisant les URL des images.",
+    "help": "Choisissez un tournoi et ajoutez des candidats. Combinez plusieurs tournois en réutilisant les URL des images. Si l’image originale est supprimée, seul le nom apparaît sur fond noir.",
     "search": "Rechercher des titres dans toutes les langues",
     "loading": "Chargement…",
     "empty": "Aucun résultat.",
@@ -122,7 +122,7 @@
   "vi": {
     "open": "Nhập ứng viên từ vòng đấu có sẵn",
     "title": "Nhập ứng viên",
-    "help": "Chọn vòng đấu và thêm ứng viên. Có thể kết hợp nhiều vòng đấu bằng cách dùng lại URL ảnh.",
+    "help": "Chọn vòng đấu và thêm ứng viên. Có thể kết hợp nhiều vòng đấu bằng cách dùng lại URL ảnh. Nếu ảnh gốc bị xóa, chỉ tên sẽ xuất hiện trên nền đen.",
     "search": "Tìm tiêu đề bằng mọi ngôn ngữ",
     "loading": "Đang tải…",
     "empty": "Không có kết quả.",
@@ -142,7 +142,7 @@
   "de": {
     "open": "Kandidaten aus bestehenden Turnieren importieren",
     "title": "Kandidaten importieren",
-    "help": "Wähle ein Turnier und füge Kandidaten hinzu. Kombiniere mehrere Turniere mit den vorhandenen Bild-URLs.",
+    "help": "Wähle ein Turnier und füge Kandidaten hinzu. Kombiniere mehrere Turniere mit den vorhandenen Bild-URLs. Wird das Originalbild gelöscht, erscheint nur der Name auf schwarzem Hintergrund.",
     "search": "Titel in allen Sprachen suchen",
     "loading": "Wird geladen…",
     "empty": "Keine Ergebnisse.",
@@ -162,7 +162,7 @@
   "ru": {
     "open": "Импортировать участников из турниров",
     "title": "Импорт участников",
-    "help": "Выберите турнир и участников. Можно объединить несколько турниров, используя существующие ссылки на изображения.",
+    "help": "Выберите турнир и участников. Можно объединить несколько турниров, используя существующие ссылки на изображения. При удалении исходного изображения на чёрном фоне останется только имя.",
     "search": "Поиск названий на всех языках",
     "loading": "Загрузка…",
     "empty": "Нет результатов.",
@@ -182,7 +182,7 @@
   "id": {
     "open": "Impor kandidat dari turnamen yang ada",
     "title": "Impor kandidat",
-    "help": "Pilih turnamen dan tambahkan kandidat. Gabungkan beberapa turnamen dengan memakai kembali URL gambar.",
+    "help": "Pilih turnamen dan tambahkan kandidat. Gabungkan beberapa turnamen dengan memakai kembali URL gambar. Jika gambar asli dihapus, hanya nama yang muncul di latar hitam.",
     "search": "Cari judul dalam semua bahasa",
     "loading": "Memuat…",
     "empty": "Tidak ada hasil.",
@@ -202,7 +202,7 @@
   "pt": {
     "open": "Importar candidatos de torneios existentes",
     "title": "Importar candidatos",
-    "help": "Escolha um torneio e adicione candidatos. Combine vários torneios reutilizando os URLs das imagens.",
+    "help": "Escolha um torneio e adicione candidatos. Combine vários torneios reutilizando os URLs das imagens. Se a imagem original for excluída, apenas o nome aparecerá em fundo preto.",
     "search": "Pesquisar títulos em qualquer idioma",
     "loading": "Carregando…",
     "empty": "Nenhum resultado.",
@@ -222,7 +222,7 @@
   "hi": {
     "open": "मौजूदा टूर्नामेंट से उम्मीदवार जोड़ें",
     "title": "उम्मीदवार आयात करें",
-    "help": "टूर्नामेंट चुनकर उम्मीदवार जोड़ें। कई टूर्नामेंट मिलाएँ; मौजूदा तस्वीरों के लिंक दोबारा इस्तेमाल होंगे।",
+    "help": "टूर्नामेंट चुनकर उम्मीदवार जोड़ें। कई टूर्नामेंट मिलाएँ; मौजूदा तस्वीरों के लिंक दोबारा इस्तेमाल होंगे। मूल तस्वीर हटने पर काली पृष्ठभूमि पर केवल नाम दिखेगा।",
     "search": "सभी भाषाओं में शीर्षक खोजें",
     "loading": "लोड हो रहा है…",
     "empty": "कोई परिणाम नहीं।",
@@ -242,7 +242,7 @@
   "bn": {
     "open": "বিদ্যমান টুর্নামেন্ট থেকে প্রার্থী আনুন",
     "title": "প্রার্থী আমদানি",
-    "help": "টুর্নামেন্ট বেছে প্রার্থী যোগ করুন। পুরোনো ছবির লিংক ব্যবহার করে একাধিক টুর্নামেন্ট একত্র করা যায়।",
+    "help": "টুর্নামেন্ট বেছে প্রার্থী যোগ করুন। পুরোনো ছবির লিংক ব্যবহার করে একাধিক টুর্নামেন্ট একত্র করা যায়। মূল ছবি মুছে গেলে কালো পটভূমিতে শুধু নাম দেখা যাবে।",
     "search": "সব ভাষায় শিরোনাম খুঁজুন",
     "loading": "লোড হচ্ছে…",
     "empty": "কোনো ফল নেই।",
@@ -262,7 +262,7 @@
   "ar": {
     "open": "استيراد مرشحين من بطولات موجودة",
     "title": "استيراد المرشحين",
-    "help": "اختر بطولة وأضف المرشحين. يمكنك دمج عدة بطولات مع إعادة استخدام روابط الصور الحالية.",
+    "help": "اختر بطولة وأضف المرشحين. يمكنك دمج عدة بطولات مع إعادة استخدام روابط الصور الحالية. إذا حُذفت الصورة الأصلية، يظهر الاسم فقط على خلفية سوداء.",
     "search": "البحث في العناوين بجميع اللغات",
     "loading": "جارٍ التحميل…",
     "empty": "لا توجد نتائج.",
@@ -282,7 +282,7 @@
   "th": {
     "open": "นำเข้าผู้เข้าร่วมจากทัวร์นาเมนต์เดิม",
     "title": "นำเข้าผู้เข้าร่วม",
-    "help": "เลือกทัวร์นาเมนต์และเพิ่มผู้เข้าร่วม รวมหลายทัวร์นาเมนต์ได้โดยใช้ลิงก์รูปภาพเดิม",
+    "help": "เลือกทัวร์นาเมนต์และเพิ่มผู้เข้าร่วม รวมหลายทัวร์นาเมนต์ได้โดยใช้ลิงก์รูปภาพเดิม หากลบรูปต้นฉบับ จะแสดงเพียงชื่อบนพื้นหลังสีดำ",
     "search": "ค้นหาชื่อในทุกภาษา",
     "loading": "กำลังโหลด…",
     "empty": "ไม่พบผลลัพธ์",
@@ -302,7 +302,7 @@
   "tr": {
     "open": "Mevcut turnuvalardan aday aktar",
     "title": "Adayları içe aktar",
-    "help": "Bir turnuva seçip aday ekleyin. Mevcut resim bağlantılarını kullanarak birden fazla turnuvayı birleştirebilirsiniz.",
+    "help": "Bir turnuva seçip aday ekleyin. Mevcut resim bağlantılarını kullanarak birden fazla turnuvayı birleştirebilirsiniz. Orijinal resim silinirse siyah arka planda yalnızca ad görünür.",
     "search": "Tüm dillerde başlık ara",
     "loading": "Yükleniyor…",
     "empty": "Sonuç yok.",

@@ -1,3 +1,4 @@
+import { removedCandidateImagePaths, removeCandidateImageFiles, notifyImageCleanupFailure } from "../utils/worldcupImageCleanup";
 import { removedWorldcupCandidateIds } from "../utils/worldcupCandidateChanges";
 import candidateDeleteCopy from "./worldcupCandidateDeleteCopy.json";
 import { resolveOriginalContentLanguage, originalTitleLabel } from "../utils/originalContentLanguage";
@@ -2168,6 +2169,12 @@ if (activeData.length < 2) {
 
           image: imageUrl,
 
+          image_reused: (() => {
+            const original = originalCup.data?.find(candidate => candidate.id === item.id);
+            if (original && original.image === oldImageValue) return original.image_reused === true;
+            return Boolean(imageUrl) && !String(oldImageValue || "").startsWith("data:");
+          })(),
+
         });
 
       }
@@ -2267,8 +2274,9 @@ const updatedCup = {
 
       // DB 갱신 후에 삭제되거나 교체된 기존 파일을 정리합니다.
 
-      // Published images may also be used by another worldcup, tier list or quiz.
-      // Removing/replacing a candidate changes this game only. Keep the stored file.
+      const obsoletePaths = removedCandidateImagePaths(originalCup.data, updatedData);
+      const cleanup = await removeCandidateImageFiles(obsoletePaths);
+      notifyImageCleanupFailure(cleanup, contentLanguage);
 
       if (fetchWorldcups) {
 

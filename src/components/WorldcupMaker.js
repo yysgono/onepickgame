@@ -4042,6 +4042,8 @@ for (
 
             image: imageUrl,
 
+            image_reused: !candidate.file && Boolean(candidate.image),
+
           };
 
         }

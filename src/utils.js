@@ -1,3 +1,4 @@
+import { deleteWorldcupGame as deleteWorldcupAndImages } from "./utils/supabaseWorldcupApi";
 // src/utils.js
 import { supabase } from "./utils/supabaseClient";
 import { readStatsCache, writeStatsCache, invalidateStatsCache, getStatsRevision } from "./utils/statsCache";
@@ -120,12 +121,7 @@ export async function updateWorldcupGame(id, updates) {
 }
 
 export async function deleteWorldcupGame(id) {
-  const { error } = await supabase
-    .from("worldcups")
-    .delete()
-    .eq("id", id);
-
-  if (error) throw error;
+  await deleteWorldcupAndImages(id);
   return true;
 }
 
