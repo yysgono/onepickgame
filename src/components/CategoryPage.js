@@ -286,6 +286,9 @@ const CATEGORY_MAP = {
 
 
 
+  travel: { key: "travel", label: "Travel / Places" },
+  brands: { key: "brands", label: "Brands / Products" },
+
   etc: {
 
 

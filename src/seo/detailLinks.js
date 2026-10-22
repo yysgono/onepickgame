@@ -6,7 +6,7 @@ function getDetailLinks(language, category, sourceWorldcupId) {
   const copy = COPY[lang];
   const raw = String(category || '').trim().toLowerCase();
   const worldcupCategory = ({ animation: 'anime-manga', anime_manga: 'anime-manga', entertainment: 'person', movie_drama: 'movie-drama', other: 'etc' })[raw] || raw;
-  const validWorldcup = ['game', 'sports', 'food', 'person', 'music', 'korea', 'anime-manga', 'movie-drama', 'etc'].includes(worldcupCategory);
+  const validWorldcup = ['game', 'sports', 'food', 'person', 'music', 'korea', 'anime-manga', 'movie-drama', 'travel', 'brands', 'etc'].includes(worldcupCategory);
   const listCategory = ({ anime_manga: 'animation', 'anime-manga': 'animation', person: 'entertainment', music: 'entertainment', korea: 'entertainment', movie_drama: 'entertainment', 'movie-drama': 'entertainment', etc: 'other' })[raw] || raw;
   const validList = ['game', 'sports', 'food', 'animation', 'entertainment', 'other'].includes(listCategory);
   const quizCategory = listCategory === 'knowledge' ? 'knowledge' : validList ? listCategory : '';

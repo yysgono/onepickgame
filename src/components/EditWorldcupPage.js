@@ -56,6 +56,9 @@ const CATEGORY_OPTIONS = [
 
   { value: "food", labelKey: "category_food" },
 
+  { value: "travel", labelKey: "category_travel" },
+  { value: "brands", labelKey: "category_brands" },
+
   { value: "etc", labelKey: "category_etc" },
 
 ];

@@ -206,6 +206,9 @@ const HOME_CATEGORIES = [
 
   { key: "food", slug: "food", label: "Food" },
 
+  { key: "travel", slug: "travel", label: "Travel / Places" },
+  { key: "brands", slug: "brands", label: "Brands / Products" },
+
   { key: "etc", slug: "etc", label: "Other" },
 
 ];
@@ -219,6 +222,8 @@ const HOME_CATEGORY_SHORTCUT_KEYS = [
   "person",
   "sports",
   "food",
+  "travel",
+  "brands",
 ];
 
 const KO_HOME_CATEGORY_SHORTCUT_LABELS = {
@@ -230,6 +235,8 @@ const KO_HOME_CATEGORY_SHORTCUT_LABELS = {
   person: "인물 이상형 월드컵",
   sports: "스포츠 월드컵",
   food: "음식 이상형 월드컵",
+  travel: "여행 / 장소 월드컵",
+  brands: "브랜드 / 제품 월드컵",
 };
 
 
@@ -2361,7 +2368,7 @@ const renderHomeActivityPanel = ({
 
 const renderWorldcupCard = (cup) => {
 
-  const categoryAccent = ({korea:"#F97316",person:"#de5276",anime_manga:"#db8a20",game:"#1687e8",sports:"#24945d",music:"#9a55cd",movie_drama:"#db6544",food:"#c38b17"})[cup.category] || "#F97316";
+  const categoryAccent = ({korea:"#F97316",person:"#de5276",anime_manga:"#db8a20",game:"#1687e8",sports:"#24945d",music:"#9a55cd",movie_drama:"#db6544",food:"#c38b17",travel:"#128c9e",brands:"#6470ba"})[cup.category] || "#F97316";
 
   const winStats = winStatsMap[cup.id] || [];
 

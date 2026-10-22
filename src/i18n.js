@@ -1,3 +1,4 @@
+import categoryLabels from "./seo/categoryLabels.json";
 import homeCommentUi from "./locales/homeCommentUi.json";
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
@@ -39,6 +40,14 @@ const resources = {
   id: { translation: translationID },
   es: { translation: translationES },
 };
+
+// Shared category names keep client labels and server metadata identical.
+for (const [language, labels] of Object.entries(categoryLabels)) {
+  if (resources[language]) {
+    resources[language].translation.category_travel = labels.travel;
+    resources[language].translation.category_brands = labels.brands;
+  }
+}
 
 // Fill the UI keys used by Home and CommentBox without replacing existing translations.
 for (const [language, extra] of Object.entries(homeCommentUi)) {

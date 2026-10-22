@@ -11,7 +11,7 @@ const loadModule=relative=>import('data:text/javascript;base64,'+Buffer.from(fs.
  assert.equal(calls.length,0);await pager.ensureRows(PRIMARY_HOME_ROWS);assert.equal(calls.length,1);assert.equal(calls[0].requests.length,4);assert(calls[0].requests.every(r=>r.offset===0&&r.limit===2));
  await Promise.resolve();assert.equal(calls.length,1); // no automatic next-page fetch
  await Promise.all([pager.loadMore('korea',4),pager.loadMore('korea',4)]);assert.equal(calls.length,2);assert.equal(calls[1].requests[0].offset,2);assert.equal(calls[1].requests[0].limit,2);assert.equal(pager.snapshot().rows.korea.items.length,4);
- await pager.ensureRows(HOME_ROW_KEYS);assert.equal(calls.length,3);assert.equal(calls[2].requests.length,6);assert(calls[2].requests.every(r=>!PRIMARY_HOME_ROWS.includes(r.key)));assert.equal(calls[2].requests.find(r=>r.key==='etc').limit,8);
+ await pager.ensureRows(HOME_ROW_KEYS);assert.equal(calls.length,3);assert.equal(calls[2].requests.length,8);assert(calls[2].requests.every(r=>!PRIMARY_HOME_ROWS.includes(r.key)));assert.equal(calls[2].requests.find(r=>r.key==='etc').limit,8);
  fail=true;assert.equal(await pager.loadMore('korea',6),false);assert.equal(pager.snapshot().rows.korea.items.length,4);assert(pager.snapshot().error);
  fail=false;await pager.loadMore('korea',6);assert.equal(pager.snapshot().rows.korea.items.length,6);assert.equal(pager.snapshot().error,null);
  const eventsBefore=emitCount;pager.dispose();assert.equal(await pager.loadMore('person',4),false);assert.equal(emitCount,eventsBefore);

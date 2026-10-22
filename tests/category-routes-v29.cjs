@@ -1,0 +1,7 @@
+const assert=require('node:assert/strict'),express=require('express');
+require.cache[require.resolve('../seo-template.cjs')]={exports:{loadSeoTemplate:async()=>'<html><head><title>old</title></head><body><div id="root"><div class="loading-screen">Loading...</div></div></body></html>'}};
+const filters=[];const db={from(table){assert.equal(table,'worldcups');return{select(){return this},is(){return this},eq(field,value){assert.equal(field,'category');filters.push(value);return this},order(){return this},async limit(){return{data:[]}}};}};
+const app=express();require('../category-routes.cjs')(app,db,'https://www.onepickgame.com');const server=app.listen(0,'127.0.0.1',async()=>{
+ try{for(const lang of Object.keys(require('../src/seo/categoryLabels.json'))){for(const key of ['travel','brands']){const response=await fetch(`http://127.0.0.1:${server.address().port}/?seo=category&lang=${lang}&category=${key}`);assert.equal(response.status,200);const html=await response.text();assert(html.includes(`href="https://www.onepickgame.com/${lang}/category/${key}"`));assert.equal((html.match(/<title\b/g)||[]).length,1);assert(html.includes('index, follow'));assert.equal(filters.at(-1),key);}}console.log('PASS: new category server routes across all 16 languages return correct canonical and empty-category HTML');}
+ catch(error){console.error(error);process.exitCode=1;}finally{server.close();}
+});

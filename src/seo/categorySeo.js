@@ -66,7 +66,7 @@ const CATEGORY_SEO_COPY = {
 };
 
 const labels = require("./categoryLabels.json");
-const CATEGORY_KEYS = {person:"person",music:"music",korea:"korea",game:"game",sports:"sports","anime-manga":"anime_manga","movie-drama":"movie_drama",food:"food",etc:"etc"};
+const CATEGORY_KEYS = {person:"person",music:"music",korea:"korea",game:"game",sports:"sports","anime-manga":"anime_manga","movie-drama":"movie_drama",food:"food",travel:"travel",brands:"brands",etc:"etc"};
 function getCategorySeo(lang, slug) {
  const key = CATEGORY_KEYS[slug];
  if (!key || !labels[lang]) return null;

@@ -17,6 +17,8 @@ const CATEGORY_OPTIONS = [
   { value: "anime_manga", label: "애니 / 만화" },
   { value: "movie_drama", label: "영화 / 드라마" },
   { value: "food", label: "음식" },
+  { value: "travel", label: "여행 / 장소" },
+  { value: "brands", label: "브랜드 / 제품" },
   { value: "etc", label: "기타" },
 ];
 

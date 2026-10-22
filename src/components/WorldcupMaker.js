@@ -95,6 +95,9 @@ const CATEGORY_OPTIONS = [
 
   { value: "food", label: "Food" },
 
+  { value: "travel", label: "Travel / Places" },
+  { value: "brands", label: "Brands / Products" },
+
   { value: "etc", label: "Other" },
 
 ];

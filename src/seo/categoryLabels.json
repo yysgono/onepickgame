@@ -8,7 +8,9 @@
     "anime_manga": "Anime / Manga",
     "movie_drama": "Movies / TV",
     "food": "Food",
-    "etc": "Other"
+    "etc": "Other",
+    "travel": "Travel / Places",
+    "brands": "Brands / Products"
   },
   "ko": {
     "person": "인물",
@@ -19,7 +21,9 @@
     "anime_manga": "애니 / 만화",
     "movie_drama": "영화 / 드라마",
     "food": "음식",
-    "etc": "기타"
+    "etc": "기타",
+    "travel": "여행 / 장소",
+    "brands": "브랜드 / 제품"
   },
   "ja": {
     "person": "人物",
@@ -30,7 +34,9 @@
     "anime_manga": "アニメ / 漫画",
     "movie_drama": "映画 / ドラマ",
     "food": "グルメ",
-    "etc": "その他"
+    "etc": "その他",
+    "travel": "旅行 / 場所",
+    "brands": "ブランド / 製品"
   },
   "zh": {
     "person": "人物",
@@ -41,7 +47,9 @@
     "anime_manga": "动漫 / 漫画",
     "movie_drama": "电影 / 电视剧",
     "food": "美食",
-    "etc": "其他"
+    "etc": "其他",
+    "travel": "旅行 / 地点",
+    "brands": "品牌 / 产品"
   },
   "ru": {
     "person": "Люди",
@@ -52,7 +60,9 @@
     "anime_manga": "Аниме / Манга",
     "movie_drama": "Фильмы / Сериалы",
     "food": "Еда",
-    "etc": "Другое"
+    "etc": "Другое",
+    "travel": "Путешествия / Места",
+    "brands": "Бренды / Товары"
   },
   "pt": {
     "person": "Pessoas",
@@ -63,7 +73,9 @@
     "anime_manga": "Anime / Mangá",
     "movie_drama": "Filmes / Séries",
     "food": "Comida",
-    "etc": "Outros"
+    "etc": "Outros",
+    "travel": "Viagens / Lugares",
+    "brands": "Marcas / Produtos"
   },
   "es": {
     "person": "Personas",
@@ -74,7 +86,9 @@
     "anime_manga": "Anime / Manga",
     "movie_drama": "Películas / Series",
     "food": "Comida",
-    "etc": "Otros"
+    "etc": "Otros",
+    "travel": "Viajes / Lugares",
+    "brands": "Marcas / Productos"
   },
   "fr": {
     "person": "Personnalités",
@@ -85,7 +99,9 @@
     "anime_manga": "Anime / Manga",
     "movie_drama": "Films / Séries",
     "food": "Cuisine",
-    "etc": "Autres"
+    "etc": "Autres",
+    "travel": "Voyages / Lieux",
+    "brands": "Marques / Produits"
   },
   "id": {
     "person": "Tokoh",
@@ -96,7 +112,9 @@
     "anime_manga": "Anime / Manga",
     "movie_drama": "Film / Serial",
     "food": "Makanan",
-    "etc": "Lainnya"
+    "etc": "Lainnya",
+    "travel": "Wisata / Tempat",
+    "brands": "Merek / Produk"
   },
   "hi": {
     "person": "लोग",
@@ -107,7 +125,9 @@
     "anime_manga": "एनीमे / मंगा",
     "movie_drama": "फ़िल्में / सीरीज़",
     "food": "खाना",
-    "etc": "अन्य"
+    "etc": "अन्य",
+    "travel": "यात्रा / स्थान",
+    "brands": "ब्रांड / उत्पाद"
   },
   "de": {
     "person": "Personen",
@@ -118,7 +138,9 @@
     "anime_manga": "Anime / Manga",
     "movie_drama": "Filme / Serien",
     "food": "Essen",
-    "etc": "Sonstiges"
+    "etc": "Sonstiges",
+    "travel": "Reisen / Orte",
+    "brands": "Marken / Produkte"
   },
   "vi": {
     "person": "Nhân vật",
@@ -129,7 +151,9 @@
     "anime_manga": "Anime / Manga",
     "movie_drama": "Phim / Truyền hình",
     "food": "Ẩm thực",
-    "etc": "Khác"
+    "etc": "Khác",
+    "travel": "Du lịch / Địa điểm",
+    "brands": "Thương hiệu / Sản phẩm"
   },
   "ar": {
     "person": "شخصيات",
@@ -140,7 +164,9 @@
     "anime_manga": "أنمي / مانغا",
     "movie_drama": "أفلام / مسلسلات",
     "food": "طعام",
-    "etc": "أخرى"
+    "etc": "أخرى",
+    "travel": "السفر / الأماكن",
+    "brands": "العلامات التجارية / المنتجات"
   },
   "bn": {
     "person": "ব্যক্তিত্ব",
@@ -151,7 +177,9 @@
     "anime_manga": "অ্যানিমে / মাঙ্গা",
     "movie_drama": "সিনেমা / টিভি",
     "food": "খাবার",
-    "etc": "অন্যান্য"
+    "etc": "অন্যান্য",
+    "travel": "ভ্রমণ / স্থান",
+    "brands": "ব্র্যান্ড / পণ্য"
   },
   "th": {
     "person": "บุคคล",
@@ -162,7 +190,9 @@
     "anime_manga": "อนิเมะ / มังงะ",
     "movie_drama": "ภาพยนตร์ / ซีรีส์",
     "food": "อาหาร",
-    "etc": "อื่นๆ"
+    "etc": "อื่นๆ",
+    "travel": "ท่องเที่ยว / สถานที่",
+    "brands": "แบรนด์ / ผลิตภัณฑ์"
   },
   "tr": {
     "person": "Kişiler",
@@ -173,6 +203,8 @@
     "anime_manga": "Anime / Manga",
     "movie_drama": "Film / Diziler",
     "food": "Yemek",
-    "etc": "Diğer"
+    "etc": "Diğer",
+    "travel": "Seyahat / Yerler",
+    "brands": "Markalar / Ürünler"
   }
 }

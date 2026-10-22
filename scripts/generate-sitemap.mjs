@@ -44,6 +44,8 @@ const CATEGORY_SLUGS = [
   "music",
   "movie-drama",
   "food",
+  "travel",
+  "brands",
   "etc",
 ];
 
