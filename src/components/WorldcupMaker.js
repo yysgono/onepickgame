@@ -1,3 +1,5 @@
+import WorldcupCandidateImporter from "./WorldcupCandidateImporter";
+import { mergeImportedCandidates } from "../utils/worldcupCandidateImport";
 import { originalTitleLabel } from "../utils/originalContentLanguage";
 // src/components/WorldcupMaker.js
 
@@ -5247,6 +5249,12 @@ style={{
   </label>
 
 </div>
+
+        <WorldcupCandidateImporter disabled={loading} onImport={(selected) => {
+          const result = mergeImportedCandidates(candidates, selected, uuidv4, MAX_CANDIDATES);
+          setCandidates(result.rows);
+          return result;
+        }} />
 
         {/* 드래그 앤 드롭 업로드 */}
 

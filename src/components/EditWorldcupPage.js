@@ -1965,86 +1965,6 @@ editDraftReadyRef.current = true;
 
 
 
-  function collectOldPathsToDelete(updatedData) {
-
-    const originalCandidates = Array.isArray(originalCup?.data)
-
-      ? originalCup.data
-
-      : [];
-
-
-
-    const updatedById = new Map(
-
-      updatedData.map((item) => [String(item.id), item])
-
-    );
-
-
-
-    const paths = [];
-
-
-
-    for (const originalItem of originalCandidates) {
-
-      const oldPath = extractCandidateStoragePath(
-
-        originalItem.image
-
-      );
-
-
-
-      if (!oldPath) continue;
-
-
-
-      const updatedItem = updatedById.get(
-
-        String(originalItem.id)
-
-      );
-
-
-
-      // 후보가 삭제된 경우
-
-      if (!updatedItem) {
-
-        paths.push(oldPath);
-
-        continue;
-
-      }
-
-
-
-      // 같은 후보의 이미지가 교체된 경우
-
-      if (
-
-        String(updatedItem.image || "") !==
-
-        String(originalItem.image || "")
-
-      ) {
-
-        paths.push(oldPath);
-
-      }
-
-    }
-
-
-
-    return [...new Set(paths)];
-
-  }
-
-
-
   async function handleSave() {
 
     setError("");
@@ -2347,29 +2267,8 @@ const updatedCup = {
 
       // DB 갱신 후에 삭제되거나 교체된 기존 파일을 정리합니다.
 
-      const oldPathsToDelete =
-
-        collectOldPathsToDelete(updatedData);
-
-
-
-      console.log(
-
-        "[월드컵 편집] 삭제 예정 기존 파일:",
-
-        oldPathsToDelete
-
-      );
-
-
-
-      if (oldPathsToDelete.length > 0) {
-
-        await removeStoragePaths(oldPathsToDelete);
-
-      }
-
-
+      // Published images may also be used by another worldcup, tier list or quiz.
+      // Removing/replacing a candidate changes this game only. Keep the stored file.
 
       if (fetchWorldcups) {
 
