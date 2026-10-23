@@ -1,66 +1,82 @@
 {
   "ko": [
     "다른 언어 추가 접기/펼치기",
-    "만들어진 티어표 모음"
+    "만들어진 티어표 모음",
+    "추천 티어표 목록"
   ],
   "en": [
     "Show / hide other languages",
-    "Community Tier Lists"
+    "Community Tier Lists",
+    "Recommended Tier Lists"
   ],
   "ja": [
     "他の言語を表示／折りたたむ",
-    "作成されたティア表一覧"
+    "作成されたティア表一覧",
+    "おすすめのティア表"
   ],
   "zh": [
     "展开／收起其他语言",
-    "用户制作的排行榜"
+    "用户制作的排行榜",
+    "推荐排行榜"
   ],
   "es": [
     "Mostrar / ocultar otros idiomas",
-    "Tier lists de la comunidad"
+    "Tier lists de la comunidad",
+    "Tier lists recomendadas"
   ],
   "fr": [
     "Afficher / masquer les autres langues",
-    "Tier lists de la communauté"
+    "Tier lists de la communauté",
+    "Tier lists recommandées"
   ],
   "vi": [
     "Hiện / ẩn các ngôn ngữ khác",
-    "Bảng xếp hạng cộng đồng"
+    "Bảng xếp hạng cộng đồng",
+    "Bảng xếp hạng được đề xuất"
   ],
   "de": [
     "Weitere Sprachen ein-/ausblenden",
-    "Tier-Listen der Community"
+    "Tier-Listen der Community",
+    "Empfohlene Tier-Listen"
   ],
   "ru": [
     "Показать / скрыть другие языки",
-    "Тир-листы сообщества"
+    "Тир-листы сообщества",
+    "Рекомендуемые тир-листы"
   ],
   "id": [
     "Tampilkan / sembunyikan bahasa lain",
-    "Tier list komunitas"
+    "Tier list komunitas",
+    "Tier list rekomendasi"
   ],
   "pt": [
     "Mostrar / ocultar outros idiomas",
-    "Tier lists da comunidade"
+    "Tier lists da comunidade",
+    "Tier lists recomendadas"
   ],
   "hi": [
     "अन्य भाषाएँ दिखाएँ / छिपाएँ",
-    "समुदाय की टियर सूचियाँ"
+    "समुदाय की टियर सूचियाँ",
+    "सुझाई गई टियर सूचियाँ"
   ],
   "tr": [
     "Diğer dilleri göster / gizle",
-    "Topluluk seviye listeleri"
+    "Topluluk seviye listeleri",
+    "Önerilen seviye listeleri"
   ],
   "th": [
     "แสดง / ซ่อนภาษาอื่น",
-    "รายการจัดอันดับจากชุมชน"
+    "รายการจัดอันดับจากชุมชน",
+    "รายการจัดอันดับที่แนะนำ"
   ],
   "ar": [
     "إظهار / إخفاء اللغات الأخرى",
-    "قوائم تصنيف المجتمع"
+    "قوائم تصنيف المجتمع",
+    "قوائم التصنيف المقترحة"
   ],
   "bn": [
     "অন্য ভাষা দেখান / লুকান",
-    "কমিউনিটির টিয়ার তালিকা"
+    "কমিউনিটির টিয়ার তালিকা",
+    "প্রস্তাবিত টিয়ার তালিকা"
   ]
 }

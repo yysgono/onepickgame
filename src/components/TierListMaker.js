@@ -1475,7 +1475,9 @@ useEffect(() => {
           cup?.translations?.title
         );
 
+        const presetTitles = readTranslationMap(cup?.tier_preset_title_translations);
         return (
+          presetTitles?.[lang]?.trim() ||
           translations?.[lang] ||
           translations?.en ||
           legacyTranslations?.[lang] ||
@@ -1489,27 +1491,12 @@ useEffect(() => {
       [lang]
     );
 
-    const sortedSourceWorldcups =
-  useMemo(() => {
-    return [...worldcupList].sort(
-      (a, b) => {
-        const aCount =
-          sourcePlayCountMap[
-            String(a.id)
-          ] || 0;
-
-        const bCount =
-          sourcePlayCountMap[
-            String(b.id)
-          ] || 0;
-
-        return bCount - aCount;
-      }
-    );
-  }, [
-    worldcupList,
-    sourcePlayCountMap,
-  ]);
+    const sortedSourceWorldcups = useMemo(() => {
+      return worldcupList.filter(cup => cup.is_tier_preset === true).sort((a, b) => {
+        const order = Number(a.tier_preset_order ?? 2147483647) - Number(b.tier_preset_order ?? 2147483647);
+        return order || String(a.id).localeCompare(String(b.id));
+      });
+    }, [worldcupList]);
 
     const filteredPresetWorldcups =
   useMemo(() => {
@@ -4911,7 +4898,7 @@ if (editingTierListId) {
                 }}
               >
                 ⭐{" "}
-                {text.importWorldcupTitle}
+                {(tierUiCopy[lang] || tierUiCopy.en)[2]}
               </div>
 
 

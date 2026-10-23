@@ -374,7 +374,7 @@ function TierListPage({
     const query = params.toString();
     navigate(
       `${location.pathname}${query ? `?${query}` : ""}${location.hash || ""}`,
-      { replace: false }
+      { replace: false, state: { preserveScroll: true } }
     );
   };
 

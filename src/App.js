@@ -8,7 +8,7 @@ import WorldcupDetailSeo from "./seo/WorldcupDetailSeo";
 import worldcupMetadata from "./seo/worldcupMetadata.js";
 import "./i18n";
 import "./App.css";
-import React, { useState, useEffect, useCallback, lazy, Suspense } from "react";
+import React, { useState, useEffect, useCallback, useRef, lazy, Suspense } from "react";
 import {
   BrowserRouter as Router,
   Routes,
@@ -238,8 +238,12 @@ const RandomPickPage = lazy(() => import('./components/randomPick/RandomPickPage
 
 function ScrollToTopOnRouteChange() {
   const location = useLocation();
+  const previousPath = useRef(location.pathname);
 
   useEffect(() => {
+    const samePage = previousPath.current === location.pathname;
+    previousPath.current = location.pathname;
+    if (samePage && location.state?.preserveScroll) return;
     try {
       if ("scrollRestoration" in window.history) {
         window.history.scrollRestoration = "manual";
