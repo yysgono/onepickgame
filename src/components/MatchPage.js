@@ -1,3 +1,4 @@
+import NavigationLink from "./NavigationLink";
 // src/components/MatchPage.js
 import React, { useEffect, useMemo } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -148,9 +149,9 @@ export default function MatchPage({ worldcupList = [] }) {
           })}
         </div>
 
-        <button
-          type="button"
-          onClick={() => navigate(`/${lang}`)}
+        <NavigationLink
+
+          to={`/${lang}`} appearance="button"
           style={{
             marginTop: 16,
             padding: "10px 18px",
@@ -166,7 +167,7 @@ export default function MatchPage({ worldcupList = [] }) {
           {t("home", {
             defaultValue: "Home",
           })}
-        </button>
+        </NavigationLink>
       </div>
     );
   }

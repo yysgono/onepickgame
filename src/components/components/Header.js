@@ -1,3 +1,4 @@
+import NavigationLink from "../NavigationLink";
 import { Link } from "react-router-dom";
 import "../registerHeaderTranslations";
 import "./OnePickHeader.css";
@@ -673,8 +674,8 @@ export default function Header({
   const activeMode = personalPage ? '' : modePath.startsWith('tier-list') ? 'tier-list' : modePath.startsWith('quiz') ? 'quiz' : ['','category','select-round','match','result','worldcup-maker','edit-worldcup','stats'].some(key => modePath === key || (key && modePath.startsWith(key))) ? 'worldcup' : '';
   const headerModes = [
     {key:'worldcup',icon:'trophy',label:t('gameModeNav.worldcup'),path:`/${currentLang}`},
-    {key:'tier-list',icon:'chart',label:t('gameModeNav.tierList'),path:`/${currentLang}/tier-list`},
     {key:'quiz',icon:'question',label:currentLang === 'ko' ? '퀴즈 맞히기' : t('gameModeNav.quiz'),path:`/${currentLang}/quiz`},
+    {key:'tier-list',icon:'chart',label:t('gameModeNav.tierList'),path:`/${currentLang}/tier-list`},
     {key:'blind-ranking',icon:'crown',label:t('gameModeNav.blindRanking'),pending:true},
   ];
   useEffect(() => {
@@ -744,8 +745,8 @@ export default function Header({
                 <strong>{nicknameLoading ? t('loading_nickname') : nickname || t('no_nickname')}</strong>
                 <button type="button" onClick={()=>setShowProfile(true)}>{t('edit_profile')}</button>
                 {isAdmin && <>
-                  <button type="button" onClick={()=>navigate(`/${currentLang}/admin`)}>{t('dashboard')}</button>
-                  <button type="button" onClick={()=>navigate(`/${currentLang}/admin-stats`)}>{t('stats')}</button>
+                  <NavigationLink  to={`/${currentLang}/admin`} appearance="button">{t('dashboard')}</NavigationLink>
+                  <NavigationLink  to={`/${currentLang}/admin-stats`} appearance="button">{t('stats')}</NavigationLink>
                   <button type="button" onClick={onBackup}>{t('backupAll')}</button>
                   <button type="button" onClick={()=>inputRef.current?.click()}>{t('restore')}</button>
                 </>}

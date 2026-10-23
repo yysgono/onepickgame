@@ -1,3 +1,5 @@
+import NavigationLink from "./NavigationLink";
+import QuizCategorySections from "./QuizCategorySections";
 import useQuizPages from "../hooks/useQuizPages";
 import listSeo from "../seo/listSeo";
 import React, {
@@ -129,43 +131,7 @@ import { supabase } from "../utils/supabaseClient";
 
 
 
-const CATEGORIES = [
-
-
-
-  "all",
-
-
-
-  "game",
-
-
-
-  "entertainment",
-
-
-
-  "animation",
-
-
-
-  "food",
-
-
-
-  "sports",
-
-
-
-  "knowledge",
-
-
-
-  "other",
-
-
-
-];
+const CATEGORIES = ['all','knowledge','animation','sports','entertainment','game','food','other'];
 
 const SORTS = [
   "popular",
@@ -801,7 +767,7 @@ export default function QuizPage({ user = null }) {
 
   );
 
-  const updateQuizFilterUrl = (nextCategory, nextSort) => {
+  const quizFilterHref = (nextCategory, nextSort) => {
     const params = new URLSearchParams(location.search || "");
 
     if (nextCategory && nextCategory !== "all") {
@@ -818,11 +784,9 @@ export default function QuizPage({ user = null }) {
 
     const query = params.toString();
 
-    navigate(
-      `${location.pathname}${query ? `?${query}` : ""}${location.hash || ""}`,
-      { replace: false }
-    );
+    return `${location.pathname}${query ? `?${query}` : ""}${location.hash || ""}`;
   };
+  const updateQuizFilterUrl = (nextCategory, nextSort) => navigate(quizFilterHref(nextCategory, nextSort));
 
   const changeCategory = (nextCategory) => {
     setCategory(nextCategory);
@@ -862,8 +826,9 @@ export default function QuizPage({ user = null }) {
   const quizSeoTitle = listMetadata.title;
   const quizSeoDescription = listMetadata.description;
   const quizSeoIndexable = listMetadata.indexable;
+  const showCategoryOverview = !mineOnly && category === "all" && !debounced.trim();
   const quizPages = useQuizPages({
-    enabled: !mineOnly || Boolean(user?.id),
+    enabled: (!mineOnly || Boolean(user?.id)) && !showCategoryOverview,
     search: debounced, category, sort, contentLanguage,
     ownerId: mineOnly ? user?.id || "" : "",
   });
@@ -1130,7 +1095,7 @@ export default function QuizPage({ user = null }) {
 
       contentLanguage,
 
-      limit: 4,
+      limit: 5,
 
 
 
@@ -1556,9 +1521,9 @@ export default function QuizPage({ user = null }) {
         >
           {items.map((item) => (
             <li key={`${title}-${item.id}`}>
-              <button
-                type="button"
-                onClick={() => navigate(`/${lang}/quiz/${item.id}`)}
+              <NavigationLink
+
+                to={`/${lang}/quiz/${item.id}`} appearance="button"
                 title={item.displayTitle || ""}
                 style={{
                   width: "100%",
@@ -1599,7 +1564,7 @@ export default function QuizPage({ user = null }) {
                     ? formatActivityDate(item.lastPlayedAt || item.created_at)
                     : formatActivityDate(item.created_at)}
                 </span>
-              </button>
+              </NavigationLink>
             </li>
           ))}
         </ul>
@@ -1729,7 +1694,7 @@ export default function QuizPage({ user = null }) {
 
 
 
-        className="tier-page-container"
+        className="tier-page-container quiz-home-page"
 
 
 
@@ -1749,19 +1714,7 @@ export default function QuizPage({ user = null }) {
 
 
 
-          maxWidth:
-
-
-
-            mobile
-
-
-
-              ? 430
-
-
-
-              : 1780,
+          maxWidth: "none",
 
 
 
@@ -2431,11 +2384,7 @@ export default function QuizPage({ user = null }) {
 
 
 
-              maxWidth:
-
-
-
-                1420,
+              maxWidth: 1480,
 
 
 
@@ -2619,7 +2568,7 @@ export default function QuizPage({ user = null }) {
 
 
 
-                    : "repeat(4, minmax(260px, 1fr))",
+                    : "repeat(auto-fit, minmax(min(220px, 100%), 280px))",
 
 
 
@@ -2699,7 +2648,7 @@ export default function QuizPage({ user = null }) {
 
 
 
-                  4
+                  5
 
 
 
@@ -2715,7 +2664,7 @@ export default function QuizPage({ user = null }) {
 
 
 
-                    <Link
+                    <Link className="quiz-featured-card"
 
 
 
@@ -3116,7 +3065,7 @@ export default function QuizPage({ user = null }) {
                                 "cover",
 
                               objectPosition:
-                                "center 20%",
+                                "center 35%",
 
 
 
@@ -3904,7 +3853,7 @@ export default function QuizPage({ user = null }) {
 
 
 
-                <button
+                <Link
 
 
 
@@ -3924,7 +3873,6 @@ export default function QuizPage({ user = null }) {
 
 
 
-                  type="button"
 
 
 
@@ -3932,23 +3880,8 @@ export default function QuizPage({ user = null }) {
 
 
 
-                  onClick={() =>
 
-
-
-                    changeCategory(
-
-
-
-                      v
-
-
-
-                    )
-
-
-
-                  }
+                  to={quizFilterHref(v, sort)}
 
 
 
@@ -3960,7 +3893,7 @@ export default function QuizPage({ user = null }) {
 
 
 
-                    ...toggleButton(
+                    textDecoration: "none", fontSize: 17, minHeight: 46, display: "inline-flex", alignItems: "center", justifyContent: "center", ...toggleButton(
 
 
 
@@ -3980,6 +3913,7 @@ export default function QuizPage({ user = null }) {
 
 
 
+                    fontSize: mobile ? 15 : 17,
                     height:
 
 
@@ -3996,7 +3930,7 @@ export default function QuizPage({ user = null }) {
 
 
 
-                      "6px 11px",
+                      "10px 17px",
 
 
 
@@ -4020,7 +3954,7 @@ export default function QuizPage({ user = null }) {
 
 
 
-                </button>
+                </Link>
 
 
 
@@ -4044,187 +3978,7 @@ export default function QuizPage({ user = null }) {
 
 
 
-          {/* 인기 / 최신 */}
 
-
-
-
-
-
-
-          <div
-
-
-
-            style={{
-
-
-
-              display:
-
-
-
-                "flex",
-
-
-
-
-
-
-
-              justifyContent:
-
-
-
-                "center",
-
-
-
-
-
-
-
-              gap:
-
-
-
-                8,
-
-
-
-
-
-
-
-              marginTop:
-
-
-
-                6,
-
-
-
-            }}
-
-
-
-          >
-
-
-
-            {[
-
-
-
-              "popular",
-
-
-
-              "latest",
-
-
-
-            ].map(
-
-
-
-              (v) => (
-
-
-
-                <button
-
-
-
-                  key={
-
-
-
-                    v
-
-
-
-                  }
-
-
-
-
-
-
-
-                  type="button"
-
-
-
-
-
-
-
-                  onClick={() =>
-
-
-
-                    changeSort(
-
-
-
-                      v
-
-
-
-                    )
-
-
-
-                  }
-
-
-
-
-
-
-
-                  style={toggleButton(
-
-
-
-                    sort === v
-
-
-
-                  )}
-
-
-
-                >
-
-
-
-                  {
-
-
-
-                    c[v]
-
-
-
-                  }
-
-
-
-                </button>
-
-
-
-              )
-
-
-
-            )}
-
-
-
-          </div>
 
 
 
@@ -4256,7 +4010,8 @@ export default function QuizPage({ user = null }) {
 
 
 
-        <h2
+        {showCategoryOverview ? <QuizCategorySections lang={lang} contentLanguage={contentLanguage} sort={sort} c={c} /> : <>
+<h2
 
 
 
@@ -5301,7 +5056,7 @@ export default function QuizPage({ user = null }) {
                               "cover",
 
                             objectPosition:
-                              "center 20%",
+                              "center 35%",
 
 
 
@@ -6731,6 +6486,7 @@ export default function QuizPage({ user = null }) {
 
 
 
+        </>}
       </div>
 
 

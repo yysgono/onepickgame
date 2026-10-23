@@ -1,3 +1,4 @@
+import NavigationLink from "../NavigationLink";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -776,13 +777,13 @@ export default function QuizMaker() {
     return (
       <div style={{ padding: 60, textAlign: "center" }}>
         <h2>{m.loginRequired}</h2>
-        <button
-          type="button"
-          onClick={() => navigate(`/${lang}/login`)}
+        <NavigationLink
+
+          to={`/${lang}/login`} appearance="button"
           style={primaryButton}
         >
           {m.login}
-        </button>
+        </NavigationLink>
       </div>
     );
   }
@@ -790,9 +791,9 @@ export default function QuizMaker() {
   return (
     <div style={{ minHeight: "100vh", background: "#fff", color: "#202534", padding: "24px 12px 60px" }}>
       <form onSubmit={submit} style={{ maxWidth: 980, margin: "0 auto" }}>
-        <button type="button" onClick={() => navigate(`/${lang}/quiz`)} style={secondaryButton}>
+        <NavigationLink  to={`/${lang}/quiz`} appearance="button" style={secondaryButton}>
           ← {m.back}
-        </button>
+        </NavigationLink>
         <h1 style={{ textAlign: "center", fontSize: mobile ? 28 : 36, marginBottom: 22 }}>
           {m.title}
         </h1>

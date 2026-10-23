@@ -1,3 +1,4 @@
+import NavigationLink from "./NavigationLink";
 import { moveTierItem, tierDropPosition } from "../utils/tierItemOrder";
 import contentDescription from "../seo/contentDescription";
 import descriptionEditorCopy from "../seo/tierDescriptionEditorCopy.json";
@@ -3957,7 +3958,7 @@ const candidatesForSave =
   Array.from(
     candidatesForSaveMap.values()
   );
-  
+
 const finalCandidates =
   candidatesForSave.map(
               (item) => {
@@ -4302,7 +4303,7 @@ if (editingTierListId) {
 ]
     );
 
-  
+
 
   const seoTitle = t("tierList.seo.makerTitle");
   const seoDescription = t("tierList.seo.makerDescription");
@@ -4351,7 +4352,7 @@ if (editingTierListId) {
         }}
       >
 
-        
+
 
         <div
           style={{
@@ -4506,9 +4507,9 @@ if (editingTierListId) {
               >
                 {t("retry")}
               </button>
-              <button
-                type="button"
-                onClick={() => navigate(`/${lang}/tier-list/create`)}
+              <NavigationLink
+
+                to={`/${lang}/tier-list/create`} appearance="button"
                 style={{
                   padding: "10px 16px",
                   borderRadius: 9,
@@ -4520,7 +4521,7 @@ if (editingTierListId) {
                 }}
               >
                 {text.changeSource}
-              </button>
+              </NavigationLink>
             </div>
           </div>
         </div>
@@ -4574,7 +4575,7 @@ if (editingTierListId) {
         }}
       >
 
-        
+
 
         <div
           style={{
@@ -7425,16 +7426,12 @@ objectPosition: "center",
 
 
                   return (
-                    <button
+                    <NavigationLink
                       key={
                         cup.id
                       }
-                      type="button"
-                      onClick={() =>
-                        navigate(
-                          `/${lang}/tier-list/create/${cup.id}`
-                        )
-                      }
+
+                      to={`/${lang}/tier-list/create/${cup.id}`} appearance="button"
                       style={{
                         padding:
                           0,
@@ -7587,7 +7584,7 @@ objectPosition: "center",
 
                         {text.candidates}
                       </div>
-                    </button>
+                    </NavigationLink>
                   );
                 }
               )}
@@ -7642,7 +7639,7 @@ objectPosition: "center",
     </div>
   </div>
 )}
-          
+
 
 
 

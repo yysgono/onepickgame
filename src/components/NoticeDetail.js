@@ -1,3 +1,4 @@
+import NavigationLink from "./NavigationLink";
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -30,7 +31,7 @@ Want to make your own World Cup tournament? It's easy!
 4. When you’re done, click “Save.” Your World Cup will appear on the main page and can be played by anyone.
 5. Share the link with your friends and see who becomes the top pick!
 
-Tip: You can always edit or delete your tournaments later.  
+Tip: You can always edit or delete your tournaments later.
 Have fun making and sharing your own unique One Pick World Cups!
     `.trim(),
   },
@@ -105,8 +106,8 @@ export default function NoticeDetail() {
     return (
       <div style={{ maxWidth: 700, margin: "80px auto", color: "#222" }}>
         <h2>{t("notice_not_found", "Notice not found")}</h2>
-        <button
-          onClick={() => navigate(`/${lang}/notice`)}
+        <NavigationLink
+          to={`/${lang}/notice`} appearance="button"
           style={{
             marginTop: 12,
             padding: "8px 14px",
@@ -119,7 +120,7 @@ export default function NoticeDetail() {
           }}
         >
           {t("back_to_list", "Back to Notices")}
-        </button>
+        </NavigationLink>
       </div>
     );
   }

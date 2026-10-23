@@ -1502,7 +1502,7 @@ const unassignedCount = useMemo(() => {
           ❓ 추천 퀴즈 맞히기 관리
         </div>
         <div style={{ fontSize: 16, color: "#596579", marginBottom: 20 }}>
-          퀴즈 맞히기 홈의 ‘추천 퀴즈 맞히기’에 노출할 퀴즈와 순서를 지정합니다.
+          퀴즈 홈에 노출할 퀴즈와 순서를 지정합니다. 선택한 언어에 맞는 퀴즈를 추천 순서대로 최대 5개 표시합니다.
         </div>
 
         <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 18 }}>

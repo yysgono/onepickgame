@@ -1,3 +1,4 @@
+import NavigationLink from "../NavigationLink";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -176,7 +177,7 @@ export default function QuizDetailPage() {
 
   const ownerControls = isOwner ? (
     <div style={{ display: "flex", justifyContent: "center", gap: 10, flexWrap: "wrap", marginTop: 14 }}>
-      <button type="button" onClick={() => navigate(`/${lang}/quiz/create?edit=${id}`)} style={{ ...secondaryButton, minHeight: 46, padding: "10px 18px", color: "#2459a6", borderColor: "#93b4e8" }}>✏️ {c.editQuiz}</button>
+      <NavigationLink  to={`/${lang}/quiz/create?edit=${id}`} appearance="button" style={{ ...secondaryButton, minHeight: 46, padding: "10px 18px", color: "#2459a6", borderColor: "#93b4e8" }}>✏️ {c.editQuiz}</NavigationLink>
       <button type="button" disabled={deletingQuiz} onClick={removeOwnedQuiz} style={{ ...secondaryButton, minHeight: 46, padding: "10px 18px", color: "#b42346", borderColor: "#e7aab3" }}>🗑️ {deletingQuiz ? c.deletingQuiz : c.deleteQuiz}</button>
     </div>
   ) : null;
@@ -521,7 +522,7 @@ export default function QuizDetailPage() {
   return (
     <div style={{ minHeight: "100vh", background: "#fff", color: "#202534", padding: "28px 16px 72px" }}>
       <div style={{ maxWidth: 1320, margin: "0 auto" }}>
-        <button type="button" onClick={() => navigate(`/${lang}/quiz`)} style={{ ...secondaryButton, minHeight: 48, padding: "11px 18px", fontSize: 16 }}>← {c.quizList}</button>
+        <NavigationLink  to={`/${lang}/quiz`} appearance="button" style={{ ...secondaryButton, minHeight: 48, padding: "11px 18px", fontSize: 16 }}>← {c.quizList}</NavigationLink>
 
         {phase === "setup" && (
           <>
@@ -716,11 +717,11 @@ export default function QuizDetailPage() {
                 <button type="button" onClick={() => start()} style={resultPrimaryButton}>{c.retry}</button>
                 <button type="button" disabled={!records.some((x) => !x.correct)} onClick={retryWrong} style={resultSecondaryButton}>{c.retryWrong}</button>
                 <button type="button" onClick={playRandomQuiz} disabled={randomLoading} style={resultPrimaryButton}>{randomLoading ? c.loading : `🎲 ${c.randomQuiz}`}</button>
-                <button type="button" onClick={() => navigate(`/${lang}/quiz`)} style={resultSecondaryButton}>{c.otherQuizzes}</button>
+                <NavigationLink  to={`/${lang}/quiz`} appearance="button" style={resultSecondaryButton}>{c.otherQuizzes}</NavigationLink>
                 <button type="button" onClick={shareResult} style={resultSecondaryButton}>{c.share}</button>
               </div>
               <div style={{ display: "flex", justifyContent: "center", marginTop: 10 }}>
-                <button type="button" onClick={() => navigate(`/${lang}/quiz/create`)} style={{ ...resultSecondaryButton, minWidth: 230 }}>＋ {c.createMyQuiz}</button>
+                <NavigationLink  to={`/${lang}/quiz/create`} appearance="button" style={{ ...resultSecondaryButton, minWidth: 230 }}>＋ {c.createMyQuiz}</NavigationLink>
               </div>
               {ownerControls}
             </div>
@@ -772,7 +773,7 @@ export default function QuizDetailPage() {
                 <h2 style={{ fontSize: 22, margin: "0 0 12px", textAlign: "center" }}>{c.featured}</h2>
                 <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(220px,280px))", justifyContent: "center", gap: 12 }}>
                   {recommended.map((item) => (
-                    <button key={item.id} type="button" onClick={() => navigate(`/${lang}/quiz/${item.id}`)} style={{ ...cardStyle, padding: 0, overflow: "hidden", textAlign: "left", cursor: "pointer", color: "#202534" }}>
+                    <NavigationLink key={item.id}  to={`/${lang}/quiz/${item.id}`} appearance="button" style={{ ...cardStyle, padding: 0, overflow: "hidden", textAlign: "left", cursor: "pointer", color: "#202534" }}>
                       <div style={{ aspectRatio: "16/9", background: "#f3f6fb", overflow: "hidden" }}>
                         {item.thumbnail_url ? <MediaRenderer url={item.thumbnail_url} alt="" playable={false} style={{ width: "100%", height: "100%", objectFit: "cover" }} /> : <div style={{ display: "grid", placeItems: "center", height: "100%", fontSize: 36 }}>?</div>}
                       </div>
@@ -780,7 +781,7 @@ export default function QuizDetailPage() {
                         <div style={{ fontWeight: 900, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{localize(item.title_translations, item.title, lang)}</div>
                         <div style={{ marginTop: 5, fontSize: 13, color: "#667085" }}>▶ {item.play_count || 0} · {c.questionWord} {item.question_count || 0}</div>
                       </div>
-                    </button>
+                    </NavigationLink>
                   ))}
                 </div>
               </div>

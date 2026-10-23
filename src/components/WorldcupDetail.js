@@ -1,3 +1,4 @@
+import NavigationLink from "./NavigationLink";
 // src/components/WorldcupDetail.jsx
 
 import React from "react";
@@ -124,8 +125,8 @@ function WorldcupDetail({ worldcupList }) {
           marginBottom: 16,
         }}
       >
-        <button
-          onClick={() => navigate("/")}
+        <NavigationLink
+          to={"/"} appearance="button"
           style={{
             ...grayButtonStyle(isMobile),
             padding: isMobile ? "7px 0" : "8px 22px",
@@ -134,7 +135,7 @@ function WorldcupDetail({ worldcupList }) {
           }}
         >
           {t("home") || "홈으로"}
-        </button>
+        </NavigationLink>
 
         <button
           onClick={handleCopy}

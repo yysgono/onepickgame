@@ -1,3 +1,4 @@
+import NavigationLink from "./NavigationLink";
 import quizTranslationHint from "./quizTranslationHint";
 import GameBrandLabel from "./GameBrandLabel";
 import { getGuestQuizCopy } from "./guestQuizCopy";
@@ -358,7 +359,7 @@ export default function QuizDetailPage() {
 
     <div style={{ display: "flex", justifyContent: "center", gap: 10, flexWrap: "wrap", marginTop: 14 }}>
 
-      <button type="button" onClick={() => navigate(`/${lang}/quiz/create?edit=${id}`)} style={{ ...secondaryButton, minHeight: 46, padding: "10px 18px", color: "#2459a6", borderColor: "#93b4e8" }}>✏️ {c.editQuiz}</button>
+      <NavigationLink  to={`/${lang}/quiz/create?edit=${id}`} appearance="button" style={{ ...secondaryButton, minHeight: 46, padding: "10px 18px", color: "#2459a6", borderColor: "#93b4e8" }}>✏️ {c.editQuiz}</NavigationLink>
 
       <button type="button" disabled={deletingQuiz} onClick={removeOwnedQuiz} style={{ ...secondaryButton, minHeight: 46, padding: "10px 18px", color: "#b42346", borderColor: "#e7aab3" }}>🗑️ {deletingQuiz ? c.deletingQuiz : c.deleteQuiz}</button>
 
@@ -366,7 +367,7 @@ export default function QuizDetailPage() {
 
   ) : quiz && !quiz.user_id && quiz.guest_nickname ? (
     <div style={{ textAlign: "center", marginTop: 14 }}>
-      <button type="button" onClick={() => navigate(`/${lang}/quiz/create?edit=${id}`)} style={secondaryButton}>✏️ {getGuestQuizCopy(lang).edit}</button>
+      <NavigationLink  to={`/${lang}/quiz/create?edit=${id}`} appearance="button" style={secondaryButton}>✏️ {getGuestQuizCopy(lang).edit}</NavigationLink>
     </div>
   ) : null;
 
@@ -1034,7 +1035,7 @@ export default function QuizDetailPage() {
 
       <div style={{ maxWidth: 1320, margin: "0 auto" }}>
 
-        <button type="button" onClick={() => navigate(`/${lang}/quiz`)} style={{ ...secondaryButton, minHeight: 48, padding: "11px 18px", fontSize: 16 }}>← {c.quizList}</button>
+        <NavigationLink  to={`/${lang}/quiz`} appearance="button" style={{ ...secondaryButton, minHeight: 48, padding: "11px 18px", fontSize: 16 }}>← {c.quizList}</NavigationLink>
 
         {phase === "setup" && (
 
@@ -1042,6 +1043,7 @@ export default function QuizDetailPage() {
 
             <div style={{ textAlign: "center", padding: "30px 10px 20px" }}>
 
+              <div style={{marginBottom: 14}}><GameBrandLabel /></div>
               {quiz.thumbnail_url && (
 
                 <MediaRenderer url={quiz.thumbnail_url} alt={title || "Quiz"} playable={false} style={{
@@ -1068,7 +1070,6 @@ export default function QuizDetailPage() {
 
               )}
 
-              <GameBrandLabel />
               <h1 className="onepick-brand-game-title" style={{ fontSize: 34, margin: "18px 0 8px" }}>{title}</h1>
 
               <p style={{ color: "#637086", lineHeight: 1.6 }}>{seo.description}</p>
@@ -1439,7 +1440,7 @@ export default function QuizDetailPage() {
 
                 <button type="button" onClick={playRandomQuiz} disabled={randomLoading} style={resultPrimaryButton}>{randomLoading ? c.loading : `🎲 ${c.randomQuiz}`}</button>
 
-                <button type="button" onClick={() => navigate(`/${lang}/quiz`)} style={resultSecondaryButton}>{c.otherQuizzes}</button>
+                <NavigationLink  to={`/${lang}/quiz`} appearance="button" style={resultSecondaryButton}>{c.otherQuizzes}</NavigationLink>
 
                 <button type="button" onClick={shareResult} style={resultSecondaryButton}>{c.share}</button>
 
@@ -1447,7 +1448,7 @@ export default function QuizDetailPage() {
 
               <div style={{ display: "flex", justifyContent: "center", marginTop: 10 }}>
 
-                <button type="button" onClick={() => navigate(`/${lang}/quiz/create`)} style={{ ...resultSecondaryButton, minWidth: 230 }}>＋ {c.createMyQuiz}</button>
+                <NavigationLink  to={`/${lang}/quiz/create`} appearance="button" style={{ ...resultSecondaryButton, minWidth: 230 }}>＋ {c.createMyQuiz}</NavigationLink>
 
               </div>
 

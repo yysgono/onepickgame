@@ -1,0 +1,130 @@
+{
+  "ko": {
+    "viewAll": "전체보기",
+    "next": "다음 퀴즈",
+    "previous": "이전 퀴즈",
+    "moreCategories": "카테고리 더보기",
+    "loadFailed": "목록을 불러오지 못했습니다.",
+    "retry": "다시 시도"
+  },
+  "en": {
+    "viewAll": "View all",
+    "next": "Next quizzes",
+    "previous": "Previous quizzes",
+    "moreCategories": "More categories",
+    "loadFailed": "Could not load quizzes.",
+    "retry": "Retry"
+  },
+  "ja": {
+    "viewAll": "すべて見る",
+    "next": "次のクイズ",
+    "previous": "前のクイズ",
+    "moreCategories": "カテゴリをもっと見る",
+    "loadFailed": "クイズを読み込めませんでした。",
+    "retry": "再試行"
+  },
+  "zh": {
+    "viewAll": "查看全部",
+    "next": "下一组测验",
+    "previous": "上一组测验",
+    "moreCategories": "更多分类",
+    "loadFailed": "无法加载测验。",
+    "retry": "重试"
+  },
+  "es": {
+    "viewAll": "Ver todos",
+    "next": "Siguientes quizzes",
+    "previous": "Quizzes anteriores",
+    "moreCategories": "Más categorías",
+    "loadFailed": "No se pudieron cargar los quizzes.",
+    "retry": "Reintentar"
+  },
+  "fr": {
+    "viewAll": "Tout voir",
+    "next": "Quiz suivants",
+    "previous": "Quiz précédents",
+    "moreCategories": "Plus de catégories",
+    "loadFailed": "Impossible de charger les quiz.",
+    "retry": "Réessayer"
+  },
+  "vi": {
+    "viewAll": "Xem tất cả",
+    "next": "Câu đố tiếp theo",
+    "previous": "Câu đố trước",
+    "moreCategories": "Thêm danh mục",
+    "loadFailed": "Không tải được câu đố.",
+    "retry": "Thử lại"
+  },
+  "de": {
+    "viewAll": "Alle ansehen",
+    "next": "Nächste Quizze",
+    "previous": "Vorherige Quizze",
+    "moreCategories": "Mehr Kategorien",
+    "loadFailed": "Quizze konnten nicht geladen werden.",
+    "retry": "Erneut versuchen"
+  },
+  "ru": {
+    "viewAll": "Смотреть все",
+    "next": "Следующие викторины",
+    "previous": "Предыдущие викторины",
+    "moreCategories": "Больше категорий",
+    "loadFailed": "Не удалось загрузить викторины.",
+    "retry": "Повторить"
+  },
+  "id": {
+    "viewAll": "Lihat semua",
+    "next": "Kuis berikutnya",
+    "previous": "Kuis sebelumnya",
+    "moreCategories": "Kategori lainnya",
+    "loadFailed": "Gagal memuat kuis.",
+    "retry": "Coba lagi"
+  },
+  "pt": {
+    "viewAll": "Ver todos",
+    "next": "Próximos quizzes",
+    "previous": "Quizzes anteriores",
+    "moreCategories": "Mais categorias",
+    "loadFailed": "Não foi possível carregar os quizzes.",
+    "retry": "Tentar novamente"
+  },
+  "hi": {
+    "viewAll": "सभी देखें",
+    "next": "अगले क्विज़",
+    "previous": "पिछले क्विज़",
+    "moreCategories": "और श्रेणियाँ",
+    "loadFailed": "क्विज़ लोड नहीं हो सके।",
+    "retry": "फिर कोशिश करें"
+  },
+  "bn": {
+    "viewAll": "সব দেখুন",
+    "next": "পরের কুইজ",
+    "previous": "আগের কুইজ",
+    "moreCategories": "আরও বিভাগ",
+    "loadFailed": "কুইজ লোড করা যায়নি।",
+    "retry": "আবার চেষ্টা করুন"
+  },
+  "ar": {
+    "viewAll": "عرض الكل",
+    "next": "الاختبارات التالية",
+    "previous": "الاختبارات السابقة",
+    "moreCategories": "المزيد من الفئات",
+    "loadFailed": "تعذر تحميل الاختبارات.",
+    "retry": "إعادة المحاولة"
+  },
+  "th": {
+    "viewAll": "ดูทั้งหมด",
+    "next": "ควิซถัดไป",
+    "previous": "ควิซก่อนหน้า",
+    "moreCategories": "หมวดหมู่เพิ่มเติม",
+    "loadFailed": "โหลดควิซไม่สำเร็จ",
+    "retry": "ลองอีกครั้ง"
+  },
+  "tr": {
+    "viewAll": "Tümünü gör",
+    "next": "Sonraki quizler",
+    "previous": "Önceki quizler",
+    "moreCategories": "Diğer kategoriler",
+    "loadFailed": "Quizler yüklenemedi.",
+    "retry": "Tekrar dene"
+  }
+}

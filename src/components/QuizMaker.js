@@ -1,3 +1,4 @@
+import NavigationLink from "./NavigationLink";
 import { syncSourceQuestions, sourceCandidatePool, mergeSourceQuestions } from "../utils/quizSourceSync";
 import sourceSyncCopy from "./quizSourceSyncCopy.json";
 import { getGuestQuizCopy, validGuestQuizCredentials, guestQuizError } from "./guestQuizCopy";
@@ -886,7 +887,7 @@ export default function QuizMaker() {
     <label style={labelStyle}>{guestCopy.nickname}<input readOnly={guestEdit && editReady} autoComplete="off" value={guestNickname} onChange={e => setGuestNickname(e.target.value)} maxLength={20} style={inputStyle} /></label>
     <label style={labelStyle}>{guestCopy.password}<input readOnly={guestEdit && editReady} type="password" autoComplete="new-password" value={guestPassword} onChange={e => setGuestPassword(e.target.value)} maxLength={50} style={inputStyle} /></label>
     <p>{guestCopy.remember}</p>
-    {!user?.id && <button type="button" onClick={() => navigate(`/${lang}/login`)} style={secondaryButton}>{m.login}</button>}
+    {!user?.id && <NavigationLink  to={`/${lang}/login`} appearance="button" style={secondaryButton}>{m.login}</NavigationLink>}
   </section>;
 
   if (editQuizId && !editReady) {
@@ -895,17 +896,17 @@ export default function QuizMaker() {
       {guestEdit && guestFields}
       {error && <p role="alert">{error}</p>}
       {guestEdit && <button type="button" disabled={verifyingGuest} onClick={verifyGuest} style={primaryButton}>{verifyingGuest ? guestCopy.loading : guestCopy.verify}</button>}
-      <button type="button" onClick={() => navigate(`/${lang}/quiz`)} style={secondaryButton}>{m.back}</button>
-      {!guestEdit && error && <button type="button" onClick={() => navigate(`/${lang}/login`)} style={secondaryButton}>{m.login}</button>}
+      <NavigationLink  to={`/${lang}/quiz`} appearance="button" style={secondaryButton}>{m.back}</NavigationLink>
+      {!guestEdit && error && <NavigationLink  to={`/${lang}/login`} appearance="button" style={secondaryButton}>{m.login}</NavigationLink>}
     </div>;
   }
 
   return (
     <div style={{ minHeight: "100vh", background: "#fff", color: "#202534", padding: "24px 12px 60px" }}>
       <form onSubmit={submit} style={{ maxWidth: 980, margin: "0 auto" }}>
-        <button type="button" onClick={() => navigate(`/${lang}/quiz`)} style={secondaryButton}>
+        <NavigationLink  to={`/${lang}/quiz`} appearance="button" style={secondaryButton}>
           ← {m.back}
-        </button>
+        </NavigationLink>
         <h1 style={{ textAlign: "center", fontSize: mobile ? 28 : 36, marginBottom: 22 }}>
           {m.title}
         </h1>

@@ -1,3 +1,4 @@
+import NavigationLink from "./NavigationLink";
 import "../registerPresetTranslations";
 import React from "react";
 import { useNavigate } from "react-router-dom";
@@ -328,11 +329,9 @@ function GameModeNav({
   }}
 >
   {/* 내 이상형 월드컵 */}
-  <button
-    type="button"
-    onClick={() =>
-      navigate(`/${lang}/my-worldcups`)
-    }
+  <NavigationLink
+
+    to={`/${lang}/my-worldcups`} appearance="button"
     style={{
       width: "100%",
       minHeight: isMobile ? 42 : 46,
@@ -357,14 +356,12 @@ function GameModeNav({
     }}
   >
     {t("presetNavigation.myBrackets")}
-  </button>
+  </NavigationLink>
 
   {/* 내가 만든 티어표 */}
-  <button
-    type="button"
-    onClick={() =>
-      navigate(`/${lang}/tier-list?mine=1`)
-    }
+  <NavigationLink
+
+    to={`/${lang}/tier-list?mine=1`} appearance="button"
     style={{
       width: "100%",
       minHeight: isMobile ? 42 : 46,
@@ -389,7 +386,7 @@ function GameModeNav({
     }}
   >
     {t("presetNavigation.myTierLists")}
-  </button>
+  </NavigationLink>
 
   {/* 맞히기 - 준비 중 */}
   <button

@@ -1,3 +1,4 @@
+import NavigationLink from "./NavigationLink";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -293,19 +294,15 @@ export function TierTags({
     >
       {tags.map(
         (tag) => (
-          <button
-            type="button"
+          <NavigationLink
+
             key={tag}
 
-            onClick={() =>
-              navigate(
-                `/${lang}/tier-list?${new URLSearchParams(
+            to={`/${lang}/tier-list?${new URLSearchParams(
                   {
                     tag,
                   }
-                )}`
-              )
-            }
+                )}`} appearance="button"
 
             style={{
               border:
@@ -337,7 +334,7 @@ export function TierTags({
             }}
           >
             #{tag}
-          </button>
+          </NavigationLink>
         )
       )}
     </div>

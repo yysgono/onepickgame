@@ -1,3 +1,4 @@
+import NavigationLink from "./NavigationLink";
 import GameBrandLabel from "./GameBrandLabel";
 import RelatedContentLinks from "./RelatedContentLinks";
 // src/components/SelectRoundPage.js
@@ -2357,7 +2358,7 @@ lineHeight: 1.8,
 
       whiteSpace: "pre-line",
 
-      wordBreak: "keep-all", 
+      wordBreak: "keep-all",
 
     }}
 
@@ -2515,25 +2516,17 @@ detailTags.length > 0 && (
 
    {detailTags.slice(0, 3).map((tag) => (
 
-        <button
+        <NavigationLink
 
           key={tag}
 
-          type="button"
 
-          onClick={() =>
 
-            navigate(
-
-              `/${normalizedLang}?search=${encodeURIComponent(
+          to={`/${normalizedLang}?search=${encodeURIComponent(
 
                 tag
 
-              )}`
-
-            )
-
-          }
+              )}`} appearance="button"
 
           style={{
 
@@ -2559,7 +2552,7 @@ detailTags.length > 0 && (
 
           #{tag}
 
-        </button>
+        </NavigationLink>
 
       ))}
 
@@ -2573,23 +2566,15 @@ detailTags.length > 0 && (
 
   creatorOtherWorldcups.length > 0 && (
 
-    <button
+    <NavigationLink
 
-      type="button"
 
-      onClick={() =>
 
-        navigate(
-
-          `/${normalizedLang}?creator=${encodeURIComponent(
+      to={`/${normalizedLang}?creator=${encodeURIComponent(
 
             creatorId
 
-          )}`
-
-        )
-
-      }
+          )}`} appearance="button"
 
       style={{
 
@@ -2619,7 +2604,7 @@ detailTags.length > 0 && (
 
         "'s other brackets"} →
 
-    </button>
+    </NavigationLink>
 
   )}
 

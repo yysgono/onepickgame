@@ -1,3 +1,4 @@
+import NavigationLink from "../components/NavigationLink";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -33,13 +34,13 @@ export default function MyWorldcups() {
       ) : (
         <div style={{ display: "flex", flexWrap: "wrap", gap: 22, marginTop: 12 }}>
           {myList.map(wc => (
-            <div key={wc.id}
+            <NavigationLink key={wc.id}
               style={{
                 width: 180, minHeight: 188, background: "#f6f8fa", borderRadius: 13, boxShadow: "0 4px 16px rgba(25,32,52,0.07)",
                 display: "flex", flexDirection: "column", alignItems: "center", cursor: "pointer",
                 transition: "box-shadow .13s", border: "1.2px solid #e6eefb"
               }}
-              onClick={() => navigate(`/worldcup/${wc.id}`)}
+              to={`/worldcup/${wc.id}`} appearance="div"
             >
               <img
                 src={wc.data?.[0]?.image || "/default-thumb.png"}
@@ -47,7 +48,7 @@ export default function MyWorldcups() {
                 style={{ width: 128, height: 128, objectFit: "cover", borderRadius: 8, margin: "13px 0 7px 0", background: "#eceff4" }}
               />
               <div style={{ fontWeight: 700, fontSize: 18, marginBottom: 8, textAlign: "center", color: "#5542b8" }}>{wc.title}</div>
-            </div>
+            </NavigationLink>
           ))}
         </div>
       )}

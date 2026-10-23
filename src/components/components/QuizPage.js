@@ -1,3 +1,4 @@
+import NavigationLink from "../NavigationLink";
 import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -144,7 +145,7 @@ export default function QuizPage() {
             <h2 style={{ margin: "0 0 16px", fontSize: mobile ? 22 : 29, textAlign: "center" }}>{c.featured}</h2>
             <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "repeat(auto-fit,minmax(459px,544px))", justifyContent: "center", gap: 18 }}>
               {recommended.slice(0, 3).map((q) => (
-                <button key={q.id} type="button" onClick={() => navigate(`/${lang}/quiz/${q.id}`)} style={{ padding: 0, border: "1.5px solid #cfd8e6", borderBottom: "4px solid #E53935", borderRadius: 12, overflow: "hidden", background: "#fff", textAlign: "left", cursor: "pointer", color: "#202534" }}>
+                <NavigationLink key={q.id}  to={`/${lang}/quiz/${q.id}`} appearance="button" style={{ padding: 0, border: "1.5px solid #cfd8e6", borderBottom: "4px solid #E53935", borderRadius: 12, overflow: "hidden", background: "#fff", textAlign: "left", cursor: "pointer", color: "#202534" }}>
                   <div style={{ aspectRatio: "16/9", background: "#f3f6fb", overflow: "hidden" }}>
                     {q.thumbnail_url ? <MediaRenderer url={q.thumbnail_url} alt="" playable={false} style={{ width: "100%", height: "100%", objectFit: "cover" }} /> : <div style={{ display: "grid", placeItems: "center", height: "100%", fontSize: 42 }}>?</div>}
                   </div>
@@ -152,7 +153,7 @@ export default function QuizPage() {
                     <div style={{ fontSize: mobile ? 20 : 18, fontWeight: 950, lineHeight: 1.35, minHeight: mobile ? 54 : 49, overflow: "hidden", display: "-webkit-box", WebkitBoxOrient: "vertical", WebkitLineClamp: 2 }}>{localized(q.title_translations, q.title, lang)}</div>
                     <div style={{ marginTop: 7, color: "#667085", fontSize: mobile ? 15 : 14 }}>▶ {q.play_count || 0} · {q.question_count || 0} {c.questions}</div>
                   </div>
-                </button>
+                </NavigationLink>
               ))}
             </div>
           </section>
@@ -274,10 +275,10 @@ export default function QuizPage() {
             }}
           >
             {cards.slice(0, visibleCount).map((q) => (
-              <button
+              <NavigationLink
                 key={q.id}
-                type="button"
-                onClick={() => navigate(`/${lang}/quiz/${q.id}`)}
+
+                to={`/${lang}/quiz/${q.id}`} appearance="button"
                 style={{
                   width: "100%",
                   boxSizing: "border-box",
@@ -362,7 +363,7 @@ export default function QuizPage() {
                 {!mobile && (
                   <div style={{ alignSelf: "center", margin: "0 18px", minHeight: 62, display: "grid", placeItems: "center", borderRadius: 10, background: "#E53935", color: "#fff", fontSize: 19, fontWeight: 950, boxShadow: "0 5px 12px rgba(229,57,53,.18)" }}>{c.playNow}</div>
                 )}
-              </button>
+              </NavigationLink>
             ))}
           </div>
         )}

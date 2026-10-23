@@ -1,3 +1,4 @@
+import NavigationLink from "./NavigationLink";
 import RelatedContentLinks from "./RelatedContentLinks";
 import tierDetailSeo from "../seo/tierDetailSeo";
 import { socialImage } from "../seo/quizSeo";
@@ -2568,7 +2569,7 @@ if (isAdmin) {
         </div>
 
 
-        
+
       </div>
       </>
     );
@@ -2603,14 +2604,13 @@ const seoAuthorReady = seoAuthor.tierId === String(tierList.id);
   ).trim();
 
   const canBrowsePreset = Boolean(tierList.source_worldcup_id || sourcePresetName);
-  const openPresetTierLists = (excludeCurrent = false) => {
+  const presetTierListsHref = (() => {
     const params = new URLSearchParams();
     if (tierList.source_worldcup_id) params.set("source", String(tierList.source_worldcup_id));
     else if (sourcePresetName) params.set("preset", sourcePresetName);
-    else return;
-
-    navigate(`/${lang}/tier-list?${params.toString()}`);
-  };
+    else return `/${lang}/tier-list`;
+    return `/${lang}/tier-list?${params.toString()}`;
+  })();
 
   const detailActionLabels = {
     makeBracket: t("tierList.result.makeBracketCandidates", {
@@ -2712,9 +2712,9 @@ padding: isMobile
       좌측 상단 - 티어표 홈
       ========================= */}
 
-      
 
-  
+
+
 
   {/* =========================
       우측 상단 - 액션
@@ -3032,9 +3032,9 @@ padding: isMobile
     {canBrowsePreset && (
       <div style={{marginLeft: isMobile ? 0 : "auto", minWidth: 0, maxWidth: "100%", textAlign: isMobile ? "center" : "right"}}>
         {t("tierList.result.usedPresetLabel")}{": "}
-        <button type="button" onClick={() => openPresetTierLists(false)} style={{border: 0, background: "transparent", color: "#5542b8", padding: 0, font: "inherit", textDecoration: "underline", cursor: "pointer", overflowWrap: "anywhere", textAlign: "inherit"}}>
+        <NavigationLink appearance="button" to={presetTierListsHref} style={{border: 0, background: "transparent", color: "#5542b8", padding: 0, font: "inherit", textDecoration: "underline", cursor: "pointer", overflowWrap: "anywhere", textAlign: "inherit"}}>
           <PresetTitle id={tierList.source_worldcup_id} snapshot={sourcePresetName} lang={lang} />
-        </button>
+        </NavigationLink>
       </div>
     )}
   </div>
@@ -3059,6 +3059,67 @@ padding: isMobile
               marginBottom: isMobile ? 14 : 18,
             }}
           >
+<div style={{display:"grid",gridTemplateColumns:canBrowsePreset ? "1fr 1.12fr 1fr" : "1fr 1.12fr",alignItems:"center",gap:isMobile ? 8 : 14,width:"100%",maxWidth:1100,margin:"0 auto 20px"}}>
+<button
+                  type="button"
+                  onClick={handleCreateBracketFromTier}
+                  style={{
+                    width: "100%",
+                    padding: isMobile ? "13px 14px" : "14px 16px",
+                    borderRadius: 13,
+                    border: "2px solid #ff9f1a",
+                    background: "#ffffff",
+                    color: "#202534",
+                    fontSize: isMobile ? 15 : 16,
+                    fontWeight: 900,
+                    lineHeight: 1.25,
+                    cursor: "pointer",
+                    boxShadow: "0 4px 16px rgba(25,32,52,0.07)",
+                  }}
+                >
+                  {detailActionLabels.makeBracket}
+                </button>
+<button
+                  type="button"
+                  onClick={handleClone}
+                  style={{
+                    width: "100%",
+                    padding: isMobile ? "16px 10px" : "18px 16px",
+                    borderRadius: 13,
+                    border: "2px solid #7c5cff",
+                    background: "#f3efff",
+                    color: "#202534",
+                    fontSize: isMobile ? 15 : 18,
+                    fontWeight: 900,
+                    lineHeight: 1.25,
+                    cursor: "pointer",
+                    boxShadow: "0 4px 16px rgba(25,32,52,0.07)",
+                  }}
+                >
+                  {detailActionLabels.cloneTierList}
+                </button>
+{canBrowsePreset && (<NavigationLink
+                    appearance="button"
+                    to={presetTierListsHref}
+                    style={{
+                      width: "100%",
+                      padding: isMobile ? "13px 14px" : "14px 16px",
+                      borderRadius: 13,
+                      border: "2px solid #19bfff",
+                      background: "#ffffff",
+                      color: "#202534",
+                      fontSize: isMobile ? 15 : 16,
+                      fontWeight: 900,
+                      lineHeight: 1.25,
+                      whiteSpace: "normal",
+                      overflowWrap: "anywhere",
+                      cursor: "pointer",
+                      boxShadow: "0 4px 16px rgba(25,32,52,0.07)",
+                    }}
+                  >
+                    {detailActionLabels.browseTierLists}
+                  </NavigationLink>)}
+</div>
             <div
               style={{
                 fontSize: isMobile ? 24 : 28,
@@ -3161,79 +3222,7 @@ padding: isMobile
                 )}
               </div>
 
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: 10,
-                  width: isMobile ? "100%" : 260,
-                  maxWidth: "100%",
-                }}
-              >
-                <button
-                  type="button"
-                  onClick={handleCreateBracketFromTier}
-                  style={{
-                    width: "100%",
-                    padding: isMobile ? "13px 14px" : "14px 16px",
-                    borderRadius: 13,
-                    border: "1px solid #ff9f1a",
-                    background: "#ffffff",
-                    color: "#202534",
-                    fontSize: isMobile ? 15 : 16,
-                    fontWeight: 900,
-                    lineHeight: 1.25,
-                    cursor: "pointer",
-                    boxShadow: "0 4px 16px rgba(25,32,52,0.07)",
-                  }}
-                >
-                  {detailActionLabels.makeBracket}
-                </button>
 
-                {canBrowsePreset && (
-                  <button
-                    type="button"
-                    onClick={() => openPresetTierLists(false)}
-                    style={{
-                      width: "100%",
-                      padding: isMobile ? "13px 14px" : "14px 16px",
-                      borderRadius: 13,
-                      border: "1px solid #19bfff",
-                      background: "#ffffff",
-                      color: "#202534",
-                      fontSize: isMobile ? 15 : 16,
-                      fontWeight: 900,
-                      lineHeight: 1.25,
-                      whiteSpace: "normal",
-                      overflowWrap: "anywhere",
-                      cursor: "pointer",
-                      boxShadow: "0 4px 16px rgba(25,32,52,0.07)",
-                    }}
-                  >
-                    {detailActionLabels.browseTierLists}
-                  </button>
-                )}
-
-                <button
-                  type="button"
-                  onClick={handleClone}
-                  style={{
-                    width: "100%",
-                    padding: isMobile ? "13px 14px" : "14px 16px",
-                    borderRadius: 13,
-                    border: "1px solid #7c5cff",
-                    background: "#ffffff",
-                    color: "#202534",
-                    fontSize: isMobile ? 15 : 16,
-                    fontWeight: 900,
-                    lineHeight: 1.25,
-                    cursor: "pointer",
-                    boxShadow: "0 4px 16px rgba(25,32,52,0.07)",
-                  }}
-                >
-                  {detailActionLabels.cloneTierList}
-                </button>
-              </div>
             </div>
           </div>
 
@@ -3428,13 +3417,9 @@ padding: isMobile
           </button>
 
 
-          <button
-            type="button"
-            onClick={() =>
-              navigate(
-                `/${lang}/tier-list/create`
-              )
-            }
+          <NavigationLink
+
+            to={`/${lang}/tier-list/create`} appearance="button"
             style={{
               padding:
                 "12px 20px",
@@ -3460,7 +3445,7 @@ padding: isMobile
           >
             ＋{" "}
             {text.createTierList}
-          </button>
+          </NavigationLink>
 
 
           <button

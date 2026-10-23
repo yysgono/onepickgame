@@ -9,10 +9,11 @@ export function createQuizListPager({ fetchPage, onChange = () => {}, pageSize =
     if (!active) return Promise.resolve(false);
     if (pending) return pending;
     const offset = state.nextOffset;
-    pending = Promise.resolve().then(() => fetchPage({ offset, pageSize }))
+    const requestedSize = pageSize;
+    pending = Promise.resolve().then(() => fetchPage({ offset, pageSize: requestedSize }))
       .then(page => {
         if (!active) return false;
-        if (!Array.isArray(page?.items) || page.items.length > pageSize ||
+        if (!Array.isArray(page?.items) || page.items.length > requestedSize ||
             page.nextOffset !== offset + page.items.length || (page.hasMore && !page.items.length)) {
           throw new Error('Invalid quiz page response');
         }
@@ -35,6 +36,7 @@ export function createQuizListPager({ fetchPage, onChange = () => {}, pageSize =
   };
   return {
     snapshot,
+    setPageSize(value) { pageSize = Math.max(1, Math.min(40, Number(value) || 1)); },
     loadMore(desired = state.items.length + pageSize) {
       return allPending || ensure(desired);
     },

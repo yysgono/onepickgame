@@ -1,0 +1,65 @@
+.quiz-category-sections{width:100%;max-width:1800px;margin:28px auto 0;color:#202534}.quiz-category-row{position:relative;margin:0 0 38px;padding:0 0 24px;border-bottom:1px solid #e2e5eb;min-width:0}.quiz-category-row>header{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:18px}.quiz-category-row h2{margin:0;font-size:27px;font-weight:850;line-height:1.4}.quiz-category-row a{text-decoration:none;color:inherit}.quiz-category-all{flex-shrink:0;padding:10px 16px;border:2px solid #dc5757;border-radius:10px;font-weight:750;background:#fff8f8;color:#a82323!important}.quiz-category-cards{display:grid;grid-template-columns:repeat(var(--quiz-columns,4),minmax(0,1fr));gap:20px;min-width:0}.quiz-category-card{min-width:0;display:flex;flex-direction:column;border:1px solid #e2caca;border-radius:14px;overflow:hidden;background:#fff;box-shadow:0 5px 18px #1920340c}.quiz-category-card:hover{border-color:#e53935;box-shadow:0 8px 24px #a823231b}.quiz-category-image{width:100%;aspect-ratio:4/3;background:#fff0f0;display:flex;align-items:center;justify-content:center;overflow:hidden;font-size:48px}.quiz-category-card-body{padding:16px;display:flex;flex-direction:column;flex:1;min-width:0}.quiz-category-card h3{margin:0;font-size:19px;line-height:1.45;font-weight:800;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;overflow-wrap:anywhere}.quiz-category-card p{margin:12px 0;color:#64748b;font-size:14px}.quiz-category-play{margin-top:auto;background:#e53935;color:white;border-radius:8px;padding:10px;text-align:center;font-weight:750}.quiz-category-placeholder{min-height:300px;border:1px solid #e7e9ed;border-radius:14px;background:linear-gradient(#f0f2f5 0 65%,#fafafa 65%)}.quiz-category-paging{display:flex;justify-content:flex-end;gap:10px;margin-top:16px}.quiz-category-paging button,.quiz-more-categories{font:inherit;cursor:pointer;background:#fff;border:2px solid #c63232;border-radius:10px;color:#a82323;min-height:46px;padding:8px 18px;font-weight:750}.quiz-category-paging button{font-size:28px;line-height:1;min-width:52px}.quiz-category-paging button:disabled{opacity:.35;cursor:default}.quiz-category-status{padding:12px;text-align:center;color:#64748b}.quiz-category-status button{font:inherit;padding:8px 14px;cursor:pointer}.quiz-more-categories{display:block;margin:20px auto;min-width:240px;font-size:18px}.quiz-category-sections a:focus-visible,.quiz-category-sections button:focus-visible{outline:3px solid #2563eb;outline-offset:3px}.quiz-category-filters a{font-size:17px!important;min-height:46px;display:inline-flex;align-items:center;justify-content:center;text-decoration:none;box-sizing:border-box}
+@media(max-width:650px){.quiz-category-cards{gap:12px}.quiz-category-row h2{font-size:22px}.quiz-category-all{font-size:14px;padding:8px 10px}.quiz-category-card-body{padding:11px}.quiz-category-card h3{font-size:16px}.quiz-category-card p{font-size:12px}.quiz-category-play{font-size:14px}.quiz-category-placeholder{min-height:230px}.quiz-category-filters a{font-size:15px!important;min-height:42px}.quiz-category-sections{margin-top:22px}}
+/* v31: full-width rows with adjacent headings and side arrows. */
+.quiz-home-page{max-width:none!important;min-width:0}
+.quiz-category-sections{max-width:none}
+.quiz-category-row>header{justify-content:flex-start;gap:14px}
+.quiz-category-carousel{position:relative;padding:0 32px}
+.quiz-category-arrow{position:absolute;top:42%;transform:translateY(-50%);z-index:2;width:46px;height:66px;border:2px solid #d94a4a;border-radius:12px;background:#fff;color:#a82323;font-size:38px;line-height:1;cursor:pointer;box-shadow:0 3px 12px #19203418}
+.quiz-category-arrow-prev{left:0}.quiz-category-arrow-next{right:0}
+.quiz-category-arrow:disabled{opacity:.35;cursor:default}
+.quiz-category-card-body{text-align:center}
+.quiz-category-card h3{height:2.9em;min-height:2.9em;flex-shrink:0}
+.quiz-category-description{margin-top:10px;line-height:1.5;font-size:15px;color:#64748b;height:3em;min-height:3em;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;overflow-wrap:anywhere}
+.quiz-category-card p{flex-shrink:0}
+@media(max-width:650px){.quiz-category-carousel{padding:0 19px}.quiz-category-arrow{width:32px;height:54px;font-size:30px}.quiz-category-description{font-size:13px}.quiz-category-row>header{gap:10px}.quiz-category-row h2{font-size:21px}}
+.quiz-featured-card{text-align:center!important}
+.quiz-featured-card>div:last-child{ text-align:center }
+.quiz-featured-card>div:last-child>div:first-child{height:54px;min-height:54px!important;flex-shrink:0}
+/* v32: match the worldcup thumbnail height instead of scaling tall images. */
+.quiz-category-image{height:214px;aspect-ratio:auto;flex-shrink:0}
+.quiz-category-placeholder{min-height:420px}
+.quiz-category-carousel{padding:0 12px}
+.quiz-category-cards{gap:13px}
+.quiz-category-arrow{top:107px;transform:translateY(-50%)}
+.quiz-featured-card>div:first-child{height:214px;aspect-ratio:auto!important;flex-shrink:0}
+.quiz-featured-card{width:100%;max-width:504px}
+@media(max-width:650px){.quiz-category-image,.quiz-featured-card>div:first-child{height:156px}.quiz-category-carousel{padding:0 10px}.quiz-category-cards{gap:8px}.quiz-category-arrow{top:78px}.quiz-category-placeholder{min-height:340px}}
+
+/* v33: compact cards, centered images and arrows centered on the whole card. */
+.quiz-category-card-body{padding:12px 14px}
+.quiz-category-card p{margin:8px 0 10px}
+.quiz-category-placeholder{min-height:360px}
+.quiz-category-arrow{top:50%;transform:translateY(-50%)}
+@media(max-width:650px){.quiz-category-card-body{padding:10px}.quiz-category-arrow{top:50%}.quiz-category-placeholder{min-height:300px}}
+/* v34: taller photos and a single compact title line. */
+.quiz-category-image,.quiz-featured-card>div:first-child{height:320px}
+.quiz-category-description{display:none}
+.quiz-category-card h3,.quiz-home-page .quiz-featured-card>div:last-child>div:first-child{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;-webkit-line-clamp:unset;height:1.45em;min-height:1.45em!important;line-height:1.45;max-width:100%}
+.quiz-category-placeholder{min-height:440px}
+@media(max-width:650px){.quiz-category-image,.quiz-featured-card>div:first-child{height:200px}.quiz-category-placeholder{min-height:320px}}
+/* v35: preserve the reference photo ratio at every window width. */
+.quiz-category-image,.quiz-featured-card>div:first-child{height:auto;aspect-ratio:7 / 5!important}
+.quiz-category-card h3{font-size:20px}
+.quiz-home-page .quiz-featured-card>div:last-child>div:first-child{font-size:21px!important}
+@media(max-width:650px){.quiz-category-image,.quiz-featured-card>div:first-child{height:auto;aspect-ratio:7 / 5!important}.quiz-category-card h3{font-size:17px}.quiz-home-page .quiz-featured-card>div:last-child>div:first-child{font-size:21px!important}}
+/* v36: twice as many desktop/tablet cards, with the same photo ratio. */
+@media(min-width:651px){.quiz-category-cards{gap:10px}.quiz-category-card-body{padding:10px 8px}.quiz-category-card p{font-size:12px;margin:6px 0 8px}.quiz-category-play{font-size:14px;padding:8px 5px}.quiz-category-placeholder{min-height:220px}}
+/* v37: compact recommendations, independent of their configured count. */
+.quiz-featured-card{max-width:280px;justify-self:center}
+/* v38: desktop cards keep their size; only the visible count changes. */
+@media(min-width:651px){.quiz-category-cards{grid-template-columns:repeat(var(--quiz-columns),280px);justify-content:start;gap:10px}.quiz-category-card,.quiz-category-placeholder{width:280px;max-width:280px}}
+/* v39: retain the original seven-column card size across window resizing. */
+@media(min-width:651px){.quiz-category-cards{grid-template-columns:repeat(var(--quiz-columns),var(--quiz-card-width));justify-content:start}.quiz-category-card,.quiz-category-placeholder{width:var(--quiz-card-width);max-width:var(--quiz-card-width)}}
+/* v40: retain a partially visible edge card instead of dropping it on resize. */
+.quiz-category-cards{overflow:hidden}
+/* v41: center short rows, keep overflowing rows anchored, improve readability. */
+.quiz-category-cards{justify-content:start;justify-content:safe center}
+.quiz-category-card-body{padding:13px 10px}
+.quiz-category-card p{font-size:16px;margin:10px 0 12px;line-height:1.5}
+.quiz-category-play{font-size:17px;padding:11px 6px;line-height:1.4}
+.quiz-featured-card img{object-position:center 35%!important}
+.quiz-featured-card>div:last-child>div:last-child{font-size:16px!important;line-height:1.5}
+@media(max-width:650px){.quiz-category-card p{font-size:14px}.quiz-category-play{font-size:16px}.quiz-category-card-body{padding:12px 8px}}
+/* v42: width is identical on first load, resize and reload. */
+@media(min-width:651px){.quiz-category-sections{--quiz-card-width:440px}}

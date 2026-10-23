@@ -1,3 +1,4 @@
+import NavigationLink from "./NavigationLink";
 import useWorldcupCategoryPages from "../hooks/useWorldcupCategoryPages";
 // src/components/CategoryPage.js
 
@@ -1692,23 +1693,15 @@ const smallButtonStyle = {
 
 
 
-        <button
+        <NavigationLink
 
 
 
-          type="button"
 
 
 
-          onClick={() =>
 
-
-
-            goto(`/${lang}/worldcup-maker`)
-
-
-
-          }
+          to={`/${lang}/worldcup-maker`} appearance="button"
 
 
 
@@ -1944,7 +1937,7 @@ const smallButtonStyle = {
 
 
 
-        </button>
+        </NavigationLink>
 
 
 

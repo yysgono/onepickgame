@@ -1,3 +1,4 @@
+import NavigationLink from "./NavigationLink";
 import SITE_HOME_COPY from "../seo/siteHomeCopy.json";
 import useWorldcupHomePages from "../hooks/useWorldcupHomePages";
 import PageIntro from "./PageIntro";
@@ -3440,15 +3441,11 @@ fontWeight: 900,
 
         {!featured && slug && (
 
-          <button
+          <NavigationLink
 
-            type="button"
 
-            onClick={() =>
 
-              goto(`/${lang}/category/${slug}`)
-
-            }
+            to={`/${lang}/category/${slug}`} appearance="button"
 
             style={{
 
@@ -3504,7 +3501,7 @@ fontWeight: 900,
 
             ›
 
-          </button>
+          </NavigationLink>
 
         )}
 
