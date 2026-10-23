@@ -1797,7 +1797,7 @@ maxWidth: isMobile ? 430 : 1780,
               style={{
                 width: "100%",
 
-                maxWidth: 1220,
+                maxWidth: "none",
 
                 margin:
                   isMobile
@@ -1832,16 +1832,7 @@ marginBottom: isMobile ? 12 : 16,
   {t("tierList.page.recommendedPresetTitle")}
 </div>
 
-      <div
-  style={{
-    display: "grid",
-    gridTemplateColumns: isMobile
-      ? "1fr"
-      : "repeat(3, minmax(0, 1fr))",
-    gap: isMobile ? 12 : 20,
-    alignItems: "stretch",
-  }}
->
+      <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: 18, alignItems: "stretch" }}>
                 {recommendedPresets.map(
                   (cup) => {
                     const title =
@@ -1865,6 +1856,7 @@ marginBottom: isMobile ? 12 : 16,
 
                     return (
                       <button
+                        className="tier-recommendation-card"
                         key={
                           cup.id
                         }
@@ -1904,7 +1896,8 @@ onMouseLeave={(e) => {
 style={{
   width: "100%",
   minWidth: 0,
-  maxWidth: "none",
+  maxWidth: isMobile ? "none" : 400,
+  flex: isMobile ? "0 1 100%" : "0 1 400px",
   padding: 0,
 
 	  boxShadow:
@@ -1941,7 +1934,7 @@ style={{
                             "border-box",
                         }}
                       >
-                        <div style={{ height: isMobile ? 220 : 230, width: "100%", overflow: "hidden", background: "#eff6ff" }}>
+                        <div style={{ height: isMobile ? 198 : 207, width: "100%", overflow: "hidden", background: "#eff6ff" }}>
                           {firstImage ? <MediaRenderer url={firstImage} alt={title} playable={false} loading="lazy" deferUntilVisible viewportMargin="180px" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 35%", display: "block" }} /> : <div style={{ height: "100%", display: "grid", placeItems: "center", fontSize: 44 }} aria-hidden="true">📊</div>}
                         </div>
 
@@ -1954,8 +1947,8 @@ style={{
 
                             minHeight:
                               isMobile
-                                ? 54
-                                : 72,
+                                ? 49
+                                : 65,
 
                             boxSizing:
                               "border-box",
@@ -2007,7 +2000,7 @@ style={{
                             }
                           </span>
                         </div>
-	                        <div style={{ margin: "0 10px 11px", minHeight: 42, display: "grid", placeItems: "center", border: "1px solid #2563EB", borderRadius: 8, background: "#2563EB", color: "#fff", fontSize: isMobile ? 15 : 16, fontWeight: 900 }}>
+	                        <div style={{ margin: "0 10px 11px", minHeight: 38, display: "grid", placeItems: "center", border: "1px solid #2563EB", borderRadius: 8, background: "#2563EB", color: "#fff", fontSize: isMobile ? 15 : 16, fontWeight: 900 }}>
                           {t("tierList.page.createButton")}
                         </div>
                       </button>
