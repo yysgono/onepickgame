@@ -826,6 +826,7 @@ export default function QuizPage({ user = null }) {
   const quizSeoTitle = listMetadata.title;
   const quizSeoDescription = listMetadata.description;
   const quizSeoIndexable = listMetadata.indexable;
+  const categoryListHeading = category === "all" ? c.allQuizzes : lang === "ko" ? `${c[category]} 퀴즈 맞히기` : `${c[category]} · ${c.title}`;
   const showCategoryOverview = !mineOnly && category === "all" && !debounced.trim();
   const quizPages = useQuizPages({
     enabled: (!mineOnly || Boolean(user?.id)) && !showCategoryOverview,
@@ -4011,6 +4012,10 @@ export default function QuizPage({ user = null }) {
 
 
         {showCategoryOverview ? <QuizCategorySections lang={lang} contentLanguage={contentLanguage} sort={sort} c={c} /> : <>
+<div role="group" aria-label={`${c.popular} / ${c.latest}`} style={{display:"flex",justifyContent:"center",gap:10,margin:"14px auto 18px"}}>
+ {SORTS.map(value=><Link key={value} to={quizFilterHref(category,value)} aria-current={sort===value?"true":undefined} style={{...toggleButton(sort===value),textDecoration:"none",display:"inline-flex",alignItems:"center",justifyContent:"center",minHeight:42,padding:"9px 18px"}}>{c[value]}</Link>)}
+</div>
+
 <h2
 
 
@@ -4083,7 +4088,7 @@ export default function QuizPage({ user = null }) {
 
 
 
-            c.allQuizzes
+            categoryListHeading
 
 
 
