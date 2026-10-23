@@ -63,3 +63,6 @@
 @media(max-width:650px){.quiz-category-card p{font-size:14px}.quiz-category-play{font-size:16px}.quiz-category-card-body{padding:12px 8px}}
 /* v42: width is identical on first load, resize and reload. */
 @media(min-width:651px){.quiz-category-sections{--quiz-card-width:440px}}
+
+/* v44: slightly larger featured quiz cards only. */
+.quiz-featured-card{max-width:320px}

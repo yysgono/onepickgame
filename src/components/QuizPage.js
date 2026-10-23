@@ -2385,7 +2385,7 @@ export default function QuizPage({ user = null }) {
 
 
 
-              maxWidth: 1480,
+              maxWidth: 1690,
 
 
 
@@ -2569,7 +2569,7 @@ export default function QuizPage({ user = null }) {
 
 
 
-                    : "repeat(auto-fit, minmax(min(220px, 100%), 280px))",
+                    : "repeat(auto-fit, minmax(min(220px, 100%), 320px))",
 
 
 
