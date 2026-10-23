@@ -1,4 +1,3 @@
-import { adminDisplayTitle } from "../utils/adminDisplayTitle";
 import React, {
   useCallback,
   useEffect,
@@ -11,6 +10,24 @@ import { supabase } from "../utils/supabaseClient";
 const INITIAL_VISIBLE_COUNT = 5;
 const LOAD_MORE_COUNT = 5;
 
+function displayTitle(cup) {
+  let translations = cup?.title_translations || {};
+  if (typeof translations === "string") { try { translations = JSON.parse(translations); } catch { translations = {}; } }
+  return translations.ko || (typeof cup?.title === "string" ? cup.title : cup?.title?.ko || cup?.title?.en) || translations.en || String(cup.id);
+}
+function orderedPresets(rows) {
+  return rows.filter(row => row.is_tier_preset).sort((a, b) =>
+    Number(a.tier_preset_order ?? 2147483647) - Number(b.tier_preset_order ?? 2147483647) || String(a.id).localeCompare(String(b.id)));
+}
+function movePresetRows(rows, id, delta) {
+  const selected = orderedPresets(rows);
+  const index = selected.findIndex(row => String(row.id) === String(id));
+  const target = index + delta;
+  if (index < 0 || target < 0 || target >= selected.length) return rows;
+  [selected[index], selected[target]] = [selected[target], selected[index]];
+  const orders = new Map(selected.map((row, i) => [String(row.id), i + 1]));
+  return rows.map(row => orders.has(String(row.id)) ? { ...row, tier_preset_order: orders.get(String(row.id)) } : row);
+}
 function TierPresetAdmin() {
   const [worldcups, setWorldcups] = useState([]);
   const [originalMap, setOriginalMap] = useState({});
@@ -256,28 +273,11 @@ function TierPresetAdmin() {
      추천 순서 변경
   ========================================= */
 
-  const changeOrder = (
-    id,
-    value
-  ) => {
+  const movePreset = (id, delta) => {
     setMessage("");
-
-    setWorldcups((prev) =>
-      prev.map((cup) =>
-        String(cup.id) ===
-        String(id)
-          ? {
-              ...cup,
-
-              tier_preset_order:
-                value === ""
-                  ? null
-                  : Number(value),
-            }
-          : cup
-      )
-    );
+    setWorldcups(previous => movePresetRows(previous, id, delta));
   };
+  const selectedOrder = orderedPresets(worldcups);
 
   /* =========================================
      저장
@@ -375,8 +375,7 @@ function TierPresetAdmin() {
         return (
           currentEnabled !==
             originalEnabled ||
-          currentOrder !==
-            originalOrder ||
+          currentOrder !== originalOrder ||
           JSON.stringify(cup.tier_preset_title_translations || {}) !== JSON.stringify(original.tier_preset_title_translations || {})
         );
       });
@@ -497,7 +496,7 @@ function TierPresetAdmin() {
         }}
       >
         티어표 홈에 표시할
-        이상형 월드컵을 개수 제한 없이 선택하세요.
+        이상형 월드컵을 개수 제한 없이 선택하세요. 위·아래 버튼으로 추천 순서를 바꾸고 저장하세요.
         {" "}
         현재{" "}
         <strong
@@ -613,7 +612,8 @@ function TierPresetAdmin() {
           >
             {visibleWorldcups.map(
               (cup) => {
-                const title = adminDisplayTitle(cup, String(cup.id));
+                const title = displayTitle(cup);
+                const position = selectedOrder.findIndex(row => String(row.id) === String(cup.id));
 
                 return (
                   <div
@@ -682,60 +682,17 @@ function TierPresetAdmin() {
                       title={title}
                     >
                       {title}
-                      {cup.is_tier_preset && <input
-                        aria-label={`${title} 추천 카드 제목 (${titleLanguage})`}
-                        placeholder="추천 카드 제목 (예: 여자 아이돌 티어표)"
-                        value={cup.tier_preset_title_translations?.[titleLanguage] || ""}
-                        maxLength={140}
-                        onChange={event => {
-                          const value = event.target.value;
-                          setWorldcups(previous => previous.map(item => item.id === cup.id ? { ...item, tier_preset_title_translations: { ...(item.tier_preset_title_translations || {}), [titleLanguage]: value } } : item));
-                        }}
-                        style={{ display: "block", width: "100%", boxSizing: "border-box", marginTop: 8, minHeight: 40, padding: "8px 10px", border: "2px solid #2563eb", borderRadius: 7, color: "#111827", background: "#fff", fontSize: 16 }}
-                      />}
+                      {cup.is_tier_preset && <input aria-label={`${title} 추천 카드 제목 (${titleLanguage})`} placeholder="추천 카드 제목 (예: 여자 아이돌 티어표)" value={cup.tier_preset_title_translations?.[titleLanguage] || ""} maxLength={140} onChange={event => {
+                        const value = event.target.value;
+                        setWorldcups(previous => previous.map(item => item.id === cup.id ? { ...item, tier_preset_title_translations: { ...(item.tier_preset_title_translations || {}), [titleLanguage]: value } } : item));
+                      }} style={{ display: "block", width: "100%", boxSizing: "border-box", marginTop: 8, minHeight: 40, padding: "8px 10px", border: "2px solid #2563eb", borderRadius: 7, color: "#111827", background: "#fff", fontSize: 16 }} />}
                     </div>
 
                     {cup.is_tier_preset && (
-                      <input
-                        type="number"
-                        min="1"
-                        value={
-                          cup.tier_preset_order ??
-                          ""
-                        }
-                        onChange={(
-                          e
-                        ) =>
-                          changeOrder(
-                            cup.id,
-                            e.target
-                              .value
-                          )
-                        }
-                        style={{
-                          width: 60,
-
-                          height: 34,
-
-                          textAlign:
-                            "center",
-
-                          borderRadius:
-                            6,
-
-                          border:
-                            "1px solid #dde2ea",
-
-                          background:
-                            "#ffffff",
-
-                          color:
-                            "#202534",
-
-                          fontWeight:
-                            800,
-                        }}
-                      />
+                      <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                        <span style={{ minWidth: 28, textAlign: "center", fontWeight: 800 }}>{position + 1}</span>
+                        {[-1, 1].map(delta => <button key={delta} type="button" disabled={saving || (delta < 0 ? position === 0 : position === selectedOrder.length - 1)} aria-label={`${title} ${delta < 0 ? "위로" : "아래로"}`} onClick={() => movePreset(cup.id, delta)} style={{ minWidth: 42, minHeight: 42, border: "2px solid #2563eb", borderRadius: 7, background: "#eff6ff", color: "#1d4ed8", cursor: "pointer", fontSize: 22, fontWeight: 800 }}> {delta < 0 ? "↑" : "↓"} </button>)}
+                      </div>
                     )}
                   </div>
                 );
