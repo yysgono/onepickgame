@@ -69,3 +69,13 @@
 
 /* v45: featured cards ten percent larger. */
 .quiz-featured-card{max-width:352px}
+/* v47: touch-scroll quiz rows on mobile, one readable card at a time. */
+.quiz-featured-carousel{position:relative;min-width:0}
+.quiz-featured-arrow{display:none}
+@media(max-width:650px){
+ .quiz-category-cards,.quiz-featured-scroll{display:flex!important;justify-content:flex-start!important;gap:12px!important;overflow-x:auto!important;overflow-y:hidden;scroll-snap-type:x mandatory;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-bottom:6px;min-width:0}
+ .quiz-category-cards::-webkit-scrollbar,.quiz-featured-scroll::-webkit-scrollbar{display:none}
+ .quiz-category-card,.quiz-category-placeholder,.quiz-featured-scroll>.quiz-featured-card{flex:0 0 min(360px,calc(100% - 20px));width:min(360px,calc(100% - 20px));max-width:360px;scroll-snap-align:start;box-sizing:border-box}
+ .quiz-featured-arrow{display:flex;align-items:center;justify-content:center;position:absolute;top:50%;transform:translateY(-50%);z-index:3;width:34px;height:64px;border:2px solid #dc5757;border-radius:12px;background:#fff;color:#a82323;font-size:30px;cursor:pointer}
+ .quiz-featured-prev{left:-5px}.quiz-featured-next{right:-5px}
+}

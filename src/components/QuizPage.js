@@ -827,6 +827,7 @@ export default function QuizPage({ user = null }) {
   const quizSeoDescription = listMetadata.description;
   const quizSeoIndexable = listMetadata.indexable;
   const categoryListHeading = category === "all" ? c.allQuizzes : lang === "ko" ? `${c[category]} 퀴즈 맞히기` : `${c[category]} · ${c.title}`;
+  const featuredScrollRef = React.useRef(null);
   const showCategoryOverview = !mineOnly && category === "all" && !debounced.trim();
   const quizPages = useQuizPages({
     enabled: (!mineOnly || Boolean(user?.id)) && !showCategoryOverview,
@@ -2537,7 +2538,7 @@ export default function QuizPage({ user = null }) {
 
 
 
-            <div
+            <div className="quiz-featured-carousel"><div ref={featuredScrollRef} className="quiz-featured-scroll"
 
 
 
@@ -3583,6 +3584,10 @@ export default function QuizPage({ user = null }) {
 
 
             </div>
+<button type="button" className="quiz-featured-arrow quiz-featured-prev" aria-label={t('previous',{defaultValue:lang==='ko'?'이전':'Previous'})} onClick={()=>featuredScrollRef.current?.scrollBy({left:(lang==='ar'?1:-1)*(featuredScrollRef.current.clientWidth*.9),behavior:'smooth'})}>‹</button>
+<button type="button" className="quiz-featured-arrow quiz-featured-next" aria-label={t('next',{defaultValue:lang==='ko'?'다음':'Next'})} onClick={()=>featuredScrollRef.current?.scrollBy({left:(lang==='ar'?-1:1)*(featuredScrollRef.current.clientWidth*.9),behavior:'smooth'})}>›</button>
+</div>
+
 
 
 
