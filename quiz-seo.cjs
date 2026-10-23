@@ -35,11 +35,19 @@ function renderHtml(template, seo, body, indexable = true) {
   ].join('\n');
   const rootPattern = /<div\s+id=["']?root["']?\s*>\s*<div\s+class=["']?loading-screen["']?\s*>\s*Loading\.\.\.\s*<\/div>\s*<\/div>/i;
   const emptyRootPattern = /<div\s+id=["']?root["']?\s*>\s*<\/div>/i;
-  const root = () => '<div id="root">' + body + '</div>';
+  const bootHead = `<style>
+.quiz-boot-spinner{display:none}
+html.quiz-booting .quiz-seo-content{display:none}
+html.quiz-booting .quiz-boot-spinner{display:flex;align-items:center;justify-content:center;min-height:65vh;background:#fff}
+.quiz-boot-spinner span{width:42px;height:42px;border:4px solid #f3d7d7;border-top-color:#e53935;border-radius:50%;animation:quiz-boot-spin .8s linear infinite}
+@keyframes quiz-boot-spin{to{transform:rotate(360deg)}}
+@media(prefers-reduced-motion:reduce){.quiz-boot-spinner span{animation:none}}
+</style><script>document.documentElement.classList.add('quiz-booting');setTimeout(function(){document.documentElement.classList.remove('quiz-booting')},8000);</script>`;
+  const root = () => '<div id="root"><div class="quiz-seo-content">' + body + '</div><div class="quiz-boot-spinner" role="status" aria-label="Loading" lang="en"><span aria-hidden="true"></span></div></div>';
   if (rootPattern.test(html)) html = html.replace(rootPattern, root);
   else if (emptyRootPattern.test(html)) html = html.replace(emptyRootPattern, root);
   else throw new Error('Unexpected SPA root; refusing to serve another page as quiz HTML');
-  return html.replace(/<\/head>/i, () => head + '\n</head>');
+  return html.replace(/<\/head>/i, () => head + bootHead + '\n</head>');
 }
 
 module.exports = function installQuizSeo(app, db, origin, options = {}) {

@@ -66,3 +66,6 @@
 
 /* v44: slightly larger featured quiz cards only. */
 .quiz-featured-card{max-width:320px}
+
+/* v45: featured cards ten percent larger. */
+.quiz-featured-card{max-width:352px}
