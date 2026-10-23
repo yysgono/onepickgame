@@ -107,3 +107,12 @@ input::placeholder,textarea::placeholder{color:#68758a!important;opacity:1}
 /* Keep the World Cup search field visible before focus. */
 .home-search-input{border:2px solid #a78bfa!important;box-sizing:border-box!important;box-shadow:0 0 0 1px rgba(167,139,250,.12)!important}
 .home-search-input:focus{border-color:#7c3aed!important;box-shadow:0 0 0 3px rgba(124,58,237,.14)!important}
+
+/* v57: clear tier discovery controls and loading indicator. */
+.tier-recommendation-filters{margin:0 auto 20px;text-align:center}
+.tier-recommendation-filters>div{gap:10px!important}
+.tier-recommendation-filters .tier-filter{font-size:18px!important;min-height:42px;padding:9px 16px!important}
+.tier-list-loading{min-height:180px;display:flex;align-items:center;justify-content:center}
+.tier-list-loading span{width:38px;height:38px;border:4px solid #dbeafe;border-top-color:#2563eb;border-radius:50%;animation:tier-list-spin .8s linear infinite}
+@keyframes tier-list-spin{to{transform:rotate(360deg)}}
+@media(prefers-reduced-motion:reduce){.tier-list-loading span{animation:none}}

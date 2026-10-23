@@ -62,6 +62,14 @@ ${alternates}
 <meta data-rh="true" name="twitter:image" content="${image}">
 <script data-rh="true" type="application/ld+json">${safeJson(jsonLd)}</script>`;
       const body = `<main id="seo-content" style="max-width:900px;margin:40px auto;padding:24px;font-family:Arial,sans-serif"><h1>${escape(heading)}</h1><p>${escape(meta.description)}</p>${links ? `<ul>${links}</ul>` : ''}</main>`;
+      const bootHead = `<style>
+.tier-boot-spinner{display:none}
+html.tier-booting .tier-seo-content{display:none}
+html.tier-booting .tier-boot-spinner{display:flex;align-items:center;justify-content:center;min-height:65vh;background:#fff}
+.tier-boot-spinner span{width:42px;height:42px;border:4px solid #dbeafe;border-top-color:#2563eb;border-radius:50%;animation:tier-boot-spin .8s linear infinite}
+@keyframes tier-boot-spin{to{transform:rotate(360deg)}}
+@media(prefers-reduced-motion:reduce){.tier-boot-spinner span{animation:none}}
+</style><script>document.documentElement.classList.add('tier-booting');setTimeout(function(){document.documentElement.classList.remove('tier-booting')},8000);</script>`;
       let html = await loadSeoTemplate(origin);
       html = html.replace(/<title\b[^>]*>[\s\S]*?<\/title>/gi, '')
         .replace(/<meta\b[^>]*(?:name|property)=["'](?:description|robots|og:[^"']*|twitter:[^"']*)["'][^>]*>/gi, '')
@@ -69,7 +77,7 @@ ${alternates}
         .replace(/<html\b[^>]*>/i, `<html lang="${lang}" dir="${lang === 'ar' ? 'rtl' : 'ltr'}">`);
       const root = /<div\s+id=["']root["']>\s*(?:<div\s+class=["']loading-screen["']>\s*Loading\.\.\.\s*<\/div>\s*)?<\/div>/i;
       if (!root.test(html)) throw new Error('SEO template root missing');
-      html = html.replace(root, () => `<div id="root">${body}</div>`).replace('</head>', () => `${head}\n</head>`);
+      html = html.replace(root, () => `<div id="root"><div class="tier-seo-content">${body}</div><div class="tier-boot-spinner" role="status" aria-label="Loading"><span aria-hidden="true"></span></div></div>`).replace('</head>', () => `${head}${bootHead}\n</head>`);
       res.setHeader('Cache-Control', meta.indexable ? 'public, s-maxage=300, stale-while-revalidate=3600' : 'no-store');
       res.setHeader('Content-Type', 'text/html; charset=utf-8');
       if (!meta.indexable) res.setHeader('X-Robots-Tag', 'noindex, follow');

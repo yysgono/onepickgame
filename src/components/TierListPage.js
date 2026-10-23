@@ -431,6 +431,7 @@ function TierListPage({
               id,
               title,
               title_translations,
+              category,
               data,
               is_tier_preset,
               tier_preset_order,
@@ -1833,8 +1834,78 @@ marginBottom: isMobile ? 12 : 16,
   {t("tierList.page.recommendedPresetTitle")}
 </div>
 
+<div className="tier-recommendation-filters"><div
+            style={{
+              display:
+                "flex",
+
+              gap: 7,
+
+              justifyContent:
+                "center",
+
+              flexWrap:
+                "wrap",
+
+              marginTop:
+                12,
+            }}
+          >
+            {CATEGORY_VALUES.map(
+              (value) => (
+                <button
+                  key={
+                    value
+                  }
+                  type="button"
+                  aria-pressed={category === value}
+                  className="tier-filter"
+                  onClick={() =>
+                    changeCategory(
+                      value
+                    )
+                  }
+                  style={{
+                    padding:
+                      "7px 11px",
+
+                    borderRadius: 999,
+
+                    border:
+                      category ===
+                      value
+                        ? "1px solid #19bfff"
+                        : "1px solid #dde2ea",
+
+                    background: category === value ? "#2563EB" : "#ffffff",
+
+                    color: category === value ? "#ffffff" : "#202534",
+
+                    fontSize:
+                      isMobile ? 15 : 16,
+
+                    fontWeight:
+                      900,
+
+                    cursor:
+                      "pointer",
+                  }}
+                >
+                  {t(
+                    `tierList.categories.${value}`
+                  )}
+                </button>
+              )
+            )}
+          </div>
+</div>
       <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: 18, alignItems: "stretch" }}>
-                {recommendedPresets.map(
+                {recommendedPresets.filter(cup => {
+                  if (category === "all") return true;
+                  const mapped = { anime_manga: "animation", person: "entertainment", korea: "entertainment", music: "entertainment", etc: "other" };
+                  const cupCategory = mapped[cup.category] || (CATEGORY_VALUES.includes(cup.category) ? cup.category : "other");
+                  return cupCategory === category;
+                }).map(
                   (cup) => {
                     const title =
                       cup.tier_preset_title_translations?.[lang]?.trim() ||
@@ -1937,7 +2008,7 @@ style={{
                         }}
                       >
                         <div style={{ height: isMobile ? 198 : 207, width: "100%", overflow: "hidden", background: "#eff6ff" }}>
-                          {firstImage ? <MediaRenderer url={firstImage} alt={title} playable={false} loading="lazy" deferUntilVisible viewportMargin="180px" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 35%", display: "block" }} /> : <div style={{ height: "100%", display: "grid", placeItems: "center", fontSize: 44 }} aria-hidden="true">📊</div>}
+                          {firstImage ? <MediaRenderer url={firstImage} alt={title} playable={false} loading="lazy" deferUntilVisible viewportMargin="180px" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 25%", display: "block" }} /> : <div style={{ height: "100%", display: "grid", placeItems: "center", fontSize: 44 }} aria-hidden="true">📊</div>}
                         </div>
 
                         <div
@@ -2011,70 +2082,17 @@ style={{
           )}
 
 <section className="tier-community-filters" aria-label={t("tierList.page.title")}>
-<div
-            style={{
-              display:
-                "flex",
-
-              gap: 7,
-
-              justifyContent:
-                "center",
-
-              flexWrap:
-                "wrap",
-
-              marginTop:
-                12,
-            }}
-          >
-            {CATEGORY_VALUES.map(
-              (value) => (
-                <button
-                  key={
-                    value
-                  }
-                  type="button"
-                  aria-pressed={category === value}
-                  className="tier-filter"
-                  onClick={() =>
-                    changeCategory(
-                      value
-                    )
-                  }
-                  style={{
-                    padding:
-                      "7px 11px",
-
-                    borderRadius: 999,
-
-                    border:
-                      category ===
-                      value
-                        ? "1px solid #19bfff"
-                        : "1px solid #dde2ea",
-
-                    background: category === value ? "#2563EB" : "#ffffff",
-
-                    color: category === value ? "#ffffff" : "#202534",
-
-                    fontSize:
-                      isMobile ? 15 : 16,
-
-                    fontWeight:
-                      900,
-
-                    cursor:
-                      "pointer",
-                  }}
-                >
-                  {t(
-                    `tierList.categories.${value}`
-                  )}
-                </button>
-              )
-            )}
-          </div>
+<h2
+  style={{
+    margin: "24px 0 4px",
+    textAlign: "center",
+    fontSize: isMobile ? 24 : 30,
+    fontWeight: 950,
+    color: "#202534",
+  }}
+>
+  {(tierUiCopy[lang] || tierUiCopy.en)[1]}
+</h2>
 <div
             style={{
               display:
@@ -2141,17 +2159,6 @@ style={{
             )}
           </div>
 
-<h2
-  style={{
-    margin: "24px 0 4px",
-    textAlign: "center",
-    fontSize: isMobile ? 24 : 30,
-    fontWeight: 950,
-    color: "#202534",
-  }}
->
-  {(tierUiCopy[lang] || tierUiCopy.en)[1]}
-</h2>
 </section>
         {loadError && (
           <div
@@ -2185,25 +2192,7 @@ style={{
 
         {tagFilter && <div style={{textAlign:"center",color:"#1D4ED8",margin:12}}><button type="button" onClick={() => navigate(`/${lang}/tier-list`)} style={{color:"inherit",background:"#ffffff",border:"1px solid #19bfff",borderRadius:20,padding:"6px 12px",cursor:"pointer"}}>#{tagFilter} ×</button></div>}
         {loading ? (
-          <div
-            style={{
-              padding:
-                "54px 10px",
-
-              textAlign:
-                "center",
-
-              color:
-                "#1D4ED8",
-
-              fontWeight:
-                800,
-            }}
-          >
-            {t(
-              "tierList.common.loading"
-            )}
-          </div>
+          <div className="tier-list-loading" role="status" aria-label={t("tierList.common.loading")}><span aria-hidden="true" /></div>
         ) : cards.length ===
           0 ? (
           <div
