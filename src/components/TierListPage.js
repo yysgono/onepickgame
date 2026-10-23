@@ -1,3 +1,4 @@
+import tierUiCopy from "../seo/tierUiCopy.json";
 import listSeo from "../seo/listSeo";
 import ContentNav from "./ContentNav";
 import { normalizeTags } from "./TierTagTools";
@@ -341,11 +342,6 @@ function TierListPage({
   ] = useState(false);
 
   const [
-    presetPlayCountMap,
-    setPresetPlayCountMap,
-  ] = useState({});
-
-  const [
     presetTop2Map,
     setPresetTop2Map,
   ] = useState({});
@@ -416,62 +412,6 @@ function TierListPage({
   }, [location.search]);
 
   /* =====================================================
-     추천 프리셋 인기순 fallback용 참여 횟수
-  ===================================================== */
-
-  useEffect(() => {
-    let cancelled = false;
-
-    async function loadPresetPlayCounts() {
-      try {
-        const {
-          data,
-          error,
-        } =
-          await supabase.rpc(
-            "get_worldcup_play_counts"
-          );
-
-        if (error) {
-          throw error;
-        }
-
-        if (cancelled) {
-          return;
-        }
-
-        const nextMap = {};
-
-        (data || []).forEach(
-          (row) => {
-            nextMap[
-              String(row.cup_id)
-            ] =
-              Number(
-                row.play_count || 0
-              );
-          }
-        );
-
-        setPresetPlayCountMap(
-          nextMap
-        );
-      } catch (error) {
-        console.warn(
-          "티어표 추천 프리셋 인기순 조회 실패:",
-          error
-        );
-      }
-    }
-
-    loadPresetPlayCounts();
-
-    return () => {
-      cancelled = true;
-    };
-  }, []);
-
-  /* =====================================================
      운영자 지정 티어 프리셋 직접 조회
   ===================================================== */
 
@@ -510,8 +450,7 @@ function TierListPage({
                 ascending: true,
                 nullsFirst: false,
               }
-            )
-            .limit(5);
+            );
 
         if (error) {
           throw error;
@@ -558,8 +497,7 @@ function TierListPage({
   /* =====================================================
      추천 프리셋 결정
 
-     1. 관리자 지정 우선
-     2. 하나도 없으면 인기 TOP5
+     관리자 지정 항목을 지정 순서대로 모두 표시
   ===================================================== */
 
   const recommendedPresets =
@@ -572,31 +510,13 @@ function TierListPage({
         managedTierPresets.length >
         0
       ) {
-        return managedTierPresets.slice(0, 3);
+        return managedTierPresets;
       }
 
-      return [...worldcupList]
-        .sort((a, b) => {
-          const aCount =
-            presetPlayCountMap[
-              String(a.id)
-            ] || 0;
-
-          const bCount =
-            presetPlayCountMap[
-              String(b.id)
-            ] || 0;
-
-          return (
-            bCount - aCount
-          );
-        })
-        .slice(0, 3);
+      return [];
     }, [
       tierPresetLoaded,
       managedTierPresets,
-      worldcupList,
-      presetPlayCountMap,
     ]);
 
   /* =====================================================
@@ -1941,20 +1861,7 @@ marginBottom: isMobile ? 12 : 16,
                       top2[0] ||
                       null;
 
-                    const secondCandidate =
-                      top2[1] ||
-                      null;
-
-                    const extraPreviewCandidates = (Array.isArray(cup.data) ? cup.data : []).filter(candidate => candidate && candidate !== firstCandidate && candidate !== secondCandidate && ![firstCandidate?.id,secondCandidate?.id].filter(Boolean).map(String).includes(String(candidate.id)));
-                    const firstImage =
-                      firstCandidate
-                        ?.image ||
-                      "";
-
-                    const secondImage =
-                      secondCandidate
-                        ?.image ||
-                      "";
+                    const firstImage = firstCandidate?.image || "";
 
                     return (
                       <button
@@ -2034,258 +1941,8 @@ style={{
                             "border-box",
                         }}
                       >
-                        <div style={{ display: "grid", gridTemplateColumns: isMobile ? "42% 58%" : "42% 58%", minHeight: isMobile ? 132 : 170, borderBottom: "1px solid #dbeafe" }}>
-                        <div
-                          style={{
-                            width:
-                              "100%",
-
-                minHeight: isMobile ? 132 : 170,
-
-                            display:
-                              "grid",
-
-                            gridTemplateColumns:
-                              "minmax(0, 1fr) minmax(0, 1fr)",
-
-                            overflow:
-                              "hidden",
-
-                            background:
-                              "#ffffff",
-
-                            position:
-                              "relative",
-                          }}
-                        >
-                          <div
-                            style={{
-                              minWidth:
-                                0,
-
-                              position:
-                                "relative",
-
-                              overflow:
-                                "hidden",
-
-                              background:
-                                "#ffffff",
-                            }}
-                          >
-                            {firstImage ? (
-                              <MediaRenderer
-                                url={
-                                  firstImage
-                                }
-                                alt={
-                                  title
-                                }
-                                playable={
-                                  false
-                                }
-                                loading="lazy"
-                                deferUntilVisible
-                                viewportMargin="180px"
-                                style={{
-                                  position:
-                                    "absolute",
-
-                                  inset:
-                                    0,
-
-                                  width:
-                                    "100%",
-
-                                  height:
-                                    "100%",
-
-	                                  objectFit:
-	                                    "cover",
-
-	                                  objectPosition:
-	                                    "center 20%",
-
-                                  display:
-                                    "block",
-                                }}
-                              />
-                            ) : (
-                              <div
-                                style={{
-                                  width:
-                                    "100%",
-
-                                  height:
-                                    "100%",
-
-                                  background:
-                                    "#ffffff",
-                                }}
-                              />
-                            )}
-                          </div>
-
-                          <div
-                            style={{
-                              minWidth:
-                                0,
-
-                              position:
-                                "relative",
-
-                              overflow:
-                                "hidden",
-
-                              background:
-                                "#ffffff",
-                            }}
-                          >
-                            {secondImage ? (
-                              <MediaRenderer
-                                url={
-                                  secondImage
-                                }
-                                alt={
-                                  title
-                                }
-                                playable={
-                                  false
-                                }
-                                loading="lazy"
-                                deferUntilVisible
-                                viewportMargin="180px"
-                                style={{
-                                  position:
-                                    "absolute",
-
-                                  inset:
-                                    0,
-
-                                  width:
-                                    "100%",
-
-                                  height:
-                                    "100%",
-
-                                  objectFit:
-                                    "cover",
-
-                                  display:
-                                    "block",
-                                }}
-                              />
-                            ) : firstImage ? (
-                              <MediaRenderer
-                                url={
-                                  firstImage
-                                }
-                                alt={
-                                  title
-                                }
-                                playable={
-                                  false
-                                }
-                                loading="lazy"
-                                deferUntilVisible
-                                viewportMargin="180px"
-                                style={{
-                                  position:
-                                    "absolute",
-
-                                  inset:
-                                    0,
-
-                                  width:
-                                    "100%",
-
-                                  height:
-                                    "100%",
-
-                                  objectFit:
-                                    "cover",
-
-                                  display:
-                                    "block",
-                                }}
-                              />
-                            ) : null}
-                          </div>
-
-                          <div
-                            style={{
-                              position:
-                                "absolute",
-
-                              left:
-                                "50%",
-
-                              top:
-                                "50%",
-
-                              transform:
-                                "translate(-50%, -50%)",
-
-                              width:
-                                isMobile
-                                  ? 30
-                                  : 38,
-
-                              height:
-                                isMobile
-                                  ? 30
-                                  : 38,
-
-                              borderRadius:
-                                "50%",
-
-                              background:
-                                "#ffffff",
-
-                              display:
-                                "flex",
-
-                              alignItems:
-                                "center",
-
-                              justifyContent:
-                                "center",
-
-                              color:
-                                "#202534",
-
-                              fontSize:
-                                isMobile
-                                  ? 12
-                                  : 14,
-
-                              fontWeight:
-                                900,
-
-                              border:
-                                "1px solid rgba(255,255,255,0.35)",
-                            }}
-                          >
-                            VS
-                          </div>
-                        </div>
-
-                        <div style={{ padding: "8px 10px", borderLeft: "1px solid #dde2ea", display: "grid", alignContent: "center", gap: 4, background: "#fff" }}>
-                          {[
-                            { tier: "S", color: "#ff6b6b", candidate: firstCandidate },
-                            { tier: "A+", color: "#ff8052", candidate: extraPreviewCandidates[0] || null },
-                            { tier: "A", color: "#ff9f43", candidate: secondCandidate },
-                            { tier: "B", color: "#ffd93d", candidate: extraPreviewCandidates[1] || null },
-                          ].map((row) => (
-                            <div key={row.tier} style={{ minHeight: 28, display: "flex", alignItems: "center", gap: 6 }}>
-                              <span style={{ width: 28, height: 28, borderRadius: 5, display: "grid", placeItems: "center", background: row.color, color: "#111", fontWeight: 950 }}>{row.tier}</span>
-                              {row.candidate?.image ? (
-                                <MediaRenderer url={row.candidate.image} alt={row.candidate.name || ""} playable={false} loading="lazy" deferUntilVisible viewportMargin="180px" style={{ width: 28, height: 28, borderRadius: 5, objectFit: "cover", border: "1px solid #dde2ea" }} />
-                              ) : <span style={{ width: 28, height: 28, borderRadius: 5, border: "1px dashed #cfd8e6", background: "#f8fafc" }} />}
-                              <span style={{ minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", fontSize: 12, fontWeight: 800, color: "#596579" }}>{row.candidate?.name || ""}</span>
-                            </div>
-                          ))}
-                        </div>
+                        <div style={{ height: isMobile ? 220 : 230, width: "100%", overflow: "hidden", background: "#eff6ff" }}>
+                          {firstImage ? <MediaRenderer url={firstImage} alt={title} playable={false} loading="lazy" deferUntilVisible viewportMargin="180px" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 35%", display: "block" }} /> : <div style={{ height: "100%", display: "grid", placeItems: "center", fontSize: 44 }} aria-hidden="true">📊</div>}
                         </div>
 
                         <div
@@ -2501,7 +2158,7 @@ style={{
     color: "#202534",
   }}
 >
-  {t("tierList.page.allTitle", "전체 티어표")}
+  {(tierUiCopy[lang] || tierUiCopy.en)[1]}
 </h2>
 </section>
         {loadError && (

@@ -1,3 +1,4 @@
+import tierUiCopy from "../seo/tierUiCopy.json";
 import NavigationLink from "./NavigationLink";
 import { moveTierItem, tierDropPosition } from "../utils/tierItemOrder";
 import contentDescription from "../seo/contentDescription";
@@ -1859,46 +1860,15 @@ const sourceCandidates =
     ]);
 
 
-  const sortedCandidates =
-    useMemo(() => {
-      return [
-        ...allCandidates,
-      ].sort((a, b) => {
-        const nameA =
-          (
-            a?.name ||
-            ""
-          )
-            .toString()
-            .trim();
-
-
-        const nameB =
-          (
-            b?.name ||
-            ""
-          )
-            .toString()
-            .trim();
-
-
-        return nameA.localeCompare(
-          nameB,
-          lang === "ko"
-            ? "ko"
-            : undefined,
-          {
-            numeric: true,
-            sensitivity:
-              "base",
-          }
-        );
-      });
-    }, [
-      allCandidates,
-      lang,
-    ]);
-
+  const sortedCandidates = useMemo(() => {
+    const source = allCandidates.filter(item => item._source !== "local");
+    const local = allCandidates.filter(item => item._source === "local");
+    source.sort((a, b) => String(a?.name || "").trim().localeCompare(
+      String(b?.name || "").trim(), lang === "ko" ? "ko" : undefined,
+      { numeric: true, sensitivity: "base" }
+    ));
+    return [...source, ...local];
+  }, [allCandidates, lang]);
 
   const placedKeys =
     useMemo(() => {
@@ -3902,6 +3872,20 @@ const handleDragEndItem =
           } =
             await getUserOrGuestId();
 
+          // Reject incomplete guest details before preparing/uploading candidate data.
+          if (!user_id && !editingTierListId) {
+            const nickname = guestNickname.trim();
+            if (nickname.length < 1 || nickname.length > 20) {
+              throw new Error(text.guestNicknameInvalid);
+            }
+            if (guestPassword.length < 4 || guestPassword.length > 50) {
+              throw new Error(text.guestPasswordInvalid);
+            }
+            if (allCandidates.some(item => item._source === "local")) {
+              throw new Error(text.guestLocalImageBlocked);
+            }
+          }
+
 
           const uploadedCandidateMap =
             new Map();
@@ -5355,42 +5339,6 @@ if (editingTierListId) {
 
 
 
-            {/* 저장 오류 */}
-
-            {saveError && (
-              <div
-                style={{
-                  marginBottom:
-                    16,
-
-                  padding:
-                    "11px 13px",
-
-                  borderRadius:
-                    8,
-
-                  border:
-                    "1px solid #dde2ea",
-
-                  background:
-                    "#ffffff",
-
-                  color:
-                    "#b42346",
-
-                  fontWeight:
-                    800,
-
-                  fontSize:
-                    16,
-                }}
-              >
-                {saveError}
-              </div>
-            )}
-
-
-
             {renderMobilePlacementPanel({ marginBottom: 18 })}
 
             {/* ============================================
@@ -5453,6 +5401,10 @@ if (editingTierListId) {
               <p style={{ margin: "6px 0 18px", color: "#596579", fontSize: 13, lineHeight: 1.5 }}>{descriptionCopy[2]}</p>
 
 
+              <details className="tier-other-languages" style={{ marginBottom: 18 }}>
+                <summary style={{ cursor: "pointer", padding: "12px 14px", marginBottom: 12, border: "2px solid #2563EB", borderRadius: 9, color: "#1D4ED8", background: "#fff", fontWeight: 800 }}>
+                  {(tierUiCopy[lang] || tierUiCopy.en)[0]}
+                </summary>
               <div
                 style={{
                   display: "flex",
@@ -5572,6 +5524,8 @@ if (editingTierListId) {
                   </button>
                 )}
               </div>
+
+              </details>
 
               <div
                 style={{
@@ -5939,6 +5893,11 @@ if (editingTierListId) {
                       : text.publish}
                 </button>
               </div>
+              {saveError && (
+                <div role="alert" aria-live="assertive" style={{ width: "100%", boxSizing: "border-box", margin: "12px auto 0", padding: "12px 16px", border: "1px solid #fda4af", borderRadius: 9, background: "#fff1f2", color: "#b42346", fontSize: 16, fontWeight: 800, lineHeight: 1.6, textAlign: "center", overflowWrap: "anywhere" }}>
+                  {saveError}
+                </div>
+              )}
             </div>
 
 
@@ -6575,6 +6534,12 @@ objectPosition: "center",
                     : text.publish}
               </button>
 
+              {saveError && (
+                <div role="alert" aria-live="assertive" style={{ width: "100%", boxSizing: "border-box", margin: "12px auto 0", padding: "12px 16px", border: "1px solid #fda4af", borderRadius: 9, background: "#fff1f2", color: "#b42346", fontSize: 16, fontWeight: 800, lineHeight: 1.6, textAlign: "center", overflowWrap: "anywhere" }}>
+                  {saveError}
+                </div>
+              )}
+
               <div
                 style={{
                   maxWidth: 760,
@@ -6665,19 +6630,19 @@ objectPosition: "center",
                 <label
                   style={{
                     padding:
-                      "8px 13px",
+                      "11px 18px",
 
                     borderRadius:
                       8,
 
                     border:
-                      "1px solid #19bfff",
+                      "2px solid #2563EB",
 
                     background:
-                      "#ffffff",
+                      "#2563EB",
 
                     color:
-                      "#202534",
+                      "#ffffff",
 
                     fontSize:
                       15,
@@ -6945,8 +6910,8 @@ objectPosition: "center",
         minWidth: 160,
         padding: "11px 20px",
         borderRadius: 8,
-        border: "1px solid #dde2ea",
-        background: "#ffffff",
+        border: "2px solid #2563EB",
+        background: "#eff6ff",
         color: "#202534",
         fontSize: 16,
         fontWeight: 900,
@@ -6979,676 +6944,6 @@ objectPosition: "center",
                 </div>
               )}
             </div>
-
-
-            {/* ============================================
-                후보 추가 / 프리셋 선택
-                기존 첫 화면의 소스 선택 UI를 등록 버튼 아래로 이동
-                ============================================ */}
-
-            {/* 직접 이미지 업로드 */}
-
-            <div
-              onDragOver={(
-                e
-              ) => {
-                e.preventDefault();
-
-                setFileDragOver(
-                  true
-                );
-              }}
-              onDragLeave={() => {
-                setFileDragOver(
-                  false
-                );
-              }}
-              onDrop={(
-                e
-              ) => {
-                e.preventDefault();
-
-                setFileDragOver(
-                  false
-                );
-
-
-                addLocalFiles(
-                  e.dataTransfer
-                    .files
-                );
-              }}
-              style={{
-                marginTop:
-                  28,
-
-                padding:
-                  isMobile
-                    ? "26px 16px"
-                    : "34px 24px",
-
-                borderRadius:
-                  14,
-
-                border:
-                  fileDragOver
-                    ? "2px solid #19bfff"
-                    : "1px dashed #dde2ea",
-
-                background:
-                  fileDragOver
-                    ? "#6650d8"
-                    : "#ffffff",
-
-                textAlign:
-                  "center",
-              }}
-            >
-              <div
-                style={{
-                  fontSize:
-                    isMobile
-                      ? 38
-                      : 50,
-                }}
-              >
-                📁
-              </div>
-
-
-              <div
-                style={{
-                  marginTop:
-                    8,
-
-                  fontSize:
-                    isMobile
-                      ? 20
-                      : 24,
-
-                  fontWeight:
-                    900,
-                }}
-              >
-                {text.uploadTitle}
-              </div>
-
-
-              <div
-                style={{
-                  marginTop:
-                    6,
-
-                  color:
-                    "#5542b8",
-
-                  fontSize:
-                    isMobile
-                      ? 15
-                      : 17,
-
-                  fontWeight:
-                    700,
-                }}
-              >
-                {text.uploadDesc}
-              </div>
-
-
-              <button
-                type="button"
-                onClick={() =>
-                  fileInputRef
-                    .current
-                    ?.click()
-                }
-                style={{
-                  marginTop:
-                    16,
-
-                  padding:
-                    "11px 22px",
-
-                  borderRadius:
-                    9,
-
-                  border:
-                    "1px solid #19bfff",
-
-                  background:
-                    "#6650d8",
-
-                  color:
-                    "#ffffff",
-
-                  cursor:
-                    "pointer",
-
-                  fontWeight:
-                    900,
-                }}
-              >
-                ＋{" "}
-                {text.chooseImages}
-              </button>
-
-
-              <input
-                ref={
-                  fileInputRef
-                }
-                type="file"
-                accept="image/*"
-                multiple
-                onChange={(
-                  e
-                ) => {
-                  addLocalFiles(
-                    e.target.files
-                  );
-
-                  e.target.value =
-                    "";
-                }}
-                style={{
-                  display:
-                    "none",
-                }}
-              />
-            </div>
-
-
-            {/* OR */}
-
-            <div
-              style={{
-                margin:
-                  "32px 0 15px",
-
-                display:
-                  "flex",
-
-                alignItems:
-                  "center",
-
-                gap:
-                  12,
-
-                color:
-                  "#5542b8",
-              }}
-            >
-              <div
-                style={{
-                  flex:
-                    1,
-
-                  height:
-                    1,
-
-                  background:
-                    "#ffffff",
-                }}
-              />
-
-
-              <span
-                style={{
-                  fontSize:
-                    16,
-
-                  fontWeight:
-                    900,
-                }}
-              >
-                {text.or}
-              </span>
-
-
-              <div
-                style={{
-                  flex:
-                    1,
-
-                  height:
-                    1,
-
-                  background:
-                    "#ffffff",
-                }}
-              />
-            </div>
-
-
-            {/* 기존 이상형 월드컵 */}
-
-            <div
-              style={{
-                padding:
-                  isMobile
-                    ? 14
-                    : 18,
-
-                border:
-                  "1px solid rgba(25,191,255,0.32)",
-
-                borderRadius:
-                  14,
-
-                background:
-                  "#ffffff",
-              }}
-            >
-              <div
-                style={{
-                  fontSize:
-                    isMobile
-                      ? 19
-                      : 22,
-
-                  fontWeight:
-                    900,
-
-                  color:
-                    "#5542b8",
-
-                  textAlign:
-                    "center",
-                }}
-              >
-                ⭐{" "}
-                {text.importWorldcupTitle}
-              </div>
-
-
-      <div
-  style={{
-    marginTop: 6,
-    color: "#5542b8",
-    fontSize: isMobile ? 15 : 17,
-    fontWeight: 700,
-    lineHeight: 1.5,
-    textAlign: "center",
-  }}
->
-  {text.importWorldcupDesc}
-</div>
-
-<div
-  style={{
-    marginTop: 10,
-    color: "#5542b8",
-    fontSize: isMobile ? 16 : 18,
-    fontWeight: 900,
-    lineHeight: 1.5,
-    textAlign: "center",
-  }}
->
-  {text.importGuide}
-</div>
-
-<div
-  style={{
-    marginTop: 2,
-    textAlign: "center",
-    color: "#5542b8",
-    fontSize: isMobile
-      ? 24
-      : 30,
-    lineHeight: 1,
-    fontWeight: 900,
-  }}
->
-  ↓
-</div>
-            </div>
-
-<div
-  style={{
-    marginTop: 16,
-    display: "flex",
-    justifyContent: "center",
-  }}
->
-  <input
-    type="text"
-    value={presetSearch}
-    onChange={(e) => {
-      setPresetSearch(
-        e.target.value
-      );
-
-      setPresetVisibleCount(8);
-    }}
-    placeholder={
-      text.presetSearchPlaceholder
-    }
-    style={{
-      width: isMobile
-        ? "100%"
-        : 820,
-
-      height: isMobile ? 48 : 52,
-
-      padding: "0 16px",
-
-      boxSizing:
-        "border-box",
-
-      borderRadius: 10,
-
-      border:
-        "2px solid #ef4444",
-
-      background:
-        "#ffffff",
-
-      color: "#202534",
-
-      outline: "none",
-
-      fontSize: isMobile ? 16 : 18,
-
-      fontWeight: 800,
-
-      boxShadow: "0 0 0 3px rgba(239,68,68,0.08)",
-    }}
-  />
-</div>
-
-            {winnerLoading && (
-              <div
-                style={{
-                  marginTop:
-                    15,
-
-                  textAlign:
-                    "center",
-
-                  color:
-                    "#5542b8",
-
-                  fontWeight:
-                    800,
-                }}
-              >
-                {text.loadingWinners}
-              </div>
-            )}
-
-
-            <div
-              style={{
-                marginTop: 18,
-                display: "grid",
-                gridTemplateColumns: isMobile
-                  ? "1fr"
-                  : "repeat(4, minmax(0, 1fr))",
-                gap: isMobile ? 12 : 16,
-                width: isMobile
-                  ? "100%"
-                  : "min(1320px, calc(100vw - 80px))",
-                position: isMobile ? "static" : "relative",
-                left: isMobile ? "auto" : "50%",
-                transform: isMobile ? "none" : "translateX(-50%)",
-              }}
-            >
-           {filteredPresetWorldcups
-  .slice(
-    0,
-    presetVisibleCount
-  )
-  .map(
-                (
-                  cup
-                ) => {
-                  const winner =
-                    winnerMap[
-                      String(
-                        cup.id
-                      )
-                    ] ||
-                    null;
-
-
-                  const fallback =
-                    Array.isArray(
-                      cup.data
-                    )
-                      ? (
-                        cup.data.find(
-                          (
-                            candidate
-                          ) =>
-                            candidate
-                              ?.image
-                        ) ||
-                        null
-                      )
-                      : null;
-
-
-                  const thumbnail =
-                    winner ||
-                    fallback;
-
-
-                  return (
-                    <NavigationLink
-                      key={
-                        cup.id
-                      }
-
-                      to={`/${lang}/tier-list/create/${cup.id}`} appearance="button"
-                      style={{
-                        padding:
-                          0,
-
-                        borderRadius:
-                          14,
-
-                        overflow:
-                          "hidden",
-
-                        border:
-                          "1px solid #dde2ea",
-
-                        background:
-                          "#ffffff",
-
-                        color:
-                          "#202534",
-
-                        cursor:
-                          "pointer",
-
-                        textAlign:
-                          "left",
-                      }}
-                    >
-                      <div
-                        style={{
-                          width:
-                            "100%",
-
-                          height:
-                            isMobile ? 145 : 180,
-
-                          background:
-                            "#ffffff",
-
-                          overflow:
-                            "hidden",
-                        }}
-                      >
-                        {thumbnail?.image ? (
-                          <MediaRenderer
-                            url={
-                              thumbnail.image
-                            }
-                            alt={
-                              getTitle(
-                                cup
-                              )
-                            }
-                            playable={
-                              false
-                            }
-                            style={{
-                              width:
-                                "100%",
-
-                              height:
-                                "100%",
-
-                              objectFit:
-                                "cover",
-
-                              display:
-                                "block",
-                            }}
-                          />
-                        ) : (
-                          <div
-                            style={{
-                              width:
-                                "100%",
-
-                              height:
-                                "100%",
-
-                              display:
-                                "flex",
-
-                              alignItems:
-                                "center",
-
-                              justifyContent:
-                                "center",
-
-                              color:
-                                "#607086",
-
-                              fontWeight:
-                                800,
-                            }}
-                          >
-                            {text.noImage}
-                          </div>
-                        )}
-                      </div>
-
-
-                      <div
-                        style={{
-                          padding:
-                            "12px 14px 5px",
-
-                          fontSize:
-                            isMobile
-                              ? 18
-                              : 21,
-
-                          fontWeight:
-                            900,
-                          lineHeight: 1.35,
-                          minHeight: isMobile ? 44 : 52,
-                          display: "-webkit-box",
-                          WebkitBoxOrient: "vertical",
-                          WebkitLineClamp: 2,
-                          overflow: "hidden",
-                          textOverflow: "ellipsis",
-                          overflowWrap: "anywhere",
-                        }}
-                      >
-                        {getTitle(
-                          cup
-                        )}
-                      </div>
-
-
-                      <div
-                        style={{
-                          padding:
-                            "0 14px 13px",
-
-                          color:
-                            "#5542b8",
-
-                          fontSize:
-                            15,
-
-                          fontWeight:
-                            700,
-                        }}
-                      >
-                        {Array.isArray(
-                          cup.data
-                        )
-                          ? cup
-                              .data
-                              .length
-                          : 0}{" "}
-
-                        {text.candidates}
-                      </div>
-                    </NavigationLink>
-                  );
-                }
-              )}
-            </div>
-
-            {presetVisibleCount <
-  filteredPresetWorldcups.length && (
-  <div
-    style={{
-      marginTop: 18,
-      textAlign: "center",
-    }}
-  >
-    <button
-      type="button"
-      onClick={() =>
-        setPresetVisibleCount(
-          (prev) => prev + 8
-        )
-      }
-      style={{
-        padding: "12px 28px",
-        borderRadius: 8,
-        border:
-          "1px solid #dde2ea",
-        background: "#ffffff",
-        color: "#202534",
-        fontSize: 17,
-        fontWeight: 900,
-        cursor: "pointer",
-      }}
-    >
-      {text.loadMore}
-    </button>
-
-    <div
-      style={{
-        marginTop: 7,
-        color: "#5542b8",
-        fontSize: 13,
-        fontWeight: 700,
-      }}
-    >
-      {Math.min(
-        presetVisibleCount,
-        filteredPresetWorldcups.length
-      )}
-      /
-      {
-        filteredPresetWorldcups.length
-      }
-    </div>
-  </div>
-)}
-
-
 
 
             {/* 이미지 재사용 안내 */}
