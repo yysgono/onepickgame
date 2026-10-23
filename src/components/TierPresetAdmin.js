@@ -1,3 +1,4 @@
+import { adminDisplayTitle } from "../utils/adminDisplayTitle";
 import React, {
   useCallback,
   useEffect,
@@ -631,15 +632,7 @@ function TierPresetAdmin() {
           >
             {visibleWorldcups.map(
               (cup) => {
-                const title =
-                  cup
-                    ?.title_translations
-                    ?.ko ||
-                  cup?.title ||
-                  cup
-                    ?.title_translations
-                    ?.en ||
-                  String(cup.id);
+                const title = adminDisplayTitle(cup, String(cup.id));
 
                 return (
                   <div

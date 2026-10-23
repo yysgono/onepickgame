@@ -1,3 +1,4 @@
+import { adminDisplayTitle } from "./adminDisplayTitle";
 import { supabase } from './supabaseClient';
 
 // Existing authenticated client and RLS are preserved. These helpers only read data.
@@ -80,9 +81,9 @@ export async function getAdminRecentPlays() {
   const ids = [...new Set(rows.map(row => row.cup_id).filter(Boolean))];
   let titles = new Map();
   if (ids.length) {
-    const { data: cups, error: titleError } = await supabase.from('worldcups').select('id,title').in('id', ids);
+    const { data: cups, error: titleError } = await supabase.from('worldcups').select('id,title,title_translations').in('id', ids);
     if (titleError) throw titleError;
-    titles = new Map((cups || []).map(cup => [String(cup.id), cup.title]));
+    titles = new Map((cups || []).map(cup => [String(cup.id), adminDisplayTitle(cup)]));
   }
   return rows.map(row => ({ ...row, worldcup_title: titles.get(String(row.cup_id)) || '삭제되었거나 제목 없는 월드컵' }));
 }

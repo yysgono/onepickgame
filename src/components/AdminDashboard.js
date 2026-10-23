@@ -1,3 +1,4 @@
+import { adminDisplayTitle } from "../utils/adminDisplayTitle";
 import { getAllAdminWorldcups as getAllWorldcups, getAllAdminTierLists as getAllTierLists, getAllAdminQuizzes as getAllQuizzes, getAdminCommentCount as getTotalComments, adminTitleMatches } from "../utils/adminReadApi";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { supabase } from "../utils/supabaseClient";
@@ -657,12 +658,7 @@ const unassignedCount = useMemo(() => {
     color: "#222",
   }}
 >
-  {typeof wc.title === "object"
-    ? wc.title.ko ||
-      wc.title.en ||
-      Object.values(wc.title)[0] ||
-      "제목 없음"
-    : wc.title || "제목 없음"}
+  {adminDisplayTitle(wc)}
 </div>
 
 <div
@@ -928,7 +924,7 @@ const unassignedCount = useMemo(() => {
 
                 <img
                   src={firstImage}
-                  alt={wc.title}
+                  alt={adminDisplayTitle(wc)}
                   onError={(e) => {
                     e.currentTarget.src =
                       "/default-thumb.png";
@@ -970,7 +966,7 @@ const unassignedCount = useMemo(() => {
                       </span>
                     )}
 
-                    {wc.title}
+                    {adminDisplayTitle(wc)}
                   </div>
 
                   <div
@@ -1357,7 +1353,7 @@ const unassignedCount = useMemo(() => {
               >
                 <img
                   src={thumbnail}
-                  alt={item.title || "Tier List"}
+                  alt={adminDisplayTitle(item)}
                   onError={(e) => {
                     e.currentTarget.src = "/default-thumb.png";
                   }}
@@ -1380,7 +1376,7 @@ const unassignedCount = useMemo(() => {
                       marginBottom: 5,
                     }}
                   >
-                    {item.title || "제목 없음"}
+                    {adminDisplayTitle(item)}
                   </div>
                   <div
                     style={{
@@ -1565,7 +1561,7 @@ const unassignedCount = useMemo(() => {
               >
                 <div style={{ minWidth: 0 }}>
                   <div style={{ fontWeight: 900, fontSize: 17, color: "#202534", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                    {quiz.title || "제목 없음"}
+                    {adminDisplayTitle(quiz)}
                   </div>
                   <div style={{ marginTop: 4, fontSize: 13, color: "#667085" }}>
                     문제 {quiz.question_count || 0} · 플레이 {quiz.play_count || 0}
