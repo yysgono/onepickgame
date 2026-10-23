@@ -10,7 +10,6 @@ import { supabase } from "../utils/supabaseClient";
 
 const INITIAL_VISIBLE_COUNT = 5;
 const LOAD_MORE_COUNT = 5;
-const MAX_PRESETS = 5;
 
 function TierPresetAdmin() {
   const [worldcups, setWorldcups] = useState([]);
@@ -227,21 +226,6 @@ function TierPresetAdmin() {
       const nextValue =
         !target.is_tier_preset;
 
-      if (nextValue) {
-        const count = prev.filter(
-          (cup) =>
-            cup.is_tier_preset
-        ).length;
-
-        if (count >= MAX_PRESETS) {
-          setMessage(
-            `추천 프리셋은 최대 ${MAX_PRESETS}개까지 선택할 수 있습니다.`
-          );
-
-          return prev;
-        }
-      }
-
       const nextOrder =
         nextValue
           ? target.tier_preset_order ??
@@ -309,17 +293,6 @@ function TierPresetAdmin() {
         cup.is_tier_preset
     );
 
-    if (
-      selected.length >
-      MAX_PRESETS
-    ) {
-      setMessage(
-        `추천 프리셋은 최대 ${MAX_PRESETS}개입니다.`
-      );
-
-      return;
-    }
-
     const usedOrders =
       selected
         .map((cup) =>
@@ -342,14 +315,11 @@ function TierPresetAdmin() {
           ) ||
           Number(
             cup.tier_preset_order
-          ) < 1 ||
-          Number(
-            cup.tier_preset_order
-          ) > 5
+          ) < 1
       )
     ) {
       setMessage(
-        "추천 순서는 1~5 사이 숫자로 입력해주세요."
+        "추천 순서는 1 이상의 정수로 입력해주세요."
       );
 
       return;
@@ -522,8 +492,7 @@ function TierPresetAdmin() {
         }}
       >
         티어표 홈에 표시할
-        이상형 월드컵을 최대{" "}
-        {MAX_PRESETS}개 선택하세요.
+        이상형 월드컵을 개수 제한 없이 선택하세요.
         {" "}
         현재{" "}
         <strong
@@ -531,8 +500,7 @@ function TierPresetAdmin() {
             color: "#5542b8",
           }}
         >
-          {selectedCount}/
-          {MAX_PRESETS}
+          {selectedCount}개 선택됨
         </strong>
       </div>
 
@@ -707,7 +675,6 @@ function TierPresetAdmin() {
                       <input
                         type="number"
                         min="1"
-                        max="5"
                         value={
                           cup.tier_preset_order ??
                           ""
