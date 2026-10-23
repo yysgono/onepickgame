@@ -1945,6 +1945,7 @@ marginBottom: isMobile ? 12 : 16,
                       top2[1] ||
                       null;
 
+                    const extraPreviewCandidates = (Array.isArray(cup.data) ? cup.data : []).filter(candidate => candidate && candidate !== firstCandidate && candidate !== secondCandidate && ![firstCandidate?.id,secondCandidate?.id].filter(Boolean).map(String).includes(String(candidate.id)));
                     const firstImage =
                       firstCandidate
                         ?.image ||
@@ -2272,9 +2273,9 @@ style={{
                         <div style={{ padding: "8px 10px", borderLeft: "1px solid #dde2ea", display: "grid", alignContent: "center", gap: 4, background: "#fff" }}>
                           {[
                             { tier: "S", color: "#ff6b6b", candidate: firstCandidate },
-                            { tier: "A+", color: "#ff8052", candidate: null },
+                            { tier: "A+", color: "#ff8052", candidate: extraPreviewCandidates[0] || null },
                             { tier: "A", color: "#ff9f43", candidate: secondCandidate },
-                            { tier: "B", color: "#ffd93d", candidate: null },
+                            { tier: "B", color: "#ffd93d", candidate: extraPreviewCandidates[1] || null },
                           ].map((row) => (
                             <div key={row.tier} style={{ minHeight: 28, display: "flex", alignItems: "center", gap: 6 }}>
                               <span style={{ width: 28, height: 28, borderRadius: 5, display: "grid", placeItems: "center", background: row.color, color: "#111", fontWeight: 950 }}>{row.tier}</span>

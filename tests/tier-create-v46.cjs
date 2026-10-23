@@ -1,0 +1,9 @@
+const fs=require('fs'),assert=require('assert/strict'),parser=require('@babel/parser'),traverse=require('@babel/traverse').default;
+(async()=>{
+ const routeSource=fs.readFileSync('src/utils/worldcupRouteData.js','utf8');const{worldcupRouteData:route}=await import('data:text/javascript;base64,'+Buffer.from(routeSource).toString('base64'));
+ assert.deepEqual(route('/ko/tier-list/create/cup-id'),{kind:'all'});assert.deepEqual(route('/ja/tier-list/create','?clone=tier-id'),{kind:'all'});assert.deepEqual(route('/en/tier-list/create','?edit=tier-id'),{kind:'all'});assert.deepEqual(route('/ko/tier-list/create'),{kind:'all'});assert.deepEqual(route('/ko/select-round/cup-id'),{kind:'one',id:'cup-id'});
+ const s=fs.readFileSync('src/components/TierListResultPage.js','utf8');let fn;traverse(parser.parse(s,{sourceType:'module',plugins:['jsx']}),{VariableDeclarator(p){if(p.node.id.name==='handleClone')fn=s.slice(p.node.init.start,p.node.init.end);}});assert(fn);let rpcCalls=0,navigated='',saved;
+ const supabase={rpc(){rpcCalls++;return new Promise(()=>{});}};const sessionStorage={setItem(key,raw){saved=JSON.parse(raw);}};const tierList={id:'tier-123',source_worldcup_id:'cup-456',title:'Title',description:'Description',candidates:[{id:'candidate'}],tier_labels:{S:'S'}};
+ const clone=new Function('supabase','tierList','sessionStorage','CLONE_STORAGE_KEY','navigate','lang',`return (${fn})`)(supabase,tierList,sessionStorage,'clone',url=>navigated=url,'ko');await clone();assert.equal(navigated,'/ko/tier-list/create?clone=tier-123');assert.equal(rpcCalls,1);assert.equal(saved.source_worldcup_id,'cup-456');assert.equal(saved.sourceTierListId,'tier-123');assert.equal(saved.description,'Description');assert.equal(saved.candidates.length,1);assert(saved.tier_labels);
+ console.log('PASS: source-picker catalogue preserved, immediate navigation with unresolved analytics RPC, complete clone session payload');
+})().catch(e=>{console.error(e);process.exitCode=1});

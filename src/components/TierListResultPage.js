@@ -2038,32 +2038,8 @@ ctx.font =
 
   const handleClone =
     async () => {
-      try {
-        const { error: cloneError } =
-          await supabase.rpc(
-            "increment_tier_list_clone",
-            {
-              p_tier_list_id: tierList.id,
-            }
-          );
-
-        if (!cloneError) {
-          setTierList((current) =>
-            current
-              ? {
-                  ...current,
-                  clone_count:
-                    Number(current.clone_count || 0) + 1,
-                }
-              : current
-          );
-        }
-      } catch (cloneError) {
-        console.warn(
-          "Tier list clone count failed",
-          cloneError
-        );
-      }
+      // Analytics must not delay opening the editor.
+      Promise.resolve().then(() => supabase.rpc("increment_tier_list_clone", {p_tier_list_id:tierList.id})).then(({error}) => {if(error) console.warn("Tier list clone count failed",error);}).catch(error => console.warn("Tier list clone count failed",error));
       try {
         sessionStorage.setItem(
           CLONE_STORAGE_KEY,
@@ -2072,6 +2048,8 @@ ctx.font =
               sourceTierListId:
                 tierList.id,
 
+              source_worldcup_id: tierList.source_worldcup_id || null,
+              title_translations: tierList.title_translations || {},
               title:
                 tierList.title,
               description: tierList.description || "",
@@ -3086,9 +3064,9 @@ padding: isMobile
                     width: "100%",
                     padding: isMobile ? "16px 10px" : "18px 16px",
                     borderRadius: 13,
-                    border: "2px solid #7c5cff",
-                    background: "#f3efff",
-                    color: "#202534",
+                    border: "2px solid #2563EB",
+                    background: "#2563EB",
+                    color: "#ffffff",
                     fontSize: isMobile ? 15 : 18,
                     fontWeight: 900,
                     lineHeight: 1.25,
@@ -3400,7 +3378,7 @@ padding: isMobile
                 "1px solid #19bfff",
 
               background:
-                "#6650d8",
+                "#2563EB",
 
               color:
                 "#ffffff",
@@ -3734,7 +3712,7 @@ padding: isMobile
                   background:
                     commentLoading
                       ? "#ffffff"
-                      : "#6650d8",
+                      : "#2563EB",
 
                   color:
                     (commentLoading) ? "#202534" : "#ffffff",

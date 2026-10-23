@@ -1641,6 +1641,14 @@ const list =
       return;
     }
 
+    if (selectedCupFromList && selectedCupFromList._homeCardOnly !== true && Array.isArray(selectedCupFromList.data)) {
+      setSelectedCupFromDb(null);
+      setSelectedCupLoading(false);
+      setSelectedCupResolved(true);
+      setSelectedCupError("");
+      return;
+    }
+
     let cancelled = false;
     setSelectedCupFromDb(null);
     setSelectedCupLoading(true);
