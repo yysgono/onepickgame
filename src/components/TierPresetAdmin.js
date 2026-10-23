@@ -24,6 +24,7 @@ function TierPresetAdmin() {
   );
 
   const [message, setMessage] = useState("");
+  const [titleLanguage, setTitleLanguage] = useState("ko");
 
   /* =========================================
      월드컵 목록 불러오기
@@ -43,6 +44,7 @@ function TierPresetAdmin() {
           title_translations,
           is_tier_preset,
           tier_preset_order,
+          tier_preset_title_translations,
           deleted_at
           `
         )
@@ -65,6 +67,7 @@ function TierPresetAdmin() {
 
       rows.forEach((cup) => {
         nextOriginalMap[String(cup.id)] = {
+          tier_preset_title_translations: cup.tier_preset_title_translations || {},
           is_tier_preset: Boolean(
             cup.is_tier_preset
           ),
@@ -373,7 +376,8 @@ function TierPresetAdmin() {
           currentEnabled !==
             originalEnabled ||
           currentOrder !==
-            originalOrder
+            originalOrder ||
+          JSON.stringify(cup.tier_preset_title_translations || {}) !== JSON.stringify(original.tier_preset_title_translations || {})
         );
       });
 
@@ -402,6 +406,7 @@ function TierPresetAdmin() {
                     "worldcups"
                   )
                   .update({
+                    tier_preset_title_translations: cup.tier_preset_title_translations || {},
                     is_tier_preset:
                       Boolean(
                         cup.is_tier_preset
@@ -503,6 +508,14 @@ function TierPresetAdmin() {
           {selectedCount}개 선택됨
         </strong>
       </div>
+
+      <label style={{ display: "block", marginBottom: 14, fontWeight: 800 }}>
+        추천 카드 제목 편집 언어 {" "}
+        <select value={titleLanguage} onChange={event => setTitleLanguage(event.target.value)} style={{ padding: 8, border: "1px solid #2563eb", borderRadius: 6 }}>
+          {[['ko','한국어'],['en','English'],['ja','日本語'],['zh','简体中文'],['es','Español'],['fr','Français'],['vi','Tiếng Việt'],['de','Deutsch'],['ru','Русский'],['id','Bahasa Indonesia'],['pt','Português'],['hi','हिन्दी'],['tr','Türkçe'],['th','ภาษาไทย'],['ar','العربية'],['bn','বাংলা']].map(([code, label]) => <option key={code} value={code}>{label}</option>)}
+        </select>
+        <p style={{ fontSize: 13, fontWeight: 500 }}>추천 카드에만 표시되는 제목입니다. 원본 월드컵 제목은 바뀌지 않습니다. 비워두면 원본 제목을 표시합니다.</p>
+      </label>
 
       {/* 검색 */}
 
@@ -669,6 +682,17 @@ function TierPresetAdmin() {
                       title={title}
                     >
                       {title}
+                      {cup.is_tier_preset && <input
+                        aria-label={`${title} 추천 카드 제목 (${titleLanguage})`}
+                        placeholder="추천 카드 제목 (예: 여자 아이돌 티어표)"
+                        value={cup.tier_preset_title_translations?.[titleLanguage] || ""}
+                        maxLength={140}
+                        onChange={event => {
+                          const value = event.target.value;
+                          setWorldcups(previous => previous.map(item => item.id === cup.id ? { ...item, tier_preset_title_translations: { ...(item.tier_preset_title_translations || {}), [titleLanguage]: value } } : item));
+                        }}
+                        style={{ display: "block", width: "100%", boxSizing: "border-box", marginTop: 8, minHeight: 40, padding: "8px 10px", border: "2px solid #2563eb", borderRadius: 7, color: "#111827", background: "#fff", fontSize: 16 }}
+                      />}
                     </div>
 
                     {cup.is_tier_preset && (

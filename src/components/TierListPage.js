@@ -433,7 +433,8 @@ function TierListPage({
               title_translations,
               data,
               is_tier_preset,
-              tier_preset_order
+              tier_preset_order,
+              tier_preset_title_translations
               `
             )
             .eq(
@@ -1836,6 +1837,7 @@ marginBottom: isMobile ? 12 : 16,
                 {recommendedPresets.map(
                   (cup) => {
                     const title =
+                      cup.tier_preset_title_translations?.[lang]?.trim() ||
                       getLocalizedWorldcupTitle(
                         cup,
                         lang
@@ -1999,9 +2001,6 @@ style={{
                               title
                             }
                           </span>
-                        </div>
-	                        <div style={{ margin: "0 10px 11px", minHeight: 38, display: "grid", placeItems: "center", border: "1px solid #2563EB", borderRadius: 8, background: "#2563EB", color: "#fff", fontSize: isMobile ? 15 : 16, fontWeight: 900 }}>
-                          {t("tierList.page.createButton")}
                         </div>
                       </button>
                     );
