@@ -5,7 +5,7 @@ import {createQuizListPager} from '../utils/quizListPager';
 import MediaRenderer from './MediaRenderer';
 import COPY from './quizCategoryHomeCopy.json';
 import './QuizCategorySections.css';
-const CATEGORIES=['knowledge','animation','sports','entertainment','game','food','other'];
+const CATEGORIES=['knowledge','animation','game','entertainment','sports','food','other'];
 function local(map,fallback,lang){if(typeof map==='string'){try{map=JSON.parse(map);}catch{map={};}}return map?.[lang]||map?.en||fallback||'';}
 function useColumns(container){
  const cardWidth=440;

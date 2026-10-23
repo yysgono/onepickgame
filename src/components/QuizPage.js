@@ -131,7 +131,7 @@ import { supabase } from "../utils/supabaseClient";
 
 
 
-const CATEGORIES = ['all','knowledge','animation','sports','entertainment','game','food','other'];
+const CATEGORIES = ['all','knowledge','animation','game','entertainment','sports','food','other'];
 
 const SORTS = [
   "popular",
