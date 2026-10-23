@@ -216,6 +216,7 @@ module.exports = function installQuizSeo(app, db, origin, options = {}) {
       const html = renderHtml(await templateLoader(), seo, body, indexable);
 
       res.set('Cache-Control', creator || !indexable ? 'no-store' : PUBLIC_CACHE);
+      if (!indexable) res.set('X-Robots-Tag', 'noindex, follow');
 
       res.type('html').send(html);
 

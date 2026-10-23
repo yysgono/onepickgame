@@ -17,9 +17,13 @@ const COPY = {
   th: ['เวิลด์คัพของฉัน', 'ดูและจัดการเวิลด์คัพที่คุณสร้าง'],
   tr: ['World Cup Oyunlarım', 'Oluşturduğun World Cup oyunlarını görüntüle ve yönet.'],
 };
-function getPrivatePageSeo(language) {
+function getPrivatePageSeo(language, page = "my-worldcups") {
   const requested = String(language || 'en').toLowerCase().split(/[-_]/)[0];
   const lang = Object.prototype.hasOwnProperty.call(COPY, requested) ? requested : 'en';
+  if (page === "worldcup-maker") {
+    const meta = require("./privateMakerCopy.json")[lang];
+    return {lang, heading:meta.title.split("|")[0].trim(), title:meta.title, description:meta.description};
+  }
   const [heading, description] = COPY[lang];
   return { lang, heading, title: `${heading} | ${lang === 'ko' ? '원픽게임' : 'OnePickGame'}`, description };
 }

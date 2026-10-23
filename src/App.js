@@ -1302,7 +1302,7 @@ const makerDescMap = {
           makerDescMap[currentLang] ||
           makerDescMap.en
         }
-        indexable={true}
+        indexable={false}
       />
 
       <WorldcupMaker

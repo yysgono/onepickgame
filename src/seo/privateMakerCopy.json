@@ -1,0 +1,66 @@
+{
+  "en": {
+    "title": "Create a Tournament Bracket Game | OnePickGame",
+    "description": "Create your own tournament bracket game on OnePickGame. Add candidates, build matchups, share your bracket, and let players vote for their favorites."
+  },
+  "ko": {
+    "title": "이상형 월드컵 만들기 | 원픽게임",
+    "description": "나만의 이상형 월드컵을 만들어보세요. 후보를 추가하고 대진을 구성해 공유한 뒤, 다른 사용자들과 함께 좋아하는 후보를 선택할 수 있습니다."
+  },
+  "ja": {
+    "title": "投票トーナメントを作成 | OnePickGame",
+    "description": "自分だけの投票トーナメントを作成できます。候補を追加して対戦を組み、共有してみんなでお気に入りに投票しましょう。"
+  },
+  "zh": {
+    "title": "创建投票淘汰赛 | OnePickGame",
+    "description": "创建属于自己的投票淘汰赛。添加候选项、生成对战、分享比赛，并让大家为喜欢的候选项投票。"
+  },
+  "ru": {
+    "title": "Создать турнир с голосованием | OnePickGame",
+    "description": "Создайте собственный турнир с голосованием. Добавляйте участников, составляйте пары, делитесь турниром и голосуйте за любимых участников."
+  },
+  "pt": {
+    "title": "Criar um Torneio de Votação | OnePickGame",
+    "description": "Crie seu próprio torneio de votação. Adicione candidatos, monte os confrontos, compartilhe o torneio e deixe os jogadores votarem em seus favoritos."
+  },
+  "es": {
+    "title": "Crear un Torneo de Votación | OnePickGame",
+    "description": "Crea tu propio torneo de votación. Añade candidatos, organiza enfrentamientos, comparte el torneo y deja que los jugadores voten por sus favoritos."
+  },
+  "fr": {
+    "title": "Créer un Tournoi de Vote | OnePickGame",
+    "description": "Créez votre propre tournoi de vote. Ajoutez des candidats, organisez les duels, partagez le tournoi et laissez les joueurs voter pour leurs favoris."
+  },
+  "id": {
+    "title": "Buat Turnamen Voting | OnePickGame",
+    "description": "Buat turnamen voting milikmu sendiri. Tambahkan kandidat, susun pertandingan, bagikan turnamen, dan biarkan pemain memilih favorit mereka."
+  },
+  "hi": {
+    "title": "वोटिंग टूर्नामेंट बनाएं | OnePickGame",
+    "description": "अपना वोटिंग टूर्नामेंट बनाएं। प्रतियोगियों को जोड़ें, मुकाबले तैयार करें, टूर्नामेंट शेयर करें और खिलाड़ियों को अपने पसंदीदा विकल्प के लिए वोट करने दें।"
+  },
+  "de": {
+    "title": "Abstimmungsturnier erstellen | OnePickGame",
+    "description": "Erstelle dein eigenes Abstimmungsturnier. Füge Kandidaten hinzu, erstelle Duelle, teile das Turnier und lass Spieler für ihre Favoriten abstimmen."
+  },
+  "vi": {
+    "title": "Tạo Giải Đấu Bình Chọn | OnePickGame",
+    "description": "Tạo giải đấu bình chọn của riêng bạn. Thêm ứng viên, tạo các cặp đấu, chia sẻ giải đấu và để người chơi bình chọn cho mục yêu thích."
+  },
+  "ar": {
+    "title": "إنشاء بطولة تصويت | OnePickGame",
+    "description": "أنشئ بطولة تصويت خاصة بك. أضف المتسابقين، وأنشئ المواجهات، وشارك البطولة، ودع اللاعبين يصوتون لمفضلاتهم."
+  },
+  "bn": {
+    "title": "ভোটিং টুর্নামেন্ট তৈরি করুন | OnePickGame",
+    "description": "নিজের ভোটিং টুর্নামেন্ট তৈরি করুন। প্রতিযোগী যোগ করুন, ম্যাচআপ তৈরি করুন, টুর্নামেন্ট শেয়ার করুন এবং খেলোয়াড়দের পছন্দের প্রতিযোগীকে ভোট দিতে দিন।"
+  },
+  "th": {
+    "title": "สร้างเกมโหวตแบบทัวร์นาเมนต์ | OnePickGame",
+    "description": "สร้างเกมโหวตแบบทัวร์นาเมนต์ของคุณเอง เพิ่มผู้เข้าแข่งขัน จัดคู่การแข่งขัน แชร์ทัวร์นาเมนต์ และให้ผู้เล่นโหวตตัวเลือกที่ชื่นชอบ"
+  },
+  "tr": {
+    "title": "Oylama Turnuvası Oluştur | OnePickGame",
+    "description": "Kendi oylama turnuvanı oluştur. Adayları ekle, eşleşmeleri hazırla, turnuvayı paylaş ve oyuncuların favorilerine oy vermesini sağla."
+  }
+}

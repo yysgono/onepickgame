@@ -43,9 +43,10 @@ module.exports = (app, supabase, origin) => {
         if (!isKnownPath(rawPath)) return await notFound(res, origin, lang);
         const html = await loadSeoTemplate(origin);
         res.setHeader('Cache-Control', 'no-store');
-        if (rawPath.replace(/\/+$/, '') === `/${lang}/my-worldcups`) {
-          const meta = getPrivatePageSeo(lang);
-          const canonical = `${origin}/${lang}/my-worldcups`;
+        const privatePage = rawPath.replace(/\/+$/, '') === `/${lang}/my-worldcups` ? 'my-worldcups' : rawPath.replace(/\/+$/, '') === `/${lang}/worldcup-maker` ? 'worldcup-maker' : '';
+        if (privatePage) {
+          const meta = getPrivatePageSeo(lang, privatePage);
+          const canonical = `${origin}/${lang}/${privatePage}`;
           const head = `<title data-rh="true">${escape(meta.title)}</title><meta data-rh="true" name="description" content="${escape(meta.description)}"><meta data-rh="true" name="robots" content="noindex, follow"><link data-rh="true" rel="canonical" href="${canonical}">`;
           res.setHeader('X-Robots-Tag', 'noindex, follow');
           return res.send(inject(html, head, '<div class="loading-screen" role="status">Loading...</div>', lang));
