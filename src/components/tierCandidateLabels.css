@@ -1,0 +1,20 @@
+/* Candidate names reserve exactly two lines without resizing their images. */
+.tier-candidate-name {
+  box-sizing: content-box;
+  height: 2.8em;
+  min-height: 2.8em;
+  line-height: 1.4;
+  white-space: normal;
+  overflow: hidden;
+}
+.tier-candidate-name-text {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  line-height: 1.4;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: normal;
+  overflow: hidden;
+}

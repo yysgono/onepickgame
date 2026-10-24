@@ -1,3 +1,4 @@
+import "./tierCandidateLabels.css";
 import NavigationLink from "./NavigationLink";
 import RelatedContentLinks from "./RelatedContentLinks";
 import tierDetailSeo from "../seo/tierDetailSeo";
@@ -3171,17 +3172,15 @@ padding: isMobile
                       )}
                     </div>
 
-                    <div
+                    <div className="tier-candidate-name" title={onePickCandidate.name || text.untitled}
                       style={{
                         marginTop: 9,
                         fontSize: isMobile ? 16 : 18,
                         fontWeight: 900,
                         overflow: "hidden",
-                        textOverflow: "ellipsis",
-                        whiteSpace: "nowrap",
                       }}
                     >
-                      {onePickCandidate.name || text.untitled}
+                      <span className="tier-candidate-name-text">{onePickCandidate.name || text.untitled}</span>
                     </div>
                   </>
                 ) : (
@@ -3305,18 +3304,16 @@ padding: isMobile
                           )}
                         </div>
 
-                        <div
+                        <div className="tier-candidate-name" title={candidate.name || text.untitled}
                           style={{
                             padding: isMobile ? "5px 4px" : "7px 5px",
                             textAlign: "center",
                             fontSize: isMobile ? 13 : 14,
                             fontWeight: 800,
                             overflow: "hidden",
-                            textOverflow: "ellipsis",
-                            whiteSpace: "nowrap",
                           }}
                         >
-                          {candidate.name || text.untitled}
+                          <span className="tier-candidate-name-text">{candidate.name || text.untitled}</span>
                         </div>
                       </div>
                     ))}

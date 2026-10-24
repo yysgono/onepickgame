@@ -1,3 +1,4 @@
+import "./tierCandidateLabels.css";
 import tierUiCopy from "../seo/tierUiCopy.json";
 import NavigationLink from "./NavigationLink";
 import { moveTierItem, tierDropPosition } from "../utils/tierItemOrder";
@@ -667,7 +668,7 @@ style={{
         </div>
 
 
-        <div
+        <div className="tier-candidate-name"
           style={{
             padding:
               compact
@@ -688,18 +689,12 @@ style={{
             overflow:
               "hidden",
 
-            textOverflow:
-              "ellipsis",
-
-            whiteSpace:
-              "nowrap",
-
             pointerEvents:
               "none",
           }}
         >
-          {item?.name ||
-            text.untitledCandidate}
+          <span className="tier-candidate-name-text">{item?.name ||
+            text.untitledCandidate}</span>
         </div>
 
 
@@ -6118,7 +6113,7 @@ objectPosition: "center",
                     </div>
 
 
-                    <div
+                    <div className="tier-candidate-name" title={onePick.name || text.untitledCandidate}
                       style={{
                         marginTop:
                           8,
@@ -6133,16 +6128,10 @@ objectPosition: "center",
 
                         overflow:
                           "hidden",
-
-                        textOverflow:
-                          "ellipsis",
-
-                        whiteSpace:
-                          "nowrap",
                       }}
                     >
-                      {onePick.name ||
-                        text.untitledCandidate}
+                      <span className="tier-candidate-name-text">{onePick.name ||
+                        text.untitledCandidate}</span>
                     </div>
 
 
