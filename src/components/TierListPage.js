@@ -1,4 +1,3 @@
-import tierUiCopy from "../seo/tierUiCopy.json";
 import listSeo from "../seo/listSeo";
 import ContentNav from "./ContentNav";
 import { normalizeTags } from "./TierTagTools";
@@ -17,10 +16,10 @@ import { useTranslation } from "react-i18next";
 import MediaRenderer from "./MediaRenderer";
 import Seo from "../seo/Seo";
 import { supabase } from "../utils/supabaseClient";
-import { fetchWinnerStatsFromDB } from "../utils";
+
 
 const PAGE_SIZE = 12;
-const TIER_LIST_CACHE_TTL = 5000;
+const TIER_LIST_CACHE_TTL = 60000;
 const tierListPageCache = new Map();
 const tierListPageInflight = new Map();
 
@@ -39,6 +38,7 @@ async function getCachedTierListRows(key, loader) {
   const request = Promise.resolve()
     .then(loader)
     .then((data) => {
+      if (tierListPageCache.size >= 40 && !tierListPageCache.has(key)) tierListPageCache.delete(tierListPageCache.keys().next().value);
       tierListPageCache.set(key, {
         at: Date.now(),
         data,
@@ -342,11 +342,6 @@ function TierListPage({
   ] = useState(false);
 
   const [
-    presetTop2Map,
-    setPresetTop2Map,
-  ] = useState({});
-
-  const [
     managedTierPresets,
     setManagedTierPresets,
   ] = useState([]);
@@ -355,6 +350,10 @@ function TierListPage({
     tierPresetLoaded,
     setTierPresetLoaded,
   ] = useState(false);
+
+  const [presetPage, setPresetPage] = useState(0);
+  const [presetHasMore, setPresetHasMore] = useState(false);
+  const [presetError, setPresetError] = useState("");
 
   const updateTierFilterUrl = (nextCategory, nextSort) => {
     const params = new URLSearchParams(location.search || "");
@@ -379,6 +378,7 @@ function TierListPage({
   };
 
   const changeCategory = (nextCategory) => {
+    setPresetPage(0);
     setCategory(nextCategory);
     updateTierFilterUrl(nextCategory, sort);
   };
@@ -403,6 +403,7 @@ function TierListPage({
     );
 
     if (nextCategory !== category) {
+      setPresetPage(0);
       setCategory(nextCategory);
     }
 
@@ -411,311 +412,33 @@ function TierListPage({
     }
   }, [location.search]);
 
-  /* =====================================================
-     운영자 지정 티어 프리셋 직접 조회
-  ===================================================== */
-
   useEffect(() => {
-    let cancelled = false;
-
-    async function loadTierPresets() {
-      try {
-        const {
-          data,
-          error,
-        } =
-          await supabase
-            .from("worldcups")
-            .select(
-              `
-              id,
-              title,
-              title_translations,
-              category,
-              data,
-              is_tier_preset,
-              tier_preset_order,
-              tier_preset_title_translations
-              `
-            )
-            .eq(
-              "is_tier_preset",
-              true
-            )
-            .is(
-              "deleted_at",
-              null
-            )
-            .order(
-              "tier_preset_order",
-              {
-                ascending: true,
-                nullsFirst: false,
-              }
-            );
-
-        if (error) {
-          throw error;
-        }
-
-        if (cancelled) {
-          return;
-        }
-
-        setManagedTierPresets(
-          Array.isArray(data)
-            ? data
-            : []
-        );
-
-        setTierPresetLoaded(
-          true
-        );
-      } catch (error) {
-        console.warn(
-          "티어표 운영자 프리셋 조회 실패:",
-          error
-        );
-
-        if (!cancelled) {
-          setManagedTierPresets(
-            []
-          );
-
-          setTierPresetLoaded(
-            true
-          );
-        }
-      }
-    }
-
-    loadTierPresets();
-
-    return () => {
-      cancelled = true;
+    if (mineOnly) return undefined;
+    let live = true;
+    setTierPresetLoaded(false);
+    setPresetError("");
+    if (presetPage === 0) setManagedTierPresets([]);
+    const categories = {
+      game: ["game"], animation: ["anime_manga", "animation"], entertainment: ["person", "korea", "music", "entertainment"],
+      food: ["food"], sports: ["sports"], other: ["etc", "movie_drama", "travel", "brands", "brand", "product", "other"]
     };
-  }, []);
+    getCachedTierListRows(`presets:${category}:${presetPage}`, async () => {
+      let query = supabase.from("worldcup_tier_preset_cards").select("id,title,title_translations,category,tier_preset_order,tier_preset_title_translations,tier_preset_thumbnail_url");
+      if (category !== "all") query = query.in("category", categories[category] || [category]);
+      const { data, error } = await query.order("tier_preset_order", { ascending: true, nullsFirst: false }).order("id", { ascending: true }).range(presetPage * 12, presetPage * 12 + 11);
+      if (error) throw error;
+      return data || [];
+    }).then(rows => {
+      if (!live) return;
+      setManagedTierPresets(previous => presetPage ? [...previous, ...rows] : rows);
+      setPresetHasMore(rows.length === 12);
+    }).catch(error => {
+      if (live) { setPresetError(error.message); setPresetHasMore(false); }
+    }).finally(() => { if (live) setTierPresetLoaded(true); });
+    return () => { live = false; };
+  }, [category, presetPage, mineOnly]);
 
-  /* =====================================================
-     추천 프리셋 결정
-
-     관리자 지정 항목을 지정 순서대로 모두 표시
-  ===================================================== */
-
-  const recommendedPresets =
-    useMemo(() => {
-      if (!tierPresetLoaded) {
-        return [];
-      }
-
-      if (
-        managedTierPresets.length >
-        0
-      ) {
-        return managedTierPresets;
-      }
-
-      return [];
-    }, [
-      tierPresetLoaded,
-      managedTierPresets,
-    ]);
-
-  /* =====================================================
-     추천 월드컵 실제 누적 1위 / 2위 후보 조회
-  ===================================================== */
-
-  useEffect(() => {
-    if (
-      !tierPresetLoaded ||
-      recommendedPresets.length ===
-        0
-    ) {
-      return;
-    }
-
-    let cancelled = false;
-
-    async function loadPresetTop2() {
-      const nextMap = {};
-
-      await Promise.all(
-        recommendedPresets.map(
-          async (cup) => {
-            try {
-              const stats =
-                await fetchWinnerStatsFromDB(
-                  cup.id
-                );
-
-              const cupData =
-                Array.isArray(
-                  cup?.data
-                )
-                  ? cup.data
-                  : [];
-
-              if (
-                !Array.isArray(
-                  stats
-                ) ||
-                stats.length === 0
-              ) {
-                nextMap[
-                  String(cup.id)
-                ] = [
-                  cupData[0] ||
-                    null,
-                  cupData[1] ||
-                    null,
-                ];
-
-                return;
-              }
-
-              const sorted =
-                [...stats]
-                  .map(
-                    (
-                      row,
-                      index
-                    ) => ({
-                      ...row,
-                      _originIndex:
-                        index,
-                    })
-                  )
-                  .sort(
-                    (a, b) => {
-                      const winDiff =
-                        Number(
-                          b?.win_count ||
-                            0
-                        ) -
-                        Number(
-                          a?.win_count ||
-                            0
-                        );
-
-                      if (
-                        winDiff !== 0
-                      ) {
-                        return winDiff;
-                      }
-
-                      const matchDiff =
-                        Number(
-                          b?.match_wins ||
-                            0
-                        ) -
-                        Number(
-                          a?.match_wins ||
-                            0
-                        );
-
-                      if (
-                        matchDiff !==
-                        0
-                      ) {
-                        return matchDiff;
-                      }
-
-                      return (
-                        a._originIndex -
-                        b._originIndex
-                      );
-                    }
-                  );
-
-              const firstId =
-                sorted[0]
-                  ?.candidate_id;
-
-              const secondId =
-                sorted[1]
-                  ?.candidate_id;
-
-              const first =
-                cupData.find(
-                  (
-                    candidate
-                  ) =>
-                    String(
-                      candidate?.id
-                    ) ===
-                    String(
-                      firstId
-                    )
-                ) ||
-                cupData[0] ||
-                null;
-
-              const second =
-                cupData.find(
-                  (
-                    candidate
-                  ) =>
-                    String(
-                      candidate?.id
-                    ) ===
-                    String(
-                      secondId
-                    )
-                ) ||
-                cupData[1] ||
-                null;
-
-              nextMap[
-                String(cup.id)
-              ] = [
-                first,
-                second,
-              ];
-            } catch (
-              error
-            ) {
-              console.warn(
-                "티어 추천 TOP2 조회 실패:",
-                cup.id,
-                error
-              );
-
-              const cupData =
-                Array.isArray(
-                  cup?.data
-                )
-                  ? cup.data
-                  : [];
-
-              nextMap[
-                String(cup.id)
-              ] = [
-                cupData[0] ||
-                  null,
-                cupData[1] ||
-                  null,
-              ];
-            }
-          }
-        )
-      );
-
-      if (!cancelled) {
-        setPresetTop2Map(
-          nextMap
-        );
-      }
-    }
-
-    loadPresetTop2();
-
-    return () => {
-      cancelled = true;
-    };
-  }, [
-    tierPresetLoaded,
-    recommendedPresets,
-  ]);
+  const recommendedPresets = managedTierPresets;
 
   /* =====================================================
      모바일 체크
@@ -855,10 +578,10 @@ function TierListPage({
           let query =
             supabase
               .from(
-                "tier_lists"
+                "tier_list_home_cards"
               )
        .select(
-  "id, user_id, guest_nickname, title, title_translations, source_worldcup_id, category, thumbnail_url, candidate_count, has_one_pick, view_count, like_count, comment_count, clone_count, created_at, tier_labels, tiers, candidates"
+  "id, user_id, guest_nickname, title, title_translations, source_worldcup_id, category, thumbnail_url, candidate_count, has_one_pick, view_count, like_count, comment_count, clone_count, created_at, tier_labels, tiers, candidates, tier_preview_counts"
 );
 
 
@@ -1186,7 +909,7 @@ const displayTitle =
       return {
         tier,
         candidates: previewCandidates,
-        remaining: Math.max(0, ids.length - previewCandidates.length),
+        remaining: Math.max(0, Number(item?.tier_preview_counts?.[tier] ?? ids.length) - previewCandidates.length),
       };
     });
 
@@ -1793,48 +1516,9 @@ maxWidth: isMobile ? 430 : 1780,
     })}
   </div>
 )}
-{!mineOnly && recommendedPresets.length >
-            0 && (
-            <div className="tier-recommendations"
-              style={{
-                width: "100%",
-
-                maxWidth: "none",
-
-                margin:
-                  isMobile
-                    ? "0 auto"
-                    : "0 auto",
-
-                padding:
-                  isMobile
-                    ? "4px 12px 14px"
-                    : "6px 24px 18px",
-
-                boxSizing:
-                  "border-box",
-
-                borderTop:
-                  "none",
-
-                borderBottom:
-                  "none",
-              }}
-            >
-        <div
-  style={{
-    textAlign: "center",
-    color: "#1D4ED8",
-fontSize: isMobile ? 24 : 34,
-fontWeight: 900,
-lineHeight: 1.2,
-marginBottom: isMobile ? 12 : 16,
-  }}
->
-  {t("tierList.page.recommendedPresetTitle")}
-</div>
-
-<div className="tier-recommendation-filters"><div
+{!mineOnly && <section className="tier-recommendations" style={{ width: "100%", maxWidth: "none", boxSizing: "border-box" }}>
+  <h2 style={{ textAlign: "center", color: "#1d4ed8", fontSize: isMobile ? 24 : 34 }}>{t("tierList.page.recommendedPresetTitle")}</h2>
+  <div className="tier-recommendation-filters"><div
             style={{
               display:
                 "flex",
@@ -1899,187 +1583,21 @@ marginBottom: isMobile ? 12 : 16,
             )}
           </div>
 </div>
-      <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: 18, alignItems: "stretch" }}>
-                {recommendedPresets.filter(cup => {
-                  if (category === "all") return true;
-                  const mapped = { anime_manga: "animation", person: "entertainment", korea: "entertainment", music: "entertainment", etc: "other" };
-                  const cupCategory = mapped[cup.category] || (CATEGORY_VALUES.includes(cup.category) ? cup.category : "other");
-                  return cupCategory === category;
-                }).map(
-                  (cup) => {
-                    const title =
-                      cup.tier_preset_title_translations?.[lang]?.trim() ||
-                      getLocalizedWorldcupTitle(
-                        cup,
-                        lang
-                      ) || "Tier List";
-
-                    const top2 =
-                      presetTop2Map[
-                        String(
-                          cup.id
-                        )
-                      ] || [];
-
-                    const firstCandidate =
-                      top2[0] ||
-                      null;
-
-                    const firstImage = firstCandidate?.image || "";
-
-                    return (
-                      <button
-                        className="tier-recommendation-card"
-                        key={
-                          cup.id
-                        }
-                        type="button"
-                        onClick={() =>
-                          navigate(
-                            `/${lang}/tier-list/create/${cup.id}`
-                          )
-                        }
-                        title={
-                          title
-                        }
-                        onMouseEnter={(e) => {
-  if (isMobile) return;
-
-  e.currentTarget.style.transform =
-    "translateY(-6px) scale(1.015)";
-
-  e.currentTarget.style.boxShadow =
-    "0 18px 38px rgba(15,23,42,0.14)";
-
-  e.currentTarget.style.borderColor =
-    "#4aaeff";
-}}
-
-onMouseLeave={(e) => {
-  if (isMobile) return;
-
-  e.currentTarget.style.transform = "";
-
-  e.currentTarget.style.boxShadow =
-    "0 12px 28px rgba(15,23,42,0.10)";
-
-  e.currentTarget.style.borderColor =
-    "#315a8f";
-}}
-style={{
-  width: "100%",
-  minWidth: 0,
-  maxWidth: isMobile ? "none" : 400,
-  flex: isMobile ? "0 1 100%" : "0 1 400px",
-  padding: 0,
-
-	  boxShadow:
-	    "0 12px 28px rgba(15,23,42,0.10)",
-
-  transition:
-    "transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease",
-
-  willChange:
-    "transform",
-
-                          border:
-                            "1px solid #bfdbfe",
-
-	                          borderRadius:
-	                            12,
-
-                          overflow:
-                            "hidden",
-
-                          background:
-                            "#ffffff",
-
-                          color:
-                            "#202534",
-
-                          cursor:
-                            "pointer",
-
-                          textAlign:
-                            "left",
-
-                          boxSizing:
-                            "border-box",
-                        }}
-                      >
-                        <div style={{ height: isMobile ? 198 : 207, width: "100%", overflow: "hidden", background: "#eff6ff" }}>
-                          {firstImage ? <MediaRenderer url={firstImage} alt={title} playable={false} loading="lazy" deferUntilVisible viewportMargin="180px" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 25%", display: "block" }} /> : <div style={{ height: "100%", display: "grid", placeItems: "center", fontSize: 44 }} aria-hidden="true">📊</div>}
-                        </div>
-
-                        <div
-                          style={{
-                            padding:
-                              isMobile
-                                ? "9px 8px"
-                                : "11px 10px",
-
-                            minHeight:
-                              isMobile
-                                ? 49
-                                : 65,
-
-                            boxSizing:
-                              "border-box",
-
-                            display:
-                              "flex",
-
-                            alignItems:
-                              "center",
-
-                            justifyContent:
-                              "center",
-
-                            textAlign:
-                              "center",
-
-                            fontSize:
-                              isMobile
-                                ? 15
-                                : 19,
-
-                            fontWeight:
-                              900,
-
-                            lineHeight:
-                              1.35,
-
-                            overflow:
-                              "hidden",
-                          }}
-                        >
-                          <span
-                            style={{
-                              display:
-                                "-webkit-box",
-
-                              WebkitBoxOrient:
-                                "vertical",
-
-                              WebkitLineClamp:
-                                2,
-
-                              overflow:
-                                "hidden",
-                            }}
-                          >
-                            {
-                              title
-                            }
-                          </span>
-                        </div>
-                      </button>
-                    );
-                  }
-                )}
-              </div>
-            </div>
-          )}
+  <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: 18 }}>
+    {recommendedPresets.map(cup => {
+      const title = cup.tier_preset_title_translations?.[lang]?.trim() || getLocalizedWorldcupTitle(cup, lang) || "Tier List";
+      return <Link className="tier-recommendation-card" key={cup.id} to={`/${lang}/tier-list/create/${cup.id}`} style={{ flex: isMobile ? "0 1 100%" : "0 1 400px", maxWidth: isMobile ? "100%" : 400, minWidth: 0, border: "1px solid #bfdbfe", borderRadius: 12, overflow: "hidden", background: "#fff", color: "#202534", textDecoration: "none", boxShadow: "0 8px 22px #0f172a15" }}>
+        <div style={{ width: "100%", height: isMobile ? 198 : 207, background: "#eff6ff" }}>
+          {cup.tier_preset_thumbnail_url ? <MediaRenderer url={cup.tier_preset_thumbnail_url} alt={title} playable={false} loading="lazy" deferUntilVisible viewportMargin="0px" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 25%", display: "block" }} /> : <div aria-hidden="true" style={{ height: "100%", display: "grid", placeItems: "center", fontSize: 44 }}>📊</div>}
+        </div>
+        <div style={{ padding: "12px 10px", minHeight: 65, boxSizing: "border-box", textAlign: "center", display: "grid", placeItems: "center", fontWeight: 900, fontSize: isMobile ? 15 : 19 }}><span style={{ display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>{title}</span></div>
+      </Link>;
+    })}
+  </div>
+  {!tierPresetLoaded && <div className="tier-list-loading" role="status" aria-label={t("tierList.common.loading")}><span aria-hidden="true" /></div>}
+  {presetError && <p role="alert" style={{ textAlign: "center", color: "#b42346" }}>{presetError}</p>}
+  {presetHasMore && tierPresetLoaded && <div style={{ textAlign: "center", margin: 20 }}><button type="button" onClick={() => setPresetPage(previous => previous + 1)} style={{ border: "2px solid #2563eb", borderRadius: 8, padding: "12px 24px", color: "#1d4ed8", background: "#fff", fontWeight: 800 }}>{t("tierList.common.loadMore", { defaultValue: lang === "ko" ? "더 보기" : "Load more" })}</button></div>}
+</section>}
 
 <section className="tier-community-filters" aria-label={t("tierList.page.title")}>
 <h2
@@ -2091,9 +1609,8 @@ style={{
     color: "#202534",
   }}
 >
-  {(tierUiCopy[lang] || tierUiCopy.en)[1]}
-</h2>
-<div
+  {lang === "ko" ? "만들어진 티어표 모음" : t("tierList.page.allTitle")}
+</h2><div
             style={{
               display:
                 "flex",
@@ -2304,7 +1821,7 @@ gap:
     playable={false}
     loading="lazy"
     deferUntilVisible
-    viewportMargin="220px"
+    viewportMargin="0px"
     style={{
       position: "absolute",
       inset: 0,
@@ -2409,7 +1926,7 @@ gap:
                                       playable={false}
                                       loading="lazy"
                                       deferUntilVisible
-                                      viewportMargin="180px"
+                                      viewportMargin="0px"
                                       style={{
                                         width: "100%",
                                         height: "100%",

@@ -8,7 +8,7 @@ import WorldcupDetailSeo from "./seo/WorldcupDetailSeo";
 import worldcupMetadata from "./seo/worldcupMetadata.js";
 import "./i18n";
 import "./App.css";
-import React, { useState, useEffect, useCallback, useRef, lazy, Suspense } from "react";
+import React, { useState, useEffect, useCallback, useRef, createContext, useContext, lazy, Suspense } from "react";
 import {
   BrowserRouter as Router,
   Routes,
@@ -338,323 +338,12 @@ style={{
 
 function RouteBackground() { return null; }
 
-function App() {
- useIsMobile();
-  const [worldcupList, setWorldcupList] = useState([]);
-  const [worldcupAllLoaded, setWorldcupAllLoaded] = useState(false);
-  const [relatedWorldcupsById, setRelatedWorldcupsById] = useState({});
+const AppShellContext = createContext(null);
+const AppRoutesContext = createContext(null);
 
-  const { t, i18n } = useTranslation();
+function MyWorldcupsWrapper() {
+  const { fetchWorldcups, handleWorldcupDelete, i18n, isAdmin, nickname, t, user, worldcupList } = useContext(AppShellContext);
 
-  const [user, setUser] = useState(null);
-
-  const [isAdmin, setIsAdmin] = useState(false);
-
-  const [nickname, setNickname] = useState("");
-
-  const [nicknameLoading, setNicknameLoading] =
-    useState(false);
-
-  const [fixedWorldcupIds, setFixedWorldcupIds] =
-    useState([]);
-
-  const [fixedWorldcups, setFixedWorldcups] =
-    useState([]);
-
-  /* ===================================================
-     로그인 사용자 + 프로필 확인
-  =================================================== */
-
-  useEffect(() => subscribeToAuthProfile(supabase, {
-    setUser,
-    setNickname,
-    setNicknameLoading,
-    setIsAdmin,
-  }), []);
-
-  /* ===================================================
-     닉네임 변경
-  =================================================== */
-
-  function updateNickname(nick) {
-    setNickname(nick);
-
-    setIsAdmin(
-      nick === "admin"
-    );
-  }
-
-  /* ===================================================
-     월드컵 목록 다시 가져오기
-  =================================================== */
-
-  const fetchWorldcups = useCallback(async () => {
-    const list = await getWorldcupGames();
-    setWorldcupList(list);
-    setWorldcupAllLoaded(true);
-    return list;
-  }, []);
-
-  const fetchOneWorldcup = useCallback(async (id) => {
-    const [cup, related] = await Promise.all([
-      getWorldcupGame(id),
-      fetchWorldcupRelatedCards(id).catch(error => { console.warn("Related games could not be loaded", error); return []; }),
-    ]);
-    setRelatedWorldcupsById(previous => ({ ...previous, [id]: related }));
-    setWorldcupList(previous => {
-      const games = new Map(previous.map(item => [String(item.id), item]));
-      games.set(String(id), cup);
-      related.forEach(item => { if (!games.has(String(item.id)) || games.get(String(item.id))._homeCardOnly) games.set(String(item.id), item); });
-      return [...games.values()];
-    });
-    return cup;
-  }, []);
-
-  /* ===================================================
-     월드컵 삭제
-
-     관리자:
-       실제 삭제 X
-       deleted_at 설정
-       → 관리자 휴지통
-
-     일반 사용자:
-       Storage 이미지 삭제
-       DB 실제 삭제
-  =================================================== */
-
-  const handleWorldcupDelete = async (id) => {
-    if (!id) {
-      throw new Error(
-        "월드컵 ID가 없습니다."
-      );
-    }
-
-    console.log(
-      "🔥 월드컵 삭제 요청:",
-      {
-        id,
-        isAdmin,
-        nickname,
-        mode: isAdmin
-          ? "SOFT_DELETE"
-          : "PERMANENT_DELETE",
-      }
-    );
-
-    if (isAdmin) {
-      await softDeleteWorldcupGame(id);
-
-      console.log(
-        "🗑️ 관리자 삭제 → 휴지통 이동 완료:",
-        id
-      );
-    } else {
-      await deleteWorldcupGame(id);
-
-      console.log(
-        "❌ 사용자 월드컵 영구삭제 완료:",
-        id
-      );
-    }
-
-    await fetchWorldcups();
-
-    return true;
-  };
-
-  /* ===================================================
-     최초 월드컵 로딩
-  =================================================== */
-
-  // Data is requested by WorldcupRouteDataLoader only when the active route needs it.
-
-  /* ===================================================
-     운영자 PICK ID 로딩
-  =================================================== */
-
-  useEffect(() => {
-    async function fetchFixedWorldcups() {
-      try {
-        const {
-          data,
-          error,
-        } = await supabase
-          .from("fixed_worldcups")
-          .select("worldcup_id")
-          .order("id", {
-            ascending: true,
-          });
-
-        if (error) {
-          console.error(
-            "운영자 PICK 조회 실패:",
-            error
-          );
-
-          setFixedWorldcupIds([]);
-          return;
-        }
-
-        if (Array.isArray(data)) {
-          setFixedWorldcupIds(
-            data.map((d) =>
-              String(d.worldcup_id)
-            )
-          );
-        } else {
-          setFixedWorldcupIds([]);
-        }
-      } catch (error) {
-        console.error(
-          "운영자 PICK 조회 오류:",
-          error
-        );
-
-        setFixedWorldcupIds([]);
-      }
-    }
-
-    fetchFixedWorldcups();
-  }, []);
-
-  /* ===================================================
-     운영자 PICK 실제 월드컵 데이터 구성
-  =================================================== */
-
-  useEffect(() => {
-    if (
-      !worldcupList.length ||
-      !fixedWorldcupIds.length
-    ) {
-      setFixedWorldcups([]);
-      return;
-    }
-
-    const fixeds =
-      fixedWorldcupIds
-        .map((id) =>
-          worldcupList.find(
-            (cup) =>
-              String(cup.id) ===
-              String(id)
-          )
-        )
-        .filter(Boolean);
-
-    setFixedWorldcups(fixeds);
-  }, [
-    worldcupList,
-    fixedWorldcupIds,
-  ]);
-
- 
-
-  /* ===================================================
-     언어 변경
-  =================================================== */
-
-  function handleLangChange(
-    lng,
-    _options
-  ) {
-    i18n.changeLanguage(lng);
-
-    localStorage.setItem(
-      "onepickgame_lang",
-      lng
-    );
-  }
-    /* ===================================================
-     백업
-  =================================================== */
-
-  function handleBackup() {
-    const data =
-      JSON.stringify(
-        worldcupList || []
-      );
-
-    const blob =
-      new Blob([data], {
-        type: "application/json",
-      });
-
-    const url =
-      URL.createObjectURL(blob);
-
-    const a =
-      document.createElement("a");
-
-    a.href = url;
-
-    a.download =
-      `worldcup_backup_${Date.now()}.json`;
-
-    a.click();
-
-    URL.revokeObjectURL(url);
-  }
-
-  /* ===================================================
-     복구
-     현재는 프론트 목록만 복원
-     DB에는 직접 반영하지 않음
-  =================================================== */
-
-  function handleRestore(e) {
-    const file =
-      e.target.files[0];
-
-    if (!file) return;
-
-    const reader =
-      new FileReader();
-
-    reader.onload = function (ev) {
-      try {
-        const data =
-          JSON.parse(
-            ev.target.result
-          );
-
-        if (
-          !Array.isArray(data)
-        ) {
-          throw new Error(
-            "Invalid format"
-          );
-        }
-
-        setWorldcupList(data);
-
-        alert(
-          t("restore_success") ||
-            "Restore successful! (Front-end only, DB not affected)"
-        );
-      } catch (error) {
-        console.error(
-          "복구 실패:",
-          error
-        );
-
-        alert(
-          t("restore_fail") ||
-            "Restore failed!"
-        );
-      }
-    };
-
-    reader.readAsText(file);
-
-    e.target.value = "";
-  }
-
-  /* ===================================================
-     내가 만든 월드컵
-  =================================================== */
-
-  function MyWorldcupsWrapper() {
     const navigate =
       useNavigate();
 
@@ -715,11 +404,9 @@ function App() {
     );
   }
 
-  /* ===================================================
-     최근 본 월드컵
-  =================================================== */
+function RecentWorldcupsWrapper() {
+  const { fetchWorldcups, handleWorldcupDelete, i18n, isAdmin, nickname, t, user, worldcupList } = useContext(AppShellContext);
 
-  function RecentWorldcupsWrapper() {
     const navigate =
       useNavigate();
 
@@ -804,11 +491,9 @@ function App() {
     );
   }
 
-  /* ===================================================
-     통계 페이지
-  =================================================== */
+function StatsPageWrapper() {
+  const { worldcupList } = useContext(AppShellContext);
 
-  function StatsPageWrapper() {
     const { id } =
       useParams();
 
@@ -919,11 +604,9 @@ function App() {
     );
   }
 
-  /* ===================================================
-     앱 라우트
-  =================================================== */
+function AppRoutes() {
+  const { fetchWorldcups, fixedWorldcups, handleBackup, handleLangChange, handleRestore, handleWorldcupDelete, isAdmin, nickname, nicknameLoading, relatedWorldcupsById, setUser, setWorldcupAllLoaded, setWorldcupList, t, updateNickname, user, worldcupList } = useContext(AppShellContext);
 
-  function AppRoutes() {
     const navigate =
       useNavigate();
 
@@ -1012,552 +695,55 @@ function handleMakeWorldcup() {
        메인 홈
     =============================================== */
 
-    function HomeWrapper() {
-      return (
-        <EnPage
-          worldcupList={
-            worldcupList
-          }
-          fetchWorldcups={
-            fetchWorldcups
-          }
-          onSelect={(cup) => {
-            let recent = [];
-
-            try {
-              recent =
-                JSON.parse(
-                  localStorage.getItem(
-                    "onepickgame_recentWorldcups"
-                  ) || "[]"
-                );
-            } catch (error) {
-              console.error(
-                "최근 목록 파싱 실패:",
-                error
-              );
-            }
-
-            localStorage.setItem(
-              "onepickgame_recentWorldcups",
-              JSON.stringify(
-                [
-                  cup.id,
-                  ...recent.filter(
-                    (id) =>
-                      id !== cup.id
-                  ),
-                ].slice(
-                  0,
-                  30
-                )
-              )
-            );
-
-            navigate(
-              getLangPath(
-                i18n,
-                `select-round/${cup.id}`
-              )
-            );
-          }}
-          onMakeWorldcup={
-            handleMakeWorldcup
-          }
-          onDelete={async (id) => {
-            try {
-              await handleWorldcupDelete(
-                id
-              );
-            } catch (e) {
-              console.error(
-                "홈 삭제 실패:",
-                e
-              );
-
-              alert(
-                (t(
-                  "delete_failed"
-                ) ||
-                  "Delete failed!") +
-                  " " +
-                  (e.message || e)
-              );
-            }
-          }}
-          user={user}
-          nickname={nickname}
-          isAdmin={isAdmin}
-          fixedWorldcups={
-            fixedWorldcups
-          }
-        />
-      );
-    }
+    
 
     /* ===============================================
        라운드 선택
     =============================================== */
 
-    function SelectRoundPageWrapper() {
-      const {
-        id,
-        lang = "en",
-      } = useParams();
-
-      const cup =
-        worldcupList.find(
-          (c) =>
-            String(c.id) ===
-            String(id)
-        );
-
-      if (!cup) {
-        return (
-          <div
-            style={{
-              minHeight: "60vh",
-              display: "flex",
-              alignItems: "center",
-              justifyContent:
-                "center",
-              color: "#202534",
-              fontSize: 20,
-              fontWeight: 700,
-            }}
-          >
-            {t("loading") ||
-              "Loading..."}
-          </div>
-        );
-      }
-
-      const normalizedLang =
-        String(
-          lang || "en"
-        )
-          .toLowerCase()
-          .split("-")[0];
-
- const translatedTitle =
-  getWorldcupTitle(cup, normalizedLang) ||
-  "";
-
-const worldCupKeywordMap = {
-  ko: "이상형 월드컵",
-  en: "Ideal Type World Cup",
-  ja: "人気投票トーナメント",
-  zh: "人气投票淘汰赛",
-  es: "Torneo de Votación",
-  fr: "Tournoi de Vote",
-  de: "Abstimmungsturnier",
-  pt: "Torneio de Votação",
-  ru: "Турнир голосований",
-  id: "Turnamen Voting",
-  hi: "वोटिंग टूर्नामेंट",
-  vi: "Giải đấu bình chọn",
-  ar: "بطولة التصويت",
-  bn: "ভোটিং টুর্নামেন্ট",
-  th: "เกมโหวตแบบทัวร์นาเมนต์",
-  tr: "Oylama Turnuvası",
-};
-
-const worldCupKeyword =
-  worldCupKeywordMap[normalizedLang] ||
-  worldCupKeywordMap.en;
-
-const cleanEnglishTitle = translatedTitle
-  .replace(/\s+(Bracket|Tournament)$/i, "")
-  .trim();
-
-const pageSeoTitle =
-  normalizedLang === "en"
-    ? `${cleanEnglishTitle} Tournament Bracket Game | Ideal Type World Cup | OnePickGame`
-    : normalizedLang === "ko"
-      ? `이상형 월드컵 | ${translatedTitle} | 원픽게임`
-      : `${worldCupKeyword} - ${translatedTitle} | OnePickGame`;
-const translatedDescription = worldcupMetadata.worldcupDescription(cup, normalizedLang);
-      return (
-        <>
-          <WorldcupDetailSeo cup={cup}
-            lang={
-              normalizedLang
-            }
-            slug={`select-round/${cup.id}`}
-       title={pageSeoTitle}
-            description={
-              translatedDescription
-            }
-          />
-
-  <SelectRoundPage
-  cup={cup}
-  worldcupList={relatedWorldcupsById[id] || worldcupList}
-  user={user}
-  isAdmin={isAdmin}
-  onDelete={handleWorldcupDelete}
-            maxRound={
-              cup.data.length
-            }
-            candidates={
-              cup.data
-            }
-            onSelect={(
-              roundOrCandidate
-            ) => {
-              if (
-                typeof roundOrCandidate ===
-                "number"
-              ) {
-                navigate(
-                  getLangPath(
-                    i18n,
-                    `match/${cup.id}/${roundOrCandidate}`
-                  )
-                );
-              } else if (
-                typeof roundOrCandidate ===
-                  "object" &&
-                roundOrCandidate?.id
-              ) {
-                navigate(
-                  getLangPath(
-                    i18n,
-                    `match/${cup.id}/${cup.data.length}`
-                  )
-                );
-              }
-            }}
-          />
-        </>
-      );
-    }
+    
         /* ===============================================
        월드컵 만들기 래퍼
     =============================================== */
 
-    function WorldcupMakerWrapper() {
-  const navigate =
-    useNavigate();
-
-  const makerTitleMap = {
-  en: "Create a Tournament Bracket Game | OnePickGame",
-  ko: "이상형 월드컵 만들기 | 원픽게임",
-  ja: "投票トーナメントを作成 | OnePickGame",
-  zh: "创建投票淘汰赛 | OnePickGame",
-  es: "Crear un Torneo de Votación | OnePickGame",
-  fr: "Créer un Tournoi de Vote | OnePickGame",
-  de: "Abstimmungsturnier erstellen | OnePickGame",
-  pt: "Criar um Torneio de Votação | OnePickGame",
-  ru: "Создать турнир с голосованием | OnePickGame",
-  id: "Buat Turnamen Voting | OnePickGame",
-  hi: "वोटिंग टूर्नामेंट बनाएं | OnePickGame",
-  vi: "Tạo Giải Đấu Bình Chọn | OnePickGame",
-  ar: "إنشاء بطولة تصويت | OnePickGame",
-  bn: "ভোটিং টুর্নামেন্ট তৈরি করুন | OnePickGame",
-  th: "สร้างเกมโหวตแบบทัวร์นาเมนต์ | OnePickGame",
-  tr: "Oylama Turnuvası Oluştur | OnePickGame",
-};
-
-const makerDescMap = {
-  en: "Create your own tournament bracket game on OnePickGame. Add candidates, build matchups, share your bracket, and let players vote for their favorites.",
-
-  ko: "나만의 이상형 월드컵을 만들어보세요. 후보를 추가하고 대진을 구성해 공유한 뒤, 다른 사용자들과 함께 좋아하는 후보를 선택할 수 있습니다.",
-
-  ja: "自分だけの投票トーナメントを作成できます。候補を追加して対戦を組み、共有してみんなでお気に入りに投票しましょう。",
-
-  zh: "创建属于自己的投票淘汰赛。添加候选项、生成对战、分享比赛，并让大家为喜欢的候选项投票。",
-
-  es: "Crea tu propio torneo de votación. Añade candidatos, organiza enfrentamientos, comparte el torneo y deja que los jugadores voten por sus favoritos.",
-
-  fr: "Créez votre propre tournoi de vote. Ajoutez des candidats, organisez les duels, partagez le tournoi et laissez les joueurs voter pour leurs favoris.",
-
-  de: "Erstelle dein eigenes Abstimmungsturnier. Füge Kandidaten hinzu, erstelle Duelle, teile das Turnier und lass Spieler für ihre Favoriten abstimmen.",
-
-  pt: "Crie seu próprio torneio de votação. Adicione candidatos, monte os confrontos, compartilhe o torneio e deixe os jogadores votarem em seus favoritos.",
-
-  ru: "Создайте собственный турнир с голосованием. Добавляйте участников, составляйте пары, делитесь турниром и голосуйте за любимых участников.",
-
-  id: "Buat turnamen voting milikmu sendiri. Tambahkan kandidat, susun pertandingan, bagikan turnamen, dan biarkan pemain memilih favorit mereka.",
-
-  hi: "अपना वोटिंग टूर्नामेंट बनाएं। प्रतियोगियों को जोड़ें, मुकाबले तैयार करें, टूर्नामेंट शेयर करें और खिलाड़ियों को अपने पसंदीदा विकल्प के लिए वोट करने दें।",
-
-  vi: "Tạo giải đấu bình chọn của riêng bạn. Thêm ứng viên, tạo các cặp đấu, chia sẻ giải đấu và để người chơi bình chọn cho mục yêu thích.",
-
-  ar: "أنشئ بطولة تصويت خاصة بك. أضف المتسابقين، وأنشئ المواجهات، وشارك البطولة، ودع اللاعبين يصوتون لمفضلاتهم.",
-
-  bn: "নিজের ভোটিং টুর্নামেন্ট তৈরি করুন। প্রতিযোগী যোগ করুন, ম্যাচআপ তৈরি করুন, টুর্নামেন্ট শেয়ার করুন এবং খেলোয়াড়দের পছন্দের প্রতিযোগীকে ভোট দিতে দিন।",
-
-  th: "สร้างเกมโหวตแบบทัวร์นาเมนต์ของคุณเอง เพิ่มผู้เข้าแข่งขัน จัดคู่การแข่งขัน แชร์ทัวร์นาเมนต์ และให้ผู้เล่นโหวตตัวเลือกที่ชื่นชอบ",
-
-  tr: "Kendi oylama turnuvanı oluştur. Adayları ekle, eşleşmeleri hazırla, turnuvayı paylaş ve oyuncuların favorilerine oy vermesini sağla.",
-};
-
-  return (
-    <>
-      <Seo
-        lang={currentLang}
-        slug="worldcup-maker"
-        title={
-          makerTitleMap[currentLang] ||
-          makerTitleMap.en
-        }
-        description={
-          makerDescMap[currentLang] ||
-          makerDescMap.en
-        }
-        indexable={false}
-      />
-
-      <WorldcupMaker
-        fetchWorldcups={
-          fetchWorldcups
-        }
- onCreate={() => {
-  setWorldcupAllLoaded(false);
-  navigate(
-    getLangPath(
-      i18n
-    )
-  );
-}}
-        onCancel={() =>
-          navigate(
-            getLangPath(
-              i18n
-            )
-          )
-        }
-        user={user}
-        nickname={
-          nickname
-        }
-      />
-    </>
-  );
-}
+    
 
     /* ===============================================
        월드컵 관리 래퍼
     =============================================== */
 
-    function ManageWorldcupWrapper() {
-      return (
-        <ManageWorldcup
-          user={user}
-          isAdmin={
-            isAdmin
-          }
-          worldcupList={
-            worldcupList
-          }
-          setWorldcupList={
-            setWorldcupList
-          }
-        />
-      );
-    }
+    
 
     /* ===============================================
        월드컵 수정 래퍼
     =============================================== */
 
-    function EditWorldcupPageWrapper() {
-      const { id } =
-        useParams();
-
-      return (
-        <EditWorldcupPage
-          worldcupList={
-            worldcupList
-          }
-          fetchWorldcups={
-            fetchWorldcups
-          }
-          cupId={id}
-          user={user}
-          nickname={
-            nickname
-          }
-          isAdmin={
-            isAdmin
-          }
-        />
-      );
-    }
+    
 
     /* ===============================================
        관리자 대시보드
     =============================================== */
 
-    function AdminRoute() {
-      if (
-        nicknameLoading
-      ) {
-        return (
-          <div
-            style={{
-              padding: 60,
-              textAlign:
-                "center",
-              fontWeight:
-                700,
-              fontSize: 24,
-            }}
-          >
-            Loading...
-          </div>
-        );
-      }
-
-      if (!isAdmin) {
-        return (
-          <div
-            style={{
-              padding: 60,
-              textAlign:
-                "center",
-              fontWeight:
-                700,
-              fontSize: 24,
-            }}
-          >
-            {t(
-              "admin_only"
-            ) ||
-              "Admins only."}
-
-            <br />
-
-            {t(
-              "login_with_admin"
-            ) ||
-              "Please log in as admin."}
-          </div>
-        );
-      }
-
-      return (
-        <>
-          <AdminBar
-            adminName={
-              nickname
-            }
-            onLogout={() => {
-              supabase.auth
-                .signOut()
-                .then(() => {
-                  window.location.href =
-                    getLangPath(
-                      i18n
-                    );
-                });
-            }}
-          />
-
-          <AdminDashboard />
-        </>
-      );
-    }
+    
 
     /* ===============================================
        관리자 통계
     =============================================== */
 
-    function AdminStatsRoute() {
-      if (
-        nicknameLoading
-      ) {
-        return (
-          <div
-            style={{
-              padding: 60,
-              textAlign:
-                "center",
-              fontWeight:
-                700,
-              fontSize: 24,
-            }}
-          >
-            Loading...
-          </div>
-        );
-      }
-
-      if (!isAdmin) {
-        return (
-          <div
-            style={{
-              padding: 60,
-              textAlign:
-                "center",
-              fontWeight:
-                700,
-              fontSize: 24,
-            }}
-          >
-            {t(
-              "admin_only"
-            ) ||
-              "Admins only."}
-
-            <br />
-
-            {t(
-              "login_with_admin"
-            ) ||
-              "Please log in as admin."}
-          </div>
-        );
-      }
-
-      return (
-        <>
-          <AdminBar
-            adminName={
-              nickname
-            }
-            onLogout={() => {
-              supabase.auth
-                .signOut()
-                .then(() => {
-                  window.location.href =
-                    getLangPath(
-                      i18n
-                    );
-                });
-            }}
-          />
-
-          <AdminStatsPage />
-        </>
-      );
-    }
+    
 
     /* ===============================================
        구 stats 주소 → result로 이동
     =============================================== */
 
-    function RedirectStatsToResult() {
-      const {
-        lang,
-        id,
-      } = useParams();
-
-      return (
-        <Navigate
-          to={`/${lang}/result/${id}`}
-          replace
-        />
-      );
-    }
+    
 
     /* ===============================================
        ROUTES
     =============================================== */
 
     return (
-      <>
+      <AppRoutesContext.Provider value={{ currentLang, handleMakeWorldcup, i18n, navigate }}><>
         <SEOManager />
 
 <div
@@ -1996,16 +1182,889 @@ const makerDescMap = {
             />
           </Routes>
         </div>
-      </>
+      </></AppRoutesContext.Provider>
     );
   }
+
+function HomeWrapper() {
+  const { fetchWorldcups, fixedWorldcups, handleWorldcupDelete, isAdmin, nickname, t, user, worldcupList } = useContext(AppShellContext);
+
+  const { handleMakeWorldcup, i18n, navigate } = useContext(AppRoutesContext);
+
+      return (
+        <EnPage
+          worldcupList={
+            worldcupList
+          }
+          fetchWorldcups={
+            fetchWorldcups
+          }
+          onSelect={(cup) => {
+            let recent = [];
+
+            try {
+              recent =
+                JSON.parse(
+                  localStorage.getItem(
+                    "onepickgame_recentWorldcups"
+                  ) || "[]"
+                );
+            } catch (error) {
+              console.error(
+                "최근 목록 파싱 실패:",
+                error
+              );
+            }
+
+            localStorage.setItem(
+              "onepickgame_recentWorldcups",
+              JSON.stringify(
+                [
+                  cup.id,
+                  ...recent.filter(
+                    (id) =>
+                      id !== cup.id
+                  ),
+                ].slice(
+                  0,
+                  30
+                )
+              )
+            );
+
+            navigate(
+              getLangPath(
+                i18n,
+                `select-round/${cup.id}`
+              )
+            );
+          }}
+          onMakeWorldcup={
+            handleMakeWorldcup
+          }
+          onDelete={async (id) => {
+            try {
+              await handleWorldcupDelete(
+                id
+              );
+            } catch (e) {
+              console.error(
+                "홈 삭제 실패:",
+                e
+              );
+
+              alert(
+                (t(
+                  "delete_failed"
+                ) ||
+                  "Delete failed!") +
+                  " " +
+                  (e.message || e)
+              );
+            }
+          }}
+          user={user}
+          nickname={nickname}
+          isAdmin={isAdmin}
+          fixedWorldcups={
+            fixedWorldcups
+          }
+        />
+      );
+    }
+
+function SelectRoundPageWrapper() {
+  const { handleWorldcupDelete, isAdmin, relatedWorldcupsById, t, user, worldcupList } = useContext(AppShellContext);
+
+  const { i18n, navigate } = useContext(AppRoutesContext);
+
+      const {
+        id,
+        lang = "en",
+      } = useParams();
+
+      const cup =
+        worldcupList.find(
+          (c) =>
+            String(c.id) ===
+            String(id)
+        );
+
+      if (!cup) {
+        return (
+          <div
+            style={{
+              minHeight: "60vh",
+              display: "flex",
+              alignItems: "center",
+              justifyContent:
+                "center",
+              color: "#202534",
+              fontSize: 20,
+              fontWeight: 700,
+            }}
+          >
+            {t("loading") ||
+              "Loading..."}
+          </div>
+        );
+      }
+
+      const normalizedLang =
+        String(
+          lang || "en"
+        )
+          .toLowerCase()
+          .split("-")[0];
+
+ const translatedTitle =
+  getWorldcupTitle(cup, normalizedLang) ||
+  "";
+
+const worldCupKeywordMap = {
+  ko: "이상형 월드컵",
+  en: "Ideal Type World Cup",
+  ja: "人気投票トーナメント",
+  zh: "人气投票淘汰赛",
+  es: "Torneo de Votación",
+  fr: "Tournoi de Vote",
+  de: "Abstimmungsturnier",
+  pt: "Torneio de Votação",
+  ru: "Турнир голосований",
+  id: "Turnamen Voting",
+  hi: "वोटिंग टूर्नामेंट",
+  vi: "Giải đấu bình chọn",
+  ar: "بطولة التصويت",
+  bn: "ভোটিং টুর্নামেন্ট",
+  th: "เกมโหวตแบบทัวร์นาเมนต์",
+  tr: "Oylama Turnuvası",
+};
+
+const worldCupKeyword =
+  worldCupKeywordMap[normalizedLang] ||
+  worldCupKeywordMap.en;
+
+const cleanEnglishTitle = translatedTitle
+  .replace(/\s+(Bracket|Tournament)$/i, "")
+  .trim();
+
+const pageSeoTitle =
+  normalizedLang === "en"
+    ? `${cleanEnglishTitle} Tournament Bracket Game | Ideal Type World Cup | OnePickGame`
+    : normalizedLang === "ko"
+      ? `이상형 월드컵 | ${translatedTitle} | 원픽게임`
+      : `${worldCupKeyword} - ${translatedTitle} | OnePickGame`;
+const translatedDescription = worldcupMetadata.worldcupDescription(cup, normalizedLang);
+      return (
+        <>
+          <WorldcupDetailSeo cup={cup}
+            lang={
+              normalizedLang
+            }
+            slug={`select-round/${cup.id}`}
+       title={pageSeoTitle}
+            description={
+              translatedDescription
+            }
+          />
+
+  <SelectRoundPage
+  cup={cup}
+  worldcupList={relatedWorldcupsById[id] || worldcupList}
+  user={user}
+  isAdmin={isAdmin}
+  onDelete={handleWorldcupDelete}
+            maxRound={
+              cup.data.length
+            }
+            candidates={
+              cup.data
+            }
+            onSelect={(
+              roundOrCandidate
+            ) => {
+              if (
+                typeof roundOrCandidate ===
+                "number"
+              ) {
+                navigate(
+                  getLangPath(
+                    i18n,
+                    `match/${cup.id}/${roundOrCandidate}`
+                  )
+                );
+              } else if (
+                typeof roundOrCandidate ===
+                  "object" &&
+                roundOrCandidate?.id
+              ) {
+                navigate(
+                  getLangPath(
+                    i18n,
+                    `match/${cup.id}/${cup.data.length}`
+                  )
+                );
+              }
+            }}
+          />
+        </>
+      );
+    }
+
+function WorldcupMakerWrapper() {
+  const { fetchWorldcups, nickname, setWorldcupAllLoaded, user } = useContext(AppShellContext);
+
+  const { currentLang, i18n } = useContext(AppRoutesContext);
+
+  const navigate =
+    useNavigate();
+
+  const makerTitleMap = {
+  en: "Create a Tournament Bracket Game | OnePickGame",
+  ko: "이상형 월드컵 만들기 | 원픽게임",
+  ja: "投票トーナメントを作成 | OnePickGame",
+  zh: "创建投票淘汰赛 | OnePickGame",
+  es: "Crear un Torneo de Votación | OnePickGame",
+  fr: "Créer un Tournoi de Vote | OnePickGame",
+  de: "Abstimmungsturnier erstellen | OnePickGame",
+  pt: "Criar um Torneio de Votação | OnePickGame",
+  ru: "Создать турнир с голосованием | OnePickGame",
+  id: "Buat Turnamen Voting | OnePickGame",
+  hi: "वोटिंग टूर्नामेंट बनाएं | OnePickGame",
+  vi: "Tạo Giải Đấu Bình Chọn | OnePickGame",
+  ar: "إنشاء بطولة تصويت | OnePickGame",
+  bn: "ভোটিং টুর্নামেন্ট তৈরি করুন | OnePickGame",
+  th: "สร้างเกมโหวตแบบทัวร์นาเมนต์ | OnePickGame",
+  tr: "Oylama Turnuvası Oluştur | OnePickGame",
+};
+
+const makerDescMap = {
+  en: "Create your own tournament bracket game on OnePickGame. Add candidates, build matchups, share your bracket, and let players vote for their favorites.",
+
+  ko: "나만의 이상형 월드컵을 만들어보세요. 후보를 추가하고 대진을 구성해 공유한 뒤, 다른 사용자들과 함께 좋아하는 후보를 선택할 수 있습니다.",
+
+  ja: "自分だけの投票トーナメントを作成できます。候補を追加して対戦を組み、共有してみんなでお気に入りに投票しましょう。",
+
+  zh: "创建属于自己的投票淘汰赛。添加候选项、生成对战、分享比赛，并让大家为喜欢的候选项投票。",
+
+  es: "Crea tu propio torneo de votación. Añade candidatos, organiza enfrentamientos, comparte el torneo y deja que los jugadores voten por sus favoritos.",
+
+  fr: "Créez votre propre tournoi de vote. Ajoutez des candidats, organisez les duels, partagez le tournoi et laissez les joueurs voter pour leurs favoris.",
+
+  de: "Erstelle dein eigenes Abstimmungsturnier. Füge Kandidaten hinzu, erstelle Duelle, teile das Turnier und lass Spieler für ihre Favoriten abstimmen.",
+
+  pt: "Crie seu próprio torneio de votação. Adicione candidatos, monte os confrontos, compartilhe o torneio e deixe os jogadores votarem em seus favoritos.",
+
+  ru: "Создайте собственный турнир с голосованием. Добавляйте участников, составляйте пары, делитесь турниром и голосуйте за любимых участников.",
+
+  id: "Buat turnamen voting milikmu sendiri. Tambahkan kandidat, susun pertandingan, bagikan turnamen, dan biarkan pemain memilih favorit mereka.",
+
+  hi: "अपना वोटिंग टूर्नामेंट बनाएं। प्रतियोगियों को जोड़ें, मुकाबले तैयार करें, टूर्नामेंट शेयर करें और खिलाड़ियों को अपने पसंदीदा विकल्प के लिए वोट करने दें।",
+
+  vi: "Tạo giải đấu bình chọn của riêng bạn. Thêm ứng viên, tạo các cặp đấu, chia sẻ giải đấu và để người chơi bình chọn cho mục yêu thích.",
+
+  ar: "أنشئ بطولة تصويت خاصة بك. أضف المتسابقين، وأنشئ المواجهات، وشارك البطولة، ودع اللاعبين يصوتون لمفضلاتهم.",
+
+  bn: "নিজের ভোটিং টুর্নামেন্ট তৈরি করুন। প্রতিযোগী যোগ করুন, ম্যাচআপ তৈরি করুন, টুর্নামেন্ট শেয়ার করুন এবং খেলোয়াড়দের পছন্দের প্রতিযোগীকে ভোট দিতে দিন।",
+
+  th: "สร้างเกมโหวตแบบทัวร์นาเมนต์ของคุณเอง เพิ่มผู้เข้าแข่งขัน จัดคู่การแข่งขัน แชร์ทัวร์นาเมนต์ และให้ผู้เล่นโหวตตัวเลือกที่ชื่นชอบ",
+
+  tr: "Kendi oylama turnuvanı oluştur. Adayları ekle, eşleşmeleri hazırla, turnuvayı paylaş ve oyuncuların favorilerine oy vermesini sağla.",
+};
+
+  return (
+    <>
+      <Seo
+        lang={currentLang}
+        slug="worldcup-maker"
+        title={
+          makerTitleMap[currentLang] ||
+          makerTitleMap.en
+        }
+        description={
+          makerDescMap[currentLang] ||
+          makerDescMap.en
+        }
+        indexable={false}
+      />
+
+      <WorldcupMaker
+        fetchWorldcups={
+          fetchWorldcups
+        }
+ onCreate={() => {
+  setWorldcupAllLoaded(false);
+  navigate(
+    getLangPath(
+      i18n
+    )
+  );
+}}
+        onCancel={() =>
+          navigate(
+            getLangPath(
+              i18n
+            )
+          )
+        }
+        user={user}
+        nickname={
+          nickname
+        }
+      />
+    </>
+  );
+}
+
+function ManageWorldcupWrapper() {
+  const { isAdmin, setWorldcupList, user, worldcupList } = useContext(AppShellContext);
+
+      return (
+        <ManageWorldcup
+          user={user}
+          isAdmin={
+            isAdmin
+          }
+          worldcupList={
+            worldcupList
+          }
+          setWorldcupList={
+            setWorldcupList
+          }
+        />
+      );
+    }
+
+function EditWorldcupPageWrapper() {
+  const { fetchWorldcups, isAdmin, nickname, user, worldcupList } = useContext(AppShellContext);
+
+      const { id } =
+        useParams();
+
+      return (
+        <EditWorldcupPage
+          worldcupList={
+            worldcupList
+          }
+          fetchWorldcups={
+            fetchWorldcups
+          }
+          cupId={id}
+          user={user}
+          nickname={
+            nickname
+          }
+          isAdmin={
+            isAdmin
+          }
+        />
+      );
+    }
+
+function AdminRoute() {
+  const { isAdmin, nickname, nicknameLoading, t } = useContext(AppShellContext);
+
+  const { i18n } = useContext(AppRoutesContext);
+
+      if (
+        nicknameLoading
+      ) {
+        return (
+          <div
+            style={{
+              padding: 60,
+              textAlign:
+                "center",
+              fontWeight:
+                700,
+              fontSize: 24,
+            }}
+          >
+            Loading...
+          </div>
+        );
+      }
+
+      if (!isAdmin) {
+        return (
+          <div
+            style={{
+              padding: 60,
+              textAlign:
+                "center",
+              fontWeight:
+                700,
+              fontSize: 24,
+            }}
+          >
+            {t(
+              "admin_only"
+            ) ||
+              "Admins only."}
+
+            <br />
+
+            {t(
+              "login_with_admin"
+            ) ||
+              "Please log in as admin."}
+          </div>
+        );
+      }
+
+      return (
+        <>
+          <AdminBar
+            adminName={
+              nickname
+            }
+            onLogout={() => {
+              supabase.auth
+                .signOut()
+                .then(() => {
+                  window.location.href =
+                    getLangPath(
+                      i18n
+                    );
+                });
+            }}
+          />
+
+          <AdminDashboard />
+        </>
+      );
+    }
+
+function AdminStatsRoute() {
+  const { isAdmin, nickname, nicknameLoading, t } = useContext(AppShellContext);
+
+  const { i18n } = useContext(AppRoutesContext);
+
+      if (
+        nicknameLoading
+      ) {
+        return (
+          <div
+            style={{
+              padding: 60,
+              textAlign:
+                "center",
+              fontWeight:
+                700,
+              fontSize: 24,
+            }}
+          >
+            Loading...
+          </div>
+        );
+      }
+
+      if (!isAdmin) {
+        return (
+          <div
+            style={{
+              padding: 60,
+              textAlign:
+                "center",
+              fontWeight:
+                700,
+              fontSize: 24,
+            }}
+          >
+            {t(
+              "admin_only"
+            ) ||
+              "Admins only."}
+
+            <br />
+
+            {t(
+              "login_with_admin"
+            ) ||
+              "Please log in as admin."}
+          </div>
+        );
+      }
+
+      return (
+        <>
+          <AdminBar
+            adminName={
+              nickname
+            }
+            onLogout={() => {
+              supabase.auth
+                .signOut()
+                .then(() => {
+                  window.location.href =
+                    getLangPath(
+                      i18n
+                    );
+                });
+            }}
+          />
+
+          <AdminStatsPage />
+        </>
+      );
+    }
+
+function RedirectStatsToResult() {
+      const {
+        lang,
+        id,
+      } = useParams();
+
+      return (
+        <Navigate
+          to={`/${lang}/result/${id}`}
+          replace
+        />
+      );
+    }
+
+function App() {
+ useIsMobile();
+  const [worldcupList, setWorldcupList] = useState([]);
+  const [worldcupAllLoaded, setWorldcupAllLoaded] = useState(false);
+  const [relatedWorldcupsById, setRelatedWorldcupsById] = useState({});
+
+  const { t, i18n } = useTranslation();
+
+  const [user, setUser] = useState(null);
+
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  const [nickname, setNickname] = useState("");
+
+  const [nicknameLoading, setNicknameLoading] =
+    useState(false);
+
+  const [fixedWorldcupIds, setFixedWorldcupIds] =
+    useState([]);
+
+  const [fixedWorldcups, setFixedWorldcups] =
+    useState([]);
+
+  /* ===================================================
+     로그인 사용자 + 프로필 확인
+  =================================================== */
+
+  useEffect(() => subscribeToAuthProfile(supabase, {
+    setUser,
+    setNickname,
+    setNicknameLoading,
+    setIsAdmin,
+  }), []);
+
+  /* ===================================================
+     닉네임 변경
+  =================================================== */
+
+  function updateNickname(nick) {
+    setNickname(nick);
+
+    setIsAdmin(
+      nick === "admin"
+    );
+  }
+
+  /* ===================================================
+     월드컵 목록 다시 가져오기
+  =================================================== */
+
+  const fetchWorldcups = useCallback(async () => {
+    const list = await getWorldcupGames();
+    setWorldcupList(list);
+    setWorldcupAllLoaded(true);
+    return list;
+  }, []);
+
+  const fetchOneWorldcup = useCallback(async (id) => {
+    const [cup, related] = await Promise.all([
+      getWorldcupGame(id),
+      fetchWorldcupRelatedCards(id).catch(error => { console.warn("Related games could not be loaded", error); return []; }),
+    ]);
+    setRelatedWorldcupsById(previous => ({ ...previous, [id]: related }));
+    setWorldcupList(previous => {
+      const games = new Map(previous.map(item => [String(item.id), item]));
+      games.set(String(id), cup);
+      related.forEach(item => { if (!games.has(String(item.id)) || games.get(String(item.id))._homeCardOnly) games.set(String(item.id), item); });
+      return [...games.values()];
+    });
+    return cup;
+  }, []);
+
+  /* ===================================================
+     월드컵 삭제
+
+     관리자:
+       실제 삭제 X
+       deleted_at 설정
+       → 관리자 휴지통
+
+     일반 사용자:
+       Storage 이미지 삭제
+       DB 실제 삭제
+  =================================================== */
+
+  const handleWorldcupDelete = async (id) => {
+    if (!id) {
+      throw new Error(
+        "월드컵 ID가 없습니다."
+      );
+    }
+
+    console.log(
+      "🔥 월드컵 삭제 요청:",
+      {
+        id,
+        isAdmin,
+        nickname,
+        mode: isAdmin
+          ? "SOFT_DELETE"
+          : "PERMANENT_DELETE",
+      }
+    );
+
+    if (isAdmin) {
+      await softDeleteWorldcupGame(id);
+
+      console.log(
+        "🗑️ 관리자 삭제 → 휴지통 이동 완료:",
+        id
+      );
+    } else {
+      await deleteWorldcupGame(id);
+
+      console.log(
+        "❌ 사용자 월드컵 영구삭제 완료:",
+        id
+      );
+    }
+
+    await fetchWorldcups();
+
+    return true;
+  };
+
+  /* ===================================================
+     최초 월드컵 로딩
+  =================================================== */
+
+  // Data is requested by WorldcupRouteDataLoader only when the active route needs it.
+
+  /* ===================================================
+     운영자 PICK ID 로딩
+  =================================================== */
+
+  useEffect(() => {
+    async function fetchFixedWorldcups() {
+      try {
+        const {
+          data,
+          error,
+        } = await supabase
+          .from("fixed_worldcups")
+          .select("worldcup_id")
+          .order("id", {
+            ascending: true,
+          });
+
+        if (error) {
+          console.error(
+            "운영자 PICK 조회 실패:",
+            error
+          );
+
+          setFixedWorldcupIds([]);
+          return;
+        }
+
+        if (Array.isArray(data)) {
+          setFixedWorldcupIds(
+            data.map((d) =>
+              String(d.worldcup_id)
+            )
+          );
+        } else {
+          setFixedWorldcupIds([]);
+        }
+      } catch (error) {
+        console.error(
+          "운영자 PICK 조회 오류:",
+          error
+        );
+
+        setFixedWorldcupIds([]);
+      }
+    }
+
+    fetchFixedWorldcups();
+  }, []);
+
+  /* ===================================================
+     운영자 PICK 실제 월드컵 데이터 구성
+  =================================================== */
+
+  useEffect(() => {
+    if (
+      !worldcupList.length ||
+      !fixedWorldcupIds.length
+    ) {
+      setFixedWorldcups([]);
+      return;
+    }
+
+    const fixeds =
+      fixedWorldcupIds
+        .map((id) =>
+          worldcupList.find(
+            (cup) =>
+              String(cup.id) ===
+              String(id)
+          )
+        )
+        .filter(Boolean);
+
+    setFixedWorldcups(fixeds);
+  }, [
+    worldcupList,
+    fixedWorldcupIds,
+  ]);
+
+ 
+
+  /* ===================================================
+     언어 변경
+  =================================================== */
+
+  function handleLangChange(
+    lng,
+    _options
+  ) {
+    i18n.changeLanguage(lng);
+
+    localStorage.setItem(
+      "onepickgame_lang",
+      lng
+    );
+  }
+    /* ===================================================
+     백업
+  =================================================== */
+
+  function handleBackup() {
+    const data =
+      JSON.stringify(
+        worldcupList || []
+      );
+
+    const blob =
+      new Blob([data], {
+        type: "application/json",
+      });
+
+    const url =
+      URL.createObjectURL(blob);
+
+    const a =
+      document.createElement("a");
+
+    a.href = url;
+
+    a.download =
+      `worldcup_backup_${Date.now()}.json`;
+
+    a.click();
+
+    URL.revokeObjectURL(url);
+  }
+
+  /* ===================================================
+     복구
+     현재는 프론트 목록만 복원
+     DB에는 직접 반영하지 않음
+  =================================================== */
+
+  function handleRestore(e) {
+    const file =
+      e.target.files[0];
+
+    if (!file) return;
+
+    const reader =
+      new FileReader();
+
+    reader.onload = function (ev) {
+      try {
+        const data =
+          JSON.parse(
+            ev.target.result
+          );
+
+        if (
+          !Array.isArray(data)
+        ) {
+          throw new Error(
+            "Invalid format"
+          );
+        }
+
+        setWorldcupList(data);
+
+        alert(
+          t("restore_success") ||
+            "Restore successful! (Front-end only, DB not affected)"
+        );
+      } catch (error) {
+        console.error(
+          "복구 실패:",
+          error
+        );
+
+        alert(
+          t("restore_fail") ||
+            "Restore failed!"
+        );
+      }
+    };
+
+    reader.readAsText(file);
+
+    e.target.value = "";
+  }
+
+  /* ===================================================
+     내가 만든 월드컵
+  =================================================== */
+
+  
+
+  /* ===================================================
+     최근 본 월드컵
+  =================================================== */
+
+  
+
+  /* ===================================================
+     통계 페이지
+  =================================================== */
+
+  
+
+  /* ===================================================
+     앱 라우트
+  =================================================== */
+
+  
 
   /* ===================================================
      최종 APP 렌더링
   =================================================== */
 
   return (
-    <Router>
+    <AppShellContext.Provider value={{ fetchWorldcups, fixedWorldcups, handleBackup, handleLangChange, handleRestore, handleWorldcupDelete, i18n, isAdmin, nickname, nicknameLoading, relatedWorldcupsById, setUser, setWorldcupAllLoaded, setWorldcupList, t, updateNickname, user, worldcupList }}><Router>
     <div
       className="app-main-wrapper"
       style={{
@@ -2056,7 +2115,7 @@ overflowX: "hidden",
         </div>
       </div>
     </div>
-    </Router>
+    </Router></AppShellContext.Provider>
   );
 }
 
