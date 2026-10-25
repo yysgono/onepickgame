@@ -157,3 +157,30 @@
 .onepick-header-mode-main{font-size:24px}
 .onepick-header-mode-main svg{width:35px;height:35px}
 @media(max-width:600px){.onepick-header-mode-main{font-size:17px}.onepick-header-mode-main svg{width:27px;height:27px}}
+
+/* v70: account stack and compact community navigation */
+.onepick-header-account{justify-content:center;gap:10px}
+.onepick-header-tools,.onepick-header-user{width:100%;padding:0!important}
+.onepick-header-tools .header-language-control{width:100%;box-sizing:border-box;justify-content:space-between}
+.onepick-header-user .onepick-login-link,.onepick-header-user .onepick-profile-menu>summary{box-sizing:border-box;width:100%;min-height:44px;padding:10px 14px;display:flex;flex-direction:row;justify-content:center;align-items:center;gap:8px;border:1px solid #111827;border-radius:9px;background:#111827;color:#fff;font-size:15px;white-space:normal}
+.onepick-header-user .onepick-login-link:hover,.onepick-header-user .onepick-profile-menu>summary:hover{background:#253148;color:#fff}
+.onepick-header-user .onepick-profile-menu{width:100%}
+.onepick-header-user .onepick-login-link svg,.onepick-header-user .onepick-profile-menu>summary svg{width:22px;height:22px;flex-shrink:0}
+.onepick-community-nav{display:flex;justify-content:center;align-items:center;gap:0;border-top:1px solid #edf0f4;padding:5px 16px;overflow-x:auto;white-space:nowrap;scrollbar-width:thin}
+.onepick-community-nav>a,.onepick-community-nav>span{flex:0 0 auto;display:inline-flex;align-items:center;gap:5px;padding:10px 20px;font-size:15px;line-height:1.4;text-decoration:none;color:#343c4d}
+.onepick-community-nav>a:hover,.onepick-community-nav>a[aria-current=page]{color:#5542b8;background:#f5f2ff;border-radius:6px}
+.onepick-community-nav a:focus-visible{outline:2px solid #6650d8;outline-offset:-2px;border-radius:6px}
+.onepick-community-pending{color:#647084!important;cursor:default}
+.onepick-community-pending small{font-size:10px;background:#f1f3f7;padding:2px 5px;border-radius:4px}
+@media(max-width:600px){
+.onepick-header .onepick-header-account{gap:8px!important}
+.onepick-header .onepick-header-user{justify-content:stretch!important}
+.onepick-header-user .onepick-login-link,.onepick-header-user .onepick-profile-menu>summary{min-height:42px;font-size:14px}
+.onepick-community-nav{justify-content:flex-start;padding:3px 8px}
+.onepick-community-nav>a,.onepick-community-nav>span{font-size:13px;padding:9px 12px}
+}
+
+/* v71: compact account width and larger secondary links */
+.onepick-header-account{width:100%;max-width:270px;justify-self:end;box-sizing:border-box;padding-left:16px}
+.onepick-community-nav>a{font-size:17px;padding:10px 16px}
+@media(max-width:600px){.onepick-header-account{max-width:none;padding-left:0}.onepick-community-nav>a{font-size:15px;padding:10px 12px}}

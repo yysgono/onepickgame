@@ -67,6 +67,8 @@ const supabase = createClient(
   }
 );
 
+require("./community-seo-routes.cjs")(app, supabase, SITE_URL);
+
 require("./quiz-seo.cjs")(app, supabase, SITE_URL);
 
 const supabaseAdmin =
@@ -506,7 +508,8 @@ app.use(async (req, res, next) => {
         )
         .eq("language", lang)
         .order("created_at", { ascending: false })
-        .limit(30);
+        .order("id", { ascending: false })
+        .limit(12);
 
       if (error) {
         throw error;

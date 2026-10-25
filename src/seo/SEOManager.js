@@ -13,7 +13,7 @@ export default function SEOManager() {
     /^\/([a-z]{2})(?:\/(.*))?$/i
   );
 
-  const slug = (match?.[2] || "").replace(
+  const slug = (match ? (match[2] || "") : pathname).replace(
     /^\/+|\/+$/g,
     ""
   );
@@ -25,7 +25,8 @@ export default function SEOManager() {
     "worldcup-maker",
     "privacy-policy",
     "terms-of-service",
-    "suggestions",
+    "notices",
+    "community",
     "notice",
     "tier-list",
     "tier-list/create",
@@ -48,6 +49,9 @@ export default function SEOManager() {
 
   // 색인에서 제외할 경로
   const NOINDEX_PATTERNS = [
+    /^(suggestions|suggestions-board|admin-suggestions)(\/|$)/,
+    /^blog\/write(?:\/|$)/,
+    /^blog\/[^/]+\/edit(?:\/|$)/,
     /^(login|signup|find-(id|pw)|reset-password)(\/|$)/,
     /^(admin|admin-stats)(\/|$)/,
     /^(edit-worldcup|manage)(\/|$)/,
@@ -71,6 +75,7 @@ export default function SEOManager() {
     (searchParams.has("edit") || searchParams.has("clone"));
 
   const shouldNoIndex =
+    ((slug === "quiz" || slug === "tier-list") && searchParams.get("mine") === "1") ||
     isExplicitlyNoIndex ||
     isTierEditOrClone ||
     !isIndexAllowed;

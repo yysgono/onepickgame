@@ -1,0 +1,30 @@
+import homeCopy from '../seo/homeShellCopy.json';
+import {getCommunityUi} from './communityUi';
+import React,{useEffect,useRef,useState} from 'react';
+import {Link,useParams} from 'react-router-dom';
+import {supabase} from '../utils/supabaseClient';
+import Seo from '../seo/Seo';
+import {SITE_LANGUAGES,useSitePublisher} from './SitePublishing';
+import copy from './headerCommunityCopy.json';
+import './communityPublishing.css';
+export default function CommunityBoardPage({board,user}){
+ const {lang='en'}=useParams(),ko=lang==='ko',labels=copy[lang]||copy.en,name=labels[board==='notices'?0:1],admin=useSitePublisher();
+ const ui=getCommunityUi(lang);
+ const categories=[['all',ui.all],['general',ui.general],['worldcup',(homeCopy[lang]||homeCopy.en).modes[0]],['quiz',(homeCopy[lang]||homeCopy.en).modes[2]],['tier-list',(homeCopy[lang]||homeCopy.en).modes[1]],['random-pick',(homeCopy[lang]||homeCopy.en).modes[3]]];
+ const [category,setCategory]=useState('all'),[postCategory,setPostCategory]=useState('general'),[postLanguage,setPostLanguage]=useState(lang),[saved,setSaved]=useState('');
+ const [posts,setPosts]=useState([]),[more,setMore]=useState(false),[busy,setBusy]=useState(false),[error,setError]=useState(''),[writing,setWriting]=useState(false),[title,setTitle]=useState(''),[body,setBody]=useState(''),[saving,setSaving]=useState(false),[expanded,setExpanded]=useState(null);
+ const version=useRef(0),lock=useRef(false),rows=useRef([]);
+ async function load(reset=false){if(lock.current&&!reset)return;const ticket=reset?++version.current:version.current;lock.current=true;setBusy(true);setError('');const offset=reset?0:rows.current.length;try{let query=supabase.from('community_posts').select('id,title,body,author_id,author_nickname,category,language,created_at').eq('board',board);if(board==='notices')query=query.eq('language',lang);else if(category!=='all')query=query.eq('category',category);const {data,error}=await query.order('created_at',{ascending:false}).order('id',{ascending:false}).range(offset,offset+12);if(ticket!==version.current)return;if(error)throw error;setMore(data.length>12);rows.current=reset?data.slice(0,12):[...rows.current,...data.slice(0,12)];setPosts(rows.current);}catch(e){if(ticket===version.current)setError(e.message);}finally{if(ticket===version.current){lock.current=false;setBusy(false);}}}
+ useEffect(()=>{rows.current=[];setPosts([]);setMore(false);setPostLanguage(lang);setWriting(false);setTitle('');setBody('');setExpanded(null);load(true);return()=>{version.current++;lock.current=false;};},[lang,board,category]);
+ async function save(e){e.preventDefault();if(saving)return;setSaving(true);setError('');try{const {error}=await supabase.from('community_posts').insert({board,language:postLanguage,category:board==='notices'?'general':postCategory,title:title.trim(),body:body.trim(),author_id:user.id});if(error)throw error;setTitle('');setBody('');setWriting(false);setSaved(`✓ ${ui.save} (${postLanguage})`);await load(true);}catch(e){setError(e.message);}finally{setSaving(false);}}
+ async function remove(id){if(!window.confirm(ui.confirmDelete))return;const {error}=await supabase.from('community_posts').delete().eq('id',id);if(error)setError(error.message);else load(true);}
+ return <main className="site-publishing"><Seo lang={lang} slug={board==='community'?'en/community':board} title={`${name} | OnePickGame`} description={`${name} · OnePickGame`} indexable={true} langPrefix={board!=='community'} hreflangLangs={board==='community'?[]:undefined}/><h1>{name}</h1>
+ {(board==='community'?Boolean(user):admin)?<button onClick={()=>setWriting(v=>!v)}>{ui.write}</button>:!user&&<Link to={`/${lang}/login`}>{ui.loginRequired}</Link>}
+ {saved&&<p role="status">{saved}</p>}{board==='community'&&<div className="community-tabs" role="group" aria-label={ui.category}>{categories.map(([key,label])=><button key={key} aria-pressed={category===key} onClick={()=>setCategory(key)}>{label}</button>)}</div>}
+ {writing&&<form onSubmit={save}><label>{ui.language}<select value={postLanguage} onChange={e=>setPostLanguage(e.target.value)}>{SITE_LANGUAGES.map(l=><option key={l}>{l}</option>)}</select></label>{board==='community'&&<label>{ui.category}<select value={postCategory} onChange={e=>setPostCategory(e.target.value)}>{categories.filter(([key])=>key!=='all').map(([key,label])=><option key={key} value={key}>{label}</option>)}</select></label>}<label>{ui.title}<input required maxLength={200} value={title} onChange={e=>setTitle(e.target.value)}/></label><label>{ui.content}<textarea required maxLength={20000} value={body} onChange={e=>setBody(e.target.value)}/></label><button disabled={saving}>{saving?'…':ui.publish}</button></form>}
+ {error&&<p role="alert">{error}</p>}
+ <section>{posts.map(post=><article className="community-post" key={post.id}><button className="community-post-title" aria-expanded={expanded===post.id} onClick={()=>setExpanded(expanded===post.id?null:post.id)}>{post.title}</button><span className="community-author">{post.author_nickname || 'Member'} · {post.language} {board==='community'&&`· ${categories.find(([key])=>key===post.category)?.[1]||post.category}`}</span><time>{new Date(post.created_at).toLocaleDateString(lang)}</time>{expanded===post.id&&<p style={{whiteSpace:'pre-wrap',overflowWrap:'anywhere'}}>{post.body}</p>}{(admin||user?.id===post.author_id)&&<button onClick={()=>remove(post.id)}>{ui.delete}</button>}</article>)}</section>
+ {!busy&&!error&&!posts.length&&<p>{ui.noPosts}</p>}
+ {busy&&<p role="status">{ui.loading}</p>}{more&&<button disabled={busy} onClick={()=>load()}>{ui.more}</button>}
+ </main>;
+}

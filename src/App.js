@@ -1,3 +1,7 @@
+import PrivateContentCards from "./components/PrivateContentCards";
+import MyWorldcupCards from "./components/MyWorldcupCards";
+import BlogEditorPage from "./components/BlogEditorPage";
+import CommunityBoardPage from "./components/CommunityBoardPage";
 import { getPrivatePageSeo } from "./seo/privatePageSeo";
 import { fetchWorldcupRelatedCards } from "./utils/worldcupHomeApi";
 import WorldcupRouteDataLoader from "./components/WorldcupRouteDataLoader";
@@ -342,67 +346,9 @@ const AppShellContext = createContext(null);
 const AppRoutesContext = createContext(null);
 
 function MyWorldcupsWrapper() {
-  const { fetchWorldcups, handleWorldcupDelete, i18n, isAdmin, nickname, t, user, worldcupList } = useContext(AppShellContext);
-
-    const navigate =
-      useNavigate();
-
-    const myId =
-      user?.id;
-
-    const myList =
-      worldcupList.filter((w) => myId && [w.owner, w.creator, w.creator_id].some(value => value === myId || (user?.email && value === user.email)));
-
-    return (
-      <>
-      <Seo {...getPrivatePageSeo((i18n.language || "en").split("-")[0])} slug="my-worldcups" indexable={false} />
-      <ContentNav active="worldcup" user={user} />
-      <Home
-        personalView
-        onMakeWorldcup={() => navigate(getLangPath(i18n, "worldcup-maker"))}
-        worldcupList={myList}
-        fetchWorldcups={
-          fetchWorldcups
-        }
-        onSelect={(cup) => {
-          navigate(
-            getLangPath(
-              i18n,
-              `select-round/${cup.id}`
-            )
-          );
-        }}
-        user={user}
-        nickname={nickname}
-        isAdmin={isAdmin}
-        showFixedWorldcups={
-          false
-        }
-        onDelete={async (id) => {
-          try {
-            await handleWorldcupDelete(
-              id
-            );
-          } catch (e) {
-            console.error(
-              "삭제 실패:",
-              e
-            );
-
-            alert(
-              (t(
-                "delete_failed"
-              ) ||
-                "Delete failed!") +
-                " " +
-                (e.message || e)
-            );
-          }
-        }}
-      />
-      </>
-    );
-  }
+  const { user, handleWorldcupDelete } = useContext(AppShellContext);
+  return <MyWorldcupCards user={user} onDelete={id=>handleWorldcupDelete(id,{refresh:false})} />;
+}
 
 function RecentWorldcupsWrapper() {
   const { fetchWorldcups, handleWorldcupDelete, i18n, isAdmin, nickname, t, user, worldcupList } = useContext(AppShellContext);
@@ -795,6 +741,12 @@ function handleMakeWorldcup() {
 
 <div className="main-content-box">
   <Routes>
+    <Route path="/:lang/suggestions-board" element={<SuggestionsBoard user={user} />} />
+    <Route path="/:lang/admin-suggestions" element={<SuggestionsBoard user={user} adminView />} />
+    <Route path="/:lang/notices" element={<CommunityBoardPage board="notices" user={user} />} />
+    <Route path="/:lang/community" element={<CommunityBoardPage board="community" user={user} />} />
+    <Route path="/:lang/blog/write" element={<BlogEditorPage />} />
+    <Route path="/:lang/blog/:slug/edit" element={<BlogEditorPage />} />
             <Route path="/quiz/*" element={<LegacyQuizRedirect />} />
             <Route
               path="/privacy-policy"
@@ -884,9 +836,9 @@ function handleMakeWorldcup() {
 <Route
   path="/:lang/tier-list"
   element={
-    <TierListPage
-      worldcupList={worldcupList}
-    />
+    new URLSearchParams(location.search).get('mine') === '1'
+      ? <PrivateContentCards kind="tier-list" user={user} />
+      : <TierListPage worldcupList={worldcupList} />
   }
 />
 <Route
@@ -912,7 +864,7 @@ function handleMakeWorldcup() {
 />
 <Route
   path="/:lang/quiz"
-  element={<QuizPage user={user} />}
+  element={new URLSearchParams(location.search).get('mine')==='1'?<PrivateContentCards kind="quiz" user={user}/>:<QuizPage user={user} />}
 />
 <Route
   path="/:lang/quiz/create"
@@ -1808,7 +1760,7 @@ function App() {
        DB 실제 삭제
   =================================================== */
 
-  const handleWorldcupDelete = async (id) => {
+  const handleWorldcupDelete = async (id, options = {}) => {
     if (!id) {
       throw new Error(
         "월드컵 ID가 없습니다."
@@ -1843,7 +1795,7 @@ function App() {
       );
     }
 
-    await fetchWorldcups();
+    if (options.refresh !== false) await fetchWorldcups();
 
     return true;
   };

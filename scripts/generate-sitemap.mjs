@@ -275,8 +275,10 @@ export function generateLanguageSitemap(
     for (const slug of ["privacy-policy", "terms-of-service"]) {
       xml += makeUrlEntry({ loc: `${BASE_URL}/en/${slug}`, changefreq: "yearly", priority: "0.5" });
     }
-    xml += makeUrlEntry({ loc: `${BASE_URL}/suggestions-board`, changefreq: "weekly", priority: "0.6" });
+    xml += makeUrlEntry({ loc: `${BASE_URL}/en/community`, changefreq: "daily", priority: "0.5" });
   }
+
+  xml += makeUrlEntry({ loc: `${BASE_URL}/${lang}/notices`, changefreq: "weekly", priority: "0.5" });
 
   // Random Pick: stable public tool URLs; operator templates use the tool canonical.
   for (const mode of ["", "wheel", "lotto", "pinball", "ladder", "boxes", "cards", "order", "dice", "teams"]) {

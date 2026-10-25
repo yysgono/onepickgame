@@ -1,0 +1,114 @@
+{
+  "ko": [
+    "공지사항",
+    "자유게시판",
+    "준비 중",
+    "커뮤니티 메뉴",
+    "건의사항"
+  ],
+  "en": [
+    "Announcements",
+    "Community",
+    "Coming soon",
+    "Community navigation",
+    "Feedback / Bugs"
+  ],
+  "ja": [
+    "お知らせ",
+    "交流掲示板",
+    "準備中",
+    "コミュニティメニュー",
+    "ご意見・不具合報告"
+  ],
+  "zh": [
+    "公告",
+    "交流区",
+    "即将开放",
+    "社区导航",
+    "建议与问题反馈"
+  ],
+  "es": [
+    "Anuncios",
+    "Comunidad",
+    "Próximamente",
+    "Menú de la comunidad",
+    "Sugerencias y errores"
+  ],
+  "fr": [
+    "Annonces",
+    "Communauté",
+    "Bientôt",
+    "Navigation communautaire",
+    "Suggestions et bugs"
+  ],
+  "vi": [
+    "Thông báo",
+    "Cộng đồng",
+    "Sắp ra mắt",
+    "Menu cộng đồng",
+    "Góp ý / Báo lỗi"
+  ],
+  "de": [
+    "Mitteilungen",
+    "Community",
+    "Demnächst",
+    "Community-Menü",
+    "Feedback / Fehler"
+  ],
+  "ru": [
+    "Объявления",
+    "Общение",
+    "Скоро",
+    "Меню сообщества",
+    "Предложения / Ошибки"
+  ],
+  "id": [
+    "Pengumuman",
+    "Komunitas",
+    "Segera hadir",
+    "Menu komunitas",
+    "Saran / Lapor bug"
+  ],
+  "pt": [
+    "Avisos",
+    "Comunidade",
+    "Em breve",
+    "Menu da comunidade",
+    "Sugestões / Erros"
+  ],
+  "hi": [
+    "सूचनाएँ",
+    "चर्चा मंच",
+    "जल्द आ रहा है",
+    "समुदाय मेनू",
+    "सुझाव / समस्या बताएँ"
+  ],
+  "tr": [
+    "Duyurular",
+    "Topluluk",
+    "Yakında",
+    "Topluluk menüsü",
+    "Öneri / Hata bildir"
+  ],
+  "th": [
+    "ประกาศ",
+    "พูดคุย",
+    "เร็ว ๆ นี้",
+    "เมนูชุมชน",
+    "ข้อเสนอแนะ / แจ้งปัญหา"
+  ],
+  "ar": [
+    "الإعلانات",
+    "المنتدى",
+    "قريبًا",
+    "قائمة المجتمع",
+    "اقتراحات / إبلاغ عن خطأ"
+  ],
+  "bn": [
+    "ঘোষণা",
+    "আলোচনা",
+    "শীঘ্রই আসছে",
+    "কমিউনিটি মেনু",
+    "পরামর্শ / সমস্যা জানান"
+  ]
+}

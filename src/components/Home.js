@@ -4113,14 +4113,6 @@ const renderedCategorySections = shouldShowAllCategories
 
   : primaryCategorySections;
 
-const worldcupIntroDescription =
-  lang === "ko"
-    ? "이상형 월드컵을 만들고 플레이하는 원픽게임입니다. 아이돌, 애니, 게임, 영화, 음식 등 다양한 주제의 월드컵을 무료로 즐기고 공유해보세요."
-    : t("gameModeNav.introLine2", {
-        defaultValue:
-          "Create and play tournament bracket games, tier lists, quizzes, and blind rankings on One Pick Game.",
-      });
-
 const homeSeoSummary =
   SITE_HOME_COPY[lang]?.description ||
   SITE_HOME_COPY.en.description;
@@ -4319,38 +4311,6 @@ return (
 
 
 
-  {!personalView && !search.trim() && (
-    <section
-      aria-label={lang === "ko" ? "원픽게임 소개" : "One Pick Game introduction"}
-      style={{
-        width: "100%",
-        maxWidth: isMobile ? 430 : 1060,
-        margin: isMobile ? "0 auto 8px" : "0 auto 10px",
-        padding: isMobile ? "14px 18px 0" : "18px 24px 0",
-        boxSizing: "border-box",
-        textAlign: "center",
-      }}
-    >
-<p
-  style={{
-    margin: 0,
-    color: "#475569",
-    fontSize: isMobile ? 14 : 15,
-    lineHeight: 1.65,
-    fontWeight: 750,
-  }}
->
-  {homeSeoSummaryParts.map((line, index) => (
-    <span key={`${line}-${index}`} style={{ display: "block" }}>
-      {line}
-    </span>
-  ))}
-</p>
-    </section>
-  )}
-
-
-
   <div
     className="home-top-layout"
     style={{
@@ -4378,7 +4338,7 @@ return (
     )}
 
     <div style={{ minWidth: 0 }}>
-      <PageIntro icon="🏆" title={SITE_HOME_COPY[lang]?.heading || t('gameModeNav.worldcup')} description={worldcupIntroDescription} hideDescription buttonLabel={t('create_worldcup')} createTo={`/${lang}/worldcup-maker`} onCreate={() => onMakeWorldcup ? onMakeWorldcup() : goto(`/${lang}/worldcup-maker`)} personal={false} accentColor="#F97316" />
+      <PageIntro icon="🏆" title={SITE_HOME_COPY[lang]?.heading || t('gameModeNav.worldcup')} description={<>{homeSeoSummaryParts.map((line, index) => <span key={`${line}-${index}`} style={{ display: "block" }}>{line}</span>)}</>} hideDescription={Boolean(search.trim())} buttonLabel={t('create_worldcup')} createTo={`/${lang}/worldcup-maker`} onCreate={() => onMakeWorldcup ? onMakeWorldcup() : goto(`/${lang}/worldcup-maker`)} personal={false} accentColor="#F97316" />
 
       {/* 언어 선택 / 검색 */}
 

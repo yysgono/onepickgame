@@ -1,3 +1,5 @@
+import {getCommunityUi} from './communityUi';
+import headerCommunityCopy from "./headerCommunityCopy.json";
 import NavigationLink from "./NavigationLink";
 import useHeaderLanguage, {rememberHeaderLanguage} from "../utils/useHeaderLanguage";
 import randomPickLabels from "./randomPick/randomPickLabels.json";
@@ -62,6 +64,8 @@ export default function Header({
   const navigate = useNavigate();
   const location = useLocation();
   const currentLang = useHeaderLanguage(i18n);
+  const ui=getCommunityUi(currentLang);
+  const communityCopy = headerCommunityCopy[currentLang] || headerCommunityCopy.en;
   const inputRef = useRef();
 
   const [showProfile, setShowProfile] =
@@ -732,20 +736,17 @@ export default function Header({
         </nav>
         <div className="onepick-header-account">
           <div className="onepick-header-tools">
-            <label className="header-language-control"><span className="header-language-label">🌐 Language</span><select value={currentLang} onChange={e=>changeLanguageAndKeepPath(e.target.value)} aria-label={t('language_select','Select language')}>
+            <label className="header-language-control"><span className="header-language-label">🌐 {ui.language}</span><select value={currentLang} onChange={e=>changeLanguageAndKeepPath(e.target.value)} aria-label={t('language_select','Select language')}>
               {languages.map(item=><option key={item.code} value={item.code}>{item.label}</option>)}
             </select></label>
-            <Link className="onepick-header-blog-link" to={`/${currentLang}/blog`}>Blog</Link>
           </div>
           <div className="onepick-header-user">
-            <Link to={`/${currentLang}/my-worldcups`} className={`onepick-header-content-link${personalPage ? ' is-active' : ''}`} aria-current={personalPage ? 'page' : undefined}>
-              <span>{t('lightUi.myContent','My content')}</span>
-            </Link>
             {user ? <details className="onepick-profile-menu">
-              <summary><HeaderIcon name="user" /><span>{t('lightUi.profile','Profile')}</span></summary>
+              <summary><HeaderIcon name="user" /><span>{ui.profile}</span></summary>
               <div className="onepick-profile-dropdown">
                 <strong>{nicknameLoading ? t('loading_nickname') : nickname || t('no_nickname')}</strong>
                 <button type="button" onClick={()=>setShowProfile(true)}>{t('edit_profile')}</button>
+                {isAdmin && <Link to={`/${currentLang}/admin-suggestions`}>{ui.inbox}</Link>}
                 {isAdmin && <>
                   <NavigationLink  to={`/${currentLang}/admin`} appearance="button">{t('dashboard')}</NavigationLink>
                   <NavigationLink  to={`/${currentLang}/admin-stats`} appearance="button">{t('stats')}</NavigationLink>
@@ -754,10 +755,17 @@ export default function Header({
                 </>}
                 <button type="button" onClick={handleLogout}>{t('logout')}</button>
               </div>
-            </details> : <Link className="onepick-login-link" to={`/${currentLang}/login`}><HeaderIcon name="user" /><span>{t('auth.loginSignup')}</span></Link>}
+            </details> : <Link className="onepick-login-link" to={`/${currentLang}/login`}><HeaderIcon name="user" /><span>{ui.loginSignup}</span></Link>}
           </div>
         </div>
       </div>
+      <nav className="onepick-community-nav" aria-label={communityCopy[3]}>
+        <Link to={`/${currentLang}/notices`}>{communityCopy[0]}</Link>
+        <Link to={`/${currentLang}/community`}>{communityCopy[1]}</Link>
+        <Link to={`/${currentLang}/suggestions`}>{communityCopy[4]}</Link>
+        <Link to={`/${currentLang}/my-worldcups`} aria-current={personalPage ? 'page' : undefined}>{ui.myContent}</Link>
+        <Link to={`/${currentLang}/blog`}>{ui.blog}</Link>
+      </nav>
       {isAdmin && <input ref={inputRef} type="file" accept="application/json" hidden onChange={onRestore} />}
 
       {/* 프로필 모달 */}

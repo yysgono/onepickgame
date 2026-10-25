@@ -1,5 +1,8 @@
+import {getCommunityUi} from './communityUi';
+import { useSitePublisher } from "./SitePublishing";
+import "./communityPublishing.css";
 import React, { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { supabase } from "../utils/supabaseClient";
 import Seo from "../seo/Seo";
 
@@ -257,6 +260,10 @@ function getVisitorId() {
 }
 
 export default function BlogPostPage() {
+  const canPublish = useSitePublisher();
+  const navigate = useNavigate();
+  const [deleting,setDeleting] = useState(false);
+  const [deleteError,setDeleteError] = useState('');
   const { lang = "en", slug = "" } =
     useParams();
 
@@ -266,6 +273,7 @@ export default function BlogPostPage() {
       : "en";
 
   const text = getDetailText(currentLang);
+  const ui=getCommunityUi(currentLang);
   const brandName =
     getBrandName(currentLang);
 
@@ -481,6 +489,11 @@ export default function BlogPostPage() {
     post?.language,
   ]);
 
+  async function deletePost(){
+    if(deleting || !post || !window.confirm(ui.deleteTranslation))return;
+    setDeleting(true);setDeleteError('');
+    try{const {error}=await supabase.rpc('delete_site_blog',{p_language:currentLang,p_slug:post.slug});if(error)throw error;navigate(`/${currentLang}/blog`);}catch(e){setDeleteError(e.message);}finally{setDeleting(false);}
+  }
   if (loading) {
     return (
       <main className="blog-page">
@@ -582,6 +595,9 @@ export default function BlogPostPage() {
 
       <main className="blog-page">
         <article className="blog-post">
+          {canPublish && <Link className="blog-edit-link" to={`/${currentLang}/blog/${post.slug}/edit`}>{ui.edit}</Link>}
+          {canPublish&&<button className="blog-delete-button" disabled={deleting} onClick={deletePost}>{deleting?'…':ui.delete}</button>}
+          {deleteError&&<p role="alert">{deleteError}</p>}
           <Link
             className="blog-back-link"
             to={`/${currentLang}/blog`}

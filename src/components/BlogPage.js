@@ -1,4 +1,7 @@
-import React, { useEffect, useState } from "react";
+import {getCommunityUi} from './communityUi';
+import { useSitePublisher } from "./SitePublishing";
+import "./communityPublishing.css";
+import React, { useEffect, useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { supabase } from "../utils/supabaseClient";
 import Seo from "../seo/Seo";
@@ -210,12 +213,24 @@ export default function BlogPage() {
     : "en";
 
   const text = getBlogText(currentLang);
+  const ui=getCommunityUi(currentLang);
 
+  const canPublish = useSitePublisher();
+  const [page, setPage] = useState(0);
+  const [retry, setRetry] = useState(0);
+  const [hasMore, setHasMore] = useState(false);
+  const moreLock = useRef(false);
+  const previousLanguage = useRef(currentLang);
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
+    if (previousLanguage.current !== currentLang) {
+      previousLanguage.current = currentLang;
+      setPosts([]);setHasMore(false);setPage(0);
+      if (page !== 0) return;
+    }
     let mounted = true;
 
     async function fetchPosts() {
@@ -229,16 +244,19 @@ export default function BlogPage() {
             "id, language, slug, title, description, created_at"
           )
           .eq("language", currentLang)
-          .order("created_at", { ascending: false });
+          .order("created_at", { ascending: false })
+          .order("id", { ascending: false })
+          .range(page * 12, page * 12 + 12);
 
         if (!mounted) return;
 
         if (error) {
           console.error("Blog posts fetch error:", error);
-          setPosts([]);
           setErrorMessage(error.message || text.error);
         } else {
-          setPosts(Array.isArray(data) ? data : []);
+          const next = Array.isArray(data) ? data : [];
+          setHasMore(next.length > 12);
+          setPosts(previous => page === 0 ? next.slice(0, 12) : [...previous, ...next.slice(0, 12)]);
         }
       } catch (error) {
         if (!mounted) return;
@@ -249,6 +267,7 @@ export default function BlogPage() {
       } finally {
         if (mounted) {
           setLoading(false);
+          moreLock.current = false;
         }
       }
     }
@@ -258,7 +277,7 @@ export default function BlogPage() {
     return () => {
       mounted = false;
     };
-  }, [currentLang, text.error]);
+  }, [currentLang, text.error, page, retry]);
 
   return (
     <>
@@ -284,6 +303,7 @@ export default function BlogPage() {
             >
               {text.description}
             </p>
+            {canPublish && <Link className="blog-write-link" to={`/${currentLang}/blog/write`}>＋ {ui.write}</Link>}
           </header>
 
           {loading && (
@@ -295,7 +315,7 @@ export default function BlogPage() {
           {!loading && errorMessage && (
             <div className="blog-status blog-status-error">
               <strong>{text.error}</strong>
-              <span>{errorMessage}</span>
+              <span>{errorMessage}</span><button className="blog-load-more" onClick={()=>setRetry(v=>v+1)}>{ui.retry}</button>
             </div>
           )}
 
@@ -307,9 +327,7 @@ export default function BlogPage() {
               </div>
             )}
 
-          {!loading &&
-            !errorMessage &&
-            posts.length > 0 && (
+          {posts.length > 0 && (
               <div className="blog-list">
                 {posts.map((post) => (
                   <article
@@ -355,6 +373,7 @@ export default function BlogPage() {
                 ))}
               </div>
             )}
+          {hasMore && !errorMessage && <div className="blog-load-more-wrap"><button className="blog-load-more" disabled={loading} onClick={()=>{if(loading||moreLock.current)return;moreLock.current=true;setPage(v=>v+1);}}>{loading ? (ui.loading) : (ui.more)}</button></div>}
         </section>
       </main>
     </>
