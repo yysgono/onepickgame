@@ -8,7 +8,13 @@
     "후보를 저장하거나 불러오지 못했습니다. 다시 시도해주세요.",
     "이 기기에 저장한 후보입니다. 이전 후보 불러오기는 직전에 사용한 후보입니다.",
     "저장된 후보",
-    "플레이 {n}회"
+    "플레이 {n}회",
+    "수정",
+    "저장 목록 삭제",
+    "저장된 후보 목록을 삭제할까요? 이전 후보 목록은 유지됩니다.",
+    "저장된 후보 목록을 삭제했습니다.",
+    "취소",
+    "변경사항 저장"
   ],
   "en": [
     "Save candidates",
@@ -19,7 +25,13 @@
     "Could not save or load candidates. Please try again.",
     "Saved on this device. Previous candidates are the candidates used most recently.",
     "Saved candidates",
-    "{n} plays"
+    "{n} plays",
+    "Edit",
+    "Delete saved list",
+    "Delete the saved list? Previous candidates will remain.",
+    "Saved list deleted.",
+    "Cancel",
+    "Save changes"
   ],
   "ja": [
     "候補を保存",
@@ -30,7 +42,13 @@
     "保存または読み込みに失敗しました。もう一度お試しください。",
     "この端末に保存します。「前回の候補」は直前に使用した候補です。",
     "保存した候補",
-    "プレイ {n}回"
+    "プレイ {n}回",
+    "編集",
+    "保存リストを削除",
+    "保存リストを削除しますか？前回の候補は残ります。",
+    "保存リストを削除しました。",
+    "キャンセル",
+    "変更を保存"
   ],
   "zh": [
     "保存候选名单",
@@ -41,7 +59,13 @@
     "保存或加载失败，请重试。",
     "保存在此设备中。“上次候选名单”指最近使用的名单。",
     "已保存的候选名单",
-    "已玩 {n} 次"
+    "已玩 {n} 次",
+    "修改",
+    "删除已保存名单",
+    "删除已保存名单？上次候选名单将保留。",
+    "已删除保存名单。",
+    "取消",
+    "保存修改"
   ],
   "es": [
     "Guardar candidatos",
@@ -52,7 +76,13 @@
     "No se pudo guardar o cargar. Inténtalo de nuevo.",
     "Guardado en este dispositivo. Los candidatos anteriores son los utilizados por última vez.",
     "Candidatos guardados",
-    "{n} partidas"
+    "{n} partidas",
+    "Editar",
+    "Eliminar lista guardada",
+    "¿Eliminar la lista guardada? Los candidatos anteriores se conservarán.",
+    "Lista guardada eliminada.",
+    "Cancelar",
+    "Guardar cambios"
   ],
   "fr": [
     "Enregistrer les candidats",
@@ -63,7 +93,13 @@
     "Impossible d’enregistrer ou de charger. Réessayez.",
     "Enregistrés sur cet appareil. Les candidats précédents sont ceux utilisés en dernier.",
     "Candidats enregistrés",
-    "{n} parties"
+    "{n} parties",
+    "Modifier",
+    "Supprimer la liste enregistrée",
+    "Supprimer la liste enregistrée ? Les candidats précédents seront conservés.",
+    "Liste enregistrée supprimée.",
+    "Annuler",
+    "Enregistrer les modifications"
   ],
   "vi": [
     "Lưu ứng viên",
@@ -74,7 +110,13 @@
     "Không thể lưu hoặc tải. Vui lòng thử lại.",
     "Lưu trên thiết bị này. Ứng viên trước là danh sách được dùng gần nhất.",
     "Ứng viên đã lưu",
-    "{n} lượt chơi"
+    "{n} lượt chơi",
+    "Chỉnh sửa",
+    "Xóa danh sách đã lưu",
+    "Xóa danh sách đã lưu? Ứng viên trước vẫn được giữ.",
+    "Đã xóa danh sách đã lưu.",
+    "Hủy",
+    "Lưu thay đổi"
   ],
   "de": [
     "Kandidaten speichern",
@@ -85,7 +127,13 @@
     "Speichern oder Laden fehlgeschlagen. Bitte erneut versuchen.",
     "Auf diesem Gerät gespeichert. Vorherige Kandidaten wurden zuletzt verwendet.",
     "Gespeicherte Kandidaten",
-    "{n} Spiele"
+    "{n} Spiele",
+    "Bearbeiten",
+    "Gespeicherte Liste löschen",
+    "Gespeicherte Liste löschen? Vorherige Kandidaten bleiben erhalten.",
+    "Gespeicherte Liste gelöscht.",
+    "Abbrechen",
+    "Änderungen speichern"
   ],
   "ru": [
     "Сохранить участников",
@@ -96,7 +144,13 @@
     "Не удалось сохранить или загрузить. Повторите попытку.",
     "Сохраняется на этом устройстве. Предыдущие участники — использованные в последний раз.",
     "Сохранённые участники",
-    "Игр: {n}"
+    "Игр: {n}",
+    "Изменить",
+    "Удалить сохранённый список",
+    "Удалить сохранённый список? Предыдущие участники останутся.",
+    "Сохранённый список удалён.",
+    "Отмена",
+    "Сохранить изменения"
   ],
   "id": [
     "Simpan kandidat",
@@ -107,7 +161,13 @@
     "Tidak dapat menyimpan atau memuat. Coba lagi.",
     "Disimpan di perangkat ini. Kandidat sebelumnya adalah yang terakhir digunakan.",
     "Kandidat tersimpan",
-    "{n} kali dimainkan"
+    "{n} kali dimainkan",
+    "Edit",
+    "Hapus daftar tersimpan",
+    "Hapus daftar tersimpan? Kandidat sebelumnya tetap tersimpan.",
+    "Daftar tersimpan dihapus.",
+    "Batal",
+    "Simpan perubahan"
   ],
   "pt": [
     "Salvar candidatos",
@@ -118,7 +178,13 @@
     "Não foi possível salvar ou carregar. Tente novamente.",
     "Salvos neste dispositivo. Os candidatos anteriores são os usados por último.",
     "Candidatos salvos",
-    "{n} partidas"
+    "{n} partidas",
+    "Editar",
+    "Excluir lista salva",
+    "Excluir a lista salva? Os candidatos anteriores serão mantidos.",
+    "Lista salva excluída.",
+    "Cancelar",
+    "Salvar alterações"
   ],
   "hi": [
     "उम्मीदवार सहेजें",
@@ -129,7 +195,13 @@
     "सहेजना या लोड करना विफल रहा। फिर से प्रयास करें।",
     "इस डिवाइस पर सहेजे गए हैं। पिछले उम्मीदवार हाल ही में उपयोग किए गए उम्मीदवार हैं।",
     "सहेजे गए उम्मीदवार",
-    "{n} बार खेला गया"
+    "{n} बार खेला गया",
+    "संपादित करें",
+    "सहेजी सूची हटाएँ",
+    "सहेजी सूची हटाएँ? पिछले उम्मीदवार बने रहेंगे।",
+    "सहेजी सूची हटा दी गई।",
+    "रद्द करें",
+    "बदलाव सहेजें"
   ],
   "tr": [
     "Adayları kaydet",
@@ -140,7 +212,13 @@
     "Kaydetme veya yükleme başarısız. Tekrar deneyin.",
     "Bu cihazda saklanır. Önceki adaylar en son kullanılan adaylardır.",
     "Kaydedilen adaylar",
-    "{n} kez oynandı"
+    "{n} kez oynandı",
+    "Düzenle",
+    "Kayıtlı listeyi sil",
+    "Kayıtlı liste silinsin mi? Önceki adaylar korunacak.",
+    "Kayıtlı liste silindi.",
+    "İptal",
+    "Değişiklikleri kaydet"
   ],
   "th": [
     "บันทึกผู้เข้าร่วม",
@@ -151,7 +229,13 @@
     "บันทึกหรือโหลดไม่สำเร็จ โปรดลองอีกครั้ง",
     "บันทึกบนอุปกรณ์นี้ ผู้เข้าร่วมก่อนหน้าคือรายชื่อที่ใช้ล่าสุด",
     "ผู้เข้าร่วมที่บันทึกไว้",
-    "เล่น {n} ครั้ง"
+    "เล่น {n} ครั้ง",
+    "แก้ไข",
+    "ลบรายการที่บันทึกไว้",
+    "ลบรายการที่บันทึกไว้หรือไม่? รายชื่อที่ใช้ล่าสุดจะยังคงอยู่",
+    "ลบรายการที่บันทึกแล้ว",
+    "ยกเลิก",
+    "บันทึกการเปลี่ยนแปลง"
   ],
   "ar": [
     "حفظ المشاركين",
@@ -162,7 +246,13 @@
     "تعذر الحفظ أو التحميل. حاول مرة أخرى.",
     "يتم الحفظ على هذا الجهاز. المشاركون السابقون هم آخر من تم استخدامهم.",
     "المشاركون المحفوظون",
-    "{n} مرة لعب"
+    "{n} مرة لعب",
+    "تعديل",
+    "حذف القائمة المحفوظة",
+    "حذف القائمة المحفوظة؟ سيبقى المشاركون السابقون.",
+    "تم حذف القائمة المحفوظة.",
+    "إلغاء",
+    "حفظ التغييرات"
   ],
   "bn": [
     "প্রার্থী সংরক্ষণ করুন",
@@ -173,6 +263,12 @@
     "সংরক্ষণ বা লোড করা যায়নি। আবার চেষ্টা করুন।",
     "এই ডিভাইসে সংরক্ষিত। আগের প্রার্থীরা সর্বশেষ ব্যবহৃত প্রার্থী।",
     "সংরক্ষিত প্রার্থী",
-    "{n} বার খেলা হয়েছে"
+    "{n} বার খেলা হয়েছে",
+    "সম্পাদনা",
+    "সংরক্ষিত তালিকা মুছুন",
+    "সংরক্ষিত তালিকা মুছবেন? আগের প্রার্থীরা থাকবে।",
+    "সংরক্ষিত তালিকা মুছে ফেলা হয়েছে।",
+    "বাতিল",
+    "পরিবর্তন সংরক্ষণ"
   ]
 }

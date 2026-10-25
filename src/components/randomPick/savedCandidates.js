@@ -39,3 +39,9 @@ export function rowsFromNames(text,original=[]) {
     return {id:`home:${i}`,name:name.slice(0,120),image:row?.image||'',enabled:row?.enabled!==false};
   });
 }
+
+export async function deleteCandidateSet() {
+  const db=await openDatabase();
+  try {await new Promise((resolve,reject)=>{const tx=db.transaction(STORE,'readwrite');tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error);tx.onabort=()=>reject(tx.error || new Error('Delete cancelled'));tx.objectStore(STORE).delete(KEY);});}
+  finally {db.close();}
+}
