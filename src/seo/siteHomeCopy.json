@@ -1,66 +1,82 @@
 {
   "ko": {
+    "heading": "이상형 월드컵",
     "title": "이상형 월드컵 사이트 · 랜덤 뽑기 · 티어표 · 퀴즈 맞히기 | 원픽게임",
-    "description": "이상형 월드컵을 만들고 랜덤 뽑기, 티어표, 퀴즈를 즐겨보세요. 후보를 직접 입력하거나 불러오고 결과를 친구들과 공유할 수 있습니다."
+    "description": "애니 캐릭터, 아이돌, 음식 등 다양한 주제로 이상형 월드컵을 즐겨보세요. 나만의 월드컵과 티어표를 만들고, 랜덤 뽑기와 퀴즈를 즐기며 결과를 친구들과 공유하세요."
   },
   "en": {
-    "title": "Bracket Games · Random Picker · Tier Lists & Quizzes | OnePickGame",
-    "description": "Create bracket games and enjoy random picks, tier lists and quizzes. Enter names or import candidates, then share your results."
+    "title": "Tournament Brackets · Random Picker · Tier Lists & Quizzes | OnePickGame",
+    "description": "Play tournament bracket games with anime characters, K-pop idols, songs and food. Pick favorites, create tier lists, use random pickers and take quizzes.",
+    "heading": "Tournament Bracket Games"
   },
   "ja": {
-    "title": "理想のタイプワールドカップ・ランダム抽選・ティア表・クイズ | OnePickGame",
-    "description": "ワールドカップ、ランダム抽選、ティア表、クイズを楽しもう。候補を入力・読み込みして結果を共有できます。"
+    "heading": "好きなものを選ぶトーナメント",
+    "title": "推しを選ぶトーナメント・ランダム抽選・ティア表・クイズ | OnePickGame",
+    "description": "アニメキャラやアイドル、食べ物を二択で選んで、あなたの一番を決めよう。自分だけのトーナメントやティア表を作ったり、抽選やクイズで遊んだりして、結果をシェアできます。"
   },
   "zh": {
-    "title": "理想型世界杯 · 随机抽签 · 排行榜 · 测验 | OnePickGame",
-    "description": "创建理想型世界杯，体验随机抽签、排行榜和测验。输入或导入候选项，与朋友分享结果。"
+    "heading": "二选一淘汰赛",
+    "title": "二选一淘汰赛 · 随机抽签 · Tier 排行榜 · 趣味问答 | OnePickGame",
+    "description": "动漫角色、偶像、美食，你更喜欢哪一个？每轮二选一，选出你的最爱。还可以创建 Tier 排行榜、随机抽签、挑战趣味问答，并与朋友分享结果。"
   },
   "es": {
-    "title": "Torneos · Sorteos · Tier Lists y Quiz | OnePickGame",
-    "description": "Crea torneos y disfruta de sorteos, tier lists y quizzes. Escribe o importa candidatos y comparte los resultados."
+    "heading": "Torneos para elegir tus favoritos",
+    "title": "Torneos de favoritos · Sorteos · Tier lists y quizzes | OnePickGame",
+    "description": "Elige entre personajes de anime, ídolos del K-pop, canciones y comida hasta encontrar tu favorito. Crea torneos y tier lists, haz sorteos y pon a prueba tus conocimientos."
   },
   "fr": {
-    "title": "Tournois · Tirages au sort · Tier Lists et Quiz | OnePickGame",
-    "description": "Créez des tournois et profitez des tirages au sort, tier lists et quiz. Saisissez ou importez des candidats et partagez les résultats."
+    "heading": "Tournois pour choisir vos favoris",
+    "title": "Tournois de favoris · Tirages au sort · Tier lists et quiz | OnePickGame",
+    "description": "Départagez personnages d’anime, stars de K-pop, chansons et plats pour choisir votre favori. Créez vos tournois et tier lists, faites des tirages au sort et jouez à des quiz."
   },
   "vi": {
-    "title": "World Cup · Bốc thăm · Bảng xếp hạng và Đố vui | OnePickGame",
-    "description": "Tạo World Cup, bốc thăm, bảng xếp hạng và câu đố. Nhập hoặc tải ứng viên rồi chia sẻ kết quả với bạn bè."
+    "heading": "Đấu loại chọn mục yêu thích",
+    "title": "Đấu loại chọn yêu thích · Bốc thăm · Tier list và đố vui | OnePickGame",
+    "description": "Chọn giữa hai nhân vật anime, thần tượng K-pop, bài hát hay món ăn để tìm ra lựa chọn yêu thích nhất. Tạo vòng đấu, xếp tier list, bốc thăm và thử sức với các câu đố."
   },
   "de": {
-    "title": "Turniere · Zufallsauswahl · Tier Lists & Quiz | OnePickGame",
-    "description": "Erstelle Turniere und nutze Zufallsauswahl, Tier Lists und Quiz. Gib Namen ein oder importiere Kandidaten und teile Ergebnisse."
+    "heading": "Wähle deine Favoriten im Turnier",
+    "title": "Favoriten-Turniere · Zufallsauswahl · Tier Lists & Quiz | OnePickGame",
+    "description": "Anime-Figuren, K-Pop-Stars, Songs oder Essen: Wähle in jeder Runde deinen Favoriten bis zum Finale. Erstelle Turniere und Tier Lists, lose Namen aus und spiele Quiz."
   },
   "ru": {
-    "title": "Турниры · Жеребьёвка · Тир-листы и Викторины | OnePickGame",
-    "description": "Создавайте турниры, проводите жеребьёвки, составляйте тир-листы и проходите викторины. Добавляйте кандидатов и делитесь результатами."
+    "heading": "Турниры: выберите своего фаворита",
+    "title": "Турниры на выбывание · Жеребьёвка · Тир-листы и викторины | OnePickGame",
+    "description": "Выбирайте любимых персонажей аниме, K-pop-исполнителей, песни и блюда в парных сравнениях. Создавайте турниры и тир-листы, проводите жеребьёвки и проходите викторины."
   },
   "id": {
-    "title": "Turnamen · Undian Acak · Tier List & Kuis | OnePickGame",
-    "description": "Buat turnamen, undian acak, tier list dan kuis. Masukkan atau impor kandidat lalu bagikan hasilnya."
+    "heading": "Turnamen Pilih Favoritmu",
+    "title": "Turnamen Favorit · Undian Acak · Tier List & Kuis | OnePickGame",
+    "description": "Pilih satu dari dua karakter anime, idola K-pop, lagu, atau makanan hingga menemukan favoritmu. Buat turnamen dan tier list, adakan undian, lalu mainkan kuis bersama teman."
   },
   "pt": {
-    "title": "Torneios · Sorteios · Tier Lists e Quiz | OnePickGame",
-    "description": "Crie torneios e aproveite sorteios, tier lists e quizzes. Digite ou importe candidatos e compartilhe os resultados."
+    "heading": "Torneios para escolher seus favoritos",
+    "title": "Torneios de favoritos · Sorteios · Tier lists e quizzes | OnePickGame",
+    "description": "Escolha entre personagens de anime, ídolos do K-pop, músicas e comidas até encontrar seu favorito. Crie torneios e tier lists, faça sorteios e divirta-se com quizzes."
   },
   "hi": {
-    "title": "टूर्नामेंट · रैंडम चयन · टियर लिस्ट और क्विज़ | OnePickGame",
-    "description": "टूर्नामेंट बनाएँ और रैंडम चयन, टियर लिस्ट और क्विज़ का आनंद लें। नाम लिखें या उम्मीदवार लाएँ और परिणाम साझा करें।"
+    "heading": "मुकाबलों में चुनें अपना पसंदीदा",
+    "title": "पसंदीदा चुनने के टूर्नामेंट · रैंडम पिकर · टियर लिस्ट और क्विज़ | OnePickGame",
+    "description": "एनीमे किरदारों, K-pop कलाकारों, गानों और खाने में से हर मुकाबले में अपनी पसंद चुनें। टूर्नामेंट और टियर लिस्ट बनाएँ, नामों की रैंडम पर्ची निकालें और क्विज़ खेलें।"
   },
   "tr": {
-    "title": "Turnuvalar · Rastgele Seçim · Tier List ve Quiz | OnePickGame",
-    "description": "Turnuva oluştur, rastgele seçim yap, tier list ve quiz dene. Adayları yaz veya içe aktar ve sonuçları paylaş."
+    "heading": "Favorini Seç: Eleme Turnuvaları",
+    "title": "Eleme Turnuvaları · Rastgele Seçim · Tier List ve Quiz | OnePickGame",
+    "description": "Anime karakterleri, K-pop yıldızları, şarkılar ve yemekler arasından her turda birini seçerek favorini bul. Turnuva ve tier list oluştur, kura çek ve quiz çöz."
   },
   "th": {
-    "title": "เวิลด์คัพ · สุ่มเลือก · Tier List และควิซ | OnePickGame",
-    "description": "สร้างเวิลด์คัพ สุ่มเลือก จัด Tier List และเล่นควิซ พิมพ์หรือนำเข้ารายชื่อแล้วแชร์ผลกับเพื่อน"
+    "heading": "โหวตเลือกสิ่งที่ชอบแบบทัวร์นาเมนต์",
+    "title": "ทัวร์นาเมนต์เลือกสิ่งที่ชอบ · สุ่มชื่อ · Tier List · ควิซ | OnePickGame",
+    "description": "เลือกตัวละครอนิเมะ ไอดอล K-pop เพลง หรืออาหารที่ชอบจากสองตัวเลือกในแต่ละรอบ จนได้ผู้ชนะในใจ สร้างทัวร์นาเมนต์ จัด Tier List สุ่มชื่อ และเล่นควิซแล้วแชร์ผลกับเพื่อน"
   },
   "ar": {
-    "title": "بطولات · اختيار عشوائي · قوائم تصنيف واختبارات | OnePickGame",
-    "description": "أنشئ بطولات وجرّب الاختيار العشوائي وقوائم التصنيف والاختبارات. أدخل الأسماء أو استوردها وشارك النتائج."
+    "heading": "بطولات لاختيار المفضّل لديك",
+    "title": "بطولات لاختيار المفضّل · سحب عشوائي · قوائم تصنيف واختبارات | OnePickGame",
+    "description": "اختر المفضّل لديك بين شخصيات الأنمي ونجوم الكيبوب والأغاني والأطعمة في مواجهات ثنائية. أنشئ بطولات وقوائم تصنيف، وجرّب السحب العشوائي والاختبارات وشارك النتائج."
   },
   "bn": {
-    "title": "টুর্নামেন্ট · এলোমেলো বাছাই · টিয়ার তালিকা ও কুইজ | OnePickGame",
-    "description": "টুর্নামেন্ট তৈরি করুন, এলোমেলো বাছাই, টিয়ার তালিকা ও কুইজ খেলুন। নাম লিখুন বা প্রার্থী আনুন এবং ফলাফল শেয়ার করুন।"
+    "heading": "মুখোমুখি বাছাইয়ে খুঁজুন আপনার পছন্দের সেরা",
+    "title": "পছন্দের টুর্নামেন্ট · র‍্যান্ডম পিকার · টিয়ার লিস্ট ও কুইজ | OnePickGame",
+    "description": "অ্যানিমে চরিত্র, K-pop তারকা, গান বা খাবার—প্রতি রাউন্ডে দুটির মধ্যে একটি বেছে নিন। নিজের টুর্নামেন্ট ও টিয়ার লিস্ট তৈরি করুন, লটারি করুন এবং কুইজ খেলুন।"
   }
 }

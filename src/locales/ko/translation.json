@@ -40,7 +40,7 @@
   "month_6": "6개월",
   "year_1": "1년",
   "home_intro_line1": "One Pick Game (원픽게임)은",
-  "home_intro_line2": "나만의 최애를 고르는 글로벌 이상형 월드컵 사이트입니다.",
+  "home_intro_line2": "애니 캐릭터, 아이돌, 음식 등 다양한 주제로 이상형 월드컵을 즐겨보세요. 나만의 월드컵과 티어표를 만들고, 랜덤 뽑기와 퀴즈를 즐기며 결과를 친구들과 공유하세요.",
   "select_category": "카테고리를 선택하세요",
   "category_person": "인물",
   "category_anime_manga": "애니 / 만화",
@@ -537,7 +537,7 @@
   },
   "gameModeNav": {
     "introLine1": "One Pick Game은",
-    "introLine2": "이상형 월드컵으로 최애를 고르고, 티어표, 맞히기, 블라인드 랭킹까지 즐길 수 있는 글로벌 게임 사이트입니다.",
+    "introLine2": "애니 캐릭터, 아이돌, 음식 등 다양한 주제로 이상형 월드컵을 즐겨보세요. 나만의 월드컵과 티어표를 만들고, 랜덤 뽑기와 퀴즈를 즐기며 결과를 친구들과 공유하세요.",
     "worldcup": "이상형 월드컵",
     "tierList": "티어표",
     "quiz": "맞히기",

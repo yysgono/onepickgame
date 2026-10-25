@@ -11,13 +11,13 @@
   },
   "en": {
     "modes": [
-      "Bracket",
+      "Tournament",
       "Tier List",
       "Quiz",
       "Random Picker"
     ],
-    "create": "Create Bracket",
-    "popular": "Popular Brackets"
+    "create": "Create Tournament Bracket",
+    "popular": "Popular Tournament Brackets"
   },
   "ja": {
     "modes": [
@@ -26,32 +26,32 @@
       "クイズ",
       "ランダム抽選"
     ],
-    "create": "トーナメント作成",
+    "create": "トーナメントを作る",
     "popular": "人気のトーナメント"
   },
   "zh": {
     "modes": [
-      "淘汰赛",
+      "二选一",
       "等级榜",
       "竞猜",
       "随机抽签"
     ],
-    "create": "创建理想型世界杯",
-    "popular": "热门淘汰赛"
+    "create": "创建二选一淘汰赛",
+    "popular": "热门二选一淘汰赛"
   },
   "es": {
     "modes": [
-      "Torneo",
+      "Torneos",
       "Tier List",
       "Quiz",
       "Sorteo aleatorio"
     ],
-    "create": "Crear torneo",
+    "create": "Crear un torneo",
     "popular": "Torneos populares"
   },
   "fr": {
     "modes": [
-      "Tournoi",
+      "Tournois",
       "Tier List",
       "Quiz",
       "Tirage au sort"
@@ -66,12 +66,12 @@
       "Đố vui",
       "Bốc thăm ngẫu nhiên"
     ],
-    "create": "Tạo giải đấu",
-    "popular": "Giải đấu phổ biến"
+    "create": "Tạo vòng đấu",
+    "popular": "Vòng đấu nổi bật"
   },
   "de": {
     "modes": [
-      "Turnier",
+      "Turniere",
       "Tier-Liste",
       "Quiz",
       "Zufallsauswahl"
@@ -81,7 +81,7 @@
   },
   "ru": {
     "modes": [
-      "Турнир",
+      "Турниры",
       "Тир-лист",
       "Викторина",
       "Случайный выбор"
@@ -101,7 +101,7 @@
   },
   "pt": {
     "modes": [
-      "Torneio",
+      "Torneios",
       "Tier List",
       "Quiz",
       "Sorteio aleatório"
@@ -116,12 +116,12 @@
       "क्विज़",
       "रैंडम चयन"
     ],
-    "create": "टूर्नामेंट बनाएं",
+    "create": "टूर्नामेंट बनाएँ",
     "popular": "लोकप्रिय टूर्नामेंट"
   },
   "tr": {
     "modes": [
-      "Turnuva",
+      "Turnuvalar",
       "Tier Listesi",
       "Quiz",
       "Rastgele Seçim"
@@ -141,13 +141,13 @@
   },
   "ar": {
     "modes": [
-      "بطولة",
+      "البطولات",
       "قائمة مستويات",
       "اختبار",
       "اختيار عشوائي"
     ],
-    "create": "إنشاء كأس العالم",
-    "popular": "البطولات الشائعة"
+    "create": "إنشاء بطولة",
+    "popular": "البطولات الرائجة"
   },
   "bn": {
     "modes": [

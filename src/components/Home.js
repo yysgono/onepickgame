@@ -4378,7 +4378,7 @@ return (
     )}
 
     <div style={{ minWidth: 0 }}>
-      <PageIntro icon="🏆" title={t('gameModeNav.worldcup')} description={worldcupIntroDescription} hideDescription buttonLabel={t('create_worldcup')} createTo={`/${lang}/worldcup-maker`} onCreate={() => onMakeWorldcup ? onMakeWorldcup() : goto(`/${lang}/worldcup-maker`)} personal={false} accentColor="#F97316" />
+      <PageIntro icon="🏆" title={SITE_HOME_COPY[lang]?.heading || t('gameModeNav.worldcup')} description={worldcupIntroDescription} hideDescription buttonLabel={t('create_worldcup')} createTo={`/${lang}/worldcup-maker`} onCreate={() => onMakeWorldcup ? onMakeWorldcup() : goto(`/${lang}/worldcup-maker`)} personal={false} accentColor="#F97316" />
 
       {/* 언어 선택 / 검색 */}
 

@@ -64,7 +64,7 @@ function renderHomeBody(rows, lang, copy) {
 </style>
 <header class="home-shell-header"><a class="home-shell-brand" href="${paths[0]}"><img src="/onepick2.png" alt="OnePickGame" width="72" height="72">One Pick Game</a><nav class="home-shell-nav">${[ui.modes[0],ui.modes[2],ui.modes[1],ui.modes[3]].map((name,i)=>`<a href="${paths[i]}"${i===0?' aria-current="page"':''}><span aria-hidden="true">${icons[i]}</span>${escape(name)}</a>`).join('')}</nav></header>
 <p class="home-shell-summary">${escape(copy.description)}</p>
-<main class="home-shell-main"><section class="home-shell-intro"><h1>🏆 ${escape(ui.modes[0])}</h1><a class="home-shell-create" href="/${lang}/worldcup-maker">＋ ${escape(ui.create)}</a></section>${links?`<h2 class="home-shell-list-title">${escape(ui.popular)}</h2><ul class="home-shell-list">${links}</ul>`:''}</main></div>`;
+<main class="home-shell-main"><section class="home-shell-intro"><h1>🏆 ${escape(copy.heading || ui.modes[0])}</h1><a class="home-shell-create" href="/${lang}/worldcup-maker">＋ ${escape(ui.create)}</a></section>${links?`<h2 class="home-shell-list-title">${escape(ui.popular)}</h2><ul class="home-shell-list">${links}</ul>`:''}</main></div>`;
 }
 function verifyHome(html) {
   if (!/id="seo-content"/.test(html) || (html.match(/<title\b/gi)||[]).length !== 1 || !/<link\b[^>]*rel=["']canonical["']/i.test(html)) throw new Error('Home SEO output incomplete');
