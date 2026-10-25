@@ -6,7 +6,9 @@
     "후보를 저장했습니다.",
     "저장된 후보가 없습니다.",
     "후보를 저장하거나 불러오지 못했습니다. 다시 시도해주세요.",
-    "이 기기에 저장한 후보입니다. 이전 후보 불러오기는 직전에 사용한 후보입니다."
+    "이 기기에 저장한 후보입니다. 이전 후보 불러오기는 직전에 사용한 후보입니다.",
+    "저장된 후보",
+    "플레이 {n}회"
   ],
   "en": [
     "Save candidates",
@@ -15,7 +17,9 @@
     "Candidates saved.",
     "No saved candidates.",
     "Could not save or load candidates. Please try again.",
-    "Saved on this device. Previous candidates are the candidates used most recently."
+    "Saved on this device. Previous candidates are the candidates used most recently.",
+    "Saved candidates",
+    "{n} plays"
   ],
   "ja": [
     "候補を保存",
@@ -24,7 +28,9 @@
     "候補を保存しました。",
     "保存された候補はありません。",
     "保存または読み込みに失敗しました。もう一度お試しください。",
-    "この端末に保存します。「前回の候補」は直前に使用した候補です。"
+    "この端末に保存します。「前回の候補」は直前に使用した候補です。",
+    "保存した候補",
+    "プレイ {n}回"
   ],
   "zh": [
     "保存候选名单",
@@ -33,7 +39,9 @@
     "候选名单已保存。",
     "没有已保存的候选名单。",
     "保存或加载失败，请重试。",
-    "保存在此设备中。“上次候选名单”指最近使用的名单。"
+    "保存在此设备中。“上次候选名单”指最近使用的名单。",
+    "已保存的候选名单",
+    "已玩 {n} 次"
   ],
   "es": [
     "Guardar candidatos",
@@ -42,7 +50,9 @@
     "Candidatos guardados.",
     "No hay candidatos guardados.",
     "No se pudo guardar o cargar. Inténtalo de nuevo.",
-    "Guardado en este dispositivo. Los candidatos anteriores son los utilizados por última vez."
+    "Guardado en este dispositivo. Los candidatos anteriores son los utilizados por última vez.",
+    "Candidatos guardados",
+    "{n} partidas"
   ],
   "fr": [
     "Enregistrer les candidats",
@@ -51,7 +61,9 @@
     "Candidats enregistrés.",
     "Aucun candidat enregistré.",
     "Impossible d’enregistrer ou de charger. Réessayez.",
-    "Enregistrés sur cet appareil. Les candidats précédents sont ceux utilisés en dernier."
+    "Enregistrés sur cet appareil. Les candidats précédents sont ceux utilisés en dernier.",
+    "Candidats enregistrés",
+    "{n} parties"
   ],
   "vi": [
     "Lưu ứng viên",
@@ -60,7 +72,9 @@
     "Đã lưu ứng viên.",
     "Chưa có ứng viên đã lưu.",
     "Không thể lưu hoặc tải. Vui lòng thử lại.",
-    "Lưu trên thiết bị này. Ứng viên trước là danh sách được dùng gần nhất."
+    "Lưu trên thiết bị này. Ứng viên trước là danh sách được dùng gần nhất.",
+    "Ứng viên đã lưu",
+    "{n} lượt chơi"
   ],
   "de": [
     "Kandidaten speichern",
@@ -69,7 +83,9 @@
     "Kandidaten gespeichert.",
     "Keine gespeicherten Kandidaten.",
     "Speichern oder Laden fehlgeschlagen. Bitte erneut versuchen.",
-    "Auf diesem Gerät gespeichert. Vorherige Kandidaten wurden zuletzt verwendet."
+    "Auf diesem Gerät gespeichert. Vorherige Kandidaten wurden zuletzt verwendet.",
+    "Gespeicherte Kandidaten",
+    "{n} Spiele"
   ],
   "ru": [
     "Сохранить участников",
@@ -78,7 +94,9 @@
     "Участники сохранены.",
     "Нет сохранённых участников.",
     "Не удалось сохранить или загрузить. Повторите попытку.",
-    "Сохраняется на этом устройстве. Предыдущие участники — использованные в последний раз."
+    "Сохраняется на этом устройстве. Предыдущие участники — использованные в последний раз.",
+    "Сохранённые участники",
+    "Игр: {n}"
   ],
   "id": [
     "Simpan kandidat",
@@ -87,7 +105,9 @@
     "Kandidat tersimpan.",
     "Belum ada kandidat tersimpan.",
     "Tidak dapat menyimpan atau memuat. Coba lagi.",
-    "Disimpan di perangkat ini. Kandidat sebelumnya adalah yang terakhir digunakan."
+    "Disimpan di perangkat ini. Kandidat sebelumnya adalah yang terakhir digunakan.",
+    "Kandidat tersimpan",
+    "{n} kali dimainkan"
   ],
   "pt": [
     "Salvar candidatos",
@@ -96,7 +116,9 @@
     "Candidatos salvos.",
     "Não há candidatos salvos.",
     "Não foi possível salvar ou carregar. Tente novamente.",
-    "Salvos neste dispositivo. Os candidatos anteriores são os usados por último."
+    "Salvos neste dispositivo. Os candidatos anteriores são os usados por último.",
+    "Candidatos salvos",
+    "{n} partidas"
   ],
   "hi": [
     "उम्मीदवार सहेजें",
@@ -105,7 +127,9 @@
     "उम्मीदवार सहेजे गए।",
     "कोई उम्मीदवार सहेजा नहीं गया है।",
     "सहेजना या लोड करना विफल रहा। फिर से प्रयास करें।",
-    "इस डिवाइस पर सहेजे गए हैं। पिछले उम्मीदवार हाल ही में उपयोग किए गए उम्मीदवार हैं।"
+    "इस डिवाइस पर सहेजे गए हैं। पिछले उम्मीदवार हाल ही में उपयोग किए गए उम्मीदवार हैं।",
+    "सहेजे गए उम्मीदवार",
+    "{n} बार खेला गया"
   ],
   "tr": [
     "Adayları kaydet",
@@ -114,7 +138,9 @@
     "Adaylar kaydedildi.",
     "Kayıtlı aday yok.",
     "Kaydetme veya yükleme başarısız. Tekrar deneyin.",
-    "Bu cihazda saklanır. Önceki adaylar en son kullanılan adaylardır."
+    "Bu cihazda saklanır. Önceki adaylar en son kullanılan adaylardır.",
+    "Kaydedilen adaylar",
+    "{n} kez oynandı"
   ],
   "th": [
     "บันทึกผู้เข้าร่วม",
@@ -123,7 +149,9 @@
     "บันทึกแล้ว",
     "ยังไม่มีผู้เข้าร่วมที่บันทึกไว้",
     "บันทึกหรือโหลดไม่สำเร็จ โปรดลองอีกครั้ง",
-    "บันทึกบนอุปกรณ์นี้ ผู้เข้าร่วมก่อนหน้าคือรายชื่อที่ใช้ล่าสุด"
+    "บันทึกบนอุปกรณ์นี้ ผู้เข้าร่วมก่อนหน้าคือรายชื่อที่ใช้ล่าสุด",
+    "ผู้เข้าร่วมที่บันทึกไว้",
+    "เล่น {n} ครั้ง"
   ],
   "ar": [
     "حفظ المشاركين",
@@ -132,7 +160,9 @@
     "تم حفظ المشاركين.",
     "لا يوجد مشاركون محفوظون.",
     "تعذر الحفظ أو التحميل. حاول مرة أخرى.",
-    "يتم الحفظ على هذا الجهاز. المشاركون السابقون هم آخر من تم استخدامهم."
+    "يتم الحفظ على هذا الجهاز. المشاركون السابقون هم آخر من تم استخدامهم.",
+    "المشاركون المحفوظون",
+    "{n} مرة لعب"
   ],
   "bn": [
     "প্রার্থী সংরক্ষণ করুন",
@@ -141,6 +171,8 @@
     "প্রার্থী সংরক্ষিত হয়েছে।",
     "কোনো প্রার্থী সংরক্ষিত নেই।",
     "সংরক্ষণ বা লোড করা যায়নি। আবার চেষ্টা করুন।",
-    "এই ডিভাইসে সংরক্ষিত। আগের প্রার্থীরা সর্বশেষ ব্যবহৃত প্রার্থী।"
+    "এই ডিভাইসে সংরক্ষিত। আগের প্রার্থীরা সর্বশেষ ব্যবহৃত প্রার্থী।",
+    "সংরক্ষিত প্রার্থী",
+    "{n} বার খেলা হয়েছে"
   ]
 }
