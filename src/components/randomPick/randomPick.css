@@ -139,3 +139,44 @@
 .rp-saved-edit-list>div{display:flex;align-items:center;gap:8px;margin-bottom:8px}
 .rp-saved-edit-list input{flex:1;min-width:0;padding:9px;border:2px solid #94a3b8;border-radius:7px;font:inherit}
 .rp-saved-edit-list button{min-width:36px;min-height:36px;border:1px solid #dc2626;border-radius:7px;background:#fff;color:#b91c1c}
+
+/* BEGIN onepick-random-home-v66 */
+/* Keep the start buttons aligned while placing play counts directly underneath. */
+.rp.rp-current-home .rp-modes > .rp-mode > .rp-mode-start {
+  margin-bottom: 6px !important;
+}
+.rp.rp-current-home .rp-modes > .rp-mode > .rp-mode-plays {
+  display: block;
+  flex-shrink: 0;
+  margin: 0 12px 12px !important;
+  padding: 0 !important;
+  line-height: 1.35;
+}
+/* Center the candidate-saving copy and saved-name summary. */
+.rp.rp-current-home .rp-home-candidates,
+.rp.rp-current-home .rp-home-candidates h2,
+.rp.rp-current-home .rp-home-candidates p,
+.rp.rp-current-home .rp-home-candidates label,
+.rp.rp-current-home .rp-saved-summary,
+.rp.rp-current-home .rp-saved-summary h3,
+.rp.rp-current-home .rp-home-candidates > .rp-import,
+.rp.rp-current-home .rp-home-candidates > .rp-saved-load {
+  text-align: center;
+}
+.rp.rp-current-home .rp-saved-summary ul,
+.rp.rp-current-home .rp-saved-tools {
+  justify-content: center;
+}
+/* Only the save button on the home page changes color. */
+.rp.rp-current-home .rp-home-candidates > .rp-saved-load {
+  background: #078657;
+  border-color: #056b45;
+  color: #fff;
+  box-shadow: 0 3px 10px #07865725;
+}
+.rp.rp-current-home .rp-home-candidates > .rp-saved-load:hover:not(:disabled) {
+  background: #056b45;
+  border-color: #056b45;
+  color: #fff;
+}
+/* END onepick-random-home-v66 */
