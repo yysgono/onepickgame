@@ -1,0 +1,146 @@
+{
+  "ko": [
+    "후보 저장하기",
+    "저장된 후보 불러오기",
+    "저장할 후보 설정",
+    "후보를 저장했습니다.",
+    "저장된 후보가 없습니다.",
+    "후보를 저장하거나 불러오지 못했습니다. 다시 시도해주세요.",
+    "이 기기에 저장한 후보입니다. 이전 후보 불러오기는 직전에 사용한 후보입니다."
+  ],
+  "en": [
+    "Save candidates",
+    "Load saved candidates",
+    "Candidates to save",
+    "Candidates saved.",
+    "No saved candidates.",
+    "Could not save or load candidates. Please try again.",
+    "Saved on this device. Previous candidates are the candidates used most recently."
+  ],
+  "ja": [
+    "候補を保存",
+    "保存した候補を読み込む",
+    "保存する候補",
+    "候補を保存しました。",
+    "保存された候補はありません。",
+    "保存または読み込みに失敗しました。もう一度お試しください。",
+    "この端末に保存します。「前回の候補」は直前に使用した候補です。"
+  ],
+  "zh": [
+    "保存候选名单",
+    "加载已保存的候选名单",
+    "设置要保存的候选名单",
+    "候选名单已保存。",
+    "没有已保存的候选名单。",
+    "保存或加载失败，请重试。",
+    "保存在此设备中。“上次候选名单”指最近使用的名单。"
+  ],
+  "es": [
+    "Guardar candidatos",
+    "Cargar candidatos guardados",
+    "Candidatos para guardar",
+    "Candidatos guardados.",
+    "No hay candidatos guardados.",
+    "No se pudo guardar o cargar. Inténtalo de nuevo.",
+    "Guardado en este dispositivo. Los candidatos anteriores son los utilizados por última vez."
+  ],
+  "fr": [
+    "Enregistrer les candidats",
+    "Charger les candidats enregistrés",
+    "Candidats à enregistrer",
+    "Candidats enregistrés.",
+    "Aucun candidat enregistré.",
+    "Impossible d’enregistrer ou de charger. Réessayez.",
+    "Enregistrés sur cet appareil. Les candidats précédents sont ceux utilisés en dernier."
+  ],
+  "vi": [
+    "Lưu ứng viên",
+    "Tải ứng viên đã lưu",
+    "Ứng viên cần lưu",
+    "Đã lưu ứng viên.",
+    "Chưa có ứng viên đã lưu.",
+    "Không thể lưu hoặc tải. Vui lòng thử lại.",
+    "Lưu trên thiết bị này. Ứng viên trước là danh sách được dùng gần nhất."
+  ],
+  "de": [
+    "Kandidaten speichern",
+    "Gespeicherte Kandidaten laden",
+    "Kandidaten zum Speichern",
+    "Kandidaten gespeichert.",
+    "Keine gespeicherten Kandidaten.",
+    "Speichern oder Laden fehlgeschlagen. Bitte erneut versuchen.",
+    "Auf diesem Gerät gespeichert. Vorherige Kandidaten wurden zuletzt verwendet."
+  ],
+  "ru": [
+    "Сохранить участников",
+    "Загрузить сохранённых участников",
+    "Участники для сохранения",
+    "Участники сохранены.",
+    "Нет сохранённых участников.",
+    "Не удалось сохранить или загрузить. Повторите попытку.",
+    "Сохраняется на этом устройстве. Предыдущие участники — использованные в последний раз."
+  ],
+  "id": [
+    "Simpan kandidat",
+    "Muat kandidat tersimpan",
+    "Kandidat untuk disimpan",
+    "Kandidat tersimpan.",
+    "Belum ada kandidat tersimpan.",
+    "Tidak dapat menyimpan atau memuat. Coba lagi.",
+    "Disimpan di perangkat ini. Kandidat sebelumnya adalah yang terakhir digunakan."
+  ],
+  "pt": [
+    "Salvar candidatos",
+    "Carregar candidatos salvos",
+    "Candidatos para salvar",
+    "Candidatos salvos.",
+    "Não há candidatos salvos.",
+    "Não foi possível salvar ou carregar. Tente novamente.",
+    "Salvos neste dispositivo. Os candidatos anteriores são os usados por último."
+  ],
+  "hi": [
+    "उम्मीदवार सहेजें",
+    "सहेजे गए उम्मीदवार लोड करें",
+    "सहेजने के लिए उम्मीदवार",
+    "उम्मीदवार सहेजे गए।",
+    "कोई उम्मीदवार सहेजा नहीं गया है।",
+    "सहेजना या लोड करना विफल रहा। फिर से प्रयास करें।",
+    "इस डिवाइस पर सहेजे गए हैं। पिछले उम्मीदवार हाल ही में उपयोग किए गए उम्मीदवार हैं।"
+  ],
+  "tr": [
+    "Adayları kaydet",
+    "Kaydedilen adayları yükle",
+    "Kaydedilecek adaylar",
+    "Adaylar kaydedildi.",
+    "Kayıtlı aday yok.",
+    "Kaydetme veya yükleme başarısız. Tekrar deneyin.",
+    "Bu cihazda saklanır. Önceki adaylar en son kullanılan adaylardır."
+  ],
+  "th": [
+    "บันทึกผู้เข้าร่วม",
+    "โหลดผู้เข้าร่วมที่บันทึกไว้",
+    "ผู้เข้าร่วมที่จะบันทึก",
+    "บันทึกแล้ว",
+    "ยังไม่มีผู้เข้าร่วมที่บันทึกไว้",
+    "บันทึกหรือโหลดไม่สำเร็จ โปรดลองอีกครั้ง",
+    "บันทึกบนอุปกรณ์นี้ ผู้เข้าร่วมก่อนหน้าคือรายชื่อที่ใช้ล่าสุด"
+  ],
+  "ar": [
+    "حفظ المشاركين",
+    "تحميل المشاركين المحفوظين",
+    "المشاركون للحفظ",
+    "تم حفظ المشاركين.",
+    "لا يوجد مشاركون محفوظون.",
+    "تعذر الحفظ أو التحميل. حاول مرة أخرى.",
+    "يتم الحفظ على هذا الجهاز. المشاركون السابقون هم آخر من تم استخدامهم."
+  ],
+  "bn": [
+    "প্রার্থী সংরক্ষণ করুন",
+    "সংরক্ষিত প্রার্থী লোড করুন",
+    "সংরক্ষণের জন্য প্রার্থী",
+    "প্রার্থী সংরক্ষিত হয়েছে।",
+    "কোনো প্রার্থী সংরক্ষিত নেই।",
+    "সংরক্ষণ বা লোড করা যায়নি। আবার চেষ্টা করুন।",
+    "এই ডিভাইসে সংরক্ষিত। আগের প্রার্থীরা সর্বশেষ ব্যবহৃত প্রার্থী।"
+  ]
+}

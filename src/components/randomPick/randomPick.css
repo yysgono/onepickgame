@@ -114,3 +114,13 @@
   .rp .rp-workspace>.rp-editor{order:-1;width:100%;min-width:0;max-width:none}
   .rp .rp-workspace>.rp-play{order:0;width:100%;min-width:0}
 }
+
+/* Saved candidates are distinct from the last-used in-memory candidates. */
+.rp-home-candidates{max-width:960px;margin:0 auto 28px;padding:20px;border:2px solid #078657;border-radius:14px;background:#f5faf7}
+.rp-home-candidates h2{text-align:center;margin-top:0}
+.rp-home-candidates label{display:block;margin:14px 0;font-weight:700}
+.rp-home-candidates textarea{display:block;width:100%;box-sizing:border-box;margin-top:8px;padding:12px;border:2px solid #64748b;border-radius:8px;font:inherit;resize:vertical}
+.rp .rp-saved-load{display:block;width:100%;margin:10px 0;padding:14px 16px;border:3px solid #1d4ed8;border-radius:10px;background:#2563eb;color:#fff;font-size:18px;font-weight:800;box-shadow:0 3px 10px #2563eb25}
+.rp .rp-saved-load:hover:not(:disabled){background:#1d4ed8;color:#fff}
+.rp .rp-saved-load:disabled{opacity:.5;cursor:not-allowed}
+.rp-saved-help{display:block;margin-bottom:12px;color:#475569;line-height:1.5}
