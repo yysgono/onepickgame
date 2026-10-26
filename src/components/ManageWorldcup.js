@@ -171,7 +171,6 @@ function ManageWorldcup({
    * ===================================================
    */
 async function handleDelete(cup) {
-  alert("ManageWorldcup 삭제 함수 실행됨");
 
   console.log("🔥 DELETE CHECK", {
     isAdmin,
@@ -182,7 +181,7 @@ async function handleDelete(cup) {
 
   const message = isAdmin
     ? `"${cup.title}"을 휴지통으로 이동하시겠습니까?\n\n관리자 대시보드에서 다시 복구할 수 있습니다.`
-    : `"${cup.title}"을 정말 삭제하시겠습니까?\n\n삭제하면 복구할 수 없습니다.`;
+    : `"${cup.title}"을 정말 삭제하시겠습니까?\n\n휴지통에 최소 30일간 보관되며 운영자에게 복구를 요청할 수 있습니다.`;
 
     if (!window.confirm(message)) {
       return;

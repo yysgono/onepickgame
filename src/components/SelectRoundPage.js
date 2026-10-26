@@ -195,7 +195,7 @@ useEffect(() => {
 
         .from("worldcups")
 
-        .select("tags")
+        .select("tags").is("deleted_at", null)
 
         .eq("id", cup.id)
 

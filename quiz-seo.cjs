@@ -64,7 +64,7 @@ module.exports = function installQuizSeo(app, db, origin, options = {}) {
 
         const { data, error } = await db.from('quizzes')
 
-          .select('id,original_language,content_languages').eq('is_published', true)
+          .select('id,original_language,content_languages').is("deleted_at", null).eq('is_published', true)
 
           .order('id').range(from, from + 999);
 
@@ -144,7 +144,7 @@ module.exports = function installQuizSeo(app, db, origin, options = {}) {
 
       if (!creator && (detail || listMeta.indexable)) {
 
-        let query = db.from('quizzes').select(fields).eq('is_published', true);
+        let query = db.from('quizzes').select(fields).is("deleted_at", null).eq('is_published', true);
 
         if (!detail && listMeta.category !== 'all') query = query.eq('category', listMeta.category);
 

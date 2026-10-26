@@ -24,7 +24,7 @@ module.exports = (app, supabase, origin) => {
       // Personal or transient filters are rendered by React after auth, never as a public collection.
       if (meta.indexable) {
         let query = supabase.from('tier_lists')
-          .select('id,title,title_translations,original_language,updated_at,candidate_count,category');
+          .select('id,title,title_translations,original_language,updated_at,candidate_count,category').is("deleted_at", null);
         if (meta.category !== 'all') query = query.eq('category', meta.category);
         const sort = params.get('sort');
         if (sort === 'latest') query = query.order('created_at', { ascending: false });

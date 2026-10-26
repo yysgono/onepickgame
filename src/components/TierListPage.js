@@ -1,3 +1,4 @@
+import {contentRevision} from "../utils/contentTrashApi";
 import listSeo from "../seo/listSeo";
 import ContentNav from "./ContentNav";
 import { normalizeTags } from "./TierTagTools";
@@ -24,6 +25,7 @@ const tierListPageCache = new Map();
 const tierListPageInflight = new Map();
 
 async function getCachedTierListRows(key, loader) {
+  key = `${contentRevision("tier-list")}:${key}`;
   const now = Date.now();
   const cached = tierListPageCache.get(key);
 
@@ -980,7 +982,7 @@ const displayTitle =
       try {
         const { data: rows, error } = await supabase
           .from("tier_lists")
-          .select("id, title, title_translations, created_at")
+          .select("id, title, title_translations, created_at").is("deleted_at", null)
           .order("created_at", { ascending: false })
           .order("id", { ascending: false })
           .limit(6);
@@ -1056,7 +1058,7 @@ const displayTitle =
         .from("tier_lists")
         .select(
           "id, title, title_translations, category, thumbnail_url, candidate_count, view_count, created_at"
-        )
+        ).is("deleted_at", null)
         .in("id", recentIds);
 
       if (tierError) {

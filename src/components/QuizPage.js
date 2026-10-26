@@ -1429,7 +1429,7 @@ export default function QuizPage({ user = null }) {
         .from("quizzes")
         .select(
           "id,title,title_translations,created_at"
-        )
+        ).is("deleted_at", null)
         .in("id", recentIds)
         .eq("is_published", true);
 

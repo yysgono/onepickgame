@@ -1,3 +1,4 @@
+import ContentTrashAdmin from "./ContentTrashAdmin";
 import { adminDisplayTitle } from "../utils/adminDisplayTitle";
 import { getAllAdminWorldcups as getAllWorldcups, getAllAdminTierLists as getAllTierLists, getAllAdminQuizzes as getAllQuizzes, getAdminCommentCount as getTotalComments, adminTitleMatches } from "../utils/adminReadApi";
 import React, { useEffect, useMemo, useRef, useState } from "react";
@@ -81,25 +82,6 @@ async function updateWorldcupManagement(
 
   if (error) throw error;
 }
-// 삭제된 월드컵 복구
-async function restoreWorldcup(worldcupId) {
-  const { error } = await supabase
-    .from("worldcups")
-    .update({ deleted_at: null })
-    .eq("id", worldcupId);
-
-  if (error) throw error;
-}
-
-// 휴지통에서 영구 삭제
-async function permanentlyDeleteWorldcup(worldcupId) {
-  const { error } = await supabase
-    .from("worldcups")
-    .delete()
-    .eq("id", worldcupId);
-
-  if (error) throw error;
-}
 // ========================================
 // AdminDashboard
 // ========================================
@@ -145,8 +127,7 @@ export default function AdminDashboard() {
 
   // 처음 로딩
   const [loading, setLoading] = useState(true);
-  const [showTrash, setShowTrash] = useState(false);
-const [trashWorkingId, setTrashWorkingId] = useState(null);
+
 
   // ========================================
   // 최초 데이터 로드
@@ -304,49 +285,6 @@ const activeWorldcups = useMemo(() => {
   return allWorldcups.filter((wc) => !wc.deleted_at);
 }, [allWorldcups]);
 
-const deletedWorldcups = useMemo(() => {
-  return allWorldcups.filter((wc) => Boolean(wc.deleted_at));
-}, [allWorldcups]);
-
-async function handleRestoreWorldcup(id) {
-  if (!window.confirm("이 월드컵을 복구할까요?")) return;
-
-  setTrashWorkingId(id);
-
-  try {
-    await restoreWorldcup(id);
-    setAllWorldcups(previous => previous.map(cup => String(cup.id) === String(id) ? { ...cup, deleted_at: null } : cup));
-    alert("복구되었습니다.");
-  } catch (error) {
-    console.error(error);
-    alert("복구 실패: " + error.message);
-  } finally {
-    setTrashWorkingId(null);
-  }
-}
-
-async function handlePermanentDelete(id) {
-  if (
-    !window.confirm(
-      "정말 영구 삭제할까요?\n이 작업은 되돌릴 수 없습니다."
-    )
-  ) {
-    return;
-  }
-
-  setTrashWorkingId(id);
-
-  try {
-    await permanentlyDeleteWorldcup(id);
-    setAllWorldcups(previous => previous.filter(cup => String(cup.id) !== String(id)));
-    alert("영구 삭제되었습니다.");
-  } catch (error) {
-    console.error(error);
-    alert("영구 삭제 실패: " + error.message);
-  } finally {
-    setTrashWorkingId(null);
-  }
-}
   async function handleTierCategorySave(tierListId) {
     const category = tierCategoryValues[tierListId] || "other";
     setTierSavingId(tierListId);
@@ -596,138 +534,7 @@ const unassignedCount = useMemo(() => {
           valueColor="#6650d8"
         />
       </div>
-      <div
-  style={{
-    marginBottom: 30,
-    background: "#fff5f5",
-    border: "1px solid #ffd6d6",
-    borderRadius: 14,
-    padding: 20,
-  }}
->
-  <button
-    type="button"
-    onClick={() => setShowTrash((prev) => !prev)}
-    style={{
-      border: "none",
-      background: "#c83232",
-      color: "#ffffff",
-      padding: "10px 16px",
-      borderRadius: 8,
-      fontWeight: 800,
-      cursor: "pointer",
-    }}
-  >
-    🗑️ 휴지통 ({loading ? "..." : sectionErrors.worldcups ? "조회 실패" : deletedWorldcups.length})
-  </button>
-
-  {showTrash && (
-    <div style={{ marginTop: 18 }}>
-      {deletedWorldcups.length === 0 ? (
-        <div style={{ color: "#596579" }}>
-          휴지통이 비어 있습니다.
-        </div>
-      ) : (
-        deletedWorldcups.map((wc) => (
-          <div
-            key={wc.id}
-            data-admin-worldcup-id={wc.id}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 10,
-              padding: 12,
-              marginBottom: 8,
-              background: "#fff",
-              border: "1px solid #eee",
-              borderRadius: 10,
-              flexWrap: "wrap",
-            }}
-          >
-            <div
-              style={{
-                flex: 1,
-                minWidth: 200,
-                fontWeight: 700,
-              }}
-            >
-<div
-  style={{
-    fontSize: 18,
-    fontWeight: 800,
-    color: "#222",
-  }}
->
-  {adminDisplayTitle(wc)}
-</div>
-
-<div
-  style={{
-    fontSize: 13,
-    color: "#596579",
-    marginTop: 5,
-  }}
->
-  ID: {wc.id}
-</div>
-
-<div
-  style={{
-    fontSize: 14,
-    color: "#b42346",
-    marginTop: 4,
-  }}
->
-  삭제일:{" "}
-  {wc.deleted_at
-    ? new Date(wc.deleted_at).toLocaleString("ko-KR")
-    : "-"}
-</div>
-            </div>
-
-            <button
-              type="button"
-              disabled={Boolean(trashWorkingId)}
-              onClick={() =>
-                handleRestoreWorldcup(wc.id)
-              }
-              style={{
-                border: "none",
-                background: "#6650d8",
-                color: "#ffffff",
-                padding: "8px 13px",
-                borderRadius: 7,
-                fontWeight: 800,
-                cursor: "pointer",
-              }}
-            >
-              ♻️ 복구
-            </button>
-
-            <button
-              type="button"
-              disabled={Boolean(trashWorkingId)}
-              onClick={() =>
-                handlePermanentDelete(wc.id)
-              }
-              style={{
-                border: "none",
-                background: "#ffffff",
-                color: "#202534",
-                padding: "8px 13px",
-                borderRadius: 7,
-                fontWeight: 800,
-                cursor: "pointer",
-              }}
-            >
-              ❌ 영구삭제
-            </button>
-          </div>
-        ))
-      )}
-    </div>
-  )}
-</div>
+      <ContentTrashAdmin onChanged={loadDashboard} />
 
       {/* ========================================
           월드컵 카테고리 / 추천 관리

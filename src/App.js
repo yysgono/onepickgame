@@ -1774,8 +1774,8 @@ function App() {
         isAdmin,
         nickname,
         mode: isAdmin
-          ? "SOFT_DELETE"
-          : "PERMANENT_DELETE",
+          ? "TRASH"
+          : "TRASH",
       }
     );
 
@@ -1790,7 +1790,7 @@ function App() {
       await deleteWorldcupGame(id);
 
       console.log(
-        "❌ 사용자 월드컵 영구삭제 완료:",
+        "🗑️ 사용자 월드컵 휴지통 이동 완료:",
         id
       );
     }

@@ -26,7 +26,7 @@ export async function getFixedCupsWithInfo() {
   // 2. 해당 id의 worldcups 정보
   const { data: cups, error: error2 } = await supabase
     .from("worldcups")
-    .select("id, title, thumbnail")
+    .select("id, title, thumbnail").is("deleted_at", null)
     .in("id", ids);
 
   if (error2) throw error2;

@@ -9,7 +9,7 @@ async function readAllRows(table, fields) {
   let total = Infinity;
   while (offset < total) {
     const { data, count, error } = await supabase.from(table)
-      .select(fields, offset === 0 ? { count: 'exact' } : undefined)
+      .select(fields, offset === 0 ? { count: 'exact' } : undefined).is("deleted_at", null)
       .order('created_at', { ascending: false }).order('id', { ascending: false })
       .range(offset, offset + pageSize - 1);
     if (error) throw error;
@@ -81,7 +81,7 @@ export async function getAdminRecentPlays() {
   const ids = [...new Set(rows.map(row => row.cup_id).filter(Boolean))];
   let titles = new Map();
   if (ids.length) {
-    const { data: cups, error: titleError } = await supabase.from('worldcups').select('id,title,title_translations').in('id', ids);
+    const { data: cups, error: titleError } = await supabase.from('worldcups').select('id,title,title_translations').is("deleted_at", null).in('id', ids);
     if (titleError) throw titleError;
     titles = new Map((cups || []).map(cup => [String(cup.id), adminDisplayTitle(cup)]));
   }

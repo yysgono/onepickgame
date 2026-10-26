@@ -1,3 +1,4 @@
+import {subscribeContentChanges} from "../utils/contentTrashApi";
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { createWorldcupHomePager, HOME_ROW_KEYS } from '../utils/worldcupHomePager';
 import { fetchWorldcupHomeRows } from '../utils/worldcupHomeApi';
@@ -10,6 +11,7 @@ export default function useWorldcupCategoryPages({ categoryKey, search = '', sor
   const [state, setState] = useState(null);
   const [revision, setRevision] = useState(0);
   const pagerRef = useRef(null);
+  useEffect(()=>subscribeContentChanges("worldcup",()=>setRevision(v=>v+1)),[]);
 
   useEffect(() => {
     if (!key) return undefined;

@@ -1597,7 +1597,7 @@ app.use(async (req, res, next) => {
   try {
     const { data: tierList, error } = await supabase
       .from("tier_lists")
-      .select("id,user_id,guest_nickname,title,description,title_translations,description_translations,original_language,thumbnail_url,candidate_count,candidates,tiers,updated_at,category,source_worldcup_id,tier_labels")
+      .select("id,user_id,guest_nickname,title,description,title_translations,description_translations,original_language,thumbnail_url,candidate_count,candidates,tiers,updated_at,category,source_worldcup_id,tier_labels").is("deleted_at", null)
       .eq("id", id)
       .maybeSingle();
 

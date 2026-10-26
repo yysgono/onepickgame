@@ -1,3 +1,4 @@
+import trashCopy from "../utils/contentTrashCopy.json";
 import NavigationLink from "./NavigationLink";
 import SITE_HOME_COPY from "../seo/siteHomeCopy.json";
 import useWorldcupHomePages from "../hooks/useWorldcupHomePages";
@@ -3194,11 +3195,7 @@ fontWeight: 800,
 
                   !window.confirm(
 
-                    t(
-
-                      "delete_confirm"
-
-                    ) ||
+                    (trashCopy[lang] || trashCopy.en) ||
 
                       "Are you sure you want to delete?"
 

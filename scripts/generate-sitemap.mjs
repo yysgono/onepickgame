@@ -210,6 +210,7 @@ async function fetchTierLists() {
   return fetchAllRows({
     table: "tier_lists",
     select: "id, created_at, updated_at, original_language, title_translations, description_translations, tier_labels",
+    applyFilters: (query) => query.is("deleted_at", null),
     label: "티어표",
   });
 }
@@ -224,7 +225,7 @@ async function fetchQuizzes() {
   return fetchAllRows({
     table: "quizzes",
     select: "id, created_at, original_language, content_languages, title_translations, description_translations",
-    applyFilters: (query) => query.eq("is_published", true),
+    applyFilters: (query) => query.eq("is_published", true).is("deleted_at", null),
     label: "공개 퀴즈",
   });
 }

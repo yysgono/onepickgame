@@ -377,7 +377,7 @@ export function PresetTitle({
       )
       .select(
         "id,title,title_translations"
-      )
+      ).is("deleted_at", null)
       .eq(
         "id",
         id

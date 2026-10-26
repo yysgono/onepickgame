@@ -1640,7 +1640,7 @@ const list =
 
     supabase
       .from("worldcups")
-      .select("*")
+      .select("*").is("deleted_at", null)
       .eq("id", id)
       .maybeSingle()
       .then(({ data, error }) => {
@@ -1714,7 +1714,7 @@ const list =
 
     supabase
       .from("worldcups")
-      .select("*")
+      .select("*").is("deleted_at", null)
       .eq("id", sourceWorldcupId)
       .maybeSingle()
       .then(({ data, error }) => {
@@ -2095,7 +2095,7 @@ const sourceCandidates =
   try {
     const { data: sourceCup, error } = await supabase
       .from("worldcups")
-      .select("id, data")
+      .select("id, data").is("deleted_at", null)
       .eq("id", effectiveSourceWorldcupId)
       .maybeSingle();
 
@@ -2309,7 +2309,7 @@ const sourceCandidates =
           .from("tier_lists")
           .select(
             "id, user_id, guest_nickname, title, title_translations, description, description_translations, source_worldcup_id, category, tier_labels, tiers, candidates"
-          )
+          ).is("deleted_at", null)
           .eq("id", targetId)
           .single();
 

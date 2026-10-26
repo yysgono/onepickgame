@@ -1,3 +1,4 @@
+import trashCopy from "../../utils/contentTrashCopy.json";
 import NavigationLink from "../NavigationLink";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -162,7 +163,7 @@ export default function QuizDetailPage() {
 
   async function removeOwnedQuiz() {
     if (!isOwner || deletingQuiz) return;
-    if (!window.confirm(c.deleteQuizConfirm)) return;
+    if (!window.confirm((trashCopy[lang] || trashCopy.en))) return;
     setDeletingQuiz(true);
     try {
       await deleteQuiz(id);

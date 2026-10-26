@@ -13,7 +13,7 @@ const root = path.resolve(__dirname, '..');
 const origin = 'https://www.onepickgame.com';
 const id = '6b8d552e-ba7e-48d0-aa94-3e84448aa8dc';
 const id2 = '631a4968-c367-46d7-980c-754761fd6415';
-const row = { id, is_published: true, title: '한국어 제목', title_translations: { ko: '한글 퀴즈', en: 'English quiz', ja: '日本語クイズ' }, description: '한국어 설명', description_translations: { ko: '한글 설명', en: 'English description', ja: '日本語の説明' }, content_languages: ['ko', 'en', 'ja'], original_language: 'ko', thumbnail_url: 'https://youtu.be/dQw4w9WgXcQ' };
+const row = { id, deleted_at: null, is_published: true, title: '한국어 제목', title_translations: { ko: '한글 퀴즈', en: 'English quiz', ja: '日本語クイズ' }, description: '한국어 설명', description_translations: { ko: '한글 설명', en: 'English description', ja: '日本語の説明' }, content_languages: ['ko', 'en', 'ja'], original_language: 'ko', thumbnail_url: 'https://youtu.be/dQw4w9WgXcQ' };
 const template = fs.readFileSync(path.join(root, 'public/index.html'), 'utf8').replace('</head>', '<script defer src="/static/js/test.js"></script></head>');
 const parse = html => new JSDOM(html).window.document;
 
@@ -27,6 +27,7 @@ function mockDb(rows = [row], failure = false) {
       calls.push(call);
       const query = {
         select(fields) { call.fields = fields; assert.doesNotMatch(fields, /answers|correct_index|user_id|\*/); return this; },
+        is(key, value) { call.filters.push(r => value === null ? r[key] == null : r[key] === value); return this; },
         eq(key, value) { call.filters.push(r => r[key] === value); return this; },
         contains(key, values) { call.filters.push(r => values.every(v => (r[key] || []).includes(v))); return this; },
         order() { return this; },
@@ -137,6 +138,14 @@ test('sitemap endpoints return only supported published quiz URLs, never drafts/
     assert.equal(d.querySelectorAll('url').length, 19);
     assert.doesNotMatch(xml, new RegExp(id2 + '|invalid|create|admin|answers'));
   }
+});
+
+test('trashed published quizzes are excluded from HTML, detail lookup and sitemap', async t => {
+ const hidden={...row,id:id2,title:'Trashed record',deleted_at:'2026-10-26T00:00:00Z'};
+ const request=await withApp(t,mockDb([row,hidden]));
+ assert.equal((await request('/ko/quiz/'+id2)).status,404);
+ assert.doesNotMatch(await (await request('/ko/quiz')).text(),/Trashed record/);
+ assert.doesNotMatch(await (await request('/sitemap-quizzes.xml')).text(),new RegExp(id2));
 });
 
 test('sitemap paginates beyond 1000 records without losing or duplicating rows', async t => {

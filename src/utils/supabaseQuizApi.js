@@ -1,3 +1,4 @@
+import {trashContent,contentRevision} from "./contentTrashApi";
 import { supabase } from "./supabaseClient";
 import imageCompression from "browser-image-compression";
 
@@ -6,6 +7,7 @@ const quizListCache = new Map();
 const quizListInflight = new Map();
 
 async function getCachedQuizList(key, loader) {
+  key = `${contentRevision("quiz")}:${key}`;
   const now = Date.now();
   const cached = quizListCache.get(key);
 
@@ -83,7 +85,7 @@ export async function getQuizzes({
       .from("quizzes")
       .select(
         "id,user_id,guest_nickname,title,title_translations,description,description_translations,original_language,content_languages,category,thumbnail_url,question_count,play_count,like_count,comment_count,answer_reveal_mode,is_featured,featured_order,created_at,is_published"
-      )
+      ).is("deleted_at", null)
       .eq("is_published", true)
       .order(sort === "latest" ? "created_at" : "play_count", {
         ascending: false,
@@ -132,7 +134,7 @@ export async function getQuizPage({ offset = 0, pageSize = 10, ...filters } = {}
 export async function getRecentCreatedQuizCards({ contentLanguage = "", category = "all" } = {}) {
   const key = JSON.stringify({ type: "recent-created-cards", contentLanguage, category });
   return getCachedQuizList(key, async () => {
-    let query = supabase.from("quizzes").select("id,title,title_translations,created_at")
+    let query = supabase.from("quizzes").select("id,title,title_translations,created_at").is("deleted_at", null)
       .eq("is_published", true).order("created_at", { ascending: false })
       .order("id", { ascending: true }).limit(6);
     if (contentLanguage) query = query.contains("content_languages", [contentLanguage]);
@@ -158,7 +160,7 @@ export async function getFeaturedQuizzes({
       .from("quizzes")
       .select(
         "id,user_id,guest_nickname,title,title_translations,description,description_translations,original_language,content_languages,category,thumbnail_url,question_count,play_count,like_count,comment_count,answer_reveal_mode,is_featured,featured_order,created_at,is_published"
-      )
+      ).is("deleted_at", null)
       .eq("is_published", true)
       .eq("is_featured", true)
       .order("featured_order", { ascending: true, nullsFirst: false })
@@ -179,7 +181,7 @@ export async function getFeaturedQuizzes({
 export async function getQuiz(id) {
   const { data, error } = await supabase
     .from("quizzes")
-    .select("*")
+    .select("*").is("deleted_at", null)
     .eq("id", id)
     .eq("is_published", true)
     .single();
@@ -200,16 +202,8 @@ export async function getQuizQuestions(quizId) {
 }
 
 export async function deleteQuiz(quizId) {
-  const { data } = await supabase.auth.getUser();
-  const userId = data?.user?.id;
-  if (!userId) throw new Error("LOGIN_REQUIRED");
-  const { error } = await supabase
-    .from("quizzes")
-    .delete()
-    .eq("id", quizId)
-    .eq("user_id", userId);
-  if (error) throw error;
-  clearQuizListCache();
+ await trashContent('quiz',quizId);
+ clearQuizListCache();
 }
 
 export async function getQuizSourceWorldcups(ids = []) {
@@ -406,7 +400,7 @@ export async function createQuiz({
     .insert(rows);
 
   if (questionError && !quizId) {
-    await supabase.from("quizzes").delete().eq("id", quiz.id);
+    await trashContent("quiz", quiz.id);
   }
   if (questionError) throw questionError;
 

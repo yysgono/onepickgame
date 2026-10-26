@@ -21,8 +21,14 @@ export function removedCandidateImagePaths(before,after){
 export async function removeCandidateImageFiles(paths){
  const unique=[...new Set(paths.filter(Boolean))],removed=[],failed=[];
  for(let start=0;start<unique.length;start+=100){
-  const batch=unique.slice(start,start+100);
+  let batch=unique.slice(start,start+100);
   try{
+   const {data:safe,error:checkError}=await supabase.rpc('filter_trash_safe_candidate_paths',{p_paths:batch});
+   if(checkError)throw checkError;
+   if(!Array.isArray(safe))throw new Error('Invalid protected image response');
+   const allowed=new Set(safe);
+   batch=batch.filter(path=>allowed.has(path));
+   if(!batch.length)continue;
    const {data,error}=await supabase.storage.from('candidates').remove(batch);
    if(error)throw error;
    const confirmed=new Set((data||[]).map(file=>file.name||file.path));

@@ -1,3 +1,5 @@
+import trashCopy from "../utils/contentTrashCopy.json";
+import {trashContent} from "../utils/contentTrashApi";
 import "./tierCandidateLabels.css";
 import NavigationLink from "./NavigationLink";
 import RelatedContentLinks from "./RelatedContentLinks";
@@ -533,7 +535,7 @@ if (mounted) {
               )
               .select(
                 "id, user_id, guest_nickname, title, title_translations, description, description_translations, source_worldcup_id, category, thumbnail_url, candidate_count, has_one_pick, view_count, like_count, comment_count, clone_count, created_at, tier_labels, tiers, candidates"
-              )
+              ).is("deleted_at", null)
               .eq(
                 "id",
                 id
@@ -2192,7 +2194,7 @@ ctx.font =
 
       const confirmed =
         window.confirm(
-          text.deleteConfirm
+          (trashCopy[lang] || trashCopy.en)
         );
 
       if (!confirmed) {
@@ -2202,59 +2204,12 @@ ctx.font =
       setDeleting(true);
 
       try {
-if (isAdmin) {
-  const {
-    error: deleteError,
-  } = await supabase.rpc(
-    "admin_delete_tier_list",
-    {
-      p_tier_list_id: tierList.id,
-    }
-  );
-
-  if (deleteError) {
-    throw deleteError;
-  }
-} else if (isGuestPost) {
-  const guestPassword =
-    window.prompt(
-      text.guestPasswordPrompt
-    ) || "";
-
-  if (!guestPassword) {
-    return;
-  }
-
-  const {
-    error: deleteError,
-  } = await supabase.rpc(
-    "delete_guest_tier_list",
-    {
-      p_tier_list_id: tierList.id,
-      p_password: guestPassword,
-    }
-  );
-
-  if (deleteError) {
-    throw deleteError;
-  }
-} else {
-          if (!isMemberOwner) {
-            return;
-          }
-
-          const {
-            error: deleteError,
-          } = await supabase
-            .from("tier_lists")
-            .delete()
-            .eq("id", tierList.id)
-            .eq("user_id", currentUser.id);
-
-          if (deleteError) {
-            throw deleteError;
-          }
-        }
+let guestPassword = null;
+if (!isAdmin && isGuestPost) {
+ guestPassword = window.prompt(text.guestPasswordPrompt) || '';
+ if (!guestPassword) return;
+} else if (!isAdmin && !isMemberOwner) return;
+await trashContent('tier-list',tierList.id,guestPassword);
 
         navigate(`/${lang}/tier-list`);
       } catch (deleteError) {

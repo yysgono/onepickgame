@@ -338,7 +338,7 @@ const bracketTitle =
 
             .from("worldcups")
 
-            .select("*")
+            .select("*").is("deleted_at", null)
 
             .eq("id", id)
 

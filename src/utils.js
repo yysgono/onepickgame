@@ -81,7 +81,7 @@ export async function getUserOrGuestId() {
 export async function getWorldcupGames() {
   const { data, error } = await supabase
     .from("worldcups")
-    .select("*")
+    .select("*").is("deleted_at", null)
     .order("created_at", { ascending: false });
 
   if (error) throw error;
@@ -91,7 +91,7 @@ export async function getWorldcupGames() {
 export async function getWorldcupGame(id) {
   const { data, error } = await supabase
     .from("worldcups")
-    .select("*")
+    .select("*").is("deleted_at", null)
     .eq("id", id)
     .single();
 

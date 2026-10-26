@@ -1,3 +1,4 @@
+import trashCopy from "../utils/contentTrashCopy.json";
 import NavigationLink from "./NavigationLink";
 import quizTranslationHint from "./quizTranslationHint";
 import GameBrandLabel from "./GameBrandLabel";
@@ -331,7 +332,7 @@ export default function QuizDetailPage() {
 
     if (!isOwner || deletingQuiz) return;
 
-    if (!window.confirm(c.deleteQuizConfirm)) return;
+    if (!window.confirm((trashCopy[lang] || trashCopy.en))) return;
 
     setDeletingQuiz(true);
 

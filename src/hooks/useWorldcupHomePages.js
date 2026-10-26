@@ -1,3 +1,4 @@
+import {subscribeContentChanges} from "../utils/contentTrashApi";
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { createWorldcupHomePager, HOME_ROW_KEYS, PRIMARY_HOME_ROWS } from '../utils/worldcupHomePager';
 import { fetchWorldcupHomeRows } from '../utils/worldcupHomeApi';
@@ -7,6 +8,7 @@ export default function useWorldcupHomePages({ enabled, search, creator, sorts, 
   const [state, setState] = useState(EMPTY);
   const [retryTick, setRetryTick] = useState(0);
   const pagerRef = useRef(null);
+  useEffect(()=>subscribeContentChanges("worldcup",()=>setRetryTick(v=>v+1)),[]);
   const latest = useRef(null);
   latest.current = { includeDeferred, includeActivity, pageSize };
   const queryKey = JSON.stringify([search, creator, sorts]);
