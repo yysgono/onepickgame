@@ -2835,7 +2835,7 @@ const totalPlays =
 
           <img
 
-            src="/vs.png"
+            src="/ui/vs-badge-v78.webp"
 
             alt={t("vs")}
 

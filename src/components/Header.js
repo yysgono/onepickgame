@@ -384,7 +384,7 @@ export default function Header({
   }
 
   const logoImgUrl =
-    "/onepick2.png";
+    "/ui/onepick-logo-v78.webp";
 
   const blueMain = "#6650d8";
 

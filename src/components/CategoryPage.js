@@ -3832,7 +3832,7 @@ rowGap: isMobile ? 18 : 26,
 
 
 
-                          src="/vs.png"
+                          src="/ui/vs-badge-v78.webp"
 
 
 
