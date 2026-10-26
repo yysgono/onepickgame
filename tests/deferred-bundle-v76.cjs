@@ -5,7 +5,15 @@ const assert = require('node:assert/strict');
 const manifest = JSON.parse(fs.readFileSync('build/asset-manifest.json', 'utf8'));
 const main = manifest.entrypoints.find(name => /\/main\.[^/]+\.js$/.test(name));
 assert(main, 'main entry must exist');
-const sources = JSON.parse(fs.readFileSync(path.join('build', main + '.map'), 'utf8')).sources;
+let sources = JSON.parse(fs.readFileSync(path.join('build', main + '.map'), 'utf8')).sources;
+if (sources.some(source => source.endsWith('/bootAfterPaint.js'))) {
+  assert(!sources.some(source => source.split('/').pop() === 'App.js'), 'boot entry must not contain the React application');
+  const maps = fs.readdirSync('build/static/js').filter(file => file.endsWith('.map'));
+  const application = maps.map(file => JSON.parse(fs.readFileSync(path.join('build/static/js', file), 'utf8')))
+    .find(map => map.sources.some(source => source.split('/').pop() === 'mountApplication.js'));
+  assert(application, 'deferred application chunk must exist');
+  sources = application.sources;
+}
 for (const name of ['Home', 'Header', 'LoginBox']) {
   assert(sources.some(source => source.endsWith('/' + name + '.js')), `${name} should be available immediately`);
 }
@@ -19,6 +27,6 @@ for (const file of Object.values(manifest.files)) {
     assert(fs.existsSync(localFile), file);
   }
 }
-const css = manifest.entrypoints.filter(file => file.endsWith('.css')).map(file => fs.readFileSync(path.join('build', file), 'utf8')).join('\n');
+const css = Object.values(manifest.files).filter(file => file.endsWith('.css')).map(file => fs.readFileSync(path.join('build', file.replace(/^\//, '')), 'utf8')).join('\n');
 assert(!/@import[^;]*fonts\.googleapis\.com/.test(css), 'main CSS must not request blocking duplicate fonts');
 console.log('PASS: production home/header/login stay eager; makers/admin/game routes are deferred; chunk files exist; no blocking Google Fonts CSS import.');
