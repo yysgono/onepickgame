@@ -5,7 +5,7 @@ import { fetchWorldcupHomeRows } from '../utils/worldcupHomeApi';
 
 const EMPTY = { rows: {}, totals: {}, activity: { created: [], played: [] }, loading: false, error: null };
 export default function useWorldcupHomePages({ enabled, search, creator, sorts, pageSize, includeDeferred, includeActivity }) {
-  const [state, setState] = useState(EMPTY);
+  const [state, setState] = useState(() => ({ ...EMPTY, loading: Boolean(enabled) }));
   const [retryTick, setRetryTick] = useState(0);
   const pagerRef = useRef(null);
   useEffect(()=>subscribeContentChanges("worldcup",()=>setRetryTick(v=>v+1)),[]);

@@ -3345,9 +3345,17 @@ const renderCategorySection = ({
 
   const totalCount = remoteHome ? (homePages.totals[rowKey] || 0) : cups.length;
   if (!Array.isArray(cups) || cups.length === 0) {
-
-    return null;
-
+    // Reserve the same card height while this row's first page is pending.
+    // Empty completed rows and failures must not leave permanent blank sections.
+    const pending = remoteHome && !homePages.rows[rowKey] && !homePages.error;
+    if (!pending) return null;
+    return <section key={rowKey} className={`home-category-section home-row-placeholder${featured ? " is-featured" : ""}`} aria-busy="true"
+      style={{ width: "100%", margin: featured ? "2px 0 12px" : (isMobile ? "10px 0 14px" : "14px 0 18px") }}>
+      <h2 style={{ textAlign: featured ? "center" : undefined, margin: "0 0 16px", fontSize: isMobile ? 29 : 38, lineHeight: 1.2 }}>{title}</h2>
+      <div className="home-placeholder-track" aria-hidden="true" style={{ height: CARD_HEIGHT }}>
+        {[0, 1, 2].map(key => <div key={key} className="home-placeholder-card" />)}
+      </div>
+    </section>;
   }
 
 
@@ -4066,7 +4074,7 @@ const categorySections = HOME_CATEGORIES.map(category => ({
 
 const visibleCategorySections = categorySections.filter(
 
-  (section) => remoteHome ? (homePages.totals[section.key] || 0) > 0 : section.cups.length > 0
+  (section) => remoteHome ? ((homePages.totals[section.key] || 0) > 0 || (!homePages.rows[section.key] && !homePages.error && PRIMARY_HOME_CATEGORY_KEYS.has(section.key))) : section.cups.length > 0
 
 );
 
@@ -4673,7 +4681,7 @@ return (
 
 
 
-{remoteHome && homePages.loading && homePages.cups.length === 0 && <p role="status" style={{ textAlign: "center", padding: 16 }}>{t("loading", { defaultValue: "Loading..." })}</p>}
+{remoteHome && homePages.loading && homePages.cups.length === 0 && <p className="home-loading-status" role="status">{t("loading", { defaultValue: "Loading..." })}</p>}
 {remoteHome && homePages.error && <div role="alert" style={{ textAlign: "center", padding: 16 }}>
   <p>{lang === "ko" ? "게임 목록을 불러오지 못했습니다. 다시 시도해 주세요." : "Could not load games. Please try again."}</p>
   <button type="button" onClick={homePages.retry}>{t("retry", { defaultValue: lang === "ko" ? "다시 시도" : "Retry" })}</button>

@@ -137,16 +137,10 @@
     crossorigin
   />
 
-  <link
-    rel="preload"
-    as="style"
-    href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Noto+Sans:wght@400;700&display=swap"
-  />
-
-  <link
-    href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Noto+Sans:wght@400;700&display=swap"
-    rel="stylesheet"
-  />
+  <!-- Fonts must not block the first paint; optional avoids a late font swap. -->
+  <link rel="stylesheet" media="print" onload="this.onload=null;this.media='all'"
+    href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Noto+Sans:wght@400;700&display=optional" />
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Noto+Sans:wght@400;700&display=optional" /></noscript>
 
   <!-- Critical CSS -->
   <style>
