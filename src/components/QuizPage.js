@@ -339,6 +339,7 @@ export default function QuizPage({ user = null }) {
   try {
 
     await i18n.changeLanguage(newLang);
+    if ((i18n.language || "en").split(/[-_]/)[0] !== newLang) return;
 
 
 

@@ -3,77 +3,54 @@ import homeCommentUi from "./locales/homeCommentUi.json";
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
 import LanguageDetector from "i18next-browser-languagedetector";
-
-// 번역 리소스 (네가 올린 그대로)
 import translationEN from "./locales/en/translation.json";
-import translationKO from "./locales/ko/translation.json";
-import translationJA from "./locales/ja/translation.json";
-import translationZH from "./locales/zh/translation.json";
-import translationHI from "./locales/hi/translation.json";
-import translationPT from "./locales/pt/translation.json";
-import translationFR from "./locales/fr/translation.json";
-import translationRU from "./locales/ru/translation.json";
-import translationDE from "./locales/de/translation.json";
-import translationVI from "./locales/vi/translation.json";
-import translationID from "./locales/id/translation.json";
-import translationTR from "./locales/tr/translation.json";
-import translationTH from "./locales/th/translation.json";
-import translationAR from "./locales/ar/translation.json";
-import translationBN from "./locales/bn/translation.json";
-import translationES from "./locales/es/translation.json";
+import { readInitialTranslations, installLazyTranslations } from "./utils/lazyTranslations";
 
-const resources = {
-  en: { translation: translationEN },
-  ko: { translation: translationKO },
-  ja: { translation: translationJA },
-  zh: { translation: translationZH },
-  hi: { translation: translationHI },
-  pt: { translation: translationPT },
-  fr: { translation: translationFR },
-  ru: { translation: translationRU },
-  de: { translation: translationDE },
-  vi: { translation: translationVI },
-  tr: { translation: translationTR },
-  th: { translation: translationTH },
-  ar: { translation: translationAR },
-  bn: { translation: translationBN },
-  id: { translation: translationID },
-  es: { translation: translationES },
+const SUPPORTED_LANGS = ["en","ko","ar","bn","de","es","fr","hi","id","ja","pt","ru","th","tr","vi","zh"];
+const loaders = {
+  ko: () => import("./locales/ko/translation.json"),
+  ja: () => import("./locales/ja/translation.json"),
+  zh: () => import("./locales/zh/translation.json"),
+  hi: () => import("./locales/hi/translation.json"),
+  pt: () => import("./locales/pt/translation.json"),
+  fr: () => import("./locales/fr/translation.json"),
+  ru: () => import("./locales/ru/translation.json"),
+  de: () => import("./locales/de/translation.json"),
+  vi: () => import("./locales/vi/translation.json"),
+  id: () => import("./locales/id/translation.json"),
+  tr: () => import("./locales/tr/translation.json"),
+  th: () => import("./locales/th/translation.json"),
+  ar: () => import("./locales/ar/translation.json"),
+  bn: () => import("./locales/bn/translation.json"),
+  es: () => import("./locales/es/translation.json"),
 };
-
-// Shared category names keep client labels and server metadata identical.
-for (const [language, labels] of Object.entries(categoryLabels)) {
-  if (resources[language]) {
-    resources[language].translation.category_travel = labels.travel;
-    resources[language].translation.category_brands = labels.brands;
-  }
-}
-
-// Fill the UI keys used by Home and CommentBox without replacing existing translations.
-for (const [language, extra] of Object.entries(homeCommentUi)) {
-  const bundle = resources[language]?.translation;
-  if (!bundle) continue;
-  resources[language].translation = {
-    ...bundle,
+function prepare(bundle, language) {
+  const labels = categoryLabels[language] || {};
+  const extra = homeCommentUi[language] || {};
+  return { ...bundle,
+    category_travel: labels.travel || bundle.category_travel,
+    category_brands: labels.brands || bundle.category_brands,
     show_more_categories: bundle.show_more_categories || extra.show_more_categories,
-    comment: {
-      ...bundle.comment,
+    comment: { ...bundle.comment,
       loginRequired: bundle.comment?.loginRequired || bundle.comment?.needLogin,
       unknownUser: bundle.comment?.unknownUser || extra.unknownUser,
     },
   };
 }
-
-// 라우터와 정확히 맞추기 위한 지원 언어 목록
-const SUPPORTED_LANGS = [
-  "en","ko","ar","bn","de","es","fr","hi","id","ja","pt","ru","th","tr","vi","zh",
-];
+// Non-executable JSON is added by the server per URL, not per user/cookie.
+// The initial language therefore needs no extra request before the first render.
+const initial = readInitialTranslations(typeof document === "undefined" ? null : document, SUPPORTED_LANGS);
+const resources = { en: { translation: prepare(translationEN, "en") } };
+if (initial && initial.language !== "en") {
+  resources[initial.language] = { translation: prepare(initial.messages, initial.language) };
+}
 
 i18n
   .use(LanguageDetector)
   .use(initReactI18next)
   .init({
     resources,
+    ...(initial ? { lng: initial.language } : {}),
     fallbackLng: "en",
     supportedLngs: SUPPORTED_LANGS, // 목록 밖 언어는 fallback
     load: "languageOnly",           // zh-CN -> zh 처럼 언어만 사용
@@ -93,4 +70,14 @@ i18n
     react: { useSuspense: false },
   });
 
+
+const lazyLanguages = installLazyTranslations(i18n, { loaders,
+  loadedLanguages: Object.keys(resources), prepare,
+});
+function loadDetectedLanguage() {
+  const language = String(i18n.language || "en").split(/[-_]/)[0];
+  if (SUPPORTED_LANGS.includes(language) && !lazyLanguages.isLoaded(language)) i18n.changeLanguage(language);
+}
+if (i18n.isInitialized) loadDetectedLanguage();
+else i18n.once("initialized", loadDetectedLanguage);
 export default i18n;
