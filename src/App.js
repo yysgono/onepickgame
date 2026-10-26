@@ -1,7 +1,4 @@
-import PrivateContentCards from "./components/PrivateContentCards";
-import MyWorldcupCards from "./components/MyWorldcupCards";
-import BlogEditorPage from "./components/BlogEditorPage";
-import CommunityBoardPage from "./components/CommunityBoardPage";
+import DeferredPageBoundary from "./components/DeferredPageBoundary";
 import { getPrivatePageSeo } from "./seo/privatePageSeo";
 import { fetchWorldcupRelatedCards } from "./utils/worldcupHomeApi";
 import WorldcupRouteDataLoader from "./components/WorldcupRouteDataLoader";
@@ -12,7 +9,7 @@ import WorldcupDetailSeo from "./seo/WorldcupDetailSeo";
 import worldcupMetadata from "./seo/worldcupMetadata.js";
 import "./i18n";
 import "./App.css";
-import React, { useState, useEffect, useCallback, useRef, createContext, useContext, lazy, Suspense } from "react";
+import React, { useState, useEffect, useCallback, useRef, createContext, useContext, lazy } from "react";
 import {
   BrowserRouter as Router,
   Routes,
@@ -26,36 +23,13 @@ import { useTranslation } from "react-i18next";
 import Header from "./components/Header";
 import ContentNav from "./components/ContentNav";
 import Home from "./components/Home";
-import SelectRoundPage from "./components/SelectRoundPage";
-import MatchPage from "./components/MatchPage";
-import ResultPage from "./components/ResultPage";
-import StatsPage from "./components/StatsPage";
-import WorldcupMaker from "./components/WorldcupMaker";
-import BackupPage from "./components/BackupPage";
-import ManageWorldcup from "./components/ManageWorldcup";
-import EditWorldcupPage from "./components/EditWorldcupPage";
-import AdminBar from "./components/AdminBar";
-import AdminDashboard from "./components/AdminDashboard";
-import AdminStatsPage from "./components/AdminStatsPage";
 import SignupBox from "./components/SignupBox";
 import LoginBox from "./components/LoginBox";
 import FindIdBox from "./components/FindIdBox";
 import FindPwBox from "./components/FindPwBox";
-import PrivacyPolicy from "./components/PrivacyPolicy";
-import TermsOfService from "./components/TermsOfService";
 import Footer from "./components/Footer";
-import SuggestionsBoard from "./components/SuggestionsBoard";
 import SEOManager from "./seo/SEOManager";
 import AdGuard from "./ads/AdGuard";
-import BlogPage from "./components/BlogPage";
-import BlogPostPage from "./components/BlogPostPage";
-import CategoryPage from "./components/CategoryPage";
-import TierListPage from "./components/TierListPage";
-import TierListMaker from "./components/TierListMaker";
-import TierListResultPage from "./components/TierListResultPage";
-import QuizPage from "./components/QuizPage";
-import QuizMaker from "./components/QuizMaker";
-import QuizDetailPage from "./components/QuizDetailPage";
 import {
   getWorldcupTitle,
 } from "./utils/localization";
@@ -237,6 +211,35 @@ function LanguageWrapper(props) {
 /* =====================================================
    페이지 이동 시 스크롤 최상단
 ===================================================== */
+
+// Home, header and login remain eager; route-only screens load on entry.
+const PrivateContentCards = lazy(() => import("./components/PrivateContentCards"));
+const MyWorldcupCards = lazy(() => import("./components/MyWorldcupCards"));
+const BlogEditorPage = lazy(() => import("./components/BlogEditorPage"));
+const CommunityBoardPage = lazy(() => import("./components/CommunityBoardPage"));
+const SelectRoundPage = lazy(() => import("./components/SelectRoundPage"));
+const MatchPage = lazy(() => import("./components/MatchPage"));
+const ResultPage = lazy(() => import("./components/ResultPage"));
+const StatsPage = lazy(() => import("./components/StatsPage"));
+const WorldcupMaker = lazy(() => import("./components/WorldcupMaker"));
+const BackupPage = lazy(() => import("./components/BackupPage"));
+const ManageWorldcup = lazy(() => import("./components/ManageWorldcup"));
+const EditWorldcupPage = lazy(() => import("./components/EditWorldcupPage"));
+const AdminBar = lazy(() => import("./components/AdminBar"));
+const AdminDashboard = lazy(() => import("./components/AdminDashboard"));
+const AdminStatsPage = lazy(() => import("./components/AdminStatsPage"));
+const PrivacyPolicy = lazy(() => import("./components/PrivacyPolicy"));
+const TermsOfService = lazy(() => import("./components/TermsOfService"));
+const SuggestionsBoard = lazy(() => import("./components/SuggestionsBoard"));
+const BlogPage = lazy(() => import("./components/BlogPage"));
+const BlogPostPage = lazy(() => import("./components/BlogPostPage"));
+const CategoryPage = lazy(() => import("./components/CategoryPage"));
+const TierListPage = lazy(() => import("./components/TierListPage"));
+const TierListMaker = lazy(() => import("./components/TierListMaker"));
+const TierListResultPage = lazy(() => import("./components/TierListResultPage"));
+const QuizPage = lazy(() => import("./components/QuizPage"));
+const QuizMaker = lazy(() => import("./components/QuizMaker"));
+const QuizDetailPage = lazy(() => import("./components/QuizDetailPage"));
 
 const RandomPickPage = lazy(() => import('./components/randomPick/RandomPickPage'));
 
@@ -740,6 +743,7 @@ function handleMakeWorldcup() {
 />
 
 <div className="main-content-box">
+  <DeferredPageBoundary>
   <Routes>
     <Route path="/:lang/suggestions-board" element={<SuggestionsBoard user={user} />} />
     <Route path="/:lang/admin-suggestions" element={<SuggestionsBoard user={user} adminView />} />
@@ -831,8 +835,8 @@ function handleMakeWorldcup() {
 />
   }
 />
-<Route path="/:lang/random-pick" element={<Suspense fallback={<div role="status" style={{padding:32,textAlign:"center"}}>◌</div>}><RandomPickPage user={user} /></Suspense>} />
-<Route path="/:lang/random-pick/:mode" element={<Suspense fallback={<div role="status" style={{padding:32,textAlign:"center"}}>◌</div>}><RandomPickPage user={user} /></Suspense>} />
+<Route path="/:lang/random-pick" element={<RandomPickPage user={user} />} />
+<Route path="/:lang/random-pick/:mode" element={<RandomPickPage user={user} />} />
 <Route
   path="/:lang/tier-list"
   element={
@@ -1133,6 +1137,7 @@ function handleMakeWorldcup() {
               }
             />
           </Routes>
+          </DeferredPageBoundary>
         </div>
       </></AppRoutesContext.Provider>
     );

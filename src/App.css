@@ -1,5 +1,4 @@
-/* Google Fonts Noto Sans Import */
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&display=swap');
+/* Fonts load once, without blocking paint, from public/index.html. */
 
 html, body {
   margin: 0 !important;
