@@ -42,6 +42,23 @@ export default function WithdrawalRequestsAdmin() {
       setError('목록을 불러오지 못했습니다. SQL 적용과 운영자 조회 권한을 확인해 주세요.');
     } finally { if (current === sequence.current) { locked.current = false; setBusy(false); } }
   }
+  async function copyMemberId(id) {
+    if (working) return;
+    let copied = false;
+    try {
+      if (navigator.clipboard?.writeText) { await navigator.clipboard.writeText(id); copied = true; }
+    } catch {}
+    if (!copied) {
+      const previousFocus = document.activeElement;
+      const field = document.createElement('textarea');
+      field.value = id; field.readOnly = true;
+      field.style.position = 'fixed'; field.style.left = '-10000px';
+      document.body.appendChild(field);
+      try { field.select(); copied = document.execCommand('copy') === true; } catch {}
+      finally { field.remove(); previousFocus?.focus?.({ preventScroll: true }); }
+    }
+    setNotice(copied ? '회원 ID를 복사했습니다. 탈퇴 처리 버튼을 누른 뒤 확인창에 붙여넣으세요.' : '자동 복사가 차단됐습니다. 목록의 회원 ID 입력칸을 클릭하고 Ctrl+C로 복사해 주세요.');
+  }
   async function withdraw(row) {
     if (actionLock.current) return;
     const typed = window.prompt('계정 정보와 로그인 권한은 삭제하고 작성물은 ‘탈퇴한 회원’으로 남깁니다. 되돌릴 수 없습니다.\n개인정보가 포함된 자료의 별도 삭제 요청도 확인해 주세요.\n확인하려면 회원 ID를 그대로 입력하세요.\n' + row.id);
@@ -88,7 +105,10 @@ export default function WithdrawalRequestsAdmin() {
         <tbody>{items.map(row => <tr key={row.id}>
           <td style={{ padding: 12 }}>{row.nickname || '닉네임 없음'}</td>
           <td style={{ padding: 12 }}>{row.masked_email || '정보 없음'}</td>
-          <td style={{ padding: 12, overflowWrap: 'anywhere', fontSize: 13 }}>{row.id}</td>
+          <td style={{ padding: 12, fontSize: 13 }}><div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: 8 }}>
+            <input aria-label="복사할 회원 ID" type="text" readOnly value={row.id} onFocus={event => event.currentTarget.select()} style={{ width: '36ch', maxWidth: '100%', padding: '8px 10px', border: '1px solid #a8b2c5', borderRadius: 6, background: '#fff', color: '#30263c', fontSize: 13, userSelect: 'text', boxSizing: 'border-box' }} />
+            <button type="button" style={{ ...button, padding: '8px 12px', whiteSpace: 'nowrap' }} disabled={busy || working} onClick={() => copyMemberId(row.id)}>ID 복사</button>
+          </div></td>
           <td style={{ padding: 12 }}>{new Date(row.withdrawal_requested_at).toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' })} (한국시간)</td>
           <td style={{ padding: 12 }}><button type="button" style={{ ...button, borderColor: "#b42346", color: "#a51d36", whiteSpace: "nowrap" }} disabled={busy || working} onClick={() => withdraw(row)}>{row.state && row.state !== "requested" ? "처리 재시도" : "탈퇴 처리"}</button></td>
         </tr>)}</tbody>
