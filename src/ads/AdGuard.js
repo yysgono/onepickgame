@@ -16,7 +16,7 @@ export default function AdGuard({ isAdmin = false }) {
     // 개인정보/약관/제안하기
     /^\/[a-z]{2}\/(?:privacy-policy|terms-of-service|suggestions)(?:\/|$)/i,
     // 공지 목록/상세
-    /^\/[a-z]{2}\/notice(?:\/.*)?$/i,
+    /^\/[a-z]{2}\/notices?(?:\/.*)?$/i,
     // 관리자 대시보드/통계 (하위 경로 포함)
     /^\/[a-z]{2}\/admin(?:\/.*)?$/i,
     /^\/[a-z]{2}\/admin-stats(?:\/.*)?$/i,
@@ -31,6 +31,9 @@ export default function AdGuard({ isAdmin = false }) {
     <Helmet>
       <style>{`
         /* 대표 AdSense 셀렉터들 전부 숨김 */
+        /* AdSense may mount its host outside the hidden slot. Hide the shell too. */
+        [id^="aswift_"][id$="_host"],
+        iframe[id^="aswift_"],
         ins.adsbygoogle,
         .adsbygoogle,
         .google-auto-placed,
@@ -42,6 +45,7 @@ export default function AdGuard({ isAdmin = false }) {
         /* data-* 기반 수동 슬롯도 차단 */
         div[data-ad-client],
         div[data-ad-slot] {
+          pointer-events: none !important;
           display: none !important;
           visibility: hidden !important;
           width: 0 !important;
