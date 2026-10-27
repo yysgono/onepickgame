@@ -2300,6 +2300,7 @@ const renderHomeActivityPanel = ({
             return (
               <li key={`${title}-${cup.id}`}>
                 <Link
+                  className="home-activity-link"
                   to={`/${lang}/select-round/${cup.id}`}
                   title={titleText}
                   style={{

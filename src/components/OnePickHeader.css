@@ -184,3 +184,7 @@
 .onepick-header-account{width:100%;max-width:270px;justify-self:end;box-sizing:border-box;padding-left:16px}
 .onepick-community-nav>a{font-size:17px;padding:10px 16px}
 @media(max-width:600px){.onepick-header-account{max-width:none;padding-left:0}.onepick-community-nav>a{font-size:15px;padding:10px 12px}}
+
+/* Explicit link targets for the compact community navigation. */
+.onepick-community-nav>a{cursor:pointer;min-height:44px;box-sizing:border-box}
+.onepick-community-nav>a *{cursor:inherit}
