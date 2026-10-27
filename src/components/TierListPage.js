@@ -1,3 +1,4 @@
+import useClickTargetDebug from "../hooks/useClickTargetDebug";
 import {contentRevision} from "../utils/contentTrashApi";
 import listSeo from "../seo/listSeo";
 import ContentNav from "./ContentNav";
@@ -167,6 +168,7 @@ function getLocalizedWorldcupTitle(cup, lang) {
 function TierListPage({
   worldcupList = [],
 }) {
+  useClickTargetDebug();
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();

@@ -1,3 +1,4 @@
+import useClickTargetDebug from "../hooks/useClickTargetDebug";
 import NavigationLink from "./NavigationLink";
 import QuizCategorySections from "./QuizCategorySections";
 import useQuizPages from "../hooks/useQuizPages";
@@ -258,6 +259,7 @@ function localized(
 
 
 export default function QuizPage({ user = null }) {
+  useClickTargetDebug();
 
 
 

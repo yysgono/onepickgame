@@ -1,3 +1,4 @@
+import useClickTargetDebug from "../hooks/useClickTargetDebug";
 import trashCopy from "../utils/contentTrashCopy.json";
 import NavigationLink from "./NavigationLink";
 import SITE_HOME_COPY from "../seo/siteHomeCopy.json";
@@ -880,6 +881,7 @@ function Home({
 
 }) {
 
+useClickTargetDebug();
 const { t, i18n } = useTranslation();
 
 const navigate = useNavigate();
