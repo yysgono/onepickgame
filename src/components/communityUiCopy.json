@@ -49,7 +49,8 @@
     "pin": "Pin as notice",
     "unpin": "Unpin",
     "guestSuggestionHint": "Guests can send feedback. Only site publishers can read guest submissions. Sign in before posting if you want to view replies.",
-    "languageOnly": "Show only on pages in this language"
+    "languageOnly": "Show only on pages in this language",
+    "currentLanguageOnly": "Show posts in the current language only"
   },
   "ko": {
     "myContent": "내 콘텐츠",
@@ -101,7 +102,8 @@
     "pin": "공지로 고정",
     "unpin": "공지 해제",
     "guestSuggestionHint": "비회원도 건의할 수 있습니다. 비회원 건의는 운영자만 확인할 수 있으며, 답변을 확인하려면 로그인 후 작성해 주세요.",
-    "languageOnly": "이 언어 페이지에서만 표시"
+    "languageOnly": "이 언어 페이지에서만 표시",
+    "currentLanguageOnly": "현재 언어 게시물만 보기"
   },
   "ja": {
     "myContent": "マイコンテンツ",
@@ -153,7 +155,8 @@
     "pin": "お知らせに固定",
     "unpin": "固定を解除",
     "guestSuggestionHint": "ゲストもご意見を送信できます。ゲストの投稿は運営者のみ閲覧できます。返信を確認したい場合はログインして投稿してください。",
-    "languageOnly": "この言語のページにのみ表示"
+    "languageOnly": "この言語のページにのみ表示",
+    "currentLanguageOnly": "現在の言語の投稿のみ表示"
   },
   "zh": {
     "myContent": "我的内容",
@@ -205,7 +208,8 @@
     "pin": "设为置顶公告",
     "unpin": "取消置顶",
     "guestSuggestionHint": "游客也可以提交建议。游客建议仅管理员可查看。如需查看回复，请登录后提交。",
-    "languageOnly": "仅在此语言页面显示"
+    "languageOnly": "仅在此语言页面显示",
+    "currentLanguageOnly": "仅查看当前语言的帖子"
   },
   "es": {
     "myContent": "Mi contenido",
@@ -257,7 +261,8 @@
     "pin": "Fijar como aviso",
     "unpin": "Desfijar",
     "guestSuggestionHint": "Puedes enviar sugerencias sin iniciar sesión. Solo el equipo del sitio puede leerlas. Inicia sesión antes de publicarlas para consultar las respuestas.",
-    "languageOnly": "Mostrar solo en páginas de este idioma"
+    "languageOnly": "Mostrar solo en páginas de este idioma",
+    "currentLanguageOnly": "Ver solo publicaciones en el idioma actual"
   },
   "fr": {
     "myContent": "Mes contenus",
@@ -309,7 +314,8 @@
     "pin": "Épingler comme annonce",
     "unpin": "Désépingler",
     "guestSuggestionHint": "Les visiteurs peuvent envoyer des suggestions. Seule l’équipe du site peut les lire. Connectez-vous avant de publier pour consulter les réponses.",
-    "languageOnly": "Afficher uniquement sur les pages dans cette langue"
+    "languageOnly": "Afficher uniquement sur les pages dans cette langue",
+    "currentLanguageOnly": "Afficher uniquement les publications dans la langue actuelle"
   },
   "vi": {
     "myContent": "Nội dung của tôi",
@@ -361,7 +367,8 @@
     "pin": "Ghim thông báo",
     "unpin": "Bỏ ghim",
     "guestSuggestionHint": "Khách có thể gửi góp ý. Chỉ quản trị viên đọc được góp ý của khách. Hãy đăng nhập trước khi gửi để xem phản hồi.",
-    "languageOnly": "Chỉ hiển thị trên trang dùng ngôn ngữ này"
+    "languageOnly": "Chỉ hiển thị trên trang dùng ngôn ngữ này",
+    "currentLanguageOnly": "Chỉ xem bài viết bằng ngôn ngữ hiện tại"
   },
   "de": {
     "myContent": "Meine Inhalte",
@@ -413,7 +420,8 @@
     "pin": "Als Hinweis anheften",
     "unpin": "Lösen",
     "guestSuggestionHint": "Gäste können Feedback senden. Nur das Website-Team kann es lesen. Melde dich vor dem Absenden an, um Antworten zu sehen.",
-    "languageOnly": "Nur auf Seiten in dieser Sprache anzeigen"
+    "languageOnly": "Nur auf Seiten in dieser Sprache anzeigen",
+    "currentLanguageOnly": "Nur Beiträge in der aktuellen Sprache anzeigen"
   },
   "ru": {
     "myContent": "Мои материалы",
@@ -465,7 +473,8 @@
     "pin": "Закрепить объявление",
     "unpin": "Открепить",
     "guestSuggestionHint": "Гости могут отправлять предложения. Их видят только администраторы. Войдите перед отправкой, чтобы просматривать ответы.",
-    "languageOnly": "Показывать только на страницах на этом языке"
+    "languageOnly": "Показывать только на страницах на этом языке",
+    "currentLanguageOnly": "Показывать только публикации на текущем языке"
   },
   "id": {
     "myContent": "Konten saya",
@@ -517,7 +526,8 @@
     "pin": "Sematkan pengumuman",
     "unpin": "Lepas sematan",
     "guestSuggestionHint": "Tamu dapat mengirim masukan. Hanya pengelola yang dapat membacanya. Masuk sebelum mengirim untuk melihat balasan.",
-    "languageOnly": "Tampilkan hanya di halaman berbahasa ini"
+    "languageOnly": "Tampilkan hanya di halaman berbahasa ini",
+    "currentLanguageOnly": "Hanya tampilkan postingan dalam bahasa saat ini"
   },
   "pt": {
     "myContent": "Meu conteúdo",
@@ -569,7 +579,8 @@
     "pin": "Fixar como aviso",
     "unpin": "Desafixar",
     "guestSuggestionHint": "Visitantes podem enviar sugestões. Só a equipe do site pode lê-las. Entre antes de publicar para consultar as respostas.",
-    "languageOnly": "Mostrar apenas nas páginas neste idioma"
+    "languageOnly": "Mostrar apenas nas páginas neste idioma",
+    "currentLanguageOnly": "Mostrar apenas publicações no idioma atual"
   },
   "hi": {
     "myContent": "मेरी सामग्री",
@@ -621,7 +632,8 @@
     "pin": "सूचना के रूप में पिन करें",
     "unpin": "पिन हटाएँ",
     "guestSuggestionHint": "अतिथि भी सुझाव भेज सकते हैं। अतिथि सुझाव केवल व्यवस्थापक पढ़ सकते हैं। जवाब देखने के लिए भेजने से पहले लॉगिन करें।",
-    "languageOnly": "केवल इस भाषा के पृष्ठों पर दिखाएँ"
+    "languageOnly": "केवल इस भाषा के पृष्ठों पर दिखाएँ",
+    "currentLanguageOnly": "केवल वर्तमान भाषा की पोस्ट दिखाएँ"
   },
   "tr": {
     "myContent": "İçeriklerim",
@@ -673,7 +685,8 @@
     "pin": "Duyuru olarak sabitle",
     "unpin": "Sabitlemeyi kaldır",
     "guestSuggestionHint": "Misafirler öneri gönderebilir. Bunları yalnızca site yöneticileri okuyabilir. Yanıtları görmek için göndermeden önce giriş yapın.",
-    "languageOnly": "Yalnızca bu dildeki sayfalarda göster"
+    "languageOnly": "Yalnızca bu dildeki sayfalarda göster",
+    "currentLanguageOnly": "Yalnızca mevcut dildeki gönderileri göster"
   },
   "th": {
     "myContent": "เนื้อหาของฉัน",
@@ -725,7 +738,8 @@
     "pin": "ปักหมุดเป็นประกาศ",
     "unpin": "เลิกปักหมุด",
     "guestSuggestionHint": "ผู้เยี่ยมชมส่งข้อเสนอแนะได้ โดยมีเพียงผู้ดูแลที่อ่านได้ หากต้องการดูคำตอบ โปรดเข้าสู่ระบบก่อนส่ง",
-    "languageOnly": "แสดงเฉพาะหน้าที่ใช้ภาษานี้"
+    "languageOnly": "แสดงเฉพาะหน้าที่ใช้ภาษานี้",
+    "currentLanguageOnly": "แสดงเฉพาะโพสต์ในภาษาปัจจุบัน"
   },
   "ar": {
     "myContent": "محتواي",
@@ -777,7 +791,8 @@
     "pin": "تثبيت كإعلان",
     "unpin": "إلغاء التثبيت",
     "guestSuggestionHint": "يمكن للضيوف إرسال اقتراحات لا يقرأها إلا مشرفو الموقع. سجّل الدخول قبل الإرسال إذا أردت الاطلاع على الردود.",
-    "languageOnly": "عرض على صفحات هذه اللغة فقط"
+    "languageOnly": "عرض على صفحات هذه اللغة فقط",
+    "currentLanguageOnly": "عرض المنشورات باللغة الحالية فقط"
   },
   "bn": {
     "myContent": "আমার কনটেন্ট",
@@ -829,6 +844,7 @@
     "pin": "বিজ্ঞপ্তি হিসেবে পিন করুন",
     "unpin": "পিন সরান",
     "guestSuggestionHint": "অতিথিরাও পরামর্শ পাঠাতে পারেন। শুধু প্রশাসক অতিথির পরামর্শ পড়তে পারেন। উত্তর দেখতে পাঠানোর আগে লগইন করুন।",
-    "languageOnly": "শুধু এই ভাষার পাতায় দেখান"
+    "languageOnly": "শুধু এই ভাষার পাতায় দেখান",
+    "currentLanguageOnly": "শুধু বর্তমান ভাষার পোস্ট দেখান"
   }
 }
