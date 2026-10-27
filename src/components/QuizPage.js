@@ -1485,8 +1485,10 @@ export default function QuizPage({ user = null }) {
     accentColor = "#E53935",
     metric = "date",
   }) => (
-    <aside
+    <aside className="home-activity-panel"
       style={{
+        "--activity-hover-border": "#ef5350",
+        "--activity-hover-bg": "#fff0f0",
         minWidth: 0,
         background: "#ffffff",
         border: "1px solid #fecaca",
@@ -1524,12 +1526,15 @@ export default function QuizPage({ user = null }) {
         >
           {items.map((item) => (
             <li key={`${title}-${item.id}`}>
-              <NavigationLink
+              <NavigationLink className="home-activity-link"
 
                 to={`/${lang}/quiz/${item.id}`} appearance="button"
                 title={item.displayTitle || ""}
                 style={{
                   width: "100%",
+                  minWidth: 0,
+                  boxSizing: "border-box",
+                  textDecoration: "none",
                   border: "1px solid #fee2e2",
                   borderRadius: 8,
                   background: "#fffafa",
@@ -1538,7 +1543,7 @@ export default function QuizPage({ user = null }) {
                   cursor: "pointer",
                   textAlign: "left",
                   display: "grid",
-                  gridTemplateColumns: "1fr auto",
+                  gridTemplateColumns: "minmax(0, 1fr) auto",
                   gap: 10,
                   alignItems: "center",
                 }}

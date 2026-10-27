@@ -1119,8 +1119,10 @@ const displayTitle =
     accentColor = "#2563EB",
     metric = "date",
   }) => (
- <aside
+ <aside className="home-activity-panel"
   style={{
+    "--activity-hover-border": "#3b82f6",
+    "--activity-hover-bg": "#eff6ff",
     minWidth: 0,
     background: "#ffffff",
     border: "1px solid #bfdbfe",
@@ -1158,12 +1160,14 @@ const displayTitle =
         >
           {items.map((item) => (
             <li key={`${title}-${item.id}`}>
-              <button
-                type="button"
-                onClick={() => navigate(`/${lang}/tier-list/${item.id}`)}
+              <Link className="home-activity-link"
+                to={`/${lang}/tier-list/${item.id}`}
                 title={item.displayTitle || ""}
                 style={{
                   width: "100%",
+                  minWidth: 0,
+                  boxSizing: "border-box",
+                  textDecoration: "none",
                   border: "1px solid #dbeafe",
                   borderRadius: 8,
                   background: "#f8fbff",
@@ -1172,7 +1176,7 @@ const displayTitle =
                   cursor: "pointer",
                   textAlign: "left",
                   display: "grid",
-                  gridTemplateColumns: "1fr auto",
+                  gridTemplateColumns: "minmax(0, 1fr) auto",
                   gap: 10,
                   alignItems: "center",
                 }}
@@ -1201,7 +1205,7 @@ const displayTitle =
                     ? formatActivityDate(item.lastPlayedAt || item.created_at)
                     : formatActivityDate(item.created_at)}
                 </span>
-              </button>
+              </Link>
             </li>
           ))}
         </ul>

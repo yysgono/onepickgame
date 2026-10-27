@@ -125,5 +125,5 @@ input::placeholder,textarea::placeholder{color:#68758a!important;opacity:1}
 
 .home-activity-panel .home-activity-link{position:relative;min-height:44px;cursor:pointer}
 .home-activity-panel .home-activity-link *{cursor:inherit}
-.home-activity-panel .home-activity-link:hover{border-color:#fb923c!important;background:#fff3e8!important}
-.home-activity-panel .home-activity-link:focus-visible{outline:3px solid #ea580c;outline-offset:2px}
+.home-activity-panel .home-activity-link:hover{border-color:var(--activity-hover-border,#fb923c)!important;background:var(--activity-hover-bg,#fff3e8)!important}
+.home-activity-panel .home-activity-link:focus-visible{outline:3px solid var(--activity-hover-border,#ea580c);outline-offset:2px}
