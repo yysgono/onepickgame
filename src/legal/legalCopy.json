@@ -1,0 +1,898 @@
+{
+  "en": {
+    "privacyTitle": "Privacy Policy",
+    "termsTitle": "Terms of Service",
+    "operatorLabel": "Operator (individual)",
+    "country": "Republic of Korea",
+    "contactLabel": "Contact",
+    "updatedLabel": "Updated",
+    "privacy": [
+      [
+        "Account information",
+        "Email signup uses email and password through Supabase Auth. Google sign-in supplies an account identifier, email and basic profile information; OnePickGame does not receive your Google password or request Gmail, Drive or Contacts access. Your site nickname is public."
+      ],
+      [
+        "Use of data and providers",
+        "We process accounts, uploaded content, game results and support messages to provide features, authenticate users, maintain sessions, prevent abuse and handle requests. Supabase provides authentication, database and storage; Vercel hosts the site. Providers may process technical logs and data outside your country."
+      ],
+      [
+        "Withdrawal and retained content",
+        "Withdrawal is completed after operator review, not immediately upon request. The site account and profile are removed, but published content and statistics may remain attributed to a withdrawn member. Personal information inside content is not automatically erased; request a separate review. Rejoining does not restore ownership. Backups and technical logs are not necessarily erased immediately."
+      ],
+      [
+        "Browser storage and advertising",
+        "Browser storage retains sessions, language and saved candidates. Clearing it can sign you out and does not delete your online account. Google AdSense and partners may process cookies, identifiers, IP addresses and usage for ads and measurement. Signup is not consent to personalized advertising; separate controls are required where applicable."
+      ],
+      [
+        "Your rights and contact",
+        "Depending on applicable law, you may request access, correction, deletion, restriction, portability, objection or withdrawal of consent, and complain to a competent authority. Contact the operator above; proportionate identity checks may be needed. Never send passwords or tokens. Mandatory local rights remain protected."
+      ],
+      [
+        "Google connections",
+        "Site withdrawal does not delete your Google account or automatically revoke its app permission. Manage that permission using Google account connections below. Removing the Google connection alone does not delete your OnePickGame account."
+      ]
+    ],
+    "terms": [
+      [
+        "Accounts and access",
+        "Browsing and many games do not require signup; some creation, upload and management actions require email or Google sign-in. Protect your account and do not impersonate others. Contact the operator before registering if you cannot meet local age or parental-authorization requirements."
+      ],
+      [
+        "Content and conduct",
+        "Retain your rights in content you own or are authorized to use; allow storage, reproduction and display needed for site features. Do not upload unlawful or infringing material, unauthorized personal information, harassment, threats or spam. Abusive content or accounts may be restricted; you may contact us to request review."
+      ],
+      [
+        "Random games",
+        "Random-picker tools are for entertainment. Probability settings and physical mechanics may affect outcomes; these are not certified gambling or prize-allocation systems. Do not use them unlawfully."
+      ],
+      [
+        "Account withdrawal",
+        "The operator processes withdrawal requests. Published content and statistics may remain under withdrawn-member attribution; request separate removal of personal information inside content. Google permissions are managed separately. Rejoining does not automatically restore previous content ownership."
+      ],
+      [
+        "Service changes and rights",
+        "Features may change or be interrupted or discontinued. Reasonable notice is intended where practicable; urgent legal, security or abuse actions may be immediate. Availability and search rankings are not guaranteed. Mandatory local rights and liabilities cannot be waived. Read the Privacy Policy; signup notices are not advertising consent. Contact the operator above with questions."
+      ]
+    ]
+  },
+  "ko": {
+    "privacyTitle": "개인정보처리방침",
+    "termsTitle": "이용약관",
+    "operatorLabel": "운영자(개인)",
+    "country": "대한민국",
+    "contactLabel": "문의",
+    "updatedLabel": "수정일",
+    "privacy": [
+      [
+        "회원 정보",
+        "이메일 가입 시 Supabase Auth를 통해 이메일과 비밀번호를 처리합니다. Google 로그인 시 계정 식별자·이메일·기본 프로필 정보를 받으며, Google 비밀번호를 받거나 Gmail·Drive·연락처 접근을 요청하지 않습니다. 사이트 닉네임은 공개됩니다."
+      ],
+      [
+        "처리 목적과 서비스 제공업체",
+        "계정·업로드 콘텐츠·게임 결과·문의 내용을 기능 제공, 본인 식별, 로그인 유지, 부정 이용 방지와 요청 처리에 사용합니다. Supabase는 인증·데이터베이스·파일 저장을, Vercel은 호스팅을 제공합니다. 제공업체는 기술 로그와 데이터를 이용자의 국가 밖에서 처리할 수 있습니다."
+      ],
+      [
+        "탈퇴와 작성물 보존",
+        "탈퇴 신청 즉시 삭제되지 않으며 운영자 검토 후 처리됩니다. 사이트 계정과 프로필은 삭제되지만 공개 작성물과 통계는 ‘탈퇴한 회원’으로 남을 수 있습니다. 콘텐츠 안의 개인정보는 자동 삭제되지 않으므로 별도 검토를 요청해 주세요. 재가입해도 이전 소유권은 복구되지 않습니다. 백업·기술 로그까지 즉시 삭제된다는 뜻은 아닙니다."
+      ],
+      [
+        "브라우저 저장과 광고",
+        "브라우저에는 로그인·언어·저장 후보가 보관됩니다. 이를 지우면 로그아웃될 수 있으며 온라인 계정이 삭제되지는 않습니다. Google AdSense와 광고 파트너는 광고·측정을 위해 쿠키·식별자·IP 주소·이용 정보를 처리할 수 있습니다. 가입은 맞춤 광고 동의가 아니며 필요한 경우 별도 선택 절차가 적용되어야 합니다."
+      ],
+      [
+        "이용자 권리와 문의",
+        "적용 법률에 따라 열람·정정·삭제·처리 제한·이동·이의 제기·동의 철회를 요청하거나 관할 기관에 민원을 제기할 수 있습니다. 위 운영자 연락처로 문의해 주세요. 계정 보호를 위한 적정한 본인 확인이 필요할 수 있습니다. 비밀번호나 토큰은 보내지 마세요. 지역별 법률이 보장하는 권리는 유지됩니다."
+      ],
+      [
+        "Google 연결 관리",
+        "사이트 탈퇴는 Google 계정 자체를 삭제하거나 Google의 앱 접근 권한을 자동 철회하지 않습니다. 아래 Google 계정 연결 관리에서 권한을 관리할 수 있습니다. Google 연결만 해제해도 OnePickGame 계정이 삭제되는 것은 아닙니다."
+      ]
+    ],
+    "terms": [
+      [
+        "계정과 이용 범위",
+        "열람과 많은 게임은 가입 없이 이용할 수 있으나 일부 제작·업로드·관리는 이메일 또는 Google 로그인이 필요합니다. 계정을 보호하고 타인을 사칭하지 마세요. 지역별 연령·보호자 허가 요건을 충족할 수 없다면 가입 전에 운영자에게 문의해 주세요."
+      ],
+      [
+        "콘텐츠와 이용 규칙",
+        "소유하거나 사용 허가를 받은 콘텐츠를 올려 주세요. 권리는 작성자에게 있으며 서비스 기능에 필요한 저장·복제·표시를 허용합니다. 불법·권리 침해 자료, 무단 개인정보, 괴롭힘·협박·도배를 금지합니다. 문제가 있는 작성물·계정은 제한할 수 있으며 운영자에게 재검토를 요청할 수 있습니다."
+      ],
+      [
+        "랜덤 게임",
+        "랜덤 뽑기는 오락용입니다. 확률 설정과 물리적 움직임에 따라 결과가 달라질 수 있으며 공인된 도박·경품 배정 시스템이 아닙니다. 위법한 용도로 사용하지 마세요."
+      ],
+      [
+        "회원 탈퇴",
+        "운영자가 탈퇴 신청을 처리합니다. 공개 작성물과 통계는 ‘탈퇴한 회원’으로 남을 수 있으며 콘텐츠 안의 개인정보 삭제는 별도 요청해 주세요. Google 권한은 별도로 관리됩니다. 재가입해도 이전 작성물 소유권이 자동 복구되지 않습니다."
+      ],
+      [
+        "서비스 변경과 권리",
+        "기능이 변경·중단·종료될 수 있습니다. 가능한 경우 합리적인 사전 안내를 하며 긴급한 법적·보안·부정 이용 조치는 즉시 진행될 수 있습니다. 무중단 제공과 검색 순위를 보장하지 않습니다. 강행 법률상 권리·책임은 배제되지 않습니다. 개인정보처리방침을 확인해 주세요. 가입 안내는 광고 동의가 아닙니다. 문의는 위 연락처로 보내주세요."
+      ]
+    ]
+  },
+  "ja": {
+    "privacyTitle": "プライバシーポリシー",
+    "termsTitle": "利用規約",
+    "operatorLabel": "運営者（個人）",
+    "country": "大韓民国",
+    "contactLabel": "お問い合わせ",
+    "updatedLabel": "更新日",
+    "privacy": [
+      [
+        "アカウント情報",
+        "メール登録ではSupabase Authを通じてメールアドレスとパスワードを処理します。Googleログインではアカウント識別子、メールアドレス、基本プロフィールを受け取ります。Googleのパスワードは受け取らず、Gmail・Drive・連絡先へのアクセスも求めません。サイトのニックネームは公開されます。"
+      ],
+      [
+        "利用目的とサービス提供者",
+        "機能提供、本人識別、ログイン維持、不正利用防止、依頼対応のため、アカウント、投稿、ゲーム結果、お問い合わせを処理します。Supabaseは認証・データベース・ファイル保存、Vercelはホスティングを提供します。提供者は技術ログやデータを利用者の国外で処理する場合があります。"
+      ],
+      [
+        "退会と投稿の保存",
+        "退会は申請直後ではなく運営者の確認後に処理されます。サイトのアカウントとプロフィールは削除しますが、公開投稿と統計は退会した会員の投稿として残る場合があります。投稿内の個人情報は自動削除されないため、別途確認を依頼してください。再登録しても以前の所有権は戻りません。バックアップや技術ログまで即時削除されるとは限りません。"
+      ],
+      [
+        "ブラウザ保存と広告",
+        "ブラウザにログイン、言語、保存した候補を保持します。削除するとログアウトする場合がありますが、オンラインのアカウントは削除されません。Google AdSenseと広告パートナーは広告・測定のためCookie、識別子、IPアドレス、利用情報を処理する場合があります。登録はパーソナライズ広告への同意ではなく、必要な場合は別の選択手続きが必要です。"
+      ],
+      [
+        "利用者の権利と連絡",
+        "適用法に応じて、開示、訂正、削除、処理制限、移行、異議申立て、同意撤回や管轄機関への苦情申立てができます。上記の運営者にご連絡ください。アカウント保護のため適切な本人確認が必要な場合があります。パスワードやトークンは送らないでください。地域の強行法規による権利は保護されます。"
+      ],
+      [
+        "Googleの接続管理",
+        "サイトの退会はGoogleアカウントの削除やアプリ権限の自動撤回ではありません。下記のGoogleアカウント接続管理で権限を管理できます。Googleとの接続解除だけではOnePickGameのアカウントは削除されません。"
+      ]
+    ],
+    "terms": [
+      [
+        "アカウントと利用範囲",
+        "閲覧や多くのゲームは登録不要ですが、一部の作成・アップロード・管理にはメールまたはGoogleでのログインが必要です。アカウントを保護し、他人になりすまさないでください。地域の年齢・保護者許可要件を満たせない場合は登録前に運営者へご相談ください。"
+      ],
+      [
+        "コンテンツと利用規則",
+        "所有するか利用許可を得たコンテンツを投稿してください。権利は作成者に残り、機能に必要な保存・複製・表示を許可します。違法・権利侵害資料、無断の個人情報、嫌がらせ、脅迫、スパムは禁止です。問題のある投稿やアカウントを制限する場合があり、運営者へ再審査を求められます。"
+      ],
+      [
+        "ランダムゲーム",
+        "抽選ツールは娯楽用です。確率設定や物理的な動作が結果に影響する場合があり、公認の賭博・賞品配分システムではありません。違法な目的に使用しないでください。"
+      ],
+      [
+        "退会",
+        "運営者が退会申請を処理します。公開投稿と統計は退会した会員のものとして残る場合があります。投稿内の個人情報の削除は別途依頼してください。Googleの権限は別管理です。再登録しても以前の投稿の所有権は自動で戻りません。"
+      ],
+      [
+        "サービス変更と権利",
+        "機能を変更・中断・終了する場合があります。可能な場合は合理的な事前案内を行いますが、緊急の法的・セキュリティ・不正利用対策は直ちに実施する場合があります。常時利用や検索順位は保証しません。強行法規上の権利や責任は排除されません。プライバシーポリシーをご確認ください。登録案内は広告への同意ではありません。ご質問は上記連絡先へお寄せください。"
+      ]
+    ]
+  },
+  "zh": {
+    "privacyTitle": "隐私政策",
+    "termsTitle": "服务条款",
+    "operatorLabel": "运营者（个人）",
+    "country": "大韩民国",
+    "contactLabel": "联系",
+    "updatedLabel": "更新日期",
+    "privacy": [
+      [
+        "账户信息",
+        "邮箱注册通过Supabase Auth处理邮箱和密码。Google登录提供账户标识、邮箱和基本资料；OnePickGame不会获取您的Google密码，也不请求访问Gmail、Drive或通讯录。本站昵称公开显示。"
+      ],
+      [
+        "处理目的与服务提供商",
+        "我们处理账户、上传内容、游戏结果和咨询信息，以提供功能、验证身份、维持登录、防止滥用和处理请求。Supabase提供认证、数据库和文件存储，Vercel提供托管。提供商可能在您所在国家以外处理技术日志和数据。"
+      ],
+      [
+        "注销与内容保留",
+        "注销需经运营者审核处理，并非提交申请后立即删除。本站账户与资料会被删除，但公开内容与统计可能以“已注销会员”名义保留。内容中的个人信息不会自动清除，请另行申请审核。重新注册不会恢复原有所有权。备份及技术日志不一定立即删除。"
+      ],
+      [
+        "浏览器存储与广告",
+        "浏览器保存登录状态、语言与已保存候选项。清除后可能退出登录，但不会删除在线账户。Google AdSense及广告合作伙伴可能为广告和衡量处理Cookie、标识符、IP地址与使用信息。注册不代表同意个性化广告；适用时须通过单独的选择流程处理。"
+      ],
+      [
+        "您的权利与联系",
+        "依适用法律，您可请求访问、更正、删除、限制处理、数据可携、提出异议或撤回同意，也可向主管机关投诉。请通过上述联系方式联系运营者。为保护账户，可能需要适当验证身份。请勿发送密码或令牌。当地强制性法律保障的权利不受影响。"
+      ],
+      [
+        "Google连接管理",
+        "本站注销不会删除您的Google账户，也不会自动撤销Google中的应用权限。请通过下方Google账户连接管理处理权限。仅断开Google连接不会删除OnePickGame账户。"
+      ]
+    ],
+    "terms": [
+      [
+        "账户与访问",
+        "浏览和许多游戏无需注册；部分制作、上传及管理操作需要邮箱或Google登录。请保护账户，不得冒充他人。若无法满足当地年龄或监护人授权要求，请在注册前联系运营者。"
+      ],
+      [
+        "内容与行为",
+        "请仅上传您拥有或获准使用的内容。您保留权利，并允许为本站功能所需的存储、复制与展示。禁止非法、侵权、未经授权的个人信息、骚扰、威胁或垃圾内容。违规内容或账户可能受限，您可联系运营者申请复核。"
+      ],
+      [
+        "随机游戏",
+        "随机抽选工具仅供娱乐。概率设置与物理机制可能影响结果，并非经认证的博彩或奖品分配系统。请勿用于违法用途。"
+      ],
+      [
+        "账户注销",
+        "注销申请由运营者处理。公开内容与统计可能以已注销会员名义保留；内容中的个人信息请另行申请删除。Google权限需单独管理。重新注册不会自动恢复原内容所有权。"
+      ],
+      [
+        "服务变更与权利",
+        "功能可能变更、中断或停止。可行时将给予合理提前通知；紧急法律、安全或反滥用措施可能立即执行。不保证持续可用或搜索排名。强制性法律规定的权利与责任不予排除。请阅读隐私政策，注册提示并非广告同意。疑问请联系上述运营者。"
+      ]
+    ]
+  },
+  "ru": {
+    "privacyTitle": "Политика конфиденциальности",
+    "termsTitle": "Условия использования",
+    "operatorLabel": "Оператор (частное лицо)",
+    "country": "Республика Корея",
+    "contactLabel": "Контакт",
+    "updatedLabel": "Обновлено",
+    "privacy": [
+      [
+        "Данные аккаунта",
+        "При регистрации по почте адрес и пароль обрабатываются через Supabase Auth. Google передаёт идентификатор аккаунта, почту и основные данные профиля. OnePickGame не получает пароль Google и не запрашивает доступ к Gmail, Drive или контактам. Псевдоним на сайте виден публично."
+      ],
+      [
+        "Цели и поставщики услуг",
+        "Аккаунты, загруженные материалы, результаты игр и обращения обрабатываются для работы функций, идентификации, поддержания сеансов, предотвращения злоупотреблений и ответов на запросы. Supabase предоставляет авторизацию, базу данных и хранилище; Vercel размещает сайт. Поставщики могут обрабатывать технические журналы и данные за пределами вашей страны."
+      ],
+      [
+        "Удаление аккаунта и сохранённые материалы",
+        "Удаление завершается после проверки оператором, а не сразу после запроса. Аккаунт и профиль удаляются, но публичные материалы и статистика могут остаться с указанием выбывшего участника. Личные данные внутри материалов автоматически не стираются: запросите отдельную проверку. Повторная регистрация не возвращает права владельца. Резервные копии и технические журналы не обязательно удаляются немедленно."
+      ],
+      [
+        "Хранилище браузера и реклама",
+        "Браузер хранит сеансы, язык и сохранённых кандидатов. Очистка может завершить сеанс, но не удаляет онлайн-аккаунт. Google AdSense и партнёры могут обрабатывать cookies, идентификаторы, IP-адреса и сведения об использовании для рекламы и измерений. Регистрация не означает согласия на персонализированную рекламу; когда это требуется, необходим отдельный выбор."
+      ],
+      [
+        "Ваши права и связь",
+        "В зависимости от применимого закона можно запросить доступ, исправление, удаление, ограничение, переносимость, возразить против обработки, отозвать согласие и обратиться в компетентный орган. Свяжитесь с оператором выше. Может потребоваться соразмерная проверка личности. Не отправляйте пароли или токены. Обязательные местные права сохраняются."
+      ],
+      [
+        "Подключения Google",
+        "Удаление аккаунта сайта не удаляет аккаунт Google и не отзывает автоматически разрешение приложению. Управляйте разрешением через подключения Google по ссылке ниже. Одного отключения Google недостаточно для удаления аккаунта OnePickGame."
+      ]
+    ],
+    "terms": [
+      [
+        "Аккаунты и доступ",
+        "Просмотр и многие игры доступны без регистрации; некоторые действия по созданию, загрузке и управлению требуют входа по почте или через Google. Защищайте аккаунт и не выдавайте себя за других. До регистрации обратитесь к оператору, если не можете выполнить местные требования к возрасту или разрешению родителей."
+      ],
+      [
+        "Материалы и поведение",
+        "Загружайте только собственные или разрешённые к использованию материалы. Ваши права сохраняются; вы разрешаете хранение, воспроизведение и показ, необходимые для функций сайта. Запрещены незаконные и нарушающие права материалы, чужие личные данные без разрешения, травля, угрозы и спам. Нарушающие правила материалы и аккаунты могут быть ограничены; можно запросить пересмотр."
+      ],
+      [
+        "Случайные игры",
+        "Инструменты случайного выбора предназначены для развлечения. Настройки вероятности и физические механизмы могут влиять на результат; это не сертифицированные системы азартных игр или распределения призов. Не используйте их незаконно."
+      ],
+      [
+        "Удаление аккаунта",
+        "Оператор обрабатывает запросы на удаление. Публичные материалы и статистика могут остаться с указанием выбывшего участника; удаление личных данных внутри материалов запрашивается отдельно. Разрешения Google управляются отдельно. Повторная регистрация не восстанавливает автоматически владение прежними материалами."
+      ],
+      [
+        "Изменения сервиса и права",
+        "Функции могут изменяться, приостанавливаться или прекращаться. По возможности предусматривается разумное предварительное уведомление; срочные правовые, защитные и антизлоупотребительные меры могут применяться немедленно. Доступность и позиции в поиске не гарантируются. Неотчуждаемые права и обязательная ответственность не исключаются. Прочтите политику конфиденциальности; уведомление при регистрации не является согласием на рекламу. Вопросы направляйте по контакту выше."
+      ]
+    ]
+  },
+  "pt": {
+    "privacyTitle": "Política de privacidade",
+    "termsTitle": "Termos de uso",
+    "operatorLabel": "Responsável (pessoa física)",
+    "country": "República da Coreia",
+    "contactLabel": "Contato",
+    "updatedLabel": "Atualização",
+    "privacy": [
+      [
+        "Dados da conta",
+        "O cadastro por e-mail usa endereço e senha pelo Supabase Auth. O Google fornece um identificador de conta, e-mail e perfil básico; o OnePickGame não recebe sua senha do Google nem solicita acesso ao Gmail, Drive ou Contatos. Seu apelido no site é público."
+      ],
+      [
+        "Uso dos dados e prestadores",
+        "Tratamos contas, conteúdos enviados, resultados e mensagens para oferecer funções, identificar usuários, manter sessões, prevenir abusos e atender solicitações. O Supabase fornece autenticação, banco de dados e armazenamento; a Vercel hospeda o site. Os prestadores podem tratar registros técnicos e dados fora do seu país."
+      ],
+      [
+        "Exclusão da conta e conteúdo mantido",
+        "A exclusão é concluída após análise do responsável, não imediatamente ao solicitar. A conta e o perfil são removidos, mas conteúdos públicos e estatísticas podem permanecer atribuídos a um membro que saiu do site. Dados pessoais dentro do conteúdo não são apagados automaticamente: solicite análise separada. Um novo cadastro não restaura a titularidade. Backups e registros técnicos não são necessariamente apagados de imediato."
+      ],
+      [
+        "Navegador e anúncios",
+        "O navegador guarda sessões, idioma e candidatos salvos. Apagar esses dados pode encerrar a sessão, mas não exclui a conta online. Google AdSense e parceiros podem tratar cookies, identificadores, endereços IP e dados de uso para anúncios e medição. Cadastrar-se não é consentir com anúncios personalizados; escolhas separadas são necessárias quando aplicáveis."
+      ],
+      [
+        "Seus direitos e contato",
+        "Conforme a lei aplicável, você pode solicitar acesso, correção, exclusão, limitação, portabilidade, oposição ou retirada do consentimento e reclamar à autoridade competente. Fale com o responsável acima. Pode ser necessária uma verificação proporcional de identidade. Não envie senhas nem tokens. Direitos locais obrigatórios permanecem protegidos."
+      ],
+      [
+        "Conexões do Google",
+        "Excluir a conta do site não exclui sua conta do Google nem revoga automaticamente a permissão do aplicativo. Gerencie-a nas conexões do Google abaixo. Apenas desconectar o Google não exclui sua conta OnePickGame."
+      ]
+    ],
+    "terms": [
+      [
+        "Contas e acesso",
+        "Navegar e jogar muitos jogos não exige cadastro; algumas ações de criação, envio e gestão exigem login por e-mail ou Google. Proteja sua conta e não se passe por outra pessoa. Contate o responsável antes de se cadastrar se não puder cumprir requisitos locais de idade ou autorização dos responsáveis."
+      ],
+      [
+        "Conteúdo e conduta",
+        "Publique apenas conteúdo próprio ou autorizado. Você mantém seus direitos e permite armazenamento, reprodução e exibição necessários às funções do site. São proibidos conteúdos ilegais, infratores, dados pessoais não autorizados, assédio, ameaças e spam. Conteúdos ou contas abusivos podem ser restringidos; você pode pedir revisão."
+      ],
+      [
+        "Jogos aleatórios",
+        "As ferramentas de sorteio são recreativas. Configurações de probabilidade e mecanismos físicos podem afetar resultados; não são sistemas certificados de apostas ou distribuição de prêmios. Não as use ilegalmente."
+      ],
+      [
+        "Exclusão da conta",
+        "O responsável processa os pedidos. Conteúdos públicos e estatísticas podem permanecer atribuídos a um membro que saiu do site; solicite separadamente a remoção de dados pessoais presentes no conteúdo. Permissões do Google são gerenciadas à parte. Um novo cadastro não restaura automaticamente a titularidade de conteúdo antigo."
+      ],
+      [
+        "Mudanças e direitos",
+        "As funções podem mudar, ser interrompidas ou encerradas. Pretende-se dar aviso razoável quando viável; medidas urgentes legais, de segurança ou contra abusos podem ser imediatas. Disponibilidade e posição em buscas não são garantidas. Direitos e responsabilidades legais obrigatórios não são excluídos. Leia a política de privacidade; avisos de cadastro não são consentimento publicitário. Dúvidas podem ser enviadas ao contato acima."
+      ]
+    ]
+  },
+  "es": {
+    "privacyTitle": "Política de privacidad",
+    "termsTitle": "Condiciones de uso",
+    "operatorLabel": "Responsable (persona física)",
+    "country": "República de Corea",
+    "contactLabel": "Contacto",
+    "updatedLabel": "Actualizado",
+    "privacy": [
+      [
+        "Datos de la cuenta",
+        "El registro por correo utiliza email y contraseña mediante Supabase Auth. Google facilita un identificador de cuenta, email y perfil básico; OnePickGame no recibe tu contraseña de Google ni solicita acceso a Gmail, Drive o Contactos. El apodo del sitio es público."
+      ],
+      [
+        "Uso de datos y proveedores",
+        "Tratamos cuentas, contenido subido, resultados y consultas para ofrecer funciones, identificar usuarios, mantener sesiones, prevenir abusos y atender solicitudes. Supabase proporciona autenticación, base de datos y almacenamiento; Vercel aloja el sitio. Los proveedores pueden tratar registros técnicos y datos fuera de tu país."
+      ],
+      [
+        "Baja y contenido conservado",
+        "La baja se completa tras la revisión del responsable, no al solicitarla. Se eliminan la cuenta y el perfil, pero el contenido público y las estadísticas pueden conservarse atribuidos a un miembro dado de baja. Los datos personales dentro del contenido no se borran automáticamente: solicita una revisión aparte. Registrarte de nuevo no restablece la titularidad. Las copias de seguridad y los registros técnicos no se eliminan necesariamente de inmediato."
+      ],
+      [
+        "Navegador y publicidad",
+        "El navegador guarda sesiones, idioma y candidatos guardados. Borrarlo puede cerrar tu sesión, pero no elimina la cuenta en línea. Google AdSense y sus socios pueden tratar cookies, identificadores, direcciones IP y datos de uso para anuncios y medición. Registrarse no implica consentir publicidad personalizada; deben aplicarse controles separados cuando corresponda."
+      ],
+      [
+        "Derechos y contacto",
+        "Según la legislación aplicable, puedes solicitar acceso, rectificación, supresión, limitación, portabilidad, oposición o retirada del consentimiento, y reclamar ante la autoridad competente. Contacta con el responsable indicado arriba. Puede requerirse una verificación de identidad proporcionada. No envíes contraseñas ni tokens. Se respetan los derechos locales irrenunciables."
+      ],
+      [
+        "Conexiones de Google",
+        "Darse de baja del sitio no elimina tu cuenta de Google ni revoca automáticamente los permisos de la aplicación. Gestiona esos permisos en las conexiones de Google indicadas abajo. Desconectar Google por sí solo no elimina tu cuenta de OnePickGame."
+      ]
+    ],
+    "terms": [
+      [
+        "Cuentas y acceso",
+        "La navegación y muchos juegos no requieren registro; algunas funciones de creación, subida y gestión requieren acceso por email o Google. Protege tu cuenta y no suplantes identidades. Contacta antes de registrarte si no puedes cumplir los requisitos locales de edad o autorización parental."
+      ],
+      [
+        "Contenido y conducta",
+        "Publica solo contenido propio o autorizado. Conservas tus derechos y permites el almacenamiento, reproducción y presentación necesarios para las funciones del sitio. Se prohíben material ilícito o infractor, datos personales no autorizados, acoso, amenazas y spam. Los contenidos o cuentas abusivos pueden restringirse; puedes solicitar una revisión al responsable."
+      ],
+      [
+        "Juegos aleatorios",
+        "Las herramientas de selección aleatoria son recreativas. La configuración de probabilidades y la mecánica física pueden afectar al resultado; no son sistemas certificados de apuestas ni de reparto de premios. No las utilices de forma ilícita."
+      ],
+      [
+        "Baja de la cuenta",
+        "El responsable tramita las solicitudes de baja. El contenido público y las estadísticas pueden permanecer atribuidos a un miembro dado de baja; solicita aparte la retirada de datos personales incluidos en el contenido. Los permisos de Google se gestionan por separado. Registrarte de nuevo no restaura automáticamente la titularidad del contenido anterior."
+      ],
+      [
+        "Cambios del servicio y derechos",
+        "Las funciones pueden cambiar, interrumpirse o finalizar. Se procurará avisar razonablemente cuando sea posible; las medidas legales, de seguridad o contra abusos urgentes pueden ser inmediatas. No se garantiza disponibilidad continua ni posición en buscadores. No se excluyen derechos ni responsabilidades imperativos. Lee la política de privacidad; el aviso de registro no es consentimiento publicitario. Contacta arriba para consultas."
+      ]
+    ]
+  },
+  "fr": {
+    "privacyTitle": "Politique de confidentialité",
+    "termsTitle": "Conditions d’utilisation",
+    "operatorLabel": "Responsable (particulier)",
+    "country": "République de Corée",
+    "contactLabel": "Contact",
+    "updatedLabel": "Mise à jour",
+    "privacy": [
+      [
+        "Informations du compte",
+        "L’inscription par e-mail utilise l’adresse et le mot de passe via Supabase Auth. Google transmet un identifiant, une adresse e-mail et un profil de base ; OnePickGame ne reçoit pas votre mot de passe Google et ne demande aucun accès à Gmail, Drive ou aux contacts. Votre pseudo est public."
+      ],
+      [
+        "Utilisation des données et prestataires",
+        "Nous traitons les comptes, contenus déposés, résultats et demandes pour fournir les fonctions, identifier les utilisateurs, maintenir les sessions, prévenir les abus et répondre aux demandes. Supabase fournit l’authentification, la base de données et le stockage ; Vercel héberge le site. Ces prestataires peuvent traiter des journaux techniques et des données hors de votre pays."
+      ],
+      [
+        "Suppression du compte et contenus conservés",
+        "La suppression intervient après examen par le responsable, pas dès la demande. Le compte et le profil sont supprimés, mais les contenus publics et statistiques peuvent rester attribués à un membre ayant quitté le site. Les données personnelles dans les contenus ne sont pas effacées automatiquement : demandez un examen distinct. Une réinscription ne rétablit pas la propriété. Sauvegardes et journaux techniques ne sont pas nécessairement effacés immédiatement."
+      ],
+      [
+        "Stockage du navigateur et publicité",
+        "Le navigateur conserve les sessions, la langue et les candidats enregistrés. Les effacer peut vous déconnecter sans supprimer votre compte en ligne. Google AdSense et ses partenaires peuvent traiter cookies, identifiants, adresses IP et données d’usage pour la publicité et la mesure. L’inscription ne vaut pas consentement aux annonces personnalisées ; des choix distincts sont nécessaires lorsque les règles l’exigent."
+      ],
+      [
+        "Vos droits et contact",
+        "Selon le droit applicable, vous pouvez demander l’accès, la rectification, l’effacement, la limitation, la portabilité, l’opposition ou le retrait du consentement, et saisir l’autorité compétente. Contactez le responsable ci-dessus. Une vérification d’identité proportionnée peut être nécessaire. N’envoyez ni mots de passe ni jetons. Les droits locaux impératifs restent protégés."
+      ],
+      [
+        "Connexions Google",
+        "La suppression du compte du site ne supprime pas votre compte Google et ne révoque pas automatiquement l’autorisation de l’application. Gérez-la dans les connexions Google ci-dessous. Déconnecter Google seul ne supprime pas votre compte OnePickGame."
+      ]
+    ],
+    "terms": [
+      [
+        "Comptes et accès",
+        "La consultation et de nombreux jeux sont accessibles sans compte ; certaines créations, mises en ligne et opérations de gestion nécessitent une connexion par e-mail ou Google. Protégez votre compte et n’usurpez pas d’identité. Contactez le responsable avant de vous inscrire si vous ne pouvez respecter les exigences locales d’âge ou d’autorisation parentale."
+      ],
+      [
+        "Contenus et comportement",
+        "Ne publiez que des contenus dont vous êtes titulaire ou que vous êtes autorisé à utiliser. Vous conservez vos droits et autorisez le stockage, la reproduction et l’affichage nécessaires au service. Sont interdits les contenus illicites, contrefaisants, les données personnelles non autorisées, le harcèlement, les menaces et le spam. Des contenus ou comptes abusifs peuvent être restreints ; vous pouvez demander un réexamen."
+      ],
+      [
+        "Jeux aléatoires",
+        "Les outils de tirage sont destinés au divertissement. Les probabilités configurées et la mécanique physique peuvent modifier les résultats ; il ne s’agit pas de systèmes certifiés de jeux d’argent ou d’attribution de lots. Tout usage illicite est interdit."
+      ],
+      [
+        "Suppression du compte",
+        "Le responsable traite les demandes. Les contenus publics et statistiques peuvent rester attribués à un membre ayant quitté le site ; demandez séparément le retrait des données personnelles présentes dans les contenus. Les autorisations Google sont gérées séparément. Une réinscription ne restaure pas automatiquement la propriété des anciens contenus."
+      ],
+      [
+        "Évolution du service et droits",
+        "Les fonctions peuvent être modifiées, interrompues ou arrêtées. Un préavis raisonnable est prévu lorsque cela est possible ; les mesures urgentes légales, de sécurité ou contre les abus peuvent être immédiates. Disponibilité et classement dans les moteurs ne sont pas garantis. Les droits et responsabilités impératifs ne sont pas exclus. Consultez la politique de confidentialité ; l’avis d’inscription n’est pas un consentement publicitaire. Contactez le responsable ci-dessus pour toute question."
+      ]
+    ]
+  },
+  "id": {
+    "privacyTitle": "Kebijakan privasi",
+    "termsTitle": "Ketentuan layanan",
+    "operatorLabel": "Pengelola (perorangan)",
+    "country": "Republik Korea",
+    "contactLabel": "Kontak",
+    "updatedLabel": "Diperbarui",
+    "privacy": [
+      [
+        "Informasi akun",
+        "Pendaftaran email memproses email dan kata sandi melalui Supabase Auth. Google memberikan pengenal akun, email dan profil dasar; OnePickGame tidak menerima kata sandi Google atau meminta akses ke Gmail, Drive atau Kontak. Nama panggilan situs bersifat publik."
+      ],
+      [
+        "Penggunaan data dan penyedia",
+        "Kami memproses akun, unggahan, hasil permainan dan pesan bantuan untuk menyediakan fitur, mengenali pengguna, mempertahankan sesi, mencegah penyalahgunaan dan menangani permintaan. Supabase menyediakan autentikasi, basis data dan penyimpanan; Vercel menghosting situs. Penyedia dapat memproses log teknis dan data di luar negara Anda."
+      ],
+      [
+        "Penghapusan akun dan konten tersimpan",
+        "Penghapusan selesai setelah peninjauan pengelola, bukan langsung saat diminta. Akun dan profil dihapus, tetapi konten publik serta statistik dapat tetap ada dengan atribusi kepada anggota yang telah keluar. Data pribadi dalam konten tidak terhapus otomatis; mintalah peninjauan terpisah. Mendaftar kembali tidak mengembalikan kepemilikan lama. Cadangan dan log teknis belum tentu langsung terhapus."
+      ],
+      [
+        "Penyimpanan browser dan iklan",
+        "Browser menyimpan sesi, bahasa dan kandidat tersimpan. Menghapusnya dapat membuat Anda keluar tanpa menghapus akun online. Google AdSense dan mitra dapat memproses cookie, pengenal, alamat IP dan data penggunaan untuk iklan serta pengukuran. Pendaftaran bukan persetujuan iklan personal; pilihan terpisah diperlukan jika berlaku."
+      ],
+      [
+        "Hak dan kontak",
+        "Sesuai hukum yang berlaku, Anda dapat meminta akses, koreksi, penghapusan, pembatasan, portabilitas, keberatan atau penarikan persetujuan, dan mengadu kepada otoritas berwenang. Hubungi pengelola di atas. Verifikasi identitas yang sebanding mungkin diperlukan. Jangan kirim kata sandi atau token. Hak wajib berdasarkan hukum setempat tetap dilindungi."
+      ],
+      [
+        "Koneksi Google",
+        "Penghapusan akun situs tidak menghapus akun Google atau mencabut izin aplikasi secara otomatis. Kelola izin melalui koneksi Google di bawah. Memutus Google saja tidak menghapus akun OnePickGame."
+      ]
+    ],
+    "terms": [
+      [
+        "Akun dan akses",
+        "Penjelajahan dan banyak permainan tidak perlu pendaftaran; beberapa pembuatan, unggahan dan pengelolaan memerlukan login email atau Google. Lindungi akun dan jangan menyamar sebagai orang lain. Hubungi pengelola sebelum mendaftar jika Anda tidak dapat memenuhi syarat usia atau izin orang tua setempat."
+      ],
+      [
+        "Konten dan perilaku",
+        "Unggah hanya konten milik Anda atau yang diizinkan. Hak Anda tetap ada; izinkan penyimpanan, penyalinan dan tampilan yang diperlukan untuk fitur situs. Materi ilegal, pelanggaran hak, data pribadi tanpa izin, pelecehan, ancaman dan spam dilarang. Konten atau akun yang menyalahgunakan layanan dapat dibatasi; Anda boleh meminta peninjauan."
+      ],
+      [
+        "Permainan acak",
+        "Alat pemilihan acak untuk hiburan. Pengaturan peluang dan mekanisme fisik dapat memengaruhi hasil; alat ini bukan sistem perjudian atau pembagian hadiah bersertifikat. Jangan menggunakannya secara melanggar hukum."
+      ],
+      [
+        "Penghapusan akun",
+        "Pengelola menangani permintaan penghapusan. Konten publik dan statistik dapat tetap diatribusikan kepada anggota yang keluar; mintalah penghapusan data pribadi dalam konten secara terpisah. Izin Google dikelola terpisah. Pendaftaran ulang tidak otomatis memulihkan kepemilikan konten lama."
+      ],
+      [
+        "Perubahan layanan dan hak",
+        "Fitur dapat berubah, terputus atau dihentikan. Pemberitahuan wajar diupayakan jika memungkinkan; tindakan hukum, keamanan atau pencegahan penyalahgunaan yang mendesak dapat langsung dilakukan. Ketersediaan dan peringkat pencarian tidak dijamin. Hak dan tanggung jawab wajib menurut hukum tidak dikesampingkan. Baca kebijakan privasi; pemberitahuan pendaftaran bukan persetujuan iklan. Kirim pertanyaan ke kontak di atas."
+      ]
+    ]
+  },
+  "hi": {
+    "privacyTitle": "गोपनीयता नीति",
+    "termsTitle": "सेवा की शर्तें",
+    "operatorLabel": "संचालक (व्यक्ति)",
+    "country": "कोरिया गणराज्य",
+    "contactLabel": "संपर्क",
+    "updatedLabel": "संशोधित",
+    "privacy": [
+      [
+        "खाते की जानकारी",
+        "ईमेल पंजीकरण में Supabase Auth के ज़रिए ईमेल और पासवर्ड संसाधित होते हैं। Google लॉगिन से खाता पहचानकर्ता, ईमेल और बुनियादी प्रोफ़ाइल मिलती है। OnePickGame आपका Google पासवर्ड नहीं लेता और Gmail, Drive या संपर्कों की पहुँच नहीं माँगता। साइट का उपनाम सार्वजनिक है।"
+      ],
+      [
+        "उद्देश्य और सेवा प्रदाता",
+        "सुविधाएँ देने, पहचान सत्यापित करने, सत्र बनाए रखने, दुरुपयोग रोकने और अनुरोध सँभालने के लिए खाते, अपलोड, खेल परिणाम और सहायता संदेश संसाधित होते हैं। Supabase प्रमाणीकरण, डेटाबेस और भंडारण देता है; Vercel साइट होस्ट करता है। प्रदाता तकनीकी लॉग और डेटा आपके देश के बाहर संसाधित कर सकते हैं।"
+      ],
+      [
+        "खाता हटाना और बची सामग्री",
+        "खाता अनुरोध करते ही नहीं, संचालक की समीक्षा के बाद हटता है। खाता और प्रोफ़ाइल हटते हैं, पर सार्वजनिक सामग्री और आँकड़े पूर्व सदस्य के नाम से रह सकते हैं। सामग्री के अंदर की निजी जानकारी अपने आप नहीं मिटती; अलग समीक्षा माँगें। दोबारा पंजीकरण से पुराना स्वामित्व नहीं लौटता। बैकअप और तकनीकी लॉग तुरंत मिटना आवश्यक नहीं है।"
+      ],
+      [
+        "ब्राउज़र भंडारण और विज्ञापन",
+        "ब्राउज़र सत्र, भाषा और सहेजे गए उम्मीदवार रखता है। इन्हें मिटाने से लॉगआउट हो सकता है, ऑनलाइन खाता नहीं मिटता। Google AdSense और साझेदार विज्ञापन व मापन के लिए कुकी, पहचानकर्ता, IP पते और उपयोग जानकारी संसाधित कर सकते हैं। पंजीकरण वैयक्तिकृत विज्ञापन की सहमति नहीं है; जहाँ ज़रूरी हो अलग विकल्प चाहिए।"
+      ],
+      [
+        "आपके अधिकार और संपर्क",
+        "लागू कानून के अनुसार आप पहुँच, सुधार, विलोपन, प्रतिबंध, डेटा पोर्टेबिलिटी, आपत्ति या सहमति वापसी माँग सकते हैं और सक्षम प्राधिकरण से शिकायत कर सकते हैं। ऊपर दिए संचालक से संपर्क करें। उचित पहचान सत्यापन आवश्यक हो सकता है। पासवर्ड या टोकन न भेजें। स्थानीय कानून के अनिवार्य अधिकार सुरक्षित हैं।"
+      ],
+      [
+        "Google कनेक्शन",
+        "साइट से खाता हटाने पर Google खाता नहीं मिटता और ऐप की अनुमति अपने आप रद्द नहीं होती। नीचे Google खाता कनेक्शन से अनुमति सँभालें। केवल Google कनेक्शन हटाने से OnePickGame खाता नहीं हटता।"
+      ]
+    ],
+    "terms": [
+      [
+        "खाते और पहुँच",
+        "ब्राउज़िंग और कई खेलों के लिए पंजीकरण नहीं चाहिए; कुछ निर्माण, अपलोड और प्रबंधन कार्यों के लिए ईमेल या Google लॉगिन चाहिए। खाता सुरक्षित रखें और किसी का प्रतिरूपण न करें। स्थानीय आयु या अभिभावक अनुमति की शर्तें पूरी न कर सकें तो पंजीकरण से पहले संचालक से संपर्क करें।"
+      ],
+      [
+        "सामग्री और व्यवहार",
+        "केवल अपनी या अनुमति प्राप्त सामग्री अपलोड करें। आपके अधिकार बने रहते हैं और साइट की सुविधाओं हेतु आवश्यक भंडारण, प्रतिलिपि और प्रदर्शन की अनुमति देते हैं। अवैध या अधिकारों का उल्लंघन करने वाली सामग्री, अनधिकृत निजी जानकारी, उत्पीड़न, धमकी और स्पैम वर्जित हैं। अनुचित सामग्री या खाते सीमित किए जा सकते हैं; आप समीक्षा माँग सकते हैं।"
+      ],
+      [
+        "रैंडम खेल",
+        "रैंडम चयन उपकरण मनोरंजन के लिए हैं। संभावना सेटिंग और भौतिक तंत्र परिणाम प्रभावित कर सकते हैं; ये प्रमाणित जुआ या पुरस्कार वितरण प्रणालियाँ नहीं हैं। गैरकानूनी उपयोग न करें।"
+      ],
+      [
+        "खाता हटाना",
+        "संचालक खाता हटाने के अनुरोध संसाधित करता है। सार्वजनिक सामग्री और आँकड़े पूर्व सदस्य के नाम से रह सकते हैं; सामग्री में निजी जानकारी हटाने का अलग अनुरोध दें। Google अनुमतियाँ अलग सँभाली जाती हैं। दोबारा पंजीकरण पुरानी सामग्री का स्वामित्व अपने आप नहीं लौटाता।"
+      ],
+      [
+        "सेवा परिवर्तन और अधिकार",
+        "सुविधाएँ बदल, बाधित या बंद हो सकती हैं। जहाँ संभव हो उचित पूर्व सूचना देने का उद्देश्य है; तत्काल कानूनी, सुरक्षा या दुरुपयोग संबंधी कार्रवाई तुरंत हो सकती है। निरंतर उपलब्धता और खोज रैंक की गारंटी नहीं है। अनिवार्य अधिकार और दायित्व हटाए नहीं जा सकते। गोपनीयता नीति पढ़ें; पंजीकरण सूचना विज्ञापन सहमति नहीं है। प्रश्न ऊपर दिए संपर्क पर भेजें।"
+      ]
+    ]
+  },
+  "de": {
+    "privacyTitle": "Datenschutzerklärung",
+    "termsTitle": "Nutzungsbedingungen",
+    "operatorLabel": "Verantwortlicher (Privatperson)",
+    "country": "Republik Korea",
+    "contactLabel": "Kontakt",
+    "updatedLabel": "Aktualisiert",
+    "privacy": [
+      [
+        "Kontodaten",
+        "Bei der E-Mail-Registrierung werden E-Mail-Adresse und Passwort über Supabase Auth verarbeitet. Google übermittelt eine Kontokennung, E-Mail und grundlegende Profildaten. OnePickGame erhält dein Google-Passwort nicht und fordert keinen Zugriff auf Gmail, Drive oder Kontakte an. Dein Spitzname ist öffentlich."
+      ],
+      [
+        "Zwecke und Dienstleister",
+        "Wir verarbeiten Konten, hochgeladene Inhalte, Spielergebnisse und Anfragen für Funktionen, Identifizierung, Sitzungen, Missbrauchsschutz und die Bearbeitung von Anliegen. Supabase stellt Authentifizierung, Datenbank und Dateispeicher bereit; Vercel hostet die Website. Die Anbieter können technische Protokolle und Daten außerhalb deines Landes verarbeiten."
+      ],
+      [
+        "Kontolöschung und verbleibende Inhalte",
+        "Die Löschung erfolgt nach Prüfung durch den Betreiber, nicht sofort beim Antrag. Konto und Profil werden entfernt, öffentliche Inhalte und Statistiken können jedoch einem ausgeschiedenen Mitglied zugeordnet bleiben. Personenbezogene Daten innerhalb von Inhalten werden nicht automatisch gelöscht; bitte gesondert prüfen lassen. Eine Neuregistrierung stellt keine früheren Eigentumszuordnungen wieder her. Sicherungen und technische Protokolle werden nicht unbedingt sofort gelöscht."
+      ],
+      [
+        "Browserspeicher und Werbung",
+        "Der Browser speichert Sitzungen, Sprache und gespeicherte Kandidaten. Das Löschen kann dich abmelden, löscht aber nicht dein Onlinekonto. Google AdSense und Partner können Cookies, Kennungen, IP-Adressen und Nutzungsdaten für Werbung und Messung verarbeiten. Die Registrierung ist keine Einwilligung in personalisierte Werbung; soweit erforderlich sind gesonderte Auswahlmöglichkeiten nötig."
+      ],
+      [
+        "Deine Rechte und Kontakt",
+        "Je nach anwendbarem Recht kannst du Auskunft, Berichtigung, Löschung, Einschränkung, Übertragbarkeit, Widerspruch oder Widerruf einer Einwilligung verlangen und dich bei der zuständigen Behörde beschweren. Wende dich an den oben genannten Verantwortlichen. Eine angemessene Identitätsprüfung kann erforderlich sein. Sende keine Passwörter oder Tokens. Zwingende lokale Rechte bleiben geschützt."
+      ],
+      [
+        "Google-Verbindungen",
+        "Die Kontolöschung auf der Website löscht weder dein Google-Konto noch widerruft sie automatisch die App-Berechtigung. Verwalte sie über die unten verlinkten Google-Verbindungen. Allein das Trennen von Google löscht dein OnePickGame-Konto nicht."
+      ]
+    ],
+    "terms": [
+      [
+        "Konten und Zugang",
+        "Das Durchsuchen und viele Spiele benötigen kein Konto; bestimmte Erstellungs-, Upload- und Verwaltungsfunktionen erfordern E-Mail- oder Google-Anmeldung. Schütze dein Konto und gib dich nicht als andere Person aus. Kontaktiere den Betreiber vor der Registrierung, wenn du lokale Alters- oder elterliche Genehmigungsanforderungen nicht erfüllen kannst."
+      ],
+      [
+        "Inhalte und Verhalten",
+        "Lade nur eigene oder zur Nutzung freigegebene Inhalte hoch. Deine Rechte bleiben bestehen; du erlaubst die für die Funktionen erforderliche Speicherung, Vervielfältigung und Anzeige. Rechtswidrige, rechtsverletzende Inhalte, unbefugte personenbezogene Daten, Belästigung, Drohungen und Spam sind verboten. Missbräuchliche Inhalte oder Konten können eingeschränkt werden; eine Überprüfung kann beantragt werden."
+      ],
+      [
+        "Zufallsspiele",
+        "Auswahlwerkzeuge dienen der Unterhaltung. Wahrscheinlichkeitseinstellungen und physikalische Mechaniken können Ergebnisse beeinflussen; sie sind keine zertifizierten Glücksspiel- oder Gewinnverteilungssysteme. Rechtswidrige Nutzung ist untersagt."
+      ],
+      [
+        "Kontolöschung",
+        "Der Betreiber bearbeitet Löschanträge. Öffentliche Inhalte und Statistiken können unter der Zuordnung zu einem ausgeschiedenen Mitglied bleiben; personenbezogene Daten innerhalb von Inhalten bitte gesondert zur Entfernung melden. Google-Berechtigungen werden getrennt verwaltet. Eine Neuregistrierung stellt frühere Inhaltszuordnungen nicht automatisch wieder her."
+      ],
+      [
+        "Änderungen und Rechte",
+        "Funktionen können geändert, unterbrochen oder beendet werden. Soweit praktikabel soll eine angemessene Vorankündigung erfolgen; dringende rechtliche, sicherheitsbezogene oder missbrauchsbedingte Maßnahmen können sofort erfolgen. Verfügbarkeit und Suchrang werden nicht garantiert. Zwingende Rechte und Haftung bleiben unberührt. Lies die Datenschutzerklärung; Registrierungshinweise sind keine Werbeeinwilligung. Fragen bitte an den oben genannten Kontakt."
+      ]
+    ]
+  },
+  "vi": {
+    "privacyTitle": "Chính sách quyền riêng tư",
+    "termsTitle": "Điều khoản sử dụng",
+    "operatorLabel": "Người vận hành (cá nhân)",
+    "country": "Đại Hàn Dân Quốc",
+    "contactLabel": "Liên hệ",
+    "updatedLabel": "Cập nhật",
+    "privacy": [
+      [
+        "Thông tin tài khoản",
+        "Đăng ký email xử lý email và mật khẩu qua Supabase Auth. Google cung cấp mã tài khoản, email và hồ sơ cơ bản; OnePickGame không nhận mật khẩu Google hay yêu cầu truy cập Gmail, Drive hoặc Danh bạ. Biệt danh trên trang web được công khai."
+      ],
+      [
+        "Mục đích và nhà cung cấp",
+        "Chúng tôi xử lý tài khoản, nội dung tải lên, kết quả và tin nhắn hỗ trợ để cung cấp tính năng, xác thực, duy trì phiên, ngăn lạm dụng và giải quyết yêu cầu. Supabase cung cấp xác thực, cơ sở dữ liệu và lưu trữ; Vercel lưu trữ trang web. Nhà cung cấp có thể xử lý nhật ký kỹ thuật và dữ liệu ngoài quốc gia của bạn."
+      ],
+      [
+        "Xóa tài khoản và nội dung còn lại",
+        "Việc xóa hoàn tất sau khi người vận hành xem xét, không phải ngay khi gửi yêu cầu. Tài khoản và hồ sơ bị xóa, nhưng nội dung công khai và thống kê có thể còn dưới tên thành viên đã rời trang web. Thông tin cá nhân bên trong nội dung không tự động bị xóa; hãy yêu cầu xem xét riêng. Đăng ký lại không khôi phục quyền sở hữu cũ. Bản sao lưu và nhật ký kỹ thuật không nhất thiết được xóa ngay."
+      ],
+      [
+        "Bộ nhớ trình duyệt và quảng cáo",
+        "Trình duyệt lưu phiên, ngôn ngữ và ứng viên đã lưu. Xóa chúng có thể đăng xuất nhưng không xóa tài khoản trực tuyến. Google AdSense và đối tác có thể xử lý cookie, mã định danh, địa chỉ IP và dữ liệu sử dụng để quảng cáo, đo lường. Đăng ký không phải đồng ý quảng cáo cá nhân hóa; cần lựa chọn riêng khi quy định yêu cầu."
+      ],
+      [
+        "Quyền và liên hệ",
+        "Tùy luật áp dụng, bạn có thể yêu cầu truy cập, sửa, xóa, hạn chế, chuyển dữ liệu, phản đối, rút đồng ý và khiếu nại tới cơ quan có thẩm quyền. Hãy liên hệ người vận hành ở trên. Có thể cần xác minh danh tính ở mức phù hợp. Không gửi mật khẩu hay token. Các quyền bắt buộc theo luật địa phương được giữ nguyên."
+      ],
+      [
+        "Kết nối Google",
+        "Xóa tài khoản trang web không xóa tài khoản Google hay tự động thu hồi quyền ứng dụng. Quản lý quyền qua kết nối tài khoản Google ở dưới. Chỉ ngắt Google không xóa tài khoản OnePickGame."
+      ]
+    ],
+    "terms": [
+      [
+        "Tài khoản và truy cập",
+        "Duyệt trang và nhiều trò chơi không cần đăng ký; một số thao tác tạo, tải lên và quản lý yêu cầu đăng nhập email hoặc Google. Bảo vệ tài khoản và không mạo danh. Liên hệ người vận hành trước khi đăng ký nếu không đáp ứng yêu cầu địa phương về độ tuổi hay sự cho phép của cha mẹ."
+      ],
+      [
+        "Nội dung và hành vi",
+        "Chỉ tải lên nội dung thuộc sở hữu hoặc được phép sử dụng. Bạn giữ các quyền và cho phép lưu trữ, sao chép, hiển thị cần thiết cho tính năng trang web. Cấm nội dung bất hợp pháp, vi phạm quyền, thông tin cá nhân không được phép, quấy rối, đe dọa và spam. Nội dung hoặc tài khoản lạm dụng có thể bị hạn chế; bạn có thể yêu cầu xem xét lại."
+      ],
+      [
+        "Trò chơi ngẫu nhiên",
+        "Công cụ chọn ngẫu nhiên dành cho giải trí. Thiết lập xác suất và cơ chế vật lý có thể ảnh hưởng kết quả; đây không phải hệ thống cờ bạc hay phân bổ giải thưởng được chứng nhận. Không sử dụng trái pháp luật."
+      ],
+      [
+        "Xóa tài khoản",
+        "Người vận hành xử lý yêu cầu xóa. Nội dung công khai và thống kê có thể còn dưới tên thành viên đã rời trang web; hãy yêu cầu riêng việc xóa thông tin cá nhân trong nội dung. Quyền Google được quản lý riêng. Đăng ký lại không tự động khôi phục quyền sở hữu nội dung cũ."
+      ],
+      [
+        "Thay đổi dịch vụ và quyền",
+        "Tính năng có thể thay đổi, gián đoạn hoặc ngừng hoạt động. Chúng tôi dự kiến thông báo trước hợp lý khi khả thi; biện pháp pháp lý, bảo mật hay chống lạm dụng khẩn cấp có thể được thực hiện ngay. Không bảo đảm hoạt động liên tục hoặc thứ hạng tìm kiếm. Quyền và trách nhiệm bắt buộc theo luật không bị loại trừ. Hãy đọc chính sách quyền riêng tư; thông báo đăng ký không phải đồng ý quảng cáo. Gửi câu hỏi đến liên hệ ở trên."
+      ]
+    ]
+  },
+  "ar": {
+    "privacyTitle": "سياسة الخصوصية",
+    "termsTitle": "شروط الخدمة",
+    "operatorLabel": "المشغّل (فرد)",
+    "country": "جمهورية كوريا",
+    "contactLabel": "للتواصل",
+    "updatedLabel": "آخر تحديث",
+    "privacy": [
+      [
+        "معلومات الحساب",
+        "يعالج التسجيل بالبريد الإلكتروني العنوان وكلمة المرور عبر Supabase Auth. يزوّد تسجيل Google معرّف الحساب والبريد ومعلومات الملف الأساسية؛ لا يتلقى OnePickGame كلمة مرور Google ولا يطلب الوصول إلى Gmail أو Drive أو جهات الاتصال. الاسم المستعار في الموقع علني."
+      ],
+      [
+        "الأغراض ومقدمو الخدمات",
+        "نعالج الحسابات والمحتوى المرفوع ونتائج الألعاب ورسائل الدعم لتقديم الميزات والتحقق من المستخدمين وإبقاء الجلسات ومنع الإساءة ومعالجة الطلبات. يوفّر Supabase المصادقة وقاعدة البيانات والتخزين، وتستضيف Vercel الموقع. قد يعالج المزوّدون البيانات والسجلات التقنية خارج بلدك."
+      ],
+      [
+        "حذف الحساب والمحتوى المتبقي",
+        "يكتمل الحذف بعد مراجعة المشغّل، وليس فور تقديم الطلب. يُحذف حساب الموقع وملفه، لكن المحتوى المنشور والإحصاءات قد تبقى منسوبة إلى عضو غادر الموقع. لا تُمحى البيانات الشخصية داخل المحتوى تلقائيًا؛ اطلب مراجعة مستقلة. إعادة التسجيل لا تعيد الملكية السابقة. قد لا تُحذف النسخ الاحتياطية والسجلات التقنية فورًا."
+      ],
+      [
+        "تخزين المتصفح والإعلانات",
+        "يحفظ المتصفح الجلسات واللغة والمرشحين المحفوظين. قد يؤدي مسحه إلى تسجيل الخروج لكنه لا يحذف الحساب على الإنترنت. قد يعالج Google AdSense وشركاؤه ملفات الارتباط والمعرّفات وعناوين IP وبيانات الاستخدام للإعلانات والقياس. التسجيل ليس موافقة على الإعلانات المخصصة؛ تلزم خيارات منفصلة حيثما كان ذلك مطلوبًا."
+      ],
+      [
+        "حقوقك والتواصل",
+        "بحسب القانون المعمول به، يمكنك طلب الوصول والتصحيح والحذف والتقييد ونقل البيانات والاعتراض أو سحب الموافقة، وتقديم شكوى إلى الجهة المختصة. تواصل مع المشغّل أعلاه. قد يلزم تحقق متناسب من الهوية. لا ترسل كلمات المرور أو الرموز المميزة. تظل الحقوق المحلية الإلزامية محفوظة."
+      ],
+      [
+        "اتصالات Google",
+        "حذف حساب الموقع لا يحذف حساب Google ولا يلغي إذن التطبيق تلقائيًا. أدر الإذن عبر اتصالات حساب Google أدناه. إلغاء اتصال Google وحده لا يحذف حساب OnePickGame."
+      ]
+    ],
+    "terms": [
+      [
+        "الحسابات والوصول",
+        "التصفح وكثير من الألعاب لا يتطلبان التسجيل؛ بعض إجراءات الإنشاء والرفع والإدارة تتطلب الدخول بالبريد أو Google. احمِ حسابك ولا تنتحل هوية الآخرين. تواصل مع المشغّل قبل التسجيل إذا تعذر استيفاء متطلبات العمر أو إذن الوالدين المحلية."
+      ],
+      [
+        "المحتوى والسلوك",
+        "ارفع فقط ما تملكه أو لديك إذن باستخدامه. تحتفظ بحقوقك وتسمح بالتخزين والنسخ والعرض اللازم لميزات الموقع. يُحظر المحتوى غير القانوني أو المنتهك للحقوق والبيانات الشخصية غير المصرّح بها والتحرش والتهديد والرسائل المزعجة. قد تُقيّد الحسابات أو المواد المسيئة، ويمكنك طلب المراجعة."
+      ],
+      [
+        "الألعاب العشوائية",
+        "أدوات الاختيار العشوائي للترفيه. قد تؤثر إعدادات الاحتمالات والآليات الفيزيائية في النتائج؛ ليست أنظمة معتمدة للمقامرة أو توزيع الجوائز. لا تستخدمها بصورة غير قانونية."
+      ],
+      [
+        "حذف الحساب",
+        "يعالج المشغّل طلبات الحذف. قد يبقى المحتوى العلني والإحصاءات منسوبًا إلى عضو غادر الموقع؛ اطلب حذف البيانات الشخصية داخل المحتوى على حدة. تُدار أذونات Google بشكل مستقل. إعادة التسجيل لا تستعيد تلقائيًا ملكية المحتوى السابق."
+      ],
+      [
+        "تغييرات الخدمة والحقوق",
+        "قد تتغير الميزات أو تتوقف مؤقتًا أو نهائيًا. يُعتزم تقديم إشعار معقول متى أمكن؛ قد تُتخذ الإجراءات القانونية أو الأمنية أو المضادة للإساءة العاجلة فورًا. لا نضمن الاستمرارية أو ترتيب البحث. لا تُستبعد الحقوق والمسؤوليات الإلزامية. اقرأ سياسة الخصوصية؛ إشعار التسجيل ليس موافقة إعلانية. أرسل الأسئلة إلى وسيلة التواصل أعلاه."
+      ]
+    ]
+  },
+  "bn": {
+    "privacyTitle": "গোপনীয়তা নীতি",
+    "termsTitle": "ব্যবহারের শর্তাবলি",
+    "operatorLabel": "পরিচালক (ব্যক্তি)",
+    "country": "কোরিয়া প্রজাতন্ত্র",
+    "contactLabel": "যোগাযোগ",
+    "updatedLabel": "হালনাগাদ",
+    "privacy": [
+      [
+        "অ্যাকাউন্টের তথ্য",
+        "ইমেইল নিবন্ধনে Supabase Auth-এর মাধ্যমে ইমেইল ও পাসওয়ার্ড প্রক্রিয়াকরণ হয়। Google লগইনে অ্যাকাউন্ট পরিচায়ক, ইমেইল ও প্রাথমিক প্রোফাইল আসে; OnePickGame আপনার Google পাসওয়ার্ড পায় না এবং Gmail, Drive বা পরিচিতির প্রবেশাধিকার চায় না। সাইটের ডাকনাম প্রকাশ্য।"
+      ],
+      [
+        "উদ্দেশ্য ও সেবাদাতা",
+        "সুবিধা দেওয়া, পরিচয় যাচাই, সেশন বজায় রাখা, অপব্যবহার রোধ ও অনুরোধ পরিচালনায় অ্যাকাউন্ট, আপলোড, খেলার ফল এবং সহায়তার বার্তা প্রক্রিয়াকরণ করা হয়। Supabase প্রমাণীকরণ, ডেটাবেস ও সংরক্ষণ দেয়; Vercel সাইট হোস্ট করে। সেবাদাতারা আপনার দেশের বাইরে প্রযুক্তিগত লগ ও তথ্য প্রক্রিয়াকরণ করতে পারে।"
+      ],
+      [
+        "অ্যাকাউন্ট মুছলে যে তথ্য থাকে",
+        "অনুরোধের সঙ্গে সঙ্গে নয়, পরিচালকের পর্যালোচনার পর অ্যাকাউন্ট মোছা হয়। অ্যাকাউন্ট ও প্রোফাইল মুছে যায়, তবে প্রকাশ্য বিষয়বস্তু ও পরিসংখ্যান সাইট ছেড়ে যাওয়া সদস্যের নামে থাকতে পারে। বিষয়বস্তুর ভেতরের ব্যক্তিগত তথ্য স্বয়ংক্রিয়ভাবে মোছে না; আলাদা পর্যালোচনা চান। পুনর্নিবন্ধনে পুরোনো মালিকানা ফেরে না। ব্যাকআপ ও প্রযুক্তিগত লগ সঙ্গে সঙ্গে নাও মুছতে পারে।"
+      ],
+      [
+        "ব্রাউজার সংরক্ষণ ও বিজ্ঞাপন",
+        "ব্রাউজারে সেশন, ভাষা ও সংরক্ষিত প্রার্থীরা থাকে। মুছলে লগআউট হতে পারেন, কিন্তু অনলাইন অ্যাকাউন্ট মোছে না। Google AdSense ও সহযোগীরা বিজ্ঞাপন ও পরিমাপের জন্য কুকি, পরিচায়ক, IP ঠিকানা ও ব্যবহারের তথ্য প্রক্রিয়াকরণ করতে পারে। নিবন্ধন ব্যক্তিগতকৃত বিজ্ঞাপনের সম্মতি নয়; প্রযোজ্য ক্ষেত্রে আলাদা পছন্দের ব্যবস্থা প্রয়োজন।"
+      ],
+      [
+        "আপনার অধিকার ও যোগাযোগ",
+        "প্রযোজ্য আইন অনুযায়ী প্রবেশাধিকার, সংশোধন, মোছা, সীমাবদ্ধতা, তথ্য বহনযোগ্যতা, আপত্তি বা সম্মতি প্রত্যাহার চাইতে এবং উপযুক্ত কর্তৃপক্ষের কাছে অভিযোগ করতে পারেন। উপরের পরিচালকের সঙ্গে যোগাযোগ করুন। আনুপাতিক পরিচয় যাচাই প্রয়োজন হতে পারে। পাসওয়ার্ড বা টোকেন পাঠাবেন না। স্থানীয় আইনের বাধ্যতামূলক অধিকার বজায় থাকে।"
+      ],
+      [
+        "Google সংযোগ",
+        "সাইটের অ্যাকাউন্ট মুছলে Google অ্যাকাউন্ট মোছে না বা অ্যাপের অনুমতি নিজে থেকে বাতিল হয় না। নিচে Google অ্যাকাউন্ট সংযোগ থেকে তা নিয়ন্ত্রণ করুন। শুধু Google সংযোগ বিচ্ছিন্ন করলে OnePickGame অ্যাকাউন্ট মোছে না।"
+      ]
+    ],
+    "terms": [
+      [
+        "অ্যাকাউন্ট ও প্রবেশাধিকার",
+        "ব্রাউজিং ও অনেক খেলায় নিবন্ধন লাগে না; কিছু তৈরি, আপলোড ও পরিচালনায় ইমেইল বা Google লগইন লাগে। অ্যাকাউন্ট রক্ষা করুন এবং অন্যের পরিচয় ব্যবহার করবেন না। স্থানীয় বয়স বা অভিভাবকের অনুমতির শর্ত পূরণ না হলে নিবন্ধনের আগে পরিচালকের সঙ্গে যোগাযোগ করুন।"
+      ],
+      [
+        "বিষয়বস্তু ও আচরণ",
+        "নিজের বা ব্যবহারের অনুমতিপ্রাপ্ত বিষয়বস্তু আপলোড করুন। আপনার অধিকার বজায় থাকে; সাইটের সুবিধার জন্য প্রয়োজনীয় সংরক্ষণ, অনুলিপি ও প্রদর্শনের অনুমতি দেন। বেআইনি বা অধিকার লঙ্ঘনকারী উপাদান, অননুমোদিত ব্যক্তিগত তথ্য, হয়রানি, হুমকি ও স্প্যাম নিষিদ্ধ। অপব্যবহারকারী বিষয়বস্তু বা অ্যাকাউন্ট সীমিত হতে পারে; পর্যালোচনা চাইতে পারেন।"
+      ],
+      [
+        "র্যান্ডম খেলা",
+        "র্যান্ডম বাছাইয়ের সরঞ্জাম বিনোদনের জন্য। সম্ভাবনার সেটিং ও ভৌত প্রক্রিয়া ফলে প্রভাব ফেলতে পারে; এগুলো প্রত্যয়িত জুয়া বা পুরস্কার বণ্টন ব্যবস্থা নয়। বেআইনিভাবে ব্যবহার করবেন না।"
+      ],
+      [
+        "অ্যাকাউন্ট মোছা",
+        "পরিচালক মোছার অনুরোধ প্রক্রিয়াকরণ করেন। প্রকাশ্য বিষয়বস্তু ও পরিসংখ্যান বিদায়ী সদস্যের নামে থাকতে পারে; বিষয়বস্তুর ব্যক্তিগত তথ্য মোছার আলাদা অনুরোধ দিন। Google অনুমতি আলাদাভাবে নিয়ন্ত্রিত। পুনর্নিবন্ধনে পুরোনো বিষয়বস্তুর মালিকানা স্বয়ংক্রিয়ভাবে ফেরে না।"
+      ],
+      [
+        "সেবার পরিবর্তন ও অধিকার",
+        "সুবিধা বদলাতে, ব্যাহত হতে বা বন্ধ হতে পারে। সম্ভব হলে যুক্তিসংগত পূর্ব নোটিশ দেওয়ার উদ্দেশ্য থাকে; জরুরি আইনি, নিরাপত্তা বা অপব্যবহারবিরোধী ব্যবস্থা তাৎক্ষণিক হতে পারে। নিরবচ্ছিন্ন সেবা বা অনুসন্ধানের স্থান নিশ্চিত নয়। বাধ্যতামূলক অধিকার ও দায় বাদ যায় না। গোপনীয়তা নীতি পড়ুন; নিবন্ধনের বার্তা বিজ্ঞাপনের সম্মতি নয়। প্রশ্ন উপরের যোগাযোগে পাঠান।"
+      ]
+    ]
+  },
+  "th": {
+    "privacyTitle": "นโยบายความเป็นส่วนตัว",
+    "termsTitle": "ข้อกำหนดการใช้งาน",
+    "operatorLabel": "ผู้ดำเนินการ (บุคคลธรรมดา)",
+    "country": "สาธารณรัฐเกาหลี",
+    "contactLabel": "ติดต่อ",
+    "updatedLabel": "ปรับปรุง",
+    "privacy": [
+      [
+        "ข้อมูลบัญชี",
+        "การสมัครด้วยอีเมลจะประมวลผลอีเมลและรหัสผ่านผ่าน Supabase Auth ส่วน Google จะส่งรหัสบัญชี อีเมล และข้อมูลโปรไฟล์พื้นฐาน OnePickGame ไม่ได้รับรหัสผ่าน Google และไม่ขอเข้าถึง Gmail, Drive หรือรายชื่อติดต่อ ชื่อเล่นบนเว็บไซต์เป็นข้อมูลสาธารณะ"
+      ],
+      [
+        "วัตถุประสงค์และผู้ให้บริการ",
+        "เราประมวลผลบัญชี เนื้อหาที่อัปโหลด ผลเกม และข้อความติดต่อ เพื่อให้บริการ ยืนยันตัวตน รักษาเซสชัน ป้องกันการใช้งานที่ไม่เหมาะสม และจัดการคำขอ Supabase ให้บริการยืนยันตัวตน ฐานข้อมูล และพื้นที่จัดเก็บ ส่วน Vercel ให้บริการโฮสติ้ง ผู้ให้บริการอาจประมวลผลบันทึกทางเทคนิคและข้อมูลนอกประเทศของคุณ"
+      ],
+      [
+        "การลบบัญชีและเนื้อหาที่คงอยู่",
+        "บัญชีจะถูกลบหลังผู้ดำเนินการตรวจสอบ ไม่ใช่ทันทีที่ส่งคำขอ บัญชีและโปรไฟล์จะถูกลบ แต่เนื้อหาสาธารณะและสถิติอาจคงอยู่ในนามสมาชิกที่ออกจากเว็บไซต์แล้ว ข้อมูลส่วนบุคคลในเนื้อหาไม่ถูกลบอัตโนมัติ โปรดขอตรวจสอบแยกต่างหาก การสมัครใหม่ไม่คืนสิทธิ์ความเป็นเจ้าของเดิม ข้อมูลสำรองและบันทึกทางเทคนิคอาจไม่ถูกลบทันที"
+      ],
+      [
+        "พื้นที่จัดเก็บเบราว์เซอร์และโฆษณา",
+        "เบราว์เซอร์เก็บเซสชัน ภาษา และรายชื่อที่บันทึกไว้ การล้างข้อมูลอาจทำให้ออกจากระบบ แต่ไม่ลบบัญชีออนไลน์ Google AdSense และพันธมิตรอาจประมวลผลคุกกี้ ตัวระบุ ที่อยู่ IP และข้อมูลการใช้เพื่อโฆษณาและการวัดผล การสมัครไม่ใช่ความยินยอมต่อโฆษณาเฉพาะบุคคล และต้องมีตัวเลือกแยกเมื่อจำเป็น"
+      ],
+      [
+        "สิทธิและการติดต่อ",
+        "ตามกฎหมายที่ใช้บังคับ คุณอาจขอเข้าถึง แก้ไข ลบ จำกัด โอนย้าย คัดค้าน ถอนความยินยอม หรือร้องเรียนต่อหน่วยงานที่มีอำนาจ โปรดติดต่อผู้ดำเนินการด้านบน อาจต้องยืนยันตัวตนอย่างได้สัดส่วน ห้ามส่งรหัสผ่านหรือโทเคน สิทธิที่กฎหมายท้องถิ่นบังคับคุ้มครองยังคงอยู่"
+      ],
+      [
+        "การเชื่อมต่อ Google",
+        "การลบบัญชีเว็บไซต์ไม่ลบบัญชี Google หรือเพิกถอนสิทธิ์แอปโดยอัตโนมัติ จัดการสิทธิ์ผ่านการเชื่อมต่อบัญชี Google ด้านล่าง การตัดการเชื่อมต่อ Google เพียงอย่างเดียวไม่ลบบัญชี OnePickGame"
+      ]
+    ],
+    "terms": [
+      [
+        "บัญชีและการเข้าถึง",
+        "การดูเว็บไซต์และเกมจำนวนมากไม่ต้องสมัคร แต่การสร้าง อัปโหลด และจัดการบางอย่างต้องเข้าสู่ระบบด้วยอีเมลหรือ Google โปรดรักษาความปลอดภัยบัญชีและไม่สวมรอยผู้อื่น หากไม่สามารถปฏิบัติตามข้อกำหนดอายุหรือการอนุญาตจากผู้ปกครองในพื้นที่ โปรดติดต่อผู้ดำเนินการก่อนสมัคร"
+      ],
+      [
+        "เนื้อหาและพฤติกรรม",
+        "อัปโหลดเฉพาะเนื้อหาที่เป็นเจ้าของหรือได้รับอนุญาต คุณยังคงมีสิทธิ์และอนุญาตให้จัดเก็บ ทำซ้ำ และแสดงตามที่จำเป็นต่อบริการ ห้ามเนื้อหาผิดกฎหมาย ละเมิดสิทธิ์ ข้อมูลส่วนบุคคลที่ไม่ได้รับอนุญาต การคุกคาม ข่มขู่ และสแปม เนื้อหาหรือบัญชีที่ไม่เหมาะสมอาจถูกจำกัด และคุณสามารถขอให้ทบทวนได้"
+      ],
+      [
+        "เกมสุ่ม",
+        "เครื่องมือสุ่มใช้เพื่อความบันเทิง การตั้งค่าความน่าจะเป็นและกลไกทางฟิสิกส์อาจมีผลต่อผลลัพธ์ ไม่ใช่ระบบพนันหรือจัดสรรรางวัลที่ได้รับการรับรอง ห้ามใช้ผิดกฎหมาย"
+      ],
+      [
+        "การลบบัญชี",
+        "ผู้ดำเนินการจัดการคำขอลบบัญชี เนื้อหาสาธารณะและสถิติอาจคงอยู่ในนามสมาชิกที่ออกจากเว็บไซต์แล้ว โปรดขอลบข้อมูลส่วนบุคคลในเนื้อหาแยกต่างหาก สิทธิ์ Google จัดการแยกกัน การสมัครใหม่ไม่คืนความเป็นเจ้าของเนื้อหาเดิมโดยอัตโนมัติ"
+      ],
+      [
+        "การเปลี่ยนบริการและสิทธิ",
+        "ฟังก์ชันอาจเปลี่ยน หยุดชั่วคราว หรือยุติ โดยตั้งใจแจ้งล่วงหน้าอย่างเหมาะสมเมื่อทำได้ มาตรการทางกฎหมาย ความปลอดภัย หรือป้องกันการใช้งานไม่เหมาะสมที่เร่งด่วนอาจมีผลทันที ไม่รับประกันการใช้งานต่อเนื่องหรืออันดับค้นหา ไม่ตัดสิทธิ์และความรับผิดที่กฎหมายบังคับ โปรดอ่านนโยบายความเป็นส่วนตัว ประกาศสมัครไม่ใช่ความยินยอมด้านโฆษณา สอบถามได้ตามช่องทางด้านบน"
+      ]
+    ]
+  },
+  "tr": {
+    "privacyTitle": "Gizlilik politikası",
+    "termsTitle": "Kullanım koşulları",
+    "operatorLabel": "İşletmeci (gerçek kişi)",
+    "country": "Kore Cumhuriyeti",
+    "contactLabel": "İletişim",
+    "updatedLabel": "Güncelleme",
+    "privacy": [
+      [
+        "Hesap bilgileri",
+        "E-posta kaydı, e-posta ve parolayı Supabase Auth üzerinden işler. Google; hesap tanımlayıcısı, e-posta ve temel profil bilgilerini sağlar. OnePickGame Google parolanızı almaz; Gmail, Drive veya Kişiler erişimi istemez. Sitedeki takma adınız herkese açıktır."
+      ],
+      [
+        "Veri kullanımı ve sağlayıcılar",
+        "Hesapları, yüklenen içerikleri, oyun sonuçlarını ve destek mesajlarını; özellikleri sunmak, kullanıcıları tanımak, oturumları sürdürmek, kötüye kullanımı önlemek ve talepleri karşılamak için işleriz. Supabase kimlik doğrulama, veritabanı ve depolama sağlar; Vercel siteyi barındırır. Sağlayıcılar teknik kayıtları ve verileri ülkeniz dışında işleyebilir."
+      ],
+      [
+        "Hesap silme ve kalan içerikler",
+        "Silme, talep anında değil işletmeci incelemesinden sonra tamamlanır. Hesap ve profil silinir; ancak herkese açık içerikler ve istatistikler ayrılmış üyeye atfedilerek kalabilir. İçerikteki kişisel bilgiler otomatik silinmez; ayrı inceleme isteyin. Yeniden kayıt eski sahipliği geri getirmez. Yedekler ve teknik kayıtlar mutlaka hemen silinmez."
+      ],
+      [
+        "Tarayıcı depolaması ve reklamlar",
+        "Tarayıcı oturumları, dili ve kayıtlı adayları tutar. Temizlemek oturumu kapatabilir, çevrimiçi hesabı silmez. Google AdSense ve ortakları; reklam ve ölçüm için çerezleri, tanımlayıcıları, IP adreslerini ve kullanım bilgilerini işleyebilir. Kayıt, kişiselleştirilmiş reklamlara onay değildir; gerektiğinde ayrı seçimler sunulmalıdır."
+      ],
+      [
+        "Haklarınız ve iletişim",
+        "Geçerli hukuka göre erişim, düzeltme, silme, kısıtlama, taşınabilirlik, itiraz veya onayınızı geri çekme talebinde bulunabilir, yetkili makama şikâyet edebilirsiniz. Yukarıdaki işletmeciyle iletişime geçin. Orantılı kimlik doğrulaması gerekebilir. Parola veya token göndermeyin. Emredici yerel haklar korunur."
+      ],
+      [
+        "Google bağlantıları",
+        "Site hesabını silmek Google hesabınızı silmez veya uygulama iznini otomatik kaldırmaz. İzinleri aşağıdaki Google hesap bağlantılarından yönetin. Yalnızca Google bağlantısını kaldırmak OnePickGame hesabını silmez."
+      ]
+    ],
+    "terms": [
+      [
+        "Hesaplar ve erişim",
+        "Gezinti ve birçok oyun kayıt gerektirmez; bazı oluşturma, yükleme ve yönetim işlemleri e-posta veya Google ile giriş gerektirir. Hesabınızı koruyun, başkasının kimliğine bürünmeyin. Yerel yaş ya da ebeveyn izni koşullarını karşılayamıyorsanız kaydolmadan önce işletmeciye başvurun."
+      ],
+      [
+        "İçerik ve davranış",
+        "Yalnızca sahip olduğunuz veya kullanma izniniz bulunan içeriği yükleyin. Haklarınız korunur; site özellikleri için gerekli saklama, çoğaltma ve gösterime izin verirsiniz. Yasadışı veya hak ihlal eden içerik, izinsiz kişisel bilgi, taciz, tehdit ve spam yasaktır. Kötüye kullanılan içerik veya hesaplar kısıtlanabilir; inceleme isteyebilirsiniz."
+      ],
+      [
+        "Rastgele oyunlar",
+        "Rastgele seçim araçları eğlence içindir. Olasılık ayarları ve fiziksel mekanikler sonuçları etkileyebilir; bunlar sertifikalı kumar ya da ödül dağıtım sistemleri değildir. Hukuka aykırı kullanmayın."
+      ],
+      [
+        "Hesap silme",
+        "İşletmeci silme taleplerini işler. Herkese açık içerik ve istatistikler ayrılmış üyeye atfedilerek kalabilir; içerikteki kişisel bilgiler için ayrıca silme talep edin. Google izinleri ayrı yönetilir. Yeniden kayıt, eski içerik sahipliğini otomatik geri getirmez."
+      ],
+      [
+        "Hizmet değişiklikleri ve haklar",
+        "Özellikler değişebilir, kesintiye uğrayabilir veya sonlandırılabilir. Mümkün olduğunda makul ön bildirim amaçlanır; acil hukuki, güvenlik veya kötüye kullanım önlemleri hemen uygulanabilir. Sürekli erişim ve arama sırası garanti edilmez. Emredici haklar ve sorumluluklar kaldırılamaz. Gizlilik politikasını okuyun; kayıt bildirimi reklam onayı değildir. Sorularınız için yukarıdaki iletişim adresini kullanın."
+      ]
+    ]
+  }
+}

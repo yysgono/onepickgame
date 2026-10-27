@@ -1,48 +1,40 @@
-OnePickGame 구글 로그인 v95
-기준: GitHub main fe1007ebe9edafe37bfe67a2ce3a0ac85762e548
+원픽게임 v97 개인정보처리방침·이용약관 16개 언어 전문
 
-적용 순서
-1. supabase/20261028_google_profile_v95.sql 전체를 Supabase SQL Editor에서 실행합니다.
-   이번에 추가한 구글 회원용 닉네임 함수입니다. 예전 SQL을 다시 실행하는 것이 아닙니다.
-   v93.1 회원탈퇴 SQL이 적용된 프로젝트 기준입니다.
-2. ZIP 안 파일을 기존 프로젝트의 같은 경로에 덮어씁니다.
-3. Git에 커밋/푸시하고 Vercel Production 배포가 Ready가 될 때까지 기다립니다.
-   package.json 수정이나 새로운 키/환경변수 추가는 필요 없습니다.
-4. 사이트 로그인/회원가입 화면에서 Google로 계속하기를 누릅니다.
-5. 새 구글 회원은 닉네임을 입력하고 저장합니다. 기존 프로필이 있으면 닉네임을 유지합니다.
-6. 새로고침 후 로그인 유지, 기존 이메일 로그인, 본인 콘텐츠 표시를 확인합니다.
+기준 GitHub main: 63be63d9761d00018097baa2859f600d58e1d45a
+v96 적용 프로젝트 기준 수정 파일만 포함합니다.
 
-이미 진행한 외부 설정
-- Google OAuth 웹 클라이언트 생성, 원본 https://www.onepickgame.com
-- Google 승인된 리디렉션 URI: Supabase Google 제공자에 표시된 Callback URL
-- Supabase Google Enabled 및 클라이언트 ID/Secret 저장
-- Supabase Site URL https://www.onepickgame.com/
-- Supabase Redirect URLs https://www.onepickgame.com/auth/callback
-Google 쪽 리디렉션과 Supabase 쪽 리디렉션은 서로 다릅니다.
+반영한 운영자 정보
+- 운영자: 윤영석(개인)
+- 운영 국가: 대한민국
+- 기존 공개 연락 이메일: yysgono@gmail.com
+실명을 정책 페이지에 공개하므로 배포 전 표기를 확인하세요.
 
-테스트 계정 제한이 표시될 때
-Google Auth Platform > 대상(Audience)에서 외부/테스트 상태인지 확인합니다.
-테스트 상태라면 본인의 Google 이메일을 테스트 사용자로 추가해서 먼저 테스트합니다.
-일반 공개 전에는 대상/게시 상태, 브랜딩, 개인정보처리방침·약관을 확인해야 합니다.
-Google의 심사 요구 사항은 실제 콘솔 안내를 따르세요.
+적용
+1. 같은 경로에 파일을 덮어씁니다. src/legal 폴더와 최상위 legal-policy-render.cjs도 포함합니다.
+2. 커밋·푸시하고 Vercel Production 배포 Ready를 기다립니다.
+3. /ko/privacy-policy 및 /ko/terms-of-service에서 한국어 전문을 확인하세요.
+4. 헤더 언어, 정책 페이지 언어 버튼, 푸터, 가입 안내의 약관 링크를 확인하세요.
 
-탈퇴
-구글 단독 및 이메일+구글 회원도 기존 관리자 탈퇴 처리로 사이트 계정과 로그인 권한을 삭제합니다.
-작성물은 기존 절차대로 '탈퇴한 회원' 소유로 유지합니다.
-이 변경은 Google 계정 자체를 삭제하지 않으며 Google '연결된 앱'의 동의까지 서버에서 자동 철회하지 않습니다.
-Google 연결까지 없애려는 이용자는 https://myaccount.google.com/connections 에서 직접 해제할 수 있습니다.
-구글 외 제공자(예: 네이버)는 아직 지원하지 않으며 기존 보호 장치를 유지합니다.
-구글로 재가입하면 새 사이트 계정이 생길 수 있으며 탈퇴 전 작성물 소유권은 자동 복구하지 않습니다.
-이름/이메일을 브라우저가 보내는 값으로 신뢰하지 않고 인증된 본인 계정에서만 프로필을 생성합니다.
+예시
+https://www.onepickgame.com/ko/privacy-policy
+https://www.onepickgame.com/ko/terms-of-service
+https://www.onepickgame.com/en/privacy-policy
+https://www.onepickgame.com/ja/terms-of-service
 
-언어 및 계정 연결
-16개 언어 UI 문구를 포함하며 로그인 후 시작한 언어 홈으로 돌아갑니다.
-동일 이메일 계정의 자동 연결 여부는 Supabase Auth 정책이 결정합니다.
-브라우저에서 이메일 문자열만 비교해 계정이나 작성물을 합치지 않습니다.
-네이버 로그인은 이번 ZIP에 포함되지 않습니다.
+SQL·새 환경변수·패키지 설치는 필요 없습니다.
+로그인, 구글 OAuth Callback, 회원탈퇴 서버 처리는 바꾸지 않습니다.
+약관/방침에서 영어로 강제 이동하던 Vercel 설정을 없앴습니다.
+기존 /privacy-policy와 /terms-of-service는 /en의 해당 전문으로 영구 이동합니다.
+언어별 서버 초기 HTML·canonical·hreflang도 맞췄고 DB 추가 조회는 없습니다.
+
+범위와 남은 확인
+약관/방침을 동일한 6개 개인정보 항목, 5개 약관 항목으로 재구성해 16개 언어 전문을 제공합니다.
+개별 국가 법률을 각각 새로 적용한 16개 법률 검토본이나 법률 적합성 인증은 아닙니다.
+실제 Supabase 저장 지역·국외 처리 계약 정보, 로그/백업의 보관 기간, 연령/보호자 절차와 광고 CMP는 별도 확인이 필요합니다.
+이 정보는 임의로 작성하거나 자동 시행하지 않았습니다. docs/REVIEW-KO.md를 보세요.
+새 동의 체크박스·서버 동의 기록·광고 쿠키 제어를 추가한 패치는 아닙니다.
 
 검증
-로컬 CRA 프로덕션 빌드, PGlite 닉네임 함수 권한/입력 검사, OAuth callback 모의 테스트,
-구글 회원 관리자 탈퇴 모의 테스트 통과.
-실제 Google 로그인, 운영 DB SQL 실행, 운영 배포는 사용자의 적용 후 확인이 필요합니다.
+32개 정책(2종×16언어) 데이터/React 본문/서버 초기 응답·메타데이터 테스트 통과.
+CRA 프로덕션 빌드 통과. 운영 배포/실제 Google 로그인을 대신 실행하지 않았습니다.
 전체 npm run build(운영 사이트맵 조회 포함)는 실행하지 않았습니다.

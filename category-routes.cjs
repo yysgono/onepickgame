@@ -1,3 +1,4 @@
+const {renderLegalPolicy}=require('./legal-policy-render.cjs');
 const { loadSeoTemplate } = require('./seo-template.cjs');
 const { getCategorySeo } = require('./src/seo/categorySeo.js');
 const { getPrivatePageSeo } = require('./src/seo/privatePageSeo.js');
@@ -40,6 +41,13 @@ module.exports = (app, supabase, origin) => {
     const lang = languages.includes(requestedLang) ? requestedLang : 'en';
     try {
       if (type === 'spa') {
+        const legalMatch = /^\/([a-z]{2})\/(privacy-policy|terms-of-service)\/?$/.exec(rawPath);
+        if (legalMatch && languages.includes(legalMatch[1])) {
+          const legal = renderLegalPolicy(legalMatch[1], legalMatch[2], origin);
+          const template = await loadSeoTemplate(origin);
+          res.setHeader('Cache-Control', 'no-store');
+          return res.send(inject(template, legal.head, legal.body, legal.lang));
+        }
         if (!isKnownPath(rawPath)) return await notFound(res, origin, lang);
         const html = await loadSeoTemplate(origin);
         res.setHeader('Cache-Control', 'no-store');
@@ -83,4 +91,5 @@ module.exports = (app, supabase, origin) => {
   });
 };
 module.exports.isKnownPath = isKnownPath;
+
 

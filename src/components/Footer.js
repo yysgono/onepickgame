@@ -75,10 +75,10 @@ export default function Footer() {
           </Link>
         </div>
 
-        {/* 약관/개인정보: 영어 전용 루트 경로 */}
+        {/* 약관/개인정보: 현재 언어의 전문 */}
         <div style={{ marginTop: 4 }}>
           <Link
-            to={`/terms-of-service`}
+            to={`/${lang}/terms-of-service`}
             style={{
               color: "#5542b8",
               textDecoration: "underline",
@@ -90,7 +90,7 @@ export default function Footer() {
             {t("terms_of_service", { defaultValue: "Terms of Service" })}
           </Link>
           <Link
-            to={`/privacy-policy`}
+            to={`/${lang}/privacy-policy`}
             style={{
               color: "#5542b8",
               textDecoration: "underline",
@@ -120,3 +120,4 @@ export default function Footer() {
     </footer>
   );
 }
+

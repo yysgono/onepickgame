@@ -31,18 +31,18 @@
       "permanent": true
     },
     {
-      "source": "/(ar|bn|de|es|fr|hi|id|ja|ko|pt|ru|th|tr|vi|zh)/privacy-policy",
+      "source": "/(ar|bn|de|es|fr|hi|id|ja|ko|pt|ru|th|tr|vi|zh)/notice",
+      "destination": "/en/notice",
+      "permanent": true
+    },
+    {
+      "source": "/privacy-policy",
       "destination": "/en/privacy-policy",
       "permanent": true
     },
     {
-      "source": "/(ar|bn|de|es|fr|hi|id|ja|ko|pt|ru|th|tr|vi|zh)/terms-of-service",
+      "source": "/terms-of-service",
       "destination": "/en/terms-of-service",
-      "permanent": true
-    },
-    {
-      "source": "/(ar|bn|de|es|fr|hi|id|ja|ko|pt|ru|th|tr|vi|zh)/notice",
-      "destination": "/en/notice",
       "permanent": true
     }
   ],
