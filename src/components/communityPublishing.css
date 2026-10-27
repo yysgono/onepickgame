@@ -28,3 +28,7 @@
 .notice-post .community-post-meta{display:flex;align-items:center;justify-content:flex-end;flex-wrap:wrap;gap:6px 12px;flex-shrink:0;max-width:45%;text-align:right}
 .notice-post .community-author,.notice-post time{display:inline;margin:0;font-size:13px;line-height:1.6;overflow-wrap:anywhere}
 @media(max-width:600px){.notice-post .community-post-heading{flex-wrap:wrap;gap:8px}.notice-post .community-post-title{flex-basis:100%}.notice-post .community-post-meta{max-width:100%;margin-left:auto}}
+
+.community-pin-badge{display:inline-block;margin-inline-end:8px;padding:2px 8px;border-radius:5px;background:#ede9fe;color:#5935ac;font-size:13px;white-space:nowrap}
+.community-post-pinned{background:#faf9ff;padding-inline:12px}
+.site-publishing .community-pin-action{background:#fff;color:#5935ac;border-color:#8b72bd;margin:12px 8px 0 0;font-size:13px;padding:7px 12px}

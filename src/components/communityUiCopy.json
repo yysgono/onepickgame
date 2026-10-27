@@ -44,7 +44,11 @@
     "requiredTitle": "Enter a title and article text.",
     "confirmDelete": "Delete this item?",
     "deleteTranslation": "Delete this language version? Other translations will remain.",
-    "manage": "View and manage your creations."
+    "manage": "View and manage your creations.",
+    "pinned": "Pinned",
+    "pin": "Pin as notice",
+    "unpin": "Unpin",
+    "guestSuggestionHint": "Guests can send feedback. Only site publishers can read guest submissions. Sign in before posting if you want to view replies."
   },
   "ko": {
     "myContent": "내 콘텐츠",
@@ -91,7 +95,11 @@
     "requiredTitle": "제목과 본문을 입력해 주세요.",
     "confirmDelete": "이 항목을 삭제할까요?",
     "deleteTranslation": "이 언어의 글을 삭제할까요? 다른 언어 글은 유지됩니다.",
-    "manage": "내가 만든 콘텐츠를 확인하고 관리하세요."
+    "manage": "내가 만든 콘텐츠를 확인하고 관리하세요.",
+    "pinned": "공지",
+    "pin": "공지로 고정",
+    "unpin": "공지 해제",
+    "guestSuggestionHint": "비회원도 건의할 수 있습니다. 비회원 건의는 운영자만 확인할 수 있으며, 답변을 확인하려면 로그인 후 작성해 주세요."
   },
   "ja": {
     "myContent": "マイコンテンツ",
@@ -138,7 +146,11 @@
     "requiredTitle": "タイトルと本文を入力してください。",
     "confirmDelete": "この項目を削除しますか？",
     "deleteTranslation": "この言語の記事を削除しますか？他の翻訳は残ります。",
-    "manage": "作成したコンテンツを確認・管理できます。"
+    "manage": "作成したコンテンツを確認・管理できます。",
+    "pinned": "お知らせ",
+    "pin": "お知らせに固定",
+    "unpin": "固定を解除",
+    "guestSuggestionHint": "ゲストもご意見を送信できます。ゲストの投稿は運営者のみ閲覧できます。返信を確認したい場合はログインして投稿してください。"
   },
   "zh": {
     "myContent": "我的内容",
@@ -185,7 +197,11 @@
     "requiredTitle": "请输入标题和正文。",
     "confirmDelete": "删除此项？",
     "deleteTranslation": "删除此语言版本？其他语言版本将保留。",
-    "manage": "查看并管理你创建的内容。"
+    "manage": "查看并管理你创建的内容。",
+    "pinned": "置顶",
+    "pin": "设为置顶公告",
+    "unpin": "取消置顶",
+    "guestSuggestionHint": "游客也可以提交建议。游客建议仅管理员可查看。如需查看回复，请登录后提交。"
   },
   "es": {
     "myContent": "Mi contenido",
@@ -232,7 +248,11 @@
     "requiredTitle": "Escribe el título y el texto.",
     "confirmDelete": "¿Eliminar este elemento?",
     "deleteTranslation": "¿Eliminar esta versión? Las demás traducciones se conservarán.",
-    "manage": "Consulta y gestiona tus creaciones."
+    "manage": "Consulta y gestiona tus creaciones.",
+    "pinned": "Fijado",
+    "pin": "Fijar como aviso",
+    "unpin": "Desfijar",
+    "guestSuggestionHint": "Puedes enviar sugerencias sin iniciar sesión. Solo el equipo del sitio puede leerlas. Inicia sesión antes de publicarlas para consultar las respuestas."
   },
   "fr": {
     "myContent": "Mes contenus",
@@ -279,7 +299,11 @@
     "requiredTitle": "Saisissez un titre et le texte.",
     "confirmDelete": "Supprimer cet élément ?",
     "deleteTranslation": "Supprimer cette version ? Les autres traductions seront conservées.",
-    "manage": "Consultez et gérez vos créations."
+    "manage": "Consultez et gérez vos créations.",
+    "pinned": "Épinglé",
+    "pin": "Épingler comme annonce",
+    "unpin": "Désépingler",
+    "guestSuggestionHint": "Les visiteurs peuvent envoyer des suggestions. Seule l’équipe du site peut les lire. Connectez-vous avant de publier pour consulter les réponses."
   },
   "vi": {
     "myContent": "Nội dung của tôi",
@@ -326,7 +350,11 @@
     "requiredTitle": "Nhập tiêu đề và nội dung.",
     "confirmDelete": "Xóa mục này?",
     "deleteTranslation": "Xóa phiên bản ngôn ngữ này? Các bản dịch khác vẫn được giữ.",
-    "manage": "Xem và quản lý nội dung bạn đã tạo."
+    "manage": "Xem và quản lý nội dung bạn đã tạo.",
+    "pinned": "Ghim",
+    "pin": "Ghim thông báo",
+    "unpin": "Bỏ ghim",
+    "guestSuggestionHint": "Khách có thể gửi góp ý. Chỉ quản trị viên đọc được góp ý của khách. Hãy đăng nhập trước khi gửi để xem phản hồi."
   },
   "de": {
     "myContent": "Meine Inhalte",
@@ -373,7 +401,11 @@
     "requiredTitle": "Gib einen Titel und Text ein.",
     "confirmDelete": "Diesen Eintrag löschen?",
     "deleteTranslation": "Diese Sprachversion löschen? Andere Übersetzungen bleiben erhalten.",
-    "manage": "Sieh dir deine Inhalte an und verwalte sie."
+    "manage": "Sieh dir deine Inhalte an und verwalte sie.",
+    "pinned": "Angeheftet",
+    "pin": "Als Hinweis anheften",
+    "unpin": "Lösen",
+    "guestSuggestionHint": "Gäste können Feedback senden. Nur das Website-Team kann es lesen. Melde dich vor dem Absenden an, um Antworten zu sehen."
   },
   "ru": {
     "myContent": "Мои материалы",
@@ -420,7 +452,11 @@
     "requiredTitle": "Введите заголовок и текст.",
     "confirmDelete": "Удалить этот элемент?",
     "deleteTranslation": "Удалить эту языковую версию? Другие переводы сохранятся.",
-    "manage": "Просматривайте свои материалы и управляйте ими."
+    "manage": "Просматривайте свои материалы и управляйте ими.",
+    "pinned": "Закреплено",
+    "pin": "Закрепить объявление",
+    "unpin": "Открепить",
+    "guestSuggestionHint": "Гости могут отправлять предложения. Их видят только администраторы. Войдите перед отправкой, чтобы просматривать ответы."
   },
   "id": {
     "myContent": "Konten saya",
@@ -467,7 +503,11 @@
     "requiredTitle": "Masukkan judul dan isi artikel.",
     "confirmDelete": "Hapus item ini?",
     "deleteTranslation": "Hapus versi bahasa ini? Terjemahan lain tetap tersimpan.",
-    "manage": "Lihat dan kelola konten buatan Anda."
+    "manage": "Lihat dan kelola konten buatan Anda.",
+    "pinned": "Disematkan",
+    "pin": "Sematkan pengumuman",
+    "unpin": "Lepas sematan",
+    "guestSuggestionHint": "Tamu dapat mengirim masukan. Hanya pengelola yang dapat membacanya. Masuk sebelum mengirim untuk melihat balasan."
   },
   "pt": {
     "myContent": "Meu conteúdo",
@@ -514,7 +554,11 @@
     "requiredTitle": "Digite o título e o texto.",
     "confirmDelete": "Excluir este item?",
     "deleteTranslation": "Excluir esta versão? As outras traduções serão mantidas.",
-    "manage": "Veja e gerencie suas criações."
+    "manage": "Veja e gerencie suas criações.",
+    "pinned": "Fixado",
+    "pin": "Fixar como aviso",
+    "unpin": "Desafixar",
+    "guestSuggestionHint": "Visitantes podem enviar sugestões. Só a equipe do site pode lê-las. Entre antes de publicar para consultar as respostas."
   },
   "hi": {
     "myContent": "मेरी सामग्री",
@@ -561,7 +605,11 @@
     "requiredTitle": "शीर्षक और लेख का पाठ लिखें।",
     "confirmDelete": "यह आइटम हटाएँ?",
     "deleteTranslation": "इस भाषा का संस्करण हटाएँ? दूसरे अनुवाद बने रहेंगे।",
-    "manage": "अपनी बनाई सामग्री देखें और प्रबंधित करें।"
+    "manage": "अपनी बनाई सामग्री देखें और प्रबंधित करें।",
+    "pinned": "पिन किया गया",
+    "pin": "सूचना के रूप में पिन करें",
+    "unpin": "पिन हटाएँ",
+    "guestSuggestionHint": "अतिथि भी सुझाव भेज सकते हैं। अतिथि सुझाव केवल व्यवस्थापक पढ़ सकते हैं। जवाब देखने के लिए भेजने से पहले लॉगिन करें।"
   },
   "tr": {
     "myContent": "İçeriklerim",
@@ -608,7 +656,11 @@
     "requiredTitle": "Başlık ve yazı metnini girin.",
     "confirmDelete": "Bu öğe silinsin mi?",
     "deleteTranslation": "Bu dildeki sürüm silinsin mi? Diğer çeviriler korunur.",
-    "manage": "Oluşturduğunuz içerikleri görüntüleyin ve yönetin."
+    "manage": "Oluşturduğunuz içerikleri görüntüleyin ve yönetin.",
+    "pinned": "Sabitlendi",
+    "pin": "Duyuru olarak sabitle",
+    "unpin": "Sabitlemeyi kaldır",
+    "guestSuggestionHint": "Misafirler öneri gönderebilir. Bunları yalnızca site yöneticileri okuyabilir. Yanıtları görmek için göndermeden önce giriş yapın."
   },
   "th": {
     "myContent": "เนื้อหาของฉัน",
@@ -655,7 +707,11 @@
     "requiredTitle": "กรุณากรอกหัวข้อและเนื้อหา",
     "confirmDelete": "ลบรายการนี้หรือไม่?",
     "deleteTranslation": "ลบเวอร์ชันภาษานี้หรือไม่? ภาษาอื่นจะยังอยู่",
-    "manage": "ดูและจัดการเนื้อหาที่คุณสร้าง"
+    "manage": "ดูและจัดการเนื้อหาที่คุณสร้าง",
+    "pinned": "ปักหมุด",
+    "pin": "ปักหมุดเป็นประกาศ",
+    "unpin": "เลิกปักหมุด",
+    "guestSuggestionHint": "ผู้เยี่ยมชมส่งข้อเสนอแนะได้ โดยมีเพียงผู้ดูแลที่อ่านได้ หากต้องการดูคำตอบ โปรดเข้าสู่ระบบก่อนส่ง"
   },
   "ar": {
     "myContent": "محتواي",
@@ -702,7 +758,11 @@
     "requiredTitle": "أدخل العنوان ونص المقال.",
     "confirmDelete": "هل تريد حذف هذا العنصر؟",
     "deleteTranslation": "هل تريد حذف هذه النسخة اللغوية؟ ستبقى الترجمات الأخرى.",
-    "manage": "اطّلع على المحتوى الذي أنشأته وأدِره."
+    "manage": "اطّلع على المحتوى الذي أنشأته وأدِره.",
+    "pinned": "مثبّت",
+    "pin": "تثبيت كإعلان",
+    "unpin": "إلغاء التثبيت",
+    "guestSuggestionHint": "يمكن للضيوف إرسال اقتراحات لا يقرأها إلا مشرفو الموقع. سجّل الدخول قبل الإرسال إذا أردت الاطلاع على الردود."
   },
   "bn": {
     "myContent": "আমার কনটেন্ট",
@@ -749,6 +809,10 @@
     "requiredTitle": "শিরোনাম ও লেখার বিষয়বস্তু দিন।",
     "confirmDelete": "এই আইটেমটি মুছবেন?",
     "deleteTranslation": "এই ভাষার সংস্করণ মুছবেন? অন্য অনুবাদ থাকবে।",
-    "manage": "আপনার তৈরি কনটেন্ট দেখুন ও পরিচালনা করুন।"
+    "manage": "আপনার তৈরি কনটেন্ট দেখুন ও পরিচালনা করুন।",
+    "pinned": "পিন করা",
+    "pin": "বিজ্ঞপ্তি হিসেবে পিন করুন",
+    "unpin": "পিন সরান",
+    "guestSuggestionHint": "অতিথিরাও পরামর্শ পাঠাতে পারেন। শুধু প্রশাসক অতিথির পরামর্শ পড়তে পারেন। উত্তর দেখতে পাঠানোর আগে লগইন করুন।"
   }
 }
