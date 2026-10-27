@@ -32,19 +32,19 @@ export default function PrivacyPolicy() {
         <ul style={{ lineHeight: 1.7, paddingLeft: 18 }}>
           <li>
             <b>What Personal Data We Collect</b><br />
-            We collect only the minimum personal data required to operate the service, such as email and nickname.
+            Email registration uses an email address and password through Supabase Auth. Google sign-in uses your Google account identifier, email and basic profile information supplied by Google; you do not give OnePickGame your Google password. A site nickname is used for public attribution. Content, images, comments, game results and support messages are processed when you use those features.
           </li>
           <li>
             <b>Use of Personal Data</b><br />
-            Your personal information is used only for providing and operating the service, user identification, and customer support.
+            Account data is used to authenticate users, maintain sessions, associate content with its creator, prevent abuse, and handle support and withdrawal requests. Public content and game statistics are used to provide the corresponding features. Google sign-in does not request access to Gmail, Drive or Contacts. Advertising processing is described separately below.
           </li>
           <li>
             <b>Retention &amp; Deletion</b><br />
-            Your data is deleted immediately upon withdrawal from the service, except where retention is required by law.
+            A withdrawal request is reviewed by the operator; submitting it does not immediately delete the account. When withdrawal processing completes, the site login account and profile are removed. Previously published games, posts, comments and related statistics may remain with attribution to a withdrawn member. Names, photos or other personal information inside published content are not automatically removed by changing its attribution; contact us for a separate review of that content. Re-registering does not automatically restore ownership of previous content. This is not a promise that provider backups or all technical logs are erased immediately.
           </li>
           <li>
             <b>Third-party Sharing &amp; Ads</b><br />
-            Third-party vendors, including Google, may collect cookies, IP addresses, and visit logs to provide ads.
+            The site uses Supabase for authentication, database and file storage, and Vercel for hosting and server functions. These providers may process technical information such as IP addresses, request logs and security events. Google AdSense and its advertising partners may use cookies or similar storage, identifiers and usage information for ad delivery, measurement and, where permitted, personalization. Signup and Google authentication do not themselves constitute consent to personalized advertising. Where separate consent is required, it must be handled through the applicable advertising consent controls; a privacy-policy link alone does not replace those controls.
           </li>
           <li>
             For more information, please see the{" "}
@@ -59,19 +59,32 @@ export default function PrivacyPolicy() {
           </li>
           <li>
             <b>Your Rights</b><br />
-            You may request access, correction, deletion, or restriction of your personal data at any time by contacting us by email.
+            You can contact us to request access, correction or deletion of personal information. Depending on the laws applicable to you, you may also have rights to restriction, portability, objection, withdrawal of consent, or complaint to a supervisory authority. We may need proportionate identity verification to protect your account. Do not send passwords, session tokens or authentication secrets. Mandatory rights under applicable local law are not waived by these terms or by using this site.
+          </li>
+          <li>
+            <b>Google Account Connections</b><br />
+            Site withdrawal does not delete your Google account or automatically revoke the app permission listed in your Google account. You can review or remove that connection at <a href="https://myaccount.google.com/connections" target="_blank" rel="noopener noreferrer">Google account connections</a>. Removing that connection alone is not a request to delete your OnePickGame account.
+          </li>
+          <li>
+            <b>Browser Storage</b><br />
+            Browser storage is used for the login session, language preference and saved random-picker candidates. Saved candidates on this device can be edited or removed using the site controls; clearing browser storage also removes local data and can sign you out. Device storage is separate from data saved to your online account.
+          </li>
+          <li>
+            <b>International Processing</b><br />
+            Our hosting, authentication, storage and advertising providers may process information outside your country. Applicable transfer safeguards and your local privacy rights must still be respected. Contact us about the processing of your information or a region-specific privacy request.
           </li>
           <li>
             See also our <Link to="/terms-of-service">Terms of Service</Link>.
           </li>
         </ul>
         <p>
-          Contact: <a href="mailto:yysgono@gmail.com">yysgono@gmail.com</a>
+          Privacy contact for OnePickGame (privately operated): <a href="mailto:yysgono@gmail.com">yysgono@gmail.com</a>
         </p>
         <p style={{ color: "#596579", fontSize: 16, marginTop: 30 }}>
-          This policy is effective from July 10, 2025.
+          Account and Google sign-in information updated: October 28, 2026.
         </p>
       </div>
     </>
   );
 }
+

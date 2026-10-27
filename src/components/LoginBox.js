@@ -1,3 +1,4 @@
+import AccountPolicyNotice from "./AccountPolicyNotice";
 import GoogleLoginButton from "./GoogleLoginButton";
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
@@ -106,6 +107,7 @@ function LoginBox({ setUser, setNickname }) {
           <p style={{ margin: "9px 0 0", color: "#5542b8", fontSize: 16, lineHeight: 1.55 }}>{t("auth.login.subtitle")}</p>
         </div>
 
+        <AccountPolicyNotice />
         <GoogleLoginButton />
         <form onSubmit={handleLogin}>
           <label style={labelStyle}>{t("auth.common.email")}</label>
@@ -137,4 +139,5 @@ function LoginBox({ setUser, setNickname }) {
 }
 
 export default LoginBox;
+
 

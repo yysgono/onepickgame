@@ -1,3 +1,4 @@
+import AccountPolicyNotice from "./AccountPolicyNotice";
 import React, { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
@@ -32,6 +33,7 @@ export default function GoogleAuthCallback({ setNickname }) {
     {status==='loading' && <p role="status">{copy.loading}</p>}
     {status==='error' && <><p role="alert">{copy.failed}</p><Link to={`/${lang}/login`}>{copy.back}</Link></>}
     {status==='nickname' && <form onSubmit={save}>
+      <AccountPolicyNotice language={lang} />
       <p>{copy.hint}</p>
       <label htmlFor="google-nickname">{copy.label}</label>
       <input id="google-nickname" value={nickname} onChange={e=>setName(e.target.value)} minLength={2} maxLength={24} required autoComplete="nickname" style={{display:'block',width:'100%',boxSizing:'border-box',padding:12,margin:'12px 0',border:'2px solid #64748b',borderRadius:8,fontSize:18}} />
@@ -40,3 +42,4 @@ export default function GoogleAuthCallback({ setNickname }) {
     </form>}
   </main>;
 }
+
