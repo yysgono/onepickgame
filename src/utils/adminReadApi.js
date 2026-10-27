@@ -126,3 +126,12 @@ export async function getAdminRecentContentActivity(kind) {
     };
   });
 }
+
+
+// Counts only; never fetch answer records or participant IDs for dashboard totals.
+export function getAdminTodayContentCount(kind, today = getTodayKstDateString()) {
+  if (!['quiz', 'tier-list'].includes(kind)) throw new Error('Unsupported activity kind');
+  const { start, end } = getKstDayRangeUtc(today);
+  const table = kind === 'quiz' ? 'quiz_attempts' : 'tier_list_play_logs';
+  return readCount(table, query => query.gte('created_at', start).lt('created_at', end));
+}
