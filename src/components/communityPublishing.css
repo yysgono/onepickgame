@@ -32,3 +32,6 @@
 .community-pin-badge{display:inline-block;margin-inline-end:8px;padding:2px 8px;border-radius:5px;background:#ede9fe;color:#5935ac;font-size:13px;white-space:nowrap}
 .community-post-pinned{background:#faf9ff;padding-inline:12px}
 .site-publishing .community-pin-action{background:#fff;color:#5935ac;border-color:#8b72bd;margin:12px 8px 0 0;font-size:13px;padding:7px 12px}
+
+.site-publishing .community-language-only{flex-direction:row;align-items:center;gap:10px;line-height:1.5}
+.site-publishing .community-language-only input{width:20px;height:20px;flex:0 0 20px;accent-color:#5935ac}
