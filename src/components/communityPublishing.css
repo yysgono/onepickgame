@@ -44,3 +44,7 @@
 .notice-post .community-post-title:focus-visible::after{outline:2px solid #6650d8;outline-offset:2px}
 
 .site-publishing .community-read-filter{justify-content:flex-end;margin:16px 0 22px;font-size:15px;cursor:pointer}
+
+/* Make publishing title fields as clear as the content field. */
+.site-publishing form input[maxlength="200"]{border:2px solid #8c98ac!important;background:#fff;border-radius:8px}
+.site-publishing form input[maxlength="200"]:focus{border-color:#6650d8!important;outline:2px solid #e4def8;outline-offset:1px}
