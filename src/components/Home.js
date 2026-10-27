@@ -318,7 +318,7 @@ const WORLDCUP_INFO_COPY = {
   "ko": {
     "ariaLabel": "이상형 월드컵이란?",
     "title": "이상형 월드컵이란?",
-    "description": "이상형 월드컵은 두 후보 중 더 마음에 드는 쪽을 선택하며 최종 우승자를 고르는 토너먼트 게임입니다. 원픽게임에서는 아이돌, 애니, 게임, 영화, 음식, 스포츠 등 다양한 주제의 이상형 월드컵을 무료로 플레이하고 직접 만들 수 있습니다."
+    "description": "이상형 월드컵은 두 후보 중 더 마음에 드는 쪽을 선택하며 최종 우승자를 고르는 토너먼트 게임입니다.\n원픽게임에서는 아이돌, 애니, 게임, 영화, 음식, 스포츠 등 다양한 주제의 이상형 월드컵을 무료로 플레이하고 직접 만들 수 있습니다."
   },
   "en": {
     "ariaLabel": "What is an Ideal Type World Cup?",
@@ -4448,6 +4448,7 @@ return (
       </h2>
       <p
         style={{
+          whiteSpace: "pre-line",
           margin: "0 0 14px",
           fontSize: isMobile ? 15 : 17,
           lineHeight: 1.75,
@@ -4505,6 +4506,7 @@ return (
 
 
 export default Home;
+
 
 
 
