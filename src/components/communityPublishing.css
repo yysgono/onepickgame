@@ -89,3 +89,9 @@
 .community-board .board-pagination button[aria-current=page]{background:#5542b8;color:#fff;border-color:#5542b8;font-weight:800}
 .community-board .board-page-count{font-size:12px;color:#8792a6;margin-inline-start:8px}
 @media(max-width:600px){.community-board .board-heading{padding:18px 16px;gap:12px}.community-board .board-heading h1{font-size:25px}.community-board .board-heading p{font-size:13px}.community-board .board-write{padding:10px 12px;font-size:14px}.community-board .board-card{padding:12px 14px}.community-board .community-post-title{flex:1 1 calc(100% - 65px);font-size:16px}.community-board .board-post-number{flex-basis:42px}.community-board .community-post-meta{max-width:100%;flex-direction:row;gap:9px}.community-board .board-editor{padding:16px}.community-board .community-tabs button{padding:8px 12px;font-size:14px}}
+
+/* v90: compact controls, with the language filter left and writing action right. */
+.community-board .board-accessible-title{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap;border:0}
+.community-board .board-toolbar{display:flex;align-items:center;justify-content:space-between;gap:14px;margin:14px 0 20px;flex-wrap:wrap}
+.community-board .board-toolbar .community-read-filter{justify-content:flex-start;margin:0;flex:1 1 auto}
+.community-board .board-toolbar .board-write{margin-inline-start:auto;flex:0 0 auto;background:#5542b8;border-color:#5542b8;font-weight:750}

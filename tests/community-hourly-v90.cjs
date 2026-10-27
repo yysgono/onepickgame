@@ -1,0 +1,13 @@
+const fs=require('fs'),assert=require('assert'),{PGlite}=require('@electric-sql/pglite');
+(async()=>{const db=new PGlite();await db.exec(`create role anon;create role authenticated;create schema auth;create function auth.uid() returns uuid language sql as $$select '00000000-0000-0000-0000-000000000001'::uuid$$;create function can_publish_site_content() returns boolean language sql as $$select coalesce(current_setting('test.admin',true),'')='true'$$;grant usage on schema auth,public to authenticated;
+create table community_posts(id uuid primary key default gen_random_uuid(),board text,title text,body text,author_id uuid,language text,category text,language_only boolean default false,is_pinned boolean default false,created_at timestamptz default now());grant insert,select,delete on community_posts to authenticated;`);
+await db.exec(fs.readFileSync(__dirname+'/../supabase/20261027_community_board_v89.sql','utf8'));const patch=fs.readFileSync(__dirname+'/../supabase/20261027_community_hourly_v90.sql','utf8');await db.exec(patch);await db.exec(patch);
+const batch=prefix=>db.exec(`insert into community_posts(board,title,body,author_id,language) select 'community','${prefix}'||i,'body',auth.uid(),'ko' from generate_series(1,10) i`);
+await db.exec('set role authenticated');await batch('first');await assert.rejects(db.exec("insert into community_posts(board,title,body,author_id,language) values('community','eleventh','body',auth.uid(),'ko')"),/POST_HOURLY_LIMIT/);
+await db.exec("delete from community_posts where title='first1'");await assert.rejects(db.exec("insert into community_posts(board,title,body,author_id,language) values('community','after delete','body',auth.uid(),'ko')"),/POST_HOURLY_LIMIT/);
+await db.exec("reset role;update community_post_events set created_at=now()-interval '2 hours';set role authenticated;");await batch('second');
+await db.exec("reset role;update community_post_events set created_at=now()-interval '2 hours';set role authenticated;");await batch('third');
+assert.equal((await db.query('select count(*)::int n from community_posts')).rows[0].n,29);
+await assert.rejects(db.exec("insert into community_posts(board,title,body,author_id,language) values('community','first1','body',auth.uid(),'ko')"),/POST_DUPLICATE/);
+await db.exec("set test.admin='true';");await batch('admin');
+console.log('PASS: ten immediate posts allowed, eleventh denied, deletion cannot reset quota, rolling-hour expiry, previous daily/60-second limits removed, duplicate protection retained, publisher exemption');await db.close();})().catch(e=>{console.error(e);process.exitCode=1});
