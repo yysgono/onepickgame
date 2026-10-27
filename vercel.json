@@ -109,9 +109,30 @@
           "value": "text/plain; charset=utf-8"
         }
       ]
+    },
+    {
+      "source": "/auth/callback",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "private, no-store"
+        },
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "no-referrer"
+        }
+      ]
     }
   ],
   "routes": [
+    {
+      "src": "/auth/callback/?$",
+      "dest": "/seo-shell.html"
+    },
     {
       "src": "/suggestions-board/?$",
       "dest": "/server.js?seo=private-page&lang=en&page=suggestions-board"

@@ -1,0 +1,17 @@
+{
+  "vercel.json": "671eb22df53fd50e46b7c0cc599752aec9faf235cb247fb9361ba81a8c59f857",
+  "START-HERE-KO.txt": "522b14ed31ad4fcfadd0d395423eda64c152a837922d5bfde5e345eb22a62ae4",
+  "account-withdrawal-routes.cjs": "5a30463ef91c0a9a240494206071be7539f1fe29c986a344d925cc4d051908ec",
+  "supabase/20261028_google_profile_v95.sql": "b62fd8c43a1a0904e91258a7846e7e039b2fde7a54dc91aa0365af73572eb79f",
+  "src/App.js": "83636be162c849ba41713a7d478245dd3b237e3907bfc9f958f2af35613454c5",
+  "tests/google-auth-v95-ui.cjs": "a766244f0549b71a709805db13358c92f6b4dbd29b4350a1d6519a14c856ac4f",
+  "tests/google-auth-v95-withdrawal.cjs": "d81704be0c1104c300bdc8c347fde5e4635730d77d99b23890ab62ef1400aa1a",
+  "tests/google-auth-v95-client.cjs": "4dab3e0b15ee6d901a1cf5bbad946f6d6de59391b888081a365044179e431781",
+  "tests/google-auth-v95-db.cjs": "dac4c62c2422df60be29f49ca22050eea1024e8493a9ab2ac1a09cdd467219b4",
+  "src/components/GoogleLoginButton.js": "446f9e3a34398ac89c0d70e5beab91d761e41ed2817c5907b7a709c4467d18e5",
+  "src/components/GoogleAuthCallback.js": "fd59b351278249b3c5d6d2615f25ce13ee2a506db3967430d33ee22a47e8792b",
+  "src/components/LoginBox.js": "b52b87bd88bc337ab51157a7300116c6404f13e01f8890276f9c303dfded5271",
+  "src/components/SignupBox.js": "1106783207a460a356a7dc9c6b92435b09fcb70e435e62dc8ec2cfc0bbfdb60a",
+  "src/utils/googleAuthCopy.js": "0477629b97eea70e2bf1bf2531db9ccf4ca798ab5d4dc509b04df785db5f87e4",
+  "src/utils/googleAuth.js": "224ae1ac174f8f09ea8e5ebed3ae79c34ecd9fcd6755b34a250944c67cd2143d"
+}

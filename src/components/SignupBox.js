@@ -1,3 +1,4 @@
+import GoogleLoginButton from "./GoogleLoginButton";
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { signupUser } from "../utils/supabaseUserApi";
@@ -111,6 +112,7 @@ function SignupBox() {
           <p style={{ margin: "9px 0 0", color: "#5542b8", fontSize: 16, lineHeight: 1.55 }}>{t("auth.signup.subtitle")}</p>
         </div>
 
+        <GoogleLoginButton />
         <form onSubmit={handleSignup}>
           <label style={labelStyle}>{t("auth.common.email")}</label>
           <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder={t("auth.common.emailPlaceholder")} autoCapitalize="none" autoComplete="email" style={{...inputStyle, marginBottom: 16}} required spellCheck={false} />
@@ -139,3 +141,4 @@ function SignupBox() {
   );
 }
 export default SignupBox;
+

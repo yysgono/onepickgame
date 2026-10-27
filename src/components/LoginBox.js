@@ -1,3 +1,4 @@
+import GoogleLoginButton from "./GoogleLoginButton";
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { supabase } from "../utils/supabaseClient";
@@ -105,6 +106,7 @@ function LoginBox({ setUser, setNickname }) {
           <p style={{ margin: "9px 0 0", color: "#5542b8", fontSize: 16, lineHeight: 1.55 }}>{t("auth.login.subtitle")}</p>
         </div>
 
+        <GoogleLoginButton />
         <form onSubmit={handleLogin}>
           <label style={labelStyle}>{t("auth.common.email")}</label>
           <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder={t("auth.common.emailPlaceholder")} autoCapitalize="none" autoComplete="email" style={{...inputStyle, marginBottom: 16}} required spellCheck={false} />
@@ -135,3 +137,4 @@ function LoginBox({ setUser, setNickname }) {
 }
 
 export default LoginBox;
+

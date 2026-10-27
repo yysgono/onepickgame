@@ -1,3 +1,4 @@
+import GoogleAuthCallback from "./components/GoogleAuthCallback";
 import DeferredPageBoundary from "./components/DeferredPageBoundary";
 import { getPrivatePageSeo } from "./seo/privatePageSeo";
 import { fetchWorldcupRelatedCards } from "./utils/worldcupHomeApi";
@@ -745,6 +746,7 @@ function handleMakeWorldcup() {
 <div className="main-content-box">
   <DeferredPageBoundary>
   <Routes>
+    <Route path="/auth/callback" element={<GoogleAuthCallback setNickname={updateNickname} />} />
     <Route path="/:lang/suggestions-board" element={<SuggestionsBoard user={user} />} />
     <Route path="/:lang/admin-suggestions" element={<SuggestionsBoard user={user} adminView />} />
     <Route path="/:lang/notices" element={<CommunityBoardPage board="notices" user={user} />} />
@@ -2075,5 +2077,6 @@ overflowX: "hidden",
 }
 
 export default App;
+
 
 
