@@ -1,0 +1,27 @@
+const {PGlite}=require('@electric-sql/pglite');
+const fs=require('fs'),assert=require('node:assert/strict');
+(async()=>{
+ const db=new PGlite();
+ await db.exec(`create schema auth;create role anon;create role authenticated;
+ create table auth.users(id uuid primary key);create function auth.uid() returns uuid language sql stable as $$select nullif(current_setting('request.jwt.claim.sub',true),'')::uuid$$;
+ grant usage on schema auth to authenticated,anon;grant execute on function auth.uid() to authenticated,anon;
+ create table profiles(id uuid primary key references auth.users,nickname text,email text,withdrawal_requested_at timestamptz);
+ insert into auth.users select ('00000000-0000-0000-0000-'||lpad(i::text,12,'0'))::uuid from generate_series(1,23) i;
+ insert into profiles select id,'name','PRIVATE_SENTINEL@example.com',now() from auth.users;
+ update profiles set withdrawal_requested_at=null where id='00000000-0000-0000-0000-000000000023';`);
+ await db.exec(fs.readFileSync('supabase/20261027_withdrawal_admin_v92.sql','utf8'));
+ await db.exec(`insert into account_review_admins values('00000000-0000-0000-0000-000000000001',now());set role authenticated;set request.jwt.claim.sub='00000000-0000-0000-0000-000000000001';`);
+ let {rows}=await db.query('select admin_list_withdrawal_requests(0) d');
+ assert.equal(rows[0].d.items.length,20);assert.equal(rows[0].d.has_more,true);
+ assert.ok(!JSON.stringify(rows).includes('PRIVATE_SENTINEL'));assert.equal(rows[0].d.items[0].masked_email,'P***@example.com');
+ rows=(await db.query('select admin_list_withdrawal_requests(20) d')).rows;assert.equal(rows[0].d.items.length,2);assert.equal(rows[0].d.has_more,false);
+ await assert.rejects(db.query('select admin_list_withdrawal_requests(-1)'),/Invalid page offset/);
+ await db.exec("set request.jwt.claim.sub='00000000-0000-0000-0000-000000000002'");
+ assert.equal((await db.query('select can_review_account_requests() a')).rows[0].a,false);
+ await assert.rejects(db.query('select admin_list_withdrawal_requests(0)'),/permission required/);
+ await assert.rejects(db.query('select * from account_review_admins'),/permission denied/);
+ await assert.rejects(db.query("insert into account_review_admins(user_id) values('00000000-0000-0000-0000-000000000002')"),/permission denied/);
+ await db.exec('set role anon');await assert.rejects(db.query('select admin_list_withdrawal_requests(0)'),/permission denied/);
+ await db.exec('reset role');assert.equal((await db.query('select count(*)::int n from profiles')).rows[0].n,23);
+ console.log('PASS: dedicated admin authorization, normal/anon denial, no self-grant, 20-row paging, cancelled exclusion, masked email, no account deletion');await db.close();
+})().catch(e=>{console.error(e);process.exitCode=1});

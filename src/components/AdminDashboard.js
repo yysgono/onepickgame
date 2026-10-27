@@ -1,3 +1,4 @@
+import WithdrawalRequestsAdmin from "./WithdrawalRequestsAdmin";
 import ContentTrashAdmin from "./ContentTrashAdmin";
 import { adminDisplayTitle } from "../utils/adminDisplayTitle";
 import { getAllAdminWorldcups as getAllWorldcups, getAllAdminTierLists as getAllTierLists, getAllAdminQuizzes as getAllQuizzes, getAdminCommentCount as getTotalComments, adminTitleMatches } from "../utils/adminReadApi";
@@ -534,6 +535,7 @@ const unassignedCount = useMemo(() => {
           valueColor="#6650d8"
         />
       </div>
+      <WithdrawalRequestsAdmin />
       <ContentTrashAdmin onChanged={loadDashboard} />
 
       {/* ========================================
