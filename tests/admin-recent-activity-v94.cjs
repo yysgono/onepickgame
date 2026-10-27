@@ -1,0 +1,23 @@
+const fs=require('fs'),assert=require('node:assert/strict'),babel=require('@babel/core');
+let fixtures={},calls=[],fail='';
+const client={from(table){const call={table};calls.push(call);let filter=()=>true;let limit=Infinity;
+ const q={select(fields){call.fields=fields;return q},order(){return q},limit(n){limit=n;call.limit=n;return q},is(key,value){const before=filter;filter=r=>before(r)&&(r[key]??null)===value;return q},in(key,values){const before=filter;filter=r=>before(r)&&values.includes(r[key]);return q},then(resolve,reject){const data=(fixtures[table]||[]).filter(filter).slice(0,limit);return Promise.resolve({data,error:table===fail?{message:'fixture failure'}:null}).then(resolve,reject)}};return q;}};
+const code=babel.transformSync(fs.readFileSync('src/utils/adminReadApi.js','utf8'),{presets:[['@babel/preset-env',{targets:{node:'current'}}]],babelrc:false,configFile:false}).code;
+const m={exports:{}};new Function('require','module','exports',code)(path=>path.includes('adminDisplayTitle')?{adminDisplayTitle:r=>r.title_translations?.ko||r.title}:{supabase:client},m,m.exports);
+(async()=>{
+ fixtures={quiz_attempts:Array.from({length:35},(_,i)=>({id:i,quiz_id:i===1?'gone':'q',created_at:'2026-10-27T00:00:00Z'})),quizzes:[{id:'q',title:'English',title_translations:{ko:'한글 제목'},content_languages:['en'],original_language:'en',deleted_at:null},{id:'gone',title:'Deleted',deleted_at:'2026-10-01'}]};
+ let rows=await m.exports.getAdminRecentContentActivity('quiz');assert.equal(rows.length,30);assert.equal(rows[0].title,'한글 제목');assert.equal(rows[0].href,'/en/quiz/q');assert.equal(rows[1].href,null);assert.equal(calls.length,2);assert.equal(calls[0].limit,30);
+ assert.ok(calls.every(c=>!/(answers|attempt_token|participant_id|candidates|image)/.test(c.fields)));
+ calls=[];fixtures={tier_list_play_logs:[{id:'t-log',tier_list_id:'t',created_at:'2026-10-27T00:00:00Z'}],tier_lists:[{id:'t',title:'티어표',deleted_at:null}]};rows=await m.exports.getAdminRecentContentActivity('tier-list');assert.equal(rows[0].href,'/ko/tier-list/t');
+ calls=[];fixtures={};assert.deepEqual(await m.exports.getAdminRecentContentActivity('quiz'),[]);assert.equal(calls.length,1);
+ fail='quiz_attempts';await assert.rejects(m.exports.getAdminRecentContentActivity('quiz'),e=>e?.message==='fixture failure');
+ fail='quizzes';fixtures={quiz_attempts:[{id:1,quiz_id:'q'}]};await assert.rejects(m.exports.getAdminRecentContentActivity('quiz'),e=>e?.message==='fixture failure');
+ await assert.rejects(m.exports.getAdminRecentContentActivity('invalid'),/Unsupported/);
+ const React=require('react'),{renderToStaticMarkup}=require('react-dom/server'),{MemoryRouter}=require('react-router-dom');
+ const component=babel.transformSync(fs.readFileSync('src/components/AdminRecentActivity.js','utf8'),{presets:[['@babel/preset-env',{targets:{node:'current'}}],'@babel/preset-react'],babelrc:false,configFile:false}).code;
+ const cm={exports:{}};new Function('require','module','exports',component)(require,cm,cm.exports);
+ const render=props=>renderToStaticMarkup(React.createElement(MemoryRouter,null,React.createElement(cm.exports.default,props)));
+ const errorHtml=render({kind:'quiz',items:[],error:true});assert.ok(errorHtml.includes('조회에 실패'));assert.ok(!errorHtml.includes('아직 기록이 없습니다'));
+ const html=render({kind:'tier-list',items:[{id:1,title:'<script>bad</script>',href:'/ko/tier-list/t',created_at:'2026-10-27T00:00:00Z'}]});assert.ok(html.includes('href="/ko/tier-list/t"'));assert.ok(html.includes('&lt;script&gt;'));assert.ok(html.includes('열람 기록'));
+ console.log('PASS: bounded metadata queries, no answers/identifiers/images, title localization, supported quiz links, deleted content disabled, empty/error isolation, safe accessible activity links');
+})().catch(e=>{console.error(e);process.exitCode=1});

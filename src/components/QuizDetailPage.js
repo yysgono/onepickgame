@@ -1371,7 +1371,7 @@ export default function QuizDetailPage() {
 
           <>
 
-            <div style={{ ...cardStyle, maxWidth: 980, margin: "35px auto 22px", padding: 38, textAlign: "center" }}>
+            <div style={{ ...cardStyle, maxWidth: 1120, width: "100%", boxSizing: "border-box", margin: "35px auto 22px", padding: "clamp(20px, 3vw, 38px)", textAlign: "center" }}>
 
               <div style={{ fontSize: 17, fontWeight: 900, color: "#596579", marginBottom: 6 }}>{title}</div>
 
@@ -1417,7 +1417,7 @@ export default function QuizDetailPage() {
 
                     </div>
 
-                    <div style={{ marginTop: 10, color: "#7a4650", fontSize: 13 }}>
+                    <div style={{ marginTop: 10, color: "#7a4650", fontSize: 16, lineHeight: 1.6, fontWeight: 650 }}>
 
                       {formatCopy(c.comparisonLine, { count: records.length })}
 
@@ -1433,23 +1433,23 @@ export default function QuizDetailPage() {
 
               </div>
 
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(130px,1fr))", gap: 8, margin: "18px auto 0", maxWidth: 850 }}>
+              <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: 8, margin: "18px auto 0", maxWidth: 1040 }}>
 
-                <button type="button" onClick={() => start()} style={resultPrimaryButton}>{c.retry}</button>
+                <button type="button" onClick={() => start()} style={{ ...resultPrimaryButton, ...resultActionLayout }}>{c.retry}</button>
 
-                <button type="button" disabled={!records.some((x) => !x.correct)} onClick={retryWrong} style={resultSecondaryButton}>{c.retryWrong}</button>
+                <button type="button" disabled={!records.some((x) => !x.correct)} onClick={retryWrong} style={{ ...resultSecondaryButton, ...resultActionLayout }}>{c.retryWrong}</button>
 
-                <button type="button" onClick={playRandomQuiz} disabled={randomLoading} style={resultPrimaryButton}>{randomLoading ? c.loading : `🎲 ${c.randomQuiz}`}</button>
+                <button type="button" onClick={playRandomQuiz} disabled={randomLoading} style={{ ...resultSecondaryButton, ...resultActionLayout }}>{randomLoading ? c.loading : `🎲 ${c.randomQuiz}`}</button>
 
-                <NavigationLink  to={`/${lang}/quiz`} appearance="button" style={resultSecondaryButton}>{c.otherQuizzes}</NavigationLink>
+                <NavigationLink  to={`/${lang}/quiz`} appearance="button" style={{ ...resultSecondaryButton, ...resultActionLayout }}>{c.otherQuizzes}</NavigationLink>
 
-                <button type="button" onClick={shareResult} style={resultSecondaryButton}>{c.share}</button>
+                <button type="button" onClick={shareResult} style={{ ...resultSecondaryButton, ...resultActionLayout }}>{c.share}</button>
 
               </div>
 
               <div style={{ display: "flex", justifyContent: "center", marginTop: 10 }}>
 
-                <NavigationLink  to={`/${lang}/quiz/create`} appearance="button" style={{ ...resultSecondaryButton, minWidth: 230 }}>＋ {c.createMyQuiz}</NavigationLink>
+                <NavigationLink  to={`/${lang}/quiz/create`} appearance="button" style={{ ...resultPrimaryButton, minWidth: 230, whiteSpace: "nowrap" }}>＋ {c.createMyQuiz}</NavigationLink>
 
               </div>
 
@@ -1696,6 +1696,8 @@ const secondaryButton = {
   cursor: "pointer",
 
 };
+
+const resultActionLayout = { flex: "1 0 auto", minWidth: "min(180px, 100%)", maxWidth: "100%", boxSizing: "border-box", whiteSpace: "nowrap", padding: "14px 16px" };
 
 const resultPrimaryButton = {
 

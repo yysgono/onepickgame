@@ -94,3 +94,35 @@ export async function getAdminRecentComments() {
   if (error) throw error;
   return Array.isArray(data) ? data : [];
 }
+
+// Metadata only: no answers, participant identifiers, candidate arrays or images.
+export async function getAdminRecentContentActivity(kind) {
+  if (!['quiz', 'tier-list'].includes(kind)) throw new Error('Unsupported activity kind');
+  const isQuiz = kind === 'quiz';
+  const logTable = isQuiz ? 'quiz_attempts' : 'tier_list_play_logs';
+  const parentTable = isQuiz ? 'quizzes' : 'tier_lists';
+  const parentKey = isQuiz ? 'quiz_id' : 'tier_list_id';
+  const { data, error } = await supabase.from(logTable)
+    .select(`id,${parentKey},created_at`).order('created_at', { ascending: false }).order('id', { ascending: false }).limit(30);
+  if (error) throw error;
+  const logs = Array.isArray(data) ? data : [];
+  const ids = [...new Set(logs.map(row => row[parentKey]).filter(Boolean))];
+  let parents = new Map();
+  if (ids.length) {
+    const fields = isQuiz ? 'id,title,title_translations,original_language,content_languages' : 'id,title,title_translations';
+    const { data: titles, error: titleError } = await supabase.from(parentTable).select(fields).is('deleted_at', null).in('id', ids);
+    if (titleError) throw titleError;
+    parents = new Map((titles || []).map(row => [String(row.id), row]));
+  }
+  const languages = ['ko','en','ja','zh','es','fr','vi','de','ru','id','pt','hi','tr','th','ar','bn'];
+  return logs.map(row => {
+    const parent = parents.get(String(row[parentKey]));
+    const supported = isQuiz ? [...(parent?.content_languages || []), parent?.original_language] : ['ko'];
+    const lang = supported.includes('ko') ? 'ko' : languages.includes(parent?.original_language) ? parent.original_language : 'en';
+    return {
+      id: row.id, created_at: row.created_at,
+      title: parent ? adminDisplayTitle(parent) : '삭제되었거나 조회할 수 없는 콘텐츠',
+      href: parent ? `/${lang}/${kind}/${encodeURIComponent(parent.id)}` : null,
+    };
+  });
+}
