@@ -95,3 +95,25 @@
 .community-board .board-toolbar{display:flex;align-items:center;justify-content:space-between;gap:14px;margin:14px 0 20px;flex-wrap:wrap}
 .community-board .board-toolbar .community-read-filter{justify-content:flex-start;margin:0;flex:1 1 auto}
 .community-board .board-toolbar .board-write{margin-inline-start:auto;flex:0 0 auto;background:#5542b8;border-color:#5542b8;font-weight:750}
+/* Shared rich text editor and safe formatted article layout. */
+.rich-editor{border:1px solid #9ca8ba;border-radius:10px;overflow:hidden;background:#fff;min-width:0}
+.site-publishing .rich-toolbar{display:flex;align-items:center;flex-wrap:wrap;gap:3px;padding:8px;background:#f7f8fb;border-bottom:1px solid #d5dae4}
+.site-publishing .rich-toolbar button{padding:5px 8px;min-width:32px;min-height:32px;background:transparent;color:#334155;border:1px solid transparent;border-radius:4px;font-size:14px;line-height:1.2}
+.site-publishing .rich-toolbar button:hover:not(:disabled),.site-publishing .rich-toolbar button[aria-pressed=true]{background:#e8e3f9;border-color:#b8a9e2;color:#443292}
+.site-publishing .rich-toolbar select{width:auto;max-width:135px;min-height:32px;border:1px solid #d3d9e4;border-radius:4px;padding:4px 6px;font-size:13px;background:white}
+.site-publishing .rich-toolbar .rich-color{display:flex;flex-direction:row;align-items:center;gap:2px;margin:0 3px;font-size:14px;cursor:pointer}
+.site-publishing .rich-toolbar input[type=color]{display:block;width:25px;height:27px;padding:1px;border:1px solid #d3d9e4;border-radius:3px;background:#fff;cursor:pointer}
+.rich-editable,.site-publishing textarea.rich-source{padding:18px;min-height:320px;max-height:75vh;overflow:auto;line-height:1.8;font-size:16px;background:#fff;color:#202534;outline:none;overflow-wrap:anywhere;white-space:normal;text-align:start}
+.rich-editable:focus{box-shadow:inset 0 0 0 2px #ab9bdc}
+.site-publishing textarea.rich-source{width:100%;border:0;border-radius:0;font-family:monospace;resize:vertical;white-space:pre-wrap}
+.rich-editor-hint{padding:8px 12px;border-top:1px solid #e2e6ef;color:#778399;background:#fcfcfe;font-size:12px}
+.rich-editable img,.rich-content img,.blog-post-content img{max-width:100%;height:auto;border-radius:6px;vertical-align:middle}
+.rich-editable table,.rich-content table,.blog-post-content table{border-collapse:collapse;max-width:100%;width:100%;margin:12px 0;table-layout:fixed}
+.rich-editable td,.rich-editable th,.rich-content td,.rich-content th,.blog-post-content td,.blog-post-content th{border:1px solid #aeb9cc;padding:8px;min-width:35px;overflow-wrap:anywhere}
+.rich-editable blockquote,.rich-content blockquote,.blog-post-content blockquote{border-inline-start:4px solid #a59ac9;margin:15px 0;padding:10px 16px;background:#f7f5fc;color:#64748b}
+.rich-editable pre,.rich-content pre,.blog-post-content pre{padding:14px;background:#f0f3f7;border-radius:6px;white-space:pre-wrap;overflow-wrap:anywhere;font-family:monospace}
+.rich-editable hr,.rich-content hr,.blog-post-content hr{border:0;border-top:1px solid #cbd3e0;margin:20px 0}
+.rich-content p{white-space:normal;line-height:1.9}
+@media(max-width:600px){.site-publishing .rich-toolbar{padding:6px;gap:2px}.site-publishing .rich-toolbar button{min-width:33px;min-height:36px}.site-publishing .rich-toolbar select{max-width:110px}.rich-editable{padding:13px;min-height:280px}}
+
+.community-board .rich-content{white-space:normal}

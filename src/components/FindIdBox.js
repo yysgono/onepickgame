@@ -1,3 +1,4 @@
+import accountRecoveryCopy from "./accountRecoveryCopy.json";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { supabase } from "../utils/supabaseClient";
@@ -79,9 +80,7 @@ function FindIdBox() {
     if(getByteLength(nickname)>12) { setError(t("auth.common.nicknameMax")); return; }
     setLoading(true);
     try {
-      const {data:profile,error:pErr}=await supabase.from("profiles").select("email").eq("nickname",nickname.trim()).single();
-      if(pErr || !profile?.email) setError(t("auth.findId.notFound"));
-      else setFoundId(t("auth.findId.result",{email:profile.email}));
+      setFoundId((accountRecoveryCopy[lang] || accountRecoveryCopy.en).privacy);
     } catch { setError(t("auth.common.temporaryError")); }
     setLoading(false);
   }

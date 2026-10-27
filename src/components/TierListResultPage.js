@@ -441,9 +441,7 @@ const [
               profile,
           } =
             await supabase
-              .from(
-                "profiles"
-              )
+              .from("public_member_names")
               .select(
                 "nickname"
               )
@@ -749,7 +747,7 @@ if (mounted) {
     };
     if (!tierList.user_id) apply(tierList.guest_nickname);
     else {
-      supabase.from("profiles").select("nickname").eq("id", tierList.user_id).maybeSingle()
+      supabase.from("public_member_names").select("nickname").eq("id", tierList.user_id).maybeSingle()
         .then(({ data, error }) => apply(error ? "" : data?.nickname))
         .catch(() => apply(""));
     }

@@ -17,8 +17,8 @@ export async function loadBoardPage(client,{board,lang,category='all',currentLan
  return {pinned:pinResult.data||[],items:result.data||[],total:result.count||0};
 }
 export async function loadBoardBody(client,id){
- const {data,error}=await client.from('community_posts').select('body').eq('id',id).single();
- if(error)throw error;return data?.body||'';
+ const {data,error}=await client.from('community_posts').select('body,body_html').eq('id',id).single();
+ if(error)throw error;return {text:data?.body||'',html:data?.body_html||null};
 }
 export function boardDate(value,lang,now=new Date()){
  const date=new Date(value);if(!Number.isFinite(date.getTime()))return '';

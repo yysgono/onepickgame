@@ -62,7 +62,7 @@ export default function AuthBox({ onLogin }) {
       }
       // --- 핵심! 모든 닉네임 받아와서 대소문자 무시 완전일치 체크 ---
       const { data: allNicks, error: nickError } = await supabase
-        .from("profiles")
+        .from("public_member_names")
         .select("nickname");
       if (nickError) {
         setMsg(nickError.message);

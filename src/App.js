@@ -1721,9 +1721,7 @@ function App() {
   function updateNickname(nick) {
     setNickname(nick);
 
-    setIsAdmin(
-      nick === "admin"
-    );
+    // Nickname edits do not grant or revoke server-maintained administrator roles.
   }
 
   /* ===================================================

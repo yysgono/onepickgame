@@ -1,3 +1,4 @@
+import {sanitizeRichHtml} from '../utils/richText';
 import {getCommunityUi} from './communityUi';
 import { useSitePublisher } from "./SitePublishing";
 import "./communityPublishing.css";
@@ -653,7 +654,7 @@ export default function BlogPostPage() {
             className="blog-post-content"
             dangerouslySetInnerHTML={{
               __html:
-                post.content || "",
+                sanitizeRichHtml(post.content || ""),
             }}
           />
         </article>

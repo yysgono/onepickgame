@@ -1,3 +1,4 @@
+const sanitizeRichHtml=require('./rich-text-server.cjs');
 const {loadSeoTemplate}=require('./seo-template.cjs');
 const {insertRoot}=require('./home-seo-support.cjs');
 const labels=require('./src/components/headerCommunityCopy.json');
@@ -18,14 +19,14 @@ function privateInfo(req){
 }
 module.exports=(app,client,origin)=>{
  const cache=new Map(),pending=new Map();
- async function boardRows(lang,board){const key=`${board}:${lang}`,now=Date.now();if(cache.get(key)?.until>now)return cache.get(key).rows;if(pending.has(key))return pending.get(key);const p=(async()=>{let q=client.from('community_posts').select('id,title,body,author_nickname,language,created_at,is_pinned').eq('board',board);if(board==='notices')q=q.eq('language',lang);else q=q.or(`language_only.eq.false,language.eq.${lang}`);const {data,error}=await q.order('is_pinned',{ascending:false}).order('created_at',{ascending:false}).order('id',{ascending:false}).limit(12);if(error)throw error;const rows=data||[];cache.set(key,{until:Date.now()+30000,rows});return rows;})().finally(()=>pending.delete(key));pending.set(key,p);return p;}
+ async function boardRows(lang,board){const key=`${board}:${lang}`,now=Date.now();if(cache.get(key)?.until>now)return cache.get(key).rows;if(pending.has(key))return pending.get(key);const p=(async()=>{let q=client.from('community_posts').select('id,title,body,body_html,author_nickname,language,created_at,is_pinned').eq('board',board);if(board==='notices')q=q.eq('language',lang);else q=q.or(`language_only.eq.false,language.eq.${lang}`);const {data,error}=await q.order('is_pinned',{ascending:false}).order('created_at',{ascending:false}).order('id',{ascending:false}).limit(12);if(error)throw error;const rows=data||[];cache.set(key,{until:Date.now()+30000,rows});return rows;})().finally(()=>pending.delete(key));pending.set(key,p);return p;}
  app.use(async(req,res,next)=>{
   const info=privateInfo(req),publicPage=req.query?.seo==='community-list';if(!info&&!publicPage)return next();
   const lang=Object.hasOwn(labels,info?.lang||req.query.lang)?(info?.lang||req.query.lang):'en',ui=copy[lang]||copy.en;
   try{
    if(info){const title=/suggestions/.test(info.page)?labels[lang][4]:/blog/.test(info.page)?ui.article:ui.myContent;res.setHeader('Cache-Control','private, no-store');res.setHeader('X-Robots-Tag','noindex, follow');return res.send(render(await loadSeoTemplate(origin),{lang,title:`${title} | OnePickGame`,description:title,canonical:`${origin}/${lang}/${info.page}`,indexable:false,body:`<main class="site-publishing"><h1>${escape(title)}</h1><p role="status">${escape(ui.loading)}</p></main>`}));}
    const board=req.query.board;if(!['notices','community'].includes(board))return next();const rows=await boardRows(lang,board),name=labels[lang][board==='notices'?0:1],canonical=`${origin}/${lang}/${board}`;
-   const articles=rows.map(p=>`<article class="community-post"><details><summary><strong>${p.is_pinned?escape(ui.pinned)+' · ':''}${escape(p.title)}</strong> · ${escape(p.author_nickname||'Member')}</summary><p style="white-space:pre-wrap">${escape(p.body)}</p></details><time datetime="${escape(p.created_at)}">${escape(String(p.created_at).slice(0,10))}</time></article>`).join('');
+   const articles=rows.map(p=>`<article class="community-post"><details><summary><strong>${p.is_pinned?escape(ui.pinned)+' · ':''}${escape(p.title)}</strong> · ${escape(p.author_nickname||'Member')}</summary>${p.body_html?`<div>${sanitizeRichHtml(p.body_html)}</div>`:`<p style="white-space:pre-wrap">${escape(p.body)}</p>`}</details><time datetime="${escape(p.created_at)}">${escape(String(p.created_at).slice(0,10))}</time></article>`).join('');
    res.setHeader('Cache-Control','public, s-maxage=30, stale-while-revalidate=60');
    res.setHeader('X-Robots-Tag','index, follow');return res.send(render(await loadSeoTemplate(origin),{lang,title:`${name} | OnePickGame`,description:`${name} · OnePickGame`,canonical,indexable:true,body:`<main class="site-publishing"><a href="${lang==='en'?'/':`/${lang}`}">One Pick Game</a><h1>${escape(name)}</h1>${articles||`<p>${escape(ui.noPosts)}</p>`}</main>`}));
   }catch(e){console.error('Community HTML unavailable:',e.message);res.setHeader('Cache-Control','no-store');return res.status(503).send('Temporarily unavailable');}

@@ -53,7 +53,7 @@ export function subscribeToAuthProfile(client, state) {
     // Supabase requests must run outside the synchronous auth callback.
     profileTimer = setTimeout(async () => {
       try {
-        const { data, error } = await client.from("profiles")
+        const { data, error } = await client.from("public_member_names")
           .select("nickname").eq("id", id).single();
         if (!active || currentId !== id) return;
         if (error) {
@@ -63,7 +63,8 @@ export function subscribeToAuthProfile(client, state) {
         }
         const nickname = data?.nickname || "";
         state.setNickname(nickname);
-        state.setIsAdmin(nickname === "admin");
+        const { data: role, error: roleError } = await client.rpc("account_site_admin");
+        if (active && currentId === id) state.setIsAdmin(!roleError && role === true);
       } catch (error) {
         if (active && currentId === id) profileId = null;
         console.warn("Profile lookup failed", error);

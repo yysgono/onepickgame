@@ -14,7 +14,7 @@ export default function QuizCommentBox({ quizId }) {
   const [loading, setLoading] = useState(true);
   const { isBanned } = useBanCheck(user);
 
-  useEffect(()=>{ supabase.auth.getUser().then(async ({data})=>{ const u=data?.user||null; setUser(u); if(u){ const {data:p}=await supabase.from("profiles").select("nickname").eq("id",u.id).single(); setNickname(p?.nickname||""); }}); },[]);
+  useEffect(()=>{ supabase.auth.getUser().then(async ({data})=>{ const u=data?.user||null; setUser(u); if(u){ const {data:p}=await supabase.from("public_member_names").select("nickname").eq("id",u.id).single(); setNickname(p?.nickname||""); }}); },[]);
   async function load(){ setLoading(true); const {data}=await supabase.from("quiz_comments").select("*").eq("quiz_id",quizId).order("created_at",{ascending:false}); setComments(data||[]); setLoading(false); }
   useEffect(()=>{ if(quizId) load(); },[quizId]);
 

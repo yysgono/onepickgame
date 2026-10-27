@@ -65,7 +65,9 @@
     "POST_PERMISSION": "Please sign in.",
     "POST_NOT_FOUND": "No posts yet.",
     "POST_INVALID": "Enter a title and article text.",
-    "POST_HOURLY_LIMIT": "You have reached the limit of 10 posts in the last hour. Please try again later."
+    "POST_HOURLY_LIMIT": "You have reached the limit of 10 posts in the last hour. Please try again later.",
+    "POST_IMAGE_LIMIT": "Attach image: ≤5",
+    "POST_HTML_LIMIT": "Use 1–120 characters for the title and 1–10,000 for the body."
   },
   "ko": {
     "myContent": "내 콘텐츠",
@@ -133,7 +135,9 @@
     "POST_PERMISSION": "이 글을 수정할 권한이 없습니다.",
     "POST_NOT_FOUND": "아직 등록된 글이 없습니다.",
     "POST_INVALID": "제목과 본문을 입력해 주세요.",
-    "POST_HOURLY_LIMIT": "최근 1시간 등록 한도(10개)에 도달했습니다. 잠시 후 다시 작성해 주세요."
+    "POST_HOURLY_LIMIT": "최근 1시간 등록 한도(10개)에 도달했습니다. 잠시 후 다시 작성해 주세요.",
+    "POST_IMAGE_LIMIT": "이미지는 글당 최대 5장까지 첨부할 수 있습니다.",
+    "POST_HTML_LIMIT": "본문 서식이 너무 큽니다. 일부 서식을 지우고 다시 저장해 주세요."
   },
   "ja": {
     "myContent": "マイコンテンツ",
@@ -201,7 +205,9 @@
     "POST_PERMISSION": "ログインしてください。",
     "POST_NOT_FOUND": "まだ投稿がありません。",
     "POST_INVALID": "タイトルと本文を入力してください。",
-    "POST_HOURLY_LIMIT": "直近1時間の投稿上限（10件）に達しました。しばらくしてからお試しください。"
+    "POST_HOURLY_LIMIT": "直近1時間の投稿上限（10件）に達しました。しばらくしてからお試しください。",
+    "POST_IMAGE_LIMIT": "画像を添付: ≤5",
+    "POST_HTML_LIMIT": "タイトルは1〜120文字、本文は1〜10,000文字で入力してください。"
   },
   "zh": {
     "myContent": "我的内容",
@@ -269,7 +275,9 @@
     "POST_PERMISSION": "请先登录。",
     "POST_NOT_FOUND": "暂无帖子。",
     "POST_INVALID": "请输入标题和正文。",
-    "POST_HOURLY_LIMIT": "已达到最近1小时10篇的上限，请稍后再试。"
+    "POST_HOURLY_LIMIT": "已达到最近1小时10篇的上限，请稍后再试。",
+    "POST_IMAGE_LIMIT": "添加图片: ≤5",
+    "POST_HTML_LIMIT": "标题请输入1–120字，正文1–10,000字。"
   },
   "es": {
     "myContent": "Mi contenido",
@@ -337,7 +345,9 @@
     "POST_PERMISSION": "Inicia sesión.",
     "POST_NOT_FOUND": "Aún no hay publicaciones.",
     "POST_INVALID": "Escribe el título y el texto.",
-    "POST_HOURLY_LIMIT": "Has alcanzado el límite de 10 publicaciones en la última hora. Inténtalo más tarde."
+    "POST_HOURLY_LIMIT": "Has alcanzado el límite de 10 publicaciones en la última hora. Inténtalo más tarde.",
+    "POST_IMAGE_LIMIT": "Adjuntar imagen: ≤5",
+    "POST_HTML_LIMIT": "Usa 1–120 caracteres en el título y 1–10.000 en el texto."
   },
   "fr": {
     "myContent": "Mes contenus",
@@ -405,7 +415,9 @@
     "POST_PERMISSION": "Connectez-vous.",
     "POST_NOT_FOUND": "Aucune publication pour le moment.",
     "POST_INVALID": "Saisissez un titre et le texte.",
-    "POST_HOURLY_LIMIT": "Vous avez atteint la limite de 10 publications sur la dernière heure. Réessayez plus tard."
+    "POST_HOURLY_LIMIT": "Vous avez atteint la limite de 10 publications sur la dernière heure. Réessayez plus tard.",
+    "POST_IMAGE_LIMIT": "Joindre une image: ≤5",
+    "POST_HTML_LIMIT": "Saisissez 1 à 120 caractères pour le titre et 1 à 10 000 pour le texte."
   },
   "vi": {
     "myContent": "Nội dung của tôi",
@@ -473,7 +485,9 @@
     "POST_PERMISSION": "Vui lòng đăng nhập.",
     "POST_NOT_FOUND": "Chưa có bài viết.",
     "POST_INVALID": "Nhập tiêu đề và nội dung.",
-    "POST_HOURLY_LIMIT": "Bạn đã đạt giới hạn 10 bài trong giờ vừa qua. Vui lòng thử lại sau."
+    "POST_HOURLY_LIMIT": "Bạn đã đạt giới hạn 10 bài trong giờ vừa qua. Vui lòng thử lại sau.",
+    "POST_IMAGE_LIMIT": "Đính kèm ảnh: ≤5",
+    "POST_HTML_LIMIT": "Tiêu đề từ 1–120 ký tự, nội dung từ 1–10.000 ký tự."
   },
   "de": {
     "myContent": "Meine Inhalte",
@@ -541,7 +555,9 @@
     "POST_PERMISSION": "Bitte anmelden.",
     "POST_NOT_FOUND": "Noch keine Beiträge.",
     "POST_INVALID": "Gib einen Titel und Text ein.",
-    "POST_HOURLY_LIMIT": "Du hast das Limit von 10 Beiträgen in der letzten Stunde erreicht. Versuche es später erneut."
+    "POST_HOURLY_LIMIT": "Du hast das Limit von 10 Beiträgen in der letzten Stunde erreicht. Versuche es später erneut.",
+    "POST_IMAGE_LIMIT": "Bild anhängen: ≤5",
+    "POST_HTML_LIMIT": "Titel: 1–120 Zeichen; Text: 1–10.000 Zeichen."
   },
   "ru": {
     "myContent": "Мои материалы",
@@ -609,7 +625,9 @@
     "POST_PERMISSION": "Войдите в аккаунт.",
     "POST_NOT_FOUND": "Публикаций пока нет.",
     "POST_INVALID": "Введите заголовок и текст.",
-    "POST_HOURLY_LIMIT": "Достигнут лимит: 10 публикаций за последний час. Попробуйте позже."
+    "POST_HOURLY_LIMIT": "Достигнут лимит: 10 публикаций за последний час. Попробуйте позже.",
+    "POST_IMAGE_LIMIT": "Прикрепить изображение: ≤5",
+    "POST_HTML_LIMIT": "Заголовок: 1–120 символов; текст: 1–10 000 символов."
   },
   "id": {
     "myContent": "Konten saya",
@@ -677,7 +695,9 @@
     "POST_PERMISSION": "Silakan masuk.",
     "POST_NOT_FOUND": "Belum ada postingan.",
     "POST_INVALID": "Masukkan judul dan isi artikel.",
-    "POST_HOURLY_LIMIT": "Batas 10 postingan dalam satu jam terakhir tercapai. Coba lagi nanti."
+    "POST_HOURLY_LIMIT": "Batas 10 postingan dalam satu jam terakhir tercapai. Coba lagi nanti.",
+    "POST_IMAGE_LIMIT": "Lampirkan gambar: ≤5",
+    "POST_HTML_LIMIT": "Judul harus 1–120 karakter dan isi 1–10.000 karakter."
   },
   "pt": {
     "myContent": "Meu conteúdo",
@@ -745,7 +765,9 @@
     "POST_PERMISSION": "Entre na sua conta.",
     "POST_NOT_FOUND": "Ainda não há publicações.",
     "POST_INVALID": "Digite o título e o texto.",
-    "POST_HOURLY_LIMIT": "Você atingiu o limite de 10 publicações na última hora. Tente novamente mais tarde."
+    "POST_HOURLY_LIMIT": "Você atingiu o limite de 10 publicações na última hora. Tente novamente mais tarde.",
+    "POST_IMAGE_LIMIT": "Anexar imagem: ≤5",
+    "POST_HTML_LIMIT": "Use 1–120 caracteres no título e 1–10.000 no texto."
   },
   "hi": {
     "myContent": "मेरी सामग्री",
@@ -813,7 +835,9 @@
     "POST_PERMISSION": "कृपया लॉगिन करें।",
     "POST_NOT_FOUND": "अभी कोई पोस्ट नहीं है।",
     "POST_INVALID": "शीर्षक और लेख का पाठ लिखें।",
-    "POST_HOURLY_LIMIT": "पिछले एक घंटे में 10 पोस्ट की सीमा पूरी हो गई है। कृपया बाद में प्रयास करें।"
+    "POST_HOURLY_LIMIT": "पिछले एक घंटे में 10 पोस्ट की सीमा पूरी हो गई है। कृपया बाद में प्रयास करें।",
+    "POST_IMAGE_LIMIT": "चित्र जोड़ें: ≤5",
+    "POST_HTML_LIMIT": "शीर्षक 1–120 और लेख 1–10,000 अक्षरों में लिखें।"
   },
   "tr": {
     "myContent": "İçeriklerim",
@@ -881,7 +905,9 @@
     "POST_PERMISSION": "Lütfen giriş yapın.",
     "POST_NOT_FOUND": "Henüz gönderi yok.",
     "POST_INVALID": "Başlık ve yazı metnini girin.",
-    "POST_HOURLY_LIMIT": "Son bir saatte 10 gönderi sınırına ulaştınız. Daha sonra tekrar deneyin."
+    "POST_HOURLY_LIMIT": "Son bir saatte 10 gönderi sınırına ulaştınız. Daha sonra tekrar deneyin.",
+    "POST_IMAGE_LIMIT": "Görsel ekle: ≤5",
+    "POST_HTML_LIMIT": "Başlık 1–120, metin 1–10.000 karakter olmalıdır."
   },
   "th": {
     "myContent": "เนื้อหาของฉัน",
@@ -949,7 +975,9 @@
     "POST_PERMISSION": "กรุณาเข้าสู่ระบบ",
     "POST_NOT_FOUND": "ยังไม่มีโพสต์",
     "POST_INVALID": "กรุณากรอกหัวข้อและเนื้อหา",
-    "POST_HOURLY_LIMIT": "ครบขีดจำกัด 10 โพสต์ในหนึ่งชั่วโมงที่ผ่านมาแล้ว โปรดลองอีกครั้งภายหลัง"
+    "POST_HOURLY_LIMIT": "ครบขีดจำกัด 10 โพสต์ในหนึ่งชั่วโมงที่ผ่านมาแล้ว โปรดลองอีกครั้งภายหลัง",
+    "POST_IMAGE_LIMIT": "แนบรูปภาพ: ≤5",
+    "POST_HTML_LIMIT": "หัวข้อ 1–120 ตัวอักษร และเนื้อหา 1–10,000 ตัวอักษร"
   },
   "ar": {
     "myContent": "محتواي",
@@ -1017,7 +1045,9 @@
     "POST_PERMISSION": "يرجى تسجيل الدخول.",
     "POST_NOT_FOUND": "لا توجد منشورات بعد.",
     "POST_INVALID": "أدخل العنوان ونص المقال.",
-    "POST_HOURLY_LIMIT": "بلغت الحد الأقصى وهو 10 منشورات خلال الساعة الماضية. حاول لاحقًا."
+    "POST_HOURLY_LIMIT": "بلغت الحد الأقصى وهو 10 منشورات خلال الساعة الماضية. حاول لاحقًا.",
+    "POST_IMAGE_LIMIT": "إرفاق صورة: ≤5",
+    "POST_HTML_LIMIT": "اكتب عنوانًا من 1–120 حرفًا ونصًا من 1–10,000 حرف."
   },
   "bn": {
     "myContent": "আমার কনটেন্ট",
@@ -1085,6 +1115,8 @@
     "POST_PERMISSION": "লগইন করুন।",
     "POST_NOT_FOUND": "এখনও কোনো পোস্ট নেই।",
     "POST_INVALID": "শিরোনাম ও লেখার বিষয়বস্তু দিন।",
-    "POST_HOURLY_LIMIT": "গত এক ঘণ্টায় 10টি পোস্টের সীমা পূর্ণ হয়েছে। পরে আবার চেষ্টা করুন।"
+    "POST_HOURLY_LIMIT": "গত এক ঘণ্টায় 10টি পোস্টের সীমা পূর্ণ হয়েছে। পরে আবার চেষ্টা করুন।",
+    "POST_IMAGE_LIMIT": "ছবি সংযুক্ত করুন: ≤5",
+    "POST_HTML_LIMIT": "শিরোনাম 1–120 অক্ষর এবং লেখা 1–10,000 অক্ষর হতে হবে।"
   }
 }

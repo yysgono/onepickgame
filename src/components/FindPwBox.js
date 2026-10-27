@@ -1,3 +1,4 @@
+import accountRecoveryCopy from "./accountRecoveryCopy.json";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { supabase } from "../utils/supabaseClient";
@@ -62,24 +63,19 @@ const labelStyle = {
 };
 
 
-function getByteLength(str) { let len=0; for (let i=0;i<str.length;i++) len += str.charCodeAt(i)>127 ? 2 : 1; return len; }
-function sliceByByte(str,maxBytes) { let bytes=0,result=""; for (let i=0;i<str.length;i++) { const c=str[i], n=str.charCodeAt(i)>127?2:1; if(bytes+n>maxBytes) break; result+=c; bytes+=n; } return result; }
 
 function FindPwBox() {
   const { t, i18n } = useTranslation();
-  const [userId,setUserId]=useState(""); const [nickname,setNickname]=useState(""); const [successMsg,setSuccessMsg]=useState(""); const [error,setError]=useState(""); const [loading,setLoading]=useState(false);
+  const [userId,setUserId]=useState(""); const [successMsg,setSuccessMsg]=useState(""); const [error,setError]=useState(""); const [loading,setLoading]=useState(false);
   const lang=(i18n.language||"en").split("-")[0];
 
   async function handleFindPw(e) {
     e.preventDefault(); setSuccessMsg(""); setError("");
-    if(!userId||!nickname) { setError(t("auth.findPw.inputAll")); return; }
-    if(getByteLength(nickname)>12) { setError(t("auth.common.nicknameMax")); return; }
+    if(!userId) { setError(t("auth.findPw.inputAll")); return; }
     setLoading(true);
     try {
-      const {data:profile,error:pErr}=await supabase.from("profiles").select("email").eq("nickname",nickname.trim()).eq("email",userId.trim()).single();
-      if(pErr||!profile?.email) { setError(t("auth.findPw.noMatch")); setLoading(false); return; }
       const {error:resetErr}=await supabase.auth.resetPasswordForEmail(userId.trim(),{redirectTo:`${window.location.origin}/${lang}/reset-password`});
-      if(resetErr) setError(t("auth.findPw.sendFail")); else setSuccessMsg(t("auth.findPw.sendSuccess"));
+      if(resetErr) setError(t("auth.findPw.sendFail")); else setSuccessMsg((accountRecoveryCopy[lang] || accountRecoveryCopy.en).reset);
     } catch { setError(t("auth.common.temporaryError")); }
     setLoading(false);
   }
@@ -88,7 +84,6 @@ function FindPwBox() {
     <div style={{textAlign:"center",marginBottom:26}}><h2 style={{margin:0,fontSize:29,fontWeight:950}}>{t("auth.findPw.title")}</h2><p style={{margin:"9px 0 0",color:"#5542b8",fontSize:16,lineHeight:1.55}}>{t("auth.findPw.subtitle")}</p></div>
     <form onSubmit={handleFindPw}>
       <label style={labelStyle}>{t("auth.common.email")}</label><input type="email" value={userId} onChange={e=>setUserId(e.target.value)} placeholder={t("auth.common.emailPlaceholder")} style={{...inputStyle,marginBottom:16}} maxLength={50} disabled={loading} autoComplete="username" />
-      <label style={labelStyle}>{t("auth.common.nickname")}</label><input type="text" value={nickname} onChange={e=>setNickname(sliceByByte(e.target.value,12))} placeholder={t("auth.common.nicknamePlaceholder")} style={{...inputStyle,marginBottom:20}} autoComplete="off" spellCheck={false} disabled={loading} />
       <button type="submit" style={{...buttonStyle,opacity:loading?.65:1}} disabled={loading}>{loading?t("auth.findPw.loading"):t("auth.findPw.submit")}</button>
     </form>
     {successMsg&&<div style={{color:"#167044",marginTop:16,textAlign:"center",fontWeight:800,lineHeight:1.5}}>{successMsg}</div>}

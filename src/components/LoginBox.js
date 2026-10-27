@@ -88,7 +88,7 @@ function LoginBox({ setUser, setNickname }) {
     }
     if (data?.user) {
       setUser?.(data.user);
-      const { data: profile } = await supabase.from("profiles").select("nickname").eq("id", data.user.id).single();
+      const { data: profile } = await supabase.from("public_member_names").select("nickname").eq("id", data.user.id).single();
       setNickname?.(profile?.nickname || "");
     }
     setEmail("");

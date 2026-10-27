@@ -87,6 +87,8 @@ const supabaseAdmin =
       )
     : null;
 
+require("./account-withdrawal-routes.cjs")(app, supabaseAdmin, SITE_URL);
+
 const SUPPORTED_LANGS = [
   "ko",
   "en",

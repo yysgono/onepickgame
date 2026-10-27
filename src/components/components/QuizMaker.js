@@ -221,7 +221,7 @@ export default function QuizMaker() {
       setUser(u);
       if (u) {
         const { data: p } = await supabase
-          .from("profiles")
+          .from("public_member_names")
           .select("nickname")
           .eq("id", u.id)
           .single();

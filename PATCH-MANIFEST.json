@@ -1,0 +1,223 @@
+{
+  "base_commit": "5b2077d58e8beb9654e13d317690e83dee12e752",
+  "date_kst": "2026-10-27",
+  "included_changes": [
+    "v91",
+    "v93.1",
+    "credential-note gitignore entries"
+  ],
+  "v94_preserved": true,
+  "verification": [
+    "CRA build on GitHub snapshot plus patch",
+    "editor sanitization and image paste tests",
+    "combined v91/v93 database fixture and status-check SQL"
+  ],
+  "production_db_or_deployment_changed": false,
+  "files": [
+    {
+      "path": ".gitignore",
+      "sha256": "f760fc388c1c9d9a2e0d2021f7ee7d564d45120a1cf899748db885a218457a07",
+      "bytes": 486
+    },
+    {
+      "path": "START-HERE-KO.txt",
+      "sha256": "8105e5fd74754672f504d989a989d6bcedfebf1899eeee7cb060b85cdbb594b1",
+      "bytes": 6164
+    },
+    {
+      "path": "account-withdrawal-routes.cjs",
+      "sha256": "dc4d547f6e373f52c789cb34772cda5aafe069c7a98c1b34c5ece9f0197a62ff",
+      "bytes": 5628
+    },
+    {
+      "path": "community-seo-routes.cjs",
+      "sha256": "bd2395ffb0c526bba887a657700eb588d41a2ea52e9651b09fd0b5a741c44c21",
+      "bytes": 4978
+    },
+    {
+      "path": "package-lock.json",
+      "sha256": "f6c9c87f14ff95485ef2b3382e5d32974b1764fdbe85b5165ba1bf4b200f5c02",
+      "bytes": 693293
+    },
+    {
+      "path": "package.json",
+      "sha256": "a61d825626e3e4b222bd705b24239e1198e1a355650e4eb62692e8e57fbd438b",
+      "bytes": 1206
+    },
+    {
+      "path": "rich-text-server.cjs",
+      "sha256": "d0e6bece728547abe227ee0f5daf7d2ab31748892953cd352a6cb5021ca66cfc",
+      "bytes": 1070
+    },
+    {
+      "path": "server.js",
+      "sha256": "4dfab19ead9844e136e5ea521f920376c0f76b4e7448529786ad5f003b13d9fe",
+      "bytes": 58096
+    },
+    {
+      "path": "src/App.js",
+      "sha256": "c9cf1cad34bca20812f26d7e49b6ba3b4d4b35eb337b03e449c4e4e63380d9cb",
+      "bytes": 54778
+    },
+    {
+      "path": "src/components/AuthBox.js",
+      "sha256": "a44ea57bbc5921ed645c0e11aab26b698c3d89b6229faf22c67294e5b1d35254",
+      "bytes": 6423
+    },
+    {
+      "path": "src/components/BlogEditorPage.js",
+      "sha256": "726a2c323cae87ae5912e680fe5976721444cb0805bc53b0da4c4145b3bda6e3",
+      "bytes": 3407
+    },
+    {
+      "path": "src/components/BlogPostPage.js",
+      "sha256": "6565d7a2976a503a7fbbed3ca8beeba674a76c31319ca0083b82f889d512ffea",
+      "bytes": 16991
+    },
+    {
+      "path": "src/components/CommentBox.js",
+      "sha256": "4eeb33b46728d83c662a17fbc1e7e3f13d1fcec7fc9bf5e21ec7f266aca71d29",
+      "bytes": 26058
+    },
+    {
+      "path": "src/components/CommunityBoardPage.js",
+      "sha256": "b8c9d19305cf599454aa8f8ab5d5de1242b677564158aa0e488cb1708f7f7d2c",
+      "bytes": 11106
+    },
+    {
+      "path": "src/components/EditWorldcupPage.js",
+      "sha256": "8d9ce0c6584ef58335f10fe0132b5c244753d38859c0d32eb191e04518b7f5fe",
+      "bytes": 59677
+    },
+    {
+      "path": "src/components/FindIdBox.js",
+      "sha256": "b53c10e7a5c305fa3fde437c6d41efb4835f93f9deb8ca9c231b981c1c6eb76d",
+      "bytes": 3786
+    },
+    {
+      "path": "src/components/FindPwBox.js",
+      "sha256": "177bf6ec022b5516e640cf9a385b7c750245f531b3536b65b28a481cdbed0a3e",
+      "bytes": 3543
+    },
+    {
+      "path": "src/components/LoginBox.js",
+      "sha256": "42c34d617681edb2ecb9c797ca86061d9a4d208586560f45380b1f3ab103ef21",
+      "bytes": 5411
+    },
+    {
+      "path": "src/components/MatchCommunityBox.js",
+      "sha256": "1662da56569a3841bdf361ec97ada978c8618a3912217cfd036dacd3b694f896",
+      "bytes": 23614
+    },
+    {
+      "path": "src/components/QuizCommentBox.js",
+      "sha256": "203af35b123ac59db7002b83422e23f130937306e8cdb3e37bcc916621c65547",
+      "bytes": 3895
+    },
+    {
+      "path": "src/components/QuizMaker.js",
+      "sha256": "388cce841850eb94ebcdf58423c742929e7b1396d87877359ec40272cf494e35",
+      "bytes": 71203
+    },
+    {
+      "path": "src/components/RichTextEditor.js",
+      "sha256": "62e46830a0cefc2e8fe1b568bc58130d2d2985a620cdd68e92715b62e6a78404",
+      "bytes": 6941
+    },
+    {
+      "path": "src/components/SelectRoundPage.js",
+      "sha256": "86a873fb9b847b180453ccce5c3cc65f6156ab7ad59e48987909292daf1b01b6",
+      "bytes": 39531
+    },
+    {
+      "path": "src/components/TierListPage.js",
+      "sha256": "d6096854dcb10acda95e1d8dfc0a925862256ee8287ee986645826b8cd63a762",
+      "bytes": 59794
+    },
+    {
+      "path": "src/components/TierListResultPage.js",
+      "sha256": "c2b400a67ea7e248bb62eeb469723068ab0183d992424c98b490b8b317fc0b1d",
+      "bytes": 78946
+    },
+    {
+      "path": "src/components/WithdrawalRequestsAdmin.js",
+      "sha256": "c2010f986c1bca3e39fda918a0f46849e8595b1f09b4fa4ec4199450dc941491",
+      "bytes": 8266
+    },
+    {
+      "path": "src/components/WorldcupMaker.js",
+      "sha256": "a73ab9e116231569f7b97849f89a41c606602781c7e77a6821549fd66c6a0f3c",
+      "bytes": 77929
+    },
+    {
+      "path": "src/components/accountRecoveryCopy.json",
+      "sha256": "210e5352f3207f9fabe4d90b003b0c42d05a722b7ff9454990ed0466dcea5cb1",
+      "bytes": 6048
+    },
+    {
+      "path": "src/components/communityPublishing.css",
+      "sha256": "557689797c5547ba9c09c76cddbf1b7dd82e98e8a5a5734778f2cd76ee3a2af1",
+      "bytes": 13561
+    },
+    {
+      "path": "src/components/communityUiCopy.json",
+      "sha256": "5930276b0717303778e4504ef1ec26b1e6d3d8b11201c476b3e76bd629863bdd",
+      "bytes": 59615
+    },
+    {
+      "path": "src/components/components/QuizMaker.js",
+      "sha256": "4d2f4cbf09783b157c97d44de1a411d8681aeb0ee6ea97cfb28e84ad11e92845",
+      "bytes": 62874
+    },
+    {
+      "path": "src/components/richEditorCopy.json",
+      "sha256": "f9819eee1f28bebef84aea8dbb6c594036617bed7957f8085a3d8432ff9805ed",
+      "bytes": 18788
+    },
+    {
+      "path": "src/utils/authSession.js",
+      "sha256": "70a524887d0b6379815603656f107128774b819ffa8f3a072d8f57c501c0238e",
+      "bytes": 5676
+    },
+    {
+      "path": "src/utils/communityBoardApi.js",
+      "sha256": "597217aa07f1a99064fda3c0a9f673b5fc04650d09203d5ac6d6b8333bbd996b",
+      "bytes": 2297
+    },
+    {
+      "path": "src/utils/publishingImages.js",
+      "sha256": "bf0051cf42df8bd5033a546624ffb433186bf9339071565cd6657e26b8dd445a",
+      "bytes": 1066
+    },
+    {
+      "path": "src/utils/richText.js",
+      "sha256": "e0b3c7eb583b6225165bbae7874cbf144ceab6ee1a0bcbdf5a88e7174302b94a",
+      "bytes": 2061
+    },
+    {
+      "path": "src/utils/richTextPolicy.js",
+      "sha256": "e3809cb58add28e79d289c1b16770f09ff34a88c08a9d73e32f334b8f6313880",
+      "bytes": 1408
+    },
+    {
+      "path": "supabase/20261027_account_withdrawal_v93.sql",
+      "sha256": "a669652218f61fdba868a9dadc0e1740f416b5df7b1f2eedc751e5f6d9762db6",
+      "bytes": 23889
+    },
+    {
+      "path": "supabase/20261027_patch_status_readonly.sql",
+      "sha256": "3bab7540b2b78f12661a42c117478f6d28dbf2a5e998b19343446c3d953931bc",
+      "bytes": 1232
+    },
+    {
+      "path": "supabase/20261027_publishing_editor_v91.sql",
+      "sha256": "9e45b1b85017809510b1476c349ef4b3a7cb88415727e978ac96ae2e8c62b5ce",
+      "bytes": 7795
+    },
+    {
+      "path": "supabase/20261027_withdrawal_admin_v92.sql",
+      "sha256": "16a80ea93f78f87320f6a79e22702a654907606a35d20a5173cf8cd8ed164177",
+      "bytes": 2589
+    }
+  ]
+}

@@ -347,7 +347,7 @@ useEffect(() => {
 
         await supabase
 
-          .from("profiles")
+          .from("public_member_names")
 
           .select("nickname")
 

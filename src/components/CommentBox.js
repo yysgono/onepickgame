@@ -267,7 +267,7 @@ export default function CommentBox({
 
         const { data: profile } =
           await supabase
-            .from("profiles")
+            .from("public_member_names")
             .select("nickname")
             .eq(
               "id",
@@ -519,10 +519,11 @@ export default function CommentBox({
     commentId
   ) {
     await supabase.rpc(
-      "increment_comment_upvotes",
+      "vote_worldcup_comment",
       {
-        comment_id:
+        p_comment_id:
           commentId,
+        p_direction: "up",
       }
     );
 
@@ -533,10 +534,11 @@ export default function CommentBox({
     commentId
   ) {
     await supabase.rpc(
-      "increment_comment_downvotes",
+      "vote_worldcup_comment",
       {
-        comment_id:
+        p_comment_id:
           commentId,
+        p_direction: "down",
       }
     );
 

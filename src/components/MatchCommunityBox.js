@@ -122,7 +122,7 @@ export default function MatchCommunityBox({ cupId }) {
 
     const { data, error } = await supabase
 
-      .from("profiles")
+      .from("public_member_names")
 
       .select("nickname")
 

@@ -499,7 +499,7 @@ function TierListPage({
         data,
         error,
       } = await supabase
-        .from("profiles")
+        .from("public_member_names")
         .select(
           "id, nickname"
         )

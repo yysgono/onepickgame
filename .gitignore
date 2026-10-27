@@ -22,5 +22,12 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-����/*.zip
-����/*.zip
+ÀúÀå/*.zip
+ÀúÀå/*.zip
+
+# Local credential notes and renamed environment backups
+/api key.txt
+/passwords.txt
+/앱 비밀번호.txt
+/새 텍스트 문서.env.local
+
