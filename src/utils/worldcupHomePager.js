@@ -1,4 +1,4 @@
-export const HOME_ROW_KEYS = ['featured','korea','anime_manga','person','game','sports','music','movie_drama','food','travel','brands','etc'];
+export const HOME_ROW_KEYS = ['featured','korea','anime_manga','person','game','sports','music','movie_drama','food','animals_plants','travel','brands','etc'];
 export const PRIMARY_HOME_ROWS = ['featured','korea','anime_manga','person'];
 
 // Per-mounted-home state only: no localStorage, global private-data cache, or eager next-page fetch.
@@ -65,3 +65,4 @@ export function createWorldcupHomePager({ fetchRows, search = '', creator = '', 
     dispose() { active = false; controllers.forEach(controller => controller.abort()); pending.clear(); }
   };
 }
+

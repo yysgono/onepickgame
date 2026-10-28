@@ -95,6 +95,7 @@ const CATEGORY_OPTIONS = [
 
   { value: "food", label: "Food" },
 
+  { value: "animals_plants", label: "Animals / Plants" },
   { value: "travel", label: "Travel / Places" },
   { value: "brands", label: "Brands / Products" },
 
@@ -6625,4 +6626,5 @@ color: "#000",
 
 
 export default WorldcupMaker;
+
 

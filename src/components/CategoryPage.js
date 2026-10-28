@@ -287,6 +287,7 @@ const CATEGORY_MAP = {
 
 
 
+  "animals-plants": { key: "animals_plants", label: "Animals / Plants" },
   travel: { key: "travel", label: "Travel / Places" },
   brands: { key: "brands", label: "Brands / Products" },
 
@@ -5286,4 +5287,5 @@ fontWeight: 800,
 
 
 }
+
 

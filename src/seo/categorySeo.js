@@ -66,7 +66,7 @@ const CATEGORY_SEO_COPY = {
 };
 
 const labels = require("./categoryLabels.json");
-const CATEGORY_KEYS = {person:"person",music:"music",korea:"korea",game:"game",sports:"sports","anime-manga":"anime_manga","movie-drama":"movie_drama",food:"food",travel:"travel",brands:"brands",etc:"etc"};
+const CATEGORY_KEYS = {person:"person",music:"music",korea:"korea",game:"game",sports:"sports","anime-manga":"anime_manga","movie-drama":"movie_drama",food:"food","animals-plants":"animals_plants",travel:"travel",brands:"brands",etc:"etc"};
 function getCategorySeo(lang, slug) {
  const key = CATEGORY_KEYS[slug];
  if (!key || !labels[lang]) return null;
@@ -75,3 +75,4 @@ function getCategorySeo(lang, slug) {
  return {key,label,title:copy.title.replace(/\{category\}/g,label),description:copy.description.replace(/\{category\}/g,label),slug:`category/${slug}`};
 }
 module.exports = {CATEGORY_SEO_COPY, CATEGORY_KEYS, getCategorySeo};
+

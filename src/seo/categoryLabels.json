@@ -10,7 +10,8 @@
     "food": "Food",
     "etc": "Other",
     "travel": "Travel / Places",
-    "brands": "Brands / Products"
+    "brands": "Brands / Products",
+    "animals_plants": "Animals / Plants"
   },
   "ko": {
     "person": "인물",
@@ -23,7 +24,8 @@
     "food": "음식",
     "etc": "기타",
     "travel": "여행 / 장소",
-    "brands": "브랜드 / 제품"
+    "brands": "브랜드 / 제품",
+    "animals_plants": "동물 / 식물"
   },
   "ja": {
     "person": "人物",
@@ -36,7 +38,8 @@
     "food": "グルメ",
     "etc": "その他",
     "travel": "旅行 / 場所",
-    "brands": "ブランド / 製品"
+    "brands": "ブランド / 製品",
+    "animals_plants": "動物 / 植物"
   },
   "zh": {
     "person": "人物",
@@ -49,7 +52,8 @@
     "food": "美食",
     "etc": "其他",
     "travel": "旅行 / 地点",
-    "brands": "品牌 / 产品"
+    "brands": "品牌 / 产品",
+    "animals_plants": "动物 / 植物"
   },
   "ru": {
     "person": "Люди",
@@ -62,7 +66,8 @@
     "food": "Еда",
     "etc": "Другое",
     "travel": "Путешествия / Места",
-    "brands": "Бренды / Товары"
+    "brands": "Бренды / Товары",
+    "animals_plants": "Животные / Растения"
   },
   "pt": {
     "person": "Pessoas",
@@ -75,7 +80,8 @@
     "food": "Comida",
     "etc": "Outros",
     "travel": "Viagens / Lugares",
-    "brands": "Marcas / Produtos"
+    "brands": "Marcas / Produtos",
+    "animals_plants": "Animais / Plantas"
   },
   "es": {
     "person": "Personas",
@@ -88,7 +94,8 @@
     "food": "Comida",
     "etc": "Otros",
     "travel": "Viajes / Lugares",
-    "brands": "Marcas / Productos"
+    "brands": "Marcas / Productos",
+    "animals_plants": "Animales / Plantas"
   },
   "fr": {
     "person": "Personnalités",
@@ -101,7 +108,8 @@
     "food": "Cuisine",
     "etc": "Autres",
     "travel": "Voyages / Lieux",
-    "brands": "Marques / Produits"
+    "brands": "Marques / Produits",
+    "animals_plants": "Animaux / Plantes"
   },
   "id": {
     "person": "Tokoh",
@@ -114,7 +122,8 @@
     "food": "Makanan",
     "etc": "Lainnya",
     "travel": "Wisata / Tempat",
-    "brands": "Merek / Produk"
+    "brands": "Merek / Produk",
+    "animals_plants": "Hewan / Tumbuhan"
   },
   "hi": {
     "person": "लोग",
@@ -127,7 +136,8 @@
     "food": "खाना",
     "etc": "अन्य",
     "travel": "यात्रा / स्थान",
-    "brands": "ब्रांड / उत्पाद"
+    "brands": "ब्रांड / उत्पाद",
+    "animals_plants": "जानवर / पौधे"
   },
   "de": {
     "person": "Personen",
@@ -140,7 +150,8 @@
     "food": "Essen",
     "etc": "Sonstiges",
     "travel": "Reisen / Orte",
-    "brands": "Marken / Produkte"
+    "brands": "Marken / Produkte",
+    "animals_plants": "Tiere / Pflanzen"
   },
   "vi": {
     "person": "Nhân vật",
@@ -153,7 +164,8 @@
     "food": "Ẩm thực",
     "etc": "Khác",
     "travel": "Du lịch / Địa điểm",
-    "brands": "Thương hiệu / Sản phẩm"
+    "brands": "Thương hiệu / Sản phẩm",
+    "animals_plants": "Động vật / Thực vật"
   },
   "ar": {
     "person": "شخصيات",
@@ -166,7 +178,8 @@
     "food": "طعام",
     "etc": "أخرى",
     "travel": "السفر / الأماكن",
-    "brands": "العلامات التجارية / المنتجات"
+    "brands": "العلامات التجارية / المنتجات",
+    "animals_plants": "الحيوانات / النباتات"
   },
   "bn": {
     "person": "ব্যক্তিত্ব",
@@ -179,7 +192,8 @@
     "food": "খাবার",
     "etc": "অন্যান্য",
     "travel": "ভ্রমণ / স্থান",
-    "brands": "ব্র্যান্ড / পণ্য"
+    "brands": "ব্র্যান্ড / পণ্য",
+    "animals_plants": "প্রাণী / উদ্ভিদ"
   },
   "th": {
     "person": "บุคคล",
@@ -192,7 +206,8 @@
     "food": "อาหาร",
     "etc": "อื่นๆ",
     "travel": "ท่องเที่ยว / สถานที่",
-    "brands": "แบรนด์ / ผลิตภัณฑ์"
+    "brands": "แบรนด์ / ผลิตภัณฑ์",
+    "animals_plants": "สัตว์ / พืช"
   },
   "tr": {
     "person": "Kişiler",
@@ -205,6 +220,7 @@
     "food": "Yemek",
     "etc": "Diğer",
     "travel": "Seyahat / Yerler",
-    "brands": "Markalar / Ürünler"
+    "brands": "Markalar / Ürünler",
+    "animals_plants": "Hayvanlar / Bitkiler"
   }
 }

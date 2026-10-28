@@ -28,6 +28,7 @@ function prepare(bundle, language) {
   const labels = categoryLabels[language] || {};
   const extra = homeCommentUi[language] || {};
   return { ...bundle,
+    category_animals_plants: labels.animals_plants || bundle.category_animals_plants,
     category_travel: labels.travel || bundle.category_travel,
     category_brands: labels.brands || bundle.category_brands,
     show_more_categories: bundle.show_more_categories || extra.show_more_categories,
@@ -81,3 +82,4 @@ function loadDetectedLanguage() {
 if (i18n.isInitialized) loadDetectedLanguage();
 else i18n.once("initialized", loadDetectedLanguage);
 export default i18n;
+

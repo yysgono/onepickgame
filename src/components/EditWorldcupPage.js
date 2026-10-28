@@ -56,6 +56,7 @@ const CATEGORY_OPTIONS = [
 
   { value: "food", labelKey: "category_food" },
 
+  { value: "animals_plants", labelKey: "category_animals_plants" },
   { value: "travel", labelKey: "category_travel" },
   { value: "brands", labelKey: "category_brands" },
 
@@ -3984,4 +3985,5 @@ style={{
 
 
 export default EditWorldcupPage;
+
 

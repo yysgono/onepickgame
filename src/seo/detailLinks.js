@@ -5,8 +5,8 @@ function getDetailLinks(language, category, sourceWorldcupId) {
   const lang = COPY[requested] ? requested : 'en';
   const copy = COPY[lang];
   const raw = String(category || '').trim().toLowerCase();
-  const worldcupCategory = ({ animation: 'anime-manga', anime_manga: 'anime-manga', entertainment: 'person', movie_drama: 'movie-drama', other: 'etc' })[raw] || raw;
-  const validWorldcup = ['game', 'sports', 'food', 'person', 'music', 'korea', 'anime-manga', 'movie-drama', 'travel', 'brands', 'etc'].includes(worldcupCategory);
+  const worldcupCategory = ({ animation: 'anime-manga', anime_manga: 'anime-manga', entertainment: 'person', movie_drama: 'movie-drama', animals_plants: 'animals-plants', other: 'etc' })[raw] || raw;
+  const validWorldcup = ['game', 'sports', 'food', 'person', 'music', 'korea', 'anime-manga', 'movie-drama', 'animals-plants', 'travel', 'brands', 'etc'].includes(worldcupCategory);
   const listCategory = ({ anime_manga: 'animation', 'anime-manga': 'animation', person: 'entertainment', music: 'entertainment', korea: 'entertainment', movie_drama: 'entertainment', 'movie-drama': 'entertainment', etc: 'other' })[raw] || raw;
   const validList = ['game', 'sports', 'food', 'animation', 'entertainment', 'other'].includes(listCategory);
   const quizCategory = listCategory === 'knowledge' ? 'knowledge' : validList ? listCategory : '';
@@ -24,3 +24,4 @@ function renderDetailLinks(language, category, sourceWorldcupId) {
   return `<nav aria-label="${escape(heading)}"><h2>${escape(heading)}</h2><ul>${links.map(link => `<li><a href="${escape(link.href)}">${escape(link.label)}</a></li>`).join('')}</ul></nav>`;
 }
 module.exports = { getDetailLinks, renderDetailLinks };
+

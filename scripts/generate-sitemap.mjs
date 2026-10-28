@@ -44,6 +44,7 @@ const CATEGORY_SLUGS = [
   "music",
   "movie-drama",
   "food",
+  "animals-plants",
   "travel",
   "brands",
   "etc",
@@ -654,3 +655,4 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
   generateSitemaps();
 }
 export { generateSitemaps };
+
