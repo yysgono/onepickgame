@@ -21,6 +21,7 @@ import { supabase } from "../utils/supabaseClient";
 
 
 const PAGE_SIZE = 12;
+const PRESET_PAGE_SIZE = 14;
 const TIER_LIST_CACHE_TTL = 60000;
 const tierListPageCache = new Map();
 const tierListPageInflight = new Map();
@@ -427,16 +428,16 @@ function TierListPage({
       game: ["game"], animation: ["anime_manga", "animation"], entertainment: ["person", "korea", "music", "entertainment"],
       food: ["food"], sports: ["sports"], other: ["etc", "movie_drama", "travel", "brands", "brand", "product", "other"]
     };
-    getCachedTierListRows(`presets:${category}:${presetPage}`, async () => {
+    getCachedTierListRows(`presets:${PRESET_PAGE_SIZE}:${category}:${presetPage}`, async () => {
       let query = supabase.from("worldcup_tier_preset_cards").select("id,title,title_translations,category,tier_preset_order,tier_preset_title_translations,tier_preset_thumbnail_url");
       if (category !== "all") query = query.in("category", categories[category] || [category]);
-      const { data, error } = await query.order("tier_preset_order", { ascending: true, nullsFirst: false }).order("id", { ascending: true }).range(presetPage * 12, presetPage * 12 + 11);
+      const { data, error } = await query.order("tier_preset_order", { ascending: true, nullsFirst: false }).order("id", { ascending: true }).range(presetPage * PRESET_PAGE_SIZE, (presetPage + 1) * PRESET_PAGE_SIZE - 1);
       if (error) throw error;
       return data || [];
     }).then(rows => {
       if (!live) return;
       setManagedTierPresets(previous => presetPage ? [...previous, ...rows] : rows);
-      setPresetHasMore(rows.length === 12);
+      setPresetHasMore(rows.length === PRESET_PAGE_SIZE);
     }).catch(error => {
       if (live) { setPresetError(error.message); setPresetHasMore(false); }
     }).finally(() => { if (live) setTierPresetLoaded(true); });
@@ -2225,5 +2226,6 @@ gap:
 }
 
 export default TierListPage;
+
 
 
