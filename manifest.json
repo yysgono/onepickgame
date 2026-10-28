@@ -1,13 +1,10 @@
 {
-  "START-HERE-KO.txt": "f483b8793ec537fbae8586dedc4533b2559b4aa2846cac76178cfb88bae5ea66",
-  "tests/stats-images-ui-v103.cjs": "881511ba0cf32805fba44e045198992068c2f68364cf4ada8676f3df109e5c60",
-  "tests/stats-image-source-v103.cjs": "2d2fd6ffd8bc63609e6d7139ecd8a2ecbdbd60ecb5f0ae1bb30df557e54b87c3",
-  "docs/IMAGE-USAGE-KO.md": "2eb9d11e16313736ece750200dfbe3619e48e2ee086abf32cf4edf424c8bc9e6",
-  "src/utils/statsImageSource.js": "5a8681e6024f2ad576483dfc53352fabbec600d132a16ee21c13db9bd2135578",
-  "src/utils/recentLoadedImages.js": "0c555ac30a08fa104ddbbc14a9a093e81b2c3994f6ee300dfa2226778052bb94",
-  "src/components/MediaRenderer.jsx": "634e49bdb916b11aba3d2990c2cba465c0e25f6614ce262cbf040ffa20f3a262",
-  "src/components/StatsRoutePage.js": "6b8ea8c31c0f797b968a4e7e8c875508683389e3d9d993f79fc232ca15f07ff4",
-  "src/components/StatsCandidateName.js": "a0a4b4854324a1f99a40d7a2cd29b4bfb786eb2342ec563da04ca6c2e78ef67f",
-  "src/components/ResultPage.js": "e0983da3982a10080acc01772c6471a1a322fee3300f1b3d2ff253986d82d73e",
-  "src/components/StatsPage.js": "91aa202a31b9efd7f788ab752fc0cd62177cab43dbf8663dbc04bf6a12dcc116"
+  "version": 105,
+  "base": "9d0aa5f763b27f32bc2dcda32c2150ea10914b69",
+  "files": [
+    "START-HERE-KO.txt",
+    "src/components/StatsPage.js",
+    "src/utils/statsPageWithSelected.js",
+    "tests/stats-page-selected-v105.cjs"
+  ]
 }

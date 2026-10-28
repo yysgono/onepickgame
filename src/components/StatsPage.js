@@ -1,3 +1,4 @@
+import { statsPageWithSelected } from "../utils/statsPageWithSelected";
 import StatsCandidateName from "./StatsCandidateName";
 import {saveCandidateSet} from "./randomPick/savedCandidates";
 import savedCandidatesCopy from "./randomPick/savedCandidatesCopy.json";
@@ -749,7 +750,7 @@ const displayCupTitle =
 
   const [userOnly, setUserOnly] = useState(false);
 
-  const [itemsPerPage, setItemsPerPage] = useState(25);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
 
   const [period, setPeriod] = useState(null);
 
@@ -1253,19 +1254,8 @@ if (sortKey === "win_count") {
   const totalPages = Math.max(1, Math.ceil(totalStats / itemsPerPage));
 
   const pagedStats = useMemo(
-
-    () =>
-
-      filteredStats.slice(
-
-        (currentPage - 1) * itemsPerPage,
-
-        currentPage * itemsPerPage
-
-      ),
-
-    [filteredStats, currentPage, itemsPerPage]
-
+    () => statsPageWithSelected(filteredStats, currentPage, itemsPerPage, highlightCandidateId),
+    [filteredStats, currentPage, itemsPerPage, highlightCandidateId]
   );
 
 
@@ -2054,7 +2044,7 @@ onClick={() => {
 
       >
 
-        {[10, 25, 50, 100].map((num) => (
+        {[10, 20, 25, 50, 100].map((num) => (
 
           <button
 
@@ -2468,6 +2458,7 @@ function periodBtnStyle(selected) {
   };
 
 }
+
 
 
 
