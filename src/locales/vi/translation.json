@@ -33,7 +33,7 @@
   "match": "Trận đấu",
   "winning_rate": "Tỷ lệ thắng",
   "all": "Tất cả",
-  "members_only": "Chỉ thành viên",
+  "members_only": "Người dùng đã xác thực",
   "user_only": "Chỉ người dùng",
   "month_1": "1 tháng",
   "participation_count": "{{count}} lượt chơi",
@@ -94,6 +94,7 @@
   "apply": "Áp dụng",
   "cancel": "Hủy",
   "view_10": "Xem 10",
+  "view_20": "Xem 20",
   "view_25": "Xem 25",
   "view_50": "Xem 50",
   "view_100": "Xem 100",
@@ -635,3 +636,4 @@
   "stop_and_view_stats": "Dừng và xem thống kê",
   "add_other_language_title": "Thêm tiêu đề bằng ngôn ngữ khác"
 }
+

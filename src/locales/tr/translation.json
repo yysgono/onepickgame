@@ -33,7 +33,7 @@
   "match": "Maç",
   "winning_rate": "Kazanma Oranı",
   "all": "Tümü",
-  "members_only": "Sadece Üyeler",
+  "members_only": "Kimliği doğrulanmış kullanıcılar",
   "user_only": "Sadece Kullanıcılar",
   "month_1": "1 ay",
   "participation_count": "{{count}} oynama",
@@ -89,6 +89,7 @@
   "apply": "Uygula",
   "cancel": "İptal",
   "view_10": "10 Görüntüle",
+  "view_20": "20 Görüntüle",
   "view_25": "25 Görüntüle",
   "view_50": "50 Görüntüle",
   "view_100": "100 Görüntüle",
@@ -630,3 +631,4 @@
   "stop_and_view_stats": "Durdur ve istatistikleri görüntüle",
   "add_other_language_title": "Başka dilde başlık ekle"
 }
+

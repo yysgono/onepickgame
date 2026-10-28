@@ -82,7 +82,7 @@
   "winning_rate": "Taux de victoire",
   "participation_count": "{{count}} participations",
   "all": "Tout",
-  "members_only": "Membres uniquement",
+  "members_only": "Utilisateurs authentifiés",
   "user_only": "Utilisateurs uniquement",
   "month_1": "1 mois",
   "month_3": "3 mois",
@@ -94,6 +94,7 @@
   "apply": "Appliquer",
   "cancel": "Annuler",
   "view_10": "Voir 10",
+  "view_20": "Voir 20",
   "view_25": "Voir 25",
   "view_50": "Voir 50",
   "view_100": "Voir 100",
@@ -635,3 +636,4 @@
   "stop_and_view_stats": "Arrêter et voir les statistiques",
   "add_other_language_title": "Ajouter un titre dans une autre langue"
 }
+

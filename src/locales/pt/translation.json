@@ -34,7 +34,7 @@
   "match": "Partida",
   "winning_rate": "Taxa de vitória",
   "all": "Todos",
-  "members_only": "Somente membros",
+  "members_only": "Usuários autenticados",
   "worldcup_guide_title": "Como criar um torneio",
   "worldcup_guide_description": "Primeira vez? Veja o guia desde adicionar candidatos até publicar o torneio.",
   "home_intro_line1": "One Pick Game é",
@@ -94,6 +94,7 @@
   "apply": "Aplicar",
   "cancel": "Cancelar",
   "view_10": "Ver 10",
+  "view_20": "Ver 20",
   "view_25": "Ver 25",
   "view_50": "Ver 50",
   "view_100": "Ver 100",
@@ -632,3 +633,4 @@
   "stop_and_view_stats": "Parar e ver estatísticas",
   "add_other_language_title": "Adicionar título em outro idioma"
 }
+

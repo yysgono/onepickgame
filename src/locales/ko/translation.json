@@ -33,7 +33,7 @@
   "match": "대결",
   "winning_rate": "승률",
   "all": "전체",
-  "members_only": "회원 전용",
+  "members_only": "인증된 회원",
   "user_only": "회원 전용",
   "month_1": "1개월",
   "month_3": "3개월",
@@ -88,6 +88,7 @@
   "view_10": "10개 보기",
   "go_to_start": "처음으로",
   "random_select": "랜덤 선택",
+  "view_20": "20개 보기",
   "view_25": "25개 보기",
   "view_50": "50개 보기",
   "view_100": "100개 보기",
@@ -635,3 +636,4 @@
   "stop_and_view_stats": "중단하고 바로 통계 결과 보기",
   "add_other_language_title": "다른 언어 제목 추가"
 }
+

@@ -82,7 +82,7 @@
   "match": "Match",
   "winning_rate": "Siegesquote",
   "all": "Alle",
-  "members_only": "Nur Mitglieder",
+  "members_only": "Authentifizierte Nutzer",
   "user_only": "Nur Nutzer",
   "month_1": "1 Monat",
   "month_3": "3 Monate",
@@ -94,6 +94,7 @@
   "apply": "Anwenden",
   "cancel": "Abbrechen",
   "view_10": "10 anzeigen",
+  "view_20": "20 anzeigen",
   "view_25": "25 anzeigen",
   "view_50": "50 anzeigen",
   "view_100": "100 anzeigen",
@@ -635,3 +636,4 @@
   "stop_and_view_stats": "Beenden und Statistiken ansehen",
   "add_other_language_title": "Titel in einer anderen Sprache hinzufügen"
 }
+

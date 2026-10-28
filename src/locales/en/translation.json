@@ -33,7 +33,7 @@
   "match": "Match",
   "winning_rate": "Win Rate",
   "all": "All",
-  "members_only": "Members Only",
+  "members_only": "Authenticated users",
   "user_only": "Members Only",
   "home_intro_line1": "One Pick Game is",
   "candidates_remaining": "{{count}} more",
@@ -90,6 +90,7 @@
   "apply": "Apply",
   "cancel": "Cancel",
   "view_10": "View 10",
+  "view_20": "View 20",
   "view_25": "View 25",
   "view_50": "View 50",
   "view_100": "View 100",
@@ -634,3 +635,4 @@
   "stop_and_view_stats": "Stop and view statistics",
   "add_other_language_title": "Add title in another language"
 }
+

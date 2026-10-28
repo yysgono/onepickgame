@@ -73,7 +73,7 @@
   "match": "対戦",
   "winning_rate": "勝率",
   "all": "すべて",
-  "members_only": "会員のみ",
+  "members_only": "認証済みユーザー",
   "user_only": "ユーザーのみ",
   "month_1": "1ヶ月",
   "month_3": "3ヶ月",
@@ -85,6 +85,7 @@
   "apply": "適用",
   "cancel": "キャンセル",
   "view_10": "10件表示",
+  "view_20": "20件表示",
   "view_25": "25件表示",
   "view_50": "50件表示",
   "view_100": "100件表示",
@@ -638,3 +639,4 @@
   "stop_and_view_stats": "中断して統計結果を見る",
   "add_other_language_title": "他の言語のタイトルを追加"
 }
+

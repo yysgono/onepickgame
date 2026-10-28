@@ -1,0 +1,114 @@
+{
+  "en": {
+    "win_count": "Titles",
+    "win_rate": "Championship Rate",
+    "match_wins": "Match Wins",
+    "match_count": "Matches",
+    "match_win_rate": "Match Win Rate"
+  },
+  "ko": {
+    "win_count": "우승 횟수",
+    "win_rate": "우승률",
+    "match_wins": "승리 수",
+    "match_count": "대결 수",
+    "match_win_rate": "승률"
+  },
+  "ja": {
+    "win_count": "優勝回数",
+    "win_rate": "優勝率",
+    "match_wins": "対戦勝利数",
+    "match_count": "対戦数",
+    "match_win_rate": "対戦勝率"
+  },
+  "zh": {
+    "win_count": "夺冠次数",
+    "win_rate": "夺冠率",
+    "match_wins": "对战获胜次数",
+    "match_count": "对战次数",
+    "match_win_rate": "对战胜率"
+  },
+  "ru": {
+    "win_count": "Титулы",
+    "win_rate": "Доля побед в турнирах",
+    "match_wins": "Победы в дуэлях",
+    "match_count": "Дуэли",
+    "match_win_rate": "Доля побед в дуэлях"
+  },
+  "pt": {
+    "win_count": "Títulos",
+    "win_rate": "Taxa de títulos",
+    "match_wins": "Vitórias em duelos",
+    "match_count": "Duelos",
+    "match_win_rate": "Taxa de vitórias em duelos"
+  },
+  "es": {
+    "win_count": "Títulos",
+    "win_rate": "Tasa de títulos",
+    "match_wins": "Victorias en duelos",
+    "match_count": "Duelos",
+    "match_win_rate": "Tasa de victorias en duelos"
+  },
+  "fr": {
+    "win_count": "Titres",
+    "win_rate": "Taux de victoire en tournoi",
+    "match_wins": "Duels gagnés",
+    "match_count": "Duels",
+    "match_win_rate": "Taux de victoire en duel"
+  },
+  "id": {
+    "win_count": "Gelar juara",
+    "win_rate": "Persentase juara",
+    "match_wins": "Kemenangan duel",
+    "match_count": "Jumlah duel",
+    "match_win_rate": "Persentase kemenangan duel"
+  },
+  "hi": {
+    "win_count": "खिताब",
+    "win_rate": "खिताब जीतने की दर",
+    "match_wins": "मुकाबलों में जीत",
+    "match_count": "कुल मुकाबले",
+    "match_win_rate": "मुकाबले जीतने की दर"
+  },
+  "de": {
+    "win_count": "Titel",
+    "win_rate": "Turniersiegquote",
+    "match_wins": "Duellsiege",
+    "match_count": "Duelle",
+    "match_win_rate": "Duellsiegquote"
+  },
+  "vi": {
+    "win_count": "Số lần vô địch",
+    "win_rate": "Tỷ lệ vô địch",
+    "match_wins": "Số trận thắng",
+    "match_count": "Số trận đối đầu",
+    "match_win_rate": "Tỷ lệ thắng đối đầu"
+  },
+  "ar": {
+    "win_count": "مرات التتويج",
+    "win_rate": "نسبة الفوز بالبطولة",
+    "match_wins": "الانتصارات في المواجهات",
+    "match_count": "المواجهات",
+    "match_win_rate": "نسبة الفوز بالمواجهات"
+  },
+  "bn": {
+    "win_count": "শিরোপা",
+    "win_rate": "শিরোপা জয়ের হার",
+    "match_wins": "দ্বৈরথে জয়",
+    "match_count": "মোট দ্বৈরথ",
+    "match_win_rate": "দ্বৈরথে জয়ের হার"
+  },
+  "th": {
+    "win_count": "จำนวนแชมป์",
+    "win_rate": "อัตราการเป็นแชมป์",
+    "match_wins": "จำนวนครั้งที่ชนะคู่แข่ง",
+    "match_count": "จำนวนการดวล",
+    "match_win_rate": "อัตราชนะการดวล"
+  },
+  "tr": {
+    "win_count": "Şampiyonluklar",
+    "win_rate": "Şampiyonluk Oranı",
+    "match_wins": "Düello Galibiyetleri",
+    "match_count": "Düellolar",
+    "match_win_rate": "Düello Kazanma Oranı"
+  }
+}

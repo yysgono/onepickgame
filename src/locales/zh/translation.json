@@ -37,7 +37,7 @@
   "worldcup_guide_title": "如何创建淘汰赛",
   "worldcup_guide_description": "第一次使用？查看从添加候选项到发布淘汰赛的完整指南。",
   "view_creation_guide": "查看创建指南",
-  "members_only": "仅限会员",
+  "members_only": "已认证用户",
   "user_only": "仅限会员",
   "month_1": "1个月",
   "month_3": "3个月",
@@ -49,6 +49,7 @@
   "apply": "应用",
   "cancel": "取消",
   "view_10": "显示10条",
+  "view_20": "显示20条",
   "view_25": "显示25条",
   "view_50": "显示50条",
   "view_100": "显示100条",
@@ -750,3 +751,4 @@
   "stop_and_view_stats": "结束并查看统计结果",
   "add_other_language_title": "添加其他语言标题"
 }
+

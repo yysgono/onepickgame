@@ -33,7 +33,7 @@
   "match": "Pertandingan",
   "winning_rate": "Tingkat Kemenangan",
   "all": "Semua",
-  "members_only": "Hanya Anggota",
+  "members_only": "Pengguna terautentikasi",
   "user_only": "Hanya Pengguna",
   "worldcup_guide_title": "Cara membuat turnamen",
   "worldcup_guide_description": "Baru pertama kali? Lihat panduan dari menambah kandidat hingga menerbitkan turnamen.",
@@ -94,6 +94,7 @@
   "apply": "Terapkan",
   "cancel": "Batal",
   "view_10": "Tampilkan 10",
+  "view_20": "Tampilkan 20",
   "view_25": "Tampilkan 25",
   "view_50": "Tampilkan 50",
   "view_100": "Tampilkan 100",
@@ -635,3 +636,4 @@
   "stop_and_view_stats": "Berhenti dan lihat statistik",
   "add_other_language_title": "Tambahkan judul dalam bahasa lain"
 }
+

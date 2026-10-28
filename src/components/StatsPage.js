@@ -1,3 +1,4 @@
+import statsTableLabels from "../locales/statsTableLabels.json";
 import { statsPageWithSelected } from "../utils/statsPageWithSelected";
 import StatsCandidateName from "./StatsCandidateName";
 import {saveCandidateSet} from "./randomPick/savedCandidates";
@@ -983,6 +984,11 @@ setStatsLoadedCupId(String(selectedCup.id));
 
   );
 
+  const matchCell = useMemo(() => ({
+    background: "#edf5ff", color: "#24527a", fontWeight: 700,
+    padding: "7px 0", border: 0,
+  }), []);
+
   const normalCell = useMemo(
 
     () => ({
@@ -1556,6 +1562,8 @@ const top3 = useMemo(() => {
 
 
 
+  const tableLabels = statsTableLabels[normalizedLang] || statsTableLabels.en;
+
   /* ===== 테이블 컬럼 ===== */
 
   const sortableCols = [
@@ -1564,15 +1572,15 @@ const top3 = useMemo(() => {
 
     { key: "name", label: t("name") },
 
-    { key: "win_count", label: t("win_count") },
+    { key: "win_count", label: tableLabels.win_count },
 
-    { key: "win_rate", label: t("win_rate"), isIvory: true },
+    { key: "win_rate", label: tableLabels.win_rate, isIvory: true },
 
-    { key: "match_wins", label: t("match_wins") },
+    { key: "match_wins", label: tableLabels.match_wins },
 
-    { key: "match_count", label: t("duel_count") },
+    { key: "match_count", label: tableLabels.match_count },
 
-    { key: "match_win_rate", label: t("match_win_rate"), isIvory: true },
+    { key: "match_win_rate", label: tableLabels.match_win_rate, isIvory: true },
 
   ];
 
@@ -2201,15 +2209,15 @@ onClick={() => {
 
                 { key: "name", label: t("name") },
 
-                { key: "win_count", label: t("win_count") },
+                { key: "win_count", label: tableLabels.win_count },
 
-                { key: "win_rate", label: t("win_rate"), isIvory: true },
+                { key: "win_rate", label: tableLabels.win_rate, isIvory: true },
 
-                { key: "match_wins", label: t("match_wins") },
+                { key: "match_wins", label: tableLabels.match_wins },
 
-                { key: "match_count", label: t("duel_count") },
+                { key: "match_count", label: tableLabels.match_count },
 
-                { key: "match_win_rate", label: t("match_win_rate"), isIvory: true },
+                { key: "match_win_rate", label: tableLabels.match_win_rate, isIvory: true },
 
               ].map((col) => (
 
@@ -2223,7 +2231,7 @@ onClick={() => {
 
                     cursor: col.key === "rank" ? undefined : "pointer",
 
-                    ...(col.isIvory ? ivoryCell : { background: "#fff", fontWeight: 700, color: "#333" }),
+                    ...(["win_count", "win_rate"].includes(col.key) ? ivoryCell : ["match_wins", "match_count", "match_win_rate"].includes(col.key) ? matchCell : { background: "#fff", fontWeight: 700, color: "#333" }),
 
                     userSelect: "none",
 
@@ -2339,21 +2347,21 @@ onClick={() => {
 
                     <tr key={row.candidate_id} style={highlightStyle}>
 
-                      <td style={{ ...ivoryCell, ...selectedCell }}>{row.rank}</td>
+                      <td style={{ ...normalCell, ...selectedCell }}>{row.rank}</td>
 
                       <td style={{ ...normalCell, ...selectedCell, fontWeight: 700, fontSize: isMobile ? 13 : 15, padding: "8px 10px", verticalAlign: "middle" }} title={row.name}>
                         <StatsCandidateName key={row.image || row.candidate_id} image={row.image} name={row.name} selected={isHighlighted} isMobile={isMobile} />
                       </td>
 
-                      <td style={{ ...normalCell, ...selectedCell }}>{row.win_count}</td>
+                      <td style={{ ...ivoryCell, ...selectedCell }}>{row.win_count}</td>
 
                       <td style={{ ...ivoryCell, ...selectedCell }}>{winRateStr ?? "-"}</td>
 
-                      <td style={{ ...normalCell, ...selectedCell }}>{row.match_wins}</td>
+                      <td style={{ ...matchCell, ...selectedCell }}>{row.match_wins}</td>
 
-                      <td style={{ ...normalCell, ...selectedCell }}>{row.match_count}</td>
+                      <td style={{ ...matchCell, ...selectedCell }}>{row.match_count}</td>
 
-                      <td style={{ ...ivoryCell, ...selectedCell }}>{matchWinRateStr ?? "-"}</td>
+                      <td style={{ ...matchCell, ...selectedCell }}>{matchWinRateStr ?? "-"}</td>
 
                     </tr>
 
@@ -2458,6 +2466,7 @@ function periodBtnStyle(selected) {
   };
 
 }
+
 
 
 

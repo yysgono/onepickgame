@@ -82,7 +82,7 @@
   "match": "Partido",
   "winning_rate": "Tasa de victoria",
   "all": "Todo",
-  "members_only": "Solo miembros",
+  "members_only": "Usuarios autenticados",
   "user_only": "Solo usuarios",
   "month_1": "1 mes",
   "month_3": "3 meses",
@@ -94,6 +94,7 @@
   "apply": "Aplicar",
   "cancel": "Cancelar",
   "view_10": "Ver 10",
+  "view_20": "Ver 20",
   "view_25": "Ver 25",
   "view_50": "Ver 50",
   "view_100": "Ver 100",
@@ -635,3 +636,4 @@
   "stop_and_view_stats": "Detener y ver estadísticas",
   "add_other_language_title": "Añadir título en otro idioma"
 }
+
