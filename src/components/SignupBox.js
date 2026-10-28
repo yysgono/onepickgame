@@ -10,6 +10,8 @@ import { useTranslation } from "react-i18next";
 
 
 const pageStyle = {
+  width: "100%",
+  minWidth: 0,
   minHeight: "calc(100vh - 220px)",
   display: "flex",
   alignItems: "flex-start",
@@ -20,12 +22,13 @@ const pageStyle = {
 
 const cardStyle = {
   width: "100%",
-  maxWidth: 430,
+  maxWidth: 600,
+  minWidth: 0,
   background: "#f5f6fa",
   border: "1px solid #dde2ea",
   borderRadius: 20,
   boxShadow: "0 4px 16px rgba(25,32,52,0.07)",
-  padding: "34px 32px 30px",
+  padding: "30px clamp(18px, 4vw, 36px)",
   boxSizing: "border-box",
   color: "#202534",
   fontFamily: "'Pretendard','Noto Sans KR',Arial,sans-serif",
@@ -147,6 +150,7 @@ function SignupBox() {
   );
 }
 export default SignupBox;
+
 
 
 
