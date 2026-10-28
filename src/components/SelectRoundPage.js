@@ -1453,9 +1453,11 @@ textShadow: "none",
 
       borderRadius: 11,
 
-      border: "2px solid #dde2ea",
+      border: "3px solid #6650d8",
 
-      background: "#ffffff",
+      background: "#faf8ff",
+
+      boxShadow: "0 0 0 3px rgba(102,80,216,0.10)",
 
       color: "#202534",
 
@@ -2845,5 +2847,6 @@ style={{
   );
 
 }
+
 
 

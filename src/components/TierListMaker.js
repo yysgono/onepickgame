@@ -1,3 +1,4 @@
+import tierSourceSearchLabels from "../locales/tierSourceSearchLabels.json";
 import "./tierCandidateLabels.css";
 import tierUiCopy from "../seo/tierUiCopy.json";
 import NavigationLink from "./NavigationLink";
@@ -1500,8 +1501,18 @@ useEffect(() => {
         .trim()
         .toLowerCase();
 
-const list =
-  [...sortedSourceWorldcups];
+// An empty search keeps the curated recommendation order. Searching includes
+// ordinary World Cups already loaded by the maker route; no candidate refetch.
+const list = keyword
+  ? [...worldcupList].filter(cup => !cup.deleted_at).sort((a, b) => {
+      const presetFirst = Number(b.is_tier_preset === true) - Number(a.is_tier_preset === true);
+      if (presetFirst) return presetFirst;
+      if (a.is_tier_preset === true && b.is_tier_preset === true) {
+        return Number(a.tier_preset_order ?? 2147483647) - Number(b.tier_preset_order ?? 2147483647) || String(a.id).localeCompare(String(b.id));
+      }
+      return (Date.parse(b.created_at) || 0) - (Date.parse(a.created_at) || 0) || String(a.id).localeCompare(String(b.id));
+    })
+  : [...sortedSourceWorldcups];
 
     if (!keyword) {
       return list;
@@ -1549,6 +1560,7 @@ const list =
       }
     );
 }, [
+  worldcupList,
   sortedSourceWorldcups,
   presetSearch,
   getTitle,
@@ -4975,7 +4987,7 @@ if (editingTierListId) {
       setPresetVisibleCount(8);
     }}
     placeholder={
-      text.presetSearchPlaceholder
+      tierSourceSearchLabels[lang] || tierSourceSearchLabels.en
     }
     style={{
       width: isMobile
@@ -6953,4 +6965,5 @@ objectPosition: "center",
 
 
 export default TierListMaker;
+
 
