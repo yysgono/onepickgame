@@ -74,7 +74,7 @@ export default function StatsRoutePage({ worldcupList }) {
         )}
 
         {/* ✅ 메인 */}
-        <div style={{ width: "100%", maxWidth: 980 }}>
+        <div style={{ width: "100%", maxWidth: 1200, minWidth: 0 }}>
           <StatsPage selectedCup={cup} showCommentBox={true} />
         </div>
 

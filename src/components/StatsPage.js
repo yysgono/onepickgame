@@ -1,3 +1,4 @@
+import StatsCandidateName from "./StatsCandidateName";
 import {saveCandidateSet} from "./randomPick/savedCandidates";
 import savedCandidatesCopy from "./randomPick/savedCandidatesCopy.json";
 import {normalizeCandidates} from "../utils/randomPickCore";
@@ -2168,6 +2169,7 @@ onClick={() => {
           style={{
 
             width: "100%",
+            minWidth: isMobile ? 840 : 1040,
 
             borderCollapse: "collapse",
 
@@ -2192,6 +2194,12 @@ onClick={() => {
           }}
 
         >
+
+          <colgroup>
+            <col style={{ width: "6%" }} />
+            <col style={{ width: "34%" }} />
+            {Array.from({ length: 5 }, (_, index) => <col key={index} style={{ width: "12%" }} />)}
+          </colgroup>
 
           <thead>
 
@@ -2343,33 +2351,8 @@ onClick={() => {
 
                       <td style={{ ...ivoryCell, ...selectedCell }}>{row.rank}</td>
 
-                      <td
-
-                        style={{
-
-                          ...normalCell,
-                          ...selectedCell,
-
-                          fontWeight: 700,
-
-                          fontSize: isMobile ? 13 : 15,
-
-                          overflow: "hidden",
-
-                          textOverflow: "ellipsis",
-
-                          whiteSpace: "nowrap",
-
-                          maxWidth: isMobile ? 90 : 120,
-
-                        }}
-
-                        title={row.name}
-
-                      >
-
-                        {isHighlighted ? "✓ " : ""}{row.name}
-
+                      <td style={{ ...normalCell, ...selectedCell, fontWeight: 700, fontSize: isMobile ? 13 : 15, padding: "8px 10px", verticalAlign: "middle" }} title={row.name}>
+                        <StatsCandidateName key={row.image || row.candidate_id} image={row.image} name={row.name} selected={isHighlighted} isMobile={isMobile} />
                       </td>
 
                       <td style={{ ...normalCell, ...selectedCell }}>{row.win_count}</td>
@@ -2485,6 +2468,7 @@ function periodBtnStyle(selected) {
   };
 
 }
+
 
 
 

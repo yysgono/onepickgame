@@ -732,6 +732,7 @@ title={
       style={{
 
         maxWidth: 1200,
+        minWidth: 0,
 
         width: "100%",
 
@@ -962,4 +963,5 @@ textShadow: "none",
   );
 
 }
+
 

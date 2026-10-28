@@ -1,3 +1,4 @@
+import { rememberLoadedImage } from "../utils/recentLoadedImages";
 // src/components/MediaRenderer.js
 import React, {
   useEffect,
@@ -223,6 +224,7 @@ function MediaRenderer({
   const { t } = useTranslation();
 
   function handlePreviewImageLoad(event) {
+    if (event.currentTarget.naturalWidth > 0) rememberLoadedImage(event.currentTarget.currentSrc || event.currentTarget.src);
     if (!previewCrop) return;
     const image = event.currentTarget;
     image.style.objectPosition = image.naturalHeight > image.naturalWidth
@@ -820,3 +822,4 @@ onError={
 }
 
 export default MediaRenderer;
+
