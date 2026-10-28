@@ -1,0 +1,22 @@
+const fs=require('fs'),assert=require('node:assert/strict'),{PGlite}=require('@electric-sql/pglite');
+(async()=>{
+ const db=new PGlite();await db.exec(`create schema auth;create role anon;create role authenticated;
+ create function auth.uid() returns uuid language sql stable as $$select nullif(current_setting('request.jwt.claim.sub',true),'')::uuid$$;
+ create function public.account_site_admin() returns boolean language sql stable as $$select coalesce(current_setting('test.admin',true),'false')='true'$$;
+ create table random_pick_play_counts(mode text primary key,play_count bigint not null);
+ insert into random_pick_play_counts values('wheel',1000);grant usage on schema auth to authenticated,anon;`);
+ const sql=fs.readFileSync('supabase/20261028_random_pick_daily_v101.sql','utf8');await db.exec(sql);
+ assert.equal((await db.query('select * from random_pick_daily_counts')).rows.length,0);
+ await db.exec("update random_pick_play_counts set play_count=1001 where mode='wheel';insert into random_pick_play_counts values('cards',1);update random_pick_play_counts set play_count=play_count+2 where mode='wheel';");
+ let rows=(await db.query('select * from random_pick_daily_counts order by mode')).rows;assert.equal(rows.length,2);assert.equal(Number(rows[0].play_count),1);assert.equal(Number(rows[1].play_count),3);
+ assert.equal((await db.query("select bool_and(play_date=(now() at time zone 'Asia/Seoul')::date) as ok from random_pick_daily_counts")).rows[0].ok,true);
+ await db.exec("update random_pick_play_counts set play_count=900 where mode='wheel';insert into random_pick_play_counts values('retired-mode',100);");
+ assert.equal(Number((await db.query("select play_count from random_pick_daily_counts where mode='wheel'")).rows[0].play_count),3);
+ await db.exec(sql);assert.equal(Number((await db.query('select sum(play_count) as n from random_pick_daily_counts')).rows[0].n),4);
+ await db.exec('set role anon');await assert.rejects(db.query('select get_admin_random_pick_today_v101()'),/permission denied/);
+ await db.exec("set role authenticated;set request.jwt.claim.sub='00000000-0000-0000-0000-000000000001'");await assert.rejects(db.query('select get_admin_random_pick_today_v101()'),/Admin required/);
+ await db.exec("set test.admin='true'");let result=(await db.query('select get_admin_random_pick_today_v101() as stats')).rows[0].stats;assert.equal(result.count,4);assert.equal(result.partial,true);
+ await assert.rejects(db.query('select * from random_pick_daily_counts'),/permission denied/);
+ await db.exec("reset role;update random_pick_daily_config set started_at=now()-interval '2 days';set role authenticated");result=(await db.query('select get_admin_random_pick_today_v101() as stats')).rows[0].stats;assert.equal(result.partial,false);
+ await db.close();console.log('PASS: no historical backfill, positive increments only, KST day, sum across modes, repeat migration, admin-only reads, partial first day');
+})().catch(e=>{console.error(e);process.exitCode=1});

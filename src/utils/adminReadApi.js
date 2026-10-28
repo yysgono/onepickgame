@@ -135,3 +135,14 @@ export function getAdminTodayContentCount(kind, today = getTodayKstDateString())
   const table = kind === 'quiz' ? 'quiz_attempts' : 'tier_list_play_logs';
   return readCount(table, query => query.gte('created_at', start).lt('created_at', end));
 }
+
+
+export async function getAdminTodayRandomPickCount() {
+  const { data, error } = await supabase.rpc('get_admin_random_pick_today_v101');
+  // The layout remains usable while the additive SQL has not yet been installed.
+  if (error && ['PGRST202', '42883'].includes(error.code)) return { pending: true };
+  if (error) throw error;
+  const value = Number(data?.count);
+  if (!data || data.count == null || !Number.isSafeInteger(value) || value < 0 || typeof data.partial !== 'boolean') throw new Error('Count unavailable');
+  return { count: value, partial: data.partial };
+}

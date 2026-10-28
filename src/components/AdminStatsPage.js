@@ -1,6 +1,6 @@
 import AdminTodayContentStats from "./AdminTodayContentStats";
 import AdminRecentActivity from "./AdminRecentActivity";
-import { getAdminWorldcupCount, getAdminTodayContentCount, getAdminTotalCompletions, getAdminRecent7Completions, getAdminRecentPlays, getAdminRecentContentActivity, getAdminRecentComments, getTodayKstDateString } from "../utils/adminReadApi";
+import { getAdminWorldcupCount, getAdminTodayRandomPickCount, getAdminTodayContentCount, getAdminTotalCompletions, getAdminRecent7Completions, getAdminRecentPlays, getAdminRecentContentActivity, getAdminRecentComments, getTodayKstDateString } from "../utils/adminReadApi";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../utils/supabaseClient";
@@ -49,6 +49,7 @@ export default function AdminStatsPage() {
     setLoading,
   ] = useState(true);
 
+  const [todayRandomCount, setTodayRandomCount] = useState(null);
   const [todayQuizCount, setTodayQuizCount] = useState(null);
   const [todayTierCount, setTodayTierCount] = useState(null);
   const [quizPlays, setQuizPlays] = useState([]);
@@ -63,12 +64,13 @@ export default function AdminStatsPage() {
     let mounted = true;
     const today = getTodayKstDateString();
     setLoading(true);
-    const keys = ["worldcups", "total", "recent7", "plays", "comments", "quizPlays", "tierViews", "todayQuiz", "todayTier"];
+    const keys = ["worldcups", "total", "recent7", "plays", "comments", "quizPlays", "tierViews", "todayQuiz", "todayTier", "todayRandom"];
     Promise.allSettled([
       getAdminWorldcupCount(), getAdminTotalCompletions(), getAdminRecent7Completions(today),
       getAdminRecentPlays(), getAdminRecentComments(),
       getAdminRecentContentActivity("quiz"), getAdminRecentContentActivity("tier-list"),
       getAdminTodayContentCount("quiz", today), getAdminTodayContentCount("tier-list", today),
+      getAdminTodayRandomPickCount(),
     ]).then(results => {
       if (!mounted) return;
       const errors = {};
@@ -92,6 +94,7 @@ export default function AdminStatsPage() {
       setTierViews(results[6].status === "fulfilled" ? results[6].value : []);
       setTodayQuizCount(results[7].status === "fulfilled" ? results[7].value : null);
       setTodayTierCount(results[8].status === "fulfilled" ? results[8].value : null);
+      setTodayRandomCount(results[9].status === "fulfilled" ? results[9].value : null);
       setSectionErrors(errors);
       setLoading(false);
     });
@@ -238,7 +241,7 @@ export default function AdminStatsPage() {
       </div>
       {Object.keys(sectionErrors).length > 0 && <div role="alert" style={{ padding: 16, marginBottom: 20, background: "#fff5f5", color: "#a12626", border: "1px solid #f3b4b4", borderRadius: 10 }}>
         <strong>일부 통계를 불러오지 못했습니다. 실패한 수치는 0회로 표시하지 않습니다.</strong>
-        <ul>{Object.keys(sectionErrors).map(key => <li key={key}>{{ worldcups: "월드컵 수", total: "총 완료 수", recent7: "최근 7일 집계", plays: "최근 완료 목록", comments: "최근 댓글", quizPlays: "퀴즈 최근 플레이", tierViews: "티어표 최근 열람", todayQuiz: "오늘 퀴즈 플레이", todayTier: "오늘 티어표 열람" }[key]} 조회 실패</li>)}</ul>
+        <ul>{Object.keys(sectionErrors).map(key => <li key={key}>{{ worldcups: "월드컵 수", total: "총 완료 수", recent7: "최근 7일 집계", plays: "최근 완료 목록", comments: "최근 댓글", quizPlays: "퀴즈 최근 플레이", tierViews: "티어표 최근 열람", todayQuiz: "오늘 퀴즈 플레이", todayTier: "오늘 티어표 열람", todayRandom: "오늘 랜덤 뽑기" }[key]} 조회 실패</li>)}</ul>
         <button type="button" disabled={loading} onClick={() => setRefreshTick(value => value + 1)}>다시 시도</button>
       </div>}
 
@@ -453,7 +456,9 @@ export default function AdminStatsPage() {
               : todayPlays == null ? "집계 실패" : todayPlays.toLocaleString()}
           </div>
         </div>
-        <AdminTodayContentStats loading={loading} quizCount={todayQuizCount} tierCount={todayTierCount} />
+      </div>
+      <div className="admin-today-content-row" style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: 20, marginBottom: 32 }}>
+        <AdminTodayContentStats loading={loading} quizCount={todayQuizCount} tierCount={todayTierCount} randomCount={todayRandomCount} />
       </div>
 
       {/* ==================================================
@@ -1036,4 +1041,5 @@ export default function AdminStatsPage() {
     </div>
   );
 }
+
 
