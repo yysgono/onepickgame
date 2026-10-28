@@ -1,3 +1,4 @@
+import {naverLinkVisibility} from "../utils/naverLinkVisibility";
 import React,{useEffect,useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {supabase} from '../utils/supabaseClient';
@@ -8,9 +9,11 @@ export default function NaverAccountLink({user}){
  const {i18n}=useTranslation(),copy=COPY[authLanguage(i18n.language)]||COPY.en;
  const [state,setState]=useState('checking'),[error,setError]=useState('');
  useEffect(()=>{let active=true;setState('checking');setError('');
-  supabase.auth.getUser().then(({data,error})=>{if(active)setState(error||!data?.user?'error':data.user.identities?.some(x=>x.provider==='custom:naver')?'linked':'ready');}).catch(()=>{if(active)setState('error');});
+  if(naverLinkVisibility(user)==='hidden'){setState('hidden');return ()=>{active=false;};}
+  supabase.auth.getUser().then(({data,error})=>{if(active)setState(error||!data?.user?'hidden':naverLinkVisibility(data.user));}).catch(()=>{if(active)setState('hidden');});
   return()=>{active=false;};
  },[user?.id]);
+ if(state==='checking'||state==='hidden'||naverLinkVisibility(user)==='hidden')return null;
  return <div style={{borderTop:'1px solid #e2e8f0',paddingTop:10,marginTop:8,whiteSpace:'normal'}}>
   <button type="button" disabled={state==='checking'||state==='busy'||state==='linked'} onClick={async()=>{
    if(state==='busy')return;setState('busy');setError('');
@@ -27,3 +30,4 @@ export function NaverExistingAccountNotice({language}){
  const copy=COPY[authLanguage(language)]||COPY.en;
  return <p style={{padding:12,border:'1px solid #b8e2ca',borderRadius:8,background:'#f1fbf5',color:'#23533b',fontSize:14,lineHeight:1.6}}>{copy.notice}</p>;
 }
+
