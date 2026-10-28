@@ -1850,7 +1850,7 @@ const renderHomeActivityPanel = ({
                     minWidth: 0,
                     boxSizing: "border-box",
                     textDecoration: "none",
-                    border: "1px solid #111111",
+                    border: "none",
                     borderRadius: 8,
                     background: "#ffffff",
                     color: "#111111",
@@ -4510,6 +4510,7 @@ return (
 
 
 export default Home;
+
 
 
 
