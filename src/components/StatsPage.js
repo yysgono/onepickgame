@@ -66,11 +66,11 @@ const PERIODS = [
 
 
 
-function percent(n, d) {
+function percent(n, d, digits = 0) {
 
   if (!d) return "-";
 
-  return Math.round((n / d) * 100) + "%";
+  return ((n / d) * 100).toFixed(digits) + "%";
 
 }
 
@@ -166,7 +166,7 @@ function normalizeStats(arr) {
 
       _display: {
 
-        winRateAll: percent(win_count, total_games),
+        winRateAll: percent(win_count, total_games, 1),
 
         matchRateAll: percent(match_wins, match_count),
 
@@ -968,11 +968,11 @@ setStatsLoadedCupId(String(selectedCup.id));
 
     () => ({
 
-      background: "#fcf5cd",
+      background: "#fff0b3",
 
       fontWeight: 800,
 
-      color: "#998314",
+      color: "#785800",
 
       fontSize: isMobile ? 15 : 18,
 
@@ -985,8 +985,8 @@ setStatsLoadedCupId(String(selectedCup.id));
   );
 
   const matchCell = useMemo(() => ({
-    background: "#edf5ff", color: "#24527a", fontWeight: 700,
-    padding: "7px 0", border: 0,
+    background: "#dcecff", color: "#174c87", fontWeight: 700,
+    padding: "9px 0", border: 0,
   }), []);
 
   const normalCell = useMemo(
@@ -1115,7 +1115,7 @@ const rankedStats = useMemo(() => {
 
         _display: {
 
-          winRateAll: percent(row.user_win_count || 0, row.user_total_games || 0),
+          winRateAll: percent(row.user_win_count || 0, row.user_total_games || 0, 1),
 
           matchRateAll: percent(row.user_match_wins || 0, row.user_match_count || 0),
 
@@ -2233,6 +2233,7 @@ onClick={() => {
 
                     ...(["win_count", "win_rate"].includes(col.key) ? ivoryCell : ["match_wins", "match_count", "match_win_rate"].includes(col.key) ? matchCell : { background: "#fff", fontWeight: 700, color: "#333" }),
 
+                    borderBottom: "2px solid #bdcce0",
                     userSelect: "none",
 
                   }}
@@ -2347,21 +2348,21 @@ onClick={() => {
 
                     <tr key={row.candidate_id} style={highlightStyle}>
 
-                      <td style={{ ...normalCell, ...selectedCell }}>{row.rank}</td>
+                      <td style={{ ...normalCell, background: "#f1f5f9", color: "#475569", fontWeight: 700, borderBottom: "1px solid #e2e8f0", ...selectedCell }}>{row.rank}</td>
 
-                      <td style={{ ...normalCell, ...selectedCell, fontWeight: 700, fontSize: isMobile ? 13 : 15, padding: "8px 10px", verticalAlign: "middle" }} title={row.name}>
+                      <td style={{ ...normalCell, ...selectedCell, fontWeight: 700, fontSize: isMobile ? 13 : 15, padding: "8px 10px", borderBottom: "1px solid #e2e8f0", verticalAlign: "middle" }} title={row.name}>
                         <StatsCandidateName key={row.image || row.candidate_id} image={row.image} name={row.name} selected={isHighlighted} isMobile={isMobile} />
                       </td>
 
-                      <td style={{ ...ivoryCell, ...selectedCell }}>{row.win_count}</td>
+                      <td style={{ ...ivoryCell, borderBottom: "1px solid #e8d99e", ...selectedCell }}>{row.win_count}</td>
 
-                      <td style={{ ...ivoryCell, ...selectedCell }}>{winRateStr ?? "-"}</td>
+                      <td style={{ ...ivoryCell, borderBottom: "1px solid #e8d99e", ...selectedCell }}>{winRateStr ?? "-"}</td>
 
-                      <td style={{ ...matchCell, ...selectedCell }}>{row.match_wins}</td>
+                      <td style={{ ...matchCell, borderBottom: "1px solid #bdd4ef", ...selectedCell }}>{row.match_wins}</td>
 
-                      <td style={{ ...matchCell, ...selectedCell }}>{row.match_count}</td>
+                      <td style={{ ...matchCell, borderBottom: "1px solid #bdd4ef", ...selectedCell }}>{row.match_count}</td>
 
-                      <td style={{ ...matchCell, ...selectedCell }}>{matchWinRateStr ?? "-"}</td>
+                      <td style={{ ...matchCell, borderBottom: "1px solid #bdd4ef", ...selectedCell }}>{matchWinRateStr ?? "-"}</td>
 
                     </tr>
 
@@ -2466,6 +2467,7 @@ function periodBtnStyle(selected) {
   };
 
 }
+
 
 
 
