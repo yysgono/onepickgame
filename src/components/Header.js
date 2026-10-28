@@ -1,3 +1,4 @@
+import NaverAccountLink from "./NaverAccountLink";
 import {getCommunityUi} from './communityUi';
 import headerCommunityCopy from "./headerCommunityCopy.json";
 import NavigationLink from "./NavigationLink";
@@ -746,6 +747,7 @@ export default function Header({
               <div className="onepick-profile-dropdown">
                 <strong>{nicknameLoading ? t('loading_nickname') : nickname || t('no_nickname')}</strong>
                 <button type="button" onClick={()=>setShowProfile(true)}>{t('edit_profile')}</button>
+                <NaverAccountLink user={user} />
                 {isAdmin && <Link to={`/${currentLang}/admin-suggestions`}>{ui.inbox}</Link>}
                 {isAdmin && <>
                   <NavigationLink  to={`/${currentLang}/admin`} appearance="button">{t('dashboard')}</NavigationLink>
@@ -1085,4 +1087,5 @@ function HeaderIcon({ name }) {
   };
   return <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.65" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{paths[name]}</svg>;
 }
+
 

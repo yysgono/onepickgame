@@ -10,6 +10,7 @@ export function oauthProvider() {
   catch { return 'google'; }
 }
 async function startLogin(provider, language) {
+  sessionStorage.removeItem('onepick.oauth.naver-link');
   sessionStorage.setItem('onepick.oauth.language', authLanguage(language));
   sessionStorage.setItem('onepick.oauth.provider', provider);
   const probe = 'onepick.oauth.storage-probe';
@@ -48,3 +49,4 @@ export async function saveSocialNickname(nickname) {
   if (error || !data) throw error || Error('PROFILE_FAILED');
   return data;
 }
+

@@ -1,3 +1,4 @@
+import {NaverExistingAccountNotice} from "./NaverAccountLink";
 import NaverLoginButton from "./NaverLoginButton";
 import AccountPolicyNotice from "./AccountPolicyNotice";
 import GoogleLoginButton from "./GoogleLoginButton";
@@ -117,6 +118,7 @@ function SignupBox() {
         <AccountPolicyNotice />
         <GoogleLoginButton />
         <NaverLoginButton />
+        <NaverExistingAccountNotice language={i18n.language} />
         <form onSubmit={handleSignup}>
           <label style={labelStyle}>{t("auth.common.email")}</label>
           <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder={t("auth.common.emailPlaceholder")} autoCapitalize="none" autoComplete="email" style={{...inputStyle, marginBottom: 16}} required spellCheck={false} />
@@ -145,6 +147,7 @@ function SignupBox() {
   );
 }
 export default SignupBox;
+
 
 
 

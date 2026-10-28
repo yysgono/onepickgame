@@ -1,3 +1,5 @@
+import {hasNaverLinkIntent,completeNaverAccountLink,naverLinkErrorCode} from "../utils/naverAccountLink";
+import NAVER_LINK_COPY from "./naverLinkCopy.json";
 import AccountPolicyNotice from "./AccountPolicyNotice";
 import React, { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
@@ -7,19 +9,26 @@ import { googleAuthCopy } from '../utils/googleAuthCopy';
 import { authLanguage, completeGoogleLogin, oauthProvider, saveSocialNickname } from '../utils/googleAuth';
 export default function GoogleAuthCallback({ setNickname }) {
   const navigate = useNavigate();
+  const [linking] = useState(hasNaverLinkIntent);
+  const [linkError,setLinkError] = useState("failed");
   const [lang] = useState(() => { try { return authLanguage(sessionStorage.getItem('onepick.oauth.language')); } catch { return 'en'; } });
   const baseCopy = googleAuthCopy(lang);
+  const linkCopy = NAVER_LINK_COPY[lang] || NAVER_LINK_COPY.en;
   const copy = oauthProvider() === 'custom:naver' ? {...baseCopy,title:lang==='ko'?'네이버 로그인':baseCopy.title.replace(/Google|구글/gi,'NAVER')} : baseCopy;
   const [status,setStatus] = useState('loading'), [nickname,setName] = useState(''), [busy,setBusy] = useState(false), [error,setError] = useState(false);
   useEffect(() => {
     let active=true;
+    if(linking){
+      completeNaverAccountLink().then(()=>{if(active)setStatus("linked");}).catch(err=>{if(active){setLinkError(naverLinkErrorCode(err));setStatus("error");}});
+      return ()=>{active=false;};
+    }
     completeGoogleLogin().then(name => {
       if (!active) return;
       if (name) { setNickname?.(name); navigate(`/${lang}`,{replace:true}); }
       else setStatus('nickname');
     }).catch(() => { if(active) setStatus('error'); });
     return () => {active=false;};
-  },[lang,navigate,setNickname]);
+  },[lang,navigate,setNickname,linking]);
   async function save(event) {
     event.preventDefault(); if(busy) return; setBusy(true); setError(false);
     try {
@@ -31,7 +40,8 @@ export default function GoogleAuthCallback({ setNickname }) {
     <Helmet><title>Sign in | OnePickGame</title><meta name="robots" content="noindex, nofollow" /></Helmet>
     <h1>{copy.title}</h1>
     {status==='loading' && <p role="status">{copy.loading}</p>}
-    {status==='error' && <><p role="alert">{copy.failed}</p><Link to={`/${lang}/login`}>{copy.back}</Link></>}
+    {status==='error' && <><p role="alert">{linking?linkCopy[linkError]:copy.failed}</p><Link to={`/${lang}/login`}>{copy.back}</Link></>}
+    {status==='linked' && <><p role="status">{linkCopy.success}</p><Link to={`/${lang}`}>{linkCopy.home}</Link></>}
     {status==='nickname' && <form onSubmit={save}>
       <AccountPolicyNotice language={lang} />
       <p>{copy.hint}</p>
@@ -42,5 +52,6 @@ export default function GoogleAuthCallback({ setNickname }) {
     </form>}
   </main>;
 }
+
 
 
