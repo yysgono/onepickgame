@@ -117,3 +117,47 @@
 @media(max-width:600px){.site-publishing .rich-toolbar{padding:6px;gap:2px}.site-publishing .rich-toolbar button{min-width:33px;min-height:36px}.site-publishing .rich-toolbar select{max-width:110px}.rich-editable{padding:13px;min-height:280px}}
 
 .community-board .rich-content{white-space:normal}
+
+
+/* v120: clearer community layout; all selectors stay inside the board. */
+.community-board{max-width:1120px;margin-top:36px}
+.community-board .board-hero{display:flex;align-items:center;gap:22px;padding:32px;margin-bottom:26px;background:linear-gradient(120deg,#f3efff,#f7faff);border:1px solid #e0d9f6;border-radius:22px}
+.community-board .board-hero-icon{display:grid;place-items:center;width:66px;height:66px;flex:0 0 66px;background:#fff;border-radius:20px;color:#6650d8;font-size:36px;box-shadow:0 8px 24px #5542b815}
+.community-board .board-eyebrow{font-size:11px;letter-spacing:.13em;font-weight:800;color:#7868b5}
+.community-board .board-hero h1{text-align:start;margin:7px 0;font-size:32px;letter-spacing:-.04em;color:#242039}
+.community-board .board-hero p{margin:0;color:#736b88;font-size:14px;line-height:1.7}
+.community-board .community-tabs{padding-bottom:17px;border-bottom:1px solid #e8e5f0;gap:9px}
+.community-board .community-tabs button{border:1px solid #e4e0ee;background:#fff;color:#5f5870;transition:background .15s,border-color .15s}
+.community-board .community-tabs button:hover{border-color:#9a89dc;background:#f7f4ff}
+.community-board .community-tabs button[aria-pressed=true]{color:#fff;background:#6650d8;border-color:#6650d8;box-shadow:0 4px 12px #6650d826}
+.community-board .board-list{border-color:#e5e3ed;border-radius:18px;box-shadow:0 6px 24px #20203406}
+.community-board .board-card{padding:20px 24px;transition:background .15s}
+.community-board .board-card:hover{background:#fcfbff}
+.community-board .community-post-title{font-size:17px;font-weight:750;line-height:1.65}
+.community-board .community-post-title:hover{color:#6650d8}
+.community-board .board-post-number{color:#a19aad;font-size:12px}
+.community-board .community-post-meta{color:#8a8299}
+.community-board .board-expanded{padding:24px 8px 8px;margin-top:20px}
+.community-board .board-post-body{font-size:16px;line-height:1.95;min-height:100px}
+.community-board .board-write{box-shadow:0 4px 14px #5542b824}
+.community-board .community-comments{margin-top:26px;border-top:1px solid #e7e2f0;padding-top:24px;text-align:start}
+.community-board .community-comments h3{display:flex;align-items:center;gap:9px;font-size:17px;margin:0 0 18px;color:#332b48}
+.community-board .community-comments h3 span{font-size:13px;color:#6650d8;background:#eee9ff;border-radius:20px;padding:3px 9px}
+.community-board .community-comment{padding:17px 0;border-bottom:1px solid #eeeaf4}
+.community-board .comment-byline{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:13px}
+.community-board .comment-avatar{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:#eee9ff;color:#6650d8;font-weight:800}
+.community-board .comment-byline time{margin:0;margin-inline-start:auto;font-size:12px;color:#8b829a}
+.community-board .community-comment p{white-space:pre-wrap;overflow-wrap:anywhere;font-size:14px;line-height:1.8;margin:10px 0 6px;padding-inline-start:40px;color:#40394d}
+.community-board .comment-actions{display:flex;justify-content:flex-end;gap:7px}
+.community-board .comment-actions button{background:transparent;border:0;color:#7b708e;padding:4px 7px;font-size:12px;min-height:32px}
+.community-board .comment-actions button:hover{color:#6650d8;background:#f1edfc}
+.community-board .comment-composer{padding:18px;background:#f7f5fb;border:1px solid #e7e1f1;border-radius:14px;margin:20px 0 0;gap:10px}
+.community-board .comment-composer label{font-size:13px;color:#5f5475}
+.community-board .comment-composer textarea{min-height:100px;border-color:#d9d1e7;font-size:14px;line-height:1.7}
+.community-board .comment-composer textarea:focus{outline:2px solid #9c87ea;outline-offset:2px}
+.community-board .comment-composer-footer{display:flex;align-items:center;justify-content:flex-end;gap:8px}
+.community-board .comment-composer-footer small{margin-inline-end:auto;color:#8b8199;font-size:12px}
+.community-board .comment-composer-footer button{font-size:13px;padding:9px 14px;background:#6650d8;border-color:#6650d8}
+.community-board .comment-empty{padding:20px 0;color:#91879f;font-size:14px}
+.community-board .comment-login{display:block;padding:18px;background:#f7f5fc;border:1px dashed #d6ccea;border-radius:12px;color:#6650d8;text-align:center;text-decoration:none;font-weight:700;font-size:14px;margin-top:18px}
+@media(max-width:600px){.community-board{padding-inline:14px;margin-top:20px}.community-board .board-hero{padding:22px 18px;gap:14px;border-radius:17px}.community-board .board-hero-icon{width:46px;height:46px;flex-basis:46px;border-radius:14px;font-size:27px}.community-board .board-hero h1{font-size:26px}.community-board .board-eyebrow{font-size:9px}.community-board .board-card{padding:16px}.community-board .board-expanded{padding-inline:0}.community-board .comment-composer{padding:12px}.community-board .community-comment p{padding-inline-start:0}}
