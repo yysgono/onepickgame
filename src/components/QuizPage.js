@@ -1484,32 +1484,31 @@ export default function QuizPage({ user = null }) {
   const renderQuizActivityPanel = ({
     title,
     items,
-    accentColor = "#E53935",
     metric = "date",
   }) => (
     <aside className="home-activity-panel"
       style={{
-        "--activity-hover-border": "#ef5350",
-        "--activity-hover-bg": "#fff0f0",
+        "--activity-hover-border": "#111111",
+        "--activity-hover-bg": "#f5f5f5",
         minWidth: 0,
         background: "#ffffff",
-        border: "1px solid #fecaca",
+        border: "1px solid #111111",
         borderRadius: 10,
         padding: "17px 17px 15px",
         boxSizing: "border-box",
         minHeight: 292,
-        boxShadow: "0 12px 28px rgba(239,68,68,0.12)",
+        boxShadow: "0 12px 28px rgba(0,0,0,0.08)",
       }}
     >
       <h2
         style={{
           margin: "0 0 11px",
-          color: accentColor,
+          color: "#E53935",
           fontSize: 20,
           lineHeight: 1.25,
           fontWeight: 950,
           textAlign: "left",
-          borderLeft: `4px solid ${accentColor}`,
+          borderLeft: "4px solid #E53935",
           paddingLeft: 8,
         }}
       >
@@ -1537,10 +1536,10 @@ export default function QuizPage({ user = null }) {
                   minWidth: 0,
                   boxSizing: "border-box",
                   textDecoration: "none",
-                  border: "1px solid #fee2e2",
+                  border: "1px solid #111111",
                   borderRadius: 8,
-                  background: "#fffafa",
-                  color: "#202534",
+                  background: "#ffffff",
+                  color: "#111111",
                   padding: "11px 11px",
                   cursor: "pointer",
                   textAlign: "left",
@@ -1564,7 +1563,7 @@ export default function QuizPage({ user = null }) {
                 </span>
                 <span
                   style={{
-                    color: accentColor,
+                    color: "#111111",
                     fontSize: 13,
                     fontWeight: 850,
                     whiteSpace: "nowrap",
@@ -1579,7 +1578,7 @@ export default function QuizPage({ user = null }) {
           ))}
         </ul>
       ) : (
-        <p style={{ margin: 0, color: "#64748b", fontSize: 13, fontWeight: 750 }}>
+        <p style={{ margin: 0, color: "#111111", fontSize: 13, fontWeight: 750 }}>
           {quizActivityCopy.empty}
         </p>
       )}
@@ -6974,4 +6973,5 @@ function languageButton(
 
 
 }
+
 

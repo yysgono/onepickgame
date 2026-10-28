@@ -962,12 +962,12 @@ const displayTitle =
     lang === "ko"
       ? {
           recentCreated: "최근 등록된 티어표",
-          recentPlayed: "최근 조회된 티어표",
+          recentPlayed: "최근 플레이된 티어표",
           empty: "표시할 티어표가 없습니다.",
         }
       : {
           recentCreated: "Recently Added Tier Lists",
-          recentPlayed: "Recently Viewed Tier Lists",
+          recentPlayed: "Recently Played Tier Lists",
           empty: "No tier lists to show.",
         };
 
@@ -1118,32 +1118,31 @@ const displayTitle =
   const renderTierActivityPanel = ({
     title,
     items,
-    accentColor = "#2563EB",
     metric = "date",
   }) => (
  <aside className="home-activity-panel"
   style={{
-    "--activity-hover-border": "#3b82f6",
-    "--activity-hover-bg": "#eff6ff",
+    "--activity-hover-border": "#111111",
+    "--activity-hover-bg": "#f5f5f5",
     minWidth: 0,
     background: "#ffffff",
-    border: "1px solid #bfdbfe",
+    border: "1px solid #111111",
     borderRadius: 10,
     padding: "18px 18px 16px",
     boxSizing: "border-box",
     minHeight: 280,
-    boxShadow: "0 12px 28px rgba(37,99,235,0.12)",
+    boxShadow: "0 12px 28px rgba(0,0,0,0.08)",
   }}
 >
   <h2
     style={{
       margin: "0 0 12px",
-      color: accentColor,
+      color: "#2563EB",
       fontSize: 22,
       lineHeight: 1.25,
       fontWeight: 950,
       textAlign: "left",
-      borderLeft: `4px solid ${accentColor}`,
+      borderLeft: "4px solid #2563EB",
       paddingLeft: 8,
     }}
   >
@@ -1170,10 +1169,10 @@ const displayTitle =
                   minWidth: 0,
                   boxSizing: "border-box",
                   textDecoration: "none",
-                  border: "1px solid #dbeafe",
+                  border: "1px solid #111111",
                   borderRadius: 8,
-                  background: "#f8fbff",
-                  color: "#202534",
+                  background: "#ffffff",
+                  color: "#111111",
                   padding: "11px 11px",
                   cursor: "pointer",
                   textAlign: "left",
@@ -1197,7 +1196,7 @@ const displayTitle =
                 </span>
                 <span
                   style={{
-                    color: accentColor,
+                    color: "#111111",
                     fontSize: 13,
                     fontWeight: 850,
                     whiteSpace: "nowrap",
@@ -1212,7 +1211,7 @@ const displayTitle =
           ))}
         </ul>
       ) : (
-        <p style={{ margin: 0, color: "#64748b", fontSize: 13, fontWeight: 750 }}>
+        <p style={{ margin: 0, color: "#111111", fontSize: 13, fontWeight: 750 }}>
           {tierActivityCopy.empty}
         </p>
       )}
@@ -2226,3 +2225,4 @@ gap:
 }
 
 export default TierListPage;
+

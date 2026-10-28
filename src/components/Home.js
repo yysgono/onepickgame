@@ -94,82 +94,82 @@ const WORLDCUP_CARD_META_COPY = {
 const HOME_SIDE_PANEL_COPY = {
   ko: {
     recentCreated: "최근 만들어진 월드컵",
-    recentPlayed: "최근 플레이",
+    recentPlayed: "최근 플레이된 월드컵",
     empty: "표시할 월드컵이 없습니다.",
   },
   en: {
     recentCreated: "Recently Created Brackets",
-    recentPlayed: "Recent Plays",
+    recentPlayed: "Recently Played Brackets",
     empty: "No brackets to show yet.",
   },
   ja: {
     recentCreated: "最近作成されたワールドカップ",
-    recentPlayed: "最近のプレイ",
+    recentPlayed: "最近プレイされたワールドカップ",
     empty: "表示できるワールドカップがありません。",
   },
   zh: {
     recentCreated: "最近创建的淘汰赛",
-    recentPlayed: "最近游玩",
+    recentPlayed: "最近游玩的淘汰赛",
     empty: "暂无可显示的淘汰赛。",
   },
   es: {
     recentCreated: "Torneos creados recientemente",
-    recentPlayed: "Jugadas recientes",
+    recentPlayed: "Torneos jugados recientemente",
     empty: "No hay torneos para mostrar.",
   },
   fr: {
     recentCreated: "Tournois créés récemment",
-    recentPlayed: "Parties récentes",
+    recentPlayed: "Tournois joués récemment",
     empty: "Aucun tournoi à afficher.",
   },
   vi: {
     recentCreated: "Bracket mới tạo",
-    recentPlayed: "Lượt chơi gần đây",
+    recentPlayed: "Giải đấu được chơi gần đây",
     empty: "Chưa có bracket để hiển thị.",
   },
   de: {
     recentCreated: "Neu erstellte Turniere",
-    recentPlayed: "Letzte Spiele",
+    recentPlayed: "Zuletzt gespielte Turniere",
     empty: "Noch keine Turniere vorhanden.",
   },
   ru: {
     recentCreated: "Недавно созданные турниры",
-    recentPlayed: "Недавние игры",
+    recentPlayed: "Недавно сыгранные турниры",
     empty: "Пока нечего показать.",
   },
   id: {
     recentCreated: "Bracket Terbaru",
-    recentPlayed: "Baru Dimainkan",
+    recentPlayed: "Turnamen Terakhir Dimainkan",
     empty: "Belum ada bracket untuk ditampilkan.",
   },
   pt: {
     recentCreated: "Torneios recentes",
-    recentPlayed: "Jogadas recentes",
+    recentPlayed: "Torneios jogados recentemente",
     empty: "Nenhum torneio para mostrar.",
   },
   hi: {
     recentCreated: "हाल में बनाए गए ब्रैकेट",
-    recentPlayed: "हाल की खेलें",
+    recentPlayed: "हाल में खेले गए टूर्नामेंट",
     empty: "दिखाने के लिए कोई ब्रैकेट नहीं है।",
   },
   tr: {
     recentCreated: "Yeni Oluşturulan Turnuvalar",
-    recentPlayed: "Son Oynananlar",
+    recentPlayed: "Son Oynanan Turnuvalar",
     empty: "Gösterilecek turnuva yok.",
   },
   th: {
     recentCreated: "เวิลด์คัพที่สร้างล่าสุด",
-    recentPlayed: "เล่นล่าสุด",
+    recentPlayed: "เวิลด์คัพที่เล่นล่าสุด",
     empty: "ยังไม่มีรายการให้แสดง",
   },
   ar: {
     recentCreated: "بطولات أُنشئت حديثًا",
-    recentPlayed: "آخر مرات اللعب",
+    recentPlayed: "البطولات التي لُعبت مؤخرًا",
     empty: "لا توجد بطولات لعرضها.",
   },
   bn: {
     recentCreated: "সাম্প্রতিক তৈরি ব্র্যাকেট",
-    recentPlayed: "সাম্প্রতিক খেলা",
+    recentPlayed: "সম্প্রতি খেলা টুর্নামেন্ট",
     empty: "দেখানোর মতো কোনো ব্র্যাকেট নেই।",
   },
 };
@@ -1791,33 +1791,34 @@ const goto = (url) => {
 const renderHomeActivityPanel = ({
   title,
   items,
-  accentColor = "#F97316",
 }) => {
   return (
     <aside
       className="home-activity-panel"
       style={{
+        "--activity-hover-border": "#111111",
+        "--activity-hover-bg": "#f5f5f5",
         minWidth: 0,
         position: "relative",
         zIndex: 1,
         background: "#ffffff",
-        border: "1px solid #fed7aa",
+        border: "1px solid #111111",
         borderRadius: 10,
        padding: "18px 18px 16px",
         boxSizing: "border-box",
         minHeight: 302,
-        boxShadow: "0 12px 28px rgba(249,115,22,0.10)",
+        boxShadow: "0 12px 28px rgba(0,0,0,0.08)",
       }}
     >
       <h2
         style={{
           margin: "0 0 13px",
-          color: accentColor,
+          color: "#F97316",
           fontSize: 22,
           lineHeight: 1.25,
           fontWeight: 900,
           textAlign: "left",
-          borderLeft: `4px solid ${accentColor}`,
+          borderLeft: "4px solid #F97316",
           paddingLeft: 9,
         }}
       >
@@ -1849,10 +1850,10 @@ const renderHomeActivityPanel = ({
                     minWidth: 0,
                     boxSizing: "border-box",
                     textDecoration: "none",
-                    border: "1px solid #ffedd5",
+                    border: "1px solid #111111",
                     borderRadius: 8,
-                    background: "#fffaf7",
-                    color: "#202534",
+                    background: "#ffffff",
+                    color: "#111111",
                     padding: "11px 11px",
                     cursor: "pointer",
                     textAlign: "left",
@@ -1877,7 +1878,7 @@ const renderHomeActivityPanel = ({
 
                   <span
                     style={{
-                      color: "#C2410C",
+                      color: "#111111",
                       fontSize: 13,
                       fontWeight: 800,
                       whiteSpace: "nowrap",
@@ -1894,7 +1895,7 @@ const renderHomeActivityPanel = ({
         <p
           style={{
             margin: 0,
-            color: "#64748b",
+            color: "#111111",
             fontSize: 14,
             lineHeight: 1.45,
             fontWeight: 700,
@@ -4509,6 +4510,7 @@ return (
 
 
 export default Home;
+
 
 
 
