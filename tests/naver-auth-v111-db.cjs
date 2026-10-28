@@ -1,0 +1,25 @@
+const {PGlite}=require('@electric-sql/pglite');const fs=require('fs'),assert=require('node:assert/strict');
+(async()=>{
+const db=new PGlite();
+await db.exec(`create schema auth;create role anon;create role authenticated;
+create table auth.users(id uuid primary key,email text);create table auth.identities(user_id uuid,provider text);
+create function auth.uid() returns uuid language sql stable as $$select nullif(current_setting('request.jwt.claim.sub',true),'')::uuid$$;
+create table profiles(id uuid primary key,uid uuid,email text,nickname text unique,is_admin boolean);
+create function account_session_is_active() returns boolean language sql stable as $$select coalesce(current_setting('test.active',true),'true')='true'$$;
+create function account_not_banned() returns boolean language sql stable as $$select true$$;
+grant usage on schema auth to authenticated,anon;`);
+await db.exec(fs.readFileSync('supabase/20261029_naver_profile_v111.sql','utf8'));
+await db.exec(fs.readFileSync('supabase/20261029_naver_profile_v111.sql','utf8'));
+const a='00000000-0000-0000-0000-000000000001', b='00000000-0000-0000-0000-000000000002';
+await db.exec(`insert into auth.users values('${a}',null),('${b}','other@example.test');insert into auth.identities values('${a}','custom:naver'),('${b}','email');`);
+await db.exec(`set role anon`);await assert.rejects(db.query("select account_naver_profile('test')"),/permission denied/);
+await db.exec(`set role authenticated;set request.jwt.claim.sub='${b}'`);await assert.rejects(db.query("select account_naver_profile('test')"),/NAVER identity required/);
+await db.exec(`set request.jwt.claim.sub='${a}'`);
+assert.equal((await db.query('select account_naver_profile(null) as n')).rows[0].n,null);
+for(const name of ['a','admin','管理员<','_withdrawn_test','x'.repeat(25)])await assert.rejects(db.query('select account_naver_profile($1)',[name]),/Invalid nickname/);
+assert.equal((await db.query("select account_naver_profile('테스트회원') as n")).rows[0].n,'테스트회원');
+assert.equal((await db.query("select account_naver_profile('new name') as n")).rows[0].n,'테스트회원');
+await db.exec(`set test.active='false'`);await assert.rejects(db.query('select account_naver_profile(null)'),/Login required/);
+await db.exec('reset role');const rows=(await db.query('select * from profiles')).rows;assert.equal(rows.length,1);assert.equal(rows[0].id,a);assert.equal(rows[0].is_admin,false);assert.equal(rows[0].email,null);
+await db.close();console.log('PASS: anonymous/other-provider/inactive guards, nickname validation, own profile only, preserve existing nickname, no privilege grant');
+})().catch(e=>{console.error(e);process.exitCode=1});

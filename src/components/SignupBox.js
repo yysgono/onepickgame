@@ -1,3 +1,4 @@
+import NaverLoginButton from "./NaverLoginButton";
 import AccountPolicyNotice from "./AccountPolicyNotice";
 import GoogleLoginButton from "./GoogleLoginButton";
 import React, { useState } from "react";
@@ -115,6 +116,7 @@ function SignupBox() {
 
         <AccountPolicyNotice />
         <GoogleLoginButton />
+        <NaverLoginButton />
         <form onSubmit={handleSignup}>
           <label style={labelStyle}>{t("auth.common.email")}</label>
           <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder={t("auth.common.emailPlaceholder")} autoCapitalize="none" autoComplete="email" style={{...inputStyle, marginBottom: 16}} required spellCheck={false} />
@@ -143,5 +145,6 @@ function SignupBox() {
   );
 }
 export default SignupBox;
+
 
 

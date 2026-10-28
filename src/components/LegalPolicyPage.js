@@ -17,7 +17,9 @@ export default function LegalPolicyPage({page}) {
    </nav>
    {meta.sections.map(([heading,text],i)=><section key={i} style={{margin:'24px 0'}}><h2 style={{fontSize:20,lineHeight:1.5,marginBottom:8}}>{heading}</h2><p style={{margin:0,whiteSpace:'pre-line'}}>{text}</p></section>)}
    <p><a href="https://myaccount.google.com/connections" target="_blank" rel="noopener noreferrer">Google · myaccount.google.com/connections</a></p>
+   <p><a href="https://nid.naver.com/" target="_blank" rel="noopener noreferrer">NAVER</a></p>
    <p><Link to={`/${meta.lang}/${meta.otherPage}`}>{meta.otherTitle}</Link></p>
   </main>
  </>;
 }
+

@@ -3,12 +3,13 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { googleAuthCopy } from '../utils/googleAuthCopy';
-import { supabase } from '../utils/supabaseClient';
-import { authLanguage, completeGoogleLogin } from '../utils/googleAuth';
+
+import { authLanguage, completeGoogleLogin, oauthProvider, saveSocialNickname } from '../utils/googleAuth';
 export default function GoogleAuthCallback({ setNickname }) {
   const navigate = useNavigate();
   const [lang] = useState(() => { try { return authLanguage(sessionStorage.getItem('onepick.oauth.language')); } catch { return 'en'; } });
-  const copy = googleAuthCopy(lang);
+  const baseCopy = googleAuthCopy(lang);
+  const copy = oauthProvider() === 'custom:naver' ? {...baseCopy,title:lang==='ko'?'네이버 로그인':baseCopy.title.replace(/Google|구글/gi,'NAVER')} : baseCopy;
   const [status,setStatus] = useState('loading'), [nickname,setName] = useState(''), [busy,setBusy] = useState(false), [error,setError] = useState(false);
   useEffect(() => {
     let active=true;
@@ -22,8 +23,7 @@ export default function GoogleAuthCallback({ setNickname }) {
   async function save(event) {
     event.preventDefault(); if(busy) return; setBusy(true); setError(false);
     try {
-      const {data,error:err}=await supabase.rpc('account_google_profile',{p_nickname:nickname.trim()});
-      if(err || !data) throw Error('PROFILE_FAILED');
+      const data=await saveSocialNickname(nickname);
       setNickname?.(data); navigate(`/${lang}`,{replace:true});
     } catch {setError(true);} finally {setBusy(false);}
   }
@@ -42,4 +42,5 @@ export default function GoogleAuthCallback({ setNickname }) {
     </form>}
   </main>;
 }
+
 
