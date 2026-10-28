@@ -1,10 +1,14 @@
 {
-  "version": 105,
-  "base": "9d0aa5f763b27f32bc2dcda32c2150ea10914b69",
-  "files": [
-    "START-HERE-KO.txt",
-    "src/components/StatsPage.js",
-    "src/utils/statsPageWithSelected.js",
-    "tests/stats-page-selected-v105.cjs"
-  ]
+  "version": 109,
+  "base": "8ef529ef2965452479857ec280f50e791e0c443d",
+  "bundledSanitizer": "2.18.1",
+  "files": {
+    "rich-text-server.cjs": "8256741427b9593d349cb8e50d12e8f742cd5f86994be643459b8e787bdfb376",
+    "package.json": "13ec88575bfc476d49354b36470ff5eb1f76c366c061f106cfc40c37abe7a2b9",
+    "START-HERE-KO.txt": "6ef90e6b3bc25ae9e4cac81357a5612048d1a65c2dc45233b0414ba65194ac86",
+    "vendor/rich-text-sanitizer.cjs": "e3ca79a4a0d9e36ee54d363eae269baa427fab77ca5a3af356940b0d116a2fd6",
+    "vendor/rich-text-sanitizer.NOTICES.json": "4627a3539d57f406095c7d0f62bf46aa1decd8a166864b9d5a6851dd15623e52",
+    "scripts/bundle-rich-text-sanitizer.cjs": "3dcc4ce9fee39c044f8e8a2a13d3305e6577ebe9fa4028fb551e030e530ea9b0",
+    "tests/rich-text-compat-v109.cjs": "6f14c34f0e9b87180c963c87e20e53865678bb5e471ca2f72892b9c86352e508"
+  }
 }
