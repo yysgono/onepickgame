@@ -760,11 +760,11 @@ export default function Header({
         </div>
       </div>
       <nav className="onepick-community-nav" aria-label={communityCopy[3]}>
-        <Link to={`/${currentLang}/notices`}>{communityCopy[0]}</Link>
-        <Link to={`/${currentLang}/community`}>{communityCopy[1]}</Link>
-        <Link to={`/${currentLang}/suggestions`}>{communityCopy[4]}</Link>
-        <Link to={`/${currentLang}/my-worldcups`} aria-current={personalPage ? 'page' : undefined}>{ui.myContent}</Link>
-        <Link to={`/${currentLang}/blog`}>{ui.blog}</Link>
+        <Link rel="nosublink" to={`/${currentLang}/notices`}>{communityCopy[0]}</Link>
+        <Link rel="nosublink" to={`/${currentLang}/community`}>{communityCopy[1]}</Link>
+        <Link rel="nosublink" to={`/${currentLang}/suggestions`}>{communityCopy[4]}</Link>
+        <Link rel="nosublink" to={`/${currentLang}/my-worldcups`} aria-current={personalPage ? 'page' : undefined}>{ui.myContent}</Link>
+        <Link rel="nosublink" to={`/${currentLang}/blog`}>{ui.blog}</Link>
       </nav>
       {isAdmin && <input ref={inputRef} type="file" accept="application/json" hidden onChange={onRestore} />}
 
@@ -1085,3 +1085,4 @@ function HeaderIcon({ name }) {
   };
   return <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.65" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{paths[name]}</svg>;
 }
+
