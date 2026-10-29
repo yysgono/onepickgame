@@ -522,9 +522,7 @@ const CandidateCard = memo(
           onDragEndItem
         }
         onClick={() => {
-          if (isMobile) {
-            onSelectItem?.(item);
-          }
+          onSelectItem?.(item);
         }}
         title={
           item?.name ||
@@ -2401,271 +2399,9 @@ return () => {
 
 
   useEffect(() => {
-    if (
-      id ||
-      !Array.isArray(
-        worldcupList
-      ) ||
-      worldcupList.length ===
-        0
-    ) {
-      return;
-    }
-
-
-    let cancelled =
-      false;
-
-
-    async function loadWinners() {
-      const cached =
-        readWinnerCache();
-
-
-      const cupsToLoad =
-        worldcupList.filter(
-          (cup) =>
-            !Object.prototype
-              .hasOwnProperty
-              .call(
-                cached,
-                String(
-                  cup.id
-                )
-              )
-        );
-
-
-      if (
-        cupsToLoad.length ===
-        0
-      ) {
-        setWinnerMap(
-          cached
-        );
-
-        return;
-      }
-
-
-      setWinnerLoading(
-        true
-      );
-
-
-      const nextCache = {
-        ...cached,
-      };
-
-
-      let currentIndex =
-        0;
-
-
-      const worker =
-        async () => {
-          while (
-            currentIndex <
-            cupsToLoad.length
-          ) {
-            const index =
-              currentIndex++;
-
-
-            const cup =
-              cupsToLoad[
-                index
-              ];
-
-
-            try {
-              const stats =
-                await fetchWinnerStatsFromDB(
-                  cup.id
-                );
-
-
-              if (
-                !Array.isArray(
-                  stats
-                ) ||
-                stats.length ===
-                  0
-              ) {
-                nextCache[
-                  String(
-                    cup.id
-                  )
-                ] = null;
-
-                continue;
-              }
-
-
-              const sorted =
-                [...stats]
-                  .map(
-                    (
-                      row,
-                      originIndex
-                    ) => ({
-                      ...row,
-                      _originIndex:
-                        originIndex,
-                    })
-                  )
-                  .sort(
-                    (a, b) => {
-                      const winDiff =
-                        Number(
-                          b
-                            ?.win_count ||
-                            0
-                        ) -
-                        Number(
-                          a
-                            ?.win_count ||
-                            0
-                        );
-
-
-                      if (
-                        winDiff !==
-                        0
-                      ) {
-                        return winDiff;
-                      }
-
-
-                      const matchDiff =
-                        Number(
-                          b
-                            ?.match_wins ||
-                            0
-                        ) -
-                        Number(
-                          a
-                            ?.match_wins ||
-                            0
-                        );
-
-
-                      if (
-                        matchDiff !==
-                        0
-                      ) {
-                        return matchDiff;
-                      }
-
-
-                      return (
-                        a._originIndex -
-                        b._originIndex
-                      );
-                    }
-                  );
-
-
-              const winnerId =
-                sorted[0]
-                  ?.candidate_id;
-
-
-              const winner =
-                Array.isArray(
-                  cup.data
-                )
-                  ? cup.data.find(
-                      (
-                        candidate
-                      ) =>
-                        String(
-                          candidate
-                            ?.id
-                        ) ===
-                        String(
-                          winnerId
-                        )
-                    ) ||
-                    null
-                  : null;
-
-
-              nextCache[
-                String(
-                  cup.id
-                )
-              ] = winner;
-            } catch (
-              error
-            ) {
-              console.error(
-                "티어표 우승자 썸네일 조회 실패:",
-                cup.id,
-                error
-              );
-
-
-              nextCache[
-                String(
-                  cup.id
-                )
-              ] = null;
-            }
-          }
-        };
-
-
-      try {
-        const workerCount =
-          Math.min(
-            6,
-            cupsToLoad.length
-          );
-
-
-        await Promise.all(
-          Array.from(
-            {
-              length:
-                workerCount,
-            },
-            () => worker()
-          )
-        );
-
-
-        if (!cancelled) {
-          writeWinnerCache(
-            nextCache
-          );
-
-
-          setWinnerMap(
-            nextCache
-          );
-        }
-      } finally {
-        if (!cancelled) {
-          setWinnerLoading(
-            false
-          );
-        }
-      }
-    }
-
-
-    loadWinners();
-
-
-    return () => {
-      cancelled =
-        true;
-    };
-  }, [
-    id,
-    worldcupList,
-  ]);
+    setWinnerMap(readWinnerCache());
+    setWinnerLoading(false);
+  }, [id]);
 
 
 const addLocalFiles =
@@ -3235,7 +2971,7 @@ const handleDragEndItem =
   const renderMobilePlacementPanel =
     useCallback(
       (styleOverride = {}) => {
-        if (!isMobile || !selectedMobileItem) {
+        if (!selectedMobileItem) {
           return null;
         }
 
@@ -3254,7 +2990,7 @@ const handleDragEndItem =
               style={{
                 marginBottom: 9,
                 color: "#202534",
-                fontSize: 15,
+                fontSize: 19,
                 fontWeight: 900,
               }}
             >
@@ -3264,7 +3000,7 @@ const handleDragEndItem =
             <div
               style={{
                 display: "flex",
-                gap: 6,
+                gap: 10,
                 justifyContent: "center",
                 flexWrap: "wrap",
               }}
@@ -3275,13 +3011,14 @@ const handleDragEndItem =
                   type="button"
                   onClick={() => handleMobilePlacement(tier)}
                   style={{
-                    minWidth: 44,
-                    height: 38,
+                    minWidth: 60,
+                    height: 50,
                     borderRadius: 8,
                     border: `1px solid ${TIER_COLORS[tier]}`,
                     background: "#ffffff",
                     color: "#202534",
                     fontWeight: 900,
+                    fontSize: 19,
                   }}
                 >
                   {tier}
@@ -3293,13 +3030,14 @@ const handleDragEndItem =
                   type="button"
                   onClick={() => handleMobilePlacement("ONE_PICK")}
                   style={{
-                    height: 38,
+                    height: 50,
                     padding: "0 10px",
                     borderRadius: 8,
                     border: "1px solid #19bfff",
                     background: "#ffffff",
                     color: "#202534",
                     fontWeight: 900,
+                    fontSize: 19,
                   }}
                 >
                   ⭐ {text.onePickTitle}
@@ -3311,13 +3049,14 @@ const handleDragEndItem =
                   type="button"
                   onClick={() => handleMobilePlacement("UNRANKED")}
                   style={{
-                    height: 38,
+                    height: 50,
                     padding: "0 10px",
                     borderRadius: 8,
                     border: "1px solid #dde2ea",
                     background: "#ffffff",
                     color: "#202534",
                     fontWeight: 900,
+                    fontSize: 19,
                   }}
                 >
                   {text.moveUnranked}
@@ -5361,7 +5100,8 @@ if (editingTierListId) {
                 color: "#111827",
               }}
             >
-              <label htmlFor="tier-original-title" style={{ display: "block", fontWeight: 800, marginBottom: 8 }}>
+              
+<label htmlFor="tier-original-title" style={{ display: "block", fontWeight: 800, marginBottom: 8 }}>
                 {originalTitleLabel(lang, originalContentLanguage)}
               </label>
               <input
@@ -5386,278 +5126,7 @@ if (editingTierListId) {
                   outline: "none",
                 }}
               />
-
-              <label htmlFor="tier-description" style={{ display: "block", fontWeight: 800, marginBottom: 8 }}>
-                {descriptionCopy[0]}
-              </label>
-              <textarea
-                id="tier-description"
-                value={tierListDescription}
-                onChange={event => setTierListDescription(event.target.value)}
-                placeholder={descriptionCopy[1]}
-                rows={4}
-                maxLength={2000}
-                style={{ width: "100%", minHeight: 110, boxSizing: "border-box", padding: "12px 14px", borderRadius: 10, border: "1px solid #cbd5e1", background: "#fff", color: "#111827", font: "inherit", fontSize: 16, lineHeight: 1.6, resize: "vertical" }}
-              />
-              <p style={{ margin: "6px 0 18px", color: "#596579", fontSize: 13, lineHeight: 1.5 }}>{descriptionCopy[2]}</p>
-
-
-              <details className="tier-other-languages" style={{ marginBottom: 18 }}>
-                <summary style={{ cursor: "pointer", padding: "12px 14px", marginBottom: 12, border: "2px solid #2563EB", borderRadius: 9, color: "#1D4ED8", background: "#fff", fontWeight: 800 }}>
-                  {(tierUiCopy[lang] || tierUiCopy.en)[0]}
-                </summary>
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: 10,
-                  marginTop: -4,
-                  marginBottom: 14,
-                }}
-              >
-                {titleTranslationLanguages.filter((code) => code !== originalContentLanguage).map((translationLang) => (
-                  <div
-                    key={translationLang}
-                    style={{
-                      display: "grid",
-                      gridTemplateColumns: isMobile
-                        ? "112px minmax(0,1fr) 42px"
-                        : "150px minmax(0,1fr) 52px",
-                      gap: 8,
-                      alignItems: "center",
-                    }}
-                  >
-                    <select
-                      value={translationLang}
-                      onChange={(e) =>
-                        changeTitleTranslationLanguage(translationLang, e.target.value)
-                      }
-                      style={{
-                        width: "100%",
-                        height: 42,
-                        borderRadius: 8,
-                        border: "1px solid #cbd5e1",
-                        background: "#fff",
-                        color: "#111827",
-                        padding: "0 8px",
-                        fontWeight: 800,
-                      }}
-                    >
-                      {TITLE_TRANSLATION_LANGUAGES.map((item) => (
-                        <option
-                          key={item.code}
-                          value={item.code}
-                          disabled={
-                            item.code === originalContentLanguage ||
-                            item.code !== translationLang &&
-                            titleTranslationLanguages.includes(item.code)
-                          }
-                        >
-                          {item.label}
-                        </option>
-                      ))}
-                    </select>
-
-                    <input
-                      value={titleTranslations[translationLang] || ""}
-                      onChange={(e) =>
-                        setTitleTranslations((prev) => ({
-                          ...prev,
-                          [translationLang]: e.target.value,
-                        }))
-                      }
-                      placeholder={titleTranslationCopy.placeholder}
-                      maxLength={80}
-                      style={{
-                        width: "100%",
-                        height: 42,
-                        boxSizing: "border-box",
-                        padding: "0 12px",
-                        borderRadius: 8,
-                        border: "1px solid #cbd5e1",
-                        background: "#fff",
-                        color: "#111827",
-                        fontSize: isMobile ? 15 : 16,
-                        fontWeight: 700,
-                        outline: "none",
-                      }}
-                    />
-
-                    <button
-                      type="button"
-                      onClick={() => removeTitleTranslation(translationLang)}
-                      title={titleTranslationCopy.remove}
-                      aria-label={titleTranslationCopy.remove}
-                      style={{
-                        height: 42,
-                        borderRadius: 8,
-                        border: "1px solid #d7dce4",
-                        background: "#fff",
-                        color: "#6b7280",
-                        cursor: "pointer",
-                        fontSize: 20,
-                        fontWeight: 900,
-                      }}
-                    >
-                      ×
-                    </button>
-                  </div>
-                ))}
-
-                {titleTranslationLanguages.length < TITLE_TRANSLATION_LANGUAGES.length - 1 && (
-                  <button
-                    type="button"
-                    onClick={addTitleTranslation}
-                    style={{
-                      alignSelf: "flex-start",
-                      minHeight: 40,
-                      padding: "0 12px",
-                      borderRadius: 8,
-                      border: "1px solid #2563EB",
-                      background: "#fff",
-                      color: "#1D4ED8",
-                      cursor: "pointer",
-                      fontSize: isMobile ? 14 : 15,
-                      fontWeight: 900,
-                    }}
-                  >
-                    {titleTranslationCopy.add}
-                  </button>
-                )}
-              </div>
-
-              </details>
-
-              <div
-                style={{
-                  width: "100%",
-                  display: "grid",
-                  gridTemplateColumns: isMobile ? "1fr" : "1.25fr 0.85fr",
-                  gap: isMobile ? 12 : 14,
-                  alignItems: "stretch",
-                }}
-              >
-                <TierTagEditor
-                  value={tierLabels._tags}
-                  onChange={(tags) =>
-                    setTierLabels((prev) => ({
-                      ...prev,
-                      _tags: tags,
-                    }))
-                  }
-                />
-
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: 10,
-                    padding: "12px 14px 14px",
-                    boxSizing: "border-box",
-                    border: "1px solid #d7dce4",
-                    borderRadius: 12,
-                    background: "#f8fafc",
-                  }}
-                >
-                  <div>
-                    <div
-                      style={{
-                        color: "#374151",
-                        fontSize: 16,
-                        fontWeight: 800,
-                        marginBottom: 6,
-                      }}
-                    >
-                      {text.sourcePresetLabel}
-                    </div>
-
-                    {sourceWorldcupId ? (
-                      <div
-                        style={{
-                          minHeight: 42,
-                          padding: "10px 12px",
-                          boxSizing: "border-box",
-                          border: "1px solid #cbd5e1",
-                          borderRadius: 8,
-                          background: "#fff",
-                          color: "#111827",
-                          fontSize: 16,
-                          fontWeight: 700,
-                          lineHeight: 1.35,
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          textAlign: "center",
-                        }}
-                      >
-                        {sourcePresetName}
-                      </div>
-                    ) : (
-                      <input
-                        type="text"
-                        value={customPresetName}
-                        onChange={(e) => setCustomPresetName(e.target.value)}
-                        placeholder={text.customPresetPlaceholder}
-                        maxLength={60}
-                        style={{
-                          width: "100%",
-                          height: 42,
-                          padding: "0 12px",
-                          boxSizing: "border-box",
-                          border: "1px solid #cbd5e1",
-                          borderRadius: 8,
-                          background: "#fff",
-                          color: "#111827",
-                          fontSize: 16,
-                          fontWeight: 700,
-                          textAlign: "center",
-                          outline: "none",
-                        }}
-                      />
-                    )}
-                  </div>
-
-                  <div>
-                    <div
-                      style={{
-                        color: "#374151",
-                        fontSize: 16,
-                        fontWeight: 800,
-                        marginBottom: 6,
-                      }}
-                    >
-                      {text.categoryLabel}
-                    </div>
-
-                    <select
-                      value={selectedCategory}
-                      onChange={(e) => setSelectedCategory(e.target.value)}
-                      disabled={saving}
-                      style={{
-                        width: "100%",
-                        height: 42,
-                        padding: "0 12px",
-                        borderRadius: 8,
-                        border: "1px solid #cbd5e1",
-                        background: "#fff",
-                        color: "#111827",
-                        fontSize: 16,
-                        fontWeight: 700,
-                        outline: "none",
-                      }}
-                    >
-                      {CATEGORY_OPTIONS.map((option) => (
-                        <option key={option.value} value={option.value}>
-                          {t(`tierList.categories.${option.value}`)}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
-              </div>
-
-
-
+              <p style={{textAlign:'center',color:'#6650d8'}}>{lang==='ko'?`마음에 드는 후보만 배치해도 돼요 · ${placedCount}개 배치됨`:'Rank only the candidates you want. Click a candidate, then choose a tier.'}</p>
               <div
                 style={{
                   marginTop: 8,
@@ -5891,7 +5360,7 @@ if (editingTierListId) {
                       : text.saving
                     : editingTierListId
                       ? text.saveChanges
-                      : text.publish}
+                      : (lang==='ko'?'내 티어표 완성하기':'Finish my tier list')}
                 </button>
               </div>
               {saveError && (
@@ -6501,7 +5970,282 @@ objectPosition: "center",
                 gap: 9,
               }}
             >
-              <button
+              <details><summary style={{cursor:'pointer',fontWeight:800,padding:12}}>{lang==='ko'?'추가 설정 · 제목·설명·번역·태그':'Title, description & tags (optional)'}</summary>
+              
+
+              <label htmlFor="tier-description" style={{ display: "block", fontWeight: 800, marginBottom: 8 }}>
+                {descriptionCopy[0]}
+              </label>
+              <textarea
+                id="tier-description"
+                value={tierListDescription}
+                onChange={event => setTierListDescription(event.target.value)}
+                placeholder={descriptionCopy[1]}
+                rows={4}
+                maxLength={2000}
+                style={{ width: "100%", minHeight: 110, boxSizing: "border-box", padding: "12px 14px", borderRadius: 10, border: "1px solid #cbd5e1", background: "#fff", color: "#111827", font: "inherit", fontSize: 16, lineHeight: 1.6, resize: "vertical" }}
+              />
+              <p style={{ margin: "6px 0 18px", color: "#596579", fontSize: 13, lineHeight: 1.5 }}>{descriptionCopy[2]}</p>
+
+
+              <details className="tier-other-languages" style={{ marginBottom: 18 }}>
+                <summary style={{ cursor: "pointer", padding: "12px 14px", marginBottom: 12, border: "2px solid #2563EB", borderRadius: 9, color: "#1D4ED8", background: "#fff", fontWeight: 800 }}>
+                  {(tierUiCopy[lang] || tierUiCopy.en)[0]}
+                </summary>
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 10,
+                  marginTop: -4,
+                  marginBottom: 14,
+                }}
+              >
+                {titleTranslationLanguages.filter((code) => code !== originalContentLanguage).map((translationLang) => (
+                  <div
+                    key={translationLang}
+                    style={{
+                      display: "grid",
+                      gridTemplateColumns: isMobile
+                        ? "112px minmax(0,1fr) 42px"
+                        : "150px minmax(0,1fr) 52px",
+                      gap: 8,
+                      alignItems: "center",
+                    }}
+                  >
+                    <select
+                      value={translationLang}
+                      onChange={(e) =>
+                        changeTitleTranslationLanguage(translationLang, e.target.value)
+                      }
+                      style={{
+                        width: "100%",
+                        height: 42,
+                        borderRadius: 8,
+                        border: "1px solid #cbd5e1",
+                        background: "#fff",
+                        color: "#111827",
+                        padding: "0 8px",
+                        fontWeight: 800,
+                      }}
+                    >
+                      {TITLE_TRANSLATION_LANGUAGES.map((item) => (
+                        <option
+                          key={item.code}
+                          value={item.code}
+                          disabled={
+                            item.code === originalContentLanguage ||
+                            item.code !== translationLang &&
+                            titleTranslationLanguages.includes(item.code)
+                          }
+                        >
+                          {item.label}
+                        </option>
+                      ))}
+                    </select>
+
+                    <input
+                      value={titleTranslations[translationLang] || ""}
+                      onChange={(e) =>
+                        setTitleTranslations((prev) => ({
+                          ...prev,
+                          [translationLang]: e.target.value,
+                        }))
+                      }
+                      placeholder={titleTranslationCopy.placeholder}
+                      maxLength={80}
+                      style={{
+                        width: "100%",
+                        height: 42,
+                        boxSizing: "border-box",
+                        padding: "0 12px",
+                        borderRadius: 8,
+                        border: "1px solid #cbd5e1",
+                        background: "#fff",
+                        color: "#111827",
+                        fontSize: isMobile ? 15 : 16,
+                        fontWeight: 700,
+                        outline: "none",
+                      }}
+                    />
+
+                    <button
+                      type="button"
+                      onClick={() => removeTitleTranslation(translationLang)}
+                      title={titleTranslationCopy.remove}
+                      aria-label={titleTranslationCopy.remove}
+                      style={{
+                        height: 42,
+                        borderRadius: 8,
+                        border: "1px solid #d7dce4",
+                        background: "#fff",
+                        color: "#6b7280",
+                        cursor: "pointer",
+                        fontSize: 20,
+                        fontWeight: 900,
+                      }}
+                    >
+                      ×
+                    </button>
+                  </div>
+                ))}
+
+                {titleTranslationLanguages.length < TITLE_TRANSLATION_LANGUAGES.length - 1 && (
+                  <button
+                    type="button"
+                    onClick={addTitleTranslation}
+                    style={{
+                      alignSelf: "flex-start",
+                      minHeight: 40,
+                      padding: "0 12px",
+                      borderRadius: 8,
+                      border: "1px solid #2563EB",
+                      background: "#fff",
+                      color: "#1D4ED8",
+                      cursor: "pointer",
+                      fontSize: isMobile ? 14 : 15,
+                      fontWeight: 900,
+                    }}
+                  >
+                    {titleTranslationCopy.add}
+                  </button>
+                )}
+              </div>
+
+              </details>
+
+              <div
+                style={{
+                  width: "100%",
+                  display: "grid",
+                  gridTemplateColumns: isMobile ? "1fr" : "1.25fr 0.85fr",
+                  gap: isMobile ? 12 : 14,
+                  alignItems: "stretch",
+                }}
+              >
+                <TierTagEditor
+                  value={tierLabels._tags}
+                  onChange={(tags) =>
+                    setTierLabels((prev) => ({
+                      ...prev,
+                      _tags: tags,
+                    }))
+                  }
+                />
+
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 10,
+                    padding: "12px 14px 14px",
+                    boxSizing: "border-box",
+                    border: "1px solid #d7dce4",
+                    borderRadius: 12,
+                    background: "#f8fafc",
+                  }}
+                >
+                  <div>
+                    <div
+                      style={{
+                        color: "#374151",
+                        fontSize: 16,
+                        fontWeight: 800,
+                        marginBottom: 6,
+                      }}
+                    >
+                      {text.sourcePresetLabel}
+                    </div>
+
+                    {sourceWorldcupId ? (
+                      <div
+                        style={{
+                          minHeight: 42,
+                          padding: "10px 12px",
+                          boxSizing: "border-box",
+                          border: "1px solid #cbd5e1",
+                          borderRadius: 8,
+                          background: "#fff",
+                          color: "#111827",
+                          fontSize: 16,
+                          fontWeight: 700,
+                          lineHeight: 1.35,
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          textAlign: "center",
+                        }}
+                      >
+                        {sourcePresetName}
+                      </div>
+                    ) : (
+                      <input
+                        type="text"
+                        value={customPresetName}
+                        onChange={(e) => setCustomPresetName(e.target.value)}
+                        placeholder={text.customPresetPlaceholder}
+                        maxLength={60}
+                        style={{
+                          width: "100%",
+                          height: 42,
+                          padding: "0 12px",
+                          boxSizing: "border-box",
+                          border: "1px solid #cbd5e1",
+                          borderRadius: 8,
+                          background: "#fff",
+                          color: "#111827",
+                          fontSize: 16,
+                          fontWeight: 700,
+                          textAlign: "center",
+                          outline: "none",
+                        }}
+                      />
+                    )}
+                  </div>
+
+                  <div>
+                    <div
+                      style={{
+                        color: "#374151",
+                        fontSize: 16,
+                        fontWeight: 800,
+                        marginBottom: 6,
+                      }}
+                    >
+                      {text.categoryLabel}
+                    </div>
+
+                    <select
+                      value={selectedCategory}
+                      onChange={(e) => setSelectedCategory(e.target.value)}
+                      disabled={saving}
+                      style={{
+                        width: "100%",
+                        height: 42,
+                        padding: "0 12px",
+                        borderRadius: 8,
+                        border: "1px solid #cbd5e1",
+                        background: "#fff",
+                        color: "#111827",
+                        fontSize: 16,
+                        fontWeight: 700,
+                        outline: "none",
+                      }}
+                    >
+                      {CATEGORY_OPTIONS.map((option) => (
+                        <option key={option.value} value={option.value}>
+                          {t(`tierList.categories.${option.value}`)}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+
+
+              </details>
+<button
                 type="button"
                 onClick={saveTierList}
                 disabled={saving}
@@ -6526,7 +6270,7 @@ objectPosition: "center",
                     : text.saving
                   : editingTierListId
                     ? text.saveChanges
-                    : text.publish}
+                    : (lang==='ko'?'내 티어표 완성하기':'Finish my tier list')}
               </button>
 
               {saveError && (

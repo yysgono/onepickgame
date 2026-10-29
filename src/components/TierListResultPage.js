@@ -2203,10 +2203,13 @@ ctx.font =
 
       try {
 let guestPassword = null;
-if (!isAdmin && isGuestPost) {
+const {data:publisher,error:permissionError}=await supabase.rpc('can_publish_site_content');
+if(permissionError) throw permissionError;
+const canModerate=publisher===true;
+if (!canModerate && isGuestPost) {
  guestPassword = window.prompt(text.guestPasswordPrompt) || '';
  if (!guestPassword) return;
-} else if (!isAdmin && !isMemberOwner) return;
+} else if (!canModerate && !isMemberOwner) return;
 await trashContent('tier-list',tierList.id,guestPassword);
 
         navigate(`/${lang}/tier-list`);
@@ -3028,7 +3031,7 @@ padding: isMobile
                     boxShadow: "0 4px 16px rgba(25,32,52,0.07)",
                   }}
                 >
-                  {detailActionLabels.cloneTierList}
+                  {lang==='ko'?'내 취향대로 순위 매기기':lang==='en'?'Rank them your way':detailActionLabels.cloneTierList}<small style={{display:'block',fontSize:12,marginTop:5}}>{lang==='ko'?'같은 후보로 바로 시작해요':lang==='en'?'Start with the same candidates':''}</small>
                 </button>
 {canBrowsePreset && (<NavigationLink
                     appearance="button"
@@ -3821,3 +3824,4 @@ padding: isMobile
 
 
 export default TierListResultPage;
+
