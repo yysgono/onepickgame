@@ -38,5 +38,15 @@
     "slot": "lol",
     "mode": "pinball",
     "index": 7
+  },
+  "travel-korea": {
+    "slot": "travel_korea",
+    "mode": "pinball",
+    "index": 8
+  },
+  "travel-global": {
+    "slot": "travel_global",
+    "mode": "pinball",
+    "index": 9
   }
 }

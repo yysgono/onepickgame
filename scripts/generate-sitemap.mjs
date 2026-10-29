@@ -285,7 +285,7 @@ export function generateLanguageSitemap(
   // Random Pick: stable public tool URLs; operator templates use the tool canonical.
   for (const mode of ["", "wheel", "lotto", "pinball", "ladder", "boxes", "cards", "order", "dice", "teams"]) {
     xml += makeUrlEntry({loc: `${BASE_URL}/${lang}/random-pick${mode ? "/" + mode : ""}`, changefreq: "monthly", priority: "0.7"});
-    if (!mode) for (const topic of ["delivery-food", "snacks", "dessert", "movies", "anime", "countries", "lotto645", "lol-champions"]) xml += makeUrlEntry({loc: `${BASE_URL}/${lang}/random-pick/${topic}`,changefreq:"weekly",priority:"0.7"});
+    if (!mode) for (const topic of ["delivery-food", "snacks", "dessert", "movies", "anime", "countries", "lotto645", "lol-champions", "travel-korea", "travel-global"]) xml += makeUrlEntry({loc: `${BASE_URL}/${lang}/random-pick/${topic}`,changefreq:"weekly",priority:"0.7"});
   }
 
   // 티어표 목록

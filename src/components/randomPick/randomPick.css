@@ -214,3 +214,7 @@
 @media(max-width:720px){.rp-home-recommendations{min-height:0}.rp-home-recommendations .rp-recommendation-links{flex-basis:auto;grid-template-rows:repeat(8,minmax(62px,auto))}.rp-home-recommendations .rp-recommendation-links button strong{font-size:22px}}
 
 .rp-home-recommendations{border-color:#078657}.rp-home-recommendations:hover{box-shadow:0 0 0 2px #078657}.rp-recommendation-links button{border:1px solid transparent}.rp-recommendation-links button:hover{border-color:#078657}
+
+/* v140: ten recommendations */
+.rp-home-recommendations .rp-recommendation-links{grid-template-rows:repeat(10,minmax(60px,1fr))}
+@media(max-width:720px){.rp-home-recommendations .rp-recommendation-links{grid-template-rows:repeat(10,minmax(62px,auto))}}

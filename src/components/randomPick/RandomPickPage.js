@@ -78,7 +78,7 @@ function RandomPickContent({user}) {
  useEffect(()=>{if(mode==='lotto'&&(topic?.slot==='lottery'||new URLSearchParams(location.search).get('quick')==='lotto645')){setRows(numericCandidates(1,45));setPickCount(6);setRangeFrom(1);setRangeTo(45);setTitle(lang==='ko'?'로또 번호 추출기':'Lotto 6/45');setSourceCupId(null);}},[mode,location.search,lang]);
  useEffect(()=>{
  const key=topic?.slot||new URLSearchParams(location.search).get('recommend');
- if(!['pinball','wheel'].includes(mode)||!['food','snacks','delivery','movie','anime','country','lol'].includes(key))return;
+ if(!['pinball','wheel'].includes(mode)||!['food','snacks','delivery','movie','anime','country','lol','travel_korea','travel_global'].includes(key))return;
  let live=true;setLoadingTemplate(true);
  supabase.from('random_home_presets').select('candidates,source_cup_id').eq('slot',key).single().then(({data,error})=>{
  if(!live)return;if(error||!data?.candidates?.length){setMessage(copy.error);return;}

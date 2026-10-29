@@ -7,7 +7,9 @@
     "애니 랜덤 추천",
     "나라 랜덤 뽑기",
     "로또 번호 추출기",
-    "롤 랜덤 챔피언 뽑기"
+    "롤 랜덤 챔피언 뽑기",
+    "랜덤 여행지 뽑기 국내",
+    "랜덤 여행지 뽑기 해외"
   ],
   "en": [
     "Delivery food ideas",
@@ -17,7 +19,9 @@
     "Random anime picker",
     "Random country picker",
     "Lotto number generator",
-    "Random LoL champion"
+    "Random LoL champion",
+    "Random travel destination · Korea",
+    "Random travel destination · Global"
   ],
   "ja": [
     "出前メニューのおすすめ",
@@ -27,7 +31,9 @@
     "アニメランダムおすすめ",
     "国ランダム抽選",
     "ロト番号ジェネレーター",
-    "LoLチャンピオンランダム抽選"
+    "LoLチャンピオンランダム抽選",
+    "旅行先ランダム抽選・韓国",
+    "旅行先ランダム抽選・グローバル"
   ],
   "zh": [
     "外卖菜单推荐",
@@ -37,7 +43,9 @@
     "随机动漫推荐",
     "随机国家抽选",
     "乐透号码生成器",
-    "英雄联盟随机英雄"
+    "英雄联盟随机英雄",
+    "随机旅行目的地·韩国",
+    "随机旅行目的地·全球"
   ],
   "es": [
     "Ideas de comida a domicilio",
@@ -47,7 +55,9 @@
     "Anime al azar",
     "Países al azar",
     "Generador de números de lotería",
-    "Campeón aleatorio de LoL"
+    "Campeón aleatorio de LoL",
+    "Destino de viaje al azar · Corea",
+    "Destino de viaje al azar · Global"
   ],
   "fr": [
     "Idées de repas à livrer",
@@ -57,7 +67,9 @@
     "Anime au hasard",
     "Pays au hasard",
     "Générateur de numéros de loto",
-    "Champion LoL au hasard"
+    "Champion LoL au hasard",
+    "Destination au hasard · Corée",
+    "Destination au hasard · Monde"
   ],
   "vi": [
     "Gợi ý món ăn giao tận nơi",
@@ -67,7 +79,9 @@
     "Gợi ý anime ngẫu nhiên",
     "Chọn quốc gia ngẫu nhiên",
     "Tạo số xổ số",
-    "Chọn tướng LoL ngẫu nhiên"
+    "Chọn tướng LoL ngẫu nhiên",
+    "Chọn điểm du lịch · Hàn Quốc",
+    "Chọn điểm du lịch · Toàn cầu"
   ],
   "de": [
     "Ideen für Lieferessen",
@@ -77,7 +91,9 @@
     "Zufälliger Anime",
     "Zufälliges Land",
     "Lottozahlen-Generator",
-    "Zufälliger LoL-Champion"
+    "Zufälliger LoL-Champion",
+    "Zufälliges Reiseziel · Korea",
+    "Zufälliges Reiseziel · Weltweit"
   ],
   "ru": [
     "Что заказать из еды",
@@ -87,7 +103,9 @@
     "Случайное аниме",
     "Случайная страна",
     "Генератор чисел лото",
-    "Случайный чемпион LoL"
+    "Случайный чемпион LoL",
+    "Случайное направление · Корея",
+    "Случайное направление · Весь мир"
   ],
   "id": [
     "Ide makanan pesan antar",
@@ -97,7 +115,9 @@
     "Rekomendasi anime acak",
     "Pilih negara acak",
     "Generator angka lotre",
-    "Pilih champion LoL acak"
+    "Pilih champion LoL acak",
+    "Tujuan wisata acak · Korea",
+    "Tujuan wisata acak · Global"
   ],
   "pt": [
     "Ideias de comida para entrega",
@@ -107,7 +127,9 @@
     "Anime aleatório",
     "País aleatório",
     "Gerador de números da loteria",
-    "Campeão aleatório de LoL"
+    "Campeão aleatório de LoL",
+    "Destino de viagem aleatório · Coreia",
+    "Destino de viagem aleatório · Global"
   ],
   "hi": [
     "डिलीवरी खाने के सुझाव",
@@ -117,7 +139,9 @@
     "रैंडम ऐनिमे सुझाव",
     "रैंडम देश चुनें",
     "लॉटरी नंबर जनरेटर",
-    "रैंडम LoL चैंपियन चुनें"
+    "रैंडम LoL चैंपियन चुनें",
+    "रैंडम यात्रा स्थल · कोरिया",
+    "रैंडम यात्रा स्थल · वैश्विक"
   ],
   "tr": [
     "Yemek siparişi önerileri",
@@ -127,7 +151,9 @@
     "Rastgele anime önerisi",
     "Rastgele ülke seç",
     "Loto numarası üretici",
-    "Rastgele LoL şampiyonu"
+    "Rastgele LoL şampiyonu",
+    "Rastgele seyahat rotası · Kore",
+    "Rastgele seyahat rotası · Dünya"
   ],
   "th": [
     "แนะนำเมนูอาหารเดลิเวอรี",
@@ -137,7 +163,9 @@
     "สุ่มแนะนำอนิเมะ",
     "สุ่มเลือกประเทศ",
     "เครื่องสุ่มเลขล็อตโต้",
-    "สุ่มแชมเปียน LoL"
+    "สุ่มแชมเปียน LoL",
+    "สุ่มสถานที่ท่องเที่ยว · เกาหลี",
+    "สุ่มสถานที่ท่องเที่ยว · ทั่วโลก"
   ],
   "ar": [
     "اقتراحات وجبات التوصيل",
@@ -147,7 +175,9 @@
     "اقتراح أنمي عشوائي",
     "اختيار بلد عشوائياً",
     "مولّد أرقام اللوتو",
-    "اختيار بطل LoL عشوائياً"
+    "اختيار بطل LoL عشوائياً",
+    "وجهة سفر عشوائية · كوريا",
+    "وجهة سفر عشوائية · العالم"
   ],
   "bn": [
     "ডেলিভারি খাবারের পরামর্শ",
@@ -157,6 +187,8 @@
     "এলোমেলো অ্যানিমের পরামর্শ",
     "এলোমেলো দেশ বাছাই",
     "লটারি নম্বর জেনারেটর",
-    "এলোমেলো LoL চ্যাম্পিয়ন বাছাই"
+    "এলোমেলো LoL চ্যাম্পিয়ন বাছাই",
+    "এলোমেলো ভ্রমণ গন্তব্য · কোরিয়া",
+    "এলোমেলো ভ্রমণ গন্তব্য · বিশ্বব্যাপী"
   ]
 }
