@@ -1,7 +1,6 @@
 import NaverAccountLink from "./NaverAccountLink";
 import {getCommunityUi} from './communityUi';
 import headerCommunityCopy from "./headerCommunityCopy.json";
-import NavigationLink from "./NavigationLink";
 import useHeaderLanguage, {rememberHeaderLanguage} from "../utils/useHeaderLanguage";
 import randomPickLabels from "./randomPick/randomPickLabels.json";
 import { Link } from "react-router-dom";
@@ -750,8 +749,8 @@ export default function Header({
                 <NaverAccountLink user={user} />
                 {isAdmin && <Link to={`/${currentLang}/admin-suggestions`}>{ui.inbox}</Link>}
                 {isAdmin && <>
-                  <NavigationLink  to={`/${currentLang}/admin`} appearance="button">{t('dashboard')}</NavigationLink>
-                  <NavigationLink  to={`/${currentLang}/admin-stats`} appearance="button">{t('stats')}</NavigationLink>
+                  <a href={`/${currentLang}/admin`} style={{display:"block",position:"relative",zIndex:1,pointerEvents:"auto",padding:"11px 12px",border:"1px solid #dde2ea",borderRadius:8,color:"#202534",background:"#fff",textAlign:"center",textDecoration:"none"}}>{t('dashboard')}</a>
+                  <a href={`/${currentLang}/admin-stats`} style={{display:"block",position:"relative",zIndex:1,pointerEvents:"auto",padding:"11px 12px",border:"1px solid #dde2ea",borderRadius:8,color:"#202534",background:"#fff",textAlign:"center",textDecoration:"none"}}>{t('stats')}</a>
                   <button type="button" onClick={onBackup}>{t('backupAll')}</button>
                   <button type="button" onClick={()=>inputRef.current?.click()}>{t('restore')}</button>
                 </>}
@@ -1087,5 +1086,6 @@ function HeaderIcon({ name }) {
   };
   return <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.65" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{paths[name]}</svg>;
 }
+
 
 
