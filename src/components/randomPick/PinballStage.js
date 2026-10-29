@@ -1,3 +1,4 @@
+import PinballResults from './PinballResults';
 import React,{useEffect,useRef,useState} from 'react';
 import {makeRace,stepRace,obstacles,startPosition,cameraPosition,WIDTH,FINISH,DT} from './pinballPhysics';
 const COLORS=['#6ee7b7','#7dd3fc','#fcd34d','#fda4af','#c4b5fd','#fdba74'];
@@ -44,6 +45,6 @@ export default function PinballStage({rows,draw,done,fast,onFinish,onError,copy,
   }
   frame=requestAnimationFrame(tick);return()=>{live=false;cancelAnimationFrame(frame);};
  },[draw,done,fast,rows]);
- return <><div className="rp-stage rp-pinball-stage"><canvas ref={canvas} role="img" aria-label={`${copy.modes.pinball} — ${copy.participants}: ${rows.length}`}/></div>{beforeResults}<div className="rp-live-arrivals"><strong>{copy.result} · {arrivals.length} / {rows.length}</strong><ol>{arrivals.map(row=><li key={row.id}>{row.name}</li>)}</ol></div></>;
+ return <><div className="rp-stage rp-pinball-stage"><canvas ref={canvas} role="img" aria-label={`${copy.modes.pinball} — ${copy.participants}: ${rows.length}`}/></div>{beforeResults}<PinballResults key={draw?.token||'ready'} arrivals={arrivals} total={rows.length} copy={copy}/></>;
 }
 
