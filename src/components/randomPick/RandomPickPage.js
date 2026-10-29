@@ -1,3 +1,4 @@
+import {supabase} from '../../utils/supabaseClient';
 import HomeRecommendations,{HOME_DRAFT} from "./HomeRecommendations";
 import {loadPlayCounts,recordModePlay} from "./playCounts";
 import {saveCandidateSet,loadCandidateSet,deleteCandidateSet,rowsFromNames} from "./savedCandidates";
@@ -71,7 +72,18 @@ function RandomPickContent({user}) {
  useEffect(()=>{alive.current=true;return()=>{alive.current=false;};},[]);
  useEffect(()=>{setSetupCount(6);setTeamRules([]);setSourceCupId(null);setRows([]);setNewName('');setBulk('');setTitle('');setGroups(2);setDraw(null);setDone(false);setFast(false);setStop(false);setWeights({});setBoxes({});boxDeck.current=null;setBoxCount(10);setLadderCount(6);setLadderBusy(false);setPickCount(1);setRangeFrom(1);setRangeTo(45);setDiceCount(1);setSettingsOpen(true);lock.current=false;setMessage('');setShowImport(false);setSaving(false);return()=>{if(mode)rememberCandidates(rowsRef.current,sourceCupRef.current);};},[mode]);
  useEffect(()=>{if(mode==='lotto'&&new URLSearchParams(location.search).get('quick')==='lotto645'){setRows(numericCandidates(1,45));setPickCount(6);setRangeFrom(1);setRangeTo(45);setTitle(lang==='ko'?'로또 번호 추출기':'Lotto 6/45');setSourceCupId(null);}},[mode,location.search,lang]);
- useEffect(()=>{let live=true;loadCandidateSet().then(saved=>{if(!live)return;setSavedAvailable(Boolean(saved?.rows.length));setSavedPreview(saved?.rows||[]);setSavedSourceId(saved?.sourceCupId||null);if(mode&&!templateParam&&!presetParam&&!location.hash&&!new URLSearchParams(location.search).has('quick')&&saved){setRows(saved.rows);setSourceCupId(saved.sourceCupId);}
+ useEffect(()=>{
+ const key=new URLSearchParams(location.search).get('recommend');
+ if(mode!=='pinball'||!['food','snacks','delivery','movie','anime','country','lol'].includes(key))return;
+ let live=true;setLoadingTemplate(true);
+ supabase.from('random_home_presets').select('candidates,source_cup_id').eq('slot',key).single().then(({data,error})=>{
+ if(!live)return;if(error||!data?.candidates?.length){setMessage(copy.error);return;}
+ const loaded=normalizeCandidates(data.candidates,'recommend:'+key);setRows(loaded);setSourceCupId(data.source_cup_id||null);setDraw(null);setDone(false);
+ try{sessionStorage.setItem(HOME_DRAFT,JSON.stringify({rows:loaded,sourceCupId:data.source_cup_id||null}));}catch{}
+ }).catch(()=>{if(live)setMessage(copy.error);}).finally(()=>{if(live)setLoadingTemplate(false);});
+ return()=>{live=false};
+ },[mode,location.search,copy.error]);
+ useEffect(()=>{let live=true;loadCandidateSet().then(saved=>{if(!live)return;setSavedAvailable(Boolean(saved?.rows.length));setSavedPreview(saved?.rows||[]);setSavedSourceId(saved?.sourceCupId||null);if(mode&&!templateParam&&!presetParam&&!location.hash&&!new URLSearchParams(location.search).has('quick')&&!new URLSearchParams(location.search).has('recommend')&&saved){setRows(saved.rows);setSourceCupId(saved.sourceCupId);}
 if(!mode&&!homeEditedRef.current){let recent=null;try{recent=JSON.parse(sessionStorage.getItem(HOME_DRAFT)||'null');}catch{}if(recent?.rows){setRows(recent.rows);setHomeNames(recent.rows.map(r=>r.name).join('\n'));setSourceCupId(recent.sourceCupId);homeEditedRef.current=true;}}
 if(!mode&&saved&&!homeEditedRef.current){setRows(saved.rows);setHomeNames(saved.rows.map(row=>row.name).join('\n'));setSourceCupId(saved.sourceCupId);}}).catch(()=>{if(live)setSavedAvailable(false);});return()=>{live=false;};},[mode]);
  useEffect(()=>{if(mode)return;let live=true;loadPlayCounts().then(counts=>{if(live)setPlayCounts(counts);}).catch(()=>{if(live)setPlayCounts(null);});return()=>{live=false;};},[mode]);
