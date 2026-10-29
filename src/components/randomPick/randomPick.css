@@ -218,3 +218,13 @@
 /* v140: ten recommendations */
 .rp-home-recommendations .rp-recommendation-links{grid-template-rows:repeat(10,minmax(60px,1fr))}
 @media(max-width:720px){.rp-home-recommendations .rp-recommendation-links{grid-template-rows:repeat(10,minmax(62px,auto))}}
+
+/* v141 compact recommendation list; do not stretch the candidate editor. */
+.rp-current-home .rp-home-columns{align-items:start}
+.rp-home-recommendations{min-height:0;align-self:start;padding:16px;width:100%;box-sizing:border-box}
+.rp-home-recommendations .rp-recommendation-links{flex:0 0 auto;grid-template-rows:none;grid-auto-rows:auto;gap:3px}
+.rp-home-recommendations .rp-recommendation-links button{height:auto;min-height:46px;padding:9px 6px}
+.rp-home-recommendations .rp-recommendation-links button strong{font-size:18px;line-height:1.4}
+.rp-home-recommendations>details{margin-top:8px}
+.rp-home-recommendations>details>summary{min-height:40px;padding:10px 2px}
+@media(max-width:720px){.rp-home-recommendations .rp-recommendation-links{grid-template-rows:none;grid-auto-rows:auto}.rp-home-recommendations .rp-recommendation-links button{min-height:48px}.rp-home-recommendations .rp-recommendation-links button strong{font-size:18px}}
