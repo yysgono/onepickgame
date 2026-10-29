@@ -1,0 +1,162 @@
+{
+  "ko": [
+    "배달 음식 메뉴 추천",
+    "과자 랜덤 뽑기",
+    "디저트 추천 룰렛",
+    "영화 랜덤 추천",
+    "애니 랜덤 추천",
+    "나라 랜덤 뽑기",
+    "로또 번호 추출기",
+    "롤 랜덤 챔피언 뽑기"
+  ],
+  "en": [
+    "Delivery food ideas",
+    "Random snack picker",
+    "Dessert roulette",
+    "Random movie picker",
+    "Random anime picker",
+    "Random country picker",
+    "Lotto number generator",
+    "Random LoL champion"
+  ],
+  "ja": [
+    "出前メニューのおすすめ",
+    "お菓子ランダム抽選",
+    "デザートルーレット",
+    "映画ランダムおすすめ",
+    "アニメランダムおすすめ",
+    "国ランダム抽選",
+    "ロト番号ジェネレーター",
+    "LoLチャンピオンランダム抽選"
+  ],
+  "zh": [
+    "外卖菜单推荐",
+    "零食随机抽选",
+    "甜点推荐转盘",
+    "随机电影推荐",
+    "随机动漫推荐",
+    "随机国家抽选",
+    "乐透号码生成器",
+    "英雄联盟随机英雄"
+  ],
+  "es": [
+    "Ideas de comida a domicilio",
+    "Selector aleatorio de aperitivos",
+    "Ruleta de postres",
+    "Películas al azar",
+    "Anime al azar",
+    "Países al azar",
+    "Generador de números de lotería",
+    "Campeón aleatorio de LoL"
+  ],
+  "fr": [
+    "Idées de repas à livrer",
+    "Tirage de snacks",
+    "Roulette des desserts",
+    "Film au hasard",
+    "Anime au hasard",
+    "Pays au hasard",
+    "Générateur de numéros de loto",
+    "Champion LoL au hasard"
+  ],
+  "vi": [
+    "Gợi ý món ăn giao tận nơi",
+    "Bốc thăm đồ ăn vặt",
+    "Vòng quay món tráng miệng",
+    "Gợi ý phim ngẫu nhiên",
+    "Gợi ý anime ngẫu nhiên",
+    "Chọn quốc gia ngẫu nhiên",
+    "Tạo số xổ số",
+    "Chọn tướng LoL ngẫu nhiên"
+  ],
+  "de": [
+    "Ideen für Lieferessen",
+    "Zufällige Snackauswahl",
+    "Dessert-Roulette",
+    "Zufälliger Film",
+    "Zufälliger Anime",
+    "Zufälliges Land",
+    "Lottozahlen-Generator",
+    "Zufälliger LoL-Champion"
+  ],
+  "ru": [
+    "Что заказать из еды",
+    "Случайный выбор снеков",
+    "Рулетка десертов",
+    "Случайный фильм",
+    "Случайное аниме",
+    "Случайная страна",
+    "Генератор чисел лото",
+    "Случайный чемпион LoL"
+  ],
+  "id": [
+    "Ide makanan pesan antar",
+    "Pilih camilan acak",
+    "Rolet hidangan penutup",
+    "Rekomendasi film acak",
+    "Rekomendasi anime acak",
+    "Pilih negara acak",
+    "Generator angka lotre",
+    "Pilih champion LoL acak"
+  ],
+  "pt": [
+    "Ideias de comida para entrega",
+    "Sorteio de salgadinhos",
+    "Roleta de sobremesas",
+    "Filme aleatório",
+    "Anime aleatório",
+    "País aleatório",
+    "Gerador de números da loteria",
+    "Campeão aleatório de LoL"
+  ],
+  "hi": [
+    "डिलीवरी खाने के सुझाव",
+    "रैंडम स्नैक चुनें",
+    "मिठाई रूलेट",
+    "रैंडम फ़िल्म सुझाव",
+    "रैंडम ऐनिमे सुझाव",
+    "रैंडम देश चुनें",
+    "लॉटरी नंबर जनरेटर",
+    "रैंडम LoL चैंपियन चुनें"
+  ],
+  "tr": [
+    "Yemek siparişi önerileri",
+    "Rastgele atıştırmalık seç",
+    "Tatlı ruleti",
+    "Rastgele film önerisi",
+    "Rastgele anime önerisi",
+    "Rastgele ülke seç",
+    "Loto numarası üretici",
+    "Rastgele LoL şampiyonu"
+  ],
+  "th": [
+    "แนะนำเมนูอาหารเดลิเวอรี",
+    "สุ่มเลือกขนม",
+    "วงล้อแนะนำของหวาน",
+    "สุ่มแนะนำภาพยนตร์",
+    "สุ่มแนะนำอนิเมะ",
+    "สุ่มเลือกประเทศ",
+    "เครื่องสุ่มเลขล็อตโต้",
+    "สุ่มแชมเปียน LoL"
+  ],
+  "ar": [
+    "اقتراحات وجبات التوصيل",
+    "اختيار وجبة خفيفة عشوائياً",
+    "عجلة اختيار الحلويات",
+    "اقتراح فيلم عشوائي",
+    "اقتراح أنمي عشوائي",
+    "اختيار بلد عشوائياً",
+    "مولّد أرقام اللوتو",
+    "اختيار بطل LoL عشوائياً"
+  ],
+  "bn": [
+    "ডেলিভারি খাবারের পরামর্শ",
+    "এলোমেলো স্ন্যাকস বাছাই",
+    "ডেজার্ট রুলেট",
+    "এলোমেলো সিনেমার পরামর্শ",
+    "এলোমেলো অ্যানিমের পরামর্শ",
+    "এলোমেলো দেশ বাছাই",
+    "লটারি নম্বর জেনারেটর",
+    "এলোমেলো LoL চ্যাম্পিয়ন বাছাই"
+  ]
+}

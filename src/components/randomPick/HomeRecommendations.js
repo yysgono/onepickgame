@@ -1,3 +1,4 @@
+import homeRecommendationLabels from './homeRecommendationLabels.json';
 import React,{useEffect,useState} from 'react';
 import {useNavigate} from 'react-router-dom';
 import {supabase} from '../../utils/supabaseClient';
@@ -5,7 +6,7 @@ export const HOME_DRAFT='onepick.random.homeDraft.v130';
 export default function HomeRecommendations({lang,operator,getDraft}){
  const nav=useNavigate(),ko=lang==='ko';const [items,setItems]=useState({}),[busy,setBusy]=useState(false),[message,setMessage]=useState(''),[slot,setSlot]=useState('food');
 
- const slots=['food','snacks','delivery','movie','anime','country','lottery','lol'];const labels=ko?['배달 음식 메뉴 추천','과자 랜덤 뽑기','디저트 추천 룰렛','영화 랜덤 추천','애니 랜덤 추천','나라 랜덤 뽑기','로또 번호 추출기','롤 랜덤 챔피언 뽑기']:['Food recommendations','Random snacks','Delivery food roulette','Random movies','Random anime','Random countries','Lotto number generator','Random LoL champion'];
+ const slots=['food','snacks','delivery','movie','anime','country','lottery','lol'];const labels=homeRecommendationLabels[lang]||homeRecommendationLabels.en;
  useEffect(()=>{let live=true;supabase.from('random_home_presets').select('slot,candidates,source_cup_id').then(({data,error})=>{if(!live)return;if(error){setMessage(ko?'추천 후보를 준비 중입니다.':'Recommendations are being prepared.');return;}setItems(Object.fromEntries((data||[]).map(r=>[r.slot,r])));});return()=>{live=false};},[ko]);
  async function start(key){if(busy)return;if(key==='lottery'){nav(`/${lang}/random-pick/lotto?quick=lotto645`);return;}const item=items[key];if(!item?.candidates?.length){setMessage(ko?'아직 후보가 등록되지 않았습니다.':'No candidates have been saved yet.');return;}setBusy(true);try{const draft={rows:item.candidates,sourceCupId:item.source_cup_id};sessionStorage.setItem(HOME_DRAFT,JSON.stringify(draft));nav(`/${lang}/random-pick/${key==='delivery'?'wheel':'pinball'}?recommend=${encodeURIComponent(key)}`);}catch{setMessage(ko?'후보를 열지 못했습니다. 다시 시도해 주세요.':'Unable to open candidates. Please retry.');}finally{setBusy(false);}}
  async function save(){if(busy)return;const draft=getDraft();if(draft.rows.length<2){setMessage(ko?'후보를 2개 이상 입력하세요.':'Enter at least two candidates.');return;}if(!window.confirm(ko?'방문자 모두가 사용하는 추천 후보를 변경할까요?':'Replace this public recommendation?'))return;setBusy(true);try{const {error}=await supabase.from('random_home_presets').update({candidates:draft.rows,source_cup_id:draft.sourceCupId||null,updated_at:new Date().toISOString()}).eq('slot',slot);if(error)throw error;setItems(old=>({...old,[slot]:{slot,candidates:draft.rows,source_cup_id:draft.sourceCupId}}));setMessage(ko?'공용 추천 후보를 저장했습니다.':'Public recommendation saved.');}catch{setMessage(ko?'저장 실패: 운영자 권한과 SQL 적용을 확인하세요.':'Save failed. Check permissions and SQL setup.');}finally{setBusy(false);}}
