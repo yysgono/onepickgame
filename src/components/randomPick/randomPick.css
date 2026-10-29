@@ -228,3 +228,12 @@
 .rp-home-recommendations>details{margin-top:8px}
 .rp-home-recommendations>details>summary{min-height:40px;padding:10px 2px}
 @media(max-width:720px){.rp-home-recommendations .rp-recommendation-links{grid-template-rows:none;grid-auto-rows:auto}.rp-home-recommendations .rp-recommendation-links button{min-height:48px}.rp-home-recommendations .rp-recommendation-links button strong{font-size:18px}}
+
+/* v142: match both desktop panels without imposing an oversized fixed height. */
+@media(min-width:721px){
+ .rp-current-home .rp-home-columns{align-items:stretch}
+ .rp-current-home .rp-home-recommendations{align-self:stretch;min-height:0;display:flex;flex-direction:column}
+ .rp-current-home .rp-home-recommendations .rp-recommendation-links{flex:1 1 auto;grid-template-rows:repeat(10,minmax(46px,1fr));grid-auto-rows:auto;gap:3px}
+ .rp-current-home .rp-home-recommendations .rp-recommendation-links button{height:100%;min-height:46px}
+ .rp-current-home .rp-home-recommendations>details{flex:0 0 auto;margin-top:8px}
+}
