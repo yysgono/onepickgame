@@ -180,3 +180,17 @@
   color: #fff;
 }
 /* END onepick-random-home-v66 */
+
+
+/* v130 home panels */
+.rp-current-home .rp-home-columns{display:grid;grid-template-columns:minmax(240px,.8fr) minmax(0,1.2fr);gap:20px;align-items:stretch;margin:18px auto 24px;max-width:1100px}
+.rp-current-home .rp-home-candidates{margin:0!important;width:100%;max-width:none;box-sizing:border-box;padding:20px}
+.rp-home-recommendations{border:1px solid #111;border-radius:12px;padding:20px;background:#fff;min-width:0}
+.rp-home-recommendations h2{font-size:21px;margin:0 0 16px}
+.rp-recommendation-links{display:flex;flex-direction:column;gap:8px}
+.rp-recommendation-links button{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;text-align:start;padding:14px 8px;background:#fff;color:#111;border:0;border-bottom:1px solid #eee}
+.rp-recommendation-links small{font-size:12px;color:#68756d;white-space:nowrap}
+.rp-home-recommendations details{margin-top:20px}.rp-home-recommendations select{width:100%}
+.rp-current-home .rp-home-candidates>label{font-size:18px;font-weight:900;color:#087a4b;background:#e8f8ef;padding:10px;border-radius:8px}
+.rp-current-home .rp-saved-summary{max-height:230px;overflow:auto}
+@media(max-width:720px){.rp-current-home .rp-home-columns{grid-template-columns:1fr}}
