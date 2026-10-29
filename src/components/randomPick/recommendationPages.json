@@ -1,0 +1,42 @@
+{
+  "delivery-food": {
+    "slot": "food",
+    "mode": "pinball",
+    "index": 0
+  },
+  "snacks": {
+    "slot": "snacks",
+    "mode": "pinball",
+    "index": 1
+  },
+  "dessert": {
+    "slot": "delivery",
+    "mode": "wheel",
+    "index": 2
+  },
+  "movies": {
+    "slot": "movie",
+    "mode": "pinball",
+    "index": 3
+  },
+  "anime": {
+    "slot": "anime",
+    "mode": "pinball",
+    "index": 4
+  },
+  "countries": {
+    "slot": "country",
+    "mode": "pinball",
+    "index": 5
+  },
+  "lotto645": {
+    "slot": "lottery",
+    "mode": "lotto",
+    "index": 6
+  },
+  "lol-champions": {
+    "slot": "lol",
+    "mode": "pinball",
+    "index": 7
+  }
+}

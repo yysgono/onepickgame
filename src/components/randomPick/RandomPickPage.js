@@ -1,3 +1,5 @@
+import recommendationPages from './recommendationPages.json';
+import recommendationLabels from './homeRecommendationLabels.json';
 import {supabase} from '../../utils/supabaseClient';
 import HomeRecommendations,{HOME_DRAFT} from "./HomeRecommendations";
 import {loadPlayCounts,recordModePlay} from "./playCounts";
@@ -46,7 +48,9 @@ export default function RandomPickPage(props){
  return <RandomPickContent key={mode||'home'} {...props}/>;
 }
 function RandomPickContent({user}) {
- const {lang='en',mode}=useParams(),copy=getCopy(lang),navigate=useNavigate(),location=useLocation();
+ const {lang='en',mode:routeMode}=useParams(),copy=getCopy(lang),navigate=useNavigate(),location=useLocation();
+ const topic=recommendationPages[routeMode],mode=topic?.mode||routeMode;
+ const topicTitle=topic?(recommendationLabels[lang]||recommendationLabels.en)[topic.index]:'';
  const homeEditedRef=useRef(false);
  const [savedPreview,setSavedPreview]=useState([]),[playCounts,setPlayCounts]=useState(null);
  const [savedSourceId,setSavedSourceId]=useState(null),[savedEditing,setSavedEditing]=useState(false),[savedDraft,setSavedDraft]=useState([]);
@@ -71,9 +75,9 @@ function RandomPickContent({user}) {
  const running=Boolean(draw&&!done),locked=running||ladderBusy||loadingTemplate;
  useEffect(()=>{alive.current=true;return()=>{alive.current=false;};},[]);
  useEffect(()=>{setSetupCount(6);setTeamRules([]);setSourceCupId(null);setRows([]);setNewName('');setBulk('');setTitle('');setGroups(2);setDraw(null);setDone(false);setFast(false);setStop(false);setWeights({});setBoxes({});boxDeck.current=null;setBoxCount(10);setLadderCount(6);setLadderBusy(false);setPickCount(1);setRangeFrom(1);setRangeTo(45);setDiceCount(1);setSettingsOpen(true);lock.current=false;setMessage('');setShowImport(false);setSaving(false);return()=>{if(mode)rememberCandidates(rowsRef.current,sourceCupRef.current);};},[mode]);
- useEffect(()=>{if(mode==='lotto'&&new URLSearchParams(location.search).get('quick')==='lotto645'){setRows(numericCandidates(1,45));setPickCount(6);setRangeFrom(1);setRangeTo(45);setTitle(lang==='ko'?'로또 번호 추출기':'Lotto 6/45');setSourceCupId(null);}},[mode,location.search,lang]);
+ useEffect(()=>{if(mode==='lotto'&&(topic?.slot==='lottery'||new URLSearchParams(location.search).get('quick')==='lotto645')){setRows(numericCandidates(1,45));setPickCount(6);setRangeFrom(1);setRangeTo(45);setTitle(lang==='ko'?'로또 번호 추출기':'Lotto 6/45');setSourceCupId(null);}},[mode,location.search,lang]);
  useEffect(()=>{
- const key=new URLSearchParams(location.search).get('recommend');
+ const key=topic?.slot||new URLSearchParams(location.search).get('recommend');
  if(!['pinball','wheel'].includes(mode)||!['food','snacks','delivery','movie','anime','country','lol'].includes(key))return;
  let live=true;setLoadingTemplate(true);
  supabase.from('random_home_presets').select('candidates,source_cup_id').eq('slot',key).single().then(({data,error})=>{
@@ -83,7 +87,7 @@ function RandomPickContent({user}) {
  }).catch(()=>{if(live)setMessage(copy.error);}).finally(()=>{if(live)setLoadingTemplate(false);});
  return()=>{live=false};
  },[mode,location.search,copy.error]);
- useEffect(()=>{let live=true;loadCandidateSet().then(saved=>{if(!live)return;setSavedAvailable(Boolean(saved?.rows.length));setSavedPreview(saved?.rows||[]);setSavedSourceId(saved?.sourceCupId||null);if(mode&&!templateParam&&!presetParam&&!location.hash&&!new URLSearchParams(location.search).has('quick')&&!new URLSearchParams(location.search).has('recommend')&&saved){setRows(saved.rows);setSourceCupId(saved.sourceCupId);}
+ useEffect(()=>{let live=true;loadCandidateSet().then(saved=>{if(!live)return;setSavedAvailable(Boolean(saved?.rows.length));setSavedPreview(saved?.rows||[]);setSavedSourceId(saved?.sourceCupId||null);if(mode&&!topic&&!templateParam&&!presetParam&&!location.hash&&!new URLSearchParams(location.search).has('quick')&&!new URLSearchParams(location.search).has('recommend')&&saved){setRows(saved.rows);setSourceCupId(saved.sourceCupId);}
 if(!mode&&!homeEditedRef.current){let recent=null;try{recent=JSON.parse(sessionStorage.getItem(HOME_DRAFT)||'null');}catch{}if(recent?.rows){setRows(recent.rows);setHomeNames(recent.rows.map(r=>r.name).join('\n'));setSourceCupId(recent.sourceCupId);homeEditedRef.current=true;}}
 if(!mode&&saved&&!homeEditedRef.current){setRows(saved.rows);setHomeNames(saved.rows.map(row=>row.name).join('\n'));setSourceCupId(saved.sourceCupId);}}).catch(()=>{if(live)setSavedAvailable(false);});return()=>{live=false;};},[mode]);
  useEffect(()=>{if(mode)return;let live=true;loadPlayCounts().then(counts=>{if(live)setPlayCounts(counts);}).catch(()=>{if(live)setPlayCounts(null);});return()=>{live=false;};},[mode]);
@@ -156,11 +160,11 @@ if(!mode&&saved&&!homeEditedRef.current){setRows(saved.rows);setHomeNames(saved.
  function configure(){reset();setSettingsOpen(true);requestAnimationFrame(()=>editorRef.current?.scrollIntoView({behavior:'smooth',block:'start'}));}
  if(mode==='slots'||mode==='pirate')return null;
  if(!LANGUAGES.includes(lang)||(mode&&!MODES.includes(mode)))return <NotFoundPage/>;
- const pageTitle=mode?`${copy.modes[mode]} · ${copy.heading}`:copy.heading;
+ const pageTitle=topic?topicTitle:mode?`${copy.modes[mode]} · ${copy.heading}`:copy.heading;
  const resultReady=done&&draw;
  const noCandidates=mode==='dice';
  const textOnly=['teams','order','ladder'].includes(mode);
- return <main className={`rp rp-current-${mode||'home'}${textOnly?' rp-text-only':''}`} dir={lang==='ar'?'rtl':'ltr'}><Seo lang={lang} slug={`random-pick${mode?`/${mode}`:''}`} title={mode?`${copy.modes[mode]} | ${lang==='ko'?'원픽게임':'OnePickGame'}`:copy.seoTitle} description={mode?copy.modeDescriptions[mode]:copy.intro} hreflangLangs={LANGUAGES}/>
+ return <main className={`rp rp-current-${mode||'home'}${textOnly?' rp-text-only':''}`} dir={lang==='ar'?'rtl':'ltr'}><Seo lang={lang} slug={`random-pick${routeMode?`/${routeMode}`:''}`} title={topic?`${topicTitle} | OnePickGame`:mode?`${copy.modes[mode]} | ${lang==='ko'?'원픽게임':'OnePickGame'}`:copy.seoTitle} description={topic?`${topicTitle} · ${copy.modeDescriptions[mode]}`:mode?copy.modeDescriptions[mode]:copy.intro} hreflangLangs={LANGUAGES}/>
  <header className="rp-heading">{mode&&<Link to={`/${lang}/random-pick`}>← {copy.back}</Link>}<h1>{pageTitle}</h1><p>{mode?copy.modeDescriptions[mode]:lang==='ko'?<>이름을 직접 입력하거나 월드컵 후보를 불러와 랜덤으로 뽑아보세요.<br/>룰렛, 공 이름 뽑기, 핀볼, 카드, 사다리, 제비뽑기, 팀 나누기로 선택하는 재미를 즐기고 결과를 공유할 수 있습니다.</>:copy.intro}</p></header>
  {mode&&<nav className="rp-tool-nav" aria-label={copy.choose}>{MODES.map(id=><Link key={id} aria-current={mode===id?'page':undefined} to={`/${lang}/random-pick/${id}`}>{copy.modes[id]}</Link>)}</nav>}
  {!mode?<><div className="rp-home-columns"><HomeRecommendations lang={lang} operator={operator} getDraft={()=>({rows:rowsFromNames(homeNames,rows),sourceCupId})}/><section className="rp-home-candidates"><h2>{savedCopy[2]}</h2><p>{savedCopy[6]}</p><button type="button" className="rp-import" onClick={()=>setShowImport(true)}>{copy.import}</button><label>{copy.bulk}<textarea rows={5} value={homeNames} maxLength={24200} onChange={event=>{homeEditedRef.current=true;setHomeNames(event.target.value);}} placeholder={copy.bulk}/></label><button type="button" className="rp-saved-load" disabled={candidateSaving} onClick={saveHomeCandidates}>💾 {savedCopy[0]}</button><div className="rp-saved-summary" aria-live="polite"><h3>{savedCopy[7]} ({savedPreview.length})</h3>{savedPreview.length?<><div className="rp-saved-tools"><button type="button" disabled={candidateSaving||savedEditing} onClick={editSavedCandidates}>✎ {savedCopy[9]}</button><button type="button" className="rp-saved-delete" disabled={candidateSaving} onClick={deleteSavedCandidates}>× {savedCopy[10]}</button></div>{savedEditing?<div className="rp-saved-edit"><div className="rp-saved-edit-list">{savedDraft.map((row,index)=><div key={row.id}><span>{index+1}</span><input aria-label={`${copy.name} ${index+1}`} maxLength={120} disabled={candidateSaving} value={row.name} onChange={event=>{const name=event.target.value;setSavedDraft(previous=>previous.map((item,i)=>i===index?{...item,name}:item));}}/><button type="button" disabled={candidateSaving} aria-label={`${copy.delete}: ${row.name}`} onClick={()=>setSavedDraft(previous=>previous.filter((_,i)=>i!==index))}>×</button></div>)}</div><div className="rp-saved-tools"><button type="button" disabled={candidateSaving||savedDraft.length>=200} onClick={()=>setSavedDraft(previous=>[...previous,{id:`new:${Date.now()}:${previous.length}`,name:'',image:'',enabled:true}])}>＋ {copy.add}</button><button type="button" disabled={candidateSaving} onClick={saveEditedCandidates}>{savedCopy[14]}</button><button type="button" disabled={candidateSaving} onClick={()=>setSavedEditing(false)}>{savedCopy[13]}</button></div></div>:<><ul>{savedPreview.slice(0,8).map((row,index)=><li key={index}>{row.name}</li>)}</ul>{savedPreview.length>8&&<span>+{savedPreview.length-8}</span>}</>}</>:<p>{savedCopy[4]}</p>}</div><button type="button" onClick={()=>{homeEditedRef.current=true;setHomeNames('');setRows([]);setSourceCupId(null);sessionStorage.removeItem(HOME_DRAFT);}}>{lang==='ko'?'후보 초기화':'Clear candidates'}</button></section></div><div className="rp-modes">{MODES.map(id=><Link key={id} className={`rp-mode rp-mode-${id}`} to={`/${lang}/random-pick/${id}`}><div className="rp-mode-art" aria-hidden="true"><ToolArt mode={id}/></div><h2>{copy.modes[id]}</h2><span className="rp-mode-start">{copy.start} →</span><small className="rp-mode-plays">{savedCopy[8].replace("{n}",Number.isFinite(playCounts?.[id])?new Intl.NumberFormat(lang).format(playCounts[id]):"—")}</small></Link>)}</div>{templates.length>0&&<section><h2>{copy.presets}</h2><div className="rp-templates">{templates.filter(t=>MODES.includes(t.mode)).map(t=><Link key={t.id} to={`/${lang}/random-pick/${t.mode}?template=${encodeURIComponent(t.id)}`}><small>{copy.modes[t.mode]}</small><strong>{t.title}</strong></Link>)}</div></section>}{templatesError&&<p className="rp-note">{copy.templateError} <button onClick={()=>setRefresh(v=>v+1)}>↻</button></p>}</>:
