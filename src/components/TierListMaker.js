@@ -1,3 +1,4 @@
+import { localizeTierClone } from "../utils/localizeTierClone";
 import tierSourceSearchLabels from "../locales/tierSourceSearchLabels.json";
 import "./tierCandidateLabels.css";
 import tierUiCopy from "../seo/tierUiCopy.json";
@@ -2187,6 +2188,12 @@ const sourceCandidates =
     const hydratePayload = (payload, mode) => {
       if (!payload || cancelled) {
         return false;
+      }
+
+      if (mode === "clone") {
+        payload = localizeTierClone(payload, lang,
+          resolveOriginalContentLanguage(payload),
+          contentDescription.tierDescriptionFields(payload));
       }
 
       const imported = makeImportedCandidates(
@@ -6965,5 +6972,6 @@ objectPosition: "center",
 
 
 export default TierListMaker;
+
 
 
