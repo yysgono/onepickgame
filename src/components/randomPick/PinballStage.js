@@ -20,7 +20,7 @@ function render(ctx,race,rows,width,height,images){
  ctx.restore();ctx.fillStyle='#152344ee';ctx.fillRect(0,0,width,48);text(ctx,'ONE PICK GAME',width/2,24,17,'#cbffe9',width-130);text(ctx,race?`${race.time.toFixed(1)}s`:`${rows.length}`,width-40,24,12);
  ctx.fillStyle='#447269';ctx.fillRect(16,height-13,width-32,5);ctx.fillStyle='#6ee7b7';ctx.fillRect(16,height-13,(width-32)*(race?.order?.length?1:Math.min(1,lead/FINISH)),5);
 }
-export default function PinballStage({rows,draw,done,fast,onFinish,onError,copy}){
+export default function PinballStage({rows,draw,done,fast,onFinish,onError,copy,beforeResults}){
  const [arrivals,setArrivals]=useState([]);
  const canvas=useRef(null),raceRef=useRef(null),finished=useRef(false),images=useRef(new Map()),callbacks=useRef({onFinish,onError});callbacks.current={onFinish,onError};
  useEffect(()=>{images.current.clear();const pending=[];rows.forEach(row=>{if(!row.image||images.current.has(row.image))return;const image=new Image();image.referrerPolicy='no-referrer';image.src=row.image;images.current.set(row.image,image);pending.push(image);});return()=>{pending.forEach(i=>{i.onload=null;});images.current.clear();};},[rows]);
@@ -44,5 +44,6 @@ export default function PinballStage({rows,draw,done,fast,onFinish,onError,copy}
   }
   frame=requestAnimationFrame(tick);return()=>{live=false;cancelAnimationFrame(frame);};
  },[draw,done,fast,rows]);
- return <><div className="rp-stage rp-pinball-stage"><canvas ref={canvas} role="img" aria-label={`${copy.modes.pinball} — ${copy.participants}: ${rows.length}`}/></div><div className="rp-live-arrivals"><strong>{copy.result} · {arrivals.length} / {rows.length}</strong><ol>{arrivals.map(row=><li key={row.id}>{row.name}</li>)}</ol></div></>;
+ return <><div className="rp-stage rp-pinball-stage"><canvas ref={canvas} role="img" aria-label={`${copy.modes.pinball} — ${copy.participants}: ${rows.length}`}/></div>{beforeResults}<div className="rp-live-arrivals"><strong>{copy.result} · {arrivals.length} / {rows.length}</strong><ol>{arrivals.map(row=><li key={row.id}>{row.name}</li>)}</ol></div></>;
 }
+

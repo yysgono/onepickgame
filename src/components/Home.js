@@ -1,3 +1,4 @@
+import "../styles/activityPanels.css";
 import useClickTargetDebug from "../hooks/useClickTargetDebug";
 import trashCopy from "../utils/contentTrashCopy.json";
 import NavigationLink from "./NavigationLink";
@@ -1796,13 +1797,13 @@ const renderHomeActivityPanel = ({
     <aside
       className="home-activity-panel"
       style={{
-        "--activity-hover-border": "#111111",
+        "--activity-hover-border": "#F97316",
         "--activity-hover-bg": "#f5f5f5",
         minWidth: 0,
         position: "relative",
         zIndex: 1,
         background: "#ffffff",
-        border: "1px solid #111111",
+        border: "1px solid #F97316",
         borderRadius: 10,
        padding: "18px 18px 16px",
         boxSizing: "border-box",
@@ -1850,7 +1851,7 @@ const renderHomeActivityPanel = ({
                     minWidth: 0,
                     boxSizing: "border-box",
                     textDecoration: "none",
-                    border: "none",
+                    border: "1px solid transparent",
                     borderRadius: 8,
                     background: "#ffffff",
                     color: "#111111",
@@ -4510,6 +4511,7 @@ return (
 
 
 export default Home;
+
 
 
 

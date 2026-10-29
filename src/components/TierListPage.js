@@ -1,3 +1,4 @@
+import "../styles/activityPanels.css";
 import useClickTargetDebug from "../hooks/useClickTargetDebug";
 import {contentRevision} from "../utils/contentTrashApi";
 import listSeo from "../seo/listSeo";
@@ -1123,11 +1124,11 @@ const displayTitle =
   }) => (
  <aside className="home-activity-panel"
   style={{
-    "--activity-hover-border": "#111111",
+    "--activity-hover-border": "#2563EB",
     "--activity-hover-bg": "#f5f5f5",
     minWidth: 0,
     background: "#ffffff",
-    border: "1px solid #111111",
+    border: "1px solid #2563EB",
     borderRadius: 10,
     padding: "18px 18px 16px",
     boxSizing: "border-box",
@@ -1170,7 +1171,7 @@ const displayTitle =
                   minWidth: 0,
                   boxSizing: "border-box",
                   textDecoration: "none",
-                  border: "none",
+                  border: "1px solid transparent",
                   borderRadius: 8,
                   background: "#ffffff",
                   color: "#111111",
@@ -2226,6 +2227,7 @@ gap:
 }
 
 export default TierListPage;
+
 
 
 

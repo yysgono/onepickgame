@@ -212,3 +212,5 @@
 .rp-home-recommendations>details[open]>p{font-size:14px;line-height:1.7}
 .rp-home-recommendations>details[open]>select,.rp-home-recommendations>details[open]>button{display:block;width:100%;margin-top:10px}
 @media(max-width:720px){.rp-home-recommendations{min-height:0}.rp-home-recommendations .rp-recommendation-links{flex-basis:auto;grid-template-rows:repeat(8,minmax(62px,auto))}.rp-home-recommendations .rp-recommendation-links button strong{font-size:22px}}
+
+.rp-home-recommendations{border-color:#078657}.rp-home-recommendations:hover{box-shadow:0 0 0 2px #078657}.rp-recommendation-links button{border:1px solid transparent}.rp-recommendation-links button:hover{border-color:#078657}
