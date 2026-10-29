@@ -2,7 +2,7 @@ const FIELDS='id,post_number,title,author_id,author_nickname,category,language,l
 export const BOARD_PAGE_SIZE=12;
 function visible(query,board,lang,currentLanguageOnly){
  query=query.eq('board',board);
- if(board==='notices')return query.eq('language',lang);
+ if(board==='notices')return currentLanguageOnly?query.eq('language',lang):query;
  query=query.or(`language_only.eq.false,language.eq.${lang}`);
  return currentLanguageOnly?query.eq('language',lang):query;
 }
@@ -28,3 +28,4 @@ export function boardDate(value,lang,now=new Date()){
  return elapsed<1?relative.format(0,'second'):elapsed<60?relative.format(-elapsed,'minute'):relative.format(-Math.floor(elapsed/60),'hour');
 }
 export function boardPageNumbers(page,total){return Array.from(new Set([1,...Array.from({length:5},(_,i)=>page+i-2).filter(n=>n>=1&&n<=total),total])).sort((a,b)=>a-b);}
+
