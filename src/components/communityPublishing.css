@@ -39,9 +39,9 @@
 /* Stretch only the title toggle over its heading row, not over post actions. */
 .notice-post .community-post-heading{position:relative}
 .notice-post .community-post-title{min-height:44px;cursor:pointer}
-.notice-post .community-post-title::after{content:"";position:absolute;inset:0;cursor:pointer;border-radius:6px}
+.notice-post .community-post-title::after{content:none;display:none;pointer-events:none}
 .notice-post .community-post-heading:has(.community-post-title:hover){background:#f6f4fc;border-radius:6px}
-.notice-post .community-post-title:focus-visible::after{outline:2px solid #6650d8;outline-offset:2px}
+.notice-post .community-post-title:focus-visible{outline:2px solid #6650d8;outline-offset:2px}
 
 .site-publishing .community-read-filter{justify-content:flex-end;margin:16px 0 22px;font-size:15px;cursor:pointer}
 
@@ -161,3 +161,12 @@
 .community-board .comment-empty{padding:20px 0;color:#91879f;font-size:14px}
 .community-board .comment-login{display:block;padding:18px;background:#f7f5fc;border:1px dashed #d6ccea;border-radius:12px;color:#6650d8;text-align:center;text-decoration:none;font-weight:700;font-size:14px;margin-top:18px}
 @media(max-width:600px){.community-board{padding-inline:14px;margin-top:20px}.community-board .board-hero{padding:22px 18px;gap:14px;border-radius:17px}.community-board .board-hero-icon{width:46px;height:46px;flex-basis:46px;border-radius:14px;font-size:27px}.community-board .board-hero h1{font-size:26px}.community-board .board-eyebrow{font-size:9px}.community-board .board-card{padding:16px}.community-board .board-expanded{padding-inline:0}.community-board .comment-composer{padding:12px}.community-board .community-comment p{padding-inline-start:0}}
+
+
+/* v122: contain board layers and keep category/filter hit targets accessible. */
+.community-board .board-list{position:relative;isolation:isolate;z-index:0}
+.community-board .community-tabs,.community-board .board-toolbar{position:relative;z-index:1;isolation:isolate}
+.community-board .community-tabs button,.community-board .community-read-filter{position:relative;pointer-events:auto;touch-action:manipulation}
+.community-board .board-toolbar .community-read-filter{display:inline-flex;flex:0 1 auto;min-height:44px;padding:8px 4px;cursor:pointer;user-select:none}
+.community-board .community-read-filter input[type=checkbox]{position:static;appearance:auto;width:20px;height:20px;flex:0 0 20px;padding:0;margin:0;pointer-events:auto;cursor:pointer}
+.community-board .community-read-filter span{pointer-events:none}

@@ -50,7 +50,7 @@ export default function CommunityBoardPage({board,user}){
   <header className="board-hero"><div className="board-hero-icon" aria-hidden="true">{board==='community'?'✦':'▤'}</div><div><span className="board-eyebrow">ONE PICK GAME · COMMUNITY</span><h1>{name}</h1></div></header>
   {board==='community'&&<div className="community-tabs" role="group" aria-label={ui.category}>{categories.map(([key,label])=><button key={key} aria-pressed={category===key} onClick={()=>changeCategory(key)}>{label}</button>)}</div>}
   <div className="board-toolbar">
-   <label className="community-language-only community-read-filter"><input type="checkbox" checked={currentLanguageOnly} onChange={e=>{setPage(1);setCurrentLanguageOnly(e.target.checked);}}/><span>{ui.currentLanguageOnly} ({lang})</span></label>
+   <label htmlFor={`board-language-filter-${board}`} className="community-language-only community-read-filter"><input id={`board-language-filter-${board}`} type="checkbox" checked={currentLanguageOnly} onChange={e=>{setPage(1);setCurrentLanguageOnly(e.target.checked);}}/><span>{ui.currentLanguageOnly} ({lang})</span></label>
    {(board==='community'?Boolean(user):admin)&&<button className="board-write" disabled={saving||uploading} onClick={()=>{if(writing)clearForm();else{setEditing(null);setWriting(true);setSaved('');}}}>＋ {ui.write}</button>}
   </div>
   {writing&&<form ref={formRef} className="board-editor" onSubmit={save}><h2>{editing?ui.edit:ui.write}</h2><label>{ui.language}<select disabled={saving||uploading} value={postLanguage} onChange={e=>setPostLanguage(e.target.value)}>{SITE_LANGUAGES.map(l=><option key={l}>{l}</option>)}</select></label>{board==='community'&&<><label className="community-language-only"><input type="checkbox" disabled={saving||uploading} checked={languageOnly} onChange={e=>setLanguageOnly(e.target.checked)}/><span>{ui.languageOnly} ({postLanguage})</span></label><label>{ui.category}<select disabled={saving||uploading} value={postCategory} onChange={e=>setPostCategory(e.target.value)}>{categories.filter(([key])=>key!=='all').map(([key,label])=><option key={key} value={key}>{label}</option>)}</select></label></>}
@@ -61,5 +61,6 @@ export default function CommunityBoardPage({board,user}){
   {!busy&&<nav className="board-pagination" aria-label={ui.pages}><button disabled={page<=1} onClick={()=>setPage(p=>p-1)} aria-label={ui.previousPage}>‹</button>{boardPageNumbers(page,pages).map((n,i,nums)=><React.Fragment key={n}>{i>0&&n>nums[i-1]+1&&<span>…</span>}<button aria-current={page===n?'page':undefined} onClick={()=>setPage(n)}>{n}</button></React.Fragment>)}<button disabled={page>=pages} onClick={()=>setPage(p=>p+1)} aria-label={ui.nextPage}>›</button><span className="board-page-count">{page} / {pages}</span></nav>}
  </main>;
 }
+
 
 
