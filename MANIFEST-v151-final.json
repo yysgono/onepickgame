@@ -1,0 +1,29 @@
+{
+  "base_commit": "d517070937d8e25026e895647a76c6184eb4e198",
+  "status": "validated-locally-ready-for-user-application",
+  "files": {
+    "community-seo-routes.cjs": "bd2395ffb0c526bba887a657700eb588d41a2ea52e9651b09fd0b5a741c44c21",
+    "server.js": "fbc65a255b7bcc1558aad09c6a36280ce445ff7511991a5f81be9d01c4b6fa1c",
+    "src/components/BlogEditorPage.js": "726a2c323cae87ae5912e680fe5976721444cb0805bc53b0da4c4145b3bda6e3",
+    "src/components/BlogPage.js": "6daff91ff39891c2f73af2410292ee6cdaf94a8232c97834659b4dd4949ecb6f",
+    "src/components/BlogPostPage.js": "7061ffe1e10d22c78d8772e3f0492068d382575783a06675e898a376fd884646",
+    "src/components/CommunityBoardPage.js": "67b8107c023842404e9926113e07dc85b8c76fff6b3f37496c8a93e7d5f7581a",
+    "src/components/EditWorldcupPage.js": "19b2fc0868343e100ac340d05bd946ac21d894160d190c9c62f9111a95caf0fc",
+    "src/components/Home.js": "ef32d10afc628819763cdc7668b35a9de8cd14951b320195c6774a2c9cf7d26a",
+    "src/components/QuizMaker.js": "da9c730a6ff0461097273fdcd43f18899ede28fda8f2a3dd1643ddcaeb17ce33",
+    "src/components/SitePublishing.js": "c3a828df14a133415cac8783fd56c8f81908fcfa69390ae3210964f87497eb9a",
+    "src/components/TierListMaker.js": "3cc5e54e922777ad285251729d60e66877d658de6021f32444549082c90c5769",
+    "src/components/TierListPage.js": "a4283f8de5905266118a2fe056ac1e875f80f4f0c1fde4bdec4d08657433ac23",
+    "src/components/WorldcupMaker.js": "50882705346829a2f2440ac375e9bf5c39c44f1e06604829fccae06aaf9541f6",
+    "src/utils/adminReadApi.js": "4190d2d92e7db50a74efccad72df2a22f9ea6a107c27a0d99859e44ee42a1655",
+    "src/utils/detectContentLanguage.js": "8b279ef6a381f25771e8e47643364875fc294d4e38b3a219984f42dc57726d87",
+    "src/utils/supabaseQuizApi.js": "670c0a75711bd6ab5ff3d178502dd2bab6df2c881b2c836f6b13eb7dfa3d95f7",
+    "tests/content-language-db-v151.cjs": "4e457e56b8f8271367f83aa23ce932beef2a148dc19fe5ba7bc6faec0ec139ba",
+    "tests/content-languages-v151.cjs": "ef8fc2488eb62222cb882c7989bc5ff84301e0b010f3edecb10f9521bec28e78",
+    "tests/fixtures/content-languages-v151/constraints.json": "9a52514bed48b9388d2e4dd2605fca96729372dd1b8120578195ce844016b6a0",
+    "tests/fixtures/content-languages-v151/functions.json": "939f4ed389793635974ee3053f3da8ee6f6886bf8912b031a48761aaeac209e9",
+    "tests/fixtures/content-languages-v151/record_blog_view.sql": "819f7c4a2b1097477ade0f05402bcfe5fe158fc9db656c78cf9f4b00412d0a90",
+    "tests/ui-content-boundary-v150.cjs": "67bb4de45158cc902f218a1695031d84bd7404e9c19df227ada2a6790ab16d20"
+  },
+  "sql_sha256": "3a45203deb5452f178fff33dfb95409a6ac89aba97f92025171730fda32c6407"
+}

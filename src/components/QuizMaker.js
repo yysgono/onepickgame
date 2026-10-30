@@ -1,4 +1,3 @@
-import {uiContentLanguage} from "../utils/uiContentLanguage";
 import NavigationLink from "./NavigationLink";
 import { syncSourceQuestions, sourceCandidatePool, mergeSourceQuestions } from "../utils/quizSourceSync";
 import sourceSyncCopy from "./quizSourceSyncCopy.json";
@@ -144,14 +143,14 @@ export default function QuizMaker() {
   const guestMode = guestEdit || !user?.id;
 
 
-  const [originalLanguage, setOriginalLanguage] = useState(uiContentLanguage(lang));
+  const [originalLanguage, setOriginalLanguage] = useState(lang);
   const [title, setTitle] = useState("");
   const [titleTranslations, setTitleTranslations] = useState([]);
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("knowledge");
   const [thumbnailFile, setThumbnailFile] = useState(null);
   const [existingThumbnailUrl, setExistingThumbnailUrl] = useState("");
-  const [contentLanguages, setContentLanguages] = useState([uiContentLanguage(lang)]);
+  const [contentLanguages, setContentLanguages] = useState([lang]);
   const [questions, setQuestions] = useState([emptyQuestion()]);
   const [questionEditLanguages, setQuestionEditLanguages] = useState({});
   const [creationMode, setCreationMode] = useState("direct");
@@ -784,12 +783,12 @@ export default function QuizMaker() {
       const fileMap = new Map(fileEntries.map((entry) => [entry.key, entry.file]));
       const restoredQuestions = (Array.isArray(draft.questions) && draft.questions.length ? draft.questions : [emptyQuestion()])
         .map((question) => ({ ...question, localId: question.localId || makeId(), imageFile: fileMap.get(`question:${question.localId}`) || null }));
-      setOriginalLanguage(draft.originalLanguage || originalLanguage || uiContentLanguage(lang));
+      setOriginalLanguage(draft.originalLanguage || originalLanguage || lang);
       setTitle(draft.title || "");
       setTitleTranslations(Array.isArray(draft.titleTranslations) ? draft.titleTranslations : []);
       setDescription(draft.description || "");
       setCategory(draft.category || "knowledge");
-      setContentLanguages(Array.isArray(draft.contentLanguages) && draft.contentLanguages.length ? draft.contentLanguages : [uiContentLanguage(lang)]);
+      setContentLanguages(Array.isArray(draft.contentLanguages) && draft.contentLanguages.length ? draft.contentLanguages : [lang]);
       setQuestions(restoredQuestions);
       setThumbnailFile(fileMap.get("thumbnail") || null);
       setCreationMode(draft.creationMode || "direct");

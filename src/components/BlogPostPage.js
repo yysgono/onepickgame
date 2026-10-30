@@ -1,4 +1,3 @@
-import {uiContentLanguage} from "../utils/uiContentLanguage";
 import {localizeExtraUi} from "../utils/newLanguageUi";
 import {sanitizeRichHtml} from '../utils/richText';
 import {getCommunityUi} from './communityUi';
@@ -318,7 +317,7 @@ export default function BlogPostPage() {
               )
               .eq(
                 "language",
-                uiContentLanguage(currentLang)
+                currentLang
               )
               .eq("slug", slug)
               .maybeSingle(),

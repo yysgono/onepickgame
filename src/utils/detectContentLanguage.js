@@ -1,6 +1,6 @@
 const SUPPORTED_LANGUAGES = new Set([
   "ko", "en", "ja", "zh", "es", "fr", "vi", "ru",
-  "de", "th", "bn", "ar", "tr", "pt", "id", "hi",
+  "de", "th", "bn", "ar", "tr", "pt", "id", "hi", "it", "pl", "nl", "cs",
 ]);
 
 function countMatches(text, regex) {

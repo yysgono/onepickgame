@@ -114,7 +114,7 @@ export async function getAdminRecentContentActivity(kind) {
     if (titleError) throw titleError;
     parents = new Map((titles || []).map(row => [String(row.id), row]));
   }
-  const languages = ['ko','en','ja','zh','es','fr','vi','de','ru','id','pt','hi','tr','th','ar','bn'];
+  const languages = ['ko','en','ja','zh','es','fr','vi','de','ru','id','pt','hi','tr','th','ar','bn','it','pl','nl','cs'];
   return logs.map(row => {
     const parent = parents.get(String(row[parentKey]));
     const supported = isQuiz ? [...(parent?.content_languages || []), parent?.original_language] : ['ko'];

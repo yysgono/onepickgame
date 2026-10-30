@@ -98,6 +98,10 @@ const CONTENT_LANGUAGE_OPTIONS = [
 
   { value: "bn", label: "বাংলা" },
 
+  { value: "it", label: "Italiano" },
+  { value: "pl", label: "Polski" },
+  { value: "nl", label: "Nederlands" },
+  { value: "cs", label: "Čeština" },
 ];
 
 const DELETE_ALL_CANDIDATES_COPY = {

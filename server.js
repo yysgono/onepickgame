@@ -520,7 +520,7 @@ app.use(async (req, res, next) => {
         .select(
           "id, language, slug, title, description, created_at"
         )
-        .eq("language", ["it","pl","nl","cs"].includes(lang) ? "en" : lang)
+        .eq("language", lang)
         .order("created_at", { ascending: false })
         .order("id", { ascending: false })
         .limit(12);
@@ -729,7 +729,7 @@ ${safeJson(jsonLd)}
       .select(
         "id, language, slug, title, description, content, created_at"
       )
-      .eq("language", ["it","pl","nl","cs"].includes(lang) ? "en" : lang)
+      .eq("language", lang)
       .eq("slug", slug)
       .maybeSingle();
 

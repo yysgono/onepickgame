@@ -1,0 +1,12 @@
+[
+  {
+    "kind": "03_check",
+    "object_name": "community_posts.community_posts_language_check",
+    "definition": "CHECK (language = ANY (ARRAY['ko'::text, 'en'::text, 'ja'::text, 'zh'::text, 'es'::text, 'fr'::text, 'vi'::text, 'de'::text, 'ru'::text, 'id'::text, 'pt'::text, 'hi'::text, 'tr'::text, 'th'::text, 'ar'::text, 'bn'::text]))"
+  },
+  {
+    "kind": "03_check",
+    "object_name": "worldcups.worldcups_original_language_check",
+    "definition": "CHECK (original_language IS NULL OR (original_language = ANY (ARRAY['en'::text, 'ko'::text, 'ja'::text, 'zh'::text, 'es'::text, 'fr'::text, 'vi'::text, 'de'::text, 'ru'::text, 'id'::text, 'pt'::text, 'hi'::text, 'tr'::text, 'th'::text, 'ar'::text, 'bn'::text])))"
+  }
+]

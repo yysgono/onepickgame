@@ -72,6 +72,10 @@ const LANGUAGES = [
 
   { code: "bn", label: "বাংলা" },
 
+  { code: "it", label: "Italiano" },
+  { code: "pl", label: "Polski" },
+  { code: "nl", label: "Nederlands" },
+  { code: "cs", label: "Čeština" },
 ];
 
 const WORLDCUP_CARD_META_COPY = {

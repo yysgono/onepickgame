@@ -1,4 +1,3 @@
-import {uiContentLanguage} from "../utils/uiContentLanguage";
 import {getCommunityUi} from './communityUi';
 import React,{useEffect,useState} from 'react';
 import {Link,useNavigate,useParams} from 'react-router-dom';
@@ -10,7 +9,7 @@ import {sanitizeRichHtml,richPlainText} from '../utils/richText';
 import './communityPublishing.css';
 export default function BlogEditorPage(){
  const {lang='en',slug:routeSlug}=useParams(),allowed=useSitePublisher(),navigate=useNavigate(),ui=getCommunityUi(lang);
- const [language,setLanguage]=useState(uiContentLanguage(lang)),[slug,setSlug]=useState(routeSlug||''),[title,setTitle]=useState(''),[description,setDescription]=useState(''),[body,setBody]=useState(''),[busy,setBusy]=useState(false),[loading,setLoading]=useState(false),[uploading,setUploading]=useState(false),[error,setError]=useState('');
+ const [language,setLanguage]=useState(lang),[slug,setSlug]=useState(routeSlug||''),[title,setTitle]=useState(''),[description,setDescription]=useState(''),[body,setBody]=useState(''),[busy,setBusy]=useState(false),[loading,setLoading]=useState(false),[uploading,setUploading]=useState(false),[error,setError]=useState('');
  useEffect(()=>{if(!routeSlug||!allowed)return;let active=true;setLoading(true);setError('');supabase.from('blog_posts').select('title,description,content').eq('slug',routeSlug).eq('language',language).maybeSingle().then(({data,error})=>{if(!active)return;if(error){setError(error.message);return;}setTitle(data?.title||'');setDescription(data?.description||'');setBody(data?.content||'');}).finally(()=>{if(active)setLoading(false);});return()=>{active=false;};},[routeSlug,language,allowed]);
  async function save(e){e.preventDefault();if(busy||loading||uploading)return;setBusy(true);setError('');const finalSlug=slug.trim()||`post-${Date.now()}`;const html=sanitizeRichHtml(body);if(!title.trim()||!richPlainText(html)){setError(ui.requiredTitle);setBusy(false);return;}try{const {error}=await supabase.rpc('save_site_blog',{p_language:language,p_slug:finalSlug,p_title:title.trim(),p_description:description,p_content:html,p_allow_update:Boolean(routeSlug)});if(error)throw error;navigate(`/${language}/blog/${finalSlug}`);}catch(e){setError(e.message);}finally{setBusy(false);}}
  const locked=busy||loading||uploading;

@@ -115,6 +115,10 @@ const LANGUAGES = [
   { code: "th", label: "ภาษาไทย" },
   { code: "ar", label: "العربية" },
   { code: "bn", label: "বাংলা" },
+  { code: "it", label: "Italiano" },
+  { code: "pl", label: "Polski" },
+  { code: "nl", label: "Nederlands" },
+  { code: "cs", label: "Čeština" },
 ];
 
 const RECOMMENDED_PRESET_TITLE = {

@@ -1,4 +1,3 @@
-import {uiContentLanguage} from "../utils/uiContentLanguage";
 import {getCommunityUi} from './communityUi';
 import { useSitePublisher } from "./SitePublishing";
 import "./communityPublishing.css";
@@ -249,7 +248,7 @@ export default function BlogPage() {
           .select(
             "id, language, slug, title, description, created_at"
           )
-          .eq("language", uiContentLanguage(currentLang))
+          .eq("language", currentLang)
           .order("created_at", { ascending: false })
           .order("id", { ascending: false })
           .range(page * 12, page * 12 + 12);
@@ -309,7 +308,7 @@ export default function BlogPage() {
             >
               {text.description}
             </p>
-            {canPublish && <Link className="blog-write-link" to={`/${uiContentLanguage(currentLang)}/blog/write`}>＋ {ui.write}</Link>}
+            {canPublish && <Link className="blog-write-link" to={`/${currentLang}/blog/write`}>＋ {ui.write}</Link>}
           </header>
 
           {loading && (

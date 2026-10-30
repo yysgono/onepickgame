@@ -1,4 +1,3 @@
-import {uiContentLanguage} from "../utils/uiContentLanguage";
 import {localizeExtraUi} from "../utils/newLanguageUi";
 import { localizeTierClone } from "../utils/localizeTierClone";
 import tierSourceSearchLabels from "../locales/tierSourceSearchLabels.json";
@@ -257,6 +256,10 @@ const TITLE_TRANSLATION_LANGUAGES = [
   { code: "th", label: "ภาษาไทย" },
   { code: "ar", label: "العربية" },
   { code: "bn", label: "বাংলা" },
+  { code: "it", label: "Italiano" },
+  { code: "pl", label: "Polski" },
+  { code: "nl", label: "Nederlands" },
+  { code: "cs", label: "Čeština" },
 ];
 
 const TITLE_TRANSLATION_COPY = {
@@ -1080,7 +1083,7 @@ const [
 
   const [titleTranslations, setTitleTranslations] = useState({});
   const [titleTranslationLanguages, setTitleTranslationLanguages] = useState([]);
-  const [originalContentLanguage, setOriginalContentLanguage] = useState(uiContentLanguage(lang));
+  const [originalContentLanguage, setOriginalContentLanguage] = useState(lang);
 
   const titleTranslationCopy =
     TITLE_TRANSLATION_COPY[lang] || TITLE_TRANSLATION_COPY.en;
