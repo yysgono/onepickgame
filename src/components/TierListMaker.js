@@ -5126,6 +5126,132 @@ if (editingTierListId) {
                   outline: "none",
                 }}
               />
+<details open className="tier-other-languages" style={{ marginBottom: 18 }}>
+                <summary style={{ cursor: "pointer", padding: "12px 14px", marginBottom: 12, border: "2px solid #2563EB", borderRadius: 9, color: "#1D4ED8", background: "#fff", fontWeight: 800 }}>
+                  {(tierUiCopy[lang] || tierUiCopy.en)[0]}
+                </summary>
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 10,
+                  marginTop: -4,
+                  marginBottom: 14,
+                }}
+              >
+                {titleTranslationLanguages.filter((code) => code !== originalContentLanguage).map((translationLang) => (
+                  <div
+                    key={translationLang}
+                    style={{
+                      display: "grid",
+                      gridTemplateColumns: isMobile
+                        ? "112px minmax(0,1fr) 42px"
+                        : "150px minmax(0,1fr) 52px",
+                      gap: 8,
+                      alignItems: "center",
+                    }}
+                  >
+                    <select
+                      value={translationLang}
+                      onChange={(e) =>
+                        changeTitleTranslationLanguage(translationLang, e.target.value)
+                      }
+                      style={{
+                        width: "100%",
+                        height: 42,
+                        borderRadius: 8,
+                        border: "1px solid #cbd5e1",
+                        background: "#fff",
+                        color: "#111827",
+                        padding: "0 8px",
+                        fontWeight: 800,
+                      }}
+                    >
+                      {TITLE_TRANSLATION_LANGUAGES.map((item) => (
+                        <option
+                          key={item.code}
+                          value={item.code}
+                          disabled={
+                            item.code === originalContentLanguage ||
+                            item.code !== translationLang &&
+                            titleTranslationLanguages.includes(item.code)
+                          }
+                        >
+                          {item.label}
+                        </option>
+                      ))}
+                    </select>
+
+                    <input
+                      value={titleTranslations[translationLang] || ""}
+                      onChange={(e) =>
+                        setTitleTranslations((prev) => ({
+                          ...prev,
+                          [translationLang]: e.target.value,
+                        }))
+                      }
+                      placeholder={titleTranslationCopy.placeholder}
+                      maxLength={80}
+                      style={{
+                        width: "100%",
+                        height: 42,
+                        boxSizing: "border-box",
+                        padding: "0 12px",
+                        borderRadius: 8,
+                        border: "1px solid #cbd5e1",
+                        background: "#fff",
+                        color: "#111827",
+                        fontSize: isMobile ? 15 : 16,
+                        fontWeight: 700,
+                        outline: "none",
+                      }}
+                    />
+
+                    <button
+                      type="button"
+                      onClick={() => removeTitleTranslation(translationLang)}
+                      title={titleTranslationCopy.remove}
+                      aria-label={titleTranslationCopy.remove}
+                      style={{
+                        height: 42,
+                        borderRadius: 8,
+                        border: "1px solid #d7dce4",
+                        background: "#fff",
+                        color: "#6b7280",
+                        cursor: "pointer",
+                        fontSize: 20,
+                        fontWeight: 900,
+                      }}
+                    >
+                      ×
+                    </button>
+                  </div>
+                ))}
+
+                {titleTranslationLanguages.length < TITLE_TRANSLATION_LANGUAGES.length - 1 && (
+                  <button
+                    type="button"
+                    onClick={addTitleTranslation}
+                    style={{
+                      alignSelf: "flex-start",
+                      minHeight: 40,
+                      padding: "0 12px",
+                      borderRadius: 8,
+                      border: "1px solid #2563EB",
+                      background: "#fff",
+                      color: "#1D4ED8",
+                      cursor: "pointer",
+                      fontSize: isMobile ? 14 : 15,
+                      fontWeight: 900,
+                    }}
+                  >
+                    {titleTranslationCopy.add}
+                  </button>
+                )}
+              </div>
+
+              </details>
+
               <p style={{textAlign:'center',color:'#6650d8'}}>{lang==='ko'?`마음에 드는 후보만 배치해도 돼요 · ${placedCount}개 배치됨`:'Rank only the candidates you want. Click a candidate, then choose a tier.'}</p>
               <div
                 style={{
@@ -5970,7 +6096,7 @@ objectPosition: "center",
                 gap: 9,
               }}
             >
-              <details><summary style={{cursor:'pointer',fontWeight:800,padding:12}}>{lang==='ko'?'추가 설정 · 제목·설명·번역·태그':'Title, description & tags (optional)'}</summary>
+              <details><summary style={{cursor:'pointer',fontWeight:800,padding:12}}>{lang==='ko'?'추가 설정 · 설명·태그':'Description & tags (optional)'}</summary>
               
 
               <label htmlFor="tier-description" style={{ display: "block", fontWeight: 800, marginBottom: 8 }}>
@@ -5988,131 +6114,7 @@ objectPosition: "center",
               <p style={{ margin: "6px 0 18px", color: "#596579", fontSize: 13, lineHeight: 1.5 }}>{descriptionCopy[2]}</p>
 
 
-              <details className="tier-other-languages" style={{ marginBottom: 18 }}>
-                <summary style={{ cursor: "pointer", padding: "12px 14px", marginBottom: 12, border: "2px solid #2563EB", borderRadius: 9, color: "#1D4ED8", background: "#fff", fontWeight: 800 }}>
-                  {(tierUiCopy[lang] || tierUiCopy.en)[0]}
-                </summary>
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: 10,
-                  marginTop: -4,
-                  marginBottom: 14,
-                }}
-              >
-                {titleTranslationLanguages.filter((code) => code !== originalContentLanguage).map((translationLang) => (
-                  <div
-                    key={translationLang}
-                    style={{
-                      display: "grid",
-                      gridTemplateColumns: isMobile
-                        ? "112px minmax(0,1fr) 42px"
-                        : "150px minmax(0,1fr) 52px",
-                      gap: 8,
-                      alignItems: "center",
-                    }}
-                  >
-                    <select
-                      value={translationLang}
-                      onChange={(e) =>
-                        changeTitleTranslationLanguage(translationLang, e.target.value)
-                      }
-                      style={{
-                        width: "100%",
-                        height: 42,
-                        borderRadius: 8,
-                        border: "1px solid #cbd5e1",
-                        background: "#fff",
-                        color: "#111827",
-                        padding: "0 8px",
-                        fontWeight: 800,
-                      }}
-                    >
-                      {TITLE_TRANSLATION_LANGUAGES.map((item) => (
-                        <option
-                          key={item.code}
-                          value={item.code}
-                          disabled={
-                            item.code === originalContentLanguage ||
-                            item.code !== translationLang &&
-                            titleTranslationLanguages.includes(item.code)
-                          }
-                        >
-                          {item.label}
-                        </option>
-                      ))}
-                    </select>
-
-                    <input
-                      value={titleTranslations[translationLang] || ""}
-                      onChange={(e) =>
-                        setTitleTranslations((prev) => ({
-                          ...prev,
-                          [translationLang]: e.target.value,
-                        }))
-                      }
-                      placeholder={titleTranslationCopy.placeholder}
-                      maxLength={80}
-                      style={{
-                        width: "100%",
-                        height: 42,
-                        boxSizing: "border-box",
-                        padding: "0 12px",
-                        borderRadius: 8,
-                        border: "1px solid #cbd5e1",
-                        background: "#fff",
-                        color: "#111827",
-                        fontSize: isMobile ? 15 : 16,
-                        fontWeight: 700,
-                        outline: "none",
-                      }}
-                    />
-
-                    <button
-                      type="button"
-                      onClick={() => removeTitleTranslation(translationLang)}
-                      title={titleTranslationCopy.remove}
-                      aria-label={titleTranslationCopy.remove}
-                      style={{
-                        height: 42,
-                        borderRadius: 8,
-                        border: "1px solid #d7dce4",
-                        background: "#fff",
-                        color: "#6b7280",
-                        cursor: "pointer",
-                        fontSize: 20,
-                        fontWeight: 900,
-                      }}
-                    >
-                      ×
-                    </button>
-                  </div>
-                ))}
-
-                {titleTranslationLanguages.length < TITLE_TRANSLATION_LANGUAGES.length - 1 && (
-                  <button
-                    type="button"
-                    onClick={addTitleTranslation}
-                    style={{
-                      alignSelf: "flex-start",
-                      minHeight: 40,
-                      padding: "0 12px",
-                      borderRadius: 8,
-                      border: "1px solid #2563EB",
-                      background: "#fff",
-                      color: "#1D4ED8",
-                      cursor: "pointer",
-                      fontSize: isMobile ? 14 : 15,
-                      fontWeight: 900,
-                    }}
-                  >
-                    {titleTranslationCopy.add}
-                  </button>
-                )}
-              </div>
-
-              </details>
+              
 
               <div
                 style={{
@@ -6716,6 +6718,7 @@ objectPosition: "center",
 
 
 export default TierListMaker;
+
 
 
 
