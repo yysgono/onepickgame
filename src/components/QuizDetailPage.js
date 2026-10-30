@@ -911,6 +911,9 @@ export default function QuizDetailPage() {
         issueType: reportType,
 
         detail: reportDetail,
+        language: lang,
+        quizTitle: title,
+        questionText: localize(reportTarget.question_translations, reportTarget.question_text, lang),
 
       });
 
@@ -1744,5 +1747,6 @@ const choiceButton = (active) => ({
   cursor: "pointer",
 
 });
+
 
 

@@ -493,23 +493,32 @@ export async function getQuizRankingStats({ quizId, answeredCount, attemptToken 
   return data || null;
 }
 
-export async function reportQuizQuestion({ quizId, questionId, ownerId, issueType, detail = "" }) {
+export async function reportQuizQuestion({ quizId, questionId, issueType, detail = "", language = "en", quizTitle = "", questionText = "" }) {
   const { data: authData, error: authError } = await supabase.auth.getUser();
   if (authError) throw authError;
   if (!authData?.user?.id) throw new Error("LOGIN_REQUIRED");
-
-  const reason = JSON.stringify({
-    quiz_id: quizId,
-    question_id: questionId,
-    owner_id: ownerId || null,
-    issue_type: issueType,
-    detail: String(detail || "").trim().slice(0, 500),
-  });
-  const { error } = await supabase.from("reports").insert({
-    type: "quiz_question",
-    target_id: questionId,
-    reporter_id: authData.user.id,
-    reason,
+  const supported = ["ko","en","ja","zh","es","fr","vi","de","ru","id","pt","hi","tr","th","ar","bn"];
+  const lang = supported.includes(language) ? language : "en";
+  const ko = lang === "ko";
+  const reasons = ko
+    ? {wrong_answer:"정답이 잘못됨",question_error:"문제 또는 선택지가 잘못됨",broken_media:"이미지·영상이 나오지 않음",other:"기타"}
+    : {wrong_answer:"Incorrect answer",question_error:"Question or choices error",broken_media:"Image or video unavailable",other:"Other"};
+  const reason = reasons[issueType] || reasons.other;
+  const url = `https://www.onepickgame.com/${lang}/quiz/${encodeURIComponent(quizId)}`;
+  const body = [
+    `${ko ? "오류 유형" : "Issue"}: ${reason}`,
+    `${ko ? "퀴즈" : "Quiz"}: ${String(quizTitle || quizId).slice(0,300)}`,
+    `${ko ? "문제" : "Question"}: ${String(questionText || "").slice(0,1500)}`,
+    `${ko ? "내용" : "Details"}: ${String(detail || "").trim().slice(0,500)}`,
+    url,
+    `quiz_id: ${quizId}`,
+    `question_id: ${questionId}`,
+  ].join("\n\n");
+  const { error } = await supabase.from("site_suggestions").insert({
+    author_id: authData.user.id,
+    language: lang,
+    title: `[${ko ? "퀴즈 문제 오류" : "Quiz question report"}] ${reason}`.slice(0,200),
+    body,
   });
   if (error) throw error;
 }
@@ -523,4 +532,5 @@ export async function getGuestQuizForEdit(quizId, nickname, password) {
   if (!data?.quiz) throw new Error(data?.error || "GUEST_AUTH_FAILED");
   return data;
 }
+
 
