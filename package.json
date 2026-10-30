@@ -26,7 +26,8 @@
     "start": "react-scripts start",
     "sitemap": "node scripts/generate-sitemap.mjs",
     "build": "npm run build:rich-text && node scripts/generate-sitemap.mjs && react-scripts build && node scripts/copy-seo-shell.cjs",
-    "build:rich-text": "node scripts/bundle-rich-text-sanitizer.cjs"
+    "build:rich-text": "node scripts/bundle-rich-text-sanitizer.cjs",
+    "test:images": "node tests/stats-image-source-v103.cjs && node tests/stats-images-ui-v103.cjs"
   },
   "browserslist": {
     "production": [

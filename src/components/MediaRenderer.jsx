@@ -225,7 +225,17 @@ function MediaRenderer({
   const url = originalStorageImageUrl(inputUrl);
   const { t } = useTranslation();
 
+  const imageRetryTimer = useRef(null);
+
+  function clearImageRetry() {
+    if (imageRetryTimer.current !== null) {
+      clearTimeout(imageRetryTimer.current);
+      imageRetryTimer.current = null;
+    }
+  }
+
   function handlePreviewImageLoad(event) {
+    clearImageRetry();
     if (event.currentTarget.naturalWidth > 0) rememberLoadedImage(event.currentTarget.currentSrc || event.currentTarget.src);
     if (!previewCrop) return;
     const image = event.currentTarget;
@@ -336,10 +346,12 @@ function MediaRenderer({
    * 후보 URL이 바뀌면 상태 초기화
    */
 useEffect(() => {
+  clearImageRetry();
   setMediaError(false);
   setImageRetry(0);
   setYoutubeStarted(false);
   setVideoPlaying(false);
+  return clearImageRetry;
 }, [safeUrl]);
 
   /**
@@ -398,16 +410,18 @@ useEffect(() => {
     setMediaError(true);
   };
 const handleImageError = () => {
+  // Duplicate errors must not schedule multiple retries for the same image.
+  if (imageRetryTimer.current !== null) return;
   if (imageRetry < 2) {
-    setTimeout(() => {
+    imageRetryTimer.current = setTimeout(() => {
+      imageRetryTimer.current = null;
       setImageRetry((prev) => prev + 1);
     }, 500 + imageRetry * 500);
-
     return;
   }
-
   setMediaError(true);
 };
+
   /**
    * 1. 빈 URL
    */
