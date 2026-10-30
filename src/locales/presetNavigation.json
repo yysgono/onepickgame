@@ -270,5 +270,73 @@
       "label": "ট্যাগ",
       "hint": "সর্বোচ্চ ৫টি ট্যাগ, প্রতিটিতে ৩০ অক্ষর। একই ট্যাগের তালিকা খুঁজুন।"
     }
+  },
+  "it": {
+    "tierList": {
+      "result": {
+        "usedPresetLabel": "Preimpostazione usata",
+        "sourcePresetFallback": "Torneo sorgente",
+        "browsePresetTierLists": "Visualizza altre liste di livelli usando questo preset"
+      }
+    },
+    "presetNavigation": {
+      "myBrackets": "I miei tornei",
+      "myTierLists": "Le mie classifiche"
+    },
+    "tierTags": {
+      "label": "Etichette",
+      "hint": "Fino a 5 tag, 30 caratteri ciascuno. Trova liste di livelli con tag corrispondenti."
+    }
+  },
+  "pl": {
+    "tierList": {
+      "result": {
+        "usedPresetLabel": "Zużyty preset",
+        "sourcePresetFallback": "Turniej źródłowy",
+        "browsePresetTierLists": "Wyświetl inne listy poziomów używając tego ustawienia"
+      }
+    },
+    "presetNavigation": {
+      "myBrackets": "Moje turnieje",
+      "myTierLists": "Moje rankingi"
+    },
+    "tierTags": {
+      "label": "Znaczniki",
+      "hint": "Do 5 tagów, po 30 znaków. Znajdź listy poziomów z pasującymi znacznikami."
+    }
+  },
+  "nl": {
+    "tierList": {
+      "result": {
+        "usedPresetLabel": "Gebruikt voorinstelling",
+        "sourcePresetFallback": "Brontoernooi",
+        "browsePresetTierLists": "Andere ranglijsten weergeven met deze voorinstelling"
+      }
+    },
+    "presetNavigation": {
+      "myBrackets": "Mijn toernooien",
+      "myTierLists": "Mijn tierlijsten"
+    },
+    "tierTags": {
+      "label": "Tags",
+      "hint": "Tot 5 tags, elk 30 tekens. Zoek ranglijsten met bijpassende tags."
+    }
+  },
+  "cs": {
+    "tierList": {
+      "result": {
+        "usedPresetLabel": "Přednastaveno",
+        "sourcePresetFallback": "Zdrojový turnaj",
+        "browsePresetTierLists": "Zobrazit jiné seznamy úrovní pomocí tohoto přednastavení"
+      }
+    },
+    "presetNavigation": {
+      "myBrackets": "Moje turnaje",
+      "myTierLists": "Moje žebříčky"
+    },
+    "tierTags": {
+      "label": "Štítky",
+      "hint": "Až 5 značek, 30 znaků každý. Najít seznam úrovní s odpovídající značky."
+    }
   }
 }

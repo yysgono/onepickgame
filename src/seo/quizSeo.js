@@ -27,6 +27,11 @@ const OG_LOCALES = {
   th: "th_TH",
   ar: "ar_AR",
   bn: "bn_IN",
+
+"it":"it_IT",
+"pl":"pl_PL",
+"nl":"nl_NL",
+"cs":"cs_CZ"
 };
 
 export function normalizeLanguage(value) {

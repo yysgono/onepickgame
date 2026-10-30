@@ -1,3 +1,4 @@
+import {localizeExtraUi} from "../utils/newLanguageUi";
 import "../styles/activityPanels.css";
 import useClickTargetDebug from "../hooks/useClickTargetDebug";
 import trashCopy from "../utils/contentTrashCopy.json";
@@ -90,6 +91,11 @@ const WORLDCUP_CARD_META_COPY = {
   th: { candidates: "ผู้สมัคร", plays: "เล่น", updated: "อัปเดต" },
   ar: { candidates: "المرشحون", plays: "مرات اللعب", updated: "تحديث" },
   bn: { candidates: "প্রার্থী", plays: "খেলা", updated: "আপডেট" },
+
+"it":{"candidates":"Candidati","plays":"Riproduzioni","updated":"Aggiornato"},
+"pl":{"candidates":"Kandydaci","plays":"Odtwarzanie","updated":"Zaktualizowano"},
+"nl":{"candidates":"Kandidaten","plays":"Afspeelt","updated":"Bijgewerkt"},
+"cs":{"candidates":"Kandidáti","plays":"Hraje","updated":"Aktualizováno"}
 };
 
 const HOME_SIDE_PANEL_COPY = {
@@ -173,6 +179,11 @@ const HOME_SIDE_PANEL_COPY = {
     recentPlayed: "সম্প্রতি খেলা টুর্নামেন্ট",
     empty: "দেখানোর মতো কোনো ব্র্যাকেট নেই।",
   },
+
+"it":{"recentCreated":"Tornei creati di recente","recentPlayed":"Tornei giocati di recente","empty":"Non ci sono ancora tornei da mostrare."},
+"pl":{"recentCreated":"Ostatnio utworzone turnieje","recentPlayed":"Ostatnio rozegrane turnieje","empty":"Żadnych turniejów do pokazania."},
+"nl":{"recentCreated":"Onlangs aangemaakte toernooien","recentPlayed":"Onlangs gespeelde toernooien","empty":"Nog geen toernooien te zien."},
+"cs":{"recentCreated":"Nedávno vytvořené turnaje","recentPlayed":"Nedávno hrané turnaje","empty":"Zatím žádné turnaje."}
 };
 
 
@@ -399,6 +410,11 @@ const WORLDCUP_INFO_COPY = {
     "title": "পছন্দের বিশ্বকাপ কী?",
     "description": "প্রতি রাউন্ডে দুটি প্রার্থীর মধ্যে পছন্দেরটি বেছে নিন, যতক্ষণ না একজন বিজয়ী থাকে। OnePickGame-এ আইডল, অ্যানিমে, গেম, সিনেমা, খাবার ও খেলাধুলার টুর্নামেন্ট বিনামূল্যে খেলুন এবং তৈরি করুন।"
   }
+,
+"it":{"ariaLabel":"Che cos'è un torneo delle preferenze?","title":"Che cos'è un torneo delle preferenze?","description":"Scegli il tuo preferito di due candidati in ogni turno fino a quando non rimane un vincitore. Su OnePickGame, giocare e creare tornei gratuiti su idoli, anime, giochi, film, cibo, sport e altro ancora."},
+"pl":{"ariaLabel":"Czym jest turniej ulubieńców?","title":"Czym jest turniej ulubieńców?","description":"Wybierz swój ulubiony z dwóch kandydatów w każdej rundzie, aż jeden zwycięzca pozostanie. Na OnePickGame, grać i tworzyć darmowe turnieje o idole, anime, gry, filmy, jedzenie, sport i wiele innych."},
+"nl":{"ariaLabel":"Wat is een voorkeurstoernooi?","title":"Wat is een voorkeurstoernooi?","description":"Kies uw favoriet van twee kandidaten in elke ronde totdat er één winnaar blijft. Op OnePickGame, speel en maak gratis toernooien over idolen, anime, games, films, eten, sport en nog veel meer."},
+"cs":{"ariaLabel":"Co je turnaj oblíbených možností?","title":"Co je turnaj oblíbených možností?","description":"Vyberte si své oblíbené ze dvou kandidátů v každém kole, dokud jeden vítěz zůstane. Na OnePickGame, hrát a vytvářet zdarma turnaje o modlách, anime, hry, filmy, jídlo, sport a další."}
 };
 
 function Home({
@@ -431,7 +447,7 @@ const location = useLocation();
 
 
 const lang = (i18n.language || "en").split("-")[0];
-const remoteHome = !personalView && /^\/(?:en|ko|ja|zh|es|fr|vi|de|ru|id|pt|hi|tr|th|ar|bn)?\/?$/.test(location.pathname);
+const remoteHome = !personalView && /^\/(?:en|it|pl|nl|cs|ko|ja|zh|es|fr|vi|de|ru|id|pt|hi|tr|th|ar|bn)?\/?$/.test(location.pathname);
 
 const worldcupInfoCopy = WORLDCUP_INFO_COPY[lang] || WORLDCUP_INFO_COPY.en;
 
@@ -4154,7 +4170,7 @@ return (
   aria-label={
     lang === "ko"
       ? "월드컵 카테고리 바로가기"
-      : "Worldcup category shortcuts"
+      : localizeExtraUi("Worldcup category shortcuts")
   }
   className="worldcup-home-category-shortcuts"
   style={{
@@ -4228,8 +4244,8 @@ return (
 
 {remoteHome && homePages.loading && homePages.cups.length === 0 && <p className="home-loading-status" role="status">{t("loading", { defaultValue: "Loading..." })}</p>}
 {remoteHome && homePages.error && <div role="alert" style={{ textAlign: "center", padding: 16 }}>
-  <p>{lang === "ko" ? "게임 목록을 불러오지 못했습니다. 다시 시도해 주세요." : "Could not load games. Please try again."}</p>
-  <button type="button" onClick={homePages.retry}>{t("retry", { defaultValue: lang === "ko" ? "다시 시도" : "Retry" })}</button>
+  <p>{lang === "ko" ? "게임 목록을 불러오지 못했습니다. 다시 시도해 주세요." : localizeExtraUi("Could not load games. Please try again.")}</p>
+  <button type="button" onClick={homePages.retry}>{t("retry", { defaultValue: lang === "ko" ? "다시 시도" : localizeExtraUi("Retry") })}</button>
 </div>}
 {/* 검색 결과 없음 */}
 
@@ -4275,7 +4291,7 @@ return (
 
           ? "검색 결과가 없습니다."
 
-          : "No results found.",
+          : localizeExtraUi("No results found."),
 
     })}
 

@@ -1,18 +1,82 @@
 {
-  "en": ["Could not load page controls. Please try again.", "Retry"],
-  "ko": ["화면 기능을 불러오지 못했습니다. 다시 시도해 주세요.", "다시 시도"],
-  "ja": ["ページの機能を読み込めませんでした。もう一度お試しください。", "再試行"],
-  "zh": ["无法加载页面功能，请重试。", "重试"],
-  "es": ["No se pudieron cargar las funciones de la página. Inténtalo de nuevo.", "Reintentar"],
-  "fr": ["Impossible de charger les fonctions de la page. Veuillez réessayer.", "Réessayer"],
-  "vi": ["Không thể tải các chức năng của trang. Vui lòng thử lại.", "Thử lại"],
-  "de": ["Die Seitenfunktionen konnten nicht geladen werden. Bitte versuche es erneut.", "Erneut versuchen"],
-  "ru": ["Не удалось загрузить функции страницы. Повторите попытку.", "Повторить"],
-  "id": ["Fitur halaman tidak dapat dimuat. Silakan coba lagi.", "Coba lagi"],
-  "pt": ["Não foi possível carregar as funções da página. Tente novamente.", "Tentar novamente"],
-  "hi": ["पेज की सुविधाएँ लोड नहीं हो सकीं। कृपया फिर से कोशिश करें।", "फिर कोशिश करें"],
-  "tr": ["Sayfa işlevleri yüklenemedi. Lütfen tekrar deneyin.", "Tekrar dene"],
-  "th": ["โหลดฟังก์ชันของหน้าไม่สำเร็จ โปรดลองอีกครั้ง", "ลองอีกครั้ง"],
-  "ar": ["تعذر تحميل وظائف الصفحة. يرجى المحاولة مرة أخرى.", "إعادة المحاولة"],
-  "bn": ["পৃষ্ঠার সুবিধাগুলি লোড করা যায়নি। আবার চেষ্টা করুন।", "আবার চেষ্টা করুন"]
+  "en": [
+    "Could not load page controls. Please try again.",
+    "Retry"
+  ],
+  "ko": [
+    "화면 기능을 불러오지 못했습니다. 다시 시도해 주세요.",
+    "다시 시도"
+  ],
+  "ja": [
+    "ページの機能を読み込めませんでした。もう一度お試しください。",
+    "再試行"
+  ],
+  "zh": [
+    "无法加载页面功能，请重试。",
+    "重试"
+  ],
+  "es": [
+    "No se pudieron cargar las funciones de la página. Inténtalo de nuevo.",
+    "Reintentar"
+  ],
+  "fr": [
+    "Impossible de charger les fonctions de la page. Veuillez réessayer.",
+    "Réessayer"
+  ],
+  "vi": [
+    "Không thể tải các chức năng của trang. Vui lòng thử lại.",
+    "Thử lại"
+  ],
+  "de": [
+    "Die Seitenfunktionen konnten nicht geladen werden. Bitte versuche es erneut.",
+    "Erneut versuchen"
+  ],
+  "ru": [
+    "Не удалось загрузить функции страницы. Повторите попытку.",
+    "Повторить"
+  ],
+  "id": [
+    "Fitur halaman tidak dapat dimuat. Silakan coba lagi.",
+    "Coba lagi"
+  ],
+  "pt": [
+    "Não foi possível carregar as funções da página. Tente novamente.",
+    "Tentar novamente"
+  ],
+  "hi": [
+    "पेज की सुविधाएँ लोड नहीं हो सकीं। कृपया फिर से कोशिश करें।",
+    "फिर कोशिश करें"
+  ],
+  "tr": [
+    "Sayfa işlevleri yüklenemedi. Lütfen tekrar deneyin.",
+    "Tekrar dene"
+  ],
+  "th": [
+    "โหลดฟังก์ชันของหน้าไม่สำเร็จ โปรดลองอีกครั้ง",
+    "ลองอีกครั้ง"
+  ],
+  "ar": [
+    "تعذر تحميل وظائف الصفحة. يرجى المحاولة مرة أخرى.",
+    "إعادة المحاولة"
+  ],
+  "bn": [
+    "পৃষ্ঠার সুবিধাগুলি লোড করা যায়নি। আবার চেষ্টা করুন।",
+    "আবার চেষ্টা করুন"
+  ],
+  "it": [
+    "Impossibile caricare i controlli di pagina. Riprovare.",
+    "Riprova"
+  ],
+  "pl": [
+    "Nie można wczytać kontroli strony. Proszę spróbować ponownie.",
+    "Spróbuj ponownie"
+  ],
+  "nl": [
+    "Kon paginaknoppen niet laden. Probeer het opnieuw.",
+    "Opnieuw proberen"
+  ],
+  "cs": [
+    "Nelze načíst ovládání stránky. Zkuste to prosím znovu.",
+    "Zkusit znovu"
+  ]
 }

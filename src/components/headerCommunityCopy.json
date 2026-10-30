@@ -110,5 +110,33 @@
     "শীঘ্রই আসছে",
     "কমিউনিটি মেনু",
     "পরামর্শ / সমস্যা জানান"
+  ],
+  "it": [
+    "Annunci",
+    "Comunità",
+    "Arriva presto",
+    "Navigazione comunitaria",
+    "Commenti / Insetti"
+  ],
+  "pl": [
+    "Ogłoszenia",
+    "Wspólnota",
+    "Wkrótce.",
+    "Nawigacja wspólnotowa",
+    "Informacje zwrotne / błędy"
+  ],
+  "nl": [
+    "Mededelingen",
+    "Gemeenschap",
+    "Binnenkort.",
+    "Communautaire navigatie",
+    "Feedback / Bugs"
+  ],
+  "cs": [
+    "Oznámení",
+    "Společenství",
+    "Už jdu.",
+    "Navigace Společenství",
+    "Zpětná vazba / chyby"
   ]
 }

@@ -18,6 +18,11 @@ const COPY = {
  th:['สมัครด้วยอีเมลหรือ Google / NAVER ได้ โปรดอ่านข้อกำหนดและนโยบายความเป็นส่วนตัวก่อนดำเนินการต่อ','ข้อกำหนดการใช้งาน','นโยบายความเป็นส่วนตัว','ประกาศนี้ไม่ใช่ความยินยอมสำหรับโฆษณาเฉพาะบุคคลหรือการประมวลผลข้อมูลที่ไม่จำเป็น'],
  ar:['يمكن التسجيل بالبريد الإلكتروني أو Google / NAVER. اقرأ الشروط وسياسة الخصوصية قبل المتابعة.','شروط الخدمة','سياسة الخصوصية','هذا الإشعار ليس موافقة على الإعلانات المخصصة أو معالجة البيانات الاختيارية.'],
  bn:['ইমেইল বা Google / NAVER দিয়ে নিবন্ধন করা যায়। এগোনোর আগে শর্তাবলি ও গোপনীয়তা নীতি পড়ুন।','ব্যবহারের শর্তাবলি','গোপনীয়তা নীতি','এই বিজ্ঞপ্তি ব্যক্তিগতকৃত বিজ্ঞাপন বা ঐচ্ছিক তথ্য প্রক্রিয়াকরণের সম্মতি নয়।'],
+
+"it":["È possibile registrarsi con e-mail o Google / NAVER. Si prega di leggere i Termini e l'Informativa sulla privacy prima di continuare.","Termini di servizio","Informativa sulla privacy","La presente informativa non consente l'invio di annunci personalizzati o il trattamento facoltativo dei dati."],
+"pl":["Możesz zarejestrować się za pośrednictwem poczty elektronicznej lub Google / NAVER. Prosimy zapoznać się z Warunkami i Polityką Prywatności przed kontynuowaniem.","Regulamin","Polityka prywatności","Niniejsze zawiadomienie nie wyraża zgody na spersonalizowane reklamy lub opcjonalne przetwarzanie danych."],
+"nl":["U kunt zich registreren met e-mail of Google / NAVER. Lees de Voorwaarden en Privacy Policy voordat u doorgaat.","Gebruiksvoorwaarden","Privacybeleid","Deze kennisgeving is geen toestemming voor gepersonaliseerde advertenties of optionele gegevensverwerking."],
+"cs":["Můžete se zaregistrovat e-mailem nebo Google / NAVER. Před pokračováním si prosím přečtěte Podmínky ochrany osobních údajů.","Podmínky používání","Zásady ochrany osobních údajů","Toto oznámení není souhlas s personalizovanými reklamami nebo volitelným zpracováním dat."]
 };
 export default function AccountPolicyNotice({ language } = {}) {
  const {i18n}=useTranslation();const requested=String(language||i18n.language||'en').split(/[-_]/)[0];const lang=Object.prototype.hasOwnProperty.call(COPY,requested)?requested:'en';

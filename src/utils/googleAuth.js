@@ -1,5 +1,5 @@
 import { supabase } from './supabaseClient';
-const LANGS = ['ko','en','ja','zh','ru','pt','es','fr','id','hi','de','vi','ar','bn','th','tr'];
+const LANGS = ['ko','en','ja','zh','ru','pt','es','fr','id','hi','de','vi','ar','bn','th','tr', "it", "pl", "nl", "cs"];
 export function authLanguage(value) {
   const lang = String(value || '').toLowerCase().split(/[-_]/)[0];
   return LANGS.includes(lang) ? lang : 'en';

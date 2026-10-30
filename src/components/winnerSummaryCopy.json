@@ -78,5 +78,25 @@
     "পরিসংখ্যান লোড করা যায়নি।",
     "এই সময়ের কোনো রেকর্ড নেই।",
     "নির্বাচিত সময়কাল · সব খেলোয়াড়"
+  ],
+  "it": [
+    "Impossibile caricare le statistiche.",
+    "Nessuna statistica registrata per questo periodo.",
+    "Periodo selezionato · Tutti i giocatori"
+  ],
+  "pl": [
+    "Nie można wczytać statystyk.",
+    "Brak danych statystycznych dla tego okresu.",
+    "Wybrany okres · Wszyscy gracze"
+  ],
+  "nl": [
+    "Kon statistieken niet laden.",
+    "Geen geregistreerde statistieken voor deze periode.",
+    "Geselecteerde periode · Alle spelers"
+  ],
+  "cs": [
+    "Nelze načíst statistiky.",
+    "Za toto období nebyly zaznamenány žádné statistiky.",
+    "Vybrané období · Všichni hráči"
   ]
 }

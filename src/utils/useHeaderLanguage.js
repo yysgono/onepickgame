@@ -1,6 +1,6 @@
 import {useEffect,useState} from 'react';
 import {useLocation,useNavigate,useNavigationType} from 'react-router-dom';
-const LANGUAGES=['en','ko','ja','zh','es','fr','vi','de','ru','id','pt','hi','tr','th','ar','bn'];
+const LANGUAGES=['en','ko','ja','zh','es','fr','vi','de','ru','id','pt','hi','tr','th','ar','bn', "it", "pl", "nl", "cs"];
 const KEY='onepick_header_language_v1';
 let memoryPreference=null;
 export function rememberHeaderLanguage(language){

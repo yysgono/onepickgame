@@ -18,5 +18,5 @@ test("keeps the expected 16 supported languages", () => {
     "bn",
     "th",
     "tr",
-  ]);
+   "it", "pl", "nl", "cs"]);
 });

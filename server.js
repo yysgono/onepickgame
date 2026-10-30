@@ -106,7 +106,7 @@ const SUPPORTED_LANGS = [
   "bn",
   "th",
   "tr",
-];
+ "it", "pl", "nl", "cs"];
 
 const OG_LOCALE_MAP = {
   en: "en_US",
@@ -125,6 +125,11 @@ const OG_LOCALE_MAP = {
   bn: "bn_IN",
   th: "th_TH",
   tr: "tr_TR",
+
+"it":"it_IT",
+"pl":"pl_PL",
+"nl":"nl_NL",
+"cs":"cs_CZ"
 };
 
 function escapeHtml(value = "") {
@@ -380,6 +385,11 @@ const BLOG_TEXT = {
     brand: "OnePickGame",
     latest: "Son yazılar",
   },
+
+"it":{"title":"Blog","description":"Esplora i contenuti sui giochi di tornei, i giochi di classifica, anime, sport, musica e altro ancora. Scopri musica, copyright e risorse audio epidemiche per i creatori.","brand":"OnePickGame","latest":"Ultimi articoli"},
+"pl":{"title":"Blog","description":"Poznaj treści o grach turniejowych, grach rankingowych, anime, sporcie, muzyce i innych. Odkryj muzykę, prawa autorskie i epidemiczne zasoby dźwiękowe dla twórców.","brand":"OnePickGame","latest":"Najnowsze artykuły"},
+"nl":{"title":"Blog","description":"Ontdek de inhoud van toernooigames, ranking games, anime, sport, muziek, en nog veel meer. Ontdek muziek, copyright en Epidemic Sound bronnen voor makers.","brand":"OnePickGame","latest":"Laatste artikelen"},
+"cs":{"title":"Blog","description":"Prozkoumejte obsah turnajových her, žebříčku her, anime, sport, hudbu a další. Objevte hudbu, copyright a Epidemic Sound zdroje pro tvůrce.","brand":"OnePickGame","latest":"Nejnovější články"}
 };
 
 app.use(async (req, res, next) => {
@@ -510,7 +520,7 @@ app.use(async (req, res, next) => {
         .select(
           "id, language, slug, title, description, created_at"
         )
-        .eq("language", lang)
+        .eq("language", ["it","pl","nl","cs"].includes(lang) ? "en" : lang)
         .order("created_at", { ascending: false })
         .order("id", { ascending: false })
         .limit(12);
@@ -719,7 +729,7 @@ ${safeJson(jsonLd)}
       .select(
         "id, language, slug, title, description, content, created_at"
       )
-      .eq("language", lang)
+      .eq("language", ["it","pl","nl","cs"].includes(lang) ? "en" : lang)
       .eq("slug", slug)
       .maybeSingle();
 
@@ -1195,6 +1205,11 @@ ko: {
 
     locale: "tr_TR",
   },
+
+"it":{"title":"OnePickGame | Tornei, classifiche e quiz","description":"Crea e gioca tornei gratuiti, liste di livelli e quiz su OnePickGame.","locale":"it_US"},
+"pl":{"title":"OnePickGame | Turnieje, rankingi i quizy","description":"Tworzenie i grać w darmowe turnieje turnieje, listy poziomów i quizy na OnePickGame.","locale":"en_US"},
+"nl":{"title":"OnePickGame | Toernooien, tierlijsten en quizzen","description":"Maak en speel gratis toernooien toernooien, tier lijsten en quizzen op OnePickGame.","locale":"nl_US"},
+"cs":{"title":"OnePickGame | Turnaje, žebříčky a kvízy","description":"Vytvořit a hrát zdarma turnaje turnaje, seznamy úrovní a kvízy na OnePickGame.","locale":"en_US"}
 };
 
 /*

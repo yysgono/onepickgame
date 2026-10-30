@@ -254,5 +254,69 @@
     },
     "categoryDescription": "{category} tier listelerini keşfet, adayları seviyelere yerleştir ve kendi sıralamanı paylaş.",
     "mineTitle": "Tier Listelerim | OnePickGame"
+  },
+  "it": {
+    "title": "Crea classifiche · Classifiche popolari | OnePickGame",
+    "description": "Crea ed esplora liste di livelli su One Pick Game. Giochi di grado, anime, celebrità, cibo, sport, personaggi e altro ancora con preset di liste di livelli pronti.",
+    "categories": {
+      "all": "Tutti",
+      "game": "Giochi",
+      "entertainment": "Celebrità",
+      "animation": "Animazione",
+      "food": "Prodotti alimentari",
+      "sports": "Sport",
+      "other": "Altri",
+      "knowledge": "Conoscenza"
+    },
+    "categoryDescription": "Esplora le liste dei livelli {category}, organizza candidati nei livelli e condividi le tue classifiche.",
+    "mineTitle": "Le mie classifiche | OnePickGame"
+  },
+  "pl": {
+    "title": "Kreator rankingów · Popularne rankingi | OnePickGame",
+    "description": "Tworzenie i eksploracja listy poziomów na One Pick Game. Gry Rankingowe, anime, gwiazdy, jedzenie, sport, znaki i więcej z gotowymi ustawieniami listy poziomów.",
+    "categories": {
+      "all": "Wszystkie",
+      "game": "Gry",
+      "entertainment": "Gwiazdy",
+      "animation": "Animacja",
+      "food": "Żywność",
+      "sports": "Sport",
+      "other": "Inne",
+      "knowledge": "Wiedza"
+    },
+    "categoryDescription": "Poznaj listę poziomów {category}, zorganizuj kandydatów na poziomy i podziel się swoimi rankingami.",
+    "mineTitle": "Moje rankingi | OnePickGame"
+  },
+  "nl": {
+    "title": "Tierlijsten maken · Populaire tierlijsten | OnePickGame",
+    "description": "Maak en verken ranglijsten op One Pick Game. Rangspellen, anime, beroemdheden, eten, sport, personages, en meer met kant-en-klare ranglijst presets.",
+    "categories": {
+      "all": "Alles",
+      "game": "Spelletjes",
+      "entertainment": "Beroemdheden",
+      "animation": "Animatie",
+      "food": "Voedingsmiddelen",
+      "sports": "Sport",
+      "other": "Overige gevallen",
+      "knowledge": "Kennis"
+    },
+    "categoryDescription": "Verken {category}-lijsten, organiseer kandidaten in niveaus en deel uw eigen rankings.",
+    "mineTitle": "Mijn tierlijsten | OnePickGame"
+  },
+  "cs": {
+    "title": "Tvorba žebříčků · Oblíbené žebříčky | OnePickGame",
+    "description": "Vytvořit a prozkoumat seznamy úrovní na One Pick Game. Rank hry, anime, celebrity, jídlo, sport, postavy, a další s připravenými seznam úrovní presets.",
+    "categories": {
+      "all": "Vše",
+      "game": "Hry",
+      "entertainment": "Celebrity",
+      "animation": "Animace",
+      "food": "Jídlo",
+      "sports": "Sport",
+      "other": "Ostatní",
+      "knowledge": "Znalosti"
+    },
+    "categoryDescription": "Prozkoumejte seznamy úrovní {category}, uspořádejte kandidáty do úrovní a podělte se o své vlastní žebříčky.",
+    "mineTitle": "Moje žebříčky | OnePickGame"
   }
 }

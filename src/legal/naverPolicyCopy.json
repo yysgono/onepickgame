@@ -1,18 +1,82 @@
 {
- "ko":["네이버 로그인","네이버 로그인은 Supabase Auth를 통해 네이버 고유 식별자로 계정을 구분합니다. 이메일 등은 제공되는 경우에만 처리하며, 네이버 비밀번호는 받지 않습니다. 사이트 공개 닉네임은 직접 정합니다. 이메일 주소만으로 기존 계정을 임의 통합하지 않습니다. 사이트 탈퇴 처리와 네이버의 서비스 연결 해제는 별개이며, 이 사이트의 탈퇴 처리가 네이버 계정이나 네이버 측 연결을 자동으로 삭제하지는 않습니다. 필요하면 네이버 계정의 연결 서비스 관리에서 별도로 해제해 주세요."],
- "en":["NAVER sign-in","NAVER sign-in uses Supabase Auth and a provider-specific identifier. Email and other details are processed only when supplied; we do not receive your NAVER password. You choose your public site nickname. We do not manually merge accounts just because their email addresses match. Site withdrawal and NAVER connection revocation are separate; deleting the site account does not delete your NAVER account or automatically revoke its connection. Manage that connection separately in your NAVER account when needed."],
- "ja":["NAVERログイン","NAVERログインではSupabase AuthとNAVER固有の識別子を利用します。メールなどは提供された場合にのみ扱い、NAVERのパスワードは受け取りません。公開ニックネームは自分で設定します。メールの一致だけで既存アカウントを独自に統合しません。当サイトの退会とNAVER側の連携解除は別です。退会してもNAVERアカウントや連携は自動削除されないため、必要に応じてNAVERの連携サービス管理で解除してください。"],
- "zh":["NAVER 登录","NAVER 登录通过 Supabase Auth 和 NAVER 专用标识符识别账户。仅在收到时处理邮箱等资料；我们不会收到 NAVER 密码。本站公开昵称由您自行设置。我们不会仅因邮箱相同而手动合并账户。本站注销与 NAVER 解除授权相互独立；注销本站账户不会删除 NAVER 账户，也不会自动解除其授权。需要时请在 NAVER 账户的关联服务管理中另行解除。"],
- "ru":["Вход через NAVER","Вход через NAVER использует Supabase Auth и уникальный идентификатор провайдера. Электронная почта и другие сведения обрабатываются только при их предоставлении; пароль NAVER мы не получаем. Публичный псевдоним вы выбираете сами. Мы не объединяем аккаунты вручную только из-за совпадения почты. Удаление аккаунта сайта не удаляет аккаунт NAVER и не отзывает его подключение автоматически. При необходимости отключите сервис в настройках NAVER."],
- "pt":["Entrar com NAVER","O acesso com NAVER usa Supabase Auth e um identificador do provedor. E-mail e outros dados são tratados somente quando fornecidos; não recebemos sua senha NAVER. Você escolhe seu apelido público. Não unimos contas manualmente apenas por terem o mesmo e-mail. Excluir a conta do site não exclui sua conta NAVER nem revoga automaticamente a conexão. Gerencie essa conexão separadamente nas configurações da NAVER, se necessário."],
- "es":["Acceso con NAVER","El acceso con NAVER utiliza Supabase Auth y un identificador propio del proveedor. El correo y otros datos se tratan solo si se facilitan; no recibimos su contraseña de NAVER. Usted elige su apodo público. No unimos cuentas manualmente solo por compartir correo. Eliminar la cuenta del sitio no elimina su cuenta NAVER ni revoca automáticamente la conexión. Si lo necesita, desvincule el servicio en su cuenta NAVER."],
- "fr":["Connexion NAVER","La connexion NAVER utilise Supabase Auth et un identifiant propre au fournisseur. L’adresse e-mail et les autres informations ne sont traitées que si elles sont fournies ; nous ne recevons pas votre mot de passe NAVER. Vous choisissez votre pseudo public. Nous ne fusionnons pas manuellement les comptes sur la seule base d’une adresse e-mail identique. La suppression du compte du site ne supprime pas le compte NAVER et ne révoque pas automatiquement sa connexion. Gérez cette connexion séparément dans votre compte NAVER si nécessaire."],
- "id":["Masuk dengan NAVER","Login NAVER menggunakan Supabase Auth dan pengenal khusus penyedia. Email dan detail lain diproses hanya jika diberikan; kami tidak menerima kata sandi NAVER Anda. Anda memilih nama panggilan publik sendiri. Kami tidak menggabungkan akun secara manual hanya karena email sama. Penghapusan akun situs tidak menghapus akun NAVER atau otomatis mencabut hubungannya. Jika perlu, putuskan hubungan layanan secara terpisah melalui akun NAVER."],
- "hi":["NAVER से साइन इन","NAVER साइन-इन में Supabase Auth और प्रदाता की विशिष्ट पहचान का उपयोग होता है। ईमेल और अन्य विवरण केवल उपलब्ध होने पर संसाधित होते हैं; हमें आपका NAVER पासवर्ड नहीं मिलता। सार्वजनिक उपनाम आप चुनते हैं। केवल ईमेल समान होने पर हम खातों को अपने स्तर पर नहीं मिलाते। साइट खाता हटाने से NAVER खाता या उसका कनेक्शन अपने आप नहीं हटता। आवश्यकता होने पर NAVER खाते में जुड़े सेवाओं की सेटिंग से कनेक्शन अलग से हटाएँ।"],
- "de":["Anmeldung mit NAVER","Die NAVER-Anmeldung verwendet Supabase Auth und eine anbieterspezifische Kennung. E-Mail und weitere Angaben werden nur verarbeitet, wenn sie übermittelt werden; Ihr NAVER-Passwort erhalten wir nicht. Ihren öffentlichen Spitznamen wählen Sie selbst. Wir führen Konten nicht allein wegen gleicher E-Mail-Adressen manuell zusammen. Die Löschung des Website-Kontos löscht weder Ihr NAVER-Konto noch widerruft sie automatisch dessen Verbindung. Trennen Sie den Dienst bei Bedarf in Ihrem NAVER-Konto."],
- "vi":["Đăng nhập bằng NAVER","Đăng nhập NAVER sử dụng Supabase Auth và mã định danh riêng của nhà cung cấp. Email và thông tin khác chỉ được xử lý khi được cung cấp; chúng tôi không nhận mật khẩu NAVER. Bạn tự chọn biệt danh công khai. Chúng tôi không tự gộp tài khoản chỉ vì trùng email. Xóa tài khoản trang web không xóa tài khoản NAVER hoặc tự động hủy liên kết. Khi cần, hãy hủy riêng trong phần quản lý dịch vụ liên kết của tài khoản NAVER."],
- "ar":["تسجيل الدخول عبر NAVER","يستخدم تسجيل الدخول عبر NAVER خدمة Supabase Auth ومعرّفًا خاصًا بمزود الهوية. لا نعالج البريد الإلكتروني والمعلومات الأخرى إلا عند توفيرها، ولا نتلقى كلمة مرور NAVER. تختار اسمك المستعار العام بنفسك. لا ندمج الحسابات يدويًا لمجرد تطابق البريد الإلكتروني. حذف حساب الموقع لا يحذف حساب NAVER ولا يلغي ارتباطه تلقائيًا. يمكنك إلغاء الارتباط بشكل منفصل من إدارة الخدمات المتصلة في حساب NAVER عند الحاجة."],
- "bn":["NAVER দিয়ে সাইন ইন","NAVER সাইন-ইনে Supabase Auth এবং প্রদানকারীর নির্দিষ্ট পরিচয় ব্যবহার করা হয়। ইমেল ও অন্যান্য তথ্য দেওয়া হলে তবেই প্রক্রিয়া করা হয়; আমরা NAVER পাসওয়ার্ড পাই না। প্রকাশ্য ডাকনাম আপনি বেছে নেন। শুধু ইমেল মিলে গেলে আমরা নিজে থেকে অ্যাকাউন্ট এক করি না। সাইটের অ্যাকাউন্ট মুছলে NAVER অ্যাকাউন্ট বা তার সংযোগ স্বয়ংক্রিয়ভাবে মুছে যায় না। প্রয়োজনে NAVER অ্যাকাউন্টের সংযুক্ত সেবা ব্যবস্থাপনায় আলাদাভাবে সংযোগ বন্ধ করুন।"],
- "th":["เข้าสู่ระบบด้วย NAVER","การเข้าสู่ระบบ NAVER ใช้ Supabase Auth และรหัสเฉพาะของผู้ให้บริการ อีเมลและข้อมูลอื่นจะถูกประมวลผลเมื่อมีการส่งมาเท่านั้น เราไม่ได้รับรหัสผ่าน NAVER คุณเป็นผู้ตั้งชื่อเล่นสาธารณะเอง เราไม่รวมบัญชีด้วยตนเองเพียงเพราะอีเมลตรงกัน การลบบัญชีเว็บไซต์ไม่ลบบัญชี NAVER หรือยกเลิกการเชื่อมต่อโดยอัตโนมัติ หากจำเป็น ให้ยกเลิกแยกต่างหากในส่วนจัดการบริการที่เชื่อมต่อของ NAVER"],
- "tr":["NAVER ile giriş","NAVER girişi Supabase Auth ve sağlayıcıya özel bir kimlik kullanır. E-posta ve diğer bilgiler yalnızca sağlandığında işlenir; NAVER parolanızı almayız. Herkese açık takma adınızı siz seçersiniz. Yalnızca e-posta adresleri aynı diye hesapları kendimiz birleştirmeyiz. Site hesabının silinmesi NAVER hesabınızı silmez veya bağlantısını otomatik iptal etmez. Gerekirse NAVER hesabınızdaki bağlı hizmetlerden bağlantıyı ayrıca kaldırın."]
+  "ko": [
+    "네이버 로그인",
+    "네이버 로그인은 Supabase Auth를 통해 네이버 고유 식별자로 계정을 구분합니다. 이메일 등은 제공되는 경우에만 처리하며, 네이버 비밀번호는 받지 않습니다. 사이트 공개 닉네임은 직접 정합니다. 이메일 주소만으로 기존 계정을 임의 통합하지 않습니다. 사이트 탈퇴 처리와 네이버의 서비스 연결 해제는 별개이며, 이 사이트의 탈퇴 처리가 네이버 계정이나 네이버 측 연결을 자동으로 삭제하지는 않습니다. 필요하면 네이버 계정의 연결 서비스 관리에서 별도로 해제해 주세요."
+  ],
+  "en": [
+    "NAVER sign-in",
+    "NAVER sign-in uses Supabase Auth and a provider-specific identifier. Email and other details are processed only when supplied; we do not receive your NAVER password. You choose your public site nickname. We do not manually merge accounts just because their email addresses match. Site withdrawal and NAVER connection revocation are separate; deleting the site account does not delete your NAVER account or automatically revoke its connection. Manage that connection separately in your NAVER account when needed."
+  ],
+  "ja": [
+    "NAVERログイン",
+    "NAVERログインではSupabase AuthとNAVER固有の識別子を利用します。メールなどは提供された場合にのみ扱い、NAVERのパスワードは受け取りません。公開ニックネームは自分で設定します。メールの一致だけで既存アカウントを独自に統合しません。当サイトの退会とNAVER側の連携解除は別です。退会してもNAVERアカウントや連携は自動削除されないため、必要に応じてNAVERの連携サービス管理で解除してください。"
+  ],
+  "zh": [
+    "NAVER 登录",
+    "NAVER 登录通过 Supabase Auth 和 NAVER 专用标识符识别账户。仅在收到时处理邮箱等资料；我们不会收到 NAVER 密码。本站公开昵称由您自行设置。我们不会仅因邮箱相同而手动合并账户。本站注销与 NAVER 解除授权相互独立；注销本站账户不会删除 NAVER 账户，也不会自动解除其授权。需要时请在 NAVER 账户的关联服务管理中另行解除。"
+  ],
+  "ru": [
+    "Вход через NAVER",
+    "Вход через NAVER использует Supabase Auth и уникальный идентификатор провайдера. Электронная почта и другие сведения обрабатываются только при их предоставлении; пароль NAVER мы не получаем. Публичный псевдоним вы выбираете сами. Мы не объединяем аккаунты вручную только из-за совпадения почты. Удаление аккаунта сайта не удаляет аккаунт NAVER и не отзывает его подключение автоматически. При необходимости отключите сервис в настройках NAVER."
+  ],
+  "pt": [
+    "Entrar com NAVER",
+    "O acesso com NAVER usa Supabase Auth e um identificador do provedor. E-mail e outros dados são tratados somente quando fornecidos; não recebemos sua senha NAVER. Você escolhe seu apelido público. Não unimos contas manualmente apenas por terem o mesmo e-mail. Excluir a conta do site não exclui sua conta NAVER nem revoga automaticamente a conexão. Gerencie essa conexão separadamente nas configurações da NAVER, se necessário."
+  ],
+  "es": [
+    "Acceso con NAVER",
+    "El acceso con NAVER utiliza Supabase Auth y un identificador propio del proveedor. El correo y otros datos se tratan solo si se facilitan; no recibimos su contraseña de NAVER. Usted elige su apodo público. No unimos cuentas manualmente solo por compartir correo. Eliminar la cuenta del sitio no elimina su cuenta NAVER ni revoca automáticamente la conexión. Si lo necesita, desvincule el servicio en su cuenta NAVER."
+  ],
+  "fr": [
+    "Connexion NAVER",
+    "La connexion NAVER utilise Supabase Auth et un identifiant propre au fournisseur. L’adresse e-mail et les autres informations ne sont traitées que si elles sont fournies ; nous ne recevons pas votre mot de passe NAVER. Vous choisissez votre pseudo public. Nous ne fusionnons pas manuellement les comptes sur la seule base d’une adresse e-mail identique. La suppression du compte du site ne supprime pas le compte NAVER et ne révoque pas automatiquement sa connexion. Gérez cette connexion séparément dans votre compte NAVER si nécessaire."
+  ],
+  "id": [
+    "Masuk dengan NAVER",
+    "Login NAVER menggunakan Supabase Auth dan pengenal khusus penyedia. Email dan detail lain diproses hanya jika diberikan; kami tidak menerima kata sandi NAVER Anda. Anda memilih nama panggilan publik sendiri. Kami tidak menggabungkan akun secara manual hanya karena email sama. Penghapusan akun situs tidak menghapus akun NAVER atau otomatis mencabut hubungannya. Jika perlu, putuskan hubungan layanan secara terpisah melalui akun NAVER."
+  ],
+  "hi": [
+    "NAVER से साइन इन",
+    "NAVER साइन-इन में Supabase Auth और प्रदाता की विशिष्ट पहचान का उपयोग होता है। ईमेल और अन्य विवरण केवल उपलब्ध होने पर संसाधित होते हैं; हमें आपका NAVER पासवर्ड नहीं मिलता। सार्वजनिक उपनाम आप चुनते हैं। केवल ईमेल समान होने पर हम खातों को अपने स्तर पर नहीं मिलाते। साइट खाता हटाने से NAVER खाता या उसका कनेक्शन अपने आप नहीं हटता। आवश्यकता होने पर NAVER खाते में जुड़े सेवाओं की सेटिंग से कनेक्शन अलग से हटाएँ।"
+  ],
+  "de": [
+    "Anmeldung mit NAVER",
+    "Die NAVER-Anmeldung verwendet Supabase Auth und eine anbieterspezifische Kennung. E-Mail und weitere Angaben werden nur verarbeitet, wenn sie übermittelt werden; Ihr NAVER-Passwort erhalten wir nicht. Ihren öffentlichen Spitznamen wählen Sie selbst. Wir führen Konten nicht allein wegen gleicher E-Mail-Adressen manuell zusammen. Die Löschung des Website-Kontos löscht weder Ihr NAVER-Konto noch widerruft sie automatisch dessen Verbindung. Trennen Sie den Dienst bei Bedarf in Ihrem NAVER-Konto."
+  ],
+  "vi": [
+    "Đăng nhập bằng NAVER",
+    "Đăng nhập NAVER sử dụng Supabase Auth và mã định danh riêng của nhà cung cấp. Email và thông tin khác chỉ được xử lý khi được cung cấp; chúng tôi không nhận mật khẩu NAVER. Bạn tự chọn biệt danh công khai. Chúng tôi không tự gộp tài khoản chỉ vì trùng email. Xóa tài khoản trang web không xóa tài khoản NAVER hoặc tự động hủy liên kết. Khi cần, hãy hủy riêng trong phần quản lý dịch vụ liên kết của tài khoản NAVER."
+  ],
+  "ar": [
+    "تسجيل الدخول عبر NAVER",
+    "يستخدم تسجيل الدخول عبر NAVER خدمة Supabase Auth ومعرّفًا خاصًا بمزود الهوية. لا نعالج البريد الإلكتروني والمعلومات الأخرى إلا عند توفيرها، ولا نتلقى كلمة مرور NAVER. تختار اسمك المستعار العام بنفسك. لا ندمج الحسابات يدويًا لمجرد تطابق البريد الإلكتروني. حذف حساب الموقع لا يحذف حساب NAVER ولا يلغي ارتباطه تلقائيًا. يمكنك إلغاء الارتباط بشكل منفصل من إدارة الخدمات المتصلة في حساب NAVER عند الحاجة."
+  ],
+  "bn": [
+    "NAVER দিয়ে সাইন ইন",
+    "NAVER সাইন-ইনে Supabase Auth এবং প্রদানকারীর নির্দিষ্ট পরিচয় ব্যবহার করা হয়। ইমেল ও অন্যান্য তথ্য দেওয়া হলে তবেই প্রক্রিয়া করা হয়; আমরা NAVER পাসওয়ার্ড পাই না। প্রকাশ্য ডাকনাম আপনি বেছে নেন। শুধু ইমেল মিলে গেলে আমরা নিজে থেকে অ্যাকাউন্ট এক করি না। সাইটের অ্যাকাউন্ট মুছলে NAVER অ্যাকাউন্ট বা তার সংযোগ স্বয়ংক্রিয়ভাবে মুছে যায় না। প্রয়োজনে NAVER অ্যাকাউন্টের সংযুক্ত সেবা ব্যবস্থাপনায় আলাদাভাবে সংযোগ বন্ধ করুন।"
+  ],
+  "th": [
+    "เข้าสู่ระบบด้วย NAVER",
+    "การเข้าสู่ระบบ NAVER ใช้ Supabase Auth และรหัสเฉพาะของผู้ให้บริการ อีเมลและข้อมูลอื่นจะถูกประมวลผลเมื่อมีการส่งมาเท่านั้น เราไม่ได้รับรหัสผ่าน NAVER คุณเป็นผู้ตั้งชื่อเล่นสาธารณะเอง เราไม่รวมบัญชีด้วยตนเองเพียงเพราะอีเมลตรงกัน การลบบัญชีเว็บไซต์ไม่ลบบัญชี NAVER หรือยกเลิกการเชื่อมต่อโดยอัตโนมัติ หากจำเป็น ให้ยกเลิกแยกต่างหากในส่วนจัดการบริการที่เชื่อมต่อของ NAVER"
+  ],
+  "tr": [
+    "NAVER ile giriş",
+    "NAVER girişi Supabase Auth ve sağlayıcıya özel bir kimlik kullanır. E-posta ve diğer bilgiler yalnızca sağlandığında işlenir; NAVER parolanızı almayız. Herkese açık takma adınızı siz seçersiniz. Yalnızca e-posta adresleri aynı diye hesapları kendimiz birleştirmeyiz. Site hesabının silinmesi NAVER hesabınızı silmez veya bağlantısını otomatik iptal etmez. Gerekirse NAVER hesabınızdaki bağlı hizmetlerden bağlantıyı ayrıca kaldırın."
+  ],
+  "it": [
+    "Accesso con NAVER",
+    "L’accesso con NAVER utilizza Supabase Auth e un identificatore specifico del fornitore. L’email e gli altri dati vengono trattati solo se forniti; non riceviamo la password di NAVER. Scegli tu il nickname pubblico sul sito. Non uniamo manualmente gli account solo perché gli indirizzi email coincidono. La cancellazione dal sito e la revoca del collegamento a NAVER sono operazioni separate: eliminare l’account del sito non elimina l’account NAVER né revoca automaticamente il collegamento. Se necessario, gestisci separatamente il collegamento nel tuo account NAVER."
+  ],
+  "pl": [
+    "Logowanie przez NAVER",
+    "Logowanie przez NAVER korzysta z Supabase Auth i identyfikatora przypisanego przez dostawcę. Adres e-mail i inne dane są przetwarzane tylko wtedy, gdy zostaną przekazane; nie otrzymujemy hasła do NAVER. Samodzielnie wybierasz publiczny pseudonim na stronie. Nie łączymy ręcznie kont wyłącznie z powodu zgodności adresów e-mail. Usunięcie konta w serwisie i odłączenie NAVER to osobne czynności: usunięcie konta w serwisie nie usuwa konta NAVER ani nie cofa automatycznie połączenia. W razie potrzeby zarządzaj tym połączeniem oddzielnie na swoim koncie NAVER."
+  ],
+  "nl": [
+    "Inloggen met NAVER",
+    "Inloggen met NAVER gebruikt Supabase Auth en een identificatiecode van de aanbieder. E-mail en andere gegevens worden alleen verwerkt als ze worden verstrekt; wij ontvangen je NAVER-wachtwoord niet. Je kiest zelf je openbare bijnaam op de site. Wij voegen accounts niet handmatig samen alleen omdat hun e-mailadressen overeenkomen. Je siteaccount verwijderen en de NAVER-koppeling intrekken zijn afzonderlijke handelingen: het verwijderen van je siteaccount verwijdert je NAVER-account niet en trekt de koppeling niet automatisch in. Beheer die koppeling indien nodig afzonderlijk in je NAVER-account."
+  ],
+  "cs": [
+    "Přihlášení přes NAVER",
+    "Přihlášení přes NAVER využívá Supabase Auth a identifikátor specifický pro poskytovatele. E-mail a další údaje zpracováváme pouze tehdy, jsou-li poskytnuty; vaše heslo k NAVER nedostáváme. Veřejnou přezdívku na webu si volíte sami. Účty ručně neslučujeme pouze proto, že se jejich e-mailové adresy shodují. Smazání účtu na webu a zrušení propojení s NAVER jsou samostatné kroky: smazání účtu na webu nesmaže účet NAVER ani automaticky nezruší jeho propojení. V případě potřeby spravujte toto propojení zvlášť ve svém účtu NAVER."
+  ]
 }

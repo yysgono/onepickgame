@@ -63,6 +63,11 @@ const CATEGORY_SEO_COPY = {
     title: "{category} Oylama Turnuvaları | OnePickGame",
     description: "OnePickGame'de popüler ve en yeni {category} oylama turnuvalarını keşfet ve oyna.",
   },
+
+"it":{"title":"Giochi del torneo {category} | OnePickGame","description":"Sfoglia e gioca popolari e più recenti giochi di torneo {category} su OnePickGame."},
+"pl":{"title":"{category} turniej gry OnePickGame","description":"Przeglądaj i odtwarzaj popularne i najnowsze gry turniejowe {category} na OnePickGame."},
+"nl":{"title":"{category} toernooi Spelletjes OnePickGame","description":"Blader en speel populaire en nieuwste {category} toernooispellen op OnePickGame."},
+"cs":{"title":"{category} turnajové hry OnePickGame","description":"Procházet a hrát populární a nejnovější {category} turnajové hry na OnePickGame."}
 };
 
 const labels = require("./categoryLabels.json");

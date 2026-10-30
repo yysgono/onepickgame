@@ -1,3 +1,4 @@
+import {localizeExtraUi} from "../utils/newLanguageUi";
 import "../styles/activityPanels.css";
 import useClickTargetDebug from "../hooks/useClickTargetDebug";
 import {contentRevision} from "../utils/contentTrashApi";
@@ -133,6 +134,11 @@ const RECOMMENDED_PRESET_TITLE = {
   th: "⭐ เทมเพลต Tier List แนะนำ",
   ar: "⭐ قوالب Tier List مقترحة",
   bn: "⭐ প্রস্তাবিত Tier List প্রিসেট",
+
+"it":"⭐ Modelli di classifica consigliati",
+"pl":"⭐ Polecane szablony rankingów",
+"nl":"⭐ Aanbevolen tierlijstsjablonen",
+"cs":"⭐ Doporučené šablony žebříčků"
 };
 
 function readTranslationMap(value) {
@@ -967,11 +973,11 @@ const displayTitle =
           recentPlayed: "최근 플레이된 티어표",
           empty: "표시할 티어표가 없습니다.",
         }
-      : {
+      : localizeExtraUi({
           recentCreated: "Recently Added Tier Lists",
           recentPlayed: "Recently Played Tier Lists",
           empty: "No tier lists to show.",
-        };
+        }, lang);
 
   const [recentCreatedTierRows, setRecentCreatedTierRows] = useState([]);
 
@@ -1606,7 +1612,7 @@ maxWidth: isMobile ? 430 : 1780,
   </div>
   {!tierPresetLoaded && <div className="tier-list-loading" role="status" aria-label={t("tierList.common.loading")}><span aria-hidden="true" /></div>}
   {presetError && <p role="alert" style={{ textAlign: "center", color: "#b42346" }}>{presetError}</p>}
-  {presetHasMore && tierPresetLoaded && <div style={{ textAlign: "center", margin: 20 }}><button type="button" onClick={() => setPresetPage(previous => previous + 1)} style={{ border: "2px solid #2563eb", borderRadius: 8, padding: "12px 24px", color: "#1d4ed8", background: "#fff", fontWeight: 800 }}>{t("tierList.common.loadMore", { defaultValue: lang === "ko" ? "더 보기" : "Load more" })}</button></div>}
+  {presetHasMore && tierPresetLoaded && <div style={{ textAlign: "center", margin: 20 }}><button type="button" onClick={() => setPresetPage(previous => previous + 1)} style={{ border: "2px solid #2563eb", borderRadius: 8, padding: "12px 24px", color: "#1d4ed8", background: "#fff", fontWeight: 800 }}>{t("tierList.common.loadMore", { defaultValue: lang === "ko" ? "더 보기" : localizeExtraUi("Load more") })}</button></div>}
 </section>}
 
 <section className="tier-community-filters" aria-label={t("tierList.page.title")}>

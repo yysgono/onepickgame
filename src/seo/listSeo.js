@@ -8,7 +8,12 @@ function getListSeo(kind, lang, search = '') {
   const requested = params.get('category');
   const category = allowed.includes(requested) ? requested : 'all';
   const base = kind === 'quiz' ? quizCopy[language] || quizCopy.en : tierCopy[language] || tierCopy.en;
-  const label = (tierCopy[language]?.categories || {})[category] || (category === 'knowledge' ? ({ko:'상식',en:'Trivia'}[language] || 'Trivia') : category);
+  const label = (tierCopy[language]?.categories || {})[category] || (category === 'knowledge' ? ({ko:'상식',en:'Trivia',
+"it":"Trivia",
+"pl":"Ciekawostki",
+"nl":"Trivia",
+"cs":"Kvíz"
+}[language] || 'Trivia') : category);
   const slug = (kind === 'quiz' ? 'quiz' : 'tier-list') + (category === 'all' ? '' : `?category=${category}`);
   const privateView = ['mine','source','preset','tag','search','creator','exclude'].some(key => !!params.get(key));
   return { category, slug, indexable: !privateView,

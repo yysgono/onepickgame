@@ -62,5 +62,21 @@
   "tr": {
     "title": "Oylama Turnuvası Oluştur | OnePickGame",
     "description": "Kendi oylama turnuvanı oluştur. Adayları ekle, eşleşmeleri hazırla, turnuvayı paylaş ve oyuncuların favorilerine oy vermesini sağla."
+  },
+  "it": {
+    "title": "Crea un torneo di tornei | OnePickGame",
+    "description": "Crea il tuo torneo su OnePickGame. Aggiungi candidati, costruisci incontri, condividi il tuo torneo e lascia che i giocatori votino per i loro preferiti."
+  },
+  "pl": {
+    "title": "Tworzenie turnieju gry OnePickGame",
+    "description": "Stwórz własną grę turniejową na OnePickGame. Dodaj kandydatów, budować matchupy, dzielić turniej, i niech gracze głosują na swoich ulubionych."
+  },
+  "nl": {
+    "title": "Maak een toernooi toernooi Spel OnePickGame",
+    "description": "Creëer je eigen toernooitoernooispel op OnePickGame. Voeg kandidaten toe, bouw matchups, deel je toernooi en laat spelers op hun favorieten stemmen."
+  },
+  "cs": {
+    "title": "Vytvořit turnaj hru OnePickGame",
+    "description": "Vytvořte si vlastní turnaj turnaj hru na OnePickGame. Přidat kandidáty, stavět matchups, sdílet svůj turnaj, a nechat hráče hlasovat pro své oblíbené."
   }
 }

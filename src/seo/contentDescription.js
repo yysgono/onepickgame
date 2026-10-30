@@ -60,6 +60,11 @@ const QUIZ_INTRO = {
   th: ['ควิซ', 'ทั้งหมด {n} ข้อ', 'ทดสอบความรู้ของคุณ', 'ดูภาพแล้วทายคำตอบ', 'ลองตอบคำถามแบบเลือกตอบ', 'พิมพ์คำตอบของคุณ', 'ลองคำถามแบบเลือกตอบและพิมพ์คำตอบ'],
   ar: ['اختبار', '{n} سؤالًا.', 'اختبر معلوماتك.', 'شاهد الصور وخمّن الإجابات.', 'جرّب أسئلة الاختيار من متعدد.', 'اكتب إجاباتك.', 'جرّب أسئلة الاختيار من متعدد والإجابات المكتوبة.'],
   bn: ['কুইজ', '{n}টি প্রশ্ন।', 'আপনার জ্ঞান যাচাই করুন।', 'ছবি দেখে উত্তর অনুমান করুন।', 'বহুনির্বাচনী প্রশ্নের উত্তর দিন।', 'আপনার উত্তর লিখুন।', 'বহুনির্বাচনী ও লিখিত উত্তরের প্রশ্ন চেষ্টা করুন।'],
+
+"it":["Quiz","Domande {n}.","Metti alla prova le tue conoscenze.","Guarda le immagini e indovina le risposte.","Prova le domande a scelta multipla.","Scrivi le tue risposte.","Prova a rispondere a domande a risposta multipla e a risposta multipla."],
+"pl":["Quiz","Pytania {n}.","Sprawdź swoją wiedzę.","Spójrz na zdjęcia i odgadnij odpowiedzi.","Spróbuj pytań wielokrotnego wyboru.","Wpisz swoje odpowiedzi.","Spróbuj pytań wielokrotnego wyboru i odpowiedzi."],
+"nl":["Quiz","{n} vragen.","Test je kennis.","Kijk naar de beelden en raad de antwoorden.","Probeer de meerkeuzevragen.","Typ je antwoorden.","Probeer meerdere keuzes en getypte antwoordvragen."],
+"cs":["Kvíz","{n} otázky.","Otestuj své znalosti.","Podívej se na ty obrázky a hádej odpovědi.","Zkus pár otázek.","Napiš odpovědi.","Zkuste vícenásobnou volbu a napište odpovědi."]
 };
 function quizDescription(quiz, questions, language) {
   const lang = String(language || 'en').toLowerCase().split(/[-_]/)[0];

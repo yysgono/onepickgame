@@ -110,5 +110,33 @@
     "match_wins": "Düello Galibiyetleri",
     "match_count": "Düellolar",
     "match_win_rate": "Düello Kazanma Oranı"
+  },
+  "it": {
+    "win_count": "Titoli",
+    "win_rate": "Tasso di campionato",
+    "match_wins": "Corrispondenza vincite",
+    "match_count": "Corrispondenze",
+    "match_win_rate": "Corrispondenza tasso di vincita"
+  },
+  "pl": {
+    "win_count": "Tytuły",
+    "win_rate": "Stawka za mistrzostwo",
+    "match_wins": "Dopasuj wygrane",
+    "match_count": "Zapałki",
+    "match_win_rate": "Dopasuj wygraną"
+  },
+  "nl": {
+    "win_count": "Titels",
+    "win_rate": "Kampioenschapspercentage",
+    "match_wins": "Match wint",
+    "match_count": "Lucifers",
+    "match_win_rate": "Match Win rate"
+  },
+  "cs": {
+    "win_count": "Název",
+    "win_rate": "Rychlost šampionátu",
+    "match_wins": "Výhry z zápasu",
+    "match_count": "Zápalky",
+    "match_win_rate": "Vítězná rychlost zápasu"
   }
 }

@@ -78,5 +78,25 @@
     "বিবরণ (ঐচ্ছিক)",
     "কুইজের বিষয় এবং খেলার নিয়ম পরিচয় করিয়ে দিন।",
     "খালি রাখলে প্রশ্নের ভিত্তিতে একটি পরিচিতি দেখানো হবে।"
+  ],
+  "it": [
+    "Descrizione (facoltativo)",
+    "Introdurre l'argomento e come giocare a questo quiz.",
+    "Lasciare vuoto per mostrare un'introduzione basata sulle domande."
+  ],
+  "pl": [
+    "Opis (nieobowiązkowo)",
+    "Wprowadzenie tematu i jak grać ten quiz.",
+    "Zostaw puste, aby pokazać wprowadzenie oparte na pytaniach."
+  ],
+  "nl": [
+    "Beschrijving (facultatief)",
+    "Introduceer het onderwerp en hoe deze quiz af te spelen.",
+    "Laat leeg om een inleiding te tonen op basis van de vragen."
+  ],
+  "cs": [
+    "Popis (nepovinné)",
+    "Představte téma a jak hrát tento kvíz.",
+    "Nechte prázdné a ukažte úvod na základě otázek."
   ]
 }

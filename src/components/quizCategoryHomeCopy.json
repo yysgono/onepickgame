@@ -126,5 +126,37 @@
     "moreCategories": "Diğer kategoriler",
     "loadFailed": "Quizler yüklenemedi.",
     "retry": "Tekrar dene"
+  },
+  "it": {
+    "viewAll": "Mostra tutti",
+    "next": "Quiz successivi",
+    "previous": "Quiz precedenti",
+    "moreCategories": "Altre categorie",
+    "loadFailed": "Impossibile caricare i quiz.",
+    "retry": "Riprova"
+  },
+  "pl": {
+    "viewAll": "Wyświetl wszystkie",
+    "next": "Następne quizy",
+    "previous": "Poprzednie pytania",
+    "moreCategories": "Więcej kategorii",
+    "loadFailed": "Nie można wczytać quizy.",
+    "retry": "Spróbuj ponownie"
+  },
+  "nl": {
+    "viewAll": "Alles tonen",
+    "next": "Volgende vragen",
+    "previous": "Vorige quizzen",
+    "moreCategories": "Meer categorieën",
+    "loadFailed": "Kon quizzen niet laden.",
+    "retry": "Opnieuw proberen"
+  },
+  "cs": {
+    "viewAll": "Zobrazit vše",
+    "next": "Další kvízy",
+    "previous": "Předchozí kvízy",
+    "moreCategories": "Více kategorií",
+    "loadFailed": "Nelze načíst kvízy.",
+    "retry": "Zkusit znovu"
   }
 }

@@ -1,3 +1,4 @@
+import {localizeExtraUi} from "../utils/newLanguageUi";
 import "../styles/activityPanels.css";
 import useClickTargetDebug from "../hooks/useClickTargetDebug";
 import NavigationLink from "./NavigationLink";
@@ -1368,11 +1369,11 @@ export default function QuizPage({ user = null }) {
           recentPlayed: "최근 플레이된 퀴즈",
           empty: "표시할 퀴즈가 없습니다.",
         }
-      : {
+      : localizeExtraUi({
           recentCreated: "Recently Added Quizzes",
           recentPlayed: "Recently Played Quizzes",
           empty: "No quizzes to show.",
-        };
+        }, lang);
 
   const showQuizActivityPanels = !mineOnly && !mobile && !search.trim();
   const [recentCreatedQuizRows, setRecentCreatedQuizRows] = useState([]);
@@ -3592,8 +3593,8 @@ export default function QuizPage({ user = null }) {
 
 
             </div>
-<button type="button" className="quiz-featured-arrow quiz-featured-prev" aria-label={t('previous',{defaultValue:lang==='ko'?'이전':'Previous'})} onClick={()=>featuredScrollRef.current?.scrollBy({left:(lang==='ar'?1:-1)*(featuredScrollRef.current.clientWidth*.9),behavior:'smooth'})}>‹</button>
-<button type="button" className="quiz-featured-arrow quiz-featured-next" aria-label={t('next',{defaultValue:lang==='ko'?'다음':'Next'})} onClick={()=>featuredScrollRef.current?.scrollBy({left:(lang==='ar'?-1:1)*(featuredScrollRef.current.clientWidth*.9),behavior:'smooth'})}>›</button>
+<button type="button" className="quiz-featured-arrow quiz-featured-prev" aria-label={t('previous',{defaultValue:lang==='ko'?'이전':localizeExtraUi('Previous')})} onClick={()=>featuredScrollRef.current?.scrollBy({left:(lang==='ar'?1:-1)*(featuredScrollRef.current.clientWidth*.9),behavior:'smooth'})}>‹</button>
+<button type="button" className="quiz-featured-arrow quiz-featured-next" aria-label={t('next',{defaultValue:lang==='ko'?'다음':localizeExtraUi('Next')})} onClick={()=>featuredScrollRef.current?.scrollBy({left:(lang==='ar'?-1:1)*(featuredScrollRef.current.clientWidth*.9),behavior:'smooth'})}>›</button>
 </div>
 
 

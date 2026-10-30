@@ -190,5 +190,53 @@
     "মোট {n} জন প্রার্থী আছে।",
     "নকশা, দক্ষতা বা ব্যক্তিগত পছন্দের মতো মানদণ্ড বেছে নিন।",
     "প্রধান প্রার্থী"
+  ],
+  "it": [
+    "Scopri di più su questo argomento",
+    "Giochi a torneo",
+    "Classifiche a livelli",
+    "Quiz",
+    "Torneo originale",
+    "Classifica a livelli",
+    "Vota i candidati in {title} usando i tuoi criteri e confronta i loro livelli.",
+    "Ci sono candidati {n}.",
+    "Scegli un criterio come il design, le prestazioni o le preferenze personali.",
+    "Candidati in evidenza"
+  ],
+  "pl": [
+    "Więcej informacji na ten temat",
+    "Gry turniejowe",
+    "Rankingi poziomów",
+    "Quizzes",
+    "Oryginalny turniej",
+    "Ranking poziomów",
+    "Oceń kandydatów w {title} przy użyciu własnych kryteriów i porównać ich poziomy.",
+    "Kandydaci {n}.",
+    "Wybierz kryterium, takie jak projektowanie, wydajność lub osobiste preferencje.",
+    "Wyróżnieni kandydaci"
+  ],
+  "nl": [
+    "Verken meer over dit onderwerp",
+    "Toernooispellen",
+    "Tierlijsten",
+    "Quizzen",
+    "Origineel toernooi",
+    "Tierlijst",
+    "Beoordeel de kandidaten in {title} met behulp van uw eigen criteria en vergelijk hun niveaus.",
+    "Er zijn {n} kandidaten.",
+    "Kies een criterium zoals ontwerp, prestaties of persoonlijke voorkeur.",
+    "Aanbevolen kandidaten"
+  ],
+  "cs": [
+    "Prozkoumejte více na toto téma",
+    "Turnajové hry",
+    "Žebříčky úrovní",
+    "Kvízy",
+    "Původní turnaj",
+    "Žebříček úrovní",
+    "Ohodnoťte kandidáty ve {title} pomocí vlastních kritérií a porovnejte jejich úrovně.",
+    "Jsou tu kandidáti {n}.",
+    "Vyberte si kritérium, jako je design, výkon, nebo osobní preference.",
+    "Nejlepší kandidáti"
   ]
 }

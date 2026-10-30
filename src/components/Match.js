@@ -1,3 +1,4 @@
+import {localizeExtraUi} from "../utils/newLanguageUi";
 import GameBrandLabel from "./GameBrandLabel";
 // src/components/Match.js
 
@@ -5076,7 +5077,7 @@ useEffect(() => {
 
                 {t("match_random_select", {
 
-                  defaultValue: matchLanguage === "ko" ? "랜덤 선택" : "Random pick",
+                  defaultValue: matchLanguage === "ko" ? "랜덤 선택" : localizeExtraUi("Random pick"),
 
                 })}
 

@@ -16,6 +16,11 @@ const COPY = {
   bn: ['আমার ওয়ার্ল্ড কাপ', 'আপনার তৈরি ওয়ার্ল্ড কাপ দেখুন ও পরিচালনা করুন।'],
   th: ['เวิลด์คัพของฉัน', 'ดูและจัดการเวิลด์คัพที่คุณสร้าง'],
   tr: ['World Cup Oyunlarım', 'Oluşturduğun World Cup oyunlarını görüntüle ve yönet.'],
+
+"it":["I miei tornei","Visualizza e gestisci i tornei creati."],
+"pl":["Moje turnieje","Przeglądaj i zarządzaj turniejami, które stworzyłeś."],
+"nl":["Mijn toernooien","Bekijk en beheer de toernooien die je gemaakt hebt."],
+"cs":["Moje turnaje","Zobrazit a spravovat turnaje, které jste vytvořili."]
 };
 function getPrivatePageSeo(language, page = "my-worldcups") {
   const requested = String(language || 'en').toLowerCase().split(/[-_]/)[0];

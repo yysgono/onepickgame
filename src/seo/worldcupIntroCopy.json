@@ -78,5 +78,25 @@
     "{title}-এ আপনার পছন্দের প্রার্থী বেছে নিন।",
     "{n} জন প্রার্থীর তুলনা করে চূড়ান্ত বিজয়ী নির্বাচন করুন।",
     "উল্লেখযোগ্য প্রার্থী: {names}।"
+  ],
+  "it": [
+    "Scegli il tuo preferito in {title}.",
+    "Confronta i candidati {n} e scegli il vincitore finale.",
+    "Candidati in evidenza: {names}."
+  ],
+  "pl": [
+    "Wybierz swój ulubiony w {title}.",
+    "Porównaj kandydatów {n} i wybierz ostatecznego zwycięzcę.",
+    "Wybrani kandydaci: {names}."
+  ],
+  "nl": [
+    "Kies je favoriet in {title}.",
+    "Vergelijk {n} kandidaten en kies de ultieme winnaar.",
+    "Aanbevolen kandidaten: {names}."
+  ],
+  "cs": [
+    "Vyberte si své oblíbené v {title}.",
+    "Porovnejte {n} kandidáty a vyberte si konečného vítěze.",
+    "Nejlepší kandidáti: {names}."
   ]
 }

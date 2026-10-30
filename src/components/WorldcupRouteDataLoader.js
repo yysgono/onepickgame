@@ -1,3 +1,4 @@
+import {localizeExtraUi} from "../utils/newLanguageUi";
 import AdGuard from '../ads/AdGuard';
 import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
@@ -23,8 +24,8 @@ export default function WorldcupRouteDataLoader({ children, worldcupList, allLoa
   if (ready) return children;
   const ko = i18n.language?.startsWith('ko');
   if (failure?.key === key) return <div role="alert" style={{ textAlign: 'center', padding: 48 }}>
-    <p>{ko ? '게임을 불러오지 못했습니다. 주소를 확인하거나 다시 시도해 주세요.' : 'Could not load this game. Check the address or try again.'}</p>
-    <button type="button" onClick={() => setRetryTick(value => value + 1)}>{t('retry', { defaultValue: ko ? '다시 시도' : 'Retry' })}</button>
+    <p>{ko ? '게임을 불러오지 못했습니다. 주소를 확인하거나 다시 시도해 주세요.' : localizeExtraUi('Could not load this game. Check the address or try again.')}</p>
+    <button type="button" onClick={() => setRetryTick(value => value + 1)}>{t('retry', { defaultValue: ko ? '다시 시도' : localizeExtraUi('Retry') })}</button>
   </div>;
   return <><AdGuard isAdmin={true}/><div role="status" style={{width:'100%',minWidth:0,minHeight:'60vh',display:'grid',placeItems:'center',boxSizing:'border-box',padding:48}}>{t('loading', {defaultValue:'Loading...'})}</div></>;
 }

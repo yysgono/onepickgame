@@ -6,8 +6,12 @@ import LanguageDetector from "i18next-browser-languagedetector";
 import translationEN from "./locales/en/translation.json";
 import { readInitialTranslations, installLazyTranslations } from "./utils/lazyTranslations";
 
-const SUPPORTED_LANGS = ["en","ko","ar","bn","de","es","fr","hi","id","ja","pt","ru","th","tr","vi","zh"];
+const SUPPORTED_LANGS = ["en","ko","ar","bn","de","es","fr","hi","id","ja","pt","ru","th","tr","vi","zh", "it", "pl", "nl", "cs"];
 const loaders = {
+  it: () => import("./locales/it/translation.json"),
+  pl: () => import("./locales/pl/translation.json"),
+  nl: () => import("./locales/nl/translation.json"),
+  cs: () => import("./locales/cs/translation.json"),
   ko: () => import("./locales/ko/translation.json"),
   ja: () => import("./locales/ja/translation.json"),
   zh: () => import("./locales/zh/translation.json"),

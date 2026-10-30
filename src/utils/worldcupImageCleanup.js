@@ -55,6 +55,11 @@ const WARNINGS={
  ar:'تم حفظ اللعبة أو حذفها، لكن تعذر تأكيد حذف بعض الصور. تحقق من أذونات التخزين أو الاتصال.',
  th:'บันทึกหรือลบเกมแล้ว แต่ยังยืนยันการลบรูปบางไฟล์ไม่ได้ โปรดตรวจสอบสิทธิ์พื้นที่จัดเก็บหรือการเชื่อมต่อ',
  tr:'Oyun kaydedildi veya silindi ancak bazı resimlerin silindiği doğrulanamadı. Depolama izinlerini veya bağlantıyı kontrol edin.'
+,
+"it":"Il gioco è stato salvato/cancellato, ma non è stato possibile confermare la rimozione di alcuni file immagine. Controllare i permessi di archiviazione o la connessione.",
+"pl":"Gra została zapisana/usunięta, ale usunięcie niektórych plików obrazu nie może być potwierdzone. Sprawdź uprawnienia do przechowywania lub połączenie.",
+"nl":"Het spel werd opgeslagen / verwijderd, maar het verwijderen van sommige afbeeldingsbestanden kon niet worden bevestigd. Controleer opslagrechten of uw verbinding.",
+"cs":"Hra byla uložena/smazána, ale odstranění některých obrazových souborů nebylo možné potvrdit. Zkontrolujte práva k ukládání nebo vaše připojení."
 };
 export function notifyImageCleanupFailure(result,language){
  if(!result.failed.length||typeof window==='undefined')return;

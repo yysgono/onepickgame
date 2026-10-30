@@ -1,3 +1,4 @@
+import {localizeExtraUi} from "../utils/newLanguageUi";
 import WorldcupCandidateImporter from "./WorldcupCandidateImporter";
 import { mergeImportedCandidates } from "../utils/worldcupCandidateImport";
 import { originalTitleLabel } from "../utils/originalContentLanguage";
@@ -160,6 +161,11 @@ const OTHER_LANGUAGE_TITLE_COPY = {
   th: { add: "＋ เพิ่มชื่อเรื่องภาษาอื่น", title: "ชื่อเรื่องที่แปลแล้ว", description: "คำอธิบายที่แปลแล้ว (ไม่บังคับ)", remove: "ลบ" },
   ar: { add: "＋ إضافة عنوان بلغة أخرى", title: "العنوان المترجم", description: "الوصف المترجم (اختياري)", remove: "حذف" },
   bn: { add: "＋ অন্য ভাষায় শিরোনাম যোগ করুন", title: "অনূদিত শিরোনাম", description: "অনূদিত বিবরণ (ঐচ্ছিক)", remove: "মুছুন" },
+
+"it":{"add":"+ Aggiungi titolo in un'altra lingua","title":"Titolo tradotto","description":"Descrizione tradotta (facoltativo)","remove":"Rimozione"},
+"pl":{"add":"+ Dodaj tytuł w innym języku","title":"Przetłumaczony tytuł","description":"Przetłumaczony opis (opcjonalnie)","remove":"Usuń"},
+"nl":{"add":"+ Titel toevoegen in een andere taal","title":"Vertaalde titel","description":"Vertaalde beschrijving (facultatief)","remove":"Verwijderen"},
+"cs":{"add":"+ Přidat název v jiném jazyce","title":"Přeložený titulek","description":"Přeložený popis (nepovinné)","remove":"Odstranit"}
 };
 
 
@@ -4541,7 +4547,7 @@ setCandidates([
 
               ? "이상형 월드컵 만드는 방법"
 
-              : "How to Create a Worldcup"}
+              : localizeExtraUi("How to Create a Worldcup")}
 
           </h2>
 
@@ -4571,7 +4577,7 @@ setCandidates([
 
               ? "처음 만드는 분들을 위한 이상형 월드컵 만들기 가이드를 확인해보세요."
 
-              : "Check out our guide to learn how to create your own Worldcup."}
+              : localizeExtraUi("Check out our guide to learn how to create your own Worldcup.")}
 
           </p>
 
@@ -4631,7 +4637,7 @@ setCandidates([
 
               ? "만드는 방법 보기"
 
-              : "View Creation Guide"}
+              : localizeExtraUi("View Creation Guide")}
 
           </button>
 

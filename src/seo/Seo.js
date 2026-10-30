@@ -22,7 +22,7 @@ const SUPPORTED_LANGS = [
   "bn",
   "th",
   "tr",
-];
+ "it", "pl", "nl", "cs"];
 
 const OG_LOCALE_MAP = {
   en: "en_US",
@@ -41,6 +41,11 @@ const OG_LOCALE_MAP = {
   bn: "bn_IN",
   th: "th_TH",
   tr: "tr_TR",
+
+"it":"it_IT",
+"pl":"pl_PL",
+"nl":"nl_NL",
+"cs":"cs_CZ"
 };
 
 function stripTrailingSlash(value = "") {

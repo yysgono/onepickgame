@@ -231,6 +231,11 @@ const bracketTitleMap = {
 
   bn: "ভোটিং টুর্নামেন্ট",
 
+
+"it":"Torneo a eliminazione",
+"pl":"Turniej eliminacyjny",
+"nl":"Afvaltoernooi",
+"cs":"Vyřazovací turnaj"
 };
 
 
@@ -269,6 +274,11 @@ const winnerLabelMap = {
 
   bn: "বিজয়ী",
 
+
+"it":"Vincitore",
+"pl":"Zwycięzca",
+"nl":"Winnaar",
+"cs":"Vítěz"
 };
 
 

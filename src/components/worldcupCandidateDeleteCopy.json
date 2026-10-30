@@ -62,5 +62,21 @@
   "bn": [
     "সংরক্ষণ করলে বাদ দেওয়া প্রার্থীদের জয়ের রেকর্ড, ব্যক্তিগত পরিসংখ্যান ও সংশ্লিষ্ট মুখোমুখি রেকর্ড স্থায়ীভাবে মুছে যাবে। অন্য প্রার্থীদের আগের মোট পরিসংখ্যান থাকবে।",
     "{count} জন প্রার্থী ও তাঁদের পরিসংখ্যান মুছে সংরক্ষণ করবেন? মুছে ফেলা পরিসংখ্যান ফেরানো যাবে না।"
+  ],
+  "it": [
+    "Salvare in modo permanente elimina i log di vincita dei candidati rimossi, le statistiche individuali e i relativi record testa a testa. Altri candidati mantengono i loro totali storici.",
+    "Salvare ed eliminare i candidati {count} e le loro statistiche? Le statistiche cancellate non possono essere ripristinate."
+  ],
+  "pl": [
+    "Zapisywanie trwale usuwa dzienniki wygranych kandydatów, indywidualne statystyki i powiązane rekordy. Inni kandydaci zachowują swoje historyczne sumy.",
+    "Zapisz i usuń kandydatów {count} i ich statystyki? Usunięte statystyki nie mogą zostać przywrócone."
+  ],
+  "nl": [
+    "Het opslaan van permanent verwijderde kandidaten win logs, individuele statistieken en gerelateerde head-to-head records. Andere kandidaten houden hun historische totalen.",
+    "Opslaan en verwijderen van {count} kandidaten en hun statistieken? Verwijderde statistieken kunnen niet worden hersteld."
+  ],
+  "cs": [
+    "Uložení trvale smazává odstraněné kandidáty, vyhraje logy, jednotlivé statistiky a související osobní záznamy. Ostatní kandidáti si uchovávají své historické součty.",
+    "Uložit a odstranit kandidáty na {count} a jejich statistiky? Vymazané statistiky nelze obnovit."
   ]
 }

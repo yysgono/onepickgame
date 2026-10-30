@@ -1,3 +1,4 @@
+import NewLanguageHome from "./pages/NewLanguageHome";
 import GoogleAuthCallback from "./components/GoogleAuthCallback";
 import DeferredPageBoundary from "./components/DeferredPageBoundary";
 import { getPrivatePageSeo } from "./seo/privatePageSeo";
@@ -136,7 +137,7 @@ function LanguageWrapper(props) {
       "bn",
       "th",
       "tr",
-    ];
+     "it", "pl", "nl", "cs"];
 
     if (!supportedLangs.includes(lang)) {
       navigate("/en", {
@@ -156,6 +157,8 @@ function LanguageWrapper(props) {
   };
 
   switch (lang) {
+    case "it": case "pl": case "nl": case "cs":
+      return <NewLanguageHome {...homeProps} language={lang} />;
     case "ko":
       return <KoPage {...homeProps} />;
 
@@ -595,7 +598,12 @@ function AppRoutes() {
       bn: "ভোটিং টুর্নামেন্ট | One Pick Game",
       th: "เกมโหวตแบบทัวร์นาเมนต์ | One Pick Game",
       tr: "Turnuva Oyunu | One Pick Game",
-    };
+    
+"it":"Gioco di tornei | torneo preferito a scelta | One Pick Game",
+"pl":"turniej gra ulubiony-wybór turniej One Pick Game",
+"nl":"toernooi spel . . favoriete-keuze toernooi . . One Pick Game",
+"cs":"turnaj Game Oblíbený výběr turnaj ? One Pick Game"
+};
 
 const descMap = {
   en: "Create and play tournament bracket games on One Pick Game. Vote for your favorites, build your own brackets, and discover community rankings.",
@@ -629,6 +637,11 @@ const descMap = {
   th: "สร้างและเล่นเกมโหวตแบบทัวร์นาเมนต์บน One Pick Game เลือกรายการโปรด สร้างทัวร์นาเมนต์ของคุณเอง และดูอันดับยอดนิยมจากชุมชน",
 
   tr: "One Pick Game'de oylama turnuvaları oluştur ve oyna. Favorilerini seç, kendi turnuvanı oluştur ve topluluk sıralamalarını keşfet.",
+
+"it":"Crea e gioca ai tornei su One Pick Game. Vota i tuoi preferiti, costruisci i tuoi tornei e scopri la classifica della comunità.",
+"pl":"Tworzenie i grać w turniejach turniejowych na One Pick Game. Głosuj na swoich ulubionych, budować własne turnieje i odkryć rankingi społeczności.",
+"nl":"Maak en speel toernooien toernooien op One Pick Game. Stem op je favorieten, bouw je eigen toernooien, en ontdek community rankings.",
+"cs":"Vytvořit a hrát turnajové hry na One Pick Game. Hlasovat pro své oblíbené, vybudovat své vlastní turnaje, a objevte komunitní žebříčky."
 };
 
     /* ===============================================
@@ -1297,6 +1310,11 @@ const worldCupKeywordMap = {
   bn: "ভোটিং টুর্নামেন্ট",
   th: "เกมโหวตแบบทัวร์นาเมนต์",
   tr: "Oylama Turnuvası",
+
+"it":"Torneo delle preferenze",
+"pl":"Turniej ulubieńców",
+"nl":"Voorkeurstoernooi",
+"cs":"Turnaj oblíbených možností"
 };
 
 const worldCupKeyword =
@@ -1395,6 +1413,11 @@ function WorldcupMakerWrapper() {
   bn: "ভোটিং টুর্নামেন্ট তৈরি করুন | OnePickGame",
   th: "สร้างเกมโหวตแบบทัวร์นาเมนต์ | OnePickGame",
   tr: "Oylama Turnuvası Oluştur | OnePickGame",
+
+"it":"Crea un torneo di tornei | OnePickGame",
+"pl":"Tworzenie turnieju gry OnePickGame",
+"nl":"Maak een toernooi toernooi Spel OnePickGame",
+"cs":"Vytvořit turnaj hru OnePickGame"
 };
 
 const makerDescMap = {
@@ -1429,6 +1452,11 @@ const makerDescMap = {
   th: "สร้างเกมโหวตแบบทัวร์นาเมนต์ของคุณเอง เพิ่มผู้เข้าแข่งขัน จัดคู่การแข่งขัน แชร์ทัวร์นาเมนต์ และให้ผู้เล่นโหวตตัวเลือกที่ชื่นชอบ",
 
   tr: "Kendi oylama turnuvanı oluştur. Adayları ekle, eşleşmeleri hazırla, turnuvayı paylaş ve oyuncuların favorilerine oy vermesini sağla.",
+
+"it":"Crea il tuo torneo su OnePickGame. Aggiungi candidati, costruisci incontri, condividi il tuo torneo e lascia che i giocatori votino per i loro preferiti.",
+"pl":"Stwórz własną grę turniejową na OnePickGame. Dodaj kandydatów, budować matchupy, dzielić turniej, i niech gracze głosują na swoich ulubionych.",
+"nl":"Creëer je eigen toernooitoernooispel op OnePickGame. Voeg kandidaten toe, bouw matchups, deel je toernooi en laat spelers op hun favorieten stemmen.",
+"cs":"Vytvořte si vlastní turnaj turnaj hru na OnePickGame. Přidat kandidáty, stavět matchups, sdílet svůj turnaj, a nechat hráče hlasovat pro své oblíbené."
 };
 
   return (

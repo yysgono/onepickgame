@@ -1,6 +1,10 @@
 // Server-only. Static require paths keep these resources in the server deployment,
 // without putting every language in the browser's initial JavaScript.
 const loaders = {
+  it: () => require('./src/locales/it/translation.json'),
+  pl: () => require('./src/locales/pl/translation.json'),
+  nl: () => require('./src/locales/nl/translation.json'),
+  cs: () => require('./src/locales/cs/translation.json'),
   ko: () => require('./src/locales/ko/translation.json'),
   ja: () => require('./src/locales/ja/translation.json'),
   zh: () => require('./src/locales/zh/translation.json'),

@@ -5,7 +5,12 @@ const LANGS = Object.keys(COPY);
 const SITE_URL = 'https://www.onepickgame.com';
 const DEFAULT_QUIZ_LANGUAGE = 'ko'; // Stable language for the legacy /quiz URL.
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-const OG_LOCALES = { ko: 'ko_KR', en: 'en_US', ja: 'ja_JP', zh: 'zh_CN', es: 'es_ES', fr: 'fr_FR', vi: 'vi_VN', de: 'de_DE', ru: 'ru_RU', id: 'id_ID', pt: 'pt_BR', hi: 'hi_IN', tr: 'tr_TR', th: 'th_TH', ar: 'ar_AR', bn: 'bn_IN' };
+const OG_LOCALES = { ko: 'ko_KR', en: 'en_US', ja: 'ja_JP', zh: 'zh_CN', es: 'es_ES', fr: 'fr_FR', vi: 'vi_VN', de: 'de_DE', ru: 'ru_RU', id: 'id_ID', pt: 'pt_BR', hi: 'hi_IN', tr: 'tr_TR', th: 'th_TH', ar: 'ar_AR', bn: 'bn_IN' ,
+"it":"it_IT",
+"pl":"pl_PL",
+"nl":"nl_NL",
+"cs":"cs_CZ"
+};
 function normalizeLanguage(value) { return String(value || '').toLowerCase().split(/[-_]/)[0]; }
 function translationMap(value) {
   if (typeof value === 'string') {

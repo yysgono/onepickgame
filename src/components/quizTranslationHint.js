@@ -15,5 +15,10 @@ const HINTS = {
  th:'หากตัวเลือกยังไม่ได้แปล ให้คลิกขวาแล้วเลือกแปลเป็นภาษาของคุณ บนมือถือใช้เมนูแปลภาษาของเบราว์เซอร์',
  ar:'إذا لم تُترجم الخيارات، فانقر بزر الفأرة الأيمن واختر الترجمة إلى لغتك. على الهاتف استخدم الترجمة من قائمة المتصفح.',
  bn:'বিকল্পগুলো অনুবাদ না হলে ডান ক্লিক করে নিজের ভাষায় অনুবাদ বেছে নিন। মোবাইলে ব্রাউজারের মেনু থেকে অনুবাদ ব্যবহার করুন।'
+,
+"it":"Se le scelte non vengono tradotte, fare clic con il tasto destro del mouse e scegliere Tradurre nella tua lingua. Sul cellulare, utilizzare Tradurre nel menu del browser.",
+"pl":"Jeśli wybory nie są tłumaczone, kliknij prawym przyciskiem myszy i wybierz Przetłumacz na swój język. Na telefon komórkowy użyj Tłumacz w menu przeglądarki.",
+"nl":"Als de keuzes niet worden vertaald, klik met de rechtermuisknop en kies Vertalen naar uw taal. Op mobiel, gebruik Vertalen in het browsermenu.",
+"cs":"Pokud volby nejsou přeloženy, klikněte pravým tlačítkem myši a vyberte Přeložit do vašeho jazyka. Na mobilu použijte Translate v menu prohlížeče."
 };
 export default function quizTranslationHint(lang){return HINTS[String(lang).split(/[-_]/)[0]]||HINTS.en;}

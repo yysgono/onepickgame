@@ -16,7 +16,7 @@ export const SUPPORTED_LANGS = [
   "bn",
   "th",
   "tr",
-];
+ "it", "pl", "nl", "cs"];
 
 export function normalizeLang(lang) {
   return String(lang || "en").toLowerCase().split("-")[0];

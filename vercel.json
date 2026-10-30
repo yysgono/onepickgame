@@ -138,11 +138,11 @@
       "dest": "/server.js?seo=private-page&lang=en&page=suggestions-board"
     },
     {
-      "src": "/(ko|en|ja|zh|ru|pt|es|fr|id|hi|de|vi|ar|bn|th|tr)/(notices|community)/?$",
+      "src": "/(ko|en|ja|zh|ru|pt|es|fr|id|hi|de|vi|ar|bn|th|tr|it|pl|nl|cs)/(notices|community)/?$",
       "dest": "/server.js?seo=community-list&lang=$1&board=$2"
     },
     {
-      "src": "/(ko|en|ja|zh|ru|pt|es|fr|id|hi|de|vi|ar|bn|th|tr)/(my-worldcups|admin-suggestions|suggestions|suggestions-board|blog/write|blog/[^/]+/edit)/?$",
+      "src": "/(ko|en|ja|zh|ru|pt|es|fr|id|hi|de|vi|ar|bn|th|tr|it|pl|nl|cs)/(my-worldcups|admin-suggestions|suggestions|suggestions-board|blog/write|blog/[^/]+/edit)/?$",
       "dest": "/server.js?seo=private-page&lang=$1&page=$2"
     },
     {
@@ -154,19 +154,19 @@
       "dest": "/server.js"
     },
     {
-      "src": "/(ko|en|ja|zh|ru|pt|es|fr|id|hi|de|vi|ar|bn|th|tr)/category/([^/]+)/?$",
+      "src": "/(ko|en|ja|zh|ru|pt|es|fr|id|hi|de|vi|ar|bn|th|tr|it|pl|nl|cs)/category/([^/]+)/?$",
       "dest": "/server.js?seo=category&lang=$1&category=$2"
     },
     {
-      "src": "/(ko|en|ja|zh|ru|pt|es|fr|id|hi|de|vi|ar|bn|th|tr)/random-pick/?$",
+      "src": "/(ko|en|ja|zh|ru|pt|es|fr|id|hi|de|vi|ar|bn|th|tr|it|pl|nl|cs)/random-pick/?$",
       "dest": "/server.js?seo=random-pick&lang=$1"
     },
     {
-      "src": "/(ko|en|ja|zh|ru|pt|es|fr|id|hi|de|vi|ar|bn|th|tr)/random-pick/(delivery-food|snacks|dessert|movies|anime|countries|lotto645|lol-champions|travel-korea|travel-global)/?$",
+      "src": "/(ko|en|ja|zh|ru|pt|es|fr|id|hi|de|vi|ar|bn|th|tr|it|pl|nl|cs)/random-pick/(delivery-food|snacks|dessert|movies|anime|countries|lotto645|lol-champions|travel-korea|travel-global)/?$",
       "dest": "/server.js?seo=random-pick&lang=$1&mode=$2"
     },
     {
-      "src": "/(ko|en|ja|zh|ru|pt|es|fr|id|hi|de|vi|ar|bn|th|tr)/random-pick/(wheel|lotto|pinball|ladder|boxes|cards|order|dice|teams)/?$",
+      "src": "/(ko|en|ja|zh|ru|pt|es|fr|id|hi|de|vi|ar|bn|th|tr|it|pl|nl|cs)/random-pick/(wheel|lotto|pinball|ladder|boxes|cards|order|dice|teams)/?$",
       "dest": "/server.js?seo=random-pick&lang=$1&mode=$2"
     },
     {
@@ -182,47 +182,47 @@
       "dest": "/server.js?seo=home&lang=en"
     },
     {
-      "src": "/(ko|en|ja|zh|ru|pt|es|fr|id|hi|de|vi|ar|bn|th|tr)/?$",
+      "src": "/(ko|en|ja|zh|ru|pt|es|fr|id|hi|de|vi|ar|bn|th|tr|it|pl|nl|cs)/?$",
       "dest": "/server.js?seo=home&lang=$1"
     },
     {
-      "src": "/(ko|en|ja|zh|ru|pt|es|fr|id|hi|de|vi|ar|bn|th|tr)/blog/?$",
+      "src": "/(ko|en|ja|zh|ru|pt|es|fr|id|hi|de|vi|ar|bn|th|tr|it|pl|nl|cs)/blog/?$",
       "dest": "/server.js?seo=blog-list&lang=$1"
     },
     {
-      "src": "/(ko|en|ja|zh|ru|pt|es|fr|id|hi|de|vi|ar|bn|th|tr)/blog/([^/]+)/?$",
+      "src": "/(ko|en|ja|zh|ru|pt|es|fr|id|hi|de|vi|ar|bn|th|tr|it|pl|nl|cs)/blog/([^/]+)/?$",
       "dest": "/server.js?seo=blog-post&lang=$1&slug=$2"
     },
     {
-      "src": "/(ko|en|ja|zh|ru|pt|es|fr|id|hi|de|vi|ar|bn|th|tr)/select-round/([^/]+)/?$",
+      "src": "/(ko|en|ja|zh|ru|pt|es|fr|id|hi|de|vi|ar|bn|th|tr|it|pl|nl|cs)/select-round/([^/]+)/?$",
       "dest": "/server.js?seo=worldcup&lang=$1&id=$2"
     },
     {
-      "src": "/(ko|en|ja|zh|ru|pt|es|fr|id|hi|de|vi|ar|bn|th|tr)/tier-list/?$",
+      "src": "/(ko|en|ja|zh|ru|pt|es|fr|id|hi|de|vi|ar|bn|th|tr|it|pl|nl|cs)/tier-list/?$",
       "dest": "/server.js?seo=tier-list-list&lang=$1"
     },
     {
-      "src": "/(ko|en|ja|zh|ru|pt|es|fr|id|hi|de|vi|ar|bn|th|tr)/tier-list/create/?$",
+      "src": "/(ko|en|ja|zh|ru|pt|es|fr|id|hi|de|vi|ar|bn|th|tr|it|pl|nl|cs)/tier-list/create/?$",
       "dest": "/"
     },
     {
-      "src": "/(ko|en|ja|zh|ru|pt|es|fr|id|hi|de|vi|ar|bn|th|tr)/tier-list/create/([^/]+)/?$",
+      "src": "/(ko|en|ja|zh|ru|pt|es|fr|id|hi|de|vi|ar|bn|th|tr|it|pl|nl|cs)/tier-list/create/([^/]+)/?$",
       "dest": "/"
     },
     {
-      "src": "/(ko|en|ja|zh|ru|pt|es|fr|id|hi|de|vi|ar|bn|th|tr)/tier-list/([^/]+)/?$",
+      "src": "/(ko|en|ja|zh|ru|pt|es|fr|id|hi|de|vi|ar|bn|th|tr|it|pl|nl|cs)/tier-list/([^/]+)/?$",
       "dest": "/server.js?seo=tier-list&lang=$1&id=$2"
     },
     {
-      "src": "/(ko|en|ja|zh|ru|pt|es|fr|id|hi|de|vi|ar|bn|th|tr)/quiz/?$",
+      "src": "/(ko|en|ja|zh|ru|pt|es|fr|id|hi|de|vi|ar|bn|th|tr|it|pl|nl|cs)/quiz/?$",
       "dest": "/server.js?seo=quiz-list&lang=$1"
     },
     {
-      "src": "/(ko|en|ja|zh|ru|pt|es|fr|id|hi|de|vi|ar|bn|th|tr)/quiz/create/?$",
+      "src": "/(ko|en|ja|zh|ru|pt|es|fr|id|hi|de|vi|ar|bn|th|tr|it|pl|nl|cs)/quiz/create/?$",
       "dest": "/server.js?seo=quiz-create&lang=$1"
     },
     {
-      "src": "/(ko|en|ja|zh|ru|pt|es|fr|id|hi|de|vi|ar|bn|th|tr)/quiz/([^/]+)/?$",
+      "src": "/(ko|en|ja|zh|ru|pt|es|fr|id|hi|de|vi|ar|bn|th|tr|it|pl|nl|cs)/quiz/([^/]+)/?$",
       "dest": "/server.js?seo=quiz-detail&lang=$1&id=$2"
     },
     {

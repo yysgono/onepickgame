@@ -1,5 +1,10 @@
 import React,{useState} from 'react';
-const controls={ko:['전체 결과 보기','간단히 보기'],en:['View all results','Show less'],ja:['すべての結果を見る','閉じる'],zh:['查看全部结果','收起'],es:['Ver todos los resultados','Ver menos'],fr:['Voir tous les résultats','Réduire'],vi:['Xem tất cả kết quả','Thu gọn'],de:['Alle Ergebnisse anzeigen','Weniger anzeigen'],ru:['Все результаты','Свернуть'],id:['Lihat semua hasil','Ringkas'],pt:['Ver todos os resultados','Ver menos'],hi:['सभी परिणाम देखें','कम दिखाएँ'],tr:['Tüm sonuçları göster','Daha az göster'],th:['ดูผลทั้งหมด','แสดงน้อยลง'],ar:['عرض كل النتائج','عرض أقل'],bn:['সব ফলাফল দেখুন','কম দেখান']};
+const controls={ko:['전체 결과 보기','간단히 보기'],en:['View all results','Show less'],ja:['すべての結果を見る','閉じる'],zh:['查看全部结果','收起'],es:['Ver todos los resultados','Ver menos'],fr:['Voir tous les résultats','Réduire'],vi:['Xem tất cả kết quả','Thu gọn'],de:['Alle Ergebnisse anzeigen','Weniger anzeigen'],ru:['Все результаты','Свернуть'],id:['Lihat semua hasil','Ringkas'],pt:['Ver todos os resultados','Ver menos'],hi:['सभी परिणाम देखें','कम दिखाएँ'],tr:['Tüm sonuçları göster','Daha az göster'],th:['ดูผลทั้งหมด','แสดงน้อยลง'],ar:['عرض كل النتائج','عرض أقل'],bn:['সব ফলাফল দেখুন','কম দেখান'],
+"it":["Mostra tutti i risultati","Mostra meno"],
+"pl":["Wyświetl wszystkie wyniki","Pokaż mniej"],
+"nl":["Bekijk alle resultaten","Minder tonen"],
+"cs":["Zobrazit všechny výsledky","Zobrazit méně"]
+};
 export default function PinballResults({arrivals,total,copy}){
  const [expanded,setExpanded]=useState(false),labels=controls[copy.lang]||controls.en;
  return <section className="rp-ranked-results" aria-label={copy.result}><header><h2>{copy.result}</h2><span>{arrivals.length} / {total}</span></header>

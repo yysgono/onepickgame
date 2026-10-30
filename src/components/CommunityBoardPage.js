@@ -1,3 +1,4 @@
+import {uiContentLanguage} from "../utils/uiContentLanguage";
 import CommunityComments from './CommunityComments';
 import RichTextEditor from './RichTextEditor';
 import {sanitizeRichHtml,richPlainText,richImageCount,plainToRich} from '../utils/richText';
@@ -14,7 +15,7 @@ import './communityPublishing.css';
 export default function CommunityBoardPage({board,user}){
  const {lang='en'}=useParams(),labels=copy[lang]||copy.en,name=labels[board==='notices'?0:1],admin=useSitePublisher(),ui=getCommunityUi(lang);
  const categories=[['all',ui.all],['general',ui.general],['worldcup',(homeCopy[lang]||homeCopy.en).modes[0]],['quiz',(homeCopy[lang]||homeCopy.en).modes[2]],['tier-list',(homeCopy[lang]||homeCopy.en).modes[1]],['random-pick',(homeCopy[lang]||homeCopy.en).modes[3]]];
- const [category,setCategory]=useState('all'),[postCategory,setPostCategory]=useState('general'),[postLanguage,setPostLanguage]=useState(lang),[languageOnly,setLanguageOnly]=useState(false),[currentLanguageOnly,setCurrentLanguageOnly]=useState(board==='notices');
+ const [category,setCategory]=useState('all'),[postCategory,setPostCategory]=useState('general'),[postLanguage,setPostLanguage]=useState(uiContentLanguage(lang)),[languageOnly,setLanguageOnly]=useState(false),[currentLanguageOnly,setCurrentLanguageOnly]=useState(board==='notices');
  const [posts,setPosts]=useState([]),[pinned,setPinned]=useState([]),[total,setTotal]=useState(0),[page,setPage]=useState(1),[busy,setBusy]=useState(true),[error,setError]=useState(''),[saved,setSaved]=useState('');
  const [writing,setWriting]=useState(false),[editing,setEditing]=useState(null),[title,setTitle]=useState(''),[body,setBody]=useState(''),[uploading,setUploading]=useState(false),[saving,setSaving]=useState(false),[expanded,setExpanded]=useState(null),[pinning,setPinning]=useState(null),[bodies,setBodies]=useState({}),[bodyLoading,setBodyLoading]=useState(null),[now,setNow]=useState(()=>new Date());
  const plainBody=React.useMemo(()=>richPlainText(body),[body]);
@@ -22,12 +23,12 @@ export default function CommunityBoardPage({board,user}){
  const pages=Math.max(1,Math.ceil(total/BOARD_PAGE_SIZE));
  function message(e){return ui[e?.message]||e?.message||ui.retry;}
  async function load(){const ticket=++version.current;setBusy(true);setError('');try{
-  const result=await loadBoardPage(supabase,{board,lang,category,currentLanguageOnly,page});
+  const result=await loadBoardPage(supabase,{board,lang:uiContentLanguage(lang),category,currentLanguageOnly,page});
   if(ticket!==version.current)return;
   const maxPage=Math.max(1,Math.ceil(result.total/BOARD_PAGE_SIZE));if(page>maxPage){setPage(maxPage);return;}
   setPosts(result.items);setPinned(result.pinned);setTotal(result.total);
  }catch(e){if(ticket===version.current)setError(message(e));}finally{if(ticket===version.current)setBusy(false);}}
- function clearForm(){setEditing(null);setWriting(false);setTitle('');setBody('');setPostCategory('general');setPostLanguage(lang);setLanguageOnly(false);}
+ function clearForm(){setEditing(null);setWriting(false);setTitle('');setBody('');setPostCategory('general');setPostLanguage(uiContentLanguage(lang));setLanguageOnly(false);}
  useEffect(()=>{clearForm();setSaved('');setPage(1);setCurrentLanguageOnly(board==='notices');},[lang,board]);
  useEffect(()=>{setExpanded(null);setBodyLoading(null);setBodies({});setPosts([]);setPinned([]);load();return()=>{version.current++;};},[lang,board,category,currentLanguageOnly,page]);
  useEffect(()=>{const timer=setInterval(()=>setNow(new Date()),60000);return()=>clearInterval(timer);},[]);
@@ -50,7 +51,7 @@ export default function CommunityBoardPage({board,user}){
   <header className="board-hero"><div className="board-hero-icon" aria-hidden="true">{board==='community'?'✦':'▤'}</div><div><span className="board-eyebrow">ONE PICK GAME · COMMUNITY</span><h1>{name}</h1></div></header>
   {board==='community'&&<div className="community-tabs" role="group" aria-label={ui.category}>{categories.map(([key,label])=><button key={key} aria-pressed={category===key} onClick={()=>changeCategory(key)}>{label}</button>)}</div>}
   <div className="board-toolbar">
-   {board==='community'&&<label htmlFor={`board-language-filter-${board}`} className="community-language-only community-read-filter"><input id={`board-language-filter-${board}`} type="checkbox" checked={currentLanguageOnly} onChange={e=>{setPage(1);setCurrentLanguageOnly(e.target.checked);}}/><span>{ui.currentLanguageOnly} ({lang})</span></label>}
+   {board==='community'&&<label htmlFor={`board-language-filter-${board}`} className="community-language-only community-read-filter"><input id={`board-language-filter-${board}`} type="checkbox" checked={currentLanguageOnly} onChange={e=>{setPage(1);setCurrentLanguageOnly(e.target.checked);}}/><span>{ui.currentLanguageOnly} ({uiContentLanguage(lang)})</span></label>}
    {(board==='community'?Boolean(user):admin)&&<button className="board-write" disabled={saving||uploading} onClick={()=>{if(writing)clearForm();else{setEditing(null);setWriting(true);setSaved('');}}}>＋ {ui.write}</button>}
   </div>
   {writing&&<form ref={formRef} className="board-editor" onSubmit={save}><h2>{editing?ui.edit:ui.write}</h2><label>{ui.language}<select disabled={saving||uploading} value={postLanguage} onChange={e=>setPostLanguage(e.target.value)}>{SITE_LANGUAGES.map(l=><option key={l}>{l}</option>)}</select></label>{board==='community'&&<><label className="community-language-only"><input type="checkbox" disabled={saving||uploading} checked={languageOnly} onChange={e=>setLanguageOnly(e.target.checked)}/><span>{ui.languageOnly} ({postLanguage})</span></label><label>{ui.category}<select disabled={saving||uploading} value={postCategory} onChange={e=>setPostCategory(e.target.value)}>{categories.filter(([key])=>key!=='all').map(([key,label])=><option key={key} value={key}>{label}</option>)}</select></label></>}

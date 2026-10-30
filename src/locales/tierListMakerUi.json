@@ -206,5 +206,57 @@
       "draftLoaded": "খসড়া লোড হয়েছে।",
       "draftLoadFailed": "খসড়া লোড করা যায়নি।"
     }
+  },
+  "it": {
+    "tierListMakerUi": {
+      "tagHint": "Fino a 5 tag · 20 caratteri ciascuno · duplicati tag vengono salvati una volta.",
+      "tagPlaceholder": "#Tag {{index}}",
+      "draftSave": "Salva bozza",
+      "draftLoad": "Carica bozza",
+      "draftSaved": "Draft salvato.",
+      "draftSaveFailed": "Salvataggio della bozza non riuscito.",
+      "draftMissing": "Non è stata trovata nessuna bozza salvata.",
+      "draftLoaded": "Draft caricato.",
+      "draftLoadFailed": "Caricamento del draft non riuscito."
+    }
+  },
+  "pl": {
+    "tierListMakerUi": {
+      "tagHint": "Do 5 tagów · 20 znaków każdy · duplikaty znaczników są zapisywane raz.",
+      "tagPlaceholder": "#Tag {{index}}",
+      "draftSave": "Zapisz szkic",
+      "draftLoad": "Wczytaj szkic",
+      "draftSaved": "Draft uratowany.",
+      "draftSaveFailed": "Nie udało się zapisać szkicu.",
+      "draftMissing": "Nie znaleziono żadnego zapisanego szkicu.",
+      "draftLoaded": "Draft załadowany.",
+      "draftLoadFailed": "Nie udało się wczytać szkicu."
+    }
+  },
+  "nl": {
+    "tierListMakerUi": {
+      "tagHint": "Maximaal 5 tags · 20 tekens per · dubbele tags worden één keer opgeslagen.",
+      "tagPlaceholder": "#Tag {{index}}",
+      "draftSave": "Concept opslaan",
+      "draftLoad": "Concept laden",
+      "draftSaved": "Draft opgeslagen.",
+      "draftSaveFailed": "Opslaan van ontwerp is mislukt.",
+      "draftMissing": "Er is geen opgeslagen ontwerp gevonden.",
+      "draftLoaded": "Draft geladen.",
+      "draftLoadFailed": "Laden van ontwerp is mislukt."
+    }
+  },
+  "cs": {
+    "tierListMakerUi": {
+      "tagHint": "Až 5 značek · 20 znaků · duplikátní značky jsou uloženy jednou.",
+      "tagPlaceholder": "#Tag {{index}}",
+      "draftSave": "Uložit návrh",
+      "draftLoad": "Načíst návrh",
+      "draftSaved": "Návrh uložen.",
+      "draftSaveFailed": "Selhalo uložení průvanu.",
+      "draftMissing": "Nebyl nalezen žádný uložený průvan.",
+      "draftLoaded": "Návrh nabit.",
+      "draftLoadFailed": "Nepodařilo se načíst průvan."
+    }
   }
 }

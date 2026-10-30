@@ -62,5 +62,21 @@
   "bn": {
     "show_more_categories": "আরও বিভাগ",
     "unknownUser": "ব্যবহারকারী"
+  },
+  "it": {
+    "show_more_categories": "Altre categorie",
+    "unknownUser": "Utilizzatore"
+  },
+  "pl": {
+    "show_more_categories": "Więcej kategorii",
+    "unknownUser": "Użytkownik"
+  },
+  "nl": {
+    "show_more_categories": "Meer categorieën",
+    "unknownUser": "Gebruiker"
+  },
+  "cs": {
+    "show_more_categories": "Více kategorií",
+    "unknownUser": "Uživatel"
   }
 }

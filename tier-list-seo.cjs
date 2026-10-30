@@ -4,7 +4,12 @@ const COPY = require('./src/seo/tierListSeoData.json');
 const LANGS = Object.keys(COPY);
 const escape = value => String(value || '').replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char]));
 const safeJson = value => JSON.stringify(value).replace(/</g, '\\u003c');
-const LOCALES = { en: 'en_US', ko: 'ko_KR', ja: 'ja_JP', zh: 'zh_CN', ru: 'ru_RU', pt: 'pt_BR', es: 'es_ES', fr: 'fr_FR', id: 'id_ID', hi: 'hi_IN', de: 'de_DE', vi: 'vi_VN', ar: 'ar_AR', bn: 'bn_IN', th: 'th_TH', tr: 'tr_TR' };
+const LOCALES = { en: 'en_US', ko: 'ko_KR', ja: 'ja_JP', zh: 'zh_CN', ru: 'ru_RU', pt: 'pt_BR', es: 'es_ES', fr: 'fr_FR', id: 'id_ID', hi: 'hi_IN', de: 'de_DE', vi: 'vi_VN', ar: 'ar_AR', bn: 'bn_IN', th: 'th_TH', tr: 'tr_TR' ,
+"it":"it_IT",
+"pl":"pl_PL",
+"nl":"nl_NL",
+"cs":"cs_CZ"
+};
 
 module.exports = (app, supabase, origin) => {
   app.use(async (req, res, next) => {

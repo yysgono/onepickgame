@@ -181,6 +181,11 @@ const COPY = {
       "쉬운 ‘사용법’ 가이드 & 할인코드 활용 팁",
     ],
   },
+
+"it":{"title":"Cerchi musica protetta da copyright?","body":"Epidemic Sound offre un'enorme libreria di tracce royalty-free ed effetti sonori per YouTube, stream, podcast e progetti commerciali. Provatelo gratis e semplificate le licenze musicali.","cta":"Avvia la tua prova gratuita →","bullets":["Royalty-free per YouTube e streaming","Uso commerciale incluso","Migliaia di tracce curate & SFX"]},
+"pl":{"title":"Szukasz muzyki bezpiecznej dla praw autorskich?","body":"Epidemic Sound oferuje ogromną bibliotekę utworów i efektów dźwiękowych dla YouTube, strumieni, podcastów i projektów komercyjnych. Wypróbuj bezpłatnie i uprościć licencjonowanie muzyki.","cta":"Rozpocznij bezpłatny proces →","bullets":["Royalty-free dla YouTube & streaming","Do użytku komercyjnego włącznie","Tysiące uleczonych utworów & SFX"]},
+"nl":{"title":"Op zoek naar copyright-veilige muziek?","body":"Epidemic Sound biedt een enorme bibliotheek van royaltyvrije tracks en geluidseffecten voor YouTube, streams, podcasts en commerciële projecten. Probeer het gratis en vereenvoudig muzieklicenties.","cta":"Start je gratis proefversie →","bullets":["Royalty-vrij voor YouTube & streaming","Inclusief commercieel gebruik","Duizenden gecureerde tracks & SFX"]},
+"cs":{"title":"Hledáte hudbu s ochranou autorských práv?","body":"Epidemic Sound nabízí obrovskou knihovnu royalty-free stop a zvukové efekty pro YouTube, proudy, podcasty a komerční projekty. Zkuste to zdarma a zjednodušit hudební licence.","cta":"Začněte zdarma zkušební verze →","bullets":["Royalty-free pro YouTube & streaming","Komerční využití včetně","Tisíce kurovaných stop & SFX"]}
 };
 
 export default function ReferralBanner({ lang = "en" }) {

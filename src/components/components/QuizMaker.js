@@ -1,3 +1,4 @@
+import {localizeExtraUi} from "../../utils/newLanguageUi";
 import NavigationLink from "../NavigationLink";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
@@ -365,8 +366,18 @@ export default function QuizMaker() {
   ], [lang]);
 
   function languageLabel(item) {
-    const koNames = { en:"영어", ko:"한국어", ja:"일본어", zh:"중국어", es:"스페인어", fr:"프랑스어", vi:"베트남어", de:"독일어", ru:"러시아어", id:"인도네시아어", pt:"포르투갈어", hi:"힌디어", tr:"튀르키예어", th:"태국어", ar:"아랍어", bn:"벵골어" };
-    const enNames = { en:"English", ko:"Korean", ja:"Japanese", zh:"Chinese", es:"Spanish", fr:"French", vi:"Vietnamese", de:"German", ru:"Russian", id:"Indonesian", pt:"Portuguese", hi:"Hindi", tr:"Turkish", th:"Thai", ar:"Arabic", bn:"Bengali" };
+    const koNames = { en:"영어", ko:"한국어", ja:"일본어", zh:"중국어", es:"스페인어", fr:"프랑스어", vi:"베트남어", de:"독일어", ru:"러시아어", id:"인도네시아어", pt:"포르투갈어", hi:"힌디어", tr:"튀르키예어", th:"태국어", ar:"아랍어", bn:"벵골어" ,
+"it":"Italiano",
+"pl":"Polski",
+"nl":"Nederlands",
+"cs":"Čeština"
+};
+    const enNames = { en:"English", ko:"Korean", ja:"Japanese", zh:"Chinese", es:"Spanish", fr:"French", vi:"Vietnamese", de:"German", ru:"Russian", id:"Indonesian", pt:"Portuguese", hi:"Hindi", tr:"Turkish", th:"Thai", ar:"Arabic", bn:"Bengali" ,
+"it":"Italiano",
+"pl":"Polski",
+"nl":"Nederlands",
+"cs":"Čeština"
+};
     return `${(lang === "ko" ? koNames : enNames)[item.code] || item.label} (${item.code})`;
   }
 
@@ -426,7 +437,7 @@ export default function QuizMaker() {
     return {
       localId: makeId(),
       type: "multiple_choice",
-      question: lang === "ko" ? "이 후보의 이름은?" : "Who is this?",
+      question: lang === "ko" ? "이 후보의 이름은?" : localizeExtraUi("Who is this?"),
       imageFile: null,
       imageUrl: getYoutubeThumbnail(candidate?.image || ""),
       options: rawOptions.slice(0, 4),

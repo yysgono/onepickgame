@@ -1,3 +1,5 @@
+import {uiContentLanguage} from "../utils/uiContentLanguage";
+import {localizeExtraUi} from "../utils/newLanguageUi";
 import { localizeTierClone } from "../utils/localizeTierClone";
 import tierSourceSearchLabels from "../locales/tierSourceSearchLabels.json";
 import "./tierCandidateLabels.css";
@@ -274,6 +276,11 @@ const TITLE_TRANSLATION_COPY = {
   th: { add: "＋ เพิ่มชื่อเรื่องภาษาอื่น", placeholder: "ชื่อเรื่องที่แปลแล้ว", remove: "ลบ" },
   ar: { add: "＋ إضافة عنوان بلغة أخرى", placeholder: "العنوان المترجم", remove: "حذف" },
   bn: { add: "＋ অন্য ভাষায় শিরোনাম যোগ করুন", placeholder: "অনূদিত শিরোনাম", remove: "মুছুন" },
+
+"it":{"add":"+ Aggiungi titolo in un'altra lingua","placeholder":"Titolo tradotto","remove":"Rimozione"},
+"pl":{"add":"+ Dodaj tytuł w innym języku","placeholder":"Przetłumaczony tytuł","remove":"Usuń"},
+"nl":{"add":"+ Titel toevoegen in een andere taal","placeholder":"Vertaalde titel","remove":"Verwijderen"},
+"cs":{"add":"+ Přidat název v jiném jazyce","placeholder":"Přeložený titulek","remove":"Odstranit"}
 };
 
 const TIER_CANDIDATE_IMAGE_HELP_COPY = {
@@ -293,6 +300,11 @@ const TIER_CANDIDATE_IMAGE_HELP_COPY = {
   th: "※ หากรูปผู้สมัครไม่แสดง ให้ลองลากผู้สมัครเข้าไปใน Tier List",
   ar: "※ إذا لم تظهر صورة أحد المرشحين، فجرّب سحب المرشح إلى داخل Tier List.",
   bn: "※ কোনো প্রার্থীর ছবি দেখা না গেলে, প্রার্থীটিকে Tier List-এর মধ্যে টেনে এনে দেখুন।",
+
+"it":"Se un'immagine candidata non è visibile, prova a trascinare il candidato nell'elenco dei livelli.",
+"pl":"Jeśli zdjęcie kandydata nie jest widoczne, spróbuj wciągnąć kandydata na listę poziomów.",
+"nl":"Als een candidate-afbeelding niet zichtbaar is, probeer dan de candidate naar de Tier List te slepen.",
+"cs":"Pokud kandidátský obraz není viditelný, zkuste kandidáta zatáhnout na seznam úrovní."
 };
 
 // 월드컵 관리자 카테고리 -> 티어표 카테고리 변환
@@ -1068,7 +1080,7 @@ const [
 
   const [titleTranslations, setTitleTranslations] = useState({});
   const [titleTranslationLanguages, setTitleTranslationLanguages] = useState([]);
-  const [originalContentLanguage, setOriginalContentLanguage] = useState(lang);
+  const [originalContentLanguage, setOriginalContentLanguage] = useState(uiContentLanguage(lang));
 
   const titleTranslationCopy =
     TITLE_TRANSLATION_COPY[lang] || TITLE_TRANSLATION_COPY.en;
@@ -5252,7 +5264,7 @@ if (editingTierListId) {
 
               </details>
 
-              <p style={{textAlign:'center',color:'#6650d8'}}>{lang==='ko'?`마음에 드는 후보만 배치해도 돼요 · ${placedCount}개 배치됨`:'Rank only the candidates you want. Click a candidate, then choose a tier.'}</p>
+              <p style={{textAlign:'center',color:'#6650d8'}}>{lang==='ko'?`마음에 드는 후보만 배치해도 돼요 · ${placedCount}개 배치됨`:localizeExtraUi('Rank only the candidates you want. Click a candidate, then choose a tier.')}</p>
               <div
                 style={{
                   marginTop: 8,
@@ -5486,7 +5498,7 @@ if (editingTierListId) {
                       : text.saving
                     : editingTierListId
                       ? text.saveChanges
-                      : (lang==='ko'?'내 티어표 완성하기':'Finish my tier list')}
+                      : (lang==='ko'?'내 티어표 완성하기':localizeExtraUi('Finish my tier list'))}
                 </button>
               </div>
               {saveError && (
@@ -6096,7 +6108,7 @@ objectPosition: "center",
                 gap: 9,
               }}
             >
-              <details><summary style={{cursor:'pointer',fontWeight:800,padding:12}}>{lang==='ko'?'추가 설정 · 설명·태그':'Description & tags (optional)'}</summary>
+              <details><summary style={{cursor:'pointer',fontWeight:800,padding:12}}>{lang==='ko'?'추가 설정 · 설명·태그':localizeExtraUi('Description & tags (optional)')}</summary>
               
 
               <label htmlFor="tier-description" style={{ display: "block", fontWeight: 800, marginBottom: 8 }}>
@@ -6272,7 +6284,7 @@ objectPosition: "center",
                     : text.saving
                   : editingTierListId
                     ? text.saveChanges
-                    : (lang==='ko'?'내 티어표 완성하기':'Finish my tier list')}
+                    : (lang==='ko'?'내 티어표 완성하기':localizeExtraUi('Finish my tier list'))}
               </button>
 
               {saveError && (

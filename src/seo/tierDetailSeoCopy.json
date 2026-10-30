@@ -289,5 +289,81 @@
       "র‌্যাঙ্কিং",
       "ranking"
     ]
+  },
+  "it": {
+    "brand": "OnePickGame",
+    "fallbackTitle": "Classifica a livelli",
+    "unknownAuthor": "Utilizzatore",
+    "guestAuthor": "Ospite",
+    "ownedTitle": "Classifica di {author}",
+    "ranking": "Classificazioni",
+    "characterRank": "Classifica dei caratteri",
+    "intro": "{title}, classificato per {author}.",
+    "outro": "Esplora le classifiche di livello intero.",
+    "candidates": "Candidati in evidenza",
+    "tier": "Livello {tier}",
+    "onePick": "Una scelta",
+    "rankWords": [
+      "classificazione",
+      "ordinati",
+      "classifiche"
+    ]
+  },
+  "pl": {
+    "brand": "OnePickGame",
+    "fallbackTitle": "Ranking poziomów",
+    "unknownAuthor": "Użytkownik",
+    "guestAuthor": "Gość",
+    "ownedTitle": "Ranking użytkownika {author}",
+    "ranking": "Rankingi",
+    "characterRank": "Rankingi znaków",
+    "intro": "{title}, w rankingu {author}.",
+    "outro": "Poznaj rankingi pełnego poziomu.",
+    "candidates": "Wyróżnieni kandydaci",
+    "tier": "Poziom {tier}",
+    "onePick": "Jeden wybór",
+    "rankWords": [
+      "ranking",
+      "w rankingu",
+      "rankingi"
+    ]
+  },
+  "nl": {
+    "brand": "OnePickGame",
+    "fallbackTitle": "Tierlijst",
+    "unknownAuthor": "Gebruiker",
+    "guestAuthor": "Gast",
+    "ownedTitle": "Tierlijst van {author}",
+    "ranking": "Ranglijsten",
+    "characterRank": "Tekenrankings",
+    "intro": "{title}, gerangschikt door {author}.",
+    "outro": "Verken de volledige rangschikking.",
+    "candidates": "Aanbevolen kandidaten",
+    "tier": "Tier {tier}",
+    "onePick": "Eén keuze",
+    "rankWords": [
+      "rangschikking",
+      "gerangschikt",
+      "rangschikkingen"
+    ]
+  },
+  "cs": {
+    "brand": "OnePickGame",
+    "fallbackTitle": "Žebříček",
+    "unknownAuthor": "Uživatel",
+    "guestAuthor": "Host",
+    "ownedTitle": "Žebříček uživatele {author}",
+    "ranking": "Pořadí",
+    "characterRank": "Pořadí znaků",
+    "intro": "{title}, zařazen podle {author}.",
+    "outro": "Prozkoumejte žebříčky plné úrovně.",
+    "candidates": "Nejlepší kandidáti",
+    "tier": "Tier {tier}",
+    "onePick": "Jeden výběr",
+    "rankWords": [
+      "pořadí",
+      "zařazen",
+      "pořadí"
+    ]
   }
 }

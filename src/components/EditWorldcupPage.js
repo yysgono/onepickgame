@@ -117,6 +117,11 @@ const DELETE_ALL_CANDIDATES_COPY = {
   th: { button: "ลบผู้สมัครทั้งหมด", confirm: "ลบผู้สมัครทั้งหมดออกจากรายการหรือไม่?\nจะยังไม่บันทึกลงฐานข้อมูลจนกว่าคุณจะกดบันทึกหน้า" },
   ar: { button: "حذف جميع المرشحين", confirm: "هل تريد حذف جميع المرشحين من القائمة؟\nلن تُحفظ التغييرات في قاعدة البيانات حتى تحفظ الصفحة." },
   bn: { button: "সব প্রার্থী মুছুন", confirm: "তালিকা থেকে সব প্রার্থী মুছবেন?\nপৃষ্ঠা সংরক্ষণ না করা পর্যন্ত ডেটাবেসে পরিবর্তন প্রয়োগ হবে না।" },
+
+"it":{"button":"Elimina tutti i candidati","confirm":"Eliminare tutti i candidati da questa lista? Nulla viene salvato nel database fino a quando non si salva la pagina."},
+"pl":{"button":"Usuń wszystkich kandydatów","confirm":"Usuń wszystkich kandydatów z tej listy? Nic nie jest zapisane w bazie danych, dopóki nie zapiszesz strony."},
+"nl":{"button":"Alle kandidaten verwijderen","confirm":"Alle kandidaten uit deze lijst verwijderen? Er wordt niets opgeslagen in de database totdat u de pagina opslaat."},
+"cs":{"button":"Smazat všechny kandidáty","confirm":"Smazání všech kandidátů z tohoto seznamu? Nic není uloženo do databáze, dokud neuložíte stránku."}
 };
 
 

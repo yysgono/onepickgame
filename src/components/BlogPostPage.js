@@ -1,3 +1,5 @@
+import {uiContentLanguage} from "../utils/uiContentLanguage";
+import {localizeExtraUi} from "../utils/newLanguageUi";
 import {sanitizeRichHtml} from '../utils/richText';
 import {getCommunityUi} from './communityUi';
 import { useSitePublisher } from "./SitePublishing";
@@ -24,7 +26,7 @@ const SUPPORTED_LANGS = [
   "th",
   "ar",
   "bn",
-];
+ "it", "pl", "nl", "cs"];
 
 const detailText = {
   ko: {
@@ -186,6 +188,11 @@ const detailText = {
     back: "ব্লগে ফিরে যান",
     views: "দেখা হয়েছে",
   },
+
+"it":{"loading":"Caricamento articolo.","notFound":"Articolo non trovato.","notFoundDescription":"Questo articolo non è disponibile nella lingua selezionata.","error":"Impossibile caricare l'articolo.","back":"Torna al blog","views":"Vista"},
+"pl":{"loading":"Wczytywanie artykułu.","notFound":"Nie znaleziono artykułu.","notFoundDescription":"Ten artykuł nie jest dostępny w wybranym języku.","error":"Nie można wczytać artykułu.","back":"Powrót do bloga","views":"Widoki"},
+"nl":{"loading":"Artikel wordt geladen.","notFound":"Artikel niet gevonden.","notFoundDescription":"Dit artikel is niet beschikbaar in de geselecteerde taal.","error":"Kon het artikel niet laden.","back":"Terug naar blog","views":"Weergaven"},
+"cs":{"loading":"Načítám článek.","notFound":"Článek nenalezen.","notFoundDescription":"Tento článek není k dispozici ve zvoleném jazyce.","error":"Nelze načíst článek.","back":"Zpět na blog","views":"Pohledy"}
 };
 
 function getDetailText(lang) {
@@ -193,7 +200,7 @@ function getDetailText(lang) {
 }
 
 function getBrandName(lang) {
-  return lang === "ko" ? "원픽게임" : "OnePickGame";
+  return lang === "ko" ? "원픽게임" : localizeExtraUi("OnePickGame");
 }
 
 function formatDate(date, lang) {
@@ -311,7 +318,7 @@ export default function BlogPostPage() {
               )
               .eq(
                 "language",
-                currentLang
+                uiContentLanguage(currentLang)
               )
               .eq("slug", slug)
               .maybeSingle(),
@@ -493,7 +500,7 @@ export default function BlogPostPage() {
   async function deletePost(){
     if(deleting || !post || !window.confirm(ui.deleteTranslation))return;
     setDeleting(true);setDeleteError('');
-    try{const {error}=await supabase.rpc('delete_site_blog',{p_language:currentLang,p_slug:post.slug});if(error)throw error;navigate(`/${currentLang}/blog`);}catch(e){setDeleteError(e.message);}finally{setDeleting(false);}
+    try{const {error}=await supabase.rpc('delete_site_blog',{p_language:post.language,p_slug:post.slug});if(error)throw error;navigate(`/${currentLang}/blog`);}catch(e){setDeleteError(e.message);}finally{setDeleting(false);}
   }
   if (loading) {
     return (
@@ -596,7 +603,7 @@ export default function BlogPostPage() {
 
       <main className="blog-page">
         <article className="blog-post">
-          {canPublish && <Link className="blog-edit-link" to={`/${currentLang}/blog/${post.slug}/edit`}>{ui.edit}</Link>}
+          {canPublish && <Link className="blog-edit-link" to={`/${post.language}/blog/${post.slug}/edit`}>{ui.edit}</Link>}
           {canPublish&&<button className="blog-delete-button" disabled={deleting} onClick={deletePost}>{deleting?'…':ui.delete}</button>}
           {deleteError&&<p role="alert">{deleteError}</p>}
           <Link

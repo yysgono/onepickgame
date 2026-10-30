@@ -1,3 +1,4 @@
+import {uiContentLanguage} from "../utils/uiContentLanguage";
 import NavigationLink from "./NavigationLink";
 import { syncSourceQuestions, sourceCandidatePool, mergeSourceQuestions } from "../utils/quizSourceSync";
 import sourceSyncCopy from "./quizSourceSyncCopy.json";
@@ -143,14 +144,14 @@ export default function QuizMaker() {
   const guestMode = guestEdit || !user?.id;
 
 
-  const [originalLanguage, setOriginalLanguage] = useState(lang);
+  const [originalLanguage, setOriginalLanguage] = useState(uiContentLanguage(lang));
   const [title, setTitle] = useState("");
   const [titleTranslations, setTitleTranslations] = useState([]);
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("knowledge");
   const [thumbnailFile, setThumbnailFile] = useState(null);
   const [existingThumbnailUrl, setExistingThumbnailUrl] = useState("");
-  const [contentLanguages, setContentLanguages] = useState([lang]);
+  const [contentLanguages, setContentLanguages] = useState([uiContentLanguage(lang)]);
   const [questions, setQuestions] = useState([emptyQuestion()]);
   const [questionEditLanguages, setQuestionEditLanguages] = useState({});
   const [creationMode, setCreationMode] = useState("direct");
@@ -447,8 +448,18 @@ export default function QuizMaker() {
   ], [originalLanguage]);
 
   function languageLabel(item) {
-    const koNames = { en:"영어", ko:"한국어", ja:"일본어", zh:"중국어", es:"스페인어", fr:"프랑스어", vi:"베트남어", de:"독일어", ru:"러시아어", id:"인도네시아어", pt:"포르투갈어", hi:"힌디어", tr:"튀르키예어", th:"태국어", ar:"아랍어", bn:"벵골어" };
-    const enNames = { en:"English", ko:"Korean", ja:"Japanese", zh:"Chinese", es:"Spanish", fr:"French", vi:"Vietnamese", de:"German", ru:"Russian", id:"Indonesian", pt:"Portuguese", hi:"Hindi", tr:"Turkish", th:"Thai", ar:"Arabic", bn:"Bengali" };
+    const koNames = { en:"영어", ko:"한국어", ja:"일본어", zh:"중국어", es:"스페인어", fr:"프랑스어", vi:"베트남어", de:"독일어", ru:"러시아어", id:"인도네시아어", pt:"포르투갈어", hi:"힌디어", tr:"튀르키예어", th:"태국어", ar:"아랍어", bn:"벵골어" ,
+"it":"Italiano",
+"pl":"Polski",
+"nl":"Nederlands",
+"cs":"Čeština"
+};
+    const enNames = { en:"English", ko:"Korean", ja:"Japanese", zh:"Chinese", es:"Spanish", fr:"French", vi:"Vietnamese", de:"German", ru:"Russian", id:"Indonesian", pt:"Portuguese", hi:"Hindi", tr:"Turkish", th:"Thai", ar:"Arabic", bn:"Bengali" ,
+"it":"Italiano",
+"pl":"Polski",
+"nl":"Nederlands",
+"cs":"Čeština"
+};
     return `${(lang === "ko" ? koNames : enNames)[item.code] || item.label} (${item.code})`;
   }
 
@@ -773,12 +784,12 @@ export default function QuizMaker() {
       const fileMap = new Map(fileEntries.map((entry) => [entry.key, entry.file]));
       const restoredQuestions = (Array.isArray(draft.questions) && draft.questions.length ? draft.questions : [emptyQuestion()])
         .map((question) => ({ ...question, localId: question.localId || makeId(), imageFile: fileMap.get(`question:${question.localId}`) || null }));
-      setOriginalLanguage(draft.originalLanguage || originalLanguage || lang);
+      setOriginalLanguage(draft.originalLanguage || originalLanguage || uiContentLanguage(lang));
       setTitle(draft.title || "");
       setTitleTranslations(Array.isArray(draft.titleTranslations) ? draft.titleTranslations : []);
       setDescription(draft.description || "");
       setCategory(draft.category || "knowledge");
-      setContentLanguages(Array.isArray(draft.contentLanguages) && draft.contentLanguages.length ? draft.contentLanguages : [lang]);
+      setContentLanguages(Array.isArray(draft.contentLanguages) && draft.contentLanguages.length ? draft.contentLanguages : [uiContentLanguage(lang)]);
       setQuestions(restoredQuestions);
       setThumbnailFile(fileMap.get("thumbnail") || null);
       setCreationMode(draft.creationMode || "direct");

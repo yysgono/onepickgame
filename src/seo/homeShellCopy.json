@@ -158,5 +158,45 @@
     ],
     "create": "টুর্নামেন্ট তৈরি করুন",
     "popular": "জনপ্রিয় টুর্নামেন্ট"
+  },
+  "it": {
+    "modes": [
+      "Torneo",
+      "Classifica a livelli",
+      "Quiz",
+      "Estrattore casuale"
+    ],
+    "create": "Crea torneo di tornei",
+    "popular": "Tornei popolari"
+  },
+  "pl": {
+    "modes": [
+      "Turniej",
+      "Ranking poziomów",
+      "Quiz",
+      "Losowanie"
+    ],
+    "create": "Utwórz turniej turniejowy",
+    "popular": "Popularne turnieje"
+  },
+  "nl": {
+    "modes": [
+      "Toernooi",
+      "Tierlijst",
+      "Quiz",
+      "Willekeurige kiezer"
+    ],
+    "create": "Toernooi toernooi aanmaken",
+    "popular": "Populaire toernooien"
+  },
+  "cs": {
+    "modes": [
+      "Turnaj",
+      "Žebříček",
+      "Kvíz",
+      "Náhodný výběr"
+    ],
+    "create": "Vytvořit turnajový turnaj",
+    "popular": "Oblíbené turnaje"
   }
 }

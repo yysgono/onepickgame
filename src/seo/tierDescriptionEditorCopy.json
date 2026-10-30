@@ -78,5 +78,25 @@
     "বিবরণ (ঐচ্ছিক)",
     "তালিকার বিষয় এবং মূল্যায়নের মানদণ্ড ব্যাখ্যা করুন।",
     "খালি রাখলে প্রার্থীদের ভিত্তিতে একটি পরিচিতি দেখানো হবে।"
+  ],
+  "it": [
+    "Descrizione (facoltativo)",
+    "Spiegare che cosa questa lista di livelli classifica e quali criteri da utilizzare.",
+    "Lasciare vuoto per mostrare un'introduzione basata sui candidati."
+  ],
+  "pl": [
+    "Opis (nieobowiązkowo)",
+    "Proszę wyjaśnić, jakie są stopnie tej listy i jakie kryteria należy stosować.",
+    "Pozostawić puste, aby pokazać wprowadzenie w oparciu o kandydatów."
+  ],
+  "nl": [
+    "Beschrijving (facultatief)",
+    "Leg uit wat deze lijst rangschikt en welke criteria te gebruiken.",
+    "Laat leeg om een introductie op basis van de kandidaten te tonen."
+  ],
+  "cs": [
+    "Popis (nepovinné)",
+    "Vysvětlete, co tento seznam úrovní se řadí a jaká kritéria lze použít.",
+    "Nechte prázdné, abyste ukázali úvod na základě kandidátů."
   ]
 }

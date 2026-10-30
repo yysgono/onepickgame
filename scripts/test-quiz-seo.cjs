@@ -53,9 +53,9 @@ async function withApp(t, db, loadTemplate = async () => template) {
   return p => fetch('http://127.0.0.1:' + server.address().port + p, { redirect: 'manual' });
 }
 
-test('all 16 list locales have distinct, matching HTML/OG/Twitter/canonical metadata', async t => {
+test('all 20 list locales have distinct, matching HTML/OG/Twitter/canonical metadata', async t => {
   const request = await withApp(t, mockDb());
-  assert.equal(shared.LANGS.length, 16);
+  assert.equal(shared.LANGS.length, 20);
   for (const lang of shared.LANGS) {
     const response = await request('/' + lang + '/quiz');
     assert.equal(response.status, 200);
@@ -71,7 +71,7 @@ test('all 16 list locales have distinct, matching HTML/OG/Twitter/canonical meta
     assert.equal(d.querySelectorAll('title').length, 1);
     assert.equal(d.querySelectorAll('link[rel=canonical]').length, 1);
     assert.equal(d.querySelectorAll('meta[name=description]').length, 1);
-    assert.equal(d.querySelectorAll('link[rel=alternate]').length, 17);
+    assert.equal(d.querySelectorAll('link[rel=alternate]').length, shared.LANGS.length + 1);
     assert.equal(d.querySelector('h1').textContent, seo.heading || seo.name);
     assert.ok(d.querySelector('script[src="/static/js/test.js"]'));
     assert.doesNotMatch(html, /Bracket Game|onepick-social\.png|quiz_questions/);
@@ -135,7 +135,7 @@ test('sitemap endpoints return only supported published quiz URLs, never drafts/
     assert.match(r.headers.get('content-type'), /application\/xml/);
     const xml = await r.text();
     const d = new JSDOM(xml, { contentType: 'application/xml' }).window.document;
-    assert.equal(d.querySelectorAll('url').length, 19);
+    assert.equal(d.querySelectorAll('url').length, shared.LANGS.length + 3);
     assert.doesNotMatch(xml, new RegExp(id2 + '|invalid|create|admin|answers'));
   }
 });
@@ -153,7 +153,7 @@ test('sitemap paginates beyond 1000 records without losing or duplicating rows',
   const db = mockDb(rows);
   const request = await withApp(t, db);
   const xml = await (await request('/sitemap-quizzes.xml')).text();
-  assert.equal((xml.match(/<loc>/g) || []).length, 1017);
+  assert.equal((xml.match(/<loc>/g) || []).length, 1001 + shared.LANGS.length);
   assert.deepEqual(db.calls.map(c => c.from), [0, 1000]);
 });
 
@@ -216,7 +216,7 @@ test('canonical sitemap generation preserves cups/tiers without fabricated updat
   const index = generator.generateSitemapIndex();
   assert.match(index, /\/sitemap-quizzes\.xml/);
   assert.match(index, /\/sitemaps\/sitemap-blog\.xml/);
-  assert.equal((index.match(/<sitemap>/g) || []).length, 18);
+  assert.equal((index.match(/<sitemap>/g) || []).length, shared.LANGS.length + 2);
   const blogXml = generator.generateBlogSitemap([
     { language: 'ko', slug: 'hello-blog', created_at: '2026-09-20T00:00:00Z' },
     { language: 'xx', slug: 'hidden-blog', created_at: '2026-09-20T00:00:00Z' },

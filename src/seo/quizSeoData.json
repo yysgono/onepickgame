@@ -94,5 +94,29 @@
     "title": "অনলাইন কুইজ · ফ্রি কুইজ সাইট | OnePickGame",
     "description": "গেম, অ্যানিমে, সেলিব্রিটি, খেলাধুলা, সাধারণ জ্ঞানসহ নানা বিষয়ে বিনামূল্যে কুইজ খেলুন অথবা নিজের কুইজ তৈরি করুন।",
     "heading": "অনলাইন কুইজ · ফ্রি কুইজ সাইট"
+  },
+  "it": {
+    "name": "Quiz",
+    "title": "Quiz online gratuiti | OnePickGame",
+    "description": "Gioca quiz gratis su giochi, anime, celebrità, sport, curiosità e altro ancora, o creare il proprio quiz e condividerlo con gli altri.",
+    "heading": "Quiz online gratuiti"
+  },
+  "pl": {
+    "name": "Quiz",
+    "title": "Darmowe quizy online | OnePickGame",
+    "description": "Zagraj w darmowe quizy o gry, anime, gwiazdy, sporty, ciekawostki i wiele innych, lub utworzyć własny quiz i podzielić się nim z innymi.",
+    "heading": "Darmowe quizy online"
+  },
+  "nl": {
+    "name": "Quiz",
+    "title": "Gratis online quizzen | OnePickGame",
+    "description": "Speel gratis quizzen over games, anime, beroemdheden, sporten, trivia en meer, of maak je eigen quiz en deel het met anderen.",
+    "heading": "Gratis online quizzen"
+  },
+  "cs": {
+    "name": "Kvíz",
+    "title": "Bezplatné online kvízy | OnePickGame",
+    "description": "Hrát zdarma kvízy o hrách, anime, celebrity, sport, trivia a další, nebo vytvořit svůj vlastní kvíz a sdílet jej s ostatními.",
+    "heading": "Bezplatné online kvízy"
   }
 }

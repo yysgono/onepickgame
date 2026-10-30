@@ -33,7 +33,7 @@ const LANGS = [
   "bn",
   "th",
   "tr",
-];
+ "it", "pl", "nl", "cs"];
 
 const CATEGORY_SLUGS = [
   "korea",

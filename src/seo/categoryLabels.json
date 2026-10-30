@@ -222,5 +222,61 @@
     "travel": "Seyahat / Yerler",
     "brands": "Markalar / Ürünler",
     "animals_plants": "Hayvanlar / Bitkiler"
+  },
+  "it": {
+    "person": "Persone",
+    "music": "Musica",
+    "korea": "K-Celeb",
+    "game": "Giochi",
+    "sports": "Sport",
+    "anime_manga": "Anime / Manga",
+    "movie_drama": "Film / TV",
+    "food": "Prodotti alimentari",
+    "etc": "Altri",
+    "travel": "Viaggio / Luoghi",
+    "brands": "Marchi / Prodotti",
+    "animals_plants": "Animali / Piante"
+  },
+  "pl": {
+    "person": "Ludzie",
+    "music": "Muzyka",
+    "korea": "K- Celeb",
+    "game": "Gry",
+    "sports": "Sport",
+    "anime_manga": "Anime / Manga",
+    "movie_drama": "Filmy / TV",
+    "food": "Żywność",
+    "etc": "Inne",
+    "travel": "Podróże / miejsca",
+    "brands": "Brands / Produkty",
+    "animals_plants": "Zwierzęta / Rośliny"
+  },
+  "nl": {
+    "person": "Mensen",
+    "music": "Muziek",
+    "korea": "K-Celeb",
+    "game": "Spelletjes",
+    "sports": "Sport",
+    "anime_manga": "Anime / Manga",
+    "movie_drama": "Films / TV",
+    "food": "Voedingsmiddelen",
+    "etc": "Overige gevallen",
+    "travel": "Reis / Plaatsen",
+    "brands": "Merken / Producten",
+    "animals_plants": "Dieren / Planten"
+  },
+  "cs": {
+    "person": "Lidé",
+    "music": "Hudba",
+    "korea": "K-Celeb",
+    "game": "Hry",
+    "sports": "Sport",
+    "anime_manga": "Anime / Manga",
+    "movie_drama": "Filmy / TV",
+    "food": "Jídlo",
+    "etc": "Ostatní",
+    "travel": "Cestování / Místa",
+    "brands": "Značky / produkty",
+    "animals_plants": "Zvířata / rostliny"
   }
 }

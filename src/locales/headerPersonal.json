@@ -110,5 +110,33 @@
       "myBlindRankings": "আমার ব্লাইন্ড র‍্যাঙ্কিং",
       "worldcupDescription": "নিজের টুর্নামেন্ট তৈরি করুন এবং অন্যদের তৈরি টুর্নামেন্ট খেলুন।"
     }
+  },
+  "it": {
+    "headerPersonal": {
+      "myQuizzes": "I miei quiz",
+      "myBlindRankings": "Le mie classifiche cieche",
+      "worldcupDescription": "Crea il tuo torneo ed esplora i tornei fatti da altri."
+    }
+  },
+  "pl": {
+    "headerPersonal": {
+      "myQuizzes": "Moje Quizzes",
+      "myBlindRankings": "Moje Rankingi Ślepych",
+      "worldcupDescription": "Stwórz swój własny turniej i zwiedzanie turniejów przez innych."
+    }
+  },
+  "nl": {
+    "headerPersonal": {
+      "myQuizzes": "Mijn quizzen",
+      "myBlindRankings": "Mijn Blinde Rangers",
+      "worldcupDescription": "Maak uw eigen toernooi en verken toernooien gemaakt door anderen."
+    }
+  },
+  "cs": {
+    "headerPersonal": {
+      "myQuizzes": "My Quizzes",
+      "myBlindRankings": "Moje slepé žebříčky",
+      "worldcupDescription": "Vytvořte si vlastní turnaj a prozkoumat turnaje, které ostatní."
+    }
   }
 }

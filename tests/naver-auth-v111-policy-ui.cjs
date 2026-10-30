@@ -15,10 +15,10 @@ for(language of legal.LANGUAGES){
   const html=renderToStaticMarkup(React.createElement(Page,{page})),doc=new JSDOM(html).window.document;
   assert.equal(doc.querySelector('main').lang,language);assert.equal(doc.querySelector('h1').textContent,legal.getLegalPolicy(language,page).title);
   assert.equal(doc.querySelectorAll('section').length,page==='privacy-policy'?7:5);assert.ok(doc.body.textContent.includes('윤영석'));
-  assert.equal(seo.lang,language);assert.equal(seo.slug,page);assert.equal(seo.hreflangLangs.length,16);
+  assert.equal(seo.lang,language);assert.equal(seo.slug,page);assert.equal(seo.hreflangLangs.length,20);
  }
  const html=renderToStaticMarkup(React.createElement(Notice));const doc=new JSDOM(html).window.document;
  assert.ok(doc.querySelector(`a[href="/${language}/privacy-policy"]`));assert.ok(doc.querySelector(`a[href="/${language}/terms-of-service"]`));
  assert.equal(doc.querySelectorAll('small').length,0);assert.equal(doc.querySelectorAll('a[target=_blank]').length,2);
 }
-console.log('PASS: localized React policies, 16-language signup links, operator identity, language SEO, removal of English-only label');
+console.log('PASS: localized React policies, 20-language signup links, operator identity, language SEO, removal of English-only label');

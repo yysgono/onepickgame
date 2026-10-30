@@ -8,5 +8,5 @@ const m={exports:{}};const code=babel.transformSync(fs.readFileSync('src/compone
 (async()=>{sessionStorage.setItem('onepick.oauth.language','ko');const root=createRoot(document.getElementById('root'));
  await act(async()=>root.render(React.createElement(m.exports.default,{key:'success'})));assert.ok(document.body.textContent.includes(copy.ko.success));assert.equal(document.querySelector('form'),null);
  fail=true;await act(async()=>root.render(React.createElement(m.exports.default,{key:'failure'})));assert.equal(document.querySelector('[role=alert]').textContent,copy.ko.duplicate);assert.ok(!document.body.textContent.includes(copy.ko.success));
- assert.equal(Object.keys(copy).length,16);for(const lang of Object.keys(copy))for(const key of ['connect','connected','connecting','help','notice','duplicate','failed','success','home'])assert.ok(copy[lang][key]);
- await act(async()=>root.unmount());dom.window.close();console.log('PASS: link-only callback UI, confirmed success, duplicate guidance, no nickname mutation, 16 locales');})().catch(e=>{console.error(e);process.exitCode=1});
+ assert.equal(Object.keys(copy).length,20);for(const lang of Object.keys(copy))for(const key of ['connect','connected','connecting','help','notice','duplicate','failed','success','home'])assert.ok(copy[lang][key]);
+ await act(async()=>root.unmount());dom.window.close();console.log('PASS: link-only callback UI, confirmed success, duplicate guidance, no nickname mutation, 20 locales');})().catch(e=>{console.error(e);process.exitCode=1});

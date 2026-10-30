@@ -94,5 +94,29 @@
     "সব প্রশ্ন মুছবেন? সংরক্ষণ না করা পর্যন্ত পুরোনো কুইজ বদলাবে না। হালনাগাদ সব প্রার্থী আবার নির্বাচন করে আমদানি করতে পারবেন।",
     "মূল ওয়ার্ল্ড কাপ লোড করা যায়নি। পুরোনো প্রশ্ন রাখা হয়েছে। পরে সম্পাদক আবার খুলুন।",
     "যুক্ত প্রার্থীর নাম ও উত্তর যাচাই করা হয়েছে। সংরক্ষণ করলে পরিবর্তন কার্যকর হবে।"
+  ],
+  "it": [
+    "Elimina tutte le domande",
+    "Eliminare tutte le domande correnti? Il quiz salvato rimane invariato fino a quando non si salva. È possibile selezionare di nuovo tutti i candidati dall'ultimo torneo.",
+    "Impossibile caricare i tornei sorgenti. Sono state mantenute le domande esistenti. Riaprire l'editor più tardi.",
+    "I nomi dei candidati collegati e le risposte sono stati controllati. Le modifiche hanno effetto quando si salva."
+  ],
+  "pl": [
+    "Usuń wszystkie pytania",
+    "Usunąć wszystkie aktualne pytania? Zapisany quiz pozostaje niezmieniony dopóki nie zapiszesz. Możesz ponownie wybrać wszystkich kandydatów z ostatniego turnieju.",
+    "Nie można wczytać turniejów źródłowych. Zachowano istniejące pytania. Proszę otworzyć edytor później.",
+    "Połączone nazwy kandydatów i odpowiedzi zostały sprawdzone. Zmiany stają się skuteczne po zapisaniu."
+  ],
+  "nl": [
+    "Alle vragen verwijderen",
+    "Verwijder alle huidige vragen? De opgeslagen quiz blijft ongewijzigd totdat u opslaat. U kunt alle kandidaten van het laatste toernooi opnieuw selecteren.",
+    "Kon brontoernooien niet laden. Bestaande vragen werden bewaard. Gelieve de editor later te heropenen.",
+    "Gekoppelde kandidatennamen en antwoorden zijn gecontroleerd. Wijzigingen worden van kracht wanneer u opslaat."
+  ],
+  "cs": [
+    "Smazat všechny otázky",
+    "Smazat všechny aktuální otázky? Uložený kvíz zůstane nezměněn, dokud neuložíte. Můžete vybrat všechny kandidáty z posledního turnaje znovu.",
+    "Nelze načíst zdrojové turnaje. Stávající otázky byly uloženy. Prosím, otevřete editor později.",
+    "Byla zkontrolována propojená jména kandidátů a odpovědi. Změny nabývají účinku při uložení."
   ]
 }

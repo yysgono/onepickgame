@@ -5,6 +5,11 @@ export const ORIGINAL_LANGUAGE_NAMES = {
   es: "Español", fr: "Français", vi: "Tiếng Việt", de: "Deutsch",
   ru: "Русский", id: "Bahasa Indonesia", pt: "Português", hi: "हिन्दी",
   tr: "Türkçe", th: "ไทย", ar: "العربية", bn: "বাংলা",
+
+"it":"Italiano",
+"pl":"Polski",
+"nl":"Nederlands",
+"cs":"Čeština"
 };
 
 export function readOriginalTranslationMap(value) {
@@ -44,7 +49,12 @@ export function originalTitleLabel(uiLanguage, originalLanguage) {
     es: "Título original", fr: "Titre original", vi: "Tiêu đề gốc", de: "Originaltitel",
     ru: "Исходное название", id: "Judul asli", pt: "Título original", hi: "मूल शीर्षक",
     tr: "Orijinal başlık", th: "ชื่อเรื่องต้นฉบับ", ar: "العنوان الأصلي", bn: "মূল শিরোনাম",
-  };
+  
+"it":"Titolo originale",
+"pl":"Tytuł oryginalny",
+"nl":"Oorspronkelijke titel",
+"cs":"Původní název"
+};
   const code = normalizeOriginalLanguage(originalLanguage) || "en";
   return `${labels[normalizeOriginalLanguage(uiLanguage)] || labels.en} · ${ORIGINAL_LANGUAGE_NAMES[code]} (${code})`;
 }

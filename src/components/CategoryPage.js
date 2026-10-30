@@ -1,3 +1,4 @@
+import {localizeExtraUi} from "../utils/newLanguageUi";
 import NavigationLink from "./NavigationLink";
 import useWorldcupCategoryPages from "../hooks/useWorldcupCategoryPages";
 // src/components/CategoryPage.js
@@ -326,6 +327,11 @@ const WORLDCUP_CARD_META_COPY = {
   th: { candidates: "ผู้สมัคร", plays: "เล่น", updated: "อัปเดต" },
   ar: { candidates: "المرشحون", plays: "مرات اللعب", updated: "تحديث" },
   bn: { candidates: "প্রার্থী", plays: "খেলা", updated: "আপডেট" },
+
+"it":{"candidates":"Candidati","plays":"Riproduzioni","updated":"Aggiornato"},
+"pl":{"candidates":"Kandydaci","plays":"Odtwarzanie","updated":"Zaktualizowano"},
+"nl":{"candidates":"Kandidaten","plays":"Afspeelt","updated":"Bijgewerkt"},
+"cs":{"candidates":"Kandidáti","plays":"Hraje","updated":"Aktualizováno"}
 };
 
 
@@ -1930,7 +1936,7 @@ const smallButtonStyle = {
 
 
 
-                : "Create Bracket",
+                : localizeExtraUi("Create Bracket"),
 
 
 
@@ -5224,7 +5230,7 @@ fontWeight: 800,
 
 
 
-              : "Load more"}
+              : localizeExtraUi("Load more")}
 
 
 

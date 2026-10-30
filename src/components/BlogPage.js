@@ -1,3 +1,4 @@
+import {uiContentLanguage} from "../utils/uiContentLanguage";
 import {getCommunityUi} from './communityUi';
 import { useSitePublisher } from "./SitePublishing";
 import "./communityPublishing.css";
@@ -23,7 +24,7 @@ const SUPPORTED_LANGS = [
   "th",
   "ar",
   "bn",
-];
+ "it", "pl", "nl", "cs"];
 
 const blogText = {
   ko: {
@@ -185,6 +186,11 @@ const blogText = {
     error: "নিবন্ধগুলো লোড করা যায়নি।",
     readMore: "নিবন্ধ পড়ুন",
   },
+
+"it":{"title":"Blog","description":"Esplora i contenuti sui giochi di tornei, i giochi di classifica, anime, sport, musica e altro ancora. Scopri musica, copyright e risorse audio epidemiche per i creatori.","empty":"Non ci sono ancora articoli disponibili in questa lingua.","loading":"Caricamento articoli.","error":"Impossibile caricare gli articoli.","readMore":"Leggi l'articolo"},
+"pl":{"title":"Blog","description":"Poznaj treści o grach turniejowych, grach rankingowych, anime, sporcie, muzyce i innych. Odkryj muzykę, prawa autorskie i epidemiczne zasoby dźwiękowe dla twórców.","empty":"Nie ma jeszcze artykułów dostępnych w tym języku.","loading":"Wczytywanie artykułów.","error":"Nie można wczytać artykułów.","readMore":"Przeczytaj artykuł"},
+"nl":{"title":"Blog","description":"Ontdek de inhoud van toernooigames, ranking games, anime, sport, muziek, en nog veel meer. Ontdek muziek, copyright en Epidemic Sound bronnen voor makers.","empty":"Er zijn nog geen artikelen beschikbaar in deze taal.","loading":"Artikelen laden.","error":"Kon de artikelen niet laden.","readMore":"Lees artikel"},
+"cs":{"title":"Blog","description":"Prozkoumejte obsah turnajových her, žebříčku her, anime, sport, hudbu a další. Objevte hudbu, copyright a Epidemic Sound zdroje pro tvůrce.","empty":"V tomto jazyce zatím nejsou k dispozici žádné články.","loading":"Načítám články.","error":"Nelze načíst články.","readMore":"Přečtěte si článek"}
 };
 
 function getBlogText(lang) {
@@ -243,7 +249,7 @@ export default function BlogPage() {
           .select(
             "id, language, slug, title, description, created_at"
           )
-          .eq("language", currentLang)
+          .eq("language", uiContentLanguage(currentLang))
           .order("created_at", { ascending: false })
           .order("id", { ascending: false })
           .range(page * 12, page * 12 + 12);
@@ -303,7 +309,7 @@ export default function BlogPage() {
             >
               {text.description}
             </p>
-            {canPublish && <Link className="blog-write-link" to={`/${currentLang}/blog/write`}>＋ {ui.write}</Link>}
+            {canPublish && <Link className="blog-write-link" to={`/${uiContentLanguage(currentLang)}/blog/write`}>＋ {ui.write}</Link>}
           </header>
 
           {loading && (
