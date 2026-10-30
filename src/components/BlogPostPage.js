@@ -418,7 +418,7 @@ export default function BlogPostPage() {
 
         const { error: recordError } =
           await supabase.rpc(
-            "record_blog_view",
+            "record_blog_view_v149",
             {
               p_slug: post.slug,
               p_language:

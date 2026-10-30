@@ -1,3 +1,4 @@
+import AdminContentSummary from "./AdminContentSummary";
 import AdminTodayContentStats from "./AdminTodayContentStats";
 import AdminRecentActivity from "./AdminRecentActivity";
 import { getAdminWorldcupCount, getAdminTodayRandomPickCount, getAdminTodayContentCount, getAdminTotalCompletions, getAdminRecent7Completions, getAdminRecentPlays, getAdminRecentContentActivity, getAdminRecentComments, getTodayKstDateString } from "../utils/adminReadApi";
@@ -245,6 +246,8 @@ export default function AdminStatsPage() {
         <button type="button" disabled={loading} onClick={() => setRefreshTick(value => value + 1)}>다시 시도</button>
       </div>}
 
+
+      <AdminContentSummary refreshTick={refreshTick} />
 
       {/* ==================================================
           상단 통계
@@ -1041,5 +1044,6 @@ export default function AdminStatsPage() {
     </div>
   );
 }
+
 
 
