@@ -1,3 +1,4 @@
+import { originalStorageImageUrl } from '../utils/originalStorageImageUrl';
 import { rememberLoadedImage } from "../utils/recentLoadedImages";
 // src/components/MediaRenderer.js
 import React, {
@@ -209,7 +210,7 @@ function PlayOverlay() {
 }
 
 function MediaRenderer({
-  url,
+  url: inputUrl,
   alt = "",
   playable = false,
   style = {},
@@ -221,6 +222,7 @@ function MediaRenderer({
   viewportMargin = "240px",
   previewCrop = false,
 }) {
+  const url = originalStorageImageUrl(inputUrl);
   const { t } = useTranslation();
 
   function handlePreviewImageLoad(event) {
@@ -822,4 +824,5 @@ onError={
 }
 
 export default MediaRenderer;
+
 
