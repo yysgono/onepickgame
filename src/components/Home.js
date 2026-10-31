@@ -3953,7 +3953,7 @@ return (
 
     >
 
-      {LANGUAGES.map((item) => {
+      {LANGUAGES.map((item, index) => {
 
         const active = item.code === lang;
 
@@ -3963,13 +3963,13 @@ return (
 
           <React.Fragment key={item.code}>
 
-            {item.code === "de" && (
+            {(index === 7 || index === 14) && (
 
               <span
 
                 aria-hidden="true"
 
-                style={{ flexBasis: isMobile ? "100%" : 0, height: 0 }}
+                style={{ flexBasis: "100%", height: 0 }}
 
               />
 

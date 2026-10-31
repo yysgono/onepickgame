@@ -3764,7 +3764,7 @@ export default function QuizPage({ user = null }) {
 
 
 
-          <div
+          <div className="quiz-home-category-shortcuts"
 
 
 

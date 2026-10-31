@@ -1,1 +1,9 @@
 .home-activity-panel:hover{box-shadow:0 0 0 2px var(--activity-hover-border),0 10px 24px #0000000d!important}.home-activity-panel .home-activity-link{border:1px solid transparent!important}.home-activity-panel .home-activity-link:hover,.home-activity-panel .home-activity-link:focus-visible{border-color:var(--activity-hover-border)!important;outline-offset:2px}
+
+/* Home category shortcuts are desktop controls, matching Worldcup home. */
+@media (max-width: 599px) {
+  .quiz-home-category-shortcuts,
+  .tier-recommendation-filters {
+    display: none !important;
+  }
+}
