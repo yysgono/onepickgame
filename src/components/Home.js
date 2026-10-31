@@ -664,7 +664,7 @@ if (focusParam === "search") {
 
   const [rowVisibleCounts, setRowVisibleCounts] = useState({});
 
-  const [showMoreCategories, setShowMoreCategories] = useState(false);
+  const [showMoreCategories, setShowMoreCategories] = useState(0);
 
   const [vw, setVw] = useState(
 
@@ -1191,7 +1191,7 @@ const homePages = useWorldcupHomePages({
   creator: creatorFilter || "",
   sorts: categorySorts,
   pageSize: initialPageCount,
-  includeDeferred: showMoreCategories || Boolean(search.trim()) || Boolean(creatorFilter),
+  includeDeferred: showMoreCategories > 0 || Boolean(search.trim()) || Boolean(creatorFilter),
   includeActivity: !isMobile && !search.trim() && !creatorFilter,
 });
 const worldcupList = remoteHome ? homePages.cups : suppliedWorldcupList;
@@ -3647,8 +3647,6 @@ const visibleCategorySections = categorySections.filter(
 
 const shouldShowAllCategories =
 
-  showMoreCategories ||
-
   Boolean(search.trim()) ||
 
   Boolean(creatorFilter) ||
@@ -3657,31 +3655,11 @@ const shouldShowAllCategories =
 
 
 
-const primaryCategorySections =
-
-  visibleCategorySections.filter((section) =>
-
-    PRIMARY_HOME_CATEGORY_KEYS.has(section.key)
-
-  );
-
-
-
-const deferredCategorySections =
-
-  visibleCategorySections.filter((section) =>
-
-    !PRIMARY_HOME_CATEGORY_KEYS.has(section.key)
-
-  );
-
-
-
 const renderedCategorySections = shouldShowAllCategories
 
   ? visibleCategorySections
 
-  : primaryCategorySections;
+  : visibleCategorySections.slice(0, 2 + showMoreCategories * 3);
 
 const homeSeoSummary =
   SITE_HOME_COPY[lang]?.description ||
@@ -4373,7 +4351,7 @@ return (
 
 
 
-{!shouldShowAllCategories && deferredCategorySections.length > 0 && (
+{!shouldShowAllCategories && renderedCategorySections.length < visibleCategorySections.length && (
 
   <div
 
@@ -4397,7 +4375,7 @@ return (
 
       type="button"
 
-      onClick={() => setShowMoreCategories(true)}
+      onClick={() => setShowMoreCategories((count) => count + 1)}
 
       style={{
 

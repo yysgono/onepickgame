@@ -1000,7 +1000,7 @@ export default function QuizMaker() {
                 const active = contentLanguages.includes(item.code);
                 return (
                   <React.Fragment key={item.code}>
-                  {item.code === "id" && <span aria-hidden="true" style={{ flexBasis: "100%", height: 0 }} />}
+                  {(item.code === "de" || item.code === "th") && <span aria-hidden="true" style={{ flexBasis: "100%", height: 0 }} />}
                   <button type="button" onClick={() => toggleLanguage(item.code)} style={pillButton(active)}>
                     {active ? "✓ " : ""}{item.label}
                   </button>
