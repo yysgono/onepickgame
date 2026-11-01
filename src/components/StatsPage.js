@@ -267,27 +267,25 @@ function ReportButton({ cupId, size = "md" }) {
 
     if (!data?.user?.id) return setError(t("need_login"));
 
-    const { error } = await supabase.from("reports").insert([
+    const reportUrl = `${window.location.origin}/${normalizedLang}/select-round/${encodeURIComponent(cupId)}`;
 
-      {
+    const { error } = await supabase.from("site_suggestions").insert({
 
-        type: "worldcup",
+      author_id: data.user.id,
 
-        target_id: cupId,
+      language: normalizedLang,
 
-        reporter_id: data.user.id,
+      title: `[월드컵 신고] ${getWorldcupTitle(selectedCup, normalizedLang) || cupId}`.slice(0, 200),
 
-        reason,
+      body: [`신고 사유: ${String(reason || "(미입력)").trim().slice(0, 1000)}`, `월드컵: ${reportUrl}`, `월드컵 ID: ${cupId}`].join("\n\n"),
 
-      },
-
-    ]);
+    });
 
     if (error) setError(error.message);
 
     else setOk(t("report_submit_success") || "신고가 접수되었습니다. 감사합니다.");
 
-  }, [cupId, reason, t]);
+  }, [cupId, reason, t, selectedCup, normalizedLang]);
 
 
 
@@ -1785,7 +1783,7 @@ const top3 = useMemo(() => {
        </div>
      )}
 
-     <div style={{width:"min(960px, 94vw)",margin:"18px auto",textAlign:"center",display:"grid",gap:14}}>
+     <div style={{width:"min(960px, 94vw)",margin:"18px auto",textAlign:"center",display:"grid",gridTemplateColumns:"repeat(2, minmax(0, 1fr))",gap:14}}>
        <button type="button" disabled={randomSaving} style={{width:"100%",padding:"20px 16px",border:"2px solid #056b45",borderRadius:12,background:"#078657",color:"#fff",fontSize:18,fontWeight:800,cursor:"pointer",opacity:randomSaving?0.7:1}} onClick={async()=>{
          if(randomSaving)return;setRandomSaving(true);setRandomSaveError("");
          try{const candidates=normalizeCandidates(selectedCup?.data,selectedCup?.id);await saveCandidateSet(candidates,selectedCup?.id);navigate(`/${normalizedLang}/random-pick`);}
@@ -1793,7 +1791,7 @@ const top3 = useMemo(() => {
          finally{setRandomSaving(false);}
        }}>{getRandomPickCopy(normalizedLang).worldcupToRandom}</button>
        <button type="button" onClick={()=>navigate(`/${normalizedLang}/tier-list/create/${selectedCup.id}`)} style={{width:"100%",padding:"20px 16px",border:"2px solid #1d4ed8",borderRadius:12,background:"#2563eb",color:"#fff",fontSize:18,fontWeight:800,cursor:"pointer"}}>{t("result_discovery_tier_title")}</button>
-       {randomSaveError&&<p role="alert" style={{color:"#b42346",margin:0}}>{randomSaveError}</p>}
+       {randomSaveError&&<p role="alert" style={{gridColumn:"1 / -1",color:"#b42346",margin:0}}>{randomSaveError}</p>}
      </div>
 
       {/* 회원/전체 탭 */}
@@ -2082,7 +2080,7 @@ onClick={() => {
 
           >
 
-            {t("view_" + num)}
+            {normalizedLang === "ko" ? `${num}개씩 보기` : t("view_" + num)}
 
           </button>
 
