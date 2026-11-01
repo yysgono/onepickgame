@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { supabase } from "../utils/supabaseClient";
 import { hasBadword } from "../badwords-multilang";
 import useBanCheck from "../hooks/useBanCheck";
+import { addGuestComment, manageGuestComment } from "../utils/guestComments";
 
 function CommentSkeleton() {
   return (
@@ -242,6 +243,9 @@ export default function CommentBox({
   const [nickname, setNickname] =
     useState("");
 
+  const [guestNickname, setGuestNickname] = useState("");
+  const [guestPassword, setGuestPassword] = useState("");
+
   const [comments, setComments] =
     useState([]);
 
@@ -332,16 +336,9 @@ export default function CommentBox({
 
     setError("");
 
-    if (
-      !user ||
-      !nickname
-    ) {
-      setError(
-        t(
-          "comment.loginRequired"
-        )
-      );
-
+    const authorName = user ? nickname : guestNickname.trim();
+    if (!authorName || (!user && !guestPassword)) {
+      setError(i18n.language.startsWith("ko") ? "닉네임과 수정·삭제용 비밀번호를 입력해주세요." : "Enter a nickname and password for editing/deleting.");
       return;
     }
 
@@ -389,7 +386,7 @@ export default function CommentBox({
 
     if (
       containsBadword(
-        nickname
+        authorName
       )
     ) {
       return setError(
@@ -412,9 +409,7 @@ export default function CommentBox({
     }
 
     if (
-      getByteLength(
-        nickname
-      ) > 12
+      user && getByteLength(authorName) > 12
     ) {
       return setError(
         t(
@@ -425,31 +420,16 @@ export default function CommentBox({
 
     setLoading(true);
 
-    const {
-      error: insertErr,
-    } =
-      await supabase
-        .from("comments")
-        .insert([
-          {
-            cup_id:
-              cupId,
-
-            nickname,
-
-            content:
-              text,
-
-            user_id:
-              user.id,
-
-            upvotes:
-              0,
-
-            downvotes:
-              0,
-          },
-        ]);
+    let insertErr = null;
+    try {
+      if (user) {
+        const { error } = await supabase.from("comments").insert([{ cup_id: cupId, nickname: authorName, content: text, user_id: user.id, upvotes: 0, downvotes: 0 }]);
+        insertErr = error;
+      } else {
+        await addGuestComment({ kind: "worldcup", targetId: cupId, nickname: authorName, password: guestPassword, content: text });
+        setGuestPassword("");
+      }
+    } catch (error) { insertErr = error; }
 
     setLoading(false);
 
@@ -469,50 +449,30 @@ export default function CommentBox({
     fetchComments();
   }
 
-  async function handleDelete(
-    commentId,
-    commentUserId
-  ) {
-    if (!user) {
-      return;
-    }
+  async function handleDelete(commentId, commentUserId) {
+    try {
+      if (commentUserId) {
+        if (!user || (nickname !== "admin" && commentUserId !== user.id)) throw new Error(t("comment.deleteAuth"));
+        const { error } = await supabase.from("comments").delete().eq("id", commentId);
+        if (error) throw error;
+      } else {
+        const password = window.prompt(i18n.language.startsWith("ko") ? "댓글 작성 때 입력한 비밀번호를 입력하세요." : "Enter the password used for this comment.");
+        if (password === null) return;
+        await manageGuestComment({ kind: "worldcup", commentId, password, action: "delete" });
+      }
+      fetchComments();
+    } catch (deleteError) { setError(deleteError.message || t("comment.saveError")); }
+  }
 
-    const isAdmin =
-      nickname === "admin";
-
-    if (
-      !isAdmin &&
-      commentUserId !==
-        user.id
-    ) {
-      setError(
-        t(
-          "comment.deleteAuth"
-        )
-      );
-
-      return;
-    }
-
-    const {
-      error:
-        deleteErr,
-    } =
-      await supabase
-        .from("comments")
-        .delete()
-        .eq(
-          "id",
-          commentId
-        );
-
-    if (deleteErr) {
-      setError(
-        deleteErr.message
-      );
-    }
-
-    fetchComments();
+  async function handleGuestEdit(comment) {
+    const password = window.prompt(i18n.language.startsWith("ko") ? "댓글 작성 때 입력한 비밀번호를 입력하세요." : "Enter the password used for this comment.");
+    if (password === null) return;
+    const next = window.prompt(i18n.language.startsWith("ko") ? "수정할 댓글 내용을 입력하세요." : "Enter the edited comment.", comment.content);
+    if (next === null) return;
+    const clean = next.trim();
+    if (!clean || clean.length > 500 || clean.split("\n").length > 15 || containsBadword(clean)) return setError(t("comment.badwordComment"));
+    try { await manageGuestComment({ kind: "worldcup", commentId: comment.id, password, action: "edit", content: clean }); fetchComments(); }
+    catch (editError) { setError(editError.message || t("comment.saveError")); }
   }
 
   async function handleUpvote(
@@ -635,7 +595,7 @@ export default function CommentBox({
         </div>
       )}
 
-      <form
+      {user && <form
         onSubmit={
           handleSubmit
         }
@@ -969,7 +929,14 @@ export default function CommentBox({
                 "comment.submit"
               )}
         </button>
-      </form>
+      </form>}
+
+      {!user && <form onSubmit={handleSubmit} style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: 8, margin: "0 0 20px", padding: 12, border: "1.5px solid #d7e0ec", borderRadius: 12, background: "#fbfcff" }}>
+        <input value={guestNickname} onChange={e => setGuestNickname(e.target.value)} maxLength={20} autoComplete="nickname" placeholder={i18n.language.startsWith("ko") ? "임시 닉네임" : "Guest nickname"} style={{ minWidth: 0, height: 42, boxSizing: "border-box", padding: "0 10px", borderRadius: 8, border: "1px solid #c4d1e3" }} />
+        <input type="password" value={guestPassword} onChange={e => setGuestPassword(e.target.value)} minLength={4} maxLength={50} autoComplete="new-password" placeholder={i18n.language.startsWith("ko") ? "수정·삭제용 비밀번호 (4~50자)" : "Password for editing/deleting (4–50 characters)"} style={{ minWidth: 0, height: 42, boxSizing: "border-box", padding: "0 10px", borderRadius: 8, border: "1px solid #c4d1e3" }} />
+        <textarea value={content} onChange={e => setContent(e.target.value.slice(0, 500))} maxLength={500} rows={4} placeholder={t("comment.placeholder")} style={{ gridColumn: "1 / -1", width: "100%", boxSizing: "border-box", padding: 10, borderRadius: 8, border: "1px solid #c4d1e3" }} />
+        <div style={{ gridColumn: "1 / -1", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}><small>{i18n.language.startsWith("ko") ? "비밀번호를 잊으면 수정·삭제할 수 없습니다." : "Keep your password; it cannot be recovered."}</small><button disabled={loading || isBanned}>{t("comment.submit")}</button></div>
+      </form>}
 
       {isBanned && (
         <div
@@ -1344,6 +1311,8 @@ export default function CommentBox({
                   {c.downvotes ||
                     0}
                 </button>
+
+                {!c.user_id && <><button type="button" onClick={() => handleGuestEdit(c)} style={{ color: COLORS.main, border: "none", background: "none", fontWeight: 700, cursor: "pointer" }}>{i18n.language.startsWith("ko") ? "수정" : "Edit"}</button><button type="button" onClick={() => handleDelete(c.id, null)} style={{ color: COLORS.danger, border: "none", background: "none", fontWeight: 700, cursor: "pointer" }}>{t("comment.delete")}</button></>}
 
                 {user &&
                   (nickname ===

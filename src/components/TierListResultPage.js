@@ -1,5 +1,7 @@
 import trashCopy from "../utils/contentTrashCopy.json";
 import {trashContent} from "../utils/contentTrashApi";
+import { hasBadword } from "../badwords-multilang";
+import { addGuestComment, manageGuestComment } from "../utils/guestComments";
 import "./tierCandidateLabels.css";
 import NavigationLink from "./NavigationLink";
 import RelatedContentLinks from "./RelatedContentLinks";
@@ -311,6 +313,8 @@ function TierListResultPage() {
     useState(
       null
     );
+
+  const [guestCommentPassword, setGuestCommentPassword] = useState("");
 const [
   isAdmin,
   setIsAdmin,
@@ -2227,175 +2231,49 @@ await trashContent('tier-list',tierList.id,guestPassword);
      댓글 작성
      ========================= */
 
-  const submitComment =
-    async () => {
-      if (
-        commentLoading
-      ) {
-        return;
+  const submitComment = async () => {
+    if (commentLoading) return;
+    const cleanComment = commentText.trim();
+    const cleanNickname = nickname.trim();
+    if (!cleanNickname) return alert(text.nicknameRequired);
+    if (!cleanComment) return alert(text.commentRequired);
+    if (cleanComment.length > 500) return alert(text.commentMax);
+    if (hasBadword(cleanNickname, lang) || hasBadword(cleanComment, lang)) return alert(lang === "ko" ? "비속어가 포함된 닉네임이나 댓글은 사용할 수 없습니다." : "Please remove prohibited words from the nickname or comment.");
+    if (!currentUser && !guestCommentPassword) return alert(lang === "ko" ? "수정·삭제용 비밀번호를 입력해주세요." : "Enter a password for editing/deleting.");
+    setCommentLoading(true);
+    try {
+      if (currentUser) {
+        const { error: insertError } = await supabase.from("tier_list_comments").insert({ tier_list_id: id, user_id: currentUser.id, guest_id: null, nickname: cleanNickname, content: cleanComment });
+        if (insertError) throw insertError;
+      } else {
+        await addGuestComment({ kind: "tier-list", targetId: id, nickname: cleanNickname, password: guestCommentPassword, content: cleanComment });
+        setGuestCommentPassword("");
       }
+      setCommentText("");
+      await fetchComments();
+    } catch (insertError) {
+      alert(`${text.commentPostFailed}: ${insertError?.message || text.unknownError}`);
+    } finally { setCommentLoading(false); }
+  };
 
+  const editGuestTierComment = async (comment) => {
+    const password = window.prompt(lang === "ko" ? "댓글 작성 때 입력한 비밀번호를 입력하세요." : "Enter the password used for this comment.");
+    if (password === null) return;
+    const next = window.prompt(lang === "ko" ? "수정할 댓글 내용을 입력하세요." : "Enter the edited comment.", comment.content);
+    if (next === null) return;
+    const clean = next.trim();
+    if (!clean || clean.length > 500 || hasBadword(clean, lang)) return alert(lang === "ko" ? "댓글 내용을 확인해주세요. (최대 500자, 비속어 금지)" : "Check the comment (up to 500 characters; prohibited words are not allowed).");
+    try { await manageGuestComment({ kind: "tier-list", commentId: comment.id, password, action: "edit", content: clean }); await fetchComments(); }
+    catch (editError) { alert(editError.message || text.commentPostFailed); }
+  };
 
-      const cleanComment =
-        commentText
-          .trim();
-
-
-      const cleanNickname =
-        nickname
-          .trim();
-
-
-      if (
-        !cleanNickname
-      ) {
-        alert(
-          text.nicknameRequired
-        );
-
-        return;
-      }
-
-
-      if (
-        !cleanComment
-      ) {
-        alert(
-          text.commentRequired
-        );
-
-        return;
-      }
-
-
-      if (
-        cleanComment.length >
-        500
-      ) {
-        alert(
-          text.commentMax
-        );
-
-        return;
-      }
-
-
-      setCommentLoading(
-        true
-      );
-
-
-      try {
-        let guestId =
-          null;
-
-
-        if (
-          !currentUser
-        ) {
-          guestId =
-            localStorage
-              .getItem(
-                "guest_id"
-              );
-
-
-          if (
-            !guestId
-          ) {
-            guestId =
-              crypto
-                .randomUUID
-                ?.() ||
-              `${Math.random()
-                .toString(36)
-                .slice(2)}${Date.now()}`;
-
-
-            localStorage
-              .setItem(
-                "guest_id",
-                guestId
-              );
-          }
-
-
-          localStorage
-            .setItem(
-              "tier_list_guest_nickname",
-              cleanNickname
-            );
-        }
-
-
-        const {
-          error:
-            insertError,
-        } =
-          await supabase
-            .from(
-              "tier_list_comments"
-            )
-            .insert([
-              {
-                tier_list_id:
-                  id,
-
-                user_id:
-                  currentUser
-                    ?.id ||
-                  null,
-
-                guest_id:
-                  currentUser
-                    ? null
-                    : guestId,
-
-                nickname:
-                  cleanNickname,
-
-                content:
-                  cleanComment,
-              },
-            ]);
-
-
-        if (
-          insertError
-        ) {
-          throw insertError;
-        }
-
-
-        setCommentText(
-          ""
-        );
-
-
-        await fetchComments();
-      } catch (
-        insertError
-      ) {
-        console.error(
-          "댓글 등록 실패:",
-          insertError
-        );
-
-
-        alert(
-          `${text.commentPostFailed}: ${
-            insertError
-              ?.message ||
-            text.unknownError
-          }`
-        );
-      } finally {
-        setCommentLoading(
-          false
-        );
-      }
-    };
-
+  const deleteGuestTierComment = async (comment) => {
+    if (!window.confirm(text.deleteConfirm)) return;
+    const password = window.prompt(lang === "ko" ? "댓글 작성 때 입력한 비밀번호를 입력하세요." : "Enter the password used for this comment.");
+    if (password === null) return;
+    try { await manageGuestComment({ kind: "tier-list", commentId: comment.id, password, action: "delete" }); await fetchComments(); }
+    catch (deleteError) { alert(deleteError.message || text.commentPostFailed); }
+  };
 
   /* =========================
      로딩
@@ -3549,6 +3427,8 @@ padding: isMobile
             />
 
 
+            {!currentUser && <input type="password" value={guestCommentPassword} onChange={e => setGuestCommentPassword(e.target.value)} minLength={4} maxLength={50} autoComplete="new-password" placeholder={lang === "ko" ? "수정·삭제용 비밀번호 (4~50자)" : "Password for editing/deleting (4–50 characters)"} style={{ width: "100%", maxWidth: 360, height: 40, boxSizing: "border-box", padding: "0 11px", marginBottom: 9, borderRadius: 7, border: "1px solid #dde2ea" }} />}
+
             <textarea
               value={
                 commentText
@@ -3809,6 +3689,7 @@ padding: isMobile
                     >
                       {comment.content}
                     </div>
+                    {!comment.user_id && comment.guest_id?.startsWith("pw1:") && <div style={{ display: "flex", gap: 12, marginTop: 8 }}><button type="button" onClick={() => editGuestTierComment(comment)} style={{ border: 0, background: "transparent", color: "#5935ac", padding: 0, cursor: "pointer" }}>{lang === "ko" ? "수정" : "Edit"}</button><button type="button" onClick={() => deleteGuestTierComment(comment)} style={{ border: 0, background: "transparent", color: "#b42346", padding: 0, cursor: "pointer" }}>{text.delete}</button></div>}
                   </div>
                 )
               )
