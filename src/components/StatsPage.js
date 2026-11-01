@@ -193,7 +193,7 @@ const writeCache = writeStatsCache;
 
 /* ========================= 신고 버튼 ========================= */
 
-function ReportButton({ cupId, size = "md" }) {
+function ReportButton({ cupId, cupTitle = "", lang = "en", size = "md" }) {
 
   const { t } = useTranslation();
 
@@ -267,15 +267,15 @@ function ReportButton({ cupId, size = "md" }) {
 
     if (!data?.user?.id) return setError(t("need_login"));
 
-    const reportUrl = `${window.location.origin}/${normalizedLang}/select-round/${encodeURIComponent(cupId)}`;
+    const reportUrl = `${window.location.origin}/${lang}/select-round/${encodeURIComponent(cupId)}`;
 
     const { error } = await supabase.from("site_suggestions").insert({
 
       author_id: data.user.id,
 
-      language: normalizedLang,
+      language: lang,
 
-      title: `[월드컵 신고] ${getWorldcupTitle(selectedCup, normalizedLang) || cupId}`.slice(0, 200),
+      title: `[월드컵 신고] ${cupTitle || cupId}`.slice(0, 200),
 
       body: [`신고 사유: ${String(reason || "(미입력)").trim().slice(0, 1000)}`, `월드컵: ${reportUrl}`, `월드컵 ID: ${cupId}`].join("\n\n"),
 
@@ -285,7 +285,7 @@ function ReportButton({ cupId, size = "md" }) {
 
     else setOk(t("report_submit_success") || "신고가 접수되었습니다. 감사합니다.");
 
-  }, [cupId, reason, t, selectedCup, normalizedLang]);
+  }, [cupId, cupTitle, lang, reason, t]);
 
 
 
@@ -1550,7 +1550,7 @@ const top3 = useMemo(() => {
 
         </button>
 
-        <ReportButton cupId={selectedCup.id} size="md" />
+        <ReportButton cupId={selectedCup.id} cupTitle={getWorldcupTitle(selectedCup, normalizedLang)} lang={normalizedLang} size="md" />
 
       </div>
 
