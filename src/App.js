@@ -32,6 +32,7 @@ import FindPwBox from "./components/FindPwBox";
 import Footer from "./components/Footer";
 import SEOManager from "./seo/SEOManager";
 import AdGuard from "./ads/AdGuard";
+import { AdExclusionProvider } from "./ads/AdExclusionProvider";
 import {
   getWorldcupTitle,
 } from "./utils/localization";
@@ -2049,7 +2050,7 @@ function App() {
   =================================================== */
 
   return (
-    <AppShellContext.Provider value={{ fetchWorldcups, fixedWorldcups, handleBackup, handleLangChange, handleRestore, handleWorldcupDelete, i18n, isAdmin, nickname, nicknameLoading, relatedWorldcupsById, setUser, setWorldcupAllLoaded, setWorldcupList, t, updateNickname, user, worldcupList }}><Router>
+    <AppShellContext.Provider value={{ fetchWorldcups, fixedWorldcups, handleBackup, handleLangChange, handleRestore, handleWorldcupDelete, i18n, isAdmin, nickname, nicknameLoading, relatedWorldcupsById, setUser, setWorldcupAllLoaded, setWorldcupList, t, updateNickname, user, worldcupList }}><AdExclusionProvider><Router>
     <div
       className="app-main-wrapper"
       style={{
@@ -2100,7 +2101,7 @@ overflowX: "hidden",
         </div>
       </div>
     </div>
-    </Router></AppShellContext.Provider>
+    </Router></AdExclusionProvider></AppShellContext.Provider>
   );
 }
 

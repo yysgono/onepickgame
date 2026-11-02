@@ -1,12 +1,17 @@
 // src/components/AdsenseSide.js
 import React, { useEffect } from "react";
+import { useAdsAllowed } from "../ads/AdExclusionProvider";
 
 export default function AdsenseSide() {
+  const adsAllowed = useAdsAllowed();
   useEffect(() => {
+    if (!adsAllowed) return;
     try {
       (window.adsbygoogle = window.adsbygoogle || []).push({});
     } catch (e) {}
-  }, []);
+  }, [adsAllowed]);
+
+  if (!adsAllowed) return null;
 
   return (
     <ins

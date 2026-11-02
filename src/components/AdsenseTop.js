@@ -1,9 +1,12 @@
 import { useEffect, useRef } from "react";
+import { useAdsAllowed } from "../ads/AdExclusionProvider";
 
 export default function AdsenseTop() {
   const adRef = useRef(null);
+  const adsAllowed = useAdsAllowed();
 
   useEffect(() => {
+    if (!adsAllowed) return undefined;
     const timer = setTimeout(() => {
       try {
         if (adRef.current) {
@@ -15,7 +18,9 @@ export default function AdsenseTop() {
     }, 300); // ⭐ 딜레이 핵심
 
     return () => clearTimeout(timer);
-  }, []);
+  }, [adsAllowed]);
+
+  if (!adsAllowed) return null;
 
 return (
   <div

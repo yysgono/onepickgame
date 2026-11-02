@@ -1,4 +1,5 @@
 import {localizeExtraUi} from "../utils/newLanguageUi";
+import { useAdsAllowed } from "../ads/AdExclusionProvider";
 import NavigationLink from "./NavigationLink";
 import useWorldcupCategoryPages from "../hooks/useWorldcupCategoryPages";
 // src/components/CategoryPage.js
@@ -48,10 +49,12 @@ const ADSENSE_CLIENT = "ca-pub-2906270915716379";
 
 
 const AdsenseCategory = () => {
+  const adsAllowed = useAdsAllowed();
 
 
 
   useEffect(() => {
+    if (!adsAllowed) return;
 
 
 
@@ -67,13 +70,15 @@ const AdsenseCategory = () => {
 
 
 
-  }, []);
+  }, [adsAllowed]);
 
 
 
 
 
 
+
+  if (!adsAllowed) return null;
 
   return (
 

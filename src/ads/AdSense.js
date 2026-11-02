@@ -1,5 +1,6 @@
 // src/ads/AdSense.jsx
 import React, { useEffect, useRef } from "react";
+import { useAdsAllowed } from "./AdExclusionProvider";
 
 /**
  * Google AdSense 수동 광고 컴포넌트
@@ -14,9 +15,10 @@ export default function AdSense({
   className = "",
 }) {
   const adRef = useRef(null);
+  const adsAllowed = useAdsAllowed();
 
   useEffect(() => {
-    if (!adRef.current) return;
+    if (!adsAllowed || !adRef.current) return;
 
     try {
       // 광고 요청
@@ -25,7 +27,9 @@ export default function AdSense({
       // AdSense는 종종 에러를 던지므로 무시
       console.warn("Adsense error", e);
     }
-  }, []);
+  }, [adsAllowed]);
+
+  if (!adsAllowed) return null;
 
   return (
     <ins

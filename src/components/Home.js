@@ -1,4 +1,5 @@
 import {localizeExtraUi} from "../utils/newLanguageUi";
+import { useAdsAllowed } from "../ads/AdExclusionProvider";
 import "../styles/activityPanels.css";
 import useClickTargetDebug from "../hooks/useClickTargetDebug";
 import trashCopy from "../utils/contentTrashCopy.json";
@@ -288,8 +289,10 @@ const ADSENSE_CLIENT = "ca-pub-2906270915716379";
 
 
 const AdsenseMid = () => {
+  const adsAllowed = useAdsAllowed();
 
   useEffect(() => {
+    if (!adsAllowed) return;
 
     try {
 
@@ -297,7 +300,9 @@ const AdsenseMid = () => {
 
     } catch (e) {}
 
-  }, []);
+  }, [adsAllowed]);
+
+  if (!adsAllowed) return null;
 
 
 
