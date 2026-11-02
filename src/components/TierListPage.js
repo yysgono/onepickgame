@@ -1132,7 +1132,7 @@ const displayTitle =
     items,
     metric = "date",
   }) => (
- <aside className="home-activity-panel"
+  <aside className="home-activity-panel" data-nosnippet="true"
   style={{
     "--activity-hover-border": "#2563EB",
     "--activity-hover-bg": "#f5f5f5",

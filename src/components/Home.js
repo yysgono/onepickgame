@@ -3881,7 +3881,7 @@ return (
     }}
   >
     {showHomeActivityPanels && (
-      <div style={{ paddingTop: 18 }}>
+      <div data-nosnippet="true" style={{ paddingTop: 18 }}>
         {renderHomeActivityPanel({
           title: sidePanelCopy.recentCreated,
           items: recentCreatedCups,
@@ -4217,7 +4217,7 @@ return (
     </div>
 
     {showHomeActivityPanels && (
-      <div style={{ paddingTop: 18 }}>
+      <div data-nosnippet="true" style={{ paddingTop: 18 }}>
         {renderHomeActivityPanel({
           title: sidePanelCopy.recentPlayed,
           items: recentPlayedCups,

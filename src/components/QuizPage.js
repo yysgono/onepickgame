@@ -1488,7 +1488,7 @@ export default function QuizPage({ user = null }) {
     items,
     metric = "date",
   }) => (
-    <aside className="home-activity-panel"
+    <aside className="home-activity-panel" data-nosnippet="true"
       style={{
         "--activity-hover-border": "#E53935",
         "--activity-hover-bg": "#f5f5f5",
