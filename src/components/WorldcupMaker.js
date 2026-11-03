@@ -1,3 +1,4 @@
+import { isGifFile, prepareGifFile } from "../utils/gifUpload";
 import {localizeExtraUi} from "../utils/newLanguageUi";
 import WorldcupCandidateImporter from "./WorldcupCandidateImporter";
 import { mergeImportedCandidates } from "../utils/worldcupCandidateImport";
@@ -297,7 +298,7 @@ const IMAGE_MAX_OUTPUT_BYTES =
 
 const IMAGE_EXTENSIONS =
 
-  /\.(jpe?g|png|webp|avif|svg)$/i;
+  /\.(jpe?g|png|gif|webp|avif|svg)$/i;
 
 
 
@@ -312,6 +313,8 @@ const IMAGE_MIME_TYPES =
     "image/jpeg",
 
     "image/png",
+
+    "image/gif",
 
     "image/webp",
 
@@ -1228,6 +1231,10 @@ async function normalizeImageFile(
   }
 
 
+
+  if (isGifFile(file)) {
+    return prepareGifFile(file);
+  }
 
   if (isSvgFile(file)) {
 
@@ -3208,8 +3215,8 @@ if (!image) {
 
           t(
 
-            "some_files_not_added"
-
+            "some_files_not_added",
+            { defaultValue: "Some files could not be added." }
           ) ||
 
           "Some files could not be added."
@@ -3950,15 +3957,13 @@ for (
 
             /*
 
-             * 최종 파일은 반드시 WebP
+             * 최종 파일은 WebP 또는 검증된 원본 GIF
 
              */
 
             if (
 
-              uploadFile.type !==
-
-              "image/webp"
+              !["image/webp", "image/gif"].includes(uploadFile.type)
 
             ) {
 
@@ -5438,7 +5443,7 @@ style={{
 
 
 
-           accept=".jpg,.jpeg,.png,.webp,.avif,.svg,image/jpeg,image/png,image/webp,image/avif,image/svg+xml"
+           accept=".jpg,.jpeg,.png,.gif,.webp,.avif,.svg,image/jpeg,image/png,image/gif,image/webp,image/avif,image/svg+xml"
 
 
 

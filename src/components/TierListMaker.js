@@ -1,3 +1,4 @@
+import { isGifFile, prepareGifFile } from "../utils/gifUpload";
 import {localizeExtraUi} from "../utils/newLanguageUi";
 import { localizeTierClone } from "../utils/localizeTierClone";
 import tierSourceSearchLabels from "../locales/tierSourceSearchLabels.json";
@@ -51,12 +52,13 @@ const IMAGE_MAX_OUTPUT_BYTES =
   1 * 1024 * 1024;
 
 const IMAGE_EXTENSIONS =
-  /\.(jpe?g|png|webp|avif|svg)$/i;
+  /\.(jpe?g|png|gif|webp|avif|svg)$/i;
 
 const IMAGE_MIME_TYPES =
   new Set([
     "image/jpeg",
     "image/png",
+    "image/gif",
     "image/webp",
     "image/avif",
     "image/svg+xml",
@@ -187,6 +189,7 @@ async function normalizeImageFile(file) {
   if (!file) {
     throw new Error("Image file is missing");
   }
+  if (isGifFile(file)) return prepareGifFile(file);
   if (isSvgFile(file)) {
     return convertSvgToWebp(file);
   }
@@ -3502,7 +3505,7 @@ const handleDragEndItem =
             .slice(2)}`;
 
         const filePath =
-          `${tierListId}/${random}.webp`;
+          `${tierListId}/${random}.${normalizedFile.type === "image/gif" ? "gif" : "webp"}`;
 
         const { error: uploadError } =
           await supabase.storage
@@ -3513,7 +3516,7 @@ const handleDragEndItem =
               {
                 cacheControl: "31536000",
                 upsert: false,
-                contentType: "image/webp",
+                contentType: normalizedFile.type,
               }
             );
 

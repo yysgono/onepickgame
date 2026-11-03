@@ -1,3 +1,4 @@
+import { isGifFile, prepareGifFile } from "../utils/gifUpload";
 import { removedCandidateImagePaths, removeCandidateImageFiles, notifyImageCleanupFailure } from "../utils/worldcupImageCleanup";
 import { removedWorldcupCandidateIds } from "../utils/worldcupCandidateChanges";
 import candidateDeleteCopy from "./worldcupCandidateDeleteCopy.json";
@@ -143,7 +144,7 @@ const EDIT_WORLDCUP_DRAFT_PREFIX =
 
 
 
-const IMAGE_EXTENSION_RE = /\.(jpe?g|png|webp|avif)$/i;
+const IMAGE_EXTENSION_RE = /\.(jpe?g|png|gif|webp|avif)$/i;
 
 const VIDEO_EXTENSION_RE = /\.(mp4|webm|mov)$/i;
 
@@ -154,6 +155,8 @@ const IMAGE_MIME_TYPES = new Set([
   "image/jpeg",
 
   "image/png",
+
+  "image/gif",
 
   "image/webp",
 
@@ -1643,6 +1646,7 @@ editDraftReadyRef.current = true;
 
     if (image) {
 
+      if (isGifFile(file)) return prepareGifFile(file);
       return compressImageToWebp(file);
 
     }
@@ -1769,7 +1773,7 @@ editDraftReadyRef.current = true;
 
         `${
 
-          t("some_files_not_added") ||
+          t("some_files_not_added", { defaultValue: "Some files could not be added." }) ||
 
           "일부 파일을 추가하지 못했습니다."
 
@@ -1899,7 +1903,7 @@ editDraftReadyRef.current = true;
 
 
 
-    if (isImage && blob.type !== "image/webp") {
+    if (isImage && !["image/webp", "image/gif"].includes(blob.type)) {
 
       throw new Error(
 
@@ -1937,7 +1941,7 @@ editDraftReadyRef.current = true;
 
     const extension = isImage
 
-      ? "webp"
+      ? (blob.type === "image/gif" ? "gif" : "webp")
 
       : getFileExtension(item.pendingFileName || "") ||
 
@@ -3491,7 +3495,7 @@ style={{
 
             type="file"
 
-            accept=".jpg,.jpeg,.png,.webp,.avif,.mp4,.webm,.mov,image/jpeg,image/png,image/webp,image/avif,video/mp4,video/webm,video/quicktime"
+            accept=".jpg,.jpeg,.png,.gif,.webp,.avif,.mp4,.webm,.mov,image/jpeg,image/png,image/gif,image/webp,image/avif,video/mp4,video/webm,video/quicktime"
 
             multiple
 
@@ -3723,7 +3727,7 @@ style={{
 
                 type="file"
 
-                accept=".jpg,.jpeg,.png,.webp,.avif,.mp4,.webm,.mov,image/jpeg,image/png,image/webp,image/avif,video/mp4,video/webm,video/quicktime"
+                accept=".jpg,.jpeg,.png,.gif,.webp,.avif,.mp4,.webm,.mov,image/jpeg,image/png,image/gif,image/webp,image/avif,video/mp4,video/webm,video/quicktime"
 
                 style={{ display: "none" }}
 
