@@ -1,3 +1,4 @@
+import Mp4Media from "./Mp4Media";
 import { originalStorageImageUrl } from '../utils/originalStorageImageUrl';
 import { rememberLoadedImage } from "../utils/recentLoadedImages";
 // src/components/MediaRenderer.js
@@ -213,6 +214,8 @@ function MediaRenderer({
   url: inputUrl,
   alt = "",
   playable = false,
+  mediaType = "",
+  autoPlayVideo = false,
   style = {},
   onPlay,
   active = true,
@@ -337,7 +340,7 @@ function MediaRenderer({
     getYoutubeId(safeUrl);
 
   const videoFile =
-    isVideoFile(safeUrl);
+    isVideoFile(safeUrl) || mediaType === "video/mp4" || /^data:video\/mp4[;,]/i.test(safeUrl);
 
   const imageFile =
     isImageFile(safeUrl);
@@ -665,6 +668,9 @@ const handleImageError = () => {
    * 기존 로직 유지
    */
   if (videoFile) {
+    if (!mediaError && (getFileExtension(safeUrl) === "mp4" || mediaType === "video/mp4" || /^data:video\/mp4[;,]/i.test(safeUrl))) {
+      return <Mp4Media src={safeUrl} alt={alt} autoPlay={playable || autoPlayVideo} active={active} style={style} onError={handleMediaError} />;
+    }
     if (mediaError) {
       return (
         <MediaFallback

@@ -4849,7 +4849,7 @@ useEffect(() => {
 
   mediaActive={
 
-    activeMediaId === c1?.id
+    activeMediaId === null || activeMediaId === c1?.id
 
   }
 
@@ -4909,7 +4909,7 @@ useEffect(() => {
 
   mediaActive={
 
-    activeMediaId === c2?.id
+    activeMediaId === null || activeMediaId === c2?.id
 
   }
 

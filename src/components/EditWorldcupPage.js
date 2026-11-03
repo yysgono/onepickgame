@@ -1,3 +1,5 @@
+import { isMp4File, prepareMp4File, MP4_MAX_BYTES, MP4_SIZE_HELP } from "../utils/mp4Upload";
+import Mp4Media from "./Mp4Media";
 import { isGifFile, prepareGifFile, GIF_MAX_INPUT_BYTES, GIF_MAX_BYTES, GIF_SIZE_HELP } from "../utils/gifUpload";
 import { removedCandidateImagePaths, removeCandidateImageFiles, notifyImageCleanupFailure } from "../utils/worldcupImageCleanup";
 import { removedWorldcupCandidateIds } from "../utils/worldcupCandidateChanges";
@@ -1595,6 +1597,7 @@ editDraftReadyRef.current = true;
 
 
   async function processSelectedFile(file) {
+    if (isMp4File(file)) return prepareMp4File(file);
 
     const image = isImageFile(file);
 
@@ -1927,17 +1930,19 @@ editDraftReadyRef.current = true;
 
 
 
-    if (isVideo && blob.size > MAX_VIDEO_BYTES) {
+    if (isVideo && blob.size > (blob.type === "video/mp4" ? MP4_MAX_BYTES : MAX_VIDEO_BYTES)) {
 
       throw new Error(
 
-        `${item.name}: 동영상이 20MB를 초과합니다.`
+        `${item.name}: ${blob.type === "video/mp4" ? MP4_SIZE_HELP : "Video exceeds 20MB."}`
 
       );
 
     }
 
 
+
+    if (blob.type === "video/mp4") await prepareMp4File(new File([blob], "video.mp4", { type: "video/mp4" }));
 
     const extension = isImage
 
@@ -3536,7 +3541,7 @@ style={{
             {t("drag_upload_detail") ||
 
               "이미지는 WebP로 압축됩니다. 이미지 6MB 이하, 동영상 20MB 이하."}
-              <span> GIF: Max 20MB → 8MB</span>
+              <span> GIF: Max 20MB → 8MB / MP4: Max 8MB</span>
 
           </span>
 
@@ -3546,7 +3551,7 @@ style={{
 
         {data.map((item, index) => {
 
-          const extension = getFileExtension(item.image);
+          const extension = item.pendingFileType === "video/mp4" || /^data:video\/mp4[;,]/i.test(item.image || "") ? "mp4" : getFileExtension(item.image);
 
           const youtubeThumb = getYoutubeThumb(item.image);
 
@@ -3782,6 +3787,8 @@ style={{
 
                 />
 
+              ) : (extension === "mp4" || item.pendingFileType === "video/mp4") ? (
+                <Mp4Media src={item.image} alt={item.name || ""} style={{ width: mobile ? 32 : 44, height: mobile ? 32 : 44, borderRadius: 8 }} />
               ) : null}
 
 

@@ -1,3 +1,4 @@
+import { isMp4File, prepareMp4File, MP4_MAX_BYTES, MP4_SIZE_HELP } from "../utils/mp4Upload";
 import { isGifFile, prepareGifFile, GIF_MAX_INPUT_BYTES, GIF_SIZE_HELP } from "../utils/gifUpload";
 import {localizeExtraUi} from "../utils/newLanguageUi";
 import { localizeTierClone } from "../utils/localizeTierClone";
@@ -70,7 +71,7 @@ function isSupportedImageFile(file) {
   }
 
   return (
-    IMAGE_MIME_TYPES.has(file.type) ||
+    isMp4File(file) || IMAGE_MIME_TYPES.has(file.type) ||
     IMAGE_EXTENSIONS.test(file.name || "")
   );
 }
@@ -186,6 +187,7 @@ async function compressImageToWebp(file) {
 }
 
 async function normalizeImageFile(file) {
+  if (isMp4File(file)) return prepareMp4File(file);
   if (!file) {
     throw new Error("Image file is missing");
   }
@@ -595,8 +597,9 @@ const CandidateCard = memo(
           {item?.image ? (
             item._source ===
             "local" ? (
-              <img
-                src={
+              <MediaRenderer
+                mediaType={isMp4File(item.file) ? "video/mp4" : ""}
+                url={
                   item.image
                 }
                 alt={
@@ -2493,7 +2496,7 @@ const addLocalFiles =
               )
             ) {
               rejectedFiles.push(
-                `${file.name}: ${text.imageOnly}`
+                `${file.name}: Only supported images or MP4 videos can be uploaded.`
               );
 
               return;
@@ -2502,10 +2505,10 @@ const addLocalFiles =
 
             if (
               file.size >
-              (isGifFile(file) ? GIF_MAX_INPUT_BYTES : IMAGE_MAX_INPUT_BYTES)
+              (isMp4File(file) ? MP4_MAX_BYTES : isGifFile(file) ? GIF_MAX_INPUT_BYTES : IMAGE_MAX_INPUT_BYTES)
             ) {
               rejectedFiles.push(
-                `${file.name}: ${isGifFile(file) ? GIF_SIZE_HELP : text.imageMaxSize}`
+                `${file.name}: ${isMp4File(file) ? MP4_SIZE_HELP : isGifFile(file) ? GIF_SIZE_HELP : text.imageMaxSize}`
               );
 
               return;
@@ -3505,7 +3508,7 @@ const handleDragEndItem =
             .slice(2)}`;
 
         const filePath =
-          `${tierListId}/${random}.${normalizedFile.type === "image/gif" ? "gif" : "webp"}`;
+          `${tierListId}/${random}.${normalizedFile.type === "video/mp4" ? "mp4" : normalizedFile.type === "image/gif" ? "gif" : "webp"}`;
 
         const { error: uploadError } =
           await supabase.storage
@@ -4542,7 +4545,7 @@ if (editingTierListId) {
               >
                 ＋{" "}
                 {text.chooseImages}
-                <small style={{ display: "block", fontSize: 12 }}>GIF: Max 20MB → 8MB</small>
+                <small style={{ display: "block", fontSize: 12 }}>GIF: Max 20MB → 8MB / MP4: Max 8MB</small>
               </button>
 
 
@@ -4551,7 +4554,7 @@ if (editingTierListId) {
                   fileInputRef
                 }
                 type="file"
-                accept="image/*"
+                accept="image/*,.mp4,video/mp4"
                 multiple
                 onChange={(
                   e
@@ -5663,8 +5666,9 @@ if (editingTierListId) {
                       {onePick.image ? (
                         onePick._source ===
                         "local" ? (
-                          <img
-                            src={
+                          <MediaRenderer
+                            mediaType={isMp4File(onePick.file) ? "video/mp4" : ""}
+                            url={
                               onePick.image
                             }
                             alt={
@@ -6416,12 +6420,12 @@ objectPosition: "center",
                 >
                   ＋{" "}
                   {text.addImages}
-                  <small style={{ display: "block", fontSize: 12 }}>GIF: Max 20MB → 8MB</small>
+                  <small style={{ display: "block", fontSize: 12 }}>GIF: Max 20MB → 8MB / MP4: Max 8MB</small>
 
 
                   <input
                     type="file"
-                    accept="image/*"
+                    accept="image/*,.mp4,video/mp4"
                     multiple
                     onChange={(
                       e

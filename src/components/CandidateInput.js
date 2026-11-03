@@ -1,3 +1,5 @@
+import { isMp4File, prepareMp4File, MP4_MAX_BYTES, MP4_SIZE_HELP } from "../utils/mp4Upload";
+import Mp4Media from "./Mp4Media";
 import { isGifFile, GIF_MAX_INPUT_BYTES, GIF_SIZE_HELP } from "../utils/gifUpload";
 import React, {
   useEffect,
@@ -275,6 +277,8 @@ function CandidateInput({
         "",
       value.file
     );
+
+  const isMp4 = isMp4File(value.file) || ext === "mp4" || /^data:video\/mp4/i.test(value.image || "");
 
   const isGif =
     ext === "gif" ||
@@ -557,10 +561,10 @@ function CandidateInput({
   // ====================================================
   // 로컬 이미지 파일
   // ====================================================
-  function handleFileChange(
+  async function handleFileChange(
     event
   ) {
-    const file =
+    let file =
       event.target
         .files?.[0];
 
@@ -596,8 +600,8 @@ function CandidateInput({
 
     // 동영상 / 기타 파일 차단
     if (
-      !extensionAllowed ||
-      (!mimeAllowed && !(isGifFile(file) && !file.type))
+      !isMp4File(file) && (!extensionAllowed ||
+      (!mimeAllowed && !(isGifFile(file) && !file.type)))
     ) {
       alert(
         t(
@@ -615,10 +619,10 @@ function CandidateInput({
     // 원본 최대 6MB
     if (
       file.size >
-      (isGifFile(file) ? GIF_MAX_INPUT_BYTES : 6 * 1024 * 1024)
+      (isMp4File(file) ? MP4_MAX_BYTES : isGifFile(file) ? GIF_MAX_INPUT_BYTES : 6 * 1024 * 1024)
     ) {
       alert(
-        isGifFile(file) ? GIF_SIZE_HELP : t(
+        isMp4File(file) ? MP4_SIZE_HELP : isGifFile(file) ? GIF_SIZE_HELP : t(
           "image_file_size_limit"
         ) ||
           "Only images under 6MB can be uploaded."
@@ -628,6 +632,11 @@ function CandidateInput({
         "";
 
       return;
+    }
+
+    if (isMp4File(file)) {
+      try { file = await prepareMp4File(file); }
+      catch (error) { alert(error.message); event.target.value = ""; return; }
     }
 
     onChange({
@@ -702,6 +711,8 @@ function CandidateInput({
                 "cover",
             }}
           />
+        ) : isMp4 && previewUrl ? (
+          <Mp4Media src={previewUrl} alt={value.name || ""} />
         ) : isGif &&
           (value.file ||
             value.image) ? (
@@ -874,7 +885,7 @@ function CandidateInput({
           fileInputRef
         }
         type="file"
-        accept=".jpg,.jpeg,.png,.gif,.svg,.webp,.avif,image/jpeg,image/png,image/gif,image/svg+xml,image/webp,image/avif"
+        accept=".jpg,.jpeg,.png,.gif,.svg,.webp,.avif,.mp4,image/jpeg,image/png,image/gif,image/svg+xml,image/webp,image/avif,video/mp4"
         onChange={
           handleFileChange
         }

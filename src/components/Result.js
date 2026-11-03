@@ -98,7 +98,7 @@ function Result({ winner, cup, onRestart, onStats }) {
         }}
       >
         <Suspense fallback={<div style={{ width: "100%", height: "100%", background: "#f3f4f9" }} />}>
-          <MediaRenderer url={winner.image} alt={winner.name} loading="lazy" decoding="async" />
+          <MediaRenderer autoPlayVideo url={winner.image} alt={winner.name} loading="lazy" decoding="async" />
         </Suspense>
       </div>
 

@@ -5,7 +5,8 @@ const observers=[];global.IntersectionObserver=class{constructor(callback){this.
 const React=require('react'),{act}=React,{createRoot}=require('react-dom/client'),{Simulate}=require('react-dom/test-utils');
 function load(path,mocks){const m={exports:{}};const code=babel.transformSync(fs.readFileSync(path,'utf8'),{presets:[['@babel/preset-env',{targets:{node:'current'}}],'@babel/preset-react'],configFile:false,babelrc:false}).code;new Function('require','module','exports',code)(name=>{if(!(name in mocks))throw Error(name);return mocks[name];},m,m.exports);return m.exports;}
 const recent=load('src/utils/recentLoadedImages.js',{}),originalUrl=load('src/utils/originalStorageImageUrl.js',{}),source=load('src/utils/statsImageSource.js',{'./originalStorageImageUrl':originalUrl});
-const Renderer=load('src/components/MediaRenderer.jsx',{react:React,'react-i18next':{useTranslation:()=>({t:key=>key})},'../utils/recentLoadedImages':recent,'../utils/originalStorageImageUrl':originalUrl}).default;
+const Mp4Media=load('src/components/Mp4Media.jsx',{react:React});
+const Renderer=load('src/components/MediaRenderer.jsx',{'./Mp4Media':Mp4Media,react:React,'react-i18next':{useTranslation:()=>({t:key=>key})},'../utils/recentLoadedImages':recent,'../utils/originalStorageImageUrl':originalUrl}).default;
 const Name=load('src/components/StatsCandidateName.js',{react:React,'../utils/statsImageSource':source,'../utils/recentLoadedImages':recent}).default;
 (async()=>{
  const root=createRoot(document.getElementById('root')),base='https://irfyuvuazhujtlgpkfci.supabase.co/storage/v1/object/public/candidates/';

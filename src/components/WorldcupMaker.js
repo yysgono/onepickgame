@@ -1,3 +1,4 @@
+import { isMp4File, prepareMp4File, MP4_MAX_BYTES, MP4_SIZE_HELP } from "../utils/mp4Upload";
 import { isGifFile, prepareGifFile, GIF_MAX_INPUT_BYTES, GIF_MAX_BYTES, GIF_SIZE_HELP } from "../utils/gifUpload";
 import {localizeExtraUi} from "../utils/newLanguageUi";
 import WorldcupCandidateImporter from "./WorldcupCandidateImporter";
@@ -3033,19 +3034,18 @@ if (
 
     ) {
 
-const image = isImageFile(file);
+const video = isMp4File(file);
+const image = !video && isImageFile(file);
 
 
 
-if (!image) {
+if (!image && !video) {
 
   rejectedFiles.push(
 
     `${file.name}: ${
 
-      t("only_image_file") ||
-
-      "Only image files can be uploaded. Local video uploads are not supported."
+      "Only supported images or MP4 videos can be uploaded."
 
     }`
 
@@ -3095,9 +3095,10 @@ if (!image) {
 
 
 
-      let finalFile =
-
-        file;
+      let finalFile = video ? await prepareMp4File(file).catch(error => {
+        rejectedFiles.push(`${file.name}: ${error.message}`); return null;
+      }) : file;
+      if (!finalFile) continue;
 
 
 
@@ -3845,11 +3846,11 @@ for (
 
 
 
-            if (!fileIsImage) {
+            if (!fileIsImage && !isMp4File(uploadFile)) {
 
               throw new Error(
 
-                `${uploadFile.name}: 이미지 파일만 업로드할 수 있습니다.`
+                `${uploadFile.name}: Only supported images or MP4 videos can be uploaded.`
 
               );
 
@@ -3867,7 +3868,7 @@ for (
 
               uploadFile.size >
 
-              (isGifFile(uploadFile) ? GIF_MAX_INPUT_BYTES : IMAGE_MAX_INPUT_BYTES)
+              (isMp4File(uploadFile) ? MP4_MAX_BYTES : isGifFile(uploadFile) ? GIF_MAX_INPUT_BYTES : IMAGE_MAX_INPUT_BYTES)
 
             ) {
 
@@ -3887,7 +3888,7 @@ for (
 
               throw new Error(
 
-                `${uploadFile.name}: ${isGifFile(uploadFile) ? GIF_SIZE_HELP : "Image exceeds 6MB."} (${sizeMB}MB)`
+                `${uploadFile.name}: ${isMp4File(uploadFile) ? MP4_SIZE_HELP : isGifFile(uploadFile) ? GIF_SIZE_HELP : "Image exceeds 6MB."} (${sizeMB}MB)`
 
               );
 
@@ -3905,11 +3906,7 @@ for (
 
               uploadFile =
 
-                await normalizeImageFile(
-
-                  uploadFile
-
-                );
+                isMp4File(uploadFile) ? await prepareMp4File(uploadFile) : await normalizeImageFile(uploadFile);
 
             } catch (
 
@@ -3963,7 +3960,7 @@ for (
 
             if (
 
-              !["image/webp", "image/gif"].includes(uploadFile.type)
+              !["image/webp", "image/gif", "video/mp4"].includes(uploadFile.type)
 
             ) {
 
@@ -3987,7 +3984,7 @@ for (
 
               uploadFile.size >
 
-              (isGifFile(uploadFile) ? GIF_MAX_BYTES : IMAGE_MAX_OUTPUT_BYTES)
+              (isMp4File(uploadFile) ? MP4_MAX_BYTES : isGifFile(uploadFile) ? GIF_MAX_BYTES : IMAGE_MAX_OUTPUT_BYTES)
 
             ) {
 
@@ -4007,7 +4004,7 @@ for (
 
               throw new Error(
 
-                `${uploadFile.name}: ${isGifFile(uploadFile) ? GIF_SIZE_HELP : "Compressed image exceeds 1MB."} (${sizeMB}MB)`
+                `${uploadFile.name}: ${isMp4File(uploadFile) ? MP4_SIZE_HELP : isGifFile(uploadFile) ? GIF_SIZE_HELP : "Compressed image exceeds 1MB."} (${sizeMB}MB)`
 
               );
 
@@ -5443,7 +5440,7 @@ style={{
 
 
 
-           accept=".jpg,.jpeg,.png,.gif,.webp,.avif,.svg,image/jpeg,image/png,image/gif,image/webp,image/avif,image/svg+xml"
+           accept=".jpg,.jpeg,.png,.gif,.webp,.avif,.svg,.mp4,image/jpeg,image/png,image/gif,image/webp,image/avif,image/svg+xml,video/mp4"
 
 
 
@@ -5559,7 +5556,7 @@ style={{
 
   >
 
-    JPG · PNG · WebP · AVIF · SVG: Max 6MB / GIF: Max 20MB → 8MB
+    JPG · PNG · WebP · AVIF · SVG: Max 6MB / GIF: Max 20MB → 8MB / MP4: Max 8MB
 
   </span>
 
@@ -5607,9 +5604,7 @@ style={{
 
   >
 
-    {t("local_video_not_supported") ||
-
-      "Local video uploads are not supported. You can use YouTube links instead."}
+    MP4: Max 8MB. Muted playback. YouTube links are also supported.
 
   </span>
 
