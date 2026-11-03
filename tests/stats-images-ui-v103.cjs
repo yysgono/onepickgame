@@ -1,6 +1,7 @@
 const fs=require('fs'),assert=require('node:assert/strict'),babel=require('@babel/core'),{JSDOM}=require('jsdom');
 const dom=new JSDOM('<div id="root"></div>',{url:'https://www.onepickgame.com/ko/match/test'});
 global.window=dom.window;global.document=window.document;global.navigator=window.navigator;global.IS_REACT_ACT_ENVIRONMENT=true;
+let cancelledVideoLoads=0;window.HTMLMediaElement.prototype.pause=function(){};window.HTMLMediaElement.prototype.load=function(){cancelledVideoLoads++};
 const observers=[];global.IntersectionObserver=class{constructor(callback){this.callback=callback;observers.push(this);}observe(){}disconnect(){}};
 const React=require('react'),{act}=React,{createRoot}=require('react-dom/client'),{Simulate}=require('react-dom/test-utils');
 function load(path,mocks){const m={exports:{}};const code=babel.transformSync(fs.readFileSync(path,'utf8'),{presets:[['@babel/preset-env',{targets:{node:'current'}}],'@babel/preset-react'],configFile:false,babelrc:false}).code;new Function('require','module','exports',code)(name=>{if(!(name in mocks))throw Error(name);return mocks[name];},m,m.exports);return m.exports;}
@@ -21,7 +22,18 @@ const Name=load('src/components/StatsCandidateName.js',{react:React,'../utils/st
  assert.equal(document.querySelector('img').getAttribute('src'),unseen);
  await act(async()=>Simulate.error(document.querySelector('img')));assert.equal(document.querySelector('img'),null);assert.ok(document.body.textContent.includes(name));
  await act(async()=>root.render(React.createElement(Name,{key:'video',image:'https://example.test/video.mp4',name:'🍎 Apple',isMobile:true})));
+ assert.equal(document.querySelector('video'),null);
  await act(async()=>observers.at(-1).callback([{isIntersecting:true}]));assert.equal(document.querySelector('img'),null);assert.ok(document.body.textContent.includes('🍎'));assert.ok(document.querySelector('[aria-hidden=true]').style.width==='40px');
+ const statsVideo=document.querySelector('video');assert.ok(statsVideo);assert.equal(statsVideo.getAttribute('src'),'https://example.test/video.mp4');assert.equal(statsVideo.autoplay,false);assert.equal(statsVideo.controls,false);assert.equal(statsVideo.muted,true);assert.equal(statsVideo.playsInline,true);assert.equal(statsVideo.preload,'metadata');
+ statsVideo.pause=()=>{};Object.defineProperty(statsVideo,'duration',{value:2});
+ await act(async()=>Simulate.loadedMetadata(statsVideo));assert.equal(statsVideo.currentTime,0.01);await act(async()=>Simulate.loadedData(statsVideo));
+ await act(async()=>Simulate.error(statsVideo));assert.equal(document.querySelector('video'),null);assert.ok(document.body.textContent.includes('🍎'));assert.ok(document.body.textContent.includes('Apple'));assert.equal(statsVideo.getAttribute('src'),null);assert.ok(cancelledVideoLoads>0);
+ const signedVideo=base.replace('/object/public/','/object/sign/')+'candidate.MP4?token=KEEP%2B&width=96';
+ await act(async()=>root.render(React.createElement(Name,{key:'signed-video',image:signedVideo,name:'Signed video'})));
+ assert.equal(document.querySelector('video'),null);await act(async()=>observers.at(-1).callback([{isIntersecting:true}]));assert.equal(document.querySelector('video').getAttribute('src'),signedVideo);
+ await act(async()=>root.render(React.createElement(Name,{key:'bad-video',image:'javascript:video.mp4',name:'Invalid URL'})));
+ await act(async()=>observers.at(-1).callback([{isIntersecting:true}]));assert.equal(document.querySelector('video'),null);assert.equal(document.querySelector('img'),null);
+
  // Control only the renderer retry timers: no real network or time delays.
  const nativeSetTimeout=global.setTimeout,nativeClearTimeout=global.clearTimeout;
  const timers=new Map();let timerId=0;
@@ -50,5 +62,5 @@ const Name=load('src/components/StatsCandidateName.js',{react:React,'../utils/st
   await act(async()=>root.unmount());assert.equal(timers.size,0);
  }finally{global.setTimeout=nativeSetTimeout;global.clearTimeout=nativeClearTimeout;dom.window.close();}
  console.log('PASS: bounded retries, duplicate errors, URL change/load/unmount cancellation, public normalization and signed request query');
- console.log('PASS: game onLoad records URL, no image before visibility, original reuse, unseen original, failure placeholder without loops, full name retained, mobile/video placeholder');
+ console.log('PASS: game onLoad records URL, no image before visibility, original reuse, unseen original, failure placeholder without loops, full name retained, mobile sizing, paused MP4 frame, signed video query, video failure fallback');
 })().catch(e=>{console.error(e);process.exitCode=1});

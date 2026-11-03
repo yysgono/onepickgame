@@ -1,3 +1,4 @@
+import ContentCommentNotices from "./ContentCommentNotices";
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { supabase } from "../utils/supabaseClient";
@@ -94,6 +95,7 @@ export default function QuizCommentBox({ quizId }) {
 
   return <div style={{ maxWidth: 900, margin: "34px auto 50px", border: "1.5px solid #cfd8e6", borderRadius: 12, padding: 16, background: "#fff" }}>
     <h3 style={{ margin: "0 0 14px", fontSize: 20 }}>💬 {t("comment.comments") || (ko ? "댓글" : "Comments")} <span style={{ fontSize: 14, color: "#68758a" }}>{comments.length}</span></h3>
+    <ContentCommentNotices key={`quiz-${quizId}`} kind="quiz" targetId={quizId} />
     <form onSubmit={submit} style={{ display: "grid", gridTemplateColumns: user ? "1fr" : "minmax(0,1fr) minmax(0,1fr)", gap: 8 }}>
       {!user && <><input value={guestNickname} onChange={e => setGuestNickname(e.target.value)} maxLength={20} autoComplete="nickname" placeholder={ko ? "임시 닉네임 (최대 20자)" : "Guest nickname (up to 20 characters)"} style={{ minWidth: 0, border: "1.5px solid #bccae0", borderRadius: 8, padding: 10, font: "inherit" }} /><input type="password" value={guestPassword} onChange={e => setGuestPassword(e.target.value)} minLength={4} maxLength={50} autoComplete="new-password" placeholder={ko ? "수정·삭제용 비밀번호 (4~50자)" : "Password for editing/deleting (4–50 characters)"} style={{ minWidth: 0, border: "1.5px solid #bccae0", borderRadius: 8, padding: 10, font: "inherit" }} /></>}
       <textarea value={content} onChange={e => setContent(e.target.value)} maxLength={500} rows={2} placeholder={t("comment.placeholder") || (ko ? "댓글을 입력하세요" : "Write a comment")} style={{ gridColumn: "1 / -1", resize: "vertical", border: "1.5px solid #bccae0", borderRadius: 8, padding: 10, font: "inherit" }} />

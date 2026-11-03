@@ -22,3 +22,14 @@ export function getStatsImageSource(value, options={}) {
  return {url:staticCandidateImage(value),transformed:false};
 }
 
+
+// Keep videos out of <img>, while allowing a paused native preview in stats rows.
+// Reuse the original URL, including signed query parameters; no transforms.
+export function statsCandidateVideo(value) {
+ if(typeof value!=='string'||!value.trim())return '';
+ const source=originalStorageImageUrl(value.trim());
+ try {
+  const url=new URL(source,typeof window!=='undefined'?window.location.origin:'https://www.onepickgame.com');
+  return ['http:','https:'].includes(url.protocol)&&/\.mp4$/i.test(url.pathname)?source:'';
+ }catch{return '';}
+}

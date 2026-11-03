@@ -1,3 +1,4 @@
+import ContentCommentNotices from "./ContentCommentNotices";
 // src/components/CommentBox.js
 import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
@@ -569,6 +570,8 @@ export default function CommentBox({
           "comment.comments"
         )}
       </h3>
+
+      <ContentCommentNotices key={`worldcup-${cupId}`} kind="worldcup" targetId={cupId} />
 
       {!user && (
         <div

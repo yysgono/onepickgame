@@ -1,3 +1,4 @@
+import ContentCommentNotices from "./ContentCommentNotices";
 import trashCopy from "../utils/contentTrashCopy.json";
 import {trashContent} from "../utils/contentTrashApi";
 import { hasBadword } from "../badwords-multilang";
@@ -3339,6 +3340,8 @@ padding: isMobile
             {comments.length}
           </div>
 
+
+          <ContentCommentNotices key={`tier-list-${id}`} kind="tier-list" targetId={id} />
 
           {/* 댓글 작성 */}
 

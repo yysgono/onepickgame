@@ -25,3 +25,7 @@ try{
 }finally{if(previous===undefined)delete process.env.REACT_APP_SUPABASE_URL;else process.env.REACT_APP_SUPABASE_URL=previous;}
 helper.pauseStatsImageTransforms();assert.deepEqual(helper.getStatsImageSource(original),{url:original,transformed:false});
 console.log('PASS: public originals, query removal, signed preservation, custom origin, malformed input and disabled transformations');
+
+for(const value of ['https://example.test/a.mp4','https://example.test/a.MP4?token=TEST%2B#keep','/uploads/a.mp4'])assert.equal(helper.statsCandidateVideo(value),value);
+for(const value of ['',null,123,'javascript:video.mp4','data:video/mp4;base64,AA==','https://example.test/a.jpg','http://['])assert.equal(helper.statsCandidateVideo(value),'');
+console.log('PASS: separate native MP4 source, exact signed URL preservation, invalid protocol rejection; static image helper still excludes videos');
