@@ -63,6 +63,11 @@ export function getKstDayRangeUtc(dateString) {
   const start = new Date(`${dateString}T00:00:00+09:00`);
   return { start: start.toISOString(), end: new Date(start.getTime() + 86400000).toISOString() };
 }
+// One KST day count for the consolidated admin table; no seven-day fan-out.
+export function getAdminTodayWorldcupCompletions(today = getTodayKstDateString()) {
+  const { start, end } = getKstDayRangeUtc(today);
+  return readCount('winner_logs', query => query.gte('created_at', start).lt('created_at', end));
+}
 export async function getAdminRecent7Completions(today = getTodayKstDateString()) {
   const dates = Array.from({ length: 7 }, (_, index) => addDays(today, index - 6));
   return Promise.all(dates.map(async date => {

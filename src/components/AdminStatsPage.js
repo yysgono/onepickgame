@@ -1,7 +1,6 @@
 import AdminContentSummary from "./AdminContentSummary";
-import AdminTodayContentStats from "./AdminTodayContentStats";
 import AdminRecentActivity from "./AdminRecentActivity";
-import { getAdminWorldcupCount, getAdminTodayRandomPickCount, getAdminTodayContentCount, getAdminTotalCompletions, getAdminRecent7Completions, getAdminRecentPlays, getAdminRecentContentActivity, getAdminRecentComments, getTodayKstDateString } from "../utils/adminReadApi";
+import { getAdminWorldcupCount, getAdminTodayWorldcupCompletions, getAdminTotalCompletions, getAdminRecentPlays, getAdminRecentContentActivity, getAdminRecentComments, getTodayKstDateString } from "../utils/adminReadApi";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../utils/supabaseClient";
@@ -26,11 +25,6 @@ export default function AdminStatsPage() {
   ] = useState(null);
 
   const [
-    recent7,
-    setRecent7,
-  ] = useState([]);
-
-  const [
     recentComments,
     setRecentComments,
   ] = useState([]);
@@ -50,9 +44,6 @@ export default function AdminStatsPage() {
     setLoading,
   ] = useState(true);
 
-  const [todayRandomCount, setTodayRandomCount] = useState(null);
-  const [todayQuizCount, setTodayQuizCount] = useState(null);
-  const [todayTierCount, setTodayTierCount] = useState(null);
   const [quizPlays, setQuizPlays] = useState([]);
   const [tierViews, setTierViews] = useState([]);
   const [sectionErrors, setSectionErrors] = useState({});
@@ -65,13 +56,11 @@ export default function AdminStatsPage() {
     let mounted = true;
     const today = getTodayKstDateString();
     setLoading(true);
-    const keys = ["worldcups", "total", "recent7", "plays", "comments", "quizPlays", "tierViews", "todayQuiz", "todayTier", "todayRandom"];
+    const keys = ["worldcups", "total", "todayWorldcup", "plays", "comments", "quizPlays", "tierViews"];
     Promise.allSettled([
-      getAdminWorldcupCount(), getAdminTotalCompletions(), getAdminRecent7Completions(today),
+      getAdminWorldcupCount(), getAdminTotalCompletions(), getAdminTodayWorldcupCompletions(today),
       getAdminRecentPlays(), getAdminRecentComments(),
       getAdminRecentContentActivity("quiz"), getAdminRecentContentActivity("tier-list"),
-      getAdminTodayContentCount("quiz", today), getAdminTodayContentCount("tier-list", today),
-      getAdminTodayRandomPickCount(),
     ]).then(results => {
       if (!mounted) return;
       const errors = {};
@@ -83,19 +72,11 @@ export default function AdminStatsPage() {
       });
       setWorldcupCount(results[0].status === "fulfilled" ? results[0].value : null);
       setTotalPlays(results[1].status === "fulfilled" ? results[1].value : null);
-      if (results[2].status === "fulfilled") {
-        const rows = results[2].value;
-        setRecent7(rows);
-        setTodayPlays(rows.find(row => row.date === today)?.count ?? null);
-        if (rows.some(row => row.count == null)) errors.recent7 = "일부 날짜 집계 실패";
-      } else setTodayPlays(null);
+      setTodayPlays(results[2].status === "fulfilled" ? results[2].value : null);
       if (results[3].status === "fulfilled") setRecentPlays(results[3].value);
       if (results[4].status === "fulfilled") setRecentComments(results[4].value);
       setQuizPlays(results[5].status === "fulfilled" ? results[5].value : []);
       setTierViews(results[6].status === "fulfilled" ? results[6].value : []);
-      setTodayQuizCount(results[7].status === "fulfilled" ? results[7].value : null);
-      setTodayTierCount(results[8].status === "fulfilled" ? results[8].value : null);
-      setTodayRandomCount(results[9].status === "fulfilled" ? results[9].value : null);
       setSectionErrors(errors);
       setLoading(false);
     });
@@ -177,18 +158,6 @@ export default function AdminStatsPage() {
     );
   }
 
-  // ======================================================
-  // 그래프 최대값
-  // ======================================================
-  const chartMax =
-    Math.max(
-      ...recent7.map(
-        (row) =>
-          row.count
-      ),
-      1
-    );
-
   return (
     <div
       style={{
@@ -242,438 +211,12 @@ export default function AdminStatsPage() {
       </div>
       {Object.keys(sectionErrors).length > 0 && <div role="alert" style={{ padding: 16, marginBottom: 20, background: "#fff5f5", color: "#a12626", border: "1px solid #f3b4b4", borderRadius: 10 }}>
         <strong>일부 통계를 불러오지 못했습니다. 실패한 수치는 0회로 표시하지 않습니다.</strong>
-        <ul>{Object.keys(sectionErrors).map(key => <li key={key}>{{ worldcups: "월드컵 수", total: "총 완료 수", recent7: "최근 7일 집계", plays: "최근 완료 목록", comments: "최근 댓글", quizPlays: "퀴즈 최근 플레이", tierViews: "티어표 최근 열람", todayQuiz: "오늘 퀴즈 플레이", todayTier: "오늘 티어표 열람", todayRandom: "오늘 랜덤 뽑기" }[key]} 조회 실패</li>)}</ul>
+        <ul>{Object.keys(sectionErrors).map(key => <li key={key}>{{ worldcups: "월드컵 수", total: "총 완료 수", todayWorldcup: "오늘 월드컵 완료 수", plays: "최근 완료 목록", comments: "최근 댓글", quizPlays: "퀴즈 최근 플레이", tierViews: "티어표 최근 열람" }[key]} 조회 실패</li>)}</ul>
         <button type="button" disabled={loading} onClick={() => setRefreshTick(value => value + 1)}>다시 시도</button>
       </div>}
 
 
-      <AdminContentSummary refreshTick={refreshTick} />
-
-      {/* ==================================================
-          상단 통계
-      ================================================== */}
-      <div
-        style={{
-          display:
-            "flex",
-
-          gap:
-            20,
-
-          flexWrap:
-            "wrap",
-
-          justifyContent:
-            "center",
-
-          marginBottom:
-            40,
-        }}
-      >
-        {/* 월드컵 수 */}
-        <div
-          style={{
-            background:
-              "#f5f6fa",
-
-            borderRadius:
-              20,
-
-            boxShadow:
-              "0 4px 16px rgba(25,32,52,0.07)",
-
-            minWidth:
-              190,
-
-            flex:
-              "1 1 190px",
-
-            maxWidth:
-              240,
-
-            padding:
-              "30px 24px",
-
-            textAlign:
-              "center",
-          }}
-        >
-          <div
-            style={{
-              fontSize:
-                19,
-
-              fontWeight:
-                700,
-
-              color:
-                "#3b4872",
-
-              marginBottom:
-                8,
-            }}
-          >
-            현존하는 월드컵 수
-          </div>
-
-          <div
-            style={{
-              fontSize:
-                42,
-
-              fontWeight:
-                900,
-
-              color:
-                "#5542b8",
-            }}
-          >
-            {loading ? "..." : worldcupCount == null ? "집계 실패" : worldcupCount.toLocaleString()}
-          </div>
-        </div>
-
-        {/* 총 참여 수 */}
-        <div
-          style={{
-            background:
-              "#f5f6fa",
-
-            borderRadius:
-              20,
-
-            boxShadow:
-              "0 4px 16px rgba(25,32,52,0.07)",
-
-            minWidth:
-              190,
-
-            flex:
-              "1 1 190px",
-
-            maxWidth:
-              240,
-
-            padding:
-              "30px 24px",
-
-            textAlign:
-              "center",
-          }}
-        >
-          <div
-            style={{
-              fontSize:
-                19,
-
-              fontWeight:
-                700,
-
-              color:
-                "#3b4872",
-
-              marginBottom:
-                8,
-            }}
-          >
-            총 월드컵 완료 수
-          </div>
-
-          <div
-            style={{
-              fontSize:
-                42,
-
-              fontWeight:
-                900,
-
-              color:
-                "#167044",
-            }}
-          >
-            {loading
-              ? "..."
-              : totalPlays == null ? "집계 실패" : totalPlays.toLocaleString()}
-          </div>
-        </div>
-
-        {/* 오늘 완료 수 */}
-        <div
-          style={{
-            background:
-              "#f5f6fa",
-
-            borderRadius:
-              20,
-
-            boxShadow:
-              "0 4px 16px rgba(25,32,52,0.07)",
-
-            minWidth:
-              190,
-
-            flex:
-              "1 1 190px",
-
-            maxWidth:
-              240,
-
-            padding:
-              "30px 24px",
-
-            textAlign:
-              "center",
-          }}
-        >
-          <div
-            style={{
-              fontSize:
-                19,
-
-              fontWeight:
-                700,
-
-              color:
-                "#3b4872",
-
-              marginBottom:
-                8,
-            }}
-          >
-            오늘 완료 수
-          </div>
-
-          <div
-            style={{
-              fontSize:
-                42,
-
-              fontWeight:
-                900,
-
-              color:
-                "#b42346",
-            }}
-          >
-            {loading
-              ? "..."
-              : todayPlays == null ? "집계 실패" : todayPlays.toLocaleString()}
-          </div>
-        </div>
-      </div>
-      <div className="admin-today-content-row" style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: 20, marginBottom: 32 }}>
-        <AdminTodayContentStats loading={loading} quizCount={todayQuizCount} tierCount={todayTierCount} randomCount={todayRandomCount} />
-      </div>
-
-      {/* ==================================================
-          최근 7일 참여 그래프
-      ================================================== */}
-      <div
-        style={{
-          background:
-            "#f5f7fb",
-
-          borderRadius:
-            16,
-
-          padding:
-            28,
-
-          boxShadow:
-            "0 4px 16px rgba(25,32,52,0.07)",
-
-          marginBottom:
-            32,
-        }}
-      >
-        <h4
-          style={{
-            fontWeight:
-              800,
-
-            margin:
-              "0 0 26px 0",
-
-            fontSize:
-              22,
-
-            color:
-              "#26326b",
-
-            textAlign:
-              "center",
-          }}
-        >
-          최근 7일 월드컵 완료 수
-        </h4>
-
-        {loading ? (
-          <div
-            style={{
-              textAlign:
-                "center",
-
-              color:
-                "#596579",
-
-              padding:
-                30,
-            }}
-          >
-            통계를 불러오는 중...
-          </div>
-        ) : (
-          <div
-            style={{
-              display:
-                "flex",
-
-              alignItems:
-                "flex-end",
-
-              gap:
-                14,
-
-              minHeight:
-                170,
-            }}
-          >
-            {recent7.map(
-              (row) => {
-                const barHeight =
-                  row.count == null ? 0 : row.count === 0
-                    ? 8
-                    : Math.max(
-                        18,
-                        (
-                          row.count /
-                          chartMax
-                        ) *
-                          110
-                      );
-
-                return (
-                  <div
-                    key={
-                      row.date
-                    }
-                    style={{
-                      flex:
-                        1,
-
-                      minWidth:
-                        0,
-
-                      display:
-                        "flex",
-
-                      flexDirection:
-                        "column",
-
-                      alignItems:
-                        "center",
-
-                      justifyContent:
-                        "flex-end",
-                    }}
-                  >
-                    {/* 숫자 */}
-                    <div
-                      style={{
-                        fontSize:
-                          16,
-
-                        fontWeight:
-                          900,
-
-                        color:
-                          "#26326b",
-
-                        marginBottom:
-                          6,
-                      }}
-                    >
-                      {row.count == null ? "집계 실패" : row.count.toLocaleString()}
-                    </div>
-
-                    {/* 막대 */}
-                    <div
-                      title={`${row.date}: ${row.count == null ? "집계 실패" : `${row.count}회`}`}
-                      style={{
-                        width:
-                          "clamp(18px, 45%, 34px)",
-
-                        height:
-                          barHeight,
-
-                        background:
-                          row.count > 0
-                            ? "#6650d8"
-                            : "#dce4ef",
-
-                        borderRadius:
-                          "8px 8px 4px 4px",
-
-                        boxShadow:
-                          row.count > 0
-                            ? "0 4px 16px rgba(25,32,52,0.07)"
-                            : "none",
-
-                        transition:
-                          "height 0.25s",
-                      }}
-                    />
-
-                    {/* 날짜 */}
-                    <div
-                      style={{
-                        marginTop:
-                          7,
-
-                        fontSize:
-                          14,
-
-                        color:
-                          "#5542b8",
-
-                        fontWeight:
-                          700,
-
-                        whiteSpace:
-                          "nowrap",
-                      }}
-                    >
-                      {row.date
-                        .slice(5)
-                        .replace(
-                          "-",
-                          "/"
-                        )}
-                    </div>
-                  </div>
-                );
-              }
-            )}
-          </div>
-        )}
-
-        <div
-          style={{
-            textAlign:
-              "center",
-
-            color:
-              "#5542b8",
-
-            fontSize:
-              14,
-
-            marginTop:
-              18,
-          }}
-        >
-          한국시간(KST) 기준
-        </div>
-      </div>
+      <AdminContentSummary refreshTick={refreshTick} worldcupStats={{ existing: worldcupCount, total: totalPlays, today: todayPlays }} worldcupLoading={loading} />
 
       {/* ==================================================
     최근 플레이
