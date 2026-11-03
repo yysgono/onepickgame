@@ -1,4 +1,4 @@
-import { isGifFile, prepareGifFile } from "../utils/gifUpload";
+import { isGifFile, prepareGifFile, GIF_MAX_INPUT_BYTES, GIF_MAX_BYTES, GIF_SIZE_HELP } from "../utils/gifUpload";
 import {localizeExtraUi} from "../utils/newLanguageUi";
 import WorldcupCandidateImporter from "./WorldcupCandidateImporter";
 import { mergeImportedCandidates } from "../utils/worldcupCandidateImport";
@@ -3067,7 +3067,7 @@ if (!image) {
 
         file.size >
 
-          IMAGE_MAX_INPUT_BYTES
+          (isGifFile(file) ? GIF_MAX_INPUT_BYTES : IMAGE_MAX_INPUT_BYTES)
 
       ) {
 
@@ -3075,7 +3075,7 @@ if (!image) {
 
           `${file.name}: ${
 
-            t(
+            isGifFile(file) ? GIF_SIZE_HELP : t(
 
               "only_images_under_6mb"
 
@@ -3867,7 +3867,7 @@ for (
 
               uploadFile.size >
 
-              IMAGE_MAX_INPUT_BYTES
+              (isGifFile(uploadFile) ? GIF_MAX_INPUT_BYTES : IMAGE_MAX_INPUT_BYTES)
 
             ) {
 
@@ -3887,7 +3887,7 @@ for (
 
               throw new Error(
 
-                `${uploadFile.name}: 이미지가 6MB를 초과합니다. (${sizeMB}MB)`
+                `${uploadFile.name}: ${isGifFile(uploadFile) ? GIF_SIZE_HELP : "Image exceeds 6MB."} (${sizeMB}MB)`
 
               );
 
@@ -3987,7 +3987,7 @@ for (
 
               uploadFile.size >
 
-              IMAGE_MAX_OUTPUT_BYTES
+              (isGifFile(uploadFile) ? GIF_MAX_BYTES : IMAGE_MAX_OUTPUT_BYTES)
 
             ) {
 
@@ -4007,7 +4007,7 @@ for (
 
               throw new Error(
 
-                `${uploadFile.name}: 압축 후 이미지가 1MB를 초과합니다. (${sizeMB}MB)`
+                `${uploadFile.name}: ${isGifFile(uploadFile) ? GIF_SIZE_HELP : "Compressed image exceeds 1MB."} (${sizeMB}MB)`
 
               );
 
@@ -5559,7 +5559,7 @@ style={{
 
   >
 
-    JPG · PNG · WebP · AVIF · SVG · Max 6MB
+    JPG · PNG · WebP · AVIF · SVG: Max 6MB / GIF: Max 20MB → 8MB
 
   </span>
 

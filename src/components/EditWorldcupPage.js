@@ -1,4 +1,4 @@
-import { isGifFile, prepareGifFile } from "../utils/gifUpload";
+import { isGifFile, prepareGifFile, GIF_MAX_INPUT_BYTES, GIF_MAX_BYTES, GIF_SIZE_HELP } from "../utils/gifUpload";
 import { removedCandidateImagePaths, removeCandidateImageFiles, notifyImageCleanupFailure } from "../utils/worldcupImageCleanup";
 import { removedWorldcupCandidateIds } from "../utils/worldcupCandidateChanges";
 import candidateDeleteCopy from "./worldcupCandidateDeleteCopy.json";
@@ -1616,11 +1616,11 @@ editDraftReadyRef.current = true;
 
 
 
-    if (image && file.size > MAX_IMAGE_INPUT_BYTES) {
+    if (image && file.size > (isGifFile(file) ? GIF_MAX_INPUT_BYTES : MAX_IMAGE_INPUT_BYTES)) {
 
       throw new Error(
 
-        t("only_images_under_6mb") ||
+        isGifFile(file) ? GIF_SIZE_HELP : t("only_images_under_6mb") ||
 
           "이미지는 6MB 이하만 업로드할 수 있습니다."
 
@@ -1915,11 +1915,11 @@ editDraftReadyRef.current = true;
 
 
 
-    if (isImage && blob.size > MAX_IMAGE_OUTPUT_BYTES) {
+    if (isImage && blob.size > (blob.type === "image/gif" ? GIF_MAX_BYTES : MAX_IMAGE_OUTPUT_BYTES)) {
 
       throw new Error(
 
-        `${item.name}: 압축 이미지가 1MB를 초과합니다.`
+        `${item.name}: ${blob.type === "image/gif" ? GIF_SIZE_HELP : "Compressed image exceeds 1MB."}`
 
       );
 
@@ -3536,6 +3536,7 @@ style={{
             {t("drag_upload_detail") ||
 
               "이미지는 WebP로 압축됩니다. 이미지 6MB 이하, 동영상 20MB 이하."}
+              <span> GIF: Max 20MB → 8MB</span>
 
           </span>
 

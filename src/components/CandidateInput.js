@@ -1,3 +1,4 @@
+import { isGifFile, GIF_MAX_INPUT_BYTES, GIF_SIZE_HELP } from "../utils/gifUpload";
 import React, {
   useEffect,
   useRef,
@@ -596,7 +597,7 @@ function CandidateInput({
     // 동영상 / 기타 파일 차단
     if (
       !extensionAllowed ||
-      !mimeAllowed
+      (!mimeAllowed && !(isGifFile(file) && !file.type))
     ) {
       alert(
         t(
@@ -614,10 +615,10 @@ function CandidateInput({
     // 원본 최대 6MB
     if (
       file.size >
-      6 * 1024 * 1024
+      (isGifFile(file) ? GIF_MAX_INPUT_BYTES : 6 * 1024 * 1024)
     ) {
       alert(
-        t(
+        isGifFile(file) ? GIF_SIZE_HELP : t(
           "image_file_size_limit"
         ) ||
           "Only images under 6MB can be uploaded."

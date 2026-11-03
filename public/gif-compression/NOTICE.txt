@@ -1,0 +1,16 @@
+GIF compression is executed as a standalone Worker.
+
+Wrapper: gifsicle-wasm-browser 1.5.19, MIT.
+https://github.com/renzhezhilu/gifsicle-wasm-browser
+The shipped worker is tool.workerLocalUrl extracted without behavioral changes
+from npm gifsicle-wasm-browser@1.5.19/dist/gifsicle.min.js.
+The npm dist matched the upstream source snapshot included here byte for byte.
+
+Embedded engine: Gifsicle 1.92, copyright Eddie Kohler and contributors,
+GNU General Public License version 2; see GIFSICLE-COPYING.txt.
+https://github.com/kohler/gifsicle/tree/v1.92
+Original build: https://github.com/cyrilwanner/wasm-codecs/tree/master/packages/gifsicle
+
+Corresponding engine source, build scripts, wrapper source, original copyright
+notices and licenses are supplied in compressor-source.zip next to this file.
+Keep these files with the distributed standalone compressor.

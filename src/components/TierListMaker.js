@@ -1,4 +1,4 @@
-import { isGifFile, prepareGifFile } from "../utils/gifUpload";
+import { isGifFile, prepareGifFile, GIF_MAX_INPUT_BYTES, GIF_SIZE_HELP } from "../utils/gifUpload";
 import {localizeExtraUi} from "../utils/newLanguageUi";
 import { localizeTierClone } from "../utils/localizeTierClone";
 import tierSourceSearchLabels from "../locales/tierSourceSearchLabels.json";
@@ -2502,10 +2502,10 @@ const addLocalFiles =
 
             if (
               file.size >
-              IMAGE_MAX_INPUT_BYTES
+              (isGifFile(file) ? GIF_MAX_INPUT_BYTES : IMAGE_MAX_INPUT_BYTES)
             ) {
               rejectedFiles.push(
-                `${file.name}: ${text.imageMaxSize}`
+                `${file.name}: ${isGifFile(file) ? GIF_SIZE_HELP : text.imageMaxSize}`
               );
 
               return;
@@ -4542,6 +4542,7 @@ if (editingTierListId) {
               >
                 ＋{" "}
                 {text.chooseImages}
+                <small style={{ display: "block", fontSize: 12 }}>GIF: Max 20MB → 8MB</small>
               </button>
 
 
@@ -6415,6 +6416,7 @@ objectPosition: "center",
                 >
                   ＋{" "}
                   {text.addImages}
+                  <small style={{ display: "block", fontSize: 12 }}>GIF: Max 20MB → 8MB</small>
 
 
                   <input
