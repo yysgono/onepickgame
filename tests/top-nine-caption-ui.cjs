@@ -19,5 +19,19 @@ const button=text=>[...document.querySelectorAll('button')].find(b=>b.textConten
  assert.equal(publishedProps.slots.filter(Boolean).length,0);
  for(const candidate of [...document.querySelectorAll('.tn-pool .tn-candidates button')].slice(0,9))await click(candidate);assert(document.querySelector('.tn-board-complete').textContent.includes('9 / 9'));assert(publishedProps.autoTitle);
  await act(async()=>Simulate.change(document.querySelector('.tn-toggle input'),{target:{checked:true}}));let caption=document.querySelector('.tn-name-input');assert(caption);const oldName=caption.value;await act(async()=>Simulate.change(caption,{target:{value:'내가 수정한 이름'}}));assert.equal(publishedProps.slots[0].name,'내가 수정한 이름');assert(document.querySelector('.tn-pool').textContent.includes(oldName));
+ assert(document.querySelector('.tn-caption-help').textContent.includes('수정'));
+ // With a different slot focused, double clicking must remove the clicked photo
+ // without swapping or deleting its neighbour.
+ const before=publishedProps.slots.map(c=>c?.id),boardPhoto=document.querySelector('.tn-grid .tn-cell>button');
+ await act(async()=>Simulate.click(boardPhoto,{detail:1,timeStamp:2000}));
+ await act(async()=>Simulate.click(boardPhoto,{detail:2,timeStamp:2100}));
+ assert.equal(publishedProps.slots[0],null);assert.equal(publishedProps.slots[8].id,before[8]);
+ await act(async()=>new Promise(resolve=>setTimeout(resolve,500)));
+ assert.equal(publishedProps.slots[0],null);
+ const poolPhoto=document.querySelector('.tn-pool .tn-candidates button');await click(poolPhoto);
+ let restored=document.querySelector('.tn-grid .tn-cell>button');
+ for(const time of [3000,3100])await act(async()=>Simulate.click(restored,{detail:1,timeStamp:time}));
+ assert.equal(publishedProps.slots[0],null);await click(poolPhoto);
+ await act(async()=>Simulate.change(document.querySelector('.tn-name-input'),{target:{value:'내가 수정한 이름'}}));
  const title=document.querySelector('.tn-title-field input');await act(async()=>Simulate.change(title,{target:{value:'내 구절판 제목'}}));assert.equal(publishedProps.autoTitle,false);await act(async()=>Simulate.change(title,{target:{value:'Test Template'}}));assert.equal(publishedProps.autoTitle,true);
  await click(button(words.privateView));assert(document.querySelector('.tn-preview'));assert.equal(document.querySelector('.tn-name-input'),null);assert(document.querySelector('.tn-preview').textContent.includes('내가 수정한 이름'));const footer=document.querySelector('.top-nine>.tn-actions.tn-sticky');const edit=[...footer.querySelectorAll('button')].find(b=>b.textContent===words.edit);assert(edit);await click(edit);assert(document.querySelector('.tn-pool'));assert.equal(document.querySelector('.tn-name-input').value,'내가 수정한 이름');await act(async()=>root.unmount());console.log('Captions: inline editing, source-name preservation, publish payload, default-title tracking, preview and lower Edit button passed');})().catch(e=>{console.error(e);process.exitCode=1;});

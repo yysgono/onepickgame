@@ -82,3 +82,6 @@
 .tn-candidates button{touch-action:manipulation}
 .top-nine .tn-actions .tn-publish-button{white-space:nowrap;flex:0 0 auto;width:auto}
 @media(max-width:700px){.top-nine .tn-board-complete{display:flex;flex-wrap:wrap;justify-content:center}.top-nine .tn-board-complete>button{width:auto;flex:0 0 auto}}
+
+.tn-caption-help{font-size:15px;color:#695582;margin:8px 0;line-height:1.6}
+.tn-grid .tn-cell>button{touch-action:manipulation}
