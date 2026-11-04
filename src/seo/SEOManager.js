@@ -32,7 +32,7 @@ export default function SEOManager() {
     "tier-list/create",
     "quiz",
     "random-pick",
-    "top-nine",
+    "mytop9",
   ]);
 
   // 색인을 허용하는 동적 경로

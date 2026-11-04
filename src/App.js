@@ -65,6 +65,11 @@ import { supabase } from "./utils/supabaseClient";
 import Seo from "./seo/Seo";
 import { DEFAULT_QUIZ_LANGUAGE } from "./seo/quizSeo";
 
+function LegacyTopNineRedirect() {
+  const location = useLocation();
+  return <Navigate to={`${location.pathname.replace(/\/top-nine\/?$/, '/mytop9')}${location.search}${location.hash}`} replace />;
+}
+
 function LegacyQuizRedirect() {
   const location = useLocation();
   return <Navigate to={`/${DEFAULT_QUIZ_LANGUAGE}${location.pathname.replace(/\/+$/, "")}${location.search}${location.hash}`} replace />;
@@ -852,7 +857,8 @@ function handleMakeWorldcup() {
 />
   }
 />
-<Route path="/:lang/top-nine" element={<TopNinePage />} />
+<Route path="/:lang/mytop9" element={<TopNinePage />} />
+<Route path="/:lang/top-nine" element={<LegacyTopNineRedirect />} />
 <Route path="/:lang/random-pick" element={<RandomPickPage user={user} />} />
 <Route path="/:lang/random-pick/:mode" element={<RandomPickPage user={user} />} />
 <Route

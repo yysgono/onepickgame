@@ -39,5 +39,6 @@
   "/:lang/my-worldcups",
   "/:lang/recent-worldcups",
   "/",
+  "/:lang/mytop9",
   "/:lang/top-nine"
 ]

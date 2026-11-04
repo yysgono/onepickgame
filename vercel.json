@@ -131,6 +131,10 @@
   "routes": [
     {
       "src": "/(ko|en|ja|zh|ru|pt|es|fr|id|hi|de|vi|ar|bn|th|tr|it|pl|nl|cs)/top-nine/?$",
+      "dest": "/server.js?seo=top-nine&legacy=1&lang=$1"
+    },
+    {
+      "src": "/(ko|en|ja|zh|ru|pt|es|fr|id|hi|de|vi|ar|bn|th|tr|it|pl|nl|cs)/mytop9/?$",
       "dest": "/server.js?seo=top-nine&lang=$1"
     },
     {

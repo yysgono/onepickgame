@@ -645,13 +645,13 @@ export default function Header({
     modePath === 'my-worldcups' ||
     (modePath === 'tier-list' && headerSearchParams.get('mine') === '1') ||
     (modePath === 'quiz' && headerSearchParams.get('mine') === '1');
-  const activeMode = personalPage ? '' : modePath === 'top-nine' ? 'top-nine' : modePath === 'random-pick' ? 'random-pick' : modePath.startsWith('tier-list') ? 'tier-list' : modePath.startsWith('quiz') ? 'quiz' : ['','category','select-round','match','result','worldcup-maker','edit-worldcup','stats'].some(key => modePath === key || (key && modePath.startsWith(key))) ? 'worldcup' : '';
+  const activeMode = personalPage ? '' : ['mytop9','top-nine'].includes(modePath) ? 'top-nine' : modePath === 'random-pick' ? 'random-pick' : modePath.startsWith('tier-list') ? 'tier-list' : modePath.startsWith('quiz') ? 'quiz' : ['','category','select-round','match','result','worldcup-maker','edit-worldcup','stats'].some(key => modePath === key || (key && modePath.startsWith(key))) ? 'worldcup' : '';
   const headerModes = [
     {key:'worldcup',icon:'trophy',label:t('gameModeNav.worldcup'),path:currentLang === 'en' ? '/' : `/${currentLang}`},
     {key:'quiz',icon:'question',label:currentLang === 'ko' ? '퀴즈 맞히기' : t('gameModeNav.quiz'),path:`/${currentLang}/quiz`},
     {key:'tier-list',icon:'chart',label:t('gameModeNav.tierList'),path:`/${currentLang}/tier-list`},
     {key:'random-pick',icon:'dice',label:randomPickLabels[currentLang] || randomPickLabels.en,path:`/${currentLang}/random-pick`},
-    {key:'top-nine',icon:'grid',label:(topNineCopy[currentLang] || topNineCopy.en).nav,path:`/${currentLang}/top-nine`},
+    {key:'top-nine',icon:'grid',label:(topNineCopy[currentLang] || topNineCopy.en).nav,path:`/${currentLang}/mytop9`},
   ];
   useEffect(() => {
     document.querySelectorAll('.onepick-header details[open]').forEach(el => el.removeAttribute('open'));

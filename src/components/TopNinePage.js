@@ -68,13 +68,13 @@ export default function TopNinePage(){
   setGame(offset>=game.pool.length?{pool:winners,offset:0,winners:[],marked:[]}:{...game,winners,offset,marked:[]});
  }
  async function download(){work(async current=>{const cache=Object.fromEntries(Object.entries(frames).filter(([,v])=>v.frame).map(([k,v])=>[k,v.frame]));const blob=await exportPNG(slots,title,names,cache);if(current())downloadBlob(blob);});}
- async function share(){work(async current=>{try{const prepared=await prepareMemberSlots(slots);const hash=makeShareHash(prepared,title,names);if(current())setShareURL(window.location.origin+`/${lang}/top-nine`+hash);}catch{if(current())setMessage((copy[languageRef.current]||copy.en).localShare);}});}
+ async function share(){work(async current=>{try{const prepared=await prepareMemberSlots(slots);const hash=makeShareHash(prepared,title,names);if(current())setShareURL(window.location.origin+`/${lang}/mytop9`+hash);}catch{if(current())setMessage((copy[languageRef.current]||copy.en).localShare);}});}
  function reset(){if((count||candidates.length)&&!window.confirm(t.confirmReset))return;setStage('home');setSlots(blank());setCandidates([]);setTitle('');setGame(null);setFocus(null);setShareURL('');setMessage('');setDraft(null);draftStore(null,true).catch(()=>{});}
  const visibleCandidates=candidates.filter(c=>candidateMatches(c,candidateQuery));
  const ready=count===9&&slots.every(c=>frames[c.src]?.frame);
  const batch=game?gameBatch(game.pool,game.offset):[],required=game?gameRequired(game.pool,batch):0;
  return <main className="top-nine" dir={lang==='ar'?'rtl':'ltr'}>
- <Seo title={`${t.title} | One Pick Game`} description={t.subtitle} lang={lang} slug="top-nine" indexable={!location.hash}/>
+ <Seo title={`${t.title} | One Pick Game`} description={t.subtitle} lang={lang} slug="mytop9" indexable={!location.hash}/>
  <header className="tn-heading"><div className="tn-hero-icon"><TopNineIcon size={52}/></div><h1>{t.title}</h1><p>{(t.introLines||[t.subtitle]).map((line,i)=><span className="tn-description-line" key={i}>{line}</span>)}</p><ContentLanguageSelect /></header>
  <input ref={fileRef} type="file" accept=".jpg,.jpeg,.png,.webp,.gif,.mp4,.svg" multiple hidden onChange={upload}/>
  {message&&<div role="alert" className="tn-message tn-share-notice"><p>{message}</p>{message===t.localShare&&<><p>{t.memberUploadHelp}</p><a href={`/${lang}/login`}>{t.memberAccess.split(' / ')[0]}</a>{' · '}<a href={`/${lang}/signup`}>{t.memberAccess.split(' / ')[1]||t.memberAccess}</a></>}</div>}

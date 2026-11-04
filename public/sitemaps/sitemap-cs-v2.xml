@@ -2269,5 +2269,5 @@
     <changefreq>weekly</changefreq>
     <priority>0.75</priority>
   </url>
-  <url><loc>https://www.onepickgame.com/cs/top-nine</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://www.onepickgame.com/cs/mytop9</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
 </urlset>
