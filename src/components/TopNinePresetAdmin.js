@@ -1,7 +1,6 @@
 import ThumbnailSetting from './topNine/ThumbnailSetting';
 import {supabase} from '../utils/supabaseClient';
 import React,{useEffect,useMemo,useRef,useState} from 'react';
-import {TOPICS} from './topNine/topics';
 import {loadAdminRows,saveAdminRows} from './topNine/adminApi';
 import PresetTitleTranslations from './PresetTitleTranslations';
 import {titleOf,enabledRows,reorderRows,moveRow,toggleRow,snapshot,changedPayloads} from './presetAdmin/model';
@@ -38,7 +37,6 @@ export default function TopNinePresetAdmin(){
         <input type="checkbox" aria-label={`${title} 구절판 추천`} checked={row.enabled} onChange={()=>{setRows(previous=>toggleRow(previous,row.id));setMessage('');}} style={{marginTop:13,flexShrink:0}}/>
         <div style={{flex:1,minWidth:0}}><strong style={{display:'block',overflowWrap:'anywhere',lineHeight:1.5}}>{title}</strong>
           {(row.enabled||Object.keys(row.top_nine_title_translations||{}).length>0)&&<>
-            <label style={{display:'block',marginTop:10,fontSize:14,fontWeight:700}}>기본 프리셋 <select aria-label={`${title} 기본 프리셋`} value={row.topic} onChange={e=>update(row.id,{topic:e.target.value})} style={{maxWidth:'100%',padding:6,border:'1px solid #c4b5fd',borderRadius:6}}>{TOPICS.map(([key,en,ko])=><option key={key} value={key}>{ko} / {en}</option>)}</select></label>
             <ThumbnailSetting id={row.id} url={thumbnails[row.id]||''} disabled={saving} onSaved={url=>setThumbnails(old=>({...old,[row.id]:url}))}/>
             <PresetTitleTranslations title={title} value={row.top_nine_title_translations} primaryLanguage="en" disabled={saving} placeholder="예: My Top 9 Games" onChange={titles=>update(row.id,{top_nine_title_translations:titles})}/>
           </>}
