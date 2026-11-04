@@ -629,6 +629,7 @@
   "head_to_head_total": "Toplam {{formattedCount}} karşılaşma",
   "head_to_head_loading": "İkili rekabet yükleniyor…",
   "stop_and_view_stats": "Durdur ve istatistikleri görüntüle",
-  "add_other_language_title": "Başka dilde başlık ekle"
+  "add_other_language_title": "Başka dilde başlık ekle",
+  "clear_all_candidates": "Tüm adayları sil",
+  "clear_all_candidates_confirm": "Tüm adaylar silinsin mi? Bu işlem geri alınamaz."
 }
-

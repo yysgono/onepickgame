@@ -634,6 +634,7 @@
   "head_to_head_total": "พบกันทั้งหมด {{formattedCount}} ครั้ง",
   "head_to_head_loading": "กำลังโหลดสถิติการเจอกัน…",
   "stop_and_view_stats": "หยุดและดูสถิติ",
-  "add_other_language_title": "เพิ่มชื่อเรื่องในภาษาอื่น"
+  "add_other_language_title": "เพิ่มชื่อเรื่องในภาษาอื่น",
+  "clear_all_candidates": "ลบผู้สมัครทั้งหมด",
+  "clear_all_candidates_confirm": "ลบผู้สมัครทั้งหมดหรือไม่? ย้อนกลับไม่ได้"
 }
-

@@ -634,6 +634,7 @@
   "head_to_head_total": "Insgesamt {{formattedCount}} Duelle",
   "head_to_head_loading": "Direkter Vergleich wird geladen…",
   "stop_and_view_stats": "Beenden und Statistiken ansehen",
-  "add_other_language_title": "Titel in einer anderen Sprache hinzufügen"
+  "add_other_language_title": "Titel in einer anderen Sprache hinzufügen",
+  "clear_all_candidates": "Alle Kandidaten löschen",
+  "clear_all_candidates_confirm": "Alle Kandidaten löschen? Dies kann nicht rückgängig gemacht werden."
 }
-

@@ -637,6 +637,7 @@
   "head_to_head_total": "通算{{formattedCount}}回対戦",
   "head_to_head_loading": "直接対決の成績を読み込み中…",
   "stop_and_view_stats": "中断して統計結果を見る",
-  "add_other_language_title": "他の言語のタイトルを追加"
+  "add_other_language_title": "他の言語のタイトルを追加",
+  "clear_all_candidates": "候補をすべて削除",
+  "clear_all_candidates_confirm": "候補をすべて削除しますか？元に戻せません。"
 }
-

@@ -184,6 +184,9 @@ export default function MakeWorldcup({ worldcupList, setWorldcupList, onClose })
           <div style={{ color: "#5542b8", marginBottom: 8, fontSize: 17 }}>
             {t("image_video_upload_limit") || "Images: up to 6MB, Videos: up to 20MB."}
           </div>
+          <button type="button" disabled={!candidates.length} onClick={()=>{
+            if(window.confirm(t("clear_all_candidates_confirm")))setCandidates([]);
+          }}>{t("clear_all_candidates")}</button>
           {candidates.map((c, idx) => {
             const youtubeThumb = getYoutubeThumb(c.image);
             const ext = getFileExtension(c.image);

@@ -1793,5 +1793,7 @@
     "🍪 Snack picker": "🍪 Snack kiezen",
     "🍚 What to eat?": "🍚 Wat eten we?",
     "☕ Cafe menu": "☕ Cafémenu"
-  }
+  },
+  "clear_all_candidates": "Alle kandidaten verwijderen",
+  "clear_all_candidates_confirm": "Alle kandidaten verwijderen? Dit kan niet ongedaan worden gemaakt."
 }

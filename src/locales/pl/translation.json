@@ -1793,5 +1793,7 @@
     "🍪 Snack picker": "🍪 Losowanie przekąski",
     "🍚 What to eat?": "🍚 Co zjeść?",
     "☕ Cafe menu": "☕ Menu kawiarni"
-  }
+  },
+  "clear_all_candidates": "Usuń wszystkich kandydatów",
+  "clear_all_candidates_confirm": "Usunąć wszystkich kandydatów? Nie można tego cofnąć."
 }

@@ -634,6 +634,7 @@
   "head_to_head_total": "{{formattedCount}} enfrentamientos en total",
   "head_to_head_loading": "Cargando enfrentamientos directos…",
   "stop_and_view_stats": "Detener y ver estadísticas",
-  "add_other_language_title": "Añadir título en otro idioma"
+  "add_other_language_title": "Añadir título en otro idioma",
+  "clear_all_candidates": "Eliminar todos los candidatos",
+  "clear_all_candidates_confirm": "¿Eliminar todos los candidatos? No se puede deshacer."
 }
-

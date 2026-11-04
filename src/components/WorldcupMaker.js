@@ -2812,6 +2812,12 @@ function addCandidate() {
 
 
 
+  function clearAllCandidates() {
+    if (loading || !window.confirm(t("clear_all_candidates_confirm"))) return;
+    candidates.forEach(candidate => revokeBlobUrl(candidate.image));
+    setCandidates([]);
+  }
+
   function removeCandidate(
 
     index
@@ -6284,6 +6290,12 @@ color: "#000",
           </div>
 
 
+
+          <button type="button" disabled={loading || !candidates.length}
+            onClick={clearAllCandidates}
+            style={{marginBottom:14,padding:"10px 16px",border:"1px solid #ef9aaa",borderRadius:8,background:"#fff0f2",color:"#b42346",fontWeight:700}}>
+            {t("clear_all_candidates")}
+          </button>
 
           {candidates.map(
 

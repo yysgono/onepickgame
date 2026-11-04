@@ -634,6 +634,7 @@
   "head_to_head_total": "कुल {{formattedCount}} मुकाबले",
   "head_to_head_loading": "आमने-सामने रिकॉर्ड लोड हो रहा है…",
   "stop_and_view_stats": "रोकें और आँकड़े देखें",
-  "add_other_language_title": "दूसरी भाषा में शीर्षक जोड़ें"
+  "add_other_language_title": "दूसरी भाषा में शीर्षक जोड़ें",
+  "clear_all_candidates": "सभी उम्मीदवार हटाएँ",
+  "clear_all_candidates_confirm": "सभी उम्मीदवार हटाएँ? इसे वापस नहीं किया जा सकता।"
 }
-

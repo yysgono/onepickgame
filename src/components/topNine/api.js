@@ -1,7 +1,12 @@
 import { supabase } from '../../utils/supabaseClient';
 export async function sourcePage(term='',offset=0,recommended=false) {
  const {data,error}=await supabase.rpc('search_top_nine_sources',{p_query:term.trim(),p_offset:offset,p_recommended:recommended});
- if(error)throw error;return Array.isArray(data)?data:[];
+ if(error)throw error;
+ const rows=Array.isArray(data)?data:[];
+ if(!rows.length)return rows;
+ const thumbs=await supabase.from('top_nine_thumbnails').select('source_worldcup_id,image_url').in('source_worldcup_id',rows.map(row=>row.id));
+ const map=new Map((thumbs.data||[]).map(row=>[String(row.source_worldcup_id),row.image_url]));
+ return rows.map(row=>({...row,thumbnail:map.get(String(row.id))||row.thumbnail}));
 }
 export async function listTemplates(admin=false) {
  if(!admin)return sourcePage('',0,true);

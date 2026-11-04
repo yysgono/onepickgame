@@ -631,6 +631,7 @@
   "head_to_head_total": "{{formattedCount}} confrontos no total",
   "head_to_head_loading": "Carregando confronto direto…",
   "stop_and_view_stats": "Parar e ver estatísticas",
-  "add_other_language_title": "Adicionar título em outro idioma"
+  "add_other_language_title": "Adicionar título em outro idioma",
+  "clear_all_candidates": "Excluir todos os candidatos",
+  "clear_all_candidates_confirm": "Excluir todos os candidatos? Esta ação não pode ser desfeita."
 }
-

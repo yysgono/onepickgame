@@ -1793,5 +1793,7 @@
     "🍪 Snack picker": "🍪 Scegli uno spuntino",
     "🍚 What to eat?": "🍚 Cosa mangiare?",
     "☕ Cafe menu": "☕ Menu del bar"
-  }
+  },
+  "clear_all_candidates": "Elimina tutti i candidati",
+  "clear_all_candidates_confirm": "Eliminare tutti i candidati? Non puoi annullare questa azione."
 }

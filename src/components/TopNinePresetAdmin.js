@@ -1,3 +1,5 @@
+import ThumbnailSetting from './topNine/ThumbnailSetting';
+import {supabase} from '../utils/supabaseClient';
 import React,{useEffect,useMemo,useRef,useState} from 'react';
 import {TOPICS} from './topNine/topics';
 import {loadAdminRows,saveAdminRows} from './topNine/adminApi';
@@ -6,6 +8,8 @@ import {titleOf,enabledRows,reorderRows,moveRow,toggleRow,snapshot,changedPayloa
 const buttonStyle={minWidth:36,minHeight:40,border:'1px solid #c4b5fd',borderRadius:7,background:'#f5f3ff',color:'#6d28d9',fontWeight:800,cursor:'pointer'};
 export default function TopNinePresetAdmin(){
   const [rows,setRows]=useState([]),[baseline,setBaseline]=useState(()=>new Map()),[query,setQuery]=useState(''),[visible,setVisible]=useState(5),[loading,setLoading]=useState(true),[saving,setSaving]=useState(false),[error,setError]=useState(''),[message,setMessage]=useState(''),[retry,setRetry]=useState(0),[dragged,setDragged]=useState(null),[dropTarget,setDropTarget]=useState(null);
+  const [thumbnails,setThumbnails]=useState({});
+  useEffect(()=>{let live=true;supabase.from('top_nine_thumbnails').select('source_worldcup_id,image_url').then(({data})=>{if(live)setThumbnails(Object.fromEntries((data||[]).map(row=>[row.source_worldcup_id,row.image_url])));});return()=>{live=false;};},[]);
   const drag=useRef(null),mounted=useRef(false);
   useEffect(()=>{mounted.current=true;return()=>{mounted.current=false;};},[]);
   useEffect(()=>{let live=true;setLoading(true);setError('');loadAdminRows().then(data=>{if(live){setRows(data);setBaseline(snapshot(data));}}).catch(e=>{if(live)setError('구절판 목록을 불러오지 못했어요. '+e.message);}).finally(()=>{if(live)setLoading(false);});return()=>{live=false;};},[retry]);
@@ -35,6 +39,7 @@ export default function TopNinePresetAdmin(){
         <div style={{flex:1,minWidth:0}}><strong style={{display:'block',overflowWrap:'anywhere',lineHeight:1.5}}>{title}</strong>
           {(row.enabled||Object.keys(row.top_nine_title_translations||{}).length>0)&&<>
             <label style={{display:'block',marginTop:10,fontSize:14,fontWeight:700}}>기본 프리셋 <select aria-label={`${title} 기본 프리셋`} value={row.topic} onChange={e=>update(row.id,{topic:e.target.value})} style={{maxWidth:'100%',padding:6,border:'1px solid #c4b5fd',borderRadius:6}}>{TOPICS.map(([key,en,ko])=><option key={key} value={key}>{ko} / {en}</option>)}</select></label>
+            <ThumbnailSetting id={row.id} url={thumbnails[row.id]||''} disabled={saving} onSaved={url=>setThumbnails(old=>({...old,[row.id]:url}))}/>
             <PresetTitleTranslations title={title} value={row.top_nine_title_translations} primaryLanguage="en" disabled={saving} placeholder="예: My Top 9 Games" onChange={titles=>update(row.id,{top_nine_title_translations:titles})}/>
           </>}
         </div>

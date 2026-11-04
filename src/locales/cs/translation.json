@@ -1793,5 +1793,7 @@
     "🍪 Snack picker": "🍪 Výběr svačiny",
     "🍚 What to eat?": "🍚 Co si dát k jídlu?",
     "☕ Cafe menu": "☕ Nabídka kavárny"
-  }
+  },
+  "clear_all_candidates": "Smazat všechny kandidáty",
+  "clear_all_candidates_confirm": "Smazat všechny kandidáty? Tuto akci nelze vrátit."
 }

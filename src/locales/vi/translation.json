@@ -634,6 +634,7 @@
   "head_to_head_total": "Tổng {{formattedCount}} lần đối đầu",
   "head_to_head_loading": "Đang tải thành tích đối đầu…",
   "stop_and_view_stats": "Dừng và xem thống kê",
-  "add_other_language_title": "Thêm tiêu đề bằng ngôn ngữ khác"
+  "add_other_language_title": "Thêm tiêu đề bằng ngôn ngữ khác",
+  "clear_all_candidates": "Xóa tất cả ứng viên",
+  "clear_all_candidates_confirm": "Xóa tất cả ứng viên? Không thể hoàn tác."
 }
-

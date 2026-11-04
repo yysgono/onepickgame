@@ -634,6 +634,7 @@
   "head_to_head_total": "총 {{formattedCount}}회 대결",
   "head_to_head_loading": "상대전적 불러오는 중…",
   "stop_and_view_stats": "중단하고 바로 통계 결과 보기",
-  "add_other_language_title": "다른 언어 제목 추가"
+  "add_other_language_title": "다른 언어 제목 추가",
+  "clear_all_candidates": "후보 전체 삭제",
+  "clear_all_candidates_confirm": "후보를 모두 삭제할까요? 되돌릴 수 없어요."
 }
-

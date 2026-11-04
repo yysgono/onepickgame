@@ -634,6 +634,7 @@
   "head_to_head_total": "{{formattedCount}} confrontations au total",
   "head_to_head_loading": "Chargement du face-à-face…",
   "stop_and_view_stats": "Arrêter et voir les statistiques",
-  "add_other_language_title": "Ajouter un titre dans une autre langue"
+  "add_other_language_title": "Ajouter un titre dans une autre langue",
+  "clear_all_candidates": "Supprimer tous les candidats",
+  "clear_all_candidates_confirm": "Supprimer tous les candidats ? Cette action est irréversible."
 }
-

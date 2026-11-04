@@ -633,6 +633,7 @@
   "head_to_head_total": "إجمالي {{formattedCount}} مواجهة",
   "head_to_head_loading": "جارٍ تحميل سجل المواجهات…",
   "stop_and_view_stats": "إيقاف وعرض الإحصاءات",
-  "add_other_language_title": "إضافة عنوان بلغة أخرى"
+  "add_other_language_title": "إضافة عنوان بلغة أخرى",
+  "clear_all_candidates": "حذف جميع المرشحين",
+  "clear_all_candidates_confirm": "هل تريد حذف جميع المرشحين؟ لا يمكن التراجع."
 }
-

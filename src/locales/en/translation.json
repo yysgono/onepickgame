@@ -633,6 +633,7 @@
   "head_to_head_total": "{{formattedCount}} meetings",
   "head_to_head_loading": "Loading head-to-head record…",
   "stop_and_view_stats": "Stop and view statistics",
-  "add_other_language_title": "Add title in another language"
+  "add_other_language_title": "Add title in another language",
+  "clear_all_candidates": "Delete all candidates",
+  "clear_all_candidates_confirm": "Delete all candidates? This cannot be undone."
 }
-
