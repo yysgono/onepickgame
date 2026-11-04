@@ -41,3 +41,16 @@
 .top-nine .tn-home-grid{border:3px solid #9561df;border-radius:18px;background:#fcfaff;padding:18px;box-shadow:0 4px 18px #7139ce0d}
 .top-nine>.tn-search>input{border:3px solid #9561df;box-shadow:0 0 0 3px #f2eaff}
 @media(max-width:700px){.top-nine .tn-home-grid{padding:12px;border-radius:14px}}
+/* Candidate-count setup and optional-selection rounds. */
+.tn-game-start{display:flex;flex-direction:column;gap:12px;min-width:0;width:100%}
+.tn-mode-choice .tn-actions{align-items:start}
+.tn-mode-choice .tn-game-start>button{width:100%}
+.tn-game-count{display:grid;gap:8px;text-align:start;font-size:17px;font-weight:800;min-width:0}
+.top-nine .tn-game-count select{width:100%;min-width:0;min-height:48px;padding:10px 12px;border:2px solid #9561df;border-radius:9px;background:#fff;color:#50248d;font-size:17px}
+.tn-game-count small{font-size:13px;font-weight:500;line-height:1.6;color:#6c6078}
+.tn-pool-game .tn-game-start{max-width:100%}.tn-pool-game .tn-game-count{font-size:15px;gap:5px}
+.tn-game.tn-game-grid25{max-width:1360px}.tn-game.tn-game-grid25 .tn-candidates{grid-template-columns:repeat(5,minmax(0,1fr))}
+.tn-game.tn-game-grid9{max-width:900px}.tn-game.tn-game-grid9 .tn-candidates{grid-template-columns:repeat(3,minmax(0,1fr))}
+.tn-game .tn-candidates button>span:last-child{font-size:15px;line-height:1.5;padding:9px}
+.tn-game-byes{margin:14px 0;padding:12px;border:1px solid var(--tn-border);border-radius:10px;background:#faf6ff;font-size:15px}.tn-game-byes summary{cursor:pointer;font-weight:800}.tn-game-byes p{max-height:130px;overflow:auto;overflow-wrap:anywhere;line-height:1.7}
+@media(max-width:700px){.tn-game.tn-game-grid25 .tn-candidates{grid-template-columns:repeat(3,minmax(0,1fr))}.tn-game-count{font-size:15px}.top-nine .tn-game-count select{font-size:16px}.tn-game .tn-actions{gap:8px}.tn-game .tn-actions button{font-size:14px;padding:10px}}
