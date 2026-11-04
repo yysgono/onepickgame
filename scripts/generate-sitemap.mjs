@@ -288,6 +288,8 @@ export function generateLanguageSitemap(
     if (!mode) for (const topic of ["delivery-food", "snacks", "dessert", "movies", "anime", "countries", "lotto645", "lol-champions", "travel-korea", "travel-global"]) xml += makeUrlEntry({loc: `${BASE_URL}/${lang}/random-pick/${topic}`,changefreq:"weekly",priority:"0.7"});
   }
 
+  xml += makeUrlEntry({ loc: `${BASE_URL}/${lang}/top-nine`, changefreq: "weekly", priority: "0.7" });
+
   // 티어표 목록
   xml += makeUrlEntry({
     loc: `${BASE_URL}/${lang}/tier-list`,

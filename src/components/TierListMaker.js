@@ -1,3 +1,4 @@
+import { templateTitle } from "../utils/templateTitles";
 import { isMp4File, prepareMp4File, MP4_MAX_BYTES, MP4_SIZE_HELP } from "../utils/mp4Upload";
 import { isGifFile, prepareGifFile, GIF_MAX_INPUT_BYTES, GIF_SIZE_HELP } from "../utils/gifUpload";
 import {localizeExtraUi} from "../utils/newLanguageUi";
@@ -1480,39 +1481,35 @@ useEffect(() => {
     const draggedItemRef =
   useRef(null);
 
-  const getTitle =
-    useCallback(
-      (cup) => {
-        const translations = readTranslationMap(
-          cup?.title_translations
-        );
-
-        const legacyTranslations = readTranslationMap(
-          cup?.translations?.title
-        );
-
-        const presetTitles = readTranslationMap(cup?.tier_preset_title_translations);
-        return (
-          presetTitles?.[lang]?.trim() ||
-          translations?.[lang] ||
-          translations?.en ||
-          legacyTranslations?.[lang] ||
-          legacyTranslations?.en ||
-          cup?.[`title_${lang}`] ||
-          cup?.title_en ||
-          cup?.title ||
-          ""
-        );
-      },
-      [lang]
-    );
+  // Fetch lightweight preset metadata independently: the app's home cards can
+  // omit custom titles or contain an older cached World Cup title.
+  const [presetMetadata, setPresetMetadata] = useState([]);
+  useEffect(() => {
+    let live = true;
+    supabase.from("worldcup_tier_preset_cards")
+      .select("id,title,title_translations,category,tier_preset_order,tier_preset_title_translations,tier_preset_thumbnail_url")
+      .order("tier_preset_order", { ascending: true, nullsFirst: false }).limit(1000)
+      .then(({ data, error }) => { if (live && !error) setPresetMetadata(data || []); });
+    return () => { live = false; };
+  }, []);
+  const templateWorldcups = useMemo(() => {
+    const map = new Map(worldcupList.map(cup => [String(cup.id), cup]));
+    presetMetadata.forEach(cup => map.set(String(cup.id), {
+      _homeCardOnly: true, ...map.get(String(cup.id)), ...cup, is_tier_preset: true
+    }));
+    return [...map.values()];
+  }, [worldcupList, presetMetadata]);
+  const getTitle = useCallback(cup => {
+    const metadata = presetMetadata.find(row => String(row.id) === String(cup?.id));
+    return templateTitle(metadata ? { ...cup, ...metadata } : cup, "tier", lang);
+  }, [lang, presetMetadata]);
 
     const sortedSourceWorldcups = useMemo(() => {
-      return worldcupList.filter(cup => cup.is_tier_preset === true).sort((a, b) => {
+      return templateWorldcups.filter(cup => cup.is_tier_preset === true).sort((a, b) => {
         const order = Number(a.tier_preset_order ?? 2147483647) - Number(b.tier_preset_order ?? 2147483647);
         return order || String(a.id).localeCompare(String(b.id));
       });
-    }, [worldcupList]);
+    }, [templateWorldcups]);
 
     const filteredPresetWorldcups =
   useMemo(() => {
@@ -1524,7 +1521,7 @@ useEffect(() => {
 // An empty search keeps the curated recommendation order. Searching includes
 // ordinary World Cups already loaded by the maker route; no candidate refetch.
 const list = keyword
-  ? [...worldcupList].filter(cup => !cup.deleted_at).sort((a, b) => {
+  ? [...templateWorldcups].filter(cup => !cup.deleted_at).sort((a, b) => {
       const presetFirst = Number(b.is_tier_preset === true) - Number(a.is_tier_preset === true);
       if (presetFirst) return presetFirst;
       if (a.is_tier_preset === true && b.is_tier_preset === true) {
@@ -1560,6 +1557,7 @@ const list = keyword
           cup?.title,
           cup?.title_en,
           getTitle(cup),
+          ...Object.values(readTranslationMap(cup?.tier_preset_title_translations)),
           ...Object.values(
             titleTranslations
           ),
@@ -1580,7 +1578,7 @@ const list = keyword
       }
     );
 }, [
-  worldcupList,
+  templateWorldcups,
   sortedSourceWorldcups,
   presetSearch,
   getTitle,

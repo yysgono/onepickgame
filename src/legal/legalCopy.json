@@ -30,6 +30,10 @@
       [
         "Google connections",
         "Site withdrawal does not delete your Google account or automatically revoke its app permission. Manage that permission using Google account connections below. Removing the Google connection alone does not delete your OnePickGame account."
+      ],
+      [
+        "My Top 9 collages",
+        "Collage drafts and directly imported photos are stored in your browser. When you publish, the title, selected public image URLs, layout, account identifier and publication date are saved to provide the public gallery. Shared links contain selected public image URLs; viewing them requests images from their original hosts. Deleting a public collage does not remove downloaded copies or shared links. Aggregate creation counts may remain after deletion. Guests may publish with a public nickname and a deletion password. The password is processed into a salted verification value; the original password is not stored. Members can compress and upload their own photos for link sharing and public posts. Sharing stores these photos publicly. Private signed URLs are not supported."
       ]
     ],
     "terms": [
@@ -52,6 +56,10 @@
       [
         "Service changes and rights",
         "Features may change or be interrupted or discontinued. Reasonable notice is intended where practicable; urgent legal, security or abuse actions may be immediate. Availability and search rankings are not guaranteed. Mandatory local rights and liabilities cannot be waived. Read the Privacy Policy; signup notices are not advertising consent. Contact the operator above with questions."
+      ],
+      [
+        "My Top 9 collages",
+        "Create your own Top 9 collage with your favorite idols, anime characters, games, movies and more. Choose from recommended presets or narrow down candidates through a game, arrange your photos, add a title and save or share the finished image. Guests may publish with a public nickname and a deletion password. The password is processed into a salted verification value; the original password is not stored. Members can compress and upload their own photos for link sharing and public posts. Sharing stores these photos publicly. Private signed URLs are not supported."
       ]
     ]
   },
@@ -86,6 +94,10 @@
       [
         "Google 연결 관리",
         "사이트 탈퇴는 Google 계정 자체를 삭제하거나 Google의 앱 접근 권한을 자동 철회하지 않습니다. 아래 Google 계정 연결 관리에서 권한을 관리할 수 있습니다. Google 연결만 해제해도 OnePickGame 계정이 삭제되는 것은 아닙니다."
+      ],
+      [
+        "구절판 / My Top 9",
+        "구절판 초안과 직접 가져온 사진은 브라우저에 저장됩니다. 공개 게시 시 제목, 선택한 공개 이미지 URL, 배치, 계정 식별자, 게시 시각을 저장하여 공개 목록을 제공합니다. 공유 링크에는 공개 이미지 URL이 포함되며, 열람 시 원본 이미지 제공처에 이미지가 요청됩니다. 공개 구절판을 삭제해도 이미 내려받은 사본이나 공유 링크가 회수되지는 않습니다. 개인 식별 정보를 포함하지 않는 생성 집계는 삭제 후에도 남을 수 있습니다. 비회원도 공개 닉네임과 삭제용 비밀번호로 게시할 수 있습니다. 비밀번호는 무작위 솔트를 적용한 검증값으로 처리하며 원문은 저장하지 않습니다. 회원은 직접 올린 사진도 압축하여 링크 공유·공개 게시할 수 있어요. 공유할 때 사진이 공개 서버에 저장됩니다. 비공개 서명 URL은 지원하지 않아요."
       ]
     ],
     "terms": [
@@ -108,6 +120,10 @@
       [
         "서비스 변경과 권리",
         "기능이 변경·중단·종료될 수 있습니다. 가능한 경우 합리적인 사전 안내를 하며 긴급한 법적·보안·부정 이용 조치는 즉시 진행될 수 있습니다. 무중단 제공과 검색 순위를 보장하지 않습니다. 강행 법률상 권리·책임은 배제되지 않습니다. 개인정보처리방침을 확인해 주세요. 가입 안내는 광고 동의가 아닙니다. 문의는 위 연락처로 보내주세요."
+      ],
+      [
+        "구절판 / My Top 9",
+        "아이돌, 애니 캐릭터, 게임, 영화 등 좋아하는 후보 9개를 모아 나만의 이상형·최애 구절판을 만들어보세요. 추천 프리셋에서 직접 고르거나 게임으로 후보를 선별하고, 사진 배치와 이름을 꾸민 뒤 이미지로 저장하고 공유할 수 있어요. 비회원도 공개 닉네임과 삭제용 비밀번호로 게시할 수 있습니다. 비밀번호는 무작위 솔트를 적용한 검증값으로 처리하며 원문은 저장하지 않습니다. 회원은 직접 올린 사진도 압축하여 링크 공유·공개 게시할 수 있어요. 공유할 때 사진이 공개 서버에 저장됩니다. 비공개 서명 URL은 지원하지 않아요."
       ]
     ]
   },
@@ -142,6 +158,10 @@
       [
         "Googleの接続管理",
         "サイトの退会はGoogleアカウントの削除やアプリ権限の自動撤回ではありません。下記のGoogleアカウント接続管理で権限を管理できます。Googleとの接続解除だけではOnePickGameのアカウントは削除されません。"
+      ],
+      [
+        "My Top 9 コラージュ",
+        "下書きと直接取り込んだ写真はブラウザに保存されます。公開時にはタイトル、公開画像URL、配置、アカウント識別子、公開日時を保存します。共有リンクの閲覧時には元の配信元へ画像が要求されます。公開作品を削除してもダウンロード済みの画像や共有リンクは回収されません。集計数は削除後も残る場合があります。 ゲストも公開ニックネームと削除用パスワードで投稿できます。パスワードはランダムなソルトを使った検証値として処理し、元のパスワードは保存しません。 会員は自分の写真も圧縮してリンク共有・公開投稿できます。共有時に写真は公開サーバーへ保存されます。非公開の署名URLは対象外です。"
       ]
     ],
     "terms": [
@@ -164,6 +184,10 @@
       [
         "サービス変更と権利",
         "機能を変更・中断・終了する場合があります。可能な場合は合理的な事前案内を行いますが、緊急の法的・セキュリティ・不正利用対策は直ちに実施する場合があります。常時利用や検索順位は保証しません。強行法規上の権利や責任は排除されません。プライバシーポリシーをご確認ください。登録案内は広告への同意ではありません。ご質問は上記連絡先へお寄せください。"
+      ],
+      [
+        "My Top 9 コラージュ",
+        "アイドル、アニメキャラクター、ゲーム、映画など、お気に入り9つで自分だけのコラージュを作りましょう。 おすすめテンプレートから直接選んだり、ゲームで候補を絞ったりできます。写真の配置やタイトルを整え、完成した画像を保存・共有しましょう。 ゲストも公開ニックネームと削除用パスワードで投稿できます。パスワードはランダムなソルトを使った検証値として処理し、元のパスワードは保存しません。 会員は自分の写真も圧縮してリンク共有・公開投稿できます。共有時に写真は公開サーバーへ保存されます。非公開の署名URLは対象外です。"
       ]
     ]
   },
@@ -198,6 +222,10 @@
       [
         "Google连接管理",
         "本站注销不会删除您的Google账户，也不会自动撤销Google中的应用权限。请通过下方Google账户连接管理处理权限。仅断开Google连接不会删除OnePickGame账户。"
+      ],
+      [
+        "My Top 9 九宫格",
+        "草稿和直接导入的照片保存在浏览器中。公开发布时保存标题、公开图片URL、布局、账户标识和发布时间。打开分享链接会向原始图片提供方请求图片。删除公开作品不会收回已下载的图片或分享链接，创建总数可能继续保留。 访客也可使用公开昵称和删除密码发布。密码会通过随机盐处理成验证值，不保存原始密码。 会员可压缩上传自己的照片，用于链接分享和公开发布。分享时照片会存储到公开服务器，不支持私密签名URL。"
       ]
     ],
     "terms": [
@@ -220,6 +248,10 @@
       [
         "服务变更与权利",
         "功能可能变更、中断或停止。可行时将给予合理提前通知；紧急法律、安全或反滥用措施可能立即执行。不保证持续可用或搜索排名。强制性法律规定的权利与责任不予排除。请阅读隐私政策，注册提示并非广告同意。疑问请联系上述运营者。"
+      ],
+      [
+        "My Top 9 九宫格",
+        "挑选你最喜欢的偶像、动漫角色、游戏、电影等9个候选项，制作专属九宫格。 从推荐模板直接选择，或通过游戏筛选候选项，调整照片位置、添加标题，再保存或分享完成的图片。 访客也可使用公开昵称和删除密码发布。密码会通过随机盐处理成验证值，不保存原始密码。 会员可压缩上传自己的照片，用于链接分享和公开发布。分享时照片会存储到公开服务器，不支持私密签名URL。"
       ]
     ]
   },
@@ -254,6 +286,10 @@
       [
         "Подключения Google",
         "Удаление аккаунта сайта не удаляет аккаунт Google и не отзывает автоматически разрешение приложению. Управляйте разрешением через подключения Google по ссылке ниже. Одного отключения Google недостаточно для удаления аккаунта OnePickGame."
+      ],
+      [
+        "Коллажи My Top 9",
+        "Черновики и импортированные фото хранятся в браузере. При публикации сохраняются заголовок, общедоступные URL изображений, расположение, идентификатор аккаунта и время. Ссылки загружают изображения с исходных серверов. Удаление публикации не отзывает скачанные копии или отправленные ссылки. Сводные счётчики могут сохраняться. Гости могут публиковать с публичным никнеймом и паролем для удаления. Хранится проверочное значение со случайной солью, а не исходный пароль. Участники могут сжимать и загружать свои фото для ссылок и публикаций. При отправке они сохраняются публично. Закрытые подписанные URL не поддерживаются."
       ]
     ],
     "terms": [
@@ -276,6 +312,10 @@
       [
         "Изменения сервиса и права",
         "Функции могут изменяться, приостанавливаться или прекращаться. По возможности предусматривается разумное предварительное уведомление; срочные правовые, защитные и антизлоупотребительные меры могут применяться немедленно. Доступность и позиции в поиске не гарантируются. Неотчуждаемые права и обязательная ответственность не исключаются. Прочтите политику конфиденциальности; уведомление при регистрации не является согласием на рекламу. Вопросы направляйте по контакту выше."
+      ],
+      [
+        "Коллажи My Top 9",
+        "Создайте свой коллаж топ-9 с любимыми айдолами, персонажами аниме, играми, фильмами и другими фаворитами. Выбирайте из готовых шаблонов или отбирайте кандидатов в игре, расставляйте фото, добавляйте заголовок и сохраняйте или отправляйте готовое изображение. Гости могут публиковать с публичным никнеймом и паролем для удаления. Хранится проверочное значение со случайной солью, а не исходный пароль. Участники могут сжимать и загружать свои фото для ссылок и публикаций. При отправке они сохраняются публично. Закрытые подписанные URL не поддерживаются."
       ]
     ]
   },
@@ -310,6 +350,10 @@
       [
         "Conexões do Google",
         "Excluir a conta do site não exclui sua conta do Google nem revoga automaticamente a permissão do aplicativo. Gerencie-a nas conexões do Google abaixo. Apenas desconectar o Google não exclui sua conta OnePickGame."
+      ],
+      [
+        "Colagens My Top 9",
+        "Rascunhos e fotos importadas ficam no navegador. Ao publicar, são salvos título, URLs públicas das imagens, disposição, identificador da conta e data. Links compartilhados carregam imagens das fontes originais. Excluir a publicação não remove cópias baixadas nem links compartilhados. Contagens agregadas podem permanecer. Visitantes podem publicar com apelido público e senha de exclusão. É guardado um valor de verificação com salt aleatório, não a senha original. Membros podem compactar e enviar fotos próprias para compartilhar links ou publicar. As fotos ficam armazenadas publicamente ao compartilhar. URLs privadas assinadas não são aceitas."
       ]
     ],
     "terms": [
@@ -332,6 +376,10 @@
       [
         "Mudanças e direitos",
         "As funções podem mudar, ser interrompidas ou encerradas. Pretende-se dar aviso razoável quando viável; medidas urgentes legais, de segurança ou contra abusos podem ser imediatas. Disponibilidade e posição em buscas não são garantidas. Direitos e responsabilidades legais obrigatórios não são excluídos. Leia a política de privacidade; avisos de cadastro não são consentimento publicitário. Dúvidas podem ser enviadas ao contato acima."
+      ],
+      [
+        "Colagens My Top 9",
+        "Crie sua colagem Top 9 com seus ídolos, personagens de anime, jogos, filmes e outros favoritos. Escolha um modelo ou selecione candidatos jogando, organize as fotos, adicione um título e salve ou compartilhe a imagem final. Visitantes podem publicar com apelido público e senha de exclusão. É guardado um valor de verificação com salt aleatório, não a senha original. Membros podem compactar e enviar fotos próprias para compartilhar links ou publicar. As fotos ficam armazenadas publicamente ao compartilhar. URLs privadas assinadas não são aceitas."
       ]
     ]
   },
@@ -366,6 +414,10 @@
       [
         "Conexiones de Google",
         "Darse de baja del sitio no elimina tu cuenta de Google ni revoca automáticamente los permisos de la aplicación. Gestiona esos permisos en las conexiones de Google indicadas abajo. Desconectar Google por sí solo no elimina tu cuenta de OnePickGame."
+      ],
+      [
+        "Collages My Top 9",
+        "Los borradores y las fotos importadas se guardan en el navegador. Al publicar se guardan el título, las URL públicas de imágenes, la disposición, el identificador de cuenta y la fecha. Abrir enlaces compartidos solicita imágenes a sus proveedores originales. Borrar una publicación no retira las copias descargadas ni los enlaces compartidos; los recuentos agregados pueden conservarse. Los invitados pueden publicar con un apodo público y una contraseña de eliminación. Se conserva un valor de verificación con sal aleatoria, no la contraseña original. Los miembros pueden comprimir y subir sus fotos para compartir enlaces y publicar. Al compartir, las fotos se guardan públicamente. No se admiten URL privadas firmadas."
       ]
     ],
     "terms": [
@@ -388,6 +440,10 @@
       [
         "Cambios del servicio y derechos",
         "Las funciones pueden cambiar, interrumpirse o finalizar. Se procurará avisar razonablemente cuando sea posible; las medidas legales, de seguridad o contra abusos urgentes pueden ser inmediatas. No se garantiza disponibilidad continua ni posición en buscadores. No se excluyen derechos ni responsabilidades imperativos. Lee la política de privacidad; el aviso de registro no es consentimiento publicitario. Contacta arriba para consultas."
+      ],
+      [
+        "Collages My Top 9",
+        "Crea tu collage Top 9 con tus ídolos, personajes de anime, videojuegos, películas y otros favoritos. Elige una plantilla o selecciona candidatos jugando, organiza las fotos, añade un título y guarda o comparte la imagen final. Los invitados pueden publicar con un apodo público y una contraseña de eliminación. Se conserva un valor de verificación con sal aleatoria, no la contraseña original. Los miembros pueden comprimir y subir sus fotos para compartir enlaces y publicar. Al compartir, las fotos se guardan públicamente. No se admiten URL privadas firmadas."
       ]
     ]
   },
@@ -422,6 +478,10 @@
       [
         "Connexions Google",
         "La suppression du compte du site ne supprime pas votre compte Google et ne révoque pas automatiquement l’autorisation de l’application. Gérez-la dans les connexions Google ci-dessous. Déconnecter Google seul ne supprime pas votre compte OnePickGame."
+      ],
+      [
+        "Collages My Top 9",
+        "Les brouillons et photos importées restent dans le navigateur. Une publication enregistre le titre, les URL publiques des images, la disposition, l’identifiant du compte et la date. Les liens partagés chargent les images depuis leur hébergeur d’origine. Une suppression ne retire pas les copies téléchargées ou les liens partagés. Les décomptes agrégés peuvent être conservés. Les invités peuvent publier avec un pseudo public et un mot de passe de suppression. Seule une valeur de vérification avec sel aléatoire est conservée, jamais le mot de passe original. Les membres peuvent compresser et envoyer leurs photos pour les partager ou les publier. Elles sont alors stockées publiquement. Les URL privées signées sont exclues."
       ]
     ],
     "terms": [
@@ -444,6 +504,10 @@
       [
         "Évolution du service et droits",
         "Les fonctions peuvent être modifiées, interrompues ou arrêtées. Un préavis raisonnable est prévu lorsque cela est possible ; les mesures urgentes légales, de sécurité ou contre les abus peuvent être immédiates. Disponibilité et classement dans les moteurs ne sont pas garantis. Les droits et responsabilités impératifs ne sont pas exclus. Consultez la politique de confidentialité ; l’avis d’inscription n’est pas un consentement publicitaire. Contactez le responsable ci-dessus pour toute question."
+      ],
+      [
+        "Collages My Top 9",
+        "Créez votre collage Top 9 avec vos idoles, personnages d’anime, jeux, films et autres favoris. Choisissez un modèle ou départagez les candidats en jouant, disposez les photos, ajoutez un titre et enregistrez ou partagez l’image finale. Les invités peuvent publier avec un pseudo public et un mot de passe de suppression. Seule une valeur de vérification avec sel aléatoire est conservée, jamais le mot de passe original. Les membres peuvent compresser et envoyer leurs photos pour les partager ou les publier. Elles sont alors stockées publiquement. Les URL privées signées sont exclues."
       ]
     ]
   },
@@ -478,6 +542,10 @@
       [
         "Koneksi Google",
         "Penghapusan akun situs tidak menghapus akun Google atau mencabut izin aplikasi secara otomatis. Kelola izin melalui koneksi Google di bawah. Memutus Google saja tidak menghapus akun OnePickGame."
+      ],
+      [
+        "Kolase My Top 9",
+        "Draf dan foto impor disimpan di peramban. Saat dipublikasikan, judul, URL gambar publik, tata letak, ID akun dan waktu publikasi disimpan. Tautan bersama memuat gambar dari penyedia aslinya. Penghapusan tidak menarik kembali salinan unduhan atau tautan bersama. Jumlah agregat dapat tetap disimpan. Tamu dapat menerbitkan dengan nama publik dan kata sandi untuk penghapusan. Yang disimpan adalah nilai verifikasi dengan salt acak, bukan kata sandi asli. Anggota dapat memampatkan dan mengunggah foto sendiri untuk dibagikan atau diterbitkan. Foto disimpan secara publik saat dibagikan. URL bertanda tangan pribadi tidak didukung."
       ]
     ],
     "terms": [
@@ -500,6 +568,10 @@
       [
         "Perubahan layanan dan hak",
         "Fitur dapat berubah, terputus atau dihentikan. Pemberitahuan wajar diupayakan jika memungkinkan; tindakan hukum, keamanan atau pencegahan penyalahgunaan yang mendesak dapat langsung dilakukan. Ketersediaan dan peringkat pencarian tidak dijamin. Hak dan tanggung jawab wajib menurut hukum tidak dikesampingkan. Baca kebijakan privasi; pemberitahuan pendaftaran bukan persetujuan iklan. Kirim pertanyaan ke kontak di atas."
+      ],
+      [
+        "Kolase My Top 9",
+        "Buat kolase Top 9 dengan idol, karakter anime, gim, film, dan favorit lainnya. Pilih dari templat rekomendasi atau saring kandidat lewat permainan, atur foto, tambahkan judul, lalu simpan atau bagikan gambar hasilnya. Tamu dapat menerbitkan dengan nama publik dan kata sandi untuk penghapusan. Yang disimpan adalah nilai verifikasi dengan salt acak, bukan kata sandi asli. Anggota dapat memampatkan dan mengunggah foto sendiri untuk dibagikan atau diterbitkan. Foto disimpan secara publik saat dibagikan. URL bertanda tangan pribadi tidak didukung."
       ]
     ]
   },
@@ -534,6 +606,10 @@
       [
         "Google कनेक्शन",
         "साइट से खाता हटाने पर Google खाता नहीं मिटता और ऐप की अनुमति अपने आप रद्द नहीं होती। नीचे Google खाता कनेक्शन से अनुमति सँभालें। केवल Google कनेक्शन हटाने से OnePickGame खाता नहीं हटता।"
+      ],
+      [
+        "My Top 9 कोलाज",
+        "ड्राफ़्ट और आयात की गई फ़ोटो ब्राउज़र में रहती हैं। प्रकाशित करने पर शीर्षक, सार्वजनिक तस्वीर URL, लेआउट, खाता पहचान और समय सेव होते हैं। साझा लिंक मूल होस्ट से तस्वीरें लोड करते हैं। पोस्ट हटाने पर डाउनलोड की गई प्रतियाँ या साझा लिंक वापस नहीं लिए जाते। कुल गिनती बची रह सकती है। मेहमान सार्वजनिक उपनाम और हटाने के पासवर्ड से प्रकाशित कर सकते हैं। पासवर्ड का यादृच्छिक साल्ट वाला सत्यापन मान रखा जाता है, मूल पासवर्ड नहीं। सदस्य अपनी तस्वीरें संपीड़ित करके अपलोड और साझा कर सकते हैं। साझा करने पर तस्वीरें सार्वजनिक सर्वर पर रहती हैं। निजी हस्ताक्षरित URL समर्थित नहीं हैं।"
       ]
     ],
     "terms": [
@@ -556,6 +632,10 @@
       [
         "सेवा परिवर्तन और अधिकार",
         "सुविधाएँ बदल, बाधित या बंद हो सकती हैं। जहाँ संभव हो उचित पूर्व सूचना देने का उद्देश्य है; तत्काल कानूनी, सुरक्षा या दुरुपयोग संबंधी कार्रवाई तुरंत हो सकती है। निरंतर उपलब्धता और खोज रैंक की गारंटी नहीं है। अनिवार्य अधिकार और दायित्व हटाए नहीं जा सकते। गोपनीयता नीति पढ़ें; पंजीकरण सूचना विज्ञापन सहमति नहीं है। प्रश्न ऊपर दिए संपर्क पर भेजें।"
+      ],
+      [
+        "My Top 9 कोलाज",
+        "अपने पसंदीदा आइडल, ऐनिमे पात्र, गेम, फ़िल्मों और अन्य विकल्पों से अपना टॉप 9 कोलाज बनाएँ। सुझाए गए टेम्पलेट से चुनें या खेलकर उम्मीदवार छाँटें, फ़ोटो सजाएँ, शीर्षक जोड़ें और तैयार तस्वीर सेव या साझा करें। मेहमान सार्वजनिक उपनाम और हटाने के पासवर्ड से प्रकाशित कर सकते हैं। पासवर्ड का यादृच्छिक साल्ट वाला सत्यापन मान रखा जाता है, मूल पासवर्ड नहीं। सदस्य अपनी तस्वीरें संपीड़ित करके अपलोड और साझा कर सकते हैं। साझा करने पर तस्वीरें सार्वजनिक सर्वर पर रहती हैं। निजी हस्ताक्षरित URL समर्थित नहीं हैं।"
       ]
     ]
   },
@@ -590,6 +670,10 @@
       [
         "Google-Verbindungen",
         "Die Kontolöschung auf der Website löscht weder dein Google-Konto noch widerruft sie automatisch die App-Berechtigung. Verwalte sie über die unten verlinkten Google-Verbindungen. Allein das Trennen von Google löscht dein OnePickGame-Konto nicht."
+      ],
+      [
+        "My-Top-9-Collagen",
+        "Entwürfe und importierte Fotos werden im Browser gespeichert. Bei Veröffentlichung speichern wir Titel, öffentliche Bild-URLs, Anordnung, Kontokennung und Zeitpunkt. Geteilte Links laden Bilder vom ursprünglichen Anbieter. Löschen entfernt keine heruntergeladenen Kopien oder geteilten Links. Aggregierte Zählwerte können erhalten bleiben. Gäste können mit öffentlichem Namen und Löschpasswort veröffentlichen. Gespeichert wird ein Prüfwert mit zufälligem Salt, nicht das ursprüngliche Passwort. Mitglieder können eigene Fotos komprimiert hochladen und teilen oder veröffentlichen. Beim Teilen werden die Fotos öffentlich gespeichert. Private signierte URLs sind ausgeschlossen."
       ]
     ],
     "terms": [
@@ -612,6 +696,10 @@
       [
         "Änderungen und Rechte",
         "Funktionen können geändert, unterbrochen oder beendet werden. Soweit praktikabel soll eine angemessene Vorankündigung erfolgen; dringende rechtliche, sicherheitsbezogene oder missbrauchsbedingte Maßnahmen können sofort erfolgen. Verfügbarkeit und Suchrang werden nicht garantiert. Zwingende Rechte und Haftung bleiben unberührt. Lies die Datenschutzerklärung; Registrierungshinweise sind keine Werbeeinwilligung. Fragen bitte an den oben genannten Kontakt."
+      ],
+      [
+        "My-Top-9-Collagen",
+        "Erstelle deine eigene Top-9-Collage mit deinen liebsten Idolen, Animefiguren, Spielen, Filmen und mehr. Wähle eine Vorlage oder grenze die Kandidaten spielerisch ein, ordne die Fotos an, ergänze einen Titel und speichere oder teile das fertige Bild. Gäste können mit öffentlichem Namen und Löschpasswort veröffentlichen. Gespeichert wird ein Prüfwert mit zufälligem Salt, nicht das ursprüngliche Passwort. Mitglieder können eigene Fotos komprimiert hochladen und teilen oder veröffentlichen. Beim Teilen werden die Fotos öffentlich gespeichert. Private signierte URLs sind ausgeschlossen."
       ]
     ]
   },
@@ -646,6 +734,10 @@
       [
         "Kết nối Google",
         "Xóa tài khoản trang web không xóa tài khoản Google hay tự động thu hồi quyền ứng dụng. Quản lý quyền qua kết nối tài khoản Google ở dưới. Chỉ ngắt Google không xóa tài khoản OnePickGame."
+      ],
+      [
+        "Ảnh ghép My Top 9",
+        "Bản nháp và ảnh nhập trực tiếp được lưu trong trình duyệt. Khi đăng, hệ thống lưu tiêu đề, URL ảnh công khai, bố cục, mã tài khoản và thời điểm đăng. Liên kết chia sẻ tải ảnh từ nguồn gốc. Xóa bài công khai không thu hồi bản đã tải hay liên kết đã chia sẻ. Số liệu tổng hợp có thể được giữ lại. Khách có thể đăng bằng biệt danh công khai và mật khẩu xóa. Mật khẩu được xử lý thành giá trị xác minh với muối ngẫu nhiên; không lưu mật khẩu gốc. Thành viên có thể nén và tải ảnh riêng lên để chia sẻ liên kết hoặc đăng công khai. Ảnh sẽ được lưu công khai khi chia sẻ. Không hỗ trợ URL ký riêng tư."
       ]
     ],
     "terms": [
@@ -668,6 +760,10 @@
       [
         "Thay đổi dịch vụ và quyền",
         "Tính năng có thể thay đổi, gián đoạn hoặc ngừng hoạt động. Chúng tôi dự kiến thông báo trước hợp lý khi khả thi; biện pháp pháp lý, bảo mật hay chống lạm dụng khẩn cấp có thể được thực hiện ngay. Không bảo đảm hoạt động liên tục hoặc thứ hạng tìm kiếm. Quyền và trách nhiệm bắt buộc theo luật không bị loại trừ. Hãy đọc chính sách quyền riêng tư; thông báo đăng ký không phải đồng ý quảng cáo. Gửi câu hỏi đến liên hệ ở trên."
+      ],
+      [
+        "Ảnh ghép My Top 9",
+        "Tạo ảnh ghép Top 9 của riêng bạn với thần tượng, nhân vật anime, trò chơi, phim và những điều yêu thích khác. Chọn từ mẫu đề xuất hoặc chơi để lọc ứng viên, sắp xếp ảnh, thêm tiêu đề rồi lưu hoặc chia sẻ ảnh hoàn chỉnh. Khách có thể đăng bằng biệt danh công khai và mật khẩu xóa. Mật khẩu được xử lý thành giá trị xác minh với muối ngẫu nhiên; không lưu mật khẩu gốc. Thành viên có thể nén và tải ảnh riêng lên để chia sẻ liên kết hoặc đăng công khai. Ảnh sẽ được lưu công khai khi chia sẻ. Không hỗ trợ URL ký riêng tư."
       ]
     ]
   },
@@ -702,6 +798,10 @@
       [
         "اتصالات Google",
         "حذف حساب الموقع لا يحذف حساب Google ولا يلغي إذن التطبيق تلقائيًا. أدر الإذن عبر اتصالات حساب Google أدناه. إلغاء اتصال Google وحده لا يحذف حساب OnePickGame."
+      ],
+      [
+        "صور My Top 9",
+        "تُحفظ المسودات والصور المستوردة في المتصفح. عند النشر يُحفظ العنوان وروابط الصور العامة والتخطيط ومعرّف الحساب والوقت. تحمّل الروابط المشتركة الصور من مصادرها الأصلية. لا يسترجع الحذف النسخ المنزّلة أو الروابط المشتركة. قد تبقى الأعداد الإجمالية محفوظة. يمكن للضيوف النشر باسم مستعار عام وكلمة مرور للحذف. تُحفظ قيمة تحقق بملح عشوائي، ولا تُحفظ كلمة المرور الأصلية. يمكن للأعضاء ضغط صورهم ورفعها للمشاركة أو النشر. تُخزن الصور علنًا عند مشاركتها. الروابط الخاصة الموقّعة غير مدعومة."
       ]
     ],
     "terms": [
@@ -724,6 +824,10 @@
       [
         "تغييرات الخدمة والحقوق",
         "قد تتغير الميزات أو تتوقف مؤقتًا أو نهائيًا. يُعتزم تقديم إشعار معقول متى أمكن؛ قد تُتخذ الإجراءات القانونية أو الأمنية أو المضادة للإساءة العاجلة فورًا. لا نضمن الاستمرارية أو ترتيب البحث. لا تُستبعد الحقوق والمسؤوليات الإلزامية. اقرأ سياسة الخصوصية؛ إشعار التسجيل ليس موافقة إعلانية. أرسل الأسئلة إلى وسيلة التواصل أعلاه."
+      ],
+      [
+        "صور My Top 9",
+        "أنشئ صورة تجمع أفضل 9 لديك من الآيدولز وشخصيات الأنمي والألعاب والأفلام وغيرها. اختر من القوالب المقترحة أو صفِّ المرشحين باللعب، ثم رتّب الصور وأضف عنوانًا واحفظ الصورة النهائية أو شاركها. يمكن للضيوف النشر باسم مستعار عام وكلمة مرور للحذف. تُحفظ قيمة تحقق بملح عشوائي، ولا تُحفظ كلمة المرور الأصلية. يمكن للأعضاء ضغط صورهم ورفعها للمشاركة أو النشر. تُخزن الصور علنًا عند مشاركتها. الروابط الخاصة الموقّعة غير مدعومة."
       ]
     ]
   },
@@ -758,6 +862,10 @@
       [
         "Google সংযোগ",
         "সাইটের অ্যাকাউন্ট মুছলে Google অ্যাকাউন্ট মোছে না বা অ্যাপের অনুমতি নিজে থেকে বাতিল হয় না। নিচে Google অ্যাকাউন্ট সংযোগ থেকে তা নিয়ন্ত্রণ করুন। শুধু Google সংযোগ বিচ্ছিন্ন করলে OnePickGame অ্যাকাউন্ট মোছে না।"
+      ],
+      [
+        "My Top 9 কোলাজ",
+        "খসড়া ও আমদানি করা ছবি ব্রাউজারে থাকে। প্রকাশের সময় শিরোনাম, পাবলিক ছবির URL, বিন্যাস, অ্যাকাউন্ট আইডি ও সময় রাখা হয়। শেয়ার করা লিংক মূল উৎস থেকে ছবি আনে। মুছে ফেললেও ডাউনলোড করা কপি বা শেয়ার করা লিংক ফেরত নেওয়া হয় না। মোট সংখ্যা রাখা হতে পারে। অতিথিরা প্রকাশ্য ডাকনাম ও মুছে ফেলার পাসওয়ার্ড দিয়ে প্রকাশ করতে পারেন। র‌্যান্ডম সল্টসহ যাচাই মান রাখা হয়, মূল পাসওয়ার্ড নয়। সদস্যরা নিজের ছবি কমপ্রেস করে আপলোড ও শেয়ার করতে পারেন। শেয়ার করলে ছবি প্রকাশ্য সার্ভারে থাকে। ব্যক্তিগত স্বাক্ষরিত URL সমর্থিত নয়।"
       ]
     ],
     "terms": [
@@ -780,6 +888,10 @@
       [
         "সেবার পরিবর্তন ও অধিকার",
         "সুবিধা বদলাতে, ব্যাহত হতে বা বন্ধ হতে পারে। সম্ভব হলে যুক্তিসংগত পূর্ব নোটিশ দেওয়ার উদ্দেশ্য থাকে; জরুরি আইনি, নিরাপত্তা বা অপব্যবহারবিরোধী ব্যবস্থা তাৎক্ষণিক হতে পারে। নিরবচ্ছিন্ন সেবা বা অনুসন্ধানের স্থান নিশ্চিত নয়। বাধ্যতামূলক অধিকার ও দায় বাদ যায় না। গোপনীয়তা নীতি পড়ুন; নিবন্ধনের বার্তা বিজ্ঞাপনের সম্মতি নয়। প্রশ্ন উপরের যোগাযোগে পাঠান।"
+      ],
+      [
+        "My Top 9 কোলাজ",
+        "প্রিয় আইডল, অ্যানিমে চরিত্র, গেম, সিনেমা ও অন্য পছন্দগুলো দিয়ে নিজের সেরা ৯-এর কোলাজ তৈরি করুন। প্রস্তাবিত টেমপ্লেট থেকে বাছুন বা খেলে প্রার্থী কমান, ছবি সাজান, শিরোনাম দিন এবং তৈরি ছবি সেভ বা শেয়ার করুন। অতিথিরা প্রকাশ্য ডাকনাম ও মুছে ফেলার পাসওয়ার্ড দিয়ে প্রকাশ করতে পারেন। র‌্যান্ডম সল্টসহ যাচাই মান রাখা হয়, মূল পাসওয়ার্ড নয়। সদস্যরা নিজের ছবি কমপ্রেস করে আপলোড ও শেয়ার করতে পারেন। শেয়ার করলে ছবি প্রকাশ্য সার্ভারে থাকে। ব্যক্তিগত স্বাক্ষরিত URL সমর্থিত নয়।"
       ]
     ]
   },
@@ -814,6 +926,10 @@
       [
         "การเชื่อมต่อ Google",
         "การลบบัญชีเว็บไซต์ไม่ลบบัญชี Google หรือเพิกถอนสิทธิ์แอปโดยอัตโนมัติ จัดการสิทธิ์ผ่านการเชื่อมต่อบัญชี Google ด้านล่าง การตัดการเชื่อมต่อ Google เพียงอย่างเดียวไม่ลบบัญชี OnePickGame"
+      ],
+      [
+        "ภาพรวม My Top 9",
+        "ฉบับร่างและรูปที่นำเข้าจะเก็บในเบราว์เซอร์ เมื่อเผยแพร่จะบันทึกชื่อเรื่อง URL ภาพสาธารณะ การจัดวาง รหัสบัญชีและเวลา ลิงก์ที่แชร์โหลดภาพจากแหล่งเดิม การลบไม่เรียกคืนสำเนาที่ดาวน์โหลดหรือลิงก์ที่แชร์แล้ว จำนวนรวมอาจยังถูกเก็บไว้ ผู้เยี่ยมชมเผยแพร่ได้ด้วยชื่อเล่นสาธารณะและรหัสผ่านสำหรับลบ ระบบเก็บค่าตรวจสอบที่ใช้ salt แบบสุ่ม ไม่เก็บรหัสผ่านต้นฉบับ สมาชิกบีบอัดและอัปโหลดรูปของตนเพื่อแชร์ลิงก์หรือเผยแพร่ได้ เมื่อแชร์ รูปจะถูกเก็บแบบสาธารณะ ไม่รองรับ URL ส่วนตัวที่มีลายเซ็น"
       ]
     ],
     "terms": [
@@ -836,6 +952,10 @@
       [
         "การเปลี่ยนบริการและสิทธิ",
         "ฟังก์ชันอาจเปลี่ยน หยุดชั่วคราว หรือยุติ โดยตั้งใจแจ้งล่วงหน้าอย่างเหมาะสมเมื่อทำได้ มาตรการทางกฎหมาย ความปลอดภัย หรือป้องกันการใช้งานไม่เหมาะสมที่เร่งด่วนอาจมีผลทันที ไม่รับประกันการใช้งานต่อเนื่องหรืออันดับค้นหา ไม่ตัดสิทธิ์และความรับผิดที่กฎหมายบังคับ โปรดอ่านนโยบายความเป็นส่วนตัว ประกาศสมัครไม่ใช่ความยินยอมด้านโฆษณา สอบถามได้ตามช่องทางด้านบน"
+      ],
+      [
+        "ภาพรวม My Top 9",
+        "สร้างภาพรวม Top 9 ของคุณจากไอดอล ตัวละครอนิเมะ เกม ภาพยนตร์ และสิ่งที่ชอบอื่น ๆ เลือกจากเทมเพลตแนะนำหรือเล่นเกมเพื่อคัดตัวเลือก จัดวางรูป เพิ่มชื่อเรื่อง แล้วบันทึกหรือแชร์ภาพที่เสร็จแล้ว ผู้เยี่ยมชมเผยแพร่ได้ด้วยชื่อเล่นสาธารณะและรหัสผ่านสำหรับลบ ระบบเก็บค่าตรวจสอบที่ใช้ salt แบบสุ่ม ไม่เก็บรหัสผ่านต้นฉบับ สมาชิกบีบอัดและอัปโหลดรูปของตนเพื่อแชร์ลิงก์หรือเผยแพร่ได้ เมื่อแชร์ รูปจะถูกเก็บแบบสาธารณะ ไม่รองรับ URL ส่วนตัวที่มีลายเซ็น"
       ]
     ]
   },
@@ -870,6 +990,10 @@
       [
         "Google bağlantıları",
         "Site hesabını silmek Google hesabınızı silmez veya uygulama iznini otomatik kaldırmaz. İzinleri aşağıdaki Google hesap bağlantılarından yönetin. Yalnızca Google bağlantısını kaldırmak OnePickGame hesabını silmez."
+      ],
+      [
+        "My Top 9 kolajları",
+        "Taslaklar ve içe aktarılan fotoğraflar tarayıcıda saklanır. Yayında başlık, herkese açık görsel URL’leri, düzen, hesap kimliği ve zaman kaydedilir. Paylaşılan bağlantılar görselleri asıl sunuculardan yükler. Silme, indirilmiş kopyaları veya paylaşılmış bağlantıları geri almaz. Toplam sayımlar saklanabilir. Misafirler herkese açık ad ve silme şifresiyle yayınlayabilir. Asıl şifre değil, rastgele salt içeren doğrulama değeri saklanır. Üyeler kendi fotoğraflarını sıkıştırıp paylaşmak veya yayınlamak için yükleyebilir. Paylaşırken fotoğraflar herkese açık saklanır. Özel imzalı URL’ler desteklenmez."
       ]
     ],
     "terms": [
@@ -892,6 +1016,10 @@
       [
         "Hizmet değişiklikleri ve haklar",
         "Özellikler değişebilir, kesintiye uğrayabilir veya sonlandırılabilir. Mümkün olduğunda makul ön bildirim amaçlanır; acil hukuki, güvenlik veya kötüye kullanım önlemleri hemen uygulanabilir. Sürekli erişim ve arama sırası garanti edilmez. Emredici haklar ve sorumluluklar kaldırılamaz. Gizlilik politikasını okuyun; kayıt bildirimi reklam onayı değildir. Sorularınız için yukarıdaki iletişim adresini kullanın."
+      ],
+      [
+        "My Top 9 kolajları",
+        "Sevdiğin idoller, anime karakterleri, oyunlar, filmler ve diğer favorilerinle kendi Top 9 kolajını oluştur. Önerilen şablonlardan seç veya oynayarak adayları ele, fotoğrafları düzenle, başlık ekle ve bitmiş görseli kaydet ya da paylaş. Misafirler herkese açık ad ve silme şifresiyle yayınlayabilir. Asıl şifre değil, rastgele salt içeren doğrulama değeri saklanır. Üyeler kendi fotoğraflarını sıkıştırıp paylaşmak veya yayınlamak için yükleyebilir. Paylaşırken fotoğraflar herkese açık saklanır. Özel imzalı URL’ler desteklenmez."
       ]
     ]
   },
@@ -926,6 +1054,10 @@
       [
         "Collegamenti a Google",
         "La cancellazione dal sito non elimina l'account Google e non revoca automaticamente l'autorizzazione dell'app. Gestisci tale autorizzazione tramite i collegamenti dell'account Google indicati sotto. Rimuovere soltanto il collegamento Google non elimina l'account OnePickGame."
+      ],
+      [
+        "Collage My Top 9",
+        "Bozze e foto importate restano nel browser. Pubblicando si salvano titolo, URL pubblici delle immagini, disposizione, identificativo dell’account e data. I link caricano le immagini dalle fonti originali. Eliminare una pubblicazione non ritira copie scaricate o link condivisi. I conteggi aggregati possono restare. Gli ospiti possono pubblicare con un nome pubblico e una password per eliminare. Si conserva un valore di verifica con salt casuale, non la password originale. I membri possono comprimere e caricare le proprie foto per condividerle o pubblicarle. Le foto vengono salvate pubblicamente durante la condivisione. Gli URL privati firmati sono esclusi."
       ]
     ],
     "terms": [
@@ -948,6 +1080,10 @@
       [
         "Modifiche del servizio e diritti",
         "Le funzionalità possono cambiare, essere interrotte o cessare. Ove possibile si intende fornire un ragionevole preavviso; interventi urgenti per ragioni legali, di sicurezza o contro gli abusi possono essere immediati. Disponibilità e posizionamento nei risultati di ricerca non sono garantiti. Non è possibile rinunciare a diritti e responsabilità inderogabili previsti dalla normativa locale. Leggi l'informativa sulla privacy; gli avvisi di registrazione non costituiscono consenso pubblicitario. Per domande, contatta il gestore indicato sopra."
+      ],
+      [
+        "Collage My Top 9",
+        "Crea il tuo collage Top 9 con idol, personaggi anime, giochi, film e altri preferiti. Scegli un modello consigliato oppure seleziona i candidati giocando, disponi le foto, aggiungi un titolo e salva o condividi l’immagine finale. Gli ospiti possono pubblicare con un nome pubblico e una password per eliminare. Si conserva un valore di verifica con salt casuale, non la password originale. I membri possono comprimere e caricare le proprie foto per condividerle o pubblicarle. Le foto vengono salvate pubblicamente durante la condivisione. Gli URL privati firmati sono esclusi."
       ]
     ]
   },
@@ -982,6 +1118,10 @@
       [
         "Połączenia z Google",
         "Usunięcie konta w serwisie nie usuwa konta Google ani automatycznie nie cofa uprawnień aplikacji. Zarządzaj tymi uprawnieniami przez poniższe połączenia konta Google. Samo usunięcie połączenia z Google nie usuwa konta OnePickGame."
+      ],
+      [
+        "Kolaże My Top 9",
+        "Szkice i importowane zdjęcia pozostają w przeglądarce. Publikacja zapisuje tytuł, publiczne URL obrazów, układ, identyfikator konta i czas. Linki pobierają obrazy z pierwotnych źródeł. Usunięcie nie wycofuje pobranych kopii ani udostępnionych linków. Zbiorcze liczniki mogą pozostać. Goście mogą publikować z publicznym pseudonimem i hasłem do usuwania. Zapisywana jest wartość weryfikacyjna z losową solą, nie oryginalne hasło. Członkowie mogą kompresować i przesyłać własne zdjęcia do udostępniania i publikacji. Udostępniane zdjęcia są zapisywane publicznie. Prywatne podpisane URL nie są obsługiwane."
       ]
     ],
     "terms": [
@@ -1004,6 +1144,10 @@
       [
         "Zmiany usługi i prawa",
         "Funkcje mogą zostać zmienione, przerwane lub zakończone. W miarę możliwości planujemy informować z rozsądnym wyprzedzeniem; pilne działania prawne, związane z bezpieczeństwem lub nadużyciami mogą być natychmiastowe. Dostępność i pozycja w wynikach wyszukiwania nie są gwarantowane. Nie można wyłączyć bezwzględnie obowiązujących lokalnych praw i odpowiedzialności. Przeczytaj politykę prywatności; komunikaty rejestracyjne nie stanowią zgody reklamowej. W razie pytań skontaktuj się z operatorem wskazanym powyżej."
+      ],
+      [
+        "Kolaże My Top 9",
+        "Stwórz własny kolaż Top 9 z ulubionymi idolami, postaciami anime, grami, filmami i innymi faworytami. Wybierz polecany szablon lub wyłoń kandydatów w grze, ułóż zdjęcia, dodaj tytuł i zapisz albo udostępnij gotowy obraz. Goście mogą publikować z publicznym pseudonimem i hasłem do usuwania. Zapisywana jest wartość weryfikacyjna z losową solą, nie oryginalne hasło. Członkowie mogą kompresować i przesyłać własne zdjęcia do udostępniania i publikacji. Udostępniane zdjęcia są zapisywane publicznie. Prywatne podpisane URL nie są obsługiwane."
       ]
     ]
   },
@@ -1038,6 +1182,10 @@
       [
         "Google-koppelingen",
         "Accountverwijdering op de website verwijdert je Google-account niet en trekt de appmachtiging niet automatisch in. Beheer die machtiging via de onderstaande Google-accountkoppelingen. Alleen de Google-koppeling verwijderen wist je OnePickGame-account niet."
+      ],
+      [
+        "My Top 9-collages",
+        "Concepten en geïmporteerde foto’s blijven in de browser. Publiceren bewaart de titel, openbare afbeeldings-URL’s, indeling, account-ID en tijd. Gedeelde links laden afbeeldingen van hun oorspronkelijke hosts. Verwijderen trekt gedownloade kopieën of gedeelde links niet in. Geaggregeerde tellingen kunnen blijven bestaan. Gasten kunnen publiceren met een openbare bijnaam en een verwijderwachtwoord. Alleen een verificatiewaarde met willekeurige salt wordt opgeslagen, niet het oorspronkelijke wachtwoord. Leden kunnen eigen foto’s comprimeren en uploaden om te delen of publiceren. Bij delen worden foto’s openbaar opgeslagen. Privé ondertekende URL’s worden niet ondersteund."
       ]
     ],
     "terms": [
@@ -1060,6 +1208,10 @@
       [
         "Wijzigingen van de dienst en rechten",
         "Functies kunnen veranderen, worden onderbroken of beëindigd. Waar mogelijk streven we naar een redelijke aankondiging vooraf; dringende maatregelen wegens wetgeving, veiligheid of misbruik kunnen direct worden genomen. Beschikbaarheid en posities in zoekresultaten zijn niet gegarandeerd. Dwingende lokale rechten en aansprakelijkheden kunnen niet worden uitgesloten. Lees het privacybeleid; registratieberichten zijn geen toestemming voor advertenties. Neem bij vragen contact op met de hierboven genoemde beheerder."
+      ],
+      [
+        "My Top 9-collages",
+        "Maak je eigen Top 9-collage met je favoriete idolen, animepersonages, games, films en meer. Kies een aanbevolen sjabloon of selecteer kandidaten via een spel, rangschik de foto’s, voeg een titel toe en sla de afbeelding op of deel deze. Gasten kunnen publiceren met een openbare bijnaam en een verwijderwachtwoord. Alleen een verificatiewaarde met willekeurige salt wordt opgeslagen, niet het oorspronkelijke wachtwoord. Leden kunnen eigen foto’s comprimeren en uploaden om te delen of publiceren. Bij delen worden foto’s openbaar opgeslagen. Privé ondertekende URL’s worden niet ondersteund."
       ]
     ]
   },
@@ -1094,6 +1246,10 @@
       [
         "Propojení s Google",
         "Zrušení účtu na webu nesmaže váš účet Google ani automaticky neodvolá oprávnění aplikace. Spravujte tato oprávnění prostřednictvím níže uvedených propojení účtu Google. Samotné odstranění propojení s Google nesmaže váš účet OnePickGame."
+      ],
+      [
+        "Koláže My Top 9",
+        "Koncepty a importované fotky zůstávají v prohlížeči. Zveřejnění ukládá název, veřejné URL obrázků, rozložení, identifikátor účtu a čas. Odkazy načítají obrázky z původních zdrojů. Smazání nestáhne zpět uložené kopie ani sdílené odkazy. Souhrnné počty mohou zůstat. Hosté mohou zveřejňovat s veřejnou přezdívkou a heslem pro smazání. Ukládá se ověřovací hodnota s náhodnou solí, nikoli původní heslo. Členové mohou své fotografie komprimovat a nahrát ke sdílení nebo zveřejnění. Při sdílení se fotografie ukládají veřejně. Soukromé podepsané URL nejsou podporovány."
       ]
     ],
     "terms": [
@@ -1116,6 +1272,10 @@
       [
         "Změny služby a práva",
         "Funkce se mohou změnit, být přerušeny nebo ukončeny. Pokud je to proveditelné, usilujeme o přiměřené oznámení předem; naléhavá právní, bezpečnostní opatření nebo opatření proti zneužití mohou být okamžitá. Dostupnost ani pořadí ve vyhledávání nejsou zaručeny. Kogentní místní práva a odpovědnost nelze vyloučit. Přečtěte si zásady ochrany osobních údajů; registrační oznámení nejsou souhlasem s reklamou. S dotazy kontaktujte výše uvedeného provozovatele."
+      ],
+      [
+        "Koláže My Top 9",
+        "Vytvořte vlastní koláž Top 9 s oblíbenými idoly, anime postavami, hrami, filmy a dalšími favority. Vyberte doporučenou šablonu nebo zúžte kandidáty pomocí hry, uspořádejte fotografie, přidejte název a hotový obrázek uložte nebo sdílejte. Hosté mohou zveřejňovat s veřejnou přezdívkou a heslem pro smazání. Ukládá se ověřovací hodnota s náhodnou solí, nikoli původní heslo. Členové mohou své fotografie komprimovat a nahrát ke sdílení nebo zveřejnění. Při sdílení se fotografie ukládají veřejně. Soukromé podepsané URL nejsou podporovány."
       ]
     ]
   }

@@ -127,3 +127,16 @@ input::placeholder,textarea::placeholder{color:#68758a!important;opacity:1}
 .home-activity-panel .home-activity-link *{cursor:inherit}
 .home-activity-panel .home-activity-link:hover{border-color:var(--activity-hover-border,#fb923c)!important;background:var(--activity-hover-bg,#fff3e8)!important}
 .home-activity-panel .home-activity-link:focus-visible{outline:3px solid var(--activity-hover-border,#ea580c);outline-offset:2px}
+/* One language control and intro geometry across content homes. */
+.content-language-select{display:flex;justify-content:center;margin:16px auto 20px;padding:0 12px}.content-language-select label{display:flex;align-items:center;gap:12px;border:1px solid #ad9fe4;border-radius:9px;background:#f5f2ff;color:#443292;padding:8px 12px;font-size:16px;font-weight:700;min-height:48px;max-width:100%}.content-language-select select{font:inherit;border:0;background:transparent;color:#30235e;min-height:32px;max-width:200px;cursor:pointer}.page-intro:not(.is-personal) h1{min-height:52px;display:flex;align-items:center;justify-content:center}.page-intro:not(.is-personal) p{min-height:60px}.page-intro:not(.is-personal){padding-top:0!important}
+@media(max-width:700px){.content-language-select{margin:12px auto 16px}.content-language-select label{width:100%;max-width:430px;justify-content:space-between}.page-intro:not(.is-personal) h1{min-height:44px}.page-intro:not(.is-personal) p{min-height:76px}}
+.content-language-label{white-space:nowrap;flex:0 0 auto}.content-language-select label{flex-wrap:nowrap}.content-language-select select{min-width:0;flex:1 1 auto}
+/* Keep side panels useful while reserving a readable center column. */
+.quiz-home-page.has-quiz-side-panels .page-intro{max-width:calc(100% - 2 * clamp(340px,23vw,440px) - 72px)}
+.quiz-home-page .quiz-home-category-shortcuts{margin-top:2px!important;margin-bottom:18px!important;padding-top:0!important}
+.quiz-home-page .quiz-featured-carousel{margin-top:0!important}
+.quiz-home-page .quiz-featured-title{margin-bottom:6px!important}
+.tier-page-container.has-tier-side-panels .page-intro{max-width:calc(100% - 2 * clamp(340px,23vw,440px) - 72px)}
+.onepick-header-mode.mode-quiz .header-mode-symbol{transform:scaleX(1.2);filter:drop-shadow(.45px 0 currentColor) drop-shadow(-.45px 0 currentColor)}
+
+.onepick-header-mode.mode-quiz .header-mode-symbol{filter:none;transform:scaleX(1.2)}

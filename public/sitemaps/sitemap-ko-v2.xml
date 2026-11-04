@@ -1279,4 +1279,5 @@
     <changefreq>weekly</changefreq>
     <priority>0.74</priority>
   </url>
+  <url><loc>https://www.onepickgame.com/ko/top-nine</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
 </urlset>

@@ -267,3 +267,5 @@
 .rp-result-rank-card>strong{font-size:14px;line-height:1.6;overflow-wrap:anywhere}
 .rp-ranked-results .rp-results-expand{display:block;margin:16px auto 0;border:1px solid #c4d6cb;border-radius:9px;background:#fff;color:#216846;padding:10px 18px;font-size:14px}
 @media(max-width:600px){.rp .rp-ranked-results{padding:14px}.rp-result-podium{gap:7px}.rp-podium-card{padding:12px 7px;min-height:120px}.rp-podium-card>strong,.rp-podium-1>strong{font-size:13px}.rp-podium-card>img{width:50px;height:50px}.rp-result-rank-grid{grid-template-columns:1fr}}
+/* Compact gap after the content language control. */
+.rp .rp-heading{margin-bottom:12px}.rp .rp-heading .content-language-select{margin:12px auto 0}.rp .rp-featured-grid{margin-top:12px}

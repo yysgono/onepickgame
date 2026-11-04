@@ -130,6 +130,10 @@
   ],
   "routes": [
     {
+      "src": "/(ko|en|ja|zh|ru|pt|es|fr|id|hi|de|vi|ar|bn|th|tr|it|pl|nl|cs)/top-nine/?$",
+      "dest": "/server.js?seo=top-nine&lang=$1"
+    },
+    {
       "src": "/auth/callback/?$",
       "dest": "/seo-shell.html"
     },

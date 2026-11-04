@@ -1,3 +1,4 @@
+import ContentLanguageSelect from "./ContentLanguageSelect";
 import {localizeExtraUi} from "../utils/newLanguageUi";
 import "../styles/activityPanels.css";
 import useClickTargetDebug from "../hooks/useClickTargetDebug";
@@ -1611,7 +1612,225 @@ export default function QuizPage({ user = null }) {
 
 
 
-  return (
+  const categoryControls = (<div className="quiz-home-category-shortcuts"
+
+
+
+            style={{
+
+
+
+              display:
+
+
+
+                "flex",
+
+
+
+
+
+
+
+              gap:
+
+
+
+                6,
+
+
+
+
+
+
+
+              flexWrap:
+
+
+
+                "wrap",
+
+
+
+
+
+
+
+              justifyContent:
+
+
+
+                "center",
+
+
+
+
+
+
+
+              marginTop:
+
+
+
+                4,
+
+
+
+
+
+
+
+              paddingTop:
+
+
+
+                4,
+
+
+
+
+
+
+
+              borderTop:
+
+
+
+                "none",
+
+
+
+            }}
+
+
+
+          >
+
+
+
+            {CATEGORIES.map(
+
+
+
+              (v) => (
+
+
+
+                <Link
+
+
+
+                  key={
+
+
+
+                    v
+
+
+
+                  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                  to={quizFilterHref(v, sort)}
+
+
+
+
+
+
+
+                  style={{
+
+
+
+                    textDecoration: "none", fontSize: 17, minHeight: 46, display: "inline-flex", alignItems: "center", justifyContent: "center", ...toggleButton(
+
+
+
+                      category ===
+
+
+
+                        v
+
+
+
+                    ),
+
+
+
+
+
+
+
+                    fontSize: mobile ? 15 : 17,
+                    height:
+
+
+
+                      "auto",
+
+
+
+
+
+
+
+                    padding:
+
+
+
+                      "10px 17px",
+
+
+
+                  }}
+
+
+
+                >
+
+
+
+                  {
+
+
+
+                    c[v]
+
+
+
+                  }
+
+
+
+                </Link>
+
+
+
+              )
+
+
+
+            )}
+
+
+
+          </div>);
+return (
 
 
 
@@ -1705,7 +1924,7 @@ export default function QuizPage({ user = null }) {
 
 
 
-        className="tier-page-container quiz-home-page"
+        className={`tier-page-container quiz-home-page${useSideQuizActivityPanels ? " has-quiz-side-panels" : ""}`}
 
 
 
@@ -1789,9 +2008,9 @@ export default function QuizPage({ user = null }) {
     <div
       style={{
         position: "absolute",
-        left: "max(24px, calc((100% - 1120px) / 2 - 364px))",
+        left: "max(18px, calc((100% - 1800px) / 2))",
         top: 34,
-        width: 340,
+        width: "clamp(340px, 23vw, 440px)",
         zIndex: 1,
       }}
     >
@@ -1805,9 +2024,9 @@ export default function QuizPage({ user = null }) {
     <div
       style={{
         position: "absolute",
-        right: "max(24px, calc((100% - 1120px) / 2 - 364px))",
+        right: "max(18px, calc((100% - 1800px) / 2))",
         top: 34,
-        width: 340,
+        width: "clamp(340px, 23vw, 440px)",
         zIndex: 1,
       }}
     >
@@ -1943,249 +2162,7 @@ export default function QuizPage({ user = null }) {
 
 
 
-          <div
-
-
-
-            style={{
-
-
-
-              display: mobile ? "none" : "flex",
-
-
-
-
-
-
-
-              gap:
-
-
-
-                mobile
-
-
-
-                  ? 6
-
-
-
-                  : 8,
-
-
-
-
-
-
-
-              flexWrap:
-
-
-
-                "wrap",
-
-
-
-
-
-
-
-              justifyContent:
-
-
-
-                "center",
-
-
-
-
-
-
-
-              marginTop:
-
-
-
-                0,
-
-
-
-            }}
-
-
-
-          >
-
-
-
-            {QUIZ_LANGUAGES.map(
-
-
-
-              (item) => (
-
-
-
-                <React.Fragment
-
-
-
-                  key={
-
-
-
-                    item.code
-
-
-
-                  }
-
-
-
-                >
-
-
-
-                  {item.code ===
-
-
-
-                    "id" && (
-
-
-
-                    <span
-
-
-
-                      aria-hidden="true"
-
-
-
-                      style={{
-
-
-
-                        flexBasis:
-
-
-
-                          "100%",
-
-
-
-
-
-
-
-                        height:
-
-
-
-                          0,
-
-
-
-                      }}
-
-
-
-                    />
-
-
-
-                  )}
-
-
-
-
-
-
-
-                  <button
-
-
-
-                    type="button"
-
-
-
-
-
-
-
-           onClick={() =>
-
-  changeQuizLanguage(
-
-    item.code
-
-  )
-
-}
-
-
-
-
-
-
-
-         aria-pressed={
-
-  lang === item.code
-
-}
-
-
-
-
-
-
-
-          style={languageButton(
-
-  lang === item.code,
-
-  mobile
-
-)}
-
-
-
-                  >
-
-
-
-                    {
-
-
-
-                      item.label
-
-
-
-                    }
-
-
-
-                  </button>
-
-
-
-                </React.Fragment>
-
-
-
-              )
-
-
-
-            )}
-
-
-
-          </div>
+          <ContentLanguageSelect />
 
 
 
@@ -2431,7 +2408,7 @@ export default function QuizPage({ user = null }) {
 
 
 
-            <h2
+            <h2 className="quiz-featured-title"
 
 
 
@@ -2536,6 +2513,8 @@ export default function QuizPage({ user = null }) {
 
 
             </h2>
+{categoryControls}
+
 
 
 
@@ -3764,224 +3743,7 @@ export default function QuizPage({ user = null }) {
 
 
 
-          <div className="quiz-home-category-shortcuts"
-
-
-
-            style={{
-
-
-
-              display:
-
-
-
-                "flex",
-
-
-
-
-
-
-
-              gap:
-
-
-
-                6,
-
-
-
-
-
-
-
-              flexWrap:
-
-
-
-                "wrap",
-
-
-
-
-
-
-
-              justifyContent:
-
-
-
-                "center",
-
-
-
-
-
-
-
-              marginTop:
-
-
-
-                4,
-
-
-
-
-
-
-
-              paddingTop:
-
-
-
-                4,
-
-
-
-
-
-
-
-              borderTop:
-
-
-
-                "none",
-
-
-
-            }}
-
-
-
-          >
-
-
-
-            {CATEGORIES.map(
-
-
-
-              (v) => (
-
-
-
-                <Link
-
-
-
-                  key={
-
-
-
-                    v
-
-
-
-                  }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                  to={quizFilterHref(v, sort)}
-
-
-
-
-
-
-
-                  style={{
-
-
-
-                    textDecoration: "none", fontSize: 17, minHeight: 46, display: "inline-flex", alignItems: "center", justifyContent: "center", ...toggleButton(
-
-
-
-                      category ===
-
-
-
-                        v
-
-
-
-                    ),
-
-
-
-
-
-
-
-                    fontSize: mobile ? 15 : 17,
-                    height:
-
-
-
-                      "auto",
-
-
-
-
-
-
-
-                    padding:
-
-
-
-                      "10px 17px",
-
-
-
-                  }}
-
-
-
-                >
-
-
-
-                  {
-
-
-
-                    c[v]
-
-
-
-                  }
-
-
-
-                </Link>
-
-
-
-              )
-
-
-
-            )}
-
-
-
-          </div>
+          {(mineOnly || !recommended.length) && categoryControls}
 
 
 

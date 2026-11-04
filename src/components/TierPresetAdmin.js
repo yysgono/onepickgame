@@ -509,11 +509,11 @@ function TierPresetAdmin() {
       </div>
 
       <label style={{ display: "block", marginBottom: 14, fontWeight: 800 }}>
-        추천 카드 제목 편집 언어 {" "}
+        티어표 템플릿 제목 편집 언어 {" "}
         <select value={titleLanguage} onChange={event => setTitleLanguage(event.target.value)} style={{ padding: 8, border: "1px solid #2563eb", borderRadius: 6 }}>
-          {[['ko','한국어'],['en','English'],['ja','日本語'],['zh','简体中文'],['es','Español'],['fr','Français'],['vi','Tiếng Việt'],['de','Deutsch'],['ru','Русский'],['id','Bahasa Indonesia'],['pt','Português'],['hi','हिन्दी'],['tr','Türkçe'],['th','ภาษาไทย'],['ar','العربية'],['bn','বাংলা']].map(([code, label]) => <option key={code} value={code}>{label}</option>)}
+          {[['ko','한국어'],['en','English'],['ja','日本語'],['zh','简体中文'],['es','Español'],['fr','Français'],['vi','Tiếng Việt'],['de','Deutsch'],['ru','Русский'],['id','Bahasa Indonesia'],['pt','Português'],['hi','हिन्दी'],['tr','Türkçe'],['th','ภาษาไทย'],['ar','العربية'],['bn','বাংলা'],['it','Italiano'],['pl','Polski'],['nl','Nederlands'],['cs','Čeština']].map(([code, label]) => <option key={code} value={code}>{label}</option>)}
         </select>
-        <p style={{ fontSize: 13, fontWeight: 500 }}>추천 카드에만 표시되는 제목입니다. 원본 월드컵 제목은 바뀌지 않습니다. 비워두면 원본 제목을 표시합니다.</p>
+        <p style={{ fontSize: 13, fontWeight: 500 }}>티어표 추천 카드와 만들기 페이지의 템플릿 목록에 사용할 제목입니다. 언어를 바꿔 각각 입력한 뒤 아래 저장 버튼을 누르세요. 원본 월드컵 제목과 다른 언어의 제목은 바뀌지 않습니다. 비워둔 언어는 영어 전용 제목, 그다음 기존 월드컵 제목을 표시합니다.</p>
       </label>
 
       {/* 검색 */}

@@ -1,0 +1,16 @@
+const fs=require('fs'),assert=require('assert/strict'),{PGlite}=require('@electric-sql/pglite');
+(async()=>{const db=new PGlite(),id='00000000-0000-4000-8000-000000000001';await db.exec(`CREATE ROLE anon;CREATE ROLE authenticated;CREATE SCHEMA auth;CREATE SCHEMA storage;
+CREATE FUNCTION auth.uid() RETURNS uuid LANGUAGE sql AS $$SELECT nullif(current_setting('test.uid',true),'')::uuid$$;
+CREATE FUNCTION auth.jwt() RETURNS jsonb LANGUAGE sql AS $$SELECT jsonb_build_object('is_anonymous',current_setting('test.guest',true)='yes')$$;
+CREATE FUNCTION account_session_is_active() RETURNS boolean LANGUAGE sql AS $$SELECT true$$;CREATE FUNCTION account_not_banned() RETURNS boolean LANGUAGE sql AS $$SELECT true$$;
+CREATE TABLE storage.buckets(id text PRIMARY KEY,name text,public boolean,file_size_limit bigint,allowed_mime_types text[]);
+CREATE TABLE storage.objects(bucket_id text,name text);ALTER TABLE storage.objects ENABLE ROW LEVEL SECURITY;
+CREATE FUNCTION storage.foldername(text) RETURNS text[] LANGUAGE sql AS $$SELECT string_to_array($1,'/')$$;
+CREATE FUNCTION storage.extension(text) RETURNS text LANGUAGE sql AS $$SELECT split_part($1,'.',array_length(string_to_array($1,'.'),1))$$;
+GRANT USAGE ON SCHEMA auth,public,storage TO anon,authenticated;GRANT SELECT,INSERT,UPDATE ON storage.objects TO anon,authenticated;
+CREATE POLICY legacy_broad_access ON storage.objects FOR ALL TO anon,authenticated USING(true) WITH CHECK(true);`);
+const sql=fs.readFileSync('supabase/20261104_top_nine_member_images.sql','utf8');await db.exec(sql);await db.exec(sql);assert.equal((await db.query('SELECT file_size_limit FROM storage.buckets')).rows[0].file_size_limit,524288);
+await db.exec(`SET test.uid='${id}';SET test.guest='no';SET ROLE authenticated`);await db.query('INSERT INTO storage.objects VALUES($1,$2)',['top-nine-images',id+'/one.webp']);await assert.rejects(()=>db.query('INSERT INTO storage.objects VALUES($1,$2)',['top-nine-images','other/two.webp']),/row-level security/);await assert.rejects(()=>db.query('INSERT INTO storage.objects VALUES($1,$2)',['top-nine-images',id+'/raw.svg']),/row-level security/);
+await db.exec("SET test.guest='yes'");await assert.rejects(()=>db.query('INSERT INTO storage.objects VALUES($1,$2)',['top-nine-images',id+'/guest.webp']),/row-level security/);
+await db.exec("RESET ROLE;SET test.uid='';SET ROLE anon");await assert.rejects(()=>db.query('INSERT INTO storage.objects VALUES($1,$2)',['top-nine-images',id+'/anon.webp']),/row-level security/);
+await db.exec("RESET ROLE");assert.equal((await db.query('SELECT count(*)::int AS n FROM storage.objects')).rows[0].n,1);await db.close();console.log('Storage: bucket limit, repeated migration, member own-folder writes, guest/anon/raw-SVG rejection, broad-policy guard passed');})().catch(e=>{console.error(e);process.exit(1)});

@@ -1,3 +1,4 @@
+import ContentLanguageSelect from "./ContentLanguageSelect";
 import {localizeExtraUi} from "../utils/newLanguageUi";
 import { useAdsAllowed } from "../ads/AdExclusionProvider";
 import "../styles/activityPanels.css";
@@ -3915,101 +3916,7 @@ return (
 
     {/* 언어 선택 - 다른 홈과 동일하게 박스 없이 검색창 위 */}
 
-    <div
-      className="worldcup-home-language-shortcuts"
-
-      style={{
-
-        display: "flex",
-
-        flexWrap: "wrap",
-
-        gap: isMobile ? 8 : 10,
-
-        justifyContent: "center",
-
-        alignItems: "center",
-
-        marginBottom: isMobile ? 10 : 12,
-
-      }}
-
-    >
-
-      {LANGUAGES.map((item, index) => {
-
-        const active = item.code === lang;
-
-
-
-        return (
-
-          <React.Fragment key={item.code}>
-
-            {(index === 7 || index === 14) && (
-
-              <span
-
-                aria-hidden="true"
-
-                style={{ flexBasis: "100%", height: 0 }}
-
-              />
-
-            )}
-
-
-
-            <button
-
-              type="button"
-
-              onClick={() => changeHomeLanguage(item.code)}
-
-              aria-pressed={active}
-
-              style={{
-
-                border: active
-
-                  ? "1.5px solid #F97316"
-
-                  : "1px solid #fed7aa",
-
-                background: active ? "#F97316" : "#fffaf7",
-
-                color: active ? "#ffffff" : "#9A3412",
-
-                borderRadius: 999,
-
-                padding: isMobile ? "8px 12px" : "9px 15px",
-
-                fontSize: isMobile ? 15 : 16,
-
-                fontWeight: active ? 900 : 800,
-
-                cursor: "pointer",
-
-                lineHeight: 1.2,
-                boxShadow: active
-                  ? "0 8px 16px rgba(249,115,22,0.22)"
-                  : "0 3px 10px rgba(234,88,12,0.08)",
-
-              }}
-
-            >
-
-              {item.label}
-
-            </button>
-
-          </React.Fragment>
-
-        );
-
-      })}
-
-    </div>
+    <ContentLanguageSelect />
 
 
 

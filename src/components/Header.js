@@ -1,3 +1,5 @@
+import TopNineIcon from "./TopNineIcon";
+import topNineCopy from "./topNine/copy.json";
 import NaverAccountLink from "./NaverAccountLink";
 import {getCommunityUi} from './communityUi';
 import headerCommunityCopy from "./headerCommunityCopy.json";
@@ -643,12 +645,13 @@ export default function Header({
     modePath === 'my-worldcups' ||
     (modePath === 'tier-list' && headerSearchParams.get('mine') === '1') ||
     (modePath === 'quiz' && headerSearchParams.get('mine') === '1');
-  const activeMode = personalPage ? '' : modePath === 'random-pick' ? 'random-pick' : modePath.startsWith('tier-list') ? 'tier-list' : modePath.startsWith('quiz') ? 'quiz' : ['','category','select-round','match','result','worldcup-maker','edit-worldcup','stats'].some(key => modePath === key || (key && modePath.startsWith(key))) ? 'worldcup' : '';
+  const activeMode = personalPage ? '' : modePath === 'top-nine' ? 'top-nine' : modePath === 'random-pick' ? 'random-pick' : modePath.startsWith('tier-list') ? 'tier-list' : modePath.startsWith('quiz') ? 'quiz' : ['','category','select-round','match','result','worldcup-maker','edit-worldcup','stats'].some(key => modePath === key || (key && modePath.startsWith(key))) ? 'worldcup' : '';
   const headerModes = [
     {key:'worldcup',icon:'trophy',label:t('gameModeNav.worldcup'),path:currentLang === 'en' ? '/' : `/${currentLang}`},
     {key:'quiz',icon:'question',label:currentLang === 'ko' ? '퀴즈 맞히기' : t('gameModeNav.quiz'),path:`/${currentLang}/quiz`},
     {key:'tier-list',icon:'chart',label:t('gameModeNav.tierList'),path:`/${currentLang}/tier-list`},
     {key:'random-pick',icon:'dice',label:randomPickLabels[currentLang] || randomPickLabels.en,path:`/${currentLang}/random-pick`},
+    {key:'top-nine',icon:'grid',label:(topNineCopy[currentLang] || topNineCopy.en).nav,path:`/${currentLang}/top-nine`},
   ];
   useEffect(() => {
     document.querySelectorAll('.onepick-header details[open]').forEach(el => el.removeAttribute('open'));
@@ -667,7 +670,7 @@ export default function Header({
     <header className="onepick-header">
       <style>{`
         .onepick-header-modes {
-          grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+          grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
         }
 
         @media (min-width: 1201px) {
@@ -1076,7 +1079,11 @@ export default function Header({
   );
 }
 function HeaderIcon({ name }) {
+  const symbol = { trophy: "🏆", question: "❓", chart: "📊", dice: "🎲" }[name];
+  if (symbol) return <span className="header-mode-symbol" aria-hidden="true">{symbol}</span>;
+  if (name === "grid") return <TopNineIcon size={28} />;
   const paths = {
+    grid: <>{[3,10,17].flatMap(y => [3,10,17].map(x => <rect key={`${x}-${y}`} x={x} y={y} width="4" height="4" rx=".5" />))}</>,
     dice: <><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M7 7h.01M12 12h.01M17 17h.01M7 17h.01M17 7h.01"/></>,
     trophy: <><path d="M8 3h8v6a4 4 0 0 1-8 0V3Z"/><path d="M8 5H4v2a4 4 0 0 0 4 4m8-6h4v2a4 4 0 0 1-4 4m-4 2v5m-4 3h8m-6-3h4"/></>,
     chart: <><path d="M4 20h16M5 19v-7h3v7m3 0V8h3v11m3 0V3h3v16"/></>,

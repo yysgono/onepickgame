@@ -3,7 +3,7 @@ const NAVER_COPY = require('./naverPolicyCopy.json');
 const LANGUAGES = Object.keys(COPY);
 const OPERATOR = '윤영석';
 const EMAIL = 'yysgono@gmail.com';
-const VERSION = '2026-10-29';
+const VERSION = '2026-11-04';
 function legalLanguage(value) {
  const lang = String(value || 'en').toLowerCase().split(/[-_]/)[0];
  return Object.prototype.hasOwnProperty.call(COPY,lang) ? lang : 'en';

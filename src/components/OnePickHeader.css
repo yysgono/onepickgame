@@ -188,3 +188,21 @@
 /* Explicit link targets for the compact community navigation. */
 .onepick-community-nav>a{cursor:pointer;min-height:44px;box-sizing:border-box}
 .onepick-community-nav>a *{cursor:inherit}
+
+/* Fifth mode: visible purple identity, accessible horizontal overflow on phones. */
+.onepick-header-mode.mode-top-nine .onepick-header-mode-main{color:#7139ce}
+.onepick-header-mode.mode-top-nine.is-active{background:#7139ce}
+.onepick-header-mode.mode-top-nine.is-active .onepick-header-mode-main{color:#fff}
+.onepick-header-mode.mode-top-nine:not(.is-active):hover{background:#f2eaff}
+.onepick-header-mode-main span{overflow-wrap:anywhere;line-height:1.3}
+@media(max-width:600px){.onepick-header-modes{overflow-x:auto;grid-auto-flow:column;scrollbar-width:thin}.onepick-header-mode{min-width:72px}.onepick-header-mode-main{font-size:12px;min-height:78px;padding:8px 4px}.onepick-header-mode-main svg{width:24px;height:24px}}
+/* Mode identities remain visible before selection. */
+.onepick-header-mode.mode-worldcup{--mode-color:#ea580c}
+.onepick-header-mode.mode-quiz{--mode-color:#d92d32}
+.onepick-header-mode.mode-tier-list{--mode-color:#2563eb}
+.onepick-header-mode.mode-random-pick{--mode-color:#078657}
+.onepick-header-mode.mode-top-nine{--mode-color:#7139ce}
+.onepick-header-mode{border-bottom:0}
+.onepick-header-mode:not(.is-active) .onepick-header-mode-main{color:var(--mode-color,#343c4d)}
+.onepick-header-mode-main .header-mode-symbol{display:block;flex:0 0 auto;font-size:32px;line-height:1.15;white-space:nowrap}
+@media(max-width:600px){.onepick-header-mode-main .header-mode-symbol{font-size:25px}}

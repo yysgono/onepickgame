@@ -5,6 +5,7 @@ import { getAllAdminWorldcups as getAllWorldcups, getAllAdminTierLists as getAll
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { supabase } from "../utils/supabaseClient";
 import RecommendationAdmin from "./randomPick/RecommendationAdmin";
+import TopNinePresetAdmin from "./TopNinePresetAdmin";
 import TierPresetAdmin from "./TierPresetAdmin";
 
 // ========================================
@@ -1485,6 +1486,7 @@ const unassignedCount = useMemo(() => {
 
       <RecommendationAdmin />
       <TierPresetAdmin />
+      <TopNinePresetAdmin />
 
       {/* ========================================
           안내

@@ -231,6 +231,7 @@ const BackupPage = lazy(() => import("./components/BackupPage"));
 const ManageWorldcup = lazy(() => import("./components/ManageWorldcup"));
 const EditWorldcupPage = lazy(() => import("./components/EditWorldcupPage"));
 const AdminBar = lazy(() => import("./components/AdminBar"));
+const TopNinePage = lazy(() => import("./components/TopNinePage"));
 const AdminDashboard = lazy(() => import("./components/AdminDashboard"));
 const AdminStatsPage = lazy(() => import("./components/AdminStatsPage"));
 const PrivacyPolicy = lazy(() => import("./components/PrivacyPolicy"));
@@ -851,6 +852,7 @@ function handleMakeWorldcup() {
 />
   }
 />
+<Route path="/:lang/top-nine" element={<TopNinePage />} />
 <Route path="/:lang/random-pick" element={<RandomPickPage user={user} />} />
 <Route path="/:lang/random-pick/:mode" element={<RandomPickPage user={user} />} />
 <Route

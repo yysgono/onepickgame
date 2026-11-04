@@ -1,3 +1,6 @@
+import PageIntro from "./PageIntro";
+import ContentLanguageSelect from "./ContentLanguageSelect";
+import { templateTitle } from "../utils/templateTitles";
 import {localizeExtraUi} from "../utils/newLanguageUi";
 import "../styles/activityPanels.css";
 import useClickTargetDebug from "../hooks/useClickTargetDebug";
@@ -1254,7 +1257,7 @@ const displayTitle =
         color: "#202534",
       }}
     >
-<div className="tier-page-container"
+<div className={`tier-page-container${useSideTierActivityPanels ? " has-tier-side-panels" : ""}`}
   style={{
     width: "100%",
 maxWidth: isMobile ? 430 : 1780,
@@ -1271,9 +1274,9 @@ maxWidth: isMobile ? 430 : 1780,
     <div
       style={{
         position: "absolute",
-        left: "max(24px, calc((100% - 1120px) / 2 - 364px))",
+        left: "max(18px, calc((100% - 1800px) / 2))",
         top: 34,
-        width: 340,
+        width: "clamp(340px, 23vw, 440px)",
         zIndex: 1,
       }}
     >
@@ -1287,9 +1290,9 @@ maxWidth: isMobile ? 430 : 1780,
     <div
       style={{
         position: "absolute",
-        right: "max(24px, calc((100% - 1120px) / 2 - 364px))",
+        right: "max(18px, calc((100% - 1800px) / 2))",
         top: 34,
-        width: 340,
+        width: "clamp(340px, 23vw, 440px)",
         zIndex: 1,
       }}
     >
@@ -1304,124 +1307,9 @@ maxWidth: isMobile ? 430 : 1780,
 )}
         
 
-      <section
-  aria-labelledby="tier-list-page-title"
-  style={{
-    maxWidth: 860,
-    margin: isMobile ? "0 auto 12px" : "0 auto 14px",
-    padding: isMobile ? "8px 8px 4px" : "8px 12px 4px",
-    display: "grid",
-    gridTemplateColumns: "1fr",
-    alignItems: "center",
-    justifyItems: "center",
-    gap: isMobile ? 12 : 18,
-  }}
->
-  <div
-    style={{
-      width: "100%",
-      textAlign: "center",
-      minWidth: 0,
-    }}
-  >
-    <h1
-      id="tier-list-page-title"
-      style={{
-        margin: 0,
-        color: "#202534",
-        fontSize: isMobile ? 32 : 42,
-        fontWeight: 950,
-        lineHeight: 1.15,
-        letterSpacing: "-0.035em",
-      }}
-    >
-      📊 {t("tierList.page.title")}
-    </h1>
-
-    <p
-      style={{
-        margin: "8px auto 0",
-        maxWidth: 720,
-        color: "#596579",
-        fontSize: isMobile ? 16 : 18,
-        fontWeight: 700,
-        lineHeight: 1.45,
-      }}
-    >
-      {t("tierList.page.description")}
-    </p>
-  </div>
-
-  <Link
-    to={`/${lang}/tier-list/create`}
-    style={{
-      display: "inline-flex", alignItems: "center", justifyContent: "center", textDecoration: "none", boxSizing: "border-box",
-      width: isMobile ? "100%" : 260,
-      maxWidth: "100%",
-      padding: isMobile ? "13px 18px" : "14px 22px",
-      border: 0,
-      borderRadius: 12,
-      background: "#2563EB",
-      color: "#fff",
-      fontSize: isMobile ? 18 : 20,
-      fontWeight: 900,
-      cursor: "pointer",
-      boxShadow: "0 12px 24px rgba(37,99,235,0.22)",
-    }}
-  >
-    + {t("tierList.page.createButton")}
-  </Link>
-</section>
+<PageIntro icon="📊" title={t("tierList.page.title")} description={t("tierList.page.description")} buttonLabel={t("tierList.page.createButton")} createTo={`/${lang}/tier-list/create`} accentColor="#2563EB" />
 {/* 검색 위 언어 선택 */}
-<div
-  style={{
-    margin: isMobile ? "6px 0 10px" : "8px 0 12px",
-    display: isMobile ? "none" : "flex",
-    flexWrap: "wrap",
-    justifyContent: "center",
-    alignItems: "center",
-    gap: isMobile ? 7 : 9,
-  }}
->
-  {LANGUAGES.map((item) => {
-    const active = item.code === lang;
-
-    return (
-      <React.Fragment key={item.code}>
-        {item.code === "id" && (
-          <span aria-hidden="true" style={{ flexBasis: "100%", height: 0 }} />
-        )}
-        <button
-          type="button"
-          onClick={() => changeTierLanguage(item.code)}
-          aria-pressed={active}
-          style={{
-            border: active
-              ? "1.5px solid #2563EB"
-              : "1px solid #bfdbfe",
-            background: active
-              ? "#2563EB"
-              : "#ffffff",
-            color: active
-              ? "#ffffff"
-              : "#1D4ED8",
-            borderRadius: 999,
-            padding: isMobile ? "8px 12px" : "9px 15px",
-            fontSize: isMobile ? 15 : 16,
-            fontWeight: active ? 900 : 800,
-            cursor: "pointer",
-            lineHeight: 1.2,
-            boxShadow: active
-              ? "0 8px 16px rgba(37,99,235,0.22)"
-              : "0 3px 10px rgba(37,99,235,0.08)",
-          }}
-        >
-          {item.label}
-        </button>
-      </React.Fragment>
-    );
-  })}
-</div>
+<ContentLanguageSelect />
 <div
           style={{
             width: "100%", maxWidth: 760, margin: "0 auto 4px", boxSizing: "border-box",
@@ -1605,7 +1493,7 @@ maxWidth: isMobile ? 430 : 1780,
 </div>
   <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: 18 }}>
     {recommendedPresets.map(cup => {
-      const title = cup.tier_preset_title_translations?.[lang]?.trim() || getLocalizedWorldcupTitle(cup, lang) || "Tier List";
+      const title = templateTitle(cup, "tier", lang, "Tier List");
       return <Link className="tier-recommendation-card" key={cup.id} to={`/${lang}/tier-list/create/${cup.id}`} style={{ flex: isMobile ? "0 1 100%" : "0 1 400px", maxWidth: isMobile ? "100%" : 400, minWidth: 0, border: "1px solid #bfdbfe", borderRadius: 12, overflow: "hidden", background: "#fff", color: "#202534", textDecoration: "none", boxShadow: "0 8px 22px #0f172a15" }}>
         <div style={{ width: "100%", height: isMobile ? 198 : 207, background: "#eff6ff" }}>
           {cup.tier_preset_thumbnail_url ? <MediaRenderer url={cup.tier_preset_thumbnail_url} alt={title} playable={false} loading="lazy" deferUntilVisible viewportMargin="0px" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 25%", display: "block" }} /> : <div aria-hidden="true" style={{ height: "100%", display: "grid", placeItems: "center", fontSize: 44 }}>📊</div>}
