@@ -1,3 +1,4 @@
+import { loadTierSourceCatalogue } from "../utils/tierSourceCatalogue";
 import { templateTitle } from "../utils/templateTitles";
 import { isMp4File, prepareMp4File, MP4_MAX_BYTES, MP4_SIZE_HELP } from "../utils/mp4Upload";
 import { isGifFile, prepareGifFile, GIF_MAX_INPUT_BYTES, GIF_SIZE_HELP } from "../utils/gifUpload";
@@ -610,8 +611,10 @@ const CandidateCard = memo(
                 draggable={
                   false
                 }
-                loading="eager"
-                decoding="auto"
+                loading="lazy"
+                decoding="async"
+                deferUntilVisible
+                viewportMargin="100px"
 style={{
   position: "absolute",
   inset: 0,
@@ -627,8 +630,10 @@ style={{
                 url={
                   item.image
                 }
-                loading="eager"
-                decoding="auto"
+                loading="lazy"
+                decoding="async"
+                deferUntilVisible
+                viewportMargin="100px"
                 alt={
                   item.name ||
                   ""
@@ -1486,16 +1491,15 @@ useEffect(() => {
   const [presetMetadata, setPresetMetadata] = useState([]);
   useEffect(() => {
     let live = true;
-    supabase.from("worldcup_tier_preset_cards")
-      .select("id,title,title_translations,category,tier_preset_order,tier_preset_title_translations,tier_preset_thumbnail_url")
-      .order("tier_preset_order", { ascending: true, nullsFirst: false }).limit(1000)
-      .then(({ data, error }) => { if (live && !error) setPresetMetadata(data || []); });
+    loadTierSourceCatalogue()
+      .then(data => { if (live) setPresetMetadata(data); })
+      .catch(error => { console.warn("티어표 프리셋 목록 조회 실패:", error); });
     return () => { live = false; };
   }, []);
   const templateWorldcups = useMemo(() => {
     const map = new Map(worldcupList.map(cup => [String(cup.id), cup]));
     presetMetadata.forEach(cup => map.set(String(cup.id), {
-      _homeCardOnly: true, ...map.get(String(cup.id)), ...cup, is_tier_preset: true
+      ...map.get(String(cup.id)), ...cup, _homeCardOnly: true, is_tier_preset: Boolean(cup.is_tier_preset)
     }));
     return [...map.values()];
   }, [worldcupList, presetMetadata]);
@@ -1519,7 +1523,7 @@ useEffect(() => {
         .toLowerCase();
 
 // An empty search keeps the curated recommendation order. Searching includes
-// ordinary World Cups already loaded by the maker route; no candidate refetch.
+// ordinary World Cups from the lightweight catalogue; no candidate refetch.
 const list = keyword
   ? [...templateWorldcups].filter(cup => !cup.deleted_at).sort((a, b) => {
       const presetFirst = Number(b.is_tier_preset === true) - Number(a.is_tier_preset === true);
@@ -1739,6 +1743,12 @@ const list = keyword
       return;
     }
 
+    // The selected-preset request above already owns this ID.
+    if (id && String(id) === String(sourceWorldcupId)) {
+      setSourcePresetCupFromDb(null);
+      return;
+    }
+
     let cancelled = false;
     setSourcePresetCupFromDb(null);
 
@@ -1767,6 +1777,7 @@ const list = keyword
       cancelled = true;
     };
   }, [
+    id,
     sourceWorldcupId,
     selectedCup,
   ]);
@@ -4860,9 +4871,9 @@ if (editingTierListId) {
                       : null;
 
 
-                  const thumbnail =
-                    winner ||
-                    fallback;
+                  const thumbnail = cup.tier_preset_thumbnail_url
+                    ? { image: cup.tier_preset_thumbnail_url }
+                    : winner || fallback;
 
 
                   return (
@@ -4928,6 +4939,10 @@ if (editingTierListId) {
                             playable={
                               false
                             }
+                            loading="lazy"
+                            decoding="async"
+                            deferUntilVisible
+                            viewportMargin="100px"
                             style={{
                               width:
                                 "100%",
@@ -4937,6 +4952,7 @@ if (editingTierListId) {
 
                               objectFit:
                                 "cover",
+                              objectPosition: "center 25%",
 
                               display:
                                 "block",
@@ -5022,7 +5038,7 @@ if (editingTierListId) {
                           ? cup
                               .data
                               .length
-                          : 0}{" "}
+                          : Number(cup.candidate_count || 0)}{" "}
 
                         {text.candidates}
                       </div>

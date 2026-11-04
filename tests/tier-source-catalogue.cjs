@@ -1,0 +1,5 @@
+const fs=require('node:fs'),assert=require('node:assert/strict'),babel=require('@babel/core');
+const mod={exports:{}};let calls=0,revision=0,fail=false;
+const supabase={rpc:async name=>{assert.equal(name,'get_tier_source_catalogue');calls++;return fail?{error:new Error('temporary')}:{data:[{id:'one',candidate_count:80,tier_preset_thumbnail_url:'https://example.test/thumb.jpg'}]};}};
+new Function('require','module','exports',babel.transformSync(fs.readFileSync('src/utils/tierSourceCatalogue.js','utf8'),{presets:[['@babel/preset-env',{targets:{node:'current'}}]],configFile:false,babelrc:false}).code)(name=>name.includes('supabaseClient')?{supabase}:{contentRevision:()=>revision},mod,mod.exports);
+(async()=>{const load=mod.exports.loadTierSourceCatalogue;const [a,b]=await Promise.all([load(),load()]);assert.equal(calls,1);assert.equal(a,b);await load();assert.equal(calls,1);revision++;fail=true;await assert.rejects(load(),/temporary/);fail=false;await load();assert.equal(calls,3);console.log('Tier catalogue: metadata-only RPC, shared concurrent request, one-minute reuse and failure retry passed');})().catch(e=>{console.error(e);process.exitCode=1;});

@@ -5,7 +5,8 @@ export function worldcupRouteData(pathname = '') {
   const [page, id] = parts;
   if (['select-round','match','result','stats','edit-worldcup'].includes(page) && id) return { kind: 'one', id };
   if (['manage','recent-worldcups','manage-worldcups','manage-worldcup','admin-dashboard','backup'].includes(page)) return { kind: 'all' };
-  if (page === 'tier-list' && id === 'create') return { kind: 'all' };
+  // The tier builder fetches its selected preset and lightweight picker metadata itself.
+  // Do not block it on the complete catalogue (including every game's candidates).
   return { kind: 'none' };
 }
 
