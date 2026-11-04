@@ -2,6 +2,7 @@ import React, {
   useCallback,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from "react";
 
@@ -28,8 +29,28 @@ function movePresetRows(rows, id, delta) {
   const orders = new Map(selected.map((row, i) => [String(row.id), i + 1]));
   return rows.map(row => orders.has(String(row.id)) ? { ...row, tier_preset_order: orders.get(String(row.id)) } : row);
 }
+function reorderPresetRows(rows, sourceId, targetId, after) {
+  const selected = orderedPresets(rows);
+  const sourceIndex = selected.findIndex(row => String(row.id) === String(sourceId));
+  const targetIndex = selected.findIndex(row => String(row.id) === String(targetId));
+  if (sourceIndex < 0 || targetIndex < 0 || sourceIndex === targetIndex) return rows;
+  const [source] = selected.splice(sourceIndex, 1);
+  const insertionIndex = selected.findIndex(row => String(row.id) === String(targetId)) + (after ? 1 : 0);
+  selected.splice(insertionIndex, 0, source);
+  const orders = new Map(selected.map((row, i) => [String(row.id), i + 1]));
+  return rows.map(row => orders.has(String(row.id)) ? { ...row, tier_preset_order: orders.get(String(row.id)) } : row);
+}
+
 function TierPresetAdmin() {
   const [worldcups, setWorldcups] = useState([]);
+  const draggedPreset = useRef(null);
+  const [draggedId, setDraggedId] = useState(null);
+  const [dropTarget, setDropTarget] = useState(null);
+  const clearDrag = () => {
+    draggedPreset.current = null;
+    setDraggedId(null);
+    setDropTarget(null);
+  };
   const [originalMap, setOriginalMap] = useState({});
 
   const [loading, setLoading] = useState(true);
@@ -496,7 +517,7 @@ function TierPresetAdmin() {
         }}
       >
         티어표 홈에 표시할
-        이상형 월드컵을 개수 제한 없이 선택하세요. 위·아래 버튼으로 추천 순서를 바꾸고 저장하세요.
+        이상형 월드컵을 개수 제한 없이 선택하세요. 왼쪽 ⋮⋮ 손잡이를 드래그하거나 위·아래 버튼으로 추천 순서를 바꾼 뒤 저장하세요.
         {" "}
         현재{" "}
         <strong
@@ -618,7 +639,31 @@ function TierPresetAdmin() {
                 return (
                   <div
                     key={cup.id}
+                    data-preset-id={cup.id}
+                    onDragOver={event => {
+                      if (saving || !cup.is_tier_preset || draggedPreset.current == null || String(draggedPreset.current) === String(cup.id)) return;
+                      event.preventDefault();
+                      event.dataTransfer.dropEffect = "move";
+                      const rect = event.currentTarget.getBoundingClientRect();
+                      const after = event.clientY > rect.top + rect.height / 2;
+                      setDropTarget(previous => previous?.id === cup.id && previous.after === after ? previous : { id: cup.id, after });
+                    }}
+                    onDragLeave={event => {
+                      if (!event.currentTarget.contains(event.relatedTarget)) setDropTarget(previous => previous?.id === cup.id ? null : previous);
+                    }}
+                    onDrop={event => {
+                      const sourceId = draggedPreset.current;
+                      if (saving || !cup.is_tier_preset || sourceId == null) return;
+                      event.preventDefault();
+                      const rect = event.currentTarget.getBoundingClientRect();
+                      const after = event.clientY > rect.top + rect.height / 2;
+                      setWorldcups(previous => reorderPresetRows(previous, sourceId, cup.id, after));
+                      setMessage("");
+                      clearDrag();
+                    }}
                     style={{
+                      opacity: draggedId === cup.id ? 0.5 : 1,
+                      boxShadow: dropTarget?.id === cup.id ? `inset 0 ${dropTarget.after ? '-3px' : '3px'} 0 #2563eb` : 'none', 
                       display:
                         "flex",
 
@@ -644,6 +689,23 @@ function TierPresetAdmin() {
                           : "#ffffff",
                     }}
                   >
+                    {cup.is_tier_preset && <button
+                      type="button"
+                      draggable={!saving}
+                      disabled={saving}
+                      aria-label={`${title} 순서 드래그`}
+                      title="드래그해서 추천 순서 변경 (키보드는 위·아래 버튼 사용)"
+                      onDragStart={event => {
+                        if (saving) { event.preventDefault(); return; }
+                        draggedPreset.current = cup.id;
+                        setDraggedId(cup.id);
+                        event.dataTransfer.effectAllowed = "move";
+                        event.dataTransfer.setData("text/plain", String(cup.id));
+                        event.dataTransfer.setDragImage?.(event.currentTarget.parentElement, 20, 20);
+                      }}
+                      onDragEnd={clearDrag}
+                      style={{ flexShrink: 0, minWidth: 34, minHeight: 42, border: "1px solid #bfdbfe", borderRadius: 7, background: "#eff6ff", color: "#1d4ed8", cursor: saving ? "default" : "grab", fontSize: 24, fontWeight: 800 }}
+                    >⋮⋮</button>}
                     <input
                       type="checkbox"
                       checked={Boolean(
