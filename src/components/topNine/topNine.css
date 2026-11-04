@@ -54,3 +54,14 @@
 .tn-game .tn-candidates button>span:last-child{font-size:15px;line-height:1.5;padding:9px}
 .tn-game-byes{margin:14px 0;padding:12px;border:1px solid var(--tn-border);border-radius:10px;background:#faf6ff;font-size:15px}.tn-game-byes summary{cursor:pointer;font-weight:800}.tn-game-byes p{max-height:130px;overflow:auto;overflow-wrap:anywhere;line-height:1.7}
 @media(max-width:700px){.tn-game.tn-game-grid25 .tn-candidates{grid-template-columns:repeat(3,minmax(0,1fr))}.tn-game-count{font-size:15px}.top-nine .tn-game-count select{font-size:16px}.tn-game .tn-actions{gap:8px}.tn-game .tn-actions button{font-size:14px;padding:10px}}
+/* Larger home recommendations; keep the search border above shared input styles. */
+.top-nine .tn-picture-templates{grid-template-columns:repeat(6,minmax(0,1fr));gap:16px}
+.top-nine .tn-picture-templates>button{border:2px solid #ded1f0;border-radius:12px}
+.top-nine .tn-picture-templates img,.top-nine .tn-picture-templates video,.top-nine .tn-picture-templates .tn-card-placeholder{height:clamp(160px,13vw,220px)}
+.top-nine .tn-picture-templates strong{width:100%;padding:14px 12px;min-height:82px;font-size:18px;line-height:1.5;font-weight:800;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;overflow-wrap:anywhere}
+.top-nine>.tn-search{max-width:960px;gap:12px;align-items:stretch}
+.top-nine>.tn-search>input:not([type=range]):not([type=checkbox]){border:3px solid #9561df;box-shadow:0 0 0 3px #f2eaff;font-size:19px;min-height:58px;padding:12px 16px}
+.top-nine>.tn-search>input::placeholder{color:#75608e;opacity:1}
+.top-nine>.tn-search>button{font-size:18px;min-height:58px;min-width:110px}
+@media(max-width:1100px){.top-nine .tn-picture-templates{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media(max-width:700px){.top-nine .tn-picture-templates{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.top-nine .tn-picture-templates img,.top-nine .tn-picture-templates video,.top-nine .tn-picture-templates .tn-card-placeholder{height:clamp(145px,25vw,190px)}.top-nine .tn-picture-templates strong{font-size:16px;padding:12px 9px;min-height:72px}.top-nine>.tn-search>input:not([type=range]):not([type=checkbox]){font-size:17px}.top-nine>.tn-search>button{font-size:17px}}
