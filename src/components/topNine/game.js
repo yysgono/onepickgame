@@ -51,3 +51,13 @@ export function fillRemaining(game,random=Math.random) {
   const chosen=uniqueCandidates([...game.chosen,...additions]);
   return chosen.length===9?{...game,status:'done',chosen}:game;
 }
+
+// Touch browsers may report both taps as separate single clicks.
+export function activatedPhoto(event, previous) {
+  if (!event.detail) return true; // Keyboard or assistive technology.
+  const target = event.currentTarget;
+  const time = event.timeStamp;
+  const paired = previous.current?.target === target && time - previous.current.time <= 450;
+  previous.current = paired ? null : {target, time};
+  return paired || event.detail === 2;
+}

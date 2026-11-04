@@ -11,12 +11,12 @@ export async function compressMemberImage(src){
  throw Error('IMAGE_TOO_LARGE');
 }
 export async function prepareMemberSlots(slots){
- if(slots.length!==9||slots.some(c=>!c))throw Error('NINE_REQUIRED');
- const locals=slots.filter(c=>!isShareable(c));if(!locals.length)return slots;
+ if(slots.length!==9||!slots.some(Boolean))throw Error('NINE_REQUIRED');
+ const locals=slots.filter(c=>c&&!isShareable(c));if(!locals.length)return slots;
  if(locals.some(c=>!/^data:image\/(jpeg|png|webp);base64,/i.test(c.src)))throw Error('PRIVATE_IMAGE');
  const {data,error}=await supabase.auth.getUser();if(error||!data?.user||data.user.is_anonymous)throw Error('MEMBER_REQUIRED');
  const result=[];
- for(const c of slots){if(isShareable(c)){result.push(c);continue;}const key=data.user.id+':'+c.src;
+ for(const c of slots){if(!c||isShareable(c)){result.push(c);continue;}const key=data.user.id+':'+c.src;
  let url=uploaded.get(key);if(!url){const blob=await compressMemberImage(c.src);const extension=blob.type==='image/webp'?'webp':blob.type==='image/png'?'png':'jpg';const path=`${data.user.id}/${crypto.randomUUID()}.${extension}`;
  const bucket=supabase.storage.from('top-nine-images');const response=await bucket.upload(path,blob,{contentType:blob.type,cacheControl:'31536000',upsert:false});if(response.error)throw response.error;
  url=bucket.getPublicUrl(path).data.publicUrl;uploaded.set(key,url);}

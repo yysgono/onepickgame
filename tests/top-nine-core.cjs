@@ -11,3 +11,8 @@ const copy=JSON.parse(fs.readFileSync('src/components/topNine/copy.json'));asser
 const multilingual=core.normalizeCandidates([{name:'루피',image:'https://example.com/luffy.jpg',name_translations:{en:'Monkey D. Luffy',ja:'ルフィ'},title_zh:'路飞'}])[0];
 for(const term of ['루피','LUFFY','Monkey D','ルフィ','路飞'])assert(core.candidateMatches(multilingual,term),term);
 assert(!core.candidateMatches(multilingual,'unrelated'));console.log('Multilingual candidate name search passed');
+
+const partial=Array(9).fill(null);partial[4]=pool[0];
+const restored=core.readShared(core.makeShareHash(partial,'Partial',true)).slots;
+assert.equal(restored.filter(Boolean).length,1);assert.equal(restored[4].id,pool[0].id);
+assert.throws(()=>core.makeShareHash(Array(9).fill(null),'',false));

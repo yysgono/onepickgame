@@ -1,13 +1,11 @@
 {
-  "src/components/TopNinePage.js": "dbf5aec84c71028c4fd84d985f080c48d3578934617b653293efa739b6a4c90e",
-  "src/components/topNine/topNine.css": "881b1997a86eb037c8bf1355316bc2387acacd0d74ebce4a7babf9e5b9db8ad7",
-  "src/components/topNine/game.js": "b4c4fb6acde37ba2e0836bbc3ff5a75df411e817b250aeb5af9b55950973e0a1",
-  "src/components/topNine/gameCopy.json": "a04cff3c5e8ec27e2e1680c389586c6a18b4f84d6def846ded7023fa03bf9fef",
-  "src/components/topNine/GameCountSelect.js": "0c8ca3a7d7c47053e226b8accb6b3ce53704bece653954aaa0635fe17254a4b2",
-  "src/components/topNine/TopNineGame.js": "0976b4c759bc1fbf8175be5c1932e340066d63bce7585d9a5c501f66ca315377",
-  "tests/top-nine-game.cjs": "f5324b6d922cae33cf3ec72a8cc45ce3f585aab604f08fa41b06a6731d1e6b0a",
-  "tests/top-nine-game-ui.cjs": "6f1117ea07af4ca5ddf265416ec115d1dbd920a213fe2d01daa46d2557e54435",
-  "tests/top-nine-mode-ui.cjs": "011e5e15adc962c5fec9082efe97eb11af19c15fdd1241deac49b3247c883e56",
-  "tests/top-nine-fast-refresh.cjs": "73094fe9411ac86e3470fd1a2581cb7898535b95aecd2b9bf37e7d590561f27e",
-  "tests/top-nine-navigation-scroll.cjs": "1d06ecdb6a0c3aefabe6324391c21333bb7b98d326e806576e8c89d6b0c4c5f6"
+  "src/components/TopNinePage.js": "7efac0bd38bd6e833fa693a81fca5fbc3db60dbc1eb3e5b7cfc20273ef0a318a",
+  "src/components/topNine/TopNineGame.js": "c9fa57bb39f708e16aa6ad41273bd34d20b692166c5d13e48756e9bf2d0db1f8",
+  "src/components/topNine/PublicBoards.js": "b0a486a3dea51893e7bf8c09d1c0897bc7b962cb9b687d8126525669487a715e",
+  "src/components/topNine/publicTitle.js": "19778964b60102e8ce3f6e8304126852ee7bba8b6af80f0eff76a563c62a1b70",
+  "src/components/topNine/topNine.css": "662fc48b06febce8f9db39b2e7403eb86c13b8e6ed581d4cff5a5abd0e04211a",
+  "tests/top-nine-caption-ui.cjs": "20625a9b1fffccf9e46e4231b3f5ac250a4cd9fdb306378d69f2fcf3a1fb5bd0",
+  "tests/top-nine-public-title.cjs": "9f58d5990e96ffc17a9119d82db250ec1d87307cb8dc7c215a8fc376a2b1f94e",
+  "tests/top-nine-publish-ui.cjs": "895d4df01b6db9df4e5bec392530945962d79c2caaeef5c2068c8a50d6eb82fc",
+  "tests/top-nine-game-ui.cjs": "f6496b41dba7883f5a703f343c3b60924b4c2b5849f890e5c9617a76d9624609"
 }

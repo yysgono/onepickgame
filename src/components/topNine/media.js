@@ -31,13 +31,14 @@ export async function importFile(file) {
 }
 const fit=(ctx,text,max)=>{let chars=Array.from(text);while(chars.length&&ctx.measureText(chars.join('')).width>max)chars.pop();return chars.join('');};
 export async function exportPNG(slots,title,names,frameCache={}) {
- if(slots.length!==9||slots.some(c=>!c))throw new Error('NINE_REQUIRED');
+ if(slots.length!==9||!slots.some(Boolean))throw new Error('NINE_REQUIRED');
  const canvas=document.createElement('canvas'),cell=344,gap=12,pad=36,top=title?100:36;
  const nameHeight=names?44:0;canvas.width=1128;canvas.height=top+3*(cell+nameHeight)+2*gap+96;
  const ctx=canvas.getContext('2d');if(!ctx)throw new Error('CANVAS');
  ctx.fillStyle='#fff';ctx.fillRect(0,0,canvas.width,canvas.height);ctx.textAlign='center';ctx.fillStyle='#211638';ctx.font='bold 34px sans-serif';
  if(title)ctx.fillText(fit(ctx,title,1056),564,61);
  for(let i=0;i<9;i++) {
+  if(!slots[i])continue;
   const c=slots[i],src=frameCache[c.src]||safeMedia(c.src);if(!src)throw new Error('MEDIA_ERROR');
   const frame=isVideo(src)?await mediaFrame(src):src;
   const img=await loadMedia(frame);const x=pad+(i%3)*(cell+gap),y=top+Math.floor(i/3)*(cell+nameHeight+gap);
