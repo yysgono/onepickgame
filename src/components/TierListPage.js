@@ -26,7 +26,7 @@ import { supabase } from "../utils/supabaseClient";
 
 
 const PAGE_SIZE = 12;
-const PRESET_PAGE_SIZE = 14;
+const PRESET_PAGE_SIZE = 28;
 const TIER_LIST_CACHE_TTL = 60000;
 const tierListPageCache = new Map();
 const tierListPageInflight = new Map();
@@ -445,13 +445,15 @@ function TierListPage({
     getCachedTierListRows(`presets:${PRESET_PAGE_SIZE}:${category}:${presetPage}`, async () => {
       let query = supabase.from("worldcup_tier_preset_cards").select("id,title,title_translations,category,tier_preset_order,tier_preset_title_translations,tier_preset_thumbnail_url");
       if (category !== "all") query = query.in("category", categories[category] || [category]);
-      const { data, error } = await query.order("tier_preset_order", { ascending: true, nullsFirst: false }).order("id", { ascending: true }).range(presetPage * PRESET_PAGE_SIZE, (presetPage + 1) * PRESET_PAGE_SIZE - 1);
+      const { data, error } = await query.order("tier_preset_order", { ascending: true, nullsFirst: false }).order("id", { ascending: true }).range(presetPage * PRESET_PAGE_SIZE, (presetPage + 1) * PRESET_PAGE_SIZE);
       if (error) throw error;
       return data || [];
     }).then(rows => {
       if (!live) return;
-      setManagedTierPresets(previous => presetPage ? [...previous, ...rows] : rows);
-      setPresetHasMore(rows.length === PRESET_PAGE_SIZE);
+      // One extra metadata row tells us whether the next page exists, without a count query.
+      const pageRows = rows.slice(0, PRESET_PAGE_SIZE);
+      setManagedTierPresets(previous => presetPage ? [...previous, ...pageRows] : pageRows);
+      setPresetHasMore(rows.length > PRESET_PAGE_SIZE);
     }).catch(error => {
       if (live) { setPresetError(error.message); setPresetHasMore(false); }
     }).finally(() => { if (live) setTierPresetLoaded(true); });
