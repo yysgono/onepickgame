@@ -8,7 +8,11 @@ const Component=compile('src/components/TopNinePage.js',{'react':React,'react-ro
 
 const root=createRoot(document.getElementById('root')),words=require('../src/components/topNine/copy.json').ko;
 const button=text=>[...document.querySelectorAll('button')].find(b=>b.textContent.trim()===text);const click=async node=>{assert(node);await act(async()=>Simulate.click(node));};
-(async()=>{await act(async()=>root.render(React.createElement(Component)));await click(document.querySelector('.tn-templates button'));await click(button('직접 고르기'));
+(async()=>{await act(async()=>root.render(React.createElement(Component)));const homeCells=document.querySelectorAll('.tn-home-grid button'),transfer={types:['Files'],dropEffect:'none'};
+ await act(async()=>Simulate.dragOver(homeCells[0],{dataTransfer:transfer}));assert(document.querySelector('.tn-home-grid .tn-cell').classList.contains('tn-drop-target'));assert.equal(transfer.dropEffect,'copy');assert(document.querySelector('.tn-drop-label'));
+ await act(async()=>Simulate.dragLeave(homeCells[0],{relatedTarget:homeCells[1]}));await act(async()=>Simulate.dragEnter(homeCells[1],{dataTransfer:transfer}));assert.equal(document.querySelectorAll('.tn-drop-target').length,1);assert(homeCells[1].parentElement.classList.contains('tn-drop-target'));
+ await act(async()=>window.dispatchEvent(new window.Event('dragend')));assert.equal(document.querySelectorAll('.tn-drop-target').length,0);
+ await click(document.querySelector('.tn-templates button'));await click(button('직접 고르기'));
  const photo=document.querySelector('.tn-pool .tn-candidates button');
  const tap=async time=>act(async()=>Simulate.click(photo,{detail:1,timeStamp:time}));
  await tap(100);assert.equal(publishedProps.slots.filter(Boolean).length,0);

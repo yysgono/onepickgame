@@ -85,3 +85,11 @@
 
 .tn-caption-help{font-size:15px;color:#695582;margin:8px 0;line-height:1.6}
 .tn-grid .tn-cell>button{touch-action:manipulation}
+
+.top-nine .tn-home-grid{transition:border-color .15s,box-shadow .15s}
+.top-nine .tn-home-grid.tn-drop-active{border-color:#6d28d9;box-shadow:0 0 0 5px #7c3aed18}
+.tn-home-grid .tn-cell{position:relative}
+.top-nine .tn-home-grid .tn-drop-target>button{position:relative;background:#ddd0ff;outline:4px solid #7c3aed;outline-offset:-4px;box-shadow:inset 0 0 0 8px #fff8}
+.tn-home-grid .tn-drop-target>button>canvas,.tn-home-grid .tn-drop-target>button>span:not(.tn-drop-label){opacity:.15}
+.top-nine .tn-home-grid .tn-drop-label{position:absolute;inset:8px;z-index:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;font-size:clamp(15px,2vw,22px);font-weight:800;color:#5b21b6;text-align:center;pointer-events:none;overflow-wrap:anywhere}
+.tn-home-grid .tn-drop-label>span{font-size:48px;line-height:1}
