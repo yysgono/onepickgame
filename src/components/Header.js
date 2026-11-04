@@ -1,3 +1,4 @@
+import ContentHomeLink from "./ContentHomeLink";
 import TopNineIcon from "./TopNineIcon";
 import topNineCopy from "./topNine/copy.json";
 import NaverAccountLink from "./NaverAccountLink";
@@ -732,9 +733,9 @@ export default function Header({
           {headerModes.map(mode => <div key={mode.key} className={`onepick-header-mode mode-${mode.key}${activeMode === mode.key ? ' is-active' : ''}${mode.pending ? ' is-pending' : ''}`}>
             {mode.pending ? <div className="onepick-header-mode-main" aria-disabled="true">
               <HeaderIcon name={mode.icon} /><span>{mode.label}</span><small>{t('gameModeNav.comingSoon')}</small>
-            </div> : <Link className="onepick-header-mode-main" to={mode.path} aria-current={activeMode === mode.key ? 'page' : undefined}>
+            </div> : <ContentHomeLink className="onepick-header-mode-main" mode={mode.key} to={mode.path} aria-current={activeMode === mode.key ? 'page' : undefined}>
               <HeaderIcon name={mode.icon} /><span>{mode.label}</span>
-            </Link>}
+            </ContentHomeLink>}
           </div>)}
         </nav>
         <div className="onepick-header-account">

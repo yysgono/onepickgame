@@ -28,10 +28,16 @@ export default function TopNinePage(){
  const [candidates,setCandidates]=useState([]),[templates,setTemplates]=useState([]),[sources,setSources]=useState([]),[query,setQuery]=useState(''),[searchedQuery,setSearchedQuery]=useState(''),[candidateQuery,setCandidateQuery]=useState(''),[limit,setLimit]=useState(36),[sourceOffset,setSourceOffset]=useState(0),[moreSources,setMoreSources]=useState(false),[searched,setSearched]=useState(false);
  const [busy,setBusy]=useState(false),[message,setMessage]=useState(''),[templateError,setTemplateError]=useState(false),[templateTick,setTemplateTick]=useState(0),[focus,setFocus]=useState(null),[draft,setDraft]=useState(null),[draftError,setDraftError]=useState(false),[shareURL,setShareURL]=useState('');
  const [frames,setFrames]=useState({}),[frameRetry,setFrameRetry]=useState(0),[game,setGame]=useState(null),[history,setHistory]=useState([]);
- const dragItem=useRef(null),uploadTarget=useRef(null),fileRef=useRef(),poolRef=useRef(),lock=useRef(false),operation=useRef(0),alive=useRef(true),draftReady=useRef(false),frameJobs=useRef(new Set());
+ const dragItem=useRef(null),uploadTarget=useRef(null),fileRef=useRef(),poolRef=useRef(),poolListRef=useRef(),lock=useRef(false),operation=useRef(0),alive=useRef(true),draftReady=useRef(false),frameJobs=useRef(new Set());
  const languageRef=useRef(lang);languageRef.current=lang;
  const count=slots.filter(Boolean).length;
  useEffect(()=>{setMessage('');},[lang]);
+ useEffect(()=>{
+  if(location.state?.contentHome!=='top-nine'||location.hash)return;
+  operation.current++;lock.current=false;setBusy(false);setStage('home');setFocus(null);
+  setPendingCup(null);setSitePicker(false);setGame(null);setHistory([]);setMessage('');setShareURL('');dragItem.current=null;
+ },[location.key,location.hash,location.state]);
+ useEffect(()=>{if(poolListRef.current)poolListRef.current.scrollTop=0;},[candidateQuery]);
  useEffect(()=>{alive.current=true;draftStore().then(d=>{if(alive.current&&d?.v===1)setDraft(d);}).catch(()=>{}).finally(()=>{draftReady.current=true;});return()=>{alive.current=false;operation.current++;};},[]);
  useEffect(()=>{if(!shared)return;setSlots(shared.slots);setTitle(shared.title);setNames(shared.names);setStage('preview');setFocus(null);setShareURL('');},[shared]);
  useEffect(()=>{let live=true;setTemplateError(false);listTemplates().then(rows=>{if(live){setTemplates(rows);setTemplateMore(rows.length===30);}}).catch(()=>{if(live)setTemplateError(true);});return()=>{live=false;};},[templateTick]);
@@ -48,7 +54,7 @@ export default function TopNinePage(){
  // Already requested sources are skipped, including when only the crop changes.
  },[slots,frameRetry]);
  useEffect(()=>{setShareURL('');},[slots,title,names]);
- async function work(fn){if(lock.current)return;lock.current=true;setBusy(true);setMessage('');const op=++operation.current;try{await fn(()=>alive.current&&op===operation.current);}catch(e){if(alive.current&&op===operation.current)setMessage((copy[languageRef.current]||copy.en).error);}finally{lock.current=false;if(alive.current)setBusy(false);}}
+ async function work(fn){if(lock.current)return;lock.current=true;setBusy(true);setMessage('');const op=++operation.current;try{await fn(()=>alive.current&&op===operation.current);}catch(e){if(alive.current&&op===operation.current)setMessage((copy[languageRef.current]||copy.en).error);}finally{if(alive.current&&op===operation.current){lock.current=false;setBusy(false);}}}
  function resume(){if(!draft)return;const pool=(draft.candidates||[]).slice(0,2048).filter(c=>safeMedia(c?.src));const restored=Array.isArray(draft.slots)&&draft.slots.length===9?draft.slots.map(c=>c&&safeMedia(c.src)?{...c,zoom:Math.max(1,Math.min(3,Number(c.zoom)||1)),x:Math.max(0,Math.min(100,Number(c.x)||0)),y:Math.max(0,Math.min(100,Number(c.y)||0))}:null):blank();setSlots(restored);setCandidates(pool);setTitle(String(draft.title||'').slice(0,100));setNames(!!draft.names);setStage('pick');setFocus(null);}
  function openSource(cup,mode){setPendingCup(null);work(async current=>{const raw=await loadSource(cup.id);if(!current())return;const pool=normalizeCandidates(raw.data);if(!pool.length)throw new Error('EMPTY');setCandidates(pool);setSlots(blank());setTitle(templateTitle({...raw,...cup},'nine',lang,t.nav));setFocus(null);setCandidateQuery('');setLimit(36);if(mode==='game'&&pool.length>=9){setHistory([]);setGame({pool:[...pool],offset:0,winners:[],marked:[]});setStage('game');}else{setStage('pick');}setFrames({});frameJobs.current.clear();});}
  function search(e,append=false){e?.preventDefault();work(async current=>{const offset=append?sourceOffset+30:0;const rows=await searchSources(append?searchedQuery:query,offset);if(!current())return;setSources(old=>append?[...old,...rows]:rows);if(!append)setSearchedQuery(query);setSourceOffset(offset);setMoreSources(rows.length===30);setSearched(true);});}
@@ -111,8 +117,10 @@ export default function TopNinePage(){
  {stage==='pick'&&<div className="tn-actions tn-sticky tn-board-complete"><strong aria-live="polite">{count} / 9</strong><button className="tn-primary" disabled={busy||!ready} onClick={()=>{setStage('preview');setFocus(null);}}>{t.done}</button><button disabled={busy||!ready} onClick={()=>{setStage('preview');setFocus(null);}}>{t.privateView}</button><PublishBoard slots={slots} title={title} names={names} lang={lang} disabled={busy||!ready} onPublished={()=>setGalleryTick(n=>n+1)}/></div>}
  </section>
  {stage==='pick'&&<section className="tn-pool" ref={poolRef} onDragOver={e=>e.preventDefault()} onDrop={poolDrop}><h2>{t.choose}</h2><input type="search" aria-label={t.candidateSearch} placeholder={t.candidateSearch} value={candidateQuery} onChange={e=>{setCandidateQuery(e.target.value);setLimit(36);}}/>
+ <div className="tn-pool-scroll" ref={poolListRef} role="region" aria-label={t.choose} tabIndex={0}>
  <div className="tn-candidates">{visibleCandidates.slice(0,limit).map(c=>{const checked=slots.some(s=>s?.id===c.id);return <button type="button" key={c.id} className={checked?'selected':''} aria-pressed={checked} disabled={busy} draggable={!busy} onDragStart={e=>dragStart(e,{kind:'candidate',candidate:c})} onDragEnd={()=>{dragItem.current=null;}} onClick={()=>{setSlots(old=>placeCandidate(old,c,focus!==null?focus:null));setFocus(null);}}><Photo candidate={c}/><span>{checked?'✓ ':''}{c.name}</span></button>;})}</div>
  {!visibleCandidates.length&&<p>{t.empty}</p>}{visibleCandidates.length>limit&&<button onClick={()=>setLimit(n=>n+36)}>{t.more}</button>}
+ </div>
  <div className="tn-pool-game"><button className="tn-primary" disabled={busy||candidates.length<9} onClick={startGame}>{t.game}</button></div>
  </section>}
  </div>
