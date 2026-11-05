@@ -58,7 +58,9 @@
     "resetCandidates": "Reset candidates",
     "resetCandidatesConfirm": "Clear the candidate list? Photos already on the board will stay.",
     "saveChanges": "Save changes",
-    "editDenied": "Only the author can edit this post."
+    "editDenied": "Only the author can edit this post.",
+    "showCandidateNames": "Show candidate names",
+    "hideCandidateNames": "Hide candidate names"
   },
   "ko": {
     "nav": "구절판",
@@ -119,7 +121,9 @@
     "resetCandidates": "후보 초기화",
     "resetCandidatesConfirm": "후보 목록을 비울까요? 왼쪽에 배치한 사진은 유지돼요.",
     "saveChanges": "수정 저장",
-    "editDenied": "작성자만 이 게시물을 수정할 수 있어요."
+    "editDenied": "작성자만 이 게시물을 수정할 수 있어요.",
+    "showCandidateNames": "후보 이름 보기",
+    "hideCandidateNames": "후보 이름 숨기기"
   },
   "ja": {
     "nav": "マイトップ9",
@@ -180,7 +184,9 @@
     "resetCandidates": "候補をリセット",
     "resetCandidatesConfirm": "候補一覧を空にしますか？配置済みの写真は残ります。",
     "saveChanges": "変更を保存",
-    "editDenied": "投稿者のみ編集できます。"
+    "editDenied": "投稿者のみ編集できます。",
+    "showCandidateNames": "候補名を表示",
+    "hideCandidateNames": "候補名を非表示"
   },
   "zh": {
     "nav": "我的九宫格",
@@ -241,7 +247,9 @@
     "resetCandidates": "清空候选项",
     "resetCandidatesConfirm": "清空候选列表？已放入格子的照片会保留。",
     "saveChanges": "保存修改",
-    "editDenied": "只有发布者可以修改此内容。"
+    "editDenied": "只有发布者可以修改此内容。",
+    "showCandidateNames": "显示候选名称",
+    "hideCandidateNames": "隐藏候选名称"
   },
   "es": {
     "nav": "Mis 9 favoritos",
@@ -302,7 +310,9 @@
     "resetCandidates": "Vaciar candidatos",
     "resetCandidatesConfirm": "¿Vaciar la lista? Las fotos colocadas se conservarán.",
     "saveChanges": "Guardar cambios",
-    "editDenied": "Solo el autor puede editar esta publicación."
+    "editDenied": "Solo el autor puede editar esta publicación.",
+    "showCandidateNames": "Mostrar nombres",
+    "hideCandidateNames": "Ocultar nombres"
   },
   "fr": {
     "nav": "Mes 9 favoris",
@@ -363,7 +373,9 @@
     "resetCandidates": "Vider les candidats",
     "resetCandidatesConfirm": "Vider la liste ? Les photos placées seront conservées.",
     "saveChanges": "Enregistrer les modifications",
-    "editDenied": "Seul l’auteur peut modifier cette publication."
+    "editDenied": "Seul l’auteur peut modifier cette publication.",
+    "showCandidateNames": "Afficher les noms",
+    "hideCandidateNames": "Masquer les noms"
   },
   "it": {
     "nav": "I miei 9 preferiti",
@@ -424,7 +436,9 @@
     "resetCandidates": "Svuota candidati",
     "resetCandidatesConfirm": "Svuotare la lista? Le foto già posizionate resteranno.",
     "saveChanges": "Salva modifiche",
-    "editDenied": "Solo l’autore può modificare questo post."
+    "editDenied": "Solo l’autore può modificare questo post.",
+    "showCandidateNames": "Mostra nomi",
+    "hideCandidateNames": "Nascondi nomi"
   },
   "pl": {
     "nav": "Moje top 9",
@@ -485,7 +499,9 @@
     "resetCandidates": "Wyczyść kandydatów",
     "resetCandidatesConfirm": "Wyczyścić listę? Umieszczone zdjęcia pozostaną.",
     "saveChanges": "Zapisz zmiany",
-    "editDenied": "Tylko autor może edytować ten wpis."
+    "editDenied": "Tylko autor może edytować ten wpis.",
+    "showCandidateNames": "Pokaż nazwy",
+    "hideCandidateNames": "Ukryj nazwy"
   },
   "nl": {
     "nav": "Mijn top 9",
@@ -546,7 +562,9 @@
     "resetCandidates": "Kandidaten wissen",
     "resetCandidatesConfirm": "Lijst wissen? Geplaatste foto’s blijven staan.",
     "saveChanges": "Wijzigingen opslaan",
-    "editDenied": "Alleen de auteur kan dit bericht bewerken."
+    "editDenied": "Alleen de auteur kan dit bericht bewerken.",
+    "showCandidateNames": "Namen tonen",
+    "hideCandidateNames": "Namen verbergen"
   },
   "cs": {
     "nav": "Mých top 9",
@@ -607,7 +625,9 @@
     "resetCandidates": "Vymazat kandidáty",
     "resetCandidatesConfirm": "Vymazat seznam? Umístěné fotky zůstanou.",
     "saveChanges": "Uložit změny",
-    "editDenied": "Tento příspěvek může upravit pouze autor."
+    "editDenied": "Tento příspěvek může upravit pouze autor.",
+    "showCandidateNames": "Zobrazit jména",
+    "hideCandidateNames": "Skrýt jména"
   },
   "de": {
     "nav": "Meine Top 9",
@@ -668,7 +688,9 @@
     "resetCandidates": "Kandidaten leeren",
     "resetCandidatesConfirm": "Liste leeren? Platzierte Fotos bleiben erhalten.",
     "saveChanges": "Änderungen speichern",
-    "editDenied": "Nur der Autor kann diesen Beitrag bearbeiten."
+    "editDenied": "Nur der Autor kann diesen Beitrag bearbeiten.",
+    "showCandidateNames": "Namen anzeigen",
+    "hideCandidateNames": "Namen ausblenden"
   },
   "pt": {
     "nav": "Meus 9 favoritos",
@@ -729,7 +751,9 @@
     "resetCandidates": "Limpar candidatos",
     "resetCandidatesConfirm": "Limpar a lista? As fotos posicionadas serão mantidas.",
     "saveChanges": "Salvar alterações",
-    "editDenied": "Apenas o autor pode editar esta publicação."
+    "editDenied": "Apenas o autor pode editar esta publicação.",
+    "showCandidateNames": "Mostrar nomes",
+    "hideCandidateNames": "Ocultar nomes"
   },
   "ru": {
     "nav": "Мои топ-9",
@@ -790,7 +814,9 @@
     "resetCandidates": "Очистить кандидатов",
     "resetCandidatesConfirm": "Очистить список? Размещённые фото останутся.",
     "saveChanges": "Сохранить изменения",
-    "editDenied": "Изменить публикацию может только автор."
+    "editDenied": "Изменить публикацию может только автор.",
+    "showCandidateNames": "Показать имена",
+    "hideCandidateNames": "Скрыть имена"
   },
   "vi": {
     "nav": "Top 9 của tôi",
@@ -851,7 +877,9 @@
     "resetCandidates": "Xóa danh sách ứng viên",
     "resetCandidatesConfirm": "Xóa danh sách? Ảnh đã xếp vẫn được giữ lại.",
     "saveChanges": "Lưu thay đổi",
-    "editDenied": "Chỉ tác giả mới có thể sửa bài đăng này."
+    "editDenied": "Chỉ tác giả mới có thể sửa bài đăng này.",
+    "showCandidateNames": "Hiện tên ứng viên",
+    "hideCandidateNames": "Ẩn tên ứng viên"
   },
   "id": {
     "nav": "9 Favorit Saya",
@@ -912,7 +940,9 @@
     "resetCandidates": "Kosongkan kandidat",
     "resetCandidatesConfirm": "Kosongkan daftar? Foto yang sudah ditempatkan tetap ada.",
     "saveChanges": "Simpan perubahan",
-    "editDenied": "Hanya pembuat yang dapat mengedit postingan ini."
+    "editDenied": "Hanya pembuat yang dapat mengedit postingan ini.",
+    "showCandidateNames": "Tampilkan nama",
+    "hideCandidateNames": "Sembunyikan nama"
   },
   "hi": {
     "nav": "मेरे टॉप 9",
@@ -973,7 +1003,9 @@
     "resetCandidates": "उम्मीदवार सूची खाली करें",
     "resetCandidatesConfirm": "सूची खाली करें? बोर्ड पर रखी फ़ोटो बनी रहेंगी।",
     "saveChanges": "बदलाव सहेजें",
-    "editDenied": "केवल लेखक इस पोस्ट को बदल सकता है।"
+    "editDenied": "केवल लेखक इस पोस्ट को बदल सकता है।",
+    "showCandidateNames": "उम्मीदवारों के नाम दिखाएँ",
+    "hideCandidateNames": "उम्मीदवारों के नाम छिपाएँ"
   },
   "bn": {
     "nav": "আমার সেরা ৯",
@@ -1034,7 +1066,9 @@
     "resetCandidates": "প্রার্থী তালিকা খালি করুন",
     "resetCandidatesConfirm": "তালিকা খালি করবেন? বোর্ডে রাখা ছবিগুলো থাকবে।",
     "saveChanges": "পরিবর্তন সংরক্ষণ",
-    "editDenied": "শুধু লেখক এই পোস্ট সম্পাদনা করতে পারেন।"
+    "editDenied": "শুধু লেখক এই পোস্ট সম্পাদনা করতে পারেন।",
+    "showCandidateNames": "প্রার্থীদের নাম দেখান",
+    "hideCandidateNames": "প্রার্থীদের নাম লুকান"
   },
   "ar": {
     "nav": "أفضل 9 لديّ",
@@ -1095,7 +1129,9 @@
     "resetCandidates": "إفراغ قائمة المرشحين",
     "resetCandidatesConfirm": "هل تريد إفراغ القائمة؟ ستبقى الصور الموضوعة في اللوحة.",
     "saveChanges": "حفظ التعديلات",
-    "editDenied": "يمكن لكاتب المنشور فقط تعديله."
+    "editDenied": "يمكن لكاتب المنشور فقط تعديله.",
+    "showCandidateNames": "إظهار أسماء المرشحين",
+    "hideCandidateNames": "إخفاء أسماء المرشحين"
   },
   "tr": {
     "nav": "İlk 9 Favorim",
@@ -1156,7 +1192,9 @@
     "resetCandidates": "Adayları temizle",
     "resetCandidatesConfirm": "Liste temizlensin mi? Yerleştirilen fotoğraflar kalır.",
     "saveChanges": "Değişiklikleri kaydet",
-    "editDenied": "Bu gönderiyi yalnızca yazarı düzenleyebilir."
+    "editDenied": "Bu gönderiyi yalnızca yazarı düzenleyebilir.",
+    "showCandidateNames": "Aday adlarını göster",
+    "hideCandidateNames": "Aday adlarını gizle"
   },
   "th": {
     "nav": "9 อันดับของฉัน",
@@ -1217,6 +1255,8 @@
     "resetCandidates": "ล้างรายชื่อผู้สมัคร",
     "resetCandidatesConfirm": "ล้างรายชื่อหรือไม่? รูปที่วางไว้จะยังอยู่",
     "saveChanges": "บันทึกการแก้ไข",
-    "editDenied": "เฉพาะผู้เขียนเท่านั้นที่แก้ไขโพสต์นี้ได้"
+    "editDenied": "เฉพาะผู้เขียนเท่านั้นที่แก้ไขโพสต์นี้ได้",
+    "showCandidateNames": "แสดงชื่อผู้สมัคร",
+    "hideCandidateNames": "ซ่อนชื่อผู้สมัคร"
   }
 }

@@ -3,8 +3,8 @@ const dom=new JSDOM('<div id="root"></div>',{url:'https://www.onepickgame.com/ko
 const React=require('react'),{act}=React,{createRoot}=require('react-dom/client'),{Simulate}=require('react-dom/test-utils');
 function compile(file,mocks){const mod={exports:{}};new Function('require','module','exports',babel.transformSync(fs.readFileSync(file,'utf8'),{presets:[['@babel/preset-env',{targets:{node:'current'}}],'@babel/preset-react'],configFile:false,babelrc:false}).code)(name=>{if(name in mocks)return mocks[name];if(name==='./topNine/game')return compile('src/components/topNine/game.js',{});if(name==='./topNine/TopNineGame'||name==='./topNine/GameCountSelect')return compile('src/components/'+name.slice(2)+'.js',{react:React,'./game':compile('src/components/topNine/game.js',{}),'./gameCopy.json':require('../src/components/topNine/gameCopy.json')});throw Error(name);},mod,mod.exports);return mod.exports;}
 const core=compile('src/components/topNine/core.js',{'../../utils/originalStorageImageUrl':{originalStorageImageUrl:x=>x}}),pool=Array.from({length:30},(_,i)=>({id:i,name:'Candidate '+i,image:'https://example.com/'+i+'.jpg'}));
-let draftData=null,publishedProps;global.Image=window.Image;const noop=()=>null;
-const Component=compile('src/components/TopNinePage.js',{'react':React,'react-router-dom':{useParams:()=>({lang:'ko'}),useLocation:()=>({hash:''})},'../seo/Seo':{default:noop,__esModule:true},'./ContentLanguageSelect':{default:noop,__esModule:true},'./TopNineIcon':{default:noop,__esModule:true},'../utils/templateTitles':{templateTitle:()=> 'Test Template'},'./topNine/copy.json':require('../src/components/topNine/copy.json'),'./topNine/SiteCandidatePicker':{default:({onAdd,onClose})=>React.createElement('button',{onClick:()=>{onAdd([{id:'site:test',name:'From site',src:'https://example.com/site.jpg'}]);onClose();}},'Import test candidate'),__esModule:true},'./topNine/PublicBoards':{default:noop,PublishBoard:props=>{publishedProps=props;return null;},__esModule:true},'./topNine/memberImages':{prepareMemberSlots:async slots=>slots},'./topNine/api':{listTemplates:async()=>[{id:'cup'}],loadSource:async()=>({data:pool}),searchSources:async()=>[],sourcePage:async()=>[]},'./topNine/core':core,'./topNine/media':{importFile:async f=>({id:'file:'+f.name,name:f.name,src:'data:image/jpeg;base64,YQ==',x:50,y:50,zoom:1}),isVideo:()=>false,mediaFrame:async()=> 'data:image/png;base64,YQ=='},'./topNine/draft':{draftStore:async()=>draftData},'./topNine/topNine.css':{}}).default;
+let routeSearch='',draftData=null,publishedProps;global.Image=window.Image;const noop=()=>null;
+const Component=compile('src/components/TopNinePage.js',{'react':React,'react-router-dom':{useParams:()=>({lang:'ko'}),useLocation:()=>({hash:'',search:routeSearch})},'../seo/Seo':{default:noop,__esModule:true},'./ContentLanguageSelect':{default:noop,__esModule:true},'./TopNineIcon':{default:noop,__esModule:true},'../utils/templateTitles':{templateTitle:()=> 'Test Template'},'./topNine/copy.json':require('../src/components/topNine/copy.json'),'./topNine/SiteCandidatePicker':{default:({onAdd,onClose})=>React.createElement('button',{onClick:()=>{onAdd([{id:'site:test',name:'From site',src:'https://example.com/site.jpg'}]);onClose();}},'Import test candidate'),__esModule:true},'./topNine/PublicBoards':{default:noop,PublishBoard:props=>{publishedProps=props;return null;},__esModule:true},'./topNine/memberImages':{prepareMemberSlots:async slots=>slots},'./topNine/api':{listTemplates:async()=>[{id:'cup'}],loadSource:async()=>({data:pool}),searchSources:async()=>[],sourcePage:async()=>[]},'./topNine/core':core,'./topNine/media':{importFile:async f=>({id:'file:'+f.name,name:f.name,src:'data:image/jpeg;base64,YQ==',x:50,y:50,zoom:1}),isVideo:()=>false,mediaFrame:async()=> 'data:image/png;base64,YQ=='},'./topNine/draft':{draftStore:async()=>draftData},'./topNine/topNine.css':{}}).default;
 
 const root=createRoot(document.getElementById('root')),words=require('../src/components/topNine/copy.json').ko;
 const button=text=>[...document.querySelectorAll('button')].find(b=>b.textContent.trim()===text);const click=async node=>{assert(node);await act(async()=>Simulate.click(node));};
@@ -49,7 +49,12 @@ const button=text=>[...document.querySelectorAll('button')].find(b=>b.textConten
  publishedProps=null;
  await act(async()=>root.render(React.createElement(Component,{key:'public-edit',publicBoard:{slots:publicSlots,title:'Saved board',names:true,sourceIds:['cup']},publicId:'board'})));
  assert.equal(publishedProps,null);
+ assert.equal(document.querySelectorAll('.tn-preview .tn-name').length,9);
+ await click(button(words.hideCandidateNames));assert.equal(document.querySelectorAll('.tn-preview .tn-name').length,0);
+ await click(button(words.showCandidateNames));assert.equal(document.querySelectorAll('.tn-preview .tn-name').length,9);
  await click(button(words.edit));
+ assert([...document.querySelectorAll('.tn-pool .tn-candidates button')].slice(0,9).every(item=>item.getAttribute('aria-pressed')==='true'));
+ assert.equal(publishedProps.names,true);
  assert.equal(publishedProps.disabled,true);
  await act(async()=>Simulate.change(document.querySelector('.tn-title-field input'),{target:{value:'Updated board'}}));
  assert.equal(publishedProps.disabled,false);
@@ -61,4 +66,8 @@ const button=text=>[...document.querySelectorAll('button')].find(b=>b.textConten
  assert.equal(document.querySelectorAll('.tn-pool .tn-candidates button').length,0);
  assert.equal(publishedProps.slots.filter(Boolean).length,9);
  assert.deepEqual(publishedProps.sourceIds,[]);
+ routeSearch='?edit=1';
+ await act(async()=>root.render(React.createElement(Component,{key:'direct-edit',publicBoard:{slots:publicSlots,title:'Saved board',names:false,sourceIds:['cup']},publicId:'board'})));
+ assert(document.querySelector('.tn-pool'));assert(!document.querySelector('.tn-preview'));
+ assert.equal(document.querySelectorAll('.tn-pool .tn-candidates button').length,30);
  await act(async()=>root.unmount());console.log('Captions: inline editing, source-name preservation, publish payload, default-title tracking, preview and lower Edit button passed');})().catch(e=>{console.error(e);process.exitCode=1;});
