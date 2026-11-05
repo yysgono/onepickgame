@@ -53,8 +53,11 @@ export function fillRemaining(game,random=Math.random) {
 }
 
 // Touch browsers may report both taps as separate single clicks.
-export function activatedPhoto(event, previous) {
+export function activatedPhoto(event, previous, singleMouse = false) {
   if (!event.detail) return true; // Keyboard or assistive technology.
+  const pointer = event.nativeEvent?.pointerType || event.pointerType || previous.pointerType;
+  const touch = pointer ? pointer !== 'mouse' : (event.nativeEvent?.sourceCapabilities?.firesTouchEvents || (typeof window !== 'undefined' && window.matchMedia?.('(pointer: coarse)').matches));
+  if (singleMouse && !touch) { previous.current = null; return true; }
   const target = event.currentTarget;
   const time = event.timeStamp;
   const paired = previous.current?.target === target && time - previous.current.time <= 450;

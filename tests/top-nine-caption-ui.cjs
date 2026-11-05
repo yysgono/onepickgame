@@ -20,12 +20,12 @@ const button=text=>[...document.querySelectorAll('button')].find(b=>b.textConten
  await click(button('홈으로'));
  await click(document.querySelector('.tn-templates button'));await click(button('직접 고르기'));
  const photo=document.querySelector('.tn-pool .tn-candidates button');
- const tap=async time=>act(async()=>Simulate.click(photo,{detail:1,timeStamp:time}));
+ const tap=async time=>act(async()=>Simulate.click(photo,{detail:1,pointerType:'touch',timeStamp:time}));
  await tap(100);assert.equal(publishedProps.slots.filter(Boolean).length,0);
  await tap(200);assert.equal(publishedProps.slots.filter(Boolean).length,1);assert.equal(publishedProps.disabled,false);
  assert(!button(words.done));await click(button(words.privateView));assert(document.querySelector('.tn-preview'));await click(button(words.edit));
  const currentPhoto=document.querySelector('.tn-pool .tn-candidates button');
- for(const time of [600,700])await act(async()=>Simulate.click(currentPhoto,{detail:1,timeStamp:time}));
+ for(const time of [600,700])await act(async()=>Simulate.click(currentPhoto,{detail:1,pointerType:'touch',timeStamp:time}));
  assert.equal(publishedProps.slots.filter(Boolean).length,0);
  for(const candidate of [...document.querySelectorAll('.tn-pool .tn-candidates button')].slice(0,9))await click(candidate);assert(document.querySelector('.tn-board-complete').textContent.includes('9 / 9'));assert(publishedProps.autoTitle);
  await act(async()=>Simulate.change(document.querySelector('.tn-toggle input'),{target:{checked:true}}));let caption=document.querySelector('.tn-name-input');assert(caption);const oldName=caption.value;await act(async()=>Simulate.change(caption,{target:{value:'내가 수정한 이름'}}));assert.equal(publishedProps.slots[0].name,'내가 수정한 이름');assert(document.querySelector('.tn-pool').textContent.includes(oldName));
@@ -40,7 +40,7 @@ const button=text=>[...document.querySelectorAll('button')].find(b=>b.textConten
  assert.equal(publishedProps.slots[0],null);
  const poolPhoto=document.querySelector('.tn-pool .tn-candidates button');await click(poolPhoto);
  let restored=document.querySelector('.tn-grid .tn-cell>button');
- for(const time of [3000,3100])await act(async()=>Simulate.click(restored,{detail:1,timeStamp:time}));
+ for(const time of [3000,3100])await act(async()=>Simulate.click(restored,{detail:1,pointerType:'touch',timeStamp:time}));
  assert.equal(publishedProps.slots[0],null);await click(poolPhoto);
  await act(async()=>Simulate.change(document.querySelector('.tn-name-input'),{target:{value:'내가 수정한 이름'}}));
  const title=document.querySelector('.tn-title-field input');await act(async()=>Simulate.change(title,{target:{value:'내 구절판 제목'}}));assert.equal(publishedProps.autoTitle,false);await act(async()=>Simulate.change(title,{target:{value:'Test Template'}}));assert.equal(publishedProps.autoTitle,true);

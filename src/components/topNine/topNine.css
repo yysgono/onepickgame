@@ -76,7 +76,7 @@
 .top-nine .tn-cell>input.tn-name-input:not([type=range]):not([type=checkbox]){display:block;width:100%;min-width:0;min-height:36px;margin-top:5px;padding:5px 7px;border:1px solid transparent;border-radius:6px;background:transparent;color:#28203a;font:inherit;font-size:15px;font-weight:700;line-height:1.5;text-align:center;text-overflow:ellipsis;cursor:text}
 .top-nine .tn-cell>input.tn-name-input:not([type=range]):not([type=checkbox]):hover,.top-nine .tn-cell>input.tn-name-input:not([type=range]):not([type=checkbox]):focus{border-color:#9561df;background:#fff}
 .tn-game .tn-candidates img,.tn-game .tn-candidates video{object-position:center 15%}
-@media(max-width:700px){.tn-game .tn-game-navigation button{font-size:16px;min-height:54px;min-width:0;padding:12px 10px}.tn-game .tn-game-navigation:not(.tn-game-finish-actions){display:grid;grid-template-columns:1fr 1fr 1.5fr;width:100%}.tn-game-action-row{gap:8px}.tn-game-count small{font-size:15px}.top-nine .tn-pool>input[type=search]{font-size:17px}}
+@media(max-width:700px){.tn-game .tn-game-navigation button{font-size:16px;min-height:54px;min-width:0;padding:12px 10px}.tn-game .tn-game-navigation:not(.tn-game-finish-actions){display:grid;grid-template-columns:1fr 1fr;width:100%}.tn-game-action-row{gap:8px}.tn-game-count small{font-size:15px}.top-nine .tn-pool>input[type=search]{font-size:17px}}
 .tn-photo-help{text-align:center}
 .tn-mini-empty{aspect-ratio:1;background:#eee8f6}
 .tn-candidates button{touch-action:manipulation}
