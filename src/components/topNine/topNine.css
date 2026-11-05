@@ -109,3 +109,6 @@
 
 .top-nine .tn-picture-templates strong{-webkit-line-clamp:2;line-clamp:2;text-overflow:ellipsis;max-height:82px}
 @media(max-width:700px){.top-nine .tn-picture-templates strong{max-height:72px}}
+
+.top-nine .tn-picture-templates strong{display:block;-webkit-line-clamp:unset;line-clamp:unset;max-height:none}
+.top-nine .tn-picture-templates strong>.tn-template-title{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-clamp:2;overflow:hidden;text-overflow:ellipsis;line-height:1.5;max-height:3em;padding:0;overflow-wrap:anywhere}
