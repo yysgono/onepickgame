@@ -19,15 +19,20 @@ export function toggleCandidate(slots,candidate) {
  return next;
 }
 export function swapSlots(slots,a,b) {const next=[...slots];[next[a],next[b]]=[next[b],next[a]];return next;}
+export function normalizeZoom(value) {
+ const number=Number(value??1);return Number.isFinite(number)?Math.max(0,Math.min(3,number)):1;
+}
 export function cropRect(w,h,zoom=1,x=50,y=50) {
- const size=Math.min(w,h)/Math.max(1,Math.min(3,Number(zoom)||1));
+ const z=normalizeZoom(zoom),short=Math.min(w,h),long=Math.max(w,h);
+ // Zero fits the whole image; one preserves the original square crop.
+ const size=z<1?long+(short-long)*z:short/z;
  return [(w-size)*Math.max(0,Math.min(100,Number(x)||0))/100,(h-size)*Math.max(0,Math.min(100,Number(y)||0))/100,size,size];
 }
 export function gameBatch(pool,offset) {return pool.length<=27?pool:pool.slice(offset,offset+9);}
 export function gameRequired(pool,batch) {return pool.length<=27?9:Math.min(3,batch.length);}
 function cleanCandidate(c,local) {
  const src=safeMedia(c?.src,local);if(!src)return null;
- return {id:String(c.id||'').slice(0,160),name:String(c.name||'').slice(0,150),src,zoom:Math.max(1,Math.min(3,Number(c.zoom)||1)),x:Math.max(0,Math.min(100,Number(c.x)||0)),y:Math.max(0,Math.min(100,Number(c.y)||0))};
+ return {id:String(c.id||'').slice(0,160),name:String(c.name||'').slice(0,150),src,zoom:normalizeZoom(c.zoom),x:Math.max(0,Math.min(100,Number(c.x)||0)),y:Math.max(0,Math.min(100,Number(c.y)||0))};
 }
 export function readShared(hash) {
  try {
