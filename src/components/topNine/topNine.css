@@ -118,3 +118,5 @@
 
 .tn-public-card-link{display:block;width:100%;padding:8px;border:1px solid var(--tn-border);border-radius:10px;background:white;text-decoration:none;color:#50248d;font-weight:700}
 .tn-public-card-link:focus-visible{outline:3px solid #9a60ed;outline-offset:3px}
+
+.tn-pool-reset{display:flex;justify-content:flex-end;flex-shrink:0;margin:0 0 8px}.top-nine .tn-pool-reset button{border-color:#c4b5fd;font-size:15px;min-height:40px;padding:7px 12px}

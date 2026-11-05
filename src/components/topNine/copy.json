@@ -54,7 +54,11 @@
     "memberAccess": "Sign in / Sign up",
     "finalNine": "Finish the game with 9 picks.",
     "doublePhoto": "Double-click or double-tap a candidate photo to add it. Do it again to remove it.",
-    "editNameHelp": "Click a name below a photo to edit it."
+    "editNameHelp": "Click a name below a photo to edit it.",
+    "resetCandidates": "Reset candidates",
+    "resetCandidatesConfirm": "Clear the candidate list? Photos already on the board will stay.",
+    "saveChanges": "Save changes",
+    "editDenied": "Only the author can edit this post."
   },
   "ko": {
     "nav": "구절판",
@@ -111,7 +115,11 @@
     "memberAccess": "로그인 / 회원가입",
     "finalNine": "게임을 마치려면 최종 후보 9개를 골라주세요.",
     "doublePhoto": "후보 사진을 두 번 누르면 추가되고, 다시 두 번 누르면 빠져요.",
-    "editNameHelp": "사진 아래 이름을 누르면 수정할 수 있어요."
+    "editNameHelp": "사진 아래 이름을 누르면 수정할 수 있어요.",
+    "resetCandidates": "후보 초기화",
+    "resetCandidatesConfirm": "후보 목록을 비울까요? 왼쪽에 배치한 사진은 유지돼요.",
+    "saveChanges": "수정 저장",
+    "editDenied": "작성자만 이 게시물을 수정할 수 있어요."
   },
   "ja": {
     "nav": "マイトップ9",
@@ -168,7 +176,11 @@
     "memberAccess": "ログイン / 登録",
     "finalNine": "最後に候補を9つ選んでください。",
     "doublePhoto": "候補の写真をダブルクリックまたはダブルタップして追加します。もう一度繰り返すと外せます。",
-    "editNameHelp": "写真の下の名前を押すと編集できます。"
+    "editNameHelp": "写真の下の名前を押すと編集できます。",
+    "resetCandidates": "候補をリセット",
+    "resetCandidatesConfirm": "候補一覧を空にしますか？配置済みの写真は残ります。",
+    "saveChanges": "変更を保存",
+    "editDenied": "投稿者のみ編集できます。"
   },
   "zh": {
     "nav": "我的九宫格",
@@ -225,7 +237,11 @@
     "memberAccess": "登录 / 注册",
     "finalNine": "请选出最终的9个候选项。",
     "doublePhoto": "双击候选图片即可添加，再双击一次即可移除。",
-    "editNameHelp": "点击照片下方的名字即可修改。"
+    "editNameHelp": "点击照片下方的名字即可修改。",
+    "resetCandidates": "清空候选项",
+    "resetCandidatesConfirm": "清空候选列表？已放入格子的照片会保留。",
+    "saveChanges": "保存修改",
+    "editDenied": "只有发布者可以修改此内容。"
   },
   "es": {
     "nav": "Mis 9 favoritos",
@@ -282,7 +298,11 @@
     "memberAccess": "Iniciar sesión / Registrarse",
     "finalNine": "Elige 9 finalistas para terminar.",
     "doublePhoto": "Haz doble clic o toca dos veces una foto para añadirla. Repite para quitarla.",
-    "editNameHelp": "Haz clic en el nombre debajo de una foto para editarlo."
+    "editNameHelp": "Haz clic en el nombre debajo de una foto para editarlo.",
+    "resetCandidates": "Vaciar candidatos",
+    "resetCandidatesConfirm": "¿Vaciar la lista? Las fotos colocadas se conservarán.",
+    "saveChanges": "Guardar cambios",
+    "editDenied": "Solo el autor puede editar esta publicación."
   },
   "fr": {
     "nav": "Mes 9 favoris",
@@ -339,7 +359,11 @@
     "memberAccess": "Connexion / Inscription",
     "finalNine": "Choisissez 9 finalistes pour terminer.",
     "doublePhoto": "Double-cliquez ou touchez deux fois une photo pour l’ajouter. Répétez pour la retirer.",
-    "editNameHelp": "Cliquez sur le nom sous une photo pour le modifier."
+    "editNameHelp": "Cliquez sur le nom sous une photo pour le modifier.",
+    "resetCandidates": "Vider les candidats",
+    "resetCandidatesConfirm": "Vider la liste ? Les photos placées seront conservées.",
+    "saveChanges": "Enregistrer les modifications",
+    "editDenied": "Seul l’auteur peut modifier cette publication."
   },
   "it": {
     "nav": "I miei 9 preferiti",
@@ -396,7 +420,11 @@
     "memberAccess": "Accedi / Registrati",
     "finalNine": "Scegli 9 finalisti per concludere.",
     "doublePhoto": "Fai doppio clic o tocca due volte una foto per aggiungerla. Ripeti per rimuoverla.",
-    "editNameHelp": "Clicca sul nome sotto una foto per modificarlo."
+    "editNameHelp": "Clicca sul nome sotto una foto per modificarlo.",
+    "resetCandidates": "Svuota candidati",
+    "resetCandidatesConfirm": "Svuotare la lista? Le foto già posizionate resteranno.",
+    "saveChanges": "Salva modifiche",
+    "editDenied": "Solo l’autore può modificare questo post."
   },
   "pl": {
     "nav": "Moje top 9",
@@ -453,7 +481,11 @@
     "memberAccess": "Logowanie / Rejestracja",
     "finalNine": "Aby zakończyć grę, wybierz 9 finalistów.",
     "doublePhoto": "Kliknij lub stuknij zdjęcie dwa razy, aby je dodać. Powtórz, aby je usunąć.",
-    "editNameHelp": "Kliknij nazwę pod zdjęciem, aby ją edytować."
+    "editNameHelp": "Kliknij nazwę pod zdjęciem, aby ją edytować.",
+    "resetCandidates": "Wyczyść kandydatów",
+    "resetCandidatesConfirm": "Wyczyścić listę? Umieszczone zdjęcia pozostaną.",
+    "saveChanges": "Zapisz zmiany",
+    "editDenied": "Tylko autor może edytować ten wpis."
   },
   "nl": {
     "nav": "Mijn top 9",
@@ -510,7 +542,11 @@
     "memberAccess": "Inloggen / Registreren",
     "finalNine": "Kies uiteindelijk 9 favorieten.",
     "doublePhoto": "Dubbelklik of dubbeltik op een foto om deze toe te voegen. Herhaal om deze te verwijderen.",
-    "editNameHelp": "Klik op de naam onder een foto om deze te bewerken."
+    "editNameHelp": "Klik op de naam onder een foto om deze te bewerken.",
+    "resetCandidates": "Kandidaten wissen",
+    "resetCandidatesConfirm": "Lijst wissen? Geplaatste foto’s blijven staan.",
+    "saveChanges": "Wijzigingen opslaan",
+    "editDenied": "Alleen de auteur kan dit bericht bewerken."
   },
   "cs": {
     "nav": "Mých top 9",
@@ -567,7 +603,11 @@
     "memberAccess": "Přihlášení / Registrace",
     "finalNine": "Na závěr vyberte 9 favoritů.",
     "doublePhoto": "Dvojitým kliknutím nebo klepnutím fotku přidáte. Opakováním ji odeberete.",
-    "editNameHelp": "Kliknutím na jméno pod fotkou ho upravíte."
+    "editNameHelp": "Kliknutím na jméno pod fotkou ho upravíte.",
+    "resetCandidates": "Vymazat kandidáty",
+    "resetCandidatesConfirm": "Vymazat seznam? Umístěné fotky zůstanou.",
+    "saveChanges": "Uložit změny",
+    "editDenied": "Tento příspěvek může upravit pouze autor."
   },
   "de": {
     "nav": "Meine Top 9",
@@ -624,7 +664,11 @@
     "memberAccess": "Anmelden / Registrieren",
     "finalNine": "Wähle zum Abschluss 9 Favoriten aus.",
     "doublePhoto": "Klicke oder tippe zweimal auf ein Foto, um es hinzuzufügen. Wiederhole dies, um es zu entfernen.",
-    "editNameHelp": "Klicke auf den Namen unter einem Foto, um ihn zu bearbeiten."
+    "editNameHelp": "Klicke auf den Namen unter einem Foto, um ihn zu bearbeiten.",
+    "resetCandidates": "Kandidaten leeren",
+    "resetCandidatesConfirm": "Liste leeren? Platzierte Fotos bleiben erhalten.",
+    "saveChanges": "Änderungen speichern",
+    "editDenied": "Nur der Autor kann diesen Beitrag bearbeiten."
   },
   "pt": {
     "nav": "Meus 9 favoritos",
@@ -681,7 +725,11 @@
     "memberAccess": "Entrar / Cadastrar",
     "finalNine": "Escolha 9 finalistas para terminar.",
     "doublePhoto": "Clique ou toque duas vezes na foto para adicioná-la. Repita para removê-la.",
-    "editNameHelp": "Clique no nome abaixo de uma foto para editá-lo."
+    "editNameHelp": "Clique no nome abaixo de uma foto para editá-lo.",
+    "resetCandidates": "Limpar candidatos",
+    "resetCandidatesConfirm": "Limpar a lista? As fotos posicionadas serão mantidas.",
+    "saveChanges": "Salvar alterações",
+    "editDenied": "Apenas o autor pode editar esta publicação."
   },
   "ru": {
     "nav": "Мои топ-9",
@@ -738,7 +786,11 @@
     "memberAccess": "Войти / Зарегистрироваться",
     "finalNine": "В конце выберите 9 финалистов.",
     "doublePhoto": "Дважды нажмите на фото, чтобы добавить его. Повторите, чтобы убрать.",
-    "editNameHelp": "Нажмите на имя под фото, чтобы изменить его."
+    "editNameHelp": "Нажмите на имя под фото, чтобы изменить его.",
+    "resetCandidates": "Очистить кандидатов",
+    "resetCandidatesConfirm": "Очистить список? Размещённые фото останутся.",
+    "saveChanges": "Сохранить изменения",
+    "editDenied": "Изменить публикацию может только автор."
   },
   "vi": {
     "nav": "Top 9 của tôi",
@@ -795,7 +847,11 @@
     "memberAccess": "Đăng nhập / Đăng ký",
     "finalNine": "Hãy chọn 9 ứng viên cuối cùng.",
     "doublePhoto": "Nhấp đúp hoặc chạm hai lần vào ảnh để thêm. Lặp lại để bỏ chọn.",
-    "editNameHelp": "Nhấn vào tên bên dưới ảnh để chỉnh sửa."
+    "editNameHelp": "Nhấn vào tên bên dưới ảnh để chỉnh sửa.",
+    "resetCandidates": "Xóa danh sách ứng viên",
+    "resetCandidatesConfirm": "Xóa danh sách? Ảnh đã xếp vẫn được giữ lại.",
+    "saveChanges": "Lưu thay đổi",
+    "editDenied": "Chỉ tác giả mới có thể sửa bài đăng này."
   },
   "id": {
     "nav": "9 Favorit Saya",
@@ -852,7 +908,11 @@
     "memberAccess": "Masuk / Daftar",
     "finalNine": "Pilih 9 kandidat terakhir untuk menyelesaikan permainan.",
     "doublePhoto": "Klik atau ketuk dua kali pada foto untuk menambahkannya. Ulangi untuk menghapusnya.",
-    "editNameHelp": "Klik nama di bawah foto untuk mengeditnya."
+    "editNameHelp": "Klik nama di bawah foto untuk mengeditnya.",
+    "resetCandidates": "Kosongkan kandidat",
+    "resetCandidatesConfirm": "Kosongkan daftar? Foto yang sudah ditempatkan tetap ada.",
+    "saveChanges": "Simpan perubahan",
+    "editDenied": "Hanya pembuat yang dapat mengedit postingan ini."
   },
   "hi": {
     "nav": "मेरे टॉप 9",
@@ -909,7 +969,11 @@
     "memberAccess": "लॉगिन / पंजीकरण",
     "finalNine": "अंत में 9 उम्मीदवार चुनें।",
     "doublePhoto": "फ़ोटो जोड़ने के लिए उस पर दो बार क्लिक या टैप करें। हटाने के लिए यही दोहराएँ।",
-    "editNameHelp": "फ़ोटो के नीचे नाम पर क्लिक करके उसे बदलें।"
+    "editNameHelp": "फ़ोटो के नीचे नाम पर क्लिक करके उसे बदलें।",
+    "resetCandidates": "उम्मीदवार सूची खाली करें",
+    "resetCandidatesConfirm": "सूची खाली करें? बोर्ड पर रखी फ़ोटो बनी रहेंगी।",
+    "saveChanges": "बदलाव सहेजें",
+    "editDenied": "केवल लेखक इस पोस्ट को बदल सकता है।"
   },
   "bn": {
     "nav": "আমার সেরা ৯",
@@ -966,7 +1030,11 @@
     "memberAccess": "লগইন / নিবন্ধন",
     "finalNine": "শেষে ৯টি পছন্দ বেছে নিন।",
     "doublePhoto": "ছবি যোগ করতে তাতে দুবার ক্লিক বা ট্যাপ করুন। সরাতে আবার একই কাজ করুন।",
-    "editNameHelp": "ছবির নিচের নামে ক্লিক করে সেটি সম্পাদনা করুন।"
+    "editNameHelp": "ছবির নিচের নামে ক্লিক করে সেটি সম্পাদনা করুন।",
+    "resetCandidates": "প্রার্থী তালিকা খালি করুন",
+    "resetCandidatesConfirm": "তালিকা খালি করবেন? বোর্ডে রাখা ছবিগুলো থাকবে।",
+    "saveChanges": "পরিবর্তন সংরক্ষণ",
+    "editDenied": "শুধু লেখক এই পোস্ট সম্পাদনা করতে পারেন।"
   },
   "ar": {
     "nav": "أفضل 9 لديّ",
@@ -1023,7 +1091,11 @@
     "memberAccess": "تسجيل الدخول / إنشاء حساب",
     "finalNine": "اختر ٩ مرشحين في النهاية.",
     "doublePhoto": "انقر مرتين على صورة المرشح لإضافتها، وكرر ذلك لإزالتها.",
-    "editNameHelp": "اضغط على الاسم أسفل الصورة لتعديله."
+    "editNameHelp": "اضغط على الاسم أسفل الصورة لتعديله.",
+    "resetCandidates": "إفراغ قائمة المرشحين",
+    "resetCandidatesConfirm": "هل تريد إفراغ القائمة؟ ستبقى الصور الموضوعة في اللوحة.",
+    "saveChanges": "حفظ التعديلات",
+    "editDenied": "يمكن لكاتب المنشور فقط تعديله."
   },
   "tr": {
     "nav": "İlk 9 Favorim",
@@ -1080,7 +1152,11 @@
     "memberAccess": "Giriş / Kayıt",
     "finalNine": "Oyunu tamamlamak için 9 finalist seçin.",
     "doublePhoto": "Fotoğrafı eklemek için çift tıklayın veya iki kez dokunun. Kaldırmak için tekrarlayın.",
-    "editNameHelp": "Düzenlemek için fotoğrafın altındaki ada tıklayın."
+    "editNameHelp": "Düzenlemek için fotoğrafın altındaki ada tıklayın.",
+    "resetCandidates": "Adayları temizle",
+    "resetCandidatesConfirm": "Liste temizlensin mi? Yerleştirilen fotoğraflar kalır.",
+    "saveChanges": "Değişiklikleri kaydet",
+    "editDenied": "Bu gönderiyi yalnızca yazarı düzenleyebilir."
   },
   "th": {
     "nav": "9 อันดับของฉัน",
@@ -1137,6 +1213,10 @@
     "memberAccess": "เข้าสู่ระบบ / สมัครสมาชิก",
     "finalNine": "เลือกผู้เข้ารอบสุดท้าย 9 รายการเพื่อจบเกม",
     "doublePhoto": "คลิกหรือแตะรูปสองครั้งเพื่อเพิ่ม ทำซ้ำอีกครั้งเพื่อนำออก",
-    "editNameHelp": "กดชื่อใต้รูปเพื่อแก้ไข"
+    "editNameHelp": "กดชื่อใต้รูปเพื่อแก้ไข",
+    "resetCandidates": "ล้างรายชื่อผู้สมัคร",
+    "resetCandidatesConfirm": "ล้างรายชื่อหรือไม่? รูปที่วางไว้จะยังอยู่",
+    "saveChanges": "บันทึกการแก้ไข",
+    "editDenied": "เฉพาะผู้เขียนเท่านั้นที่แก้ไขโพสต์นี้ได้"
   }
 }

@@ -1,11 +1,13 @@
 const fs=require('fs'),assert=require('assert/strict'),babel=require('@babel/core');const mod={exports:{}};new Function('module','exports',babel.transformSync(fs.readFileSync('src/components/topNine/publicTitle.js','utf8'),{presets:[['@babel/preset-env',{targets:{node:'current'}}]],configFile:false,babelrc:false}).code)(mod,mod.exports);const t=mod.exports;
-(async()=>{assert.equal(t.decoratedTitle('Template','ABC123'),'Template · ABC123');assert(Array.from(t.decoratedTitle('😀'.repeat(100),'ABC123')).length<=100);assert.equal(t.isDuplicateTitle({code:'23505',message:'duplicate key value violates unique constraint "top_nine_public_boards_title_key"'}),true);assert.equal(t.isDuplicateTitle({code:'23505',message:'duplicate key value violates unique constraint "guest_credentials_pkey"'}),false);
+(async()=>{assert.equal(t.authoredTitle('Template','Nick'),'Template - Nick');assert(Array.from(t.authoredTitle('😀'.repeat(100),'Nick')).length<=100);assert.equal(t.isDuplicateTitle({code:'23505',message:'duplicate key value violates unique constraint "top_nine_public_boards_title_key"'}),true);assert.equal(t.isDuplicateTitle({code:'23505',message:'duplicate key value violates unique constraint "guest_credentials_pkey"'}),false);
  const args={p_title:'Template',p_slots:[{name:'Edited caption'}],p_salt:'existing-salt',p_proof:'existing-proof'};let calls=[];const api={rpc:async(name,payload)=>{calls.push({name,payload});return {};}};
- await t.publishWithTitleRetry(api,args,true);assert.equal(calls.length,1);assert(/^Template · [A-F0-9]{10}$/.test(calls[0].payload.p_title));assert.equal(calls[0].payload.p_slots[0].name,'Edited caption');
+ await t.publishWithTitleRetry(api,args,true);assert.equal(calls.length,1);assert.equal(calls[0].payload.p_title,'Template');assert.equal(calls[0].payload.p_slots[0].name,'Edited caption');
  calls=[];await t.publishWithTitleRetry(api,args,false);assert.equal(calls[0].payload.p_title,'Template');
  calls=[];const retry={rpc:async(name,payload)=>{calls.push(payload);return calls.length===1?{error:{code:'23505',message:'duplicate title'}}:{};}};await t.publishWithTitleRetry(retry,args);assert.equal(calls.length,2);assert.notEqual(calls[1].p_title,'Template');assert.equal(calls[0].p_salt,calls[1].p_salt);assert.equal(calls[0].p_proof,calls[1].p_proof);
  let tries=0;await assert.rejects(()=>t.publishWithTitleRetry({rpc:async()=>{tries++;return {error:{message:'permission denied'}};}},args),e=>e.message==='permission denied');assert.equal(tries,1);
  tries=0;await assert.rejects(()=>t.publishWithTitleRetry({rpc:async()=>{tries++;return {error:{message:'duplicate title'}};}},args),e=>e.message==='duplicate title');assert.equal(tries,3);console.log('Public titles: default suffix, custom-title preservation, Unicode length, duplicate-only bounded retry and unchanged proof passed');})().catch(e=>{console.error(e);process.exitCode=1;});
 
-assert.equal(t.authoredTitle('명작 영화 이상형 월드컵','닉네임'),'닉네임 - 명작 영화 이상형 월드컵');
+assert.equal(t.authoredTitle('명작 영화 이상형 월드컵','닉네임'),'명작 영화 이상형 월드컵 - 닉네임');
 assert(Array.from(t.authoredTitle('😀'.repeat(100),'닉네임')).length<=100);
+
+assert.equal(t.authoredTitle('명작 영화 - 닉네임','닉네임'),'명작 영화 - 닉네임');
