@@ -1,0 +1,21 @@
+const fs=require('fs'),assert=require('assert/strict'),{PGlite}=require('@electric-sql/pglite');
+(async()=>{
+const db=new PGlite(),id=n=>'00000000-0000-4000-8000-'+String(n).padStart(12,'0');
+await db.exec("CREATE TABLE worldcups(id uuid PRIMARY KEY,data jsonb,deleted_at timestamptz);CREATE TABLE top_nine_public_boards(id uuid PRIMARY KEY,slots jsonb,source_worldcup_ids uuid[] NOT NULL DEFAULT '{}');");
+const pool=Array.from({length:256},(_,i)=>({image:'https://example.com/'+i+'.jpg'})),slots=pool.slice(0,9).map((c,i)=>({id:String(i),src:c.image}));
+await db.query('INSERT INTO worldcups VALUES($1,$2,NULL)',[id(1),JSON.stringify(pool)]);
+await db.query('INSERT INTO top_nine_public_boards(id,slots) VALUES($1,$2)',[id(2),JSON.stringify(slots)]);
+await db.query('INSERT INTO top_nine_public_boards(id,slots) VALUES($1,$2)',[id(3),JSON.stringify([{id:'single',src:slots[0].src}])]);
+await db.query('INSERT INTO top_nine_public_boards VALUES($1,$2,$3)',[id(4),JSON.stringify(slots),[id(99)]]);
+const migration=fs.readFileSync('supabase/20261105_top_nine_restore_legacy_sources.sql','utf8');
+await db.exec(migration);await db.exec(migration);
+assert.deepEqual((await db.query('SELECT source_worldcup_ids FROM top_nine_public_boards WHERE id=$1',[id(2)])).rows[0].source_worldcup_ids,[id(1)]);
+assert.deepEqual((await db.query('SELECT source_worldcup_ids FROM top_nine_public_boards WHERE id=$1',[id(3)])).rows[0].source_worldcup_ids,[]);
+assert.deepEqual((await db.query('SELECT source_worldcup_ids FROM top_nine_public_boards WHERE id=$1',[id(4)])).rows[0].source_worldcup_ids,[id(99)]);
+await db.query('INSERT INTO worldcups VALUES($1,$2,NULL)',[id(5),JSON.stringify(pool)]);
+await db.query('INSERT INTO top_nine_public_boards(id,slots) VALUES($1,$2)',[id(6),JSON.stringify(slots)]);
+await db.exec(migration);
+assert.deepEqual((await db.query('SELECT source_worldcup_ids FROM top_nine_public_boards WHERE id=$1',[id(6)])).rows[0].source_worldcup_ids,[]);
+assert.deepEqual((await db.query('SELECT slots FROM top_nine_public_boards WHERE id=$1',[id(2)])).rows[0].slots,slots);
+await db.close();console.log('Legacy sources: unique 9-of-256 source restored, repeat safe, ambiguous/single-image skipped, existing source and board photos preserved.');
+})().catch(error=>{console.error(error);process.exitCode=1});
