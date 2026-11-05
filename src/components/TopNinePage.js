@@ -52,10 +52,9 @@ export default function TopNinePage({publicBoard=null,publicId='',onHome}={}){
   const anchor=[...list.querySelectorAll('[data-candidate-id]')].find(node=>node.dataset.candidateId===position.anchorId);
   list.scrollTop=anchor?list.scrollTop+anchor.getBoundingClientRect().top-list.getBoundingClientRect().top-position.offset:position.scrollTop;
  },[slots]);
- const previousTap=useRef(null),previousSlotTap=useRef(null),slotSwapTimer=useRef(null);
- useEffect(()=>()=>clearTimeout(slotSwapTimer.current),[]);
+ const previousTap=useRef(null),previousSlotTap=useRef(null);
  useEffect(()=>{
-  previousTap.current=null;previousSlotTap.current=null;clearTimeout(slotSwapTimer.current);
+  previousTap.current=null;previousSlotTap.current=null;
   if(stage!=='home' && window.scrollY)window.scrollTo({top:0,behavior:'instant'});
  },[stage]);
  const languageRef=useRef(lang);languageRef.current=lang;
@@ -104,19 +103,13 @@ export default function TopNinePage({publicBoard=null,publicId='',onHome}={}){
  function addSiteCandidates(items){poolWasReset.current=false;setSourceIds(old=>[...new Set([...old,...items.map(c=>c.id?.match(/^site:([0-9a-f-]{36}):/i)?.[1]).filter(Boolean)])].slice(0,20));setCandidates(old=>{const map=new Map(old.map(c=>[c.id,c]));items.forEach(c=>{if(map.size<2048&&!map.has(c.id))map.set(c.id,c);});return [...map.values()];});setCandidateQuery('');setLimit(36);setStage('pick');}
  function slotClick(i,event){
   if(stage==='preview'||busy)return;
-  clearTimeout(slotSwapTimer.current);
   if(!slots[i]){previousSlotTap.current=null;setFocus(i);pickUpload(i);return;}
   if(event.detail>0&&activatedPhoto(event,previousSlotTap)){
    setSlots(old=>clearSlot(old,i));setFocus(null);return;
   }
-  if(focus!==null&&focus!==i&&slots[focus]){
-   const from=focus;
-   // Give a second click time to remove this photo before applying a swap.
-   slotSwapTimer.current=setTimeout(()=>setSlots(old=>swapSlots(old,from,i)),450);
-  }
   setFocus(i);
  }
- function dragStart(event,item){if(busy)return;if(item.kind==='candidate')rememberPoolPosition(item.candidate.id);clearTimeout(slotSwapTimer.current);previousSlotTap.current=null;dragItem.current=item;event.dataTransfer?.setData('text/plain','onepick-top-nine');if(event.dataTransfer)event.dataTransfer.effectAllowed='copyMove';}
+ function dragStart(event,item){if(busy)return;if(item.kind==='candidate')rememberPoolPosition(item.candidate.id);previousSlotTap.current=null;dragItem.current=item;event.dataTransfer?.setData('text/plain','onepick-top-nine');if(event.dataTransfer)event.dataTransfer.effectAllowed='copyMove';}
  function homeGridDragOver(event){
   if(busy||!Array.from(event.dataTransfer?.types||[]).includes('Files'))return;
   event.preventDefault();event.dataTransfer.dropEffect='copy';
@@ -212,7 +205,7 @@ export default function TopNinePage({publicBoard=null,publicId='',onHome}={}){
  {c&&showNames&&(stage==='pick'?<input className="tn-name-input" type="text" value={c.name||''} maxLength={150} disabled={busy} aria-label={`${t.edit}: ${c.name||i+1}`} title={t.edit} onFocus={()=>setFocus(i)} onChange={event=>{const name=event.target.value;setSlots(previous=>previous.map((item,index)=>index===i?{...item,name}:item));}}/>:<span className="tn-name">{c.name}</span>)}
  {c&&frames[c.src]?.error&&<button className="tn-retry" onClick={()=>{frameJobs.current.delete(c.src);setFrames(f=>({...f,[c.src]:null}));setFrameRetry(v=>v+1);}}>{t.retry}</button>}
  </div>)}</div>
- {stage==='pick'?<><div className="tn-drag-help"><p>{t.doublePhoto}</p>{(lang==='ko'?['빈칸을 누르면 사진을 등록할 수 있어요.','등록된 후보는 오른쪽 후보칸에서 드래그하여 넣을 수 있어요.','사진을 드래그해서 칸의 위치를 바꿀 수 있어요.']:['Tap an empty cell to add a photo.','Drag candidates from the list into any cell.','Drag photos to swap cells.']).map(line=><p key={line}>{line}</p>)}</div>
+ {stage==='pick'?<><div className="tn-drag-help"><p>{t.boardPhotoHelp}</p>{(lang==='ko'?['빈칸을 누르면 사진을 등록할 수 있어요.','등록된 후보는 오른쪽 후보칸에서 드래그하여 넣을 수 있어요.','사진을 드래그해서 칸의 위치를 바꿀 수 있어요.']:['Tap an empty cell to add a photo.','Drag candidates from the list into any cell.','Drag photos to swap cells.']).map(line=><p key={line}>{line}</p>)}</div>
  {focus!==null&&slots[focus]&&<fieldset disabled={busy} className="tn-crop"><legend title={slots[focus].name||'One Pick'}>{slots[focus].name||'One Pick'}</legend>{[['zoom',t.zoom,0,3,.05],['x',t.horizontal,0,100,1],['y',t.vertical,0,100,1]].map(([key,label,min,max,step])=><label key={key}>{label}<input type="range" min={min} max={max} step={step} value={slots[focus][key]??(key==='zoom'?1:50)} onChange={e=>adjust(key,e.target.value)}/></label>)}<button onClick={()=>{setSlots(old=>old.map((c,i)=>i===focus?null:c));setFocus(null);}}>{t.remove}</button></fieldset>}
  <label className="tn-title-field">{lang==='ko'?'구절판 이름 (선택)':t.titleLabel}<input value={title} maxLength={100} disabled={busy} onChange={e=>setTitle(e.target.value)}/></label><label className="tn-toggle"><input type="checkbox" checked={names} disabled={busy} onChange={e=>setNames(e.target.checked)}/>{t.names}</label><p className="tn-caption-help">{t.editNameHelp}</p>
  </>:<p className="tn-credit">OnePickGame.com</p>}
