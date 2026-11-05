@@ -1,4 +1,4 @@
-import titleLocalization from './topNine/localizedTitle.cjs';
+import {localizedBoardTitle} from './topNine/localizedTitle';
 // @refresh reset
 import TopNineGame from "./topNine/TopNineGame";
 import GameCountSelect from "./topNine/GameCountSelect";
@@ -18,7 +18,6 @@ import {normalizeCandidates,candidateMatches,toggleCandidate,placeCandidate,clea
 import {importFile,mediaFrame,exportPNG,downloadBlob,isVideo} from './topNine/media';
 import {draftStore} from './topNine/draft';
 import './topNine/topNine.css';
-const {localizedBoardTitle}=titleLocalization;
 const blank=()=>Array(9).fill(null);
 function Photo({candidate}){const [bad,setBad]=useState(false);return bad?<span className="tn-missing">◇</span>:isVideo(candidate.src)?<video src={candidate.src} muted playsInline preload="metadata" onError={()=>setBad(true)}/>:<img src={candidate.src} alt="" loading="lazy" decoding="async" onError={()=>setBad(true)}/>;}
 function CropPhoto({candidate,frame}) {

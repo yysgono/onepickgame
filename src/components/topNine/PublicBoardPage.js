@@ -1,4 +1,4 @@
-import titleLocalization from './localizedTitle.cjs';
+import {loadBoardTitleSources} from './localizedTitle';
 import React,{useEffect,useState} from 'react';
 import {Link,useNavigate,useParams} from 'react-router-dom';
 import TopNinePage from '../TopNinePage';
@@ -6,7 +6,6 @@ import Seo from '../../seo/Seo';
 import {supabase} from '../../utils/supabaseClient';
 import {makeShareHash,readShared} from './core';
 import copy from './copy.json';
-const {loadBoardTitleSources}=titleLocalization;
 
 export default function PublicBoardPage(){
  const {lang:routeLang,id}=useParams(),navigate=useNavigate(),lang=copy[routeLang]?routeLang:'en',t=copy[lang];

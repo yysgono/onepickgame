@@ -1,4 +1,4 @@
-import titleLocalization from './localizedTitle.cjs';
+import {localizedBoardTitle,loadBoardTitleSources} from './localizedTitle';
 import {Link} from 'react-router-dom';
 import {createPortal} from 'react-dom';
 import {authoredTitle,publishWithTitleRetry} from './publicTitle';
@@ -10,7 +10,6 @@ import {supabase} from '../../utils/supabaseClient';
 import {makeShareHash,readShared,cropRect} from './core';
 import {isVideo} from './media';
 import {hasBadword} from '../../badwords-multilang';
-const {localizedBoardTitle,loadBoardTitleSources}=titleLocalization;
 // The public RPC stores nine image records. Use one shared static tile for empty positions.
 const emptyTile={id:'tn-empty-cell',name:'',src:'https://www.onepickgame.com/top-nine-empty.png',zoom:1,x:50,y:50};
 export function PublishBoard({slots,title,names,lang,onPublished,disabled=false,sourceIds=[],existingId=''}) {
