@@ -1855,7 +1855,7 @@ ctx.fillText(
         /* 하단 로고 텍스트 */
 
         ctx.fillStyle =
-          "#64d8ff";
+          "#dc2626";
 
 ctx.font =
   "900 30px Arial, sans-serif";
