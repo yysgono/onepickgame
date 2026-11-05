@@ -1,3 +1,4 @@
+const {localizedBoardTitle,loadBoardTitleSources}=require('./src/components/topNine/localizedTitle.cjs');
 const COPY=require('./src/components/topNine/copy.json');
 const {loadSeoTemplate}=require('./seo-template.cjs');
 const escape=value=>String(value??'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
@@ -23,9 +24,10 @@ module.exports=function(app,supabase,origin){
   res.setHeader('Cache-Control','no-store');
   if(!Object.hasOwn(COPY,lang)||!uuid.test(id))return res.status(404).send('Not found');
   try{
-   const {data,error}=await supabase.from('top_nine_public_boards').select('id,title,slots,show_names').eq('id',id).maybeSingle();
+   const {data,error}=await supabase.from('top_nine_public_boards').select('id,title,slots,show_names,source_worldcup_ids').eq('id',id).maybeSingle();
    if(error)throw error;
    if(!data)return res.status(404).send('Not found');
+   data.title=localizedBoardTitle(data,await loadBoardTitleSources(supabase,[data]),lang);
    return res.type('html').send(renderBoardHtml(await loadSeoTemplate(origin),origin,lang,data));
   }catch{return res.status(503).send('Please try again');}
  });
