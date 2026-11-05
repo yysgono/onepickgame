@@ -1,0 +1,122 @@
+{
+  "en": [
+    "My Top 9 created by {author}, featuring {names}.",
+    "My Top 9 featuring {names}.",
+    "My Top 9 created by {author}.",
+    "Explore this My Top 9 collage."
+  ],
+  "ko": [
+    "{author}님이 만든 {names}로 구성된 구절판입니다.",
+    "{names}로 구성된 구절판입니다.",
+    "{author}님이 만든 구절판입니다.",
+    "선택한 후보들로 구성된 구절판을 살펴보세요."
+  ],
+  "ja": [
+    "{author}さんが作成した、{names}を集めたマイベスト9です。",
+    "{names}を集めたマイベスト9です。",
+    "{author}さんが作成したマイベスト9です。",
+    "このマイベスト9をご覧ください。"
+  ],
+  "zh": [
+    "这是{author}制作的九宫格，包含{names}。",
+    "这个九宫格包含{names}。",
+    "这是{author}制作的九宫格。",
+    "查看这个精选九宫格。"
+  ],
+  "es": [
+    "Mi Top 9 creado por {author}, con {names}.",
+    "Mi Top 9 con {names}.",
+    "Mi Top 9 creado por {author}.",
+    "Explora este collage de Mi Top 9."
+  ],
+  "fr": [
+    "Mon Top 9 créé par {author}, avec {names}.",
+    "Mon Top 9 avec {names}.",
+    "Mon Top 9 créé par {author}.",
+    "Découvrez ce collage Mon Top 9."
+  ],
+  "vi": [
+    "Top 9 của tôi do {author} tạo, gồm {names}.",
+    "Top 9 của tôi gồm {names}.",
+    "Top 9 của tôi do {author} tạo.",
+    "Khám phá ảnh ghép Top 9 này."
+  ],
+  "de": [
+    "Mein Top 9, erstellt von {author}, mit {names}.",
+    "Mein Top 9 mit {names}.",
+    "Mein Top 9, erstellt von {author}.",
+    "Entdecke diese Top-9-Collage."
+  ],
+  "ru": [
+    "Мой топ-9 от {author}: {names}.",
+    "Мой топ-9: {names}.",
+    "Мой топ-9 от {author}.",
+    "Посмотрите этот коллаж «Мой топ-9»."
+  ],
+  "id": [
+    "Top 9 Saya buatan {author}, berisi {names}.",
+    "Top 9 Saya berisi {names}.",
+    "Top 9 Saya buatan {author}.",
+    "Lihat kolase Top 9 ini."
+  ],
+  "pt": [
+    "Meu Top 9 criado por {author}, com {names}.",
+    "Meu Top 9 com {names}.",
+    "Meu Top 9 criado por {author}.",
+    "Explore esta colagem Meu Top 9."
+  ],
+  "hi": [
+    "{author} द्वारा बनाया गया मेरा टॉप 9: {names}।",
+    "मेरा टॉप 9: {names}।",
+    "{author} द्वारा बनाया गया मेरा टॉप 9।",
+    "यह मेरा टॉप 9 कोलाज देखें।"
+  ],
+  "tr": [
+    "{author} tarafından oluşturulan İlk 9’um: {names}.",
+    "İlk 9’um: {names}.",
+    "{author} tarafından oluşturulan İlk 9’um.",
+    "Bu İlk 9’um kolajını keşfedin."
+  ],
+  "th": [
+    "My Top 9 ที่สร้างโดย {author} ประกอบด้วย {names}",
+    "My Top 9 ประกอบด้วย {names}",
+    "My Top 9 ที่สร้างโดย {author}",
+    "ชมภาพคอลลาจ My Top 9 นี้"
+  ],
+  "ar": [
+    "أفضل 9 اختيارات من إعداد {author}، وتضم {names}.",
+    "أفضل 9 اختيارات، وتضم {names}.",
+    "أفضل 9 اختيارات من إعداد {author}.",
+    "استكشف هذه اللوحة لأفضل 9 اختيارات."
+  ],
+  "bn": [
+    "{author}-এর তৈরি আমার সেরা ৯: {names}।",
+    "আমার সেরা ৯: {names}।",
+    "{author}-এর তৈরি আমার সেরা ৯।",
+    "আমার সেরা ৯-এর এই কোলাজটি দেখুন।"
+  ],
+  "it": [
+    "La mia Top 9 creata da {author}, con {names}.",
+    "La mia Top 9 con {names}.",
+    "La mia Top 9 creata da {author}.",
+    "Scopri questo collage La mia Top 9."
+  ],
+  "pl": [
+    "Moje Top 9 autorstwa {author}: {names}.",
+    "Moje Top 9: {names}.",
+    "Moje Top 9 autorstwa {author}.",
+    "Zobacz ten kolaż Moje Top 9."
+  ],
+  "nl": [
+    "Mijn Top 9, gemaakt door {author}, met {names}.",
+    "Mijn Top 9 met {names}.",
+    "Mijn Top 9, gemaakt door {author}.",
+    "Bekijk deze Mijn Top 9-collage."
+  ],
+  "cs": [
+    "Moje Top 9 od {author}: {names}.",
+    "Moje Top 9: {names}.",
+    "Moje Top 9 od {author}.",
+    "Prohlédněte si tuto koláž Moje Top 9."
+  ]
+}
