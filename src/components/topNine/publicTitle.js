@@ -1,3 +1,8 @@
+export function authoredTitle(title,nickname) {
+ const author=Array.from(String(nickname||'').trim()||'OnePick').slice(0,30).join('');
+ const base=String(title||'').trim()||'My Top 9';
+ return Array.from(author+' - '+base).slice(0,100).join('');
+}
 export function titleSuffix() {
   if(globalThis.crypto?.getRandomValues){const bytes=new Uint8Array(5);globalThis.crypto.getRandomValues(bytes);return [...bytes].map(value=>value.toString(16).padStart(2,'0')).join('').toUpperCase();}
   return Math.random().toString(16).slice(2,12).padEnd(10,'0').toUpperCase();

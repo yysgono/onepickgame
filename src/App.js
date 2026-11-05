@@ -223,6 +223,7 @@ function LanguageWrapper(props) {
 ===================================================== */
 
 // Home, header and login remain eager; route-only screens load on entry.
+const PublicBoardPage = lazy(() => import("./components/topNine/PublicBoardPage"));
 const PrivateContentCards = lazy(() => import("./components/PrivateContentCards"));
 const MyWorldcupCards = lazy(() => import("./components/MyWorldcupCards"));
 const BlogEditorPage = lazy(() => import("./components/BlogEditorPage"));
@@ -857,6 +858,7 @@ function handleMakeWorldcup() {
 />
   }
 />
+<Route path="/:lang/mytop9/:id" element={<PublicBoardPage />} />
 <Route path="/:lang/mytop9" element={<TopNinePage />} />
 <Route path="/:lang/top-nine" element={<LegacyTopNineRedirect />} />
 <Route path="/:lang/random-pick" element={<RandomPickPage user={user} />} />

@@ -112,3 +112,9 @@
 
 .top-nine .tn-picture-templates strong{display:block;-webkit-line-clamp:unset;line-clamp:unset;max-height:none}
 .top-nine .tn-picture-templates strong>.tn-template-title{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-clamp:2;overflow:hidden;text-overflow:ellipsis;line-height:1.5;max-height:3em;padding:0;overflow-wrap:anywhere}
+
+.top-nine.tn-public-overlay{max-width:none;width:100%;margin:0;padding:20px;z-index:20000}
+@media(max-width:700px){.top-nine.tn-public-overlay{padding:10px}}
+
+.tn-public-card-link{display:block;width:100%;padding:8px;border:1px solid var(--tn-border);border-radius:10px;background:white;text-decoration:none;color:#50248d;font-weight:700}
+.tn-public-card-link:focus-visible{outline:3px solid #9a60ed;outline-offset:3px}

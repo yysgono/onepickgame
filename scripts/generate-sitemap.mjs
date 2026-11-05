@@ -253,7 +253,8 @@ export function generateLanguageSitemap(
   lang,
   worldcups,
   tierLists,
-  quizzes = []
+  quizzes = [],
+  topNineBoards = []
 ) {
   // Do not advertise the build date as a content modification date.
   const today = "";
@@ -289,6 +290,10 @@ export function generateLanguageSitemap(
   }
 
   xml += makeUrlEntry({ loc: `${BASE_URL}/${lang}/mytop9`, changefreq: "weekly", priority: "0.7" });
+
+  for (const board of topNineBoards) {
+    xml += makeUrlEntry({loc: `${BASE_URL}/${lang}/mytop9/${board.id}`,lastmod: board.created_at ? new Date(board.created_at).toISOString() : undefined,changefreq:"weekly",priority:"0.6"});
+  }
 
   // 티어표 목록
   xml += makeUrlEntry({
@@ -545,6 +550,10 @@ async function generateSitemaps() {
     const blogPosts =
       await fetchBlogPosts();
 
+    const topNineBoards = await fetchAllRows({
+      table: "top_nine_public_boards", select: "id,created_at", label: "공개 구절판"
+    });
+
     // 언어별 sitemap 생성
     for (const lang of LANGS) {
       const xml =
@@ -552,7 +561,8 @@ async function generateSitemaps() {
           lang,
           worldcups,
           tierLists,
-          quizzes
+          quizzes,
+          topNineBoards
         );
 
       const filePath =

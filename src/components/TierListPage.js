@@ -1426,7 +1426,7 @@ maxWidth: isMobile ? 430 : 1780,
     })}
   </div>
 )}
-{!mineOnly && <section className="tier-recommendations" style={{ width: "100%", maxWidth: "none", boxSizing: "border-box" }}>
+{!mineOnly && !searchInput.trim() && <section className="tier-recommendations" style={{ width: "100%", maxWidth: "none", boxSizing: "border-box" }}>
   <h2 style={{ textAlign: "center", color: "#1d4ed8", fontSize: isMobile ? 24 : 34 }}>{t("tierList.page.recommendedPresetTitle")}</h2>
   <div className="tier-recommendation-filters"><div
             style={{
