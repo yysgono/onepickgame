@@ -45,8 +45,13 @@ const button=text=>[...document.querySelectorAll('button')].find(b=>b.textConten
  await act(async()=>Simulate.change(document.querySelector('.tn-name-input'),{target:{value:'내가 수정한 이름'}}));
  const title=document.querySelector('.tn-title-field input');await act(async()=>Simulate.change(title,{target:{value:'내 구절판 제목'}}));assert.equal(publishedProps.autoTitle,false);await act(async()=>Simulate.change(title,{target:{value:'Test Template'}}));assert.equal(publishedProps.autoTitle,true);
  await click(button(words.privateView));assert(document.querySelector('.tn-preview'));assert.equal(document.querySelector('.tn-name-input'),null);assert(document.querySelector('.tn-preview').textContent.includes('내가 수정한 이름'));const footer=document.querySelector('.top-nine>.tn-actions.tn-sticky');const edit=[...footer.querySelectorAll('button')].find(b=>b.textContent===words.edit);assert(edit);await click(edit);assert(document.querySelector('.tn-pool'));assert.equal(document.querySelector('.tn-name-input').value,'내가 수정한 이름');await act(async()=>publishedProps.onPublished());assert(document.querySelector('.tn-home-grid'));assert(scrolledTop);assert(!document.querySelector('.tn-pool'));const publicSlots=core.normalizeCandidates(pool).slice(0,9);
+ publishedProps=null;
  await act(async()=>root.render(React.createElement(Component,{key:'public-edit',publicBoard:{slots:publicSlots,title:'Saved board',names:true,sourceIds:['cup']},publicId:'board'})));
+ assert.equal(publishedProps,null);
  await click(button(words.edit));
+ assert.equal(publishedProps.disabled,true);
+ await act(async()=>Simulate.change(document.querySelector('.tn-title-field input'),{target:{value:'Updated board'}}));
+ assert.equal(publishedProps.disabled,false);
  assert.equal(document.querySelectorAll('.tn-pool .tn-candidates button').length,30);
  assert.equal(publishedProps.slots.filter(Boolean).length,9);
  assert.deepEqual(publishedProps.sourceIds,['cup']);
