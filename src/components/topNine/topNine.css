@@ -106,3 +106,6 @@
  .tn-pool .tn-candidates{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 .tn-pool .tn-candidates img,.tn-pool .tn-candidates video,.tn-pool .tn-candidates .tn-missing{aspect-ratio:4/5;object-position:center 25%}
+
+.top-nine .tn-picture-templates strong{-webkit-line-clamp:2;line-clamp:2;text-overflow:ellipsis;max-height:82px}
+@media(max-width:700px){.top-nine .tn-picture-templates strong{max-height:72px}}

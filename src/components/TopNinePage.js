@@ -88,6 +88,18 @@ export default function TopNinePage(){
   setFocus(i);
  }
  function dragStart(event,item){if(busy)return;clearTimeout(slotSwapTimer.current);previousSlotTap.current=null;dragItem.current=item;event.dataTransfer?.setData('text/plain','onepick-top-nine');if(event.dataTransfer)event.dataTransfer.effectAllowed='copyMove';}
+ function homeGridDragOver(event){
+  if(busy||!Array.from(event.dataTransfer?.types||[]).includes('Files'))return;
+  event.preventDefault();event.dataTransfer.dropEffect='copy';
+  if(!event.target.closest?.('.tn-cell')){
+   const empty=slots.findIndex(candidate=>!candidate);
+   setDropCell(empty<0?null:empty);
+  }
+ }
+ function homeGridDrop(event){
+  event.preventDefault();event.stopPropagation();setDropCell(null);
+  if(!busy&&event.dataTransfer?.files?.length)ingestFiles(event.dataTransfer.files);
+ }
  function slotDrop(event,index){setDropCell(null);event.preventDefault();event.stopPropagation();if(busy||!['home','pick'].includes(stage))return;if(event.dataTransfer?.files?.length){dragItem.current=null;ingestFiles(event.dataTransfer.files,index);return;}const item=dragItem.current;dragItem.current=null;if(!item)return;if(item.kind==='slot')setSlots(old=>swapSlots(old,item.index,index));else setSlots(old=>placeCandidate(old,item.candidate,index));setFocus(index);}
  function poolDrop(event){event.preventDefault();event.stopPropagation();if(busy)return;if(event.dataTransfer?.files?.length){dragItem.current=null;ingestFiles(event.dataTransfer.files,null,false);return;}const item=dragItem.current;dragItem.current=null;if(item?.kind==='slot'){const candidate=slots[item.index];if(candidate)setCandidates(old=>old.some(c=>c.id===candidate.id)?old:[...old,candidate]);setSlots(old=>clearSlot(old,item.index));setFocus(null);}}
  function adjust(key,value){setSlots(old=>old.map((c,i)=>i===focus&&c?{...c,[key]:Number(value)}:c));}
@@ -110,7 +122,7 @@ export default function TopNinePage(){
  {draftError&&<p role="status" className="tn-message">{t.draftError}</p>}
  {busy&&<p role="status" className="tn-message">{t.loading}</p>}
  {stage==='home'?<>
- <div className={`tn-home-grid tn-grid ${dropCell!==null?'tn-drop-active':''}`} dir="ltr">{slots.map((c,i)=><div key={i} className={`tn-cell ${i===4?'tn-onepick':''} ${dropCell===i?'tn-drop-target':''}`}><button disabled={busy} aria-label={`${i+1}: ${c?.name||'+'}`} onClick={()=>{setFocus(i);pickUpload(i);}} onDragEnter={e=>{if(!busy&&Array.from(e.dataTransfer?.types||[]).includes('Files')){e.preventDefault();setDropCell(i);}}} onDragOver={e=>{if(!busy&&Array.from(e.dataTransfer?.types||[]).includes('Files')){e.preventDefault();e.dataTransfer.dropEffect='copy';setDropCell(i);}}} onDragLeave={e=>{if(!e.currentTarget.contains(e.relatedTarget))setDropCell(current=>current===i?null:current);}} onDrop={e=>slotDrop(e,i)}>{dropCell===i&&<span className="tn-drop-label" aria-hidden="true"><span>↓</span>{t.upload}</span>}{c&&frames[c.src]?.frame?<CropPhoto candidate={c} frame={frames[c.src].frame}/>:<span>{i===4?'One Pick': '+'}</span>}</button></div>)}</div>
+ <div className={`tn-home-grid tn-grid ${dropCell!==null?'tn-drop-active':''}`} dir="ltr" onDragOver={homeGridDragOver} onDragLeave={event=>{if(!event.currentTarget.contains(event.relatedTarget))setDropCell(null);}} onDrop={homeGridDrop}>{slots.map((c,i)=><div key={i} className={`tn-cell ${i===4?'tn-onepick':''} ${dropCell===i?'tn-drop-target':''}`}><button disabled={busy} aria-label={`${i+1}: ${c?.name||'+'}`} onClick={()=>{setFocus(i);pickUpload(i);}} onDragEnter={e=>{if(!busy&&Array.from(e.dataTransfer?.types||[]).includes('Files')){e.preventDefault();setDropCell(i);}}} onDragOver={e=>{if(!busy&&Array.from(e.dataTransfer?.types||[]).includes('Files')){e.preventDefault();e.dataTransfer.dropEffect='copy';setDropCell(i);}}} onDragLeave={e=>{if(!e.currentTarget.contains(e.relatedTarget))setDropCell(current=>current===i?null:current);}} onDrop={e=>slotDrop(e,i)}>{dropCell===i&&<span className="tn-drop-label" aria-hidden="true"><span>↓</span>{t.upload}</span>}{c&&frames[c.src]?.frame?<CropPhoto candidate={c} frame={frames[c.src].frame}/>:<span>{i===4?'One Pick': '+'}</span>}</button></div>)}</div>
  <div className="tn-actions"><button className="tn-primary tn-upload-button" disabled={busy} onClick={()=>pickUpload()}>{t.upload}</button><button className="tn-site-import" disabled={busy} onClick={()=>setSitePicker(true)}>{lang==='ko'?'사이트 내에서 골라오기':'Choose from the site'}</button>{draft&&<button disabled={busy} onClick={resume}>{t.restore}</button>}</div><p className="tn-muted">{t.uploadHelp}</p>
  <form className="tn-search" onSubmit={search}><input aria-label={t.search} placeholder={t.search} value={query} onChange={e=>setQuery(e.target.value)}/><button disabled={busy} type="submit">{lang==='ko'?'검색':'Search'}</button></form>
  <h2>{searched?t.search:t.templates}</h2>

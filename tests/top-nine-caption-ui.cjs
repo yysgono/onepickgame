@@ -12,6 +12,12 @@ const button=text=>[...document.querySelectorAll('button')].find(b=>b.textConten
  await act(async()=>Simulate.dragOver(homeCells[0],{dataTransfer:transfer}));assert(document.querySelector('.tn-home-grid .tn-cell').classList.contains('tn-drop-target'));assert.equal(transfer.dropEffect,'copy');assert(document.querySelector('.tn-drop-label'));
  await act(async()=>Simulate.dragLeave(homeCells[0],{relatedTarget:homeCells[1]}));await act(async()=>Simulate.dragEnter(homeCells[1],{dataTransfer:transfer}));assert.equal(document.querySelectorAll('.tn-drop-target').length,1);assert(homeCells[1].parentElement.classList.contains('tn-drop-target'));
  await act(async()=>window.dispatchEvent(new window.Event('dragend')));assert.equal(document.querySelectorAll('.tn-drop-target').length,0);
+ const homeGrid=document.querySelector('.tn-home-grid');
+ await act(async()=>Simulate.dragOver(homeGrid,{dataTransfer:transfer}));
+ assert.equal(document.querySelectorAll('.tn-drop-target').length,1);
+ await act(async()=>Simulate.drop(homeGrid,{dataTransfer:{types:['Files'],files:[{name:'gap-photo.png'}]}}));
+ assert.equal(publishedProps.slots.filter(Boolean).length,1);assert.equal(publishedProps.slots[0].name,'gap-photo.png');assert(!document.querySelector('.tn-drop-target'));
+ await click(button('홈으로'));
  await click(document.querySelector('.tn-templates button'));await click(button('직접 고르기'));
  const photo=document.querySelector('.tn-pool .tn-candidates button');
  const tap=async time=>act(async()=>Simulate.click(photo,{detail:1,timeStamp:time}));
