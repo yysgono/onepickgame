@@ -6,12 +6,12 @@ import {prepareMemberSlots} from "./topNine/memberImages";
 import SiteCandidatePicker from "./topNine/SiteCandidatePicker";
 import TopNineIcon from "./TopNineIcon";
 import ContentLanguageSelect from "./ContentLanguageSelect";
-import React,{useEffect,useMemo,useRef,useState} from 'react';
+import React,{useEffect,useLayoutEffect,useMemo,useRef,useState} from 'react';
 import {useLocation,useParams} from 'react-router-dom';
 import Seo from '../seo/Seo';
 import {templateTitle} from '../utils/templateTitles';
 import copy from './topNine/copy.json';
-import PublicBoards,{PublishBoard} from './topNine/PublicBoards';
+import PublicBoards,{PublishBoard,DeleteBoard} from './topNine/PublicBoards';
 import {listTemplates,sourcePage,searchSources,loadSource} from './topNine/api';
 import {normalizeCandidates,candidateMatches,toggleCandidate,placeCandidate,clearSlot,swapSlots,cropRect,readShared,makeShareHash,safeMedia} from './topNine/core';
 import {importFile,mediaFrame,exportPNG,downloadBlob,isVideo} from './topNine/media';
@@ -39,6 +39,19 @@ export default function TopNinePage({publicBoard=null,publicId='',onHome}={}){
  const [previewNames,setPreviewNames]=useState(null);
  const [sourceIds,setSourceIds]=useState(publicBoard?.sourceIds||[]);
  const selectedSource=useRef(null),restoredSources=useRef(new Set()),poolWasReset=useRef(false);
+ const poolPosition=useRef(null);
+ function rememberPoolPosition(excludedId){
+  const list=poolListRef.current;if(!list)return;
+  const top=list.getBoundingClientRect().top;
+  const anchor=[...list.querySelectorAll('[data-candidate-id]')].find(node=>node.dataset.candidateId!==String(excludedId)&&node.getBoundingClientRect().bottom>top);
+  poolPosition.current={scrollTop:list.scrollTop,anchorId:anchor?.dataset.candidateId,offset:anchor?anchor.getBoundingClientRect().top-top:0};
+ }
+ useLayoutEffect(()=>{
+  const position=poolPosition.current,list=poolListRef.current;poolPosition.current=null;
+  if(!position||!list)return;
+  const anchor=[...list.querySelectorAll('[data-candidate-id]')].find(node=>node.dataset.candidateId===position.anchorId);
+  list.scrollTop=anchor?list.scrollTop+anchor.getBoundingClientRect().top-list.getBoundingClientRect().top-position.offset:position.scrollTop;
+ },[slots]);
  const previousTap=useRef(null),previousSlotTap=useRef(null),slotSwapTimer=useRef(null);
  useEffect(()=>()=>clearTimeout(slotSwapTimer.current),[]);
  useEffect(()=>{
@@ -103,7 +116,7 @@ export default function TopNinePage({publicBoard=null,publicId='',onHome}={}){
   }
   setFocus(i);
  }
- function dragStart(event,item){if(busy)return;clearTimeout(slotSwapTimer.current);previousSlotTap.current=null;dragItem.current=item;event.dataTransfer?.setData('text/plain','onepick-top-nine');if(event.dataTransfer)event.dataTransfer.effectAllowed='copyMove';}
+ function dragStart(event,item){if(busy)return;if(item.kind==='candidate')rememberPoolPosition(item.candidate.id);clearTimeout(slotSwapTimer.current);previousSlotTap.current=null;dragItem.current=item;event.dataTransfer?.setData('text/plain','onepick-top-nine');if(event.dataTransfer)event.dataTransfer.effectAllowed='copyMove';}
  function homeGridDragOver(event){
   if(busy||!Array.from(event.dataTransfer?.types||[]).includes('Files'))return;
   event.preventDefault();event.dataTransfer.dropEffect='copy';
@@ -206,15 +219,15 @@ export default function TopNinePage({publicBoard=null,publicId='',onHome}={}){
  {stage==='pick'&&<div className="tn-actions tn-sticky tn-board-complete"><strong aria-live="polite">{count} / 9</strong><button disabled={busy||!count} onClick={()=>{setStage('preview');setFocus(null);}}>{t.privateView}</button><PublishBoard existingId={editingId} sourceIds={sourceIds} slots={slots} title={title} autoTitle={!title.trim()||(baseTitle!==null&&title.trim()===baseTitle.trim())} names={names} lang={lang} disabled={busy||!count||!!editingId&&!changedSinceSave} onPublished={publishedHome}/></div>}
  </section>
  {stage==='pick'&&<section className="tn-pool" ref={poolRef} onDragOver={e=>e.preventDefault()} onDrop={poolDrop}><h2>{t.choose}</h2><div className="tn-pool-reset"><button type="button" disabled={busy||!candidates.length} onClick={resetPool}>{t.resetCandidates}</button></div><p className="tn-photo-help">{t.doublePhoto}</p><input type="search" aria-label={t.candidateSearch} placeholder={t.candidateSearch} value={candidateQuery} onChange={e=>{setCandidateQuery(e.target.value);setLimit(36);}}/>
- <div className="tn-pool-scroll" ref={poolListRef} role="region" aria-label={t.choose} tabIndex={0}>
- <div className="tn-candidates">{visibleCandidates.slice(0,limit).map(c=>{const checked=slots.some(s=>s?.id===c.id);return <button type="button" key={c.id} className={checked?'selected':''} aria-pressed={checked} disabled={busy} draggable={!busy} onDragStart={e=>dragStart(e,{kind:'candidate',candidate:c})} onDragEnd={()=>{dragItem.current=null;}} onPointerDown={e=>{previousTap.pointerType=e.pointerType;}} onClick={e=>{if(activatedPhoto(e,previousTap,true)){setSlots(old=>toggleCandidate(old,c));setFocus(null);}}}><Photo candidate={c}/><span>{checked?'✓ ':''}{c.name}</span></button>;})}</div>
+ <div className="tn-pool-scroll" style={{overflowAnchor:'none'}} ref={poolListRef} role="region" aria-label={t.choose} tabIndex={0}>
+ <div className="tn-candidates">{visibleCandidates.slice(0,limit).map(c=>{const checked=slots.some(s=>s?.id===c.id);return <button type="button" key={c.id} data-candidate-id={c.id} className={checked?'selected':''} aria-pressed={checked} disabled={busy} draggable={!busy} onDragStart={e=>dragStart(e,{kind:'candidate',candidate:c})} onDragEnd={()=>{dragItem.current=null;}} onPointerDown={e=>{previousTap.pointerType=e.pointerType;rememberPoolPosition(c.id);}} onClick={e=>{if(activatedPhoto(e,previousTap,true)){if(!poolPosition.current)rememberPoolPosition(c.id);setSlots(old=>toggleCandidate(old,c));setFocus(null);}}}><Photo candidate={c}/><span>{checked?'✓ ':''}{c.name}</span></button>;})}</div>
  {!visibleCandidates.length&&<p>{t.empty}</p>}{visibleCandidates.length>limit&&<button onClick={()=>setLimit(n=>n+36)}>{t.more}</button>}
  </div>
  <div className="tn-pool-game"><div className="tn-game-start"><button className="tn-primary" disabled={busy||candidates.length<9} onClick={startGame}>{t.game}</button><GameCountSelect lang={lang} value={gameCount} onChange={setGameCount} total={candidates.length} disabled={busy}/></div></div>
  </section>}
  </div>
  {stage==='preview'&&<p className="tn-share-notice">{t.memberUploadHelp}</p>}
- {stage==='preview'&&<div className="tn-actions tn-sticky"><strong aria-live="polite">{count} / 9</strong><button disabled={busy} onClick={editBoard}>{t.edit}</button><button className="tn-primary" disabled={busy||!ready} onClick={download}>↓ {t.download}</button><button disabled={busy||!ready} onClick={share}>{t.share}</button>{!editingId&&!shared&&<PublishBoard existingId={editingId} sourceIds={sourceIds} slots={slots} title={title} autoTitle={!title.trim()||(baseTitle!==null&&title.trim()===baseTitle.trim())} names={names} lang={lang} disabled={busy||!count||!!editingId&&!changedSinceSave} onPublished={publishedHome}/>}</div>}
+ {stage==='preview'&&<div className="tn-actions tn-sticky"><strong aria-live="polite">{count} / 9</strong><button disabled={busy} onClick={editBoard}>{t.edit}</button>{publicId&&<DeleteBoard id={publicId} lang={lang} onDeleted={onHome}/>}<button className="tn-primary" disabled={busy||!ready} onClick={download}>↓ {t.download}</button><button disabled={busy||!ready} onClick={share}>{t.share}</button>{!editingId&&!shared&&<PublishBoard existingId={editingId} sourceIds={sourceIds} slots={slots} title={title} autoTitle={!title.trim()||(baseTitle!==null&&title.trim()===baseTitle.trim())} names={names} lang={lang} disabled={busy||!count||!!editingId&&!changedSinceSave} onPublished={publishedHome}/>}</div>}
 
  {shareURL&&<label className="tn-share">{t.share}<textarea readOnly value={shareURL} onFocus={e=>e.target.select()} rows="3"/></label>}
  </>}

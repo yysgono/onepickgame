@@ -53,3 +53,36 @@ export default function PublicBoards({lang,tick=0}) {
  {guestDelete&&<div className="tn-picker-overlay"><form className="tn-publish-dialog" onSubmit={removeGuest}><label>{t.password}<input type="password" required minLength={8} value={deletePassword} onChange={e=>setDeletePassword(e.target.value)}/></label>{error&&<p role="alert">{t.error}</p>}<div className="tn-actions"><button disabled={deleting}>{t.deleteBoard}</button><button type="button" disabled={deleting} onClick={()=>{setGuestDelete(null);setDeletePassword('');}}>{t.close}</button></div></form></div>}
  </section>;
 }
+
+export function DeleteBoard({id,lang,onDeleted}){
+ const t=copy[lang]||copy.en;
+ const [permission,setPermission]=useState(null),[open,setOpen]=useState(false),[password,setPassword]=useState(''),[busy,setBusy]=useState(false),[error,setError]=useState(false);
+ useEffect(()=>{
+  let live=true;setPermission(null);
+  Promise.all([supabase.auth.getUser(),supabase.from('top_nine_public_boards').select('author_id').eq('id',id).maybeSingle()]).then(([auth,row])=>{
+   if(!live||row.error||!row.data)return;
+   const actor=auth.data?.user;
+   if(!row.data.author_id)setPermission('guest');
+   else if(actor&&!actor.is_anonymous&&actor.id===row.data.author_id)setPermission('member');
+  }).catch(()=>{});
+  return()=>{live=false;};
+ },[id]);
+ async function remove(event){
+  event.preventDefault();if(busy)return;setBusy(true);setError(false);
+  try{
+   let result;
+   if(permission==='guest'){
+    const salt=await supabase.rpc('get_top_nine_guest_salt',{p_id:id});
+    if(salt.error||!salt.data)throw Error('GUEST');
+    const proof=await guestProof(password,salt.data);
+    result=await supabase.rpc('delete_top_nine_guest_board',{p_id:id,p_proof:proof});
+    if(!result.data)throw Error('GUEST');
+   }else if(permission==='member')result=await supabase.rpc('delete_top_nine_board',{p_id:id});
+   else throw Error('PERMISSION');
+   if(result.error)throw result.error;
+   setOpen(false);setPassword('');onDeleted?.();
+  }catch{setError(true);}finally{setBusy(false);}
+ }
+ if(!permission)return null;
+ return <><button type="button" onClick={()=>{setError(false);setOpen(true);}}>{t.deleteBoard}</button>{open&&createPortal(<div className="top-nine tn-picker-overlay tn-public-overlay" dir={lang==='ar'?'rtl':'ltr'}><section className="tn-publish-dialog" role="dialog" aria-modal="true" aria-label={t.deleteBoard}><h2>{t.deleteBoard}</h2><form onSubmit={remove}>{permission==='guest'&&<label>{t.password}<input type="password" required minLength={8} maxLength={100} autoComplete="current-password" value={password} onChange={e=>setPassword(e.target.value)}/></label>}{error&&<p role="alert">{t.error}</p>}<div className="tn-actions"><button type="submit" disabled={busy}>{t.deleteBoard}</button><button type="button" disabled={busy} onClick={()=>{setOpen(false);setPassword('');}}>{t.close}</button></div></form></section></div>,document.body)}</>;
+}
