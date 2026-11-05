@@ -28,7 +28,8 @@ module.exports=function(app,supabase,origin){
    const {data,error}=await supabase.from('top_nine_public_boards').select('id,title,slots,show_names,source_worldcup_ids,guest_nickname').eq('id',id).maybeSingle();
    if(error)throw error;
    if(!data)return res.status(404).send('Not found');
-   data.title=localizedBoardTitle(data,await loadBoardTitleSources(supabase,[data]),lang);
+   data.titleSources=await loadBoardTitleSources(supabase,[data]);
+   data.title=localizedBoardTitle(data,data.titleSources,lang);
    return res.type('html').send(renderBoardHtml(await loadSeoTemplate(origin),origin,lang,data));
   }catch{return res.status(503).send('Please try again');}
  });

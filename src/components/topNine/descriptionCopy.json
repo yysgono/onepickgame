@@ -3,120 +3,140 @@
     "My Top 9 created by {author}, featuring {names}.",
     "My Top 9 featuring {names}.",
     "My Top 9 created by {author}.",
-    "Explore this My Top 9 collage."
+    "Explore this My Top 9 collage.",
+    "Template used: {template}."
   ],
   "ko": [
-    "{author}님이 만든 {names}로 구성된 구절판입니다.",
-    "{names}로 구성된 구절판입니다.",
+    "{author}님이 {names} 등을 선택해 만든 구절판입니다.",
+    "{names} 등을 선택해 만든 구절판입니다.",
     "{author}님이 만든 구절판입니다.",
-    "선택한 후보들로 구성된 구절판을 살펴보세요."
+    "선택한 후보들로 구성된 구절판을 살펴보세요.",
+    "사용한 템플릿: {template}."
   ],
   "ja": [
     "{author}さんが作成した、{names}を集めたマイベスト9です。",
     "{names}を集めたマイベスト9です。",
     "{author}さんが作成したマイベスト9です。",
-    "このマイベスト9をご覧ください。"
+    "このマイベスト9をご覧ください。",
+    "使用したテンプレート：{template}。"
   ],
   "zh": [
     "这是{author}制作的九宫格，包含{names}。",
     "这个九宫格包含{names}。",
     "这是{author}制作的九宫格。",
-    "查看这个精选九宫格。"
+    "查看这个精选九宫格。",
+    "使用的模板：{template}。"
   ],
   "es": [
     "Mi Top 9 creado por {author}, con {names}.",
     "Mi Top 9 con {names}.",
     "Mi Top 9 creado por {author}.",
-    "Explora este collage de Mi Top 9."
+    "Explora este collage de Mi Top 9.",
+    "Plantilla utilizada: {template}."
   ],
   "fr": [
     "Mon Top 9 créé par {author}, avec {names}.",
     "Mon Top 9 avec {names}.",
     "Mon Top 9 créé par {author}.",
-    "Découvrez ce collage Mon Top 9."
+    "Découvrez ce collage Mon Top 9.",
+    "Modèle utilisé : {template}."
   ],
   "vi": [
     "Top 9 của tôi do {author} tạo, gồm {names}.",
     "Top 9 của tôi gồm {names}.",
     "Top 9 của tôi do {author} tạo.",
-    "Khám phá ảnh ghép Top 9 này."
+    "Khám phá ảnh ghép Top 9 này.",
+    "Mẫu đã sử dụng: {template}."
   ],
   "de": [
     "Mein Top 9, erstellt von {author}, mit {names}.",
     "Mein Top 9 mit {names}.",
     "Mein Top 9, erstellt von {author}.",
-    "Entdecke diese Top-9-Collage."
+    "Entdecke diese Top-9-Collage.",
+    "Verwendete Vorlage: {template}."
   ],
   "ru": [
     "Мой топ-9 от {author}: {names}.",
     "Мой топ-9: {names}.",
     "Мой топ-9 от {author}.",
-    "Посмотрите этот коллаж «Мой топ-9»."
+    "Посмотрите этот коллаж «Мой топ-9».",
+    "Использованный шаблон: {template}."
   ],
   "id": [
     "Top 9 Saya buatan {author}, berisi {names}.",
     "Top 9 Saya berisi {names}.",
     "Top 9 Saya buatan {author}.",
-    "Lihat kolase Top 9 ini."
+    "Lihat kolase Top 9 ini.",
+    "Templat yang digunakan: {template}."
   ],
   "pt": [
     "Meu Top 9 criado por {author}, com {names}.",
     "Meu Top 9 com {names}.",
     "Meu Top 9 criado por {author}.",
-    "Explore esta colagem Meu Top 9."
+    "Explore esta colagem Meu Top 9.",
+    "Modelo utilizado: {template}."
   ],
   "hi": [
     "{author} द्वारा बनाया गया मेरा टॉप 9: {names}।",
     "मेरा टॉप 9: {names}।",
     "{author} द्वारा बनाया गया मेरा टॉप 9।",
-    "यह मेरा टॉप 9 कोलाज देखें।"
+    "यह मेरा टॉप 9 कोलाज देखें।",
+    "इस्तेमाल किया गया टेम्पलेट: {template}।"
   ],
   "tr": [
     "{author} tarafından oluşturulan İlk 9’um: {names}.",
     "İlk 9’um: {names}.",
     "{author} tarafından oluşturulan İlk 9’um.",
-    "Bu İlk 9’um kolajını keşfedin."
+    "Bu İlk 9’um kolajını keşfedin.",
+    "Kullanılan şablon: {template}."
   ],
   "th": [
     "My Top 9 ที่สร้างโดย {author} ประกอบด้วย {names}",
     "My Top 9 ประกอบด้วย {names}",
     "My Top 9 ที่สร้างโดย {author}",
-    "ชมภาพคอลลาจ My Top 9 นี้"
+    "ชมภาพคอลลาจ My Top 9 นี้",
+    "เทมเพลตที่ใช้: {template}"
   ],
   "ar": [
     "أفضل 9 اختيارات من إعداد {author}، وتضم {names}.",
     "أفضل 9 اختيارات، وتضم {names}.",
     "أفضل 9 اختيارات من إعداد {author}.",
-    "استكشف هذه اللوحة لأفضل 9 اختيارات."
+    "استكشف هذه اللوحة لأفضل 9 اختيارات.",
+    "القالب المستخدم: {template}."
   ],
   "bn": [
     "{author}-এর তৈরি আমার সেরা ৯: {names}।",
     "আমার সেরা ৯: {names}।",
     "{author}-এর তৈরি আমার সেরা ৯।",
-    "আমার সেরা ৯-এর এই কোলাজটি দেখুন।"
+    "আমার সেরা ৯-এর এই কোলাজটি দেখুন।",
+    "ব্যবহৃত টেমপ্লেট: {template}।"
   ],
   "it": [
     "La mia Top 9 creata da {author}, con {names}.",
     "La mia Top 9 con {names}.",
     "La mia Top 9 creata da {author}.",
-    "Scopri questo collage La mia Top 9."
+    "Scopri questo collage La mia Top 9.",
+    "Modello utilizzato: {template}."
   ],
   "pl": [
     "Moje Top 9 autorstwa {author}: {names}.",
     "Moje Top 9: {names}.",
     "Moje Top 9 autorstwa {author}.",
-    "Zobacz ten kolaż Moje Top 9."
+    "Zobacz ten kolaż Moje Top 9.",
+    "Użyty szablon: {template}."
   ],
   "nl": [
     "Mijn Top 9, gemaakt door {author}, met {names}.",
     "Mijn Top 9 met {names}.",
     "Mijn Top 9, gemaakt door {author}.",
-    "Bekijk deze Mijn Top 9-collage."
+    "Bekijk deze Mijn Top 9-collage.",
+    "Gebruikte sjabloon: {template}."
   ],
   "cs": [
     "Moje Top 9 od {author}: {names}.",
     "Moje Top 9: {names}.",
     "Moje Top 9 od {author}.",
-    "Prohlédněte si tuto koláž Moje Top 9."
+    "Prohlédněte si tuto koláž Moje Top 9.",
+    "Použitá šablona: {template}."
   ]
 }

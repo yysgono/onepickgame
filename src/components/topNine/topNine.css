@@ -124,3 +124,9 @@
 .tn-publish-dialog p,.tn-publish-status p,.tn-share-notice{white-space:pre-line;overflow-wrap:break-word;word-break:keep-all}
 
 .tn-public-edit-link{display:inline-flex;align-items:center;justify-content:center;min-height:44px;margin:6px 6px 0 0;padding:10px 16px;border:1px solid var(--tn-border);border-radius:10px;color:#50248d;background:white;text-decoration:none;font-weight:700;box-sizing:border-box}
+
+/* Keep the public introduction outside the collage frame. */
+.tn-public-description{margin:16px 0 0;line-height:1.7;overflow-wrap:anywhere;color:#51435f;text-align:start}
+.top-nine .tn-title-field input:not([type=range]):not([type=checkbox]),
+.top-nine .tn-cell>input.tn-name-input:not([type=range]):not([type=checkbox]){border:2px solid #8b5fc1;background:#fff;border-radius:8px;box-shadow:0 1px 3px #50248d14}
+.top-nine .tn-title-field input:focus,.top-nine input.tn-name-input:focus{border-color:#6d28d9;outline:2px solid #d8c3f5;outline-offset:2px}

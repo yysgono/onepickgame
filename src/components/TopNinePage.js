@@ -179,7 +179,7 @@ export default function TopNinePage({publicBoard=null,publicId='',onHome}={}){
  const visibleCandidates=candidates.filter(c=>candidateMatches(c,candidateQuery)).sort((a,b)=>Number(selectedIds.has(b.id))-Number(selectedIds.has(a.id)));
  const showNames=stage==='preview'?(previewNames??names):names;
  const displayTitle=localizedBoardTitle({title,sourceIds},publicBoard?.titleSources,lang);
- const publicDescription=boardDescription({title,slots,authorNickname:publicBoard?.authorNickname},lang);
+ const publicDescription=boardDescription({title,slots,sourceIds,titleSources:publicBoard?.titleSources,authorNickname:publicBoard?.authorNickname},lang);
  const changedSinceSave=savedBoard.current!==JSON.stringify({slots,title,names,sourceIds});
  const ready=count>0&&slots.every(c=>!c||frames[c.src]?.frame);
  return <main className="top-nine" dir={lang==='ar'?'rtl':'ltr'}>
@@ -204,7 +204,6 @@ export default function TopNinePage({publicBoard=null,publicId='',onHome}={}){
  <div className={`tn-editor ${stage==='preview'?'tn-preview':''}`}>
  <section className="tn-board-panel" aria-label={t.nav} onDragOver={e=>{if(stage==='pick')e.preventDefault();}} onDrop={e=>{if(stage!=='pick')return;e.preventDefault();if(e.dataTransfer?.files?.length)ingestFiles(e.dataTransfer.files);}}>
  {stage==='preview'&&title&&<h2 className="tn-result-title">{displayTitle}</h2>}
- {stage==='preview'&&publicId&&<p className="tn-public-description" style={{overflowWrap:'anywhere',lineHeight:1.7}}>{publicDescription}</p>}
  <div className="tn-grid" dir="ltr">{slots.map((c,i)=><div key={i} className={`tn-cell ${i===4?'tn-onepick':''} ${focus===i&&stage==='pick'?'tn-focused':''}`}>
  <button type="button" disabled={busy||stage==='preview'} aria-label={`${i+1}: ${c?.name|| (i===4?'One Pick':'+')}`} aria-pressed={stage==='pick'?focus===i:undefined} onClick={event=>slotClick(i,event)} draggable={stage==='pick'&&!!c&&!busy} onDragStart={e=>dragStart(e,{kind:'slot',index:i})} onDragEnd={()=>{dragItem.current=null;}} onDragOver={e=>{if(stage==='pick'||stage==='home')e.preventDefault();}} onDrop={e=>slotDrop(e,i)}>
  {c?frames[c.src]?.frame?<CropPhoto candidate={c} frame={frames[c.src].frame}/>:<span>{frames[c.src]?.error?'◇':t.loading}</span>:<span>{i===4?'One Pick':'+'}</span>}</button>
@@ -217,6 +216,7 @@ export default function TopNinePage({publicBoard=null,publicId='',onHome}={}){
  </>:<p className="tn-credit">OnePickGame.com</p>}
  {stage==='pick'&&<div className="tn-actions tn-sticky tn-board-complete"><strong aria-live="polite">{count} / 9</strong><button disabled={busy||!count} onClick={()=>{setStage('preview');setFocus(null);}}>{t.privateView}</button><PublishBoard existingId={editingId} sourceIds={sourceIds} slots={slots} title={title} autoTitle={!title.trim()||(baseTitle!==null&&title.trim()===baseTitle.trim())} names={names} lang={lang} disabled={busy||!count||!!editingId&&!changedSinceSave} onPublished={publishedHome}/></div>}
  </section>
+ {stage==='preview'&&publicId&&<p className="tn-public-description">{publicDescription}</p>}
  {stage==='pick'&&<section className="tn-pool" ref={poolRef} onDragOver={e=>e.preventDefault()} onDrop={poolDrop}><h2>{t.choose}</h2><div className="tn-pool-reset"><button type="button" disabled={busy||!candidates.length} onClick={resetPool}>{t.resetCandidates}</button></div><p className="tn-photo-help">{t.doublePhoto}</p><input type="search" aria-label={t.candidateSearch} placeholder={t.candidateSearch} value={candidateQuery} onChange={e=>{setCandidateQuery(e.target.value);setLimit(36);}}/>
  <div className="tn-pool-scroll" style={{overflowAnchor:'none'}} ref={poolListRef} role="region" aria-label={t.choose} tabIndex={0}>
  <div className="tn-candidates">{visibleCandidates.slice(0,limit).map(c=>{const checked=slots.some(s=>s?.id===c.id);return <button type="button" key={c.id} data-candidate-id={c.id} className={checked?'selected':''} aria-pressed={checked} disabled={busy} draggable={!busy} onDragStart={e=>dragStart(e,{kind:'candidate',candidate:c})} onDragEnd={()=>{dragItem.current=null;}} onPointerDown={e=>{previousTap.pointerType=e.pointerType;rememberPoolPosition(c.id);}} onClick={e=>{if(activatedPhoto(e,previousTap,true)){if(!poolPosition.current)rememberPoolPosition(c.id);setSlots(old=>toggleCandidate(old,c));setFocus(null);}}}><Photo candidate={c}/><span>{checked?'✓ ':''}{c.name}</span></button>;})}</div>
