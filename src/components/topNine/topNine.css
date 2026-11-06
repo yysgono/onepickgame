@@ -141,3 +141,7 @@
 .tn-public-intro .tn-actions{justify-content:center}
 
 .tn-public-intro .tn-public-description{text-align:center;white-space:pre-line}
+
+/* Slightly larger community collages, independent of the preset gallery. */
+.top-nine .tn-public-cards{grid-template-columns:repeat(auto-fill,minmax(250px,1fr))}
+@media(max-width:600px){.top-nine .tn-public-cards{grid-template-columns:repeat(2,minmax(0,1fr))}}

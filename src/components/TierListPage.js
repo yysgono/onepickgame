@@ -27,6 +27,7 @@ import { useTranslation } from "react-i18next";
 import MediaRenderer from "./MediaRenderer";
 import Seo from "../seo/Seo";
 import { supabase } from "../utils/supabaseClient";
+import "../styles/presetCardSizes.css";
 
 
 const PAGE_SIZE = 12;
@@ -1722,13 +1723,13 @@ gap:
 	                        "transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease",
 	                    }}
 	                  >
-                    <div style={{ display: "grid", gridTemplateColumns: item.hasTierPreview ? "36% 64%" : "1fr", minHeight: isMobile ? 140 : 180, borderBottom: "1px solid #dbeafe" }}>
+                    <div style={{ display: "grid", gridTemplateColumns: item.hasTierPreview ? "36% 64%" : "1fr", minHeight: isMobile ? 150 : 196, borderBottom: "1px solid #dbeafe" }}>
                     <div
                       style={{
                         width:
                           "100%",
 
-                        minHeight: isMobile ? 140 : 180,
+                        minHeight: isMobile ? 150 : 196,
 
                         position:
                           "relative",
@@ -1792,7 +1793,7 @@ gap:
                           <div
                             key={row.tier}
                             style={{
-                              minHeight: isMobile ? 30 : 38,
+                              minHeight: isMobile ? 32 : 42,
                               display: "flex",
                               alignItems: "center",
                               gap: 5,

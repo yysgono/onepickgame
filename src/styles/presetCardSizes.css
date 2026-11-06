@@ -1,0 +1,13 @@
+/* Use one sizing rule for Tier List and My Top 9 preset galleries. */
+.tier-page-container .tier-recommendations .tier-recommendation-grid,
+.top-nine .tn-picture-templates{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));width:100%;max-width:1592px;gap:16px;margin-left:auto;margin-right:auto;box-sizing:border-box}
+.tier-page-container .tier-recommendation-image,
+.top-nine .tn-picture-templates img,.top-nine .tn-picture-templates video,.top-nine .tn-picture-templates .tn-card-placeholder{height:clamp(160px,13vw,220px)}
+.tier-page-container .tier-recommendation-card>div:last-child,
+.top-nine .tn-picture-templates strong{box-sizing:border-box;min-height:82px;padding:14px 12px!important;font-size:18px!important;line-height:1.5}
+@media(max-width:1100px){.tier-page-container .tier-recommendations .tier-recommendation-grid,.top-nine .tn-picture-templates{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media(max-width:700px){
+ .tier-page-container .tier-recommendations .tier-recommendation-grid,.top-nine .tn-picture-templates{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+ .tier-page-container .tier-recommendation-image,.top-nine .tn-picture-templates img,.top-nine .tn-picture-templates video,.top-nine .tn-picture-templates .tn-card-placeholder{height:clamp(145px,25vw,190px)}
+ .tier-page-container .tier-recommendation-card>div:last-child,.top-nine .tn-picture-templates strong{font-size:16px!important;padding:12px 9px!important;min-height:72px}
+}
