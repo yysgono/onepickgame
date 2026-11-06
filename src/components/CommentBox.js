@@ -235,7 +235,9 @@ function useIsMobile() {
 
 export default function CommentBox({
   cupId,
+  kind="worldcup",
 }) {
+  const commentTable=kind==='top-nine'?'top_nine_comments':'comments';
   const { t, i18n } = useTranslation();
 
   const [user, setUser] =
@@ -298,14 +300,14 @@ export default function CommentBox({
     fetchComments();
 
     // eslint-disable-next-line
-  }, [cupId]);
+  }, [cupId,kind]);
 
   async function fetchComments() {
     setLoading(true);
 
     const { data } =
       await supabase
-        .from("comments")
+        .from(commentTable)
         .select("*")
         .eq(
           "cup_id",
@@ -424,10 +426,10 @@ export default function CommentBox({
     let insertErr = null;
     try {
       if (user) {
-        const { error } = await supabase.from("comments").insert([{ cup_id: cupId, nickname: authorName, content: text, user_id: user.id, upvotes: 0, downvotes: 0 }]);
+        const { error } = await supabase.from(commentTable).insert([{ cup_id: cupId, nickname: authorName, content: text, user_id: user.id, ...(kind==='worldcup'?{upvotes:0,downvotes:0}:{}) }]);
         insertErr = error;
       } else {
-        await addGuestComment({ kind: "worldcup", targetId: cupId, nickname: authorName, password: guestPassword, content: text });
+        await addGuestComment({ kind, targetId: cupId, nickname: authorName, password: guestPassword, content: text });
         setGuestPassword("");
       }
     } catch (error) { insertErr = error; }
@@ -454,12 +456,12 @@ export default function CommentBox({
     try {
       if (commentUserId) {
         if (!user || (nickname !== "admin" && commentUserId !== user.id)) throw new Error(t("comment.deleteAuth"));
-        const { error } = await supabase.from("comments").delete().eq("id", commentId);
+        const { error } = await supabase.from(commentTable).delete().eq("id", commentId);
         if (error) throw error;
       } else {
         const password = window.prompt(i18n.language.startsWith("ko") ? "댓글 작성 때 입력한 비밀번호를 입력하세요." : "Enter the password used for this comment.");
         if (password === null) return;
-        await manageGuestComment({ kind: "worldcup", commentId, password, action: "delete" });
+        await manageGuestComment({ kind, commentId, password, action: "delete" });
       }
       fetchComments();
     } catch (deleteError) { setError(deleteError.message || t("comment.saveError")); }
@@ -472,7 +474,7 @@ export default function CommentBox({
     if (next === null) return;
     const clean = next.trim();
     if (!clean || clean.length > 500 || clean.split("\n").length > 15 || containsBadword(clean)) return setError(t("comment.badwordComment"));
-    try { await manageGuestComment({ kind: "worldcup", commentId: comment.id, password, action: "edit", content: clean }); fetchComments(); }
+    try { await manageGuestComment({ kind, commentId: comment.id, password, action: "edit", content: clean }); fetchComments(); }
     catch (editError) { setError(editError.message || t("comment.saveError")); }
   }
 
@@ -480,7 +482,7 @@ export default function CommentBox({
     commentId
   ) {
     await supabase.rpc(
-      "vote_worldcup_comment",
+      kind==='top-nine'?'vote_top_nine_comment':'vote_worldcup_comment',
       {
         p_comment_id:
           commentId,
@@ -495,7 +497,7 @@ export default function CommentBox({
     commentId
   ) {
     await supabase.rpc(
-      "vote_worldcup_comment",
+      kind==='top-nine'?'vote_top_nine_comment':'vote_worldcup_comment',
       {
         p_comment_id:
           commentId,
@@ -571,7 +573,7 @@ export default function CommentBox({
         )}
       </h3>
 
-      <ContentCommentNotices key={`worldcup-${cupId}`} kind="worldcup" targetId={cupId} />
+      {kind==='worldcup'&&<ContentCommentNotices key={`worldcup-${cupId}`} kind="worldcup" targetId={cupId} />}
 
       {!user && (
         <div
@@ -1318,7 +1320,7 @@ export default function CommentBox({
                 {!c.user_id && <><button type="button" onClick={() => handleGuestEdit(c)} style={{ color: COLORS.main, border: "none", background: "none", fontWeight: 700, cursor: "pointer" }}>{i18n.language.startsWith("ko") ? "수정" : "Edit"}</button><button type="button" onClick={() => handleDelete(c.id, null)} style={{ color: COLORS.danger, border: "none", background: "none", fontWeight: 700, cursor: "pointer" }}>{t("comment.delete")}</button></>}
 
                 {user &&
-                  (nickname ===
+                  (kind==='worldcup'&&nickname ===
                     "admin" ||
                     c.user_id ===
                       user.id) && (

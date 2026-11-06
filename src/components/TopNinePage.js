@@ -1,3 +1,4 @@
+import CommentBox from './CommentBox';
 import categoryLabels from './topNine/categoryLabels.json';
 import {supabase} from '../utils/supabaseClient';
 import {boardDescription} from './topNine/boardDescription';
@@ -250,6 +251,7 @@ export default function TopNinePage({publicBoard=null,publicId='',onHome}={}){
 
  {shareURL&&<label className="tn-share">{t.share}<textarea readOnly value={shareURL} onFocus={e=>e.target.select()} rows="3"/></label>}
  </>}
+ {publicId&&stage==='preview'&&<CommentBox cupId={publicId} kind="top-nine"/>}
  {sitePicker&&<SiteCandidatePicker lang={lang} onAdd={addSiteCandidates} onClose={()=>setSitePicker(false)}/>}
  </main>;
 }

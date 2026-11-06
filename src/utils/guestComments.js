@@ -1,7 +1,7 @@
 import { supabase } from "./supabaseClient";
 
 export async function addGuestComment({ kind, targetId, nickname, password, content }) {
-  const { data, error } = await supabase.rpc("add_guest_comment", {
+  const { data, error } = await supabase.rpc(kind==='top-nine'?'add_top_nine_guest_comment':'add_guest_comment', {
     p_kind: kind,
     p_target_id: targetId,
     p_nickname: nickname,
@@ -13,7 +13,7 @@ export async function addGuestComment({ kind, targetId, nickname, password, cont
 }
 
 export async function manageGuestComment({ kind, commentId, password, action, content = null }) {
-  const { data, error } = await supabase.rpc("manage_guest_comment", {
+  const { data, error } = await supabase.rpc(kind==='top-nine'?'manage_top_nine_guest_comment':'manage_guest_comment', {
     p_kind: kind,
     p_comment_id: String(commentId),
     p_password: password,
