@@ -32,3 +32,27 @@ export function blogDisplayHtml(value){
  }
  return doc.body.innerHTML;
 }
+// Convert Markdown copied as plain text into actual editor HTML on blog paste.
+export function blogPasteHtml(value){
+ const doc=document.implementation.createHTMLDocument('');
+ const inline=(parent,text)=>{
+  const pattern=/\*\*([^*\n]+)\*\*|\[([^\]\n]+)\]\((https?:\/\/[^\s)]+)\)/g;
+  let match,start=0;
+  while((match=pattern.exec(text))){
+   parent.append(doc.createTextNode(text.slice(start,match.index)));
+   const node=doc.createElement(match[1]?'strong':'a');node.textContent=match[1]||match[2];
+   if(match[3])node.setAttribute('href',match[3]);parent.append(node);start=pattern.lastIndex;
+  }
+  parent.append(doc.createTextNode(text.slice(start)));
+ };
+ for(const line of String(value||'').replace(/\r\n?/g,'\n').split('\n')){
+  const text=line.trim().replace(/\\$/,'');
+  if(!text){const p=doc.createElement('p');p.append(doc.createElement('br'));doc.body.append(p);continue;}
+  const heading=text.match(/^\*\*([^*]+)\*\*$/);
+  // Short standalone bold lines are section headings; long statements stay paragraphs.
+  const node=doc.createElement(heading&&heading[1].length<=40?'h2':'p');
+  if(node.tagName==='H2')node.textContent=heading[1];else inline(node,text);
+  doc.body.append(node);
+ }
+ return sanitizeRichHtml(doc.body.innerHTML);
+}

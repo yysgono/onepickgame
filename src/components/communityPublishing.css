@@ -175,3 +175,8 @@
 .blog-post-content,.site-publishing .rich-editable{font-weight:400}
 .blog-post-content strong,.blog-post-content b,.site-publishing .rich-editable strong,.site-publishing .rich-editable b{font-weight:800!important}
 .blog-post-content strong *,.blog-post-content b *,.site-publishing .rich-editable strong *,.site-publishing .rich-editable b *{font-weight:inherit!important}
+
+/* Show section hierarchy inside the editor as well as in the published article. */
+.site-publishing .rich-editable h2{font-size:27px;font-weight:800;line-height:1.4;margin:28px 0 12px;color:#172033}
+.site-publishing .rich-editable h3{font-size:22px;font-weight:800;line-height:1.4;margin:24px 0 10px;color:#172033}
+.site-publishing .rich-editable p{margin:0 0 16px}

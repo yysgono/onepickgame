@@ -1,7 +1,7 @@
 import React,{useEffect,useRef,useState} from 'react';
 import {getCommunityUi} from './communityUi';
 import editorCopy from './richEditorCopy.json';
-import {sanitizeRichHtml,richImageCount} from '../utils/richText';
+import {sanitizeRichHtml,richImageCount,blogPasteHtml} from '../utils/richText';
 import {uploadPublishingImage,BOARD_IMAGE_LIMIT} from '../utils/publishingImages';
 const {safeUrl}=require('../utils/richTextPolicy');
 export default function RichTextEditor({value,onChange,lang='en',blog=false,disabled=false,onBusy=()=>{},onError=()=>{}}){
@@ -20,7 +20,7 @@ export default function RichTextEditor({value,onChange,lang='en',blog=false,disa
  function imageUrl(){const value=window.prompt(ui.enterUrl);if(!value)return;try{const url=new URL(value);if(!['http:','https:'].includes(url.protocol))throw Error();command('insertImage',url.href);}catch{onError(ui.invalidUrl);}}
  function table(){const answer=window.prompt(c.tableSize,'3 × 3');if(!answer)return;const [rows,cols]=answer.split(/[x×,]/).map(Number);if(!Number.isInteger(rows)||!Number.isInteger(cols)||rows<1||cols<1||rows>10||cols>10)return;insert('<table><tbody>'+Array.from({length:rows},()=>'<tr>'+Array.from({length:cols},()=>'<td><br></td>').join('')+'</tr>').join('')+'</tbody></table><p><br></p>');}
  async function images(files){if(locked)return;setUploading(true);onBusy(true);onError('');try{for(const file of files){const count=richImageCount(editor.current?.innerHTML||value);const url=await uploadPublishingImage(file,{blog,count});if(!alive.current)return;insert(`<p><img src="${url.replace(/&/g,'&amp;').replace(/"/g,'&quot;')}" alt="Image"></p><p><br></p>`);}}catch(e){if(alive.current)onError(c[e.message]||e.message||c.uploadError);}finally{if(alive.current)setUploading(false);onBusy(false);if(fileInput.current)fileInput.current.value='';}}
- function paste(e){const files=Array.from(e.clipboardData.files||[]);if(files.length){e.preventDefault();remember();void images(files);return;}const html=e.clipboardData.getData('text/html');if(html){e.preventDefault();const clean=sanitizeRichHtml(html);if(!blog&&richImageCount(clean)+richImageCount(editor.current.innerHTML)>BOARD_IMAGE_LIMIT){onError(c.EDITOR_IMAGE_COUNT);return;}insert(clean);}}
+ function paste(e){const files=Array.from(e.clipboardData.files||[]);if(files.length){e.preventDefault();remember();void images(files);return;}const plain=e.clipboardData.getData('text/plain');if(blog&&(/\*\*[^*\n]+\*\*/.test(plain)||/\[[^\]\n]+\]\(https?:\/\//.test(plain))){e.preventDefault();remember();insert(blogPasteHtml(plain));return;}const html=e.clipboardData.getData('text/html');if(html){e.preventDefault();const clean=sanitizeRichHtml(html);if(!blog&&richImageCount(clean)+richImageCount(editor.current.innerHTML)>BOARD_IMAGE_LIMIT){onError(c.EDITOR_IMAGE_COUNT);return;}insert(clean);}}
  function tool(label,icon,action){return <button type="button" title={label} aria-label={label} disabled={locked||source} onMouseDown={e=>e.preventDefault()} onClick={action}>{icon}</button>;}
  return <div className="rich-editor" aria-busy={uploading}>
   <div className="rich-toolbar" role="toolbar" aria-label={ui.edit}>
