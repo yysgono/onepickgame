@@ -18,3 +18,17 @@ export function richDocument(html){return new DOMParser().parseFromString(saniti
 export function richPlainText(html){const doc=richDocument(html);doc.querySelectorAll('img').forEach(n=>n.replaceWith(`[${n.getAttribute('alt')||'Image'}]`));doc.querySelectorAll('br').forEach(n=>n.replaceWith('\n'));doc.querySelectorAll('p,div,h2,h3,h4,li,blockquote,tr,pre').forEach(n=>n.append('\n'));return doc.body.textContent.trim();}
 export function plainToRich(value){return String(value||'').split('\n').map(line=>'<p>'+line.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')+'</p>').join('');}
 export function richImageCount(html){return richDocument(html).querySelectorAll('img').length;}
+// Older blog posts may contain literal Markdown bold from plain-text paste.
+// Convert text nodes only so existing HTML, links and code samples remain intact.
+export function blogDisplayHtml(value){
+ const doc=richDocument(value);
+ const walker=doc.createTreeWalker(doc.body,4),nodes=[];
+ let node;while((node=walker.nextNode()))if(!node.parentElement?.closest('pre,code')&&node.nodeValue.includes('**'))nodes.push(node);
+ for(const text of nodes){
+  const input=text.nodeValue,pattern=/\*\*([^*\n]+)\*\*/g;let match,start=0;
+  const fragment=doc.createDocumentFragment();
+  while((match=pattern.exec(input))){fragment.append(doc.createTextNode(input.slice(start,match.index)));const strong=doc.createElement('strong');strong.textContent=match[1];fragment.append(strong);start=pattern.lastIndex;}
+  if(start){fragment.append(doc.createTextNode(input.slice(start)));text.replaceWith(fragment);}
+ }
+ return doc.body.innerHTML;
+}

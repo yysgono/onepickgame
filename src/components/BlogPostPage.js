@@ -1,5 +1,5 @@
 import {localizeExtraUi} from "../utils/newLanguageUi";
-import {sanitizeRichHtml} from '../utils/richText';
+import {blogDisplayHtml} from '../utils/richText';
 import {getCommunityUi} from './communityUi';
 import { useSitePublisher } from "./SitePublishing";
 import "./communityPublishing.css";
@@ -660,7 +660,7 @@ export default function BlogPostPage() {
             className="blog-post-content"
             dangerouslySetInnerHTML={{
               __html:
-                sanitizeRichHtml(post.content || ""),
+                blogDisplayHtml(post.content || ""),
             }}
           />
         </article>

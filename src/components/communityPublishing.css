@@ -170,3 +170,8 @@
 .community-board .board-toolbar .community-read-filter{display:inline-flex;flex:0 1 auto;min-height:44px;padding:8px 4px;cursor:pointer;user-select:none}
 .community-board .community-read-filter input[type=checkbox]{position:static;appearance:auto;width:20px;height:20px;flex:0 0 20px;padding:0;margin:0;pointer-events:auto;cursor:pointer}
 .community-board .community-read-filter span{pointer-events:none}
+
+/* Distinguish normal text from both browser/editor forms of bold. */
+.blog-post-content,.site-publishing .rich-editable{font-weight:400}
+.blog-post-content strong,.blog-post-content b,.site-publishing .rich-editable strong,.site-publishing .rich-editable b{font-weight:800!important}
+.blog-post-content strong *,.blog-post-content b *,.site-publishing .rich-editable strong *,.site-publishing .rich-editable b *{font-weight:inherit!important}
