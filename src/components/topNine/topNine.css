@@ -163,3 +163,8 @@
 .tn-sort-filters{display:flex;justify-content:center;gap:8px;margin:-6px 0 20px}
 .top-nine .tn-sort-filters button{min-height:36px;padding:7px 15px}
 .top-nine .tn-sort-filters button[aria-pressed=true]{background:#f1e8ff;border-color:#7139ce}
+
+/* Make loading more candidates a full-width target, separated from starting a game. */
+.top-nine .tn-pool-scroll>button{display:block;width:100%;min-height:54px;margin:18px 0 12px;padding:14px 24px;border:2px solid #9561df;border-radius:10px;background:#f3ecff;color:#5425a3;font-size:18px;font-weight:800;line-height:1.35}
+.top-nine .tn-pool-scroll>button:hover:not(:disabled){background:#e9dcff;border-color:#7139ce}
+.top-nine .tn-pool-game{margin-top:24px;padding-top:16px}
