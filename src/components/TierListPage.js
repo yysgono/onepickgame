@@ -1,3 +1,4 @@
+import {tierSearchFilter} from '../utils/tierSearchFilter';
 import updatedLabels from '../locales/tierCardUpdatedLabels.json';
 import {withTierCardDates} from '../utils/tierCardDates';
 import "./tierPresetCards.css";
@@ -645,41 +646,8 @@ function TierListPage({
   normalizeTags([searchKeyword])[0] || "";
 
 if (cleanSearch) {
-  const safe =
-    cleanSearch
-      .replace(
-        /[%_,()]/g,
-        " "
-      )
-      .trim();
-
-  if (safe) {
-    // 예전에 NFKC 때문에
-    // ㅁ -> ᄆ
-    // ㅋ -> ᄏ
-    // 형태로 저장된 태그도 같이 검색
-    const legacySafe =
-      safe.normalize("NFKC");
-
-    const filters = [
-      `title.ilike.%${safe}%`,
-      `candidate_search_text.ilike.%${safe}%`,
-      `tier_labels->>_tags.ilike.%${safe}%`,
-    ];
-
-    if (
-      legacySafe !== safe
-    ) {
-      filters.push(
-        `tier_labels->>_tags.ilike.%${legacySafe}%`
-      );
-    }
-
-    query =
-      query.or(
-        filters.join(",")
-      );
-  }
+ const filter=await tierSearchFilter(supabase,cleanSearch);
+ if(filter)query=query.or(filter);
 }
 
           if (
