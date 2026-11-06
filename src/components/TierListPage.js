@@ -1,3 +1,4 @@
+import updatedLabels from '../locales/tierCardUpdatedLabels.json';
 import {withTierCardDates} from '../utils/tierCardDates';
 import "./tierPresetCards.css";
 import tierDetailSeo from "../seo/tierDetailSeo";
@@ -1721,13 +1722,13 @@ gap:
 	                        "transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease",
 	                    }}
 	                  >
-                    <div style={{ display: "grid", gridTemplateColumns: item.hasTierPreview ? "36% 64%" : "1fr", minHeight: isMobile ? 154 : 230, borderBottom: "1px solid #dbeafe" }}>
+                    <div style={{ display: "grid", gridTemplateColumns: item.hasTierPreview ? "36% 64%" : "1fr", minHeight: isMobile ? 140 : 180, borderBottom: "1px solid #dbeafe" }}>
                     <div
                       style={{
                         width:
                           "100%",
 
-                        minHeight: isMobile ? 154 : 230,
+                        minHeight: isMobile ? 140 : 180,
 
                         position:
                           "relative",
@@ -1791,7 +1792,7 @@ gap:
                           <div
                             key={row.tier}
                             style={{
-                              minHeight: isMobile ? 36 : 52,
+                              minHeight: isMobile ? 30 : 38,
                               display: "flex",
                               alignItems: "center",
                               gap: 5,
@@ -1800,9 +1801,9 @@ gap:
                           >
                             <div
                               style={{
-                                width: isMobile ? 28 : 42,
-                                minWidth: isMobile ? 28 : 42,
-                                height: isMobile ? 28 : 42,
+                                width: isMobile ? 24 : 30,
+                                minWidth: isMobile ? 24 : 30,
+                                height: isMobile ? 24 : 30,
                                 borderRadius: 5,
                                 background:
                                   ({ S: "#ff6b6b", "A+": "#ff8052", A: "#ff9f43", B: "#ffd93d" })[row.tier],
@@ -1832,9 +1833,9 @@ gap:
                                   key={`${row.tier}-${candidate?.id ?? index}`}
                                   title={candidate?.name || ""}
                                   style={{
-                                    width: isMobile ? 28 : 38,
-                                    minWidth: isMobile ? 28 : 38,
-                                    height: isMobile ? 28 : 38,
+                                    width: isMobile ? 24 : 30,
+                                    minWidth: isMobile ? 24 : 30,
+                                    height: isMobile ? 24 : 30,
                                     borderRadius: 5,
                                     overflow: "hidden",
                                     background: "#ffffff",
@@ -1860,18 +1861,7 @@ gap:
                                 </div>
                               ))}
 
-                              {row.remaining > 0 && (
-                                <span
-                                  style={{
-                                    color: "#1D4ED8",
-                                    fontSize: isMobile ? 12 : 13,
-                                    fontWeight: 900,
-                                    whiteSpace: "nowrap",
-                                  }}
-                                >
-                                  +{row.remaining}
-                                </span>
-                              )}
+
                             </div>
                           </div>
                         ))}
@@ -1882,18 +1872,18 @@ gap:
                     <div
                       style={{
 	                          padding:
-	                            isMobile ? 13 : 14,
+	                            isMobile ? 9 : 10,
                       }}
                     >
                       <div
                    className="tier-card-title" title={item.displayTitle || ""}
                         style={{
-                          marginTop: 8,
+                          marginTop: 0,
 	                          fontSize: isMobile ? 18 : 21,
                           fontWeight: 900,
                           lineHeight: 1.35,
-                          minHeight: isMobile ? 43 : 49,
-                          maxHeight: isMobile ? 43 : 49,
+                          minHeight: 0,
+                          maxHeight: 49,
                           display: "-webkit-box",
                           WebkitBoxOrient: "vertical",
                           WebkitLineClamp: 2,
@@ -1905,7 +1895,7 @@ gap:
                       >
                   {item.displayTitle}
                       </div>
-<div className="tier-card-updated" style={{marginTop:8,color:'#64748b',fontSize:13}}>{new Intl.DateTimeFormat(lang,{year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date(item.updated_at||item.created_at))}</div>
+
                       <div
                         style={{
                           marginTop:
@@ -1958,6 +1948,7 @@ gap:
                           {item.clone_count ||
                             0}
                         </span>
+                        <span className="tier-card-updated">{updatedLabels[lang]||updatedLabels.en}: {new Intl.DateTimeFormat(lang,{year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date(item.updated_at||item.created_at))}</span>
                       </div>
                     </div>
                   </button>
