@@ -1520,7 +1520,7 @@ maxWidth: isMobile ? 430 : 1780,
   </div>
   {!tierPresetLoaded && <div className="tier-list-loading" role="status" aria-label={t("tierList.common.loading")}><span aria-hidden="true" /></div>}
   {presetError && <p role="alert" style={{ textAlign: "center", color: "#b42346" }}>{presetError}</p>}
-  {presetHasMore && tierPresetLoaded && <div style={{ textAlign: "center", margin: 20 }}><button type="button" onClick={() => setPresetPage(previous => previous + 1)} style={{ border: "2px solid #2563eb", borderRadius: 8, padding: "12px 24px", color: "#1d4ed8", background: "#fff", fontWeight: 800 }}>{t("tierList.common.loadMore", { defaultValue: lang === "ko" ? "더 보기" : localizeExtraUi("Load more") })}</button></div>}
+  {presetHasMore && tierPresetLoaded && <div style={{ textAlign: "center", margin: 20 }}><button className="tier-presets-more" type="button" onClick={() => setPresetPage(previous => previous + 1)} style={{ border: "2px solid #2563eb", borderRadius: 8, padding: "12px 24px", color: "#1d4ed8", background: "#fff", fontWeight: 800 }}>{t("tierList.common.loadMore", { defaultValue: lang === "ko" ? "더 보기" : localizeExtraUi("Load more") })}</button></div>}
 </section>}
 
 <section className="tier-community-filters" aria-label={t("tierList.page.title")}>

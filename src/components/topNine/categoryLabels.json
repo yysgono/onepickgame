@@ -1,0 +1,222 @@
+{
+  "en": {
+    "all": "All",
+    "games": "Games",
+    "books": "Books",
+    "anime": "Anime / Manga",
+    "movies": "Movies",
+    "sports": "Sports",
+    "kpop": "K-pop",
+    "celebrities": "Celebrities",
+    "brands": "Brands"
+  },
+  "ko": {
+    "all": "전체",
+    "games": "게임",
+    "books": "책",
+    "anime": "애니 / 만화",
+    "movies": "영화",
+    "sports": "스포츠",
+    "kpop": "K-pop",
+    "celebrities": "셀럽",
+    "brands": "브랜드"
+  },
+  "ja": {
+    "all": "すべて",
+    "games": "ゲーム",
+    "books": "本",
+    "anime": "アニメ / 漫画",
+    "movies": "映画",
+    "sports": "スポーツ",
+    "kpop": "K-pop",
+    "celebrities": "有名人",
+    "brands": "ブランド"
+  },
+  "zh": {
+    "all": "全部",
+    "games": "游戏",
+    "books": "书籍",
+    "anime": "动漫 / 漫画",
+    "movies": "电影",
+    "sports": "体育",
+    "kpop": "K-pop",
+    "celebrities": "名人",
+    "brands": "品牌"
+  },
+  "es": {
+    "all": "Todos",
+    "games": "Juegos",
+    "books": "Libros",
+    "anime": "Anime / Manga",
+    "movies": "Películas",
+    "sports": "Deportes",
+    "kpop": "K-pop",
+    "celebrities": "Celebridades",
+    "brands": "Marcas"
+  },
+  "fr": {
+    "all": "Tout",
+    "games": "Jeux",
+    "books": "Livres",
+    "anime": "Anime / Manga",
+    "movies": "Films",
+    "sports": "Sports",
+    "kpop": "K-pop",
+    "celebrities": "Célébrités",
+    "brands": "Marques"
+  },
+  "de": {
+    "all": "Alle",
+    "games": "Spiele",
+    "books": "Bücher",
+    "anime": "Anime / Manga",
+    "movies": "Filme",
+    "sports": "Sport",
+    "kpop": "K-pop",
+    "celebrities": "Prominente",
+    "brands": "Marken"
+  },
+  "vi": {
+    "all": "Tất cả",
+    "games": "Trò chơi",
+    "books": "Sách",
+    "anime": "Anime / Manga",
+    "movies": "Phim",
+    "sports": "Thể thao",
+    "kpop": "K-pop",
+    "celebrities": "Người nổi tiếng",
+    "brands": "Thương hiệu"
+  },
+  "ru": {
+    "all": "Все",
+    "games": "Игры",
+    "books": "Книги",
+    "anime": "Аниме / Манга",
+    "movies": "Фильмы",
+    "sports": "Спорт",
+    "kpop": "K-pop",
+    "celebrities": "Знаменитости",
+    "brands": "Бренды"
+  },
+  "id": {
+    "all": "Semua",
+    "games": "Game",
+    "books": "Buku",
+    "anime": "Anime / Manga",
+    "movies": "Film",
+    "sports": "Olahraga",
+    "kpop": "K-pop",
+    "celebrities": "Selebritas",
+    "brands": "Merek"
+  },
+  "pt": {
+    "all": "Todos",
+    "games": "Jogos",
+    "books": "Livros",
+    "anime": "Anime / Mangá",
+    "movies": "Filmes",
+    "sports": "Esportes",
+    "kpop": "K-pop",
+    "celebrities": "Celebridades",
+    "brands": "Marcas"
+  },
+  "hi": {
+    "all": "सभी",
+    "games": "गेम",
+    "books": "किताबें",
+    "anime": "एनीमे / मंगा",
+    "movies": "फ़िल्में",
+    "sports": "खेल",
+    "kpop": "K-pop",
+    "celebrities": "हस्तियाँ",
+    "brands": "ब्रांड"
+  },
+  "tr": {
+    "all": "Tümü",
+    "games": "Oyunlar",
+    "books": "Kitaplar",
+    "anime": "Anime / Manga",
+    "movies": "Filmler",
+    "sports": "Spor",
+    "kpop": "K-pop",
+    "celebrities": "Ünlüler",
+    "brands": "Markalar"
+  },
+  "th": {
+    "all": "ทั้งหมด",
+    "games": "เกม",
+    "books": "หนังสือ",
+    "anime": "อนิเมะ / มังงะ",
+    "movies": "ภาพยนตร์",
+    "sports": "กีฬา",
+    "kpop": "K-pop",
+    "celebrities": "คนดัง",
+    "brands": "แบรนด์"
+  },
+  "ar": {
+    "all": "الكل",
+    "games": "ألعاب",
+    "books": "كتب",
+    "anime": "أنمي / مانغا",
+    "movies": "أفلام",
+    "sports": "رياضة",
+    "kpop": "K-pop",
+    "celebrities": "مشاهير",
+    "brands": "علامات تجارية"
+  },
+  "bn": {
+    "all": "সব",
+    "games": "গেম",
+    "books": "বই",
+    "anime": "অ্যানিমে / মাঙ্গা",
+    "movies": "সিনেমা",
+    "sports": "খেলাধুলা",
+    "kpop": "K-pop",
+    "celebrities": "তারকা",
+    "brands": "ব্র্যান্ড"
+  },
+  "it": {
+    "all": "Tutti",
+    "games": "Giochi",
+    "books": "Libri",
+    "anime": "Anime / Manga",
+    "movies": "Film",
+    "sports": "Sport",
+    "kpop": "K-pop",
+    "celebrities": "Celebrità",
+    "brands": "Marchi"
+  },
+  "pl": {
+    "all": "Wszystkie",
+    "games": "Gry",
+    "books": "Książki",
+    "anime": "Anime / Manga",
+    "movies": "Filmy",
+    "sports": "Sport",
+    "kpop": "K-pop",
+    "celebrities": "Celebryci",
+    "brands": "Marki"
+  },
+  "nl": {
+    "all": "Alles",
+    "games": "Games",
+    "books": "Boeken",
+    "anime": "Anime / Manga",
+    "movies": "Films",
+    "sports": "Sport",
+    "kpop": "K-pop",
+    "celebrities": "Beroemdheden",
+    "brands": "Merken"
+  },
+  "cs": {
+    "all": "Vše",
+    "games": "Hry",
+    "books": "Knihy",
+    "anime": "Anime / Manga",
+    "movies": "Filmy",
+    "sports": "Sport",
+    "kpop": "K-pop",
+    "celebrities": "Celebrity",
+    "brands": "Značky"
+  }
+}

@@ -150,3 +150,10 @@
 .top-nine .tn-public-cards{grid-template-columns:repeat(auto-fill,minmax(300px,1fr))}
 .top-nine .tn-public-card-link strong{display:block;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;overflow-wrap:normal;line-height:1.5;padding:10px 6px}
 @media(max-width:600px){.top-nine .tn-public-cards{grid-template-columns:minmax(0,360px);justify-content:center}}
+
+.top-nine .tn-public-cards{grid-template-columns:repeat(auto-fill,minmax(320px,1fr))}
+.top-nine .tn-public-card-link strong{text-align:center}
+.tn-category-filters{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin:16px 0 22px}
+.top-nine .tn-category-filters button{border-radius:999px;min-height:38px;padding:7px 14px}
+.top-nine .tn-category-filters button[aria-pressed=true]{border-color:#7139ce;background:#f1e8ff;color:#5425a3}
+@media(max-width:600px){.top-nine .tn-public-cards{grid-template-columns:minmax(0,380px);justify-content:center}}
