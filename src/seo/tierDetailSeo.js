@@ -36,6 +36,7 @@ function getTierPresetName(tier, language) {
 }
 function getTierPublicTitle(tier, language, nickname='', fallback='Tier List') {
  const copy=COPY[normalizeLanguage(language)]||COPY.en;
+ if(!tier?.source_worldcup_id&&!text(metadata(tier)._sourcePresetName))return getTierListTitle(tier,language,fallback);
  const author=text(nickname)||text(tier?.guest_nickname)||(tier?.user_id?copy.unknownAuthor:copy.guestAuthor);
  let base=getTierPresetName(tier,language)||getTierListTitle(tier,language,fallback);
  if(base.endsWith(' - '+author))base=base.slice(0,-author.length-3);

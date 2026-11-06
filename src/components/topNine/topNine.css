@@ -139,3 +139,5 @@
 .tn-public-intro{max-width:900px;margin:20px auto;text-align:center}
 .tn-public-intro .tn-public-description{color:#596579;font-size:15px}
 .tn-public-intro .tn-actions{justify-content:center}
+
+.tn-public-intro .tn-public-description{text-align:center;white-space:pre-line}

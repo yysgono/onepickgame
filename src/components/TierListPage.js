@@ -449,7 +449,11 @@ function TierListPage({
       if (category !== "all") query = query.in("category", categories[category] || [category]);
       const { data, error } = await query.order("tier_preset_order", { ascending: true, nullsFirst: false }).order("id", { ascending: true }).range(presetPage * PRESET_PAGE_SIZE, (presetPage + 1) * PRESET_PAGE_SIZE);
       if (error) throw error;
-      return data || [];
+      const rows=data||[];
+      if(!rows.length)return rows;
+      const thumbs=await supabase.from('tier_preset_thumbnails').select('source_worldcup_id,image_url').in('source_worldcup_id',rows.map(row=>row.id));
+      const images=new Map((thumbs.data||[]).map(row=>[String(row.source_worldcup_id),row.image_url]));
+      return rows.map(row=>({...row,tier_preset_thumbnail_url:images.get(String(row.id))||row.tier_preset_thumbnail_url}));
     }).then(rows => {
       if (!live) return;
       // One extra metadata row tells us whether the next page exists, without a count query.
@@ -605,7 +609,7 @@ function TierListPage({
                 "tier_list_home_cards"
               )
        .select(
-  "id, user_id, guest_nickname, title, title_translations, source_worldcup_id, category, thumbnail_url, candidate_count, has_one_pick, view_count, like_count, comment_count, clone_count, created_at, tier_labels, tiers, candidates, tier_preview_counts"
+  "id, user_id, guest_nickname, title, title_translations, source_worldcup_id, category, thumbnail_url, candidate_count, has_one_pick, view_count, like_count, comment_count, clone_count, created_at, updated_at, tier_labels, tiers, candidates, tier_preview_counts"
 );
 
 
@@ -1883,67 +1887,6 @@ gap:
                       }}
                     >
                       <div
-                        style={{
-                          display:
-                            "flex",
-
-                          gap: 6,
-
-                          alignItems:
-                            "center",
-
-                          flexWrap:
-                            "wrap",
-                        }}
-                      >
-                        <span
-                          style={{
-                            padding:
-                              "3px 7px",
-
-                            borderRadius:
-                              999,
-
-                            background:
-                              "#ffffff",
-
-                            color:
-                              "#1D4ED8",
-
-                            fontSize:
-	                              isMobile ? 14 : 15,
-
-                            fontWeight:
-                              900,
-                          }}
-                        >
-                          {t(
-                            `tierList.categories.${
-                              item.category ||
-                              "other"
-                            }`
-                          )}
-                        </span>
-
-                        <span
-                          style={{
-                            color:
-                              "#1D4ED8",
-
-                            fontSize:
-	                              isMobile ? 15 : 16,
-
-                            fontWeight:
-                              700,
-                          }}
-                        >
-                          {
-                            item.author
-                          }
-                        </span>
-                      </div>
-
-                      <div
                    className="tier-card-title" title={item.displayTitle || ""}
                         style={{
                           marginTop: 8,
@@ -1963,42 +1906,7 @@ gap:
                       >
                   {item.displayTitle}
                       </div>
-<div
-  style={{
-    marginTop: 6,
-
-    minHeight: 34,
-
-    color:
-      item.presetName
-        ? "#1D4ED8"
-        : "transparent",
-
-    fontSize: isMobile ? 14 : 15,
-
-    fontWeight: 800,
-
-    lineHeight: 1.35,
-
-    display:
-      "-webkit-box",
-
-    WebkitBoxOrient:
-      "vertical",
-
-    WebkitLineClamp:
-      2,
-
-    overflow:
-      "hidden",
-  }}
->
-  {item.presetName
-    ? `${
-        t("tierList.page.presetLabel")
-      }: ${item.presetName}`
-    : "\u00A0"}
-</div>
+<div className="tier-card-updated" style={{marginTop:8,color:'#64748b',fontSize:13}}>{new Intl.DateTimeFormat(lang,{year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date(item.updated_at||item.created_at))}</div>
                       <div
                         style={{
                           marginTop:

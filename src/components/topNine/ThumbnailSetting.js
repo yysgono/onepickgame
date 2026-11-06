@@ -3,7 +3,7 @@ import {supabase} from '../../utils/supabaseClient';
 import {safeMedia,isShareable,normalizeCandidates,candidateMatches} from './core';
 import {isVideo} from './media';
 
-export default function ThumbnailSetting({id,url='',disabled,onSaved}) {
+export default function ThumbnailSetting({id,url='',disabled,onSaved,kind='nine'}) {
  const [value,setValue]=useState(url),[busy,setBusy]=useState(false),[message,setMessage]=useState('');
  const [open,setOpen]=useState(false),[candidates,setCandidates]=useState(null),[loading,setLoading]=useState(false),[loadError,setLoadError]=useState(false),[query,setQuery]=useState(''),[limit,setLimit]=useState(36);
  const request=useRef(0);
@@ -30,12 +30,12 @@ export default function ThumbnailSetting({id,url='',disabled,onSaved}) {
   setMessage('');
   if(value.trim()&&(!preview||!isShareable({src:preview})||!preview.startsWith('https://'))){setMessage('공개된 후보 사진을 선택해 주세요.');return;}
   setBusy(true);
-  try{const {error}=await supabase.rpc('save_top_nine_thumbnail',{p_id:id,p_url:preview||''});if(error)throw error;onSaved(preview||'');setMessage('썸네일을 저장했어요.');}
+  try{const {error}=await supabase.rpc(kind==='tier'?'save_tier_preset_thumbnail':'save_top_nine_thumbnail',{p_id:id,p_url:preview||''});if(error)throw error;onSaved(preview||'');setMessage('썸네일을 저장했어요.');}
   catch{setMessage('저장하지 못했어요. SQL 적용과 운영자 권한을 확인해 주세요.');}
   finally{setBusy(false);}
  }
  return <div style={{marginTop:12}}>
-  <strong>구절판 추천 썸네일</strong>
+  <strong>{kind==='tier'?'티어표 프리셋 썸네일':'구절판 추천 썸네일'}</strong>
   {preview&&(isVideo(preview)?<video src={preview} muted playsInline preload="metadata" style={{width:160,height:100,objectFit:'cover',display:'block',marginTop:8}}/>:<img src={preview} alt="선택한 썸네일" loading="lazy" style={{width:160,height:100,objectFit:'cover',objectPosition:'center 25%',display:'block',marginTop:8}}/>)}
   <div style={{display:'flex',flexWrap:'wrap',gap:8,marginTop:8}}>
    <button type="button" disabled={disabled||busy} aria-expanded={open} onClick={showCandidates}>{open?'후보 접기':'이 월드컵 후보에서 고르기'}</button>
