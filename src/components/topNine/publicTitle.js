@@ -14,7 +14,7 @@ export function isDuplicateTitle(error) {
 export async function publishWithTitleRetry(supabase,args) {
   const base=String(args.p_title||'').trim()||'My Top 9';let title=base;
   for(let attempt=0;attempt<3;attempt++){
-    const result=await supabase.rpc(args.p_board_id?'update_top_nine_board_v1':Object.hasOwn(args,'p_source_worldcup_ids')?'publish_top_nine_board_v3':'publish_top_nine_board_v2',{...args,p_title:title});
+    const result=await supabase.rpc(Object.hasOwn(args,'p_category')?(args.p_board_id?'update_top_nine_board_v2':'publish_top_nine_board_v4'):args.p_board_id?'update_top_nine_board_v1':Object.hasOwn(args,'p_source_worldcup_ids')?'publish_top_nine_board_v3':'publish_top_nine_board_v2',{...args,p_title:title});
     if(!result.error)return {...result,title};
     if(!isDuplicateTitle(result.error)||attempt===2)throw result.error;
     const ending=' ('+(attempt+2)+')';

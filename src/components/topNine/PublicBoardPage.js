@@ -9,10 +9,13 @@ import copy from './copy.json';
 
 export default function PublicBoardPage(){
  const {lang:routeLang,id}=useParams(),navigate=useNavigate(),lang=copy[routeLang]?routeLang:'en',t=copy[lang];
+ useEffect(()=>{
+  try{const key='top-nine-viewer';let visitor=sessionStorage.getItem(key);if(!visitor){visitor=crypto.randomUUID();sessionStorage.setItem(key,visitor);}supabase.rpc('record_top_nine_view',{p_id:id,p_visitor:visitor}).catch(()=>{});}catch{}
+ },[id]);
  const [result,setResult]=useState(null),[retry,setRetry]=useState(0);
  useEffect(()=>{
   let live=true;setResult(null);
-  supabase.from('top_nine_public_boards').select('id,title,slots,show_names,source_worldcup_ids,guest_nickname').eq('id',id).maybeSingle().then(async({data,error})=>{
+  supabase.from('top_nine_public_boards').select('id,title,slots,show_names,source_worldcup_ids,guest_nickname,category').eq('id',id).maybeSingle().then(async({data,error})=>{
    if(!live)return;
    if(error){setResult({error:true});return;}
    if(!data){setResult({missing:true});return;}
@@ -20,7 +23,7 @@ export default function PublicBoardPage(){
     const slots=data.slots.map(c=>c?.id==='tn-empty-cell'&&c.src==='https://www.onepickgame.com/top-nine-empty.png'?null:c);
     const board=readShared(makeShareHash(slots,data.title,data.show_names));
     const titleSources=await loadBoardTitleSources(supabase,[data]);if(!live)return;
-    setResult(board?{board:{...board,authorNickname:data.guest_nickname||'',titleSources,sourceIds:data.source_worldcup_ids||[]}}:{missing:true});
+    setResult(board?{board:{...board,category:data.category||'',authorNickname:data.guest_nickname||'',titleSources,sourceIds:data.source_worldcup_ids||[]}}:{missing:true});
    }catch{setResult({missing:true});}
   }).catch(()=>{if(live)setResult({error:true});});
   return()=>{live=false;};

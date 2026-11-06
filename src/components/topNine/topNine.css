@@ -157,3 +157,9 @@
 .top-nine .tn-category-filters button{border-radius:999px;min-height:38px;padding:7px 14px}
 .top-nine .tn-category-filters button[aria-pressed=true]{border-color:#7139ce;background:#f1e8ff;color:#5425a3}
 @media(max-width:600px){.top-nine .tn-public-cards{grid-template-columns:minmax(0,380px);justify-content:center}}
+
+.tn-category-field{display:block;margin:14px 0;font-size:14px;font-weight:700}
+.tn-category-field select{display:block;width:100%;margin-top:6px;padding:10px;border:2px solid #8b5fc1;border-radius:8px;background:white;color:#28203a}
+.tn-sort-filters{display:flex;justify-content:center;gap:8px;margin:-6px 0 20px}
+.top-nine .tn-sort-filters button{min-height:36px;padding:7px 15px}
+.top-nine .tn-sort-filters button[aria-pressed=true]{background:#f1e8ff;border-color:#7139ce}
