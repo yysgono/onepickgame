@@ -1,3 +1,4 @@
+import {withTierCardDates} from '../utils/tierCardDates';
 import "./tierPresetCards.css";
 import tierDetailSeo from "../seo/tierDetailSeo";
 import PageIntro from "./PageIntro";
@@ -609,7 +610,7 @@ function TierListPage({
                 "tier_list_home_cards"
               )
        .select(
-  "id, user_id, guest_nickname, title, title_translations, source_worldcup_id, category, thumbnail_url, candidate_count, has_one_pick, view_count, like_count, comment_count, clone_count, created_at, updated_at, tier_labels, tiers, candidates, tier_preview_counts"
+  "id, user_id, guest_nickname, title, title_translations, source_worldcup_id, category, thumbnail_url, candidate_count, has_one_pick, view_count, like_count, comment_count, clone_count, created_at, tier_labels, tiers, candidates, tier_preview_counts"
 );
 
 
@@ -761,9 +762,7 @@ if (cleanSearch) {
                 throw error;
               }
 
-              return Array.isArray(data)
-                ? data
-                : [];
+              return withTierCardDates(supabase,Array.isArray(data)?data:[]);
             }
           );
 
