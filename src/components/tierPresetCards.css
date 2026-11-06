@@ -11,3 +11,6 @@
 .tier-list-card .tier-card-title{font-size:19px!important;line-height:1.35}
 @media(max-width:900px){.tier-page-container .tier-cards-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
 @media(max-width:600px){.tier-page-container .tier-cards-grid{grid-template-columns:minmax(0,440px)!important}.tier-card-updated{font-size:11px}}
+
+/* Public card titles occupy exactly one line, including under theme overrides. */
+.tier-page-container .tier-list-card .tier-card-title{display:block!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;min-height:0!important;height:1.35em!important;max-height:1.35em!important;line-height:1.35!important;-webkit-line-clamp:unset!important;overflow-wrap:normal!important;word-break:normal!important}

@@ -145,3 +145,8 @@
 /* Slightly larger community collages, independent of the preset gallery. */
 .top-nine .tn-public-cards{grid-template-columns:repeat(auto-fill,minmax(250px,1fr))}
 @media(max-width:600px){.top-nine .tn-public-cards{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* Give each public 3x3 collage more room while keeping its caption compact. */
+.top-nine .tn-public-cards{grid-template-columns:repeat(auto-fill,minmax(300px,1fr))}
+.top-nine .tn-public-card-link strong{display:block;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;overflow-wrap:normal;line-height:1.5;padding:10px 6px}
+@media(max-width:600px){.top-nine .tn-public-cards{grid-template-columns:minmax(0,360px);justify-content:center}}
