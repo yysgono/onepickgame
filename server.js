@@ -1631,6 +1631,12 @@ app.use(async (req, res, next) => {
         if (!profileError) authorNickname = profile?.nickname || "";
       } catch { /* A missing public nickname must not make a tier list unavailable. */ }
     }
+    if(tierList.source_worldcup_id){
+      try{
+        const source=await supabase.from('worldcups').select('id,title,title_translations,tier_preset_title_translations').eq('id',tierList.source_worldcup_id).is('deleted_at',null).maybeSingle();
+        if(!source.error)tierList._sourcePreset=source.data;
+      }catch{}
+    }
     const detailMeta = tierDetailSeo.getTierListDetailSeo(tierList, lang, authorNickname);
     const tierTitle = detailMeta.name;
     const tierDescription = detailMeta.description;

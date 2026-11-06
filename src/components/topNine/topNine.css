@@ -130,3 +130,12 @@
 .top-nine .tn-title-field input:not([type=range]):not([type=checkbox]),
 .top-nine .tn-cell>input.tn-name-input:not([type=range]):not([type=checkbox]){border:2px solid #8b5fc1;background:#fff;border-radius:8px;box-shadow:0 1px 3px #50248d14}
 .top-nine .tn-title-field input:focus,.top-nine input.tn-name-input:focus{border-color:#6d28d9;outline:2px solid #d8c3f5;outline-offset:2px}
+
+.tn-public-description{white-space:pre-line}
+.top-nine a.tn-reuse-template{display:inline-block;padding:10px 16px;min-height:44px;border:1px solid #7139ce;border-radius:10px;background:#7139ce;color:#fff;text-decoration:none;font-weight:700;text-align:center}
+.top-nine a.tn-reuse-template:hover{background:#5425a3}
+.top-nine a.tn-reuse-template:focus-visible{outline:3px solid #9a60ed;outline-offset:3px}
+
+.tn-public-intro{max-width:900px;margin:20px auto;text-align:center}
+.tn-public-intro .tn-public-description{color:#596579;font-size:15px}
+.tn-public-intro .tn-actions{justify-content:center}

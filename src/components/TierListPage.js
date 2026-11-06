@@ -1,3 +1,5 @@
+import "./tierPresetCards.css";
+import tierDetailSeo from "../seo/tierDetailSeo";
 import PageIntro from "./PageIntro";
 import ContentLanguageSelect from "./ContentLanguageSelect";
 import { templateTitle } from "../utils/templateTitles";
@@ -855,6 +857,15 @@ if (cleanSearch) {
     );
   };
 
+ const [sourceTitleMap,setSourceTitleMap]=useState({});
+ const sourceTitleIds=JSON.stringify([...new Set(tierLists.map(item=>item.source_worldcup_id).filter(Boolean))].sort());
+ useEffect(()=>{
+  let live=true;const ids=JSON.parse(sourceTitleIds);
+  if(!ids.length){setSourceTitleMap({});return;}
+  supabase.from('worldcups').select('id,title,title_translations,tier_preset_title_translations').in('id',ids).is('deleted_at',null)
+   .then(({data,error})=>{if(live&&!error)setSourceTitleMap(Object.fromEntries((data||[]).map(cup=>[String(cup.id),cup])));}).catch(()=>{});
+  return()=>{live=false;};
+ },[sourceTitleIds]);
  const cards = useMemo(() => {
   return tierLists.map((item) => {
     const titleTranslations =
@@ -899,7 +910,7 @@ const displayTitle =
 
     const sourceCup =
       item?.source_worldcup_id
-        ? worldcupList.find(
+        ? sourceTitleMap[String(item.source_worldcup_id)] || worldcupList.find(
             (cup) =>
               String(cup?.id) ===
               String(
@@ -910,10 +921,7 @@ const displayTitle =
 
     const presetName =
       sourceCup
-        ? getLocalizedWorldcupTitle(
-            sourceCup,
-            lang
-          )
+        ? templateTitle(sourceCup,"tier",lang)
         : String(
             item?.tier_labels?._sourcePresetName || ""
           ).trim();
@@ -946,7 +954,7 @@ const displayTitle =
   return {
   ...item,
 
-  displayTitle,
+  displayTitle: tierDetailSeo.getTierPublicTitle({...item,_sourcePreset:sourceCup},lang,item.user_id?profileMap[String(item.user_id)]:(item.guest_nickname||t("tierList.common.guestAuthor")),displayTitle),
 
   previewImage,
   presetName,
@@ -970,6 +978,7 @@ const displayTitle =
 }, [
   tierLists,
   profileMap,
+  sourceTitleMap,
   worldcupList,
   lang,
   t,
@@ -1493,14 +1502,14 @@ maxWidth: isMobile ? 430 : 1780,
             )}
           </div>
 </div>
-  <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: 18 }}>
+  <div className="tier-recommendation-grid">
     {recommendedPresets.map(cup => {
       const title = templateTitle(cup, "tier", lang, "Tier List");
-      return <Link className="tier-recommendation-card" key={cup.id} to={`/${lang}/tier-list/create/${cup.id}`} style={{ flex: isMobile ? "0 1 100%" : "0 1 400px", maxWidth: isMobile ? "100%" : 400, minWidth: 0, border: "1px solid #bfdbfe", borderRadius: 12, overflow: "hidden", background: "#fff", color: "#202534", textDecoration: "none", boxShadow: "0 8px 22px #0f172a15" }}>
-        <div style={{ width: "100%", height: isMobile ? 198 : 207, background: "#eff6ff" }}>
+      return <Link className="tier-recommendation-card" key={cup.id} to={`/${lang}/tier-list/create/${cup.id}`} style={{ minWidth: 0, border: "1px solid #bfdbfe", borderRadius: 12, overflow: "hidden", background: "#fff", color: "#202534", textDecoration: "none", boxShadow: "0 8px 22px #0f172a15" }}>
+        <div className="tier-recommendation-image" style={{ width: "100%", background: "#eff6ff" }}>
           {cup.tier_preset_thumbnail_url ? <MediaRenderer url={cup.tier_preset_thumbnail_url} alt={title} playable={false} loading="lazy" deferUntilVisible viewportMargin="0px" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 25%", display: "block" }} /> : <div aria-hidden="true" style={{ height: "100%", display: "grid", placeItems: "center", fontSize: 44 }}>📊</div>}
         </div>
-        <div style={{ padding: "12px 10px", minHeight: 65, boxSizing: "border-box", textAlign: "center", display: "grid", placeItems: "center", fontWeight: 900, fontSize: isMobile ? 15 : 19 }}><span style={{ display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>{title}</span></div>
+        <div style={{ padding: "12px 10px", minHeight: 65, boxSizing: "border-box", textAlign: "center", display: "grid", placeItems: "center", fontWeight: 900, fontSize: isMobile ? 14 : 16 }}><span style={{ display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>{title}</span></div>
       </Link>;
     })}
   </div>

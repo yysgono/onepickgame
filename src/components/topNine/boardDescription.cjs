@@ -17,6 +17,6 @@ function boardDescription(board,lang='en'){
  const templates=(board.titleSources||[]).filter(source=>sourceIds.some(id=>String(id)===String(source.id)))
   .map(source=>{const own=map(source.top_nine_title_translations),original=map(source.title_translations);return text(own[lang]||own.en||original[lang]||original.en||source.title);}).filter(Boolean);
  const template=[...new Set(templates)].join(', ');
- return description+(template?' '+forms[4].replace('{template}',()=>template):'');
+ return description+(template?'\n'+forms[4].replace('{template}',()=>template):'');
 }
 module.exports={boardDescription};

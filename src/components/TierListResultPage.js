@@ -737,6 +737,15 @@ if (mounted) {
     };
 
 
+  const [sourceTitleCup,setSourceTitleCup]=useState(null);
+  useEffect(()=>{
+    let live=true;setSourceTitleCup(null);
+    if(tierList?.source_worldcup_id){
+      supabase.from('worldcups').select('id,title,title_translations,tier_preset_title_translations').eq('id',tierList.source_worldcup_id).is('deleted_at',null).maybeSingle()
+        .then(({data,error})=>{if(live&&!error)setSourceTitleCup(data);}).catch(()=>{});
+    }
+    return()=>{live=false;};
+  },[tierList?.source_worldcup_id]);
   /* Public author lookup is reused for UI and SEO, not repeated on like/view updates. */
   useEffect(() => {
     let cancelled = false;
@@ -1046,11 +1055,7 @@ const canManage =
         window.location.href;
 
 
-   const title = getTierListTitle(
-  tierList,
-  lang,
-  "OnePickGame Tier List"
-);
+   const title = tierDetailSeo.getTierPublicTitle({...tierList,_sourcePreset:sourceTitleCup},lang,authorName);
 
 
       setShareMessage(
@@ -1320,11 +1325,7 @@ const canManage =
         ctx.font =
           "900 48px Arial, sans-serif";
 
-const exportTitle = getTierListTitle(
-  tierList,
-  lang,
-  "Tier List"
-);
+const exportTitle = tierDetailSeo.getTierPublicTitle({...tierList,_sourcePreset:sourceTitleCup},lang,authorName);
 
 ctx.fillText(
   exportTitle,
@@ -2389,13 +2390,9 @@ await trashContent('tier-list',tierList.id,guestPassword);
     );
   }
 
-const displayTitle = getTierListTitle(
-  tierList,
-  lang,
-  t("tierList.result.tierList")
-);
+const displayTitle = tierDetailSeo.getTierPublicTitle({...tierList,_sourcePreset:sourceTitleCup},lang,authorName,t("tierList.result.tierList"));
 
-const detailMeta = tierDetailSeo.getTierListDetailSeo(tierList, lang, seoAuthor.nickname);
+const detailMeta = tierDetailSeo.getTierListDetailSeo({...tierList,_sourcePreset:sourceTitleCup}, lang, seoAuthor.nickname);
 const seoResultTitle = detailMeta.title;
 const seoResultDescription = detailMeta.description;
 const seoHreflangLangs = detailMeta.languages;

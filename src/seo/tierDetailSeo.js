@@ -29,6 +29,18 @@ function getTierListTitle(tier, language, fallback = 'Tier List') {
   if (lang === original) return text(tier?.title) || text(translations[lang]) || fallback;
   return text(translations[lang]) || text(tier?.title) || text(translations.en) || fallback;
 }
+function getTierPresetName(tier, language) {
+ const lang=normalizeLanguage(language),source=tier?._sourcePreset;
+ const own=map(source?.tier_preset_title_translations),original=map(source?.title_translations);
+ return text(own[lang]||own.en||original[lang]||original.en||source?.title||metadata(tier)._sourcePresetName);
+}
+function getTierPublicTitle(tier, language, nickname='', fallback='Tier List') {
+ const copy=COPY[normalizeLanguage(language)]||COPY.en;
+ const author=text(nickname)||text(tier?.guest_nickname)||(tier?.user_id?copy.unknownAuthor:copy.guestAuthor);
+ let base=getTierPresetName(tier,language)||getTierListTitle(tier,language,fallback);
+ if(base.endsWith(' - '+author))base=base.slice(0,-author.length-3);
+ return base+' - '+author;
+}
 function getTierListDetailLanguages(tier, language) {
   const meta = metadata(tier);
   const fields = tierDescriptionFields(Object.assign({}, tier, { tier_labels: meta }));
@@ -43,19 +55,10 @@ function getTierListDetailSeo(tier, language, nickname = '') {
   const lang = Object.prototype.hasOwnProperty.call(COPY, requested) ? requested : 'en';
   const copy = COPY[lang];
   const meta = metadata(tier);
-  const name = getTierListTitle(tier, lang, copy.fallbackTitle);
+  const name = getTierPublicTitle(tier, lang, nickname, copy.fallbackTitle);
   const author = short(text(nickname) || (!tier?.user_id ? text(tier?.guest_nickname) : '') ||
     (tier?.user_id ? copy.unknownAuthor : copy.guestAuthor), 40);
-  const owned = fill(copy.ownedTitle, { author });
-  // Only remove a trailing site-brand suffix, not words from the game title itself.
-  let base = name.replace(/\s*[|｜]\s*(?:One\s*Pick\s*Game|원픽게임)\s*$/iu, '').trim();
-  const hasOwner = base.toLowerCase().includes(owned.toLowerCase());
-  const hasRanking = copy.rankWords.some(word => base.toLowerCase().includes(word.toLowerCase()));
-  if (!hasOwner && !hasRanking) {
-    base += ` – ${tier?.category === 'animation' ? copy.characterRank : copy.ranking}`;
-  }
-  const suffix = `${hasOwner ? '' : ` ${owned}`} | ${copy.brand}`;
-  const title = short(base, Math.max(60, 220 - Array.from(suffix).length)) + suffix;
+  const title = short(name, 200)+' | '+copy.brand;
 
   const candidates = list(tier?.candidates);
   const byId = new Map(candidates.filter(c => c?.id != null).map(c => [String(c.id), c]));
@@ -97,7 +100,7 @@ function getTierListDetailSeo(tier, language, nickname = '') {
   const original = normalizeLanguage(meta._originalLanguage || tier?.original_language);
   const saved = lang === original ? text(fields.description) || text(translations[lang])
     : text(translations[lang]) || text(fields.description) || text(translations.en);
-  const intro = fill(copy.intro, { author, title: short(name, 100) });
+  const intro = fill(copy.intro, { author, title: short(getTierPresetName(tier,lang)||getTierListTitle(tier,lang,copy.fallbackTitle), 100) });
   const parts = [saved ? short(saved, 140) : '', short(intro, saved ? 100 : 160),
     summary ? `${short(summary, 150)}.` : ''].filter(Boolean);
   let description = parts.join(' ');
@@ -105,4 +108,4 @@ function getTierListDetailSeo(tier, language, nickname = '') {
   description = short(description, 400);
   return { lang, name, title, description, author, languages: getTierListDetailLanguages(tier, lang) };
 }
-module.exports = { getTierListDetailSeo, getTierListTitle, getTierListDetailLanguages };
+module.exports = { getTierListDetailSeo, getTierListTitle, getTierListDetailLanguages, getTierPublicTitle, getTierPresetName };

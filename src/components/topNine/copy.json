@@ -61,11 +61,12 @@
     "editDenied": "Only the author can edit this post.",
     "showCandidateNames": "Show candidate names",
     "hideCandidateNames": "Hide candidate names",
-    "boardPhotoHelp": "Click or tap once to adjust a photo; twice to remove it. Drag to move it."
+    "boardPhotoHelp": "Click or tap once to adjust a photo; twice to remove it. Drag to move it.",
+    "reuseTemplate": "Create My Top 9 with this template"
   },
   "ko": {
     "nav": "구절판",
-    "title": "최애 구절판 만들기",
+    "title": "이상형 최애 구절판 만들기",
     "subtitle": "아이돌, 애니 캐릭터, 게임, 영화 등 좋아하는 후보 9개를 모아 나만의 이상형·최애 구절판을 만들어보세요. 추천 프리셋에서 직접 고르거나 게임으로 후보를 선별하고, 사진 배치와 이름을 꾸민 뒤 이미지로 저장하고 공유할 수 있어요.",
     "templates": "추천 템플릿",
     "search": "프리셋 검색",
@@ -125,7 +126,8 @@
     "editDenied": "작성자만 이 게시물을 수정할 수 있어요.",
     "showCandidateNames": "후보 이름 보기",
     "hideCandidateNames": "후보 이름 숨기기",
-    "boardPhotoHelp": "사진을 한 번 누르면 크기를 조절하고, 두 번 누르면 제거할 수 있어요. 위치는 드래그해서 바꿔주세요."
+    "boardPhotoHelp": "사진을 한 번 누르면 크기를 조절하고, 두 번 누르면 제거할 수 있어요. 위치는 드래그해서 바꿔주세요.",
+    "reuseTemplate": "같은 템플릿으로 구절판 만들기"
   },
   "ja": {
     "nav": "マイトップ9",
@@ -189,7 +191,8 @@
     "editDenied": "投稿者のみ編集できます。",
     "showCandidateNames": "候補名を表示",
     "hideCandidateNames": "候補名を非表示",
-    "boardPhotoHelp": "写真を1回押すと調整、2回押すと削除できます。移動はドラッグしてください。"
+    "boardPhotoHelp": "写真を1回押すと調整、2回押すと削除できます。移動はドラッグしてください。",
+    "reuseTemplate": "同じテンプレートでマイベスト9を作る"
   },
   "zh": {
     "nav": "我的九宫格",
@@ -253,7 +256,8 @@
     "editDenied": "只有发布者可以修改此内容。",
     "showCandidateNames": "显示候选名称",
     "hideCandidateNames": "隐藏候选名称",
-    "boardPhotoHelp": "单击或轻点一次调整图片，两次移除。拖动可更换位置。"
+    "boardPhotoHelp": "单击或轻点一次调整图片，两次移除。拖动可更换位置。",
+    "reuseTemplate": "使用相同模板制作九宫格"
   },
   "es": {
     "nav": "Mis 9 favoritos",
@@ -317,7 +321,8 @@
     "editDenied": "Solo el autor puede editar esta publicación.",
     "showCandidateNames": "Mostrar nombres",
     "hideCandidateNames": "Ocultar nombres",
-    "boardPhotoHelp": "Pulsa una vez para ajustar la foto y dos para quitarla. Arrastra para moverla."
+    "boardPhotoHelp": "Pulsa una vez para ajustar la foto y dos para quitarla. Arrastra para moverla.",
+    "reuseTemplate": "Crear Mi Top 9 con esta plantilla"
   },
   "fr": {
     "nav": "Mes 9 favoris",
@@ -381,7 +386,8 @@
     "editDenied": "Seul l’auteur peut modifier cette publication.",
     "showCandidateNames": "Afficher les noms",
     "hideCandidateNames": "Masquer les noms",
-    "boardPhotoHelp": "Appuyez une fois pour ajuster la photo, deux fois pour la retirer. Faites glisser pour la déplacer."
+    "boardPhotoHelp": "Appuyez une fois pour ajuster la photo, deux fois pour la retirer. Faites glisser pour la déplacer.",
+    "reuseTemplate": "Créer mon Top 9 avec ce modèle"
   },
   "it": {
     "nav": "I miei 9 preferiti",
@@ -445,7 +451,8 @@
     "editDenied": "Solo l’autore può modificare questo post.",
     "showCandidateNames": "Mostra nomi",
     "hideCandidateNames": "Nascondi nomi",
-    "boardPhotoHelp": "Premi una volta per regolare la foto, due per rimuoverla. Trascina per spostarla."
+    "boardPhotoHelp": "Premi una volta per regolare la foto, due per rimuoverla. Trascina per spostarla.",
+    "reuseTemplate": "Crea la mia Top 9 con questo modello"
   },
   "pl": {
     "nav": "Moje top 9",
@@ -509,7 +516,8 @@
     "editDenied": "Tylko autor może edytować ten wpis.",
     "showCandidateNames": "Pokaż nazwy",
     "hideCandidateNames": "Ukryj nazwy",
-    "boardPhotoHelp": "Naciśnij raz, aby dostosować zdjęcie, dwa razy, aby je usunąć. Przeciągnij, aby przenieść."
+    "boardPhotoHelp": "Naciśnij raz, aby dostosować zdjęcie, dwa razy, aby je usunąć. Przeciągnij, aby przenieść.",
+    "reuseTemplate": "Utwórz Moje Top 9 z tym szablonem"
   },
   "nl": {
     "nav": "Mijn top 9",
@@ -573,7 +581,8 @@
     "editDenied": "Alleen de auteur kan dit bericht bewerken.",
     "showCandidateNames": "Namen tonen",
     "hideCandidateNames": "Namen verbergen",
-    "boardPhotoHelp": "Druk eenmaal om de foto aan te passen, tweemaal om te verwijderen. Sleep om te verplaatsen."
+    "boardPhotoHelp": "Druk eenmaal om de foto aan te passen, tweemaal om te verwijderen. Sleep om te verplaatsen.",
+    "reuseTemplate": "Maak Mijn Top 9 met deze sjabloon"
   },
   "cs": {
     "nav": "Mých top 9",
@@ -637,7 +646,8 @@
     "editDenied": "Tento příspěvek může upravit pouze autor.",
     "showCandidateNames": "Zobrazit jména",
     "hideCandidateNames": "Skrýt jména",
-    "boardPhotoHelp": "Jedním stisknutím fotku upravíte, dvěma odeberete. Přetažením ji přesunete."
+    "boardPhotoHelp": "Jedním stisknutím fotku upravíte, dvěma odeberete. Přetažením ji přesunete.",
+    "reuseTemplate": "Vytvořit Moje Top 9 s touto šablonou"
   },
   "de": {
     "nav": "Meine Top 9",
@@ -701,7 +711,8 @@
     "editDenied": "Nur der Autor kann diesen Beitrag bearbeiten.",
     "showCandidateNames": "Namen anzeigen",
     "hideCandidateNames": "Namen ausblenden",
-    "boardPhotoHelp": "Einmal drücken zum Anpassen, zweimal zum Entfernen. Zum Verschieben ziehen."
+    "boardPhotoHelp": "Einmal drücken zum Anpassen, zweimal zum Entfernen. Zum Verschieben ziehen.",
+    "reuseTemplate": "Mein Top 9 mit dieser Vorlage erstellen"
   },
   "pt": {
     "nav": "Meus 9 favoritos",
@@ -765,7 +776,8 @@
     "editDenied": "Apenas o autor pode editar esta publicação.",
     "showCandidateNames": "Mostrar nomes",
     "hideCandidateNames": "Ocultar nomes",
-    "boardPhotoHelp": "Pressione uma vez para ajustar a foto e duas para removê-la. Arraste para mover."
+    "boardPhotoHelp": "Pressione uma vez para ajustar a foto e duas para removê-la. Arraste para mover.",
+    "reuseTemplate": "Criar Meu Top 9 com este modelo"
   },
   "ru": {
     "nav": "Мои топ-9",
@@ -829,7 +841,8 @@
     "editDenied": "Изменить публикацию может только автор.",
     "showCandidateNames": "Показать имена",
     "hideCandidateNames": "Скрыть имена",
-    "boardPhotoHelp": "Нажмите один раз для настройки фото, дважды для удаления. Перетащите для перемещения."
+    "boardPhotoHelp": "Нажмите один раз для настройки фото, дважды для удаления. Перетащите для перемещения.",
+    "reuseTemplate": "Создать свой топ-9 по этому шаблону"
   },
   "vi": {
     "nav": "Top 9 của tôi",
@@ -893,7 +906,8 @@
     "editDenied": "Chỉ tác giả mới có thể sửa bài đăng này.",
     "showCandidateNames": "Hiện tên ứng viên",
     "hideCandidateNames": "Ẩn tên ứng viên",
-    "boardPhotoHelp": "Nhấn một lần để chỉnh ảnh, hai lần để xóa. Kéo để di chuyển."
+    "boardPhotoHelp": "Nhấn một lần để chỉnh ảnh, hai lần để xóa. Kéo để di chuyển.",
+    "reuseTemplate": "Tạo Top 9 với mẫu này"
   },
   "id": {
     "nav": "9 Favorit Saya",
@@ -957,7 +971,8 @@
     "editDenied": "Hanya pembuat yang dapat mengedit postingan ini.",
     "showCandidateNames": "Tampilkan nama",
     "hideCandidateNames": "Sembunyikan nama",
-    "boardPhotoHelp": "Tekan sekali untuk menyesuaikan foto, dua kali untuk menghapus. Seret untuk memindahkan."
+    "boardPhotoHelp": "Tekan sekali untuk menyesuaikan foto, dua kali untuk menghapus. Seret untuk memindahkan.",
+    "reuseTemplate": "Buat Top 9 dengan templat ini"
   },
   "hi": {
     "nav": "मेरे टॉप 9",
@@ -1021,7 +1036,8 @@
     "editDenied": "केवल लेखक इस पोस्ट को बदल सकता है।",
     "showCandidateNames": "उम्मीदवारों के नाम दिखाएँ",
     "hideCandidateNames": "उम्मीदवारों के नाम छिपाएँ",
-    "boardPhotoHelp": "फ़ोटो समायोजित करने के लिए एक बार और हटाने के लिए दो बार दबाएँ। स्थान बदलने के लिए खींचें।"
+    "boardPhotoHelp": "फ़ोटो समायोजित करने के लिए एक बार और हटाने के लिए दो बार दबाएँ। स्थान बदलने के लिए खींचें।",
+    "reuseTemplate": "इस टेम्पलेट से मेरा टॉप 9 बनाएँ"
   },
   "bn": {
     "nav": "আমার সেরা ৯",
@@ -1085,7 +1101,8 @@
     "editDenied": "শুধু লেখক এই পোস্ট সম্পাদনা করতে পারেন।",
     "showCandidateNames": "প্রার্থীদের নাম দেখান",
     "hideCandidateNames": "প্রার্থীদের নাম লুকান",
-    "boardPhotoHelp": "ছবি ঠিক করতে একবার এবং সরাতে দুবার চাপুন। স্থান বদলাতে টেনে আনুন।"
+    "boardPhotoHelp": "ছবি ঠিক করতে একবার এবং সরাতে দুবার চাপুন। স্থান বদলাতে টেনে আনুন।",
+    "reuseTemplate": "এই টেমপ্লেট দিয়ে আমার সেরা ৯ তৈরি করুন"
   },
   "ar": {
     "nav": "أفضل 9 لديّ",
@@ -1149,7 +1166,8 @@
     "editDenied": "يمكن لكاتب المنشور فقط تعديله.",
     "showCandidateNames": "إظهار أسماء المرشحين",
     "hideCandidateNames": "إخفاء أسماء المرشحين",
-    "boardPhotoHelp": "اضغط مرة لضبط الصورة ومرتين لإزالتها. اسحبها لتغيير موضعها."
+    "boardPhotoHelp": "اضغط مرة لضبط الصورة ومرتين لإزالتها. اسحبها لتغيير موضعها.",
+    "reuseTemplate": "أنشئ أفضل 9 اختيارات بهذا القالب"
   },
   "tr": {
     "nav": "İlk 9 Favorim",
@@ -1213,7 +1231,8 @@
     "editDenied": "Bu gönderiyi yalnızca yazarı düzenleyebilir.",
     "showCandidateNames": "Aday adlarını göster",
     "hideCandidateNames": "Aday adlarını gizle",
-    "boardPhotoHelp": "Fotoğrafı ayarlamak için bir, kaldırmak için iki kez basın. Taşımak için sürükleyin."
+    "boardPhotoHelp": "Fotoğrafı ayarlamak için bir, kaldırmak için iki kez basın. Taşımak için sürükleyin.",
+    "reuseTemplate": "Bu şablonla İlk 9’umu oluştur"
   },
   "th": {
     "nav": "9 อันดับของฉัน",
@@ -1277,6 +1296,7 @@
     "editDenied": "เฉพาะผู้เขียนเท่านั้นที่แก้ไขโพสต์นี้ได้",
     "showCandidateNames": "แสดงชื่อผู้สมัคร",
     "hideCandidateNames": "ซ่อนชื่อผู้สมัคร",
-    "boardPhotoHelp": "กดหนึ่งครั้งเพื่อปรับรูป กดสองครั้งเพื่อลบ ลากเพื่อย้ายตำแหน่ง"
+    "boardPhotoHelp": "กดหนึ่งครั้งเพื่อปรับรูป กดสองครั้งเพื่อลบ ลากเพื่อย้ายตำแหน่ง",
+    "reuseTemplate": "สร้าง My Top 9 ด้วยเทมเพลตนี้"
   }
 }

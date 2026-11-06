@@ -1,5 +1,6 @@
+import {supabase} from '../utils/supabaseClient';
 import {boardDescription} from './topNine/boardDescription';
-import {localizedBoardTitle} from './topNine/localizedTitle';
+import {localizedBoardTitle,loadBoardTitleSources} from './topNine/localizedTitle';
 // @refresh reset
 import TopNineGame from "./topNine/TopNineGame";
 import GameCountSelect from "./topNine/GameCountSelect";
@@ -72,7 +73,7 @@ export default function TopNinePage({publicBoard=null,publicId='',onHome}={}){
  useEffect(()=>{if(!shared)return;setSlots(shared.slots);setTitle(shared.title);setBaseTitle(null);setNames(shared.names);setStage('preview');setFocus(null);setShareURL('');},[shared]);
  useEffect(()=>{let live=true;setTemplateError(false);listTemplates().then(rows=>{if(live){setTemplates(rows);setTemplateMore(rows.length===30);}}).catch(()=>{if(live)setTemplateError(true);});return()=>{live=false;};},[templateTick]);
  useEffect(()=>{
-  if(stage==='home'||!draftReady.current||shared)return;
+  if(stage==='home'||stage==='choose'||!draftReady.current||shared)return;
   const timer=setTimeout(()=>draftStore({v:1,boardId:editingId,slots,title,baseTitle,names,candidates,sourceIds},true).catch(()=>{if(alive.current)setDraftError(true);}),600);
   return()=>clearTimeout(timer);
  },[slots,title,baseTitle,names,candidates,sourceIds,editingId,stage,shared]);
@@ -84,6 +85,21 @@ export default function TopNinePage({publicBoard=null,publicId='',onHome}={}){
  // Already requested sources are skipped, including when only the crop changes.
  },[slots,frameRetry]);
  useEffect(()=>{setShareURL('');},[slots,title,names]);
+ useEffect(()=>{
+  const id=new URLSearchParams(location.search).get('template');
+  if(shared||publicId||!id||!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id))return;
+  work(async current=>{
+   const raw=await loadSource(id);
+   const metadata=await loadBoardTitleSources(supabase,[{sourceIds:[id]}]);
+   if(!current())return;
+   const total=normalizeCandidates(raw.data).length;
+   if(!total)throw new Error('EMPTY');
+   selectedSource.current={...raw,id};
+   setPendingCup({...raw,...metadata.find(source=>String(source.id)===id),id,candidate_count:total});
+   setStage('choose');
+  });
+ },[location.search,shared,publicId]);
+
  async function work(fn){if(lock.current)return;lock.current=true;setBusy(true);setMessage('');const op=++operation.current;try{await fn(()=>alive.current&&op===operation.current);}catch(e){if(alive.current&&op===operation.current)setMessage((copy[languageRef.current]||copy.en).error);}finally{if(alive.current&&op===operation.current){lock.current=false;setBusy(false);}}}
  function resume(){if(!draft)return;const pool=(draft.candidates||[]).slice(0,2048).filter(c=>safeMedia(c?.src));const restored=Array.isArray(draft.slots)&&draft.slots.length===9?draft.slots.map(c=>c&&safeMedia(c.src)?{...c,zoom:normalizeZoom(c.zoom),x:Math.max(0,Math.min(100,Number(c.x)||0)),y:Math.max(0,Math.min(100,Number(c.y)||0))}:null):blank();setSlots(restored);setCandidates(pool);setTitle(String(draft.title||'').slice(0,100));setBaseTitle(typeof draft.baseTitle==='string'?draft.baseTitle:null);setNames(!!draft.names);setSourceIds(draft.sourceIds||[]);setEditingId(draft.boardId||'');setStage('pick');setFocus(null);}
  function chooseSource(cup){
@@ -183,8 +199,8 @@ export default function TopNinePage({publicBoard=null,publicId='',onHome}={}){
  const changedSinceSave=savedBoard.current!==JSON.stringify({slots,title,names,sourceIds});
  const ready=count>0&&slots.every(c=>!c||frames[c.src]?.frame);
  return <main className="top-nine" dir={lang==='ar'?'rtl':'ltr'}>
- <Seo title={`${publicId?displayTitle:t.title} | One Pick Game`} description={publicId?publicDescription:t.subtitle} lang={lang} slug={publicId?'mytop9/'+publicId:'mytop9'} indexable={publicId?stage==='preview':!location.hash}/>
- <header className="tn-heading"><div className="tn-hero-icon"><TopNineIcon size={52}/></div><h1>{t.title}</h1><p>{(t.introLines||[t.subtitle]).map((line,i)=><span className="tn-description-line" key={i}>{line}</span>)}</p><ContentLanguageSelect /></header>
+ <Seo title={`${publicId?displayTitle:t.title} | One Pick Game`} description={publicId?publicDescription.replace(/\n/g,' '):t.subtitle} lang={lang} slug={publicId?'mytop9/'+publicId:'mytop9'} indexable={publicId?stage==='preview':!location.hash}/>
+ {!publicId&&<header className="tn-heading"><div className="tn-hero-icon"><TopNineIcon size={52}/></div><h1>{t.title}</h1><p>{(t.introLines||[t.subtitle]).map((line,i)=><span className="tn-description-line" key={i}>{line}</span>)}</p><ContentLanguageSelect /></header>}
  <input ref={fileRef} type="file" accept=".jpg,.jpeg,.png,.webp,.gif,.mp4,.svg" multiple hidden onChange={upload}/>
  {message&&<div role="alert" className="tn-message tn-share-notice"><p>{message}</p>{message===t.localShare&&<><p>{t.memberUploadHelp}</p><a href={`/${lang}/login`}>{t.memberAccess.split(' / ')[0]}</a>{' · '}<a href={`/${lang}/signup`}>{t.memberAccess.split(' / ')[1]||t.memberAccess}</a></>}</div>}
  {draftError&&<p role="status" className="tn-message">{t.draftError}</p>}
@@ -201,9 +217,10 @@ export default function TopNinePage({publicBoard=null,publicId='',onHome}={}){
  <PublicBoards lang={lang} tick={galleryTick}/>
  </>:stage==='choose'?<section className="tn-mode-choice"><h2>{templateTitle(pendingCup,'nine',lang,t.nav)}</h2><div className="tn-actions"><button className="tn-primary" disabled={busy} onClick={()=>openSource(pendingCup,'direct')}>{lang==='ko'?'직접 고르기':t.direct}</button><div className="tn-game-start"><button disabled={busy} onClick={()=>openSource(pendingCup,'game')}>{lang==='ko'?'게임으로 고르기':t.game}</button><GameCountSelect lang={lang} value={gameCount} onChange={setGameCount} total={pendingCup?.candidate_count} disabled={busy}/></div></div><button disabled={busy} onClick={()=>{setPendingCup(null);setStage('home');}}>{t.back}</button></section>:stage==='game'?<TopNineGame game={game} lang={lang} text={t} Photo={Photo} onChange={setGame} onNext={advanceGame} onBack={()=>{setGame(history[history.length-1]);setHistory(previous=>previous.slice(0,-1));}} onMore={moreGame} onFill={fillGame} canBack={history.length>0}/>:<>
  <div className="tn-actions"><button disabled={busy} onClick={()=>{if(onHome){onHome();return;}setStage('home');setFocus(null);setMessage('');}}>{lang==='ko'?'홈으로':'Home'}</button><button disabled={busy} onClick={reset}>{t.reset}</button>{stage==='pick'&&<><button className="tn-upload-button" disabled={busy} onClick={()=>pickUpload()}>{t.upload}</button><button className="tn-site-import" disabled={busy} onClick={()=>setSitePicker(true)}>{lang==='ko'?'사이트 내에서 골라오기':'Choose from the site'}</button></>}{stage==='preview'&&<><button disabled={busy} onClick={editBoard}>{t.edit}</button><button type="button" aria-pressed={showNames} onClick={()=>setPreviewNames(!showNames)}>{showNames?t.hideCandidateNames:t.showCandidateNames}</button></>}</div>
+ {stage==='preview'&&publicId&&<div className="tn-public-intro"><h1 className="tn-result-title">{displayTitle}</h1><p className="tn-public-description">{publicDescription}</p><div className="tn-actions">{(publicBoard?.titleSources||[]).filter(source=>sourceIds.includes(source.id)).map(source=><a className="tn-reuse-template" key={source.id} href={'/'+lang+'/mytop9?template='+encodeURIComponent(source.id)}>{t.reuseTemplate}{sourceIds.length>1?' — '+templateTitle(source,'nine',lang):''}</a>)}</div></div>}
  <div className={`tn-editor ${stage==='preview'?'tn-preview':''}`}>
  <section className="tn-board-panel" aria-label={t.nav} onDragOver={e=>{if(stage==='pick')e.preventDefault();}} onDrop={e=>{if(stage!=='pick')return;e.preventDefault();if(e.dataTransfer?.files?.length)ingestFiles(e.dataTransfer.files);}}>
- {stage==='preview'&&title&&<h2 className="tn-result-title">{displayTitle}</h2>}
+ {stage==='preview'&&!publicId&&title&&<h2 className="tn-result-title">{displayTitle}</h2>}
  <div className="tn-grid" dir="ltr">{slots.map((c,i)=><div key={i} className={`tn-cell ${i===4?'tn-onepick':''} ${focus===i&&stage==='pick'?'tn-focused':''}`}>
  <button type="button" disabled={busy||stage==='preview'} aria-label={`${i+1}: ${c?.name|| (i===4?'One Pick':'+')}`} aria-pressed={stage==='pick'?focus===i:undefined} onClick={event=>slotClick(i,event)} draggable={stage==='pick'&&!!c&&!busy} onDragStart={e=>dragStart(e,{kind:'slot',index:i})} onDragEnd={()=>{dragItem.current=null;}} onDragOver={e=>{if(stage==='pick'||stage==='home')e.preventDefault();}} onDrop={e=>slotDrop(e,i)}>
  {c?frames[c.src]?.frame?<CropPhoto candidate={c} frame={frames[c.src].frame}/>:<span>{frames[c.src]?.error?'◇':t.loading}</span>:<span>{i===4?'One Pick':'+'}</span>}</button>
@@ -216,7 +233,7 @@ export default function TopNinePage({publicBoard=null,publicId='',onHome}={}){
  </>:<p className="tn-credit">OnePickGame.com</p>}
  {stage==='pick'&&<div className="tn-actions tn-sticky tn-board-complete"><strong aria-live="polite">{count} / 9</strong><button disabled={busy||!count} onClick={()=>{setStage('preview');setFocus(null);}}>{t.privateView}</button><PublishBoard existingId={editingId} sourceIds={sourceIds} slots={slots} title={title} autoTitle={!title.trim()||(baseTitle!==null&&title.trim()===baseTitle.trim())} names={names} lang={lang} disabled={busy||!count||!!editingId&&!changedSinceSave} onPublished={publishedHome}/></div>}
  </section>
- {stage==='preview'&&publicId&&<p className="tn-public-description">{publicDescription}</p>}
+
  {stage==='pick'&&<section className="tn-pool" ref={poolRef} onDragOver={e=>e.preventDefault()} onDrop={poolDrop}><h2>{t.choose}</h2><div className="tn-pool-reset"><button type="button" disabled={busy||!candidates.length} onClick={resetPool}>{t.resetCandidates}</button></div><p className="tn-photo-help">{t.doublePhoto}</p><input type="search" aria-label={t.candidateSearch} placeholder={t.candidateSearch} value={candidateQuery} onChange={e=>{setCandidateQuery(e.target.value);setLimit(36);}}/>
  <div className="tn-pool-scroll" style={{overflowAnchor:'none'}} ref={poolListRef} role="region" aria-label={t.choose} tabIndex={0}>
  <div className="tn-candidates">{visibleCandidates.slice(0,limit).map(c=>{const checked=slots.some(s=>s?.id===c.id);return <button type="button" key={c.id} data-candidate-id={c.id} className={checked?'selected':''} aria-pressed={checked} disabled={busy} draggable={!busy} onDragStart={e=>dragStart(e,{kind:'candidate',candidate:c})} onDragEnd={()=>{dragItem.current=null;}} onPointerDown={e=>{previousTap.pointerType=e.pointerType;rememberPoolPosition(c.id);}} onClick={e=>{if(activatedPhoto(e,previousTap,true)){if(!poolPosition.current)rememberPoolPosition(c.id);setSlots(old=>toggleCandidate(old,c));setFocus(null);}}}><Photo candidate={c}/><span>{checked?'✓ ':''}{c.name}</span></button>;})}</div>
