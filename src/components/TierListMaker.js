@@ -851,10 +851,8 @@ function TierListMaker({
         customPresetPlaceholder: t("tierList.maker.customPresetPlaceholder"),
         loadingWinners: t("tierList.maker.loadingWinners"),
         candidates: t("tierList.common.candidates"),
-        ranked: t("tierList.maker.ranked"),
         categoryLabel: t("tierList.common.category"),
         tierNameLabel: t("tierList.maker.tierNameLabel"),
-        tierNameGuide: t("tierList.maker.tierNameGuide"),
         onePickTitle: t("tierList.common.onePick"),
         onePickDesc: t("tierList.maker.onePickDesc"),
         onePickEmpty: t("tierList.maker.onePickEmpty"),
@@ -5374,32 +5372,6 @@ if (editingTierListId) {
 
               </details>
               </>}
-
-              <p style={{textAlign:'center',color:'#6650d8'}}>{lang==='ko'?`마음에 드는 후보만 배치해도 돼요 · ${placedCount}개 배치됨`:localizeExtraUi('Rank only the candidates you want. Click a candidate, then choose a tier.')}</p>
-              <div
-                style={{
-                  marginTop: 8,
-                  color: "#4b5563",
-                  fontSize: isMobile ? 15 : 17,
-                  fontWeight: 700,
-                  textAlign: "center",
-                }}
-              >
-                {allCandidates.length} {text.candidates} · {placedCount} {text.ranked}
-              </div>
-
-              <div
-                style={{
-                  marginTop: 10,
-                  color: "#374151",
-                  fontSize: isMobile ? 16 : 19,
-                  fontWeight: 800,
-                  lineHeight: 1.45,
-                  textAlign: "center",
-                }}
-              >
-                {text.tierNameGuide}
-              </div>
 
               {authReady && !currentUser && (
                 <div
