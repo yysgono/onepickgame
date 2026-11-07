@@ -194,7 +194,7 @@ async function fetchWorldcups() {
 
   return fetchAllRows({
     table: "worldcups",
-    select: "id, created_at, updated_at",
+    select: "id, created_at, updated_at, is_tier_preset",
     applyFilters: (query) => query.is("deleted_at", null),
     label: "활성 월드컵",
   });
@@ -297,6 +297,16 @@ export function generateLanguageSitemap(
 
   for (const board of topNineBoards) {
     xml += makeUrlEntry({loc: `${BASE_URL}/${lang}/mytop9/${board.id}`,lastmod: board.created_at ? new Date(board.created_at).toISOString() : undefined,changefreq:"weekly",priority:"0.6"});
+  }
+
+  for (const cup of worldcups) {
+    if (!cup.is_tier_preset) continue;
+    xml += makeUrlEntry({
+      loc: `${BASE_URL}/${lang}/tier-list/create/${cup.id}`,
+      lastmod: cup.updated_at ? new Date(cup.updated_at).toISOString() : undefined,
+      changefreq: "weekly",
+      priority: "0.7",
+    });
   }
 
   // 티어표 목록

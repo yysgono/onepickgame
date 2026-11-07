@@ -1,3 +1,4 @@
+import TemplateIntroSetting from './topNine/TemplateIntroSetting';
 import ThumbnailSetting from './topNine/ThumbnailSetting';
 import React, {
   useCallback,
@@ -745,6 +746,7 @@ function TierPresetAdmin() {
                       {cup.is_tier_preset && <PresetTitleTranslations title={title} value={cup.tier_preset_title_translations || {}} disabled={saving} placeholder="추천 카드 제목 (예: 여자 아이돌 티어표)" onChange={titles => {
                         setWorldcups(previous => previous.map(item => item.id === cup.id ? { ...item, tier_preset_title_translations: titles } : item));
                       }} />}
+                      {cup.is_tier_preset&&<TemplateIntroSetting kind="tier" id={cup.id} disabled={saving}/>}
                       {cup.is_tier_preset&&<ThumbnailSetting kind="tier" id={cup.id} url={thumbnails[cup.id]||''} disabled={saving} onSaved={url=>setThumbnails(old=>({...old,[cup.id]:url}))}/>}
 
                     </div>

@@ -1,5 +1,7 @@
 import { loadTierSourceCatalogue } from "../utils/tierSourceCatalogue";
 import { templateTitle } from "../utils/templateTitles";
+import { templatePageIntro } from "./topNine/templateIntro";
+import { isDuplicateTitle } from "./topNine/publicTitle";
 import { isMp4File, prepareMp4File, MP4_MAX_BYTES, MP4_SIZE_HELP } from "../utils/mp4Upload";
 import { isGifFile, prepareGifFile, GIF_MAX_INPUT_BYTES, GIF_SIZE_HELP } from "../utils/gifUpload";
 import {localizeExtraUi} from "../utils/newLanguageUi";
@@ -48,6 +50,8 @@ import { supabase } from "../utils/supabaseClient";
 
 const MAX_UPLOAD = 50;
 const MAX_CANDIDATES = 1024;
+const PRESET_CANDIDATE_PAGE_SIZE = 16;
+const DEFAULT_CANDIDATE_PAGE_SIZE = 80;
 const IMAGE_MAX_INPUT_BYTES =
   6 * 1024 * 1024;
 
@@ -805,6 +809,10 @@ function TierListMaker({
     useParams();
 
 
+  const queryParams = new URLSearchParams(location.search);
+  const cloneTierListId = queryParams.get("clone");
+  const editTierListId = queryParams.get("edit");
+
   const { t, i18n } =
     useTranslation();
 
@@ -1353,10 +1361,7 @@ const [
   ] =
     useState("");
 
-    const [
-  visibleCandidateCount,
-  setVisibleCandidateCount,
-] = useState(80);
+  const [visibleCandidatePages, setVisibleCandidatePages] = useState(1);
 
 
   const [
@@ -1723,6 +1728,37 @@ const list = keyword
     selectedCupFromDb ||
     selectedCupFromList;
 
+  const isPresetEntry = Boolean(
+    id && !cloneTierListId && !editTierListId &&
+    String(selectedCup?.id) === String(id) &&
+    String(sourceWorldcupId) === String(id) &&
+    (selectedCup.is_tier_preset ??
+      presetMetadata.some(row => String(row.id) === String(id) && row.is_tier_preset === true))
+  );
+  const candidatePageSize = isPresetEntry ? PRESET_CANDIDATE_PAGE_SIZE : DEFAULT_CANDIDATE_PAGE_SIZE;
+  const visibleCandidateCount = candidatePageSize * visibleCandidatePages;
+  const presetTitle = isPresetEntry ? getTitle(selectedCup) || text.pageTitle : "";
+  const [presetIntro, setPresetIntro] = useState(null);
+
+  useEffect(() => {
+    if (!isPresetEntry) return;
+    let cancelled = false;
+    supabase
+      .from("tier_template_intros")
+      .select("candidate_sources")
+      .eq("source_worldcup_id", id)
+      .maybeSingle()
+      .then(({ data }) => {
+        if (!cancelled) setPresetIntro({ id, sources: data?.candidate_sources || [] });
+      });
+    return () => { cancelled = true; };
+  }, [id, isPresetEntry]);
+
+  const presetDescription = useMemo(() => isPresetEntry ? templatePageIntro({
+    ...selectedCup,
+    intro_sources: presetIntro?.id === id ? presetIntro.sources : [],
+  }, lang, "tier") : "", [id, isPresetEntry, lang, presetIntro, selectedCup]);
+
   const [
     sourcePresetCupFromDb,
     setSourcePresetCupFromDb,
@@ -1968,33 +2004,9 @@ const sourceCandidates =
       searchKeyword,
     ]);
 
-    useEffect(() => {
-  setVisibleCandidateCount(80);
-}, [
-  searchKeyword,
-  selectedCup?.id,
-]);
-
-
-  const queryParams =
-    new URLSearchParams(
-      typeof window !==
-        "undefined"
-        ? window.location.search
-        : ""
-    );
-
-
-  const cloneTierListId =
-    queryParams.get(
-      "clone"
-    );
-
-
-  const editTierListId =
-    queryParams.get(
-      "edit"
-    );
+  useEffect(() => {
+    setVisibleCandidatePages(1);
+  }, [candidatePageSize, searchKeyword, selectedCup?.id]);
 
 
  const isBuilderMode =
@@ -3399,7 +3411,7 @@ const handleDragEndItem =
         setLocalOnlyMode(false);
         setOnePick(null);
         setSelectedMobileItem(null);
-        setVisibleCandidateCount(80);
+        setVisibleCandidatePages(1);
 
         // 소스 변경 시 기존 월드컵 후보가 다음 월드컵과 섞이지 않게 제거합니다.
         // 사용자가 직접 올린 이미지만 유지합니다.
@@ -3457,7 +3469,7 @@ const handleDragEndItem =
         setOnePick(null);
         setSearchKeyword("");
         setSelectedMobileItem(null);
-        setVisibleCandidateCount(80);
+        setVisibleCandidatePages(1);
 
         // 저장된 직접 업로드 이미지만 유지합니다.
         // 이전 월드컵 후보/가져온 후보는 새 소스와 섞이지 않게 제거합니다.
@@ -3571,12 +3583,11 @@ const handleDragEndItem =
         setSaveError("");
 
 
-        const cleanTitle =
-          tierListTitle
-            .trim();
+        let cleanTitle = isPresetEntry ? presetTitle : tierListTitle.trim();
+        const titleLanguage = isPresetEntry ? lang : originalContentLanguage;
 
         const cleanTitleTranslations = Object.fromEntries(
-          Object.entries(titleTranslations || {})
+          Object.entries(isPresetEntry ? {} : titleTranslations || {})
             .map(([code, value]) => [code, String(value || "").trim()])
             .filter(([code, value]) =>
               value && TITLE_TRANSLATION_LANGUAGES.some((item) => item.code === code)
@@ -3584,7 +3595,7 @@ const handleDragEndItem =
         );
 
 
-        cleanTitleTranslations[originalContentLanguage] = cleanTitle;
+        cleanTitleTranslations[titleLanguage] = cleanTitle;
 
         if (!cleanTitle) {
           setSaveError(
@@ -3656,6 +3667,28 @@ const handleDragEndItem =
             }
           }
 
+
+          let authorSuffix = "";
+          if (isPresetEntry) {
+            let nickname = guestNickname.trim();
+            if (currentUser) {
+              const { data: profile } = await supabase
+                .from("public_member_names")
+                .select("nickname")
+                .eq("id", currentUser.id)
+                .maybeSingle();
+              nickname = profile?.nickname || currentUser.user_metadata?.nickname || `OnePick-${currentUser.id.slice(0, 6)}`;
+            }
+            authorSuffix = " - " + Array.from(nickname.trim()).slice(0, 30).join("");
+          }
+          const makePresetTitle = (ending = "") =>
+            Array.from(presetTitle).slice(0, 80 - Array.from(authorSuffix + ending).length).join("").trimEnd() +
+            authorSuffix + ending;
+
+          if (isPresetEntry) {
+            cleanTitle = makePresetTitle();
+            cleanTitleTranslations[titleLanguage] = cleanTitle;
+          }
 
           const uploadedCandidateMap =
             new Map();
@@ -3820,9 +3853,7 @@ const finalCandidates =
             // 제목이 처음 작성된 언어를 별도 DB 컬럼 없이 tier_labels 메타에 보관합니다.
             // 헤더 언어를 바꿔도 이 값은 바뀌지 않습니다.
             _originalLanguage:
-              tierLabels?._originalLanguage ||
-              originalContentLanguage ||
-              lang,
+              isPresetEntry ? titleLanguage : (tierLabels?._originalLanguage || titleLanguage || lang),
           };
 
 
@@ -3905,93 +3936,96 @@ if (editingTierListId) {
     };
     error = result.error;
   }
-} else if (currentUser) {
-  const result =
-    await supabase
-      .from("tier_lists")
-      .insert([
-        {
-          id: tierListId,
-          user_id: currentUser.id,
-          guest_id: null,
-          guest_nickname: null,
-          title: cleanTitle,
-          description: cleanDescription,
-          description_translations: cleanDescriptionTranslations,
-          title_translations: cleanTitleTranslations,
-          source_worldcup_id:
-            sourceWorldcupId || null,
-          category: selectedCategory,
-          tier_labels: savedTierLabels,
-          tiers: finalTiers,
-          candidates: finalCandidates,
-        },
-      ])
-      .select("id")
-      .single();
-
-  data = result.data;
-  error = result.error;
 } else {
-  const cleanNickname =
-    guestNickname.trim();
-
-  if (
-    cleanNickname.length < 1 ||
-    cleanNickname.length > 20
-  ) {
-    throw new Error(
-      text.guestNicknameInvalid
-    );
-  }
-
-  if (
-    guestPassword.length < 4 ||
-    guestPassword.length > 50
-  ) {
-    throw new Error(
-      text.guestPasswordInvalid
-    );
-  }
-
-  if (
-    allCandidates.some(
-      (item) => item._source === "local"
-    )
-  ) {
-    throw new Error(
-      text.guestLocalImageBlocked
-    );
-  }
-
-  const {
-    data: guestCreatedId,
-    error: guestCreateError,
-  } = await supabase.rpc(
-    "create_guest_tier_list",
-    {
-      p_guest_id: guest_id || null,
-      p_guest_nickname:
-        cleanNickname,
-      p_password: guestPassword,
-      p_title: cleanTitle,
-      p_source_worldcup_id:
-        sourceWorldcupId || null,
-      p_category:
-        selectedCategory,
-      p_tier_labels: savedTierLabels,
-      p_tiers: finalTiers,
-      p_candidates:
-        finalCandidates,
+  const createTierList = async () => {
+    if (currentUser) {
+      return supabase
+        .from("tier_lists")
+        .insert([
+          {
+            id: tierListId,
+            user_id: currentUser.id,
+            guest_id: null,
+            guest_nickname: null,
+            title: cleanTitle,
+            description: cleanDescription,
+            description_translations: cleanDescriptionTranslations,
+            title_translations: cleanTitleTranslations,
+            source_worldcup_id:
+              sourceWorldcupId || null,
+            category: selectedCategory,
+            tier_labels: savedTierLabels,
+            tiers: finalTiers,
+            candidates: finalCandidates,
+          },
+        ])
+        .select("id")
+        .single();
     }
-  );
 
-  if (guestCreateError) {
-    throw guestCreateError;
+    const cleanNickname =
+      guestNickname.trim();
+
+    if (
+      cleanNickname.length < 1 ||
+      cleanNickname.length > 20
+    ) {
+      throw new Error(
+        text.guestNicknameInvalid
+      );
+    }
+
+    if (
+      guestPassword.length < 4 ||
+      guestPassword.length > 50
+    ) {
+      throw new Error(
+        text.guestPasswordInvalid
+      );
+    }
+
+    if (
+      allCandidates.some(
+        (item) => item._source === "local"
+      )
+    ) {
+      throw new Error(
+        text.guestLocalImageBlocked
+      );
+    }
+
+    const {
+      data: guestCreatedId,
+      error: guestCreateError,
+    } = await supabase.rpc(
+      "create_guest_tier_list",
+      {
+        p_guest_id: guest_id || null,
+        p_guest_nickname:
+          cleanNickname,
+        p_password: guestPassword,
+        p_title: cleanTitle,
+        p_source_worldcup_id:
+          sourceWorldcupId || null,
+        p_category:
+          selectedCategory,
+        p_tier_labels: savedTierLabels,
+        p_tiers: finalTiers,
+        p_candidates:
+          finalCandidates,
+      }
+    );
+
+    return { data: { id: guestCreatedId }, error: guestCreateError };
+  };
+
+  ({ data, error } = await createTierList());
+  if (isPresetEntry && isDuplicateTitle(error)) {
+    // Keep the displayed preset/author title while disambiguating the stored value.
+    cleanTitle = makePresetTitle(` (${tierListId.slice(0, 8)})`);
+    cleanTitleTranslations[titleLanguage] = cleanTitle;
+    ({ data, error } = await createTierList());
   }
-
-  data = { id: guestCreatedId };
-  error = null;
 }
           if (error) {
             throw error;
@@ -4041,6 +4075,10 @@ if (editingTierListId) {
 [
   saving,
   tierListTitle,
+  isPresetEntry,
+  presetTitle,
+  originalContentLanguage,
+  sourcePresetName,
   tierListDescription,
   titleTranslations,
   lang,
@@ -4294,10 +4332,10 @@ if (editingTierListId) {
     <>
       <Seo
         lang={lang}
-        slug="tier-list/create"
-        title={seoTitle}
-        description={seoDescription}
-        indexable={!id && !cloneTierListId && !editTierListId}
+        slug={isPresetEntry ? `tier-list/create/${id}` : "tier-list/create"}
+        title={isPresetEntry ? presetTitle : seoTitle}
+        description={isPresetEntry ? presetDescription : seoDescription}
+        indexable={isPresetEntry || (!id && !cloneTierListId && !editTierListId)}
       />
     <div
       style={{
@@ -4371,8 +4409,7 @@ if (editingTierListId) {
                 900,
             }}
           >
-            📊{" "}
-            {text.pageTitle}
+            {isPresetEntry ? presetTitle : <>📊 {text.pageTitle}</>}
           </h1>
 
 
@@ -4393,9 +4430,7 @@ if (editingTierListId) {
                 700,
             }}
           >
-            {isBuilderMode
-              ? text.builderDesc
-              : text.sourceDesc}
+            {isPresetEntry ? presetDescription : (isBuilderMode ? text.builderDesc : text.sourceDesc)}
           </div>
         </div>
 
@@ -5127,17 +5162,17 @@ if (editingTierListId) {
                 width: "100%",
                 maxWidth: 980,
                 margin: isMobile ? "18px auto 18px" : "24px auto 20px",
-                padding: isMobile ? "16px 14px" : "22px",
+                padding: isPresetEntry ? 0 : (isMobile ? "16px 14px" : "22px"),
                 boxSizing: "border-box",
                 borderRadius: 18,
-                background: "#f3f4f6",
-                border: "1px solid #d7dce4",
-                boxShadow: "0 4px 16px rgba(25,32,52,0.07)",
+                background: isPresetEntry ? "transparent" : "#f3f4f6",
+                border: isPresetEntry ? "none" : "1px solid #d7dce4",
+                boxShadow: isPresetEntry ? "none" : "0 4px 16px rgba(25,32,52,0.07)",
                 color: "#111827",
               }}
             >
-              
-<label htmlFor="tier-original-title" style={{ display: "block", fontWeight: 800, marginBottom: 8 }}>
+              {!isPresetEntry && <>
+              <label htmlFor="tier-original-title" style={{ display: "block", fontWeight: 800, marginBottom: 8 }}>
                 {originalTitleLabel(lang, originalContentLanguage)}
               </label>
               <input
@@ -5287,6 +5322,7 @@ if (editingTierListId) {
               </div>
 
               </details>
+              </>}
 
               <p style={{textAlign:'center',color:'#6650d8'}}>{lang==='ko'?`마음에 드는 후보만 배치해도 돼요 · ${placedCount}개 배치됨`:localizeExtraUi('Rank only the candidates you want. Click a candidate, then choose a tier.')}</p>
               <div
@@ -6680,14 +6716,11 @@ objectPosition: "center",
   >
     <button
       type="button"
-      onClick={() =>
-        setVisibleCandidateCount(
-          (prev) => prev + 80
-        )
-      }
+      onClick={() => setVisibleCandidatePages((pages) => pages + 1)}
       style={{
-        minWidth: 160,
-        padding: "11px 20px",
+        width: "100%",
+        minHeight: 54,
+        padding: "12px 20px",
         borderRadius: 8,
         border: "2px solid #2563EB",
         background: "#eff6ff",
