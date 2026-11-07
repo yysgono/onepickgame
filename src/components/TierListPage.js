@@ -31,7 +31,7 @@ import { supabase } from "../utils/supabaseClient";
 import "../styles/presetCardSizes.css";
 
 
-const PAGE_SIZE = 8;
+const PAGE_SIZE = 10;
 const PRESET_PAGE_SIZE = 28;
 const TIER_LIST_CACHE_TTL = 60000;
 const tierListPageCache = new Map();

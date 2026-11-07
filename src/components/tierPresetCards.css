@@ -7,10 +7,11 @@
 
 /* Center the public gallery independently of the full-width page. */
 .tier-page-container .tier-community-filters,.tier-page-container .tier-cards-grid{width:100%;max-width:1400px;box-sizing:border-box;margin-inline:auto}
-.tier-page-container .tier-cards-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:16px!important}
+.tier-page-container .tier-cards-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr))!important;gap:16px!important}
 .tier-page-container .tier-list-card{min-width:0}
 .tier-card-updated{margin-left:auto;align-self:flex-end;color:#64748b;font-size:12px;font-weight:500;text-align:right}
 .tier-list-card .tier-card-title{font-size:19px!important;line-height:1.35}
+@media(max-width:1450px){.tier-page-container .tier-cards-grid{grid-template-columns:repeat(4,minmax(0,1fr))!important}}
 @media(max-width:1270px){.tier-page-container .tier-cards-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important}}
 @media(max-width:960px){.tier-page-container .tier-cards-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
 @media(max-width:600px){.tier-page-container .tier-cards-grid{grid-template-columns:minmax(0,350px)!important;justify-content:center}.tier-card-updated{font-size:11px}}
