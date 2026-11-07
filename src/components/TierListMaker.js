@@ -5248,7 +5248,7 @@ if (editingTierListId) {
                   outline: "none",
                 }}
               />
-<details open className="tier-other-languages" style={{ marginBottom: 18 }}>
+<details key={cloneTierListId || "title-translations"} open={!cloneTierListId} className="tier-other-languages" style={{ marginBottom: 18 }}>
                 <summary style={{ cursor: "pointer", padding: "12px 14px", marginBottom: 12, border: "2px solid #2563EB", borderRadius: 9, color: "#1D4ED8", background: "#fff", fontWeight: 800 }}>
                   {(tierUiCopy[lang] || tierUiCopy.en)[0]}
                 </summary>

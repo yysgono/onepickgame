@@ -1,3 +1,4 @@
+import tierListCloneButton from "../locales/tierListCloneButton.json";
 import ContentCommentNotices from "./ContentCommentNotices";
 import trashCopy from "../utils/contentTrashCopy.json";
 import {trashContent} from "../utils/contentTrashApi";
@@ -195,7 +196,6 @@ function TierListResultPage() {
         download: t("tierList.result.download"),
         downloading: t("tierList.result.downloading"),
         downloadFailed: t("tierList.result.downloadFailed"),
-        createWithCandidates: t("tierList.result.createWithCandidates"),
         edit: t("tierList.common.edit"),
         delete: t("tierList.common.delete"),
         deleteConfirm: t("tierList.result.deleteConfirm"),
@@ -2423,15 +2423,14 @@ const seoAuthorReady = seoAuthor.tierId === String(tierList.id);
     return `/${lang}/tier-list?${params.toString()}`;
   })();
 
+  const [cloneButtonTitle, cloneButtonSubtitle] = tierListCloneButton[lang] || tierListCloneButton.en;
+
   const detailActionLabels = {
     makeBracket: t("tierList.result.makeBracketCandidates", {
       defaultValue: "Make a bracket with these candidates",
     }),
     browseTierLists: t("tierList.result.browseTierLists", {
       defaultValue: "See other user tier lists on this topic",
-    }),
-    cloneTierList: t("tierList.result.cloneTierList", {
-      defaultValue: "Make this tier list too",
     }),
   };
 
@@ -2907,7 +2906,8 @@ padding: isMobile
                     boxShadow: "0 4px 16px rgba(25,32,52,0.07)",
                   }}
                 >
-                  {lang==='ko'?'내 취향대로 순위 매기기':lang==='en'?'Rank them your way':detailActionLabels.cloneTierList}<small style={{display:'block',fontSize:12,marginTop:5}}>{lang==='ko'?'같은 후보로 바로 시작해요':lang==='en'?'Start with the same candidates':''}</small>
+                  {cloneButtonTitle}
+                  <small style={{ display: "block", fontSize: 12, marginTop: 5 }}>{cloneButtonSubtitle}</small>
                 </button>
 {canBrowsePreset && (<NavigationLink
                     appearance="button"
@@ -3219,8 +3219,8 @@ padding: isMobile
                 900,
             }}
           >
-            ♻️{" "}
-            {text.createWithCandidates}
+            {cloneButtonTitle}
+            <small style={{ display: "block", fontSize: 12, marginTop: 5 }}>{cloneButtonSubtitle}</small>
           </button>
 
 

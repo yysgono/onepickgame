@@ -1,0 +1,22 @@
+{
+  "ar": ["أنشئ ترتيبك الخاص", "(بنفس الخيارات)"],
+  "bn": ["নিজের টিয়ার তালিকা বানান", "(একই প্রার্থীদের নিয়ে)"],
+  "cs": ["Vytvořte si vlastní žebříček", "(se stejnými položkami)"],
+  "de": ["Eigene Tierliste erstellen", "(mit denselben Einträgen)"],
+  "en": ["Make your own tier list", "(Same candidates)"],
+  "es": ["Crea tu propia lista de niveles", "(Con los mismos candidatos)"],
+  "fr": ["Créez votre propre tier list", "(Avec les mêmes candidats)"],
+  "hi": ["अपनी टियर लिस्ट बनाएँ", "(इन्हीं विकल्पों के साथ)"],
+  "id": ["Buat tier list versimu", "(Dengan pilihan yang sama)"],
+  "it": ["Crea la tua tier list", "(Con gli stessi candidati)"],
+  "ja": ["自分のティア表を作る", "（同じ候補で）"],
+  "ko": ["나도 이 티어표 만들기", "(같은 후보)"],
+  "nl": ["Maak je eigen tierlijst", "(Met dezelfde opties)"],
+  "pl": ["Stwórz własny ranking", "(Z tymi samymi opcjami)"],
+  "pt": ["Crie sua própria tier list", "(Com os mesmos candidatos)"],
+  "ru": ["Создайте свой тир-лист", "(С теми же участниками)"],
+  "th": ["สร้างเทียร์ลิสต์ในแบบของคุณ", "(ใช้ตัวเลือกชุดเดิม)"],
+  "tr": ["Kendi tier listeni oluştur", "(Aynı adaylarla)"],
+  "vi": ["Tạo bảng xếp hạng của bạn", "(Với cùng các lựa chọn)"],
+  "zh": ["制作自己的排行榜", "（使用相同候选项）"]
+}
