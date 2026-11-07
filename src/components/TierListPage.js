@@ -32,7 +32,7 @@ import "../styles/presetCardSizes.css";
 
 
 const PAGE_SIZE = 8;
-const PRESET_PAGE_SIZE = 28;
+const PRESET_PAGE_SIZE = 24;
 const TIER_LIST_CACHE_TTL = 60000;
 const tierListPageCache = new Map();
 const tierListPageInflight = new Map();
