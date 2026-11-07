@@ -62,7 +62,8 @@
     "showCandidateNames": "Show candidate names",
     "hideCandidateNames": "Hide candidate names",
     "boardPhotoHelp": "Click or tap once to adjust a photo; twice to remove it. Drag to move it.",
-    "reuseTemplate": "Create My Top 9 with this template"
+    "reuseTemplate": "Create My Top 9 with this template",
+    "templateCandidatePrompt": "Choose “Pick 9 directly” above to show the candidate photos, or play to choose your favorites."
   },
   "ko": {
     "nav": "구절판",
@@ -127,7 +128,8 @@
     "showCandidateNames": "후보 이름 보기",
     "hideCandidateNames": "후보 이름 숨기기",
     "boardPhotoHelp": "사진을 한 번 누르면 크기를 조절하고, 두 번 누르면 제거할 수 있어요. 위치는 드래그해서 바꿔주세요.",
-    "reuseTemplate": "같은 템플릿으로 구절판 만들기"
+    "reuseTemplate": "같은 템플릿으로 구절판 만들기",
+    "templateCandidatePrompt": "위의 ‘직접 고르기’를 누르면 후보 사진이 나타납니다. 게임으로 최애 후보를 골라도 좋아요."
   },
   "ja": {
     "nav": "マイトップ9",
@@ -192,7 +194,8 @@
     "showCandidateNames": "候補名を表示",
     "hideCandidateNames": "候補名を非表示",
     "boardPhotoHelp": "写真を1回押すと調整、2回押すと削除できます。移動はドラッグしてください。",
-    "reuseTemplate": "同じテンプレートでマイベスト9を作る"
+    "reuseTemplate": "同じテンプレートでマイベスト9を作る",
+    "templateCandidatePrompt": "上の「直接選ぶ」を押すと候補の写真が表示されます。ゲームでも選べます。"
   },
   "zh": {
     "nav": "我的九宫格",
@@ -257,7 +260,8 @@
     "showCandidateNames": "显示候选名称",
     "hideCandidateNames": "隐藏候选名称",
     "boardPhotoHelp": "单击或轻点一次调整图片，两次移除。拖动可更换位置。",
-    "reuseTemplate": "使用相同模板制作九宫格"
+    "reuseTemplate": "使用相同模板制作九宫格",
+    "templateCandidatePrompt": "点击上方的直接选择按钮即可显示候选照片，也可以通过游戏选择。"
   },
   "es": {
     "nav": "Mis 9 favoritos",
@@ -322,7 +326,8 @@
     "showCandidateNames": "Mostrar nombres",
     "hideCandidateNames": "Ocultar nombres",
     "boardPhotoHelp": "Pulsa una vez para ajustar la foto y dos para quitarla. Arrastra para moverla.",
-    "reuseTemplate": "Crear Mi Top 9 con esta plantilla"
+    "reuseTemplate": "Crear Mi Top 9 con esta plantilla",
+    "templateCandidatePrompt": "Pulsa la selección directa de arriba para ver las fotos, o juega para elegir."
   },
   "fr": {
     "nav": "Mes 9 favoris",
@@ -387,7 +392,8 @@
     "showCandidateNames": "Afficher les noms",
     "hideCandidateNames": "Masquer les noms",
     "boardPhotoHelp": "Appuyez une fois pour ajuster la photo, deux fois pour la retirer. Faites glisser pour la déplacer.",
-    "reuseTemplate": "Créer mon Top 9 avec ce modèle"
+    "reuseTemplate": "Créer mon Top 9 avec ce modèle",
+    "templateCandidatePrompt": "Choisissez la sélection directe ci-dessus pour afficher les photos, ou passez par un jeu."
   },
   "it": {
     "nav": "I miei 9 preferiti",
@@ -452,7 +458,8 @@
     "showCandidateNames": "Mostra nomi",
     "hideCandidateNames": "Nascondi nomi",
     "boardPhotoHelp": "Premi una volta per regolare la foto, due per rimuoverla. Trascina per spostarla.",
-    "reuseTemplate": "Crea la mia Top 9 con questo modello"
+    "reuseTemplate": "Crea la mia Top 9 con questo modello",
+    "templateCandidatePrompt": "Scegli la selezione diretta in alto per vedere le foto, oppure scegli tramite un gioco."
   },
   "pl": {
     "nav": "Moje top 9",
@@ -517,7 +524,8 @@
     "showCandidateNames": "Pokaż nazwy",
     "hideCandidateNames": "Ukryj nazwy",
     "boardPhotoHelp": "Naciśnij raz, aby dostosować zdjęcie, dwa razy, aby je usunąć. Przeciągnij, aby przenieść.",
-    "reuseTemplate": "Utwórz Moje Top 9 z tym szablonem"
+    "reuseTemplate": "Utwórz Moje Top 9 z tym szablonem",
+    "templateCandidatePrompt": "Wybierz bezpośredni wybór powyżej, aby zobaczyć zdjęcia, lub wybierz w grze."
   },
   "nl": {
     "nav": "Mijn top 9",
@@ -582,7 +590,8 @@
     "showCandidateNames": "Namen tonen",
     "hideCandidateNames": "Namen verbergen",
     "boardPhotoHelp": "Druk eenmaal om de foto aan te passen, tweemaal om te verwijderen. Sleep om te verplaatsen.",
-    "reuseTemplate": "Maak Mijn Top 9 met deze sjabloon"
+    "reuseTemplate": "Maak Mijn Top 9 met deze sjabloon",
+    "templateCandidatePrompt": "Kies hierboven direct selecteren om de foto’s te tonen, of kies via een spel."
   },
   "cs": {
     "nav": "Mých top 9",
@@ -647,7 +656,8 @@
     "showCandidateNames": "Zobrazit jména",
     "hideCandidateNames": "Skrýt jména",
     "boardPhotoHelp": "Jedním stisknutím fotku upravíte, dvěma odeberete. Přetažením ji přesunete.",
-    "reuseTemplate": "Vytvořit Moje Top 9 s touto šablonou"
+    "reuseTemplate": "Vytvořit Moje Top 9 s touto šablonou",
+    "templateCandidatePrompt": "Vyberte přímý výběr nahoře pro zobrazení fotografií, nebo vybírejte ve hře."
   },
   "de": {
     "nav": "Meine Top 9",
@@ -712,7 +722,8 @@
     "showCandidateNames": "Namen anzeigen",
     "hideCandidateNames": "Namen ausblenden",
     "boardPhotoHelp": "Einmal drücken zum Anpassen, zweimal zum Entfernen. Zum Verschieben ziehen.",
-    "reuseTemplate": "Mein Top 9 mit dieser Vorlage erstellen"
+    "reuseTemplate": "Mein Top 9 mit dieser Vorlage erstellen",
+    "templateCandidatePrompt": "Wähle oben die direkte Auswahl, um die Kandidatenfotos anzuzeigen, oder spiele zur Auswahl."
   },
   "pt": {
     "nav": "Meus 9 favoritos",
@@ -777,7 +788,8 @@
     "showCandidateNames": "Mostrar nomes",
     "hideCandidateNames": "Ocultar nomes",
     "boardPhotoHelp": "Pressione uma vez para ajustar a foto e duas para removê-la. Arraste para mover.",
-    "reuseTemplate": "Criar Meu Top 9 com este modelo"
+    "reuseTemplate": "Criar Meu Top 9 com este modelo",
+    "templateCandidatePrompt": "Escolha a seleção direta acima para mostrar as fotos, ou jogue para escolher."
   },
   "ru": {
     "nav": "Мои топ-9",
@@ -842,7 +854,8 @@
     "showCandidateNames": "Показать имена",
     "hideCandidateNames": "Скрыть имена",
     "boardPhotoHelp": "Нажмите один раз для настройки фото, дважды для удаления. Перетащите для перемещения.",
-    "reuseTemplate": "Создать свой топ-9 по этому шаблону"
+    "reuseTemplate": "Создать свой топ-9 по этому шаблону",
+    "templateCandidatePrompt": "Нажмите прямой выбор выше, чтобы увидеть фотографии, или выбирайте в игре."
   },
   "vi": {
     "nav": "Top 9 của tôi",
@@ -907,7 +920,8 @@
     "showCandidateNames": "Hiện tên ứng viên",
     "hideCandidateNames": "Ẩn tên ứng viên",
     "boardPhotoHelp": "Nhấn một lần để chỉnh ảnh, hai lần để xóa. Kéo để di chuyển.",
-    "reuseTemplate": "Tạo Top 9 với mẫu này"
+    "reuseTemplate": "Tạo Top 9 với mẫu này",
+    "templateCandidatePrompt": "Chọn trực tiếp ở trên để hiện ảnh ứng viên, hoặc chọn qua trò chơi."
   },
   "id": {
     "nav": "9 Favorit Saya",
@@ -972,7 +986,8 @@
     "showCandidateNames": "Tampilkan nama",
     "hideCandidateNames": "Sembunyikan nama",
     "boardPhotoHelp": "Tekan sekali untuk menyesuaikan foto, dua kali untuk menghapus. Seret untuk memindahkan.",
-    "reuseTemplate": "Buat Top 9 dengan templat ini"
+    "reuseTemplate": "Buat Top 9 dengan templat ini",
+    "templateCandidatePrompt": "Pilih langsung di atas untuk menampilkan foto kandidat, atau pilih melalui permainan."
   },
   "hi": {
     "nav": "मेरे टॉप 9",
@@ -1037,7 +1052,8 @@
     "showCandidateNames": "उम्मीदवारों के नाम दिखाएँ",
     "hideCandidateNames": "उम्मीदवारों के नाम छिपाएँ",
     "boardPhotoHelp": "फ़ोटो समायोजित करने के लिए एक बार और हटाने के लिए दो बार दबाएँ। स्थान बदलने के लिए खींचें।",
-    "reuseTemplate": "इस टेम्पलेट से मेरा टॉप 9 बनाएँ"
+    "reuseTemplate": "इस टेम्पलेट से मेरा टॉप 9 बनाएँ",
+    "templateCandidatePrompt": "उम्मीदवारों की तस्वीरें देखने के लिए ऊपर सीधे चुनने का बटन दबाएँ, या खेल से चुनें।"
   },
   "bn": {
     "nav": "আমার সেরা ৯",
@@ -1102,7 +1118,8 @@
     "showCandidateNames": "প্রার্থীদের নাম দেখান",
     "hideCandidateNames": "প্রার্থীদের নাম লুকান",
     "boardPhotoHelp": "ছবি ঠিক করতে একবার এবং সরাতে দুবার চাপুন। স্থান বদলাতে টেনে আনুন।",
-    "reuseTemplate": "এই টেমপ্লেট দিয়ে আমার সেরা ৯ তৈরি করুন"
+    "reuseTemplate": "এই টেমপ্লেট দিয়ে আমার সেরা ৯ তৈরি করুন",
+    "templateCandidatePrompt": "প্রার্থীদের ছবি দেখতে উপরে সরাসরি বাছাই চাপুন, অথবা খেলার মাধ্যমে বেছে নিন।"
   },
   "ar": {
     "nav": "أفضل 9 لديّ",
@@ -1167,7 +1184,8 @@
     "showCandidateNames": "إظهار أسماء المرشحين",
     "hideCandidateNames": "إخفاء أسماء المرشحين",
     "boardPhotoHelp": "اضغط مرة لضبط الصورة ومرتين لإزالتها. اسحبها لتغيير موضعها.",
-    "reuseTemplate": "أنشئ أفضل 9 اختيارات بهذا القالب"
+    "reuseTemplate": "أنشئ أفضل 9 اختيارات بهذا القالب",
+    "templateCandidatePrompt": "اختر التحديد المباشر أعلاه لعرض صور المرشحين، أو اختر عبر اللعبة."
   },
   "tr": {
     "nav": "İlk 9 Favorim",
@@ -1232,7 +1250,8 @@
     "showCandidateNames": "Aday adlarını göster",
     "hideCandidateNames": "Aday adlarını gizle",
     "boardPhotoHelp": "Fotoğrafı ayarlamak için bir, kaldırmak için iki kez basın. Taşımak için sürükleyin.",
-    "reuseTemplate": "Bu şablonla İlk 9’umu oluştur"
+    "reuseTemplate": "Bu şablonla İlk 9’umu oluştur",
+    "templateCandidatePrompt": "Aday fotoğraflarını görmek için yukarıdan doğrudan seçimi aç veya oyunla seç."
   },
   "th": {
     "nav": "9 อันดับของฉัน",
@@ -1297,6 +1316,7 @@
     "showCandidateNames": "แสดงชื่อผู้สมัคร",
     "hideCandidateNames": "ซ่อนชื่อผู้สมัคร",
     "boardPhotoHelp": "กดหนึ่งครั้งเพื่อปรับรูป กดสองครั้งเพื่อลบ ลากเพื่อย้ายตำแหน่ง",
-    "reuseTemplate": "สร้าง My Top 9 ด้วยเทมเพลตนี้"
+    "reuseTemplate": "สร้าง My Top 9 ด้วยเทมเพลตนี้",
+    "templateCandidatePrompt": "เลือกโดยตรงด้านบนเพื่อแสดงรูปตัวเลือก หรือเลือกผ่านเกม"
   }
 }
