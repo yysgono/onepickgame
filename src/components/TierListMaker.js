@@ -1090,6 +1090,8 @@ const [
     useState("");
 
 
+  const [presetTitleOverride, setPresetTitleOverride] = useState(null);
+  const [editingPresetTitle, setEditingPresetTitle] = useState(null);
   const [tierListDescription, setTierListDescription] = useState("");
   const loadedDescriptionRef = useRef("");
   const descriptionTranslationsRef = useRef({});
@@ -1195,6 +1197,8 @@ const [
           );
         }
 
+        setPresetTitleOverride(saved?.presetTitleOverride || null);
+
         if (typeof saved?.tierListDescription === "string") {
           hydrateDescription({ description: saved.tierListDescription, description_translations: saved.descriptionTranslations });
         }
@@ -1298,6 +1302,7 @@ const [
         TIER_BUILDER_UI_STORAGE_KEY,
         JSON.stringify({
           tierListTitle,
+          presetTitleOverride,
           tierListDescription,
           descriptionTranslations: tierListDescription.trim() === loadedDescriptionRef.current ? descriptionTranslationsRef.current : {},
           titleTranslations,
@@ -1315,6 +1320,7 @@ const [
     }
   }, [
     tierListTitle,
+    presetTitleOverride,
     tierListDescription,
     titleTranslations,
     titleTranslationLanguages,
@@ -1738,6 +1744,14 @@ const list = keyword
   const candidatePageSize = isPresetEntry ? PRESET_CANDIDATE_PAGE_SIZE : DEFAULT_CANDIDATE_PAGE_SIZE;
   const visibleCandidateCount = candidatePageSize * visibleCandidatePages;
   const presetTitle = isPresetEntry ? getTitle(selectedCup) || text.pageTitle : "";
+  const customPresetTitle = isPresetEntry && presetTitleOverride?.id === id ? presetTitleOverride.title : "";
+  const editablePresetTitle = customPresetTitle || presetTitle;
+
+  function finishPresetTitleEdit() {
+    const title = editingPresetTitle?.value.trim();
+    setPresetTitleOverride(!title || title === presetTitle ? null : { id, title, lang });
+    setEditingPresetTitle(null);
+  }
   const [presetIntro, setPresetIntro] = useState(null);
 
   useEffect(() => {
@@ -2274,7 +2288,7 @@ const sourceCandidates =
       setTierListTitle(
         mode === "clone"
           ? `${payload.title || text.newTierList}`
-          : payload.title || text.newTierList
+          : payload.tier_labels?._customPublicTitle || payload.title || text.newTierList
       );
       const hydratedTitleTranslations = readTranslationMap(
         payload?.title_translations || payload?.tier_labels?._titleTranslations
@@ -3179,6 +3193,7 @@ const handleDragEndItem =
           version: 2,
           savedAt: Date.now(),
           title: tierListTitle,
+          presetTitleOverride,
           description: tierListDescription,
           descriptionTranslations: tierListDescription.trim() === loadedDescriptionRef.current ? descriptionTranslationsRef.current : {},
           titleTranslations,
@@ -3216,6 +3231,7 @@ const handleDragEndItem =
       }
     }, [
       tierListTitle,
+      presetTitleOverride,
       tierListDescription,
       titleTranslations,
       titleTranslationLanguages,
@@ -3318,6 +3334,7 @@ const handleDragEndItem =
           original_language: draft?.originalContentLanguage,
         }));
         setTierListTitle(draft?.title || "");
+        setPresetTitleOverride(draft?.presetTitleOverride || null);
         hydrateDescription({ description: draft?.description || "", description_translations: draft?.descriptionTranslations || {} });
         const draftTitleTranslations = readTranslationMap(draft?.titleTranslations);
         setTitleTranslations(draftTitleTranslations);
@@ -3583,8 +3600,10 @@ const handleDragEndItem =
         setSaveError("");
 
 
-        let cleanTitle = isPresetEntry ? presetTitle : tierListTitle.trim();
-        const titleLanguage = isPresetEntry ? lang : originalContentLanguage;
+        let cleanTitle = isPresetEntry ? editablePresetTitle : tierListTitle.trim();
+        const titleLanguage = isPresetEntry
+          ? (customPresetTitle ? presetTitleOverride.lang : lang)
+          : originalContentLanguage;
 
         const cleanTitleTranslations = Object.fromEntries(
           Object.entries(isPresetEntry ? {} : titleTranslations || {})
@@ -3682,7 +3701,7 @@ const handleDragEndItem =
             authorSuffix = " - " + Array.from(nickname.trim()).slice(0, 30).join("");
           }
           const makePresetTitle = (ending = "") =>
-            Array.from(presetTitle).slice(0, 80 - Array.from(authorSuffix + ending).length).join("").trimEnd() +
+            Array.from(editablePresetTitle).slice(0, 80 - Array.from(authorSuffix + ending).length).join("").trimEnd() +
             authorSuffix + ending;
 
           if (isPresetEntry) {
@@ -3850,6 +3869,9 @@ const finalCandidates =
             // 게스트 RPC가 title_translations 컬럼을 직접 받지 않는 배포에서도
             // 수정 화면에서 번역 제목을 잃지 않도록 메타에 함께 보관합니다.
             _titleTranslations: cleanTitleTranslations,
+            _customPublicTitle: customPresetTitle || (editingTierListId && tierLabels?._customPublicTitle)
+              ? cleanTitle
+              : null,
             // 제목이 처음 작성된 언어를 별도 DB 컬럼 없이 tier_labels 메타에 보관합니다.
             // 헤더 언어를 바꿔도 이 값은 바뀌지 않습니다.
             _originalLanguage:
@@ -4076,7 +4098,9 @@ if (editingTierListId) {
   saving,
   tierListTitle,
   isPresetEntry,
-  presetTitle,
+  editablePresetTitle,
+  customPresetTitle,
+  presetTitleOverride,
   originalContentLanguage,
   sourcePresetName,
   tierListDescription,
@@ -4409,7 +4433,34 @@ if (editingTierListId) {
                 900,
             }}
           >
-            {isPresetEntry ? presetTitle : <>📊 {text.pageTitle}</>}
+            {isPresetEntry ? (
+              editingPresetTitle?.id === id ? (
+                <input
+                  autoFocus
+                  aria-label={text.titlePlaceholder}
+                  maxLength={80}
+                  value={editingPresetTitle.value}
+                  onFocus={(event) => event.target.select()}
+                  onChange={(event) => setEditingPresetTitle({ id, value: event.target.value })}
+                  onBlur={finishPresetTitleEdit}
+                  onKeyDown={(event) => {
+                    if (event.nativeEvent.isComposing) return;
+                    if (event.key === "Enter") event.currentTarget.blur();
+                    if (event.key === "Escape") setEditingPresetTitle(null);
+                  }}
+                  style={{ width: "min(100%, 740px)", boxSizing: "border-box", font: "inherit", textAlign: "center", border: "2px solid #6650d8", borderRadius: 8, padding: "4px 10px" }}
+                />
+              ) : (
+                <button
+                  type="button"
+                  title={text.titlePlaceholder}
+                  onClick={() => setEditingPresetTitle({ id, value: editablePresetTitle })}
+                  style={{ font: "inherit", color: "inherit", background: "transparent", border: 0, padding: 0, cursor: "pointer", overflowWrap: "anywhere" }}
+                >
+                  {editablePresetTitle} <span aria-hidden="true" style={{ fontSize: "0.55em", verticalAlign: "middle" }}>✎</span>
+                </button>
+              )
+            ) : <>📊 {text.pageTitle}</>}
           </h1>
 
 

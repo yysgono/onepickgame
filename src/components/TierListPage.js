@@ -31,7 +31,7 @@ import { supabase } from "../utils/supabaseClient";
 import "../styles/presetCardSizes.css";
 
 
-const PAGE_SIZE = 12;
+const PAGE_SIZE = 8;
 const PRESET_PAGE_SIZE = 28;
 const TIER_LIST_CACHE_TTL = 60000;
 const tierListPageCache = new Map();
@@ -723,7 +723,7 @@ if (cleanSearch) {
             requestKey,
             async () => {
               const { data, error } =
-                await query.range(
+                await query.order("id", { ascending: true }).range(
                   from,
                   to
                 );
@@ -1625,28 +1625,7 @@ maxWidth: isMobile ? 430 : 1780,
           </div>
         ) : (
           <>
-            <div className="tier-cards-grid"
-              style={{
-                display:
-                  "grid",
-
-gridTemplateColumns:
-  isMobile
-    ? "1fr"
-    : "repeat(3, minmax(300px, 1fr))",
-
-justifyContent:
-  "center",
-
-gap:
-  isMobile
-    ? 12
-    : 18,
-
-                marginTop:
-                  20,
-              }}
-            >
+            <div className="tier-cards-grid">
               {cards.map(
                 (item) => (
                   <button className="tier-list-card"
@@ -1691,7 +1670,7 @@ gap:
 	                        "transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease",
 	                    }}
 	                  >
-                    <div style={{ display: "grid", gridTemplateColumns: item.hasTierPreview ? "36% 64%" : "1fr", minHeight: isMobile ? 150 : 196, borderBottom: "1px solid #dbeafe" }}>
+                    <div style={{ display: "grid", gridTemplateColumns: item.hasTierPreview ? "38% minmax(0, 1fr)" : "1fr", minHeight: isMobile ? 150 : 196, borderBottom: "1px solid #dbeafe" }}>
                     <div
                       style={{
                         width:
@@ -1749,7 +1728,8 @@ gap:
                     {item.hasTierPreview && (
                       <div
                         style={{
-                          padding: isMobile ? "7px 8px" : "8px 10px",
+                          padding: "7px 6px",
+                          minWidth: 0,
                           background: "#f8fbff",
                           borderLeft: "1px solid #dbeafe",
                           display: "grid",
@@ -1802,9 +1782,10 @@ gap:
                                   key={`${row.tier}-${candidate?.id ?? index}`}
                                   title={candidate?.name || ""}
                                   style={{
-                                    width: isMobile ? 24 : 30,
-                                    minWidth: isMobile ? 24 : 30,
-                                    height: isMobile ? 24 : 30,
+                                    width: `min(${isMobile ? 24 : 30}px, calc((100% - 16px) / 5))`,
+                                    aspectRatio: "1",
+                                    boxSizing: "border-box",
+                                    flexShrink: 0,
                                     borderRadius: 5,
                                     overflow: "hidden",
                                     background: "#ffffff",
