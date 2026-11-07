@@ -31,7 +31,7 @@ import { supabase } from "../utils/supabaseClient";
 import "../styles/presetCardSizes.css";
 
 
-const PAGE_SIZE = 10;
+const PAGE_SIZE = 8;
 const PRESET_PAGE_SIZE = 28;
 const TIER_LIST_CACHE_TTL = 60000;
 const tierListPageCache = new Map();
@@ -1846,29 +1846,7 @@ maxWidth: isMobile ? 430 : 1780,
                   {item.displayTitle}
                       </div>
 
-                      <div
-                        style={{
-                          marginTop:
-                            10,
-
-                          display:
-                            "flex",
-
-                          gap: 10,
-
-                          flexWrap:
-                            "wrap",
-
-                          color:
-                            "#1D4ED8",
-
-                          fontSize:
-	                            isMobile ? 14 : 15,
-
-                          fontWeight:
-                            800,
-                        }}
-                      >
+                      <div className="tier-card-meta">
                         <span>
                           👤{" "}
                           {item.candidate_count ||
