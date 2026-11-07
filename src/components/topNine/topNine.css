@@ -28,7 +28,7 @@
 .tn-editor>.tn-pool{position:sticky;top:16px;display:flex;flex-direction:column;height:min(900px,calc(100vh - 32px));height:min(900px,calc(100dvh - 32px));max-height:calc(100dvh - 32px);min-height:0;padding:18px}
 .tn-pool h2{flex-shrink:0;font-size:24px;margin-bottom:12px}
 .tn-pool>input[type=search]{flex-shrink:0;font-size:17px;min-height:48px}
-.tn-pool-scroll{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;scrollbar-gutter:stable;padding:0 5px 10px 0;margin-top:14px}
+.tn-pool-scroll{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;overscroll-behavior-x:contain;overscroll-behavior-y:auto;scrollbar-gutter:stable;padding:0 5px 10px 0;margin-top:14px}
 .tn-pool-scroll:focus-visible{outline:2px solid #9561df;outline-offset:2px;border-radius:8px}
 .tn-pool-scroll .tn-candidates{margin:0;gap:12px}
 .tn-pool .tn-candidates button>span:last-child{font-size:16px;line-height:1.5;padding:9px;min-height:66px;-webkit-line-clamp:3}
@@ -183,3 +183,27 @@
 .tn-template-game .tn-game-count small{line-height:1.5}
 .tn-pool-placeholder{text-align:center;line-height:1.8;padding:35px 16px;color:#6b587e}
 @media(max-width:600px){.tn-template-modes{gap:10px}.top-nine .tn-template-modes button{font-size:20px;height:100px;min-height:100px;padding:12px;border-radius:14px}.tn-template-game .tn-game-count{font-size:13px}}
+
+.tn-editor:not(.tn-preview) > .tn-board-panel,
+.tn-editor > .tn-pool {
+  border: 2px solid #b28aeb;
+}
+
+.tn-editor > .tn-pool.tn-pool-empty {
+  position: static;
+  align-self: start;
+  height: auto;
+  max-height: none;
+}
+
+.tn-pool-empty .tn-pool-scroll {
+  flex: none;
+  overflow: visible;
+  scrollbar-gutter: auto;
+  padding: 0;
+}
+
+.tn-pool-empty .tn-pool-placeholder {
+  margin: 0;
+  padding: 16px;
+}
