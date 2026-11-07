@@ -37,7 +37,8 @@ function getTierPresetName(tier, language) {
 function getTierPublicTitle(tier, language, nickname='', fallback='Tier List') {
  const copy=COPY[normalizeLanguage(language)]||COPY.en;
  const customTitle=text(metadata(tier)._customPublicTitle);
- if(customTitle)return getTierListTitle({...tier,title:customTitle},language,fallback);
+ // Keep the shared CommonJS module free of Babel's ESM object-spread helper.
+ if(customTitle)return getTierListTitle(Object.assign({},tier,{title:customTitle}),language,fallback);
  if(!tier?.source_worldcup_id&&!text(metadata(tier)._sourcePresetName))return getTierListTitle(tier,language,fallback);
  const author=text(nickname)||text(tier?.guest_nickname)||(tier?.user_id?copy.unknownAuthor:copy.guestAuthor);
  let base=getTierPresetName(tier,language)||getTierListTitle(tier,language,fallback);
