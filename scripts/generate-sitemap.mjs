@@ -149,17 +149,16 @@ function makeUrlEntry({
 
 const DB_PAGE_SIZE = 1000;
 
-async function fetchAllRows({ table, select, applyFilters, label }) {
+async function fetchAllRows({ table, select, applyFilters, label, orderColumns=['created_at','id'] }) {
   const allRows = [];
   let from = 0;
 
   while (true) {
     let query = getSupabase()
       .from(table)
-      .select(select)
-      .order("created_at", { ascending: true })
-      .order("id", { ascending: true })
-      .range(from, from + DB_PAGE_SIZE - 1);
+      .select(select);
+    for(const column of orderColumns)query=query.order(column,{ascending:true});
+    query=query.range(from, from + DB_PAGE_SIZE - 1);
 
     if (typeof applyFilters === "function") {
       query = applyFilters(query);
@@ -254,7 +253,8 @@ export function generateLanguageSitemap(
   worldcups,
   tierLists,
   quizzes = [],
-  topNineBoards = []
+  topNineBoards = [],
+  topNineTemplates = []
 ) {
   // Do not advertise the build date as a content modification date.
   const today = "";
@@ -290,6 +290,10 @@ export function generateLanguageSitemap(
   }
 
   xml += makeUrlEntry({ loc: `${BASE_URL}/${lang}/mytop9`, changefreq: "weekly", priority: "0.7" });
+
+  for(const template of topNineTemplates){
+    if(template.enabled&&worldcups.some(cup=>String(cup.id)===String(template.source_worldcup_id)))xml += makeUrlEntry({loc:`${BASE_URL}/${lang}/mytop9/templates/${template.source_worldcup_id}`,changefreq:'weekly',priority:'0.7'});
+  }
 
   for (const board of topNineBoards) {
     xml += makeUrlEntry({loc: `${BASE_URL}/${lang}/mytop9/${board.id}`,lastmod: board.created_at ? new Date(board.created_at).toISOString() : undefined,changefreq:"weekly",priority:"0.6"});
@@ -554,6 +558,8 @@ async function generateSitemaps() {
       table: "top_nine_public_boards", select: "id,created_at", label: "공개 구절판"
     });
 
+    const topNineTemplates=await fetchAllRows({table:'top_nine_templates',select:'source_worldcup_id,enabled',label:'구절판 템플릿',orderColumns:['source_worldcup_id']});
+
     // 언어별 sitemap 생성
     for (const lang of LANGS) {
       const xml =
@@ -562,7 +568,8 @@ async function generateSitemaps() {
           worldcups,
           tierLists,
           quizzes,
-          topNineBoards
+          topNineBoards,
+          topNineTemplates
         );
 
       const filePath =

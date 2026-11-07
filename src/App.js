@@ -237,6 +237,7 @@ const BackupPage = lazy(() => import("./components/BackupPage"));
 const ManageWorldcup = lazy(() => import("./components/ManageWorldcup"));
 const EditWorldcupPage = lazy(() => import("./components/EditWorldcupPage"));
 const AdminBar = lazy(() => import("./components/AdminBar"));
+const TopNineTemplatePage=lazy(()=>import("./components/topNine/TemplatePage"));
 const TopNinePage = lazy(() => import("./components/TopNinePage"));
 const AdminDashboard = lazy(() => import("./components/AdminDashboard"));
 const AdminStatsPage = lazy(() => import("./components/AdminStatsPage"));
@@ -858,6 +859,7 @@ function handleMakeWorldcup() {
 />
   }
 />
+<Route path="/:lang/mytop9/templates/:templateId" element={<TopNineTemplatePage />}/>
 <Route path="/:lang/mytop9/:id" element={<PublicBoardPage />} />
 <Route path="/:lang/mytop9" element={<TopNinePage />} />
 <Route path="/:lang/top-nine" element={<LegacyTopNineRedirect />} />

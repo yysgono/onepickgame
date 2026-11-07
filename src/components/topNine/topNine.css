@@ -168,3 +168,6 @@
 .top-nine .tn-pool-scroll>button{display:block;width:100%;min-height:54px;margin:18px 0 12px;padding:14px 24px;border:2px solid #9561df;border-radius:10px;background:#f3ecff;color:#5425a3;font-size:18px;font-weight:800;line-height:1.35}
 .top-nine .tn-pool-scroll>button:hover:not(:disabled){background:#e9dcff;border-color:#7139ce}
 .top-nine .tn-pool-game{margin-top:24px;padding-top:16px}
+
+.top-nine .tn-picture-templates>a.tn-template-link{display:flex;flex-direction:column;gap:0;min-width:0;overflow:hidden;padding:0;border:2px solid #ded1f0;border-radius:12px;background:#fff;text-decoration:none;color:#50248d}
+.tn-template-link:focus-visible{outline:3px solid #9a60ed;outline-offset:3px}

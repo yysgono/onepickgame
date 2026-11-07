@@ -21,3 +21,13 @@ export async function loadSource(id) {
  const {data,error}=await supabase.from('worldcups').select('id,title,title_translations,data').eq('id',id).is('deleted_at',null).maybeSingle();
  if(error)throw error;if(!data)throw new Error('NOT_FOUND');return data;
 }
+export async function loadTemplatePage(id){
+ const raw=await loadSource(id);
+ const [settings,intro]=await Promise.all([
+  supabase.from('top_nine_templates').select('title_translations,enabled').eq('source_worldcup_id',id).maybeSingle(),
+  supabase.from('top_nine_template_intros').select('candidate_sources').eq('source_worldcup_id',id).maybeSingle()
+ ]);
+ if(settings.error||intro.error)throw settings.error||intro.error;
+ if(!Array.isArray(raw.data)||!raw.data.some(c=>c?.image||c?.image_url||c?.url))throw new Error('NOT_FOUND');
+ return {...raw,top_nine_title_translations:settings.data?.title_translations||{},intro_sources:intro.data?.candidate_sources||[]};
+}
