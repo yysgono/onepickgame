@@ -32,7 +32,7 @@ import "../styles/presetCardSizes.css";
 
 
 const PAGE_SIZE = 8;
-const PRESET_PAGE_SIZE = 24;
+const PRESET_PAGE_SIZE = 28;
 const TIER_LIST_CACHE_TTL = 60000;
 const tierListPageCache = new Map();
 const tierListPageInflight = new Map();
@@ -1129,7 +1129,6 @@ const displayTitle =
     borderRadius: 10,
     padding: "18px 18px 16px",
     boxSizing: "border-box",
-    minHeight: 280,
     boxShadow: "0 12px 28px rgba(0,0,0,0.08)",
   }}
 >
@@ -1158,7 +1157,7 @@ const displayTitle =
             gap: 9,
           }}
         >
-          {items.map((item) => (
+          {items.slice(0, 4).map((item) => (
             <li key={`${title}-${item.id}`}>
               <Link className="home-activity-link"
                 to={`/${lang}/tier-list/${item.id}`}
@@ -1292,11 +1291,10 @@ maxWidth: isMobile ? 430 : 1780,
         
 
 <PageIntro icon="📊" title={t("tierList.page.title")} description={t("tierList.page.description")} buttonLabel={t("tierList.page.createButton")} createTo={`/${lang}/tier-list/create`} accentColor="#2563EB" />
-{/* 검색 위 언어 선택 */}
-<ContentLanguageSelect />
 <div
+          className="home-search-language-row"
           style={{
-            width: "100%", maxWidth: 760, margin: "0 auto 4px", boxSizing: "border-box",
+            marginBottom: 4,
 
             padding:
               isMobile
@@ -1380,8 +1378,7 @@ maxWidth: isMobile ? 430 : 1780,
               </button>
             </div>
           </form>
-
-
+          <ContentLanguageSelect />
         </div>
 {showTierActivityPanels && !useSideTierActivityPanels && (
   <div

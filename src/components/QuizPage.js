@@ -1499,7 +1499,6 @@ export default function QuizPage({ user = null }) {
         borderRadius: 10,
         padding: "17px 17px 15px",
         boxSizing: "border-box",
-        minHeight: 292,
         boxShadow: "0 12px 28px rgba(0,0,0,0.08)",
       }}
     >
@@ -1528,7 +1527,7 @@ export default function QuizPage({ user = null }) {
             gap: 9,
           }}
         >
-          {items.map((item) => (
+          {items.slice(0, 4).map((item) => (
             <li key={`${title}-${item.id}`}>
               <NavigationLink className="home-activity-link"
 
@@ -2154,60 +2153,13 @@ return (
 
 
 
-     {/* 언어 선택 */}
-
-
-
-
-
-
-
-          <ContentLanguageSelect />
-
-
-
-
-
-
-
-
-
-
-
-        {/* =========================
-
-
-
-            검색
-
-
-
-        ========================== */}
-
-
-
-
-
-
-
 <div
-
+  className="home-search-language-row"
   style={{
-
-    width: "100%",
-
-    maxWidth: 760,
-
-    margin: mobile ? "8px auto 10px" : "8px auto 12px",
-
+    marginBottom: mobile ? 10 : 12,
     padding: mobile ? "0 12px" : 0,
-
-    boxSizing: "border-box",
-
   }}
-
 >
-
   <div
 
     style={{
@@ -2294,6 +2246,7 @@ return (
 
   </div>
 
+  <ContentLanguageSelect />
 </div>
 
 {showQuizActivityPanels && !useSideQuizActivityPanels && (
