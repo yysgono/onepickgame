@@ -3639,9 +3639,6 @@ const renderedCategorySections = shouldShowAllCategories
 const homeSeoSummary =
   SITE_HOME_COPY[lang]?.description ||
   SITE_HOME_COPY.en.description;
-const homeSeoSummaryParts = homeSeoSummary
-  .split(/(?<=\.|。|।)\s+/)
-  .filter(Boolean);
 useEffect(() => {
 
   const visibleCups = [];
@@ -3865,7 +3862,7 @@ return (
     )}
 
     <div style={{ minWidth: 0 }}>
-      <PageIntro icon="🏆" title={SITE_HOME_COPY[lang]?.heading || t('gameModeNav.worldcup')} description={<>{homeSeoSummaryParts.map((line, index) => <span key={`${line}-${index}`} style={{ display: "block" }}>{line}</span>)}</>} hideDescription={Boolean(search.trim())} buttonLabel={t('create_worldcup')} createTo={`/${lang}/worldcup-maker`} onCreate={() => onMakeWorldcup ? onMakeWorldcup() : goto(`/${lang}/worldcup-maker`)} personal={false} accentColor="#F97316" />
+      <PageIntro icon="🏆" title={SITE_HOME_COPY[lang]?.heading || t('gameModeNav.worldcup')} description={homeSeoSummary} hideDescription={Boolean(search.trim())} buttonLabel={t('create_worldcup')} createTo={`/${lang}/worldcup-maker`} onCreate={() => onMakeWorldcup ? onMakeWorldcup() : goto(`/${lang}/worldcup-maker`)} personal={false} accentColor="#F97316" />
 
       {/* 언어 선택 / 검색 */}
 
