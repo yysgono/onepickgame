@@ -54,7 +54,9 @@ input::placeholder,textarea::placeholder{color:#68758a!important;opacity:1}
 .tier-filter[aria-pressed=true]{background:#f2efff!important;color:#5542b8!important;border-color:#9d8ce3!important}
 .tier-filter:hover{border-color:#9d8ce3!important}
 /* v2: full-width lists, larger typography and clear section boundaries. */
-.home-page{max-width:none!important;padding:32px 32px 56px!important}
+.home-page{--home-top-space:32px;max-width:none!important;padding:var(--home-top-space) 32px 56px!important}
+.home-site-intro{display:grid;place-items:center;max-width:1200px;margin:0 auto 8px;text-align:center;color:#596579;font-size:15px;font-weight:600;line-height:1.4}
+@media(min-width:701px){.home-site-intro{min-height:var(--home-top-space);margin-block-start:calc(-1 * var(--home-top-space));margin-block-end:0}}
 .tier-page-container{max-width:none!important;padding:32px 32px 56px!important}
 .home-category-section{padding:26px 0 6px;border-top:1px solid #dce1e9;margin:26px 0!important}
 .home-category-heading{padding-bottom:20px!important}

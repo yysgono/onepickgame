@@ -3865,6 +3865,10 @@ return (
 
 
 
+  {remoteHome && (
+    <p className="home-site-intro">{(SITE_HOME_COPY[lang] || SITE_HOME_COPY.en).siteIntro}</p>
+  )}
+
   <div
     className="home-top-layout"
     style={{
