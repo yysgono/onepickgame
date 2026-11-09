@@ -1035,7 +1035,6 @@ const remainingCandidateCount = Math.max(
 
  const topSpacerH = isMobile ? 58 : 25;
 
-  const thumbH = isMobile ? 220 : 300;
 
   // ======================================================
 
@@ -1189,6 +1188,8 @@ const creatorOtherWorldcups =
 
           style={{
 
+            minWidth: 0,
+
             position: "relative",
 
             textAlign: "center",
@@ -1207,7 +1208,7 @@ const creatorOtherWorldcups =
 
               ? "100%"
 
-              : 880,
+              : 1060,
 
               boxSizing: "border-box",
 
@@ -1533,9 +1534,11 @@ textShadow: "none",
 
                     ? "98vw"
 
-                    : 710,
+                    : 850,
 
-                  height: thumbH,
+                  height: isMobile ? 220 : undefined,
+
+                  aspectRatio: isMobile ? undefined : "710 / 300",
 
                   margin: isMobile
 
@@ -1840,7 +1843,7 @@ textShadow: "none",
 
                     ? "98vw"
 
-                    : 710,
+                    : 850,
 
                   boxShadow:
 
@@ -1918,7 +1921,7 @@ textShadow: "none",
 
                       ? "95vw"
 
-                      : 590,
+                      : 710,
 
                     lineHeight: 1.45,
 
@@ -2154,7 +2157,7 @@ textShadow: "none",
 
       : "23px 26px 27px 26px",
 
-    maxWidth: 670,
+    maxWidth: isMobile ? 670 : 810,
 
     boxShadow:
 
@@ -2304,7 +2307,7 @@ textShadow: "none",
 
     margin: "20px auto 0",
 
-    maxWidth: 670,
+    maxWidth: isMobile ? 670 : 810,
 
     background: "#ffffff",
 
@@ -2384,7 +2387,7 @@ lineHeight: 1.8,
 
     margin: "20px auto 0",
 
-    maxWidth: 670,
+    maxWidth: isMobile ? 670 : 810,
 
     background: "#ffffff",
 
@@ -2622,7 +2625,7 @@ style={{
 
   margin: "20px auto 0",
 
-  maxWidth: 670,
+  maxWidth: isMobile ? 670 : 810,
 
   background: "#ffffff",
 
