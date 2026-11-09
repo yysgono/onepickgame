@@ -1,4 +1,4 @@
-import {tierSearchFilter} from '../utils/tierSearchFilter';
+import {tierPresetSearchFilter, tierSearchFilter} from '../utils/tierSearchFilter';
 import updatedLabels from '../locales/tierCardUpdatedLabels.json';
 import {withTierCardDates} from '../utils/tierCardDates';
 import "./tierPresetCards.css";
@@ -270,7 +270,7 @@ function TierListPage({
     location.search,
     "sort",
     SORT_VALUES,
-    "popular"
+    "latest"
   );
   const [currentUserId, setCurrentUserId] = useState(null);
   const [authChecked, setAuthChecked] = useState(false);
@@ -378,6 +378,7 @@ function TierListPage({
   ] = useState(false);
 
   const [presetPage, setPresetPage] = useState(0);
+  const presetSearchFilter = tierPresetSearchFilter(searchKeyword);
   const [presetHasMore, setPresetHasMore] = useState(false);
   const [presetError, setPresetError] = useState("");
 
@@ -390,7 +391,7 @@ function TierListPage({
       params.delete("category");
     }
 
-    if (nextSort && nextSort !== "popular") {
+    if (nextSort && nextSort !== "latest") {
       params.set("sort", nextSort);
     } else {
       params.delete("sort");
@@ -425,7 +426,7 @@ function TierListPage({
       location.search,
       "sort",
       SORT_VALUES,
-      "popular"
+      "latest"
     );
 
     if (nextCategory !== category) {
@@ -448,9 +449,10 @@ function TierListPage({
       game: ["game"], animation: ["anime_manga", "animation"], entertainment: ["person", "korea", "music", "entertainment"],
       food: ["food"], sports: ["sports"], other: ["etc", "movie_drama", "travel", "brands", "brand", "product", "other"]
     };
-    getCachedTierListRows(`presets:${PRESET_PAGE_SIZE}:${category}:${presetPage}`, async () => {
+    getCachedTierListRows(`presets:${PRESET_PAGE_SIZE}:${category}:${presetPage}:${presetSearchFilter}`, async () => {
       let query = supabase.from("worldcup_tier_preset_cards").select("id,title,title_translations,category,tier_preset_order,tier_preset_title_translations,tier_preset_thumbnail_url");
       if (category !== "all") query = query.in("category", categories[category] || [category]);
+      if (presetSearchFilter) query = query.or(presetSearchFilter);
       const { data, error } = await query.order("tier_preset_order", { ascending: true, nullsFirst: false }).order("id", { ascending: true }).range(presetPage * PRESET_PAGE_SIZE, (presetPage + 1) * PRESET_PAGE_SIZE);
       if (error) throw error;
       const rows=data||[];
@@ -468,7 +470,7 @@ function TierListPage({
       if (live) { setPresetError(error.message); setPresetHasMore(false); }
     }).finally(() => { if (live) setTierPresetLoaded(true); });
     return () => { live = false; };
-  }, [category, presetPage, mineOnly]);
+  }, [category, presetPage, mineOnly, presetSearchFilter]);
 
   const recommendedPresets = managedTierPresets;
 
@@ -816,18 +818,23 @@ if (cleanSearch) {
   }, [loadTierLists]);
 
   useEffect(() => {
-    const timer = setTimeout(() => setSearchKeyword(searchInput.trim()), 300);
+    if (searchInput.trim() === searchKeyword) return undefined;
+    const timer = setTimeout(() => {
+      setPresetPage(0);
+      setSearchKeyword(searchInput.trim());
+    }, 300);
     return () => clearTimeout(timer);
-  }, [searchInput]);
+  }, [searchInput, searchKeyword]);
 
   const submitSearch = (
     event
   ) => {
     event?.preventDefault?.();
 
-    setSearchKeyword(
-      searchInput.trim()
-    );
+    if (searchInput.trim() !== searchKeyword) {
+      setPresetPage(0);
+      setSearchKeyword(searchInput.trim());
+    }
   };
 
  const [sourceTitleMap,setSourceTitleMap]=useState({});
@@ -1405,7 +1412,7 @@ maxWidth: isMobile ? 430 : 1780,
     })}
   </div>
 )}
-{!mineOnly && !searchInput.trim() && <section className="tier-recommendations" style={{ width: "100%", maxWidth: "none", boxSizing: "border-box" }}>
+{!mineOnly && searchInput.trim() === searchKeyword && (!searchKeyword || (presetSearchFilter && (recommendedPresets.length > 0 || !tierPresetLoaded || presetError))) && <section className="tier-recommendations" style={{ width: "100%", maxWidth: "none", boxSizing: "border-box" }}>
   <h2 style={{ textAlign: "center", color: "#1d4ed8", fontSize: isMobile ? 24 : 34 }}>{t("tierList.page.recommendedPresetTitle")}</h2>
   <div className="tier-recommendation-filters"><div
             style={{
