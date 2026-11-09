@@ -18,3 +18,165 @@
   word-break: normal;
   overflow: hidden;
 }
+
+.tier-editor-upload {
+  display: flex;
+  justify-content: center;
+  margin: 0 auto 20px;
+}
+.tier-editor-upload-button {
+  position: relative;
+  max-width: 100%;
+  padding: 14px 22px;
+  border-radius: 9px;
+  background: #2563eb;
+  color: #fff;
+  font-size: 20px;
+  font-weight: 900;
+  text-align: center;
+  cursor: pointer;
+}
+.tier-editor-upload-button small {
+  display: block;
+  margin-top: 4px;
+  font-size: 15px;
+}
+.tier-editor-upload-button input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+.tier-editor-upload-button:focus-within {
+  outline: 3px solid #93c5fd;
+  outline-offset: 3px;
+}
+.tier-editor-restore-rows {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.tier-editor-restore-rows { margin-bottom: 12px; }
+.tier-editor-secondary {
+  min-height: 42px;
+  padding: 8px 14px;
+  border: 1px solid #bfdbfe;
+  border-radius: 9px;
+  background: #fff;
+  color: #1d4ed8;
+  font-weight: 800;
+  cursor: pointer;
+}
+.tier-editor-secondary:disabled,
+.tier-editor-remove-row:disabled { opacity: .45; cursor: default; }
+.tier-editor-remove-row {
+  position: absolute;
+  inset-block-start: 3px;
+  inset-inline-end: 3px;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 1px solid #20253444;
+  border-radius: 6px;
+  background: #ffffffe0;
+  color: #202534;
+  font-size: 19px;
+  cursor: pointer;
+}
+
+.tier-editor-row {
+  border: 1px solid var(--tier-row-color);
+  background: #fff;
+  background: color-mix(in srgb, var(--tier-row-color) 10%, white);
+}
+.tier-editor-restore-button {
+  min-height: 46px;
+  font-size: 16px;
+  border: 2px solid var(--tier-row-color);
+}
+.tier-editor-download {
+  min-width: 180px;
+  min-height: 48px;
+  border: 2px solid #2563eb;
+  font-size: 17px;
+}
+
+.tier-editor-candidate-pool {
+  border: 2px solid #c4d2e8;
+}
+.tier-editor-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.tier-editor-toolbar .tier-editor-upload { margin: 0; }
+.tier-editor-toolbar .tier-editor-upload-button { padding: 8px 12px; font-size: 16px; }
+.tier-editor-toolbar .tier-editor-upload-button small { font-size: 12px; }
+.tier-editor-toolbar .tier-editor-download { min-width: 0; min-height: 44px; }
+
+.tier-editor-primary-actions {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  width: min(100%, 780px);
+  margin-inline: auto;
+}
+.tier-editor-primary-actions > * {
+  min-width: 0;
+  min-height: 64px;
+  box-sizing: border-box;
+  overflow-wrap: anywhere;
+}
+.tier-editor-primary-actions > button,
+.tier-editor-primary-actions .tier-editor-upload-button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 12px;
+  font-size: 17px;
+  text-align: center;
+}
+.tier-editor-primary-actions .tier-editor-upload-button small { font-size: 12px; }
+.tier-editor-guest-dialog {
+  width: min(92vw, 520px);
+  padding: 22px;
+  border: 1px solid #c4d2e8;
+  border-radius: 14px;
+  color: #202534;
+  background: #fff;
+  box-shadow: 0 16px 48px #18223533;
+}
+.tier-editor-guest-dialog::backdrop { background: #18223566; }
+.tier-editor-guest-dialog h2 { margin: 0; font-size: 20px; }
+.tier-editor-guest-dialog p { margin: 8px 0 14px; }
+.tier-editor-guest-inputs {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin-block-end: 14px;
+}
+.tier-editor-guest-inputs input {
+  width: 100%;
+  min-width: 0;
+  min-height: 42px;
+  padding: 8px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  font-size: 16px;
+}
+.tier-editor-guest-error { color: #b42346; }
+.tier-other-languages[open] { margin-block-end: 18px; }
+.tier-other-languages[open] > summary { margin-block-end: 12px; }
+@media (max-width: 560px) {
+  .tier-editor-primary-actions,
+  .tier-editor-guest-inputs { grid-template-columns: minmax(0, 1fr); }
+}
+
+.tier-editor-board .tier-editor-row + .tier-editor-row { border-block-start: 0; }
+.tier-editor-board .tier-editor-row:first-child { border-start-start-radius: 8px; border-start-end-radius: 8px; }
+.tier-editor-board .tier-editor-row:last-child { border-end-start-radius: 8px; border-end-end-radius: 8px; }

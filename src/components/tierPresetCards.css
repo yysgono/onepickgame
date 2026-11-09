@@ -20,3 +20,63 @@
 .tier-page-container .tier-list-card .tier-card-title{display:block!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;min-height:0!important;height:1.35em!important;max-height:1.35em!important;line-height:1.35!important;-webkit-line-clamp:unset!important;overflow-wrap:normal!important;word-break:normal!important}
 
 .tier-page-container button.tier-presets-more{min-width:170px;min-height:52px;font-size:18px;padding:12px 28px!important}
+
+.tier-home-intro .page-intro { margin-bottom: 0; }
+.tier-home-intro .page-intro:not(.is-personal) p { min-height: 0; margin: 4px 0 8px !important; }
+.tier-home-intro .content-language-select { margin: 4px auto 6px; }
+
+.tier-preset-carousel {
+  max-width: 1280px;
+  margin: 10px auto 16px;
+  padding: 10px;
+  border: 1px solid #c4d2e8;
+  border-radius: 12px;
+  background: #fff;
+}
+.tier-preset-carousel h2 {
+  margin: 0 0 8px;
+  text-align: center;
+  font-size: clamp(18px, 2vw, 24px);
+}
+.tier-preset-carousel-body {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 8px;
+}
+.tier-preset-carousel-track {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: calc((100% - 36px) / 4);
+  gap: 12px;
+  overflow-x: auto;
+  padding-block-end: 6px;
+  scroll-snap-type: x mandatory;
+}
+.tier-preset-carousel-track > a { scroll-snap-align: start; }
+.tier-preset-carousel-track .tier-recommendation-image { height: auto; aspect-ratio: 16 / 9; }
+.tier-preset-carousel-track .tier-recommendation-card > div:last-child {
+  min-height: 50px !important;
+  padding: 6px 8px !important;
+  font-size: 15px !important;
+}
+.tier-preset-arrow {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 48px;
+  padding: 0;
+  border: 1px solid #1d4ed8;
+  border-radius: 10px;
+  background: #2563eb;
+  color: #fff;
+  font-size: 32px;
+  font-weight: 900;
+  line-height: 1;
+  cursor: pointer;
+}
+.tier-preset-arrow:hover { background: #1e40af; }
+@media (max-width: 700px) {
+  .tier-preset-carousel-track { grid-auto-columns: calc((100% - 12px) / 2); }
+  .tier-preset-arrow { width: 34px; }
+}

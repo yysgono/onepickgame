@@ -1,3 +1,5 @@
+import { TIERS, TIER_COLORS, visibleTierRows } from "../utils/tierRows";
+import editorCopy from "../locales/tierInlineEditor.json";
 import { loadTierSourceCatalogue } from "../utils/tierSourceCatalogue";
 import { templateTitle } from "../utils/templateTitles";
 import { templatePageIntro } from "./topNine/templateIntro";
@@ -208,28 +210,6 @@ async function normalizeImageFile(file) {
 }
 
 
-const TIERS = [
-  "S",
-  "A+",
-  "A",
-  "B",
-  "C",
-  "D",
-  "F",
-];
-
-
-const TIER_COLORS = {
-  S: "#ff6b6b",
-  "A+": "#ff8052",
-  A: "#ff9f43",
-  B: "#ffd93d",
-  C: "#6bcb77",
-  D: "#4d96ff",
-  F: "#a78bda",
-};
-
-
 const DEFAULT_TIER_LABELS = {
   S: "S",
   "A+": "A+",
@@ -295,30 +275,6 @@ const TITLE_TRANSLATION_COPY = {
 "pl":{"add":"+ Dodaj tytuł w innym języku","placeholder":"Przetłumaczony tytuł","remove":"Usuń"},
 "nl":{"add":"+ Titel toevoegen in een andere taal","placeholder":"Vertaalde titel","remove":"Verwijderen"},
 "cs":{"add":"+ Přidat název v jiném jazyce","placeholder":"Přeložený titulek","remove":"Odstranit"}
-};
-
-const TIER_CANDIDATE_IMAGE_HELP_COPY = {
-  ko: "※ 후보 이미지가 안 보일 경우, 후보를 티어표 안으로 드래그해 넣어보세요.",
-  en: "※ If a candidate image is not visible, try dragging the candidate into the Tier List.",
-  ja: "※ 候補画像が表示されない場合は、候補をTier表の中へドラッグしてみてください。",
-  zh: "※ 如果候选图片未显示，请尝试将候选项拖入排行榜中。",
-  es: "※ Si no se muestra la imagen de un candidato, prueba a arrastrarlo a la Tier List.",
-  fr: "※ Si l’image d’un candidat ne s’affiche pas, essayez de le faire glisser dans la Tier List.",
-  vi: "※ Nếu ảnh ứng viên không hiển thị, hãy thử kéo ứng viên vào Tier List.",
-  de: "※ Wenn ein Kandidatenbild nicht angezeigt wird, ziehe den Kandidaten testweise in die Tier List.",
-  ru: "※ Если изображение кандидата не отображается, попробуйте перетащить кандидата в Tier List.",
-  id: "※ Jika gambar kandidat tidak terlihat, coba seret kandidat ke dalam Tier List.",
-  pt: "※ Se a imagem de um candidato não aparecer, tente arrastá-lo para a Tier List.",
-  hi: "※ यदि किसी उम्मीदवार की तस्वीर दिखाई नहीं दे रही है, तो उसे Tier List में खींचकर डालकर देखें।",
-  tr: "※ Bir adayın görseli görünmüyorsa, adayı Tier List içine sürüklemeyi deneyin.",
-  th: "※ หากรูปผู้สมัครไม่แสดง ให้ลองลากผู้สมัครเข้าไปใน Tier List",
-  ar: "※ إذا لم تظهر صورة أحد المرشحين، فجرّب سحب المرشح إلى داخل Tier List.",
-  bn: "※ কোনো প্রার্থীর ছবি দেখা না গেলে, প্রার্থীটিকে Tier List-এর মধ্যে টেনে এনে দেখুন।",
-
-"it":"Se un'immagine candidata non è visibile, prova a trascinare il candidato nell'elenco dei livelli.",
-"pl":"Jeśli zdjęcie kandydata nie jest widoczne, spróbuj wciągnąć kandydata na listę poziomów.",
-"nl":"Als een candidate-afbeelding niet zichtbaar is, probeer dan de candidate naar de Tier List te slepen.",
-"cs":"Pokud kandidátský obraz není viditelný, zkuste kandidáta zatáhnout na seznam úrovní."
 };
 
 // 월드컵 관리자 카테고리 -> 티어표 카테고리 변환
@@ -521,8 +477,8 @@ const CandidateCard = memo(
     const width =
       compact
         ? isMobile
-          ? 72
-          : 94
+          ? 92
+          : 128
         : "100%";
 
 
@@ -711,7 +667,7 @@ style={{
 
             fontSize:
               compact
-                ? 13
+                ? (isMobile ? 14 : 16)
                 : 14,
 
             fontWeight:
@@ -796,6 +752,7 @@ style={{
 
 function TierListMaker({
   worldcupList = [],
+  embedded = false,
 }) {
   const navigate =
     useNavigate();
@@ -805,13 +762,13 @@ function TierListMaker({
     useLocation();
 
 
-  const { id } =
+  const { id, lang: routeLanguage } =
     useParams();
 
 
   const queryParams = new URLSearchParams(location.search);
-  const cloneTierListId = queryParams.get("clone");
-  const editTierListId = queryParams.get("edit");
+  const cloneTierListId = embedded ? null : queryParams.get("clone");
+  const editTierListId = embedded ? null : queryParams.get("edit");
 
   const { t, i18n } =
     useTranslation();
@@ -824,10 +781,8 @@ function TierListMaker({
     ).split("-")[0];
 
 
-  const candidateImageHelp =
-    TIER_CANDIDATE_IMAGE_HELP_COPY[lang] ||
-    TIER_CANDIDATE_IMAGE_HELP_COPY.en;
-
+  const editorText = editorCopy[lang] || editorCopy.en;
+  const [exporting, setExporting] = useState(false);
 
   const text =
     useMemo(
@@ -854,9 +809,6 @@ function TierListMaker({
         categoryLabel: t("tierList.common.category"),
         tierNameLabel: t("tierList.maker.tierNameLabel"),
         onePickTitle: t("tierList.common.onePick"),
-        onePickDesc: t("tierList.maker.onePickDesc"),
-        onePickEmpty: t("tierList.maker.onePickEmpty"),
-        clearOnePick: t("tierList.maker.clearOnePick"),
         loadingWorldcup: t("tierList.maker.loadingWorldcup"),
         backToList: t("tierList.common.backToList"),
         tierHome: t("tierList.result.tierHome"),
@@ -873,7 +825,6 @@ function TierListMaker({
         searchPlaceholder: t("tierList.maker.searchPlaceholder"),
         searchResult: (count) => t("tierList.maker.searchResult", { count }),
         noSearchResult: t("tierList.maker.noSearchResult"),
-        imageReuseNotice: t("tierList.maker.imageReuseNotice"),
         untitledCandidate: t("tierList.common.untitledCandidate"),
         newTierList: t("tierList.maker.newTierList"),
         enterTitle: t("tierList.maker.enterTitle"),
@@ -886,7 +837,6 @@ function TierListMaker({
         imageMaxSize: t("tierList.maker.imageMaxSize"),
         imageOnly: t("tierList.maker.imageOnly"),
         someFilesRejected: t("tierList.maker.someFilesRejected"),
-        uploadLoginRequired: t("tierList.maker.uploadLoginRequired"),
         guestEditPasswordRequired: t("tierList.maker.guestEditPasswordRequired"),
         guestNicknameInvalid: t("tierList.maker.guestNicknameInvalid"),
         guestPasswordInvalid: t("tierList.maker.guestPasswordInvalid"),
@@ -895,7 +845,6 @@ function TierListMaker({
         guestEditTitle: t("tierList.maker.guestEditTitle"),
         guestNicknamePlaceholder: t("tierList.maker.guestNicknamePlaceholder"),
         guestPasswordPlaceholder: t("tierList.maker.guestPasswordPlaceholder"),
-        guestPasswordGuide: t("tierList.maker.guestPasswordGuide"),
         mobileSelectGuide: t("tierList.maker.mobileSelectGuide"),
         moveUnranked: t("tierList.maker.moveUnranked"),
         resetConfirm: t("tierList.maker.resetConfirm"),
@@ -1103,7 +1052,8 @@ const [
 
   const [titleTranslations, setTitleTranslations] = useState({});
   const [titleTranslationLanguages, setTitleTranslationLanguages] = useState([]);
-  const [originalContentLanguage, setOriginalContentLanguage] = useState(lang);
+  const [savedOriginalLanguage, setOriginalContentLanguage] = useState(null);
+  const originalContentLanguage = savedOriginalLanguage || routeLanguage || lang;
 
   const titleTranslationCopy =
     TITLE_TRANSLATION_COPY[lang] || TITLE_TRANSLATION_COPY.en;
@@ -1263,6 +1213,7 @@ const [
         }
 
         if (
+          saved?.tierListTitle?.trim() &&
           typeof saved?.originalContentLanguage ===
           "string" &&
           TITLE_TRANSLATION_LANGUAGES.some(
@@ -1482,6 +1433,8 @@ useEffect(() => {
   ] =
     useState(null);
 
+
+  const guestPublishDialogRef = useRef(null);
 
   const fileInputRef =
     useRef(null);
@@ -2022,11 +1975,28 @@ const sourceCandidates =
 
 
  const isBuilderMode =
+  embedded ||
   Boolean(id) ||
   localOnlyMode ||
   Boolean(cloneTierListId) ||
   Boolean(editTierListId);
 
+
+  const activeTierRows = useMemo(() => visibleTierRows(tierLabels, tierItems), [tierLabels, tierItems]);
+  const hiddenTierRows = TIERS.filter(tier => !activeTierRows.includes(tier));
+
+  function removeTierRow(tier) {
+    if (activeTierRows.length <= 1) return;
+    const removed = tierItems[tier];
+    setTierItems(previous => ({ ...previous, [tier]: [] }));
+    setTierLabels(previous => ({ ...previous, _hiddenTiers: [...hiddenTierRows, tier] }));
+    if (removed.some(item => item._tierKey === onePick?._tierKey)) setOnePick(null);
+    setSelectedMobileItem(null);
+  }
+
+  function restoreTierRow(tier) {
+    setTierLabels(previous => ({ ...previous, _hiddenTiers: hiddenTierRows.filter(row => row !== tier) }));
+  }
 
   const placedCount =
     useMemo(() => {
@@ -2044,6 +2014,28 @@ const sourceCandidates =
       tierItems,
     ]);
 
+
+  async function saveEditorImage() {
+    if (exporting || !placedCount) return;
+    setExporting(true);
+    try {
+      const { downloadTierListImage } = await import("../utils/downloadTierListImage");
+      await downloadTierListImage({
+        tiers: activeTierRows,
+        labels: tierLabels,
+        getTierCandidates: tier => tierItems[tier],
+        onePickCandidate: onePick,
+        onePickTitle: text.onePickTitle,
+        untitled: text.untitledCandidate,
+        exportTitle: (isPresetEntry ? editablePresetTitle : tierListTitle).trim() || text.newTierList,
+      });
+    } catch (error) {
+      console.error("티어표 이미지 다운로드 실패:", error);
+      alert(t("tierList.result.downloadFailed"));
+    } finally {
+      setExporting(false);
+    }
+  }
 
   useEffect(() => {
     // 프리셋/원본 월드컵을 바꿀 때 후보 배치만 초기화합니다.
@@ -2460,14 +2452,8 @@ return () => {
 
 const addLocalFiles =
   useCallback(
-    (files) => {
-      if (!authReady) {
-        return;
-      }
-
-      if (!currentUser) {
-        alert(text.uploadLoginRequired);
-
+    (files, targetTier) => {
+      if (!authReady || saving) {
         return;
       }
 
@@ -2638,6 +2624,13 @@ const addLocalFiles =
         );
 
 
+        if (targetTier) {
+          setTierItems(previous => ({
+            ...previous,
+            [targetTier]: [...previous[targetTier], ...created],
+          }));
+        }
+
         if (!id) {
           setLocalOnlyMode(
             true
@@ -2655,8 +2648,8 @@ const addLocalFiles =
   id,
   text,
   allCandidates.length,
-  currentUser,
   authReady,
+  saving,
   lang,
 ]
     );
@@ -2924,66 +2917,31 @@ const handleDragEndItem =
     event.preventDefault();
     event.stopPropagation();
     // The ref is set synchronously at dragstart, even before React commits state.
+    const files = event.dataTransfer?.files;
+    if (files?.length) {
+      addLocalFiles(files, tier);
+      return;
+    }
     const item = draggedItemRef.current || draggedItem;
     if (!item) return;
     moveItemToTier(item, tier, tierDropPosition(event));
     handleDragEndItem();
-  }, [draggedItem, moveItemToTier, handleDragEndItem]);
+  }, [addLocalFiles, draggedItem, moveItemToTier, handleDragEndItem]);
 
-
- const handleOnePickDrop =
-  useCallback(
-    (e) => {
-      e.preventDefault();
-
-      const item =
-        draggedItemRef.current ||
-        draggedItem;
-
-
-      if (!item) {
-        return;
-      }
-
-
-      // S/A/B/C/D에 배치된 후보만 원픽 가능
-      if (
-        !placedKeys.has(
-          item._tierKey
-        )
-      ) {
-        return;
-      }
-
-
-      // 기존 티어에는 그대로 두고
-      // 원픽에만 복사
-      setOnePick(
-        item
-      );
-
-
-      draggedItemRef.current =
-        null;
-
-      setDraggedItem(
-        null
-      );
-    },
-    [
-      draggedItem,
-      placedKeys,
-    ]
-  );
 
   const handleUnrankedDrop = useCallback((event) => {
     event.preventDefault();
     event.stopPropagation();
+    const files = event.dataTransfer?.files;
+    if (files?.length) {
+      addLocalFiles(files);
+      return;
+    }
     const item = draggedItemRef.current || draggedItem;
     if (!item) return;
     returnToUnranked(item);
     handleDragEndItem();
-  }, [draggedItem, returnToUnranked, handleDragEndItem]);
+  }, [addLocalFiles, draggedItem, returnToUnranked, handleDragEndItem]);
 
 
   const handleMobilePlacement =
@@ -3000,14 +2958,6 @@ const handleDragEndItem =
           return;
         }
 
-        if (action === "ONE_PICK") {
-          if (placedKeys.has(item._tierKey)) {
-            setOnePick(item);
-          }
-          setSelectedMobileItem(null);
-          return;
-        }
-
         if (action === "UNRANKED") {
           returnToUnranked(item);
           setSelectedMobileItem(null);
@@ -3016,7 +2966,6 @@ const handleDragEndItem =
       [
         selectedMobileItem,
         moveItemToTier,
-        placedKeys,
         returnToUnranked,
       ]
     );
@@ -3059,7 +3008,7 @@ const handleDragEndItem =
                 flexWrap: "wrap",
               }}
             >
-              {TIERS.map((tier) => (
+              {activeTierRows.map((tier) => (
                 <button
                   key={tier}
                   type="button"
@@ -3078,25 +3027,6 @@ const handleDragEndItem =
                   {tier}
                 </button>
               ))}
-
-              {placedKeys.has(selectedMobileItem._tierKey) && (
-                <button
-                  type="button"
-                  onClick={() => handleMobilePlacement("ONE_PICK")}
-                  style={{
-                    height: 50,
-                    padding: "0 10px",
-                    borderRadius: 8,
-                    border: "1px solid #19bfff",
-                    background: "#ffffff",
-                    color: "#202534",
-                    fontWeight: 900,
-                    fontSize: 19,
-                  }}
-                >
-                  ⭐ {text.onePickTitle}
-                </button>
-              )}
 
               {placedKeys.has(selectedMobileItem._tierKey) && (
                 <button
@@ -3126,6 +3056,7 @@ const handleDragEndItem =
         text,
         handleMobilePlacement,
         placedKeys,
+        activeTierRows,
       ]
     );
 
@@ -3191,6 +3122,7 @@ const handleDragEndItem =
           version: 2,
           savedAt: Date.now(),
           title: tierListTitle,
+          originalContentLanguage,
           presetTitleOverride,
           description: tierListDescription,
           descriptionTranslations: tierListDescription.trim() === loadedDescriptionRef.current ? descriptionTranslationsRef.current : {},
@@ -3229,6 +3161,7 @@ const handleDragEndItem =
       }
     }, [
       tierListTitle,
+      originalContentLanguage,
       presetTitleOverride,
       tierListDescription,
       titleTranslations,
@@ -3325,12 +3258,12 @@ const handleDragEndItem =
         ].filter(Boolean);
         allDraftItems.forEach(restoreItem);
 
-        setOriginalContentLanguage(resolveOriginalContentLanguage({
+        setOriginalContentLanguage(draft?.title?.trim() ? resolveOriginalContentLanguage({
           title: draft?.title,
           title_translations: draft?.titleTranslations,
           tier_labels: draft?.tierLabels,
           original_language: draft?.originalContentLanguage,
-        }));
+        }) : null);
         setTierListTitle(draft?.title || "");
         setPresetTitleOverride(draft?.presetTitleOverride || null);
         hydrateDescription({ description: draft?.description || "", description_translations: draft?.descriptionTranslations || {} });
@@ -3670,6 +3603,10 @@ const handleDragEndItem =
           } =
             await getUserOrGuestId();
 
+          if (!user_id && allCandidates.some(item => item._source === "local")) {
+            throw new Error(editorText.signInToPublish);
+          }
+
           // Reject incomplete guest details before preparing/uploading candidate data.
           if (!user_id && !editingTierListId) {
             const nickname = guestNickname.trim();
@@ -3678,9 +3615,6 @@ const handleDragEndItem =
             }
             if (guestPassword.length < 4 || guestPassword.length > 50) {
               throw new Error(text.guestPasswordInvalid);
-            }
-            if (allCandidates.some(item => item._source === "local")) {
-              throw new Error(text.guestLocalImageBlocked);
             }
           }
 
@@ -4116,6 +4050,7 @@ if (editingTierListId) {
   onePick,
   selectedCategory,
   tierLabels,
+  editorText.signInToPublish,
   navigate,
   currentUser,
   guestNickname,
@@ -4133,6 +4068,18 @@ if (editingTierListId) {
       /* =========================
      id 로딩
      ========================= */
+
+  const guestHasLocalFiles = allCandidates.some(item => item._source === "local");
+
+  function requestPublish() {
+    if (!authReady || saving) return;
+    if (embedded && !currentUser) {
+      setSaveError("");
+      guestPublishDialogRef.current?.showModal();
+      return;
+    }
+    saveTierList();
+  }
 
  if (
   id &&
@@ -4352,20 +4299,20 @@ if (editingTierListId) {
   }
   return (
     <>
-      <Seo
+      {!embedded && <Seo
         lang={lang}
         slug={isPresetEntry ? `tier-list/create/${id}` : "tier-list/create"}
         title={isPresetEntry ? presetTitle : seoTitle}
         description={isPresetEntry ? presetDescription : seoDescription}
         indexable={isPresetEntry || (!id && !cloneTierListId && !editTierListId)}
-      />
+      />}
     <div
       style={{
         width:
           "100%",
 
         minHeight:
-          "100vh",
+          embedded ? undefined : "100vh",
 
         background:
           "transparent",
@@ -4387,10 +4334,7 @@ if (editingTierListId) {
           margin:
             "0 auto",
 
-          padding:
-            isMobile
-              ? "20px 10px"
-              : "22px",
+          padding: embedded ? (isMobile ? "0 10px 12px" : "0 22px 16px") : (isMobile ? "20px 10px" : "22px"),
 
           boxSizing:
             "border-box",
@@ -4399,6 +4343,7 @@ if (editingTierListId) {
 
 
 
+        {!embedded && (
         <div
           style={{
             width: "fit-content",
@@ -4482,10 +4427,9 @@ if (editingTierListId) {
             {isPresetEntry ? presetDescription : (isBuilderMode ? text.builderDesc : text.sourceDesc)}
           </div>
         </div>
+        )}
 
-        <div style={{ ...creatorWarningStyle, maxWidth: isMobile ? "100%" : 820, margin: "14px auto 18px", boxSizing: "border-box", textAlign: "center" }}>
-          ⚠️ {getCreatorSafetyCopy(lang).warning}
-        </div>
+
 
 
         {/* =================================================
@@ -4638,7 +4582,7 @@ if (editingTierListId) {
               >
                 ＋{" "}
                 {text.chooseImages}
-                <small style={{ display: "block", fontSize: 12 }}>GIF: Max 20MB → 8MB / MP4: Max 8MB</small>
+                <small style={{ display: "block", fontSize: 15, textAlign: "center" }}>GIF: Max 20MB → 8MB / MP4: Max 8MB</small>
               </button>
 
 
@@ -4666,6 +4610,10 @@ if (editingTierListId) {
               />
             </div>
 
+
+        <div style={{ ...creatorWarningStyle, maxWidth: isMobile ? "100%" : 820, margin: "14px auto 18px", boxSizing: "border-box", textAlign: "center" }}>
+          ⚠️ {getCreatorSafetyCopy(lang).warning}
+        </div>
 
             {/* OR */}
 
@@ -5210,8 +5158,8 @@ if (editingTierListId) {
               style={{
                 width: "100%",
                 maxWidth: 980,
-                margin: isMobile ? "18px auto 18px" : "24px auto 20px",
-                padding: isPresetEntry ? 0 : (isMobile ? "16px 14px" : "22px"),
+                margin: embedded ? "8px auto 12px" : (isMobile ? "18px auto 18px" : "24px auto 20px"),
+                padding: isPresetEntry ? 0 : (isMobile ? "16px 14px 12px" : "22px 22px 14px"),
                 boxSizing: "border-box",
                 borderRadius: 18,
                 background: isPresetEntry ? "transparent" : "#f3f4f6",
@@ -5246,8 +5194,8 @@ if (editingTierListId) {
                   outline: "none",
                 }}
               />
-<details key={cloneTierListId || "title-translations"} open={!cloneTierListId} className="tier-other-languages" style={{ marginBottom: 18 }}>
-                <summary style={{ cursor: "pointer", padding: "12px 14px", marginBottom: 12, border: "2px solid #2563EB", borderRadius: 9, color: "#1D4ED8", background: "#fff", fontWeight: 800 }}>
+<details key={`${routeLanguage || lang}:${cloneTierListId || editTierListId || "title-translations"}`} className="tier-other-languages">
+                <summary style={{ cursor: "pointer", padding: "12px 14px", border: "2px solid #2563EB", borderRadius: 9, color: "#1D4ED8", background: "#fff", fontWeight: 800 }}>
                   {(tierUiCopy[lang] || tierUiCopy.en)[0]}
                 </summary>
               <div
@@ -5373,7 +5321,7 @@ if (editingTierListId) {
               </details>
               </>}
 
-              {authReady && !currentUser && (
+              {!embedded && authReady && !currentUser && (
                 <div
                   style={{
                     width: "100%",
@@ -5454,464 +5402,11 @@ if (editingTierListId) {
                       lineHeight: 1.6,
                     }}
                   >
-                    {text.guestPasswordGuide}
+                    {editorText.guestGuide}
                   </div>
                 </div>
               )}
 
-              {draftMessage && (
-                <div
-                  style={{
-                    marginTop: 10,
-                    color: "#2563eb",
-                    fontSize: 16,
-                    fontWeight: 900,
-                    textAlign: "center",
-                  }}
-                >
-                  {draftMessage}
-                </div>
-              )}
-
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  gap: isMobile ? 8 : 10,
-                  flexWrap: "wrap",
-                  marginTop: 14,
-                }}
-              >
-                <button
-                  type="button"
-                  onClick={backToSourceSelection}
-                  disabled={saving}
-                  style={{
-                    padding: isMobile ? "11px 14px" : "12px 18px",
-                    borderRadius: 9,
-                    border: "1px solid #cbd5e1",
-                    background: "#fff",
-                    color: "#1f2937",
-                    fontSize: isMobile ? 15 : 18,
-                    fontWeight: 800,
-                    cursor: saving ? "default" : "pointer",
-                    opacity: saving ? 0.5 : 1,
-                    boxShadow: "0 4px 16px rgba(25,32,52,0.07)",
-                  }}
-                >
-                  {text.changeSource}
-                </button>
-
-                <button
-                  type="button"
-                  onClick={resetRanking}
-                  disabled={saving}
-                  style={{
-                    padding: isMobile ? "11px 14px" : "12px 18px",
-                    borderRadius: 9,
-                    border: "1px solid #fecaca",
-                    background: "#fff1f2",
-                    color: "#c51f29",
-                    fontSize: isMobile ? 15 : 18,
-                    fontWeight: 800,
-                    cursor: saving ? "default" : "pointer",
-                    opacity: saving ? 0.5 : 1,
-                  }}
-                >
-                  {text.reset}
-                </button>
-
-                <button
-                  type="button"
-                  onClick={saveDraft}
-                  disabled={saving}
-                  style={{
-                    padding: isMobile ? "11px 14px" : "12px 18px",
-                    borderRadius: 9,
-                    border: "1px solid #bfdbfe",
-                    background: "#eff6ff",
-                    color: "#2563eb",
-                    fontSize: isMobile ? 15 : 18,
-                    fontWeight: 800,
-                    cursor: saving ? "default" : "pointer",
-                  }}
-                >
-                  {t("tierListMakerUi.draftSave")}
-                </button>
-
-                <button
-                  type="button"
-                  onClick={loadDraft}
-                  disabled={saving}
-                  style={{
-                    padding: isMobile ? "11px 14px" : "12px 18px",
-                    borderRadius: 9,
-                    border: "1px solid #bfdbfe",
-                    background: "#fff",
-                    color: "#2563eb",
-                    fontSize: isMobile ? 15 : 18,
-                    fontWeight: 800,
-                    cursor: saving ? "default" : "pointer",
-                  }}
-                >
-                  {t("tierListMakerUi.draftLoad")}
-                </button>
-
-                <button
-                  type="button"
-                  onClick={saveTierList}
-                  disabled={saving}
-                  style={{
-                    padding: isMobile ? "11px 20px" : "12px 26px",
-                    borderRadius: 9,
-                    border: "none",
-                    background: "#6650d8",
-                    color: "#ffffff",
-                    fontSize: isMobile ? 16 : 19,
-                    fontWeight: 900,
-                    cursor: saving ? "default" : "pointer",
-                    minWidth: 140,
-                    boxShadow: "0 4px 16px rgba(25,32,52,0.07)",
-                    opacity: saving ? 0.7 : 1,
-                  }}
-                >
-                  {saving
-                    ? editingTierListId
-                      ? text.updateSaving
-                      : text.saving
-                    : editingTierListId
-                      ? text.saveChanges
-                      : (lang==='ko'?'내 티어표 완성하기':localizeExtraUi('Finish my tier list'))}
-                </button>
-              </div>
-              {saveError && (
-                <div role="alert" aria-live="assertive" style={{ width: "100%", boxSizing: "border-box", margin: "12px auto 0", padding: "12px 16px", border: "1px solid #fda4af", borderRadius: 9, background: "#fff1f2", color: "#b42346", fontSize: 16, fontWeight: 800, lineHeight: 1.6, textAlign: "center", overflowWrap: "anywhere" }}>
-                  {saveError}
-                </div>
-              )}
-            </div>
-
-
-            {/* ============================================
-                나만의 원픽
-                ============================================ */}
-
-            <div
-              style={{
-                marginBottom:
-                  26,
-
-                display:
-                  "flex",
-
-                flexDirection:
-                  "column",
-
-                alignItems:
-                  "center",
-
-                textAlign:
-                  "center",
-              }}
-            >
-              <div
-                style={{
-                  fontSize:
-                    isMobile
-                      ? 24
-                      : 30,
-
-                  fontWeight:
-                    900,
-
-                  color:
-                    "#202534",
-                }}
-              >
-                ⭐{" "}
-                {text.onePickTitle}
-              </div>
-
-
-              <div
-                style={{
-                  marginTop:
-                    6,
-
-                  color:
-                    "#5542b8",
-
-                  fontSize:
-                    isMobile
-                      ? 14
-                      : 16,
-
-                  fontWeight:
-                    700,
-                }}
-              >
-                {text.onePickDesc}
-              </div>
-
-
-              <div
-                onDragOver={(
-                  e
-                ) => {
-                  e.preventDefault();
-
-                  e.dataTransfer.dropEffect =
-                    "copy";
-                }}
-                onDrop={
-                  handleOnePickDrop
-                }
-                style={{
-                  marginTop:
-                    14,
-
-                  width:
-                    isMobile
-                      ? 190
-                      : 230,
-
-                  minHeight:
-                    isMobile
-                      ? 190
-                      : 230,
-
-                  boxSizing:
-                    "border-box",
-
-                  padding:
-                    12,
-
-                  borderRadius:
-                    16,
-
-                  border:
-                    "2px dashed #a99bdf",
-
-                  background:
-                    "#f5f3ff",
-
-                  display:
-                    "flex",
-
-                  alignItems:
-                    "center",
-
-                  justifyContent:
-                    "center",
-
-                  position:
-                    "relative",
-                }}
-              >
-                {onePick ? (
-                  <div
-                    style={{
-                      width:
-                        "100%",
-                    }}
-                  >
-                    <div
-                      style={{
-                        width:
-                          "100%",
-
-                        aspectRatio:
-                          "1 / 1",
-
-                        overflow:
-                          "hidden",
-
-                        borderRadius:
-                          11,
-
-                        background:
-                          "#ffffff",
-
-                        border:
-                          "1px solid #dde2ea",
-                      }}
-                    >
-                      {onePick.image ? (
-                        onePick._source ===
-                        "local" ? (
-                          <MediaRenderer
-                            mediaType={isMp4File(onePick.file) ? "video/mp4" : ""}
-                            url={
-                              onePick.image
-                            }
-                            alt={
-                              onePick.name ||
-                              ""
-                            }
-                            draggable={
-                              false
-                            }
-                            style={{
-                              width:
-                                "100%",
-
-                              height:
-                                "100%",
-
-                          objectFit: "contain",
-objectPosition: "center",
-
-                              display:
-                                "block",
-                            }}
-                          />
-                        ) : (
-                          <MediaRenderer
-                            url={
-                              onePick.image
-                            }
-                            alt={
-                              onePick.name ||
-                              ""
-                            }
-                            playable={
-                              false
-                            }
-                            style={{
-                              width:
-                                "100%",
-
-                              height:
-                                "100%",
-
-                        objectFit: "contain",
-objectPosition: "center",
-
-                              display:
-                                "block",
-                            }}
-                          />
-                        )
-                      ) : (
-                        <div
-                          style={{
-                            width:
-                              "100%",
-
-                            height:
-                              "100%",
-
-                            display:
-                              "flex",
-
-                            alignItems:
-                              "center",
-
-                            justifyContent:
-                              "center",
-
-                            color:
-                              "#607086",
-
-                            fontWeight:
-                              800,
-                          }}
-                        >
-                          {text.noImage}
-                        </div>
-                      )}
-                    </div>
-
-
-                    <div className="tier-candidate-name" title={onePick.name || text.untitledCandidate}
-                      style={{
-                        marginTop:
-                          8,
-
-                        fontSize:
-                          isMobile
-                            ? 16
-                            : 18,
-
-                        fontWeight:
-                          900,
-
-                        overflow:
-                          "hidden",
-                      }}
-                    >
-                      <span className="tier-candidate-name-text">{onePick.name ||
-                        text.untitledCandidate}</span>
-                    </div>
-
-
-                    <button
-                      type="button"
-                      onClick={() =>
-                        setOnePick(
-                          null
-                        )
-                      }
-                      style={{
-                        marginTop:
-                          8,
-
-                        padding:
-                          "6px 11px",
-
-                        border:
-                          "1px solid #dde2ea",
-
-                        borderRadius:
-                          7,
-
-                        background:
-                          "#ffffff",
-
-                        color:
-                          "#5542b8",
-
-                        cursor:
-                          "pointer",
-
-                        fontSize:
-                          14,
-
-                        fontWeight:
-                          800,
-                      }}
-                    >
-                      ×{" "}
-                      {text.clearOnePick}
-                    </button>
-                  </div>
-                ) : (
-                  <div
-                    style={{
-                      color:
-                        "#596579",
-
-                      fontSize:
-                        isMobile
-                          ? 15
-                          : 16,
-
-                      fontWeight:
-                        800,
-
-                      lineHeight:
-                        1.6,
-
-                      padding:
-                        10,
-                    }}
-                  >
-                    ⭐
-                    <br />
-                    {text.onePickEmpty}
-                  </div>
-                )}
-              </div>
             </div>
 
 
@@ -5919,11 +5414,22 @@ objectPosition: "center",
                 S / A / B / C / D
                 ============================================ */}
 
-            {TIERS.map(
+            {hiddenTierRows.length > 0 && (
+              <div className="tier-editor-restore-rows">
+                {hiddenTierRows.map(tier => (
+                  <button className="tier-editor-secondary tier-editor-restore-button" style={{ "--tier-row-color": TIER_COLORS[tier] }} type="button" key={tier} disabled={saving} onClick={() => restoreTierRow(tier)}>
+                    ＋ {editorText.restoreTier}: {tierLabels[tier] || tier}
+                  </button>
+                ))}
+              </div>
+            )}
+            <div className="tier-editor-board">
+            {activeTierRows.map(
               (
                 tier
               ) => (
                 <div
+                  className="tier-editor-row"
                   key={
                     tier
                   }
@@ -5932,8 +5438,7 @@ objectPosition: "center",
                   ) => {
                     e.preventDefault();
 
-                    e.dataTransfer.dropEffect =
-                      "move";
+                    e.dataTransfer.dropEffect = Array.from(e.dataTransfer.types || []).includes("Files") ? "copy" : "move";
                   }}
                   onDrop={(
                     e
@@ -5946,23 +5451,13 @@ objectPosition: "center",
                   style={{
                     minHeight:
                       isMobile
-                        ? 105
-                        : 132,
+                        ? 110
+                        : 144,
 
                     display:
                       "flex",
 
-                    marginBottom:
-                      8,
-
-                    border:
-                      "1px solid #dde2ea",
-
-                    background:
-                      "#ffffff",
-
-                    borderRadius:
-                      8,
+                    "--tier-row-color": TIER_COLORS[tier],
 
                     overflow:
                       "hidden",
@@ -5975,6 +5470,7 @@ objectPosition: "center",
 
                   <div
                     style={{
+                      position: "relative",
                       width:
                         isMobile
                           ? 66
@@ -6003,6 +5499,14 @@ objectPosition: "center",
                         "#111",
                     }}
                   >
+                    <button
+                      className="tier-editor-remove-row"
+                      type="button"
+                      aria-label={`${editorText.removeTier}: ${tierLabels[tier] || tier}`}
+                      title={editorText.removeTier}
+                      disabled={saving || activeTierRows.length <= 1}
+                      onClick={() => removeTierRow(tier)}
+                    >×</button>
                     <input
                       value={
                         tierLabels[
@@ -6176,15 +5680,13 @@ objectPosition: "center",
                 </div>
               )
             )}
-
-
-
+            </div>
 
             {/* 티어 배치 후 바로 제출 */}
             <div
               style={{
                 width: "100%",
-                marginTop: 22,
+                marginTop: 8,
                 marginBottom: 12,
                 display: "flex",
                 flexDirection: "column",
@@ -6192,7 +5694,7 @@ objectPosition: "center",
                 gap: 9,
               }}
             >
-              <details><summary style={{cursor:'pointer',fontWeight:800,padding:12}}>{lang==='ko'?'추가 설정 · 설명·태그':localizeExtraUi('Description & tags (optional)')}</summary>
+              <details><summary style={{cursor:'pointer',fontWeight:800,padding:6}}>{lang==='ko'?'추가 설정 · 설명·태그':localizeExtraUi('Description & tags (optional)')}</summary>
               
 
               <label htmlFor="tier-description" style={{ display: "block", fontWeight: 800, marginBottom: 8 }}>
@@ -6343,14 +5845,97 @@ objectPosition: "center",
 
 
               </details>
-<button
+              <div className="tier-editor-toolbar">
+                {!embedded && (
+                <button
+                  type="button"
+                  onClick={backToSourceSelection}
+                  disabled={saving}
+                  style={{
+                    padding: isMobile ? "11px 14px" : "12px 18px",
+                    borderRadius: 9,
+                    border: "1px solid #cbd5e1",
+                    background: "#fff",
+                    color: "#1f2937",
+                    fontSize: isMobile ? 15 : 18,
+                    fontWeight: 800,
+                    cursor: saving ? "default" : "pointer",
+                    opacity: saving ? 0.5 : 1,
+                    boxShadow: "0 4px 16px rgba(25,32,52,0.07)",
+                  }}
+                >
+                  {text.changeSource}
+                </button>
+                )}
+
+                <button
+                  type="button"
+                  onClick={resetRanking}
+                  disabled={saving}
+                  style={{
+                    padding: isMobile ? "11px 14px" : "12px 18px",
+                    borderRadius: 9,
+                    border: "1px solid #fecaca",
+                    background: "#fff1f2",
+                    color: "#c51f29",
+                    fontSize: isMobile ? 15 : 18,
+                    fontWeight: 800,
+                    cursor: saving ? "default" : "pointer",
+                    opacity: saving ? 0.5 : 1,
+                  }}
+                >
+                  {text.reset}
+                </button>
+
+                <button
+                  type="button"
+                  onClick={saveDraft}
+                  disabled={saving}
+                  style={{
+                    padding: isMobile ? "11px 14px" : "12px 18px",
+                    borderRadius: 9,
+                    border: "1px solid #bfdbfe",
+                    background: "#eff6ff",
+                    color: "#2563eb",
+                    fontSize: isMobile ? 15 : 18,
+                    fontWeight: 800,
+                    cursor: saving ? "default" : "pointer",
+                  }}
+                >
+                  {t("tierListMakerUi.draftSave")}
+                </button>
+
+                <button
+                  type="button"
+                  onClick={loadDraft}
+                  disabled={saving}
+                  style={{
+                    padding: isMobile ? "11px 14px" : "12px 18px",
+                    borderRadius: 9,
+                    border: "1px solid #bfdbfe",
+                    background: "#fff",
+                    color: "#2563eb",
+                    fontSize: isMobile ? 15 : 18,
+                    fontWeight: 800,
+                    cursor: saving ? "default" : "pointer",
+                  }}
+                >
+                  {t("tierListMakerUi.draftLoad")}
+                </button>
+
+
+              </div>
+              <div className="tier-editor-primary-actions">
+                <button className="tier-editor-secondary tier-editor-download" type="button" onClick={saveEditorImage} disabled={saving || exporting || !placedCount}>
+                  {t(exporting ? "tierList.result.downloading" : "tierList.result.download")}
+                </button>
+                <button
                 type="button"
-                onClick={saveTierList}
-                disabled={saving}
+                className="tier-editor-publish"
+                onClick={requestPublish}
+                disabled={saving || !authReady}
                 style={{
-                  minWidth: isMobile ? 190 : 260,
-                  minHeight: isMobile ? 48 : 54,
-                  padding: isMobile ? "11px 22px" : "13px 30px",
+                  padding: "9px 14px",
                   borderRadius: 10,
                   border: "none",
                   background: "#6650d8",
@@ -6370,6 +5955,70 @@ objectPosition: "center",
                     ? text.saveChanges
                     : (lang==='ko'?'내 티어표 완성하기':localizeExtraUi('Finish my tier list'))}
               </button>
+              <label className="tier-editor-upload-button">
+                <span>＋ {text.addImages}</span>
+                <small>GIF: Max 20MB → 8MB / MP4: Max 8MB</small>
+                <input
+                  type="file"
+                  accept="image/*,.mp4,video/mp4"
+                  multiple
+                  disabled={!authReady || saving}
+                  onChange={event => {
+                    addLocalFiles(event.target.files);
+                    event.target.value = "";
+                  }}
+                />
+              </label>
+              </div>
+              {draftMessage && (
+                <div
+                  style={{
+                    marginTop: 10,
+                    color: "#2563eb",
+                    fontSize: 16,
+                    fontWeight: 900,
+                    textAlign: "center",
+                  }}
+                >
+                  {draftMessage}
+                </div>
+              )}
+
+        <div style={{ ...creatorWarningStyle, maxWidth: isMobile ? "100%" : 820, margin: "14px auto 18px", boxSizing: "border-box", textAlign: "center" }}>
+          ⚠️ {getCreatorSafetyCopy(lang).warning}
+        </div>
+
+
+              {embedded && !currentUser && (
+                <dialog ref={guestPublishDialogRef} className="tier-editor-guest-dialog"
+                  aria-labelledby="tier-editor-guest-title"
+                  onCancel={event => { if (saving) event.preventDefault(); }}>
+                  <form onSubmit={event => {
+                    event.preventDefault();
+                    if (!guestHasLocalFiles) saveTierList();
+                  }}>
+                    <h2 id="tier-editor-guest-title">{text.guestPublishTitle}</h2>
+                    <p>{guestHasLocalFiles ? editorText.signInToPublish : editorText.guestGuide}</p>
+                    <div className="tier-editor-guest-inputs">
+                      <input type="text" aria-label={text.guestNicknamePlaceholder} placeholder={text.guestNicknamePlaceholder}
+                        autoComplete="nickname" maxLength={20} value={guestNickname} required disabled={saving || guestHasLocalFiles}
+                        onChange={event => setGuestNickname(event.target.value)} />
+                      <input type="password" aria-label={text.guestPasswordPlaceholder} placeholder={text.guestPasswordPlaceholder}
+                        autoComplete="new-password" minLength={4} maxLength={50} value={guestPassword} required disabled={saving || guestHasLocalFiles}
+                        onChange={event => setGuestPassword(event.target.value)} />
+                    </div>
+                    {saveError && <p className="tier-editor-guest-error" role="alert">{saveError}</p>}
+                    <div className="tier-editor-toolbar">
+                      <NavigationLink to={`/${lang}/login`} target="_blank" rel="noopener noreferrer" appearance="button" className="tier-editor-secondary">{t("login")}</NavigationLink>
+                      <button className="tier-editor-secondary" type="submit" disabled={saving || guestHasLocalFiles}>{saving ? text.saving : t("confirm", { defaultValue: lang === "ko" ? "확인" : "Confirm" })}</button>
+                      <button className="tier-editor-secondary" type="button" disabled={saving} onClick={() => {
+                        guestPublishDialogRef.current?.close();
+                        setSaveError("");
+                      }}>{t("cancel")}</button>
+                    </div>
+                  </form>
+                </dialog>
+              )}
 
               {saveError && (
                 <div role="alert" aria-live="assertive" style={{ width: "100%", boxSizing: "border-box", margin: "12px auto 0", padding: "12px 16px", border: "1px solid #fda4af", borderRadius: 9, background: "#fff1f2", color: "#b42346", fontSize: 16, fontWeight: 800, lineHeight: 1.6, textAlign: "center", overflowWrap: "anywhere" }}>
@@ -6377,41 +6026,26 @@ objectPosition: "center",
                 </div>
               )}
 
-              <div
-                style={{
-                  maxWidth: 760,
-                  padding: "0 10px",
-                  color: "#667085",
-                  fontSize: isMobile ? 13 : 14,
-                  fontWeight: 700,
-                  lineHeight: 1.5,
-                  textAlign: "center",
-                }}
-              >
-                {candidateImageHelp}
-              </div>
             </div>
-
 
             {/* ============================================
                 미분류 후보
                 ============================================ */}
 
             <div
+              className="tier-editor-candidate-pool"
               onDragOver={(
                 e
               ) => {
                 e.preventDefault();
 
-                e.dataTransfer.dropEffect =
-                  "move";
+                e.dataTransfer.dropEffect = Array.from(e.dataTransfer.types || []).includes("Files") ? "copy" : "move";
               }}
               onDrop={
                 handleUnrankedDrop
               }
               style={{
-                marginTop:
-                  24,
+                marginTop: 10,
 
                 padding:
                   16,
@@ -6422,8 +6056,6 @@ objectPosition: "center",
                 background:
                   "#ffffff",
 
-                border:
-                  "1px solid #dde2ea",
               }}
             >
               <div
@@ -6464,59 +6096,7 @@ objectPosition: "center",
                 </div>
 
 
-                <label
-                  style={{
-                    padding:
-                      "11px 18px",
 
-                    borderRadius:
-                      8,
-
-                    border:
-                      "2px solid #2563EB",
-
-                    background:
-                      "#2563EB",
-
-                    color:
-                      "#ffffff",
-
-                    fontSize:
-                      15,
-
-                    fontWeight:
-                      900,
-
-                    cursor:
-                      "pointer",
-                  }}
-                >
-                  ＋{" "}
-                  {text.addImages}
-                  <small style={{ display: "block", fontSize: 12 }}>GIF: Max 20MB → 8MB / MP4: Max 8MB</small>
-
-
-                  <input
-                    type="file"
-                    accept="image/*,.mp4,video/mp4"
-                    multiple
-                    onChange={(
-                      e
-                    ) => {
-                      addLocalFiles(
-                        e.target.files
-                      );
-
-
-                      e.target.value =
-                        "";
-                    }}
-                    style={{
-                      display:
-                        "none",
-                    }}
-                  />
-                </label>
               </div>
 
 
@@ -6781,27 +6361,6 @@ objectPosition: "center",
             </div>
 
 
-            {/* 이미지 재사용 안내 */}
-
-            <div
-              style={{
-                width: "fit-content",
-                maxWidth: "100%",
-                margin: "18px auto 0",
-                padding: "12px 16px",
-                borderRadius: 10,
-                background: "#ffffff",
-                border: "1px solid rgba(25,191,255,0.42)",
-                boxShadow: "0 4px 16px rgba(25,32,52,0.07)",
-                color: "#202534",
-                fontSize: isMobile ? 15 : 17,
-                fontWeight: 800,
-                lineHeight: 1.6,
-                textAlign: "center",
-              }}
-            >
-              {text.imageReuseNotice}
-            </div>
           </div>
         )}
       </div>

@@ -7,13 +7,13 @@ import PageIntro from "./PageIntro";
 import ContentLanguageSelect from "./ContentLanguageSelect";
 import { templateTitle } from "../utils/templateTitles";
 import {localizeExtraUi} from "../utils/newLanguageUi";
-import "../styles/activityPanels.css";
-import useClickTargetDebug from "../hooks/useClickTargetDebug";
 import {contentRevision} from "../utils/contentTrashApi";
 import listSeo from "../seo/listSeo";
 import ContentNav from "./ContentNav";
 import { normalizeTags } from "./TierTagTools";
 import React, {
+  lazy,
+  Suspense,
   useCallback,
   useEffect,
   useMemo,
@@ -30,6 +30,8 @@ import Seo from "../seo/Seo";
 import { supabase } from "../utils/supabaseClient";
 import "../styles/presetCardSizes.css";
 
+
+const TierListMaker = lazy(() => import("./TierListMaker"));
 
 const PAGE_SIZE = 8;
 const PRESET_PAGE_SIZE = 28;
@@ -96,15 +98,6 @@ function buildFilterSlug(base, filters) {
   });
   const query = params.toString();
   return query ? `${base}?${query}` : base;
-}
-
-function formatActivityDate(value) {
-  if (!value) return "";
-
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return "";
-
-  return date.toISOString().slice(0, 10).replace(/-/g, ".");
 }
 
 const LANGUAGES = [
@@ -189,7 +182,6 @@ function getLocalizedWorldcupTitle(cup, lang) {
 function TierListPage({
   worldcupList = [],
 }) {
-  useClickTargetDebug();
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
@@ -303,13 +295,6 @@ function TierListPage({
       typeof window !== "undefined"
         ? window.innerWidth < 600
         : false
-    );
-
-  const [viewportWidth, setViewportWidth] =
-    useState(
-      typeof window !== "undefined"
-        ? window.innerWidth
-        : 1440
     );
 
   const [
@@ -482,9 +467,6 @@ function TierListPage({
     const handleResize = () => {
       setIsMobile(
         window.innerWidth < 600
-      );
-      setViewportWidth(
-        window.innerWidth
       );
     };
 
@@ -964,264 +946,26 @@ const displayTitle =
   t,
 ]);
 
-  const tierActivityCopy =
-    lang === "ko"
-      ? {
-          recentCreated: "최근 등록된 티어표",
-          recentPlayed: "최근 플레이된 티어표",
-          empty: "표시할 티어표가 없습니다.",
-        }
-      : localizeExtraUi({
-          recentCreated: "Recently Added Tier Lists",
-          recentPlayed: "Recently Played Tier Lists",
-          empty: "No tier lists to show.",
-        }, lang);
+  const renderPresetCard = (cup) => {
+      const title = templateTitle(cup, "tier", lang, "Tier List");
+      return <Link className="tier-recommendation-card" key={cup.id} to={`/${lang}/tier-list/create/${cup.id}`} style={{ minWidth: 0, border: "1px solid #bfdbfe", borderRadius: 12, overflow: "hidden", background: "#fff", color: "#202534", textDecoration: "none", boxShadow: "0 8px 22px #0f172a15" }}>
+        <div className="tier-recommendation-image" style={{ width: "100%", background: "#eff6ff" }}>
+          {cup.tier_preset_thumbnail_url ? <MediaRenderer url={cup.tier_preset_thumbnail_url} alt={title} playable={false} loading="lazy" deferUntilVisible viewportMargin="0px" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 25%", display: "block" }} /> : <div aria-hidden="true" style={{ height: "100%", display: "grid", placeItems: "center", fontSize: 44 }}>📊</div>}
+        </div>
+        <div style={{ padding: "12px 10px", minHeight: 65, boxSizing: "border-box", textAlign: "center", display: "grid", placeItems: "center", fontWeight: 900, fontSize: isMobile ? 14 : 16 }}><span style={{ display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>{title}</span></div>
+      </Link>;
+  };
+  const presetCarouselRef = useRef(null);
 
-  const [recentCreatedTierRows, setRecentCreatedTierRows] = useState([]);
-
-  useEffect(() => {
-    let alive = true;
-
-    async function loadRecentCreatedTierLists() {
-      if (mineOnly) {
-        setRecentCreatedTierRows([]);
-        return;
-      }
-
-      try {
-        const { data: rows, error } = await supabase
-          .from("tier_lists")
-          .select("id, title, title_translations, created_at").is("deleted_at", null)
-          .order("created_at", { ascending: false })
-          .order("id", { ascending: false })
-          .limit(6);
-
-        if (error) throw error;
-        if (alive) setRecentCreatedTierRows(rows || []);
-      } catch (error) {
-        console.warn("Failed to load recently created tier lists", error);
-        if (alive) setRecentCreatedTierRows([]);
-      }
-    }
-
-    loadRecentCreatedTierLists();
-    return () => { alive = false; };
-  }, [mineOnly]);
-
-  const recentCreatedTierItems = useMemo(
-    () => recentCreatedTierRows.map((tierList) => {
-      const titleTranslations = readTranslationMap(tierList.title_translations);
-      return {
-        ...tierList,
-        displayTitle:
-          titleTranslations?.[lang] ||
-          titleTranslations?.en ||
-          tierList.title ||
-          "Tier List",
-      };
-    }),
-    [recentCreatedTierRows, lang]
-  );
-
-  const [recentPlayedTierItems, setRecentPlayedTierItems] = useState([]);
-
-  useEffect(() => {
-    let alive = true;
-
-    async function loadRecentPlayedTierLists() {
-      if (mineOnly) {
-        setRecentPlayedTierItems([]);
-        return;
-      }
-
-      const { data: logs, error: logError } = await supabase
-        .from("tier_list_play_logs")
-        .select("tier_list_id, created_at")
-        .order("created_at", { ascending: false })
-        .limit(40);
-
-      if (logError) {
-        console.warn("Failed to load recent tier list plays", logError);
-        if (alive) setRecentPlayedTierItems([]);
-        return;
-      }
-
-      const seen = new Set();
-      const recentIds = [];
-      const playedAtById = new Map();
-
-      (logs || []).forEach((log) => {
-        const tierListId = String(log?.tier_list_id || "");
-        if (!tierListId || seen.has(tierListId)) return;
-        seen.add(tierListId);
-        recentIds.push(tierListId);
-        playedAtById.set(tierListId, log?.created_at);
-      });
-
-      if (!recentIds.length) {
-        if (alive) setRecentPlayedTierItems([]);
-        return;
-      }
-
-      const { data: tierRows, error: tierError } = await supabase
-        .from("tier_lists")
-        .select(
-          "id, title, title_translations, category, thumbnail_url, candidate_count, view_count, created_at"
-        ).is("deleted_at", null)
-        .in("id", recentIds);
-
-      if (tierError) {
-        console.warn("Failed to load recent played tier lists", tierError);
-        if (alive) setRecentPlayedTierItems([]);
-        return;
-      }
-
-      const tierById = new Map(
-        (tierRows || []).map((tierList) => [String(tierList.id), tierList])
-      );
-
-      const ordered = recentIds
-        .map((tierListId) => {
-          const tierList = tierById.get(tierListId);
-          if (!tierList) return null;
-
-          const titleTranslations = readTranslationMap(
-            tierList?.title_translations
-          );
-
-          return {
-            ...tierList,
-            lastPlayedAt: playedAtById.get(tierListId),
-            displayTitle:
-              titleTranslations?.[lang] ||
-              titleTranslations?.en ||
-              tierList?.title ||
-              "Tier List",
-          };
-        })
-        .filter(Boolean)
-        .slice(0, 6);
-
-      if (alive) setRecentPlayedTierItems(ordered);
-    }
-
-    loadRecentPlayedTierLists();
-
-    return () => {
-      alive = false;
-    };
-  }, [lang, mineOnly]);
-
-  const showTierActivityPanels =
-    !mineOnly &&
-    !isMobile &&
-    !searchInput.trim();
-
-  const useSideTierActivityPanels =
-    showTierActivityPanels &&
-    viewportWidth >= 1680;
-
-  const renderTierActivityPanel = ({
-    title,
-    items,
-    metric = "date",
-  }) => (
-  <aside className="home-activity-panel" data-nosnippet="true"
-  style={{
-    "--activity-hover-border": "#2563EB",
-    "--activity-hover-bg": "#f5f5f5",
-    minWidth: 0,
-    background: "#ffffff",
-    border: "1px solid #2563EB",
-    borderRadius: 10,
-    padding: "18px 18px 16px",
-    boxSizing: "border-box",
-    boxShadow: "0 12px 28px rgba(0,0,0,0.08)",
-  }}
->
-  <h2
-    style={{
-      margin: "0 0 12px",
-      color: "#2563EB",
-      fontSize: 22,
-      lineHeight: 1.25,
-      fontWeight: 950,
-      textAlign: "left",
-      borderLeft: "4px solid #2563EB",
-      paddingLeft: 8,
-    }}
-  >
-    {title}
-  </h2>
-      {items.length ? (
-        <ul
-          style={{
-            listStyle: "none",
-            margin: 0,
-            padding: 0,
-            display: "flex",
-            flexDirection: "column",
-            gap: 9,
-          }}
-        >
-          {items.slice(0, 4).map((item) => (
-            <li key={`${title}-${item.id}`}>
-              <Link className="home-activity-link"
-                to={`/${lang}/tier-list/${item.id}`}
-                title={item.displayTitle || ""}
-                style={{
-                  width: "100%",
-                  minWidth: 0,
-                  boxSizing: "border-box",
-                  textDecoration: "none",
-                  border: "1px solid transparent",
-                  borderRadius: 8,
-                  background: "#ffffff",
-                  color: "#111111",
-                  padding: "11px 11px",
-                  cursor: "pointer",
-                  textAlign: "left",
-                  display: "grid",
-                  gridTemplateColumns: "minmax(0, 1fr) auto",
-                  gap: 10,
-                  alignItems: "center",
-                }}
-              >
-                <span
-                  style={{
-                    minWidth: 0,
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                    whiteSpace: "nowrap",
-                    fontSize: 15,
-                    fontWeight: 900,
-                  }}
-                >
-                  {item.displayTitle}
-                </span>
-                <span
-                  style={{
-                    color: "#111111",
-                    fontSize: 13,
-                    fontWeight: 850,
-                    whiteSpace: "nowrap",
-                  }}
-                >
-                  {metric === "playedAt"
-                    ? formatActivityDate(item.lastPlayedAt || item.created_at)
-                    : formatActivityDate(item.created_at)}
-                </span>
-              </Link>
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p style={{ margin: 0, color: "#111111", fontSize: 13, fontWeight: 750 }}>
-          {tierActivityCopy.empty}
-        </p>
-      )}
-    </aside>
-  );
+  function scrollPresetCarousel(direction) {
+    const carousel = presetCarouselRef.current;
+    if (!carousel) return;
+    const rtl = getComputedStyle(carousel).direction === "rtl";
+    carousel.scrollBy({
+      left: direction * (rtl ? -1 : 1) * carousel.clientWidth,
+      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth",
+    });
+  }
 
   const listMetadata = listSeo.getListSeo("tier-list", lang, location.search);
   const seoSlug = listMetadata.slug;
@@ -1247,7 +991,7 @@ const displayTitle =
         color: "#202534",
       }}
     >
-<div className={`tier-page-container${useSideTierActivityPanels ? " has-tier-side-panels" : ""}`}
+<div className="tier-page-container"
   style={{
     width: "100%",
 maxWidth: isMobile ? 430 : 1780,
@@ -1259,49 +1003,32 @@ maxWidth: isMobile ? 430 : 1780,
     position: "relative",
   }}
 >
-{useSideTierActivityPanels && (
-  <>
-    <div
-      style={{
-        position: "absolute",
-        left: "max(18px, calc((100% - 1800px) / 2))",
-        top: 34,
-        width: "clamp(340px, 23vw, 440px)",
-        zIndex: 1,
-      }}
-    >
-      {renderTierActivityPanel({
-        title: tierActivityCopy.recentCreated,
-        items: recentCreatedTierItems,
-        accentColor: "#2563EB",
-        metric: "date",
-      })}
+<div className="tier-home-intro">
+  <PageIntro icon="📊" title={t("tierList.page.title")} description={t("tierList.page.description")} />
+  <ContentLanguageSelect />
+</div>
+{!mineOnly && recommendedPresets.length > 0 && (
+  <section className="tier-preset-carousel" aria-labelledby="tier-preset-carousel-title">
+    <h2 id="tier-preset-carousel-title">{t("tierList.page.recommendedPresetTitle")}</h2>
+    <div className="tier-preset-carousel-body">
+      <button type="button" className="tier-preset-arrow" aria-label={t("previous", { defaultValue: lang === "ko" ? "이전" : localizeExtraUi("Previous") })} onClick={() => scrollPresetCarousel(-1)}>{lang === "ar" ? "›" : "‹"}</button>
+      <div className="tier-preset-carousel-track" ref={presetCarouselRef}>
+        {recommendedPresets.slice(0, 12).map(renderPresetCard)}
+      </div>
+      <button type="button" className="tier-preset-arrow" aria-label={t("next", { defaultValue: lang === "ko" ? "다음" : localizeExtraUi("Next") })} onClick={() => scrollPresetCarousel(1)}>{lang === "ar" ? "‹" : "›"}</button>
     </div>
-    <div
-      style={{
-        position: "absolute",
-        right: "max(18px, calc((100% - 1800px) / 2))",
-        top: 34,
-        width: "clamp(340px, 23vw, 440px)",
-        zIndex: 1,
-      }}
-    >
-      {renderTierActivityPanel({
-        title: tierActivityCopy.recentPlayed,
-        items: recentPlayedTierItems,
-        accentColor: "#7C3AED",
-        metric: "playedAt",
-      })}
-    </div>
-  </>
+  </section>
 )}
-        
-
-<PageIntro icon="📊" title={t("tierList.page.title")} description={t("tierList.page.description")} buttonLabel={t("tierList.page.createButton")} createTo={`/${lang}/tier-list/create`} accentColor="#2563EB" />
+{!mineOnly && (
+  <Suspense fallback={<div className="tier-list-loading" role="status" aria-label={t("tierList.common.loading")} />}>
+    <TierListMaker worldcupList={worldcupList} embedded />
+  </Suspense>
+)}
 <div
           className="home-search-language-row"
           style={{
-            marginBottom: 4,
+            display: "block",
+            marginBottom: 16,
 
             padding:
               isMobile
@@ -1385,34 +1112,8 @@ maxWidth: isMobile ? 430 : 1780,
               </button>
             </div>
           </form>
-          <ContentLanguageSelect />
         </div>
-{showTierActivityPanels && !useSideTierActivityPanels && (
-  <div
-    style={{
-      width: "100%",
-      maxWidth: 760,
-      margin: "14px auto 16px",
-      display: "grid",
-      gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
-      gap: 14,
-    }}
-  >
-    {renderTierActivityPanel({
-      title: tierActivityCopy.recentCreated,
-      items: recentCreatedTierItems,
-      accentColor: "#2563EB",
-      metric: "date",
-    })}
-    {renderTierActivityPanel({
-      title: tierActivityCopy.recentPlayed,
-      items: recentPlayedTierItems,
-      accentColor: "#7C3AED",
-      metric: "playedAt",
-    })}
-  </div>
-)}
-{!mineOnly && searchInput.trim() === searchKeyword && (!searchKeyword || (presetSearchFilter && (recommendedPresets.length > 0 || !tierPresetLoaded || presetError))) && <section className="tier-recommendations" style={{ width: "100%", maxWidth: "none", boxSizing: "border-box" }}>
+{!mineOnly && searchInput.trim() === searchKeyword && (!searchKeyword || (presetSearchFilter && (recommendedPresets.length > 0 || !tierPresetLoaded || presetError))) && <section id="tier-presets" className="tier-recommendations" style={{ width: "100%", maxWidth: "none", boxSizing: "border-box" }}>
   <h2 style={{ textAlign: "center", color: "#1d4ed8", fontSize: isMobile ? 24 : 34 }}>{t("tierList.page.recommendedPresetTitle")}</h2>
   <div className="tier-recommendation-filters"><div
             style={{
@@ -1480,15 +1181,7 @@ maxWidth: isMobile ? 430 : 1780,
           </div>
 </div>
   <div className="tier-recommendation-grid">
-    {recommendedPresets.map(cup => {
-      const title = templateTitle(cup, "tier", lang, "Tier List");
-      return <Link className="tier-recommendation-card" key={cup.id} to={`/${lang}/tier-list/create/${cup.id}`} style={{ minWidth: 0, border: "1px solid #bfdbfe", borderRadius: 12, overflow: "hidden", background: "#fff", color: "#202534", textDecoration: "none", boxShadow: "0 8px 22px #0f172a15" }}>
-        <div className="tier-recommendation-image" style={{ width: "100%", background: "#eff6ff" }}>
-          {cup.tier_preset_thumbnail_url ? <MediaRenderer url={cup.tier_preset_thumbnail_url} alt={title} playable={false} loading="lazy" deferUntilVisible viewportMargin="0px" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 25%", display: "block" }} /> : <div aria-hidden="true" style={{ height: "100%", display: "grid", placeItems: "center", fontSize: 44 }}>📊</div>}
-        </div>
-        <div style={{ padding: "12px 10px", minHeight: 65, boxSizing: "border-box", textAlign: "center", display: "grid", placeItems: "center", fontWeight: 900, fontSize: isMobile ? 14 : 16 }}><span style={{ display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>{title}</span></div>
-      </Link>;
-    })}
+    {recommendedPresets.map(renderPresetCard)}
   </div>
   {!tierPresetLoaded && <div className="tier-list-loading" role="status" aria-label={t("tierList.common.loading")}><span aria-hidden="true" /></div>}
   {presetError && <p role="alert" style={{ textAlign: "center", color: "#b42346" }}>{presetError}</p>}
