@@ -20,6 +20,7 @@ import React, {
 } from "react";
 
 import {
+  Link,
   useNavigate,
   useParams,
 } from "react-router-dom";
@@ -102,7 +103,6 @@ function TierListResultPage() {
         tierHome: t("tierList.result.tierHome"),
         tierList: t("tierList.result.tierList"),
         onePickTitle: t("tierList.common.onePick"),
-        onePickEmpty: t("tierList.result.onePickEmpty"),
         author: t("tierList.common.author"),
         guestAuthor: t("tierList.common.guestAuthor"),
         unknownAuthor: t("tierList.common.unknownAuthor"),
@@ -1543,6 +1543,29 @@ const seoAuthorReady = seoAuthor.tierId === String(tierList.id);
   };
 
 
+  function renderResultActions() {
+    return (
+      <>
+        <button className="tier-result-action" type="button" onClick={handleDownload} disabled={downloading}>
+          📥 {downloading ? text.downloading : text.download}
+        </button>
+        <button className="tier-result-action tier-result-share" type="button" onClick={handleShare}>
+          🔗 {text.share}
+        </button>
+        {canManage && (
+          <>
+            <button className="tier-result-action" type="button" onClick={handleEdit}>
+              ✏️ {text.edit}
+            </button>
+            <button className="tier-result-action tier-result-delete" type="button" onClick={handleDelete} disabled={deleting}>
+              🗑️ {deleting ? text.deleting : text.delete}
+            </button>
+          </>
+        )}
+      </>
+    );
+  }
+
   return (
     <>
       {seoAuthorReady && <Seo
@@ -1699,203 +1722,7 @@ padding: isMobile
         : text.like}
     </button>
 
-    <button
-      type="button"
-      onClick={handleDownload}
-      disabled={downloading}
-      style={{
-        minHeight: isMobile ? 42 : 52,
-
-        width: isMobile ? "100%" : "auto",
-
-        padding: isMobile ? "0 8px" : "0 18px",
-
-        borderRadius: 10,
-
-        border:
-          "1px solid #dde2ea",
-
-        background:
-          "#ffffff",
-
-        color:
-          "#202534",
-
-        fontSize:
-          isMobile ? 14 : 16,
-
-        fontWeight:
-          900,
-
-        cursor: downloading
-          ? "default"
-          : "pointer",
-
-        whiteSpace:
-          "nowrap",
-
-        display:
-          "inline-flex",
-
-        alignItems:
-          "center",
-
-        justifyContent:
-          "center",
-      }}
-    >
-      📥{" "}
-      {downloading
-        ? text.downloading
-        : text.download}
-    </button>
-
-    <button
-      type="button"
-      onClick={handleShare}
-      style={{
-        minHeight: isMobile ? 42 : 52,
-
-        width: isMobile ? "100%" : "auto",
-
-        padding: isMobile ? "0 8px" : "0 18px",
-
-        borderRadius: 10,
-
-        border:
-          "1px solid #19bfff",
-
-        background:
-          "#ffffff",
-
-        color:
-          "#202534",
-
-        fontSize:
-          isMobile ? 14 : 16,
-
-        fontWeight:
-          900,
-
-        cursor:
-          "pointer",
-
-        whiteSpace:
-          "nowrap",
-
-        display:
-          "inline-flex",
-
-        alignItems:
-          "center",
-
-        justifyContent:
-          "center",
-      }}
-    >
-      🔗 {text.share}
-    </button>
-
-    {canManage && (
-      <>
-        <button
-          type="button"
-          onClick={handleEdit}
-          style={{
-            minHeight: isMobile ? 40 : 52,
-
-            width: isMobile ? "100%" : "auto",
-
-            padding: isMobile ? "0 8px" : "0 18px",
-
-            borderRadius: 10,
-
-            border:
-              "1px solid #dde2ea",
-
-            background:
-              "#ffffff",
-
-            color:
-              "#202534",
-
-            fontSize:
-              isMobile ? 14 : 16,
-
-            fontWeight:
-              900,
-
-            cursor:
-              "pointer",
-
-            whiteSpace:
-              "nowrap",
-
-            display:
-              "inline-flex",
-
-            alignItems:
-              "center",
-
-            justifyContent:
-              "center",
-          }}
-        >
-          ✏️ {text.edit}
-        </button>
-
-        <button
-          type="button"
-          onClick={handleDelete}
-          disabled={deleting}
-          style={{
-            minHeight: isMobile ? 40 : 52,
-
-            width: isMobile ? "100%" : "auto",
-
-            padding: isMobile ? "0 8px" : "0 18px",
-
-            borderRadius: 10,
-
-            border:
-              "1px solid #dde2ea",
-
-            background:
-              "#ffffff",
-
-            color:
-              "#b42346",
-
-            fontSize:
-              isMobile ? 14 : 16,
-
-            fontWeight:
-              900,
-
-            cursor: deleting
-              ? "default"
-              : "pointer",
-
-            whiteSpace:
-              "nowrap",
-
-            display:
-              "inline-flex",
-
-            alignItems:
-              "center",
-
-            justifyContent:
-              "center",
-          }}
-        >
-          🗑️{" "}
-          {deleting
-            ? text.deleting
-            : text.delete}
-        </button>
-      </>
-    )}
+    {renderResultActions()}
   </div>
 
  </div>
@@ -2039,108 +1866,6 @@ padding: isMobile
                     {detailActionLabels.browseTierLists}
                   </NavigationLink>)}
 </div>
-            <div
-              style={{
-                fontSize: isMobile ? 24 : 28,
-                fontWeight: 900,
-                color: "#202534",
-              }}
-            >
-              ⭐ {text.onePickTitle}
-            </div>
-
-            <div
-              style={{
-                marginTop: 12,
-                display: "flex",
-                flexDirection: isMobile ? "column" : "row",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: isMobile ? 12 : 24,
-                width: "100%",
-              }}
-            >
-              <div
-                style={{
-                  width: isMobile ? 180 : 190,
-                  padding: 10,
-                  boxSizing: "border-box",
-                  borderRadius: 16,
-                  border: "2px solid #a99bdf",
-                  background: "#f5f3ff",
-                  boxShadow: "0 4px 16px rgba(25,32,52,0.07)",
-                }}
-              >
-                {onePickCandidate ? (
-                  <>
-                    <div
-                      style={{
-                        width: "100%",
-                        aspectRatio: "1 / 1",
-                        overflow: "hidden",
-                        borderRadius: 11,
-                        background: "#ffffff",
-                      }}
-                    >
-                      {onePickCandidate?.image ? (
-                        <MediaRenderer
-                          url={onePickCandidate.image}
-                          alt={onePickCandidate.name || ""}
-                          playable={false}
-                          style={{
-                            width: "100%",
-                            height: "100%",
-                            objectFit: "contain",
-                            objectPosition: "center",
-                            display: "block",
-                          }}
-                        />
-                      ) : (
-                        <div
-                          style={{
-                            width: "100%",
-                            height: "100%",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            color: "#607086",
-                            fontWeight: 800,
-                          }}
-                        >
-                          NO IMAGE
-                        </div>
-                      )}
-                    </div>
-
-                    <div className="tier-candidate-name" title={onePickCandidate.name || text.untitled}
-                      style={{
-                        marginTop: 9,
-                        fontSize: isMobile ? 16 : 18,
-                        fontWeight: 900,
-                        overflow: "hidden",
-                      }}
-                    >
-                      <span className="tier-candidate-name-text">{onePickCandidate.name || text.untitled}</span>
-                    </div>
-                  </>
-                ) : (
-                  <div
-                    style={{
-                      padding: "32px 10px",
-                      color: "#596579",
-                      fontSize: 15,
-                      fontWeight: 800,
-                    }}
-                  >
-                    ⭐
-                    <br />
-                    {text.onePickEmpty}
-                  </div>
-                )}
-              </div>
-
-
-            </div>
           </div>
 
           <div
@@ -2281,121 +2006,16 @@ padding: isMobile
             액션 버튼
             ============================================= */}
 
-        <div
-          style={{
-            marginTop:
-              24,
-
-            display:
-              "flex",
-
-            justifyContent:
-              "center",
-
-            gap:
-              10,
-
-            flexWrap:
-              "wrap",
-          }}
-        >
-          <button
-            type="button"
-            onClick={
-              handleClone
-            }
-            style={{
-              padding:
-                "12px 20px",
-
-              borderRadius:
-                9,
-
-              border:
-                "1px solid #19bfff",
-
-              background:
-                "#2563EB",
-
-              color:
-                "#ffffff",
-
-              cursor:
-                "pointer",
-
-              fontWeight:
-                900,
-            }}
-          >
+        <div className="tier-result-bottom-actions">
+          <button className="tier-result-action tier-result-clone" type="button" onClick={handleClone}>
             {cloneButtonTitle}
-            <small style={{ display: "block", fontSize: 12, marginTop: 5 }}>{cloneButtonSubtitle}</small>
+            <small>{cloneButtonSubtitle}</small>
           </button>
-
-
-          <NavigationLink
-
-            to={`/${lang}/tier-list/create`} appearance="button"
-            style={{
-              padding:
-                "12px 20px",
-
-              borderRadius:
-                9,
-
-              border:
-                "1px solid #dde2ea",
-
-              background:
-                "#ffffff",
-
-              color:
-                "#202534",
-
-              cursor:
-                "pointer",
-
-              fontWeight:
-                900,
-            }}
-          >
-            ＋{" "}
-            {text.createTierList}
-          </NavigationLink>
-
-
-          <button
-            type="button"
-            onClick={
-              handleShare
-            }
-            style={{
-              padding:
-                "12px 20px",
-
-              borderRadius:
-                9,
-
-              border:
-                "1px solid #dde2ea",
-
-              background:
-                "#ffffff",
-
-              color:
-                "#202534",
-
-              cursor:
-                "pointer",
-
-              fontWeight:
-                900,
-            }}
-          >
-            🔗{" "}
-            {text.share}
-          </button>
+          <Link className="tier-result-action" to={`/${lang}/tier-list/create`}>
+            ＋ {text.createTierList}
+          </Link>
+          {renderResultActions()}
         </div>
-
 
         {/* =============================================
             댓글

@@ -180,3 +180,42 @@
 .tier-editor-board .tier-editor-row + .tier-editor-row { border-block-start: 0; }
 .tier-editor-board .tier-editor-row:first-child { border-start-start-radius: 8px; border-start-end-radius: 8px; }
 .tier-editor-board .tier-editor-row:last-child { border-end-start-radius: 8px; border-end-end-radius: 8px; }
+
+.tier-result-action,
+a.tier-result-action {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  min-height: 52px;
+  padding: 8px 18px;
+  border: 1px solid #dde2ea;
+  border-radius: 10px;
+  background: #fff;
+  color: #202534;
+  font-size: 16px;
+  font-weight: 900;
+  line-height: 1.25;
+  text-align: center;
+  text-decoration: none;
+  overflow-wrap: anywhere;
+  cursor: pointer;
+}
+.tier-result-action:disabled { opacity: .55; cursor: default; }
+.tier-result-share { border-color: #19bfff; }
+.tier-result-delete { color: #b42346; }
+.tier-result-bottom-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 24px;
+}
+.tier-result-bottom-actions .tier-result-action { min-height: 60px; font-size: 18px; }
+.tier-result-bottom-actions .tier-result-clone { background: #2563eb; border-color: #2563eb; color: #fff; }
+.tier-result-clone small { font-size: 14px; }
+@media (max-width: 700px) {
+  .tier-result-action, a.tier-result-action { min-height: 42px; padding-inline: 8px; font-size: 14px; }
+  .tier-result-bottom-actions .tier-result-action { min-height: 52px; padding-inline: 12px; font-size: 16px; }
+}
