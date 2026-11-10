@@ -207,3 +207,33 @@
   margin: 0;
   padding: 16px;
 }
+
+.tn-pool-heading {
+  display: flex;
+  flex: 0 0 auto;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  margin-block-end: 12px;
+  padding: 8px 12px;
+  border-inline-start: 4px solid #7139ce;
+  border-radius: 10px;
+  background: #f0e5ff;
+}
+.tn-pool-heading h2 {
+  flex: 1 1 170px;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  overflow-wrap: anywhere;
+}
+.top-nine .tn-pool-heading .tn-upload-button {
+  max-width: 100%;
+  min-height: 42px;
+  margin-inline-start: auto;
+  padding: 6px 10px;
+  font-size: 15px;
+  overflow-wrap: anywhere;
+}
