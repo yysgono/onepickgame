@@ -2011,9 +2011,6 @@ padding: isMobile
             {cloneButtonTitle}
             <small>{cloneButtonSubtitle}</small>
           </button>
-          <Link className="tier-result-action" to={`/${lang}/tier-list/create`}>
-            ＋ {text.createTierList}
-          </Link>
           {renderResultActions()}
         </div>
 
