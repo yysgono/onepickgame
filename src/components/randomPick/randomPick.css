@@ -269,3 +269,13 @@
 @media(max-width:600px){.rp .rp-ranked-results{padding:14px}.rp-result-podium{gap:7px}.rp-podium-card{padding:12px 7px;min-height:120px}.rp-podium-card>strong,.rp-podium-1>strong{font-size:13px}.rp-podium-card>img{width:50px;height:50px}.rp-result-rank-grid{grid-template-columns:1fr}}
 /* Compact gap after the content language control. */
 .rp .rp-heading{margin-bottom:12px}.rp .rp-heading .content-language-select{margin:12px auto 0}.rp .rp-featured-grid{margin-top:12px}
+
+.rp .rp-heading > .rp-intro {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+  line-height: 1.5;
+  max-height: 3em;
+}

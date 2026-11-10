@@ -1,6 +1,6 @@
 {
   "ko": {
-    "intro": "이름을 직접 입력하거나 월드컵 후보를 불러와 랜덤으로 뽑아보세요. 룰렛, 공 이름 뽑기, 핀볼, 카드, 사다리, 제비뽑기, 팀 나누기로 선택하는 재미를 즐기고 결과를 공유할 수 있습니다.",
+    "intro": "이름을 입력하거나 월드컵 후보를 불러와 랜덤으로 뽑아보세요.",
     "choose": "어떻게 뽑을까요?",
     "import": "추천 후보들 불러오기",
     "search": "월드컵 검색",
@@ -109,19 +109,19 @@
     ],
     "shareTooLong": "후보 이름이 너무 길어 공유 링크를 만들 수 없습니다. 명단을 줄여 주세요.",
     "modeDescriptions": {
-      "wheel": "랜덤 룰렛 뽑기 돌림판. 정지를 누르거나 5초가 지나면 서서히 감속합니다. 멈춘 위치로 결과를 결정합니다. 참여할 후보를 체크하세요. 체크를 해제하면 제외돼요.",
-      "lotto": "뽑을 인원은 1명부터 선택한 후보 수까지 설정할 수 있어요. 최대 200개. 숫자를 만들면 기존 후보를 교체합니다.",
-      "pinball": "핀볼 뽑기. 선택한 모든 후보가 실제 충돌 경주에 참여합니다. 전원이 도착할 때까지 진행하고 도착 순서를 기록합니다. 물리 경주는 동일한 당첨 확률을 보장하지 않습니다. 참여할 후보를 체크하세요. 체크를 해제하면 제외돼요.",
-      "ladder": "사다리 타기. 위·아래 내용을 직접 쓰고, 위쪽 후보 버튼을 눌러 이동 경로를 확인하세요. 참여할 후보를 체크하세요. 체크를 해제하면 제외돼요.",
-      "boxes": "박스 수를 정하고 꽝을 추가해보세요. 번호를 누르면 숨겨진 후보 또는 꽝이 나타납니다.",
-      "cards": "이름이나 사진이 담긴 카드가 좌우로 움직이다 멈춥니다. 직접 후보를 넣거나 추천 명단을 불러와 뽑아보세요.",
-      "order": "후보들이 결승선을 향해 달립니다. 도착한 순서대로 전체 순위를 확인하고 결과를 공유하세요.",
-      "dice": "주사위 1~3개를 선택해 굴려보세요. 각 주사위의 눈과 합계를 확인할 수 있습니다.",
-      "teams": "두 후보를 선택해 조건을 추가하세요. 팀별 인원 차이는 최대 1명입니다."
+      "wheel": "룰렛을 돌려 바늘이 멈춘 후보를 뽑아요.",
+      "lotto": "후보나 숫자 중 원하는 개수만큼 뽑아요.",
+      "pinball": "후보들이 핀볼 경주를 펼쳐요. 결승선에 도착한 순서를 확인하세요.",
+      "ladder": "사다리를 따라 각 후보의 결과를 확인하세요.",
+      "boxes": "번호를 눌러 숨은 후보나 꽝을 확인하세요.",
+      "cards": "카드를 섞어 이름이나 사진을 뽑아요.",
+      "order": "후보들이 결승선에 도착한 순서를 확인하세요.",
+      "dice": "주사위 1~3개를 굴려 눈과 합계를 확인하세요.",
+      "teams": "조건을 정하고 후보를 균등한 인원으로 나눠요."
     }
   },
   "en": {
-    "intro": "Enter names or import World Cup candidates and let chance choose. Try the wheel, name ball draw, pinball, cards, ladder, lots and team generator, then share the results.",
+    "intro": "Enter names or import tournament candidates for a random draw.",
     "choose": "How will you pick?",
     "import": "Import recommended candidates",
     "search": "Search World Cups",
@@ -230,19 +230,19 @@
     ],
     "shareTooLong": "The candidate list is too long for a share link. Please shorten it.",
     "modeDescriptions": {
-      "wheel": "Random Wheel Spinner. Press Stop, or wait 5 seconds for automatic deceleration. The final pointer position determines the result. Check participants. Uncheck to exclude.",
-      "lotto": "Choose between 1 and the number of selected candidates. Up to 200 numbers. A new range replaces the current candidates.",
-      "pinball": "Pinball Drop. All selected candidates take part in the collision race. The race continues until everyone finishes, recording arrival order. Physics races do not guarantee equal winning chances. Check participants. Uncheck to exclude.",
-      "ladder": "Ladder Game. Edit the top and bottom labels, then click a top candidate to trace their path. Check participants. Uncheck to exclude.",
-      "boxes": "Choose the number of boxes and add blanks. Open numbered boxes to reveal candidates or blanks.",
-      "cards": "Name or photo cards slide back and forth before stopping. Add your own candidates or import a list.",
-      "order": "Watch candidates race to the finish. See every finishing position and share the order.",
-      "dice": "Roll one to three dice and see each face and the total.",
-      "teams": "Choose two candidates per rule. Team sizes differ by at most one."
+      "wheel": "Spin the wheel and see where the pointer stops.",
+      "lotto": "Draw as many names or numbers as you need.",
+      "pinball": "Race your picks through the pinball course and see who finishes first.",
+      "ladder": "Follow each ladder path to reveal its result.",
+      "boxes": "Open a numbered box to reveal a pick or a blank.",
+      "cards": "Shuffle cards to draw a name or photo.",
+      "order": "Race to the finish and see the full finishing order.",
+      "dice": "Roll up to three dice and see the total.",
+      "teams": "Set your rules and split players into balanced teams."
     }
   },
   "ja": {
-    "intro": "名前を入力するかワールドカップの候補を読み込んで抽選しましょう。ルーレット、ボール抽選、ピンボール、カード、あみだくじ、チーム分けの結果を共有できます。",
+    "intro": "名前を入力するか、トーナメントの候補を読み込んで抽選しましょう。",
     "choose": "抽選方法を選択",
     "import": "おすすめの候補を読み込む",
     "search": "検索",
@@ -351,19 +351,19 @@
     ],
     "shareTooLong": "The candidate list is too long for a share link. Please shorten it.",
     "modeDescriptions": {
-      "wheel": "ランダム抽選ルーレット. Slice sizes follow your percentages. Stop slows the wheel down; the final pointer position determines the result. 参加する候補にチェックしてください。",
-      "lotto": "Choose between 1 and the number of selected candidates. Up to 200 numbers. A new range replaces the current candidates.",
-      "pinball": "ピンボール抽選. 選択した全候補が衝突するレースに参加します。最初にゴールした候補が当選します。当選確率の均等は保証されません。 参加する候補にチェックしてください。",
-      "ladder": "あみだくじ. Edit the top and bottom labels, then click a top candidate to trace their path. 参加する候補にチェックしてください。",
-      "boxes": "箱の数を決めてはずれを追加できます。番号を押して候補を確認しましょう。",
-      "cards": "名前や写真のカードが左右に動いて止まります。候補を入力するか読み込んで抽選しましょう。",
-      "order": "候補がゴールへ走ります。全員の到着順を確認して共有しましょう。",
-      "dice": "サイコロを1〜3個選んで振り、各目と合計を確認できます。",
-      "teams": "候補を2人選んで条件を追加。人数差は最大1人です。"
+      "wheel": "ルーレットを回し、針が止まった候補を選びます。",
+      "lotto": "名前や数字を必要な数だけ抽選できます。",
+      "pinball": "ピンボールで競走し、ゴールした順番を確認しましょう。",
+      "ladder": "あみだくじの線をたどって結果を確認しましょう。",
+      "boxes": "番号の箱を開けて、候補やはずれを確認しましょう。",
+      "cards": "カードを混ぜて名前や写真を引きましょう。",
+      "order": "候補がゴールした順番を確認しましょう。",
+      "dice": "サイコロを1〜3個振って、出た目の合計を確認しましょう。",
+      "teams": "条件を設定して、人数が均等になるようチームを分けましょう。"
     }
   },
   "zh": {
-    "intro": "输入名字或导入世界杯候选项，让随机抽选帮你决定。尝试转盘、姓名球、弹珠、卡牌、梯子、抽签和分组，并分享结果。",
+    "intro": "输入名字或导入锦标赛候选项，开始随机抽选。",
     "choose": "选择抽签方式",
     "import": "导入推荐候选项",
     "search": "搜索世界杯",
@@ -472,19 +472,19 @@
     ],
     "shareTooLong": "The candidate list is too long for a share link. Please shorten it.",
     "modeDescriptions": {
-      "wheel": "随机抽奖转盘. Slice sizes follow your percentages. Stop slows the wheel down; the final pointer position determines the result. 勾选参加项，取消勾选即可排除。",
-      "lotto": "Choose between 1 and the number of selected candidates. Up to 200 numbers. A new range replaces the current candidates.",
-      "pinball": "弹球抽签. 所有选中的候选人参与物理碰撞比赛，最先到达终点者获胜。物理比赛不保证相同的获胜概率。 勾选参加项，取消勾选即可排除。",
-      "ladder": "爬梯抽签. Edit the top and bottom labels, then click a top candidate to trace their path. 勾选参加项，取消勾选即可排除。",
-      "boxes": "设置箱子数量并添加空奖。点击编号揭晓候选项或空奖。",
-      "cards": "姓名或照片卡牌左右滑动后停下。输入候选项或导入名单开始抽选。",
-      "order": "观看候选项冲向终点，查看所有名次并分享顺序。",
-      "dice": "选择1至3颗骰子，查看每颗点数及总和。",
-      "teams": "每条规则选择两人。各队人数相差最多一人。"
+      "wheel": "转动转盘，选出指针停下时指向的候选项。",
+      "lotto": "从名字或数字中抽出所需数量。",
+      "pinball": "让候选项参加弹珠赛，查看到达终点的顺序。",
+      "ladder": "沿着梯子路线查看每个候选项的结果。",
+      "boxes": "打开编号盒子，看看抽中候选项还是空盒。",
+      "cards": "洗牌后抽出带名字或照片的卡片。",
+      "order": "查看所有候选项冲过终点的顺序。",
+      "dice": "掷一到三颗骰子，查看点数和总和。",
+      "teams": "设置条件，把参与者均衡地分到各队。"
     }
   },
   "es": {
-    "intro": "Escribe nombres o importa candidatos de un torneo. Prueba la ruleta, bolas con nombres, pinball, cartas, escalera, sorteos y equipos, y comparte el resultado.",
+    "intro": "Escribe nombres o importa candidatos de un torneo para hacer un sorteo.",
     "choose": "¿Cómo quieres elegir?",
     "import": "Importar candidatos recomendados",
     "search": "Buscar World Cups",
@@ -593,19 +593,19 @@
     ],
     "shareTooLong": "The candidate list is too long for a share link. Please shorten it.",
     "modeDescriptions": {
-      "wheel": "Ruleta de selección aleatoria. Slice sizes follow your percentages. Stop slows the wheel down; the final pointer position determines the result. Marca los participantes. Desmarca para excluir.",
-      "lotto": "Choose between 1 and the number of selected candidates. Up to 200 numbers. A new range replaces the current candidates.",
-      "pinball": "Pinball. Todos los participantes seleccionados compiten con colisiones físicas. Gana quien llegue primero. No se garantizan probabilidades iguales. Marca los participantes. Desmarca para excluir.",
-      "ladder": "Juego de escaleras. Edit the top and bottom labels, then click a top candidate to trace their path. Marca los participantes. Desmarca para excluir.",
-      "boxes": "Elige cuántas cajas habrá y añade casillas sin premio. Abre un número para ver el resultado.",
-      "cards": "Las cartas con nombres o fotos se deslizan y se detienen. Añade candidatos o importa una lista.",
-      "order": "Mira la carrera hasta la meta y comparte el orden de llegada de todos.",
-      "dice": "Lanza de uno a tres dados y consulta sus caras y la suma.",
-      "teams": "Elige dos candidatos por regla. La diferencia de tamaño será como máximo uno."
+      "wheel": "Gira la ruleta y mira dónde se detiene la flecha.",
+      "lotto": "Saca tantos nombres o números como necesites.",
+      "pinball": "Haz una carrera de pinball y consulta el orden de llegada.",
+      "ladder": "Sigue cada camino de la escalera para descubrir su resultado.",
+      "boxes": "Abre una caja numerada para descubrir un candidato o una casilla vacía.",
+      "cards": "Baraja las cartas y saca un nombre o una foto.",
+      "order": "Consulta el orden en que todos cruzan la meta.",
+      "dice": "Tira hasta tres dados y consulta la suma.",
+      "teams": "Elige las reglas y reparte a los participantes en equipos equilibrados."
     }
   },
   "fr": {
-    "intro": "Saisissez des noms ou importez les candidats d’un tournoi. Essayez la roue, les boules, le flipper, les cartes, l’échelle et les équipes, puis partagez les résultats.",
+    "intro": "Saisissez des noms ou importez les candidats d’un tournoi pour les tirer au sort.",
     "choose": "Comment choisir ?",
     "import": "Importer les candidats recommandés",
     "search": "Rechercher",
@@ -714,19 +714,19 @@
     ],
     "shareTooLong": "The candidate list is too long for a share link. Please shorten it.",
     "modeDescriptions": {
-      "wheel": "Roue de tirage au sort. Slice sizes follow your percentages. Stop slows the wheel down; the final pointer position determines the result. Cochez les participants. Décochez pour exclure.",
-      "lotto": "Choose between 1 and the number of selected candidates. Up to 200 numbers. A new range replaces the current candidates.",
-      "pinball": "Flipper. Tous les participants sélectionnés courent avec des collisions physiques. Le premier à l’arrivée gagne. Les chances ne sont pas garanties égales. Cochez les participants. Décochez pour exclure.",
-      "ladder": "Jeu des échelles. Edit the top and bottom labels, then click a top candidate to trace their path. Cochez les participants. Décochez pour exclure.",
-      "boxes": "Choisissez le nombre de cases et ajoutez des cases perdantes. Ouvrez un numéro pour voir le résultat.",
-      "cards": "Les cartes avec noms ou photos défilent avant de s’arrêter. Saisissez ou importez les candidats.",
-      "order": "Regardez la course et partagez l’ordre d’arrivée de tous les candidats.",
-      "dice": "Lancez un à trois dés et consultez chaque face et le total.",
-      "teams": "Choisissez deux candidats par règle. L’écart entre équipes est de un au maximum."
+      "wheel": "Faites tourner la roue et regardez où s’arrête la flèche.",
+      "lotto": "Tirez autant de noms ou de nombres que nécessaire.",
+      "pinball": "Lancez une course de flipper et découvrez l’ordre d’arrivée.",
+      "ladder": "Suivez les chemins de l’échelle pour découvrir les résultats.",
+      "boxes": "Ouvrez une boîte numérotée pour révéler un candidat ou une case vide.",
+      "cards": "Mélangez les cartes et tirez un nom ou une photo.",
+      "order": "Consultez l’ordre d’arrivée de tous les candidats.",
+      "dice": "Lancez jusqu’à trois dés et découvrez le total.",
+      "teams": "Fixez les règles et répartissez les participants en équipes équilibrées."
     }
   },
   "vi": {
-    "intro": "Nhập tên hoặc tải ứng viên từ World Cup để chọn ngẫu nhiên. Thử vòng quay, bóng tên, pinball, thẻ, thang, rút thăm và chia đội rồi chia sẻ kết quả.",
+    "intro": "Nhập tên hoặc nhập danh sách từ giải đấu để bốc thăm ngẫu nhiên.",
     "choose": "Bạn muốn chọn thế nào?",
     "import": "Nhập ứng viên được đề xuất",
     "search": "Tìm World Cup",
@@ -835,19 +835,19 @@
     ],
     "shareTooLong": "The candidate list is too long for a share link. Please shorten it.",
     "modeDescriptions": {
-      "wheel": "Vòng quay bốc thăm ngẫu nhiên. Slice sizes follow your percentages. Stop slows the wheel down; the final pointer position determines the result. Đánh dấu người tham gia. Bỏ dấu để loại.",
-      "lotto": "Choose between 1 and the number of selected candidates. Up to 200 numbers. A new range replaces the current candidates.",
-      "pinball": "Thả bóng. Mọi ứng viên được chọn đều tham gia cuộc đua có va chạm vật lý. Người về đích đầu tiên thắng. Xác suất thắng không được bảo đảm bằng nhau. Đánh dấu người tham gia. Bỏ dấu để loại.",
-      "ladder": "Trò chơi bậc thang. Edit the top and bottom labels, then click a top candidate to trace their path. Đánh dấu người tham gia. Bỏ dấu để loại.",
-      "boxes": "Chọn số hộp và thêm ô không trúng. Nhấn số để xem ứng viên hoặc ô trống.",
-      "cards": "Thẻ tên hoặc ảnh trượt qua lại rồi dừng. Nhập ứng viên hoặc tải danh sách để bốc thăm.",
-      "order": "Xem các ứng viên đua đến đích và chia sẻ toàn bộ thứ tự về đích.",
-      "dice": "Tung từ một đến ba xúc xắc và xem từng mặt cùng tổng điểm.",
-      "teams": "Chọn hai người cho mỗi quy tắc. Số người giữa các đội lệch tối đa một."
+      "wheel": "Quay vòng quay và xem kim dừng ở đâu.",
+      "lotto": "Rút số lượng tên hoặc số tùy ý.",
+      "pinball": "Cho các ứng viên đua pinball và xem thứ tự về đích.",
+      "ladder": "Lần theo các đường trên thang để xem kết quả.",
+      "boxes": "Mở hộp có số để xem ứng viên hoặc ô trống.",
+      "cards": "Xáo bài rồi rút một thẻ có tên hoặc ảnh.",
+      "order": "Xem thứ tự về đích của tất cả ứng viên.",
+      "dice": "Gieo tối đa ba xúc xắc và xem tổng điểm.",
+      "teams": "Đặt điều kiện rồi chia người chơi thành các đội cân bằng."
     }
   },
   "de": {
-    "intro": "Gib Namen ein oder importiere Kandidaten aus einem Turnier. Probiere Glücksrad, Namenskugeln, Flipper, Karten, Leiter, Lose und Teams aus und teile die Ergebnisse.",
+    "intro": "Gib Namen ein oder übernimm Kandidaten aus einem Turnier für die Zufallsauswahl.",
     "choose": "Wie möchtest du wählen?",
     "import": "Empfohlene Kandidaten importieren",
     "search": "World Cups suchen",
@@ -956,19 +956,19 @@
     ],
     "shareTooLong": "The candidate list is too long for a share link. Please shorten it.",
     "modeDescriptions": {
-      "wheel": "Zufalls-Glücksrad. Slice sizes follow your percentages. Stop slows the wheel down; the final pointer position determines the result. Teilnehmer markieren. Abwählen zum Ausschließen.",
-      "lotto": "Choose between 1 and the number of selected candidates. Up to 200 numbers. A new range replaces the current candidates.",
-      "pinball": "Flipper. Alle ausgewählten Teilnehmer treten mit physikalischen Kollisionen an. Wer zuerst das Ziel erreicht, gewinnt. Gleiche Gewinnchancen sind nicht garantiert. Teilnehmer markieren. Abwählen zum Ausschließen.",
-      "ladder": "Leiterspiel. Edit the top and bottom labels, then click a top candidate to trace their path. Teilnehmer markieren. Abwählen zum Ausschließen.",
-      "boxes": "Lege die Zahl der Kästchen fest und füge Nieten hinzu. Öffne eine Nummer für das Ergebnis.",
-      "cards": "Namens- oder Bildkarten gleiten hin und her und halten an. Gib Kandidaten ein oder importiere eine Liste.",
-      "order": "Verfolge das Rennen und teile die vollständige Reihenfolge im Ziel.",
-      "dice": "Wirf ein bis drei Würfel und sieh die einzelnen Augen und ihre Summe.",
-      "teams": "Zwei Kandidaten je Regel wählen. Teamgrößen unterscheiden sich höchstens um eins."
+      "wheel": "Dreh das Rad und sieh nach, wo der Zeiger stehen bleibt.",
+      "lotto": "Zieh so viele Namen oder Zahlen, wie du brauchst.",
+      "pinball": "Starte ein Flipperrennen und sieh dir die Zieleinläufe an.",
+      "ladder": "Folge den Leiterwegen und entdecke die Ergebnisse.",
+      "boxes": "Öffne eine nummerierte Box und entdecke einen Treffer oder eine Niete.",
+      "cards": "Mische die Karten und zieh einen Namen oder ein Foto.",
+      "order": "Sieh nach, in welcher Reihenfolge alle ins Ziel kommen.",
+      "dice": "Würfle mit bis zu drei Würfeln und sieh dir die Summe an.",
+      "teams": "Lege Regeln fest und teile die Teilnehmer in ausgewogene Teams ein."
     }
   },
   "ru": {
-    "intro": "Введите имена или загрузите кандидатов турнира. Попробуйте колесо, шары с именами, пинбол, карты, лестницу, жребий и команды и поделитесь результатами.",
+    "intro": "Введите имена или загрузите участников турнира для случайного выбора.",
     "choose": "Как будем выбирать?",
     "import": "Загрузить рекомендуемых участников",
     "search": "Поиск World Cup",
@@ -1077,19 +1077,19 @@
     ],
     "shareTooLong": "The candidate list is too long for a share link. Please shorten it.",
     "modeDescriptions": {
-      "wheel": "Колесо случайного выбора. Slice sizes follow your percentages. Stop slows the wheel down; the final pointer position determines the result. Отметьте участников. Снимите отметку для исключения.",
-      "lotto": "Choose between 1 and the number of selected candidates. Up to 200 numbers. A new range replaces the current candidates.",
-      "pinball": "Пинбол. Все выбранные участники участвуют в гонке с физическими столкновениями. Побеждает первый на финише. Равные шансы не гарантируются. Отметьте участников. Снимите отметку для исключения.",
-      "ladder": "Лесенки. Edit the top and bottom labels, then click a top candidate to trace their path. Отметьте участников. Снимите отметку для исключения.",
-      "boxes": "Выберите число коробок и добавьте пустые. Нажмите номер, чтобы увидеть результат.",
-      "cards": "Карточки с именами или фото движутся и останавливаются. Введите кандидатов или загрузите список.",
-      "order": "Наблюдайте за гонкой и поделитесь полным порядком финиша.",
-      "dice": "Бросьте от одного до трёх кубиков и посмотрите грани и сумму.",
-      "teams": "Выберите двоих для каждого правила. Разница размеров команд — не более одного."
+      "wheel": "Крутите колесо и смотрите, на ком остановится стрелка.",
+      "lotto": "Вытяните нужное количество имён или чисел.",
+      "pinball": "Запустите гонку в пинболе и узнайте порядок финиша.",
+      "ladder": "Проследите путь каждого участника по лестнице до результата.",
+      "boxes": "Откройте пронумерованную коробку с участником или пустым местом.",
+      "cards": "Перемешайте карточки и вытяните имя или фото.",
+      "order": "Посмотрите, в каком порядке участники финишировали.",
+      "dice": "Бросьте до трёх кубиков и узнайте сумму очков.",
+      "teams": "Задайте правила и разделите участников на сбалансированные команды."
     }
   },
   "id": {
-    "intro": "Masukkan nama atau impor kandidat World Cup. Coba roda, bola nama, pinball, kartu, tangga, undian dan pembagian tim, lalu bagikan hasilnya.",
+    "intro": "Masukkan nama atau impor peserta turnamen untuk undian acak.",
     "choose": "Bagaimana cara memilih?",
     "import": "Impor kandidat rekomendasi",
     "search": "Cari World Cup",
@@ -1198,19 +1198,19 @@
     ],
     "shareTooLong": "The candidate list is too long for a share link. Please shorten it.",
     "modeDescriptions": {
-      "wheel": "Roda Undian Acak. Slice sizes follow your percentages. Stop slows the wheel down; the final pointer position determines the result. Centang peserta. Hapus centang untuk mengecualikan.",
-      "lotto": "Choose between 1 and the number of selected candidates. Up to 200 numbers. A new range replaces the current candidates.",
-      "pinball": "Pinball. Semua peserta terpilih berlomba dengan tumbukan fisik. Yang pertama mencapai garis akhir menang. Peluang menang tidak dijamin sama. Centang peserta. Hapus centang untuk mengecualikan.",
-      "ladder": "Permainan Tangga. Edit the top and bottom labels, then click a top candidate to trace their path. Centang peserta. Hapus centang untuk mengecualikan.",
-      "boxes": "Atur jumlah kotak dan tambahkan kotak kosong. Klik nomor untuk membuka hasilnya.",
-      "cards": "Kartu nama atau foto bergerak bolak-balik lalu berhenti. Masukkan kandidat atau impor daftar.",
-      "order": "Saksikan perlombaan sampai finis dan bagikan seluruh urutan kedatangan.",
-      "dice": "Lempar satu hingga tiga dadu dan lihat setiap angka serta jumlahnya.",
-      "teams": "Pilih dua kandidat per aturan. Selisih ukuran tim maksimal satu."
+      "wheel": "Putar roda dan lihat di mana jarum berhenti.",
+      "lotto": "Undi nama atau angka sebanyak yang diperlukan.",
+      "pinball": "Balapkan peserta di pinball dan lihat urutan finisnya.",
+      "ladder": "Ikuti jalur tangga untuk mengetahui hasil tiap peserta.",
+      "boxes": "Buka kotak bernomor untuk menemukan peserta atau kotak kosong.",
+      "cards": "Kocok kartu lalu ambil satu nama atau foto.",
+      "order": "Lihat urutan semua peserta mencapai garis finis.",
+      "dice": "Lempar hingga tiga dadu dan lihat jumlahnya.",
+      "teams": "Atur ketentuan lalu bagi peserta ke tim yang seimbang."
     }
   },
   "pt": {
-    "intro": "Digite nomes ou importe candidatos de um torneio. Experimente roleta, bolas com nomes, pinball, cartas, escada, sorteios e equipes e compartilhe os resultados.",
+    "intro": "Insira nomes ou importe participantes de um torneio para fazer um sorteio.",
     "choose": "Como deseja escolher?",
     "import": "Importar candidatos recomendados",
     "search": "Buscar World Cups",
@@ -1319,19 +1319,19 @@
     ],
     "shareTooLong": "The candidate list is too long for a share link. Please shorten it.",
     "modeDescriptions": {
-      "wheel": "Roleta de Sorteio Aleatório. Slice sizes follow your percentages. Stop slows the wheel down; the final pointer position determines the result. Marque os participantes. Desmarque para excluir.",
-      "lotto": "Choose between 1 and the number of selected candidates. Up to 200 numbers. A new range replaces the current candidates.",
-      "pinball": "Pinball. Todos os participantes selecionados competem com colisões físicas. Quem cruzar a chegada primeiro vence. Chances iguais não são garantidas. Marque os participantes. Desmarque para excluir.",
-      "ladder": "Jogo de escadas. Edit the top and bottom labels, then click a top candidate to trace their path. Marque os participantes. Desmarque para excluir.",
-      "boxes": "Escolha o número de caixas e acrescente caixas sem prêmio. Abra um número para ver o resultado.",
-      "cards": "Cartas com nomes ou fotos deslizam até parar. Digite candidatos ou importe uma lista.",
-      "order": "Assista à corrida e compartilhe a ordem de chegada de todos os candidatos.",
-      "dice": "Lance de um a três dados e veja cada face e a soma.",
-      "teams": "Escolha dois candidatos por regra. A diferença entre equipes será de no máximo um."
+      "wheel": "Gire a roleta e veja onde o ponteiro para.",
+      "lotto": "Sorteie quantos nomes ou números precisar.",
+      "pinball": "Faça uma corrida de pinball e confira a ordem de chegada.",
+      "ladder": "Siga cada caminho da escada para descobrir o resultado.",
+      "boxes": "Abra uma caixa numerada e descubra um participante ou uma caixa vazia.",
+      "cards": "Embaralhe as cartas e sorteie um nome ou uma foto.",
+      "order": "Veja a ordem em que todos cruzam a linha de chegada.",
+      "dice": "Jogue até três dados e confira a soma.",
+      "teams": "Defina as regras e divida os participantes em equipes equilibradas."
     }
   },
   "hi": {
-    "intro": "नाम लिखें या World Cup से उम्मीदवार लाएँ। पहिया, नाम वाली गेंदें, पिनबॉल, कार्ड, सीढ़ी, पर्ची और टीम चयन आज़माएँ और परिणाम साझा करें।",
+    "intro": "नाम लिखें या टूर्नामेंट से प्रतिभागी जोड़ें और यादृच्छिक चुनाव करें।",
     "choose": "कैसे चुनेंगे?",
     "import": "सुझाए गए उम्मीदवार जोड़ें",
     "search": "World Cup खोजें",
@@ -1440,19 +1440,19 @@
     ],
     "shareTooLong": "The candidate list is too long for a share link. Please shorten it.",
     "modeDescriptions": {
-      "wheel": "रैंडम चयन स्पिन व्हील. Slice sizes follow your percentages. Stop slows the wheel down; the final pointer position determines the result. भाग लेने वालों को चुनें। हटाने के लिए चयन हटाएँ।",
-      "lotto": "Choose between 1 and the number of selected candidates. Up to 200 numbers. A new range replaces the current candidates.",
-      "pinball": "पिनबॉल. सभी चुने गए प्रतिभागी भौतिक टक्करों वाली दौड़ में भाग लेते हैं। पहले पहुँचने वाला जीतता है। जीत की समान संभावना की गारंटी नहीं है। भाग लेने वालों को चुनें। हटाने के लिए चयन हटाएँ।",
-      "ladder": "सीढ़ी खेल. Edit the top and bottom labels, then click a top candidate to trace their path. भाग लेने वालों को चुनें। हटाने के लिए चयन हटाएँ।",
-      "boxes": "बॉक्स की संख्या चुनें और खाली बॉक्स जोड़ें। परिणाम देखने के लिए नंबर दबाएँ।",
-      "cards": "नाम या फोटो वाले कार्ड आगे-पीछे चलकर रुकते हैं। उम्मीदवार लिखें या सूची लाएँ।",
-      "order": "उम्मीदवारों की दौड़ देखें और सभी के पहुँचने का क्रम साझा करें।",
-      "dice": "एक से तीन पासे फेंकें और हर पासे का अंक तथा कुल देखें।",
-      "teams": "हर नियम के लिए दो उम्मीदवार चुनें। टीमों में अधिकतम एक व्यक्ति का अंतर होगा।"
+      "wheel": "पहिया घुमाएँ और देखें कि सूई कहाँ रुकती है।",
+      "lotto": "अपनी ज़रूरत के अनुसार नाम या नंबर निकालें।",
+      "pinball": "पिनबॉल रेस शुरू करें और देखें कि कौन किस क्रम में पहुँचा।",
+      "ladder": "हर प्रतिभागी की सीढ़ी का रास्ता देखकर नतीजा जानें।",
+      "boxes": "नंबर वाला डिब्बा खोलकर देखें कि नाम निकला या डिब्बा खाली है।",
+      "cards": "कार्ड फेंटें और एक नाम या फ़ोटो निकालें।",
+      "order": "देखें कि सभी प्रतिभागी किस क्रम में मंज़िल तक पहुँचे।",
+      "dice": "एक से तीन पासे फेंकें और कुल अंक देखें।",
+      "teams": "नियम तय करें और प्रतिभागियों को संतुलित टीमों में बाँटें।"
     }
   },
   "tr": {
-    "intro": "İsimleri yaz veya turnuva adaylarını içe aktar. Çark, isim topları, pinball, kartlar, merdiven, kura ve takım oluşturmayı dene, sonuçları paylaş.",
+    "intro": "Rastgele seçim için isim girin veya turnuvadaki adayları aktarın.",
     "choose": "Nasıl seçeceksin?",
     "import": "Önerilen adayları içe aktar",
     "search": "World Cup ara",
@@ -1561,19 +1561,19 @@
     ],
     "shareTooLong": "The candidate list is too long for a share link. Please shorten it.",
     "modeDescriptions": {
-      "wheel": "Rastgele Seçim Çarkı. Slice sizes follow your percentages. Stop slows the wheel down; the final pointer position determines the result. Katılımcıları işaretle. Çıkarmak için işareti kaldır.",
-      "lotto": "Choose between 1 and the number of selected candidates. Up to 200 numbers. A new range replaces the current candidates.",
-      "pinball": "Pinball. Seçilen tüm katılımcılar fiziksel çarpışmalarla yarışır. Bitişe ilk ulaşan kazanır. Eşit kazanma olasılığı garanti edilmez. Katılımcıları işaretle. Çıkarmak için işareti kaldır.",
-      "ladder": "Merdiven Oyunu. Edit the top and bottom labels, then click a top candidate to trace their path. Katılımcıları işaretle. Çıkarmak için işareti kaldır.",
-      "boxes": "Kutu sayısını seç ve boş kutu ekle. Sonucu görmek için numaraya bas.",
-      "cards": "İsim veya fotoğraf kartları ileri geri kayıp durur. Aday ekle veya listeyi içe aktar.",
-      "order": "Adayların yarışını izle ve tüm bitiş sırasını paylaş.",
-      "dice": "Bir ila üç zar at ve her yüzü ve toplamı gör.",
-      "teams": "Her kural için iki aday seçin. Takım boyutları en fazla bir kişi farklı olur."
+      "wheel": "Çarkı çevirin ve okun nerede durduğuna bakın.",
+      "lotto": "İstediğiniz sayıda isim veya sayı çekin.",
+      "pinball": "Pinbol parkurunda adayları yarıştırın ve bitiş sırasını görün.",
+      "ladder": "Sonucu öğrenmek için her merdiven yolunu takip edin.",
+      "boxes": "Bir aday ya da boş sonuç görmek için numaralı kutuyu açın.",
+      "cards": "Kartları karıştırıp bir isim veya fotoğraf çekin.",
+      "order": "Adayların bitiş çizgisini geçme sırasına bakın.",
+      "dice": "En fazla üç zar atın ve toplamı görün.",
+      "teams": "Kuralları belirleyin ve katılımcıları dengeli takımlara ayırın."
     }
   },
   "th": {
-    "intro": "พิมพ์ชื่อหรือนำเข้าจากเวิลด์คัพ ลองวงล้อ ลูกบอลชื่อ พินบอล ไพ่ บันได จับฉลากและแบ่งทีม แล้วแชร์ผลลัพธ์",
+    "intro": "พิมพ์ชื่อหรือนำเข้ารายชื่อจากทัวร์นาเมนต์เพื่อสุ่มเลือก",
     "choose": "จะสุ่มแบบไหนดี?",
     "import": "นำเข้าผู้เข้าร่วมที่แนะนำ",
     "search": "ค้นหา World Cup",
@@ -1682,19 +1682,19 @@
     ],
     "shareTooLong": "The candidate list is too long for a share link. Please shorten it.",
     "modeDescriptions": {
-      "wheel": "วงล้อสุ่มเลือก. Slice sizes follow your percentages. Stop slows the wheel down; the final pointer position determines the result. เลือกผู้เข้าร่วม ยกเลิกเพื่อไม่นำมาสุ่ม",
-      "lotto": "Choose between 1 and the number of selected candidates. Up to 200 numbers. A new range replaces the current candidates.",
-      "pinball": "พินบอล. ผู้เข้าร่วมที่เลือกทุกคนแข่งด้วยการชนทางฟิสิกส์ ผู้เข้าเส้นชัยก่อนชนะ ไม่รับประกันโอกาสชนะที่เท่ากัน เลือกผู้เข้าร่วม ยกเลิกเพื่อไม่นำมาสุ่ม",
-      "ladder": "เกมบันได. Edit the top and bottom labels, then click a top candidate to trace their path. เลือกผู้เข้าร่วม ยกเลิกเพื่อไม่นำมาสุ่ม",
-      "boxes": "กำหนดจำนวนกล่องและเพิ่มกล่องไม่ได้รางวัล กดหมายเลขเพื่อดูผล",
-      "cards": "การ์ดชื่อหรือภาพเลื่อนไปมาแล้วหยุด พิมพ์หรือนำเข้ารายชื่อเพื่อสุ่ม",
-      "order": "ดูรายชื่อแข่งเข้าเส้นชัยแล้วแชร์ลำดับทั้งหมด",
-      "dice": "ทอยลูกเต๋าหนึ่งถึงสามลูก ดูแต้มแต่ละลูกและผลรวม",
-      "teams": "เลือกสองคนต่อเงื่อนไข จำนวนสมาชิกแต่ละทีมต่างกันไม่เกินหนึ่งคน"
+      "wheel": "หมุนวงล้อแล้วดูว่าลูกศรหยุดที่ใคร",
+      "lotto": "สุ่มชื่อหรือตัวเลขได้ตามจำนวนที่ต้องการ",
+      "pinball": "แข่งพินบอลแล้วดูว่าใครเข้าเส้นชัยตามลำดับ",
+      "ladder": "ตามเส้นทางบันไดของแต่ละคนเพื่อดูผล",
+      "boxes": "เปิดกล่องหมายเลขเพื่อดูรายชื่อหรือกล่องเปล่า",
+      "cards": "สับไพ่แล้วสุ่มหยิบชื่อหรือรูปภาพ",
+      "order": "ดูว่าผู้เข้าร่วมเข้าเส้นชัยตามลำดับใด",
+      "dice": "ทอยลูกเต๋าได้สูงสุดสามลูกแล้วดูแต้มรวม",
+      "teams": "ตั้งเงื่อนไขแล้วแบ่งผู้เล่นเป็นทีมขนาดใกล้เคียงกัน"
     }
   },
   "ar": {
-    "intro": "أدخل الأسماء أو استورد مرشحي البطولة. جرّب العجلة وكرات الأسماء والبينبول والبطاقات والسلم والقرعة وتقسيم الفرق ثم شارك النتائج.",
+    "intro": "أدخل الأسماء أو استورد مرشحي بطولة لإجراء سحب عشوائي.",
     "choose": "كيف ستختار؟",
     "import": "استيراد المرشحين الموصى بهم",
     "search": "البحث عن World Cup",
@@ -1803,19 +1803,19 @@
     ],
     "shareTooLong": "The candidate list is too long for a share link. Please shorten it.",
     "modeDescriptions": {
-      "wheel": "عجلة الاختيار العشوائي. Slice sizes follow your percentages. Stop slows the wheel down; the final pointer position determines the result. حدد المشاركين وأزل التحديد للاستبعاد.",
-      "lotto": "Choose between 1 and the number of selected candidates. Up to 200 numbers. A new range replaces the current candidates.",
-      "pinball": "بينبول. يتسابق جميع المشاركين المختارين بتصادمات فيزيائية. يفوز أول من يعبر خط النهاية. لا تُضمن فرص فوز متساوية. حدد المشاركين وأزل التحديد للاستبعاد.",
-      "ladder": "لعبة السلالم. Edit the top and bottom labels, then click a top candidate to trace their path. حدد المشاركين وأزل التحديد للاستبعاد.",
-      "boxes": "حدد عدد الصناديق وأضف صناديق فارغة. اضغط الرقم لكشف النتيجة.",
-      "cards": "تتحرك بطاقات الأسماء أو الصور ثم تتوقف. أدخل المرشحين أو استورد قائمة.",
-      "order": "شاهد السباق وشارك ترتيب وصول جميع المرشحين.",
-      "dice": "ارمِ من نرد واحد إلى ثلاثة واعرض كل وجه والمجموع.",
-      "teams": "اختر مرشحين لكل قاعدة. لا يتجاوز فرق حجم الفرق شخصًا واحدًا."
+      "wheel": "أدر العجلة وشاهد أين يتوقف المؤشر.",
+      "lotto": "اسحب العدد المطلوب من الأسماء أو الأرقام.",
+      "pinball": "ابدأ سباق البينبول وتعرّف على ترتيب الوصول.",
+      "ladder": "اتبع مسار كل مشارك على السلم لمعرفة النتيجة.",
+      "boxes": "افتح صندوقًا مرقّمًا لتكشف عن اسم أو خانة فارغة.",
+      "cards": "اخلط البطاقات واسحب اسمًا أو صورة.",
+      "order": "شاهد ترتيب عبور المشاركين خط النهاية.",
+      "dice": "ارمِ ما يصل إلى ثلاثة أحجار نرد واعرف مجموع النقاط.",
+      "teams": "حدّد القواعد وقسّم المشاركين إلى فرق متوازنة."
     }
   },
   "bn": {
-    "intro": "নাম লিখুন বা World Cup থেকে প্রার্থী আনুন। চাকা, নামের বল, পিনবল, কার্ড, মই, লটারি ও দল ভাগ করে ফলাফল শেয়ার করুন।",
+    "intro": "নাম লিখুন বা টুর্নামেন্ট থেকে প্রতিযোগীদের এনে লটারিতে বেছে নিন।",
     "choose": "কীভাবে বাছবেন?",
     "import": "প্রস্তাবিত প্রার্থীদের আনুন",
     "search": "World Cup খুঁজুন",
@@ -1924,19 +1924,19 @@
     ],
     "shareTooLong": "The candidate list is too long for a share link. Please shorten it.",
     "modeDescriptions": {
-      "wheel": "এলোমেলো বাছাই চাকা. Slice sizes follow your percentages. Stop slows the wheel down; the final pointer position determines the result. অংশগ্রহণকারী নির্বাচন করুন। বাদ দিতে টিক সরান।",
-      "lotto": "Choose between 1 and the number of selected candidates. Up to 200 numbers. A new range replaces the current candidates.",
-      "pinball": "পিনবল. সব নির্বাচিত অংশগ্রহণকারী ভৌত সংঘর্ষসহ দৌড়ে অংশ নেয়। প্রথমে শেষ রেখা পার হওয়া ব্যক্তি জেতে। সমান জয়ের সম্ভাবনা নিশ্চিত নয়। অংশগ্রহণকারী নির্বাচন করুন। বাদ দিতে টিক সরান।",
-      "ladder": "সিঁড়ি খেলা. Edit the top and bottom labels, then click a top candidate to trace their path. অংশগ্রহণকারী নির্বাচন করুন। বাদ দিতে টিক সরান।",
-      "boxes": "বাক্সের সংখ্যা বেছে খালি বাক্স যোগ করুন। ফল দেখতে নম্বর চাপুন।",
-      "cards": "নাম বা ছবির কার্ড সামনে-পেছনে চলে থামে। প্রার্থী লিখুন বা তালিকা আনুন।",
-      "order": "প্রার্থীদের দৌড় দেখুন এবং সবার শেষ করার ক্রম শেয়ার করুন।",
-      "dice": "এক থেকে তিনটি পাশা ছুড়ে প্রতিটি সংখ্যা ও যোগফল দেখুন।",
-      "teams": "প্রতি নিয়মে দুজন বাছুন। দলের আকারের পার্থক্য সর্বোচ্চ একজন।"
+      "wheel": "চাকা ঘোরান এবং দেখুন কাঁটা কোথায় থামে।",
+      "lotto": "প্রয়োজনমতো নাম বা সংখ্যা তুলুন।",
+      "pinball": "পিনবল দৌড় শুরু করে দেখুন কে কোন ক্রমে শেষ করে।",
+      "ladder": "ফল জানতে সিঁড়িতে প্রত্যেকের পথ অনুসরণ করুন।",
+      "boxes": "নম্বর দেওয়া বাক্স খুলে দেখুন নাম আছে, নাকি বাক্সটি খালি।",
+      "cards": "কার্ডগুলো মিশিয়ে একটি নাম বা ছবি তুলুন।",
+      "order": "সব প্রতিযোগী কোন ক্রমে দৌড় শেষ করে দেখুন।",
+      "dice": "এক থেকে তিনটি পাশা ছুড়ে মোট পয়েন্ট দেখুন।",
+      "teams": "নিয়ম ঠিক করে অংশগ্রহণকারীদের ভারসাম্যপূর্ণ দলে ভাগ করুন।"
     }
   },
   "it": {
-    "intro": "Inserisci i nomi o importa candidati da un torneo e lascia scegliere al caso. Prova la ruota, l'estrazione con palline, il flipper, le carte, il gioco a scala, i sorteggi e il generatore di squadre, poi condividi i risultati.",
+    "intro": "Inserisci i nomi o importa i partecipanti di un torneo per sorteggiarli.",
     "choose": "Come sceglierai?",
     "import": "Importa i candidati raccomandati",
     "search": "Cerca tornei",
@@ -2045,19 +2045,19 @@
     ],
     "shareTooLong": "L'elenco dei candidati è troppo lungo per un link di condivisione. Accorcialo.",
     "modeDescriptions": {
-      "wheel": "Ruota della fortuna. Premi Ferma o attendi 5 secondi per il rallentamento automatico. La posizione finale del puntatore determina il risultato. Seleziona i partecipanti. Deselezionali per escluderli.",
-      "lotto": "Scegli tra 1 e il numero di candidati selezionati. Fino a 200 numeri. Una nuova gamma sostituisce gli attuali candidati.",
-      "pinball": "Flipper a caduta. Tutti i candidati selezionati partecipano alla gara con collisioni. La gara continua finché tutti arrivano al traguardo e registra l'ordine di arrivo. Le gare basate sulla fisica non garantiscono uguali probabilità di vittoria. Seleziona i partecipanti. Deselezionali per escluderli.",
-      "ladder": "Gioco a scala. Modifica le etichette in alto e in basso, poi fai clic su un candidato in alto per seguirne il percorso. Seleziona i partecipanti. Deselezionali per escluderli.",
-      "boxes": "Scegli il numero di scatole e aggiungi quelle vuote. Apri le scatole numerate per scoprire candidati o scatole vuote.",
-      "cards": "Le carte con nomi o foto scorrono avanti e indietro prima di fermarsi. Aggiungi i tuoi candidati o importa un elenco.",
-      "order": "Guarda i candidati correre verso il traguardo. Visualizza tutte le posizioni di arrivo e condividi l'ordine.",
-      "dice": "Lancia da uno a tre dadi e visualizza il risultato di ciascuno e il totale.",
-      "teams": "Scegli due candidati per ogni regola. Le dimensioni delle squadre differiscono al massimo di un partecipante."
+      "wheel": "Gira la ruota e guarda dove si ferma la freccia.",
+      "lotto": "Estrai tutti i nomi o numeri che ti servono.",
+      "pinball": "Fai una gara di flipper e scopri l’ordine di arrivo.",
+      "ladder": "Segui i percorsi della scala per vedere i risultati.",
+      "boxes": "Apri una scatola numerata per scoprire un nome o una casella vuota.",
+      "cards": "Mescola le carte e pesca un nome o una foto.",
+      "order": "Scopri l’ordine in cui tutti tagliano il traguardo.",
+      "dice": "Lancia fino a tre dadi e scopri il totale.",
+      "teams": "Imposta le regole e dividi i partecipanti in squadre bilanciate."
     }
   },
   "pl": {
-    "intro": "Wpisz imiona lub zaimportuj kandydatów z turnieju i pozwól zdecydować losowi. Wypróbuj koło, losowanie kul, pinball, karty, drabinkę, losy i generator drużyn, a następnie udostępnij wyniki.",
+    "intro": "Wpisz imiona lub zaimportuj uczestników turnieju, by ich wylosować.",
     "choose": "Jak chcesz wybrać?",
     "import": "Importowanie zalecanych kandydatów",
     "search": "Szukaj turniejów",
@@ -2166,19 +2166,19 @@
     ],
     "shareTooLong": "Lista kandydatów jest za długa na link do udostępnienia. Skróć ją.",
     "modeDescriptions": {
-      "wheel": "Koło losujące. Naciśnij Zatrzymaj lub poczekaj 5 sekund na automatyczne zwolnienie. Końcowa pozycja wskaźnika określa wynik. Zaznacz uczestników. Odznacz ich, aby wykluczyć z losowania.",
-      "lotto": "Wybierz pomiędzy 1 a liczbą wybranych kandydatów. Do 200 numerów. Nowy zakres zastępuje obecnych kandydatów.",
-      "pinball": "Spadające kule. Wszyscy zaznaczeni kandydaci biorą udział w wyścigu ze zderzeniami. Wyścig trwa do ukończenia go przez wszystkich, zapisując kolejność na mecie. Wyścigi oparte na fizyce nie gwarantują równych szans na wygraną. Zaznacz uczestników. Odznacz ich, aby wykluczyć z losowania.",
-      "ladder": "Gra w drabinkę. Edytuj etykiety u góry i u dołu, a następnie kliknij kandydata u góry, aby prześledzić jego trasę. Zaznacz uczestników. Odznacz ich, aby wykluczyć z losowania.",
-      "boxes": "Wybierz liczbę pudełek i dodaj puste. Otwieraj ponumerowane pudełka, aby odkryć kandydatów lub puste pola.",
-      "cards": "Karty z imionami lub zdjęciami przesuwają się tam i z powrotem, zanim się zatrzymają. Dodaj własnych kandydatów lub zaimportuj listę.",
-      "order": "Obserwuj wyścig kandydatów do mety. Zobacz wszystkie miejsca i udostępnij kolejność.",
-      "dice": "Rzuć od jednej do trzech kości i zobacz wynik każdej oraz sumę.",
-      "teams": "Wybierz dwóch kandydatów dla każdej zasady. Liczebność drużyn różni się najwyżej o jedną osobę."
+      "wheel": "Zakręć kołem i sprawdź, gdzie zatrzyma się wskaźnik.",
+      "lotto": "Wylosuj tyle imion lub liczb, ile potrzebujesz.",
+      "pinball": "Rozegraj wyścig w pinballu i sprawdź kolejność na mecie.",
+      "ladder": "Prześledź każdą ścieżkę na drabince, by poznać wynik.",
+      "boxes": "Otwórz ponumerowane pudełko, by odkryć uczestnika lub puste pole.",
+      "cards": "Potasuj karty i wylosuj imię lub zdjęcie.",
+      "order": "Sprawdź, w jakiej kolejności uczestnicy dotarli do mety.",
+      "dice": "Rzuć maksymalnie trzema kostkami i sprawdź sumę.",
+      "teams": "Ustal zasady i podziel uczestników na zrównoważone drużyny."
     }
   },
   "nl": {
-    "intro": "Voer namen in of importeer kandidaten uit een toernooi en laat het toeval kiezen. Probeer het rad, de namenballen, flipperkast, kaarten, ladder, lotingen en teamgenerator en deel de resultaten.",
+    "intro": "Voer namen in of importeer toernooideelnemers voor een loting.",
     "choose": "Hoe ga je kiezen?",
     "import": "Aanbevolen kandidaten importeren",
     "search": "Toernooien zoeken",
@@ -2287,19 +2287,19 @@
     ],
     "shareTooLong": "De kandidatenlijst is te lang voor een deellink. Maak de lijst korter.",
     "modeDescriptions": {
-      "wheel": "Rad van fortuin. Druk op Stoppen of wacht 5 seconden tot het rad automatisch vertraagt. De uiteindelijke positie van de aanwijzer bepaalt het resultaat. Vink deelnemers aan. Vink ze uit om ze uit te sluiten.",
-      "lotto": "Kies tussen 1 en het aantal geselecteerde kandidaten. Tot 200 nummers. Een nieuw bereik vervangt de huidige kandidaten.",
-      "pinball": "Vallende flipperballen. Alle geselecteerde kandidaten doen mee aan de race met botsingen. De race gaat door tot iedereen is gefinisht en legt de finishvolgorde vast. Races op basis van natuurkunde garanderen geen gelijke winstkansen. Vink deelnemers aan. Vink ze uit om ze uit te sluiten.",
-      "ladder": "Ladderspel. Bewerk de labels bovenaan en onderaan en klik op een kandidaat bovenaan om het pad te volgen. Vink deelnemers aan. Vink ze uit om ze uit te sluiten.",
-      "boxes": "Kies het aantal dozen en voeg lege dozen toe. Open de genummerde dozen om kandidaten of lege vakken te onthullen.",
-      "cards": "Kaarten met namen of foto's schuiven heen en weer voordat ze stoppen. Voeg je eigen kandidaten toe of importeer een lijst.",
-      "order": "Bekijk hoe kandidaten naar de finish racen. Bekijk alle eindposities en deel de volgorde.",
-      "dice": "Gooi één tot drie dobbelstenen en bekijk elke worp en het totaal.",
-      "teams": "Kies twee kandidaten per regel. De teamgroottes verschillen maximaal één deelnemer."
+      "wheel": "Draai het rad en kijk waar de wijzer stopt.",
+      "lotto": "Trek zoveel namen of getallen als je nodig hebt.",
+      "pinball": "Laat deelnemers flipperen en bekijk de volgorde aan de finish.",
+      "ladder": "Volg elk pad op de ladder om de uitkomst te zien.",
+      "boxes": "Open een genummerde doos en ontdek een naam of een lege doos.",
+      "cards": "Schud de kaarten en trek een naam of foto.",
+      "order": "Bekijk in welke volgorde alle deelnemers finishen.",
+      "dice": "Gooi maximaal drie dobbelstenen en bekijk het totaal.",
+      "teams": "Stel regels in en verdeel de deelnemers over teams van ongeveer gelijke grootte."
     }
   },
   "cs": {
-    "intro": "Zadejte jména nebo importujte kandidáty z turnaje a nechte rozhodnout náhodu. Vyzkoušejte kolo, losování kuliček, pinball, karty, žebřík, losy a generátor týmů a pak sdílejte výsledky.",
+    "intro": "Zadejte jména nebo načtěte účastníky turnaje a losujte.",
     "choose": "Jak si vybereš?",
     "import": "Importovat doporučené zájemce",
     "search": "Vyhledávání turnajů",
@@ -2408,15 +2408,15 @@
     ],
     "shareTooLong": "Seznam kandidátů je příliš dlouhý pro odkaz ke sdílení. Zkraťte jej.",
     "modeDescriptions": {
-      "wheel": "Losovací kolo. Stiskněte Zastavit nebo počkejte 5 sekund na automatické zpomalení. Výsledek určuje konečná poloha ukazatele. Zaškrtněte účastníky. Zrušením zaškrtnutí je vyřadíte.",
-      "lotto": "Vyberte si mezi 1 a počtem vybraných kandidátů. Až 200 čísel. Nový rozsah nahrazuje aktuální kandidáty.",
-      "pinball": "Padající kuličky. Všichni vybraní kandidáti se účastní závodu s nárazy. Závod pokračuje, dokud všichni nedojedou do cíle, a zaznamenává pořadí. Závody založené na fyzice nezaručují stejné šance na výhru. Zaškrtněte účastníky. Zrušením zaškrtnutí je vyřadíte.",
-      "ladder": "Žebříková hra. Upravte horní a dolní popisky a kliknutím na horního kandidáta sledujte jeho cestu. Zaškrtněte účastníky. Zrušením zaškrtnutí je vyřadíte.",
-      "boxes": "Zvolte počet krabic a přidejte prázdné. Otevírejte očíslované krabice a odhalte kandidáty nebo prázdná místa.",
-      "cards": "Karty se jmény nebo fotografiemi se před zastavením pohybují tam a zpět. Přidejte vlastní kandidáty nebo importujte seznam.",
-      "order": "Sledujte závod kandidátů do cíle. Zobrazte všechna umístění a sdílejte pořadí.",
-      "dice": "Hoďte jednou až třemi kostkami a zobrazte jednotlivé hodnoty i součet.",
-      "teams": "Pro každé pravidlo vyberte dva kandidáty. Velikosti týmů se liší nejvýše o jednoho účastníka."
+      "wheel": "Roztočte kolo a podívejte se, kde se zastaví šipka.",
+      "lotto": "Vylosujte tolik jmen nebo čísel, kolik potřebujete.",
+      "pinball": "Spusťte pinballový závod a zjistěte pořadí v cíli.",
+      "ladder": "Sledujte každou cestu po žebříku a zjistěte výsledek.",
+      "boxes": "Otevřete očíslovanou krabičku a odhalte jméno nebo prázdné políčko.",
+      "cards": "Zamíchejte karty a vytáhněte jméno nebo fotku.",
+      "order": "Zjistěte, v jakém pořadí účastníci doběhli do cíle.",
+      "dice": "Hoďte až třemi kostkami a podívejte se na součet.",
+      "teams": "Nastavte pravidla a rozdělte účastníky do vyvážených týmů."
     }
   }
 }

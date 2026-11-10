@@ -158,7 +158,7 @@
       "dest": "/server.js?seo=community-list&lang=$1&board=$2"
     },
     {
-      "src": "/(ko|en|ja|zh|ru|pt|es|fr|id|hi|de|vi|ar|bn|th|tr|it|pl|nl|cs)/(my-worldcups|admin-suggestions|suggestions|suggestions-board|blog/write|blog/[^/]+/edit)/?$",
+      "src": "/(ko|en|ja|zh|ru|pt|es|fr|id|hi|de|vi|ar|bn|th|tr|it|pl|nl|cs)/(my-worldcups|admin-suggestions|suggestions|suggestions-board|blog/write|blog/[^/]+/edit|login|signup)/?$",
       "dest": "/server.js?seo=private-page&lang=$1&page=$2"
     },
     {

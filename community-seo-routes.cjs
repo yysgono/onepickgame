@@ -3,6 +3,16 @@ const {loadSeoTemplate}=require('./seo-template.cjs');
 const {insertRoot}=require('./home-seo-support.cjs');
 const labels=require('./src/components/headerCommunityCopy.json');
 const copy=require('./src/components/communityUiCopy.json');
+const accountTitles = {
+ ko: ['로그인', '회원가입'], en: ['Log in', 'Sign up'], ja: ['ログイン', '新規登録'],
+ zh: ['登录', '注册'], ru: ['Вход', 'Регистрация'], pt: ['Entrar', 'Criar conta'],
+ es: ['Iniciar sesión', 'Crear cuenta'], fr: ['Connexion', 'Inscription'],
+ id: ['Masuk', 'Daftar'], hi: ['लॉग इन', 'साइन अप'], de: ['Anmelden', 'Registrieren'],
+ vi: ['Đăng nhập', 'Đăng ký'], ar: ['تسجيل الدخول', 'إنشاء حساب'],
+ bn: ['লগ ইন', 'নিবন্ধন'], th: ['เข้าสู่ระบบ', 'สมัครสมาชิก'], tr: ['Giriş yap', 'Kayıt ol'],
+ it: ['Accedi', 'Registrati'], pl: ['Zaloguj się', 'Zarejestruj się'],
+ nl: ['Inloggen', 'Registreren'], cs: ['Přihlásit se', 'Zaregistrovat se'],
+};
 const escape=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function render(html,{lang,title,description,canonical,indexable,body}){
  html=html.replace(/<title\b[^>]*>[\s\S]*?<\/title>/gi,'').replace(/<meta\b[^>]*(?:name=["'](?:description|robots|twitter:[^"']*)["']|property=["']og:[^"']*["'])[^>]*>/gi,'').replace(/<link\b[^>]*rel=["'](?:canonical|alternate)["'][^>]*>/gi,'').replace(/<html\b[^>]*>/i,`<html lang="${lang}" dir="${lang==='ar'?'rtl':'ltr'}">`);
@@ -15,6 +25,7 @@ function privateInfo(req){
  if(type==='private-page')return {lang:req.query.lang,page:req.query.page||'my-worldcups'};
  if(['quiz-list','tier-list-list'].includes(type)&&String(req.query.mine)==='1')return {lang:req.query.lang,page:type==='quiz-list'?'quiz?mine=1':'tier-list?mine=1'};
  if(type==='spa'&&['my-worldcups','suggestions','suggestions-board','admin-suggestions'].includes(parts[1]))return {lang:parts[0],page:parts[1]};
+ if(type==='spa'&&parts.length===2&&['login','signup'].includes(parts[1]))return {lang:parts[0],page:parts[1]};
  return null;
 }
 module.exports=(app,client,origin)=>{
@@ -24,7 +35,13 @@ module.exports=(app,client,origin)=>{
   const info=privateInfo(req),publicPage=req.query?.seo==='community-list';if(!info&&!publicPage)return next();
   const lang=Object.hasOwn(labels,info?.lang||req.query.lang)?(info?.lang||req.query.lang):'en',ui=copy[lang]||copy.en;
   try{
-   if(info){const title=/suggestions/.test(info.page)?labels[lang][4]:/blog/.test(info.page)?ui.article:ui.myContent;res.setHeader('Cache-Control','private, no-store');res.setHeader('X-Robots-Tag','noindex, follow');return res.send(render(await loadSeoTemplate(origin),{lang,title:`${title} | OnePickGame`,description:title,canonical:`${origin}/${lang}/${info.page}`,indexable:false,body:`<main class="site-publishing"><h1>${escape(title)}</h1><p role="status">${escape(ui.loading)}</p></main>`}));}
+   if(info){
+    const accountTitle = info.page==='login' ? accountTitles[lang][0] : info.page==='signup' ? accountTitles[lang][1] : null;
+    const title = accountTitle || (/suggestions/.test(info.page) ? labels[lang][4] : /blog/.test(info.page) ? ui.article : ui.myContent);
+    res.setHeader('Cache-Control','private, no-store');
+    res.setHeader('X-Robots-Tag','noindex, follow');
+    return res.send(render(await loadSeoTemplate(origin),{lang,title:`${title} | OnePickGame`,description:title,canonical:`${origin}/${lang}/${info.page}`,indexable:false,body:`<main class="site-publishing"><h1>${escape(title)}</h1><p role="status">${escape(ui.loading)}</p></main>`}));
+   }
    const board=req.query.board;if(!['notices','community'].includes(board))return next();const rows=await boardRows(lang,board),name=labels[lang][board==='notices'?0:1],canonical=`${origin}/${lang}/${board}`;
    const articles=rows.map(p=>`<article class="community-post"><details><summary><strong>${p.is_pinned?escape(ui.pinned)+' · ':''}${escape(p.title)}</strong> · ${escape(p.author_nickname||'Member')}</summary>${p.body_html?`<div>${sanitizeRichHtml(p.body_html)}</div>`:`<p style="white-space:pre-wrap">${escape(p.body)}</p>`}</details><time datetime="${escape(p.created_at)}">${escape(String(p.created_at).slice(0,10))}</time></article>`).join('');
    res.setHeader('Cache-Control','public, s-maxage=30, stale-while-revalidate=60');
