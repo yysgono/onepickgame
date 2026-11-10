@@ -1,0 +1,2431 @@
+import { TIER_COLORS, visibleTierRows } from "../utils/tierRows";
+import tierListCloneButton from "../locales/tierListCloneButton.json";
+import ContentCommentNotices from "./ContentCommentNotices";
+import trashCopy from "../utils/contentTrashCopy.json";
+import {trashContent} from "../utils/contentTrashApi";
+import { hasBadword } from "../badwords-multilang";
+import { addGuestComment, manageGuestComment } from "../utils/guestComments";
+import "./tierCandidateLabels.css";
+import NavigationLink from "./NavigationLink";
+import RelatedContentLinks from "./RelatedContentLinks";
+import tierDetailSeo from "../seo/tierDetailSeo";
+import { socialImage } from "../seo/quizSeo";
+import { TierTags, PresetTitle } from "./TierTagTools";
+import "../registerPresetTranslations";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
+
+import {
+  useNavigate,
+  useParams,
+} from "react-router-dom";
+
+import {
+  useTranslation,
+} from "react-i18next";
+
+import MediaRenderer from "./MediaRenderer";
+import Seo from "../seo/Seo";
+
+import {
+  supabase,
+} from "../utils/supabaseClient";
+
+import {
+  getUserOrGuestId,
+} from "../utils";
+
+
+const CLONE_STORAGE_KEY =
+  "onepick_tier_clone_v1";
+
+const EDIT_STORAGE_KEY =
+  "onepick_tier_edit_v1";
+
+const WORLDCUP_FROM_TIER_STORAGE_KEY =
+  "onepick_worldcup_from_tier_v1";
+
+const { getTierListTitle } = tierDetailSeo;
+
+/* =========================================================
+   Canvas export helpers
+   ========================================================= */
+
+/* =========================================================
+   결과 페이지 문구
+
+   지금은 여기 묶어두고
+   티어표 완성 후 기존 16개 언어 번역 파일로 이동
+   ========================================================= */
+
+
+
+/* =========================================================
+   TierListResultPage
+   ========================================================= */
+
+function TierListResultPage() {
+  const navigate =
+    useNavigate();
+
+
+  const {
+    id,
+  } =
+    useParams();
+
+
+  const {
+    t,
+    i18n,
+  } =
+    useTranslation();
+
+
+  const lang =
+    (
+      i18n.language ||
+      "en"
+    ).split("-")[0];
+
+
+  const text =
+    useMemo(
+      () => ({
+        loading: t("tierList.result.loading"),
+        loadFailed: t("tierList.result.loadFailed"),
+        notFound: t("tierList.result.notFound"),
+        tierHome: t("tierList.result.tierHome"),
+        tierList: t("tierList.result.tierList"),
+        onePickTitle: t("tierList.common.onePick"),
+        author: t("tierList.common.author"),
+        guestAuthor: t("tierList.common.guestAuthor"),
+        unknownAuthor: t("tierList.common.unknownAuthor"),
+        share: t("tierList.common.share"),
+        shareText: (title) => t("tierList.result.shareText", { title }),
+        linkCopied: t("tierList.result.linkCopied"),
+        download: t("tierList.result.download"),
+        downloading: t("tierList.result.downloading"),
+        downloadFailed: t("tierList.result.downloadFailed"),
+        edit: t("tierList.common.edit"),
+        delete: t("tierList.common.delete"),
+        deleteConfirm: t("tierList.result.deleteConfirm"),
+        deleting: t("tierList.result.deleting"),
+        deleteFailed: t("tierList.result.deleteFailed"),
+        usedPreset: t("tierList.result.usedPreset"),
+        createBracketFromTier: t("tierList.result.createBracketFromTier"),
+        createBracketFromPreset: t("tierList.result.createBracketFromPreset"),
+        comments: t("tierList.common.comments"),
+        nickname: t("tierList.common.nickname"),
+        commentPlaceholder: t("tierList.result.commentPlaceholder"),
+        nicknameRequired: t("tierList.result.nicknameRequired"),
+        commentRequired: t("tierList.result.commentRequired"),
+        commentMax: t("tierList.result.commentMax"),
+        commentPostFailed: t("tierList.result.commentPostFailed"),
+        posting: t("tierList.result.posting"),
+        post: t("tierList.result.post"),
+        noComments: t("tierList.result.noComments"),
+        anonymous: t("tierList.common.anonymous"),
+        unknownError: t("tierList.common.unknownError"),
+        untitled: t("tierList.common.untitledCandidate"),
+        guestPasswordPrompt: t("tierList.result.guestPasswordPrompt"),
+        guestPasswordWrong: t("tierList.result.guestPasswordWrong"),
+        guestPasswordRequired: t("tierList.result.guestPasswordRequired"),
+        like: t("tierList.result.like"),
+        liked: t("tierList.result.liked"),
+        views: t("tierList.result.views"),
+        likes: t("tierList.result.likes"),
+        remixes: t("tierList.result.remixes"),
+      }),
+      [t]
+    );
+
+
+  const [
+    isMobile,
+    setIsMobile,
+  ] =
+    useState(
+      typeof window !==
+        "undefined"
+        ? window.innerWidth <
+          600
+        : false
+    );
+
+
+  const [
+    tierList,
+    setTierList,
+  ] =
+    useState(
+      null
+    );
+
+
+  const [
+    loading,
+    setLoading,
+  ] =
+    useState(
+      true
+    );
+
+
+  const [
+    error,
+    setError,
+  ] =
+    useState(
+      ""
+    );
+
+
+  const [
+    comments,
+    setComments,
+  ] =
+    useState(
+      []
+    );
+
+
+  const [
+    commentLoading,
+    setCommentLoading,
+  ] =
+    useState(
+      false
+    );
+
+
+  const [
+    commentText,
+    setCommentText,
+  ] =
+    useState(
+      ""
+    );
+
+
+  const [
+    nickname,
+    setNickname,
+  ] =
+    useState(
+      ""
+    );
+
+
+  const [
+    currentUser,
+    setCurrentUser,
+  ] =
+    useState(
+      null
+    );
+
+  const [guestCommentPassword, setGuestCommentPassword] = useState("");
+const [
+  isAdmin,
+  setIsAdmin,
+] = useState(false);
+
+  const [seoAuthor, setSeoAuthor] = useState({ tierId: null, nickname: "" });
+
+  const [
+    authorName,
+    setAuthorName,
+  ] =
+    useState(
+      ""
+    );
+
+
+  const [
+    shareMessage,
+    setShareMessage,
+  ] =
+    useState(
+      ""
+    );
+
+
+  const [
+    downloading,
+    setDownloading,
+  ] =
+    useState(
+      false
+    );
+
+
+  const [
+    deleting,
+    setDeleting,
+  ] =
+    useState(
+      false
+    );
+
+
+  const [
+    liked,
+    setLiked,
+  ] =
+    useState(false);
+
+
+  const [
+    likeLoading,
+    setLikeLoading,
+  ] =
+    useState(false);
+
+
+  /* =========================
+     반응형
+     ========================= */
+
+  useEffect(() => {
+    const handleResize =
+      () => {
+        setIsMobile(
+          window.innerWidth <
+            600
+        );
+      };
+
+
+    window.addEventListener(
+      "resize",
+      handleResize
+    );
+
+
+    return () => {
+      window.removeEventListener(
+        "resize",
+        handleResize
+      );
+    };
+  }, []);
+
+
+  /* =========================
+     현재 사용자
+     ========================= */
+
+  useEffect(() => {
+    let mounted =
+      true;
+
+
+    async function loadUser() {
+      try {
+        const {
+          data,
+        } =
+          await supabase
+            .auth
+            .getUser();
+
+
+        const user =
+          data?.user ||
+          null;
+
+
+        if (
+          !mounted
+        ) {
+          return;
+        }
+
+
+        setCurrentUser(
+          user
+        );
+
+
+        if (
+          user?.id
+        ) {
+          const {
+            data:
+              profile,
+          } =
+            await supabase
+              .from("public_member_names")
+              .select(
+                "nickname"
+              )
+              .eq(
+                "id",
+                user.id
+              )
+              .maybeSingle();
+
+
+if (mounted) {
+  setNickname(
+    profile?.nickname || ""
+  );
+
+  setIsAdmin(
+    profile?.nickname === "admin"
+  );
+}
+        } else {
+          const savedGuestName =
+            localStorage
+              .getItem(
+                "tier_list_guest_nickname"
+              );
+
+
+          if (
+            savedGuestName
+          ) {
+            setNickname(
+              savedGuestName
+            );
+          }
+        }
+      } catch (
+        userError
+      ) {
+        console.error(
+          "사용자 정보 조회 실패:",
+          userError
+        );
+      }
+    }
+
+
+    loadUser();
+
+
+    return () => {
+      mounted =
+        false;
+    };
+  }, []);
+
+
+  /* =========================
+     티어표 불러오기
+     ========================= */
+
+  const fetchTierList =
+    useCallback(
+      async () => {
+        if (
+          !id
+        ) {
+          return;
+        }
+
+
+        setLoading(
+          true
+        );
+
+        setError(
+          ""
+        );
+
+
+        try {
+          const {
+            data,
+            error:
+              fetchError,
+          } =
+            await supabase
+              .from(
+                "tier_lists"
+              )
+              .select(
+                "id, user_id, guest_nickname, title, title_translations, description, description_translations, source_worldcup_id, category, thumbnail_url, candidate_count, has_one_pick, view_count, like_count, comment_count, clone_count, created_at, tier_labels, tiers, candidates"
+              ).is("deleted_at", null)
+              .eq(
+                "id",
+                id
+              )
+              .single();
+
+
+          if (
+            fetchError
+          ) {
+            throw fetchError;
+          }
+
+
+          setTierList(
+            data
+          );
+        } catch (
+          fetchError
+        ) {
+          console.error(
+            "티어표 조회 실패:",
+            fetchError
+          );
+
+
+          setError(
+            text.loadFailed
+          );
+        } finally {
+          setLoading(
+            false
+          );
+        }
+      },
+      [
+        id,
+        text.loadFailed,
+      ]
+    );
+
+
+  useEffect(() => {
+    fetchTierList();
+  }, [
+    fetchTierList,
+  ]);
+
+
+  /* =========================
+     조회수 / 좋아요 상태
+     ========================= */
+
+  useEffect(() => {
+    if (!id) {
+      return;
+    }
+
+    const key =
+      `onepick_tier_viewed_${id}`;
+
+    try {
+      if (sessionStorage.getItem(key)) {
+        return;
+      }
+      sessionStorage.setItem(key, "1");
+    } catch {}
+
+    supabase
+      .rpc(
+        "increment_tier_list_view",
+        {
+          p_tier_list_id: id,
+        }
+      )
+      .then(({ error: viewError }) => {
+        if (!viewError) {
+          setTierList((current) =>
+            current
+              ? {
+                  ...current,
+                  view_count:
+                    Number(current.view_count || 0) + 1,
+                }
+              : current
+          );
+        }
+      });
+
+    supabase
+      .from("tier_list_play_logs")
+      .insert({ tier_list_id: id })
+      .then(({ error: logError }) => {
+        if (logError) {
+          console.warn("Failed to record tier list view log", logError);
+        }
+      });
+  }, [id]);
+
+
+  useEffect(() => {
+    if (!id) {
+      return;
+    }
+
+    let cancelled = false;
+
+    async function loadLikeStatus() {
+      try {
+        const { guest_id } =
+          await getUserOrGuestId();
+
+        const {
+          data,
+          error: likeStatusError,
+        } = await supabase.rpc(
+          "get_tier_list_like_status",
+          {
+            p_tier_list_id: id,
+            p_guest_id: guest_id || null,
+          }
+        );
+
+        if (!cancelled && !likeStatusError) {
+          setLiked(Boolean(data));
+        }
+      } catch (likeStatusError) {
+        console.warn(
+          "Tier list like status failed",
+          likeStatusError
+        );
+      }
+    }
+
+    loadLikeStatus();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [id]);
+
+
+  const handleLike =
+    async () => {
+      if (!id || likeLoading) {
+        return;
+      }
+
+      setLikeLoading(true);
+
+      try {
+        const { guest_id } =
+          await getUserOrGuestId();
+
+        const {
+          data,
+          error: likeError,
+        } = await supabase.rpc(
+          "toggle_tier_list_like",
+          {
+            p_tier_list_id: id,
+            p_guest_id: guest_id || null,
+          }
+        );
+
+        if (likeError) {
+          throw likeError;
+        }
+
+        const nextLiked =
+          typeof data === "boolean"
+            ? data
+            : !liked;
+
+        setLiked(nextLiked);
+        setTierList((current) =>
+          current
+            ? {
+                ...current,
+                like_count: Math.max(
+                  0,
+                  Number(current.like_count || 0) +
+                    (nextLiked ? 1 : -1)
+                ),
+              }
+            : current
+        );
+      } catch (likeError) {
+        console.warn(
+          "Tier list like toggle failed",
+          likeError
+        );
+      } finally {
+        setLikeLoading(false);
+      }
+    };
+
+
+  const [sourceTitleCup,setSourceTitleCup]=useState(null);
+  useEffect(()=>{
+    let live=true;setSourceTitleCup(null);
+    if(tierList?.source_worldcup_id){
+      supabase.from('worldcups').select('id,title,title_translations,tier_preset_title_translations').eq('id',tierList.source_worldcup_id).is('deleted_at',null).maybeSingle()
+        .then(({data,error})=>{if(live&&!error)setSourceTitleCup(data);}).catch(()=>{});
+    }
+    return()=>{live=false;};
+  },[tierList?.source_worldcup_id]);
+  /* Public author lookup is reused for UI and SEO, not repeated on like/view updates. */
+  useEffect(() => {
+    let cancelled = false;
+    setAuthorName("");
+    setSeoAuthor({ tierId: null, nickname: "" });
+    if (!tierList?.id) return undefined;
+    const tierId = String(tierList.id);
+    const apply = raw => {
+      if (cancelled) return;
+      const name = String(raw || "").trim();
+      setAuthorName(name || (tierList.user_id ? text.unknownAuthor : text.guestAuthor));
+      setSeoAuthor({ tierId, nickname: name });
+    };
+    if (!tierList.user_id) apply(tierList.guest_nickname);
+    else {
+      supabase.from("public_member_names").select("nickname").eq("id", tierList.user_id).maybeSingle()
+        .then(({ data, error }) => apply(error ? "" : data?.nickname))
+        .catch(() => apply(""));
+    }
+    return () => { cancelled = true; };
+  }, [tierList?.id, tierList?.user_id, tierList?.guest_nickname, text.guestAuthor, text.unknownAuthor]);
+
+  /* =========================
+     본인 글 여부
+     ========================= */
+
+  const isMemberOwner =
+    Boolean(
+      currentUser?.id &&
+      tierList?.user_id &&
+      String(currentUser.id) ===
+        String(tierList.user_id)
+    );
+
+
+  const isGuestPost =
+    Boolean(
+      tierList &&
+      !tierList.user_id
+    );
+
+
+const canManage =
+  isAdmin ||
+  isMemberOwner ||
+  isGuestPost;
+
+  /* =========================
+     댓글 불러오기
+     ========================= */
+
+  const fetchComments =
+    useCallback(
+      async () => {
+        if (
+          !id
+        ) {
+          return;
+        }
+
+
+        try {
+          const {
+            data,
+            error:
+              commentError,
+          } =
+            await supabase
+              .from(
+                "tier_list_comments"
+              )
+              .select(
+                "id, tier_list_id, user_id, guest_id, nickname, content, created_at"
+              )
+              .eq(
+                "tier_list_id",
+                id
+              )
+              .order(
+                "created_at",
+                {
+                  ascending:
+                    true,
+                }
+              );
+
+
+          if (
+            commentError
+          ) {
+            throw commentError;
+          }
+
+
+          setComments(
+            Array.isArray(
+              data
+            )
+              ? data
+              : []
+          );
+        } catch (
+          commentError
+        ) {
+          console.error(
+            "티어표 댓글 조회 실패:",
+            commentError
+          );
+        }
+      },
+      [
+        id,
+      ]
+    );
+
+
+  useEffect(() => {
+    fetchComments();
+  }, [
+    fetchComments,
+  ]);
+
+
+  /* =========================
+     후보 map
+     ========================= */
+
+  const candidateMap =
+    useMemo(() => {
+      const map =
+        new Map();
+
+
+      const candidates =
+        Array.isArray(
+          tierList
+            ?.candidates
+        )
+          ? tierList
+              .candidates
+          : [];
+
+
+      candidates.forEach(
+        (
+          candidate
+        ) => {
+          map.set(
+            String(
+              candidate.id
+            ),
+            candidate
+          );
+        }
+      );
+
+
+      return map;
+    }, [
+      tierList,
+    ]);
+
+
+  /* =========================
+     나만의 원픽 후보
+     ========================= */
+
+  const onePickCandidate =
+    useMemo(() => {
+      const onePickId =
+        tierList
+          ?.tiers
+          ?.ONE_PICK;
+
+
+      if (
+        !onePickId
+      ) {
+        return null;
+      }
+
+
+      return (
+        candidateMap.get(
+          String(
+            onePickId
+          )
+        ) ||
+        null
+      );
+    }, [
+      tierList,
+      candidateMap,
+    ]);
+
+
+  /* =========================
+     티어 후보
+     ========================= */
+
+  const getTierCandidates =
+    useCallback(
+      (
+        tier
+      ) => {
+        const ids =
+          Array.isArray(
+            tierList
+              ?.tiers
+              ?.[tier]
+          )
+            ? tierList
+                .tiers[
+                  tier
+                ]
+            : [];
+
+
+        return (
+          ids
+            .map(
+              (
+                candidateId
+              ) =>
+                candidateMap.get(
+                  String(
+                    candidateId
+                  )
+                )
+            )
+            .filter(
+              Boolean
+            )
+        );
+      },
+      [
+        tierList,
+        candidateMap,
+      ]
+    );
+
+
+  /* =========================
+     날짜
+     ========================= */
+
+  const formatDate =
+    useCallback(
+      (
+        dateString
+      ) => {
+        if (
+          !dateString
+        ) {
+          return "";
+        }
+
+
+        try {
+          return (
+            new Intl
+              .DateTimeFormat(
+                lang ===
+                  "ko"
+                  ? "ko-KR"
+                  : lang,
+                {
+                  year:
+                    "numeric",
+
+                  month:
+                    "2-digit",
+
+                  day:
+                    "2-digit",
+
+                  hour:
+                    "2-digit",
+
+                  minute:
+                    "2-digit",
+                }
+              )
+              .format(
+                new Date(
+                  dateString
+                )
+              )
+          );
+        } catch {
+          return "";
+        }
+      },
+      [
+        lang,
+      ]
+    );
+
+
+  /* =========================
+     공유
+     ========================= */
+
+  const handleShare =
+    async () => {
+      const url =
+        window.location.href;
+
+
+   const title = tierDetailSeo.getTierPublicTitle({...tierList,_sourcePreset:sourceTitleCup},lang,authorName);
+
+
+      setShareMessage(
+        ""
+      );
+
+
+      try {
+        if (
+          navigator.share
+        ) {
+          await navigator.share(
+            {
+              title,
+
+              text:
+                text.shareText(
+                  title
+                ),
+
+              url,
+            }
+          );
+
+
+          return;
+        }
+
+
+        await navigator
+          .clipboard
+          .writeText(
+            url
+          );
+
+
+        setShareMessage(
+          text.linkCopied
+        );
+
+
+        setTimeout(
+          () => {
+            setShareMessage(
+              ""
+            );
+          },
+          2000
+        );
+      } catch (
+        shareError
+      ) {
+        if (
+          shareError
+            ?.name ===
+          "AbortError"
+        ) {
+          return;
+        }
+
+
+        try {
+          await navigator
+            .clipboard
+            .writeText(
+              url
+            );
+
+
+          setShareMessage(
+            text.linkCopied
+          );
+        } catch {}
+      }
+    };
+
+
+  /* =========================================================
+     PNG 다운로드
+
+     DOM 스크린샷이 아니라
+     실제 후보 데이터를 Canvas에 직접 그림.
+     ========================================================= */
+
+  const handleDownload = async () => {
+    if (!tierList || downloading) return;
+    setDownloading(true);
+    try {
+      const { downloadTierListImage } = await import("../utils/downloadTierListImage");
+      await downloadTierListImage({
+        tiers: visibleTierRows(tierList.tier_labels, tierList.tiers),
+        labels: tierList.tier_labels || {},
+        getTierCandidates,
+        onePickCandidate,
+        onePickTitle: text.onePickTitle,
+        untitled: text.untitled,
+        exportTitle: tierDetailSeo.getTierPublicTitle({...tierList, _sourcePreset: sourceTitleCup}, lang, authorName),
+        authorText: `${text.author}: ${authorName || text.unknownAuthor}`,
+        createdText: formatDate(tierList.created_at),
+      });
+    } catch (error) {
+      console.error("티어표 이미지 다운로드 실패:", error);
+      alert(text.downloadFailed);
+    } finally {
+      setDownloading(false);
+    }
+  };
+
+  /* =========================
+     이 후보로 새 티어표
+     ========================= */
+
+
+  const handleCreateBracketFromTier =
+    () => {
+      if (!tierList) {
+        return;
+      }
+
+      const bracketCandidates =
+        Array.isArray(
+          tierList.candidates
+        )
+          ? tierList.candidates.map(
+              (
+                candidate,
+                index
+              ) => ({
+                id:
+                  candidate?.id ||
+                  "tier-candidate-" + index,
+                name:
+                  candidate?.name || "",
+                image:
+                  candidate?.image || "",
+                file: null,
+              })
+            )
+          : [];
+
+      try {
+        sessionStorage.setItem(
+          WORLDCUP_FROM_TIER_STORAGE_KEY,
+          JSON.stringify({
+            fromTierListId:
+              tierList.id,
+          title:
+  getTierListTitle(
+    tierList,
+    lang,
+    tierList.title || ""
+  ),
+            category:
+              tierList.category || "other",
+            source_worldcup_id:
+              tierList.source_worldcup_id || null,
+            sourcePresetName:
+              tierList?.tier_labels?._sourcePresetName || "",
+            candidates:
+              bracketCandidates,
+          })
+        );
+      } catch (storageError) {
+        console.error(
+          "Tier-to-worldcup payload save failed",
+          storageError
+        );
+      }
+
+      navigate(
+        "/" + lang + "/worldcup-maker",
+        {
+          state: {
+            prefillFromTier: true,
+          },
+        }
+      );
+    };
+
+  const handleClone =
+    async () => {
+      // Analytics must not delay opening the editor.
+      Promise.resolve().then(() => supabase.rpc("increment_tier_list_clone", {p_tier_list_id:tierList.id})).then(({error}) => {if(error) console.warn("Tier list clone count failed",error);}).catch(error => console.warn("Tier list clone count failed",error));
+      try {
+        sessionStorage.setItem(
+          CLONE_STORAGE_KEY,
+          JSON.stringify(
+            {
+              sourceTierListId:
+                tierList.id,
+
+              source_worldcup_id: tierList.source_worldcup_id || null,
+              title_translations: tierList.title_translations || {},
+              title:
+                tierList.title,
+              description: tierList.description || "",
+              description_translations: tierList.description_translations || {},
+
+              category:
+                tierList.category ||
+                "other",
+
+              tier_labels:
+                tierList.tier_labels ||
+                {},
+
+              candidates:
+                Array.isArray(
+                  tierList
+                    .candidates
+                )
+                  ? tierList
+                      .candidates
+                  : [],
+            }
+          )
+        );
+      } catch (
+        storageError
+      ) {
+        console.error(
+          "티어표 후보 복제 데이터 저장 실패:",
+          storageError
+        );
+      }
+
+
+      navigate(
+        `/${lang}/tier-list/create?clone=${tierList.id}`
+      );
+    };
+
+
+  /* =========================
+     수정
+     ========================= */
+
+  const handleEdit =
+    async () => {
+      if (!canManage || !tierList) {
+        return;
+      }
+
+      let guestPassword = "";
+
+      if (isGuestPost) {
+        guestPassword =
+          window.prompt(
+            text.guestPasswordPrompt
+          ) || "";
+
+        if (!guestPassword) {
+          return;
+        }
+
+        const {
+          data: verified,
+          error: verifyError,
+        } = await supabase.rpc(
+          "verify_guest_tier_list_password",
+          {
+            p_tier_list_id: tierList.id,
+            p_password: guestPassword,
+          }
+        );
+
+        if (verifyError) {
+          alert(
+            `${text.guestPasswordRequired}\n${verifyError.message || text.unknownError}`
+          );
+          return;
+        }
+
+        if (!verified) {
+          alert(text.guestPasswordWrong);
+          return;
+        }
+      }
+
+      try {
+        sessionStorage.setItem(
+          EDIT_STORAGE_KEY,
+          JSON.stringify({
+            id: tierList.id,
+            user_id: tierList.user_id || null,
+            guest_nickname: tierList.guest_nickname || "",
+            title: tierList.title,
+            description: tierList.description || "",
+            description_translations: tierList.description_translations || {},
+            title_translations:
+  tierList.title_translations || {},
+            source_worldcup_id:
+              tierList.source_worldcup_id || null,
+            category: tierList.category || "other",
+            tier_labels: tierList.tier_labels || {},
+            tiers: tierList.tiers || {},
+            candidates: Array.isArray(tierList.candidates)
+              ? tierList.candidates
+              : [],
+          })
+        );
+      } catch (storageError) {
+        console.error("Tier list edit payload save failed", storageError);
+      }
+
+      navigate(
+        `/${lang}/tier-list/create?edit=${tierList.id}`,
+        isGuestPost
+          ? {
+              state: {
+                guestEditPassword:
+                  guestPassword,
+              },
+            }
+          : undefined
+      );
+    };
+
+  /* =========================
+     삭제
+     ========================= */
+
+  const handleDelete =
+    async () => {
+      if (
+        !canManage ||
+        !tierList ||
+        deleting
+      ) {
+        return;
+      }
+
+      const confirmed =
+        window.confirm(
+          (trashCopy[lang] || trashCopy.en)
+        );
+
+      if (!confirmed) {
+        return;
+      }
+
+      setDeleting(true);
+
+      try {
+let guestPassword = null;
+const {data:publisher,error:permissionError}=await supabase.rpc('can_publish_site_content');
+if(permissionError) throw permissionError;
+const canModerate=publisher===true;
+if (!canModerate && isGuestPost) {
+ guestPassword = window.prompt(text.guestPasswordPrompt) || '';
+ if (!guestPassword) return;
+} else if (!canModerate && !isMemberOwner) return;
+await trashContent('tier-list',tierList.id,guestPassword);
+
+        navigate(`/${lang}/tier-list`);
+      } catch (deleteError) {
+        console.error("Tier list delete failed", deleteError);
+        alert(
+          `${text.deleteFailed}\n${deleteError?.message || text.unknownError}`
+        );
+      } finally {
+        setDeleting(false);
+      }
+    };
+
+  /* =========================
+     댓글 작성
+     ========================= */
+
+  const submitComment = async () => {
+    if (commentLoading) return;
+    const cleanComment = commentText.trim();
+    const cleanNickname = nickname.trim();
+    if (!cleanNickname) return alert(text.nicknameRequired);
+    if (!cleanComment) return alert(text.commentRequired);
+    if (cleanComment.length > 500) return alert(text.commentMax);
+    if (hasBadword(cleanNickname, lang) || hasBadword(cleanComment, lang)) return alert(lang === "ko" ? "비속어가 포함된 닉네임이나 댓글은 사용할 수 없습니다." : "Please remove prohibited words from the nickname or comment.");
+    if (!currentUser && !guestCommentPassword) return alert(lang === "ko" ? "수정·삭제용 비밀번호를 입력해주세요." : "Enter a password for editing/deleting.");
+    setCommentLoading(true);
+    try {
+      if (currentUser) {
+        const { error: insertError } = await supabase.from("tier_list_comments").insert({ tier_list_id: id, user_id: currentUser.id, guest_id: null, nickname: cleanNickname, content: cleanComment });
+        if (insertError) throw insertError;
+      } else {
+        await addGuestComment({ kind: "tier-list", targetId: id, nickname: cleanNickname, password: guestCommentPassword, content: cleanComment });
+        setGuestCommentPassword("");
+      }
+      setCommentText("");
+      await fetchComments();
+    } catch (insertError) {
+      alert(`${text.commentPostFailed}: ${insertError?.message || text.unknownError}`);
+    } finally { setCommentLoading(false); }
+  };
+
+  const editGuestTierComment = async (comment) => {
+    const password = window.prompt(lang === "ko" ? "댓글 작성 때 입력한 비밀번호를 입력하세요." : "Enter the password used for this comment.");
+    if (password === null) return;
+    const next = window.prompt(lang === "ko" ? "수정할 댓글 내용을 입력하세요." : "Enter the edited comment.", comment.content);
+    if (next === null) return;
+    const clean = next.trim();
+    if (!clean || clean.length > 500 || hasBadword(clean, lang)) return alert(lang === "ko" ? "댓글 내용을 확인해주세요. (최대 500자, 비속어 금지)" : "Check the comment (up to 500 characters; prohibited words are not allowed).");
+    try { await manageGuestComment({ kind: "tier-list", commentId: comment.id, password, action: "edit", content: clean }); await fetchComments(); }
+    catch (editError) { alert(editError.message || text.commentPostFailed); }
+  };
+
+  const deleteGuestTierComment = async (comment) => {
+    if (!window.confirm(text.deleteConfirm)) return;
+    const password = window.prompt(lang === "ko" ? "댓글 작성 때 입력한 비밀번호를 입력하세요." : "Enter the password used for this comment.");
+    if (password === null) return;
+    try { await manageGuestComment({ kind: "tier-list", commentId: comment.id, password, action: "delete" }); await fetchComments(); }
+    catch (deleteError) { alert(deleteError.message || text.commentPostFailed); }
+  };
+
+  /* =========================
+     로딩
+     ========================= */
+
+  if (
+    loading
+  ) {
+    return (
+      <>
+
+      <div
+        style={{
+          minHeight: "55vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          padding: "32px 16px",
+          boxSizing: "border-box",
+          color: "#202534",
+        }}
+      >
+        <div
+          style={{
+            width: "fit-content",
+            maxWidth: "100%",
+            padding: "14px 20px",
+            borderRadius: 12,
+            border: "1px solid #dde2ea",
+            background: "#ffffff",
+            boxShadow: "0 4px 16px rgba(25,32,52,0.07)",
+            fontWeight: 900,
+            fontSize: 20,
+            textAlign: "center",
+          }}
+        >
+          {text.loading}
+        </div>
+      </div>
+      </>
+    );
+  }
+
+
+  /* =========================
+     오류
+     ========================= */
+
+  if (
+    error ||
+    !tierList
+  ) {
+    return (
+      <>
+        <Seo
+          lang={lang}
+          slug={`tier-list/${id}`}
+          title={t("tierList.seo.resultFallbackTitle")}
+          description={t("tierList.seo.resultFallbackDescription")}
+          indexable={false}
+        />
+      <div
+        style={{
+          minHeight:
+            "100vh",
+
+          background:
+            "#ffffff",
+
+          color:
+            "#202534",
+
+          display:
+            "flex",
+
+          flexDirection:
+            "column",
+
+          alignItems:
+            "center",
+
+          justifyContent:
+            "center",
+
+          gap:
+            16,
+
+          padding:
+            20,
+
+          textAlign:
+            "center",
+        }}
+      >
+        <div
+          style={{
+            fontSize:
+              22,
+
+            fontWeight:
+              900,
+          }}
+        >
+          {error ||
+            text.notFound}
+        </div>
+
+
+
+      </div>
+      </>
+    );
+  }
+
+const displayTitle = tierDetailSeo.getTierPublicTitle({...tierList,_sourcePreset:sourceTitleCup},lang,authorName,t("tierList.result.tierList"));
+
+const detailMeta = tierDetailSeo.getTierListDetailSeo({...tierList,_sourcePreset:sourceTitleCup}, lang, seoAuthor.nickname);
+const seoResultTitle = detailMeta.title;
+const seoResultDescription = detailMeta.description;
+const seoHreflangLangs = detailMeta.languages;
+const seoAuthorReady = seoAuthor.tierId === String(tierList.id);
+
+  const seoImageFallback = socialImage("");
+  const seoResultImage = [
+    tierList.thumbnail_url,
+    ...(Array.isArray(tierList.candidates) ? tierList.candidates : [])
+      .map(candidate => candidate?.image || candidate?.url),
+  ].map(value => socialImage(value)).find(value => value !== seoImageFallback) || seoImageFallback;
+
+  const createBracketCtaLabel =
+    tierList.source_worldcup_id
+      ? text.createBracketFromTier
+      : text.createBracketFromPreset;
+
+  const sourcePresetName = String(
+    tierList?.tier_labels?._sourcePresetName || ""
+  ).trim();
+
+  const canBrowsePreset = Boolean(tierList.source_worldcup_id || sourcePresetName);
+  const presetTierListsHref = (() => {
+    const params = new URLSearchParams();
+    if (tierList.source_worldcup_id) params.set("source", String(tierList.source_worldcup_id));
+    else if (sourcePresetName) params.set("preset", sourcePresetName);
+    else return `/${lang}/tier-list`;
+    return `/${lang}/tier-list?${params.toString()}`;
+  })();
+
+  const [cloneButtonTitle, cloneButtonSubtitle] = tierListCloneButton[lang] || tierListCloneButton.en;
+
+  const detailActionLabels = {
+    makeBracket: t("tierList.result.makeBracketCandidates", {
+      defaultValue: "Make a bracket with these candidates",
+    }),
+    browseTierLists: t("tierList.result.browseTierLists", {
+      defaultValue: "See other user tier lists on this topic",
+    }),
+  };
+
+
+  function renderResultActions() {
+    return (
+      <>
+        <button className="tier-result-action" type="button" onClick={handleDownload} disabled={downloading}>
+          📥 {downloading ? text.downloading : text.download}
+        </button>
+        <button className="tier-result-action tier-result-share" type="button" onClick={handleShare}>
+          🔗 {text.share}
+        </button>
+        {canManage && (
+          <>
+            <button className="tier-result-action" type="button" onClick={handleEdit}>
+              ✏️ {text.edit}
+            </button>
+            <button className="tier-result-action tier-result-delete" type="button" onClick={handleDelete} disabled={deleting}>
+              🗑️ {deleting ? text.deleting : text.delete}
+            </button>
+          </>
+        )}
+      </>
+    );
+  }
+
+  return (
+    <>
+      {seoAuthorReady && <Seo
+        lang={lang}
+        slug={`tier-list/${id}`}
+        title={seoResultTitle}
+        description={seoResultDescription}
+        image={seoResultImage}
+        hreflangLangs={seoHreflangLangs}
+        indexable={true}
+      />}
+<div
+  style={{
+    width: "100vw",
+    maxWidth: "100%",
+    minWidth: 0,
+    boxSizing: "border-box",
+
+    minHeight: "100vh",
+
+        background:
+          "#ffffff",
+
+        color:
+          "#202534",
+      }}
+    >
+      <div
+        style={{
+width: "100%",
+maxWidth: 1380,
+minWidth: 0,
+
+          margin:
+            "0 auto",
+
+          padding:
+            isMobile
+              ? "12px 8px 40px"
+              : "22px 28px 80px",
+
+          boxSizing:
+            "border-box",
+        }}
+      >
+
+ {/* =============================================
+    게시물 헤더
+    ============================================= */}
+
+<div
+  style={{
+    position: "relative",
+
+    width: "100%",
+
+marginTop: isMobile ? 6 : 16,
+
+padding: isMobile
+  ? "12px 10px 14px"
+  : "18px 24px 20px",
+
+    boxSizing: "border-box",
+
+    borderRadius: 14,
+
+    border: "1px solid #dde2ea",
+
+    background: "#ffffff",
+  }}
+>
+<div
+  style={{
+    display: "flex",
+    flexDirection: isMobile ? "column" : "row",
+    flexWrap: isMobile ? "nowrap" : "wrap",
+    justifyContent: "space-between",
+    alignItems: isMobile ? "stretch" : "center",
+    gap: isMobile ? 8 : 12,
+    marginBottom: isMobile ? 10 : 12,
+  }}
+>
+
+  {/* =========================
+      좌측 상단 - 티어표 홈
+      ========================= */}
+
+
+
+
+
+  {/* =========================
+      우측 상단 - 액션
+      ========================= */}
+
+ <div
+  style={{
+    display: isMobile ? "grid" : "flex",
+    gridTemplateColumns: isMobile ? "repeat(3, minmax(0, 1fr))" : undefined,
+    flexWrap: isMobile ? undefined : "wrap",
+    alignItems: "center",
+    justifyContent: isMobile ? "stretch" : "flex-end",
+    gap: isMobile ? 7 : 8,
+    marginLeft: isMobile ? 0 : "auto",
+    width: isMobile ? "100%" : "auto",
+    minWidth: 0,
+    maxWidth: "100%",
+  }}
+>
+    <button
+      type="button"
+      onClick={handleLike}
+      disabled={likeLoading}
+      style={{
+        minHeight: isMobile ? 42 : 52,
+
+        width: isMobile ? "100%" : "auto",
+
+        padding: isMobile ? "0 8px" : "0 18px",
+
+        borderRadius: 10,
+
+        border: liked
+          ? "1px solid #ff6b88"
+          : "1px solid #dde2ea",
+
+        background: liked
+          ? "#ffffff"
+          : "#ffffff",
+
+        color: liked
+          ? "#b42346"
+          : "#202534",
+
+        fontSize: isMobile ? 14 : 16,
+
+        fontWeight: 900,
+
+        cursor: likeLoading
+          ? "default"
+          : "pointer",
+
+        whiteSpace: "nowrap",
+
+        display: "inline-flex",
+
+        alignItems: "center",
+
+        justifyContent: "center",
+      }}
+    >
+      ♥ {liked
+        ? text.liked
+        : text.like}
+    </button>
+
+    {renderResultActions()}
+  </div>
+
+ </div>
+
+  {/* =========================
+      중앙 제목
+      ========================= */}
+
+  <div
+    style={{
+      width: "100%",
+
+      maxWidth: isMobile
+        ? "100%"
+        : 980,
+
+      margin: "0 auto",
+
+      textAlign: "center",
+    }}
+  >
+    <h1
+      style={{
+        margin: 0,
+
+        color: "#202534",
+
+        fontSize: isMobile
+          ? 26
+          : 42,
+
+        fontWeight: 900,
+
+        lineHeight: 1.28,
+
+        textAlign: "center",
+
+        wordBreak: "break-word",
+
+        overflowWrap: "anywhere",
+      }}
+    >
+{displayTitle}
+    </h1>
+  </div>
+
+  <div style={{display: "flex", flexDirection: isMobile ? "column" : "row", flexWrap: "wrap", justifyContent: isMobile ? "center" : "space-between", alignItems: isMobile ? "center" : "baseline", gap: isMobile ? 6 : 12, marginTop: isMobile ? 10 : 14, color: "#5542b8", fontSize: isMobile ? 13 : 16, fontWeight: 700, textAlign: isMobile ? "center" : "left"}}>
+    <div>
+      👤 {text.author}: <strong style={{color: "#202534"}}>{authorName || text.unknownAuthor}</strong>
+      {" · "}{formatDate(tierList.created_at)}
+    </div>
+    {canBrowsePreset && (
+      <div style={{marginLeft: isMobile ? 0 : "auto", minWidth: 0, maxWidth: "100%", textAlign: isMobile ? "center" : "right"}}>
+        {t("tierList.result.usedPresetLabel")}{": "}
+        <NavigationLink appearance="button" to={presetTierListsHref} style={{border: 0, background: "transparent", color: "#5542b8", padding: 0, font: "inherit", textDecoration: "underline", cursor: "pointer", overflowWrap: "anywhere", textAlign: "inherit"}}>
+          <PresetTitle id={tierList.source_worldcup_id} snapshot={sourcePresetName} lang={lang} />
+        </NavigationLink>
+      </div>
+    )}
+  </div>
+  <TierTags value={tierList.tier_labels?._tags} lang={lang} />
+  <p style={{ margin: "10px auto 0", maxWidth: 900, color: "#596579", fontSize: isMobile ? 14 : 16, lineHeight: 1.65, overflowWrap: "anywhere" }}>{seoResultDescription}</p>
+</div>
+        {/* =============================================
+            티어표 / 나만의 원픽
+            ============================================= */}
+
+        <div
+          style={{
+            marginTop: isMobile ? 12 : 18,
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              textAlign: "center",
+              marginBottom: isMobile ? 14 : 18,
+            }}
+          >
+<div style={{display:"grid",gridTemplateColumns:canBrowsePreset ? "1fr 1.12fr 1fr" : "1fr 1.12fr",alignItems:"center",gap:isMobile ? 8 : 14,width:"100%",maxWidth:1100,margin:"0 auto 20px"}}>
+<button
+                  type="button"
+                  onClick={handleCreateBracketFromTier}
+                  style={{
+                    width: "100%",
+                    padding: isMobile ? "13px 14px" : "14px 16px",
+                    borderRadius: 13,
+                    border: "2px solid #ff9f1a",
+                    background: "#ffffff",
+                    color: "#202534",
+                    fontSize: isMobile ? 15 : 16,
+                    fontWeight: 900,
+                    lineHeight: 1.25,
+                    cursor: "pointer",
+                    boxShadow: "0 4px 16px rgba(25,32,52,0.07)",
+                  }}
+                >
+                  {detailActionLabels.makeBracket}
+                </button>
+<button
+                  type="button"
+                  onClick={handleClone}
+                  style={{
+                    width: "100%",
+                    padding: isMobile ? "16px 10px" : "18px 16px",
+                    borderRadius: 13,
+                    border: "2px solid #2563EB",
+                    background: "#2563EB",
+                    color: "#ffffff",
+                    fontSize: isMobile ? 15 : 18,
+                    fontWeight: 900,
+                    lineHeight: 1.25,
+                    cursor: "pointer",
+                    boxShadow: "0 4px 16px rgba(25,32,52,0.07)",
+                  }}
+                >
+                  {cloneButtonTitle}
+                  <small style={{ display: "block", fontSize: 12, marginTop: 5 }}>{cloneButtonSubtitle}</small>
+                </button>
+{canBrowsePreset && (<NavigationLink
+                    appearance="button"
+                    to={presetTierListsHref}
+                    style={{
+                      width: "100%",
+                      padding: isMobile ? "13px 14px" : "14px 16px",
+                      borderRadius: 13,
+                      border: "2px solid #19bfff",
+                      background: "#ffffff",
+                      color: "#202534",
+                      fontSize: isMobile ? 15 : 16,
+                      fontWeight: 900,
+                      lineHeight: 1.25,
+                      whiteSpace: "normal",
+                      overflowWrap: "anywhere",
+                      cursor: "pointer",
+                      boxShadow: "0 4px 16px rgba(25,32,52,0.07)",
+                    }}
+                  >
+                    {detailActionLabels.browseTierLists}
+                  </NavigationLink>)}
+</div>
+          </div>
+
+          <div
+            style={{
+              width: "100%",
+            }}
+          >
+            {visibleTierRows(tierList.tier_labels, tierList.tiers).map((tier) => {
+              const items = getTierCandidates(tier);
+
+              return (
+                <div
+                  key={tier}
+                  style={{
+                    minHeight: isMobile ? 108 : 154,
+                    display: "flex",
+                    marginBottom: 10,
+                    border: "1px solid #dde2ea",
+                    background: "#ffffff",
+                    borderRadius: 9,
+                    overflow: "hidden",
+                  }}
+                >
+                  <div
+                    style={{
+                      width: isMobile ? 66 : 112,
+                      minWidth: isMobile ? 66 : 112,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontSize: isMobile ? 30 : 46,
+                      fontWeight: 900,
+                      background: TIER_COLORS[tier],
+                      color: "#111",
+                    }}
+                  >
+                    {tierList.tier_labels?.[tier] || tier}
+                  </div>
+
+                  <div
+                    style={{
+                      flex: 1,
+                      minWidth: 0,
+                      padding: isMobile ? 9 : 13,
+                      display: "flex",
+                      flexWrap: "wrap",
+                      alignItems: "flex-start",
+                      gap: isMobile ? 7 : 10,
+                    }}
+                  >
+                    {items.map((candidate) => (
+                      <div
+                        key={String(candidate.id)}
+                        style={{
+                          width: isMobile ? 72 : 112,
+                          minWidth: isMobile ? 72 : 112,
+                          overflow: "hidden",
+                          borderRadius: 8,
+                          border: "1px solid #dde2ea",
+                          background: "#ffffff",
+                        }}
+                      >
+                        <div
+                          style={{
+                            width: "100%",
+                            aspectRatio: "1 / 1",
+                            overflow: "hidden",
+                            background: "#ffffff",
+                          }}
+                        >
+                          {candidate?.image ? (
+                            <MediaRenderer
+                              url={candidate.image}
+                              alt={candidate.name || ""}
+                              playable={false}
+                              deferUntilVisible
+                              viewportMargin="360px"
+                              style={{
+                                width: "100%",
+                                height: "100%",
+                                objectFit: "contain",
+                                objectPosition: "center",
+                                display: "block",
+                              }}
+                            />
+                          ) : (
+                            <div
+                              style={{
+                                width: "100%",
+                                height: "100%",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                color: "#5542b8",
+                                fontSize: 12,
+                                fontWeight: 800,
+                              }}
+                            >
+                              NO IMAGE
+                            </div>
+                          )}
+                        </div>
+
+                        <div className="tier-candidate-name" title={candidate.name || text.untitled}
+                          style={{
+                            padding: isMobile ? "5px 4px" : "7px 5px",
+                            textAlign: "center",
+                            fontSize: isMobile ? 13 : 14,
+                            fontWeight: 800,
+                            overflow: "hidden",
+                          }}
+                        >
+                          <span className="tier-candidate-name-text">{candidate.name || text.untitled}</span>
+                        </div>
+                      </div>
+                    ))}
+
+                    {items.length === 0 && (
+                      <div
+                        style={{
+                          alignSelf: "center",
+                          color: "#53657d",
+                          fontSize: 15,
+                          fontWeight: 700,
+                        }}
+                      >
+                        -
+                      </div>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* =============================================
+            액션 버튼
+            ============================================= */}
+
+        <div className="tier-result-bottom-actions">
+          <button className="tier-result-action tier-result-clone" type="button" onClick={handleClone}>
+            {cloneButtonTitle}
+            <small>{cloneButtonSubtitle}</small>
+          </button>
+          {renderResultActions()}
+        </div>
+
+        {/* =============================================
+            댓글
+            ============================================= */}
+
+        <div
+          style={{
+            marginTop:
+              isMobile
+                ? 34
+                : 48,
+
+            padding:
+              isMobile
+                ? 14
+                : 22,
+
+            borderRadius:
+              14,
+
+            border:
+              "1px solid #dde2ea",
+
+            background:
+              "#ffffff",
+          }}
+        >
+          <div
+            style={{
+              fontSize:
+                isMobile
+                  ? 21
+                  : 24,
+
+              fontWeight:
+                900,
+
+              marginBottom:
+                16,
+            }}
+          >
+            💬{" "}
+            {text.comments}
+
+            {" · "}
+
+            {comments.length}
+          </div>
+
+
+          <ContentCommentNotices key={`tier-list-${id}`} kind="tier-list" targetId={id} />
+
+          {/* 댓글 작성 */}
+
+          <div
+            style={{
+              padding:
+                12,
+
+              borderRadius:
+                10,
+
+              border:
+                "1px solid #dde2ea",
+
+              background:
+                "#ffffff",
+            }}
+          >
+            <input
+              type="text"
+              value={
+                nickname
+              }
+              onChange={(
+                e
+              ) =>
+                setNickname(
+                  e.target.value
+                )
+              }
+              disabled={
+                Boolean(
+                  currentUser &&
+                  nickname
+                )
+              }
+              maxLength={
+                30
+              }
+              placeholder={
+                text.nickname
+              }
+              style={{
+                width:
+                  "100%",
+
+                maxWidth:
+                  280,
+
+                height:
+                  38,
+
+                boxSizing:
+                  "border-box",
+
+                padding:
+                  "0 11px",
+
+                marginBottom:
+                  9,
+
+                borderRadius:
+                  7,
+
+                border:
+                  "1px solid #dde2ea",
+
+                background:
+                  "#ffffff",
+
+                color:
+                  "#202534",
+
+                outline:
+                  "none",
+
+                fontWeight:
+                  700,
+
+                opacity:
+                  currentUser &&
+                  nickname
+                    ? 0.8
+                    : 1,
+              }}
+            />
+
+
+            {!currentUser && <input type="password" value={guestCommentPassword} onChange={e => setGuestCommentPassword(e.target.value)} minLength={4} maxLength={50} autoComplete="new-password" placeholder={lang === "ko" ? "수정·삭제용 비밀번호 (4~50자)" : "Password for editing/deleting (4–50 characters)"} style={{ width: "100%", maxWidth: 360, height: 40, boxSizing: "border-box", padding: "0 11px", marginBottom: 9, borderRadius: 7, border: "1px solid #dde2ea" }} />}
+
+            <textarea
+              value={
+                commentText
+              }
+              onChange={(
+                e
+              ) =>
+                setCommentText(
+                  e.target.value
+                )
+              }
+              maxLength={
+                500
+              }
+              placeholder={
+                text.commentPlaceholder
+              }
+              style={{
+                width:
+                  "100%",
+
+                minHeight:
+                  90,
+
+                resize:
+                  "vertical",
+
+                boxSizing:
+                  "border-box",
+
+                padding:
+                  11,
+
+                borderRadius:
+                  8,
+
+                border:
+                  "1px solid #dde2ea",
+
+                background:
+                  "#ffffff",
+
+                color:
+                  "#202534",
+
+                outline:
+                  "none",
+
+                fontFamily:
+                  "inherit",
+
+                fontSize:
+                  16,
+
+                lineHeight:
+                  1.5,
+              }}
+            />
+
+
+            <div
+              style={{
+                marginTop:
+                  8,
+
+                display:
+                  "flex",
+
+                alignItems:
+                  "center",
+
+                justifyContent:
+                  "space-between",
+
+                gap:
+                  10,
+              }}
+            >
+              <div
+                style={{
+                  color:
+                    "#5542b8",
+
+                  fontSize:
+                    14,
+
+                  fontWeight:
+                    700,
+                }}
+              >
+                {commentText.length}
+                /500
+              </div>
+
+
+              <button
+                type="button"
+                onClick={
+                  submitComment
+                }
+                disabled={
+                  commentLoading
+                }
+                style={{
+                  padding:
+                    "9px 16px",
+
+                  borderRadius:
+                    8,
+
+                  border:
+                    "1px solid #19bfff",
+
+                  background:
+                    commentLoading
+                      ? "#ffffff"
+                      : "#2563EB",
+
+                  color:
+                    (commentLoading) ? "#202534" : "#ffffff",
+
+                  fontWeight:
+                    900,
+
+                  cursor:
+                    commentLoading
+                      ? "default"
+                      : "pointer",
+                }}
+              >
+                {commentLoading
+                  ? text.posting
+                  : text.post}
+              </button>
+            </div>
+          </div>
+
+
+          {/* 댓글 목록 */}
+
+          <div
+            style={{
+              marginTop:
+                16,
+            }}
+          >
+            {comments.length ===
+            0 ? (
+              <div
+                style={{
+                  padding:
+                    "25px 10px",
+
+                  textAlign:
+                    "center",
+
+                  color:
+                    "#61748c",
+
+                  fontWeight:
+                    700,
+
+                  fontSize:
+                    16,
+                }}
+              >
+                {text.noComments}
+              </div>
+            ) : (
+              comments.map(
+                (
+                  comment
+                ) => (
+                  <div
+                    key={
+                      comment.id
+                    }
+                    style={{
+                      padding:
+                        "13px 4px",
+
+                      borderBottom:
+                        "1px solid #dde2ea",
+                    }}
+                  >
+                    <div
+                      style={{
+                        display:
+                          "flex",
+
+                        alignItems:
+                          "center",
+
+                        gap:
+                          8,
+
+                        flexWrap:
+                          "wrap",
+                      }}
+                    >
+                      <span
+                        style={{
+                          color:
+                            "#202534",
+
+                          fontSize:
+                            16,
+
+                          fontWeight:
+                            900,
+                        }}
+                      >
+                        {comment.nickname ||
+                          text.anonymous}
+                      </span>
+
+
+                      <span
+                        style={{
+                          color:
+                            "#566b83",
+
+                          fontSize:
+                            13,
+
+                          fontWeight:
+                            700,
+                        }}
+                      >
+                        {formatDate(
+                          comment
+                            .created_at
+                        )}
+                      </span>
+                    </div>
+
+
+                    <div
+                      style={{
+                        marginTop:
+                          6,
+
+                        color:
+                          "#596579",
+
+                        fontSize:
+                          16,
+
+                        lineHeight:
+                          1.55,
+
+                        whiteSpace:
+                          "pre-wrap",
+
+                        wordBreak:
+                          "break-word",
+                      }}
+                    >
+                      {comment.content}
+                    </div>
+                    {!comment.user_id && comment.guest_id?.startsWith("pw1:") && <div style={{ display: "flex", gap: 12, marginTop: 8 }}><button type="button" onClick={() => editGuestTierComment(comment)} style={{ border: 0, background: "transparent", color: "#5935ac", padding: 0, cursor: "pointer" }}>{lang === "ko" ? "수정" : "Edit"}</button><button type="button" onClick={() => deleteGuestTierComment(comment)} style={{ border: 0, background: "transparent", color: "#b42346", padding: 0, cursor: "pointer" }}>{text.delete}</button></div>}
+                  </div>
+                )
+              )
+            )}
+          </div>
+        </div>
+        <RelatedContentLinks lang={lang} category={tierList.category} sourceWorldcupId={tierList.source_worldcup_id} />
+      </div>
+    </div>
+    </>
+  );
+}
+
+
+export default TierListResultPage;
+
