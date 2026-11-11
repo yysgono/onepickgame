@@ -258,3 +258,7 @@
 .top-nine .tn-draft-notice{text-align:center;color:#513197;font-size:15px;margin:14px auto}
 
 .tn-action-notice{scroll-margin-block:90px 190px}
+
+.top-nine .tn-action-notice{width:min(100%,1120px);max-width:1120px;box-sizing:border-box;white-space:normal;word-break:keep-all;overflow-wrap:break-word}
+.tn-action-notice p{text-wrap:balance}
+.tn-action-notice a{display:block;width:max-content;max-width:100%;margin:10px auto 0}

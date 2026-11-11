@@ -43,7 +43,7 @@
     "privateView": "View privately",
     "publish": "Publish to gallery",
     "nickname": "Nickname",
-    "password": "Password (8+ characters)",
+    "password": "Password (4+ characters)",
     "confirmPassword": "Confirm password",
     "publishHelp": "Publishing makes this collage public.\nGuests enter a nickname and a password for deletion.",
     "published": "Published to the public gallery.",
@@ -74,8 +74,11 @@
     "noDraft": "No draft saved in this browser.",
     "unlockEdit": "Edit guest collage",
     "unlockEditHelp": "Enter the password set when publishing. After verification, save without re-entering it for 30 minutes in this tab.",
-    "editPasswordError": "Incorrect password or temporarily locked. Please try again later.",
-    "uploadShareRestriction": "If you include photos uploaded from your device, guests can preview or download; sharing or publishing requires signing in."
+    "editPasswordError": "Incorrect password. Enter the password used when publishing.",
+    "uploadShareRestriction": "If you include photos uploaded from your device, guests can preview or download; sharing or publishing requires signing in.",
+    "editVerifyUnavailable": "Unable to verify the password right now. Please try again later.",
+    "editLocked": "Too many attempts. Please try again in 15 minutes.",
+    "editSetupRequired": "Password verification is not ready. Please contact the site administrator."
   },
   "ko": {
     "nav": "구절판",
@@ -121,7 +124,7 @@
     "privateView": "나만 보기",
     "publish": "공개 목록에 게시",
     "nickname": "닉네임",
-    "password": "비밀번호 (8자 이상)",
+    "password": "비밀번호 (4자 이상)",
     "confirmPassword": "비밀번호 확인",
     "publishHelp": "공개하면 다른 사람도 이 구절판을 볼 수 있어요.\n비회원은 닉네임과 삭제용 비밀번호를 입력하세요.",
     "published": "공개 목록에 게시했어요.",
@@ -152,8 +155,11 @@
     "noDraft": "이 브라우저에 임시저장한 구절판이 없어요.",
     "unlockEdit": "비회원 게시물 수정",
     "unlockEditHelp": "게시할 때 설정한 비밀번호를 입력해 주세요. 확인 후 이 탭에서 30분 동안 다시 입력하지 않아도 저장할 수 있어요.",
-    "editPasswordError": "비밀번호가 일치하지 않거나 잠시 이용이 제한되었어요. 다시 확인해 주세요.",
-    "uploadShareRestriction": "직접 올린 사진을 포함하면 비회원은 나만 보기·이미지 다운로드만 가능하며, 링크 공유·공개 게시에는 로그인이 필요해요."
+    "editPasswordError": "비밀번호가 일치하지 않아요. 게시할 때 사용한 비밀번호를 확인해 주세요.",
+    "uploadShareRestriction": "직접 올린 사진을 포함하면 비회원은 나만 보기·이미지 다운로드만 가능하며, 링크 공유·공개 게시에는 로그인이 필요해요.",
+    "editVerifyUnavailable": "비밀번호 확인 중 오류가 발생했어요. 잠시 후 다시 시도해 주세요.",
+    "editLocked": "여러 번 확인에 실패하여 수정이 잠시 제한되었어요. 15분 후 다시 시도해 주세요.",
+    "editSetupRequired": "비밀번호 확인 기능이 아직 준비되지 않았어요. 운영자에게 문의해 주세요."
   },
   "ja": {
     "nav": "マイトップ9",
@@ -199,7 +205,7 @@
     "privateView": "自分だけで見る",
     "publish": "公開一覧に投稿",
     "nickname": "ニックネーム",
-    "password": "パスワード（8文字以上）",
+    "password": "パスワード（4文字以上）",
     "confirmPassword": "パスワード確認",
     "publishHelp": "公開すると他の人も閲覧できます。\nゲストはニックネームと削除用パスワードを入力してください。",
     "published": "公開しました。",
@@ -231,7 +237,10 @@
     "unlockEdit": "ゲスト投稿を編集",
     "unlockEditHelp": "公開時のパスワードを入力してください。確認後、このタブでは30分間再入力せず保存できます。",
     "editPasswordError": "パスワードが違うか一時的に制限されています。",
-    "uploadShareRestriction": "自分でアップロードした写真を含む場合、ゲストはプレビュー・画像保存のみ利用でき、共有・公開にはログインが必要です。"
+    "uploadShareRestriction": "自分でアップロードした写真を含む場合、ゲストはプレビュー・画像保存のみ利用でき、共有・公開にはログインが必要です。",
+    "editVerifyUnavailable": "エラーが発生しました。再試行してください。",
+    "editLocked": "パスワードが違うか一時的に制限されています。",
+    "editSetupRequired": "エラーが発生しました。再試行してください。"
   },
   "zh": {
     "nav": "我的九宫格",
@@ -277,7 +286,7 @@
     "privateView": "仅自己查看",
     "publish": "发布到公开列表",
     "nickname": "昵称",
-    "password": "密码（至少8个字符）",
+    "password": "密码（至少4个字符）",
     "confirmPassword": "确认密码",
     "publishHelp": "发布后其他人也能查看。\n访客请输入昵称和用于删除的密码。",
     "published": "已发布到公开列表。",
@@ -309,7 +318,10 @@
     "unlockEdit": "编辑访客拼图",
     "unlockEditHelp": "请输入发布时设置的密码。验证后，此标签页内30分钟内保存无需再次输入。",
     "editPasswordError": "密码不正确或暂时受限，请稍后重试。",
-    "uploadShareRestriction": "包含自己上传的照片时，访客只能预览或下载图片，分享或发布需要登录。"
+    "uploadShareRestriction": "包含自己上传的照片时，访客只能预览或下载图片，分享或发布需要登录。",
+    "editVerifyUnavailable": "发生错误，请重试。",
+    "editLocked": "密码不正确或暂时受限，请稍后重试。",
+    "editSetupRequired": "发生错误，请重试。"
   },
   "es": {
     "nav": "Mis 9 favoritos",
@@ -355,7 +367,7 @@
     "privateView": "Ver en privado",
     "publish": "Publicar en la galería",
     "nickname": "Apodo",
-    "password": "Contraseña (8+ caracteres)",
+    "password": "Contraseña (4+ caracteres)",
     "confirmPassword": "Confirmar contraseña",
     "publishHelp": "La publicación será pública.\nLos invitados deben indicar un apodo y una contraseña para eliminarla.",
     "published": "Publicado en la galería.",
@@ -387,7 +399,10 @@
     "unlockEdit": "Editar collage de invitado",
     "unlockEditHelp": "Introduce la contraseña de publicación. Tras verificarla podrás guardar sin repetirla durante 30 minutos en esta pestaña.",
     "editPasswordError": "Contraseña incorrecta o bloqueo temporal.",
-    "uploadShareRestriction": "Si incluyes fotos de tu dispositivo, los invitados solo pueden previsualizar o descargar; compartir o publicar requiere iniciar sesión."
+    "uploadShareRestriction": "Si incluyes fotos de tu dispositivo, los invitados solo pueden previsualizar o descargar; compartir o publicar requiere iniciar sesión.",
+    "editVerifyUnavailable": "Ha ocurrido un error. Inténtalo de nuevo.",
+    "editLocked": "Contraseña incorrecta o bloqueo temporal.",
+    "editSetupRequired": "Ha ocurrido un error. Inténtalo de nuevo."
   },
   "fr": {
     "nav": "Mes 9 favoris",
@@ -433,7 +448,7 @@
     "privateView": "Voir en privé",
     "publish": "Publier dans la galerie",
     "nickname": "Pseudo",
-    "password": "Mot de passe (8 caractères min.)",
+    "password": "Mot de passe (4 caractères min.)",
     "confirmPassword": "Confirmer le mot de passe",
     "publishHelp": "La publication sera publique.\nLes invités indiquent un pseudo et un mot de passe pour la suppression.",
     "published": "Publié dans la galerie.",
@@ -465,7 +480,10 @@
     "unlockEdit": "Modifier une publication invitée",
     "unlockEditHelp": "Saisissez le mot de passe de publication. Après vérification, vous pourrez enregistrer sans le ressaisir pendant 30 minutes dans cet onglet.",
     "editPasswordError": "Mot de passe incorrect ou blocage temporaire.",
-    "uploadShareRestriction": "Avec vos propres photos, les invités peuvent seulement prévisualiser ou télécharger ; le partage et la publication nécessitent une connexion."
+    "uploadShareRestriction": "Avec vos propres photos, les invités peuvent seulement prévisualiser ou télécharger ; le partage et la publication nécessitent une connexion.",
+    "editVerifyUnavailable": "Une erreur est survenue. Réessayez.",
+    "editLocked": "Mot de passe incorrect ou blocage temporaire.",
+    "editSetupRequired": "Une erreur est survenue. Réessayez."
   },
   "it": {
     "nav": "I miei 9 preferiti",
@@ -511,7 +529,7 @@
     "privateView": "Visualizza in privato",
     "publish": "Pubblica nella galleria",
     "nickname": "Soprannome",
-    "password": "Password (almeno 8 caratteri)",
+    "password": "Password (almeno 4 caratteri)",
     "confirmPassword": "Conferma password",
     "publishHelp": "Il collage sarà pubblico.\nGli ospiti inseriscono un nome e una password per eliminarlo.",
     "published": "Pubblicato nella galleria.",
@@ -543,7 +561,10 @@
     "unlockEdit": "Modifica collage ospite",
     "unlockEditHelp": "Inserisci la password della pubblicazione. Dopo la verifica puoi salvare senza reinserirla per 30 minuti in questa scheda.",
     "editPasswordError": "Password errata o blocco temporaneo.",
-    "uploadShareRestriction": "Con foto caricate dal dispositivo, gli ospiti possono solo vedere l’anteprima o scaricare; per condividere o pubblicare serve accedere."
+    "uploadShareRestriction": "Con foto caricate dal dispositivo, gli ospiti possono solo vedere l’anteprima o scaricare; per condividere o pubblicare serve accedere.",
+    "editVerifyUnavailable": "Si è verificato un errore. Riprova.",
+    "editLocked": "Password errata o blocco temporaneo.",
+    "editSetupRequired": "Si è verificato un errore. Riprova."
   },
   "pl": {
     "nav": "Moje top 9",
@@ -589,7 +610,7 @@
     "privateView": "Zobacz prywatnie",
     "publish": "Opublikuj w galerii",
     "nickname": "Pseudonim",
-    "password": "Hasło (min. 8 znaków)",
+    "password": "Hasło (min. 4 znaków)",
     "confirmPassword": "Potwierdź hasło",
     "publishHelp": "Kolaż będzie publiczny.\nGoście podają pseudonim i hasło do usuwania.",
     "published": "Opublikowano w galerii.",
@@ -621,7 +642,10 @@
     "unlockEdit": "Edytuj kolaż gościa",
     "unlockEditHelp": "Wpisz hasło publikacji. Po weryfikacji możesz zapisywać bez ponownego wpisywania przez 30 minut w tej karcie.",
     "editPasswordError": "Błędne hasło lub tymczasowa blokada.",
-    "uploadShareRestriction": "Po dodaniu zdjęć z urządzenia goście mogą tylko oglądać lub pobierać; udostępnianie i publikacja wymagają logowania."
+    "uploadShareRestriction": "Po dodaniu zdjęć z urządzenia goście mogą tylko oglądać lub pobierać; udostępnianie i publikacja wymagają logowania.",
+    "editVerifyUnavailable": "Wystąpił błąd. Spróbuj ponownie.",
+    "editLocked": "Błędne hasło lub tymczasowa blokada.",
+    "editSetupRequired": "Wystąpił błąd. Spróbuj ponownie."
   },
   "nl": {
     "nav": "Mijn top 9",
@@ -667,7 +691,7 @@
     "privateView": "Privé bekijken",
     "publish": "Publiceer in galerij",
     "nickname": "Bijnaam",
-    "password": "Wachtwoord (min. 8 tekens)",
+    "password": "Wachtwoord (min. 4 tekens)",
     "confirmPassword": "Bevestig wachtwoord",
     "publishHelp": "De collage wordt openbaar.\nGasten geven een naam en wachtwoord voor verwijdering op.",
     "published": "Gepubliceerd in de galerij.",
@@ -699,7 +723,10 @@
     "unlockEdit": "Gastcollage bewerken",
     "unlockEditHelp": "Voer het publicatiewachtwoord in. Na verificatie kun je in dit tabblad 30 minuten opslaan zonder het opnieuw in te voeren.",
     "editPasswordError": "Onjuist wachtwoord of tijdelijk geblokkeerd.",
-    "uploadShareRestriction": "Met eigen foto’s kunnen gasten alleen bekijken of downloaden; voor delen of publiceren moet je inloggen."
+    "uploadShareRestriction": "Met eigen foto’s kunnen gasten alleen bekijken of downloaden; voor delen of publiceren moet je inloggen.",
+    "editVerifyUnavailable": "Er is iets misgegaan. Probeer het opnieuw.",
+    "editLocked": "Onjuist wachtwoord of tijdelijk geblokkeerd.",
+    "editSetupRequired": "Er is iets misgegaan. Probeer het opnieuw."
   },
   "cs": {
     "nav": "Mých top 9",
@@ -745,7 +772,7 @@
     "privateView": "Zobrazit soukromě",
     "publish": "Zveřejnit v galerii",
     "nickname": "Přezdívka",
-    "password": "Heslo (min. 8 znaků)",
+    "password": "Heslo (min. 4 znaků)",
     "confirmPassword": "Potvrzení hesla",
     "publishHelp": "Koláž bude veřejná.\nHosté zadají přezdívku a heslo pro smazání.",
     "published": "Zveřejněno v galerii.",
@@ -777,7 +804,10 @@
     "unlockEdit": "Upravit koláž hosta",
     "unlockEditHelp": "Zadejte heslo použité při zveřejnění. Po ověření lze v této kartě 30 minut ukládat bez opakovaného zadání.",
     "editPasswordError": "Nesprávné heslo nebo dočasné omezení.",
-    "uploadShareRestriction": "S vlastními fotkami mohou hosté jen zobrazit náhled nebo stáhnout obrázek; sdílení a zveřejnění vyžaduje přihlášení."
+    "uploadShareRestriction": "S vlastními fotkami mohou hosté jen zobrazit náhled nebo stáhnout obrázek; sdílení a zveřejnění vyžaduje přihlášení.",
+    "editVerifyUnavailable": "Došlo k chybě. Zkuste to znovu.",
+    "editLocked": "Nesprávné heslo nebo dočasné omezení.",
+    "editSetupRequired": "Došlo k chybě. Zkuste to znovu."
   },
   "de": {
     "nav": "Meine Top 9",
@@ -823,7 +853,7 @@
     "privateView": "Privat ansehen",
     "publish": "In Galerie veröffentlichen",
     "nickname": "Spitzname",
-    "password": "Passwort (mind. 8 Zeichen)",
+    "password": "Passwort (mind. 4 Zeichen)",
     "confirmPassword": "Passwort bestätigen",
     "publishHelp": "Die Collage wird öffentlich.\nGäste geben einen Namen und ein Passwort zum Löschen ein.",
     "published": "In der Galerie veröffentlicht.",
@@ -855,7 +885,10 @@
     "unlockEdit": "Gast-Collage bearbeiten",
     "unlockEditHelp": "Gib das Passwort der Veröffentlichung ein. Danach kannst du in diesem Tab 30 Minuten ohne erneute Eingabe speichern.",
     "editPasswordError": "Falsches Passwort oder vorübergehend gesperrt.",
-    "uploadShareRestriction": "Bei eigenen hochgeladenen Fotos sind für Gäste nur Vorschau und Download möglich. Zum Teilen oder Veröffentlichen bitte anmelden."
+    "uploadShareRestriction": "Bei eigenen hochgeladenen Fotos sind für Gäste nur Vorschau und Download möglich. Zum Teilen oder Veröffentlichen bitte anmelden.",
+    "editVerifyUnavailable": "Ein Fehler ist aufgetreten. Bitte erneut versuchen.",
+    "editLocked": "Falsches Passwort oder vorübergehend gesperrt.",
+    "editSetupRequired": "Ein Fehler ist aufgetreten. Bitte erneut versuchen."
   },
   "pt": {
     "nav": "Meus 9 favoritos",
@@ -901,7 +934,7 @@
     "privateView": "Ver em privado",
     "publish": "Publicar na galeria",
     "nickname": "Apelido",
-    "password": "Senha (8+ caracteres)",
+    "password": "Senha (4+ caracteres)",
     "confirmPassword": "Confirmar senha",
     "publishHelp": "A colagem ficará pública.\nVisitantes informam apelido e senha para excluir.",
     "published": "Publicado na galeria.",
@@ -933,7 +966,10 @@
     "unlockEdit": "Editar colagem de visitante",
     "unlockEditHelp": "Digite a senha usada na publicação. Após verificar, poderá salvar sem repeti-la por 30 minutos nesta aba.",
     "editPasswordError": "Senha incorreta ou bloqueio temporário.",
-    "uploadShareRestriction": "Com fotos do seu dispositivo, visitantes podem apenas visualizar ou baixar; compartilhar ou publicar exige login."
+    "uploadShareRestriction": "Com fotos do seu dispositivo, visitantes podem apenas visualizar ou baixar; compartilhar ou publicar exige login.",
+    "editVerifyUnavailable": "Ocorreu um erro. Tente novamente.",
+    "editLocked": "Senha incorreta ou bloqueio temporário.",
+    "editSetupRequired": "Ocorreu um erro. Tente novamente."
   },
   "ru": {
     "nav": "Мои топ-9",
@@ -979,7 +1015,7 @@
     "privateView": "Смотреть приватно",
     "publish": "Опубликовать в галерее",
     "nickname": "Никнейм",
-    "password": "Пароль (от 8 символов)",
+    "password": "Пароль (от 4 символов)",
     "confirmPassword": "Повторите пароль",
     "publishHelp": "Коллаж станет публичным.\nГостям нужны никнейм и пароль для удаления.",
     "published": "Опубликовано в галерее.",
@@ -1011,7 +1047,10 @@
     "unlockEdit": "Изменить гостевой коллаж",
     "unlockEditHelp": "Введите пароль публикации. После проверки в этой вкладке можно сохранять без повторного ввода 30 минут.",
     "editPasswordError": "Неверный пароль или временная блокировка.",
-    "uploadShareRestriction": "Если добавлены фото с устройства, гостям доступны только просмотр и скачивание. Для отправки ссылки или публикации нужно войти."
+    "uploadShareRestriction": "Если добавлены фото с устройства, гостям доступны только просмотр и скачивание. Для отправки ссылки или публикации нужно войти.",
+    "editVerifyUnavailable": "Произошла ошибка. Попробуйте снова.",
+    "editLocked": "Неверный пароль или временная блокировка.",
+    "editSetupRequired": "Произошла ошибка. Попробуйте снова."
   },
   "vi": {
     "nav": "Top 9 của tôi",
@@ -1057,7 +1096,7 @@
     "privateView": "Xem riêng tư",
     "publish": "Đăng công khai",
     "nickname": "Biệt danh",
-    "password": "Mật khẩu (ít nhất 8 ký tự)",
+    "password": "Mật khẩu (ít nhất 4 ký tự)",
     "confirmPassword": "Xác nhận mật khẩu",
     "publishHelp": "Bài đăng sẽ công khai.\nKhách cần biệt danh và mật khẩu để xóa bài.",
     "published": "Đã đăng công khai.",
@@ -1089,7 +1128,10 @@
     "unlockEdit": "Sửa bộ ảnh của khách",
     "unlockEditHelp": "Nhập mật khẩu đã đặt khi đăng. Sau khi xác minh, bạn có thể lưu mà không nhập lại trong 30 phút ở thẻ này.",
     "editPasswordError": "Mật khẩu sai hoặc đang bị hạn chế tạm thời.",
-    "uploadShareRestriction": "Nếu có ảnh tải lên từ thiết bị, khách chỉ có thể xem hoặc tải ảnh xuống; muốn chia sẻ hoặc đăng cần đăng nhập."
+    "uploadShareRestriction": "Nếu có ảnh tải lên từ thiết bị, khách chỉ có thể xem hoặc tải ảnh xuống; muốn chia sẻ hoặc đăng cần đăng nhập.",
+    "editVerifyUnavailable": "Đã xảy ra lỗi. Vui lòng thử lại.",
+    "editLocked": "Mật khẩu sai hoặc đang bị hạn chế tạm thời.",
+    "editSetupRequired": "Đã xảy ra lỗi. Vui lòng thử lại."
   },
   "id": {
     "nav": "9 Favorit Saya",
@@ -1135,7 +1177,7 @@
     "privateView": "Lihat pribadi",
     "publish": "Publikasikan ke galeri",
     "nickname": "Nama panggilan",
-    "password": "Kata sandi (minimal 8 karakter)",
+    "password": "Kata sandi (minimal 4 karakter)",
     "confirmPassword": "Konfirmasi kata sandi",
     "publishHelp": "Kolase akan menjadi publik.\nTamu memasukkan nama dan kata sandi untuk menghapusnya.",
     "published": "Dipublikasikan ke galeri.",
@@ -1167,7 +1209,10 @@
     "unlockEdit": "Edit kolase tamu",
     "unlockEditHelp": "Masukkan kata sandi saat penerbitan. Setelah verifikasi, simpan tanpa memasukkannya lagi selama 30 menit di tab ini.",
     "editPasswordError": "Kata sandi salah atau dibatasi sementara.",
-    "uploadShareRestriction": "Jika menyertakan foto dari perangkat, tamu hanya dapat melihat atau mengunduh; berbagi atau menerbitkan memerlukan login."
+    "uploadShareRestriction": "Jika menyertakan foto dari perangkat, tamu hanya dapat melihat atau mengunduh; berbagi atau menerbitkan memerlukan login.",
+    "editVerifyUnavailable": "Terjadi kesalahan. Silakan coba lagi.",
+    "editLocked": "Kata sandi salah atau dibatasi sementara.",
+    "editSetupRequired": "Terjadi kesalahan. Silakan coba lagi."
   },
   "hi": {
     "nav": "मेरे टॉप 9",
@@ -1213,7 +1258,7 @@
     "privateView": "निजी तौर पर देखें",
     "publish": "गैलरी में प्रकाशित करें",
     "nickname": "उपनाम",
-    "password": "पासवर्ड (कम से कम 8 अक्षर)",
+    "password": "पासवर्ड (कम से कम 4 अक्षर)",
     "confirmPassword": "पासवर्ड दोहराएँ",
     "publishHelp": "प्रकाशित कोलाज सभी देख सकते हैं।\nमेहमान उपनाम और हटाने के लिए पासवर्ड दें।",
     "published": "गैलरी में प्रकाशित हुआ।",
@@ -1245,7 +1290,10 @@
     "unlockEdit": "मेहमान कोलाज संपादित करें",
     "unlockEditHelp": "प्रकाशित करते समय रखा पासवर्ड दर्ज करें। सत्यापन के बाद इस टैब में 30 मिनट तक दोबारा डाले बिना सहेज सकते हैं।",
     "editPasswordError": "पासवर्ड गलत है या अस्थायी रोक लगी है।",
-    "uploadShareRestriction": "अपने डिवाइस से फ़ोटो जोड़ने पर मेहमान केवल देख या डाउनलोड कर सकते हैं; साझा या प्रकाशित करने के लिए साइन इन करें।"
+    "uploadShareRestriction": "अपने डिवाइस से फ़ोटो जोड़ने पर मेहमान केवल देख या डाउनलोड कर सकते हैं; साझा या प्रकाशित करने के लिए साइन इन करें।",
+    "editVerifyUnavailable": "कुछ गड़बड़ हुई। फिर कोशिश करें।",
+    "editLocked": "पासवर्ड गलत है या अस्थायी रोक लगी है।",
+    "editSetupRequired": "कुछ गड़बड़ हुई। फिर कोशिश करें।"
   },
   "bn": {
     "nav": "আমার সেরা ৯",
@@ -1291,7 +1339,7 @@
     "privateView": "নিজে দেখুন",
     "publish": "গ্যালারিতে প্রকাশ করুন",
     "nickname": "ডাকনাম",
-    "password": "পাসওয়ার্ড (অন্তত ৮ অক্ষর)",
+    "password": "পাসওয়ার্ড (অন্তত ৪ অক্ষর)",
     "confirmPassword": "পাসওয়ার্ড আবার লিখুন",
     "publishHelp": "প্রকাশিত কোলাজ সবাই দেখতে পারবেন।\nঅতিথিরা নাম ও মুছে ফেলার পাসওয়ার্ড দিন।",
     "published": "গ্যালারিতে প্রকাশিত হয়েছে।",
@@ -1323,7 +1371,10 @@
     "unlockEdit": "অতিথির কোলাজ সম্পাদনা",
     "unlockEditHelp": "প্রকাশের সময় দেওয়া পাসওয়ার্ড লিখুন। যাচাইয়ের পর এই ট্যাবে ৩০ মিনিট আবার না লিখেই সংরক্ষণ করতে পারবেন।",
     "editPasswordError": "ভুল পাসওয়ার্ড বা সাময়িক নিষেধাজ্ঞা।",
-    "uploadShareRestriction": "নিজের ডিভাইস থেকে ছবি যোগ করলে অতিথিরা শুধু দেখতে বা ডাউনলোড করতে পারেন; শেয়ার বা প্রকাশ করতে লগইন করুন।"
+    "uploadShareRestriction": "নিজের ডিভাইস থেকে ছবি যোগ করলে অতিথিরা শুধু দেখতে বা ডাউনলোড করতে পারেন; শেয়ার বা প্রকাশ করতে লগইন করুন।",
+    "editVerifyUnavailable": "সমস্যা হয়েছে। আবার চেষ্টা করুন।",
+    "editLocked": "ভুল পাসওয়ার্ড বা সাময়িক নিষেধাজ্ঞা।",
+    "editSetupRequired": "সমস্যা হয়েছে। আবার চেষ্টা করুন।"
   },
   "ar": {
     "nav": "أفضل 9 لديّ",
@@ -1369,7 +1420,7 @@
     "privateView": "عرض خاص",
     "publish": "النشر في المعرض",
     "nickname": "الاسم المستعار",
-    "password": "كلمة المرور (8 أحرف على الأقل)",
+    "password": "كلمة المرور (4 أحرف على الأقل)",
     "confirmPassword": "تأكيد كلمة المرور",
     "publishHelp": "سيصبح التصميم عامًا.\nيُدخل الضيوف اسمًا وكلمة مرور للحذف.",
     "published": "تم النشر في المعرض.",
@@ -1401,7 +1452,10 @@
     "unlockEdit": "تعديل لوحة زائر",
     "unlockEditHelp": "أدخل كلمة مرور النشر. بعد التحقق، يمكنك الحفظ دون إعادة إدخالها لمدة 30 دقيقة في هذه الصفحة.",
     "editPasswordError": "كلمة مرور غير صحيحة أو تقييد مؤقت.",
-    "uploadShareRestriction": "إذا أضفت صورًا من جهازك، يمكن للزوار العرض أو التنزيل فقط، وتتطلب المشاركة أو النشر تسجيل الدخول."
+    "uploadShareRestriction": "إذا أضفت صورًا من جهازك، يمكن للزوار العرض أو التنزيل فقط، وتتطلب المشاركة أو النشر تسجيل الدخول.",
+    "editVerifyUnavailable": "حدث خطأ. حاول مرة أخرى.",
+    "editLocked": "كلمة مرور غير صحيحة أو تقييد مؤقت.",
+    "editSetupRequired": "حدث خطأ. حاول مرة أخرى."
   },
   "tr": {
     "nav": "İlk 9 Favorim",
@@ -1447,7 +1501,7 @@
     "privateView": "Özel görüntüle",
     "publish": "Galeride yayınla",
     "nickname": "Takma ad",
-    "password": "Şifre (en az 8 karakter)",
+    "password": "Şifre (en az 4 karakter)",
     "confirmPassword": "Şifreyi doğrula",
     "publishHelp": "Kolaj herkese açık olur.\nMisafirler silmek için ad ve şifre girer.",
     "published": "Galeride yayınlandı.",
@@ -1479,7 +1533,10 @@
     "unlockEdit": "Misafir kolajını düzenle",
     "unlockEditHelp": "Yayımlarken belirlediğiniz şifreyi girin. Doğrulamadan sonra bu sekmede 30 dakika yeniden girmeden kaydedebilirsiniz.",
     "editPasswordError": "Şifre yanlış veya geçici olarak kilitli.",
-    "uploadShareRestriction": "Cihazınızdan fotoğraf eklerseniz misafirler yalnızca önizleyebilir veya indirebilir; paylaşmak ya da yayımlamak için giriş gerekir."
+    "uploadShareRestriction": "Cihazınızdan fotoğraf eklerseniz misafirler yalnızca önizleyebilir veya indirebilir; paylaşmak ya da yayımlamak için giriş gerekir.",
+    "editVerifyUnavailable": "Bir hata oluştu. Lütfen tekrar dene.",
+    "editLocked": "Şifre yanlış veya geçici olarak kilitli.",
+    "editSetupRequired": "Bir hata oluştu. Lütfen tekrar dene."
   },
   "th": {
     "nav": "9 อันดับของฉัน",
@@ -1525,7 +1582,7 @@
     "privateView": "ดูส่วนตัว",
     "publish": "เผยแพร่ในแกลเลอรี",
     "nickname": "ชื่อเล่น",
-    "password": "รหัสผ่าน (อย่างน้อย 8 ตัวอักษร)",
+    "password": "รหัสผ่าน (อย่างน้อย 4 ตัวอักษร)",
     "confirmPassword": "ยืนยันรหัสผ่าน",
     "publishHelp": "ภาพจะเป็นสาธารณะ\nผู้เยี่ยมชมต้องใส่ชื่อและรหัสผ่านสำหรับลบ",
     "published": "เผยแพร่แล้ว",
@@ -1557,6 +1614,9 @@
     "unlockEdit": "แก้ไขภาพรวมของผู้เยี่ยมชม",
     "unlockEditHelp": "กรอกรหัสผ่านที่ตั้งไว้ตอนเผยแพร่ หลังยืนยันแล้วสามารถบันทึกในแท็บนี้ได้ 30 นาทีโดยไม่ต้องกรอกซ้ำ",
     "editPasswordError": "รหัสผ่านไม่ถูกต้องหรือถูกจำกัดชั่วคราว",
-    "uploadShareRestriction": "หากมีรูปที่อัปโหลดจากอุปกรณ์ ผู้เยี่ยมชมจะดูหรือดาวน์โหลดได้เท่านั้น การแชร์หรือเผยแพร่ต้องเข้าสู่ระบบ"
+    "uploadShareRestriction": "หากมีรูปที่อัปโหลดจากอุปกรณ์ ผู้เยี่ยมชมจะดูหรือดาวน์โหลดได้เท่านั้น การแชร์หรือเผยแพร่ต้องเข้าสู่ระบบ",
+    "editVerifyUnavailable": "เกิดข้อผิดพลาด โปรดลองอีกครั้ง",
+    "editLocked": "รหัสผ่านไม่ถูกต้องหรือถูกจำกัดชั่วคราว",
+    "editSetupRequired": "เกิดข้อผิดพลาด โปรดลองอีกครั้ง"
   }
 }
