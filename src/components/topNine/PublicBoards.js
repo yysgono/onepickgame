@@ -13,9 +13,9 @@ import {isVideo} from './media';
 import {hasBadword} from '../../badwords-multilang';
 // The public RPC stores nine image records. Use one shared static tile for empty positions.
 const emptyTile={id:'tn-empty-cell',name:'',src:'https://www.onepickgame.com/top-nine-empty.png',zoom:1,x:50,y:50};
-export function PublishBoard({slots,title,names,lang,onPublished,disabled=false,sourceIds=[],category='',existingId=''}) {
+export function PublishBoard({slots,title,names,showRanks=false,lang,onPublished,disabled=false,sourceIds=[],category='',existingId=''}) {
  const t=copy[lang]||copy.en,[busy,setBusy]=useState(false),[message,setMessage]=useState(''),[open,setOpen]=useState(false),[guest,setGuest]=useState(false),[nickname,setNickname]=useState(''),[password,setPassword]=useState(''),[confirm,setConfirm]=useState(''),[editSalt,setEditSalt]=useState('');
- async function begin(){if(disabled||busy)return;setMessage('');setBusy(true);try{const {data}=await supabase.auth.getUser();const isGuest=!data?.user||data.user.is_anonymous;if(isGuest)makeShareHash(slots,title,names);setGuest(isGuest);setEditSalt('');
+ async function begin(){if(disabled||busy)return;setMessage('');setBusy(true);try{const {data}=await supabase.auth.getUser();const isGuest=!data?.user||data.user.is_anonymous;if(isGuest)makeShareHash(slots,title,names,showRanks);setGuest(isGuest);setEditSalt('');
  if(existingId){
   const original=await supabase.from('top_nine_public_boards').select('author_id').eq('id',existingId).maybeSingle();
   if(original.error||!original.data)throw Error('EDIT_PERMISSION');
@@ -32,10 +32,10 @@ export function PublishBoard({slots,title,names,lang,onPublished,disabled=false,
  }
  setOpen(true);}catch(error){setMessage(error.message==='EDIT_PERMISSION'?t.editDenied:t.localShare);}finally{setBusy(false);}}
  async function publish(e){e.preventDefault();if(busy)return;setBusy(true);setMessage('');try{
- const prepared=guest?slots:await prepareMemberSlots(slots);makeShareHash(prepared,title,names);if(hasBadword(title,lang)||slots.some(c=>c&&hasBadword(c.name,lang))||hasBadword(nickname,lang))throw Error('TEXT');
+ const prepared=guest?slots:await prepareMemberSlots(slots);makeShareHash(prepared,title,names,showRanks);if(hasBadword(title,lang)||slots.some(c=>c&&hasBadword(c.name,lang))||hasBadword(nickname,lang))throw Error('TEXT');
  if(guest&&(password!==confirm||password.length<8))throw Error('PASSWORD');
  const salt=guest?(editSalt||guestSalt()):null,proof=guest?await guestProof(password,salt):null;
- const published=await publishWithTitleRetry(supabase,{p_title:authoredTitle(title,nickname),p_slots:prepared.map(c=>c??emptyTile),p_names:names,p_nickname:guest?nickname:null,p_salt:salt,p_proof:proof,p_source_worldcup_ids:sourceIds,p_category:category,...(existingId?{p_board_id:existingId}:{})});
+ const published=await publishWithTitleRetry(supabase,{p_title:authoredTitle(title,nickname),p_slots:prepared.map(c=>c??emptyTile),p_names:names,p_show_ranks:showRanks,p_nickname:guest?nickname:null,p_salt:salt,p_proof:proof,p_source_worldcup_ids:sourceIds,p_category:category,...(existingId?{p_board_id:existingId}:{})});
  if(!published.data)throw Error('PUBLISH_FAILED');
  setMessage(t.published);setOpen(false);setPassword('');setConfirm('');onPublished(published.data);
  }catch{setMessage(t.publishFailed);}finally{setBusy(false);}}
@@ -51,13 +51,13 @@ export function BoardThumbnail({candidate}){
  }
  return <span style={{display:'block',position:'relative',aspectRatio:'1',overflow:'hidden',background:'#fff'}}>{isVideo(candidate.src)?<video src={candidate.src} muted playsInline preload="metadata" onLoadedMetadata={measure} style={style}/>:<img src={candidate.src} alt="" loading="lazy" onLoad={measure} style={style}/>}</span>;
 }
-export default function PublicBoards({lang,tick=0,showRanks=false}) {
+export default function PublicBoards({lang,tick=0}) {
  const [category,setCategory]=useState('all'),[sort,setSort]=useState('latest');
  const t=copy[lang]||copy.en,ko=lang==='ko',[guestDelete,setGuestDelete]=useState(null),[deletePassword,setDeletePassword]=useState(''),[deleting,setDeleting]=useState(false),[rows,setRows]=useState([]),[page,setPage]=useState(0),[more,setMore]=useState(false),[error,setError]=useState(false),[retry,setRetry]=useState(0),[actor,setActor]=useState(null),[busy,setBusy]=useState(false);
  useEffect(()=>{let live=true;supabase.auth.getUser().then(({data})=>{if(live)setActor(data.user?.id);});return()=>{live=false;};},[]);
  useEffect(()=>{setPage(0);setRows([]);},[tick]);
  useEffect(()=>{let live=true;setBusy(true);setError(false);(async()=>{
- let query=supabase.from('top_nine_public_boards').select('id,title,slots,show_names,created_at,author_id,guest_nickname,source_worldcup_ids,category,view_count');
+ let query=supabase.from('top_nine_public_boards').select('id,title,slots,show_names,show_ranks,created_at,author_id,guest_nickname,source_worldcup_ids,category,view_count');
  if(category!=='all')query=query.eq('category',category);
  if(sort==='popular')query=query.order('view_count',{ascending:false});
  return query.order('created_at',{ascending:false}).order('id').range(page*12,page*12+11);
@@ -68,7 +68,7 @@ export default function PublicBoards({lang,tick=0,showRanks=false}) {
  <div className="tn-category-filters" role="group" aria-label={ko?'구절판 카테고리':'Top 9 categories'}>{Object.entries(categoryLabels[lang]||categoryLabels.en).map(([key,label])=><button key={key} type="button" aria-pressed={category===key} onClick={()=>{if(category===key)return;setCategory(key);setPage(0);setRows([]);}}>{label}</button>)}</div>
  <div className="tn-sort-filters" role="group" aria-label={ko?'정렬':'Sort'}>{[['popular',ko?'인기순':'Popular'],['latest',ko?'최신순':'Latest']].map(([key,label])=><button key={key} type="button" aria-pressed={sort===key} onClick={()=>{if(sort===key)return;setSort(key);setPage(0);setRows([]);}}>{label}</button>)}</div>
  {error?<p role="alert">{ko?'목록을 불러오지 못했어요.':'Unable to load the gallery.'} <button onClick={()=>setRetry(n=>n+1)}>{ko?'다시 시도':'Retry'}</button></p>:!busy&&!rows.length?<p>{ko?'아직 공개된 구절판이 없어요. 첫 구절판을 공유해 보세요.':'No public collages yet. Share the first one.'}</p>:null}
- <div className="tn-public-cards">{rows.map(row=>{let data;try{data=readShared(makeShareHash(row.slots.map(c=>c?.id===emptyTile.id&&c.src===emptyTile.src?null:c),row.title,row.show_names));}catch{return null;}return <article key={row.id}><Link className="tn-public-card-link" to={`/${lang}/mytop9/${row.id}`}><div className="tn-mini-grid" dir="ltr">{data.slots.map((c,i)=><div key={i} className="tn-mini-cell">{c?<BoardThumbnail candidate={c}/>:<span className="tn-mini-empty"/>}{showRanks&&<span className={`tn-rank ${i===4?'tn-rank-first':''}`} aria-hidden="true">{SLOT_RANKS[i]}</span>}</div>)}</div><strong title={localizedBoardTitle(row,row.titleSources,lang)}>{localizedBoardTitle(row,row.titleSources,lang)}</strong></Link>{row.guest_nickname&&<small>{row.guest_nickname}</small>}{(!row.author_id||actor===row.author_id)&&<Link className="tn-public-edit-link" to={`/${lang}/mytop9/${row.id}?edit=1`}>{t.edit}</Link>}{!row.author_id&&<button onClick={()=>setGuestDelete(row.id)}>{t.deleteBoard}</button>}{row.author_id&&actor===row.author_id&&<button onClick={()=>remove(row.id)}>{ko?'삭제':'Delete'}</button>}</article>;})}</div>
+ <div className="tn-public-cards">{rows.map(row=>{let data;try{data=readShared(makeShareHash(row.slots.map(c=>c?.id===emptyTile.id&&c.src===emptyTile.src?null:c),row.title,row.show_names,row.show_ranks));}catch{return null;}return <article key={row.id}><Link className="tn-public-card-link" to={`/${lang}/mytop9/${row.id}`}><div className="tn-mini-grid" dir="ltr">{data.slots.map((c,i)=><div key={i} className="tn-mini-cell">{c?<BoardThumbnail candidate={c}/>:<span className="tn-mini-empty"/>}{data.showRanks&&<span className={`tn-rank ${i===4?'tn-rank-first':''}`} aria-hidden="true">{SLOT_RANKS[i]}</span>}</div>)}</div><strong title={localizedBoardTitle(row,row.titleSources,lang)}>{localizedBoardTitle(row,row.titleSources,lang)}</strong></Link>{row.guest_nickname&&<small>{row.guest_nickname}</small>}{(!row.author_id||actor===row.author_id)&&<Link className="tn-public-edit-link" to={`/${lang}/mytop9/${row.id}?edit=1`}>{t.edit}</Link>}{!row.author_id&&<button onClick={()=>setGuestDelete(row.id)}>{t.deleteBoard}</button>}{row.author_id&&actor===row.author_id&&<button onClick={()=>remove(row.id)}>{ko?'삭제':'Delete'}</button>}</article>;})}</div>
  {more&&<button type="button" className="tn-gallery-more" disabled={busy} onClick={()=>setPage(n=>n+1)}>{ko?'더보기':'Show more'}</button>}
  {guestDelete&&<div className="tn-picker-overlay"><form className="tn-publish-dialog" onSubmit={removeGuest}><label>{t.password}<input type="password" required minLength={8} value={deletePassword} onChange={e=>setDeletePassword(e.target.value)}/></label>{error&&<p role="alert">{t.error}</p>}<div className="tn-actions"><button disabled={deleting}>{t.deleteBoard}</button><button type="button" disabled={deleting} onClick={()=>{setGuestDelete(null);setDeletePassword('');}}>{t.close}</button></div></form></div>}
  </section>;

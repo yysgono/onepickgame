@@ -43,16 +43,16 @@ export function readShared(hash) {
   if(raw.v!==1||!Array.isArray(raw.slots)||raw.slots.length!==9)return null;
   const slots=raw.slots.map(c=>cleanCandidate(c,false));
   if(!slots.some(Boolean)||slots.some((c,i)=>raw.slots[i]!==null && (!c || !isShareable(c))))return null;
-  return {slots,title:String(raw.title||'').slice(0,100),names:raw.names===true};
+  return {slots,title:String(raw.title||'').slice(0,100),names:raw.names===true,showRanks:raw.showRanks===true};
  }catch{return null;}
 }
 export function isShareable(c) {
  if(!c || !/^https?:\/\//i.test(c.src))return false;
  try {const u=new URL(c.src);return !/\/sign\//i.test(u.pathname)&&![...u.searchParams.keys()].some(k=>/token|signature|credential|expires|key|auth/i.test(k));}catch{return false;}
 }
-export function makeShareHash(slots,title,names) {
+export function makeShareHash(slots,title,names,showRanks=false) {
  if(slots.length!==9||!slots.some(Boolean)||!slots.every(c=>c===null||isShareable(c)))throw new Error('LOCAL_SHARE');
- const payload={v:1,title:String(title).slice(0,100),names:!!names,slots:slots.map(c=>cleanCandidate(c,false))};
+ const payload={v:1,title:String(title).slice(0,100),names:!!names,showRanks:!!showRanks,slots:slots.map(c=>cleanCandidate(c,false))};
  const hash='#nine='+btoa(unescape(encodeURIComponent(JSON.stringify(payload))));
  if(hash.length>24000)throw new Error('LONG_SHARE');
  return hash;

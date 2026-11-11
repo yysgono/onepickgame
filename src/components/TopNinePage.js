@@ -33,8 +33,8 @@ function CropPhoto({candidate,frame}) {
 }
 export default function TopNinePage({publicBoard=null,publicId='',templateSource=null,onHome}={}){
  const {lang:routeLang}=useParams(),location=useLocation(),navigate=useNavigate();const lang=copy[routeLang]?routeLang:'en',t=copy[lang];
- const [showRanks,setShowRanks]=useState(false);
  const shared=useMemo(()=>publicBoard||readShared(location.hash),[publicBoard,location.hash]);
+ const [showRanks,setShowRanks]=useState(shared?.showRanks===true);
  const [sitePicker,setSitePicker]=useState(false),[galleryTick,setGalleryTick]=useState(0),[templateMore,setTemplateMore]=useState(false),[templateOffset,setTemplateOffset]=useState(0),[stage,setStage]=useState(shared?'preview':templateSource?'pick':'home'),[slots,setSlots]=useState(shared?.slots||blank),[title,setTitle]=useState(shared?.title||(templateSource?templatePageTitle(templateSource,lang):'')),[baseTitle,setBaseTitle]=useState(shared?null:templateSource?templatePageTitle(templateSource,lang):''),[names,setNames]=useState(shared?.names||false);
  const [candidates,setCandidates]=useState([]),[templates,setTemplates]=useState([]),[sources,setSources]=useState([]),[query,setQuery]=useState(''),[searchedQuery,setSearchedQuery]=useState(''),[candidateQuery,setCandidateQuery]=useState(''),[limit,setLimit]=useState(36),[sourceOffset,setSourceOffset]=useState(0),[moreSources,setMoreSources]=useState(false),[searched,setSearched]=useState(false);
  const [busy,setBusy]=useState(false),[message,setMessage]=useState(''),[templateError,setTemplateError]=useState(false),[templateTick,setTemplateTick]=useState(0),[focus,setFocus]=useState(null),[draft,setDraft]=useState(null),[draftError,setDraftError]=useState(false),[shareURL,setShareURL]=useState('');
@@ -44,7 +44,7 @@ export default function TopNinePage({publicBoard=null,publicId='',templateSource
  const [dropCell,setDropCell]=useState(null);
  useEffect(()=>{const clear=()=>setDropCell(null);window.addEventListener("drop",clear);window.addEventListener("dragend",clear);return()=>{window.removeEventListener("drop",clear);window.removeEventListener("dragend",clear);};},[]);
  const [editingId,setEditingId]=useState(publicId);
- const savedBoard=useRef(publicBoard?JSON.stringify({slots:publicBoard.slots,title:publicBoard.title,names:publicBoard.names,sourceIds:publicBoard.sourceIds||[],category:publicBoard.category||''}):null);
+ const savedBoard=useRef(publicBoard?JSON.stringify({slots:publicBoard.slots,title:publicBoard.title,names:publicBoard.names,showRanks:publicBoard.showRanks===true,sourceIds:publicBoard.sourceIds||[],category:publicBoard.category||''}):null);
  const [templatePoolLoaded,setTemplatePoolLoaded]=useState(false);
  const [previewNames,setPreviewNames]=useState(null);
  const [category,setCategory]=useState(publicBoard?.category||'');
@@ -78,13 +78,13 @@ export default function TopNinePage({publicBoard=null,publicId='',templateSource
  },[location.key,location.hash,location.state]);
  useEffect(()=>{if(poolListRef.current)poolListRef.current.scrollTop=0;},[candidateQuery]);
  useEffect(()=>{alive.current=true;draftStore().then(d=>{if(!alive.current)return;if(d?.v===1)setDraft(d);if(publicBoard&&new URLSearchParams(location.search).get('edit')==='1')editBoard(d?.v===1?d:null);}).catch(()=>{if(alive.current&&publicBoard&&new URLSearchParams(location.search).get('edit')==='1')editBoard(null);}).finally(()=>{draftReady.current=true;});return()=>{alive.current=false;operation.current++;};},[]);
- useEffect(()=>{if(!shared)return;setSlots(shared.slots);setTitle(shared.title);setBaseTitle(null);setNames(shared.names);setStage('preview');setFocus(null);setShareURL('');},[shared]);
+ useEffect(()=>{if(!shared)return;setSlots(shared.slots);setTitle(shared.title);setBaseTitle(null);setNames(shared.names);setShowRanks(shared.showRanks===true);setStage('preview');setFocus(null);setShareURL('');},[shared]);
  useEffect(()=>{let live=true;setTemplateError(false);listTemplates().then(rows=>{if(live){setTemplates(rows);setTemplateMore(rows.length===30);}}).catch(()=>{if(live)setTemplateError(true);});return()=>{live=false;};},[templateTick]);
  useEffect(()=>{
   if(stage==='home'||stage==='choose'||(templateSource&&!templatePoolLoaded&&!count&&!candidates.length)||!draftReady.current||shared)return;
-  const timer=setTimeout(()=>draftStore({v:1,boardId:editingId,slots,title,baseTitle,names,candidates,sourceIds,category},true).catch(()=>{if(alive.current)setDraftError(true);}),600);
+  const timer=setTimeout(()=>draftStore({v:1,boardId:editingId,slots,title,baseTitle,names,showRanks,candidates,sourceIds,category},true).catch(()=>{if(alive.current)setDraftError(true);}),600);
   return()=>clearTimeout(timer);
- },[slots,title,baseTitle,names,candidates,sourceIds,category,editingId,stage,shared,templatePoolLoaded,templateSource,count]);
+ },[slots,title,baseTitle,names,showRanks,candidates,sourceIds,category,editingId,stage,shared,templatePoolLoaded,templateSource,count]);
  useEffect(()=>{
   slots.filter(Boolean).forEach(c=>{
    if(frameJobs.current.has(c.src))return;frameJobs.current.add(c.src);
@@ -92,7 +92,7 @@ export default function TopNinePage({publicBoard=null,publicId='',templateSource
   });
  // Already requested sources are skipped, including when only the crop changes.
  },[slots,frameRetry]);
- useEffect(()=>{setShareURL('');},[slots,title,names]);
+ useEffect(()=>{setShareURL('');},[slots,title,names,showRanks]);
  useEffect(()=>{
   const id=new URLSearchParams(location.search).get('template');
   if(shared||publicId||!id||!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id))return;
@@ -101,7 +101,7 @@ export default function TopNinePage({publicBoard=null,publicId='',templateSource
  },[location.search,shared,publicId]);
 
  async function work(fn){if(lock.current)return;lock.current=true;setBusy(true);setMessage('');const op=++operation.current;try{await fn(()=>alive.current&&op===operation.current);}catch(e){if(alive.current&&op===operation.current)setMessage((copy[languageRef.current]||copy.en).error);}finally{if(alive.current&&op===operation.current){lock.current=false;setBusy(false);}}}
- function resume(){if(!draft)return;const pool=(draft.candidates||[]).slice(0,2048).filter(c=>safeMedia(c?.src));const restored=Array.isArray(draft.slots)&&draft.slots.length===9?draft.slots.map(c=>c&&safeMedia(c.src)?{...c,zoom:normalizeZoom(c.zoom),x:Math.max(0,Math.min(100,Number(c.x)||0)),y:Math.max(0,Math.min(100,Number(c.y)||0))}:null):blank();setSlots(restored);setCandidates(pool);setTitle(String(draft.title||'').slice(0,100));setBaseTitle(typeof draft.baseTitle==='string'?draft.baseTitle:null);setNames(!!draft.names);setSourceIds(draft.sourceIds||[]);setCategory(draft.category||'');setEditingId(draft.boardId||'');setStage('pick');setFocus(null);}
+ function resume(){if(!draft)return;const pool=(draft.candidates||[]).slice(0,2048).filter(c=>safeMedia(c?.src));const restored=Array.isArray(draft.slots)&&draft.slots.length===9?draft.slots.map(c=>c&&safeMedia(c.src)?{...c,zoom:normalizeZoom(c.zoom),x:Math.max(0,Math.min(100,Number(c.x)||0)),y:Math.max(0,Math.min(100,Number(c.y)||0))}:null):blank();setSlots(restored);setCandidates(pool);setTitle(String(draft.title||'').slice(0,100));setBaseTitle(typeof draft.baseTitle==='string'?draft.baseTitle:null);setNames(!!draft.names);setShowRanks(draft.showRanks===true);setSourceIds(draft.sourceIds||[]);setCategory(draft.category||'');setEditingId(draft.boardId||'');setStage('pick');setFocus(null);}
  function beginTemplateMode(mode){
   if(!templateSource||busy)return;
   if(mode==='game'&&count&&!window.confirm(t.confirmReset))return;
@@ -157,10 +157,10 @@ export default function TopNinePage({publicBoard=null,publicId='',templateSource
  function moreGame(){setHistory(previous=>[...previous,game]);applyGame(chooseMore(game));}
  function fillGame(){applyGame(fillRemaining(game));}
  async function download(){work(async current=>{const cache=Object.fromEntries(Object.entries(frames).filter(([,v])=>v.frame).map(([k,v])=>[k,v.frame]));const blob=await exportPNG(slots,title,stage==='preview'?(previewNames??names):names,cache,showRanks);if(current())downloadBlob(blob);});}
- async function share(){if(publicId&&slots===publicBoard?.slots&&title===publicBoard.title&&names===publicBoard.names){setShareURL(window.location.origin+'/'+lang+'/mytop9/'+publicId);return;}work(async current=>{try{const prepared=await prepareMemberSlots(slots);const hash=makeShareHash(prepared,title,names);if(current())setShareURL(window.location.origin+`/${lang}/mytop9`+hash);}catch{if(current())setMessage((copy[languageRef.current]||copy.en).localShare);}});}
+ async function share(){if(publicId&&slots===publicBoard?.slots&&title===publicBoard.title&&names===publicBoard.names&&showRanks===(publicBoard.showRanks===true)){setShareURL(window.location.origin+'/'+lang+'/mytop9/'+publicId);return;}work(async current=>{try{const prepared=await prepareMemberSlots(slots);const hash=makeShareHash(prepared,title,names,showRanks);if(current())setShareURL(window.location.origin+`/${lang}/mytop9`+hash);}catch{if(current())setMessage((copy[languageRef.current]||copy.en).localShare);}});}
  function publishedHome(boardId){
-  setEditingId(boardId);savedBoard.current=JSON.stringify({slots,title,names,sourceIds,category});
-  draftStore({v:1,boardId,slots,title,baseTitle,names,candidates,sourceIds,category},true).catch(()=>{});
+  setEditingId(boardId);savedBoard.current=JSON.stringify({slots,title,names,showRanks,sourceIds,category});
+  draftStore({v:1,boardId,slots,title,baseTitle,names,showRanks,candidates,sourceIds,category},true).catch(()=>{});
   if(onHome){onHome();return;}
   setGalleryTick(n=>n+1);setStage('home');setFocus(null);setShareURL('');setMessage('');
   if(location.hash)window.history.replaceState(null,'',window.location.pathname+window.location.search);
@@ -197,13 +197,13 @@ export default function TopNinePage({publicBoard=null,publicId='',templateSource
   poolWasReset.current=true;
   setCandidates([]);setSourceIds([]);setCandidateQuery('');setLimit(36);setFocus(null);
  }
- function reset(){if((count||candidates.length)&&!window.confirm(t.confirmReset))return;if(onHome){onHome();return;}setStage('home');setSlots(blank());setCandidates([]);setSourceIds([]);setCategory('');setEditingId('');setTitle('');setBaseTitle('');setGame(null);setFocus(null);setShareURL('');setMessage('');setDraft(null);draftStore(null,true).catch(()=>{});}
+ function reset(){if((count||candidates.length)&&!window.confirm(t.confirmReset))return;if(onHome){onHome();return;}setStage('home');setSlots(blank());setCandidates([]);setSourceIds([]);setCategory('');setEditingId('');setTitle('');setBaseTitle('');setShowRanks(false);setNames(false);setGame(null);setFocus(null);setShareURL('');setMessage('');setDraft(null);draftStore(null,true).catch(()=>{});}
  const selectedIds=new Set(slots.filter(Boolean).map(candidate=>candidate.id));
  const visibleCandidates=candidates.filter(c=>candidateMatches(c,candidateQuery)).sort((a,b)=>Number(selectedIds.has(b.id))-Number(selectedIds.has(a.id)));
  const showNames=stage==='preview'?(previewNames??names):names;
  const displayTitle=localizedBoardTitle({title,sourceIds},publicBoard?.titleSources,lang);
  const publicDescription=boardDescription({title,slots,sourceIds,titleSources:publicBoard?.titleSources,authorNickname:publicBoard?.authorNickname},lang);
- const changedSinceSave=savedBoard.current!==JSON.stringify({slots,title,names,sourceIds,category});
+ const changedSinceSave=savedBoard.current!==JSON.stringify({slots,title,names,showRanks,sourceIds,category});
  const ready=count>0&&slots.every(c=>!c||frames[c.src]?.frame);
  return <main className="top-nine" dir={lang==='ar'?'rtl':'ltr'}>
  <Seo title={`${publicId?displayTitle:templateSource?templatePageTitle(templateSource,lang):t.title} | One Pick Game`} description={publicId?publicDescription.replace(/\n/g,' '):templateSource?templatePageIntro(templateSource,lang):t.subtitle} lang={lang} slug={publicId?'mytop9/'+publicId:templateSource?'mytop9/templates/'+templateSource.id:'mytop9'} indexable={publicId?stage==='preview':!location.hash}/>
@@ -213,7 +213,6 @@ export default function TopNinePage({publicBoard=null,publicId='',templateSource
  {message&&<div role="alert" className="tn-message tn-share-notice"><p>{message}</p>{message===t.localShare&&<><p>{t.memberUploadHelp}</p><a href={`/${lang}/login`}>{t.memberAccess.split(' / ')[0]}</a>{' · '}<a href={`/${lang}/signup`}>{t.memberAccess.split(' / ')[1]||t.memberAccess}</a></>}</div>}
  {draftError&&<p role="status" className="tn-message">{t.draftError}</p>}
  {busy&&<p role="status" className="tn-message">{t.loading}</p>}
- {stage!=='game'&&<label className="tn-rank-toggle"><input type="checkbox" checked={showRanks} onChange={event=>setShowRanks(event.target.checked)}/>{t.showRanks}</label>}
  {stage==='home'?<>
  <div className={`tn-home-grid tn-grid ${dropCell!==null?'tn-drop-active':''}`} dir="ltr" onDragOver={homeGridDragOver} onDragLeave={event=>{if(!event.currentTarget.contains(event.relatedTarget))setDropCell(null);}} onDrop={homeGridDrop}>{slots.map((c,i)=><div key={i} className={`tn-cell ${i===4?'tn-onepick':''} ${dropCell===i?'tn-drop-target':''}`}><button disabled={busy} aria-label={`${showRanks?SLOT_RANKS[i]:i+1}: ${c?.name||'+'}`} onClick={()=>{setFocus(i);pickUpload(i);}} onDragEnter={e=>{if(!busy&&Array.from(e.dataTransfer?.types||[]).includes('Files')){e.preventDefault();setDropCell(i);}}} onDragOver={e=>{if(!busy&&Array.from(e.dataTransfer?.types||[]).includes('Files')){e.preventDefault();e.dataTransfer.dropEffect='copy';setDropCell(i);}}} onDragLeave={e=>{if(!e.currentTarget.contains(e.relatedTarget))setDropCell(current=>current===i?null:current);}} onDrop={e=>slotDrop(e,i)}>{dropCell===i&&<span className="tn-drop-label" aria-hidden="true"><span>↓</span>{t.upload}</span>}{c&&frames[c.src]?.frame?<CropPhoto candidate={c} frame={frames[c.src].frame}/>:<span>{i===4?'One Pick': '+'}</span>}</button>{showRanks&&<span className={`tn-rank ${i===4?'tn-rank-first':''}`} aria-hidden="true">{SLOT_RANKS[i]}</span>}</div>)}</div>
  <div className="tn-actions"><button className="tn-primary tn-upload-button" disabled={busy} onClick={()=>pickUpload()}>{t.upload}</button><button className="tn-site-import" disabled={busy} onClick={()=>setSitePicker(true)}>{lang==='ko'?'사이트 내에서 골라오기':'Choose from the site'}</button>{draft&&<button disabled={busy} onClick={resume}>{t.restore}</button>}</div><p className="tn-muted">{t.uploadHelp}</p>
@@ -223,7 +222,7 @@ export default function TopNinePage({publicBoard=null,publicId='',templateSource
  <div className="tn-templates tn-picture-templates">{(searched?sources:templates).map(c=><Link key={c.id} className="tn-template-link" to={'/'+lang+'/mytop9/templates/'+c.id}>{safeMedia(c.thumbnail)?<Photo candidate={{src:safeMedia(c.thumbnail)}}/>:<span className="tn-card-placeholder" aria-hidden="true">▦</span>}<strong title={templateTitle(c,'nine',lang,t.nav)}><span className="tn-template-title">{templateTitle(c,'nine',lang,t.nav)}</span></strong></Link>)}</div>
  {searched&&!sources.length&&<p>{t.empty}</p>}
  {searched?moreSources&&<button disabled={busy} onClick={()=>search(null,true)}>{t.more}</button>:templateMore&&<button disabled={busy} onClick={()=>work(async current=>{const offset=templateOffset+30;const rows=await sourcePage('',offset,true);if(current()){setTemplates(old=>[...old,...rows]);setTemplateOffset(offset);setTemplateMore(rows.length===30);}})}>{t.more}</button>}
- <PublicBoards lang={lang} tick={galleryTick} showRanks={showRanks}/>
+ <PublicBoards lang={lang} tick={galleryTick}/>
  </>:stage==='game'?<TopNineGame game={game} lang={lang} text={t} Photo={Photo} onChange={setGame} onNext={advanceGame} onBack={()=>{setGame(history[history.length-1]);setHistory(previous=>previous.slice(0,-1));}} onMore={moreGame} onFill={fillGame} canBack={history.length>0}/>:<>
  <div className="tn-actions"><button disabled={busy} onClick={()=>{if(onHome){onHome();return;}setStage('home');setFocus(null);setMessage('');}}>{lang==='ko'?'홈으로':'Home'}</button><button disabled={busy} onClick={reset}>{t.reset}</button>{stage==='pick'&&<><button className="tn-upload-button" disabled={busy} onClick={()=>pickUpload()}>{t.upload}</button><button className="tn-site-import" disabled={busy} onClick={()=>setSitePicker(true)}>{lang==='ko'?'사이트 내에서 골라오기':'Choose from the site'}</button></>}{stage==='preview'&&<><button disabled={busy} onClick={editBoard}>{t.edit}</button><button type="button" aria-pressed={showNames} onClick={()=>setPreviewNames(!showNames)}>{showNames?t.hideCandidateNames:t.showCandidateNames}</button></>}</div>
  {stage==='preview'&&publicId&&<div className="tn-public-intro"><h1 className="tn-result-title">{displayTitle}</h1><p className="tn-public-description">{publicDescription}</p><div className="tn-actions">{(publicBoard?.titleSources||[]).filter(source=>sourceIds.includes(source.id)).map(source=><a className="tn-reuse-template" key={source.id} href={'/'+lang+'/mytop9/templates/'+encodeURIComponent(source.id)}>{t.reuseTemplate}{sourceIds.length>1?' — '+templateTitle(source,'nine',lang):''}</a>)}</div></div>}
@@ -236,11 +235,11 @@ export default function TopNinePage({publicBoard=null,publicId='',templateSource
  {c&&showNames&&(stage==='pick'?<input className="tn-name-input" type="text" value={c.name||''} maxLength={150} disabled={busy} aria-label={`${t.edit}: ${c.name||i+1}`} title={t.edit} onFocus={()=>setFocus(i)} onChange={event=>{const name=event.target.value;setSlots(previous=>previous.map((item,index)=>index===i?{...item,name}:item));}}/>:<span className="tn-name">{c.name}</span>)}
  {c&&frames[c.src]?.error&&<button className="tn-retry" onClick={()=>{frameJobs.current.delete(c.src);setFrames(f=>({...f,[c.src]:null}));setFrameRetry(v=>v+1);}}>{t.retry}</button>}
  </div>)}</div>
- {stage==='pick'?<><div className="tn-drag-help"><p>{t.boardPhotoHelp}</p>{(lang==='ko'?['빈칸을 누르면 사진을 등록할 수 있어요.','등록된 후보는 오른쪽 후보칸에서 드래그하여 넣을 수 있어요.','사진을 드래그해서 칸의 위치를 바꿀 수 있어요.']:['Tap an empty cell to add a photo.','Drag candidates from the list into any cell.','Drag photos to swap cells.']).map(line=><p key={line}>{line}</p>)}</div>
+ {stage==='pick'?<><div className="tn-drag-help"><p>{t.boardPhotoHelp}</p>{(lang==='ko'?['빈칸을 누르면 사진을 등록할 수 있어요.','등록된 후보는 오른쪽 후보칸에서 드래그하여 넣을 수 있어요.']:['Tap an empty cell to add a photo.','Drag candidates from the list into any cell.']).map(line=><p key={line}>{line}</p>)}</div>
  {focus!==null&&slots[focus]&&<fieldset disabled={busy} className="tn-crop"><legend title={slots[focus].name||'One Pick'}>{slots[focus].name||'One Pick'}</legend>{[['zoom',t.zoom,0,3,.05],['x',t.horizontal,0,100,1],['y',t.vertical,0,100,1]].map(([key,label,min,max,step])=><label key={key}>{label}<input type="range" min={min} max={max} step={step} value={slots[focus][key]??(key==='zoom'?1:50)} onChange={e=>adjust(key,e.target.value)}/></label>)}<button onClick={()=>{setSlots(old=>old.map((c,i)=>i===focus?null:c));setFocus(null);}}>{t.remove}</button></fieldset>}
- <label className="tn-title-field">{lang==='ko'?'구절판 이름 (선택)':t.titleLabel}<input value={title} maxLength={100} disabled={busy} onChange={e=>setTitle(e.target.value)}/></label><label className="tn-toggle"><input type="checkbox" checked={names} disabled={busy} onChange={e=>setNames(e.target.checked)}/>{t.names}</label><p className="tn-caption-help">{t.editNameHelp}</p>
+ <label className="tn-title-field">{lang==='ko'?'구절판 이름 (선택)':t.titleLabel}<input value={title} maxLength={100} disabled={busy} onChange={e=>setTitle(e.target.value)}/></label><div className="tn-display-options"><label className="tn-toggle"><input type="checkbox" checked={names} disabled={busy} onChange={e=>setNames(e.target.checked)}/>{t.names}</label><label className="tn-toggle"><input type="checkbox" checked={showRanks} disabled={busy} onChange={e=>setShowRanks(e.target.checked)}/>{t.showRanks}</label></div><p className="tn-rank-help">{t.rankHelp}</p><p className="tn-caption-help">{t.editNameHelp}</p>
  </>:<p className="tn-credit">OnePickGame.com</p>}
- {stage==='pick'&&<div className="tn-actions tn-sticky tn-board-complete"><strong aria-live="polite">{count} / 9</strong><button disabled={busy||!count} onClick={()=>{setStage('preview');setFocus(null);if(!editingId&&!publicId&&!shared)privateCompletionTracker(slots,title,names).catch(()=>{});}}>{t.privateView}</button><PublishBoard existingId={editingId} sourceIds={sourceIds} category={category} slots={slots} title={title} autoTitle={!title.trim()||(baseTitle!==null&&title.trim()===baseTitle.trim())} names={names} lang={lang} disabled={busy||!count||!!editingId&&!changedSinceSave} onPublished={publishedHome}/></div>}
+ {stage==='pick'&&<div className="tn-actions tn-sticky tn-board-complete"><strong aria-live="polite">{count} / 9</strong><button disabled={busy||!count} onClick={()=>{setStage('preview');setFocus(null);if(!editingId&&!publicId&&!shared)privateCompletionTracker(slots,title,names).catch(()=>{});}}>{t.privateView}</button><PublishBoard existingId={editingId} sourceIds={sourceIds} category={category} slots={slots} title={title} autoTitle={!title.trim()||(baseTitle!==null&&title.trim()===baseTitle.trim())} names={names} showRanks={showRanks} lang={lang} disabled={busy||!count||!!editingId&&!changedSinceSave} onPublished={publishedHome}/></div>}
  </section>
 
  {stage==='pick'&&<section className={candidates.length ? "tn-pool" : "tn-pool tn-pool-empty"} ref={poolRef} onDragOver={e=>e.preventDefault()} onDrop={poolDrop}><div className="tn-pool-heading"><h2>{t.choose}</h2><button type="button" className="tn-upload-button" disabled={busy} onClick={()=>pickUpload()}>{t.upload}</button></div><div className="tn-pool-reset"><button type="button" disabled={busy||!candidates.length} onClick={resetPool}>{t.resetCandidates}</button></div><p className="tn-photo-help">{t.doublePhoto}</p><input type="search" aria-label={t.candidateSearch} placeholder={t.candidateSearch} value={candidateQuery} onChange={e=>{setCandidateQuery(e.target.value);setLimit(36);}}/>
@@ -252,7 +251,7 @@ export default function TopNinePage({publicBoard=null,publicId='',templateSource
  </section>}
  </div>
  {stage==='preview'&&<p className="tn-share-notice">{t.memberUploadHelp}</p>}
- {stage==='preview'&&<div className="tn-actions tn-sticky"><strong aria-live="polite">{count} / 9</strong><button disabled={busy} onClick={editBoard}>{t.edit}</button>{publicId&&<DeleteBoard id={publicId} lang={lang} onDeleted={onHome}/>}<button className="tn-primary" disabled={busy||!ready} onClick={download}>↓ {t.download}</button><button disabled={busy||!ready} onClick={share}>{t.share}</button>{!editingId&&!shared&&<PublishBoard existingId={editingId} sourceIds={sourceIds} category={category} slots={slots} title={title} autoTitle={!title.trim()||(baseTitle!==null&&title.trim()===baseTitle.trim())} names={names} lang={lang} disabled={busy||!count||!!editingId&&!changedSinceSave} onPublished={publishedHome}/>}</div>}
+ {stage==='preview'&&<div className="tn-actions tn-sticky"><strong aria-live="polite">{count} / 9</strong><button disabled={busy} onClick={editBoard}>{t.edit}</button><button type="button" aria-pressed={showNames} onClick={()=>setPreviewNames(!showNames)}>{showNames?t.hideCandidateNames:t.showCandidateNames}</button>{publicId&&<DeleteBoard id={publicId} lang={lang} onDeleted={onHome}/>}<button className="tn-primary" disabled={busy||!ready} onClick={download}>↓ {t.download}</button><button disabled={busy||!ready} onClick={share}>{t.share}</button>{!editingId&&!shared&&<PublishBoard existingId={editingId} sourceIds={sourceIds} category={category} slots={slots} title={title} autoTitle={!title.trim()||(baseTitle!==null&&title.trim()===baseTitle.trim())} names={names} showRanks={showRanks} lang={lang} disabled={busy||!count||!!editingId&&!changedSinceSave} onPublished={publishedHome}/>}</div>}
 
  {shareURL&&<label className="tn-share">{t.share}<textarea readOnly value={shareURL} onFocus={e=>e.target.select()} rows="3"/></label>}
  </>}
