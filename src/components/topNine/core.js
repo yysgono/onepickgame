@@ -1,4 +1,6 @@
 import { originalStorageImageUrl } from '../../utils/originalStorageImageUrl';
+// Center is first; remaining cells follow reading order.
+export const SLOT_RANKS = [2,3,4,5,1,6,7,8,9];
 export function safeMedia(value, local = true) {
  if(typeof value !== 'string' || value.length > 3000000) return '';
  if(local && /^data:image\/(jpeg|png|webp);base64,[a-z0-9+/=]+$/i.test(value)) return value;
