@@ -78,3 +78,8 @@ export function candidateMatches(candidate,query) {
  const normalize=value=>String(value||'').normalize('NFKC').toLocaleLowerCase().replace(/\s+/g,'');
  const keyword=normalize(query);return !keyword||candidateSearchNames(candidate).some(name=>normalize(name).includes(keyword));
 }
+
+export function insertUploadedCandidates(candidates,uploaded,slots){
+ const selected=new Set(slots.filter(Boolean).map(c=>c.id));
+ return [...candidates.filter(c=>selected.has(c.id)),...uploaded,...candidates.filter(c=>!selected.has(c.id))].slice(0,2048);
+}

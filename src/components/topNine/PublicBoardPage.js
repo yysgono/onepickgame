@@ -1,3 +1,4 @@
+import {loadShortLink} from './shortLinks';
 import {draftStore} from './draft';
 import {ownsGuestBoard,rememberGuestBoard} from './guestOwnership';
 import {loadBoardTitleSources} from './localizedTitle';
@@ -17,21 +18,22 @@ export default function PublicBoardPage(){
  const [result,setResult]=useState(null),[retry,setRetry]=useState(0);
  useEffect(()=>{
   let live=true;setResult(null);
-  supabase.from('top_nine_public_boards').select('id,title,slots,show_names,show_ranks,author_id,source_worldcup_ids,guest_nickname,category').eq('id',id).maybeSingle().then(async({data,error})=>{
+  supabase.from('top_nine_public_boards').select('id,title,slots,show_names,show_ranks,author_id,source_worldcup_ids,guest_nickname,category').eq('id',id).maybeSingle().then(async({data:publicData,error})=>{
    if(!live)return;
    if(error){setResult({error:true});return;}
-   if(!data){setResult({missing:true});return;}
    try{
+    const data=publicData||await loadShortLink(supabase,id);if(!live)return;
+    if(!data){setResult({missing:true});return;}
     const slots=data.slots.map(c=>c?.id==='tn-empty-cell'&&c.src==='https://www.onepickgame.com/top-nine-empty.png'?null:c);
     const board=readShared(makeShareHash(slots,data.title,data.show_names,data.show_ranks));
-    const [titleSources,auth]=await Promise.all([loadBoardTitleSources(supabase,[data]),Promise.resolve().then(()=>supabase.auth.getUser()).catch(()=>null)]);if(!live)return;
+    const [titleSources,auth]=await Promise.all([data.unlisted?Promise.resolve([]):loadBoardTitleSources(supabase,[data]),Promise.resolve().then(()=>supabase.auth.getUser()).catch(()=>null)]);if(!live)return;
     const actor=auth?.data?.user;
-    const oldDraft=!data.author_id&&!ownsGuestBoard(id)?await Promise.resolve().then(()=>draftStore()).catch(()=>null):null;
+    const oldDraft=!data.unlisted&&!data.author_id&&!ownsGuestBoard(id)?await Promise.resolve().then(()=>draftStore()).catch(()=>null):null;
     const guestOwner=ownsGuestBoard(id)||oldDraft?.boardId===id;
     if(!data.author_id&&guestOwner)rememberGuestBoard(id);
-    const canEdit=data.author_id?!!actor&&!actor.is_anonymous&&actor.id===data.author_id:guestOwner;
+    const canEdit=!data.unlisted&&(data.author_id?!!actor&&!actor.is_anonymous&&actor.id===data.author_id:guestOwner);
     if(!live)return;
-    setResult(board?{canEdit,board:{...board,category:data.category||'',authorNickname:data.guest_nickname||'',titleSources,sourceIds:data.source_worldcup_ids||[]}}:{missing:true});
+    setResult(board?{canEdit,board:{...board,unlisted:!!data.unlisted,category:data.category||'',authorNickname:data.guest_nickname||'',titleSources,sourceIds:data.source_worldcup_ids||[]}}:{missing:true});
    }catch{setResult({error:true});}
   }).catch(()=>{if(live)setResult({error:true});});
   return()=>{live=false;};

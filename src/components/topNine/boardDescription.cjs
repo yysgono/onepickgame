@@ -12,11 +12,6 @@ function boardDescription(board,lang='en'){
  const forms=copy[lang]||copy.en;
  const pattern=names?(author?forms[0]:forms[1]):(author?forms[2]:forms[3]);
  const description=pattern.replace(/\{(author|names)\}/g,(_,key)=>key==='author'?author:names);
- const map=value=>{if(typeof value==='string'){try{return JSON.parse(value)||{};}catch{return {};}}return value||{};};
- const sourceIds=board.sourceIds||board.source_worldcup_ids||[];
- const templates=(board.titleSources||[]).filter(source=>sourceIds.some(id=>String(id)===String(source.id)))
-  .map(source=>{const own=map(source.top_nine_title_translations),original=map(source.title_translations);return text(own[lang]||own.en||original[lang]||original.en||source.title);}).filter(Boolean);
- const template=[...new Set(templates)].join(', ');
- return description+(template?'\n'+forms[4].replace('{template}',()=>template):'');
+ return description;
 }
 module.exports={boardDescription};
