@@ -20,7 +20,6 @@ import React, {
 } from "react";
 
 import {
-  Link,
   useNavigate,
   useParams,
 } from "react-router-dom";
@@ -117,7 +116,6 @@ function TierListResultPage() {
         deleteConfirm: t("tierList.result.deleteConfirm"),
         deleting: t("tierList.result.deleting"),
         deleteFailed: t("tierList.result.deleteFailed"),
-        createTierList: t("tierList.result.createTierList"),
         usedPreset: t("tierList.result.usedPreset"),
         createBracketFromTier: t("tierList.result.createBracketFromTier"),
         createBracketFromPreset: t("tierList.result.createBracketFromPreset"),
@@ -186,6 +184,8 @@ function TierListResultPage() {
       ""
     );
 
+
+  const [missingTierId,setMissingTierId]=useState(null);
 
   const [
     comments,
@@ -436,6 +436,7 @@ if (mounted) {
         setLoading(
           true
         );
+        setMissingTierId(null);
 
         setError(
           ""
@@ -481,6 +482,7 @@ if (mounted) {
           );
 
 
+          if(fetchError?.code==="PGRST116")setMissingTierId(id);
           setError(
             text.loadFailed
           );
@@ -1438,13 +1440,13 @@ await trashContent('tier-list',tierList.id,guestPassword);
   ) {
     return (
       <>
-        <Seo
+        {missingTierId===id&&<Seo
           lang={lang}
           slug={`tier-list/${id}`}
           title={t("tierList.seo.resultFallbackTitle")}
           description={t("tierList.seo.resultFallbackDescription")}
           indexable={false}
-        />
+        />}
       <div
         style={{
           minHeight:

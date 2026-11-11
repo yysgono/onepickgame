@@ -516,13 +516,7 @@ export default function BlogPostPage() {
   if (errorMessage) {
     return (
       <>
-        <Seo
-          lang={currentLang}
-          slug={`blog/${slug}`}
-          title={`${text.error} | ${brandName}`}
-          description={text.error}
-          indexable={false}
-        />
+
 
         <main className="blog-page">
           <div className="blog-container">

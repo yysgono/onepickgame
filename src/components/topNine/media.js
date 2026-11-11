@@ -48,10 +48,9 @@ export async function exportPNG(slots,title,names,frameCache={},showRanks=false)
   if(names){ctx.fillStyle='#211638';ctx.font='22px sans-serif';ctx.fillText(fit(ctx,c.name,cell-12),x+cell/2,y+cell+29);}
   }
   if(showRanks){
-   ctx.fillStyle=i===4?'#7139ce':'rgba(255,255,255,.96)';ctx.fillRect(x+8,y+8,34,34);
-   ctx.strokeStyle='#7139ce';ctx.lineWidth=1;ctx.strokeRect(x+8,y+8,34,34);
-   ctx.fillStyle=i===4?'#fff':'#50248d';ctx.font='bold 22px sans-serif';
-   ctx.fillText(String(SLOT_RANKS[i]),x+25,y+33);
+   ctx.font='bold 32px sans-serif';ctx.lineWidth=4;ctx.strokeStyle='#fff';ctx.lineJoin='round';
+   ctx.strokeText(String(SLOT_RANKS[i]),x+22,y+38);
+   ctx.fillStyle='#50248d';ctx.fillText(String(SLOT_RANKS[i]),x+22,y+38);ctx.lineWidth=1;
   }
  }
  ctx.fillStyle='#f2eaff';ctx.fillRect(0,canvas.height-66,canvas.width,66);ctx.fillStyle='#5c229f';ctx.font='bold 32px sans-serif';ctx.fillText('OnePickGame.com',564,canvas.height-24);

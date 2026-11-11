@@ -37,6 +37,8 @@ export default function SEOManager() {
 
   // 색인을 허용하는 동적 경로
   const ALLOW_PATTERNS = [
+    /^mytop9\/(?:templates\/)?[^/]+$/,
+    /^tier-list\/create\/[^/]+$/,
     /^random-pick\/(wheel|lotto|pinball|ladder|boxes|cards|order|dice|teams)$/,
     /^blog\/[^/]+$/,
     /^notice\/[^/]+$/,
@@ -72,7 +74,7 @@ export default function SEOManager() {
   const searchParams = new URLSearchParams(search || "");
 
   const isTierEditOrClone =
-    slug === "tier-list/create" &&
+    (slug === "tier-list/create" || /^tier-list\/create\/[^/]+$/.test(slug)) &&
     (searchParams.has("edit") || searchParams.has("clone"));
 
   const shouldNoIndex =

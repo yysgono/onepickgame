@@ -265,6 +265,7 @@ export default function QuizDetailPage() {
   const [loading, setLoading] = useState(true);
 
   const [error, setError] = useState("");
+  const [missingQuizId,setMissingQuizId]=useState(null);
 
   const [recommended, setRecommended] = useState([]);
 
@@ -379,6 +380,7 @@ export default function QuizDetailPage() {
     setLoading(true);
 
     setError("");
+    setMissingQuizId(null);
 
     setQuiz(null);
 
@@ -448,7 +450,7 @@ export default function QuizDetailPage() {
 
       })
 
-      .catch((e) => alive && setError(e.message || String(e)))
+      .catch((e) => {if(!alive)return;if(e?.code==="PGRST116")setMissingQuizId(id);setError(e.message || String(e));})
 
       .finally(() => alive && setLoading(false));
 
@@ -979,7 +981,7 @@ export default function QuizDetailPage() {
 
   if (error || !quiz) {
 
-    return <><Seo lang={lang} slug={`quiz/${id}`} title="Quiz unavailable | OnePickGame" indexable={false} /><div style={{ padding: 60, textAlign: "center", color: "#b42346" }}>{error || "Quiz not found"}</div></>;
+    return <>{missingQuizId===id&&<Seo lang={lang} slug={`quiz/${id}`} title="Quiz unavailable | OnePickGame" indexable={false} />}<div style={{ padding: 60, textAlign: "center", color: "#b42346" }}>{error || "Quiz not found"}</div></>;
 
   }
 

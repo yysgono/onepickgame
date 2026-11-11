@@ -7,9 +7,9 @@
 .tn-mini-grid video{display:block;width:100%;aspect-ratio:1;object-fit:cover}
 .tn-mini-cell{position:relative;min-width:0;aspect-ratio:1}
 .tn-mini-cell>.tn-mini-empty{display:block;width:100%;height:100%}
-.top-nine .tn-rank{position:absolute;left:5px;top:5px;z-index:2;display:grid;place-items:center;width:24px;height:24px;border:1px solid #7139ce;border-radius:5px;background:rgba(255,255,255,.96);color:#50248d;font-size:14px;font-weight:800;line-height:1;box-shadow:0 1px 4px #0003;pointer-events:none}
-.top-nine .tn-rank-first{background:#7139ce;color:#fff}
-.tn-mini-grid .tn-rank{left:3px;top:3px;width:18px;height:18px;font-size:11px;border-radius:4px}
+.top-nine .tn-rank{position:absolute;left:8px;top:6px;z-index:2;color:#50248d;font-size:22px;font-weight:900;line-height:1.2;text-shadow:0 0 3px #fff,1px 1px 2px #fff,-1px -1px 2px #fff;pointer-events:none}
+
+.tn-mini-grid .tn-rank{left:5px;top:3px;font-size:16px}
 .top-nine .tn-gallery-more{display:block;min-width:220px;min-height:54px;margin:28px auto 12px;padding:14px 32px;background:#7139ce;border:2px solid #7139ce;color:#fff;font-size:18px;font-weight:800;box-shadow:0 4px 12px #7139ce24}
 .top-nine .tn-gallery-more:hover:not(:disabled){background:#5425a3;color:#fff;border-color:#5425a3}
 /* Larger, centered home controls and direct editing. */
@@ -90,7 +90,7 @@
 .top-nine .tn-actions .tn-publish-button{white-space:nowrap;flex:0 0 auto;width:auto}
 @media(max-width:700px){.top-nine .tn-board-complete{display:flex;flex-wrap:wrap;justify-content:center}.top-nine .tn-board-complete>button{width:auto;flex:0 0 auto}}
 
-.tn-caption-help{font-size:15px;color:#695582;margin:8px 0;line-height:1.6}
+.tn-caption-help{font-size:17px;color:#695582;margin:8px 0;line-height:1.6}
 .tn-grid .tn-cell>button{touch-action:manipulation}
 
 .top-nine .tn-home-grid{transition:border-color .15s,box-shadow .15s}
@@ -248,4 +248,4 @@
 /* Author display choices are saved with each board. */
 .tn-display-options{display:flex;flex-wrap:wrap;align-items:center;gap:8px 24px;margin-top:12px}
 .tn-display-options .tn-toggle{margin-top:0}
-.tn-rank-help{font-size:13px;line-height:1.6;color:#6c6078;margin:8px 0}
+.tn-rank-help{font-size:17px;line-height:1.6;color:#6c6078;margin:8px 0}

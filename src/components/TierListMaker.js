@@ -1588,6 +1588,8 @@ const list = keyword
     setSelectedCupResolved,
   ] = useState(!id);
 
+  const [missingPresetId,setMissingPresetId]=useState(null);
+
   const [
     selectedCupError,
     setSelectedCupError,
@@ -1632,6 +1634,7 @@ const list = keyword
     setSelectedCupFromDb(null);
     setSelectedCupLoading(true);
     setSelectedCupResolved(false);
+    setMissingPresetId(null);
     setSelectedCupError("");
 
     supabase
@@ -1656,6 +1659,7 @@ const list = keyword
         if (data) {
           setSelectedCupFromDb(data);
         } else if (!selectedCupFromList) {
+          setMissingPresetId(id);
           setSelectedCupError(t("not_found"));
         }
       })
@@ -4089,13 +4093,7 @@ if (editingTierListId) {
 ) {
   return (
     <>
-      <Seo
-        lang={lang}
-        slug="tier-list/create"
-        title={seoTitle}
-        description={seoDescription}
-        indexable={!id && !cloneTierListId && !editTierListId}
-      />
+
       <div
       style={{
         width: "100%",
@@ -4210,13 +4208,13 @@ if (editingTierListId) {
   ) {
     return (
       <>
-        <Seo
+        {missingPresetId===id&&<Seo
           lang={lang}
           slug="tier-list/create"
           title={seoTitle}
           description={seoDescription}
           indexable={false}
-        />
+        />}
         <div
           style={{
             minHeight: "65vh",
