@@ -249,3 +249,6 @@
 .tn-display-options{display:flex;flex-wrap:wrap;align-items:center;gap:8px 24px;margin-top:12px}
 .tn-display-options .tn-toggle{margin-top:0}
 .tn-rank-help{font-size:17px;line-height:1.6;color:#6c6078;margin:8px 0}
+
+.top-nine .tn-action-notice{text-align:center;max-width:760px;margin:16px auto;padding:12px 16px;border:1px solid #dfd5ef;border-radius:10px;background:#fcfaff;font-size:16px;line-height:1.7;white-space:pre-line}
+.tn-action-notice p{margin:0}.tn-action-notice a{display:inline-block;margin-top:8px;color:#6224b3;font-weight:700}
