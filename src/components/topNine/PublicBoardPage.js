@@ -33,7 +33,7 @@ export default function PublicBoardPage(){
     if(!data.author_id&&guestOwner)rememberGuestBoard(id);
     const canEdit=!data.unlisted&&(data.author_id?!!actor&&!actor.is_anonymous&&actor.id===data.author_id:guestOwner);
     if(!live)return;
-    setResult(board?{canEdit,board:{...board,unlisted:!!data.unlisted,category:data.category||'',authorNickname:data.guest_nickname||'',titleSources,sourceIds:data.source_worldcup_ids||[]}}:{missing:true});
+    setResult(board?{canEdit,board:{...board,unlisted:!!data.unlisted,isGuest:!data.author_id&&!data.unlisted,category:data.category||'',authorNickname:data.guest_nickname||'',titleSources,sourceIds:data.source_worldcup_ids||[]}}:{missing:true});
    }catch{setResult({error:true});}
   }).catch(()=>{if(live)setResult({error:true});});
   return()=>{live=false;};

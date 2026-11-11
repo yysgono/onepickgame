@@ -1,3 +1,5 @@
+import GuestEditPrompt from './topNine/GuestEditPrompt';
+import {getGuestEditSession} from './topNine/guestEditSession';
 import {createShortLink} from './topNine/shortLinks';
 import {createPrivateCompletionTracker} from './topNine/privateCompletions';
 import {templatePageTitle,templatePageIntro} from './topNine/templateIntro';
@@ -39,11 +41,15 @@ export default function TopNinePage({publicBoard=null,publicId='',templateSource
  const [sitePicker,setSitePicker]=useState(false),[galleryTick,setGalleryTick]=useState(0),[templateMore,setTemplateMore]=useState(false),[templateOffset,setTemplateOffset]=useState(0),[stage,setStage]=useState(shared?'preview':templateSource?'pick':'home'),[slots,setSlots]=useState(shared?.slots||blank),[title,setTitle]=useState(shared?.title||(templateSource?templatePageTitle(templateSource,lang):'')),[baseTitle,setBaseTitle]=useState(shared?null:templateSource?templatePageTitle(templateSource,lang):''),[names,setNames]=useState(shared?.names||false);
  const [candidates,setCandidates]=useState([]),[templates,setTemplates]=useState([]),[sources,setSources]=useState([]),[query,setQuery]=useState(''),[searchedQuery,setSearchedQuery]=useState(''),[candidateQuery,setCandidateQuery]=useState(''),[limit,setLimit]=useState(36),[sourceOffset,setSourceOffset]=useState(0),[moreSources,setMoreSources]=useState(false),[searched,setSearched]=useState(false);
  const [busy,setBusy]=useState(false),[message,setMessage]=useState(''),[templateError,setTemplateError]=useState(false),[templateTick,setTemplateTick]=useState(0),[focus,setFocus]=useState(null),[draft,setDraft]=useState(null),[draftError,setDraftError]=useState(false),[shareURL,setShareURL]=useState('');
+ const [editRequest,setEditRequest]=useState(null),[draftNotice,setDraftNotice]=useState(''),[draftBusy,setDraftBusy]=useState(false),[noticeTick,setNoticeTick]=useState(0);
+ const shareNoticeRef=useRef(null);
  const [shareNotice,setShareNotice]=useState(''),[quietOperation,setQuietOperation]=useState(false);
  const [frames,setFrames]=useState({}),[frameRetry,setFrameRetry]=useState(0),[game,setGame]=useState(null),[history,setHistory]=useState([]),[gameCount,setGameCount]=useState('54');
  const privateCompletionTracker=useMemo(()=>createPrivateCompletionTracker(supabase),[]);
  const dragItem=useRef(null),uploadTarget=useRef(null),fileRef=useRef(),poolRef=useRef(),poolListRef=useRef(),lock=useRef(false),operation=useRef(0),alive=useRef(true),draftReady=useRef(false),frameJobs=useRef(new Set());
  const [dropCell,setDropCell]=useState(null);
+ useEffect(()=>{if(shareNotice)shareNoticeRef.current?.scrollIntoView?.({block:'nearest',behavior:'smooth'});},[noticeTick,shareNotice]);
+ function showShareNotice(text){setShareNotice(text===t.localShare?t.uploadShareRestriction:text);if(text)setNoticeTick(n=>n+1);}
  useEffect(()=>{const clear=()=>setDropCell(null);window.addEventListener("drop",clear);window.addEventListener("dragend",clear);return()=>{window.removeEventListener("drop",clear);window.removeEventListener("dragend",clear);};},[]);
  const [editingId,setEditingId]=useState(publicId);
  const savedBoard=useRef(publicBoard?JSON.stringify({slots:publicBoard.slots,title:publicBoard.title,names:publicBoard.names,showRanks:publicBoard.showRanks===true,sourceIds:publicBoard.sourceIds||[],category:publicBoard.category||''}):null);
@@ -79,7 +85,7 @@ export default function TopNinePage({publicBoard=null,publicId='',templateSource
   setSitePicker(false);setGame(null);setHistory([]);setMessage('');setShareURL('');dragItem.current=null;
  },[location.key,location.hash,location.state]);
  useEffect(()=>{if(poolListRef.current)poolListRef.current.scrollTop=0;},[candidateQuery]);
- useEffect(()=>{alive.current=true;draftStore().then(d=>{if(!alive.current)return;if(d?.v===1)setDraft(d);if(publicBoard&&canEdit&&new URLSearchParams(location.search).get('edit')==='1')editBoard(d?.v===1?d:null);}).catch(()=>{if(alive.current&&publicBoard&&canEdit&&new URLSearchParams(location.search).get('edit')==='1')editBoard(null);}).finally(()=>{draftReady.current=true;});return()=>{alive.current=false;operation.current++;};},[]);
+ useEffect(()=>{alive.current=true;draftStore().then(d=>{if(!alive.current)return;if(d?.v===1)setDraft(d);if(publicBoard&&canEdit&&new URLSearchParams(location.search).get('edit')==='1')requestEdit(d?.v===1?d:null);}).catch(()=>{if(alive.current&&publicBoard&&canEdit&&new URLSearchParams(location.search).get('edit')==='1')requestEdit(null);}).finally(()=>{draftReady.current=true;});return()=>{alive.current=false;operation.current++;};},[]);
  useEffect(()=>{if(!shared)return;setSlots(shared.slots);setTitle(shared.title);setBaseTitle(null);setNames(shared.names);setShowRanks(shared.showRanks===true);setStage('preview');setFocus(null);setShareURL('');},[shared]);
  useEffect(()=>{let live=true;setTemplateError(false);listTemplates().then(rows=>{if(live){setTemplates(rows);setTemplateMore(rows.length===30);}}).catch(()=>{if(live)setTemplateError(true);});return()=>{live=false;};},[templateTick]);
  useEffect(()=>{
@@ -103,7 +109,21 @@ export default function TopNinePage({publicBoard=null,publicId='',templateSource
  },[location.search,shared,publicId]);
 
  async function work(fn,quiet=false){if(lock.current)return;lock.current=true;setQuietOperation(quiet);setBusy(true);setMessage('');const op=++operation.current;try{await fn(()=>alive.current&&op===operation.current);}catch(e){if(alive.current&&op===operation.current)setMessage((copy[languageRef.current]||copy.en).error);}finally{if(alive.current&&op===operation.current){lock.current=false;setBusy(false);}}}
- function resume(){if(!draft)return;const pool=(draft.candidates||[]).slice(0,2048).filter(c=>safeMedia(c?.src));const restored=Array.isArray(draft.slots)&&draft.slots.length===9?draft.slots.map(c=>c&&safeMedia(c.src)?{...c,zoom:normalizeZoom(c.zoom),x:Math.max(0,Math.min(100,Number(c.x)||0)),y:Math.max(0,Math.min(100,Number(c.y)||0))}:null):blank();setSlots(restored);setCandidates(pool);setTitle(String(draft.title||'').slice(0,100));setBaseTitle(typeof draft.baseTitle==='string'?draft.baseTitle:null);setNames(!!draft.names);setShowRanks(draft.showRanks===true);setSourceIds(draft.sourceIds||[]);setCategory(draft.category||'');setEditingId(draft.boardId||'');setStage('pick');setFocus(null);}
+ function resume(restoredDraft=draft){const record=restoredDraft?.v===1?restoredDraft:draft;if(!record)return;const pool=(record.candidates||[]).slice(0,2048).filter(c=>safeMedia(c?.src));const restored=Array.isArray(record.slots)&&record.slots.length===9?record.slots.map(c=>c&&safeMedia(c.src)?{...c,zoom:normalizeZoom(c.zoom),x:Math.max(0,Math.min(100,Number(c.x)||0)),y:Math.max(0,Math.min(100,Number(c.y)||0))}:null):blank();setSlots(restored);setCandidates(pool);setTitle(String(record.title||'').slice(0,100));setBaseTitle(typeof record.baseTitle==='string'?record.baseTitle:null);setNames(!!record.names);setShowRanks(record.showRanks===true);setSourceIds(record.sourceIds||[]);setCategory(record.category||'');setEditingId(record.boardId||'');setStage('pick');setFocus(null);}
+ async function saveDraft(){
+  if(busy||draftBusy)return;setDraftBusy(true);setDraftNotice('');
+  try{const record={v:1,boardId:editingId,slots,title,baseTitle,names,showRanks,candidates,sourceIds,category};await draftStore(record,true,'manual');setDraft(record);setDraftNotice(t.draftSaved);}catch{setDraftNotice(t.draftSaveFailed);}finally{setDraftBusy(false);}
+ }
+ async function loadDraft(){
+  if(publicId&&publicBoard?.isGuest&&!getGuestEditSession(publicId)){setEditRequest({loadDraft:true});return;}
+  if(busy||draftBusy)return;setDraftBusy(true);setDraftNotice('');
+  try{const record=await draftStore(undefined,false,'manual')||await draftStore();if(record?.v!==1){setDraftNotice(t.noDraft);return;}setDraft(record);resume(record);setDraftNotice(t.draftLoaded);}catch{setDraftNotice(t.draftSaveFailed);}finally{setDraftBusy(false);}
+ }
+ function requestEdit(restoredDraft){
+  if(publicId&&!canEdit)return;
+  if(publicId&&publicBoard?.isGuest&&!getGuestEditSession(publicId)){setEditRequest({draft:restoredDraft?.v===1?restoredDraft:null});return;}
+  editBoard(restoredDraft);
+ }
  function beginTemplateMode(mode){
   if(!templateSource||busy)return;
   if(mode==='game'&&count&&!window.confirm(t.confirmReset))return;
@@ -166,7 +186,7 @@ export default function TopNinePage({publicBoard=null,publicId='',templateSource
    const prepared=await prepareMemberSlots(slots);
    const linkId=await createShortLink(supabase,prepared,title,names,showRanks);
    if(current()){setShareURL(window.location.origin+`/${lang}/mytop9/`+linkId);setShareNotice('');}
-  }catch(error){if(current())setShareNotice(['MEMBER_REQUIRED','PRIVATE_IMAGE','LOCAL_IMAGE_INVALID','LOCAL_SHARE'].includes(error?.message)?(copy[languageRef.current]||copy.en).localShare:(copy[languageRef.current]||copy.en).error);}},true);
+  }catch(error){if(current())showShareNotice(['MEMBER_REQUIRED','PRIVATE_IMAGE','LOCAL_IMAGE_INVALID','LOCAL_SHARE'].includes(error?.message)?(copy[languageRef.current]||copy.en).uploadShareRestriction:(copy[languageRef.current]||copy.en).error);}},true);
  }
 
  function publishedHome(boardId){
@@ -180,7 +200,7 @@ export default function TopNinePage({publicBoard=null,publicId='',templateSource
  }
  function editBoard(restoredDraft=draft){
   setShareNotice('');
-  if(publicId&&!canEdit)return;
+  if(publicId&&(!canEdit||publicBoard?.isGuest&&!getGuestEditSession(publicId)))return;
   // Event handlers pass a click event; only explicit draft objects override state.
   const editDraft=restoredDraft?.v===1?restoredDraft:draft;
   setStage('pick');setFocus(null);setCandidateQuery('');setLimit(36);
@@ -229,7 +249,7 @@ export default function TopNinePage({publicBoard=null,publicId='',templateSource
  {busy&&!quietOperation&&<p role="status" className="tn-message">{t.loading}</p>}
  {stage==='home'?<>
  <div className={`tn-home-grid tn-grid ${dropCell!==null?'tn-drop-active':''}`} dir="ltr" onDragOver={homeGridDragOver} onDragLeave={event=>{if(!event.currentTarget.contains(event.relatedTarget))setDropCell(null);}} onDrop={homeGridDrop}>{slots.map((c,i)=><div key={i} className={`tn-cell ${i===4?'tn-onepick':''} ${dropCell===i?'tn-drop-target':''}`}><button disabled={busy} aria-label={`${showRanks?SLOT_RANKS[i]:i+1}: ${c?.name||'+'}`} onClick={()=>{setFocus(i);pickUpload(i);}} onDragEnter={e=>{if(!busy&&Array.from(e.dataTransfer?.types||[]).includes('Files')){e.preventDefault();setDropCell(i);}}} onDragOver={e=>{if(!busy&&Array.from(e.dataTransfer?.types||[]).includes('Files')){e.preventDefault();e.dataTransfer.dropEffect='copy';setDropCell(i);}}} onDragLeave={e=>{if(!e.currentTarget.contains(e.relatedTarget))setDropCell(current=>current===i?null:current);}} onDrop={e=>slotDrop(e,i)}>{dropCell===i&&<span className="tn-drop-label" aria-hidden="true"><span>↓</span>{t.upload}</span>}{c&&frames[c.src]?.frame?<CropPhoto candidate={c} frame={frames[c.src].frame}/>:<span>{i===4?'One Pick': '+'}</span>}</button>{showRanks&&<span className={`tn-rank ${i===4?'tn-rank-first':''}`} aria-hidden="true">{SLOT_RANKS[i]}</span>}</div>)}</div>
- <div className="tn-actions"><button className="tn-primary tn-upload-button" disabled={busy} onClick={()=>pickUpload()}>{t.upload}</button><button className="tn-site-import" disabled={busy} onClick={()=>setSitePicker(true)}>{lang==='ko'?'사이트 내에서 골라오기':'Choose from the site'}</button>{draft&&<button disabled={busy} onClick={resume}>{t.restore}</button>}</div><p className="tn-muted">{t.uploadHelp}</p>
+ <div className="tn-actions"><button className="tn-primary tn-upload-button" disabled={busy} onClick={()=>pickUpload()}>{t.upload}</button><button className="tn-site-import" disabled={busy} onClick={()=>setSitePicker(true)}>{lang==='ko'?'사이트 내에서 골라오기':'Choose from the site'}</button><button disabled={busy||draftBusy} onClick={loadDraft}>{t.loadDraft}</button></div><p className="tn-muted">{t.uploadHelp}</p>
  <form className="tn-search" onSubmit={search}><input aria-label={t.search} placeholder={t.search} value={query} onChange={e=>setQuery(e.target.value)}/><button disabled={busy} type="submit">{lang==='ko'?'검색':'Search'}</button></form>
  <h2>{searched?t.search:t.templates}</h2>
  {templateError&&!searched&&<div className="tn-message">{t.error} <button onClick={()=>setTemplateTick(v=>v+1)}>{t.retry}</button></div>}
@@ -238,7 +258,7 @@ export default function TopNinePage({publicBoard=null,publicId='',templateSource
  {searched?moreSources&&<button disabled={busy} onClick={()=>search(null,true)}>{t.more}</button>:templateMore&&<button disabled={busy} onClick={()=>work(async current=>{const offset=templateOffset+30;const rows=await sourcePage('',offset,true);if(current()){setTemplates(old=>[...old,...rows]);setTemplateOffset(offset);setTemplateMore(rows.length===30);}})}>{t.more}</button>}
  <PublicBoards lang={lang} tick={galleryTick}/>
  </>:stage==='game'?<TopNineGame game={game} lang={lang} text={t} Photo={Photo} onChange={setGame} onNext={advanceGame} onBack={()=>{setGame(history[history.length-1]);setHistory(previous=>previous.slice(0,-1));}} onMore={moreGame} onFill={fillGame} canBack={history.length>0}/>:<>
- <div className="tn-actions"><button disabled={busy} onClick={()=>{if(onHome){onHome();return;}setStage('home');setFocus(null);setMessage('');}}>{lang==='ko'?'홈으로':'Home'}</button><button disabled={busy} onClick={reset}>{t.reset}</button>{stage==='pick'&&<><button className="tn-upload-button" disabled={busy} onClick={()=>pickUpload()}>{t.upload}</button><button className="tn-site-import" disabled={busy} onClick={()=>setSitePicker(true)}>{lang==='ko'?'사이트 내에서 골라오기':'Choose from the site'}</button></>}{stage==='preview'&&<>{(!publicId||canEdit)&&<button disabled={busy} onClick={editBoard}>{t.edit}</button>}<button type="button" aria-pressed={showNames} onClick={()=>setPreviewNames(!showNames)}>{showNames?t.hideCandidateNames:t.showCandidateNames}</button></>}</div>
+ <div className="tn-actions"><button disabled={busy} onClick={()=>{if(onHome){onHome();return;}setStage('home');setFocus(null);setMessage('');}}>{lang==='ko'?'홈으로':'Home'}</button><button disabled={busy} onClick={reset}>{t.reset}</button>{(!publicId||canEdit)&&<><button disabled={busy||draftBusy} onClick={saveDraft}>{t.saveDraft}</button><button disabled={busy||draftBusy} onClick={loadDraft}>{t.loadDraft}</button></>}{stage==='pick'&&<><button className="tn-upload-button" disabled={busy} onClick={()=>pickUpload()}>{t.upload}</button><button className="tn-site-import" disabled={busy} onClick={()=>setSitePicker(true)}>{lang==='ko'?'사이트 내에서 골라오기':'Choose from the site'}</button></>}{stage==='preview'&&<>{(!publicId||canEdit)&&<button disabled={busy} onClick={requestEdit}>{t.edit}</button>}<button type="button" aria-pressed={showNames} onClick={()=>setPreviewNames(!showNames)}>{showNames?t.hideCandidateNames:t.showCandidateNames}</button></>}</div>
  {stage==='preview'&&publicId&&<div className="tn-public-intro"><h1 className="tn-result-title">{displayTitle}</h1><p className="tn-public-description">{publicDescription}</p><div className="tn-actions">{(publicBoard?.titleSources||[]).filter(source=>sourceIds.includes(source.id)).map(source=><a className="tn-reuse-template" key={source.id} href={'/'+lang+'/mytop9/templates/'+encodeURIComponent(source.id)}>{t.reuseTemplate}{sourceIds.length>1?' — '+templateTitle(source,'nine',lang):''}</a>)}</div></div>}
  <div className={`tn-editor ${stage==='preview'?'tn-preview':''}`}>
  <section className="tn-board-panel" aria-label={t.nav} onDragOver={e=>{if(stage==='pick')e.preventDefault();}} onDrop={e=>{if(stage!=='pick')return;e.preventDefault();if(e.dataTransfer?.files?.length)ingestFiles(e.dataTransfer.files);}}>
@@ -253,7 +273,7 @@ export default function TopNinePage({publicBoard=null,publicId='',templateSource
  {focus!==null&&slots[focus]&&<fieldset disabled={busy} className="tn-crop"><legend title={slots[focus].name||'One Pick'}>{slots[focus].name||'One Pick'}</legend>{[['zoom',t.zoom,0,3,.05],['x',t.horizontal,0,100,1],['y',t.vertical,0,100,1]].map(([key,label,min,max,step])=><label key={key}>{label}<input type="range" min={min} max={max} step={step} value={slots[focus][key]??(key==='zoom'?1:50)} onChange={e=>adjust(key,e.target.value)}/></label>)}<button onClick={()=>{setSlots(old=>old.map((c,i)=>i===focus?null:c));setFocus(null);}}>{t.remove}</button></fieldset>}
  <label className="tn-title-field">{lang==='ko'?'구절판 이름 (선택)':t.titleLabel}<input value={title} maxLength={100} disabled={busy} onChange={e=>setTitle(e.target.value)}/></label><div className="tn-display-options"><label className="tn-toggle"><input type="checkbox" checked={names} disabled={busy} onChange={e=>setNames(e.target.checked)}/>{t.names}</label><label className="tn-toggle"><input type="checkbox" checked={showRanks} disabled={busy} onChange={e=>setShowRanks(e.target.checked)}/>{t.showRanks}</label></div><p className="tn-rank-help">{t.rankHelp}</p><p className="tn-caption-help">{t.editNameHelp}</p>
  </>:<p className="tn-credit">OnePickGame.com</p>}
- {stage==='pick'&&<div className="tn-actions tn-sticky tn-board-complete"><strong aria-live="polite">{count} / 9</strong><button disabled={busy||!count} onClick={()=>{setStage('preview');setFocus(null);if(!editingId&&!publicId&&!shared)privateCompletionTracker(slots,title,names).catch(()=>{});}}>{t.privateView}</button><PublishBoard existingId={editingId} sourceIds={sourceIds} category={category} slots={slots} title={title} autoTitle={!title.trim()||(baseTitle!==null&&title.trim()===baseTitle.trim())} names={names} showRanks={showRanks} lang={lang} disabled={busy||!count||!!editingId&&!changedSinceSave} onNotice={setShareNotice} onPublished={publishedHome}/></div>}
+ {stage==='pick'&&<div className="tn-actions tn-sticky tn-board-complete"><strong aria-live="polite">{count} / 9</strong><button disabled={busy||!count} onClick={()=>{setStage('preview');setFocus(null);if(!editingId&&!publicId&&!shared)privateCompletionTracker(slots,title,names).catch(()=>{});}}>{t.privateView}</button><PublishBoard existingId={editingId} sourceIds={sourceIds} category={category} slots={slots} title={title} autoTitle={!title.trim()||(baseTitle!==null&&title.trim()===baseTitle.trim())} names={names} showRanks={showRanks} lang={lang} disabled={busy||!count||!!editingId&&!changedSinceSave} onNotice={showShareNotice} onPublished={publishedHome}/></div>}
  </section>
 
  {stage==='pick'&&<section className={candidates.length ? "tn-pool" : "tn-pool tn-pool-empty"} ref={poolRef} onDragOver={e=>e.preventDefault()} onDrop={poolDrop}><div className="tn-pool-heading"><h2>{t.choose}</h2><button type="button" className="tn-upload-button" disabled={busy} onClick={()=>pickUpload()}>{t.upload}</button></div><div className="tn-pool-reset"><button type="button" disabled={busy||!candidates.length} onClick={resetPool}>{t.resetCandidates}</button></div><p className="tn-photo-help">{t.doublePhoto}</p><input type="search" aria-label={t.candidateSearch} placeholder={t.candidateSearch} value={candidateQuery} onChange={e=>{setCandidateQuery(e.target.value);setLimit(36);}}/>
@@ -264,12 +284,14 @@ export default function TopNinePage({publicBoard=null,publicId='',templateSource
  {!templateSource&&<div className="tn-pool-game"><div className="tn-game-start"><GameCountSelect lang={lang} value={gameCount} onChange={setGameCount} total={candidates.length} disabled={busy}/><button className="tn-primary" disabled={busy||candidates.length<9} onClick={startGame}>{t.game}</button></div></div>}
  </section>}
  </div>
- {(stage==='pick'||stage==='home'||stage==='preview'&&!publicId)&&<p className="tn-share-notice">{t.memberUploadHelp}</p>}
- {stage==='preview'&&<div className="tn-actions tn-sticky"><strong aria-live="polite">{count} / 9</strong>{(!publicId||canEdit)&&<button disabled={busy} onClick={editBoard}>{t.edit}</button>}<button type="button" aria-pressed={showNames} onClick={()=>setPreviewNames(!showNames)}>{showNames?t.hideCandidateNames:t.showCandidateNames}</button>{publicId&&canEdit&&<DeleteBoard id={publicId} lang={lang} onDeleted={onHome}/>}<button className="tn-primary" disabled={busy||!ready} onClick={download}>↓ {t.download}</button><button disabled={busy||!ready} onClick={share}>{busy&&quietOperation?t.loading:t.share}</button>{!editingId&&!shared&&<PublishBoard existingId={editingId} sourceIds={sourceIds} category={category} slots={slots} title={title} autoTitle={!title.trim()||(baseTitle!==null&&title.trim()===baseTitle.trim())} names={names} showRanks={showRanks} lang={lang} disabled={busy||!count||!!editingId&&!changedSinceSave} onNotice={setShareNotice} onPublished={publishedHome}/>}</div>}
+ {(stage==='pick'||stage==='home'||stage==='preview'&&!publicId)&&<div className="tn-share-notice">{t.memberUploadHelp.split('\n').map((line,i)=><p key={i} className={i===1?'tn-upload-warning':undefined}>{line}</p>)}</div>}
+ {stage==='preview'&&<div className="tn-actions tn-sticky"><strong aria-live="polite">{count} / 9</strong>{(!publicId||canEdit)&&<button disabled={busy} onClick={requestEdit}>{t.edit}</button>}<button type="button" aria-pressed={showNames} onClick={()=>setPreviewNames(!showNames)}>{showNames?t.hideCandidateNames:t.showCandidateNames}</button>{publicId&&canEdit&&<DeleteBoard id={publicId} lang={lang} onDeleted={onHome}/>}<button className="tn-primary" disabled={busy||!ready} onClick={download}>↓ {t.download}</button><button disabled={busy||!count} onClick={share}>{busy&&quietOperation?t.loading:t.share}</button>{!editingId&&!shared&&<PublishBoard existingId={editingId} sourceIds={sourceIds} category={category} slots={slots} title={title} autoTitle={!title.trim()||(baseTitle!==null&&title.trim()===baseTitle.trim())} names={names} showRanks={showRanks} lang={lang} disabled={busy||!count||!!editingId&&!changedSinceSave} onNotice={showShareNotice} onPublished={publishedHome}/>}</div>}
 
- {shareNotice&&<div className="tn-action-notice" role="status"><p>{shareNotice}</p>{shareNotice===t.localShare&&<a href={`/${lang}/login`}>{t.memberAccess}</a>}</div>}
+ {shareNotice&&<div ref={shareNoticeRef} className="tn-action-notice tn-upload-warning" role="alert"><p>{shareNotice}</p>{[t.localShare,t.uploadShareRestriction].includes(shareNotice)&&<a href={`/${lang}/login`}>{t.memberAccess}</a>}</div>}
  {shareURL&&<label className="tn-share">{t.share}<input type="text" readOnly value={shareURL} onFocus={e=>e.target.select()}/></label>}
  </>}
+ {draftNotice&&<p className="tn-draft-notice" role="status">{draftNotice}</p>}
+ {editRequest&&<GuestEditPrompt id={publicId} nickname={publicBoard?.authorNickname} lang={lang} onClose={()=>setEditRequest(null)} onVerified={()=>{const request=editRequest;setEditRequest(null);if(request.loadDraft)loadDraft();else editBoard(request.draft);}}/>}
  {publicId&&!publicBoard?.unlisted&&stage==='preview'&&<CommentBox cupId={publicId} kind="top-nine"/>}
  {sitePicker&&<SiteCandidatePicker lang={lang} onAdd={addSiteCandidates} onClose={()=>setSitePicker(false)}/>}
  </main>;

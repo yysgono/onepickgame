@@ -65,7 +65,17 @@
     "reuseTemplate": "Create My Top 9 with this template",
     "templateCandidatePrompt": "Choose “Pick 9 directly” above to show the candidate photos, or play to choose your favorites.",
     "showRanks": "Show ranks (optional)",
-    "rankHelp": "Leave ranks off for an unranked collage. Viewers will not see ranks."
+    "rankHelp": "Leave ranks off for an unranked collage. Viewers will not see ranks.",
+    "saveDraft": "Save draft",
+    "loadDraft": "Load draft",
+    "draftSaved": "Draft saved in this browser.",
+    "draftLoaded": "Draft loaded.",
+    "draftSaveFailed": "Unable to save or load. Check browser storage.",
+    "noDraft": "No draft saved in this browser.",
+    "unlockEdit": "Edit guest collage",
+    "unlockEditHelp": "Enter the password set when publishing. After verification, save without re-entering it for 30 minutes in this tab.",
+    "editPasswordError": "Incorrect password or temporarily locked. Please try again later.",
+    "uploadShareRestriction": "If you include photos uploaded from your device, guests can preview or download; sharing or publishing requires signing in."
   },
   "ko": {
     "nav": "구절판",
@@ -133,7 +143,17 @@
     "reuseTemplate": "같은 템플릿으로 구절판 만들기",
     "templateCandidatePrompt": "위의 ‘직접 고르기’를 누르면 후보 사진이 나타납니다. 게임으로 최애 후보를 골라도 좋아요.",
     "showRanks": "순위 표시 (선택)",
-    "rankHelp": "순위 표시를 선택하지 않으면 순위와 관계없는 구절판으로, 다른 사람에게도 순위가 표시되지 않습니다."
+    "rankHelp": "순위 표시를 선택하지 않으면 순위와 관계없는 구절판으로, 다른 사람에게도 순위가 표시되지 않습니다.",
+    "saveDraft": "임시저장",
+    "loadDraft": "불러오기",
+    "draftSaved": "이 브라우저에 임시저장했어요.",
+    "draftLoaded": "임시저장한 구절판을 불러왔어요.",
+    "draftSaveFailed": "임시저장·불러오기에 실패했어요. 브라우저 저장 공간을 확인해 주세요.",
+    "noDraft": "이 브라우저에 임시저장한 구절판이 없어요.",
+    "unlockEdit": "비회원 게시물 수정",
+    "unlockEditHelp": "게시할 때 설정한 비밀번호를 입력해 주세요. 확인 후 이 탭에서 30분 동안 다시 입력하지 않아도 저장할 수 있어요.",
+    "editPasswordError": "비밀번호가 일치하지 않거나 잠시 이용이 제한되었어요. 다시 확인해 주세요.",
+    "uploadShareRestriction": "직접 올린 사진을 포함하면 비회원은 나만 보기·이미지 다운로드만 가능하며, 링크 공유·공개 게시에는 로그인이 필요해요."
   },
   "ja": {
     "nav": "マイトップ9",
@@ -201,7 +221,17 @@
     "reuseTemplate": "同じテンプレートでマイベスト9を作る",
     "templateCandidatePrompt": "上の「直接選ぶ」を押すと候補の写真が表示されます。ゲームでも選べます。",
     "showRanks": "順位を表示（任意）",
-    "rankHelp": "順位を表示しない場合は順位なしのコラージュとなり、閲覧者にも順位は表示されません。"
+    "rankHelp": "順位を表示しない場合は順位なしのコラージュとなり、閲覧者にも順位は表示されません。",
+    "saveDraft": "下書き保存",
+    "loadDraft": "下書き読込",
+    "draftSaved": "このブラウザーに保存しました。",
+    "draftLoaded": "下書きを読み込みました。",
+    "draftSaveFailed": "保存・読込に失敗しました。ブラウザーの保存領域を確認してください。",
+    "noDraft": "保存された下書きがありません。",
+    "unlockEdit": "ゲスト投稿を編集",
+    "unlockEditHelp": "公開時のパスワードを入力してください。確認後、このタブでは30分間再入力せず保存できます。",
+    "editPasswordError": "パスワードが違うか一時的に制限されています。",
+    "uploadShareRestriction": "自分でアップロードした写真を含む場合、ゲストはプレビュー・画像保存のみ利用でき、共有・公開にはログインが必要です。"
   },
   "zh": {
     "nav": "我的九宫格",
@@ -269,7 +299,17 @@
     "reuseTemplate": "使用相同模板制作九宫格",
     "templateCandidatePrompt": "点击上方的直接选择按钮即可显示候选照片，也可以通过游戏选择。",
     "showRanks": "显示排名（可选）",
-    "rankHelp": "不勾选排名显示时，此拼图不分排名，其他人也不会看到排名。"
+    "rankHelp": "不勾选排名显示时，此拼图不分排名，其他人也不会看到排名。",
+    "saveDraft": "保存草稿",
+    "loadDraft": "加载草稿",
+    "draftSaved": "已保存到此浏览器。",
+    "draftLoaded": "已加载草稿。",
+    "draftSaveFailed": "保存或加载失败，请检查浏览器存储空间。",
+    "noDraft": "此浏览器没有草稿。",
+    "unlockEdit": "编辑访客拼图",
+    "unlockEditHelp": "请输入发布时设置的密码。验证后，此标签页内30分钟内保存无需再次输入。",
+    "editPasswordError": "密码不正确或暂时受限，请稍后重试。",
+    "uploadShareRestriction": "包含自己上传的照片时，访客只能预览或下载图片，分享或发布需要登录。"
   },
   "es": {
     "nav": "Mis 9 favoritos",
@@ -337,7 +377,17 @@
     "reuseTemplate": "Crear Mi Top 9 con esta plantilla",
     "templateCandidatePrompt": "Pulsa la selección directa de arriba para ver las fotos, o juega para elegir.",
     "showRanks": "Mostrar puestos (opcional)",
-    "rankHelp": "Sin esta opción, el collage no tiene clasificación y los demás no verán puestos."
+    "rankHelp": "Sin esta opción, el collage no tiene clasificación y los demás no verán puestos.",
+    "saveDraft": "Guardar borrador",
+    "loadDraft": "Cargar borrador",
+    "draftSaved": "Borrador guardado en este navegador.",
+    "draftLoaded": "Borrador cargado.",
+    "draftSaveFailed": "No se pudo guardar o cargar. Revisa el almacenamiento.",
+    "noDraft": "No hay borrador guardado.",
+    "unlockEdit": "Editar collage de invitado",
+    "unlockEditHelp": "Introduce la contraseña de publicación. Tras verificarla podrás guardar sin repetirla durante 30 minutos en esta pestaña.",
+    "editPasswordError": "Contraseña incorrecta o bloqueo temporal.",
+    "uploadShareRestriction": "Si incluyes fotos de tu dispositivo, los invitados solo pueden previsualizar o descargar; compartir o publicar requiere iniciar sesión."
   },
   "fr": {
     "nav": "Mes 9 favoris",
@@ -405,7 +455,17 @@
     "reuseTemplate": "Créer mon Top 9 avec ce modèle",
     "templateCandidatePrompt": "Choisissez la sélection directe ci-dessus pour afficher les photos, ou passez par un jeu.",
     "showRanks": "Afficher le classement (facultatif)",
-    "rankHelp": "Sans cette option, le collage est sans classement et les visiteurs ne verront aucun rang."
+    "rankHelp": "Sans cette option, le collage est sans classement et les visiteurs ne verront aucun rang.",
+    "saveDraft": "Enregistrer le brouillon",
+    "loadDraft": "Charger le brouillon",
+    "draftSaved": "Brouillon enregistré dans ce navigateur.",
+    "draftLoaded": "Brouillon chargé.",
+    "draftSaveFailed": "Échec de sauvegarde ou de chargement. Vérifiez le stockage.",
+    "noDraft": "Aucun brouillon enregistré.",
+    "unlockEdit": "Modifier une publication invitée",
+    "unlockEditHelp": "Saisissez le mot de passe de publication. Après vérification, vous pourrez enregistrer sans le ressaisir pendant 30 minutes dans cet onglet.",
+    "editPasswordError": "Mot de passe incorrect ou blocage temporaire.",
+    "uploadShareRestriction": "Avec vos propres photos, les invités peuvent seulement prévisualiser ou télécharger ; le partage et la publication nécessitent une connexion."
   },
   "it": {
     "nav": "I miei 9 preferiti",
@@ -473,7 +533,17 @@
     "reuseTemplate": "Crea la mia Top 9 con questo modello",
     "templateCandidatePrompt": "Scegli la selezione diretta in alto per vedere le foto, oppure scegli tramite un gioco.",
     "showRanks": "Mostra posizioni (facoltativo)",
-    "rankHelp": "Senza questa opzione il collage non ha una classifica e gli altri non vedranno le posizioni."
+    "rankHelp": "Senza questa opzione il collage non ha una classifica e gli altri non vedranno le posizioni.",
+    "saveDraft": "Salva bozza",
+    "loadDraft": "Carica bozza",
+    "draftSaved": "Bozza salvata in questo browser.",
+    "draftLoaded": "Bozza caricata.",
+    "draftSaveFailed": "Salvataggio o caricamento non riuscito. Controlla lo spazio.",
+    "noDraft": "Nessuna bozza salvata.",
+    "unlockEdit": "Modifica collage ospite",
+    "unlockEditHelp": "Inserisci la password della pubblicazione. Dopo la verifica puoi salvare senza reinserirla per 30 minuti in questa scheda.",
+    "editPasswordError": "Password errata o blocco temporaneo.",
+    "uploadShareRestriction": "Con foto caricate dal dispositivo, gli ospiti possono solo vedere l’anteprima o scaricare; per condividere o pubblicare serve accedere."
   },
   "pl": {
     "nav": "Moje top 9",
@@ -541,7 +611,17 @@
     "reuseTemplate": "Utwórz Moje Top 9 z tym szablonem",
     "templateCandidatePrompt": "Wybierz bezpośredni wybór powyżej, aby zobaczyć zdjęcia, lub wybierz w grze.",
     "showRanks": "Pokaż miejsca (opcjonalnie)",
-    "rankHelp": "Bez tej opcji kolaż nie ma rankingu, a oglądający nie zobaczą miejsc."
+    "rankHelp": "Bez tej opcji kolaż nie ma rankingu, a oglądający nie zobaczą miejsc.",
+    "saveDraft": "Zapisz szkic",
+    "loadDraft": "Wczytaj szkic",
+    "draftSaved": "Szkic zapisany w tej przeglądarce.",
+    "draftLoaded": "Szkic wczytany.",
+    "draftSaveFailed": "Nie udało się zapisać lub wczytać. Sprawdź pamięć przeglądarki.",
+    "noDraft": "Brak zapisanego szkicu.",
+    "unlockEdit": "Edytuj kolaż gościa",
+    "unlockEditHelp": "Wpisz hasło publikacji. Po weryfikacji możesz zapisywać bez ponownego wpisywania przez 30 minut w tej karcie.",
+    "editPasswordError": "Błędne hasło lub tymczasowa blokada.",
+    "uploadShareRestriction": "Po dodaniu zdjęć z urządzenia goście mogą tylko oglądać lub pobierać; udostępnianie i publikacja wymagają logowania."
   },
   "nl": {
     "nav": "Mijn top 9",
@@ -609,7 +689,17 @@
     "reuseTemplate": "Maak Mijn Top 9 met deze sjabloon",
     "templateCandidatePrompt": "Kies hierboven direct selecteren om de foto’s te tonen, of kies via een spel.",
     "showRanks": "Rangorde tonen (optioneel)",
-    "rankHelp": "Zonder deze optie heeft de collage geen rangorde en zien bezoekers ook geen rangnummers."
+    "rankHelp": "Zonder deze optie heeft de collage geen rangorde en zien bezoekers ook geen rangnummers.",
+    "saveDraft": "Concept opslaan",
+    "loadDraft": "Concept laden",
+    "draftSaved": "Concept opgeslagen in deze browser.",
+    "draftLoaded": "Concept geladen.",
+    "draftSaveFailed": "Opslaan of laden mislukt. Controleer de browseropslag.",
+    "noDraft": "Geen opgeslagen concept.",
+    "unlockEdit": "Gastcollage bewerken",
+    "unlockEditHelp": "Voer het publicatiewachtwoord in. Na verificatie kun je in dit tabblad 30 minuten opslaan zonder het opnieuw in te voeren.",
+    "editPasswordError": "Onjuist wachtwoord of tijdelijk geblokkeerd.",
+    "uploadShareRestriction": "Met eigen foto’s kunnen gasten alleen bekijken of downloaden; voor delen of publiceren moet je inloggen."
   },
   "cs": {
     "nav": "Mých top 9",
@@ -677,7 +767,17 @@
     "reuseTemplate": "Vytvořit Moje Top 9 s touto šablonou",
     "templateCandidatePrompt": "Vyberte přímý výběr nahoře pro zobrazení fotografií, nebo vybírejte ve hře.",
     "showRanks": "Zobrazit pořadí (volitelné)",
-    "rankHelp": "Bez této volby nemá koláž pořadí a neuvidí ho ani návštěvníci."
+    "rankHelp": "Bez této volby nemá koláž pořadí a neuvidí ho ani návštěvníci.",
+    "saveDraft": "Uložit koncept",
+    "loadDraft": "Načíst koncept",
+    "draftSaved": "Koncept uložen v tomto prohlížeči.",
+    "draftLoaded": "Koncept načten.",
+    "draftSaveFailed": "Uložení nebo načtení selhalo. Zkontrolujte úložiště prohlížeče.",
+    "noDraft": "Žádný uložený koncept.",
+    "unlockEdit": "Upravit koláž hosta",
+    "unlockEditHelp": "Zadejte heslo použité při zveřejnění. Po ověření lze v této kartě 30 minut ukládat bez opakovaného zadání.",
+    "editPasswordError": "Nesprávné heslo nebo dočasné omezení.",
+    "uploadShareRestriction": "S vlastními fotkami mohou hosté jen zobrazit náhled nebo stáhnout obrázek; sdílení a zveřejnění vyžaduje přihlášení."
   },
   "de": {
     "nav": "Meine Top 9",
@@ -745,7 +845,17 @@
     "reuseTemplate": "Mein Top 9 mit dieser Vorlage erstellen",
     "templateCandidatePrompt": "Wähle oben die direkte Auswahl, um die Kandidatenfotos anzuzeigen, oder spiele zur Auswahl.",
     "showRanks": "Rangfolge anzeigen (optional)",
-    "rankHelp": "Ohne diese Option ist die Collage unbewertet. Auch Besucher sehen keine Rangfolge."
+    "rankHelp": "Ohne diese Option ist die Collage unbewertet. Auch Besucher sehen keine Rangfolge.",
+    "saveDraft": "Entwurf speichern",
+    "loadDraft": "Entwurf laden",
+    "draftSaved": "Entwurf in diesem Browser gespeichert.",
+    "draftLoaded": "Entwurf geladen.",
+    "draftSaveFailed": "Speichern oder Laden fehlgeschlagen. Browserspeicher prüfen.",
+    "noDraft": "Kein Entwurf gespeichert.",
+    "unlockEdit": "Gast-Collage bearbeiten",
+    "unlockEditHelp": "Gib das Passwort der Veröffentlichung ein. Danach kannst du in diesem Tab 30 Minuten ohne erneute Eingabe speichern.",
+    "editPasswordError": "Falsches Passwort oder vorübergehend gesperrt.",
+    "uploadShareRestriction": "Bei eigenen hochgeladenen Fotos sind für Gäste nur Vorschau und Download möglich. Zum Teilen oder Veröffentlichen bitte anmelden."
   },
   "pt": {
     "nav": "Meus 9 favoritos",
@@ -813,7 +923,17 @@
     "reuseTemplate": "Criar Meu Top 9 com este modelo",
     "templateCandidatePrompt": "Escolha a seleção direta acima para mostrar as fotos, ou jogue para escolher.",
     "showRanks": "Mostrar posições (opcional)",
-    "rankHelp": "Sem esta opção, a colagem não tem classificação e os visitantes não verão posições."
+    "rankHelp": "Sem esta opção, a colagem não tem classificação e os visitantes não verão posições.",
+    "saveDraft": "Salvar rascunho",
+    "loadDraft": "Carregar rascunho",
+    "draftSaved": "Rascunho salvo neste navegador.",
+    "draftLoaded": "Rascunho carregado.",
+    "draftSaveFailed": "Falha ao salvar ou carregar. Verifique o armazenamento.",
+    "noDraft": "Nenhum rascunho salvo.",
+    "unlockEdit": "Editar colagem de visitante",
+    "unlockEditHelp": "Digite a senha usada na publicação. Após verificar, poderá salvar sem repeti-la por 30 minutos nesta aba.",
+    "editPasswordError": "Senha incorreta ou bloqueio temporário.",
+    "uploadShareRestriction": "Com fotos do seu dispositivo, visitantes podem apenas visualizar ou baixar; compartilhar ou publicar exige login."
   },
   "ru": {
     "nav": "Мои топ-9",
@@ -881,7 +1001,17 @@
     "reuseTemplate": "Создать свой топ-9 по этому шаблону",
     "templateCandidatePrompt": "Нажмите прямой выбор выше, чтобы увидеть фотографии, или выбирайте в игре.",
     "showRanks": "Показать места (необязательно)",
-    "rankHelp": "Без этой опции коллаж не имеет рейтинга, и зрители не увидят места."
+    "rankHelp": "Без этой опции коллаж не имеет рейтинга, и зрители не увидят места.",
+    "saveDraft": "Сохранить черновик",
+    "loadDraft": "Загрузить черновик",
+    "draftSaved": "Черновик сохранён в этом браузере.",
+    "draftLoaded": "Черновик загружен.",
+    "draftSaveFailed": "Не удалось сохранить или загрузить. Проверьте хранилище браузера.",
+    "noDraft": "Сохранённых черновиков нет.",
+    "unlockEdit": "Изменить гостевой коллаж",
+    "unlockEditHelp": "Введите пароль публикации. После проверки в этой вкладке можно сохранять без повторного ввода 30 минут.",
+    "editPasswordError": "Неверный пароль или временная блокировка.",
+    "uploadShareRestriction": "Если добавлены фото с устройства, гостям доступны только просмотр и скачивание. Для отправки ссылки или публикации нужно войти."
   },
   "vi": {
     "nav": "Top 9 của tôi",
@@ -949,7 +1079,17 @@
     "reuseTemplate": "Tạo Top 9 với mẫu này",
     "templateCandidatePrompt": "Chọn trực tiếp ở trên để hiện ảnh ứng viên, hoặc chọn qua trò chơi.",
     "showRanks": "Hiện thứ hạng (tùy chọn)",
-    "rankHelp": "Nếu không chọn, bộ ảnh không có thứ hạng và người xem cũng sẽ không thấy thứ hạng."
+    "rankHelp": "Nếu không chọn, bộ ảnh không có thứ hạng và người xem cũng sẽ không thấy thứ hạng.",
+    "saveDraft": "Lưu bản nháp",
+    "loadDraft": "Tải bản nháp",
+    "draftSaved": "Đã lưu bản nháp trong trình duyệt này.",
+    "draftLoaded": "Đã tải bản nháp.",
+    "draftSaveFailed": "Không thể lưu hoặc tải. Hãy kiểm tra bộ nhớ trình duyệt.",
+    "noDraft": "Chưa có bản nháp.",
+    "unlockEdit": "Sửa bộ ảnh của khách",
+    "unlockEditHelp": "Nhập mật khẩu đã đặt khi đăng. Sau khi xác minh, bạn có thể lưu mà không nhập lại trong 30 phút ở thẻ này.",
+    "editPasswordError": "Mật khẩu sai hoặc đang bị hạn chế tạm thời.",
+    "uploadShareRestriction": "Nếu có ảnh tải lên từ thiết bị, khách chỉ có thể xem hoặc tải ảnh xuống; muốn chia sẻ hoặc đăng cần đăng nhập."
   },
   "id": {
     "nav": "9 Favorit Saya",
@@ -1017,7 +1157,17 @@
     "reuseTemplate": "Buat Top 9 dengan templat ini",
     "templateCandidatePrompt": "Pilih langsung di atas untuk menampilkan foto kandidat, atau pilih melalui permainan.",
     "showRanks": "Tampilkan peringkat (opsional)",
-    "rankHelp": "Jika tidak dipilih, kolase tidak memiliki peringkat dan pengunjung juga tidak akan melihatnya."
+    "rankHelp": "Jika tidak dipilih, kolase tidak memiliki peringkat dan pengunjung juga tidak akan melihatnya.",
+    "saveDraft": "Simpan draf",
+    "loadDraft": "Muat draf",
+    "draftSaved": "Draf tersimpan di browser ini.",
+    "draftLoaded": "Draf dimuat.",
+    "draftSaveFailed": "Gagal menyimpan atau memuat. Periksa penyimpanan browser.",
+    "noDraft": "Tidak ada draf tersimpan.",
+    "unlockEdit": "Edit kolase tamu",
+    "unlockEditHelp": "Masukkan kata sandi saat penerbitan. Setelah verifikasi, simpan tanpa memasukkannya lagi selama 30 menit di tab ini.",
+    "editPasswordError": "Kata sandi salah atau dibatasi sementara.",
+    "uploadShareRestriction": "Jika menyertakan foto dari perangkat, tamu hanya dapat melihat atau mengunduh; berbagi atau menerbitkan memerlukan login."
   },
   "hi": {
     "nav": "मेरे टॉप 9",
@@ -1085,7 +1235,17 @@
     "reuseTemplate": "इस टेम्पलेट से मेरा टॉप 9 बनाएँ",
     "templateCandidatePrompt": "उम्मीदवारों की तस्वीरें देखने के लिए ऊपर सीधे चुनने का बटन दबाएँ, या खेल से चुनें।",
     "showRanks": "रैंक दिखाएँ (वैकल्पिक)",
-    "rankHelp": "इसे बंद रखने पर कोलाज बिना रैंक का होगा और दर्शकों को भी रैंक नहीं दिखेगी।"
+    "rankHelp": "इसे बंद रखने पर कोलाज बिना रैंक का होगा और दर्शकों को भी रैंक नहीं दिखेगी।",
+    "saveDraft": "ड्राफ़्ट सहेजें",
+    "loadDraft": "ड्राफ़्ट खोलें",
+    "draftSaved": "ड्राफ़्ट इस ब्राउज़र में सहेजा गया।",
+    "draftLoaded": "ड्राफ़्ट खोला गया।",
+    "draftSaveFailed": "सहेजना या खोलना विफल रहा। ब्राउज़र स्टोरेज जाँचें।",
+    "noDraft": "कोई सहेजा गया ड्राफ़्ट नहीं है।",
+    "unlockEdit": "मेहमान कोलाज संपादित करें",
+    "unlockEditHelp": "प्रकाशित करते समय रखा पासवर्ड दर्ज करें। सत्यापन के बाद इस टैब में 30 मिनट तक दोबारा डाले बिना सहेज सकते हैं।",
+    "editPasswordError": "पासवर्ड गलत है या अस्थायी रोक लगी है।",
+    "uploadShareRestriction": "अपने डिवाइस से फ़ोटो जोड़ने पर मेहमान केवल देख या डाउनलोड कर सकते हैं; साझा या प्रकाशित करने के लिए साइन इन करें।"
   },
   "bn": {
     "nav": "আমার সেরা ৯",
@@ -1153,7 +1313,17 @@
     "reuseTemplate": "এই টেমপ্লেট দিয়ে আমার সেরা ৯ তৈরি করুন",
     "templateCandidatePrompt": "প্রার্থীদের ছবি দেখতে উপরে সরাসরি বাছাই চাপুন, অথবা খেলার মাধ্যমে বেছে নিন।",
     "showRanks": "র‍্যাঙ্ক দেখান (ঐচ্ছিক)",
-    "rankHelp": "এটি বন্ধ রাখলে কোলাজে কোনো র‍্যাঙ্ক থাকবে না এবং অন্যরাও র‍্যাঙ্ক দেখবেন না।"
+    "rankHelp": "এটি বন্ধ রাখলে কোলাজে কোনো র‍্যাঙ্ক থাকবে না এবং অন্যরাও র‍্যাঙ্ক দেখবেন না।",
+    "saveDraft": "খসড়া সংরক্ষণ",
+    "loadDraft": "খসড়া খুলুন",
+    "draftSaved": "এই ব্রাউজারে খসড়া সংরক্ষিত হয়েছে।",
+    "draftLoaded": "খসড়া খোলা হয়েছে।",
+    "draftSaveFailed": "সংরক্ষণ বা খোলা যায়নি। ব্রাউজারের স্টোরেজ দেখুন।",
+    "noDraft": "কোনো সংরক্ষিত খসড়া নেই।",
+    "unlockEdit": "অতিথির কোলাজ সম্পাদনা",
+    "unlockEditHelp": "প্রকাশের সময় দেওয়া পাসওয়ার্ড লিখুন। যাচাইয়ের পর এই ট্যাবে ৩০ মিনিট আবার না লিখেই সংরক্ষণ করতে পারবেন।",
+    "editPasswordError": "ভুল পাসওয়ার্ড বা সাময়িক নিষেধাজ্ঞা।",
+    "uploadShareRestriction": "নিজের ডিভাইস থেকে ছবি যোগ করলে অতিথিরা শুধু দেখতে বা ডাউনলোড করতে পারেন; শেয়ার বা প্রকাশ করতে লগইন করুন।"
   },
   "ar": {
     "nav": "أفضل 9 لديّ",
@@ -1221,7 +1391,17 @@
     "reuseTemplate": "أنشئ أفضل 9 اختيارات بهذا القالب",
     "templateCandidatePrompt": "اختر التحديد المباشر أعلاه لعرض صور المرشحين، أو اختر عبر اللعبة.",
     "showRanks": "إظهار الترتيب (اختياري)",
-    "rankHelp": "إذا لم تختر إظهار الترتيب، ستكون اللوحة بلا ترتيب ولن يرى الآخرون أرقام الترتيب."
+    "rankHelp": "إذا لم تختر إظهار الترتيب، ستكون اللوحة بلا ترتيب ولن يرى الآخرون أرقام الترتيب.",
+    "saveDraft": "حفظ مسودة",
+    "loadDraft": "تحميل مسودة",
+    "draftSaved": "تم حفظ المسودة في هذا المتصفح.",
+    "draftLoaded": "تم تحميل المسودة.",
+    "draftSaveFailed": "تعذر الحفظ أو التحميل. تحقق من تخزين المتصفح.",
+    "noDraft": "لا توجد مسودة محفوظة.",
+    "unlockEdit": "تعديل لوحة زائر",
+    "unlockEditHelp": "أدخل كلمة مرور النشر. بعد التحقق، يمكنك الحفظ دون إعادة إدخالها لمدة 30 دقيقة في هذه الصفحة.",
+    "editPasswordError": "كلمة مرور غير صحيحة أو تقييد مؤقت.",
+    "uploadShareRestriction": "إذا أضفت صورًا من جهازك، يمكن للزوار العرض أو التنزيل فقط، وتتطلب المشاركة أو النشر تسجيل الدخول."
   },
   "tr": {
     "nav": "İlk 9 Favorim",
@@ -1289,7 +1469,17 @@
     "reuseTemplate": "Bu şablonla İlk 9’umu oluştur",
     "templateCandidatePrompt": "Aday fotoğraflarını görmek için yukarıdan doğrudan seçimi aç veya oyunla seç.",
     "showRanks": "Sıralamayı göster (isteğe bağlı)",
-    "rankHelp": "Bu seçenek kapalıysa kolaj sıralamasızdır ve izleyiciler de sıralama görmez."
+    "rankHelp": "Bu seçenek kapalıysa kolaj sıralamasızdır ve izleyiciler de sıralama görmez.",
+    "saveDraft": "Taslak kaydet",
+    "loadDraft": "Taslak yükle",
+    "draftSaved": "Taslak bu tarayıcıya kaydedildi.",
+    "draftLoaded": "Taslak yüklendi.",
+    "draftSaveFailed": "Kaydedilemedi veya yüklenemedi. Tarayıcı depolamasını kontrol edin.",
+    "noDraft": "Kayıtlı taslak yok.",
+    "unlockEdit": "Misafir kolajını düzenle",
+    "unlockEditHelp": "Yayımlarken belirlediğiniz şifreyi girin. Doğrulamadan sonra bu sekmede 30 dakika yeniden girmeden kaydedebilirsiniz.",
+    "editPasswordError": "Şifre yanlış veya geçici olarak kilitli.",
+    "uploadShareRestriction": "Cihazınızdan fotoğraf eklerseniz misafirler yalnızca önizleyebilir veya indirebilir; paylaşmak ya da yayımlamak için giriş gerekir."
   },
   "th": {
     "nav": "9 อันดับของฉัน",
@@ -1357,6 +1547,16 @@
     "reuseTemplate": "สร้าง My Top 9 ด้วยเทมเพลตนี้",
     "templateCandidatePrompt": "เลือกโดยตรงด้านบนเพื่อแสดงรูปตัวเลือก หรือเลือกผ่านเกม",
     "showRanks": "แสดงอันดับ (ไม่บังคับ)",
-    "rankHelp": "หากไม่เลือก ภาพรวมจะไม่มีการจัดอันดับ และผู้ชมจะไม่เห็นอันดับเช่นกัน"
+    "rankHelp": "หากไม่เลือก ภาพรวมจะไม่มีการจัดอันดับ และผู้ชมจะไม่เห็นอันดับเช่นกัน",
+    "saveDraft": "บันทึกฉบับร่าง",
+    "loadDraft": "โหลดฉบับร่าง",
+    "draftSaved": "บันทึกฉบับร่างในเบราว์เซอร์นี้แล้ว",
+    "draftLoaded": "โหลดฉบับร่างแล้ว",
+    "draftSaveFailed": "บันทึกหรือโหลดไม่สำเร็จ โปรดตรวจสอบพื้นที่จัดเก็บ",
+    "noDraft": "ไม่มีฉบับร่างที่บันทึกไว้",
+    "unlockEdit": "แก้ไขภาพรวมของผู้เยี่ยมชม",
+    "unlockEditHelp": "กรอกรหัสผ่านที่ตั้งไว้ตอนเผยแพร่ หลังยืนยันแล้วสามารถบันทึกในแท็บนี้ได้ 30 นาทีโดยไม่ต้องกรอกซ้ำ",
+    "editPasswordError": "รหัสผ่านไม่ถูกต้องหรือถูกจำกัดชั่วคราว",
+    "uploadShareRestriction": "หากมีรูปที่อัปโหลดจากอุปกรณ์ ผู้เยี่ยมชมจะดูหรือดาวน์โหลดได้เท่านั้น การแชร์หรือเผยแพร่ต้องเข้าสู่ระบบ"
   }
 }

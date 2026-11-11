@@ -1,3 +1,4 @@
+import {getGuestEditSession,rememberGuestEditSession,clearGuestEditSession} from './guestEditSession';
 import {ownsGuestBoard,rememberGuestBoard} from './guestOwnership';
 import categoryLabels from './categoryLabels.json';
 import {localizedBoardTitle,loadBoardTitleSources} from './localizedTitle';
@@ -16,32 +17,38 @@ import {hasBadword} from '../../badwords-multilang';
 const emptyTile={id:'tn-empty-cell',name:'',src:'https://www.onepickgame.com/top-nine-empty.png',zoom:1,x:50,y:50};
 export function PublishBoard({slots,title,names,showRanks=false,lang,onPublished,onNotice,disabled=false,sourceIds=[],category='',existingId=''}) {
  const t=copy[lang]||copy.en,[busy,setBusy]=useState(false),[message,setMessage]=useState(''),[open,setOpen]=useState(false),[guest,setGuest]=useState(false),[nickname,setNickname]=useState(''),[password,setPassword]=useState(''),[confirm,setConfirm]=useState(''),[editSalt,setEditSalt]=useState('');
- async function begin(){if(disabled||busy)return;setMessage('');setBusy(true);try{const {data}=await supabase.auth.getUser();const isGuest=!data?.user||data.user.is_anonymous;if(isGuest)makeShareHash(slots,title,names,showRanks);setGuest(isGuest);setEditSalt('');
- if(existingId){
-  const original=await supabase.from('top_nine_public_boards').select('author_id').eq('id',existingId).maybeSingle();
-  if(original.error||!original.data)throw Error('EDIT_PERMISSION');
-  if(original.data.author_id){if(isGuest||original.data.author_id!==data.user.id)throw Error('EDIT_PERMISSION');}
-  else{
-   if(!isGuest)throw Error('EDIT_PERMISSION');
-   const salt=await supabase.rpc('get_top_nine_guest_salt',{p_id:existingId});
-   if(salt.error||!salt.data)throw Error('EDIT_PERMISSION');setEditSalt(salt.data);
+ async function saveBoard(auth){
+  const prepared=auth.guest?slots:await prepareMemberSlots(slots);makeShareHash(prepared,title,names,showRanks);
+  if(hasBadword(title,lang)||slots.some(c=>c&&hasBadword(c.name,lang))||hasBadword(auth.nickname,lang))throw Error('TEXT');
+  const result=await publishWithTitleRetry(supabase,{p_title:authoredTitle(title,auth.nickname),p_slots:prepared.map(c=>c??emptyTile),p_names:names,p_show_ranks:showRanks,p_nickname:auth.guest?auth.nickname:null,p_salt:auth.salt||null,p_proof:auth.proof||null,p_source_worldcup_ids:sourceIds,p_category:category,...(existingId?{p_board_id:existingId}:{})});
+  if(!result.data)throw Error('PUBLISH_FAILED');
+  if(auth.guest){rememberGuestBoard(result.data);if(existingId)rememberGuestEditSession(existingId,auth);}
+  setMessage(t.published);setOpen(false);setPassword('');setConfirm('');onPublished(result.data);
+ }
+ async function begin(){if(disabled||busy)return;setMessage('');setBusy(true);try{
+  const {data}=await supabase.auth.getUser();const isGuest=!data?.user||data.user.is_anonymous;
+  if(isGuest)makeShareHash(slots,title,names,showRanks);setGuest(isGuest);setEditSalt('');
+  if(existingId){
+   const original=await supabase.from('top_nine_public_boards').select('author_id,guest_nickname').eq('id',existingId).maybeSingle();
+   if(original.error||!original.data)throw Error('EDIT_PERMISSION');
+   if(original.data.author_id){if(isGuest||original.data.author_id!==data.user.id)throw Error('EDIT_PERMISSION');}
+   else{
+    if(!isGuest)throw Error('EDIT_PERMISSION');
+    const cached=getGuestEditSession(existingId);
+    if(cached){await saveBoard({...cached,guest:true,nickname:original.data.guest_nickname||cached.nickname});return;}
+    const salt=await supabase.rpc('get_top_nine_guest_salt',{p_id:existingId});
+    if(salt.error||!salt.data)throw Error('EDIT_PERMISSION');setEditSalt(salt.data);setNickname(original.data.guest_nickname||'OnePick');
+   }
   }
- }
- if(!isGuest){
-  const profile=await supabase.from('profiles').select('nickname').eq('id',data.user.id).maybeSingle();
-  setNickname(profile.data?.nickname||data.user.user_metadata?.nickname||data.user.user_metadata?.name||('OnePick-'+data.user.id.slice(0,6)));
- }
- setOpen(true);onNotice?.('');}catch(error){const text=error.message==='EDIT_PERMISSION'?t.editDenied:t.localShare;if(onNotice)onNotice(text);else setMessage(text);}finally{setBusy(false);}}
+  if(!isGuest){const profile=await supabase.from('profiles').select('nickname').eq('id',data.user.id).maybeSingle();setNickname(profile.data?.nickname||data.user.user_metadata?.nickname||data.user.user_metadata?.name||('OnePick-'+data.user.id.slice(0,6)));}
+  setOpen(true);onNotice?.('');
+ }catch(error){if(existingId)clearGuestEditSession(existingId);const text=error.message==='EDIT_PERMISSION'?t.editDenied:['LOCAL_SHARE','MEMBER_REQUIRED','PRIVATE_IMAGE'].includes(error.message)?t.localShare:t.error;if(onNotice)onNotice(text);else setMessage(text);}finally{setBusy(false);}}
  async function publish(e){e.preventDefault();if(busy)return;setBusy(true);setMessage('');try{
- const prepared=guest?slots:await prepareMemberSlots(slots);makeShareHash(prepared,title,names,showRanks);if(hasBadword(title,lang)||slots.some(c=>c&&hasBadword(c.name,lang))||hasBadword(nickname,lang))throw Error('TEXT');
- if(guest&&(password!==confirm||password.length<8))throw Error('PASSWORD');
- const salt=guest?(editSalt||guestSalt()):null,proof=guest?await guestProof(password,salt):null;
- const published=await publishWithTitleRetry(supabase,{p_title:authoredTitle(title,nickname),p_slots:prepared.map(c=>c??emptyTile),p_names:names,p_show_ranks:showRanks,p_nickname:guest?nickname:null,p_salt:salt,p_proof:proof,p_source_worldcup_ids:sourceIds,p_category:category,...(existingId?{p_board_id:existingId}:{})});
- if(!published.data)throw Error('PUBLISH_FAILED');
- if(guest)rememberGuestBoard(published.data);
- setMessage(t.published);setOpen(false);setPassword('');setConfirm('');onPublished(published.data);
- }catch{setMessage(t.publishFailed);}finally{setBusy(false);}}
- return <><button className="tn-publish-button" disabled={busy||disabled} onClick={begin}>{existingId?t.saveChanges:t.publish}</button>{!open&&message&&!onNotice&&<div className="tn-publish-status" role="status"><p>{message}</p>{message===t.localShare&&<a href={`/${lang}/login`}>{t.memberAccess}</a>}</div>}{open&&createPortal(<div className="top-nine tn-picker-overlay tn-public-overlay" dir={lang==='ar'?'rtl':'ltr'}><section className="tn-publish-dialog" role="dialog" aria-modal="true" aria-label={existingId?t.saveChanges:t.publish}><h2>{existingId?t.saveChanges:t.publish}</h2>{guest?<p>{t.publishHelp}</p>:<p>{t.memberUploadHelp}</p>}<form onSubmit={publish}>{guest&&<><label>{t.nickname}<input required minLength={2} maxLength={30} value={nickname} onChange={e=>setNickname(e.target.value)}/></label><label>{t.password}<input type="password" required minLength={8} maxLength={100} autoComplete="new-password" value={password} onChange={e=>setPassword(e.target.value)}/></label><label>{t.confirmPassword}<input type="password" required minLength={8} maxLength={100} autoComplete="new-password" value={confirm} onChange={e=>setConfirm(e.target.value)}/></label></>}{message&&<p role="alert">{message}</p>}<div className="tn-actions"><button className="tn-primary" disabled={busy}>{existingId?t.saveChanges:t.publish}</button><button type="button" disabled={busy} onClick={()=>{setOpen(false);setPassword('');setConfirm('');setMessage('');}}>{t.close}</button></div></form></section></div>,document.body)}</>;
+  if(guest&&(password.length<8||!existingId&&password!==confirm))throw Error('PASSWORD');
+  const salt=guest?(editSalt||guestSalt()):null,proof=guest?await guestProof(password,salt):null;
+  await saveBoard({guest,nickname,salt,proof});
+ }catch{if(existingId)clearGuestEditSession(existingId);setMessage(t.publishFailed);}finally{setBusy(false);}}
+ return <><button className="tn-publish-button" disabled={busy||disabled} onClick={begin}>{existingId?t.saveChanges:t.publish}</button>{!open&&message&&!onNotice&&<div className="tn-publish-status" role="status"><p>{message}</p>{message===t.localShare&&<a href={`/${lang}/login`}>{t.memberAccess}</a>}</div>}{open&&createPortal(<div className="top-nine tn-picker-overlay tn-public-overlay" dir={lang==='ar'?'rtl':'ltr'}><section className="tn-publish-dialog" role="dialog" aria-modal="true" aria-label={existingId?t.saveChanges:t.publish}><h2>{existingId?t.saveChanges:t.publish}</h2>{guest?<p>{existingId?t.unlockEditHelp:t.publishHelp}</p>:<p>{t.memberUploadHelp}</p>}<form onSubmit={publish}>{guest&&<>{!existingId&&<label>{t.nickname}<input required minLength={2} maxLength={30} value={nickname} onChange={e=>setNickname(e.target.value)}/></label>}<label>{t.password}<input type="password" required minLength={8} maxLength={100} autoComplete={existingId?'current-password':'new-password'} value={password} onChange={e=>setPassword(e.target.value)}/></label>{!existingId&&<label>{t.confirmPassword}<input type="password" required minLength={8} maxLength={100} autoComplete="new-password" value={confirm} onChange={e=>setConfirm(e.target.value)}/></label>}</>}{message&&<p role="alert">{message}</p>}<div className="tn-actions"><button className="tn-primary" disabled={busy}>{existingId?t.saveChanges:t.publish}</button><button type="button" disabled={busy} onClick={()=>{setOpen(false);setPassword('');setConfirm('');setMessage('');}}>{t.close}</button></div></form></section></div>,document.body)}</>;
 }
 export function BoardThumbnail({candidate}){
  const [dimensions,setDimensions]=useState(null);
