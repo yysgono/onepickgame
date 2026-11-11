@@ -48,8 +48,7 @@ export async function exportPNG(slots,title,names,frameCache={},showRanks=false)
   if(names){ctx.fillStyle='#211638';ctx.font='22px sans-serif';ctx.fillText(fit(ctx,c.name,cell-12),x+cell/2,y+cell+29);}
   }
   if(showRanks){
-   ctx.font='bold 40px sans-serif';ctx.lineWidth=6;ctx.strokeStyle='#fff';ctx.lineJoin='round';
-   ctx.strokeText(String(SLOT_RANKS[i]),x+26,y+46);
+   ctx.font='bold 40px sans-serif';
    ctx.fillStyle='#50248d';ctx.fillText(String(SLOT_RANKS[i]),x+26,y+46);ctx.lineWidth=1;
   }
  }
