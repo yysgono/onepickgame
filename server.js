@@ -2511,9 +2511,11 @@ ${safeJson(jsonLd)}
 
 
 // Restore category HTML and known React pages before the final 404 handler.
+require("./worldcup-view-routes.cjs")(app, supabase, SITE_URL);
+require("./tier-maker-routes.cjs")(app, SITE_URL);
 require("./top-nine-template-routes.cjs")(app, supabase, SITE_URL);
 require("./top-nine-board-routes.cjs")(app, supabase, SITE_URL);
-require("./top-nine-routes.cjs")(app, SITE_URL);
+require("./top-nine-routes.cjs")(app, SITE_URL, supabase);
 require("./random-pick-routes.cjs")(app, SITE_URL);
 require("./category-routes.cjs")(app, supabase, SITE_URL);
 

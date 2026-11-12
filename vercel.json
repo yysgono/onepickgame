@@ -219,7 +219,7 @@
     },
     {
       "src": "/(ko|en|ja|zh|ru|pt|es|fr|id|hi|de|vi|ar|bn|th|tr|it|pl|nl|cs)/tier-list/create/?$",
-      "dest": "/"
+      "dest": "/server.js?seo=tier-maker&lang=$1"
     },
     {
       "src": "/(ko|en|ja|zh|ru|pt|es|fr|id|hi|de|vi|ar|bn|th|tr|it|pl|nl|cs)/tier-list/create/([^/]+)/?$",
@@ -240,6 +240,18 @@
     {
       "src": "/(ko|en|ja|zh|ru|pt|es|fr|id|hi|de|vi|ar|bn|th|tr|it|pl|nl|cs)/quiz/([^/]+)/?$",
       "dest": "/server.js?seo=quiz-detail&lang=$1&id=$2"
+    },
+    {
+      "src": "/(ko|en|ja|zh|ru|pt|es|fr|id|hi|de|vi|ar|bn|th|tr|it|pl|nl|cs)/stats/([^/]+)/?$",
+      "dest": "/server.js?seo=worldcup-view&lang=$1&view=stats&id=$2"
+    },
+    {
+      "src": "/(ko|en|ja|zh|ru|pt|es|fr|id|hi|de|vi|ar|bn|th|tr|it|pl|nl|cs)/result/([^/]+)(?:/([0-9]+))?/?$",
+      "dest": "/server.js?seo=worldcup-view&lang=$1&view=result&id=$2"
+    },
+    {
+      "src": "/(ko|en|ja|zh|ru|pt|es|fr|id|hi|de|vi|ar|bn|th|tr|it|pl|nl|cs)/match/([^/]+)/([0-9]+)/?$",
+      "dest": "/server.js?seo=worldcup-view&lang=$1&view=match&id=$2&round=$3"
     },
     {
       "handle": "filesystem"

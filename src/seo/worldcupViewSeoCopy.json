@@ -1,0 +1,122 @@
+{
+  "ko": {
+    "stats": "통계",
+    "result": "결과 보기",
+    "candidates": "후보",
+    "start": "시작"
+  },
+  "en": {
+    "stats": "Stats",
+    "result": "View Results",
+    "candidates": "Candidates",
+    "start": "Start"
+  },
+  "ja": {
+    "stats": "統計",
+    "result": "結果を見る",
+    "candidates": "候補",
+    "start": "開始"
+  },
+  "zh": {
+    "stats": "统计",
+    "result": "查看结果",
+    "candidates": "候选者",
+    "start": "开始"
+  },
+  "ru": {
+    "stats": "Статистика",
+    "result": "Показать результаты",
+    "candidates": "Участники",
+    "start": "Начать"
+  },
+  "pt": {
+    "stats": "Estatísticas",
+    "result": "Mostrar resultados",
+    "candidates": "Candidatos",
+    "start": "Iniciar"
+  },
+  "es": {
+    "stats": "Estadísticas",
+    "result": "Mostrar resultados",
+    "candidates": "Candidatos",
+    "start": "Comenzar"
+  },
+  "fr": {
+    "stats": "Statistiques",
+    "result": "Afficher les résultats",
+    "candidates": "Candidats",
+    "start": "Commencer"
+  },
+  "id": {
+    "stats": "Statistik",
+    "result": "Tampilkan Hasil",
+    "candidates": "Kandidat",
+    "start": "Mulai"
+  },
+  "hi": {
+    "stats": "आंकड़े",
+    "result": "परिणाम दिखाएं",
+    "candidates": "प्रतियोगी",
+    "start": "शुरू करें"
+  },
+  "de": {
+    "stats": "Statistiken",
+    "result": "Ergebnisse anzeigen",
+    "candidates": "Kandidaten",
+    "start": "Starten"
+  },
+  "vi": {
+    "stats": "Thống kê",
+    "result": "Hiển thị kết quả",
+    "candidates": "Ứng viên",
+    "start": "Bắt đầu"
+  },
+  "ar": {
+    "stats": "الإحصاءات",
+    "result": "عرض النتائج",
+    "candidates": "المتسابقون",
+    "start": "ابدأ"
+  },
+  "bn": {
+    "stats": "পরিসংখ্যান",
+    "result": "ফলাফল দেখুন",
+    "candidates": "প্রতিযোগীরা",
+    "start": "শুরু"
+  },
+  "th": {
+    "stats": "สถิติ",
+    "result": "แสดงผล",
+    "candidates": "ผู้เข้าแข่งขัน",
+    "start": "เริ่ม"
+  },
+  "tr": {
+    "stats": "İstatistikler",
+    "result": "Sonuçları Göster",
+    "candidates": "Adaylar",
+    "start": "Başlat"
+  },
+  "it": {
+    "stats": "Statistiche",
+    "result": "Vedi risultati",
+    "candidates": "Candidati",
+    "start": "Inizia"
+  },
+  "pl": {
+    "stats": "Statystyki",
+    "result": "Zobacz wyniki",
+    "candidates": "Kandydaci",
+    "start": "Rozpocznij"
+  },
+  "nl": {
+    "stats": "Statistieken",
+    "result": "Resultaten bekijken",
+    "candidates": "Kandidaten",
+    "start": "Starten"
+  },
+  "cs": {
+    "stats": "Statistiky",
+    "result": "Zobrazit výsledky",
+    "candidates": "Kandidáti",
+    "start": "Spustit"
+  }
+}

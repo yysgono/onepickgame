@@ -1,0 +1,102 @@
+{
+  "ko": {
+    "title": "티어표 만들기 | 원픽게임",
+    "description": "원픽게임에서 나만의 티어표를 만들어보세요. 기존 이상형 월드컵 후보를 불러오거나 직접 이미지를 추가해 S, A, B, C, D 등급으로 정리할 수 있습니다.",
+    "listLabel": "티어표"
+  },
+  "en": {
+    "title": "Tier List Maker | One Pick Game",
+    "description": "Create your own tier list on One Pick Game. Reuse candidates from existing brackets or add your own images and rank them from S to D.",
+    "listLabel": "Tier List"
+  },
+  "ja": {
+    "title": "Tier List Maker | One Pick Game",
+    "description": "One Pick Gameで自分だけのTier Listを作成。既存トーナメントの候補を再利用するか画像を追加してS〜Dに分類できます。",
+    "listLabel": "Tier List"
+  },
+  "zh": {
+    "title": "Tier List Maker | One Pick Game",
+    "description": "在 One Pick Game 创建自己的 Tier List。可复用现有淘汰赛候选项或上传图片，并按 S 到 D 分级。",
+    "listLabel": "Tier List"
+  },
+  "ru": {
+    "title": "Tier List Maker | One Pick Game",
+    "description": "Создайте свой tier list на One Pick Game. Используйте готовых кандидатов или добавьте изображения и распределите их от S до D.",
+    "listLabel": "Tier List"
+  },
+  "pt": {
+    "title": "Tier List Maker | One Pick Game",
+    "description": "Crie sua própria tier list no One Pick Game. Reutilize candidatos existentes ou adicione imagens e classifique de S a D.",
+    "listLabel": "Tier List"
+  },
+  "es": {
+    "title": "Tier List Maker | One Pick Game",
+    "description": "Crea tu propia tier list en One Pick Game. Reutiliza candidatos existentes o añade tus imágenes y ordénalos de S a D.",
+    "listLabel": "Tier List"
+  },
+  "fr": {
+    "title": "Tier List Maker | One Pick Game",
+    "description": "Créez votre tier list sur One Pick Game. Réutilisez des candidats existants ou ajoutez vos images et classez-les de S à D.",
+    "listLabel": "Tier List"
+  },
+  "id": {
+    "title": "Tier List Maker | One Pick Game",
+    "description": "Buat tier list milikmu di One Pick Game. Gunakan kandidat yang sudah ada atau tambahkan gambar lalu susun dari S hingga D.",
+    "listLabel": "Tier List"
+  },
+  "hi": {
+    "title": "Tier List Maker | One Pick Game",
+    "description": "One Pick Game पर अपनी tier list बनाएं। मौजूदा उम्मीदवारों का उपयोग करें या अपनी तस्वीरें जोड़कर S से D तक रैंक करें।",
+    "listLabel": "Tier List"
+  },
+  "de": {
+    "title": "Tier List Maker | One Pick Game",
+    "description": "Erstelle deine eigene Tier List auf One Pick Game. Nutze vorhandene Kandidaten oder eigene Bilder und ordne sie von S bis D ein.",
+    "listLabel": "Tier List"
+  },
+  "vi": {
+    "title": "Tier List Maker | One Pick Game",
+    "description": "Tạo tier list của riêng bạn trên One Pick Game. Dùng lại ứng viên có sẵn hoặc thêm ảnh và xếp từ S đến D.",
+    "listLabel": "Tier List"
+  },
+  "ar": {
+    "title": "Tier List Maker | One Pick Game",
+    "description": "أنشئ Tier List خاصة بك على One Pick Game. استخدم المرشحين الحاليين أو أضف صورك ورتّبهم من S إلى D.",
+    "listLabel": "Tier List"
+  },
+  "bn": {
+    "title": "Tier List Maker | One Pick Game",
+    "description": "One Pick Game-এ নিজের tier list তৈরি করুন। আগের প্রার্থী ব্যবহার করুন বা ছবি যোগ করে S থেকে D পর্যন্ত সাজান।",
+    "listLabel": "Tier List"
+  },
+  "th": {
+    "title": "Tier List Maker | One Pick Game",
+    "description": "สร้าง tier list ของคุณบน One Pick Game ใช้ผู้สมัครเดิมหรือเพิ่มรูปภาพแล้วจัดอันดับตั้งแต่ S ถึง D",
+    "listLabel": "Tier List"
+  },
+  "tr": {
+    "title": "Tier List Maker | One Pick Game",
+    "description": "One Pick Game üzerinde kendi tier listeni oluştur. Mevcut adayları kullan veya görsel ekleyip S ile D arasında sırala.",
+    "listLabel": "Tier List"
+  },
+  "it": {
+    "title": "Crea classifiche a livelli | One Pick Game",
+    "description": "Crea la tua lista di livelli su One Pick Game. Riutilizza i candidati dai tornei esistenti o aggiungi le tue immagini e classificale da S a D.",
+    "listLabel": "Classifica a livelli"
+  },
+  "pl": {
+    "title": "Kreator rankingów | One Pick Game",
+    "description": "Stwórz własną listę poziomów na One Pick Game. Ponownie wykorzystaj kandydatów z istniejących turniejów lub dodaj własne obrazy i ranking ich od S do D.",
+    "listLabel": "Ranking poziomów"
+  },
+  "nl": {
+    "title": "Tierlijst maken | One Pick Game",
+    "description": "Maak uw eigen lijst op One Pick Game. Hergebruik kandidaten van bestaande toernooien of voeg uw eigen afbeeldingen en rangschikk ze van S tot D.",
+    "listLabel": "Tierlijst"
+  },
+  "cs": {
+    "title": "Tvorba žebříčků | One Pick Game",
+    "description": "Vytvořte si vlastní seznam úrovní na One Pick Game. Znovu použít kandidáty ze stávajících turnajů nebo přidat své vlastní obrázky a řadit je od S do D.",
+    "listLabel": "Žebříček úrovní"
+  }
+}
