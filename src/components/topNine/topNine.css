@@ -263,6 +263,7 @@
 .tn-action-notice p{text-wrap:balance}
 .tn-action-notice a{display:block;width:max-content;max-width:100%;margin:10px auto 0}
 
+.top-nine .tn-share{width:100%;max-width:800px;margin:18px auto 0}
 .top-nine .tn-share-row{display:flex;align-items:center;gap:8px;margin-top:8px}
 .top-nine .tn-share-row input{flex:1;min-width:0}
 .top-nine .tn-share-row button{flex:0 0 auto;white-space:nowrap;background:#7139ce;color:#fff;border-color:#7139ce}
