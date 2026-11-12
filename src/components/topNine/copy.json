@@ -78,7 +78,10 @@
     "uploadShareRestriction": "If you include photos uploaded from your device, guests can preview or download; sharing or publishing requires signing in.",
     "editVerifyUnavailable": "Unable to verify the password right now. Please try again later.",
     "editLocked": "Too many attempts. Please try again in 15 minutes.",
-    "editSetupRequired": "Password verification is not ready. Please contact the site administrator."
+    "editSetupRequired": "Password verification is not ready. Please contact the site administrator.",
+    "copyLink": "Copy link",
+    "linkCopied": "Link copied.",
+    "copyLinkFailed": "Select the link and copy it manually."
   },
   "ko": {
     "nav": "구절판",
@@ -159,7 +162,10 @@
     "uploadShareRestriction": "직접 올린 사진을 포함하면 비회원은 나만 보기·이미지 다운로드만 가능하며, 링크 공유·공개 게시에는 로그인이 필요해요.",
     "editVerifyUnavailable": "비밀번호 확인 중 오류가 발생했어요. 잠시 후 다시 시도해 주세요.",
     "editLocked": "여러 번 확인에 실패하여 수정이 잠시 제한되었어요. 15분 후 다시 시도해 주세요.",
-    "editSetupRequired": "비밀번호 확인 기능이 아직 준비되지 않았어요. 운영자에게 문의해 주세요."
+    "editSetupRequired": "비밀번호 확인 기능이 아직 준비되지 않았어요. 운영자에게 문의해 주세요.",
+    "copyLink": "링크 복사",
+    "linkCopied": "링크를 복사했어요.",
+    "copyLinkFailed": "링크를 선택해 직접 복사해 주세요."
   },
   "ja": {
     "nav": "マイトップ9",
@@ -240,7 +246,10 @@
     "uploadShareRestriction": "自分でアップロードした写真を含む場合、ゲストはプレビュー・画像保存のみ利用でき、共有・公開にはログインが必要です。",
     "editVerifyUnavailable": "エラーが発生しました。再試行してください。",
     "editLocked": "パスワードが違うか一時的に制限されています。",
-    "editSetupRequired": "エラーが発生しました。再試行してください。"
+    "editSetupRequired": "エラーが発生しました。再試行してください。",
+    "copyLink": "リンクをコピー",
+    "linkCopied": "リンクをコピーしました。",
+    "copyLinkFailed": "リンクを選択してコピーしてください。"
   },
   "zh": {
     "nav": "我的九宫格",
@@ -321,7 +330,10 @@
     "uploadShareRestriction": "包含自己上传的照片时，访客只能预览或下载图片，分享或发布需要登录。",
     "editVerifyUnavailable": "发生错误，请重试。",
     "editLocked": "密码不正确或暂时受限，请稍后重试。",
-    "editSetupRequired": "发生错误，请重试。"
+    "editSetupRequired": "发生错误，请重试。",
+    "copyLink": "复制链接",
+    "linkCopied": "链接已复制。",
+    "copyLinkFailed": "请选择链接并手动复制。"
   },
   "es": {
     "nav": "Mis 9 favoritos",
@@ -402,7 +414,10 @@
     "uploadShareRestriction": "Si incluyes fotos de tu dispositivo, los invitados solo pueden previsualizar o descargar; compartir o publicar requiere iniciar sesión.",
     "editVerifyUnavailable": "Ha ocurrido un error. Inténtalo de nuevo.",
     "editLocked": "Contraseña incorrecta o bloqueo temporal.",
-    "editSetupRequired": "Ha ocurrido un error. Inténtalo de nuevo."
+    "editSetupRequired": "Ha ocurrido un error. Inténtalo de nuevo.",
+    "copyLink": "Copiar enlace",
+    "linkCopied": "Enlace copiado.",
+    "copyLinkFailed": "Selecciona el enlace y cópialo manualmente."
   },
   "fr": {
     "nav": "Mes 9 favoris",
@@ -483,7 +498,10 @@
     "uploadShareRestriction": "Avec vos propres photos, les invités peuvent seulement prévisualiser ou télécharger ; le partage et la publication nécessitent une connexion.",
     "editVerifyUnavailable": "Une erreur est survenue. Réessayez.",
     "editLocked": "Mot de passe incorrect ou blocage temporaire.",
-    "editSetupRequired": "Une erreur est survenue. Réessayez."
+    "editSetupRequired": "Une erreur est survenue. Réessayez.",
+    "copyLink": "Copier le lien",
+    "linkCopied": "Lien copié.",
+    "copyLinkFailed": "Sélectionnez le lien et copiez-le manuellement."
   },
   "it": {
     "nav": "I miei 9 preferiti",
@@ -564,7 +582,10 @@
     "uploadShareRestriction": "Con foto caricate dal dispositivo, gli ospiti possono solo vedere l’anteprima o scaricare; per condividere o pubblicare serve accedere.",
     "editVerifyUnavailable": "Si è verificato un errore. Riprova.",
     "editLocked": "Password errata o blocco temporaneo.",
-    "editSetupRequired": "Si è verificato un errore. Riprova."
+    "editSetupRequired": "Si è verificato un errore. Riprova.",
+    "copyLink": "Copia link",
+    "linkCopied": "Link copiato.",
+    "copyLinkFailed": "Seleziona il link e copialo manualmente."
   },
   "pl": {
     "nav": "Moje top 9",
@@ -645,7 +666,10 @@
     "uploadShareRestriction": "Po dodaniu zdjęć z urządzenia goście mogą tylko oglądać lub pobierać; udostępnianie i publikacja wymagają logowania.",
     "editVerifyUnavailable": "Wystąpił błąd. Spróbuj ponownie.",
     "editLocked": "Błędne hasło lub tymczasowa blokada.",
-    "editSetupRequired": "Wystąpił błąd. Spróbuj ponownie."
+    "editSetupRequired": "Wystąpił błąd. Spróbuj ponownie.",
+    "copyLink": "Kopiuj link",
+    "linkCopied": "Link skopiowany.",
+    "copyLinkFailed": "Zaznacz link i skopiuj go ręcznie."
   },
   "nl": {
     "nav": "Mijn top 9",
@@ -726,7 +750,10 @@
     "uploadShareRestriction": "Met eigen foto’s kunnen gasten alleen bekijken of downloaden; voor delen of publiceren moet je inloggen.",
     "editVerifyUnavailable": "Er is iets misgegaan. Probeer het opnieuw.",
     "editLocked": "Onjuist wachtwoord of tijdelijk geblokkeerd.",
-    "editSetupRequired": "Er is iets misgegaan. Probeer het opnieuw."
+    "editSetupRequired": "Er is iets misgegaan. Probeer het opnieuw.",
+    "copyLink": "Link kopiëren",
+    "linkCopied": "Link gekopieerd.",
+    "copyLinkFailed": "Selecteer de link en kopieer deze handmatig."
   },
   "cs": {
     "nav": "Mých top 9",
@@ -807,7 +834,10 @@
     "uploadShareRestriction": "S vlastními fotkami mohou hosté jen zobrazit náhled nebo stáhnout obrázek; sdílení a zveřejnění vyžaduje přihlášení.",
     "editVerifyUnavailable": "Došlo k chybě. Zkuste to znovu.",
     "editLocked": "Nesprávné heslo nebo dočasné omezení.",
-    "editSetupRequired": "Došlo k chybě. Zkuste to znovu."
+    "editSetupRequired": "Došlo k chybě. Zkuste to znovu.",
+    "copyLink": "Kopírovat odkaz",
+    "linkCopied": "Odkaz zkopírován.",
+    "copyLinkFailed": "Vyberte odkaz a zkopírujte ho ručně."
   },
   "de": {
     "nav": "Meine Top 9",
@@ -888,7 +918,10 @@
     "uploadShareRestriction": "Bei eigenen hochgeladenen Fotos sind für Gäste nur Vorschau und Download möglich. Zum Teilen oder Veröffentlichen bitte anmelden.",
     "editVerifyUnavailable": "Ein Fehler ist aufgetreten. Bitte erneut versuchen.",
     "editLocked": "Falsches Passwort oder vorübergehend gesperrt.",
-    "editSetupRequired": "Ein Fehler ist aufgetreten. Bitte erneut versuchen."
+    "editSetupRequired": "Ein Fehler ist aufgetreten. Bitte erneut versuchen.",
+    "copyLink": "Link kopieren",
+    "linkCopied": "Link kopiert.",
+    "copyLinkFailed": "Wähle den Link aus und kopiere ihn manuell."
   },
   "pt": {
     "nav": "Meus 9 favoritos",
@@ -969,7 +1002,10 @@
     "uploadShareRestriction": "Com fotos do seu dispositivo, visitantes podem apenas visualizar ou baixar; compartilhar ou publicar exige login.",
     "editVerifyUnavailable": "Ocorreu um erro. Tente novamente.",
     "editLocked": "Senha incorreta ou bloqueio temporário.",
-    "editSetupRequired": "Ocorreu um erro. Tente novamente."
+    "editSetupRequired": "Ocorreu um erro. Tente novamente.",
+    "copyLink": "Copiar link",
+    "linkCopied": "Link copiado.",
+    "copyLinkFailed": "Selecione o link e copie manualmente."
   },
   "ru": {
     "nav": "Мои топ-9",
@@ -1050,7 +1086,10 @@
     "uploadShareRestriction": "Если добавлены фото с устройства, гостям доступны только просмотр и скачивание. Для отправки ссылки или публикации нужно войти.",
     "editVerifyUnavailable": "Произошла ошибка. Попробуйте снова.",
     "editLocked": "Неверный пароль или временная блокировка.",
-    "editSetupRequired": "Произошла ошибка. Попробуйте снова."
+    "editSetupRequired": "Произошла ошибка. Попробуйте снова.",
+    "copyLink": "Копировать ссылку",
+    "linkCopied": "Ссылка скопирована.",
+    "copyLinkFailed": "Выделите ссылку и скопируйте её вручную."
   },
   "vi": {
     "nav": "Top 9 của tôi",
@@ -1131,7 +1170,10 @@
     "uploadShareRestriction": "Nếu có ảnh tải lên từ thiết bị, khách chỉ có thể xem hoặc tải ảnh xuống; muốn chia sẻ hoặc đăng cần đăng nhập.",
     "editVerifyUnavailable": "Đã xảy ra lỗi. Vui lòng thử lại.",
     "editLocked": "Mật khẩu sai hoặc đang bị hạn chế tạm thời.",
-    "editSetupRequired": "Đã xảy ra lỗi. Vui lòng thử lại."
+    "editSetupRequired": "Đã xảy ra lỗi. Vui lòng thử lại.",
+    "copyLink": "Sao chép liên kết",
+    "linkCopied": "Đã sao chép liên kết.",
+    "copyLinkFailed": "Chọn liên kết và sao chép thủ công."
   },
   "id": {
     "nav": "9 Favorit Saya",
@@ -1212,7 +1254,10 @@
     "uploadShareRestriction": "Jika menyertakan foto dari perangkat, tamu hanya dapat melihat atau mengunduh; berbagi atau menerbitkan memerlukan login.",
     "editVerifyUnavailable": "Terjadi kesalahan. Silakan coba lagi.",
     "editLocked": "Kata sandi salah atau dibatasi sementara.",
-    "editSetupRequired": "Terjadi kesalahan. Silakan coba lagi."
+    "editSetupRequired": "Terjadi kesalahan. Silakan coba lagi.",
+    "copyLink": "Salin tautan",
+    "linkCopied": "Tautan disalin.",
+    "copyLinkFailed": "Pilih tautan dan salin secara manual."
   },
   "hi": {
     "nav": "मेरे टॉप 9",
@@ -1293,7 +1338,10 @@
     "uploadShareRestriction": "अपने डिवाइस से फ़ोटो जोड़ने पर मेहमान केवल देख या डाउनलोड कर सकते हैं; साझा या प्रकाशित करने के लिए साइन इन करें।",
     "editVerifyUnavailable": "कुछ गड़बड़ हुई। फिर कोशिश करें।",
     "editLocked": "पासवर्ड गलत है या अस्थायी रोक लगी है।",
-    "editSetupRequired": "कुछ गड़बड़ हुई। फिर कोशिश करें।"
+    "editSetupRequired": "कुछ गड़बड़ हुई। फिर कोशिश करें।",
+    "copyLink": "लिंक कॉपी करें",
+    "linkCopied": "लिंक कॉपी हो गया।",
+    "copyLinkFailed": "लिंक चुनकर स्वयं कॉपी करें।"
   },
   "bn": {
     "nav": "আমার সেরা ৯",
@@ -1374,7 +1422,10 @@
     "uploadShareRestriction": "নিজের ডিভাইস থেকে ছবি যোগ করলে অতিথিরা শুধু দেখতে বা ডাউনলোড করতে পারেন; শেয়ার বা প্রকাশ করতে লগইন করুন।",
     "editVerifyUnavailable": "সমস্যা হয়েছে। আবার চেষ্টা করুন।",
     "editLocked": "ভুল পাসওয়ার্ড বা সাময়িক নিষেধাজ্ঞা।",
-    "editSetupRequired": "সমস্যা হয়েছে। আবার চেষ্টা করুন।"
+    "editSetupRequired": "সমস্যা হয়েছে। আবার চেষ্টা করুন।",
+    "copyLink": "লিঙ্ক কপি করুন",
+    "linkCopied": "লিঙ্ক কপি হয়েছে।",
+    "copyLinkFailed": "লিঙ্ক নির্বাচন করে নিজে কপি করুন।"
   },
   "ar": {
     "nav": "أفضل 9 لديّ",
@@ -1455,7 +1506,10 @@
     "uploadShareRestriction": "إذا أضفت صورًا من جهازك، يمكن للزوار العرض أو التنزيل فقط، وتتطلب المشاركة أو النشر تسجيل الدخول.",
     "editVerifyUnavailable": "حدث خطأ. حاول مرة أخرى.",
     "editLocked": "كلمة مرور غير صحيحة أو تقييد مؤقت.",
-    "editSetupRequired": "حدث خطأ. حاول مرة أخرى."
+    "editSetupRequired": "حدث خطأ. حاول مرة أخرى.",
+    "copyLink": "نسخ الرابط",
+    "linkCopied": "تم نسخ الرابط.",
+    "copyLinkFailed": "حدد الرابط وانسخه يدويًا."
   },
   "tr": {
     "nav": "İlk 9 Favorim",
@@ -1536,7 +1590,10 @@
     "uploadShareRestriction": "Cihazınızdan fotoğraf eklerseniz misafirler yalnızca önizleyebilir veya indirebilir; paylaşmak ya da yayımlamak için giriş gerekir.",
     "editVerifyUnavailable": "Bir hata oluştu. Lütfen tekrar dene.",
     "editLocked": "Şifre yanlış veya geçici olarak kilitli.",
-    "editSetupRequired": "Bir hata oluştu. Lütfen tekrar dene."
+    "editSetupRequired": "Bir hata oluştu. Lütfen tekrar dene.",
+    "copyLink": "Bağlantıyı kopyala",
+    "linkCopied": "Bağlantı kopyalandı.",
+    "copyLinkFailed": "Bağlantıyı seçip elle kopyalayın."
   },
   "th": {
     "nav": "9 อันดับของฉัน",
@@ -1617,6 +1674,9 @@
     "uploadShareRestriction": "หากมีรูปที่อัปโหลดจากอุปกรณ์ ผู้เยี่ยมชมจะดูหรือดาวน์โหลดได้เท่านั้น การแชร์หรือเผยแพร่ต้องเข้าสู่ระบบ",
     "editVerifyUnavailable": "เกิดข้อผิดพลาด โปรดลองอีกครั้ง",
     "editLocked": "รหัสผ่านไม่ถูกต้องหรือถูกจำกัดชั่วคราว",
-    "editSetupRequired": "เกิดข้อผิดพลาด โปรดลองอีกครั้ง"
+    "editSetupRequired": "เกิดข้อผิดพลาด โปรดลองอีกครั้ง",
+    "copyLink": "คัดลอกลิงก์",
+    "linkCopied": "คัดลอกลิงก์แล้ว",
+    "copyLinkFailed": "เลือกลิงก์แล้วคัดลอกด้วยตนเอง"
   }
 }

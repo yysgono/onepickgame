@@ -262,3 +262,10 @@
 .top-nine .tn-action-notice{width:min(100%,1120px);max-width:1120px;box-sizing:border-box;white-space:normal;word-break:keep-all;overflow-wrap:break-word}
 .tn-action-notice p{text-wrap:balance}
 .tn-action-notice a{display:block;width:max-content;max-width:100%;margin:10px auto 0}
+
+.top-nine .tn-share-row{display:flex;align-items:center;gap:8px;margin-top:8px}
+.top-nine .tn-share-row input{flex:1;min-width:0}
+.top-nine .tn-share-row button{flex:0 0 auto;white-space:nowrap;background:#7139ce;color:#fff;border-color:#7139ce}
+.top-nine .tn-share-row button:hover{background:#5425a3;color:#fff}
+.tn-copy-status{font-size:14px;color:#513197;margin:8px 0 0}
+@media(max-width:480px){.top-nine .tn-share-row{flex-wrap:wrap}.top-nine .tn-share-row input{flex-basis:100%}.top-nine .tn-share-row button{width:100%}}
