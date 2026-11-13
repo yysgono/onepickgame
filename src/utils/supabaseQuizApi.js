@@ -1,3 +1,4 @@
+import {currentActivityLanguage} from './activityLanguage';
 import {trashContent,contentRevision} from "./contentTrashApi";
 import { supabase } from "./supabaseClient";
 import imageCompression from "browser-image-compression";
@@ -470,7 +471,7 @@ function getQuizParticipantId() {
   return value;
 }
 
-export async function saveQuizAttempt({ quizId, attemptToken, records }) {
+export async function saveQuizAttempt({ quizId, attemptToken, records, language }) {
   const answers = (records || []).map((record, index) => ({
     index,
     question_id: record.question?.id || null,
@@ -480,6 +481,7 @@ export async function saveQuizAttempt({ quizId, attemptToken, records }) {
     quiz_id: quizId,
     participant_id: getQuizParticipantId(),
     attempt_token: attemptToken,
+    page_language:currentActivityLanguage(language),
     answered_count: answers.length,
     correct_count: answers.filter((answer) => answer.correct).length,
     answers,

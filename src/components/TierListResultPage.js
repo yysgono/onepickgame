@@ -1,3 +1,4 @@
+import {currentActivityLanguage} from '../utils/activityLanguage';
 import { TIER_COLORS, visibleTierRows } from "../utils/tierRows";
 import tierListCloneButton from "../locales/tierListCloneButton.json";
 import ContentCommentNotices from "./ContentCommentNotices";
@@ -548,13 +549,13 @@ if (mounted) {
 
     supabase
       .from("tier_list_play_logs")
-      .insert({ tier_list_id: id })
+      .insert({ tier_list_id: id, page_language:currentActivityLanguage(lang) })
       .then(({ error: logError }) => {
         if (logError) {
           console.warn("Failed to record tier list view log", logError);
         }
       });
-  }, [id]);
+  }, [id,lang]);
 
 
   useEffect(() => {

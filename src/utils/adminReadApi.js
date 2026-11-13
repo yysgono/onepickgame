@@ -1,4 +1,6 @@
-import { adminDisplayTitle } from "./adminDisplayTitle";
+import {normalizeActivityLanguage} from './activityLanguage';
+import tierDetailSeo from '../seo/tierDetailSeo';
+import { adminActivityTitle } from "./adminDisplayTitle";
 import { supabase } from './supabaseClient';
 
 // Existing authenticated client and RLS are preserved. These helpers only read data.
@@ -79,7 +81,7 @@ export async function getAdminRecent7Completions(today = getTodayKstDateString()
   }));
 }
 export async function getAdminRecentPlays() {
-  const { data, error } = await supabase.from('winner_logs').select('id,cup_id,winner_id,created_at')
+  const { data, error } = await supabase.from('winner_logs').select('id,cup_id,winner_id,created_at,page_language')
     .order('created_at', { ascending: false }).limit(30);
   if (error) throw error;
   const rows = Array.isArray(data) ? data : [];
@@ -88,9 +90,9 @@ export async function getAdminRecentPlays() {
   if (ids.length) {
     const { data: cups, error: titleError } = await supabase.from('worldcups').select('id,title,title_translations').is("deleted_at", null).in('id', ids);
     if (titleError) throw titleError;
-    titles = new Map((cups || []).map(cup => [String(cup.id), adminDisplayTitle(cup)]));
+    titles = new Map((cups || []).map(cup => [String(cup.id), cup]));
   }
-  return rows.map(row => ({ ...row, worldcup_title: titles.get(String(row.cup_id)) || '삭제되었거나 제목 없는 월드컵' }));
+  return rows.map(row => {const language=normalizeActivityLanguage(row.page_language),cup=titles.get(String(row.cup_id));return {...row,page_language:language,worldcup_title:cup?adminActivityTitle(cup,language):'삭제되었거나 제목 없는 월드컵',href:cup?`/${language||'ko'}/stats/${encodeURIComponent(row.cup_id)}`:null};});
 }
 export async function getAdminRecentComments() {
   const since = new Date(Date.now() - 7 * 86400000).toISOString();
@@ -108,27 +110,42 @@ export async function getAdminRecentContentActivity(kind) {
   const parentTable = isQuiz ? 'quizzes' : 'tier_lists';
   const parentKey = isQuiz ? 'quiz_id' : 'tier_list_id';
   const { data, error } = await supabase.from(logTable)
-    .select(`id,${parentKey},created_at`).order('created_at', { ascending: false }).order('id', { ascending: false }).limit(30);
+    .select(`id,${parentKey},created_at,page_language`).order('created_at', { ascending: false }).order('id', { ascending: false }).limit(30);
   if (error) throw error;
   const logs = Array.isArray(data) ? data : [];
   const ids = [...new Set(logs.map(row => row[parentKey]).filter(Boolean))];
   let parents = new Map();
   if (ids.length) {
-    const fields = isQuiz ? 'id,title,title_translations,original_language,content_languages' : 'id,title,title_translations';
+    const fields = isQuiz ? 'id,title,title_translations,original_language,content_languages' : 'id,title,title_translations,tier_labels,source_worldcup_id,user_id,guest_nickname';
     const { data: titles, error: titleError } = await supabase.from(parentTable).select(fields).is('deleted_at', null).in('id', ids);
     if (titleError) throw titleError;
     parents = new Map((titles || []).map(row => [String(row.id), row]));
   }
   const languages = ['ko','en','ja','zh','es','fr','vi','de','ru','id','pt','hi','tr','th','ar','bn','it','pl','nl','cs'];
+  const sources=new Map(),authors=new Map();
+  if(!isQuiz&&parents.size){
+    const sourceIds=[...new Set([...parents.values()].map(p=>p.source_worldcup_id).filter(Boolean))];
+    const authorIds=[...new Set([...parents.values()].map(p=>p.user_id).filter(Boolean))];
+    const result=await Promise.allSettled([
+      sourceIds.length?supabase.from('worldcups').select('id,title,title_translations,tier_preset_title_translations').is('deleted_at',null).in('id',sourceIds):Promise.resolve({data:[]}),
+      authorIds.length?supabase.from('profiles').select('id,nickname').in('id',authorIds):Promise.resolve({data:[]})
+    ]);
+    if(result[0].status==='fulfilled'&&!result[0].value.error)for(const row of result[0].value.data||[])sources.set(String(row.id),row);
+    if(result[1].status==='fulfilled'&&!result[1].value.error)for(const row of result[1].value.data||[])authors.set(String(row.id),row.nickname);
+  }
   return logs.map(row => {
     const parent = parents.get(String(row[parentKey]));
+    const language=normalizeActivityLanguage(row.page_language);
     const supported = isQuiz ? [...(parent?.content_languages || []), parent?.original_language] : ['ko'];
-    const lang = supported.includes('ko') ? 'ko' : languages.includes(parent?.original_language) ? parent.original_language : 'en';
-    return {
-      id: row.id, created_at: row.created_at,
-      title: parent ? adminDisplayTitle(parent) : '삭제되었거나 조회할 수 없는 콘텐츠',
-      href: parent ? `/${lang}/${kind}/${encodeURIComponent(parent.id)}` : null,
-    };
+    const lang = language || (supported.includes('ko') ? 'ko' : languages.includes(parent?.original_language) ? parent.original_language : 'en');
+    let title=parent?adminActivityTitle(parent,language):'삭제되었거나 조회할 수 없는 콘텐츠';
+    if(parent&&!isQuiz&&language){
+      const suffix=typeof parent.title==='string'&&parent.title.includes(' - ')?parent.title.slice(parent.title.lastIndexOf(' - ')+3):'';
+      const nickname=authors.get(String(parent.user_id))||parent.guest_nickname||suffix;
+      title=tierDetailSeo.getTierPublicTitle({...parent,_sourcePreset:sources.get(String(parent.source_worldcup_id))},language,nickname);
+    }
+    return {id:row.id,created_at:row.created_at,page_language:language,title,
+      href:parent?`/${lang}/${kind}/${encodeURIComponent(parent.id)}`:null};
   });
 }
 

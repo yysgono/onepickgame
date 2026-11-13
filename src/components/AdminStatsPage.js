@@ -1,3 +1,4 @@
+import {activityLanguageLabel,normalizeActivityLanguage} from '../utils/activityLanguage';
 import AdminContentSummary from "./AdminContentSummary";
 import AdminRecentActivity from "./AdminRecentActivity";
 import { getAdminWorldcupCount, getAdminTodayWorldcupCompletions, getAdminTotalCompletions, getAdminRecentPlays, getAdminRecentContentActivity, getAdminRecentComments, getTodayKstDateString } from "../utils/adminReadApi";
@@ -146,9 +147,10 @@ export default function AdminStatsPage() {
   // 댓글 클릭
   // ======================================================
   function handleCommentClick(
-    cupId
+    cupId,
+    language
   ) {
-    const lang =
+    const lang = normalizeActivityLanguage(language) ||
       window.location.pathname.match(
         /^\/([a-z]{2})(\/|$)/
       )?.[1] || "ko";
@@ -283,7 +285,8 @@ export default function AdminStatsPage() {
             key={play.id}
             onClick={() =>
               handleCommentClick(
-                play.cup_id
+                play.cup_id,
+                play.page_language
               )
             }
             style={{
@@ -319,7 +322,7 @@ export default function AdminStatsPage() {
                   whiteSpace: "nowrap",
                 }}
               >
-                {play.worldcup_title}
+                <span style={{fontSize:12,fontWeight:700,color:"#596579",marginRight:8}}>{activityLanguageLabel(play.page_language)}</span>{play.worldcup_title}
               </div>
             </div>
 

@@ -1,3 +1,4 @@
+import {currentActivityLanguage} from './activityLanguage';
 import { deleteWorldcupGame as deleteWorldcupAndImages } from "./supabaseWorldcupApi";
 import { supabase } from "./supabaseClient";
 
@@ -95,11 +96,11 @@ export async function deleteOldWinnerLogAndStats(cup_id) {
 }
 
 // winner_logs 기록
-export async function insertWinnerLog(cup_id, winner_id = null) {
+export async function insertWinnerLog(cup_id, winner_id = null, language) {
   const { user_id, guest_id } = await getUserOrGuestId();
   const { error } = await supabase
     .from("winner_logs")
-    .insert([{ user_id, guest_id, cup_id, winner_id }]);
+    .insert([{ user_id, guest_id, cup_id, winner_id, page_language:currentActivityLanguage(language) }]);
   if (error) {
     if (error.code === "23505" || error.message?.includes("duplicate")) return false;
     return false;

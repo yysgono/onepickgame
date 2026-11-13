@@ -1,3 +1,4 @@
+import {currentActivityLanguage} from './activityLanguage';
 import { supabase } from "./supabaseClient";
 
 // 로그인 유저 or 비회원 구분 (항상 이 함수만 부르면 됨)
@@ -16,7 +17,7 @@ export async function getUserOrGuestId() {
 }
 
 // ✅ 결과 기록 (기존 기록 모두 삭제 후 insert → 항상 1개만 남김)
-export async function upsertWinnerLog({ cup_id, winner_id }) {
+export async function upsertWinnerLog({ cup_id, winner_id, language }) {
   const { user_id, guest_id } = await getUserOrGuestId();
 
   // 1. 기존 winner_logs(동일 user/guest & cup_id) 삭제 (둘 중 하나만 조건에 들어감)
@@ -31,7 +32,7 @@ export async function upsertWinnerLog({ cup_id, winner_id }) {
   // 2. 새 로그 추가 (insert)
   const { data, error } = await supabase
     .from("winner_logs")
-    .insert([{ user_id, guest_id, cup_id, winner_id }])
+    .insert([{ user_id, guest_id, cup_id, winner_id, page_language:currentActivityLanguage(language) }])
     .select()
     .single();
   if (error) throw error;

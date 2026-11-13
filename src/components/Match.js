@@ -3140,7 +3140,8 @@ useEffect(() => {
 
           cup.id,
 
-          winner.id
+          winner.id,
+          matchLanguage
 
         ),
 

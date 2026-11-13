@@ -620,7 +620,7 @@ export default function QuizDetailPage() {
 
     setRankingLoading(true);
 
-    saveQuizAttempt({ quizId: id, attemptToken, records })
+    saveQuizAttempt({ quizId: id, attemptToken, records, language:lang })
 
       .then(() => getQuizRankingStats({ quizId: id, answeredCount: records.length, attemptToken }))
 
@@ -632,7 +632,7 @@ export default function QuizDetailPage() {
 
     return () => { alive = false; };
 
-  }, [phase, records, attemptToken, id]);
+  }, [phase, records, attemptToken, id, lang]);
 
   function evaluate(q, forcedTimeout = false) {
 

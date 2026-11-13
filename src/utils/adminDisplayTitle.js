@@ -13,3 +13,8 @@ export function adminDisplayTitle(item, fallback = '제목 없음') {
     titleText(translated.en) || titleText(legacy.en) ||
     [...Object.values(translated), ...Object.values(legacy)].map(titleText).find(Boolean) || fallback;
 }
+
+export function adminActivityTitle(item,language,fallback='제목 없음'){
+ const translated=titleMap(item?.title_translations),legacy=titleMap(item?.title);
+ return titleText(translated[language])||titleText(legacy[language])||(language?titleText(item?.title):'')||adminDisplayTitle(item,fallback);
+}

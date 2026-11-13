@@ -1,3 +1,4 @@
+import {currentActivityLanguage} from './utils/activityLanguage';
 import { deleteWorldcupGame as deleteWorldcupAndImages } from "./utils/supabaseWorldcupApi";
 // src/utils.js
 import { supabase } from "./utils/supabaseClient";
@@ -161,7 +162,7 @@ export async function deleteOldWinnerLogAndStats(cup_id) {
   invalidateStatsCache(cup_id);
 }
 
-export async function insertWinnerLog(cup_id, winner_id = null) {
+export async function insertWinnerLog(cup_id, winner_id = null, language) {
   const { user_id, guest_id } = await getUserOrGuestId();
 
   const { error } = await supabase
@@ -172,6 +173,7 @@ export async function insertWinnerLog(cup_id, winner_id = null) {
         guest_id,
         cup_id,
         winner_id,
+        page_language:currentActivityLanguage(language),
       },
     ]);
 
