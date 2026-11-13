@@ -18,6 +18,10 @@ const m={exports:{}};new Function('require','module','exports',code)(path=>path.
  fixtures={tier_list_play_logs:[{id:1,tier_list_id:'t',page_language:'en'}],tier_lists:[{id:'t',title:'한국어 - admin',source_worldcup_id:'w',user_id:'u',tier_labels:{_originalLanguage:'ko'}}],worldcups:[{id:'w',title:'한국어',tier_preset_title_translations:{en:'English template'}}],profiles:[{id:'u',nickname:'admin'}]};
  rows=await m.exports.getAdminRecentContentActivity('tier-list');assert.equal(rows[0].title,'English template - admin');assert.equal(rows[0].href,'/en/tier-list/t');
  assert.equal(languageApi.currentActivityLanguage('pt-BR'),'pt');assert.equal(languageApi.currentActivityLanguage('invalid'),null);assert.equal(Object.keys(languageApi.ACTIVITY_LANGUAGE_LABELS).length,20);
+ global.window={location:{pathname:'/en/quiz/q'}};assert.equal(languageApi.currentActivityLanguage('ko'),'en');
+ window.location.pathname='/ja/tier-list/t';assert.equal(languageApi.currentActivityLanguage('ko'),'ja');
+ window.location.pathname='/';assert.equal(languageApi.currentActivityLanguage('ko'),'en');
+ window.location.pathname='/admin';assert.equal(languageApi.currentActivityLanguage('fr'),'fr');delete global.window;
  calls=[];fixtures={};assert.deepEqual(await m.exports.getAdminRecentContentActivity('quiz'),[]);assert.equal(calls.length,1);
  fail='quiz_attempts';await assert.rejects(m.exports.getAdminRecentContentActivity('quiz'),e=>e?.message==='fixture failure');
  fail='quizzes';fixtures={quiz_attempts:[{id:1,quiz_id:'q'}]};await assert.rejects(m.exports.getAdminRecentContentActivity('quiz'),e=>e?.message==='fixture failure');
