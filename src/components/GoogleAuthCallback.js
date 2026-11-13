@@ -1,3 +1,4 @@
+import {topNineAuthReturn} from './topNine/authDraft';
 import {hasNaverLinkIntent,completeNaverAccountLink,naverLinkErrorCode} from "../utils/naverAccountLink";
 import NAVER_LINK_COPY from "./naverLinkCopy.json";
 import AccountPolicyNotice from "./AccountPolicyNotice";
@@ -24,7 +25,7 @@ export default function GoogleAuthCallback({ setNickname }) {
     }
     completeGoogleLogin().then(name => {
       if (!active) return;
-      if (name) { setNickname?.(name); navigate(`/${lang}`,{replace:true}); }
+      if (name) { setNickname?.(name); navigate(topNineAuthReturn(`/${lang}`),{replace:true}); }
       else setStatus('nickname');
     }).catch(() => { if(active) setStatus('error'); });
     return () => {active=false;};
@@ -33,7 +34,7 @@ export default function GoogleAuthCallback({ setNickname }) {
     event.preventDefault(); if(busy) return; setBusy(true); setError(false);
     try {
       const data=await saveSocialNickname(nickname);
-      setNickname?.(data); navigate(`/${lang}`,{replace:true});
+      setNickname?.(data); navigate(topNineAuthReturn(`/${lang}`),{replace:true});
     } catch {setError(true);} finally {setBusy(false);}
   }
   return <main style={{maxWidth:480,margin:'50px auto',padding:24,textAlign:'center'}}>

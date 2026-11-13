@@ -1,3 +1,4 @@
+import {topNineAuthReturn} from './topNine/authDraft';
 import {NaverExistingAccountNotice} from "./NaverAccountLink";
 import NaverLoginButton from "./NaverLoginButton";
 import AccountPolicyNotice from "./AccountPolicyNotice";
@@ -100,7 +101,7 @@ function LoginBox({ setUser, setNickname }) {
     }
     setEmail("");
     setPassword("");
-    navigate(`/${lang}`);
+    navigate(topNineAuthReturn(`/${lang}`));
   }
 
   return (

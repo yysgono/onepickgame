@@ -1,0 +1,202 @@
+{
+  "ko": {
+    "register": "등록하기",
+    "title": "직접 올린 사진이 있어요",
+    "help": "직접 올린 사진을 포함해 등록하려면 로그인이 필요해요.",
+    "kept": "로그인·회원가입 전에 사진과 작성 내용을 저장하고, 돌아오면 복원해요.",
+    "login": "로그인",
+    "signup": "회원가입",
+    "keepEditing": "계속 편집",
+    "siteHelp": "사이트 후보만 사용하면 비회원도 등록할 수 있어요."
+  },
+  "en": {
+    "register": "Publish",
+    "title": "Your collage includes uploaded photos",
+    "help": "Sign in to publish a collage containing your own photos.",
+    "kept": "Your photos and edits will be saved before sign-in or sign-up and restored when you return.",
+    "login": "Sign in",
+    "signup": "Sign up",
+    "keepEditing": "Keep editing",
+    "siteHelp": "Guests can publish collages made only with site candidates."
+  },
+  "ja": {
+    "register": "公開する",
+    "title": "アップロードした写真が含まれています",
+    "help": "自分でアップロードした写真を含めて公開するにはログインが必要です。",
+    "kept": "ログイン・新規登録の前に写真と編集内容を保存し、戻ると復元します。",
+    "login": "ログイン",
+    "signup": "新規登録",
+    "keepEditing": "編集を続ける",
+    "siteHelp": "サイト内の候補だけを使う場合は、ゲストも公開できます。"
+  },
+  "zh": {
+    "register": "发布",
+    "title": "包含自行上传的照片",
+    "help": "发布包含自行上传照片的作品需要登录。",
+    "kept": "登录或注册前会保存照片和编辑内容，返回后恢复。",
+    "login": "登录",
+    "signup": "注册",
+    "keepEditing": "继续编辑",
+    "siteHelp": "仅使用网站候选项时，游客也可以发布。"
+  },
+  "es": {
+    "register": "Publicar",
+    "title": "Has añadido fotos propias",
+    "help": "Inicia sesión para publicar un collage con tus propias fotos.",
+    "kept": "Guardaremos tus fotos y cambios antes de iniciar sesión o registrarte y los restauraremos al volver.",
+    "login": "Iniciar sesión",
+    "signup": "Registrarse",
+    "keepEditing": "Seguir editando",
+    "siteHelp": "Los invitados pueden publicar collages hechos solo con candidatos del sitio."
+  },
+  "fr": {
+    "register": "Publier",
+    "title": "Votre collage contient vos photos",
+    "help": "Connectez-vous pour publier un collage contenant vos propres photos.",
+    "kept": "Vos photos et modifications seront enregistrées avant la connexion ou l’inscription, puis restaurées à votre retour.",
+    "login": "Se connecter",
+    "signup": "S’inscrire",
+    "keepEditing": "Continuer à modifier",
+    "siteHelp": "Les visiteurs peuvent publier des collages composés uniquement de candidats du site."
+  },
+  "vi": {
+    "register": "Đăng",
+    "title": "Có ảnh bạn tự tải lên",
+    "help": "Hãy đăng nhập để đăng ảnh ghép có ảnh bạn tự tải lên.",
+    "kept": "Ảnh và nội dung chỉnh sửa sẽ được lưu trước khi đăng nhập hoặc đăng ký và khôi phục khi bạn quay lại.",
+    "login": "Đăng nhập",
+    "signup": "Đăng ký",
+    "keepEditing": "Tiếp tục chỉnh sửa",
+    "siteHelp": "Khách có thể đăng ảnh ghép chỉ dùng ứng viên có sẵn trên trang."
+  },
+  "de": {
+    "register": "Veröffentlichen",
+    "title": "Deine Collage enthält eigene Fotos",
+    "help": "Melde dich an, um eine Collage mit eigenen Fotos zu veröffentlichen.",
+    "kept": "Deine Fotos und Änderungen werden vor der Anmeldung oder Registrierung gespeichert und bei deiner Rückkehr wiederhergestellt.",
+    "login": "Anmelden",
+    "signup": "Registrieren",
+    "keepEditing": "Weiter bearbeiten",
+    "siteHelp": "Gäste können Collagen veröffentlichen, die nur Kandidaten der Website enthalten."
+  },
+  "ru": {
+    "register": "Опубликовать",
+    "title": "В коллаже есть ваши фотографии",
+    "help": "Войдите, чтобы опубликовать коллаж со своими фотографиями.",
+    "kept": "Фотографии и изменения сохранятся перед входом или регистрацией и восстановятся после возвращения.",
+    "login": "Войти",
+    "signup": "Регистрация",
+    "keepEditing": "Продолжить редактирование",
+    "siteHelp": "Гости могут публиковать коллажи только с кандидатами с сайта."
+  },
+  "id": {
+    "register": "Terbitkan",
+    "title": "Ada foto yang Anda unggah",
+    "help": "Masuk untuk menerbitkan kolase yang berisi foto Anda sendiri.",
+    "kept": "Foto dan perubahan akan disimpan sebelum masuk atau mendaftar, lalu dipulihkan saat Anda kembali.",
+    "login": "Masuk",
+    "signup": "Daftar",
+    "keepEditing": "Lanjutkan mengedit",
+    "siteHelp": "Tamu dapat menerbitkan kolase yang hanya memakai kandidat dari situs."
+  },
+  "pt": {
+    "register": "Publicar",
+    "title": "Há fotos que você enviou",
+    "help": "Entre para publicar uma colagem com suas próprias fotos.",
+    "kept": "Suas fotos e alterações serão salvas antes de entrar ou se cadastrar e restauradas quando você voltar.",
+    "login": "Entrar",
+    "signup": "Cadastrar-se",
+    "keepEditing": "Continuar editando",
+    "siteHelp": "Visitantes podem publicar colagens feitas apenas com candidatos do site."
+  },
+  "hi": {
+    "register": "प्रकाशित करें",
+    "title": "आपकी अपलोड की हुई तस्वीरें शामिल हैं",
+    "help": "अपनी तस्वीरों वाला कोलाज प्रकाशित करने के लिए लॉग इन करें।",
+    "kept": "लॉग इन या साइन अप से पहले तस्वीरें और बदलाव सहेजे जाएँगे और लौटने पर बहाल हो जाएँगे।",
+    "login": "लॉग इन",
+    "signup": "साइन अप",
+    "keepEditing": "संपादन जारी रखें",
+    "siteHelp": "मेहमान केवल साइट के विकल्पों से बना कोलाज प्रकाशित कर सकते हैं।"
+  },
+  "tr": {
+    "register": "Yayımla",
+    "title": "Yüklediğiniz fotoğraflar var",
+    "help": "Kendi fotoğraflarınızı içeren bir kolajı yayımlamak için giriş yapın.",
+    "kept": "Fotoğraflarınız ve düzenlemeleriniz giriş veya kayıt öncesinde kaydedilir ve döndüğünüzde geri yüklenir.",
+    "login": "Giriş yap",
+    "signup": "Kayıt ol",
+    "keepEditing": "Düzenlemeye devam et",
+    "siteHelp": "Misafirler yalnızca sitedeki adayları içeren kolajları yayımlayabilir."
+  },
+  "th": {
+    "register": "เผยแพร่",
+    "title": "มีรูปภาพที่คุณอัปโหลดเอง",
+    "help": "เข้าสู่ระบบเพื่อเผยแพร่คอลลาจที่มีรูปภาพของคุณเอง",
+    "kept": "ระบบจะบันทึกรูปภาพและการแก้ไขก่อนเข้าสู่ระบบหรือสมัครสมาชิก และกู้คืนเมื่อคุณกลับมา",
+    "login": "เข้าสู่ระบบ",
+    "signup": "สมัครสมาชิก",
+    "keepEditing": "แก้ไขต่อ",
+    "siteHelp": "ผู้เยี่ยมชมสามารถเผยแพร่คอลลาจที่ใช้เฉพาะตัวเลือกจากเว็บไซต์ได้"
+  },
+  "ar": {
+    "register": "نشر",
+    "title": "تتضمن اللوحة صورًا رفعتها بنفسك",
+    "help": "سجّل الدخول لنشر لوحة تتضمن صورك الخاصة.",
+    "kept": "سنحفظ صورك وتعديلاتك قبل تسجيل الدخول أو إنشاء حساب، ونستعيدها عند عودتك.",
+    "login": "تسجيل الدخول",
+    "signup": "إنشاء حساب",
+    "keepEditing": "متابعة التعديل",
+    "siteHelp": "يمكن للزوار نشر لوحات تتضمن فقط خيارات الموقع."
+  },
+  "bn": {
+    "register": "প্রকাশ করুন",
+    "title": "আপনার আপলোড করা ছবি রয়েছে",
+    "help": "নিজের ছবি থাকা কোলাজ প্রকাশ করতে লগ ইন করুন।",
+    "kept": "লগ ইন বা নিবন্ধনের আগে ছবি ও পরিবর্তন সংরক্ষণ করা হবে এবং ফিরে এলে পুনরুদ্ধার করা হবে।",
+    "login": "লগ ইন",
+    "signup": "নিবন্ধন",
+    "keepEditing": "সম্পাদনা চালিয়ে যান",
+    "siteHelp": "শুধু সাইটের প্রার্থী দিয়ে তৈরি কোলাজ অতিথিরাও প্রকাশ করতে পারেন।"
+  },
+  "it": {
+    "register": "Pubblica",
+    "title": "Sono presenti foto caricate da te",
+    "help": "Accedi per pubblicare un collage con le tue foto.",
+    "kept": "Le foto e le modifiche saranno salvate prima di accedere o registrarti e ripristinate al tuo ritorno.",
+    "login": "Accedi",
+    "signup": "Registrati",
+    "keepEditing": "Continua a modificare",
+    "siteHelp": "Gli ospiti possono pubblicare collage composti solo da candidati del sito."
+  },
+  "pl": {
+    "register": "Opublikuj",
+    "title": "Kolaż zawiera Twoje zdjęcia",
+    "help": "Zaloguj się, aby opublikować kolaż z własnymi zdjęciami.",
+    "kept": "Zdjęcia i zmiany zostaną zapisane przed logowaniem lub rejestracją i przywrócone po powrocie.",
+    "login": "Zaloguj się",
+    "signup": "Zarejestruj się",
+    "keepEditing": "Kontynuuj edycję",
+    "siteHelp": "Goście mogą publikować kolaże zawierające wyłącznie kandydatów z witryny."
+  },
+  "nl": {
+    "register": "Publiceren",
+    "title": "Je collage bevat eigen foto’s",
+    "help": "Log in om een collage met je eigen foto’s te publiceren.",
+    "kept": "Je foto’s en wijzigingen worden vóór het inloggen of registreren opgeslagen en bij terugkomst hersteld.",
+    "login": "Inloggen",
+    "signup": "Registreren",
+    "keepEditing": "Verder bewerken",
+    "siteHelp": "Gasten kunnen collages publiceren met alleen kandidaten van de site."
+  },
+  "cs": {
+    "register": "Zveřejnit",
+    "title": "Koláž obsahuje vaše fotografie",
+    "help": "Pro zveřejnění koláže s vlastními fotografiemi se přihlaste.",
+    "kept": "Fotografie a úpravy uložíme před přihlášením nebo registrací a po návratu je obnovíme.",
+    "login": "Přihlásit se",
+    "signup": "Registrovat se",
+    "keepEditing": "Pokračovat v úpravách",
+    "siteHelp": "Hosté mohou zveřejnit koláže obsahující pouze kandidáty z webu."
+  }
+}

@@ -11,12 +11,12 @@ import copy from './copy.json';
 import {guestSalt,guestProof,normalizeGuestSalt} from './guestProof';
 import React,{useEffect,useState} from 'react';
 import {supabase} from '../../utils/supabaseClient';
-import {makeShareHash,readShared} from './core';
+import {makeShareHash,readShared,isShareable} from './core';
 import {isVideo} from './media';
 import {hasBadword} from '../../badwords-multilang';
 // The public RPC stores nine image records. Use one shared static tile for empty positions.
 const emptyTile={id:'tn-empty-cell',name:'',src:'https://www.onepickgame.com/top-nine-empty.png',zoom:1,x:50,y:50};
-export function PublishBoard({slots,title,names,lang,onPublished,onNotice,disabled=false,sourceIds=[],category='',existingId=''}) {
+export function PublishBoard({slots,title,names,lang,onPublished,onNotice,onLocalGuest,label,disabled=false,sourceIds=[],category='',existingId=''}) {
  const showRanks=false;
  const t=copy[lang]||copy.en,[busy,setBusy]=useState(false),[message,setMessage]=useState(''),[open,setOpen]=useState(false),[guest,setGuest]=useState(false),[nickname,setNickname]=useState(''),[password,setPassword]=useState(''),[confirm,setConfirm]=useState(''),[editSalt,setEditSalt]=useState('');
  async function saveBoard(auth){
@@ -29,6 +29,7 @@ export function PublishBoard({slots,title,names,lang,onPublished,onNotice,disabl
  }
  async function begin(){if(disabled||busy)return;setMessage('');setBusy(true);try{
   const {data}=await supabase.auth.getUser();const isGuest=!data?.user||data.user.is_anonymous;
+  if(isGuest&&slots.some(c=>c&&!isShareable(c))&&onLocalGuest){onLocalGuest();return;}
   if(isGuest)makeShareHash(slots,title,names,showRanks);setGuest(isGuest);setEditSalt('');
   if(existingId){
    const original=await supabase.from('top_nine_public_boards').select('author_id,guest_nickname').eq('id',existingId).maybeSingle();
@@ -50,7 +51,7 @@ export function PublishBoard({slots,title,names,lang,onPublished,onNotice,disabl
   const salt=guest?(editSalt||guestSalt()):null,proof=guest?await guestProof(password,salt):null;
   await saveBoard({guest,nickname,salt,proof});
  }catch{if(existingId)clearGuestEditSession(existingId);setMessage(t.publishFailed);}finally{setBusy(false);}}
- return <><button className="tn-publish-button" disabled={busy||disabled} onClick={begin}>{existingId?t.saveChanges:t.publish}</button>{!open&&message&&!onNotice&&<div className="tn-publish-status" role="status"><p>{message}</p>{message===t.localShare&&<a href={`/${lang}/login`}>{t.memberAccess}</a>}</div>}{open&&createPortal(<div className="top-nine tn-picker-overlay tn-public-overlay" dir={lang==='ar'?'rtl':'ltr'}><section className="tn-publish-dialog" role="dialog" aria-modal="true" aria-label={existingId?t.saveChanges:t.publish}><h2>{existingId?t.saveChanges:t.publish}</h2>{guest?<p>{existingId?t.unlockEditHelp:t.publishHelp}</p>:<p>{t.memberUploadHelp}</p>}<form onSubmit={publish}>{guest&&<>{!existingId&&<label>{t.nickname}<input required minLength={2} maxLength={30} value={nickname} onChange={e=>setNickname(e.target.value)}/></label>}<label>{t.password}<input type="password" required minLength={4} maxLength={100} autoComplete={existingId?'current-password':'new-password'} value={password} onChange={e=>setPassword(e.target.value)}/></label>{!existingId&&<label>{t.confirmPassword}<input type="password" required minLength={4} maxLength={100} autoComplete="new-password" value={confirm} onChange={e=>setConfirm(e.target.value)}/></label>}</>}{message&&<p role="alert">{message}</p>}<div className="tn-actions"><button className="tn-primary" disabled={busy}>{existingId?t.saveChanges:t.publish}</button><button type="button" disabled={busy} onClick={()=>{setOpen(false);setPassword('');setConfirm('');setMessage('');}}>{t.close}</button></div></form></section></div>,document.body)}</>;
+ return <><button className={label?"tn-publish-button tn-primary":"tn-publish-button"} disabled={busy||disabled} onClick={begin}>{existingId?t.saveChanges:(label||t.publish)}</button>{!open&&message&&!onNotice&&<div className="tn-publish-status" role="status"><p>{message}</p>{message===t.localShare&&<a href={`/${lang}/login`}>{t.memberAccess}</a>}</div>}{open&&createPortal(<div className="top-nine tn-picker-overlay tn-public-overlay" dir={lang==='ar'?'rtl':'ltr'}><section className="tn-publish-dialog" role="dialog" aria-modal="true" aria-label={existingId?t.saveChanges:t.publish}><h2>{existingId?t.saveChanges:t.publish}</h2>{guest?<p>{existingId?t.unlockEditHelp:t.publishHelp}</p>:<p>{t.memberUploadHelp}</p>}<form onSubmit={publish}>{guest&&<>{!existingId&&<label>{t.nickname}<input required minLength={2} maxLength={30} value={nickname} onChange={e=>setNickname(e.target.value)}/></label>}<label>{t.password}<input type="password" required minLength={4} maxLength={100} autoComplete={existingId?'current-password':'new-password'} value={password} onChange={e=>setPassword(e.target.value)}/></label>{!existingId&&<label>{t.confirmPassword}<input type="password" required minLength={4} maxLength={100} autoComplete="new-password" value={confirm} onChange={e=>setConfirm(e.target.value)}/></label>}</>}{message&&<p role="alert">{message}</p>}<div className="tn-actions"><button className="tn-primary" disabled={busy}>{existingId?t.saveChanges:t.publish}</button><button type="button" disabled={busy} onClick={()=>{setOpen(false);setPassword('');setConfirm('');setMessage('');}}>{t.close}</button></div></form></section></div>,document.body)}</>;
 }
 export function BoardThumbnail({candidate,index=4}){
  const [dimensions,setDimensions]=useState(null);

@@ -1,3 +1,6 @@
+import {saveAuthDraft,readAuthDraft,clearAuthReturn} from './topNine/authDraft';
+import registrationCopy from './topNine/registrationCopy.json';
+import {createPortal} from 'react-dom';
 import collageLayout from './topNine/collageLayout.js';
 import GuestEditPrompt from './topNine/GuestEditPrompt';
 import {getGuestEditSession} from './topNine/guestEditSession';
@@ -38,6 +41,9 @@ function CropPhoto({candidate,frame,index}) {
 }
 export default function TopNinePage({publicBoard=null,publicId='',templateSource=null,onHome,canEdit=false}={}){
  const {lang:routeLang}=useParams(),location=useLocation(),navigate=useNavigate();const lang=copy[routeLang]?routeLang:'en',t=copy[lang];
+ const registration=registrationCopy[lang]||registrationCopy.en;
+ const [uploadGate,setUploadGate]=useState(false),[authSaving,setAuthSaving]=useState(false),[authSaveError,setAuthSaveError]=useState(false);
+ const restoredAuth=useRef(false);
  const shared=useMemo(()=>publicBoard||readShared(location.hash),[publicBoard,location.hash]);
  const showRanks=false; // Ignore historical rank flags in boards, drafts and shared links.
  const [sitePicker,setSitePicker]=useState(false),[galleryTick,setGalleryTick]=useState(0),[templateMore,setTemplateMore]=useState(false),[templateOffset,setTemplateOffset]=useState(0),[stage,setStage]=useState(shared?'preview':templateSource?'pick':'home'),[slots,setSlots]=useState(shared?.slots||blank),[title,setTitle]=useState(shared?.title||(templateSource?templatePageTitle(templateSource,lang):'')),[baseTitle,setBaseTitle]=useState(shared?null:templateSource?templatePageTitle(templateSource,lang):''),[names,setNames]=useState(shared?.names||false);
@@ -88,7 +94,7 @@ export default function TopNinePage({publicBoard=null,publicId='',templateSource
   if(!templateSource||shared)return undefined;
   let live=true;
   supabase.from('top_nine_template_categories').select('category').eq('source_worldcup_id',templateSource.id).maybeSingle()
-   .then(({data,error})=>{if(live&&!error)setCategory(data?.category||'');}).catch(()=>{});
+   .then(({data,error})=>{if(live&&!error&&!restoredAuth.current)setCategory(data?.category||'');}).catch(()=>{});
   return()=>{live=false;};
  },[templateSource,shared]);
  useEffect(()=>{
@@ -97,7 +103,7 @@ export default function TopNinePage({publicBoard=null,publicId='',templateSource
   setSitePicker(false);setGame(null);setHistory([]);setMessage('');setShareURL('');dragItem.current=null;
  },[location.key,location.hash,location.state]);
  useEffect(()=>{if(poolListRef.current)poolListRef.current.scrollTop=0;},[candidateQuery]);
- useEffect(()=>{alive.current=true;draftStore().then(d=>{if(!alive.current)return;if(d?.v===1)setDraft(d);if(publicBoard&&canEdit&&new URLSearchParams(location.search).get('edit')==='1')requestEdit(d?.v===1?d:null);}).catch(()=>{if(alive.current&&publicBoard&&canEdit&&new URLSearchParams(location.search).get('edit')==='1')requestEdit(null);}).finally(()=>{draftReady.current=true;});return()=>{alive.current=false;operation.current++;};},[]);
+ useEffect(()=>{alive.current=true;Promise.all([draftStore(),readAuthDraft(location.search)]).then(([d,authDraft])=>{if(!alive.current)return;if(authDraft&&!publicId&&!shared){restoredAuth.current=true;setDraft(authDraft);resume(authDraft);clearAuthReturn();navigate(location.pathname,{replace:true});setDraftNotice(t.draftLoaded);return;}if(d?.v===1)setDraft(d);if(publicBoard&&canEdit&&new URLSearchParams(location.search).get('edit')==='1')requestEdit(d?.v===1?d:null);}).catch(()=>{if(alive.current&&publicBoard&&canEdit&&new URLSearchParams(location.search).get('edit')==='1')requestEdit(null);}).finally(()=>{draftReady.current=true;});return()=>{alive.current=false;operation.current++;};},[]);
  useEffect(()=>{if(!shared)return;setSlots(shared.slots);setTitle(shared.title);setBaseTitle(null);setNames(shared.names);setStage('preview');setFocus(null);setShareURL('');},[shared]);
  useEffect(()=>{let live=true;setTemplateError(false);listTemplates().then(rows=>{if(live){setTemplates(rows);setTemplateMore(rows.length===30);}}).catch(()=>{if(live)setTemplateError(true);});return()=>{live=false;};},[templateTick]);
  useEffect(()=>{
@@ -122,6 +128,15 @@ export default function TopNinePage({publicBoard=null,publicId='',templateSource
 
  async function work(fn,quiet=false){if(lock.current)return;lock.current=true;setQuietOperation(quiet);setBusy(true);setMessage('');const op=++operation.current;try{await fn(()=>alive.current&&op===operation.current);}catch(e){if(alive.current&&op===operation.current)setMessage((copy[languageRef.current]||copy.en).error);}finally{if(alive.current&&op===operation.current){lock.current=false;setBusy(false);}}}
  function resume(restoredDraft=draft){const record=restoredDraft?.v===1?restoredDraft:draft;if(!record)return;const pool=(record.candidates||[]).slice(0,2048).filter(c=>safeMedia(c?.src));const restored=Array.isArray(record.slots)&&record.slots.length===9?record.slots.map(c=>c&&safeMedia(c.src)?{...c,zoom:normalizeZoom(c.zoom),x:Math.max(0,Math.min(100,Number(c.x)||0)),y:Math.max(0,Math.min(100,Number(c.y)||0))}:null):blank();setSlots(restored);setCandidates(pool);setTitle(String(record.title||'').slice(0,100));setBaseTitle(typeof record.baseTitle==='string'?record.baseTitle:null);setNames(!!record.names);setSourceIds(record.sourceIds||[]);setCategory(record.category||'');setEditingId(record.boardId||'');setStage('pick');setFocus(null);}
+ function privateView(){setUploadGate(false);setStage('preview');setFocus(null);if(!editingId&&!publicId&&!shared)privateCompletionTracker(slots,title,names).catch(()=>{});}
+ function requireUploadLogin(){setAuthSaveError(false);setUploadGate(true);}
+ async function continueToAuth(destination){
+  if(authSaving)return;setAuthSaving(true);setAuthSaveError(false);
+  try{
+   await saveAuthDraft({v:1,boardId:editingId,slots,title,baseTitle,names,showRanks:false,candidates,sourceIds,category},lang);
+   navigate('/'+lang+'/'+destination);
+  }catch{setAuthSaveError(true);}finally{setAuthSaving(false);}
+ }
  async function saveDraft(){
   if(busy||draftBusy)return;setDraftBusy(true);setDraftNotice('');
   try{const record={v:1,boardId:editingId,slots,title,baseTitle,names,showRanks,candidates,sourceIds,category};await draftStore(record,true,'manual');setDraft(record);setDraftNotice(t.draftSaved);}catch{setDraftNotice(t.draftSaveFailed);}finally{setDraftBusy(false);}
@@ -295,7 +310,7 @@ export default function TopNinePage({publicBoard=null,publicId='',templateSource
  {focus!==null&&slots[focus]&&<fieldset disabled={busy} className="tn-crop"><legend title={slots[focus].name||'One Pick'}>{slots[focus].name||'One Pick'}</legend>{[['zoom',t.zoom,0,3,.05],['x',t.horizontal,0,100,1],['y',t.vertical,0,100,1]].map(([key,label,min,max,step])=><label key={key}>{label}<input type="range" min={min} max={max} step={step} value={slots[focus][key]??(key==='zoom'?1:50)} onChange={e=>adjust(key,e.target.value)}/></label>)}<button onClick={()=>{setSlots(old=>old.map((c,i)=>i===focus?null:c));setFocus(null);}}>{t.remove}</button></fieldset>}
  <label className="tn-title-field">{lang==='ko'?'구절판 이름 (선택)':t.titleLabel}<input value={title} maxLength={100} disabled={busy} onChange={e=>setTitle(e.target.value)}/></label><div className="tn-display-options"><label className="tn-toggle"><input type="checkbox" checked={names} disabled={busy} onChange={e=>setNames(e.target.checked)}/>{t.names}</label></div><p className="tn-caption-help">{t.editNameHelp}</p>
  </>:<p className="tn-credit">OnePickGame.com</p>}
- {stage==='pick'&&<div className="tn-actions tn-sticky tn-board-complete"><strong aria-live="polite">{count} / 9</strong><button disabled={busy||!count} onClick={()=>{setStage('preview');setFocus(null);if(!editingId&&!publicId&&!shared)privateCompletionTracker(slots,title,names).catch(()=>{});}}>{t.privateView}</button><PublishBoard existingId={editingId} sourceIds={sourceIds} category={category} slots={slots} title={title} autoTitle={!title.trim()||(baseTitle!==null&&title.trim()===baseTitle.trim())} names={names} showRanks={showRanks} lang={lang} disabled={busy||!count||!!editingId&&!changedSinceSave} onNotice={showShareNotice} onPublished={publishedHome}/></div>}
+ {stage==='pick'&&<div className="tn-actions tn-sticky tn-board-complete"><strong aria-live="polite">{count} / 9</strong><PublishBoard label={registration.register} onLocalGuest={requireUploadLogin} existingId={editingId} sourceIds={sourceIds} category={category} slots={slots} title={title} autoTitle={!title.trim()||(baseTitle!==null&&title.trim()===baseTitle.trim())} names={names} showRanks={showRanks} lang={lang} disabled={busy||!count||!!editingId&&!changedSinceSave} onNotice={showShareNotice} onPublished={publishedHome}/></div>}
  </section>
 
  {stage==='pick'&&<section className={candidates.length ? "tn-pool" : "tn-pool tn-pool-empty"} ref={poolRef} onDragOver={e=>e.preventDefault()} onDrop={poolDrop}><div className="tn-pool-heading"><h2>{t.choose}</h2><button type="button" className="tn-upload-button" disabled={busy} onClick={()=>pickUpload()}>{t.upload}</button></div><div className="tn-pool-reset"><button type="button" disabled={busy||!candidates.length} onClick={resetPool}>{t.resetCandidates}</button></div><p className="tn-photo-help">{t.doublePhoto}</p><input type="search" aria-label={t.candidateSearch} placeholder={t.candidateSearch} value={candidateQuery} onChange={e=>{setCandidateQuery(e.target.value);setLimit(CANDIDATE_PAGE_SIZE);}}/>
@@ -307,8 +322,9 @@ export default function TopNinePage({publicBoard=null,publicId='',templateSource
  </section>}
  </div>
  {(stage==='pick'||stage==='home'||stage==='preview'&&!publicId)&&<div className="tn-share-notice">{t.memberUploadHelp.split('\n').map((line,i)=><p key={i} className={i===1?'tn-upload-warning':undefined}>{line}</p>)}</div>}
- {stage==='preview'&&<div className="tn-actions tn-sticky"><strong aria-live="polite">{count} / 9</strong>{(!publicId||canEdit)&&<button disabled={busy} onClick={requestEdit}>{t.edit}</button>}<button type="button" aria-pressed={showNames} onClick={()=>setPreviewNames(!showNames)}>{showNames?t.hideCandidateNames:t.showCandidateNames}</button>{publicId&&!publicBoard?.unlisted&&<DeleteBoard id={publicId} lang={lang} onDeleted={onHome}/>}<button className="tn-primary" disabled={busy||!ready} onClick={download}>↓ {t.download}</button><button disabled={busy||!count} onClick={share}>{busy&&quietOperation?t.loading:t.share}</button>{!editingId&&!shared&&<PublishBoard existingId={editingId} sourceIds={sourceIds} category={category} slots={slots} title={title} autoTitle={!title.trim()||(baseTitle!==null&&title.trim()===baseTitle.trim())} names={names} showRanks={showRanks} lang={lang} disabled={busy||!count||!!editingId&&!changedSinceSave} onNotice={showShareNotice} onPublished={publishedHome}/>}</div>}
+ {stage==='preview'&&<div className="tn-actions tn-sticky"><strong aria-live="polite">{count} / 9</strong>{(!publicId||canEdit)&&<button disabled={busy} onClick={requestEdit}>{t.edit}</button>}<button type="button" aria-pressed={showNames} onClick={()=>setPreviewNames(!showNames)}>{showNames?t.hideCandidateNames:t.showCandidateNames}</button>{publicId&&!publicBoard?.unlisted&&<DeleteBoard id={publicId} lang={lang} onDeleted={onHome}/>}<button className="tn-primary" disabled={busy||!ready} onClick={download}>↓ {t.download}</button><button disabled={busy||!count} onClick={share}>{busy&&quietOperation?t.loading:t.share}</button>{!editingId&&!shared&&<PublishBoard label={registration.register} onLocalGuest={requireUploadLogin} existingId={editingId} sourceIds={sourceIds} category={category} slots={slots} title={title} autoTitle={!title.trim()||(baseTitle!==null&&title.trim()===baseTitle.trim())} names={names} showRanks={showRanks} lang={lang} disabled={busy||!count||!!editingId&&!changedSinceSave} onNotice={showShareNotice} onPublished={publishedHome}/>}</div>}
 
+ {uploadGate&&createPortal(<div className="top-nine tn-picker-overlay tn-public-overlay" dir={lang==='ar'?'rtl':'ltr'}><section className="tn-publish-dialog" role="dialog" aria-modal="true" aria-labelledby="tn-upload-access-title"><h2 id="tn-upload-access-title">{registration.title}</h2><p className="tn-upload-warning">{registration.help}</p><p>{registration.kept}</p>{authSaveError&&<p role="alert">{t.draftSaveFailed}</p>}<div className="tn-actions"><button autoFocus disabled={authSaving} onClick={privateView}>{t.privateView}</button><button className="tn-primary" disabled={authSaving} onClick={()=>continueToAuth('login')}>{authSaving?t.loading:registration.login}</button><button disabled={authSaving} onClick={()=>continueToAuth('signup')}>{registration.signup}</button><button disabled={authSaving} onClick={()=>setUploadGate(false)}>{registration.keepEditing}</button></div></section></div>,document.body)}
  {shareNotice&&<div ref={shareNoticeRef} className="tn-action-notice tn-upload-warning" role="alert"><p>{shareNotice}</p>{[t.localShare,t.uploadShareRestriction].includes(shareNotice)&&<a href={`/${lang}/login`}>{t.memberAccess}</a>}</div>}
  {shareURL&&<div className="tn-share"><span>{t.share}</span><div className="tn-share-row"><input ref={shareInputRef} aria-label={t.share} type="text" readOnly value={shareURL} onFocus={e=>e.target.select()}/><button type="button" onClick={copyShareLink}>{t.copyLink}</button></div>{copyStatus&&<p className="tn-copy-status" role="status">{copyStatus==='copied'?t.linkCopied:t.copyLinkFailed}</p>}</div>}
  </>}
