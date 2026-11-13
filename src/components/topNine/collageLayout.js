@@ -13,17 +13,15 @@ const polygons=[
  [[high,far],[100,70],[100,100],[70,100],[far,high]]
 ];
 const captions=[[15,28],[50,15],[85,28],[10,57],[50,68],[90,57],[15,90],[50,92],[85,90]];
-const ranks=[[4,5],[44,4],[81,5],[3,44],[42,27],[89,44],[4,82],[46,82],[81,82]];
 const layouts=polygons.map((points,index)=>{
  const x=Math.min(...points.map(p=>p[0])),y=Math.min(...points.map(p=>p[1]));
  const width=Math.max(...points.map(p=>p[0]))-x,height=Math.max(...points.map(p=>p[1]))-y;
  const local=([px,py])=>[(px-x)/width*100,(py-y)/height*100];
- const caption=local(captions[index]),rank=local(ranks[index]);
- return {points,x,y,width,height,caption:captions[index],rank:ranks[index],style:{
+ const caption=local(captions[index]);
+ return {points,x,y,width,height,caption:captions[index],style:{
   left:x+'%',top:y+'%',width:width+'%',height:height+'%',
   clipPath:'polygon('+points.map(p=>local(p).map(n=>n+'%').join(' ')).join(',')+')',
-  '--tn-name-x':caption[0]+'%','--tn-name-y':caption[1]+'%',
-  '--tn-rank-x':rank[0]+'%','--tn-rank-y':rank[1]+'%'
+  '--tn-name-x':caption[0]+'%','--tn-name-y':caption[1]+'%'
  }};
 });
 // Draw each shared edge once so adjacent tiles have the same line weight.

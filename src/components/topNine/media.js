@@ -1,6 +1,6 @@
 import collageLayout from './collageLayout.js';
 import {sanitizeSvg} from "./svgImport";
-import { safeMedia, SLOT_RANKS } from './core';
+import { safeMedia } from './core';
 export function loadMedia(src,video=false) {
  return new Promise((resolve,reject)=>{
   const el=video?document.createElement('video'):new Image();el.crossOrigin='anonymous';
@@ -31,7 +31,7 @@ export async function importFile(file) {
  finally{URL.revokeObjectURL(src);}
 }
 const fit=(ctx,text,max)=>{let chars=Array.from(text);while(chars.length&&ctx.measureText(chars.join('')).width>max)chars.pop();return chars.join('');};
-export async function exportPNG(slots,title,names,frameCache={},showRanks=false) {
+export async function exportPNG(slots,title,names,frameCache={}) {
  if(slots.length!==9||!slots.some(Boolean))throw new Error('NINE_REQUIRED');
  const canvas=document.createElement('canvas'),size=1056,pad=36,top=title?100:36;
  canvas.width=1128;canvas.height=top+size+90;
@@ -56,11 +56,7 @@ export async function exportPNG(slots,title,names,frameCache={},showRanks=false)
     ctx.fillStyle='#fff';ctx.fillText(name,cx,cy+8);
    }
   }
-  if(showRanks){
-   ctx.font='bold 40px sans-serif';ctx.fillStyle='#fff';ctx.textAlign='left';
-   ctx.fillText(String(SLOT_RANKS[i]),pad+tile.rank[0]*scale,top+tile.rank[1]*scale+35);
-   ctx.textAlign='center';
-  }
+
   ctx.restore();
  }
  ctx.beginPath();
