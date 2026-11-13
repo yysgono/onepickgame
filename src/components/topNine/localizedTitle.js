@@ -8,9 +8,10 @@ function localizedBoardTitle(board,sources,lang) {
  for(const id of board.source_worldcup_ids||board.sourceIds||[]){
   const source=(sources||[]).find(item=>String(item.id)===String(id));if(!source)continue;
   const own=translations(source.top_nine_title_translations),original=translations(source.title_translations);
-  const target=own[lang]||own.en||original[lang]||original.en||source.title;
-  if(!target)continue;
-  const variants=[...Object.values(own),...Object.values(original),source.title].filter(value=>typeof value==='string'&&value.trim()).map(value=>value.trim()).sort((a,b)=>b.length-a.length);
+  const rawTarget=own[lang]||own.en||original[lang]||original.en||source.title;
+  if(!rawTarget)continue;
+  const target=lang==='ko'?rawTarget.replace(/구절판(?! 취향표)/g,'구절판 취향표'):rawTarget;
+  const variants=[...Object.values(own),...Object.values(original),source.title].filter(value=>typeof value==='string'&&value.trim()).flatMap(value=>{const text=value.trim();return [text,text.replace(/구절판(?! 취향표)/g,'구절판 취향표')];}).sort((a,b)=>b.length-a.length);
   for(const base of variants){
    if(saved===base)return target;
    if(saved.startsWith(base+' - '))return target+saved.slice(base.length);

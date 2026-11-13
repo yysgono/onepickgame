@@ -11,7 +11,7 @@ function renderTopNineHtml(template,origin,lang,{templates=[],boards=[]}={}){
  const publicBoards=boards.filter(row=>UUID.test(String(row.id))).slice(0,12);
  const body='<main style="max-width:1100px;margin:32px auto;padding:24px"><h1>'+escape(copy.title)+'</h1><p>'+escape(copy.subtitle)+'</p>'+
  (presets.length?'<section><h2>'+escape(copy.templates)+'</h2><ul>'+presets.map(row=>'<li><a href="'+escape(origin+'/'+lang+'/mytop9/templates/'+row.id)+'">'+escape(templatePageTitle(row,lang))+'</a></li>').join('')+'</ul></section>':'')+
- (publicBoards.length?'<section><h2>'+(lang==='ko'?'다른 사람들이 만든 구절판':'Community Top 9')+'</h2><ul>'+publicBoards.map(row=>'<li><a href="'+escape(origin+'/'+lang+'/mytop9/'+row.id)+'">'+escape(row.title)+'</a></li>').join('')+'</ul></section>':'')+'</main>';
+ (publicBoards.length?'<section><h2>'+(lang==='ko'?'다른 사람들이 만든 구절판 취향표':'Community Top 9')+'</h2><ul>'+publicBoards.map(row=>'<li><a href="'+escape(origin+'/'+lang+'/mytop9/'+row.id)+'">'+escape(row.title)+'</a></li>').join('')+'</ul></section>':'')+'</main>';
  return html.replace('</head>',`<title data-rh="true">${escape(title)}</title><meta data-rh="true" name="description" content="${escape(copy.subtitle)}"><meta data-rh="true" name="robots" content="index,follow"><link data-rh="true" rel="canonical" href="${url}">${alternates}<link data-rh="true" rel="alternate" hreflang="x-default" href="${origin}/en/mytop9"><meta data-rh="true" property="og:title" content="${escape(title)}"><meta data-rh="true" property="og:description" content="${escape(copy.subtitle)}"><meta data-rh="true" property="og:url" content="${url}"></head>`).replace(/(<div\b[^>]*\bid=["']root["'][^>]*>)/i,root=>root+body);
 }
 async function loadHomeLinks(supabase){

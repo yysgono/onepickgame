@@ -1,8 +1,8 @@
 {
   "en": {
     "nav": "My Top 9",
-    "title": "Create My Top 9",
-    "subtitle": "Create your own Top 9 collage with your favorite idols, anime characters, games, movies and more. Choose from recommended presets or narrow down candidates through a game, arrange your photos, add a title and save or share the finished image.",
+    "title": "My Top 9 — 3x3 Grid Maker",
+    "subtitle": "Create a My Top 9 collage (3x3 Grid) with your favorite idols, anime characters, games, movies and more. Choose from recommended presets or narrow down candidates through a game, arrange your photos, add a title and save or share the finished image.",
     "templates": "Recommended templates",
     "search": "Search presets",
     "more": "Show more",
@@ -37,7 +37,7 @@
     "uploadHelp": "JPG, PNG, WebP, GIF, MP4, SVG · up to 20 MB each. Saved as still images in this browser.",
     "draftError": "Your draft could not be saved on this device. Download your image before leaving.",
     "introLines": [
-      "Create your own Top 9 collage with your favorite idols, anime characters, games, movies and more.",
+      "Create a My Top 9 collage (3x3 Grid) with your favorite idols, anime characters, games, movies and more.",
       "Choose from recommended presets or narrow down candidates through a game, arrange your photos, add a title and save or share the finished image."
     ],
     "privateView": "View privately",
@@ -82,9 +82,9 @@
     "copyLinkFailed": "Select the link and copy it manually."
   },
   "ko": {
-    "nav": "구절판",
-    "title": "이상형 최애 구절판 만들기",
-    "subtitle": "아이돌, 애니 캐릭터, 게임, 영화 등 좋아하는 후보 9개를 모아 나만의 이상형·최애 구절판을 만들어보세요. 추천 프리셋에서 직접 고르거나 게임으로 후보를 선별하고, 사진 배치와 이름을 꾸민 뒤 이미지로 저장하고 공유할 수 있어요.",
+    "nav": "최애 구절판 취향표",
+    "title": "최애 구절판 취향표 만들기",
+    "subtitle": "아이돌, 애니 캐릭터, 게임, 영화 등 좋아하는 후보 9개를 모아 나만의 최애 구절판 취향표를 만들어보세요. 추천 프리셋에서 직접 고르거나 게임으로 후보를 선별하고, 사진 배치와 이름을 꾸민 뒤 이미지로 저장하고 공유할 수 있어요.",
     "templates": "추천 템플릿",
     "search": "프리셋 검색",
     "more": "더보기",
@@ -106,7 +106,7 @@
     "next": "다음",
     "done": "완성 미리보기",
     "reset": "새로 만들기",
-    "confirmReset": "현재 구절판을 지우고 새로 만들까요?",
+    "confirmReset": "현재 구절판 취향표를 지우고 새로 만들까요?",
     "error": "오류가 발생했어요. 다시 시도해 주세요.",
     "loading": "불러오는 중…",
     "restore": "이어서 만들기",
@@ -119,7 +119,7 @@
     "uploadHelp": "JPG, PNG, WebP, GIF, MP4, SVG · 파일당 최대 20 MB. 이 브라우저에 정지 이미지로 저장해요.",
     "draftError": "이 기기에 임시 저장하지 못했어요. 나가기 전에 이미지를 다운로드해 주세요.",
     "introLines": [
-      "아이돌, 애니 캐릭터, 게임, 영화 등 좋아하는 후보 9개를 모아 나만의 이상형·최애 구절판을 만들어보세요.",
+      "아이돌, 애니 캐릭터, 게임, 영화 등 좋아하는 후보 9개를 모아 나만의 최애 구절판 취향표를 만들어보세요.",
       "추천 프리셋에서 직접 고르거나 게임으로 후보를 선별하고, 사진 배치와 이름을 꾸민 뒤 이미지로 저장하고 공유할 수 있어요."
     ],
     "privateView": "나만 보기",
@@ -127,7 +127,7 @@
     "nickname": "닉네임",
     "password": "비밀번호 (4자 이상)",
     "confirmPassword": "비밀번호 확인",
-    "publishHelp": "공개하면 다른 사람도 이 구절판을 볼 수 있어요.\n비회원은 닉네임과 삭제용 비밀번호를 입력하세요.",
+    "publishHelp": "공개하면 다른 사람도 이 구절판 취향표를 볼 수 있어요.\n비회원은 닉네임과 삭제용 비밀번호를 입력하세요.",
     "published": "공개 목록에 게시했어요.",
     "publishFailed": "게시하지 못했어요.\n사진 주소와 입력 내용을 확인하고 다시 시도해 주세요.",
     "deleteBoard": "삭제",
@@ -144,14 +144,14 @@
     "showCandidateNames": "후보 이름 보기",
     "hideCandidateNames": "후보 이름 숨기기",
     "boardPhotoHelp": "사진을 한 번 누르면 크기를 조절하고, 두 번 누르면 제거할 수 있어요. 위치는 드래그해서 바꿔주세요.",
-    "reuseTemplate": "같은 템플릿으로 구절판 만들기",
+    "reuseTemplate": "같은 템플릿으로 구절판 취향표 만들기",
     "templateCandidatePrompt": "위의 ‘직접 고르기’를 누르면 후보 사진이 나타납니다. 게임으로 최애 후보를 골라도 좋아요.",
     "saveDraft": "임시저장",
     "loadDraft": "불러오기",
     "draftSaved": "이 브라우저에 임시저장했어요.",
-    "draftLoaded": "임시저장한 구절판을 불러왔어요.",
+    "draftLoaded": "임시저장한 구절판 취향표를 불러왔어요.",
     "draftSaveFailed": "임시저장·불러오기에 실패했어요. 브라우저 저장 공간을 확인해 주세요.",
-    "noDraft": "이 브라우저에 임시저장한 구절판이 없어요.",
+    "noDraft": "이 브라우저에 임시저장한 구절판 취향표가 없어요.",
     "unlockEdit": "비회원 게시물 수정",
     "unlockEditHelp": "게시할 때 설정한 비밀번호를 입력해 주세요. 확인 후 이 탭에서 30분 동안 다시 입력하지 않아도 저장할 수 있어요.",
     "editPasswordError": "비밀번호가 일치하지 않아요. 게시할 때 사용한 비밀번호를 확인해 주세요.",
@@ -165,8 +165,8 @@
   },
   "ja": {
     "nav": "マイトップ9",
-    "title": "お気に入り9選を作ろう",
-    "subtitle": "アイドル、アニメキャラクター、ゲーム、映画など、お気に入り9つで自分だけのコラージュを作りましょう。 おすすめテンプレートから直接選んだり、ゲームで候補を絞ったりできます。写真の配置やタイトルを整え、完成した画像を保存・共有しましょう。",
+    "title": "お気に入り9選を作ろう (3x3 Grid)",
+    "subtitle": "アイドル、アニメキャラクター、ゲーム、映画など、お気に入り9つで自分だけのコラージュ（3x3 Grid）を作りましょう。 おすすめテンプレートから直接選んだり、ゲームで候補を絞ったりできます。写真の配置やタイトルを整え、完成した画像を保存・共有しましょう。",
     "templates": "おすすめテンプレート",
     "search": "テンプレートを検索",
     "more": "もっと見る",
@@ -201,7 +201,7 @@
     "uploadHelp": "JPG、PNG、WebP、GIF、MP4, SVG・各20 MBまで。このブラウザに静止画として保存。",
     "draftError": "下書きを保存できませんでした。移動前に画像をダウンロードしてください。",
     "introLines": [
-      "アイドル、アニメキャラクター、ゲーム、映画など、お気に入り9つで自分だけのコラージュを作りましょう。",
+      "アイドル、アニメキャラクター、ゲーム、映画など、お気に入り9つで自分だけのコラージュ（3x3 Grid）を作りましょう。",
       "おすすめテンプレートから直接選んだり、ゲームで候補を絞ったりできます。写真の配置やタイトルを整え、完成した画像を保存・共有しましょう。"
     ],
     "privateView": "自分だけで見る",
@@ -247,8 +247,8 @@
   },
   "zh": {
     "nav": "我的九宫格",
-    "title": "制作我的最爱九宫格",
-    "subtitle": "挑选你最喜欢的偶像、动漫角色、游戏、电影等9个候选项，制作专属九宫格。 从推荐模板直接选择，或通过游戏筛选候选项，调整照片位置、添加标题，再保存或分享完成的图片。",
+    "title": "制作我的最爱九宫格 (3x3 Grid)",
+    "subtitle": "挑选喜欢的偶像、动漫角色、游戏、电影等，制作专属九宫格（3x3 Grid）。 从推荐模板直接选择，或通过游戏筛选候选项，调整照片位置、添加标题，再保存或分享完成的图片。",
     "templates": "推荐模板",
     "search": "搜索模板",
     "more": "显示更多",
@@ -283,7 +283,7 @@
     "uploadHelp": "JPG、PNG、WebP、GIF、MP4, SVG，每个文件最大20 MB。以静态图片保存在此浏览器中。",
     "draftError": "无法在此设备保存草稿，请在离开前下载图片。",
     "introLines": [
-      "挑选你最喜欢的偶像、动漫角色、游戏、电影等9个候选项，制作专属九宫格。",
+      "挑选喜欢的偶像、动漫角色、游戏、电影等，制作专属九宫格（3x3 Grid）。",
       "从推荐模板直接选择，或通过游戏筛选候选项，调整照片位置、添加标题，再保存或分享完成的图片。"
     ],
     "privateView": "仅自己查看",
@@ -329,8 +329,8 @@
   },
   "es": {
     "nav": "Mis 9 favoritos",
-    "title": "Crea tus 9 favoritos",
-    "subtitle": "Crea tu collage Top 9 con tus ídolos, personajes de anime, videojuegos, películas y otros favoritos. Elige una plantilla o selecciona candidatos jugando, organiza las fotos, añade un título y guarda o comparte la imagen final.",
+    "title": "Crea tus 9 favoritos (3x3 Grid)",
+    "subtitle": "Crea tu collage Top 9 (3x3 Grid) con tus ídolos, personajes de anime, juegos, películas y mucho más. Elige una plantilla o selecciona candidatos jugando, organiza las fotos, añade un título y guarda o comparte la imagen final.",
     "templates": "Plantillas recomendadas",
     "search": "Buscar plantillas",
     "more": "Ver más",
@@ -365,7 +365,7 @@
     "uploadHelp": "JPG, PNG, WebP, GIF, MP4, SVG · hasta 20 MB por archivo. Se guardan como imágenes fijas en este navegador.",
     "draftError": "No se pudo guardar el borrador. Descarga la imagen antes de salir.",
     "introLines": [
-      "Crea tu collage Top 9 con tus ídolos, personajes de anime, videojuegos, películas y otros favoritos.",
+      "Crea tu collage Top 9 (3x3 Grid) con tus ídolos, personajes de anime, juegos, películas y mucho más.",
       "Elige una plantilla o selecciona candidatos jugando, organiza las fotos, añade un título y guarda o comparte la imagen final."
     ],
     "privateView": "Ver en privado",
@@ -411,8 +411,8 @@
   },
   "fr": {
     "nav": "Mes 9 favoris",
-    "title": "Créez vos 9 favoris",
-    "subtitle": "Créez votre collage Top 9 avec vos idoles, personnages d’anime, jeux, films et autres favoris. Choisissez un modèle ou départagez les candidats en jouant, disposez les photos, ajoutez un titre et enregistrez ou partagez l’image finale.",
+    "title": "Créez vos 9 favoris (3x3 Grid)",
+    "subtitle": "Crée ton collage Top 9 (3x3 Grid) avec tes idoles, personnages d’anime, jeux et films préférés. Choisissez un modèle ou départagez les candidats en jouant, disposez les photos, ajoutez un titre et enregistrez ou partagez l’image finale.",
     "templates": "Modèles recommandés",
     "search": "Rechercher des modèles",
     "more": "Voir plus",
@@ -447,7 +447,7 @@
     "uploadHelp": "JPG, PNG, WebP, GIF, MP4, SVG · 20 Mo maximum par fichier. Enregistrés en images fixes dans ce navigateur.",
     "draftError": "Le brouillon n’a pas pu être enregistré. Téléchargez l’image avant de quitter.",
     "introLines": [
-      "Créez votre collage Top 9 avec vos idoles, personnages d’anime, jeux, films et autres favoris.",
+      "Crée ton collage Top 9 (3x3 Grid) avec tes idoles, personnages d’anime, jeux et films préférés.",
       "Choisissez un modèle ou départagez les candidats en jouant, disposez les photos, ajoutez un titre et enregistrez ou partagez l’image finale."
     ],
     "privateView": "Voir en privé",
@@ -493,8 +493,8 @@
   },
   "it": {
     "nav": "I miei 9 preferiti",
-    "title": "Crea i tuoi 9 preferiti",
-    "subtitle": "Crea il tuo collage Top 9 con idol, personaggi anime, giochi, film e altri preferiti. Scegli un modello consigliato oppure seleziona i candidati giocando, disponi le foto, aggiungi un titolo e salva o condividi l’immagine finale.",
+    "title": "Crea i tuoi 9 preferiti (3x3 Grid)",
+    "subtitle": "Crea il tuo collage Top 9 (3x3 Grid) con idol, personaggi anime, giochi e film preferiti. Scegli un modello consigliato oppure seleziona i candidati giocando, disponi le foto, aggiungi un titolo e salva o condividi l’immagine finale.",
     "templates": "Modelli consigliati",
     "search": "Cerca modelli",
     "more": "Mostra altro",
@@ -529,7 +529,7 @@
     "uploadHelp": "JPG, PNG, WebP, GIF, MP4, SVG · massimo 20 MB ciascuno. Salvati come immagini statiche in questo browser.",
     "draftError": "Impossibile salvare la bozza. Scarica l’immagine prima di uscire.",
     "introLines": [
-      "Crea il tuo collage Top 9 con idol, personaggi anime, giochi, film e altri preferiti.",
+      "Crea il tuo collage Top 9 (3x3 Grid) con idol, personaggi anime, giochi e film preferiti.",
       "Scegli un modello consigliato oppure seleziona i candidati giocando, disponi le foto, aggiungi un titolo e salva o condividi l’immagine finale."
     ],
     "privateView": "Visualizza in privato",
@@ -575,8 +575,8 @@
   },
   "pl": {
     "nav": "Moje top 9",
-    "title": "Stwórz swoje top 9",
-    "subtitle": "Stwórz własny kolaż Top 9 z ulubionymi idolami, postaciami anime, grami, filmami i innymi faworytami. Wybierz polecany szablon lub wyłoń kandydatów w grze, ułóż zdjęcia, dodaj tytuł i zapisz albo udostępnij gotowy obraz.",
+    "title": "Stwórz swoje top 9 (3x3 Grid)",
+    "subtitle": "Stwórz kolaż Top 9 (3x3 Grid) z ulubionymi idolami, postaciami anime, grami i filmami. Wybierz polecany szablon lub wyłoń kandydatów w grze, ułóż zdjęcia, dodaj tytuł i zapisz albo udostępnij gotowy obraz.",
     "templates": "Polecane szablony",
     "search": "Szukaj szablonów",
     "more": "Pokaż więcej",
@@ -611,7 +611,7 @@
     "uploadHelp": "JPG, PNG, WebP, GIF, MP4, SVG · do 20 MB każdy. Zapisywane jako nieruchome obrazy w tej przeglądarce.",
     "draftError": "Nie udało się zapisać szkicu. Pobierz obraz przed wyjściem.",
     "introLines": [
-      "Stwórz własny kolaż Top 9 z ulubionymi idolami, postaciami anime, grami, filmami i innymi faworytami.",
+      "Stwórz kolaż Top 9 (3x3 Grid) z ulubionymi idolami, postaciami anime, grami i filmami.",
       "Wybierz polecany szablon lub wyłoń kandydatów w grze, ułóż zdjęcia, dodaj tytuł i zapisz albo udostępnij gotowy obraz."
     ],
     "privateView": "Zobacz prywatnie",
@@ -657,8 +657,8 @@
   },
   "nl": {
     "nav": "Mijn top 9",
-    "title": "Maak je eigen top 9",
-    "subtitle": "Maak je eigen Top 9-collage met je favoriete idolen, animepersonages, games, films en meer. Kies een aanbevolen sjabloon of selecteer kandidaten via een spel, rangschik de foto’s, voeg een titel toe en sla de afbeelding op of deel deze.",
+    "title": "Maak je eigen top 9 (3x3 Grid)",
+    "subtitle": "Maak je Top 9-collage (3x3 Grid) met je favoriete idolen, animepersonages, games en films. Kies een aanbevolen sjabloon of selecteer kandidaten via een spel, rangschik de foto’s, voeg een titel toe en sla de afbeelding op of deel deze.",
     "templates": "Aanbevolen sjablonen",
     "search": "Sjablonen zoeken",
     "more": "Meer tonen",
@@ -693,7 +693,7 @@
     "uploadHelp": "JPG, PNG, WebP, GIF, MP4, SVG · maximaal 20 MB per bestand. Als stilstaande beelden opgeslagen in deze browser.",
     "draftError": "Het concept kon niet worden opgeslagen. Download je afbeelding voordat je weggaat.",
     "introLines": [
-      "Maak je eigen Top 9-collage met je favoriete idolen, animepersonages, games, films en meer.",
+      "Maak je Top 9-collage (3x3 Grid) met je favoriete idolen, animepersonages, games en films.",
       "Kies een aanbevolen sjabloon of selecteer kandidaten via een spel, rangschik de foto’s, voeg een titel toe en sla de afbeelding op of deel deze."
     ],
     "privateView": "Privé bekijken",
@@ -739,8 +739,8 @@
   },
   "cs": {
     "nav": "Mých top 9",
-    "title": "Vytvořte svých top 9",
-    "subtitle": "Vytvořte vlastní koláž Top 9 s oblíbenými idoly, anime postavami, hrami, filmy a dalšími favority. Vyberte doporučenou šablonu nebo zúžte kandidáty pomocí hry, uspořádejte fotografie, přidejte název a hotový obrázek uložte nebo sdílejte.",
+    "title": "Vytvořte svých top 9 (3x3 Grid)",
+    "subtitle": "Vytvoř si koláž Top 9 (3x3 Grid) s oblíbenými idoly, anime postavami, hrami a filmy. Vyberte doporučenou šablonu nebo zúžte kandidáty pomocí hry, uspořádejte fotografie, přidejte název a hotový obrázek uložte nebo sdílejte.",
     "templates": "Doporučené šablony",
     "search": "Hledat šablony",
     "more": "Zobrazit více",
@@ -775,7 +775,7 @@
     "uploadHelp": "JPG, PNG, WebP, GIF, MP4, SVG · maximálně 20 MB na soubor. Uloženo jako statické obrázky v tomto prohlížeči.",
     "draftError": "Koncept se nepodařilo uložit. Před odchodem stáhněte obrázek.",
     "introLines": [
-      "Vytvořte vlastní koláž Top 9 s oblíbenými idoly, anime postavami, hrami, filmy a dalšími favority.",
+      "Vytvoř si koláž Top 9 (3x3 Grid) s oblíbenými idoly, anime postavami, hrami a filmy.",
       "Vyberte doporučenou šablonu nebo zúžte kandidáty pomocí hry, uspořádejte fotografie, přidejte název a hotový obrázek uložte nebo sdílejte."
     ],
     "privateView": "Zobrazit soukromě",
@@ -821,8 +821,8 @@
   },
   "de": {
     "nav": "Meine Top 9",
-    "title": "Erstelle deine Top 9",
-    "subtitle": "Erstelle deine eigene Top-9-Collage mit deinen liebsten Idolen, Animefiguren, Spielen, Filmen und mehr. Wähle eine Vorlage oder grenze die Kandidaten spielerisch ein, ordne die Fotos an, ergänze einen Titel und speichere oder teile das fertige Bild.",
+    "title": "Erstelle deine Top 9 (3x3 Grid)",
+    "subtitle": "Erstelle deine Top-9-Collage (3x3 Grid) mit deinen liebsten Idolen, Animefiguren, Spielen und Filmen. Wähle eine Vorlage oder grenze die Kandidaten spielerisch ein, ordne die Fotos an, ergänze einen Titel und speichere oder teile das fertige Bild.",
     "templates": "Empfohlene Vorlagen",
     "search": "Vorlagen suchen",
     "more": "Mehr anzeigen",
@@ -857,7 +857,7 @@
     "uploadHelp": "JPG, PNG, WebP, GIF, MP4, SVG · jeweils bis 20 MB. Als Standbilder in diesem Browser gespeichert.",
     "draftError": "Der Entwurf konnte nicht gespeichert werden. Lade das Bild vor dem Verlassen herunter.",
     "introLines": [
-      "Erstelle deine eigene Top-9-Collage mit deinen liebsten Idolen, Animefiguren, Spielen, Filmen und mehr.",
+      "Erstelle deine Top-9-Collage (3x3 Grid) mit deinen liebsten Idolen, Animefiguren, Spielen und Filmen.",
       "Wähle eine Vorlage oder grenze die Kandidaten spielerisch ein, ordne die Fotos an, ergänze einen Titel und speichere oder teile das fertige Bild."
     ],
     "privateView": "Privat ansehen",
@@ -903,8 +903,8 @@
   },
   "pt": {
     "nav": "Meus 9 favoritos",
-    "title": "Crie seus 9 favoritos",
-    "subtitle": "Crie sua colagem Top 9 com seus ídolos, personagens de anime, jogos, filmes e outros favoritos. Escolha um modelo ou selecione candidatos jogando, organize as fotos, adicione um título e salve ou compartilhe a imagem final.",
+    "title": "Crie seus 9 favoritos (3x3 Grid)",
+    "subtitle": "Crie sua colagem Top 9 (3x3 Grid) com seus ídolos, personagens de anime, jogos e filmes favoritos. Escolha um modelo ou selecione candidatos jogando, organize as fotos, adicione um título e salve ou compartilhe a imagem final.",
     "templates": "Modelos recomendados",
     "search": "Buscar modelos",
     "more": "Ver mais",
@@ -939,7 +939,7 @@
     "uploadHelp": "JPG, PNG, WebP, GIF, MP4, SVG · até 20 MB cada. Salvos como imagens estáticas neste navegador.",
     "draftError": "Não foi possível salvar o rascunho. Baixe a imagem antes de sair.",
     "introLines": [
-      "Crie sua colagem Top 9 com seus ídolos, personagens de anime, jogos, filmes e outros favoritos.",
+      "Crie sua colagem Top 9 (3x3 Grid) com seus ídolos, personagens de anime, jogos e filmes favoritos.",
       "Escolha um modelo ou selecione candidatos jogando, organize as fotos, adicione um título e salve ou compartilhe a imagem final."
     ],
     "privateView": "Ver em privado",
@@ -985,8 +985,8 @@
   },
   "ru": {
     "nav": "Мои топ-9",
-    "title": "Создайте свои топ-9",
-    "subtitle": "Создайте свой коллаж топ-9 с любимыми айдолами, персонажами аниме, играми, фильмами и другими фаворитами. Выбирайте из готовых шаблонов или отбирайте кандидатов в игре, расставляйте фото, добавляйте заголовок и сохраняйте или отправляйте готовое изображение.",
+    "title": "Создайте свои топ-9 (3x3 Grid)",
+    "subtitle": "Создайте свой коллаж Top 9 (3x3 Grid) с любимыми айдолами, персонажами аниме, играми и фильмами. Выбирайте из готовых шаблонов или отбирайте кандидатов в игре, расставляйте фото, добавляйте заголовок и сохраняйте или отправляйте готовое изображение.",
     "templates": "Рекомендуемые шаблоны",
     "search": "Поиск шаблонов",
     "more": "Показать ещё",
@@ -1021,7 +1021,7 @@
     "uploadHelp": "JPG, PNG, WebP, GIF, MP4, SVG · до 20 МБ каждый. Сохраняются в этом браузере как неподвижные изображения.",
     "draftError": "Не удалось сохранить черновик. Скачайте изображение перед выходом.",
     "introLines": [
-      "Создайте свой коллаж топ-9 с любимыми айдолами, персонажами аниме, играми, фильмами и другими фаворитами.",
+      "Создайте свой коллаж Top 9 (3x3 Grid) с любимыми айдолами, персонажами аниме, играми и фильмами.",
       "Выбирайте из готовых шаблонов или отбирайте кандидатов в игре, расставляйте фото, добавляйте заголовок и сохраняйте или отправляйте готовое изображение."
     ],
     "privateView": "Смотреть приватно",
@@ -1067,8 +1067,8 @@
   },
   "vi": {
     "nav": "Top 9 của tôi",
-    "title": "Tạo top 9 của bạn",
-    "subtitle": "Tạo ảnh ghép Top 9 của riêng bạn với thần tượng, nhân vật anime, trò chơi, phim và những điều yêu thích khác. Chọn từ mẫu đề xuất hoặc chơi để lọc ứng viên, sắp xếp ảnh, thêm tiêu đề rồi lưu hoặc chia sẻ ảnh hoàn chỉnh.",
+    "title": "Tạo top 9 của bạn (3x3 Grid)",
+    "subtitle": "Tạo ảnh ghép Top 9 (3x3 Grid) với thần tượng, nhân vật anime, trò chơi, phim và những điều bạn yêu thích. Chọn từ mẫu đề xuất hoặc chơi để lọc ứng viên, sắp xếp ảnh, thêm tiêu đề rồi lưu hoặc chia sẻ ảnh hoàn chỉnh.",
     "templates": "Mẫu đề xuất",
     "search": "Tìm mẫu",
     "more": "Xem thêm",
@@ -1103,7 +1103,7 @@
     "uploadHelp": "JPG, PNG, WebP, GIF, MP4, SVG · tối đa 20 MB mỗi tệp. Lưu dưới dạng ảnh tĩnh trong trình duyệt này.",
     "draftError": "Không thể lưu bản nháp. Hãy tải ảnh xuống trước khi rời đi.",
     "introLines": [
-      "Tạo ảnh ghép Top 9 của riêng bạn với thần tượng, nhân vật anime, trò chơi, phim và những điều yêu thích khác.",
+      "Tạo ảnh ghép Top 9 (3x3 Grid) với thần tượng, nhân vật anime, trò chơi, phim và những điều bạn yêu thích.",
       "Chọn từ mẫu đề xuất hoặc chơi để lọc ứng viên, sắp xếp ảnh, thêm tiêu đề rồi lưu hoặc chia sẻ ảnh hoàn chỉnh."
     ],
     "privateView": "Xem riêng tư",
@@ -1149,8 +1149,8 @@
   },
   "id": {
     "nav": "9 Favorit Saya",
-    "title": "Buat 9 Favoritmu",
-    "subtitle": "Buat kolase Top 9 dengan idol, karakter anime, gim, film, dan favorit lainnya. Pilih dari templat rekomendasi atau saring kandidat lewat permainan, atur foto, tambahkan judul, lalu simpan atau bagikan gambar hasilnya.",
+    "title": "Buat 9 Favoritmu (3x3 Grid)",
+    "subtitle": "Buat kolase Top 9 (3x3 Grid) dengan idola, karakter anime, game, film, dan favorit lainnya. Pilih dari templat rekomendasi atau saring kandidat lewat permainan, atur foto, tambahkan judul, lalu simpan atau bagikan gambar hasilnya.",
     "templates": "Templat rekomendasi",
     "search": "Cari templat",
     "more": "Lihat lainnya",
@@ -1185,7 +1185,7 @@
     "uploadHelp": "JPG, PNG, WebP, GIF, MP4, SVG · maksimal 20 MB per berkas. Disimpan sebagai gambar diam di peramban ini.",
     "draftError": "Draf tidak dapat disimpan. Unduh gambar sebelum keluar.",
     "introLines": [
-      "Buat kolase Top 9 dengan idol, karakter anime, gim, film, dan favorit lainnya.",
+      "Buat kolase Top 9 (3x3 Grid) dengan idola, karakter anime, game, film, dan favorit lainnya.",
       "Pilih dari templat rekomendasi atau saring kandidat lewat permainan, atur foto, tambahkan judul, lalu simpan atau bagikan gambar hasilnya."
     ],
     "privateView": "Lihat pribadi",
@@ -1231,8 +1231,8 @@
   },
   "hi": {
     "nav": "मेरे टॉप 9",
-    "title": "अपने टॉप 9 बनाएँ",
-    "subtitle": "अपने पसंदीदा आइडल, ऐनिमे पात्र, गेम, फ़िल्मों और अन्य विकल्पों से अपना टॉप 9 कोलाज बनाएँ। सुझाए गए टेम्पलेट से चुनें या खेलकर उम्मीदवार छाँटें, फ़ोटो सजाएँ, शीर्षक जोड़ें और तैयार तस्वीर सेव या साझा करें।",
+    "title": "अपने टॉप 9 बनाएँ (3x3 Grid)",
+    "subtitle": "अपने पसंदीदा आइडल, ऐनिमे पात्रों, गेम और फिल्मों से Top 9 कोलाज (3x3 Grid) बनाएँ। सुझाए गए टेम्पलेट से चुनें या खेलकर उम्मीदवार छाँटें, फ़ोटो सजाएँ, शीर्षक जोड़ें और तैयार तस्वीर सेव या साझा करें।",
     "templates": "सुझाए गए टेम्पलेट",
     "search": "टेम्पलेट खोजें",
     "more": "और देखें",
@@ -1267,7 +1267,7 @@
     "uploadHelp": "JPG, PNG, WebP, GIF, MP4, SVG · हर फ़ाइल अधिकतम 20 MB। इस ब्राउज़र में स्थिर तस्वीर के रूप में सेव होती है।",
     "draftError": "ड्राफ़्ट सेव नहीं हुआ। बाहर जाने से पहले तस्वीर डाउनलोड करें।",
     "introLines": [
-      "अपने पसंदीदा आइडल, ऐनिमे पात्र, गेम, फ़िल्मों और अन्य विकल्पों से अपना टॉप 9 कोलाज बनाएँ।",
+      "अपने पसंदीदा आइडल, ऐनिमे पात्रों, गेम और फिल्मों से Top 9 कोलाज (3x3 Grid) बनाएँ।",
       "सुझाए गए टेम्पलेट से चुनें या खेलकर उम्मीदवार छाँटें, फ़ोटो सजाएँ, शीर्षक जोड़ें और तैयार तस्वीर सेव या साझा करें।"
     ],
     "privateView": "निजी तौर पर देखें",
@@ -1313,8 +1313,8 @@
   },
   "bn": {
     "nav": "আমার সেরা ৯",
-    "title": "আপনার সেরা ৯ তৈরি করুন",
-    "subtitle": "প্রিয় আইডল, অ্যানিমে চরিত্র, গেম, সিনেমা ও অন্য পছন্দগুলো দিয়ে নিজের সেরা ৯-এর কোলাজ তৈরি করুন। প্রস্তাবিত টেমপ্লেট থেকে বাছুন বা খেলে প্রার্থী কমান, ছবি সাজান, শিরোনাম দিন এবং তৈরি ছবি সেভ বা শেয়ার করুন।",
+    "title": "আপনার সেরা ৯ তৈরি করুন (3x3 Grid)",
+    "subtitle": "আপনার প্রিয় আইডল, অ্যানিমে চরিত্র, গেম ও সিনেমা নিয়ে Top 9 কোলাজ (3x3 Grid) তৈরি করুন। প্রস্তাবিত টেমপ্লেট থেকে বাছুন বা খেলে প্রার্থী কমান, ছবি সাজান, শিরোনাম দিন এবং তৈরি ছবি সেভ বা শেয়ার করুন।",
     "templates": "প্রস্তাবিত টেমপ্লেট",
     "search": "টেমপ্লেট খুঁজুন",
     "more": "আরও দেখুন",
@@ -1349,7 +1349,7 @@
     "uploadHelp": "JPG, PNG, WebP, GIF, MP4, SVG · প্রতি ফাইল সর্বোচ্চ 20 MB। এই ব্রাউজারে স্থির ছবি হিসেবে রাখা হয়।",
     "draftError": "খসড়া রাখা যায়নি। বেরোনোর আগে ছবি ডাউনলোড করুন।",
     "introLines": [
-      "প্রিয় আইডল, অ্যানিমে চরিত্র, গেম, সিনেমা ও অন্য পছন্দগুলো দিয়ে নিজের সেরা ৯-এর কোলাজ তৈরি করুন।",
+      "আপনার প্রিয় আইডল, অ্যানিমে চরিত্র, গেম ও সিনেমা নিয়ে Top 9 কোলাজ (3x3 Grid) তৈরি করুন।",
       "প্রস্তাবিত টেমপ্লেট থেকে বাছুন বা খেলে প্রার্থী কমান, ছবি সাজান, শিরোনাম দিন এবং তৈরি ছবি সেভ বা শেয়ার করুন।"
     ],
     "privateView": "নিজে দেখুন",
@@ -1395,8 +1395,8 @@
   },
   "ar": {
     "nav": "أفضل 9 لديّ",
-    "title": "أنشئ قائمة أفضل 9 لديك",
-    "subtitle": "أنشئ صورة تجمع أفضل 9 لديك من الآيدولز وشخصيات الأنمي والألعاب والأفلام وغيرها. اختر من القوالب المقترحة أو صفِّ المرشحين باللعب، ثم رتّب الصور وأضف عنوانًا واحفظ الصورة النهائية أو شاركها.",
+    "title": "أنشئ قائمة أفضل 9 لديك (3x3 Grid)",
+    "subtitle": "أنشئ لوحة أفضل 9 (3x3 Grid) من الآيدولز وشخصيات الأنمي والألعاب والأفلام المفضلة لديك. اختر من القوالب المقترحة أو صفِّ المرشحين باللعب، ثم رتّب الصور وأضف عنوانًا واحفظ الصورة النهائية أو شاركها.",
     "templates": "قوالب مقترحة",
     "search": "البحث عن قوالب",
     "more": "عرض المزيد",
@@ -1431,7 +1431,7 @@
     "uploadHelp": "JPG، PNG، WebP، GIF، MP4, SVG · حتى 20 MB لكل ملف. تُحفظ كصور ثابتة في هذا المتصفح.",
     "draftError": "تعذّر حفظ المسودة. نزّل الصورة قبل المغادرة.",
     "introLines": [
-      "أنشئ صورة تجمع أفضل 9 لديك من الآيدولز وشخصيات الأنمي والألعاب والأفلام وغيرها.",
+      "أنشئ لوحة أفضل 9 (3x3 Grid) من الآيدولز وشخصيات الأنمي والألعاب والأفلام المفضلة لديك.",
       "اختر من القوالب المقترحة أو صفِّ المرشحين باللعب، ثم رتّب الصور وأضف عنوانًا واحفظ الصورة النهائية أو شاركها."
     ],
     "privateView": "عرض خاص",
@@ -1477,8 +1477,8 @@
   },
   "tr": {
     "nav": "İlk 9 Favorim",
-    "title": "İlk 9 Favorini Oluştur",
-    "subtitle": "Sevdiğin idoller, anime karakterleri, oyunlar, filmler ve diğer favorilerinle kendi Top 9 kolajını oluştur. Önerilen şablonlardan seç veya oynayarak adayları ele, fotoğrafları düzenle, başlık ekle ve bitmiş görseli kaydet ya da paylaş.",
+    "title": "İlk 9 Favorini Oluştur (3x3 Grid)",
+    "subtitle": "Sevdiğin idoller, anime karakterleri, oyunlar ve filmlerle Top 9 kolajını (3x3 Grid) oluştur. Önerilen şablonlardan seç veya oynayarak adayları ele, fotoğrafları düzenle, başlık ekle ve bitmiş görseli kaydet ya da paylaş.",
     "templates": "Önerilen şablonlar",
     "search": "Şablon ara",
     "more": "Daha fazla",
@@ -1513,7 +1513,7 @@
     "uploadHelp": "JPG, PNG, WebP, GIF, MP4, SVG · dosya başına en fazla 20 MB. Bu tarayıcıda sabit görsel olarak saklanır.",
     "draftError": "Taslak kaydedilemedi. Ayrılmadan önce görseli indir.",
     "introLines": [
-      "Sevdiğin idoller, anime karakterleri, oyunlar, filmler ve diğer favorilerinle kendi Top 9 kolajını oluştur.",
+      "Sevdiğin idoller, anime karakterleri, oyunlar ve filmlerle Top 9 kolajını (3x3 Grid) oluştur.",
       "Önerilen şablonlardan seç veya oynayarak adayları ele, fotoğrafları düzenle, başlık ekle ve bitmiş görseli kaydet ya da paylaş."
     ],
     "privateView": "Özel görüntüle",
@@ -1559,8 +1559,8 @@
   },
   "th": {
     "nav": "9 อันดับของฉัน",
-    "title": "สร้าง 9 อันดับของคุณ",
-    "subtitle": "สร้างภาพรวม Top 9 ของคุณจากไอดอล ตัวละครอนิเมะ เกม ภาพยนตร์ และสิ่งที่ชอบอื่น ๆ เลือกจากเทมเพลตแนะนำหรือเล่นเกมเพื่อคัดตัวเลือก จัดวางรูป เพิ่มชื่อเรื่อง แล้วบันทึกหรือแชร์ภาพที่เสร็จแล้ว",
+    "title": "สร้าง 9 อันดับของคุณ (3x3 Grid)",
+    "subtitle": "สร้างคอลลาจ Top 9 (3x3 Grid) ด้วยไอดอล ตัวละครอนิเมะ เกม และภาพยนตร์ที่คุณชื่นชอบ เลือกจากเทมเพลตแนะนำหรือเล่นเกมเพื่อคัดตัวเลือก จัดวางรูป เพิ่มชื่อเรื่อง แล้วบันทึกหรือแชร์ภาพที่เสร็จแล้ว",
     "templates": "เทมเพลตแนะนำ",
     "search": "ค้นหาเทมเพลต",
     "more": "ดูเพิ่มเติม",
@@ -1595,7 +1595,7 @@
     "uploadHelp": "JPG, PNG, WebP, GIF, MP4, SVG · สูงสุดไฟล์ละ 20 MB บันทึกเป็นภาพนิ่งในเบราว์เซอร์นี้",
     "draftError": "บันทึกฉบับร่างไม่ได้ โปรดดาวน์โหลดภาพก่อนออก",
     "introLines": [
-      "สร้างภาพรวม Top 9 ของคุณจากไอดอล ตัวละครอนิเมะ เกม ภาพยนตร์ และสิ่งที่ชอบอื่น ๆ",
+      "สร้างคอลลาจ Top 9 (3x3 Grid) ด้วยไอดอล ตัวละครอนิเมะ เกม และภาพยนตร์ที่คุณชื่นชอบ",
       "เลือกจากเทมเพลตแนะนำหรือเล่นเกมเพื่อคัดตัวเลือก จัดวางรูป เพิ่มชื่อเรื่อง แล้วบันทึกหรือแชร์ภาพที่เสร็จแล้ว"
     ],
     "privateView": "ดูส่วนตัว",

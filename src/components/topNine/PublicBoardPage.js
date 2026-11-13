@@ -39,5 +39,5 @@ export default function PublicBoardPage(){
   return()=>{live=false;};
  },[id,retry]);
  if(result?.board)return <TopNinePage key={id} publicBoard={result.board} publicId={id} canEdit={result.canEdit} onHome={()=>navigate('/'+lang+'/mytop9')}/>;
- return <main className="top-nine">{result?.missing&&<Seo title={t.title+' | One Pick Game'} lang={lang} slug={'mytop9/'+id} indexable={false}/>}<p role="status">{!result?t.loading:result.error?t.error:t.empty}</p>{result?.error&&<button onClick={()=>setRetry(n=>n+1)}>{t.retry}</button>}<Link to={'/'+lang+'/mytop9'}>{lang==='ko'?'구절판 홈으로':t.back}</Link></main>;
+ return <main className="top-nine">{result?.missing&&<Seo title={t.title+' | One Pick Game'} lang={lang} slug={'mytop9/'+id} indexable={false}/>}<p role="status">{!result?t.loading:result.error?t.error:t.empty}</p>{result?.error&&<button onClick={()=>setRetry(n=>n+1)}>{t.retry}</button>}<Link to={'/'+lang+'/mytop9'}>{lang==='ko'?'구절판 취향표 홈으로':t.back}</Link></main>;
 }
