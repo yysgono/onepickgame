@@ -1,6 +1,6 @@
 // Shared geometry for the editor, public thumbnails and PNG export.
 // Coordinates use a 100 × 100 board; slot order and saved data stay unchanged.
-const low=22,high=78,cut=low+(high-low)/(2+Math.SQRT2),far=100-cut;
+const low=26,high=74,cut=low+(high-low)/(2+Math.SQRT2),far=100-cut;
 const polygons=[
  [[0,0],[30,0],[cut,low],[low,cut],[0,30]],
  [[30,0],[70,0],[far,low],[cut,low]],
@@ -26,6 +26,16 @@ const layouts=polygons.map((points,index)=>{
   '--tn-rank-x':rank[0]+'%','--tn-rank-y':rank[1]+'%'
  }};
 });
+// Draw each shared edge once so adjacent tiles have the same line weight.
+const uniqueEdges=new Map();
+polygons.forEach(points=>points.forEach((from,index)=>{
+ const to=points[(index+1)%points.length];
+ const key=[from.join(','),to.join(',')].sort().join('|');
+ if(!uniqueEdges.has(key))uniqueEdges.set(key,[from,to]);
+}));
+const edges=[...uniqueEdges.values()];
+const boundaryPath=edges.map(([from,to])=>'M'+from.join(' ')+'L'+to.join(' ')).join(' ');
+const boundaryColor='#9878bd';
 function cropForSlot(w,h,index,zoom=1,x=50,y=50){
  const {width,height}=layouts[index],ratio=width/height;
  const z=Number.isFinite(Number(zoom))?Math.max(0,Math.min(3,Number(zoom))):1;
@@ -34,5 +44,5 @@ function cropForSlot(w,h,index,zoom=1,x=50,y=50){
  const fraction=value=>Math.max(0,Math.min(100,Number(value)||0))/100;
  return [(w-cw)*fraction(x),(h-ch)*fraction(y),cw,ch];
 }
-export {layouts,cropForSlot};
-export default {layouts,cropForSlot};
+export {layouts,cropForSlot,edges,boundaryPath,boundaryColor};
+export default {layouts,cropForSlot,edges,boundaryPath,boundaryColor};

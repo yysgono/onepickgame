@@ -288,3 +288,7 @@
 .top-nine .tn-mini-grid.tn-collage .tn-rank{font-size:clamp(13px,5cqw,20px)}
 .top-nine .tn-collage .tn-drop-label{inset:0;width:100%;height:100%;border-radius:0;font-size:clamp(10px,2cqw,15px)}
 .top-nine .tn-home-grid.tn-collage{max-width:800px;margin:32px auto;padding:0;gap:0}
+
+/* Solid separators stay above photos and never intercept clicks or drags. */
+.top-nine .tn-collage-lines{position:absolute;inset:0;width:100%;height:100%;z-index:5;pointer-events:none;fill:none;stroke:#9878bd;stroke-width:1.2;stroke-linejoin:round}
+.top-nine .tn-mini-grid .tn-collage-lines{stroke-width:.8}
