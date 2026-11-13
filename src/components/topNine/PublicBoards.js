@@ -1,3 +1,4 @@
+import collageLayout from './collageLayout.cjs';
 import {getGuestEditSession,rememberGuestEditSession,clearGuestEditSession} from './guestEditSession';
 import {ownsGuestBoard,rememberGuestBoard} from './guestOwnership';
 import categoryLabels from './categoryLabels.json';
@@ -10,7 +11,7 @@ import copy from './copy.json';
 import {guestSalt,guestProof,normalizeGuestSalt} from './guestProof';
 import React,{useEffect,useState} from 'react';
 import {supabase} from '../../utils/supabaseClient';
-import {makeShareHash,readShared,cropRect,SLOT_RANKS} from './core';
+import {makeShareHash,readShared,SLOT_RANKS} from './core';
 import {isVideo} from './media';
 import {hasBadword} from '../../badwords-multilang';
 // The public RPC stores nine image records. Use one shared static tile for empty positions.
@@ -50,15 +51,15 @@ export function PublishBoard({slots,title,names,showRanks=false,lang,onPublished
  }catch{if(existingId)clearGuestEditSession(existingId);setMessage(t.publishFailed);}finally{setBusy(false);}}
  return <><button className="tn-publish-button" disabled={busy||disabled} onClick={begin}>{existingId?t.saveChanges:t.publish}</button>{!open&&message&&!onNotice&&<div className="tn-publish-status" role="status"><p>{message}</p>{message===t.localShare&&<a href={`/${lang}/login`}>{t.memberAccess}</a>}</div>}{open&&createPortal(<div className="top-nine tn-picker-overlay tn-public-overlay" dir={lang==='ar'?'rtl':'ltr'}><section className="tn-publish-dialog" role="dialog" aria-modal="true" aria-label={existingId?t.saveChanges:t.publish}><h2>{existingId?t.saveChanges:t.publish}</h2>{guest?<p>{existingId?t.unlockEditHelp:t.publishHelp}</p>:<p>{t.memberUploadHelp}</p>}<form onSubmit={publish}>{guest&&<>{!existingId&&<label>{t.nickname}<input required minLength={2} maxLength={30} value={nickname} onChange={e=>setNickname(e.target.value)}/></label>}<label>{t.password}<input type="password" required minLength={4} maxLength={100} autoComplete={existingId?'current-password':'new-password'} value={password} onChange={e=>setPassword(e.target.value)}/></label>{!existingId&&<label>{t.confirmPassword}<input type="password" required minLength={4} maxLength={100} autoComplete="new-password" value={confirm} onChange={e=>setConfirm(e.target.value)}/></label>}</>}{message&&<p role="alert">{message}</p>}<div className="tn-actions"><button className="tn-primary" disabled={busy}>{existingId?t.saveChanges:t.publish}</button><button type="button" disabled={busy} onClick={()=>{setOpen(false);setPassword('');setConfirm('');setMessage('');}}>{t.close}</button></div></form></section></div>,document.body)}</>;
 }
-export function BoardThumbnail({candidate}){
+export function BoardThumbnail({candidate,index=4}){
  const [dimensions,setDimensions]=useState(null);
  const measure=event=>{const node=event.currentTarget;const w=node.naturalWidth||node.videoWidth,h=node.naturalHeight||node.videoHeight;if(w&&h)setDimensions({src:candidate.src,w,h});};
  let style={display:'block',position:'absolute',width:'100%',height:'100%',objectFit:'cover',maxWidth:'none',aspectRatio:'auto'};
  if(dimensions?.src===candidate.src){
-  const {w,h}=dimensions,[x,y,size]=cropRect(w,h,candidate.zoom,candidate.x,candidate.y);
-  style={...style,objectFit:'fill',width:`${w/size*100}%`,height:`${h/size*100}%`,left:`${-x/size*100}%`,top:`${-y/size*100}%`};
+  const {w,h}=dimensions,[x,y,cw,ch]=collageLayout.cropForSlot(w,h,index,candidate.zoom,candidate.x,candidate.y);
+  style={...style,objectFit:'fill',width:`${w/cw*100}%`,height:`${h/ch*100}%`,left:`${-x/cw*100}%`,top:`${-y/ch*100}%`};
  }
- return <span style={{display:'block',position:'relative',aspectRatio:'1',overflow:'hidden',background:'#fff'}}>{isVideo(candidate.src)?<video src={candidate.src} muted playsInline preload="metadata" onLoadedMetadata={measure} style={style}/>:<img src={candidate.src} alt="" loading="lazy" onLoad={measure} style={style}/>}</span>;
+ return <span style={{display:'block',position:'relative',width:'100%',height:'100%',overflow:'hidden',background:'#fff'}}>{isVideo(candidate.src)?<video src={candidate.src} muted playsInline preload="metadata" onLoadedMetadata={measure} style={style}/>:<img src={candidate.src} alt="" loading="lazy" onLoad={measure} style={style}/>}</span>;
 }
 export default function PublicBoards({lang,tick=0}) {
  const [moderator,setModerator]=useState(false);
@@ -79,7 +80,7 @@ export default function PublicBoards({lang,tick=0}) {
  <div className="tn-category-filters" role="group" aria-label={ko?'구절판 카테고리':'Top 9 categories'}>{Object.entries(categoryLabels[lang]||categoryLabels.en).map(([key,label])=><button key={key} type="button" aria-pressed={category===key} onClick={()=>{if(category===key)return;setCategory(key);setPage(0);setRows([]);}}>{label}</button>)}</div>
  <div className="tn-sort-filters" role="group" aria-label={ko?'정렬':'Sort'}>{[['popular',ko?'인기순':'Popular'],['latest',ko?'최신순':'Latest']].map(([key,label])=><button key={key} type="button" aria-pressed={sort===key} onClick={()=>{if(sort===key)return;setSort(key);setPage(0);setRows([]);}}>{label}</button>)}</div>
  {error?<p role="alert">{ko?'목록을 불러오지 못했어요.':'Unable to load the gallery.'} <button onClick={()=>setRetry(n=>n+1)}>{ko?'다시 시도':'Retry'}</button></p>:!busy&&!rows.length?<p>{ko?'아직 공개된 구절판이 없어요. 첫 구절판을 공유해 보세요.':'No public collages yet. Share the first one.'}</p>:null}
- <div className="tn-public-cards">{rows.map(row=>{let data;try{data=readShared(makeShareHash(row.slots.map(c=>c?.id===emptyTile.id&&c.src===emptyTile.src?null:c),row.title,row.show_names,row.show_ranks));}catch{return null;}return <article key={row.id}><Link className="tn-public-card-link" to={`/${lang}/mytop9/${row.id}`}><div className="tn-mini-grid" dir="ltr">{data.slots.map((c,i)=><div key={i} className="tn-mini-cell">{c?<BoardThumbnail candidate={c}/>:<span className="tn-mini-empty"/>}{data.showRanks&&<span className={`tn-rank ${i===4?'tn-rank-first':''}`} aria-hidden="true">{SLOT_RANKS[i]}</span>}</div>)}</div><strong title={localizedBoardTitle(row,row.titleSources,lang)}>{localizedBoardTitle(row,row.titleSources,lang)}</strong></Link>{row.guest_nickname&&<small>{row.guest_nickname}</small>}{(!row.author_id?ownsGuestBoard(row.id):actor===row.author_id)&&<Link className="tn-public-edit-link" to={`/${lang}/mytop9/${row.id}?edit=1`}>{t.edit}</Link>}{!moderator&&!row.author_id&&ownsGuestBoard(row.id)&&<button onClick={()=>setGuestDelete(row.id)}>{t.deleteBoard}</button>}{(moderator||row.author_id&&actor===row.author_id)&&<button onClick={()=>remove(row.id)}>{ko?'삭제':'Delete'}</button>}</article>;})}</div>
+ <div className="tn-public-cards">{rows.map(row=>{let data;try{data=readShared(makeShareHash(row.slots.map(c=>c?.id===emptyTile.id&&c.src===emptyTile.src?null:c),row.title,row.show_names,row.show_ranks));}catch{return null;}return <article key={row.id}><Link className="tn-public-card-link" to={`/${lang}/mytop9/${row.id}`}><div className="tn-mini-grid tn-collage" dir="ltr">{data.slots.map((c,i)=><div key={i} className="tn-mini-cell" style={collageLayout.layouts[i].style}>{c?<BoardThumbnail candidate={c} index={i}/>:<span className="tn-mini-empty"/>}{data.showRanks&&<span className={`tn-rank ${i===4?'tn-rank-first':''}`} aria-hidden="true">{SLOT_RANKS[i]}</span>}</div>)}</div><strong title={localizedBoardTitle(row,row.titleSources,lang)}>{localizedBoardTitle(row,row.titleSources,lang)}</strong></Link>{row.guest_nickname&&<small>{row.guest_nickname}</small>}{(!row.author_id?ownsGuestBoard(row.id):actor===row.author_id)&&<Link className="tn-public-edit-link" to={`/${lang}/mytop9/${row.id}?edit=1`}>{t.edit}</Link>}{!moderator&&!row.author_id&&ownsGuestBoard(row.id)&&<button onClick={()=>setGuestDelete(row.id)}>{t.deleteBoard}</button>}{(moderator||row.author_id&&actor===row.author_id)&&<button onClick={()=>remove(row.id)}>{ko?'삭제':'Delete'}</button>}</article>;})}</div>
  {more&&<button type="button" className="tn-gallery-more" disabled={busy} onClick={()=>setPage(n=>n+1)}>{ko?'더보기':'Show more'}</button>}
  {guestDelete&&<div className="tn-picker-overlay"><form className="tn-publish-dialog" onSubmit={removeGuest}><label>{t.password}<input type="password" required minLength={4} value={deletePassword} onChange={e=>setDeletePassword(e.target.value)}/></label>{error&&<p role="alert">{t.error}</p>}<div className="tn-actions"><button disabled={deleting}>{t.deleteBoard}</button><button type="button" disabled={deleting} onClick={()=>{setGuestDelete(null);setDeletePassword('');}}>{t.close}</button></div></form></div>}
  </section>;

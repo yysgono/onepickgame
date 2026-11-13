@@ -1,3 +1,4 @@
+import collageLayout from './topNine/collageLayout.cjs';
 import GuestEditPrompt from './topNine/GuestEditPrompt';
 import {getGuestEditSession} from './topNine/guestEditSession';
 import {createShortLink} from './topNine/shortLinks';
@@ -22,7 +23,7 @@ import {templateTitle} from '../utils/templateTitles';
 import copy from './topNine/copy.json';
 import PublicBoards,{PublishBoard,DeleteBoard} from './topNine/PublicBoards';
 import {listTemplates,sourcePage,searchSources,loadSource} from './topNine/api';
-import {SLOT_RANKS,insertUploadedCandidates,normalizeCandidates,candidateMatches,toggleCandidate,placeCandidate,clearSlot,swapSlots,cropRect,normalizeZoom,readShared,safeMedia} from './topNine/core';
+import {SLOT_RANKS,insertUploadedCandidates,normalizeCandidates,candidateMatches,toggleCandidate,placeCandidate,clearSlot,swapSlots,normalizeZoom,readShared,safeMedia} from './topNine/core';
 import {importFile,mediaFrame,exportPNG,downloadBlob,isVideo} from './topNine/media';
 import {draftStore} from './topNine/draft';
 import './topNine/topNine.css';
@@ -30,9 +31,9 @@ import "../styles/presetCardSizes.css";
 const blank=()=>Array(9).fill(null);
 const CANDIDATE_PAGE_SIZE=12;
 function Photo({candidate}){const [bad,setBad]=useState(false);return bad?<span className="tn-missing">◇</span>:isVideo(candidate.src)?<video src={candidate.src} muted playsInline preload="metadata" onError={()=>setBad(true)}/>:<img src={candidate.src} alt="" loading="lazy" decoding="async" onError={()=>setBad(true)}/>;}
-function CropPhoto({candidate,frame}) {
+function CropPhoto({candidate,frame,index}) {
  const ref=useRef();
- useEffect(()=>{let live=true;if(!frame)return;const img=new Image();img.onload=()=>{if(!live||!ref.current)return;const ctx=ref.current.getContext('2d');ctx.clearRect(0,0,400,400);ctx.drawImage(img,...cropRect(img.naturalWidth,img.naturalHeight,candidate.zoom,candidate.x,candidate.y),0,0,400,400);};img.src=frame;return()=>{live=false;};},[candidate,frame]);
+ useEffect(()=>{let live=true;if(!frame)return;const img=new Image();img.onload=()=>{if(!live||!ref.current)return;const ctx=ref.current.getContext('2d');const {width,height}=collageLayout.layouts[index];const w=ref.current.width=600,h=ref.current.height=Math.round(600*height/width);ctx.fillStyle='#fff';ctx.fillRect(0,0,w,h);ctx.drawImage(img,...collageLayout.cropForSlot(img.naturalWidth,img.naturalHeight,index,candidate.zoom,candidate.x,candidate.y),0,0,w,h);};img.src=frame;return()=>{live=false;};},[candidate,frame,index]);
  return <canvas ref={ref} width="400" height="400" role="img" aria-label={candidate.name}/>;
 }
 export default function TopNinePage({publicBoard=null,publicId='',templateSource=null,onHome,canEdit=false}={}){
@@ -269,7 +270,7 @@ export default function TopNinePage({publicBoard=null,publicId='',templateSource
  {draftError&&<p role="status" className="tn-message">{t.draftError}</p>}
  {busy&&!quietOperation&&<p role="status" className="tn-message">{t.loading}</p>}
  {stage==='home'?<>
- <div className={`tn-home-grid tn-grid ${dropCell!==null?'tn-drop-active':''}`} dir="ltr" onDragOver={homeGridDragOver} onDragLeave={event=>{if(!event.currentTarget.contains(event.relatedTarget))setDropCell(null);}} onDrop={homeGridDrop}>{slots.map((c,i)=><div key={i} className={`tn-cell ${i===4?'tn-onepick':''} ${dropCell===i?'tn-drop-target':''}`}><button disabled={busy} aria-label={`${showRanks?SLOT_RANKS[i]:i+1}: ${c?.name||'+'}`} onClick={()=>{setFocus(i);pickUpload(i);}} onDragEnter={e=>{if(!busy&&Array.from(e.dataTransfer?.types||[]).includes('Files')){e.preventDefault();setDropCell(i);}}} onDragOver={e=>{if(!busy&&Array.from(e.dataTransfer?.types||[]).includes('Files')){e.preventDefault();e.dataTransfer.dropEffect='copy';setDropCell(i);}}} onDragLeave={e=>{if(!e.currentTarget.contains(e.relatedTarget))setDropCell(current=>current===i?null:current);}} onDrop={e=>slotDrop(e,i)}>{dropCell===i&&<span className="tn-drop-label" aria-hidden="true"><span>↓</span>{t.upload}</span>}{c&&frames[c.src]?.frame?<CropPhoto candidate={c} frame={frames[c.src].frame}/>:<span>{i===4?'One Pick': '+'}</span>}</button>{showRanks&&<span className={`tn-rank ${i===4?'tn-rank-first':''}`} aria-hidden="true">{SLOT_RANKS[i]}</span>}</div>)}</div>
+ <div className={`tn-home-grid tn-grid tn-collage ${dropCell!==null?'tn-drop-active':''}`} dir="ltr" onDragOver={homeGridDragOver} onDragLeave={event=>{if(!event.currentTarget.contains(event.relatedTarget))setDropCell(null);}} onDrop={homeGridDrop}>{slots.map((c,i)=><div key={i} style={collageLayout.layouts[i].style} className={`tn-cell ${i===4?'tn-onepick':''} ${dropCell===i?'tn-drop-target':''}`}><button disabled={busy} aria-label={`${showRanks?SLOT_RANKS[i]:i+1}: ${c?.name||'+'}`} onClick={()=>{setFocus(i);pickUpload(i);}} onDragEnter={e=>{if(!busy&&Array.from(e.dataTransfer?.types||[]).includes('Files')){e.preventDefault();setDropCell(i);}}} onDragOver={e=>{if(!busy&&Array.from(e.dataTransfer?.types||[]).includes('Files')){e.preventDefault();e.dataTransfer.dropEffect='copy';setDropCell(i);}}} onDragLeave={e=>{if(!e.currentTarget.contains(e.relatedTarget))setDropCell(current=>current===i?null:current);}} onDrop={e=>slotDrop(e,i)}>{dropCell===i&&<span className="tn-drop-label" aria-hidden="true"><span>↓</span>{t.upload}</span>}{c&&frames[c.src]?.frame?<CropPhoto index={i} candidate={c} frame={frames[c.src].frame}/>:<span>{i===4?'One Pick': '+'}</span>}</button>{showRanks&&<span className={`tn-rank ${i===4?'tn-rank-first':''}`} aria-hidden="true">{SLOT_RANKS[i]}</span>}</div>)}</div>
  <div className="tn-actions"><button className="tn-primary tn-upload-button" disabled={busy} onClick={()=>pickUpload()}>{t.upload}</button><button className="tn-site-import" disabled={busy} onClick={()=>setSitePicker(true)}>{lang==='ko'?'사이트 내에서 골라오기':'Choose from the site'}</button><button disabled={busy||draftBusy} onClick={loadDraft}>{t.loadDraft}</button></div><p className="tn-muted">{t.uploadHelp}</p>
  <form className="tn-search" onSubmit={search}><input aria-label={t.search} placeholder={t.search} value={query} onChange={e=>setQuery(e.target.value)}/><button disabled={busy} type="submit">{lang==='ko'?'검색':'Search'}</button></form>
  <h2>{searched?t.search:t.templates}</h2>
@@ -284,9 +285,9 @@ export default function TopNinePage({publicBoard=null,publicId='',templateSource
  <div className={`tn-editor ${stage==='preview'?'tn-preview':''}`}>
  <section className="tn-board-panel" aria-label={t.nav} onDragOver={e=>{if(stage==='pick')e.preventDefault();}} onDrop={e=>{if(stage!=='pick')return;e.preventDefault();if(e.dataTransfer?.files?.length)ingestFiles(e.dataTransfer.files);}}>
  {stage==='preview'&&!publicId&&title&&<h2 className="tn-result-title">{displayTitle}</h2>}
- <div className="tn-grid" dir="ltr">{slots.map((c,i)=><div key={i} className={`tn-cell ${i===4?'tn-onepick':''} ${focus===i&&stage==='pick'?'tn-focused':''}`}>
+ <div className="tn-grid tn-collage" dir="ltr">{slots.map((c,i)=><div key={i} style={collageLayout.layouts[i].style} className={`tn-cell ${i===4?'tn-onepick':''} ${focus===i&&stage==='pick'?'tn-focused':''}`}>
  <button type="button" disabled={busy||stage==='preview'} aria-label={`${showRanks?SLOT_RANKS[i]:i+1}: ${c?.name|| (i===4?'One Pick':'+')}`} aria-pressed={stage==='pick'?focus===i:undefined} onClick={event=>slotClick(i,event)} draggable={stage==='pick'&&!!c&&!busy} onDragStart={e=>dragStart(e,{kind:'slot',index:i})} onDragEnd={()=>{dragItem.current=null;}} onDragOver={e=>{if(stage==='pick'||stage==='home')e.preventDefault();}} onDrop={e=>slotDrop(e,i)}>
- {c?frames[c.src]?.frame?<CropPhoto candidate={c} frame={frames[c.src].frame}/>:<span>{frames[c.src]?.error?'◇':t.loading}</span>:<span>{i===4?'One Pick':'+'}</span>}</button>{showRanks&&<span className={`tn-rank ${i===4?'tn-rank-first':''}`} aria-hidden="true">{SLOT_RANKS[i]}</span>}
+ {c?frames[c.src]?.frame?<CropPhoto index={i} candidate={c} frame={frames[c.src].frame}/>:<span>{frames[c.src]?.error?'◇':t.loading}</span>:<span>{i===4?'One Pick':'+'}</span>}</button>{showRanks&&<span className={`tn-rank ${i===4?'tn-rank-first':''}`} aria-hidden="true">{SLOT_RANKS[i]}</span>}
  {c&&showNames&&(stage==='pick'?<input className="tn-name-input" type="text" value={c.name||''} maxLength={150} disabled={busy} aria-label={`${t.edit}: ${c.name||i+1}`} title={t.edit} onFocus={()=>setFocus(i)} onChange={event=>{const name=event.target.value;setSlots(previous=>previous.map((item,index)=>index===i?{...item,name}:item));}}/>:<span className="tn-name">{c.name}</span>)}
  {c&&frames[c.src]?.error&&<button className="tn-retry" onClick={()=>{frameJobs.current.delete(c.src);setFrames(f=>({...f,[c.src]:null}));setFrameRetry(v=>v+1);}}>{t.retry}</button>}
  </div>)}</div>
