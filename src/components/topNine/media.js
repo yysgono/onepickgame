@@ -1,4 +1,4 @@
-import collageLayout from './collageLayout.cjs';
+import collageLayout from './collageLayout.js';
 import {sanitizeSvg} from "./svgImport";
 import { safeMedia, SLOT_RANKS } from './core';
 export function loadMedia(src,video=false) {

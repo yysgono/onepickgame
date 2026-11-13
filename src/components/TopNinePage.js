@@ -1,4 +1,4 @@
-import collageLayout from './topNine/collageLayout.cjs';
+import collageLayout from './topNine/collageLayout.js';
 import GuestEditPrompt from './topNine/GuestEditPrompt';
 import {getGuestEditSession} from './topNine/guestEditSession';
 import {createShortLink} from './topNine/shortLinks';

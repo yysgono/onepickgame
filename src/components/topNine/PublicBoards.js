@@ -1,4 +1,4 @@
-import collageLayout from './collageLayout.cjs';
+import collageLayout from './collageLayout.js';
 import {getGuestEditSession,rememberGuestEditSession,clearGuestEditSession} from './guestEditSession';
 import {ownsGuestBoard,rememberGuestBoard} from './guestOwnership';
 import categoryLabels from './categoryLabels.json';
