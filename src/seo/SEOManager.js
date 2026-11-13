@@ -1,6 +1,7 @@
 import React from "react";
 import { Helmet } from "react-helmet-async";
 import { useLocation } from "react-router-dom";
+import recommendationPages from "../components/randomPick/recommendationPages.json";
 
 export default function SEOManager() {
   const { pathname, search } = useLocation();
@@ -32,6 +33,7 @@ export default function SEOManager() {
     "tier-list/create",
     "quiz",
     "random-pick",
+    ...Object.keys(recommendationPages).map(topic => `random-pick/${topic}`),
     "mytop9",
   ]);
 

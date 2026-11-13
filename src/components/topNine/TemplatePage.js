@@ -4,6 +4,7 @@ import TopNinePage from '../TopNinePage';
 import Seo from '../../seo/Seo';
 import { loadTemplatePage } from './api';
 import copy from './copy.json';
+import { readTemplateBootstrap } from './templateBootstrap';
 
 const TEMPLATE_ID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
@@ -12,7 +13,10 @@ export default function TemplatePage() {
   const lang = copy[routeLang] ? routeLang : 'en';
   const t = copy[lang];
   const navigate = useNavigate();
-  const [settled, setSettled] = useState(null);
+  const [settled, setSettled] = useState(() => {
+    const cup = readTemplateBootstrap(templateId);
+    return cup ? { templateId, retry: 0, status: 'found', cup } : null;
+  });
   const [retry, setRetry] = useState(0);
   const validId = TEMPLATE_ID_PATTERN.test(templateId);
   const result = settled?.templateId === templateId && settled?.retry === retry ? settled : null;
@@ -21,6 +25,12 @@ export default function TemplatePage() {
   useEffect(() => {
     if (!validId) return undefined;
 
+    // Direct page loads already have validated public data from the server.
+    const initial = retry === 0 ? readTemplateBootstrap(templateId) : null;
+    if (initial) {
+      setSettled({ templateId, retry, status: 'found', cup: initial });
+      return undefined;
+    }
     let live = true;
     loadTemplatePage(templateId)
       .then(cup => {
