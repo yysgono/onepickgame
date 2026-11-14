@@ -772,7 +772,7 @@ export default function Header({
         <Link rel="nosublink" to={`/${currentLang}/my-worldcups`} aria-current={personalPage ? 'page' : undefined}>{ui.myContent}</Link>
         <Link rel="nosublink" to={`/${currentLang}/blog`}>{ui.blog}</Link>
       </nav>
-      {activeMode&&!personalPage&&!isAdmin&&<CoupangHeaderBanner/>}
+      {activeMode&&!personalPage&&!isAdmin&&<CoupangHeaderBanner lang={currentLang}/>}
       {isAdmin && <input ref={inputRef} type="file" accept="application/json" hidden onChange={onRestore} />}
 
       {/* 프로필 모달 */}

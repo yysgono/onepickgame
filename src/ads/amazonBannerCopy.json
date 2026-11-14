@@ -1,0 +1,142 @@
+{
+  "en": {
+    "title": "Find your next favorite",
+    "subtitle": "Explore books, games and more on Amazon.com",
+    "cta": "Shop on Amazon",
+    "ad": "Ad · Affiliate link",
+    "disclosure": "We earn a commission from qualifying purchases."
+  },
+  "ko": {
+    "title": "다음 최애를 찾아보세요",
+    "subtitle": "Amazon.com에서 책, 게임 등을 둘러보세요",
+    "cta": "아마존 둘러보기",
+    "ad": "광고 · 제휴 링크",
+    "disclosure": "이 링크를 통한 적격 구매 시 수수료를 받습니다."
+  },
+  "ja": {
+    "title": "次のお気に入りを見つけよう",
+    "subtitle": "Amazon.comで本やゲームなどを探す",
+    "cta": "Amazonで見る",
+    "ad": "広告・アフィリエイトリンク",
+    "disclosure": "対象の購入により紹介料を受け取ります。"
+  },
+  "zh": {
+    "title": "发现你的下一个心头好",
+    "subtitle": "在 Amazon.com 浏览图书、游戏等商品",
+    "cta": "前往亚马逊",
+    "ad": "广告 · 联盟链接",
+    "disclosure": "通过此链接产生的合格购买可为我们带来佣金。"
+  },
+  "es": {
+    "title": "Encuentra tu próximo favorito",
+    "subtitle": "Explora libros, juegos y más en Amazon.com",
+    "cta": "Ver en Amazon",
+    "ad": "Publicidad · Enlace de afiliado",
+    "disclosure": "Recibimos una comisión por compras que cumplan los requisitos."
+  },
+  "fr": {
+    "title": "Trouvez votre prochain coup de cœur",
+    "subtitle": "Découvrez des livres, jeux et plus sur Amazon.com",
+    "cta": "Voir sur Amazon",
+    "ad": "Publicité · Lien affilié",
+    "disclosure": "Les achats admissibles nous rapportent une commission."
+  },
+  "vi": {
+    "title": "Tìm món yêu thích tiếp theo",
+    "subtitle": "Khám phá sách, trò chơi và nhiều hơn trên Amazon.com",
+    "cta": "Xem trên Amazon",
+    "ad": "Quảng cáo · Liên kết tiếp thị",
+    "disclosure": "Chúng tôi nhận hoa hồng từ các giao dịch mua đủ điều kiện."
+  },
+  "de": {
+    "title": "Entdecke deinen nächsten Favoriten",
+    "subtitle": "Bücher, Spiele und mehr auf Amazon.com entdecken",
+    "cta": "Bei Amazon ansehen",
+    "ad": "Werbung · Affiliate-Link",
+    "disclosure": "Wir verdienen an qualifizierten Käufen eine Provision."
+  },
+  "ru": {
+    "title": "Найдите нового фаворита",
+    "subtitle": "Книги, игры и другие товары на Amazon.com",
+    "cta": "Перейти на Amazon",
+    "ad": "Реклама · Партнёрская ссылка",
+    "disclosure": "Мы получаем комиссию за соответствующие условиям покупки."
+  },
+  "id": {
+    "title": "Temukan favorit berikutnya",
+    "subtitle": "Jelajahi buku, game, dan lainnya di Amazon.com",
+    "cta": "Lihat di Amazon",
+    "ad": "Iklan · Tautan afiliasi",
+    "disclosure": "Kami menerima komisi dari pembelian yang memenuhi syarat."
+  },
+  "pt": {
+    "title": "Encontre seu próximo favorito",
+    "subtitle": "Explore livros, jogos e mais na Amazon.com",
+    "cta": "Ver na Amazon",
+    "ad": "Publicidade · Link de afiliado",
+    "disclosure": "Recebemos comissão por compras qualificadas."
+  },
+  "hi": {
+    "title": "अपना अगला पसंदीदा खोजें",
+    "subtitle": "Amazon.com पर किताबें, गेम और अन्य सामान देखें",
+    "cta": "Amazon पर देखें",
+    "ad": "विज्ञापन · संबद्ध लिंक",
+    "disclosure": "योग्य खरीदारी पर हमें कमीशन मिलता है।"
+  },
+  "bn": {
+    "title": "আপনার পরের পছন্দ খুঁজুন",
+    "subtitle": "Amazon.com-এ বই, গেম ও আরও অনেক কিছু দেখুন",
+    "cta": "Amazon-এ দেখুন",
+    "ad": "বিজ্ঞাপন · অ্যাফিলিয়েট লিংক",
+    "disclosure": "যোগ্য কেনাকাটা থেকে আমরা কমিশন পাই।"
+  },
+  "ar": {
+    "title": "اعثر على مفضلتك التالية",
+    "subtitle": "تصفح الكتب والألعاب والمزيد على Amazon.com",
+    "cta": "تصفح Amazon",
+    "ad": "إعلان · رابط تابع",
+    "disclosure": "نحصل على عمولة من المشتريات المؤهلة."
+  },
+  "th": {
+    "title": "ค้นพบสิ่งโปรดชิ้นต่อไป",
+    "subtitle": "เลือกดูหนังสือ เกม และอื่น ๆ บน Amazon.com",
+    "cta": "ดูที่ Amazon",
+    "ad": "โฆษณา · ลิงก์พันธมิตร",
+    "disclosure": "เราได้รับค่าคอมมิชชันจากการซื้อที่เข้าเกณฑ์"
+  },
+  "tr": {
+    "title": "Yeni favorini keşfet",
+    "subtitle": "Amazon.com’da kitapları, oyunları ve daha fazlasını keşfet",
+    "cta": "Amazon’da incele",
+    "ad": "Reklam · Satış ortaklığı bağlantısı",
+    "disclosure": "Uygun satın almalardan komisyon kazanırız."
+  },
+  "it": {
+    "title": "Trova il tuo prossimo preferito",
+    "subtitle": "Scopri libri, giochi e altro su Amazon.com",
+    "cta": "Scopri su Amazon",
+    "ad": "Pubblicità · Link affiliato",
+    "disclosure": "Riceviamo una commissione dagli acquisti idonei."
+  },
+  "pl": {
+    "title": "Odkryj nowego faworyta",
+    "subtitle": "Odkryj książki, gry i więcej na Amazon.com",
+    "cta": "Zobacz na Amazon",
+    "ad": "Reklama · Link afiliacyjny",
+    "disclosure": "Otrzymujemy prowizję od kwalifikujących się zakupów."
+  },
+  "nl": {
+    "title": "Ontdek je volgende favoriet",
+    "subtitle": "Bekijk boeken, games en meer op Amazon.com",
+    "cta": "Bekijk op Amazon",
+    "ad": "Advertentie · Affiliate-link",
+    "disclosure": "Wij ontvangen commissie voor in aanmerking komende aankopen."
+  },
+  "cs": {
+    "title": "Objev svého nového favorita",
+    "subtitle": "Prohlédni si knihy, hry a další na Amazon.com",
+    "cta": "Prohlédnout na Amazonu",
+    "ad": "Reklama · Partnerský odkaz",
+    "disclosure": "Z kvalifikovaných nákupů získáváme provizi."
+  }
+}
