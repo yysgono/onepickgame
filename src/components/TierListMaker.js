@@ -1,3 +1,6 @@
+import RecommendedImagePicker from './tierList/RecommendedImagePicker';
+import recommendedImageCopy from './tierList/recommendedImageCopy.json';
+import {additionsFromWorldcup,worldcupTitle} from '../utils/tierRecommendedCandidates';
 import { TIERS, TIER_COLORS, visibleTierRows } from "../utils/tierRows";
 import editorCopy from "../locales/tierInlineEditor.json";
 import { loadTierSourceCatalogue } from "../utils/tierSourceCatalogue";
@@ -782,6 +785,8 @@ function TierListMaker({
 
 
   const editorText = editorCopy[lang] || editorCopy.en;
+  const recommendedText = recommendedImageCopy[lang] || recommendedImageCopy.en;
+  const [recommendedOpen,setRecommendedOpen] = useState(false);
   const [exporting, setExporting] = useState(false);
 
   const text =
@@ -1887,6 +1892,17 @@ const sourceCandidates =
       localCandidates,
     ]);
 
+
+  function addRecommendedCandidates(items,source){
+    const added=additionsFromWorldcup(allCandidates,items,MAX_CANDIDATES);
+    if(added.length){
+      setLocalCandidates(previous=>[...previous,...added]);
+      setSearchKeyword('');setVisibleCandidatePages(1);
+      if(!id)setLocalOnlyMode(true);
+      setTierListTitle(previous=>previous||worldcupTitle(source,lang));
+    }
+    setDraftMessage(added.length?recommendedText.added.replace('{count}',String(added.length)):recommendedText.unchanged);
+  }
 
   const sortedCandidates = useMemo(() => {
     const source = allCandidates.filter(item => item._source !== "local");
@@ -5967,7 +5983,9 @@ if (editingTierListId) {
                   }}
                 />
               </label>
+              <button type="button" className="tier-editor-recommended" disabled={!authReady || saving} onClick={()=>setRecommendedOpen(true)}>{recommendedText.title}</button>
               </div>
+              {recommendedOpen&&<RecommendedImagePicker lang={lang} onAdd={addRecommendedCandidates} onClose={()=>setRecommendedOpen(false)}/>}
               {draftMessage && (
                 <div
                   style={{
