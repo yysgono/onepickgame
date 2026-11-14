@@ -1,7 +1,7 @@
 {
   "ko": {
     "title": "추천 이미지 찾아보기",
-    "help": "월드컵 제목을 선택하면 후보를 현재 티어표에 추가합니다. 기존 이미지와 배치는 유지됩니다.",
+    "help": "월드컵을 고른 뒤 가져올 후보를 체크해 주세요. 기존 이미지와 배치는 유지됩니다.",
     "search": "월드컵 제목 검색",
     "close": "닫기",
     "retry": "다시 시도",
@@ -10,11 +10,16 @@
     "more": "더보기",
     "error": "불러오지 못했어요. 다시 시도해 주세요.",
     "added": "후보 {count}개를 추가했어요.",
-    "unchanged": "추가할 새 후보가 없거나 최대 후보 수에 도달했어요."
+    "unchanged": "추가할 새 후보가 없거나 최대 후보 수에 도달했어요.",
+    "selectAll": "전체 선택",
+    "clearAll": "전체 해제",
+    "importSelected": "선택한 후보 가져오기",
+    "back": "← 월드컵 목록",
+    "candidateSearch": "후보 이름 검색"
   },
   "en": {
     "title": "Browse recommended images",
-    "help": "Select a tournament title to add its candidates. Your existing images and rankings are kept.",
+    "help": "Choose a tournament, then check the candidates to import. Existing images and rankings are kept.",
     "search": "Search tournament titles",
     "close": "Close",
     "retry": "Retry",
@@ -23,11 +28,16 @@
     "more": "Show more",
     "error": "Unable to load. Please try again.",
     "added": "Added {count} candidates.",
-    "unchanged": "No new candidates, or the candidate limit has been reached."
+    "unchanged": "No new candidates, or the candidate limit has been reached.",
+    "selectAll": "Select all",
+    "clearAll": "Deselect all",
+    "importSelected": "Import selected candidates",
+    "back": "← Tournaments",
+    "candidateSearch": "Search candidate names"
   },
   "ja": {
     "title": "おすすめ画像を探す",
-    "help": "大会名を選ぶと候補を追加します。現在の画像と配置は保持されます。",
+    "help": "大会を選び、追加する候補にチェックしてください。現在の画像と配置は保持されます。",
     "search": "大会名を検索",
     "close": "閉じる",
     "retry": "再試行",
@@ -36,11 +46,16 @@
     "more": "もっと見る",
     "error": "読み込めませんでした。再試行してください。",
     "added": "候補を{count}件追加しました。",
-    "unchanged": "新しい候補がないか、上限に達しています。"
+    "unchanged": "新しい候補がないか、上限に達しています。",
+    "selectAll": "すべて選択",
+    "clearAll": "すべて解除",
+    "importSelected": "選択した候補を追加",
+    "back": "← 大会一覧",
+    "candidateSearch": "候補名を検索"
   },
   "zh": {
     "title": "浏览推荐图片",
-    "help": "选择对决标题以添加候选项。现有图片和排名将保留。",
+    "help": "选择对决后勾选要导入的候选项。现有图片和排名将保留。",
     "search": "搜索对决标题",
     "close": "关闭",
     "retry": "重试",
@@ -49,11 +64,16 @@
     "more": "显示更多",
     "error": "加载失败，请重试。",
     "added": "已添加 {count} 个候选项。",
-    "unchanged": "没有新候选项或已达到数量上限。"
+    "unchanged": "没有新候选项或已达到数量上限。",
+    "selectAll": "全选",
+    "clearAll": "取消全选",
+    "importSelected": "导入选中候选项",
+    "back": "← 对决列表",
+    "candidateSearch": "搜索候选项名称"
   },
   "es": {
     "title": "Buscar imágenes recomendadas",
-    "help": "Selecciona un torneo para añadir sus candidatos. Se conservan tus imágenes y posiciones.",
+    "help": "Elige un torneo y marca los candidatos que quieras importar. Se conservan tus imágenes y posiciones.",
     "search": "Buscar títulos de torneos",
     "close": "Cerrar",
     "retry": "Reintentar",
@@ -62,11 +82,16 @@
     "more": "Ver más",
     "error": "No se pudo cargar. Inténtalo de nuevo.",
     "added": "Se añadieron {count} candidatos.",
-    "unchanged": "No hay candidatos nuevos o se alcanzó el límite."
+    "unchanged": "No hay candidatos nuevos o se alcanzó el límite.",
+    "selectAll": "Seleccionar todo",
+    "clearAll": "Deseleccionar todo",
+    "importSelected": "Importar seleccionados",
+    "back": "← Torneos",
+    "candidateSearch": "Buscar candidatos"
   },
   "fr": {
     "title": "Parcourir les images recommandées",
-    "help": "Choisissez un tournoi pour ajouter ses candidats. Vos images et classements sont conservés.",
+    "help": "Choisissez un tournoi puis cochez les candidats à importer. Vos images et classements sont conservés.",
     "search": "Rechercher un tournoi",
     "close": "Fermer",
     "retry": "Réessayer",
@@ -75,11 +100,16 @@
     "more": "Voir plus",
     "error": "Échec du chargement. Réessayez.",
     "added": "{count} candidats ajoutés.",
-    "unchanged": "Aucun nouveau candidat ou limite atteinte."
+    "unchanged": "Aucun nouveau candidat ou limite atteinte.",
+    "selectAll": "Tout sélectionner",
+    "clearAll": "Tout désélectionner",
+    "importSelected": "Importer la sélection",
+    "back": "← Tournois",
+    "candidateSearch": "Rechercher des candidats"
   },
   "vi": {
     "title": "Tìm ảnh đề xuất",
-    "help": "Chọn tên giải đấu để thêm ứng viên. Ảnh và thứ hạng hiện tại được giữ nguyên.",
+    "help": "Chọn giải đấu rồi đánh dấu ứng viên muốn nhập. Ảnh và thứ hạng hiện tại được giữ nguyên.",
     "search": "Tìm tên giải đấu",
     "close": "Đóng",
     "retry": "Thử lại",
@@ -88,11 +118,16 @@
     "more": "Xem thêm",
     "error": "Không thể tải. Vui lòng thử lại.",
     "added": "Đã thêm {count} ứng viên.",
-    "unchanged": "Không có ứng viên mới hoặc đã đạt giới hạn."
+    "unchanged": "Không có ứng viên mới hoặc đã đạt giới hạn.",
+    "selectAll": "Chọn tất cả",
+    "clearAll": "Bỏ chọn tất cả",
+    "importSelected": "Nhập ứng viên đã chọn",
+    "back": "← Giải đấu",
+    "candidateSearch": "Tìm tên ứng viên"
   },
   "de": {
     "title": "Empfohlene Bilder durchsuchen",
-    "help": "Wähle einen Turniertitel, um Kandidaten hinzuzufügen. Bilder und Rangplätze bleiben erhalten.",
+    "help": "Wähle ein Turnier und markiere die gewünschten Kandidaten. Bilder und Rangplätze bleiben erhalten.",
     "search": "Turniertitel suchen",
     "close": "Schließen",
     "retry": "Erneut versuchen",
@@ -101,11 +136,16 @@
     "more": "Mehr anzeigen",
     "error": "Laden fehlgeschlagen. Bitte erneut versuchen.",
     "added": "{count} Kandidaten hinzugefügt.",
-    "unchanged": "Keine neuen Kandidaten oder Limit erreicht."
+    "unchanged": "Keine neuen Kandidaten oder Limit erreicht.",
+    "selectAll": "Alle auswählen",
+    "clearAll": "Alle abwählen",
+    "importSelected": "Auswahl importieren",
+    "back": "← Turniere",
+    "candidateSearch": "Kandidatennamen suchen"
   },
   "ru": {
     "title": "Найти рекомендуемые изображения",
-    "help": "Выберите турнир, чтобы добавить кандидатов. Изображения и позиции сохранятся.",
+    "help": "Выберите турнир и отметьте кандидатов для добавления. Изображения и позиции сохранятся.",
     "search": "Поиск турниров",
     "close": "Закрыть",
     "retry": "Повторить",
@@ -114,11 +154,16 @@
     "more": "Показать ещё",
     "error": "Не удалось загрузить. Повторите попытку.",
     "added": "Добавлено кандидатов: {count}.",
-    "unchanged": "Нет новых кандидатов или достигнут лимит."
+    "unchanged": "Нет новых кандидатов или достигнут лимит.",
+    "selectAll": "Выбрать всё",
+    "clearAll": "Снять выделение",
+    "importSelected": "Добавить выбранных",
+    "back": "← Турниры",
+    "candidateSearch": "Поиск кандидатов"
   },
   "id": {
     "title": "Cari gambar rekomendasi",
-    "help": "Pilih judul turnamen untuk menambahkan kandidat. Gambar dan peringkat Anda tetap tersimpan.",
+    "help": "Pilih turnamen, lalu centang kandidat yang ingin diimpor. Gambar dan peringkat tetap tersimpan.",
     "search": "Cari judul turnamen",
     "close": "Tutup",
     "retry": "Coba lagi",
@@ -127,11 +172,16 @@
     "more": "Lihat lagi",
     "error": "Gagal memuat. Silakan coba lagi.",
     "added": "{count} kandidat ditambahkan.",
-    "unchanged": "Tidak ada kandidat baru atau batas telah tercapai."
+    "unchanged": "Tidak ada kandidat baru atau batas telah tercapai.",
+    "selectAll": "Pilih semua",
+    "clearAll": "Batalkan semua",
+    "importSelected": "Impor kandidat terpilih",
+    "back": "← Turnamen",
+    "candidateSearch": "Cari nama kandidat"
   },
   "pt": {
     "title": "Buscar imagens recomendadas",
-    "help": "Escolha um torneio para adicionar candidatos. Suas imagens e posições serão mantidas.",
+    "help": "Escolha um torneio e marque os candidatos que deseja importar. Suas imagens e posições serão mantidas.",
     "search": "Buscar títulos de torneios",
     "close": "Fechar",
     "retry": "Tentar novamente",
@@ -140,11 +190,16 @@
     "more": "Ver mais",
     "error": "Não foi possível carregar. Tente novamente.",
     "added": "{count} candidatos adicionados.",
-    "unchanged": "Não há novos candidatos ou o limite foi atingido."
+    "unchanged": "Não há novos candidatos ou o limite foi atingido.",
+    "selectAll": "Selecionar tudo",
+    "clearAll": "Desmarcar tudo",
+    "importSelected": "Importar selecionados",
+    "back": "← Torneios",
+    "candidateSearch": "Buscar candidatos"
   },
   "hi": {
     "title": "सुझाई गई तस्वीरें खोजें",
-    "help": "उम्मीदवार जोड़ने के लिए टूर्नामेंट का शीर्षक चुनें। मौजूदा तस्वीरें और रैंक सुरक्षित रहेंगी।",
+    "help": "टूर्नामेंट चुनकर आयात करने वाले उम्मीदवारों पर निशान लगाएँ। मौजूदा तस्वीरें और रैंक सुरक्षित रहेंगी।",
     "search": "टूर्नामेंट के शीर्षक खोजें",
     "close": "बंद करें",
     "retry": "फिर कोशिश करें",
@@ -153,11 +208,16 @@
     "more": "और दिखाएँ",
     "error": "लोड नहीं हो सका। फिर कोशिश करें।",
     "added": "{count} उम्मीदवार जोड़े गए।",
-    "unchanged": "नए उम्मीदवार नहीं हैं या सीमा पूरी हो गई है।"
+    "unchanged": "नए उम्मीदवार नहीं हैं या सीमा पूरी हो गई है।",
+    "selectAll": "सभी चुनें",
+    "clearAll": "सभी चयन हटाएँ",
+    "importSelected": "चुने हुए उम्मीदवार जोड़ें",
+    "back": "← टूर्नामेंट",
+    "candidateSearch": "उम्मीदवारों के नाम खोजें"
   },
   "bn": {
     "title": "প্রস্তাবিত ছবি খুঁজুন",
-    "help": "প্রার্থী যোগ করতে টুর্নামেন্টের শিরোনাম বাছুন। বর্তমান ছবি ও র‌্যাঙ্কিং বজায় থাকবে।",
+    "help": "টুর্নামেন্ট বেছে পছন্দের প্রার্থীদের টিক দিন। বর্তমান ছবি ও র‌্যাঙ্কিং বজায় থাকবে।",
     "search": "টুর্নামেন্টের শিরোনাম খুঁজুন",
     "close": "বন্ধ করুন",
     "retry": "আবার চেষ্টা করুন",
@@ -166,11 +226,16 @@
     "more": "আরও দেখুন",
     "error": "লোড করা যায়নি। আবার চেষ্টা করুন।",
     "added": "{count} জন প্রার্থী যোগ হয়েছে।",
-    "unchanged": "নতুন প্রার্থী নেই অথবা সীমা পূর্ণ হয়েছে।"
+    "unchanged": "নতুন প্রার্থী নেই অথবা সীমা পূর্ণ হয়েছে।",
+    "selectAll": "সব বাছুন",
+    "clearAll": "সব নির্বাচন বাতিল করুন",
+    "importSelected": "বাছাই করা প্রার্থী আনুন",
+    "back": "← টুর্নামেন্ট",
+    "candidateSearch": "প্রার্থীর নাম খুঁজুন"
   },
   "ar": {
     "title": "تصفح الصور المقترحة",
-    "help": "اختر عنوان بطولة لإضافة مرشحيها. ستبقى صورك وترتيباتك الحالية.",
+    "help": "اختر بطولة ثم حدد المرشحين لاستيرادهم. ستبقى صورك وترتيباتك الحالية.",
     "search": "ابحث عن عنوان بطولة",
     "close": "إغلاق",
     "retry": "إعادة المحاولة",
@@ -179,11 +244,16 @@
     "more": "عرض المزيد",
     "error": "تعذر التحميل. حاول مجددًا.",
     "added": "تمت إضافة {count} من المرشحين.",
-    "unchanged": "لا يوجد مرشحون جدد أو تم بلوغ الحد الأقصى."
+    "unchanged": "لا يوجد مرشحون جدد أو تم بلوغ الحد الأقصى.",
+    "selectAll": "تحديد الكل",
+    "clearAll": "إلغاء تحديد الكل",
+    "importSelected": "استيراد المحددين",
+    "back": "← البطولات",
+    "candidateSearch": "ابحث عن أسماء المرشحين"
   },
   "th": {
     "title": "ค้นหารูปภาพแนะนำ",
-    "help": "เลือกชื่อทัวร์นาเมนต์เพื่อเพิ่มตัวเลือก รูปภาพและอันดับเดิมจะยังอยู่",
+    "help": "เลือกทัวร์นาเมนต์แล้วทำเครื่องหมายตัวเลือกที่ต้องการนำเข้า รูปภาพและอันดับเดิมจะยังอยู่",
     "search": "ค้นหาชื่อทัวร์นาเมนต์",
     "close": "ปิด",
     "retry": "ลองอีกครั้ง",
@@ -192,11 +262,16 @@
     "more": "ดูเพิ่มเติม",
     "error": "โหลดไม่สำเร็จ โปรดลองอีกครั้ง",
     "added": "เพิ่ม {count} ตัวเลือกแล้ว",
-    "unchanged": "ไม่มีตัวเลือกใหม่หรือถึงจำนวนสูงสุดแล้ว"
+    "unchanged": "ไม่มีตัวเลือกใหม่หรือถึงจำนวนสูงสุดแล้ว",
+    "selectAll": "เลือกทั้งหมด",
+    "clearAll": "ยกเลิกทั้งหมด",
+    "importSelected": "นำเข้าตัวเลือกที่เลือก",
+    "back": "← ทัวร์นาเมนต์",
+    "candidateSearch": "ค้นหาชื่อตัวเลือก"
   },
   "tr": {
     "title": "Önerilen görsellere göz at",
-    "help": "Adayları eklemek için bir turnuva başlığı seç. Mevcut görseller ve sıralamalar korunur.",
+    "help": "Bir turnuva seç ve aktarmak istediğin adayları işaretle. Mevcut görseller ve sıralamalar korunur.",
     "search": "Turnuva başlığı ara",
     "close": "Kapat",
     "retry": "Tekrar dene",
@@ -205,11 +280,16 @@
     "more": "Daha fazla",
     "error": "Yüklenemedi. Tekrar dene.",
     "added": "{count} aday eklendi.",
-    "unchanged": "Yeni aday yok veya aday sınırına ulaşıldı."
+    "unchanged": "Yeni aday yok veya aday sınırına ulaşıldı.",
+    "selectAll": "Tümünü seç",
+    "clearAll": "Tüm seçimleri kaldır",
+    "importSelected": "Seçilen adayları aktar",
+    "back": "← Turnuvalar",
+    "candidateSearch": "Aday adı ara"
   },
   "it": {
     "title": "Cerca immagini consigliate",
-    "help": "Seleziona un torneo per aggiungere candidati. Le immagini e le posizioni attuali restano.",
+    "help": "Scegli un torneo e seleziona i candidati da importare. Le immagini e le posizioni attuali restano.",
     "search": "Cerca titoli dei tornei",
     "close": "Chiudi",
     "retry": "Riprova",
@@ -218,11 +298,16 @@
     "more": "Mostra altro",
     "error": "Impossibile caricare. Riprova.",
     "added": "Aggiunti {count} candidati.",
-    "unchanged": "Nessun nuovo candidato o limite raggiunto."
+    "unchanged": "Nessun nuovo candidato o limite raggiunto.",
+    "selectAll": "Seleziona tutto",
+    "clearAll": "Deseleziona tutto",
+    "importSelected": "Importa selezionati",
+    "back": "← Tornei",
+    "candidateSearch": "Cerca candidati"
   },
   "pl": {
     "title": "Przeglądaj polecane obrazy",
-    "help": "Wybierz turniej, aby dodać kandydatów. Obecne obrazy i pozycje zostaną zachowane.",
+    "help": "Wybierz turniej, a następnie zaznacz kandydatów do importu. Obecne obrazy i pozycje zostaną zachowane.",
     "search": "Szukaj tytułów turniejów",
     "close": "Zamknij",
     "retry": "Spróbuj ponownie",
@@ -231,11 +316,16 @@
     "more": "Pokaż więcej",
     "error": "Nie udało się wczytać. Spróbuj ponownie.",
     "added": "Dodano kandydatów: {count}.",
-    "unchanged": "Brak nowych kandydatów lub osiągnięto limit."
+    "unchanged": "Brak nowych kandydatów lub osiągnięto limit.",
+    "selectAll": "Zaznacz wszystko",
+    "clearAll": "Odznacz wszystko",
+    "importSelected": "Importuj zaznaczonych",
+    "back": "← Turnieje",
+    "candidateSearch": "Szukaj kandydatów"
   },
   "nl": {
     "title": "Aanbevolen afbeeldingen bekijken",
-    "help": "Kies een toernooi om kandidaten toe te voegen. Je afbeeldingen en rangschikking blijven behouden.",
+    "help": "Kies een toernooi en vink de kandidaten aan die je wilt importeren. Je afbeeldingen en rangschikking blijven behouden.",
     "search": "Zoek toernooititels",
     "close": "Sluiten",
     "retry": "Opnieuw proberen",
@@ -244,11 +334,16 @@
     "more": "Meer tonen",
     "error": "Laden mislukt. Probeer het opnieuw.",
     "added": "{count} kandidaten toegevoegd.",
-    "unchanged": "Geen nieuwe kandidaten of de limiet is bereikt."
+    "unchanged": "Geen nieuwe kandidaten of de limiet is bereikt.",
+    "selectAll": "Alles selecteren",
+    "clearAll": "Alles deselecteren",
+    "importSelected": "Selectie importeren",
+    "back": "← Toernooien",
+    "candidateSearch": "Zoek kandidaatnamen"
   },
   "cs": {
     "title": "Procházet doporučené obrázky",
-    "help": "Vyber turnaj a přidej jeho kandidáty. Stávající obrázky a pořadí zůstanou zachovány.",
+    "help": "Vyber turnaj a zaškrtni kandidáty k importu. Stávající obrázky a pořadí zůstanou zachovány.",
     "search": "Hledat názvy turnajů",
     "close": "Zavřít",
     "retry": "Zkusit znovu",
@@ -257,6 +352,11 @@
     "more": "Zobrazit více",
     "error": "Načítání selhalo. Zkus to znovu.",
     "added": "Přidáno kandidátů: {count}.",
-    "unchanged": "Žádní noví kandidáti nebo byl dosažen limit."
+    "unchanged": "Žádní noví kandidáti nebo byl dosažen limit.",
+    "selectAll": "Vybrat vše",
+    "clearAll": "Zrušit výběr",
+    "importSelected": "Importovat vybrané",
+    "back": "← Turnaje",
+    "candidateSearch": "Hledat jména kandidátů"
   }
 }

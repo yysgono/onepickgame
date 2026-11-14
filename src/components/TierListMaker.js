@@ -55,8 +55,8 @@ import { supabase } from "../utils/supabaseClient";
 
 const MAX_UPLOAD = 50;
 const MAX_CANDIDATES = 1024;
-const PRESET_CANDIDATE_PAGE_SIZE = 16;
-const DEFAULT_CANDIDATE_PAGE_SIZE = 80;
+const PRESET_CANDIDATE_PAGE_SIZE = 24;
+const DEFAULT_CANDIDATE_PAGE_SIZE = 24;
 const IMAGE_MAX_INPUT_BYTES =
   6 * 1024 * 1024;
 
