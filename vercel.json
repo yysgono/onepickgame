@@ -130,6 +130,10 @@
   ],
   "routes": [
     {
+      "src": "/api/visitor-country/?$",
+      "dest": "/server.js"
+    },
+    {
       "src": "/(ko|en|ja|zh|ru|pt|es|fr|id|hi|de|vi|ar|bn|th|tr|it|pl|nl|cs)/top-nine/?$",
       "dest": "/server.js?seo=top-nine&legacy=1&lang=$1"
     },

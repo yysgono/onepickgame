@@ -13,6 +13,7 @@ const { loadSeoTemplate } = require("./seo-template.cjs");
 require("dotenv").config();
 
 const app = express();
+app.get('/api/visitor-country',require('./affiliate-country.cjs').visitorCountry);
 
 app.use(initialTranslationsMiddleware);
 app.use(cors());

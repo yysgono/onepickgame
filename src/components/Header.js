@@ -1,3 +1,4 @@
+import CoupangHeaderBanner from '../ads/CoupangHeaderBanner';
 import ContentHomeLink from "./ContentHomeLink";
 import TopNineIcon from "./TopNineIcon";
 import topNineCopy from "./topNine/copy.json";
@@ -771,6 +772,7 @@ export default function Header({
         <Link rel="nosublink" to={`/${currentLang}/my-worldcups`} aria-current={personalPage ? 'page' : undefined}>{ui.myContent}</Link>
         <Link rel="nosublink" to={`/${currentLang}/blog`}>{ui.blog}</Link>
       </nav>
+      {activeMode&&!personalPage&&!isAdmin&&<CoupangHeaderBanner/>}
       {isAdmin && <input ref={inputRef} type="file" accept="application/json" hidden onChange={onRestore} />}
 
       {/* 프로필 모달 */}
