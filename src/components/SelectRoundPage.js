@@ -1,4 +1,3 @@
-import SocialShareButtons from './sharing/SocialShareButtons';
 import {worldcupRounds} from '../utils/worldcupRounds';
 import RoundSelection from './worldcup/RoundSelection';
 import NavigationLink from "./NavigationLink";
@@ -1169,9 +1168,92 @@ boxShadow:
 
             <>
 
-              {/* 제목 위 썸네일 */}
+              {/* 제목 */}
 
-              <div
+              <h1
+                className="onepick-brand-game-title"
+
+                style={{
+
+                  fontWeight: 900,
+
+                  fontSize: isMobile
+
+                    ? 25
+
+                    : 33,
+
+                  color: "#202534",
+
+                  marginBottom:
+
+                    isMobile
+
+                      ? 20
+
+                      : 27,
+
+                  letterSpacing:
+
+                    "-1.2px",
+
+                  lineHeight: 1.18,
+
+                  textAlign: "center",
+
+                  background:
+
+                    "#ffffff",
+
+                  borderRadius: 14,
+
+                  padding: isMobile
+
+                    ? "12px 0 8px 0"
+
+                    : "18px 0 9px 0",
+
+                  marginLeft: "auto",
+
+                  marginRight: "auto",
+
+                  whiteSpace:
+
+                    "pre-line",
+
+                  wordBreak:
+
+                    "break-all",
+
+                  maxWidth: isMobile
+
+                    ? "98vw"
+
+                    : 850,
+
+                  boxShadow:
+
+                    "0 4px 16px rgba(25,32,52,0.07)",
+
+                  marginTop: isMobile
+
+                    ? 12
+
+                    : 16,
+
+                }}
+
+                title={translatedTitle}
+
+              >
+
+                {translatedTitle}
+
+              </h1>
+
+              {/* 대표 썸네일 */}
+
+              <div className="worldcup-selection-thumbnail"
 
                 style={{
 
@@ -1428,91 +1510,9 @@ boxShadow:
               </div>
 
 
-              {/* 제목 */}
 
-              <h1
-                className="onepick-brand-game-title"
-
-                style={{
-
-                  fontWeight: 900,
-
-                  fontSize: isMobile
-
-                    ? 25
-
-                    : 33,
-
-                  color: "#202534",
-
-                  marginBottom:
-
-                    isMobile
-
-                      ? 20
-
-                      : 27,
-
-                  letterSpacing:
-
-                    "-1.2px",
-
-                  lineHeight: 1.18,
-
-                  textAlign: "center",
-
-                  background:
-
-                    "#ffffff",
-
-                  borderRadius: 14,
-
-                  padding: isMobile
-
-                    ? "12px 0 8px 0"
-
-                    : "18px 0 9px 0",
-
-                  marginLeft: "auto",
-
-                  marginRight: "auto",
-
-                  whiteSpace:
-
-                    "pre-line",
-
-                  wordBreak:
-
-                    "break-all",
-
-                  maxWidth: isMobile
-
-                    ? "98vw"
-
-                    : 850,
-
-                  boxShadow:
-
-                    "0 4px 16px rgba(25,32,52,0.07)",
-
-                  marginTop: isMobile
-
-                    ? 12
-
-                    : 16,
-
-                }}
-
-                title={translatedTitle}
-
-              >
-
-                {translatedTitle}
-
-              </h1>
 
       <RoundSelection lang={normalizedLang} rounds={possibleRounds} selected={selectedRound} onChange={setSelectedRound} onStart={handleStart} roundLabel={round=>t('round_of',{count:round})} candidateCount={candidates.length} recommended={possibleRounds.includes(maxRound)?maxRound:possibleRounds[possibleRounds.length-1]}/>
-      <SocialShareButtons lang={normalizedLang} title={translatedTitle} url={shareUrl}/>
 
               {/* 설명 */}
 

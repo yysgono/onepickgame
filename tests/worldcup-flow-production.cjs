@@ -22,7 +22,7 @@ class LocalBuild extends ResourceLoader{fetch(url){const name=new URL(url).pathn
   assert.equal(document.querySelectorAll('.worldcup-round-selection select').length,0);
   assert.equal(document.querySelectorAll('.worldcup-round-selection').length,1);
   assert.equal(document.querySelector('.onepick-game-brand-label'),null);
-  const picker=document.querySelector('.worldcup-round-selection');assert.equal(picker.previousElementSibling.tagName,'H1');assert(picker.nextElementSibling.classList.contains('opg-social-share'));assert.equal(document.querySelectorAll('.opg-social-share').length,1);
+  const picker=document.querySelector('.worldcup-round-selection'),thumbnail=document.querySelector('.worldcup-selection-thumbnail');assert.equal(thumbnail.previousElementSibling.tagName,'H1');assert.equal(picker.previousElementSibling,thumbnail);assert.equal(document.querySelectorAll('.opg-social-share').length,0);
   assert(document.querySelector('h1').compareDocumentPosition(document.querySelector('.worldcup-round-selection'))&dom.window.Node.DOCUMENT_POSITION_FOLLOWING,'Round picker follows the title and introduction');
   const heading=require('../src/seo/detailCopy.json')[lang][0];assert.equal(document.querySelector('nav[aria-label="'+heading+'"]'),null);
   if(candidateCount<8)assert.equal(document.querySelectorAll('[role=radio]').length,1);

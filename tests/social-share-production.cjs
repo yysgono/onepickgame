@@ -23,6 +23,8 @@ async function run(lang,route){
  try{
   if(route==='mytop9'){
    await wait(()=>d.querySelectorAll('.tn-public-card-link').length===2);assert.equal(d.querySelector('.tn-public-card-link strong').textContent,'Board newest');d.querySelector('.tn-sort-filters button').click();await wait(()=>d.querySelector('.tn-public-card-link strong').textContent==='Board old');assert.equal(d.querySelector('.tn-board-views'),null);assert.equal(d.querySelector('.tn-public-cards article>small'),null);
+  }else if(route.startsWith('select-round/')){
+   await wait(()=>d.querySelector('.worldcup-round-selection'));assert.equal(d.querySelector('.opg-social-share'),null);assert.equal(d.querySelector('.worldcup-selection-thumbnail').previousElementSibling.tagName,'H1');
   }else{
    await wait(()=>d.querySelector('.opg-social-share a'));const x=new URL(d.querySelector('.opg-share-x').href),shared=new URL(x.searchParams.get('url'));
    const expected=route.startsWith('result/')?'result/'+id:route;assert.equal(shared.pathname,'/'+lang+'/'+expected);assert(x.searchParams.get('text'));
