@@ -1,0 +1,202 @@
+{
+  "ko": {
+    "chooseRound": "시작 라운드 선택",
+    "recommended": "추천",
+    "choices": "{count}번 선택",
+    "startRound": "{round} 시작하기",
+    "baseChoices": "기본 대결 기준 · 부활전에서는 선택 횟수가 늘어날 수 있어요.",
+    "progress": "{done} / {total} 선택",
+    "matchNumber": "{number}번째 대결",
+    "progressLabel": "월드컵 진행도"
+  },
+  "en": {
+    "chooseRound": "Choose a starting round",
+    "recommended": "Recommended",
+    "choices": "{count} choices",
+    "startRound": "Start {round}",
+    "baseChoices": "Standard bracket · Resurrection may add more choices.",
+    "progress": "{done} / {total} choices",
+    "matchNumber": "Match {number}",
+    "progressLabel": "Tournament progress"
+  },
+  "ja": {
+    "chooseRound": "開始ラウンドを選択",
+    "recommended": "おすすめ",
+    "choices": "{count}回選択",
+    "startRound": "{round}を開始",
+    "baseChoices": "通常対戦の回数です。復活戦では増える場合があります。",
+    "progress": "{done} / {total}回選択",
+    "matchNumber": "第{number}試合",
+    "progressLabel": "大会の進行状況"
+  },
+  "zh": {
+    "chooseRound": "选择起始轮次",
+    "recommended": "推荐",
+    "choices": "选择 {count} 次",
+    "startRound": "开始{round}",
+    "baseChoices": "按常规对决计算，复活赛可能增加选择次数。",
+    "progress": "已选择 {done} / {total} 次",
+    "matchNumber": "第 {number} 场",
+    "progressLabel": "对决进度"
+  },
+  "es": {
+    "chooseRound": "Elige la ronda inicial",
+    "recommended": "Recomendado",
+    "choices": "{count} elecciones",
+    "startRound": "Iniciar {round}",
+    "baseChoices": "Cuadro estándar · La repesca puede añadir elecciones.",
+    "progress": "{done} / {total} elecciones",
+    "matchNumber": "Duelo {number}",
+    "progressLabel": "Progreso del torneo"
+  },
+  "fr": {
+    "chooseRound": "Choisir le tour initial",
+    "recommended": "Recommandé",
+    "choices": "{count} choix",
+    "startRound": "Commencer : {round}",
+    "baseChoices": "Tournoi standard · Le repêchage peut ajouter des choix.",
+    "progress": "{done} / {total} choix",
+    "matchNumber": "Duel {number}",
+    "progressLabel": "Progression du tournoi"
+  },
+  "vi": {
+    "chooseRound": "Chọn vòng bắt đầu",
+    "recommended": "Đề xuất",
+    "choices": "{count} lượt chọn",
+    "startRound": "Bắt đầu {round}",
+    "baseChoices": "Đấu thông thường · Vòng hồi sinh có thể thêm lượt chọn.",
+    "progress": "{done} / {total} lượt chọn",
+    "matchNumber": "Trận {number}",
+    "progressLabel": "Tiến độ giải đấu"
+  },
+  "de": {
+    "chooseRound": "Startrunde wählen",
+    "recommended": "Empfohlen",
+    "choices": "{count} Entscheidungen",
+    "startRound": "{round} starten",
+    "baseChoices": "Standardturnier · Wiederbelebung kann weitere Entscheidungen hinzufügen.",
+    "progress": "{done} / {total} Entscheidungen",
+    "matchNumber": "Duell {number}",
+    "progressLabel": "Turnierfortschritt"
+  },
+  "ru": {
+    "chooseRound": "Выберите начальный раунд",
+    "recommended": "Рекомендуется",
+    "choices": "Выборов: {count}",
+    "startRound": "Начать: {round}",
+    "baseChoices": "Обычная сетка · Возвращение участников может добавить выборы.",
+    "progress": "{done} / {total} выборов",
+    "matchNumber": "Матч {number}",
+    "progressLabel": "Ход турнира"
+  },
+  "id": {
+    "chooseRound": "Pilih babak awal",
+    "recommended": "Disarankan",
+    "choices": "{count} pilihan",
+    "startRound": "Mulai {round}",
+    "baseChoices": "Bagan standar · Babak kebangkitan dapat menambah pilihan.",
+    "progress": "{done} / {total} pilihan",
+    "matchNumber": "Pertandingan {number}",
+    "progressLabel": "Progres turnamen"
+  },
+  "pt": {
+    "chooseRound": "Escolha a rodada inicial",
+    "recommended": "Recomendado",
+    "choices": "{count} escolhas",
+    "startRound": "Iniciar {round}",
+    "baseChoices": "Chave padrão · A repescagem pode adicionar escolhas.",
+    "progress": "{done} / {total} escolhas",
+    "matchNumber": "Duelo {number}",
+    "progressLabel": "Progresso do torneio"
+  },
+  "hi": {
+    "chooseRound": "शुरुआती राउंड चुनें",
+    "recommended": "सुझाया गया",
+    "choices": "{count} चुनाव",
+    "startRound": "{round} शुरू करें",
+    "baseChoices": "सामान्य मुकाबले · वापसी राउंड में चुनाव बढ़ सकते हैं।",
+    "progress": "{done} / {total} चुनाव",
+    "matchNumber": "मुकाबला {number}",
+    "progressLabel": "टूर्नामेंट की प्रगति"
+  },
+  "bn": {
+    "chooseRound": "শুরুর রাউন্ড বাছুন",
+    "recommended": "প্রস্তাবিত",
+    "choices": "{count}টি নির্বাচন",
+    "startRound": "{round} শুরু করুন",
+    "baseChoices": "সাধারণ লড়াই · ফিরতি রাউন্ডে নির্বাচন বাড়তে পারে।",
+    "progress": "{done} / {total} নির্বাচন",
+    "matchNumber": "ম্যাচ {number}",
+    "progressLabel": "টুর্নামেন্টের অগ্রগতি"
+  },
+  "ar": {
+    "chooseRound": "اختر جولة البداية",
+    "recommended": "موصى به",
+    "choices": "{count} اختيارات",
+    "startRound": "ابدأ {round}",
+    "baseChoices": "المواجهات العادية · قد تزيد جولة العودة عدد الاختيارات.",
+    "progress": "{done} / {total} اختيارات",
+    "matchNumber": "المواجهة {number}",
+    "progressLabel": "تقدم البطولة"
+  },
+  "th": {
+    "chooseRound": "เลือกรอบเริ่มต้น",
+    "recommended": "แนะนำ",
+    "choices": "เลือก {count} ครั้ง",
+    "startRound": "เริ่ม {round}",
+    "baseChoices": "การแข่งปกติ · รอบคืนชีพอาจเพิ่มจำนวนครั้งที่เลือก",
+    "progress": "เลือก {done} / {total} ครั้ง",
+    "matchNumber": "คู่ที่ {number}",
+    "progressLabel": "ความคืบหน้าทัวร์นาเมนต์"
+  },
+  "tr": {
+    "chooseRound": "Başlangıç turunu seç",
+    "recommended": "Önerilen",
+    "choices": "{count} seçim",
+    "startRound": "{round} başlat",
+    "baseChoices": "Standart eşleşmeler · Geri dönüş turu seçim sayısını artırabilir.",
+    "progress": "{done} / {total} seçim",
+    "matchNumber": "Eşleşme {number}",
+    "progressLabel": "Turnuva ilerlemesi"
+  },
+  "it": {
+    "chooseRound": "Scegli il turno iniziale",
+    "recommended": "Consigliato",
+    "choices": "{count} scelte",
+    "startRound": "Avvia {round}",
+    "baseChoices": "Tabellone standard · Il ripescaggio può aggiungere scelte.",
+    "progress": "{done} / {total} scelte",
+    "matchNumber": "Sfida {number}",
+    "progressLabel": "Avanzamento del torneo"
+  },
+  "pl": {
+    "chooseRound": "Wybierz rundę początkową",
+    "recommended": "Polecane",
+    "choices": "{count} wyborów",
+    "startRound": "Rozpocznij: {round}",
+    "baseChoices": "Standardowa drabinka · Powrót uczestników może zwiększyć liczbę wyborów.",
+    "progress": "{done} / {total} wyborów",
+    "matchNumber": "Pojedynek {number}",
+    "progressLabel": "Postęp turnieju"
+  },
+  "nl": {
+    "chooseRound": "Kies de startronde",
+    "recommended": "Aanbevolen",
+    "choices": "{count} keuzes",
+    "startRound": "Start {round}",
+    "baseChoices": "Standaardtoernooi · Een herkansing kan extra keuzes toevoegen.",
+    "progress": "{done} / {total} keuzes",
+    "matchNumber": "Wedstrijd {number}",
+    "progressLabel": "Toernooivoortgang"
+  },
+  "cs": {
+    "chooseRound": "Vyber úvodní kolo",
+    "recommended": "Doporučeno",
+    "choices": "{count} výběrů",
+    "startRound": "Spustit {round}",
+    "baseChoices": "Běžné zápasy · Návrat účastníků může přidat další výběry.",
+    "progress": "{done} / {total} výběrů",
+    "matchNumber": "Zápas {number}",
+    "progressLabel": "Průběh turnaje"
+  }
+}

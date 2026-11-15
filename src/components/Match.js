@@ -1,3 +1,4 @@
+import MatchProgress from './worldcup/MatchProgress';
 import {localizeExtraUi} from "../utils/newLanguageUi";
 import GameBrandLabel from "./GameBrandLabel";
 // src/components/Match.js
@@ -4356,6 +4357,8 @@ useEffect(() => {
 
       <GameBrandLabel />
 
+      <MatchProgress lang={matchLanguage} bracket={bracket} index={idx} pendingWinners={pendingWinners} history={matchHistory} stageLabel={getStageLabel(t,bracket.length*2+pendingWinners.length,roundNum===1)} tournamentLabel={t('round_of',{count:selectedCount})}/>
+
       <AdaptiveTitle
 
         title={cup.title}
@@ -4363,56 +4366,6 @@ useEffect(() => {
         isMobile={isMobile}
 
       />
-
-
-
-      <div
-
-        style={{
-
-          fontSize: STAGE_SIZE,
-
-          fontWeight: 800,
-
-          marginBottom: isMobile
-
-            ? 5
-
-            : 11,
-
-          color: "#202534",
-
-        }}
-
-      >
-
-        {getStageLabel(
-
-          t,
-
-          bracket.length * 2 +
-
-            pendingWinners.length,
-
-          roundNum === 1
-
-        )}{" "}
-
-
-
-        {bracket.length === 1
-
-          ? ""
-
-          : `${idx + 1} / ${
-
-              bracket.length
-
-            }`}
-
-      </div>
-
-
 
       {error && (
 
