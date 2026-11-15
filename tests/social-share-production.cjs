@@ -22,7 +22,7 @@ async function run(lang,route){
  const d=dom.window.document,wait=async fn=>{for(let n=0;n<300;n++){if(fn())return;await new Promise(r=>setTimeout(r,40));}throw Error(route+' timeout '+d.body.textContent.slice(-1000)+' '+errors.join(' ').slice(0,400))};
  try{
   if(route==='mytop9'){
-   await wait(()=>d.querySelectorAll('.tn-public-card-link').length===2);assert.equal(d.querySelector('.tn-public-card-link strong').textContent,'Board newest');d.querySelector('.tn-sort-filters button').click();await wait(()=>d.querySelector('.tn-public-card-link strong').textContent==='Board old');assert(d.querySelector('.tn-board-views').textContent.includes('99'));
+   await wait(()=>d.querySelectorAll('.tn-public-card-link').length===2);assert.equal(d.querySelector('.tn-public-card-link strong').textContent,'Board newest');d.querySelector('.tn-sort-filters button').click();await wait(()=>d.querySelector('.tn-public-card-link strong').textContent==='Board old');assert.equal(d.querySelector('.tn-board-views'),null);assert.equal(d.querySelector('.tn-public-cards article>small'),null);
   }else{
    await wait(()=>d.querySelector('.opg-social-share a'));const x=new URL(d.querySelector('.opg-share-x').href),shared=new URL(x.searchParams.get('url'));
    const expected=route.startsWith('result/')?'result/'+id:route;assert.equal(shared.pathname,'/'+lang+'/'+expected);assert(x.searchParams.get('text'));

@@ -46,7 +46,7 @@ const Social=load('src/components/sharing/SocialShareButtons.js',{react:React,'.
  await act(async()=>root.render(React.createElement(Gallery,{lang:'en'})));assert.equal(document.querySelector('.tn-public-card-link strong').textContent,'Board 0');assert.equal(document.querySelectorAll('.tn-public-card-link').length,12);
  await act(async()=>Simulate.click(document.querySelector('.tn-gallery-more')));assert.equal(document.querySelectorAll('.tn-public-card-link').length,15);
  await act(async()=>Simulate.click(document.querySelector('.tn-sort-filters button')));assert.equal(document.querySelector('.tn-public-card-link strong').textContent,'Board 14');assert.equal(document.querySelectorAll('.tn-public-card-link').length,12);assert.equal(queries.at(-1).start,0);assert.deepEqual(queries.at(-1).orders[0],['view_count',{ascending:false,nullsFirst:false}]);
- assert(document.querySelector('.tn-board-views').textContent.includes('100'));
+ assert.equal(document.querySelector('.tn-board-views'),null);assert.equal(document.querySelector('.tn-public-cards article>small'),null);
  await act(async()=>Simulate.click(document.querySelectorAll('.tn-sort-filters button')[1]));assert.equal(document.querySelector('.tn-public-card-link strong').textContent,'Board 0');
  await act(async()=>root.unmount());dom.window.close();console.log('PASS: 20-language direct share links and copy fallback, private URLs blocked, view RPC dedup/error/retry/storage fallback, and gallery latest/popular sorting with pagination reset.');
 })().catch(error=>{console.error(error);process.exitCode=1});
