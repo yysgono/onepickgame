@@ -1,3 +1,4 @@
+import SocialShareButtons from './sharing/SocialShareButtons';
 import trashCopy from "../utils/contentTrashCopy.json";
 import NavigationLink from "./NavigationLink";
 import quizTranslationHint from "./quizTranslationHint";
@@ -933,22 +934,6 @@ export default function QuizDetailPage() {
 
   }
 
-  async function shareQuiz() {
-    const url = new URL(`/${lang}/quiz/${id}`, window.location.origin).href;
-    try {
-      if (navigator.share) {
-        await navigator.share({ title, text: title, url });
-      } else if (navigator.clipboard?.writeText) {
-        await navigator.clipboard.writeText(url);
-        alert(c.copied);
-      } else {
-        window.prompt(c.share, url);
-      }
-    } catch (error) {
-      if (error?.name !== "AbortError") window.prompt(c.share, url);
-    }
-  }
-
   async function shareResult() {
 
     const rate = records.length ? Math.round((score / records.length) * 100) : 0;
@@ -1188,9 +1173,7 @@ export default function QuizDetailPage() {
 
               <button type="button" disabled={!allQuestions.length} onClick={() => start()} style={{ ...primaryButton, width: "100%", marginTop: 20, minHeight: 62, padding: 15, fontSize: 21 }}>{c.startQuiz}</button>
 
-              <button type="button" onClick={shareQuiz} style={{ ...secondaryButton, width: "100%", marginTop: 12, minHeight: 54, padding: "13px 18px", fontSize: 18, fontWeight: 900, border: "2px solid #e53935", background: "#fff5f5", color: "#b91c1c" }}>
-                🔗 {c.share}
-              </button>
+              <SocialShareButtons lang={lang} title={title} url={`${window.location.origin}/${lang}/quiz/${encodeURIComponent(id)}`}/>
 
               {previousResult?.records?.length > 0 && (
 

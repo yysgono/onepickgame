@@ -1,0 +1,82 @@
+{
+  "en": [
+    "Popular sorts by views; ties show the newest boards first.",
+    "Views"
+  ],
+  "ko": [
+    "인기순은 조회수 기준이며, 조회수가 같으면 최신 등록순으로 표시해요.",
+    "조회수"
+  ],
+  "ja": [
+    "人気順は閲覧数で並べ、同数の場合は新しい投稿を先に表示します。",
+    "閲覧数"
+  ],
+  "zh": [
+    "热门按浏览量排序，浏览量相同时优先显示最新发布。",
+    "浏览量"
+  ],
+  "es": [
+    "Popular ordena por visitas; en caso de empate, primero las más recientes.",
+    "Visitas"
+  ],
+  "fr": [
+    "Tri par vues ; à égalité, les publications les plus récentes passent en premier.",
+    "Vues"
+  ],
+  "it": [
+    "Popolari ordina per visualizzazioni; a parità, prima i più recenti.",
+    "Visualizzazioni"
+  ],
+  "pl": [
+    "Popularne: według wyświetleń; przy remisie najnowsze są pierwsze.",
+    "Wyświetlenia"
+  ],
+  "nl": [
+    "Populair sorteert op weergaven; bij gelijke aantallen staan de nieuwste bovenaan.",
+    "Weergaven"
+  ],
+  "cs": [
+    "Oblíbené řadí podle zobrazení; při shodě jsou první nejnovější.",
+    "Zobrazení"
+  ],
+  "de": [
+    "Beliebt sortiert nach Aufrufen; bei Gleichstand stehen die neuesten zuerst.",
+    "Aufrufe"
+  ],
+  "pt": [
+    "Popular ordena por visualizações; em caso de empate, os mais recentes primeiro.",
+    "Visualizações"
+  ],
+  "ru": [
+    "Популярные: по просмотрам; при равенстве сначала новые.",
+    "Просмотры"
+  ],
+  "vi": [
+    "Phổ biến sắp theo lượt xem; nếu bằng nhau, bài mới hơn đứng trước.",
+    "Lượt xem"
+  ],
+  "id": [
+    "Populer berdasarkan tayangan; jika sama, yang terbaru ditampilkan lebih dulu.",
+    "Tayangan"
+  ],
+  "hi": [
+    "लोकप्रिय क्रम व्यू के आधार पर है; बराबर होने पर नए पहले दिखते हैं।",
+    "व्यू"
+  ],
+  "bn": [
+    "জনপ্রিয় ক্রম ভিউ অনুযায়ী; সমান হলে নতুনগুলো আগে দেখায়।",
+    "ভিউ"
+  ],
+  "ar": [
+    "الترتيب حسب المشاهدات؛ عند التعادل يظهر الأحدث أولاً.",
+    "المشاهدات"
+  ],
+  "tr": [
+    "Popüler, görüntülenmeye göre sıralar; eşitlikte en yeniler önce gelir.",
+    "Görüntülenme"
+  ],
+  "th": [
+    "ยอดนิยมเรียงตามยอดดู หากเท่ากันจะแสดงรายการใหม่ก่อน",
+    "ยอดดู"
+  ]
+}

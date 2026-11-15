@@ -1,3 +1,4 @@
+import SocialShareButtons from './sharing/SocialShareButtons';
 import {saveAuthDraft,readAuthDraft,clearAuthReturn} from './topNine/authDraft';
 import registrationCopy from './topNine/registrationCopy.json';
 import {createPortal} from 'react-dom';
@@ -46,13 +47,14 @@ export default function TopNinePage({publicBoard=null,publicId='',templateSource
  const restoredAuth=useRef(false);
  const shared=useMemo(()=>publicBoard||readShared(location.hash),[publicBoard,location.hash]);
  const showRanks=false; // Ignore historical rank flags in boards, drafts and shared links.
- const [sitePicker,setSitePicker]=useState(false),[galleryTick,setGalleryTick]=useState(0),[templateMore,setTemplateMore]=useState(false),[templateOffset,setTemplateOffset]=useState(0),[stage,setStage]=useState(shared?'preview':templateSource?'pick':'home'),[slots,setSlots]=useState(shared?.slots||blank),[title,setTitle]=useState(shared?.title||(templateSource?templatePageTitle(templateSource,lang):'')),[baseTitle,setBaseTitle]=useState(shared?null:templateSource?templatePageTitle(templateSource,lang):''),[names,setNames]=useState(shared?.names||false);
+ const [sitePicker,setSitePicker]=useState(false),[galleryTick]=useState(0),[templateMore,setTemplateMore]=useState(false),[templateOffset,setTemplateOffset]=useState(0),[stage,setStage]=useState(shared?'preview':templateSource?'pick':'home'),[slots,setSlots]=useState(shared?.slots||blank),[title,setTitle]=useState(shared?.title||(templateSource?templatePageTitle(templateSource,lang):'')),[baseTitle,setBaseTitle]=useState(shared?null:templateSource?templatePageTitle(templateSource,lang):''),[names,setNames]=useState(shared?.names||false);
  const [candidates,setCandidates]=useState(()=>templateSource&&!shared?normalizeCandidates(templateSource.data):[]),[templates,setTemplates]=useState([]),[sources,setSources]=useState([]),[query,setQuery]=useState(''),[searchedQuery,setSearchedQuery]=useState(''),[candidateQuery,setCandidateQuery]=useState(''),[limit,setLimit]=useState(CANDIDATE_PAGE_SIZE),[sourceOffset,setSourceOffset]=useState(0),[moreSources,setMoreSources]=useState(false),[searched,setSearched]=useState(false);
  const [busy,setBusy]=useState(false),[message,setMessage]=useState(''),[templateError,setTemplateError]=useState(false),[templateTick,setTemplateTick]=useState(0),[focus,setFocus]=useState(null),[draft,setDraft]=useState(null),[draftError,setDraftError]=useState(false),[shareURL,setShareURL]=useState('');
  const [editRequest,setEditRequest]=useState(null),[draftNotice,setDraftNotice]=useState(''),[draftBusy,setDraftBusy]=useState(false),[noticeTick,setNoticeTick]=useState(0);
  const shareNoticeRef=useRef(null),shareInputRef=useRef(null);
  const [copyStatus,setCopyStatus]=useState('');
  useEffect(()=>{setCopyStatus('');},[shareURL]);
+ useEffect(()=>{setShareURL('');},[slots,title,names,lang]);
  const [shareNotice,setShareNotice]=useState(''),[quietOperation,setQuietOperation]=useState(false);
  const [frames,setFrames]=useState({}),[frameRetry,setFrameRetry]=useState(0),[game,setGame]=useState(null),[history,setHistory]=useState([]),[gameCount,setGameCount]=useState('54');
  const privateCompletionTracker=useMemo(()=>createPrivateCompletionTracker(supabase),[]);
@@ -226,13 +228,12 @@ export default function TopNinePage({publicBoard=null,publicId='',templateSource
    try{setCopyStatus(typeof document.execCommand==='function'&&document.execCommand('copy')?'copied':'failed');}catch{setCopyStatus('failed');}
   }
  }
- function publishedHome(boardId){
+ function publishedBoard(boardId){
   setShareNotice('');
   setEditingId(boardId);savedBoard.current=JSON.stringify({slots,title,names,showRanks,sourceIds,category});
   draftStore({v:1,boardId,slots,title,baseTitle,names,showRanks,candidates,sourceIds,category},true).catch(()=>{});
-  if(onHome){onHome();return;}
-  setGalleryTick(n=>n+1);setStage('home');setFocus(null);setShareURL('');setMessage('');
-  if(location.hash)window.history.replaceState(null,'',window.location.pathname+window.location.search);
+  setStage('preview');setFocus(null);setShareURL('');setMessage('');
+  navigate('/'+lang+'/mytop9/'+encodeURIComponent(boardId),{state:{refreshBoard:Date.now()}});
   window.scrollTo({top:0,behavior:'instant'});
  }
  function editBoard(restoredDraft=draft){
@@ -310,7 +311,7 @@ export default function TopNinePage({publicBoard=null,publicId='',templateSource
  {focus!==null&&slots[focus]&&<fieldset disabled={busy} className="tn-crop"><legend title={slots[focus].name||'One Pick'}>{slots[focus].name||'One Pick'}</legend>{[['zoom',t.zoom,0,3,.05],['x',t.horizontal,0,100,1],['y',t.vertical,0,100,1]].map(([key,label,min,max,step])=><label key={key}>{label}<input type="range" min={min} max={max} step={step} value={slots[focus][key]??(key==='zoom'?1:50)} onChange={e=>adjust(key,e.target.value)}/></label>)}<button onClick={()=>{setSlots(old=>old.map((c,i)=>i===focus?null:c));setFocus(null);}}>{t.remove}</button></fieldset>}
  <label className="tn-title-field">{lang==='ko'?'구절판 취향표 이름 (선택)':t.titleLabel}<input value={title} maxLength={100} disabled={busy} onChange={e=>setTitle(e.target.value)}/></label><div className="tn-display-options"><label className="tn-toggle"><input type="checkbox" checked={names} disabled={busy} onChange={e=>setNames(e.target.checked)}/>{t.names}</label></div><p className="tn-caption-help">{t.editNameHelp}</p>
  </>:<p className="tn-credit">OnePickGame.com</p>}
- {stage==='pick'&&<div className="tn-actions tn-sticky tn-board-complete"><strong aria-live="polite">{count} / 9</strong><PublishBoard label={registration.register} onLocalGuest={requireUploadLogin} existingId={editingId} sourceIds={sourceIds} category={category} slots={slots} title={title} autoTitle={!title.trim()||(baseTitle!==null&&title.trim()===baseTitle.trim())} names={names} showRanks={showRanks} lang={lang} disabled={busy||!count||!!editingId&&!changedSinceSave} onNotice={showShareNotice} onPublished={publishedHome}/></div>}
+ {stage==='pick'&&<div className="tn-actions tn-sticky tn-board-complete"><strong aria-live="polite">{count} / 9</strong><PublishBoard label={registration.register} onLocalGuest={requireUploadLogin} existingId={editingId} sourceIds={sourceIds} category={category} slots={slots} title={title} autoTitle={!title.trim()||(baseTitle!==null&&title.trim()===baseTitle.trim())} names={names} showRanks={showRanks} lang={lang} disabled={busy||!count||!!editingId&&!changedSinceSave} onNotice={showShareNotice} onPublished={publishedBoard}/></div>}
  </section>
 
  {stage==='pick'&&<section className={candidates.length ? "tn-pool" : "tn-pool tn-pool-empty"} ref={poolRef} onDragOver={e=>e.preventDefault()} onDrop={poolDrop}><div className="tn-pool-heading"><h2>{t.choose}</h2><button type="button" className="tn-upload-button" disabled={busy} onClick={()=>pickUpload()}>{t.upload}</button></div><div className="tn-pool-reset"><button type="button" disabled={busy||!candidates.length} onClick={resetPool}>{t.resetCandidates}</button></div><p className="tn-photo-help">{t.doublePhoto}</p><input type="search" aria-label={t.candidateSearch} placeholder={t.candidateSearch} value={candidateQuery} onChange={e=>{setCandidateQuery(e.target.value);setLimit(CANDIDATE_PAGE_SIZE);}}/>
@@ -322,10 +323,11 @@ export default function TopNinePage({publicBoard=null,publicId='',templateSource
  </section>}
  </div>
  {(stage==='pick'||stage==='home'||stage==='preview'&&!publicId)&&<div className="tn-share-notice">{t.memberUploadHelp.split('\n').map((line,i)=><p key={i} className={i===1?'tn-upload-warning':undefined}>{line}</p>)}</div>}
- {stage==='preview'&&<div className="tn-actions tn-sticky"><strong aria-live="polite">{count} / 9</strong>{(!publicId||canEdit)&&<button disabled={busy} onClick={requestEdit}>{t.edit}</button>}<button type="button" aria-pressed={showNames} onClick={()=>setPreviewNames(!showNames)}>{showNames?t.hideCandidateNames:t.showCandidateNames}</button>{publicId&&!publicBoard?.unlisted&&<DeleteBoard id={publicId} lang={lang} onDeleted={onHome}/>}<button className="tn-primary" disabled={busy||!ready} onClick={download}>↓ {t.download}</button><button disabled={busy||!count} onClick={share}>{busy&&quietOperation?t.loading:t.share}</button>{!editingId&&!shared&&<PublishBoard label={registration.register} onLocalGuest={requireUploadLogin} existingId={editingId} sourceIds={sourceIds} category={category} slots={slots} title={title} autoTitle={!title.trim()||(baseTitle!==null&&title.trim()===baseTitle.trim())} names={names} showRanks={showRanks} lang={lang} disabled={busy||!count||!!editingId&&!changedSinceSave} onNotice={showShareNotice} onPublished={publishedHome}/>}</div>}
+ {stage==='preview'&&<div className="tn-actions tn-sticky"><strong aria-live="polite">{count} / 9</strong>{(!publicId||canEdit)&&<button disabled={busy} onClick={requestEdit}>{t.edit}</button>}<button type="button" aria-pressed={showNames} onClick={()=>setPreviewNames(!showNames)}>{showNames?t.hideCandidateNames:t.showCandidateNames}</button>{publicId&&!publicBoard?.unlisted&&<DeleteBoard id={publicId} lang={lang} onDeleted={onHome}/>}<button className="tn-primary" disabled={busy||!ready} onClick={download}>↓ {t.download}</button><button disabled={busy||!count} onClick={share}>{busy&&quietOperation?t.loading:t.share}</button>{!editingId&&!shared&&<PublishBoard label={registration.register} onLocalGuest={requireUploadLogin} existingId={editingId} sourceIds={sourceIds} category={category} slots={slots} title={title} autoTitle={!title.trim()||(baseTitle!==null&&title.trim()===baseTitle.trim())} names={names} showRanks={showRanks} lang={lang} disabled={busy||!count||!!editingId&&!changedSinceSave} onNotice={showShareNotice} onPublished={publishedBoard}/>}</div>}
 
  {uploadGate&&createPortal(<div className="top-nine tn-picker-overlay tn-public-overlay" dir={lang==='ar'?'rtl':'ltr'}><section className="tn-publish-dialog" role="dialog" aria-modal="true" aria-labelledby="tn-upload-access-title"><h2 id="tn-upload-access-title">{registration.title}</h2><p className="tn-upload-warning">{registration.help}</p><p>{registration.kept}</p>{authSaveError&&<p role="alert">{t.draftSaveFailed}</p>}<div className="tn-actions"><button autoFocus disabled={authSaving} onClick={privateView}>{t.privateView}</button><button className="tn-primary" disabled={authSaving} onClick={()=>continueToAuth('login')}>{authSaving?t.loading:registration.login}</button><button disabled={authSaving} onClick={()=>continueToAuth('signup')}>{registration.signup}</button><button disabled={authSaving} onClick={()=>setUploadGate(false)}>{registration.keepEditing}</button></div></section></div>,document.body)}
  {shareNotice&&<div ref={shareNoticeRef} className="tn-action-notice tn-upload-warning" role="alert"><p>{shareNotice}</p>{[t.localShare,t.uploadShareRestriction].includes(shareNotice)&&<a href={`/${lang}/login`}>{t.memberAccess}</a>}</div>}
+ {stage==='preview'&&(shareURL||(publicId&&!changedSinceSave))&&<SocialShareButtons lang={lang} title={displayTitle} url={shareURL||`${window.location.origin}/${lang}/mytop9/${encodeURIComponent(publicId)}`}/>}
  {shareURL&&<div className="tn-share"><span>{t.share}</span><div className="tn-share-row"><input ref={shareInputRef} aria-label={t.share} type="text" readOnly value={shareURL} onFocus={e=>e.target.select()}/><button type="button" onClick={copyShareLink}>{t.copyLink}</button></div>{copyStatus&&<p className="tn-copy-status" role="status">{copyStatus==='copied'?t.linkCopied:t.copyLinkFailed}</p>}</div>}
  </>}
  {draftNotice&&<p className="tn-draft-notice" role="status">{draftNotice}</p>}

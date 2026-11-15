@@ -1,3 +1,4 @@
+import SocialShareButtons from './sharing/SocialShareButtons';
 import statsTableLabels from "../locales/statsTableLabels.json";
 import { statsPageWithSelected } from "../utils/statsPageWithSelected";
 import StatsCandidateName from "./StatsCandidateName";
@@ -1468,88 +1469,10 @@ const top3 = useMemo(() => {
 
     if (!selectedCup?.id) return null;
 
-    const shareUrl = `${window.location.origin}/${lang}/select-round/${selectedCup.id}`;
-
+    const shareUrl = `${window.location.origin}/${normalizedLang}/result/${selectedCup.id}`;
     return (
-
-      <div
-
-        style={{
-
-          display: "flex",
-
-          justifyContent: "center",
-
-          alignItems: "center",
-
-          flexWrap: "wrap",
-
-          gap: 10,
-
-          marginBottom: 24,
-
-          marginTop: 8,
-
-        }}
-
-      >
-
-        <button
-
-          type="button"
-
-          onClick={() => {
-
-            navigator.clipboard
-
-              .writeText(shareUrl)
-
-              .then(() => {
-
-                if (window?.toast?.success) window.toast.success(t("share_link_copied"));
-
-                else alert(t("share_link_copied"));
-
-              })
-
-              .catch(() => alert(shareUrl));
-
-          }}
-
-          style={{
-
-            color: "#ffffff",
-
-            background: "#2563eb",
-
-            border: "2px solid #1d4ed8",
-
-            borderRadius: 12,
-
-            padding: "13px 26px",
-
-            fontWeight: 900,
-
-            cursor: "pointer",
-
-            fontSize: 18,
-
-            minWidth: 220,
-
-            maxWidth: "100%",
-
-            minHeight: 54,
-
-            boxShadow: "0 5px 16px rgba(37,99,235,.28)",
-
-          }}
-
-        >
-
-          🔗 {t("share_worldcup")}
-
-        </button>
-
+      <div style={{display:'flex',justifyContent:'center',alignItems:'center',flexWrap:'wrap',gap:10,margin:'8px 0 24px'}}>
+        <SocialShareButtons lang={normalizedLang} title={getWorldcupTitle(selectedCup,normalizedLang)} url={shareUrl}/>
         <ReportButton cupId={selectedCup.id} cupTitle={getWorldcupTitle(selectedCup, normalizedLang)} lang={normalizedLang} size="md" />
 
       </div>

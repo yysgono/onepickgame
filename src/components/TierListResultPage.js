@@ -1,3 +1,4 @@
+import SocialShareButtons from './sharing/SocialShareButtons';
 import {currentActivityLanguage} from '../utils/activityLanguage';
 import { TIER_COLORS, visibleTierRows } from "../utils/tierRows";
 import tierListCloneButton from "../locales/tierListCloneButton.json";
@@ -243,15 +244,6 @@ const [
   const [
     authorName,
     setAuthorName,
-  ] =
-    useState(
-      ""
-    );
-
-
-  const [
-    shareMessage,
-    setShareMessage,
   ] =
     useState(
       ""
@@ -968,90 +960,6 @@ const canManage =
      공유
      ========================= */
 
-  const handleShare =
-    async () => {
-      const url =
-        window.location.href;
-
-
-   const title = tierDetailSeo.getTierPublicTitle({...tierList,_sourcePreset:sourceTitleCup},lang,authorName);
-
-
-      setShareMessage(
-        ""
-      );
-
-
-      try {
-        if (
-          navigator.share
-        ) {
-          await navigator.share(
-            {
-              title,
-
-              text:
-                text.shareText(
-                  title
-                ),
-
-              url,
-            }
-          );
-
-
-          return;
-        }
-
-
-        await navigator
-          .clipboard
-          .writeText(
-            url
-          );
-
-
-        setShareMessage(
-          text.linkCopied
-        );
-
-
-        setTimeout(
-          () => {
-            setShareMessage(
-              ""
-            );
-          },
-          2000
-        );
-      } catch (
-        shareError
-      ) {
-        if (
-          shareError
-            ?.name ===
-          "AbortError"
-        ) {
-          return;
-        }
-
-
-        try {
-          await navigator
-            .clipboard
-            .writeText(
-              url
-            );
-
-
-          setShareMessage(
-            text.linkCopied
-          );
-        } catch {}
-      }
-    };
-
-
   /* =========================================================
      PNG 다운로드
 
@@ -1552,9 +1460,7 @@ const seoAuthorReady = seoAuthor.tierId === String(tierList.id);
         <button className="tier-result-action" type="button" onClick={handleDownload} disabled={downloading}>
           📥 {downloading ? text.downloading : text.download}
         </button>
-        <button className="tier-result-action tier-result-share" type="button" onClick={handleShare}>
-          🔗 {text.share}
-        </button>
+        <SocialShareButtons lang={lang} title={displayTitle} url={`${window.location.origin}/${lang}/tier-list/${encodeURIComponent(id)}`}/>
         {canManage && (
           <>
             <button className="tier-result-action" type="button" onClick={handleEdit}>

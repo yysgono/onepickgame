@@ -1,0 +1,182 @@
+{
+  "ko": {
+    "heading": "공개 누적 순위",
+    "basis": "전체 기간 · 우승 횟수 기준 상위 10명. 우승률은 우승 횟수 ÷ 전체 게임 수, 승률은 대결 승리 수 ÷ 대결 수입니다.",
+    "checked": "통계 확인 시각:",
+    "empty": "아직 집계된 공개 통계가 없습니다.",
+    "unavailable": "공개 통계를 잠시 불러오지 못했습니다.",
+    "rank": "순위",
+    "name": "이름"
+  },
+  "en": {
+    "heading": "Public all-time rankings",
+    "basis": "All time · Top 10 by titles. Championship rate = titles ÷ total games; match win rate = match wins ÷ matches.",
+    "checked": "Statistics checked:",
+    "empty": "No public statistics have been recorded yet.",
+    "unavailable": "Public statistics are temporarily unavailable.",
+    "rank": "Rank",
+    "name": "Name"
+  },
+  "ja": {
+    "heading": "公開累計ランキング",
+    "basis": "全期間・優勝回数順の上位10名。優勝率＝優勝回数÷全ゲーム数、対戦勝率＝対戦勝利数÷対戦数。",
+    "checked": "統計確認日時：",
+    "empty": "公開統計はまだありません。",
+    "unavailable": "現在、公開統計を取得できません。",
+    "rank": "順位",
+    "name": "名前"
+  },
+  "zh": {
+    "heading": "公开累计排名",
+    "basis": "全部时间 · 按夺冠次数排名前10。夺冠率＝夺冠次数÷总游戏数；对战胜率＝对战获胜次数÷对战次数。",
+    "checked": "统计检查时间：",
+    "empty": "暂无公开统计。",
+    "unavailable": "暂时无法加载公开统计。",
+    "rank": "名次",
+    "name": "名称"
+  },
+  "ru": {
+    "heading": "Общий публичный рейтинг",
+    "basis": "За всё время · Топ-10 по титулам. Доля побед в турнирах = титулы ÷ все игры; в дуэлях = победы ÷ дуэли.",
+    "checked": "Статистика проверена:",
+    "empty": "Публичной статистики пока нет.",
+    "unavailable": "Публичная статистика временно недоступна.",
+    "rank": "Ранг",
+    "name": "Имя"
+  },
+  "pt": {
+    "heading": "Classificação pública acumulada",
+    "basis": "Todo o período · Top 10 por títulos. Taxa de títulos = títulos ÷ total de jogos; taxa de vitórias = vitórias em duelos ÷ duelos.",
+    "checked": "Estatísticas verificadas:",
+    "empty": "Ainda não há estatísticas públicas.",
+    "unavailable": "As estatísticas públicas estão temporariamente indisponíveis.",
+    "rank": "Classificação",
+    "name": "Nome"
+  },
+  "es": {
+    "heading": "Clasificación pública histórica",
+    "basis": "Todo el período · Top 10 por títulos. Tasa de campeonato = títulos ÷ partidas totales; tasa de victoria = victorias en duelos ÷ duelos.",
+    "checked": "Estadísticas comprobadas:",
+    "empty": "Todavía no hay estadísticas públicas.",
+    "unavailable": "Las estadísticas públicas no están disponibles temporalmente.",
+    "rank": "Rango",
+    "name": "Nombre"
+  },
+  "fr": {
+    "heading": "Classement public cumulé",
+    "basis": "Depuis le début · Top 10 par titres. Taux de championnat = titres ÷ total des parties ; taux de victoire = duels gagnés ÷ duels.",
+    "checked": "Statistiques vérifiées :",
+    "empty": "Aucune statistique publique pour le moment.",
+    "unavailable": "Les statistiques publiques sont temporairement indisponibles.",
+    "rank": "Rang",
+    "name": "Nom"
+  },
+  "id": {
+    "heading": "Peringkat publik sepanjang waktu",
+    "basis": "Sepanjang waktu · 10 teratas menurut gelar. Rasio juara = gelar ÷ total permainan; rasio kemenangan duel = duel menang ÷ jumlah duel.",
+    "checked": "Statistik diperiksa:",
+    "empty": "Belum ada statistik publik.",
+    "unavailable": "Statistik publik sementara tidak tersedia.",
+    "rank": "Peringkat",
+    "name": "Nama"
+  },
+  "hi": {
+    "heading": "सार्वजनिक कुल रैंकिंग",
+    "basis": "पूरी अवधि · खिताब के अनुसार शीर्ष 10। चैंपियन दर = खिताब ÷ कुल खेल; मुकाबला जीत दर = जीते मुकाबले ÷ कुल मुकाबले।",
+    "checked": "आँकड़े जाँचे गए:",
+    "empty": "अभी कोई सार्वजनिक आँकड़े नहीं हैं।",
+    "unavailable": "सार्वजनिक आँकड़े अभी उपलब्ध नहीं हैं।",
+    "rank": "रैंक",
+    "name": "नाम"
+  },
+  "de": {
+    "heading": "Öffentliche Gesamtrangliste",
+    "basis": "Gesamter Zeitraum · Top 10 nach Titeln. Titelquote = Titel ÷ alle Spiele; Duellsiegquote = Duellsiege ÷ Duelle.",
+    "checked": "Statistik geprüft:",
+    "empty": "Es liegen noch keine öffentlichen Statistiken vor.",
+    "unavailable": "Öffentliche Statistiken sind vorübergehend nicht verfügbar.",
+    "rank": "Rang",
+    "name": "Name"
+  },
+  "vi": {
+    "heading": "Xếp hạng công khai tích lũy",
+    "basis": "Toàn thời gian · Top 10 theo số lần vô địch. Tỷ lệ vô địch = số lần vô địch ÷ tổng số trò chơi; tỷ lệ thắng = số trận thắng ÷ số trận.",
+    "checked": "Đã kiểm tra thống kê:",
+    "empty": "Chưa có thống kê công khai.",
+    "unavailable": "Tạm thời không tải được thống kê công khai.",
+    "rank": "Xếp hạng",
+    "name": "Tên"
+  },
+  "ar": {
+    "heading": "الترتيب العام التراكمي",
+    "basis": "كل الفترات · أفضل 10 حسب الألقاب. نسبة البطولة = الألقاب ÷ إجمالي الألعاب؛ نسبة الفوز بالمواجهات = الانتصارات ÷ المواجهات.",
+    "checked": "وقت التحقق من الإحصاءات:",
+    "empty": "لا توجد إحصاءات عامة حتى الآن.",
+    "unavailable": "الإحصاءات العامة غير متاحة مؤقتاً.",
+    "rank": "الترتيب",
+    "name": "الاسم"
+  },
+  "bn": {
+    "heading": "সর্বকালের প্রকাশ্য র‍্যাঙ্কিং",
+    "basis": "সমস্ত সময় · শিরোপা অনুযায়ী শীর্ষ ১০। শিরোপার হার = শিরোপা ÷ মোট খেলা; ম্যাচ জয়ের হার = ম্যাচ জয় ÷ মোট ম্যাচ।",
+    "checked": "পরিসংখ্যান যাচাইয়ের সময়:",
+    "empty": "এখনও কোনো প্রকাশ্য পরিসংখ্যান নেই।",
+    "unavailable": "প্রকাশ্য পরিসংখ্যান সাময়িকভাবে পাওয়া যাচ্ছে না।",
+    "rank": "ক্রম",
+    "name": "নাম"
+  },
+  "th": {
+    "heading": "อันดับสะสมสาธารณะ",
+    "basis": "ตลอดเวลา · 10 อันดับตามจำนวนแชมป์ อัตราแชมป์ = จำนวนแชมป์ ÷ เกมทั้งหมด อัตราชนะ = จำนวนชนะการดวล ÷ จำนวนการดวล",
+    "checked": "เวลาตรวจสอบสถิติ:",
+    "empty": "ยังไม่มีสถิติสาธารณะ",
+    "unavailable": "ไม่สามารถโหลดสถิติสาธารณะได้ชั่วคราว",
+    "rank": "อันดับ",
+    "name": "ชื่อ"
+  },
+  "tr": {
+    "heading": "Genel herkese açık sıralama",
+    "basis": "Tüm zamanlar · Şampiyonluk sayısına göre ilk 10. Şampiyonluk oranı = şampiyonluklar ÷ toplam oyun; maç kazanma oranı = kazanılan maçlar ÷ maçlar.",
+    "checked": "İstatistik kontrol zamanı:",
+    "empty": "Henüz herkese açık istatistik yok.",
+    "unavailable": "Herkese açık istatistikler geçici olarak kullanılamıyor.",
+    "rank": "Sıra",
+    "name": "İsim"
+  },
+  "it": {
+    "heading": "Classifica pubblica complessiva",
+    "basis": "Tutto il periodo · Top 10 per titoli. Tasso di vittoria del torneo = titoli ÷ partite totali; tasso nei duelli = duelli vinti ÷ duelli.",
+    "checked": "Statistiche verificate:",
+    "empty": "Non sono ancora disponibili statistiche pubbliche.",
+    "unavailable": "Le statistiche pubbliche sono temporaneamente non disponibili.",
+    "rank": "Classifica",
+    "name": "Nome"
+  },
+  "pl": {
+    "heading": "Publiczny ranking ogólny",
+    "basis": "Cały okres · Top 10 według tytułów. Odsetek mistrzostw = tytuły ÷ wszystkie gry; odsetek wygranych = wygrane pojedynki ÷ pojedynki.",
+    "checked": "Statystyki sprawdzone:",
+    "empty": "Brak publicznych statystyk.",
+    "unavailable": "Publiczne statystyki są chwilowo niedostępne.",
+    "rank": "Ranking",
+    "name": "Nazwa"
+  },
+  "nl": {
+    "heading": "Openbare totaalranglijst",
+    "basis": "Alle perioden · Top 10 op titels. Kampioenschapspercentage = titels ÷ alle spellen; winstpercentage = gewonnen duels ÷ duels.",
+    "checked": "Statistieken gecontroleerd:",
+    "empty": "Er zijn nog geen openbare statistieken.",
+    "unavailable": "Openbare statistieken zijn tijdelijk niet beschikbaar.",
+    "rank": "Rang",
+    "name": "Naam"
+  },
+  "cs": {
+    "heading": "Veřejné celkové pořadí",
+    "basis": "Celé období · Top 10 podle titulů. Podíl titulů = tituly ÷ všechny hry; podíl výher = vyhrané duely ÷ duely.",
+    "checked": "Statistiky ověřeny:",
+    "empty": "Zatím nejsou žádné veřejné statistiky.",
+    "unavailable": "Veřejné statistiky jsou dočasně nedostupné.",
+    "rank": "Pozice",
+    "name": "Název"
+  }
+}

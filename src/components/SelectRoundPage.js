@@ -1,3 +1,4 @@
+import SocialShareButtons from './sharing/SocialShareButtons';
 import {worldcupRounds} from '../utils/worldcupRounds';
 import RoundSelection from './worldcup/RoundSelection';
 import NavigationLink from "./NavigationLink";
@@ -1165,6 +1166,7 @@ boxShadow:
           )}
 
       <RoundSelection lang={normalizedLang} rounds={possibleRounds} selected={selectedRound} onChange={setSelectedRound} onStart={handleStart} roundLabel={round=>t('round_of',{count:round})} candidateCount={candidates.length} recommended={possibleRounds.includes(maxRound)?maxRound:possibleRounds[possibleRounds.length-1]}/>
+      <SocialShareButtons lang={normalizedLang} title={translatedTitle} url={shareUrl}/>
 
           {cup && (
 

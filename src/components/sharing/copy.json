@@ -1,0 +1,182 @@
+{
+  "en": {
+    "share": "Share",
+    "copy": "Copy link",
+    "copied": "Link copied.",
+    "failed": "Unable to share. Please copy the link.",
+    "open": "Open",
+    "instagramHelp": "Choose Instagram if it appears in your device’s share menu. Otherwise, download the image and copy the link to share manually.",
+    "instagramCopied": "Link copied. Upload the downloaded image to Instagram and paste the link into a Story link sticker."
+  },
+  "ko": {
+    "share": "공유하기",
+    "copy": "링크 복사",
+    "copied": "링크를 복사했어요.",
+    "failed": "공유하지 못했어요. 링크를 복사해 주세요.",
+    "open": "열기",
+    "instagramHelp": "기기 공유 목록에 Instagram이 있으면 선택하세요. 없으면 이미지 다운로드와 링크 복사로 직접 공유해 주세요.",
+    "instagramCopied": "링크를 복사했어요. 다운로드한 이미지를 인스타그램에 올리고, 스토리 링크 스티커에 링크를 붙여넣으세요."
+  },
+  "ja": {
+    "share": "共有",
+    "copy": "リンクをコピー",
+    "copied": "コピーしました。",
+    "failed": "共有できません。リンクをコピーしてください。",
+    "open": "開く",
+    "instagramHelp": "端末の共有メニューにInstagramがあれば選択してください。なければ画像を保存し、リンクをコピーして共有してください。",
+    "instagramCopied": "リンクをコピーしました。保存した画像をInstagramに投稿し、ストーリーズのリンクスタンプに貼り付けてください。"
+  },
+  "zh": {
+    "share": "分享",
+    "copy": "复制链接",
+    "copied": "链接已复制。",
+    "failed": "无法分享，请复制链接。",
+    "open": "打开",
+    "instagramHelp": "如果设备分享菜单中有Instagram，请选择它。否则请下载图片并复制链接后手动分享。",
+    "instagramCopied": "链接已复制。将下载的图片上传至Instagram，并将链接粘贴到快拍的链接贴纸中。"
+  },
+  "es": {
+    "share": "Compartir",
+    "copy": "Copiar enlace",
+    "copied": "Enlace copiado.",
+    "failed": "No se pudo compartir. Copia el enlace.",
+    "open": "Abrir",
+    "instagramHelp": "Elige Instagram si aparece en el menú de compartir. Si no, descarga la imagen y copia el enlace para compartir manualmente.",
+    "instagramCopied": "Enlace copiado. Sube la imagen descargada a Instagram y pega el enlace en un sticker de enlace de una historia."
+  },
+  "fr": {
+    "share": "Partager",
+    "copy": "Copier le lien",
+    "copied": "Lien copié.",
+    "failed": "Partage impossible. Copiez le lien.",
+    "open": "Ouvrir",
+    "instagramHelp": "Choisissez Instagram dans le menu de partage si disponible. Sinon, téléchargez l’image et copiez le lien pour partager manuellement.",
+    "instagramCopied": "Lien copié. Publiez l’image téléchargée sur Instagram et collez le lien dans un sticker de lien en story."
+  },
+  "it": {
+    "share": "Condividi",
+    "copy": "Copia link",
+    "copied": "Link copiato.",
+    "failed": "Impossibile condividere. Copia il link.",
+    "open": "Apri",
+    "instagramHelp": "Seleziona Instagram se compare nel menu di condivisione. Altrimenti scarica l’immagine e copia il link per condividerli manualmente.",
+    "instagramCopied": "Link copiato. Carica l’immagine scaricata su Instagram e incolla il link in un adesivo link della storia."
+  },
+  "pl": {
+    "share": "Udostępnij",
+    "copy": "Kopiuj link",
+    "copied": "Link skopiowany.",
+    "failed": "Nie udało się udostępnić. Skopiuj link.",
+    "open": "Otwórz",
+    "instagramHelp": "Wybierz Instagram, jeśli jest w menu udostępniania. W przeciwnym razie pobierz obraz i skopiuj link, aby udostępnić ręcznie.",
+    "instagramCopied": "Link skopiowany. Prześlij pobrany obraz na Instagram i wklej link do naklejki z linkiem w relacji."
+  },
+  "nl": {
+    "share": "Delen",
+    "copy": "Link kopiëren",
+    "copied": "Link gekopieerd.",
+    "failed": "Delen mislukt. Kopieer de link.",
+    "open": "Openen",
+    "instagramHelp": "Kies Instagram als het in het deelmenu staat. Download anders de afbeelding en kopieer de link om handmatig te delen.",
+    "instagramCopied": "Link gekopieerd. Upload de gedownloade afbeelding naar Instagram en plak de link in een linksticker in je verhaal."
+  },
+  "cs": {
+    "share": "Sdílet",
+    "copy": "Kopírovat odkaz",
+    "copied": "Odkaz zkopírován.",
+    "failed": "Sdílení se nezdařilo. Zkopírujte odkaz.",
+    "open": "Otevřít",
+    "instagramHelp": "Vyberte Instagram, pokud je v nabídce sdílení. Jinak stáhněte obrázek a zkopírujte odkaz pro ruční sdílení.",
+    "instagramCopied": "Odkaz zkopírován. Nahrajte stažený obrázek na Instagram a vložte odkaz do nálepky s odkazem v příběhu."
+  },
+  "de": {
+    "share": "Teilen",
+    "copy": "Link kopieren",
+    "copied": "Link kopiert.",
+    "failed": "Teilen fehlgeschlagen. Bitte Link kopieren.",
+    "open": "Öffnen",
+    "instagramHelp": "Wähle Instagram, falls es im Teilen-Menü erscheint. Lade sonst das Bild herunter und kopiere den Link zum manuellen Teilen.",
+    "instagramCopied": "Link kopiert. Lade das gespeicherte Bild auf Instagram hoch und füge den Link in einen Link-Sticker deiner Story ein."
+  },
+  "pt": {
+    "share": "Compartilhar",
+    "copy": "Copiar link",
+    "copied": "Link copiado.",
+    "failed": "Não foi possível compartilhar. Copie o link.",
+    "open": "Abrir",
+    "instagramHelp": "Escolha Instagram se aparecer no menu de compartilhamento. Caso contrário, baixe a imagem e copie o link para compartilhar manualmente.",
+    "instagramCopied": "Link copiado. Publique a imagem baixada no Instagram e cole o link em um adesivo de link no Story."
+  },
+  "ru": {
+    "share": "Поделиться",
+    "copy": "Копировать ссылку",
+    "copied": "Ссылка скопирована.",
+    "failed": "Не удалось поделиться. Скопируйте ссылку.",
+    "open": "Открыть",
+    "instagramHelp": "Выберите Instagram в меню отправки, если он доступен. Иначе скачайте изображение и скопируйте ссылку для ручной публикации.",
+    "instagramCopied": "Ссылка скопирована. Загрузите скачанное изображение в Instagram и вставьте ссылку в стикер со ссылкой в истории."
+  },
+  "vi": {
+    "share": "Chia sẻ",
+    "copy": "Sao chép liên kết",
+    "copied": "Đã sao chép liên kết.",
+    "failed": "Không thể chia sẻ. Hãy sao chép liên kết.",
+    "open": "Mở",
+    "instagramHelp": "Chọn Instagram nếu có trong menu chia sẻ. Nếu không, tải ảnh và sao chép liên kết để chia sẻ thủ công.",
+    "instagramCopied": "Đã sao chép liên kết. Đăng ảnh đã tải lên Instagram và dán liên kết vào nhãn liên kết trong tin."
+  },
+  "id": {
+    "share": "Bagikan",
+    "copy": "Salin tautan",
+    "copied": "Tautan disalin.",
+    "failed": "Tidak dapat berbagi. Salin tautannya.",
+    "open": "Buka",
+    "instagramHelp": "Pilih Instagram jika tersedia di menu berbagi. Jika tidak, unduh gambar dan salin tautan untuk berbagi secara manual.",
+    "instagramCopied": "Tautan disalin. Unggah gambar yang diunduh ke Instagram dan tempel tautan pada stiker tautan Story."
+  },
+  "hi": {
+    "share": "साझा करें",
+    "copy": "लिंक कॉपी करें",
+    "copied": "लिंक कॉपी हो गया।",
+    "failed": "साझा नहीं कर सके। लिंक कॉपी करें।",
+    "open": "खोलें",
+    "instagramHelp": "अगर डिवाइस के शेयर मेनू में Instagram दिखे तो उसे चुनें। नहीं तो चित्र डाउनलोड करें और लिंक कॉपी करके साझा करें।",
+    "instagramCopied": "लिंक कॉपी हो गया। डाउनलोड किया चित्र Instagram पर अपलोड करें और Story के लिंक स्टिकर में लिंक चिपकाएँ।"
+  },
+  "bn": {
+    "share": "শেয়ার করুন",
+    "copy": "লিংক কপি করুন",
+    "copied": "লিংক কপি হয়েছে।",
+    "failed": "শেয়ার করা যায়নি। লিংক কপি করুন।",
+    "open": "খুলুন",
+    "instagramHelp": "ডিভাইসের শেয়ার মেনুতে Instagram থাকলে বেছে নিন। না থাকলে ছবি ডাউনলোড ও লিংক কপি করে শেয়ার করুন।",
+    "instagramCopied": "লিংক কপি হয়েছে। ডাউনলোড করা ছবি Instagram-এ আপলোড করে স্টোরির লিংক স্টিকারে লিংক পেস্ট করুন।"
+  },
+  "ar": {
+    "share": "مشاركة",
+    "copy": "نسخ الرابط",
+    "copied": "تم نسخ الرابط.",
+    "failed": "تعذرت المشاركة. انسخ الرابط.",
+    "open": "فتح",
+    "instagramHelp": "اختر Instagram إن ظهر في قائمة المشاركة. وإلا نزّل الصورة وانسخ الرابط للمشاركة يدوياً.",
+    "instagramCopied": "تم نسخ الرابط. ارفع الصورة التي نزّلتها إلى Instagram والصق الرابط في ملصق الرابط في القصة."
+  },
+  "tr": {
+    "share": "Paylaş",
+    "copy": "Bağlantıyı kopyala",
+    "copied": "Bağlantı kopyalandı.",
+    "failed": "Paylaşılamadı. Bağlantıyı kopyalayın.",
+    "open": "Aç",
+    "instagramHelp": "Paylaşım menüsünde Instagram varsa seçin. Yoksa görseli indirip bağlantıyı kopyalayarak elle paylaşın.",
+    "instagramCopied": "Bağlantı kopyalandı. İndirdiğiniz görseli Instagram’a yükleyip bağlantıyı hikâyedeki bağlantı çıkartmasına yapıştırın."
+  },
+  "th": {
+    "share": "แชร์",
+    "copy": "คัดลอกลิงก์",
+    "copied": "คัดลอกลิงก์แล้ว",
+    "failed": "แชร์ไม่ได้ โปรดคัดลอกลิงก์",
+    "open": "เปิด",
+    "instagramHelp": "เลือก Instagram หากมีในเมนูแชร์ของอุปกรณ์ หากไม่มี ให้ดาวน์โหลดภาพและคัดลอกลิงก์เพื่อแชร์ด้วยตนเอง",
+    "instagramCopied": "คัดลอกลิงก์แล้ว อัปโหลดภาพที่ดาวน์โหลดไปยัง Instagram และวางลิงก์ในสติกเกอร์ลิงก์ของสตอรี่"
+  }
+}
