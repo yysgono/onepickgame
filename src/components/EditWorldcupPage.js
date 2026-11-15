@@ -2988,7 +2988,7 @@ const updatedCup = {
 
                     placeholder={t("translated_description_placeholder", {
 
-                      defaultValue: "번역 설명을 입력하세요 (선택)",
+                      defaultValue: "Enter a translated description (optional)",
 
                     })}
 

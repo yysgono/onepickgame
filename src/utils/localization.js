@@ -44,7 +44,7 @@ export function getLocalizedField(
   translationFieldName = `${fieldName}_translations`
 ) {
   const normalizedLang = normalizeLang(lang);
-  const originalLanguage = normalizeLang(item?.original_language || "");
+  const originalLanguage = item?.original_language ? normalizeLang(item.original_language) : "";
   const originalValue = item?.[fieldName] || "";
   const translations = readTranslationMap(item?.[translationFieldName]);
 

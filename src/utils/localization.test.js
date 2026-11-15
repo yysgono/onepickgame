@@ -55,3 +55,16 @@ describe("localization helpers", () => {
     expect(getLocalizedField({}, "en", "title")).toBe("");
   });
 });
+
+// Home activity RPC intentionally supplies a compact record without original_language.
+test("uses stored English translation when the activity record has no original language", () => {
+ expect(getWorldcupTitle({title:"한국어 제목",title_translations:{en:"English title"}},"en")).toBe("English title");
+ expect(getWorldcupTitle({title:"한국어 제목",title_translations:'{"en":"English title"}'},"en")).toBe("English title");
+});
+test("preserves explicit English originals and translates all compact-record languages", () => {
+ expect(getWorldcupTitle({title:"Original English",original_language:"en",title_translations:{en:"Outdated translation"}},"en")).toBe("Original English");
+ for(const lang of Object.keys(require('../seo/siteHomeCopy.json'))){
+  expect(getWorldcupTitle({title:"원본",title_translations:{[lang]:"Translated "+lang}},lang)).toBe("Translated "+lang);
+  expect(typeof require('../locales/'+lang+'/translation.json').translated_description_placeholder).toBe('string');
+ }
+});
