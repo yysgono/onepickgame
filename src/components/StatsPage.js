@@ -1,3 +1,4 @@
+import WorldcupReportButton from './sharing/WorldcupReportButton';
 import SocialShareButtons from './sharing/SocialShareButtons';
 import statsTableLabels from "../locales/statsTableLabels.json";
 import { statsPageWithSelected } from "../utils/statsPageWithSelected";
@@ -14,7 +15,6 @@ import React, {
 
   useEffect,
 
-  useCallback,
 
   useMemo,
 
@@ -193,202 +193,6 @@ const readCache = readStatsCache;
 const writeCache = writeStatsCache;
 
 /* ========================= 신고 버튼 ========================= */
-
-function ReportButton({ cupId, cupTitle = "", lang = "en", size = "md" }) {
-
-  const { t } = useTranslation();
-
-  const [show, setShow] = useState(false);
-
-  const [reason, setReason] = useState("");
-
-  const [ok, setOk] = useState("");
-
-  const [error, setError] = useState("");
-
-
-
-  const style =
-
-    size === "sm"
-
-      ? {
-
-          color: "#d33",
-
-          background: "#fff4f4",
-
-          border: "1.2px solid #f6c8c8",
-
-          borderRadius: 8,
-
-          padding: "3px 11px",
-
-          fontSize: 15,
-
-          fontWeight: 700,
-
-          cursor: "pointer",
-
-          minWidth: 50,
-
-        }
-
-      : {
-
-          color: "#d33",
-
-          background: "#fff4f4",
-
-          border: "1.5px solid #f6c8c8",
-
-          borderRadius: 8,
-
-          padding: "6px 18px",
-
-          fontSize: 17,
-
-          fontWeight: 700,
-
-          cursor: "pointer",
-
-          minWidth: 60,
-
-        };
-
-
-
-  const handleReport = useCallback(async () => {
-
-    setError("");
-
-    setOk("");
-
-    const { data } = await supabase.auth.getUser();
-
-    if (!data?.user?.id) return setError(t("need_login"));
-
-    const reportUrl = `${window.location.origin}/${lang}/select-round/${encodeURIComponent(cupId)}`;
-
-    const { error } = await supabase.from("site_suggestions").insert({
-
-      author_id: data.user.id,
-
-      language: lang,
-
-      title: `[월드컵 신고] ${cupTitle || cupId}`.slice(0, 200),
-
-      body: [`신고 사유: ${String(reason || "(미입력)").trim().slice(0, 1000)}`, `월드컵: ${reportUrl}`, `월드컵 ID: ${cupId}`].join("\n\n"),
-
-    });
-
-    if (error) setError(error.message);
-
-    else setOk(t("report_submit_success") || "신고가 접수되었습니다. 감사합니다.");
-
-  }, [cupId, cupTitle, lang, reason, t]);
-
-
-
-  return (
-
-    <>
-
-      <button onClick={() => setShow(true)} style={style} aria-label={t("report")}>
-
-        🚩 {t("report")}
-
-      </button>
-
-      {show && (
-
-        <div
-
-          style={{
-
-            position: "fixed",
-
-            left: 0,
-
-            top: 0,
-
-            width: "100vw",
-
-            height: "100vh",
-
-            background: "#0006",
-
-            zIndex: 9999,
-
-            display: "flex",
-
-            alignItems: "center",
-
-            justifyContent: "center",
-
-          }}
-
-        >
-
-          <div
-
-            style={{
-
-              background: "#fff",
-
-              borderRadius: 14,
-
-              padding: 22,
-
-              minWidth: 270,
-
-            }}
-
-          >
-
-            <b>{t("report_reason")}</b>
-
-            <textarea
-
-              value={reason}
-
-              onChange={(e) => setReason(e.target.value)}
-
-              style={{ width: "95%", minHeight: 60, marginTop: 12 }}
-
-              placeholder={t("report_reason_placeholder")}
-
-            />
-
-            <div style={{ marginTop: 12 }}>
-
-              <button onClick={handleReport} style={{ marginRight: 10 }}>
-
-                {t("report_submit")}
-
-              </button>
-
-              <button onClick={() => setShow(false)}>{t("close")}</button>
-
-            </div>
-
-            {ok && <div style={{ color: "#1976ed", marginTop: 7 }}>{ok}</div>}
-
-            {error && <div style={{ color: "#d33", marginTop: 7 }}>{error}</div>}
-
-          </div>
-
-        </div>
-
-      )}
-
-    </>
-
-  );
-
-}
-
-
 
 /* ========================= 카드 ========================= */
 
@@ -1465,17 +1269,15 @@ const top3 = useMemo(() => {
 
   /* ===== 공유/신고 바 ===== */
 
-  function ShareAndReportBar() {
+  function renderShareAndReportBar() {
 
     if (!selectedCup?.id) return null;
 
     const shareUrl = `${window.location.origin}/${normalizedLang}/result/${selectedCup.id}`;
     return (
-      <div style={{display:'flex',justifyContent:'center',alignItems:'center',flexWrap:'wrap',gap:10,margin:'8px 0 24px'}}>
-        <SocialShareButtons lang={normalizedLang} title={getWorldcupTitle(selectedCup,normalizedLang)} url={shareUrl}/>
-        <ReportButton cupId={selectedCup.id} cupTitle={getWorldcupTitle(selectedCup, normalizedLang)} lang={normalizedLang} size="md" />
-
-      </div>
+      <SocialShareButtons key={selectedCup.id} lang={normalizedLang} title={getWorldcupTitle(selectedCup,normalizedLang)} url={shareUrl}>
+        <WorldcupReportButton cupId={selectedCup.id} cupTitle={getWorldcupTitle(selectedCup,normalizedLang)} lang={normalizedLang}/>
+      </SocialShareButtons>
 
     );
 
@@ -1634,7 +1436,7 @@ const top3 = useMemo(() => {
 
 
 
-<ShareAndReportBar />
+{renderShareAndReportBar()}
 
 
 
