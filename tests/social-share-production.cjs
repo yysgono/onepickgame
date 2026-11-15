@@ -17,7 +17,7 @@ async function run(lang,route){
    else if(u.pathname.endsWith('/quiz_questions'))data=[{id:'q1',quiz_id:id,question_type:'multiple_choice',question_text:'Question?',options:['A','B'],correct_index:0,answers:[]}];
    return new Response(JSON.stringify(data),{status:200,headers:{'content-type':'application/json'}});
   };
-  w.matchMedia=()=>({matches:false,addListener(){},removeListener(){},addEventListener(){},removeEventListener(){}});w.scrollTo=()=>{};w.structuredClone=structuredClone;w.TextEncoder=TextEncoder;w.TextDecoder=TextDecoder;w.ResizeObserver=class{observe(){}unobserve(){}disconnect(){}};w.IntersectionObserver=class{observe(){}unobserve(){}disconnect(){}};
+  w.matchMedia=()=>({matches:false,addListener(){},removeListener(){},addEventListener(){},removeEventListener(){}});w.scrollTo=()=>{};w.structuredClone=structuredClone;w.TextEncoder=TextEncoder;w.TextDecoder=TextDecoder;w.ResizeObserver=class{observe(){}unobserve(){}disconnect(){}};w.IntersectionObserver=class{constructor(cb){this.cb=cb;}observe(target){if(route.startsWith('result/'))queueMicrotask(()=>this.cb([{isIntersecting:true,target}]))}unobserve(){}disconnect(){}};
  }});
  const d=dom.window.document,wait=async fn=>{for(let n=0;n<300;n++){if(fn())return;await new Promise(r=>setTimeout(r,40));}throw Error(route+' timeout '+d.body.textContent.slice(-1000)+' '+errors.join(' ').slice(0,400))};
  try{

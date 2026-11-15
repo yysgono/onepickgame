@@ -1,4 +1,3 @@
-import SocialShareButtons from './sharing/SocialShareButtons';
 import WinnerStatsSummary from "./WinnerStatsSummary";
 // src/components/ResultPage.js
 
@@ -692,7 +691,6 @@ title={
 
 
 
-  <SocialShareButtons lang={lang} title={`${translatedTitle}${winner?.name?' · '+winnerLabel+': '+winner.name:''}`} url={`${window.location.origin}/${lang}/result/${cup.id}`}/>
 
   {/* ✅ 상단 광고 */}
 

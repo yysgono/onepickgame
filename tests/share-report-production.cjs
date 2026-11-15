@@ -21,6 +21,7 @@ class Local extends ResourceLoader{fetch(url){const pathname=new URL(url).pathna
    await wait(()=>calls>0&&d.body.textContent.includes('4.4%')&&!d.querySelector('#worldcup-public-ranking-title'));
    assert(d.querySelector('img[src="https://example.com/winner.jpg"]'),'Current winner thumbnail still renders');assert(d.body.textContent.includes(lang==='ko'?'현재 우승 후보':'Winner'));assert.equal(d.querySelectorAll('#worldcup-public-ranking-title').length,0,'React replaces the SSR shell, with no duplicate ranking section');assert.equal(errors.length,0,errors.join('\n'));
    await wait(()=>d.querySelector('.opg-share-report'));
+   assert.equal(d.querySelectorAll('.opg-social-share').length,1,'Only the share/report row below Start remains');
    const report=d.querySelector('.opg-share-report'),group=report.parentElement;assert(group.classList.contains('opg-social-share'));assert.equal(group.querySelectorAll(':scope>a,:scope>button').length,5);assert.equal(dom.window.getComputedStyle(group).justifyContent,'center');
    report.previousElementSibling.click();await wait(()=>group.querySelector('[role=status]'));assert.equal(report.parentElement,group);
    report.click();await wait(()=>d.querySelector('[role=dialog]'));const dialog=d.querySelector('[role=dialog]');assert.equal(dialog.parentElement.parentElement,d.body);assert.equal(dom.window.getComputedStyle(dialog.parentElement).position,'fixed');assert.equal(dom.window.getComputedStyle(dialog).maxWidth,'460px');assert.equal(d.activeElement,dialog.querySelector('textarea'));
