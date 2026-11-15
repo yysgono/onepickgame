@@ -21,6 +21,8 @@ class LocalBuild extends ResourceLoader{fetch(url){const name=new URL(url).pathn
   await wait(()=>document.querySelector('[role=radiogroup]'));
   assert.equal(document.querySelectorAll('.worldcup-round-selection select').length,0);
   assert.equal(document.querySelectorAll('.worldcup-round-selection').length,1);
+  assert.equal(document.querySelector('.onepick-game-brand-label'),null);
+  assert(document.querySelector('h1').compareDocumentPosition(document.querySelector('.worldcup-round-selection'))&dom.window.Node.DOCUMENT_POSITION_FOLLOWING,'Round picker follows the title and introduction');
   const heading=require('../src/seo/detailCopy.json')[lang][0];assert.equal(document.querySelector('nav[aria-label="'+heading+'"]'),null);
   if(candidateCount<8)assert.equal(document.querySelectorAll('[role=radio]').length,1);
   document.querySelector('[role=radiogroup]').querySelectorAll('button')[0].click();
