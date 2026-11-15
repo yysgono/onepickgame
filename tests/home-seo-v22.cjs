@@ -1,4 +1,5 @@
 const assert=require('node:assert/strict');
+const {JSDOM}=require('jsdom');
 const {insertRoot,makePopularLoader,renderHomeBody,verifyHome}=require('../home-seo-support.cjs');
 const copies=require('../src/seo/siteHomeCopy.json');
 (async()=>{
@@ -9,6 +10,11 @@ const copies=require('../src/seo/siteHomeCopy.json');
  for(const [lang,copy] of Object.entries(copies)){
   const body=renderHomeBody([{id:'009dd2c3-e4ef-429b-8b3d-8e71dc9d4449',title:'<script>bad</script>',title_translations:{[lang]:'Game & title'}}],lang,copy);
   assert(body.includes(`/${lang}/select-round/`));assert(body.includes('Game &amp; title'));assert(!body.includes('width:1px'));
+  const doc=new JSDOM(body).window.document;
+  assert.equal(doc.querySelector('.home-shell-site-intro').closest('[data-nosnippet]'),null);
+  assert.equal(doc.querySelector('.home-shell-list').closest('[data-nosnippet]'),null);
+  for(const anchor of doc.querySelectorAll('.home-shell-list a'))assert(!anchor.rel.includes('nosublink'));
+  for(const path of ['quiz','tier-list','random-pick','mytop9']){const anchor=doc.querySelector(`.home-shell-nav a[href="/${lang}/${path}"]`);assert(anchor);assert(anchor.textContent.trim());assert(!anchor.rel.includes('nosublink'));}
   verifyHome('<title>test</title><link rel="canonical" href="/">'+body);
  }
  assert.throws(()=>verifyHome('<title>a</title><title>b</title>'));

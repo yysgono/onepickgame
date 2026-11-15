@@ -3637,6 +3637,7 @@ const renderedCategorySections = shouldShowAllCategories
   : visibleCategorySections.slice(0, 2 + showMoreCategories * 3);
 
 const homeSeoSummary =
+  SITE_HOME_COPY[lang]?.modeIntro ||
   SITE_HOME_COPY[lang]?.description ||
   SITE_HOME_COPY.en.description;
 useEffect(() => {
@@ -3852,7 +3853,7 @@ return (
     }}
   >
     {showHomeActivityPanels && (
-      <div data-nosnippet="true" style={{ paddingTop: 18 }}>
+      <div style={{ paddingTop: 18 }}>
         {renderHomeActivityPanel({
           title: sidePanelCopy.recentCreated,
           items: recentCreatedCups,
@@ -4009,7 +4010,7 @@ return (
     </div>
 
     {showHomeActivityPanels && (
-      <div data-nosnippet="true" style={{ paddingTop: 18 }}>
+      <div style={{ paddingTop: 18 }}>
         {renderHomeActivityPanel({
           title: sidePanelCopy.recentPlayed,
           items: recentPlayedCups,
