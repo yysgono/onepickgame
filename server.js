@@ -2457,7 +2457,6 @@ ${safeJson(jsonLd)}
     </p>
 
     ${candidateList}
-    ${renderDetailLinks(lang, worldcup.category)}
 
   </article>
 </main>

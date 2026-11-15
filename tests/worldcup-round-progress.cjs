@@ -1,6 +1,11 @@
 const fs=require('fs'),assert=require('node:assert/strict'),babel=require('@babel/core'),{JSDOM}=require('jsdom');
 function load(file,mocks={}){const m={exports:{}};new Function('require','module','exports',babel.transformSync(fs.readFileSync(file,'utf8'),{presets:[['@babel/preset-env',{targets:{node:'current'}}],'@babel/preset-react'],configFile:false,babelrc:false}).code)(key=>{if(key in mocks)return mocks[key];throw Error('Missing '+key)},m,m.exports);return m.exports;}
 const {worldcupProgress}=load('src/utils/worldcupProgress.js');
+const {worldcupRounds}=load('src/utils/worldcupRounds.js');
+for(const n of [2,3,4,5,6,7])assert.deepEqual(worldcupRounds(n),[n]);
+assert.deepEqual(worldcupRounds(0),[]);assert.deepEqual(worldcupRounds(1),[]);
+assert.deepEqual(worldcupRounds(8),[8]);assert.deepEqual(worldcupRounds(9),[8,9]);assert.deepEqual(worldcupRounds(259),[8,16,32,64,128,256,259]);
+assert(worldcupRounds(10001).every(n=>n>=8&&n<=10000));
 // Walk full brackets including odd counts and automatic byes. Their total
 // user choices must remain N-1 through every round, without counting byes.
 for(let n=2;n<=65;n++){

@@ -1,7 +1,7 @@
+import {worldcupRounds} from '../utils/worldcupRounds';
 import RoundSelection from './worldcup/RoundSelection';
 import NavigationLink from "./NavigationLink";
 import GameBrandLabel from "./GameBrandLabel";
-import RelatedContentLinks from "./RelatedContentLinks";
 // src/components/SelectRoundPage.js
 
 import React, { useState, useEffect, useMemo } from "react";
@@ -446,67 +446,7 @@ useEffect(() => {
 
     getWorldcupDescription(cup, normalizedLang);
 
-  const possibleRounds =
-
-    useMemo(() => {
-
-      const count =
-
-        candidates.length;
-
-      const maxPossibleRound =
-
-        Math.min(
-
-          count,
-
-          10000
-
-        );
-
-      let arr = [];
-
-      for (
-
-        let n = 1;
-
-        Math.pow(2, n) <=
-
-        maxPossibleRound;
-
-        n++
-
-      ) {
-
-        arr.push(
-
-          Math.pow(2, n)
-
-        );
-
-      }
-
-      if (
-
-        count >= 2 &&
-
-        count <= 10000 &&
-
-        !arr.includes(count)
-
-      ) {
-
-        arr.push(count);
-
-      }
-
-      return arr.sort(
-
-        (a, b) => a - b
-
-      );
-
-    }, [candidates.length]);
+  const possibleRounds = useMemo(() => worldcupRounds(candidates.length), [candidates.length]);
 
   // 선택 라운드 보정
 
@@ -1661,7 +1601,7 @@ boxShadow:
 
           )}
 
-      <RoundSelection lang={normalizedLang} rounds={possibleRounds} selected={selectedRound} onChange={setSelectedRound} onStart={handleStart} roundLabel={round=>t('round_of',{count:round})} candidateCount={candidates.length} recommended={possibleRounds.includes(maxRound)?maxRound:possibleRounds[possibleRounds.length-1]}/>
+
 
           {/* 부전승 안내 */}
 
@@ -2191,7 +2131,7 @@ detailTags.length > 0 && (
 
   )}
 
-<RelatedContentLinks lang={normalizedLang} category={cup?.category} />
+
 
 {/* 관련 월드컵 */}
 
