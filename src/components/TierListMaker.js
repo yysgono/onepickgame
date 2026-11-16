@@ -3001,19 +3001,22 @@ const handleDragEndItem =
 
         return (
           <div
+            className="tier-placement-panel"
             style={{
-              padding: 12,
-              border: "1px solid #dde2ea",
-              borderRadius: 12,
-              background: "#ffffff",
+              padding: 16,
+              border: "2px solid #7952c7",
+              borderRadius: 14,
+              background: "#f1ebff",
+              boxShadow: "0 6px 20px rgba(100,65,170,0.16)",
               textAlign: "center",
               ...styleOverride,
             }}
           >
             <div
               style={{
-                marginBottom: 9,
-                color: "#202534",
+                marginBottom: 12,
+                color: "#4b287f",
+                overflowWrap: "anywhere",
                 fontSize: 19,
                 fontWeight: 900,
               }}
@@ -3038,8 +3041,10 @@ const handleDragEndItem =
                     minWidth: 60,
                     height: 50,
                     borderRadius: 8,
-                    border: `1px solid ${TIER_COLORS[tier]}`,
-                    background: "#ffffff",
+                    border: "2px solid rgba(32,37,52,0.3)",
+                    background: TIER_COLORS[tier],
+                    cursor: "pointer",
+                    boxShadow: "0 2px 4px rgba(32,37,52,0.12)",
                     color: "#202534",
                     fontWeight: 900,
                     fontSize: 19,
@@ -3057,7 +3062,7 @@ const handleDragEndItem =
                     height: 50,
                     padding: "0 10px",
                     borderRadius: 8,
-                    border: "1px solid #dde2ea",
+                    border: "2px solid #9b87bd",
                     background: "#ffffff",
                     color: "#202534",
                     fontWeight: 900,
