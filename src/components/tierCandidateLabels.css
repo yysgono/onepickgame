@@ -219,3 +219,52 @@ a.tier-result-action {
   .tier-result-action, a.tier-result-action { min-height: 42px; padding-inline: 8px; font-size: 14px; }
   .tier-result-bottom-actions .tier-result-action { min-height: 52px; padding-inline: 12px; font-size: 16px; }
 }
+
+/* Keep the header actions on one row, including the nested share group. */
+.tier-result-top-actions {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  margin-inline-start: auto;
+  overflow-x: auto;
+  padding: 4px 2px 24px;
+  box-sizing: border-box;
+  overscroll-behavior-x: contain;
+}
+.tier-result-top-actions > button,
+.tier-result-top-actions > .tier-result-action {
+  flex: 0 0 auto;
+  width: auto !important;
+  min-height: 48px !important;
+  flex-direction: row;
+  white-space: nowrap;
+  overflow-wrap: normal;
+}
+.tier-result-top-actions > .opg-social-share {
+  position: relative;
+  flex: 0 0 auto;
+  flex-wrap: nowrap;
+  width: auto;
+  max-width: none;
+  margin: 0;
+  gap: 8px;
+}
+.tier-result-top-actions > .opg-social-share > a,
+.tier-result-top-actions > .opg-social-share > button {
+  flex: 0 0 auto;
+  white-space: nowrap;
+  min-width: 0;
+  padding-inline: 16px !important;
+}
+.tier-result-top-actions .opg-share-status {
+  position: absolute;
+  inset-inline: 0;
+  top: calc(100% + 3px);
+  white-space: nowrap;
+}
+.tier-result-top-actions > button:first-child { margin-inline-start: auto; }

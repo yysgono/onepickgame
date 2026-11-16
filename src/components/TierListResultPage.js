@@ -1571,20 +1571,7 @@ padding: isMobile
       우측 상단 - 액션
       ========================= */}
 
- <div
-  style={{
-    display: isMobile ? "grid" : "flex",
-    gridTemplateColumns: isMobile ? "repeat(3, minmax(0, 1fr))" : undefined,
-    flexWrap: isMobile ? undefined : "wrap",
-    alignItems: "center",
-    justifyContent: isMobile ? "stretch" : "flex-end",
-    gap: isMobile ? 7 : 8,
-    marginLeft: isMobile ? 0 : "auto",
-    width: isMobile ? "100%" : "auto",
-    minWidth: 0,
-    maxWidth: "100%",
-  }}
->
+ <div className="tier-result-top-actions">
     <button
       type="button"
       onClick={handleLike}
