@@ -1,3 +1,4 @@
+import AdminTopNineViews from './AdminTopNineViews';
 import {activityLanguageLabel,normalizeActivityLanguage} from '../utils/activityLanguage';
 import AdminContentSummary from "./AdminContentSummary";
 import AdminRecentActivity from "./AdminRecentActivity";
@@ -219,6 +220,7 @@ export default function AdminStatsPage() {
 
 
       <AdminContentSummary refreshTick={refreshTick} worldcupStats={{ existing: worldcupCount, total: totalPlays, today: todayPlays }} worldcupLoading={loading} />
+      <AdminTopNineViews refreshTick={refreshTick} />
 
       {/* ==================================================
     최근 플레이
