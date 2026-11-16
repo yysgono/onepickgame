@@ -1,0 +1,10 @@
+.result-recommendations{width:100%;max-width:1200px;margin:32px auto;box-sizing:border-box;padding:22px 16px;border:1px solid #dde2ea;border-radius:16px;background:#fff;color:#202534}
+.result-recommendations h2{font-size:22px;line-height:1.4;margin:0 0 16px;text-align:center}
+.result-recommendation-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,260px));justify-content:center;gap:12px}
+.result-recommendation-card{display:block;min-width:0;border:1px solid #dde2ea;border-radius:12px;overflow:hidden;background:#fff;text-decoration:none;color:#202534;transition:box-shadow .15s,border-color .15s}
+.result-recommendation-card:hover,.result-recommendation-card:focus-visible{border-color:#8069d4;box-shadow:0 5px 16px #45308c20;outline:2px solid #8069d4;outline-offset:2px}
+.result-recommendation-image{aspect-ratio:16/9;background:#f3f6fb;overflow:hidden;display:grid;place-items:center;font-size:38px}
+.result-recommendation-nine{width:100%;height:100%;display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);gap:1px;overflow:hidden}
+.result-recommendation-nine>div{min-width:0;min-height:0;overflow:hidden}
+.result-recommendation-text{padding:12px;text-align:start}.result-recommendation-text strong{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;font-size:15px;line-height:1.5}.result-recommendation-text small{display:block;margin-top:6px;font-size:13px;color:#667085}
+@media(max-width:480px){.result-recommendations{padding:18px 12px}.result-recommendation-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.result-recommendation-text{padding:9px}.result-recommendation-text strong{font-size:14px}}

@@ -1,0 +1,22 @@
+const fs=require('fs'),assert=require('node:assert/strict'),babel=require('@babel/core');
+function load(file,mocks={}){const m={exports:{}};new Function('require','module','exports',babel.transformSync(fs.readFileSync(file,'utf8'),{presets:[['@babel/preset-env',{targets:{node:'current'}}]],configFile:false,babelrc:false}).code)(key=>{if(key in mocks)return mocks[key];throw Error('Missing mock '+key)},m,m.exports);return m.exports;}
+const activity=load('src/utils/recentContentActivity.js'),recommend=load('src/utils/resultRecommendations.js',{'./recentContentActivity':activity});
+const now=Date.parse('2026-11-16T09:00:00Z'),time=minutes=>new Date(now-minutes*60000).toISOString();
+let fixtures={},calls=[];
+const client={from(table){const q={table,filters:[],orders:[],cap:100,fields:''};const api={select(v){q.fields=v;return this},order(k,o){q.orders.push([k,o]);return this},limit(n){q.cap=n;return this},is(k,v){q.filters.push(r=>r[k]==v);return this},in(k,values){q.filters.push(r=>values.includes(r[k]));return this},eq(k,v){q.filters.push(r=>(k==='tier_labels->>_sourcePresetName'?r.tier_labels?._sourcePresetName:r[k])===v);return this},neq(k,v){q.filters.push(r=>r[k]!==v);return this},contains(k,v){q.filters.push(r=>(Array.isArray(v)?v:JSON.parse(v)).every(x=>(r[k]||[]).includes(x)));return this},then(resolve,reject){calls.push(q);let data=(fixtures[table]||[]).filter(row=>q.filters.every(f=>f(row)));data.sort((a,b)=>{for(const[k,o]of q.orders){if(a[k]===b[k])continue;if(a[k]==null)return 1;if(b[k]==null)return -1;return(a[k]<b[k]?-1:1)*(o.ascending?1:-1)}return 0});return Promise.resolve({data:data.slice(0,q.cap)}).then(resolve,reject)}};return api}};
+(async()=>{
+ const repeated=Array.from({length:4},(_,i)=>({cup_id:'same',quiz_id:'same',created_at:time(i*2+3)}));
+ fixtures={winner_logs:repeated,quiz_attempts:repeated,worldcups:[{id:'same',title:'Same',category:'game'}],quizzes:[{id:'same',title:'Same quiz',category:'game',is_published:true}]};
+ for(const kind of ['worldcup','quiz']){const rows=await activity.loadRecentContentActivity(client,kind);assert.equal(rows.length,4);assert.equal(rows[0].cup.id,'same');assert.equal(new Set(rows.map(r=>r.eventKey)).size,4);assert.equal(rows[0].time,time(3));}
+ assert.equal(activity.formatRecentActivity(time(3),'ko',now),'3분 전');assert.equal(activity.formatRecentActivity(time(300),'ko',now),'5시간 전');assert.equal(activity.formatRecentActivity(time(3),'en',now),'3 minutes ago');assert.match(activity.formatRecentActivity(time(1500),'ko',now),/^2026\.11\./);assert.equal(activity.formatRecentActivity('bad','ko',now),'');
+ fixtures.worldcups=[{id:'self',category:'game'},{id:'different',category:'food'},{id:'same-category',category:'game'},{id:'another',category:'game'}];fixtures.winner_logs=['self','different','different','same-category','another'].map((cup_id,i)=>({cup_id,created_at:time(i+1)}));
+ let rows=await recommend.loadResultRecommendations(client,{kind:'worldcup',id:'self',category:'game'});assert.deepEqual(rows.map(r=>r.id),['same-category','another','different']);assert(calls.some(q=>q.fields==='id,preview:data->0'));
+ for(const kind of ['tier','nine']){
+  const base=(id,views,category,source)=>({id,view_count:views,category,source_worldcup_id:source,source_worldcup_ids:[source],created_at:time(1),tier_labels:{_sourcePresetName:source}});
+  fixtures[kind==='tier'?'tier_lists':'top_nine_public_boards']=[base('self',999,'game','template'),base('same-low',2,'game','template'),base('same-high',7,'game','template'),base('category',100,'game','other'),base('other',500,'food','other'),{...base('removed',999,'game','template'),deleted_at:time(1)}];
+  if(kind==='nine')fixtures.top_nine_public_boards.pop();
+  calls=[];rows=await recommend.loadResultRecommendations(client,{kind,id:'self',category:'game',sourceId:'template',sourceIds:['template']});assert.deepEqual(rows.map(r=>r.id),['same-high','same-low','category','other']);assert(calls.every(q=>!q.fields.split(',').includes('candidates')&&!q.fields.split(',').includes('data')));
+ }
+ calls=[];rows=await recommend.loadResultRecommendations(client,{kind:'tier',id:'self',category:'game',presetName:'template'});assert.equal(rows[0].id,'same-high');assert.equal(new Set(rows.map(r=>r.id)).size,rows.length);
+ console.log('PASS: repeated worldcup/quiz events, relative 24-hour timestamps, unique recent worldcup recommendations, same-template popularity/category fallback, self/deleted exclusion and bounded metadata queries.');
+})().catch(error=>{console.error(error);process.exitCode=1});

@@ -1,3 +1,4 @@
+import ResultRecommendations from './recommendations/ResultRecommendations';
 import SocialShareButtons from './sharing/SocialShareButtons';
 import {currentActivityLanguage} from '../utils/activityLanguage';
 import { TIER_COLORS, visibleTierRows } from "../utils/tierRows";
@@ -2330,6 +2331,7 @@ padding: isMobile
             )}
           </div>
         </div>
+        <ResultRecommendations kind="tier" id={tierList.id} lang={lang} category={tierList.category} sourceId={tierList.source_worldcup_id} presetName={sourcePresetName}/>
         <RelatedContentLinks lang={lang} category={tierList.category} sourceWorldcupId={tierList.source_worldcup_id} />
       </div>
     </div>

@@ -4,139 +4,179 @@
     "type": "JPG·PNG·WebP·AVIF 정지 사진만 사용할 수 있어요. GIF·동영상은 회원만 업로드할 수 있어요.",
     "share": "직접 올린 사진은 먼저 등록한 뒤 결과 페이지의 링크를 공유해 주세요.",
     "rate": "업로드 제한에 도달했어요. 나중에 다시 시도해 주세요.",
-    "failed": "사진을 업로드하지 못했어요. 편집 내용은 유지되니 다시 시도해 주세요."
+    "failed": "사진을 업로드하지 못했어요. 편집 내용은 유지되니 다시 시도해 주세요.",
+    "nineHelp": "비회원도 사진을 올려 구절판을 등록할 수 있어요. 최대 9장이며, 비밀번호로 수정·삭제할 수 있어요.",
+    "tierHelp": "비회원도 PC 사진을 최대 50장까지 올려 티어표를 등록할 수 있어요. 비밀번호로 수정·삭제할 수 있어요."
   },
   "en": {
     "help": "Guests can publish still photos: up to 9 in a Top 9 collage or 50 local photos in a tier list. Photos are compressed and uploaded when you publish. Keep your password to edit or delete.",
     "type": "Use still JPG, PNG, WebP or AVIF photos. GIF and video uploads require membership.",
     "share": "Publish your uploaded photos first, then share the result page link.",
     "rate": "Upload limit reached. Please try again later.",
-    "failed": "Photo upload failed. Your edits are kept; please try again."
+    "failed": "Photo upload failed. Your edits are kept; please try again.",
+    "nineHelp": "Guests can publish a Top 9 collage with up to 9 photos. Keep your password to edit or delete.",
+    "tierHelp": "Guests can publish a tier list with up to 50 local photos. Keep your password to edit or delete."
   },
   "ja": {
     "help": "ゲストも静止画を公開できます。Top 9は9枚、ティア表のローカル写真は50枚まで。公開時に圧縮してアップロードします。編集・削除用パスワードを保管してください。",
     "type": "JPG・PNG・WebP・AVIFの静止画のみ利用できます。GIF・動画のアップロードには会員登録が必要です。",
     "share": "写真を先に公開してから結果ページのリンクを共有してください。",
     "rate": "アップロード上限に達しました。後でもう一度お試しください。",
-    "failed": "写真をアップロードできませんでした。編集内容は保持されています。再試行してください。"
+    "failed": "写真をアップロードできませんでした。編集内容は保持されています。再試行してください。",
+    "nineHelp": "ゲストも写真9枚までのTop 9を公開できます。編集・削除用のパスワードを保管してください。",
+    "tierHelp": "ゲストもローカル写真50枚までのティア表を公開できます。編集・削除用のパスワードを保管してください。"
   },
   "zh": {
     "help": "访客也可发布静态图片：Top 9最多9张，等级表最多50张本地照片。发布时压缩上传，请保管编辑或删除所需的密码。",
     "type": "仅支持JPG、PNG、WebP、AVIF静态图片。GIF和视频上传需要会员身份。",
     "share": "请先发布上传的照片，再分享结果页面链接。",
     "rate": "已达到上传限制，请稍后重试。",
-    "failed": "照片上传失败，编辑内容已保留，请重试。"
+    "failed": "照片上传失败，编辑内容已保留，请重试。",
+    "nineHelp": "访客也可发布Top 9，最多9张照片。请保管编辑或删除所需的密码。",
+    "tierHelp": "访客也可发布等级表，最多50张本地照片。请保管编辑或删除所需的密码。"
   },
   "es": {
     "help": "Los invitados pueden publicar fotos: hasta 9 en Top 9 o 50 fotos locales en una tier list. Se comprimen y suben al publicar. Guarda la contraseña para editar o borrar.",
     "type": "Usa imágenes estáticas JPG, PNG, WebP o AVIF. Los GIF y vídeos requieren una cuenta.",
     "share": "Publica primero tus fotos y después comparte el enlace del resultado.",
     "rate": "Límite de subidas alcanzado. Inténtalo más tarde.",
-    "failed": "No se pudieron subir las fotos. Tus cambios se conservan; inténtalo de nuevo."
+    "failed": "No se pudieron subir las fotos. Tus cambios se conservan; inténtalo de nuevo.",
+    "nineHelp": "Los invitados pueden publicar un Top 9 con hasta 9 fotos. Guarda la contraseña para editar o borrar.",
+    "tierHelp": "Los invitados pueden publicar una tier list con hasta 50 fotos locales. Guarda la contraseña para editar o borrar."
   },
   "fr": {
     "help": "Les invités peuvent publier des photos : 9 pour un Top 9, ou 50 photos locales pour une tier list. Elles sont compressées à la publication. Gardez le mot de passe pour modifier ou supprimer.",
     "type": "Photos fixes JPG, PNG, WebP ou AVIF uniquement. Les GIF et vidéos nécessitent un compte.",
     "share": "Publiez vos photos, puis partagez le lien du résultat.",
     "rate": "Limite d’envoi atteinte. Réessayez plus tard.",
-    "failed": "Échec de l’envoi. Vos modifications sont conservées ; réessayez."
+    "failed": "Échec de l’envoi. Vos modifications sont conservées ; réessayez.",
+    "nineHelp": "Les invités peuvent publier un Top 9 avec 9 photos maximum. Gardez le mot de passe pour modifier ou supprimer.",
+    "tierHelp": "Les invités peuvent publier une tier list avec 50 photos locales maximum. Gardez le mot de passe pour modifier ou supprimer."
   },
   "de": {
     "help": "Gäste können Fotos veröffentlichen: bis zu 9 im Top 9 oder 50 lokale Fotos in einer Tierliste. Beim Veröffentlichen werden sie komprimiert. Passwort zum Bearbeiten oder Löschen aufbewahren.",
     "type": "Nur statische JPG-, PNG-, WebP- oder AVIF-Bilder. GIFs und Videos erfordern ein Konto.",
     "share": "Fotos zuerst veröffentlichen, dann den Ergebnislink teilen.",
     "rate": "Upload-Limit erreicht. Bitte später erneut versuchen.",
-    "failed": "Foto-Upload fehlgeschlagen. Änderungen bleiben erhalten; bitte erneut versuchen."
+    "failed": "Foto-Upload fehlgeschlagen. Änderungen bleiben erhalten; bitte erneut versuchen.",
+    "nineHelp": "Gäste können eine Top-9-Collage mit bis zu 9 Fotos veröffentlichen. Bewahre das Passwort zum Bearbeiten oder Löschen auf.",
+    "tierHelp": "Gäste können eine Tierliste mit bis zu 50 lokalen Fotos veröffentlichen. Bewahre das Passwort zum Bearbeiten oder Löschen auf."
   },
   "pt": {
     "help": "Visitantes podem publicar fotos: até 9 no Top 9 ou 50 fotos locais na tier list. São comprimidas ao publicar. Guarde a senha para editar ou excluir.",
     "type": "Use imagens estáticas JPG, PNG, WebP ou AVIF. GIFs e vídeos exigem uma conta.",
     "share": "Publique as fotos primeiro e depois compartilhe o link do resultado.",
     "rate": "Limite de uploads atingido. Tente novamente mais tarde.",
-    "failed": "Falha no envio. Suas alterações foram mantidas; tente novamente."
+    "failed": "Falha no envio. Suas alterações foram mantidas; tente novamente.",
+    "nineHelp": "Visitantes podem publicar um Top 9 com até 9 fotos. Guarde a senha para editar ou excluir.",
+    "tierHelp": "Visitantes podem publicar uma tier list com até 50 fotos locais. Guarde a senha para editar ou excluir."
   },
   "ru": {
     "help": "Гости могут публиковать фото: до 9 в Top 9 или 50 локальных фото в тир-листе. Фото сжимаются при публикации. Сохраните пароль для редактирования и удаления.",
     "type": "Только статичные JPG, PNG, WebP или AVIF. Для GIF и видео нужна учётная запись.",
     "share": "Сначала опубликуйте фотографии, затем поделитесь ссылкой на результат.",
     "rate": "Достигнут лимит загрузки. Повторите позже.",
-    "failed": "Не удалось загрузить фото. Изменения сохранены; повторите попытку."
+    "failed": "Не удалось загрузить фото. Изменения сохранены; повторите попытку.",
+    "nineHelp": "Гости могут опубликовать Top 9 с 9 фотографиями. Сохраните пароль для редактирования или удаления.",
+    "tierHelp": "Гости могут опубликовать тир-лист с 50 локальными фотографиями. Сохраните пароль для редактирования или удаления."
   },
   "id": {
     "help": "Tamu dapat menerbitkan foto: hingga 9 di Top 9 atau 50 foto lokal di tier list. Foto dikompresi saat diterbitkan. Simpan kata sandi untuk mengedit atau menghapus.",
     "type": "Gunakan foto diam JPG, PNG, WebP atau AVIF. GIF dan video memerlukan akun anggota.",
     "share": "Terbitkan foto dahulu, lalu bagikan tautan hasilnya.",
     "rate": "Batas unggahan tercapai. Coba lagi nanti.",
-    "failed": "Unggah foto gagal. Perubahan tetap tersimpan; coba lagi."
+    "failed": "Unggah foto gagal. Perubahan tetap tersimpan; coba lagi.",
+    "nineHelp": "Tamu dapat menerbitkan Top 9 dengan hingga 9 foto. Simpan kata sandi untuk mengedit atau menghapus.",
+    "tierHelp": "Tamu dapat menerbitkan tier list dengan hingga 50 foto lokal. Simpan kata sandi untuk mengedit atau menghapus."
   },
   "vi": {
     "help": "Khách có thể đăng ảnh tĩnh: tối đa 9 ảnh Top 9 hoặc 50 ảnh cục bộ trong bảng xếp hạng. Ảnh được nén khi đăng. Giữ mật khẩu để sửa hoặc xóa.",
     "type": "Chỉ dùng ảnh tĩnh JPG, PNG, WebP hoặc AVIF. GIF và video yêu cầu tài khoản thành viên.",
     "share": "Đăng ảnh trước rồi chia sẻ liên kết trang kết quả.",
     "rate": "Đã đạt giới hạn tải lên. Vui lòng thử lại sau.",
-    "failed": "Tải ảnh thất bại. Nội dung chỉnh sửa được giữ lại; vui lòng thử lại."
+    "failed": "Tải ảnh thất bại. Nội dung chỉnh sửa được giữ lại; vui lòng thử lại.",
+    "nineHelp": "Khách có thể đăng Top 9 với tối đa 9 ảnh. Hãy giữ mật khẩu để chỉnh sửa hoặc xóa.",
+    "tierHelp": "Khách có thể đăng bảng xếp hạng với tối đa 50 ảnh từ máy. Hãy giữ mật khẩu để chỉnh sửa hoặc xóa."
   },
   "it": {
     "help": "Gli ospiti possono pubblicare foto: fino a 9 nel Top 9 o 50 foto locali in una tier list. Sono compresse alla pubblicazione. Conserva la password per modificare o eliminare.",
     "type": "Solo immagini statiche JPG, PNG, WebP o AVIF. GIF e video richiedono un account.",
     "share": "Pubblica prima le foto, poi condividi il link del risultato.",
     "rate": "Limite di caricamento raggiunto. Riprova più tardi.",
-    "failed": "Caricamento non riuscito. Le modifiche sono conservate; riprova."
+    "failed": "Caricamento non riuscito. Le modifiche sono conservate; riprova.",
+    "nineHelp": "Gli ospiti possono pubblicare un Top 9 con un massimo di 9 foto. Conserva la password per modificare o eliminare.",
+    "tierHelp": "Gli ospiti possono pubblicare una tier list con un massimo di 50 foto locali. Conserva la password per modificare o eliminare."
   },
   "pl": {
     "help": "Goście mogą publikować zdjęcia: do 9 w Top 9 lub 50 lokalnych zdjęć w tierliście. Są kompresowane przy publikacji. Zachowaj hasło do edycji lub usunięcia.",
     "type": "Tylko statyczne JPG, PNG, WebP lub AVIF. GIF-y i filmy wymagają konta.",
     "share": "Najpierw opublikuj zdjęcia, potem udostępnij link do wyniku.",
     "rate": "Osiągnięto limit przesyłania. Spróbuj później.",
-    "failed": "Przesyłanie zdjęć nie powiodło się. Zmiany zachowano; spróbuj ponownie."
+    "failed": "Przesyłanie zdjęć nie powiodło się. Zmiany zachowano; spróbuj ponownie.",
+    "nineHelp": "Goście mogą opublikować Top 9 z maksymalnie 9 zdjęciami. Zachowaj hasło do edycji lub usunięcia.",
+    "tierHelp": "Goście mogą opublikować ranking z maksymalnie 50 lokalnymi zdjęciami. Zachowaj hasło do edycji lub usunięcia."
   },
   "nl": {
     "help": "Gasten kunnen foto’s publiceren: maximaal 9 in Top 9 of 50 lokale foto’s in een tierlijst. Ze worden bij publicatie gecomprimeerd. Bewaar het wachtwoord om te wijzigen of verwijderen.",
     "type": "Alleen stilstaande JPG-, PNG-, WebP- of AVIF-foto’s. GIF en video vereisen een account.",
     "share": "Publiceer de foto’s eerst en deel daarna de resultaatlink.",
     "rate": "Uploadlimiet bereikt. Probeer het later opnieuw.",
-    "failed": "Upload mislukt. Je wijzigingen blijven bewaard; probeer opnieuw."
+    "failed": "Upload mislukt. Je wijzigingen blijven bewaard; probeer opnieuw.",
+    "nineHelp": "Gasten kunnen een Top 9 met maximaal 9 foto’s publiceren. Bewaar je wachtwoord om te bewerken of verwijderen.",
+    "tierHelp": "Gasten kunnen een tierlijst met maximaal 50 lokale foto’s publiceren. Bewaar je wachtwoord om te bewerken of verwijderen."
   },
   "cs": {
     "help": "Hosté mohou zveřejnit fotky: až 9 v Top 9 nebo 50 místních fotek v tier listu. Při zveřejnění se komprimují. Uschovejte heslo pro úpravy a smazání.",
     "type": "Pouze statické JPG, PNG, WebP nebo AVIF. GIF a videa vyžadují účet.",
     "share": "Nejprve zveřejněte fotky, pak sdílejte odkaz na výsledek.",
     "rate": "Byl dosažen limit nahrávání. Zkuste to později.",
-    "failed": "Nahrání se nezdařilo. Úpravy zůstávají zachované; zkuste to znovu."
+    "failed": "Nahrání se nezdařilo. Úpravy zůstávají zachované; zkuste to znovu.",
+    "nineHelp": "Hosté mohou zveřejnit Top 9 s až 9 fotografiemi. Heslo si uschovejte pro úpravy nebo smazání.",
+    "tierHelp": "Hosté mohou zveřejnit žebříček s až 50 místními fotografiemi. Heslo si uschovejte pro úpravy nebo smazání."
   },
   "hi": {
     "help": "अतिथि भी स्थिर फोटो प्रकाशित कर सकते हैं: Top 9 में 9 या टियर सूची में 50 स्थानीय फोटो तक। प्रकाशित करते समय फोटो संपीड़ित होते हैं। संपादन या हटाने के लिए पासवर्ड रखें।",
     "type": "केवल स्थिर JPG, PNG, WebP या AVIF फोटो। GIF और वीडियो के लिए सदस्य खाता चाहिए।",
     "share": "पहले फोटो प्रकाशित करें, फिर परिणाम पृष्ठ का लिंक साझा करें।",
     "rate": "अपलोड सीमा पूरी हो गई। बाद में फिर कोशिश करें।",
-    "failed": "फोटो अपलोड नहीं हुआ। बदलाव सुरक्षित हैं; फिर कोशिश करें।"
+    "failed": "फोटो अपलोड नहीं हुआ। बदलाव सुरक्षित हैं; फिर कोशिश करें।",
+    "nineHelp": "अतिथि 9 फ़ोटो तक का Top 9 प्रकाशित कर सकते हैं। संपादन या हटाने के लिए पासवर्ड संभालकर रखें।",
+    "tierHelp": "अतिथि 50 स्थानीय फ़ोटो तक की टियर सूची प्रकाशित कर सकते हैं। संपादन या हटाने के लिए पासवर्ड संभालकर रखें।"
   },
   "bn": {
     "help": "অতিথিরাও স্থির ছবি প্রকাশ করতে পারেন: Top 9-এ ৯টি বা টিয়ার তালিকায় ৫০টি স্থানীয় ছবি পর্যন্ত। প্রকাশের সময় ছবি সংকুচিত হয়। সম্পাদনা বা মুছতে পাসওয়ার্ড রাখুন।",
     "type": "শুধু স্থির JPG, PNG, WebP বা AVIF ছবি। GIF ও ভিডিওর জন্য সদস্য অ্যাকাউন্ট প্রয়োজন।",
     "share": "আগে ছবি প্রকাশ করুন, তারপর ফলাফলের লিংক শেয়ার করুন।",
     "rate": "আপলোড সীমা পূর্ণ হয়েছে। পরে আবার চেষ্টা করুন।",
-    "failed": "ছবি আপলোড হয়নি। সম্পাদনা রাখা আছে; আবার চেষ্টা করুন।"
+    "failed": "ছবি আপলোড হয়নি। সম্পাদনা রাখা আছে; আবার চেষ্টা করুন।",
+    "nineHelp": "অতিথিরাও সর্বোচ্চ ৯টি ছবি দিয়ে Top 9 প্রকাশ করতে পারেন। সম্পাদনা বা মুছে ফেলার পাসওয়ার্ড সংরক্ষণ করুন।",
+    "tierHelp": "অতিথিরাও সর্বোচ্চ ৫০টি স্থানীয় ছবি দিয়ে টিয়ার তালিকা প্রকাশ করতে পারেন। সম্পাদনা বা মুছে ফেলার পাসওয়ার্ড সংরক্ষণ করুন।"
   },
   "ar": {
     "help": "يمكن للضيوف نشر صور ثابتة: حتى 9 في Top 9 أو 50 صورة محلية في قائمة التصنيف. تُضغط الصور عند النشر. احتفظ بكلمة المرور للتعديل أو الحذف.",
     "type": "صور ثابتة JPG أو PNG أو WebP أو AVIF فقط. يتطلب GIF والفيديو حساب عضو.",
     "share": "انشر الصور أولاً ثم شارك رابط صفحة النتيجة.",
     "rate": "تم بلوغ حد الرفع. حاول لاحقاً.",
-    "failed": "تعذر رفع الصور. تعديلاتك محفوظة؛ حاول مجدداً."
+    "failed": "تعذر رفع الصور. تعديلاتك محفوظة؛ حاول مجدداً.",
+    "nineHelp": "يمكن للضيوف نشر Top 9 بما يصل إلى 9 صور. احتفظ بكلمة المرور للتعديل أو الحذف.",
+    "tierHelp": "يمكن للضيوف نشر قائمة مستويات بما يصل إلى 50 صورة محلية. احتفظ بكلمة المرور للتعديل أو الحذف."
   },
   "tr": {
     "help": "Misafirler fotoğraf yayımlayabilir: Top 9 için 9, tier listesi için 50 yerel fotoğrafa kadar. Yayımlarken sıkıştırılır. Düzenlemek veya silmek için şifreyi saklayın.",
     "type": "Yalnızca sabit JPG, PNG, WebP veya AVIF fotoğrafları. GIF ve video için üyelik gerekir.",
     "share": "Önce fotoğrafları yayımlayın, sonra sonuç bağlantısını paylaşın.",
     "rate": "Yükleme sınırına ulaşıldı. Daha sonra tekrar deneyin.",
-    "failed": "Fotoğraf yüklenemedi. Değişiklikler korunuyor; tekrar deneyin."
+    "failed": "Fotoğraf yüklenemedi. Değişiklikler korunuyor; tekrar deneyin.",
+    "nineHelp": "Misafirler en fazla 9 fotoğrafla Top 9 yayımlayabilir. Düzenlemek veya silmek için şifrenizi saklayın.",
+    "tierHelp": "Misafirler en fazla 50 yerel fotoğrafla seviye listesi yayımlayabilir. Düzenlemek veya silmek için şifrenizi saklayın."
   },
   "th": {
     "help": "ผู้เยี่ยมชมเผยแพร่ภาพนิ่งได้: Top 9 สูงสุด 9 ภาพ หรือภาพจากเครื่องในเทียร์ลิสต์สูงสุด 50 ภาพ ระบบบีบอัดเมื่อเผยแพร่ เก็บรหัสผ่านไว้แก้ไขหรือลบ",
     "type": "ใช้ภาพนิ่ง JPG, PNG, WebP หรือ AVIF เท่านั้น GIF และวิดีโอต้องเป็นสมาชิก",
     "share": "เผยแพร่ภาพก่อน แล้วแชร์ลิงก์หน้าผลลัพธ์",
     "rate": "ถึงขีดจำกัดการอัปโหลดแล้ว โปรดลองอีกครั้งภายหลัง",
-    "failed": "อัปโหลดภาพไม่สำเร็จ การแก้ไขยังอยู่ โปรดลองอีกครั้ง"
+    "failed": "อัปโหลดภาพไม่สำเร็จ การแก้ไขยังอยู่ โปรดลองอีกครั้ง",
+    "nineHelp": "ผู้เยี่ยมชมเผยแพร่ Top 9 ได้สูงสุด 9 ภาพ เก็บรหัสผ่านไว้เพื่อแก้ไขหรือลบ",
+    "tierHelp": "ผู้เยี่ยมชมเผยแพร่รายการจัดอันดับด้วยภาพจากเครื่องได้สูงสุด 50 ภาพ เก็บรหัสผ่านไว้เพื่อแก้ไขหรือลบ"
   }
 }

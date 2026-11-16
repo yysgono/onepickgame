@@ -1,3 +1,4 @@
+import {loadRecentContentActivity,formatRecentActivity} from '../utils/recentContentActivity';
 import ContentLanguageSelect from "./ContentLanguageSelect";
 import {localizeExtraUi} from "../utils/newLanguageUi";
 import "../styles/activityPanels.css";
@@ -1402,72 +1403,11 @@ export default function QuizPage({ user = null }) {
         return;
       }
 
-      const { data: attempts, error: attemptError } = await supabase
-        .from("quiz_attempts")
-        .select("quiz_id, created_at")
-        .order("created_at", { ascending: false })
-        .limit(200);
+      try {
+        const rows=await loadRecentContentActivity(supabase,'quiz',4);
+        if(alive)setRecentPlayedQuizItems(rows.map(({cup,time,eventKey})=>({...cup,lastPlayedAt:time,eventKey,displayTitle:localized(cup.title_translations,cup.title,lang)})));
+      }catch(error){console.warn('Failed to load recent quiz plays',error);if(alive)setRecentPlayedQuizItems([]);}
 
-      if (attemptError) {
-        console.warn("Failed to load recent quiz plays", attemptError);
-        if (alive) setRecentPlayedQuizItems([]);
-        return;
-      }
-
-      const seen = new Set();
-      const recentIds = [];
-      const playedAtById = new Map();
-
-      (attempts || []).forEach((attempt) => {
-        const quizId = String(attempt?.quiz_id || "");
-        if (!quizId || seen.has(quizId)) return;
-        seen.add(quizId);
-        recentIds.push(quizId);
-        playedAtById.set(quizId, attempt?.created_at);
-      });
-
-      if (!recentIds.length) {
-        if (alive) setRecentPlayedQuizItems([]);
-        return;
-      }
-
-      const { data: quizzes, error: quizError } = await supabase
-        .from("quizzes")
-        .select(
-          "id,title,title_translations,created_at"
-        ).is("deleted_at", null)
-        .in("id", recentIds)
-        .eq("is_published", true);
-
-      if (quizError) {
-        console.warn("Failed to load recent played quizzes", quizError);
-        if (alive) setRecentPlayedQuizItems([]);
-        return;
-      }
-
-      const quizById = new Map(
-        (quizzes || []).map((quiz) => [String(quiz.id), quiz])
-      );
-
-      const ordered = recentIds
-        .map((quizId) => {
-          const quiz = quizById.get(quizId);
-          if (!quiz) return null;
-
-          return {
-            ...quiz,
-            lastPlayedAt: playedAtById.get(quizId),
-            displayTitle: localized(
-              quiz.title_translations,
-              quiz.title,
-              lang
-            ),
-          };
-        })
-        .filter(Boolean)
-        .slice(0, 6);
-
-      if (alive) setRecentPlayedQuizItems(ordered);
     }
 
     loadRecentPlayedQuizzes();
@@ -1527,8 +1467,8 @@ export default function QuizPage({ user = null }) {
             gap: 9,
           }}
         >
-          {items.slice(0, 4).map((item) => (
-            <li key={`${title}-${item.id}`}>
+          {items.slice(0, 4).map((item,eventIndex) => (
+            <li key={`${title}-${item.id}-${eventIndex}`}>
               <NavigationLink className="home-activity-link"
 
                 to={`/${lang}/quiz/${item.id}`} appearance="button"
@@ -1572,7 +1512,7 @@ export default function QuizPage({ user = null }) {
                   }}
                 >
                   {metric === "playedAt"
-                    ? formatActivityDate(item.lastPlayedAt || item.created_at)
+                    ? formatRecentActivity(item.lastPlayedAt || item.created_at,lang)
                     : formatActivityDate(item.created_at)}
                 </span>
               </NavigationLink>

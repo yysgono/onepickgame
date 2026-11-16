@@ -2523,7 +2523,7 @@ const addLocalFiles =
         }
 
 
-        if(!currentUser&&allCandidates.filter(isLocalCandidate).length+selectedFiles.length>50){alert((guestUploadCopy[lang]||guestUploadCopy.en).help);return;}
+        if(!currentUser&&allCandidates.filter(isLocalCandidate).length+selectedFiles.length>50){alert((guestUploadCopy[lang]||guestUploadCopy.en).tierHelp);return;}
 
         const validFiles = [];
         const rejectedFiles = [];
@@ -5193,7 +5193,7 @@ if (editingTierListId) {
                   boxSizing: "border-box",
                   padding: "0 14px",
                   borderRadius: 10,
-                  border: "1px solid #cbd5e1",
+                  border: "2px solid #7c6bb8",
                   background: "#fff",
                   color: "#111827",
                   fontSize: isMobile ? 18 : 20,

@@ -1,3 +1,4 @@
+import {loadRecentContentActivity,formatRecentActivity} from '../utils/recentContentActivity';
 import ContentLanguageSelect from "./ContentLanguageSelect";
 import {localizeExtraUi} from "../utils/newLanguageUi";
 import { useAdsAllowed } from "../ads/AdExclusionProvider";
@@ -1093,21 +1094,9 @@ useEffect(() => {
   let mounted = true;
 
   async function fetchRecentPlays() {
-    if (remoteHome) return;
     try {
-      const { data, error } = await supabase
-        .from("winner_logs")
-        .select("cup_id, created_at")
-        .order("created_at", { ascending: false })
-        .limit(30);
-
-      if (error) {
-        throw error;
-      }
-
-      if (mounted) {
-        setRecentPlayLogs(data || []);
-      }
+      const rows=await loadRecentContentActivity(supabase,'worldcup',4);
+      if(mounted)setRecentPlayLogs(rows);
     } catch (error) {
       console.error("최근 플레이 조회 오류:", error);
     }
@@ -1240,23 +1229,7 @@ const recentCreatedCups = remoteHome ? homePages.activity.created : [...cupById.
     time: cup?.created_at,
   }));
 
-const seenRecentPlayIds = new Set();
-const recentPlayedCups = remoteHome ? homePages.activity.played : (recentPlayLogs || [])
-  .map((log) => {
-    const cup = cupById.get(String(log?.cup_id));
-    if (!cup) return null;
-
-    const key = String(cup.id);
-    if (seenRecentPlayIds.has(key)) return null;
-    seenRecentPlayIds.add(key);
-
-    return {
-      cup,
-      time: log?.created_at,
-    };
-  })
-  .filter(Boolean)
-  .slice(0, 6);
+const recentPlayedCups = recentPlayLogs;
 
 const showHomeActivityPanels =
   !isMobile &&
@@ -1832,11 +1805,11 @@ const renderHomeActivityPanel = ({
             gap: 9,
           }}
         >
-          {items.slice(0, 4).map(({ cup, time }) => {
+          {items.slice(0, 4).map(({ cup, time }, eventIndex) => {
             const titleText = getDisplayTitle(cup);
 
             return (
-              <li key={`${title}-${cup.id}`}>
+              <li key={`${title}-${cup.id}-${eventIndex}`}>
                 <Link
                   className="home-activity-link"
                   to={`/${lang}/select-round/${cup.id}`}
@@ -1880,7 +1853,7 @@ const renderHomeActivityPanel = ({
                       whiteSpace: "nowrap",
                     }}
                   >
-                    {formatWorldcupCardDate(time)}
+                    {formatRecentActivity(time,lang)}
                   </span>
                 </Link>
               </li>

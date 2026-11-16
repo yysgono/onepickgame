@@ -3,9 +3,9 @@ const guest=require('../src/utils/guestUploadCopy.json'),top=require('../src/com
 assert.equal(Object.keys(guest).length,20);
 for(const [lang,copy]of Object.entries(guest)){
  for(const key of ['help','type','share','rate','failed'])assert(copy[key]?.trim(),lang+'/'+key);
- assert(top[lang].publishHelp.includes(copy.help),lang+' public registration');
- assert.equal(registration[lang].help,copy.help);
- assert.equal(tier[lang].guestGuide,copy.help);
- assert.equal(tier[lang].signInToPublish,copy.help);
+ assert(top[lang].publishHelp.includes(copy.nineHelp),lang+' public registration');
+ assert.equal(registration[lang].help,copy.nineHelp);
+ assert.equal(tier[lang].guestGuide,copy.tierHelp);
+ assert.equal(tier[lang].signInToPublish,copy.tierHelp);
 }
 console.log('PASS: guest upload guidance and messages across all 20 languages.');

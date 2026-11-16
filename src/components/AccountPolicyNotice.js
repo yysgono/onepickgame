@@ -27,8 +27,9 @@ const COPY = {
 export default function AccountPolicyNotice({ language } = {}) {
  const {i18n}=useTranslation();const requested=String(language||i18n.language||'en').split(/[-_]/)[0];const lang=Object.prototype.hasOwnProperty.call(COPY,requested)?requested:'en';
  const [intro,terms,privacy,separate]=COPY[lang]||COPY.en;
+ const parts=intro.match(/^(.+?[.!。।])\s*(.+)$/)|| (lang==='th'?[null,'สมัครด้วยอีเมลหรือ Google / NAVER ได้','โปรดอ่านข้อกำหนดและนโยบายความเป็นส่วนตัวก่อนดำเนินการต่อ']:null);
  return <aside aria-label={privacy} dir={lang==='ar'?'rtl':undefined} style={{margin:'18px 0',padding:16,border:'1px solid #cbd5e1',borderRadius:10,background:'#fff',fontSize:14,lineHeight:1.65,textAlign:'start',color:'#334155'}}>
-  <p style={{margin:'0 0 9px'}}>{intro}</p>
+  <p style={{margin:'0 0 9px'}}>{parts?<>{parts[1]}<br/>{parts[2]}</>:intro}</p>
   <nav style={{display:'flex',gap:14,flexWrap:'wrap'}}>
    <Link to={`/${lang}/terms-of-service`} target="_blank" rel="noopener noreferrer" style={{fontWeight:700,color:'#5542b8',textDecoration:'underline'}}>{terms}</Link>
    <Link to={`/${lang}/privacy-policy`} target="_blank" rel="noopener noreferrer" style={{fontWeight:700,color:'#5542b8',textDecoration:'underline'}}>{privacy}</Link>

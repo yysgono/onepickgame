@@ -1,3 +1,4 @@
+import ResultRecommendations from './recommendations/ResultRecommendations';
 import WinnerStatsSummary from "./WinnerStatsSummary";
 // src/components/ResultPage.js
 
@@ -947,6 +948,7 @@ textShadow: "none",
 
 
 
+      <ResultRecommendations kind="worldcup" id={cup.id} lang={lang} category={cup.category}/>
       </div> {/* ⭐ 메인 끝 */}
 
 
