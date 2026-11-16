@@ -51,7 +51,7 @@ export async function exportPNG(slots,title,names,frameCache={}) {
    ctx.drawImage(img,...collageLayout.cropForSlot(img.naturalWidth,img.naturalHeight,i,c.zoom,c.x,c.y),x,y,w,h);
    if(names){
     const cx=pad+tile.caption[0]*scale,cy=top+tile.caption[1]*scale;
-    ctx.font='bold 22px sans-serif';const name=fit(ctx,c.name,w*.7),labelWidth=Math.min(w*.75,ctx.measureText(name).width+20);
+    ctx.font='bold 22px sans-serif';const name=fit(ctx,c.name,w*.8),labelWidth=Math.min(w*.85,ctx.measureText(name).width+20);
     ctx.fillStyle='rgba(18,14,26,.72)';ctx.fillRect(cx-labelWidth/2,cy-18,labelWidth,36);
     ctx.fillStyle='#fff';ctx.fillText(name,cx,cy+8);
    }
