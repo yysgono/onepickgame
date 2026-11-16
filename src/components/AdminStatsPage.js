@@ -220,7 +220,6 @@ export default function AdminStatsPage() {
 
 
       <AdminContentSummary refreshTick={refreshTick} worldcupStats={{ existing: worldcupCount, total: totalPlays, today: todayPlays }} worldcupLoading={loading} />
-      <AdminTopNineViews refreshTick={refreshTick} />
 
       {/* ==================================================
     최근 플레이
@@ -358,6 +357,7 @@ export default function AdminStatsPage() {
 </div>
 <AdminRecentActivity kind="quiz" items={quizPlays} loading={loading} error={sectionErrors.quizPlays} />
 <AdminRecentActivity kind="tier-list" items={tierViews} loading={loading} error={sectionErrors.tierViews} />
+      <AdminTopNineViews refreshTick={refreshTick} />
 
 
       {/* ==================================================
