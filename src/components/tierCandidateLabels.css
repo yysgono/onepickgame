@@ -230,7 +230,7 @@ a.tier-result-action {
   width: 100%;
   min-width: 0;
   max-width: 100%;
-  margin-inline-start: auto;
+  margin: 16px auto 0;
   overflow-x: auto;
   padding: 4px 2px 24px;
   box-sizing: border-box;
@@ -268,3 +268,5 @@ a.tier-result-action {
   white-space: nowrap;
 }
 .tier-result-top-actions > button:first-child { margin-inline-start: auto; }
+
+.tier-result-top-actions > :last-child { margin-inline-end: auto; }

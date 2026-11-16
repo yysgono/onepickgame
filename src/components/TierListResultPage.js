@@ -1547,83 +1547,6 @@ padding: isMobile
     background: "#ffffff",
   }}
 >
-<div
-  style={{
-    display: "flex",
-    flexDirection: isMobile ? "column" : "row",
-    flexWrap: isMobile ? "nowrap" : "wrap",
-    justifyContent: "space-between",
-    alignItems: isMobile ? "stretch" : "center",
-    gap: isMobile ? 8 : 12,
-    marginBottom: isMobile ? 10 : 12,
-  }}
->
-
-  {/* =========================
-      좌측 상단 - 티어표 홈
-      ========================= */}
-
-
-
-
-
-  {/* =========================
-      우측 상단 - 액션
-      ========================= */}
-
- <div className="tier-result-top-actions">
-    <button
-      type="button"
-      onClick={handleLike}
-      disabled={likeLoading}
-      style={{
-        minHeight: isMobile ? 42 : 52,
-
-        width: isMobile ? "100%" : "auto",
-
-        padding: isMobile ? "0 8px" : "0 18px",
-
-        borderRadius: 10,
-
-        border: liked
-          ? "1px solid #ff6b88"
-          : "1px solid #dde2ea",
-
-        background: liked
-          ? "#ffffff"
-          : "#ffffff",
-
-        color: liked
-          ? "#b42346"
-          : "#202534",
-
-        fontSize: isMobile ? 14 : 16,
-
-        fontWeight: 900,
-
-        cursor: likeLoading
-          ? "default"
-          : "pointer",
-
-        whiteSpace: "nowrap",
-
-        display: "inline-flex",
-
-        alignItems: "center",
-
-        justifyContent: "center",
-      }}
-    >
-      ♥ {liked
-        ? text.liked
-        : text.like}
-    </button>
-
-    {renderResultActions()}
-  </div>
-
- </div>
-
   {/* =========================
       중앙 제목
       ========================= */}
@@ -1682,6 +1605,56 @@ padding: isMobile
   </div>
   <TierTags value={tierList.tier_labels?._tags} lang={lang} />
   <p style={{ margin: "10px auto 0", maxWidth: 900, color: "#596579", fontSize: isMobile ? 14 : 16, lineHeight: 1.65, overflowWrap: "anywhere" }}>{seoResultDescription}</p>
+  <div className="tier-result-top-actions">
+    <button
+      type="button"
+      onClick={handleLike}
+      disabled={likeLoading}
+      style={{
+        minHeight: isMobile ? 42 : 52,
+
+        width: isMobile ? "100%" : "auto",
+
+        padding: isMobile ? "0 8px" : "0 18px",
+
+        borderRadius: 10,
+
+        border: liked
+          ? "1px solid #ff6b88"
+          : "1px solid #dde2ea",
+
+        background: liked
+          ? "#ffffff"
+          : "#ffffff",
+
+        color: liked
+          ? "#b42346"
+          : "#202534",
+
+        fontSize: isMobile ? 14 : 16,
+
+        fontWeight: 900,
+
+        cursor: likeLoading
+          ? "default"
+          : "pointer",
+
+        whiteSpace: "nowrap",
+
+        display: "inline-flex",
+
+        alignItems: "center",
+
+        justifyContent: "center",
+      }}
+    >
+      ♥ {liked
+        ? text.liked
+        : text.like}
+    </button>
+
+    {renderResultActions()}
+  </div>
 </div>
         {/* =============================================
             티어표 / 나만의 원픽
