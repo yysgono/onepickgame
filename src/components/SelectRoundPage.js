@@ -1251,6 +1251,8 @@ boxShadow:
 
               </h1>
 
+      <RoundSelection lang={normalizedLang} rounds={possibleRounds} selected={selectedRound} onChange={setSelectedRound} onStart={handleStart} roundLabel={round=>t('round_of',{count:round})} candidateCount={candidates.length} recommended={possibleRounds.includes(maxRound)?maxRound:possibleRounds[possibleRounds.length-1]}/>
+
               {/* 대표 썸네일 */}
 
               <div className="worldcup-selection-thumbnail"
@@ -1512,7 +1514,6 @@ boxShadow:
 
 
 
-      <RoundSelection lang={normalizedLang} rounds={possibleRounds} selected={selectedRound} onChange={setSelectedRound} onStart={handleStart} roundLabel={round=>t('round_of',{count:round})} candidateCount={candidates.length} recommended={possibleRounds.includes(maxRound)?maxRound:possibleRounds[possibleRounds.length-1]}/>
 
               {/* 설명 */}
 
