@@ -449,7 +449,7 @@
       "guestEditPasswordRequired": "Inserisci la password ospite per modificare questa lista di livelli.",
       "guestNicknameInvalid": "Il nickname deve contenere 1–20 caratteri.",
       "guestPasswordInvalid": "La password deve contenere 4–50 caratteri.",
-      "guestLocalImageBlocked": "Gli ospiti non possono utilizzare immagini direttamente caricate. Accedere.",
+      "guestLocalImageBlocked": "Solo immagini statiche JPG, PNG, WebP o AVIF. GIF e video richiedono un account.",
       "guestPublishTitle": "Editoria degli ospiti",
       "guestEditTitle": "Verifica della modifica degli ospiti",
       "guestNicknamePlaceholder": "Nickname (1–20 caratteri)",

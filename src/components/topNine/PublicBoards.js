@@ -1,3 +1,4 @@
+import {guestPhotoBlob,beginGuestImageUpload,completeGuestImageUpload,cancelGuestImageUpload,guestUploadCopy} from '../../utils/guestContentUpload';
 import gallerySortCopy from './gallerySortCopy.json';
 import collageLayout from './collageLayout.js';
 import {getGuestEditSession,rememberGuestEditSession,clearGuestEditSession} from './guestEditSession';
@@ -21,17 +22,28 @@ export function PublishBoard({slots,title,names,lang,onPublished,onNotice,onLoca
  const showRanks=false;
  const t=copy[lang]||copy.en,[busy,setBusy]=useState(false),[message,setMessage]=useState(''),[open,setOpen]=useState(false),[guest,setGuest]=useState(false),[nickname,setNickname]=useState(''),[password,setPassword]=useState(''),[confirm,setConfirm]=useState(''),[editSalt,setEditSalt]=useState('');
  async function saveBoard(auth){
-  const prepared=auth.guest?slots:await prepareMemberSlots(slots);makeShareHash(prepared,title,names,showRanks);
-  if(hasBadword(title,lang)||slots.some(c=>c&&hasBadword(c.name,lang))||hasBadword(auth.nickname,lang))throw Error('TEXT');
-  const result=await publishWithTitleRetry(supabase,{p_title:authoredTitle(title,auth.nickname),p_slots:prepared.map(c=>c??emptyTile),p_names:names,p_show_ranks:showRanks,p_nickname:auth.guest?auth.nickname:null,p_salt:auth.salt||null,p_proof:auth.proof||null,p_source_worldcup_ids:sourceIds,p_category:category,...(existingId?{p_board_id:existingId}:{})});
-  if(!result.data)throw Error('PUBLISH_FAILED');
-  if(auth.guest){rememberGuestBoard(result.data);if(existingId)rememberGuestEditSession(existingId,auth);}
-  setMessage(t.published);setOpen(false);setPassword('');setConfirm('');onPublished(result.data);
+  let uploadJob=null;
+  try{
+   if(hasBadword(title,lang)||slots.some(c=>c&&hasBadword(c.name,lang))||hasBadword(auth.nickname,lang))throw Error('TEXT');
+   let prepared=slots;
+   if(auth.guest){
+    const locals=[...new Set(slots.filter(c=>c&&!isShareable(c)).map(c=>c.src))];
+    if(locals.some(src=>!/^data:image\/(jpeg|png|webp);base64,/i.test(src)))throw Error('GUEST_IMAGE_INVALID');
+    const blobs=[];for(const src of locals)blobs.push(await guestPhotoBlob(src,512*1024));
+    uploadJob=await beginGuestImageUpload('nine',blobs);
+    if(uploadJob)prepared=slots.map(c=>c&&!isShareable(c)?{...c,src:uploadJob.urls[locals.indexOf(c.src)]}:c);
+   }else prepared=await prepareMemberSlots(slots);
+   makeShareHash(prepared,title,names,showRanks);
+   const result=await publishWithTitleRetry(supabase,{p_title:authoredTitle(title,auth.nickname),p_slots:prepared.map(c=>c??emptyTile),p_names:names,p_show_ranks:showRanks,p_nickname:auth.guest?auth.nickname:null,p_salt:auth.salt||null,p_proof:auth.proof||null,p_source_worldcup_ids:sourceIds,p_category:category,...(existingId?{p_board_id:existingId}:{})});
+   if(!result.data)throw Error('PUBLISH_FAILED');
+   await completeGuestImageUpload(uploadJob);
+   if(auth.guest){rememberGuestBoard(result.data);if(existingId)rememberGuestEditSession(existingId,auth);}
+   setMessage(t.published);setOpen(false);setPassword('');setConfirm('');onPublished(result.data);
+  }catch(error){await cancelGuestImageUpload(uploadJob);throw error;}
  }
  async function begin(){if(disabled||busy)return;setMessage('');setBusy(true);try{
   const {data}=await supabase.auth.getUser();const isGuest=!data?.user||data.user.is_anonymous;
-  if(isGuest&&slots.some(c=>c&&!isShareable(c))&&onLocalGuest){onLocalGuest();return;}
-  if(isGuest)makeShareHash(slots,title,names,showRanks);setGuest(isGuest);setEditSalt('');
+  setGuest(isGuest);setEditSalt('');
   if(existingId){
    const original=await supabase.from('top_nine_public_boards').select('author_id,guest_nickname').eq('id',existingId).maybeSingle();
    if(original.error||!original.data)throw Error('EDIT_PERMISSION');
@@ -51,7 +63,7 @@ export function PublishBoard({slots,title,names,lang,onPublished,onNotice,onLoca
   if(guest&&(password.length<4||!existingId&&password!==confirm))throw Error('PASSWORD');
   const salt=guest?(editSalt||guestSalt()):null,proof=guest?await guestProof(password,salt):null;
   await saveBoard({guest,nickname,salt,proof});
- }catch{if(existingId)clearGuestEditSession(existingId);setMessage(t.publishFailed);}finally{setBusy(false);}}
+ }catch(error){if(existingId)clearGuestEditSession(existingId);const c=guestUploadCopy[lang]||guestUploadCopy.en;setMessage(error.message==='GUEST_UPLOAD_RATE'?c.rate:/^GUEST_IMAGE/.test(error.message)?c.type:/^GUEST_UPLOAD/.test(error.message)?c.failed:t.publishFailed);}finally{setBusy(false);}}
  return <><button className={label?"tn-publish-button tn-primary":"tn-publish-button"} disabled={busy||disabled} onClick={begin}>{existingId?t.saveChanges:(label||t.publish)}</button>{!open&&message&&!onNotice&&<div className="tn-publish-status" role="status"><p>{message}</p>{message===t.localShare&&<a href={`/${lang}/login`}>{t.memberAccess}</a>}</div>}{open&&createPortal(<div className="top-nine tn-picker-overlay tn-public-overlay" dir={lang==='ar'?'rtl':'ltr'}><section className="tn-publish-dialog" role="dialog" aria-modal="true" aria-label={existingId?t.saveChanges:t.publish}><h2>{existingId?t.saveChanges:t.publish}</h2>{guest?<p>{existingId?t.unlockEditHelp:t.publishHelp}</p>:<p>{t.memberUploadHelp}</p>}<form onSubmit={publish}>{guest&&<>{!existingId&&<label>{t.nickname}<input required minLength={2} maxLength={30} value={nickname} onChange={e=>setNickname(e.target.value)}/></label>}<label>{t.password}<input type="password" required minLength={4} maxLength={100} autoComplete={existingId?'current-password':'new-password'} value={password} onChange={e=>setPassword(e.target.value)}/></label>{!existingId&&<label>{t.confirmPassword}<input type="password" required minLength={4} maxLength={100} autoComplete="new-password" value={confirm} onChange={e=>setConfirm(e.target.value)}/></label>}</>}{message&&<p role="alert">{message}</p>}<div className="tn-actions"><button className="tn-primary" disabled={busy}>{existingId?t.saveChanges:t.publish}</button><button type="button" disabled={busy} onClick={()=>{setOpen(false);setPassword('');setConfirm('');setMessage('');}}>{t.close}</button></div></form></section></div>,document.body)}</>;
 }
 export function BoardThumbnail({candidate,index=4}){

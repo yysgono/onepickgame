@@ -17,6 +17,7 @@ app.get('/api/visitor-country',require('./affiliate-country.cjs').visitorCountry
 
 app.use(initialTranslationsMiddleware);
 app.use(cors());
+app.use("/api/guest-content-upload",express.json({limit:"1450kb"}));
 app.use(express.json({ limit: "10mb" }));
 app.use(
   express.urlencoded({
@@ -89,6 +90,7 @@ const supabaseAdmin =
     : null;
 
 require("./account-withdrawal-routes.cjs")(app, supabaseAdmin, SITE_URL);
+require("./guest-content-upload-routes.cjs")(app, supabaseAdmin, SITE_URL);
 
 const SUPPORTED_LANGS = [
   "ko",

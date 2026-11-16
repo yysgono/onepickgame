@@ -266,5 +266,11 @@
     }
   ],
   "trailingSlash": false,
-  "cleanUrls": true
+  "cleanUrls": true,
+  "crons": [
+    {
+      "path": "/api/guest-content-cleanup",
+      "schedule": "15 19 * * *"
+    }
+  ]
 }

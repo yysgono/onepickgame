@@ -449,7 +449,7 @@
       "guestEditPasswordRequired": "Podaj hasło gościa do edycji listy poziomów.",
       "guestNicknameInvalid": "Pseudonim musi mieć 1–20 znaków.",
       "guestPasswordInvalid": "Hasło musi mieć 4–50 znaków.",
-      "guestLocalImageBlocked": "Goście nie mogą korzystać z bezpośrednio przesłanych zdjęć. Proszę się zalogować.",
+      "guestLocalImageBlocked": "Tylko statyczne JPG, PNG, WebP lub AVIF. GIF-y i filmy wymagają konta.",
       "guestPublishTitle": "Wydawanie gości",
       "guestEditTitle": "Weryfikacja edycji gości",
       "guestNicknamePlaceholder": "Pseudonim (1–20 znaków)",

@@ -449,7 +449,7 @@
       "guestEditPasswordRequired": "Zadejte heslo hosta pro editaci tohoto seznamu úrovní.",
       "guestNicknameInvalid": "Přezdívka musí mít 1–20 znaků.",
       "guestPasswordInvalid": "Heslo musí mít 4–50 znaků.",
-      "guestLocalImageBlocked": "Hosté nemohou použít přímo nahrané obrázky. Prosím přihlaste se.",
+      "guestLocalImageBlocked": "Pouze statické JPG, PNG, WebP nebo AVIF. GIF a videa vyžadují účet.",
       "guestPublishTitle": "Vydávání hostů",
       "guestEditTitle": "Verifikace úpravy hostů",
       "guestNicknamePlaceholder": "Přezdívka (1–20 znaků)",

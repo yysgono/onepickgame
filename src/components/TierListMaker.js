@@ -1,3 +1,4 @@
+import {isLocalCandidate,checkGuestPhotos,guestPhotoAllowed,guestPhotoBlob,beginGuestImageUpload,completeGuestImageUpload,cancelGuestImageUpload,guestUploadCopy} from '../utils/guestContentUpload';
 import RecommendedImagePicker from './tierList/RecommendedImagePicker';
 import recommendedImageCopy from './tierList/recommendedImageCopy.json';
 import {additionsFromWorldcup,worldcupTitle} from '../utils/tierRecommendedCandidates';
@@ -48,6 +49,7 @@ import { getCreatorSafetyCopy, creatorWarningStyle } from "./creatorSafetyCopy";
 import {
   fetchWinnerStatsFromDB,
   getUserOrGuestId,
+  getOrCreateGuestId,
 } from "../utils";
 
 import { supabase } from "../utils/supabaseClient";
@@ -1391,8 +1393,7 @@ useEffect(() => {
     }
 
     setCurrentUser(
-      data?.session?.user ||
-        null
+      (data?.session?.user&&!data.session.user.is_anonymous?data.session.user:null)
     );
 
     setAuthReady(true);
@@ -1414,8 +1415,7 @@ useEffect(() => {
         }
 
         setCurrentUser(
-          session?.user ||
-            null
+          (session?.user&&!session.user.is_anonymous?session.user:null)
         );
 
         setAuthReady(true);
@@ -2523,6 +2523,8 @@ const addLocalFiles =
         }
 
 
+        if(!currentUser&&allCandidates.filter(isLocalCandidate).length+selectedFiles.length>50){alert((guestUploadCopy[lang]||guestUploadCopy.en).help);return;}
+
         const validFiles = [];
         const rejectedFiles = [];
 
@@ -2530,12 +2532,10 @@ const addLocalFiles =
         selectedFiles.forEach(
           (file) => {
             if (
-              !isSupportedImageFile(
-                file
-              )
+              !isSupportedImageFile(file)||(!currentUser&&!guestPhotoAllowed(file))
             ) {
               rejectedFiles.push(
-                `${file.name}: Only supported images or MP4 videos can be uploaded.`
+                `${file.name}: ${!currentUser?(guestUploadCopy[lang]||guestUploadCopy.en).type:"Only supported images or MP4 videos can be uploaded."}`
               );
 
               return;
@@ -2667,7 +2667,8 @@ const addLocalFiles =
 [
   id,
   text,
-  allCandidates.length,
+  allCandidates,
+  currentUser,
   authReady,
   saving,
   lang,
@@ -3601,7 +3602,7 @@ const handleDragEndItem =
 
 
         setSaving(true);
-
+        let guestUploadJob=null;
         try {
           const tierListId =
             editingTierListId ||
@@ -3617,14 +3618,13 @@ const handleDragEndItem =
           }
 
 
-          const {
-            user_id,
-            guest_id,
-          } =
-            await getUserOrGuestId();
-
-          if (!user_id && allCandidates.some(item => item._source === "local")) {
-            throw new Error(editorText.signInToPublish);
+          const identity=await getUserOrGuestId();
+          const user_id=currentUser&&!currentUser.is_anonymous?identity.user_id:null;
+          const guest_id=user_id?null:(identity.guest_id||getOrCreateGuestId());
+          const localForSave=[...new Map([...allCandidates,...TIERS.flatMap(tier=>tierItems[tier]||[]),...(onePick?[onePick]:[])].filter(isLocalCandidate).map(item=>[item._tierKey,item])).values()];
+          if(!user_id){
+            checkGuestPhotos(localForSave);
+            if(editingTierListId&&String(guestEditPassword||guestPassword).length<4)throw Error(text.guestPasswordInvalid);
           }
 
           // Reject incomplete guest details before preparing/uploading candidate data.
@@ -3663,6 +3663,13 @@ const handleDragEndItem =
 
           const uploadedCandidateMap =
             new Map();
+          if(!user_id){
+            const files=localForSave.filter(item=>item.file);
+            const blobs=[];for(const item of files)blobs.push(await guestPhotoBlob(item.file,IMAGE_MAX_OUTPUT_BYTES));
+            guestUploadJob=await beginGuestImageUpload('tier',blobs);
+            if(guestUploadJob)files.forEach((item,index)=>uploadedCandidateMap.set(item._tierKey,{...item,image:guestUploadJob.urls[index]}));
+          }
+
 
 
           for (
@@ -3670,8 +3677,7 @@ const handleDragEndItem =
             allCandidates
           ) {
             if (
-              item._source ===
-              "local"
+              item._source === "local" && user_id
             ) {
               const uploaded =
                 await uploadLocalCandidate(
@@ -3684,7 +3690,7 @@ const handleDragEndItem =
                 item._tierKey,
                 uploaded
               );
-            } else {
+            } else if(!uploadedCandidateMap.has(item._tierKey)) {
               uploadedCandidateMap.set(
                 item._tierKey,
                 item
@@ -3874,15 +3880,7 @@ if (editingTierListId) {
       );
     }
 
-    if (
-      allCandidates.some(
-        (item) => item._source === "local"
-      )
-    ) {
-      throw new Error(
-        text.guestLocalImageBlocked
-      );
-    }
+
 
     const result =
       await supabase.rpc(
@@ -3958,15 +3956,7 @@ if (editingTierListId) {
       );
     }
 
-    if (
-      allCandidates.some(
-        (item) => item._source === "local"
-      )
-    ) {
-      throw new Error(
-        text.guestLocalImageBlocked
-      );
-    }
+
 
     const {
       data: guestCreatedId,
@@ -4026,10 +4016,14 @@ if (editingTierListId) {
             tierListId;
 
 
+          await completeGuestImageUpload(guestUploadJob);
           navigate(
             `/${lang}/tier-list/${savedId}`
           );
         } catch (error) {
+          await cancelGuestImageUpload(guestUploadJob);
+          const guestText=guestUploadCopy[lang]||guestUploadCopy.en;
+          if(/^GUEST_/.test(error?.message||''))error=new Error(error.message==='GUEST_UPLOAD_RATE'?guestText.rate:/^GUEST_IMAGE/.test(error.message)?guestText.type:guestText.failed);
           console.error(
             "티어표 등록 실패:",
             error
@@ -4089,7 +4083,6 @@ if (editingTierListId) {
      id 로딩
      ========================= */
 
-  const guestHasLocalFiles = allCandidates.some(item => item._source === "local");
 
   function requestPublish() {
     if (!authReady || saving) return;
@@ -6011,22 +6004,22 @@ if (editingTierListId) {
                   onCancel={event => { if (saving) event.preventDefault(); }}>
                   <form onSubmit={event => {
                     event.preventDefault();
-                    if (!guestHasLocalFiles) saveTierList();
+                    saveTierList();
                   }}>
                     <h2 id="tier-editor-guest-title">{text.guestPublishTitle}</h2>
-                    <p>{guestHasLocalFiles ? editorText.signInToPublish : editorText.guestGuide}</p>
+                    <p>{editorText.guestGuide}</p>
                     <div className="tier-editor-guest-inputs">
                       <input type="text" aria-label={text.guestNicknamePlaceholder} placeholder={text.guestNicknamePlaceholder}
-                        autoComplete="nickname" maxLength={20} value={guestNickname} required disabled={saving || guestHasLocalFiles}
+                        autoComplete="nickname" maxLength={20} value={guestNickname} required disabled={saving}
                         onChange={event => setGuestNickname(event.target.value)} />
                       <input type="password" aria-label={text.guestPasswordPlaceholder} placeholder={text.guestPasswordPlaceholder}
-                        autoComplete="new-password" minLength={4} maxLength={50} value={guestPassword} required disabled={saving || guestHasLocalFiles}
+                        autoComplete="new-password" minLength={4} maxLength={50} value={guestPassword} required disabled={saving}
                         onChange={event => setGuestPassword(event.target.value)} />
                     </div>
                     {saveError && <p className="tier-editor-guest-error" role="alert">{saveError}</p>}
                     <div className="tier-editor-toolbar">
                       <NavigationLink to={`/${lang}/login`} target="_blank" rel="noopener noreferrer" appearance="button" className="tier-editor-secondary">{t("login")}</NavigationLink>
-                      <button className="tier-editor-secondary" type="submit" disabled={saving || guestHasLocalFiles}>{saving ? text.saving : t("confirm", { defaultValue: lang === "ko" ? "확인" : "Confirm" })}</button>
+                      <button className="tier-editor-secondary" type="submit" disabled={saving}>{saving ? text.saving : t("confirm", { defaultValue: lang === "ko" ? "확인" : "Confirm" })}</button>
                       <button className="tier-editor-secondary" type="button" disabled={saving} onClick={() => {
                         guestPublishDialogRef.current?.close();
                         setSaveError("");

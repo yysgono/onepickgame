@@ -2,201 +2,201 @@
   "ko": {
     "register": "등록하기",
     "title": "직접 올린 사진이 있어요",
-    "help": "직접 올린 사진을 포함해 등록하려면 로그인이 필요해요.",
+    "help": "비회원도 정지 사진을 올려 등록할 수 있어요. 구절판은 최대 9장, 티어표의 PC 사진은 최대 50장입니다. 사진은 등록할 때 압축해 업로드하며, 비밀번호로 수정·삭제할 수 있어요.",
     "kept": "로그인·회원가입 전에 사진과 작성 내용을 저장하고, 돌아오면 복원해요.",
     "login": "로그인",
     "signup": "회원가입",
     "keepEditing": "계속 편집",
-    "siteHelp": "사이트 후보만 사용하면 비회원도 등록할 수 있어요."
+    "siteHelp": "비회원도 정지 사진을 올려 등록할 수 있어요. 구절판은 최대 9장, 티어표의 PC 사진은 최대 50장입니다. 사진은 등록할 때 압축해 업로드하며, 비밀번호로 수정·삭제할 수 있어요."
   },
   "en": {
     "register": "Publish",
     "title": "Your collage includes uploaded photos",
-    "help": "Sign in to publish a collage containing your own photos.",
+    "help": "Guests can publish still photos: up to 9 in a Top 9 collage or 50 local photos in a tier list. Photos are compressed and uploaded when you publish. Keep your password to edit or delete.",
     "kept": "Your photos and edits will be saved before sign-in or sign-up and restored when you return.",
     "login": "Sign in",
     "signup": "Sign up",
     "keepEditing": "Keep editing",
-    "siteHelp": "Guests can publish collages made only with site candidates."
+    "siteHelp": "Guests can publish still photos: up to 9 in a Top 9 collage or 50 local photos in a tier list. Photos are compressed and uploaded when you publish. Keep your password to edit or delete."
   },
   "ja": {
     "register": "公開する",
     "title": "アップロードした写真が含まれています",
-    "help": "自分でアップロードした写真を含めて公開するにはログインが必要です。",
+    "help": "ゲストも静止画を公開できます。Top 9は9枚、ティア表のローカル写真は50枚まで。公開時に圧縮してアップロードします。編集・削除用パスワードを保管してください。",
     "kept": "ログイン・新規登録の前に写真と編集内容を保存し、戻ると復元します。",
     "login": "ログイン",
     "signup": "新規登録",
     "keepEditing": "編集を続ける",
-    "siteHelp": "サイト内の候補だけを使う場合は、ゲストも公開できます。"
+    "siteHelp": "ゲストも静止画を公開できます。Top 9は9枚、ティア表のローカル写真は50枚まで。公開時に圧縮してアップロードします。編集・削除用パスワードを保管してください。"
   },
   "zh": {
     "register": "发布",
     "title": "包含自行上传的照片",
-    "help": "发布包含自行上传照片的作品需要登录。",
+    "help": "访客也可发布静态图片：Top 9最多9张，等级表最多50张本地照片。发布时压缩上传，请保管编辑或删除所需的密码。",
     "kept": "登录或注册前会保存照片和编辑内容，返回后恢复。",
     "login": "登录",
     "signup": "注册",
     "keepEditing": "继续编辑",
-    "siteHelp": "仅使用网站候选项时，游客也可以发布。"
+    "siteHelp": "访客也可发布静态图片：Top 9最多9张，等级表最多50张本地照片。发布时压缩上传，请保管编辑或删除所需的密码。"
   },
   "es": {
     "register": "Publicar",
     "title": "Has añadido fotos propias",
-    "help": "Inicia sesión para publicar un collage con tus propias fotos.",
+    "help": "Los invitados pueden publicar fotos: hasta 9 en Top 9 o 50 fotos locales en una tier list. Se comprimen y suben al publicar. Guarda la contraseña para editar o borrar.",
     "kept": "Guardaremos tus fotos y cambios antes de iniciar sesión o registrarte y los restauraremos al volver.",
     "login": "Iniciar sesión",
     "signup": "Registrarse",
     "keepEditing": "Seguir editando",
-    "siteHelp": "Los invitados pueden publicar collages hechos solo con candidatos del sitio."
+    "siteHelp": "Los invitados pueden publicar fotos: hasta 9 en Top 9 o 50 fotos locales en una tier list. Se comprimen y suben al publicar. Guarda la contraseña para editar o borrar."
   },
   "fr": {
     "register": "Publier",
     "title": "Votre collage contient vos photos",
-    "help": "Connectez-vous pour publier un collage contenant vos propres photos.",
+    "help": "Les invités peuvent publier des photos : 9 pour un Top 9, ou 50 photos locales pour une tier list. Elles sont compressées à la publication. Gardez le mot de passe pour modifier ou supprimer.",
     "kept": "Vos photos et modifications seront enregistrées avant la connexion ou l’inscription, puis restaurées à votre retour.",
     "login": "Se connecter",
     "signup": "S’inscrire",
     "keepEditing": "Continuer à modifier",
-    "siteHelp": "Les visiteurs peuvent publier des collages composés uniquement de candidats du site."
+    "siteHelp": "Les invités peuvent publier des photos : 9 pour un Top 9, ou 50 photos locales pour une tier list. Elles sont compressées à la publication. Gardez le mot de passe pour modifier ou supprimer."
   },
   "vi": {
     "register": "Đăng",
     "title": "Có ảnh bạn tự tải lên",
-    "help": "Hãy đăng nhập để đăng ảnh ghép có ảnh bạn tự tải lên.",
+    "help": "Khách có thể đăng ảnh tĩnh: tối đa 9 ảnh Top 9 hoặc 50 ảnh cục bộ trong bảng xếp hạng. Ảnh được nén khi đăng. Giữ mật khẩu để sửa hoặc xóa.",
     "kept": "Ảnh và nội dung chỉnh sửa sẽ được lưu trước khi đăng nhập hoặc đăng ký và khôi phục khi bạn quay lại.",
     "login": "Đăng nhập",
     "signup": "Đăng ký",
     "keepEditing": "Tiếp tục chỉnh sửa",
-    "siteHelp": "Khách có thể đăng ảnh ghép chỉ dùng ứng viên có sẵn trên trang."
+    "siteHelp": "Khách có thể đăng ảnh tĩnh: tối đa 9 ảnh Top 9 hoặc 50 ảnh cục bộ trong bảng xếp hạng. Ảnh được nén khi đăng. Giữ mật khẩu để sửa hoặc xóa."
   },
   "de": {
     "register": "Veröffentlichen",
     "title": "Deine Collage enthält eigene Fotos",
-    "help": "Melde dich an, um eine Collage mit eigenen Fotos zu veröffentlichen.",
+    "help": "Gäste können Fotos veröffentlichen: bis zu 9 im Top 9 oder 50 lokale Fotos in einer Tierliste. Beim Veröffentlichen werden sie komprimiert. Passwort zum Bearbeiten oder Löschen aufbewahren.",
     "kept": "Deine Fotos und Änderungen werden vor der Anmeldung oder Registrierung gespeichert und bei deiner Rückkehr wiederhergestellt.",
     "login": "Anmelden",
     "signup": "Registrieren",
     "keepEditing": "Weiter bearbeiten",
-    "siteHelp": "Gäste können Collagen veröffentlichen, die nur Kandidaten der Website enthalten."
+    "siteHelp": "Gäste können Fotos veröffentlichen: bis zu 9 im Top 9 oder 50 lokale Fotos in einer Tierliste. Beim Veröffentlichen werden sie komprimiert. Passwort zum Bearbeiten oder Löschen aufbewahren."
   },
   "ru": {
     "register": "Опубликовать",
     "title": "В коллаже есть ваши фотографии",
-    "help": "Войдите, чтобы опубликовать коллаж со своими фотографиями.",
+    "help": "Гости могут публиковать фото: до 9 в Top 9 или 50 локальных фото в тир-листе. Фото сжимаются при публикации. Сохраните пароль для редактирования и удаления.",
     "kept": "Фотографии и изменения сохранятся перед входом или регистрацией и восстановятся после возвращения.",
     "login": "Войти",
     "signup": "Регистрация",
     "keepEditing": "Продолжить редактирование",
-    "siteHelp": "Гости могут публиковать коллажи только с кандидатами с сайта."
+    "siteHelp": "Гости могут публиковать фото: до 9 в Top 9 или 50 локальных фото в тир-листе. Фото сжимаются при публикации. Сохраните пароль для редактирования и удаления."
   },
   "id": {
     "register": "Terbitkan",
     "title": "Ada foto yang Anda unggah",
-    "help": "Masuk untuk menerbitkan kolase yang berisi foto Anda sendiri.",
+    "help": "Tamu dapat menerbitkan foto: hingga 9 di Top 9 atau 50 foto lokal di tier list. Foto dikompresi saat diterbitkan. Simpan kata sandi untuk mengedit atau menghapus.",
     "kept": "Foto dan perubahan akan disimpan sebelum masuk atau mendaftar, lalu dipulihkan saat Anda kembali.",
     "login": "Masuk",
     "signup": "Daftar",
     "keepEditing": "Lanjutkan mengedit",
-    "siteHelp": "Tamu dapat menerbitkan kolase yang hanya memakai kandidat dari situs."
+    "siteHelp": "Tamu dapat menerbitkan foto: hingga 9 di Top 9 atau 50 foto lokal di tier list. Foto dikompresi saat diterbitkan. Simpan kata sandi untuk mengedit atau menghapus."
   },
   "pt": {
     "register": "Publicar",
     "title": "Há fotos que você enviou",
-    "help": "Entre para publicar uma colagem com suas próprias fotos.",
+    "help": "Visitantes podem publicar fotos: até 9 no Top 9 ou 50 fotos locais na tier list. São comprimidas ao publicar. Guarde a senha para editar ou excluir.",
     "kept": "Suas fotos e alterações serão salvas antes de entrar ou se cadastrar e restauradas quando você voltar.",
     "login": "Entrar",
     "signup": "Cadastrar-se",
     "keepEditing": "Continuar editando",
-    "siteHelp": "Visitantes podem publicar colagens feitas apenas com candidatos do site."
+    "siteHelp": "Visitantes podem publicar fotos: até 9 no Top 9 ou 50 fotos locais na tier list. São comprimidas ao publicar. Guarde a senha para editar ou excluir."
   },
   "hi": {
     "register": "प्रकाशित करें",
     "title": "आपकी अपलोड की हुई तस्वीरें शामिल हैं",
-    "help": "अपनी तस्वीरों वाला कोलाज प्रकाशित करने के लिए लॉग इन करें।",
+    "help": "अतिथि भी स्थिर फोटो प्रकाशित कर सकते हैं: Top 9 में 9 या टियर सूची में 50 स्थानीय फोटो तक। प्रकाशित करते समय फोटो संपीड़ित होते हैं। संपादन या हटाने के लिए पासवर्ड रखें।",
     "kept": "लॉग इन या साइन अप से पहले तस्वीरें और बदलाव सहेजे जाएँगे और लौटने पर बहाल हो जाएँगे।",
     "login": "लॉग इन",
     "signup": "साइन अप",
     "keepEditing": "संपादन जारी रखें",
-    "siteHelp": "मेहमान केवल साइट के विकल्पों से बना कोलाज प्रकाशित कर सकते हैं।"
+    "siteHelp": "अतिथि भी स्थिर फोटो प्रकाशित कर सकते हैं: Top 9 में 9 या टियर सूची में 50 स्थानीय फोटो तक। प्रकाशित करते समय फोटो संपीड़ित होते हैं। संपादन या हटाने के लिए पासवर्ड रखें।"
   },
   "tr": {
     "register": "Yayımla",
     "title": "Yüklediğiniz fotoğraflar var",
-    "help": "Kendi fotoğraflarınızı içeren bir kolajı yayımlamak için giriş yapın.",
+    "help": "Misafirler fotoğraf yayımlayabilir: Top 9 için 9, tier listesi için 50 yerel fotoğrafa kadar. Yayımlarken sıkıştırılır. Düzenlemek veya silmek için şifreyi saklayın.",
     "kept": "Fotoğraflarınız ve düzenlemeleriniz giriş veya kayıt öncesinde kaydedilir ve döndüğünüzde geri yüklenir.",
     "login": "Giriş yap",
     "signup": "Kayıt ol",
     "keepEditing": "Düzenlemeye devam et",
-    "siteHelp": "Misafirler yalnızca sitedeki adayları içeren kolajları yayımlayabilir."
+    "siteHelp": "Misafirler fotoğraf yayımlayabilir: Top 9 için 9, tier listesi için 50 yerel fotoğrafa kadar. Yayımlarken sıkıştırılır. Düzenlemek veya silmek için şifreyi saklayın."
   },
   "th": {
     "register": "เผยแพร่",
     "title": "มีรูปภาพที่คุณอัปโหลดเอง",
-    "help": "เข้าสู่ระบบเพื่อเผยแพร่คอลลาจที่มีรูปภาพของคุณเอง",
+    "help": "ผู้เยี่ยมชมเผยแพร่ภาพนิ่งได้: Top 9 สูงสุด 9 ภาพ หรือภาพจากเครื่องในเทียร์ลิสต์สูงสุด 50 ภาพ ระบบบีบอัดเมื่อเผยแพร่ เก็บรหัสผ่านไว้แก้ไขหรือลบ",
     "kept": "ระบบจะบันทึกรูปภาพและการแก้ไขก่อนเข้าสู่ระบบหรือสมัครสมาชิก และกู้คืนเมื่อคุณกลับมา",
     "login": "เข้าสู่ระบบ",
     "signup": "สมัครสมาชิก",
     "keepEditing": "แก้ไขต่อ",
-    "siteHelp": "ผู้เยี่ยมชมสามารถเผยแพร่คอลลาจที่ใช้เฉพาะตัวเลือกจากเว็บไซต์ได้"
+    "siteHelp": "ผู้เยี่ยมชมเผยแพร่ภาพนิ่งได้: Top 9 สูงสุด 9 ภาพ หรือภาพจากเครื่องในเทียร์ลิสต์สูงสุด 50 ภาพ ระบบบีบอัดเมื่อเผยแพร่ เก็บรหัสผ่านไว้แก้ไขหรือลบ"
   },
   "ar": {
     "register": "نشر",
     "title": "تتضمن اللوحة صورًا رفعتها بنفسك",
-    "help": "سجّل الدخول لنشر لوحة تتضمن صورك الخاصة.",
+    "help": "يمكن للضيوف نشر صور ثابتة: حتى 9 في Top 9 أو 50 صورة محلية في قائمة التصنيف. تُضغط الصور عند النشر. احتفظ بكلمة المرور للتعديل أو الحذف.",
     "kept": "سنحفظ صورك وتعديلاتك قبل تسجيل الدخول أو إنشاء حساب، ونستعيدها عند عودتك.",
     "login": "تسجيل الدخول",
     "signup": "إنشاء حساب",
     "keepEditing": "متابعة التعديل",
-    "siteHelp": "يمكن للزوار نشر لوحات تتضمن فقط خيارات الموقع."
+    "siteHelp": "يمكن للضيوف نشر صور ثابتة: حتى 9 في Top 9 أو 50 صورة محلية في قائمة التصنيف. تُضغط الصور عند النشر. احتفظ بكلمة المرور للتعديل أو الحذف."
   },
   "bn": {
     "register": "প্রকাশ করুন",
     "title": "আপনার আপলোড করা ছবি রয়েছে",
-    "help": "নিজের ছবি থাকা কোলাজ প্রকাশ করতে লগ ইন করুন।",
+    "help": "অতিথিরাও স্থির ছবি প্রকাশ করতে পারেন: Top 9-এ ৯টি বা টিয়ার তালিকায় ৫০টি স্থানীয় ছবি পর্যন্ত। প্রকাশের সময় ছবি সংকুচিত হয়। সম্পাদনা বা মুছতে পাসওয়ার্ড রাখুন।",
     "kept": "লগ ইন বা নিবন্ধনের আগে ছবি ও পরিবর্তন সংরক্ষণ করা হবে এবং ফিরে এলে পুনরুদ্ধার করা হবে।",
     "login": "লগ ইন",
     "signup": "নিবন্ধন",
     "keepEditing": "সম্পাদনা চালিয়ে যান",
-    "siteHelp": "শুধু সাইটের প্রার্থী দিয়ে তৈরি কোলাজ অতিথিরাও প্রকাশ করতে পারেন।"
+    "siteHelp": "অতিথিরাও স্থির ছবি প্রকাশ করতে পারেন: Top 9-এ ৯টি বা টিয়ার তালিকায় ৫০টি স্থানীয় ছবি পর্যন্ত। প্রকাশের সময় ছবি সংকুচিত হয়। সম্পাদনা বা মুছতে পাসওয়ার্ড রাখুন।"
   },
   "it": {
     "register": "Pubblica",
     "title": "Sono presenti foto caricate da te",
-    "help": "Accedi per pubblicare un collage con le tue foto.",
+    "help": "Gli ospiti possono pubblicare foto: fino a 9 nel Top 9 o 50 foto locali in una tier list. Sono compresse alla pubblicazione. Conserva la password per modificare o eliminare.",
     "kept": "Le foto e le modifiche saranno salvate prima di accedere o registrarti e ripristinate al tuo ritorno.",
     "login": "Accedi",
     "signup": "Registrati",
     "keepEditing": "Continua a modificare",
-    "siteHelp": "Gli ospiti possono pubblicare collage composti solo da candidati del sito."
+    "siteHelp": "Gli ospiti possono pubblicare foto: fino a 9 nel Top 9 o 50 foto locali in una tier list. Sono compresse alla pubblicazione. Conserva la password per modificare o eliminare."
   },
   "pl": {
     "register": "Opublikuj",
     "title": "Kolaż zawiera Twoje zdjęcia",
-    "help": "Zaloguj się, aby opublikować kolaż z własnymi zdjęciami.",
+    "help": "Goście mogą publikować zdjęcia: do 9 w Top 9 lub 50 lokalnych zdjęć w tierliście. Są kompresowane przy publikacji. Zachowaj hasło do edycji lub usunięcia.",
     "kept": "Zdjęcia i zmiany zostaną zapisane przed logowaniem lub rejestracją i przywrócone po powrocie.",
     "login": "Zaloguj się",
     "signup": "Zarejestruj się",
     "keepEditing": "Kontynuuj edycję",
-    "siteHelp": "Goście mogą publikować kolaże zawierające wyłącznie kandydatów z witryny."
+    "siteHelp": "Goście mogą publikować zdjęcia: do 9 w Top 9 lub 50 lokalnych zdjęć w tierliście. Są kompresowane przy publikacji. Zachowaj hasło do edycji lub usunięcia."
   },
   "nl": {
     "register": "Publiceren",
     "title": "Je collage bevat eigen foto’s",
-    "help": "Log in om een collage met je eigen foto’s te publiceren.",
+    "help": "Gasten kunnen foto’s publiceren: maximaal 9 in Top 9 of 50 lokale foto’s in een tierlijst. Ze worden bij publicatie gecomprimeerd. Bewaar het wachtwoord om te wijzigen of verwijderen.",
     "kept": "Je foto’s en wijzigingen worden vóór het inloggen of registreren opgeslagen en bij terugkomst hersteld.",
     "login": "Inloggen",
     "signup": "Registreren",
     "keepEditing": "Verder bewerken",
-    "siteHelp": "Gasten kunnen collages publiceren met alleen kandidaten van de site."
+    "siteHelp": "Gasten kunnen foto’s publiceren: maximaal 9 in Top 9 of 50 lokale foto’s in een tierlijst. Ze worden bij publicatie gecomprimeerd. Bewaar het wachtwoord om te wijzigen of verwijderen."
   },
   "cs": {
     "register": "Zveřejnit",
     "title": "Koláž obsahuje vaše fotografie",
-    "help": "Pro zveřejnění koláže s vlastními fotografiemi se přihlaste.",
+    "help": "Hosté mohou zveřejnit fotky: až 9 v Top 9 nebo 50 místních fotek v tier listu. Při zveřejnění se komprimují. Uschovejte heslo pro úpravy a smazání.",
     "kept": "Fotografie a úpravy uložíme před přihlášením nebo registrací a po návratu je obnovíme.",
     "login": "Přihlásit se",
     "signup": "Registrovat se",
     "keepEditing": "Pokračovat v úpravách",
-    "siteHelp": "Hosté mohou zveřejnit koláže obsahující pouze kandidáty z webu."
+    "siteHelp": "Hosté mohou zveřejnit fotky: až 9 v Top 9 nebo 50 místních fotek v tier listu. Při zveřejnění se komprimují. Uschovejte heslo pro úpravy a smazání."
   }
 }

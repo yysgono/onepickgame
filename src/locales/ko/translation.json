@@ -450,7 +450,7 @@
       "guestEditPasswordRequired": "게스트 티어표를 수정하려면 비밀번호를 입력해주세요.",
       "guestNicknameInvalid": "임시 닉네임은 1~20자로 입력해주세요.",
       "guestPasswordInvalid": "비밀번호는 4~50자로 입력해주세요.",
-      "guestLocalImageBlocked": "게스트는 직접 업로드한 이미지를 사용할 수 없습니다. 로그인 후 이용해주세요.",
+      "guestLocalImageBlocked": "JPG·PNG·WebP·AVIF 정지 사진만 사용할 수 있어요. GIF·동영상은 회원만 업로드할 수 있어요.",
       "guestPublishTitle": "게스트 작성 정보",
       "guestEditTitle": "게스트 수정 인증",
       "guestNicknamePlaceholder": "임시 닉네임 (1~20자)",

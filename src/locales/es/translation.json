@@ -450,7 +450,7 @@
       "guestEditPasswordRequired": "Enter the guest password to edit this tier list.",
       "guestNicknameInvalid": "Nickname must be 1–20 characters.",
       "guestPasswordInvalid": "Password must be 4–50 characters.",
-      "guestLocalImageBlocked": "Guests cannot use directly uploaded images. Please sign in.",
+      "guestLocalImageBlocked": "Usa imágenes estáticas JPG, PNG, WebP o AVIF. Los GIF y vídeos requieren una cuenta.",
       "guestPublishTitle": "Guest publishing",
       "guestEditTitle": "Guest edit verification",
       "guestNicknamePlaceholder": "Nickname (1–20 characters)",

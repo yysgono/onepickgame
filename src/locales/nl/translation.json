@@ -449,7 +449,7 @@
       "guestEditPasswordRequired": "Voer het gastwachtwoord in om deze lijst te bewerken.",
       "guestNicknameInvalid": "De bijnaam moet 1–20 tekens lang zijn.",
       "guestPasswordInvalid": "Het wachtwoord moet 4–50 tekens lang zijn.",
-      "guestLocalImageBlocked": "Gasten kunnen geen direct geüploade afbeeldingen gebruiken. Meld u alstublieft aan.",
+      "guestLocalImageBlocked": "Alleen stilstaande JPG-, PNG-, WebP- of AVIF-foto’s. GIF en video vereisen een account.",
       "guestPublishTitle": "Uitgeverij",
       "guestEditTitle": "Verificatie van gastbewerking",
       "guestNicknamePlaceholder": "Bijnaam (1–20 tekens)",

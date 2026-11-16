@@ -24,7 +24,7 @@ export async function mediaFrame(src) {
  }finally{if(el.tagName==='VIDEO'){el.pause();el.removeAttribute('src');el.load();}}
 }
 export async function importFile(file) {
- if(!/\.(jpe?g|png|webp|gif|mp4|svg)$/i.test(file.name)||file.size>20*1024*1024)throw new Error('FILE_TYPE_SIZE');
+ if(!/\.(jpe?g|png|webp|avif|gif|mp4|svg)$/i.test(file.name)||file.size>20*1024*1024)throw new Error('FILE_TYPE_SIZE');
  const input=/\.svg$/i.test(file.name)?new Blob([sanitizeSvg(await file.text())],{type:'image/svg+xml'}):file;
  const src=URL.createObjectURL(input);
  try {const frame=await mediaFrame(src+( /\.mp4$/i.test(file.name)?'#.mp4':''));return {id:'upload-'+crypto.randomUUID(),src:frame,name:file.name.replace(/\.[^.]+$/,'').slice(0,150),zoom:1,x:50,y:50};}
