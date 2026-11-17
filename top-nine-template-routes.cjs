@@ -1,3 +1,4 @@
+const discovery=require('./src/seo/templateDiscovery.js');
 const {loadSeoTemplate}=require('./seo-template.cjs');
 const {templatePageTitle,templatePageIntro}=require('./src/components/topNine/templateIntro.cjs');
 const COPY=require('./src/components/topNine/copy.json');
@@ -5,18 +6,19 @@ const escape=value=>String(value||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&
 function cleanTemplateShell(shell,lang){
  return shell.replace(/<title\b[^>]*>[\s\S]*?<\/title>/gi,'').replace(/<meta\b[^>]*(?:name=["'](?:description|robots|twitter:[^"']*)["']|property=["']og:[^"']*["'])[^>]*>/gi,'').replace(/<link\b[^>]*rel=["'](?:canonical|alternate)["'][^>]*>/gi,'').replace(/<html\b[^>]*>/i,'<html lang="'+lang+'" dir="'+(lang==='ar'?'rtl':'ltr')+'">');
 }
-function renderTemplateHtml(shell,origin,lang,cup,kind='nine'){
+function renderTemplateHtml(shell,origin,lang,cup,kind='nine',groups=null){
  const route=kind==='tier'?'tier-list/create':'mytop9/templates';
  const title=templatePageTitle(cup,lang,kind),description=templatePageIntro(cup,lang,kind),url=origin+'/'+lang+'/'+route+'/'+cup.id;
  const clean=cleanTemplateShell(shell,lang);
  const alternates=Object.keys(COPY).map(l=>'<link data-rh="true" rel="alternate" hreflang="'+l+'" href="'+escape(origin+'/'+l+'/'+route+'/'+cup.id)+'">').join('');
  const head='<title data-rh="true">'+escape(title+' | One Pick Game')+'</title><meta data-rh="true" name="description" content="'+escape(description)+'"><meta data-rh="true" name="robots" content="index,follow"><link data-rh="true" rel="canonical" href="'+escape(url)+'">'+alternates+'<meta data-rh="true" property="og:title" content="'+escape(title)+'"><meta data-rh="true" property="og:description" content="'+escape(description)+'"><meta data-rh="true" property="og:url" content="'+escape(url)+'">';
  const candidates=(Array.isArray(cup.data)?cup.data:[]).map(c=>({name:String(c?.name||c?.title||'').trim(),src:c?.image||c?.image_url||c?.url||''})).filter(c=>c.name&&/^https?:\/\//i.test(c.src)).slice(0,12);
- const body='<article><h1>'+escape(title)+'</h1><p>'+escape(description)+'</p><ul>'+candidates.map(c=>'<li><img src="'+escape(c.src)+'" alt="'+escape(c.name)+'" width="120" height="120" loading="lazy">'+escape(c.name)+'</li>').join('')+'</ul><a href="'+origin+'/'+lang+(kind==='tier'?'/tier-list':'/mytop9')+'">'+escape(kind==='tier'?title:COPY[lang].title)+'</a></article>';
+ const body='<article><h1>'+escape(title)+'</h1><p>'+escape(description)+'</p><ul>'+candidates.map(c=>'<li><img src="'+escape(c.src)+'" alt="'+escape(c.name)+'" width="120" height="120" loading="lazy">'+escape(c.name)+'</li>').join('')+'</ul>'+discovery.render(groups,kind,lang,origin)+'<a href="'+origin+'/'+lang+(kind==='tier'?'/tier-list':'/mytop9')+'">'+escape(kind==='tier'?title:COPY[lang].title)+'</a></article>';
  // Reuse the public data already fetched by the server; escape raw script delimiters.
+ const linksBootstrap=groups?'<script id="template-discovery-data" type="application/json">'+JSON.stringify({id:cup.id,kind,lang,groups}).replace(/</g,'\\u003c')+'</script>':'';
  const bootstrap=kind==='nine'?'<script id="top-nine-template-data" type="application/json">'+JSON.stringify(cup).replace(/</g,'\\u003c')+'</script>':'';
  const withoutLoading=clean.replace(/<div\b[^>]*class=["']loading-screen["'][^>]*>\s*Loading\.\.\.\s*<\/div>/gi,'');
- return withoutLoading.replace('</head>',()=>head+bootstrap+'</head>').replace(/<div\b[^>]*\bid=["']root["'][^>]*>/i,root=>root+body);
+ return withoutLoading.replace('</head>',()=>head+bootstrap+linksBootstrap+'</head>').replace(/<div\b[^>]*\bid=["']root["'][^>]*>/i,root=>root+body);
 }
 module.exports=function(app,supabase,origin){app.use(async(req,res,next)=>{
  const path=String(req.query?.path||req.path||'');
@@ -28,7 +30,7 @@ module.exports=function(app,supabase,origin){app.use(async(req,res,next)=>{
  if(!COPY[lang]||!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id))return res.status(404).send('Not found');
  try{
   const [cup,settings,intro]=await Promise.all([
-   supabase.from('worldcups').select(isTier?'id,title,title_translations,data,is_tier_preset,tier_preset_title_translations':'id,title,title_translations,data').eq('id',id).is('deleted_at',null).maybeSingle(),
+   supabase.from('worldcups').select(isTier?'id,title,title_translations,data,category,is_tier_preset,tier_preset_title_translations':'id,title,title_translations,data,category').eq('id',id).is('deleted_at',null).maybeSingle(),
    isTier?Promise.resolve({data:null}):supabase.from('top_nine_templates').select('title_translations,enabled').eq('source_worldcup_id',id).maybeSingle(),
    supabase.from(isTier?'tier_template_intros':'top_nine_template_intros').select('candidate_sources').eq('source_worldcup_id',id).maybeSingle()
   ]);
@@ -40,7 +42,9 @@ module.exports=function(app,supabase,origin){app.use(async(req,res,next)=>{
   }
   if(!isTier&&(!Array.isArray(cup.data.data)||!cup.data.data.some(c=>c?.image||c?.image_url||c?.url)))return res.status(404).send('Not found');
   const source={...cup.data,top_nine_title_translations:settings.data?.title_translations||{},intro_sources:intro.data?.candidate_sources||[]};
-  return res.type('html').send(renderTemplateHtml(await loadSeoTemplate(origin),origin,lang,source,isTier?'tier':'nine'));
+  const kind=isTier?'tier':'nine';
+  const [shell,groups]=await Promise.all([loadSeoTemplate(origin),discovery.load(supabase,source,kind,lang).catch(()=>null)]);
+  return res.type('html').send(renderTemplateHtml(shell,origin,lang,source,kind,groups));
  }catch{return res.status(503).send('Please try again');}
  });};
 module.exports.renderTemplateHtml=renderTemplateHtml;

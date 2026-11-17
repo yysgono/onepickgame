@@ -1,3 +1,4 @@
+import TemplateDiscovery from './templates/TemplateDiscovery';
 import {isLocalCandidate,checkGuestPhotos,guestPhotoAllowed,guestPhotoBlob,beginGuestImageUpload,completeGuestImageUpload,cancelGuestImageUpload,guestUploadCopy} from '../utils/guestContentUpload';
 import RecommendedImagePicker from './tierList/RecommendedImagePicker';
 import recommendedImageCopy from './tierList/recommendedImageCopy.json';
@@ -3001,22 +3002,19 @@ const handleDragEndItem =
 
         return (
           <div
-            className="tier-placement-panel"
             style={{
-              padding: 16,
-              border: "2px solid #7952c7",
-              borderRadius: 14,
-              background: "#f1ebff",
-              boxShadow: "0 6px 20px rgba(100,65,170,0.16)",
+              padding: 12,
+              border: "1px solid #dde2ea",
+              borderRadius: 12,
+              background: "#ffffff",
               textAlign: "center",
               ...styleOverride,
             }}
           >
             <div
               style={{
-                marginBottom: 12,
-                color: "#4b287f",
-                overflowWrap: "anywhere",
+                marginBottom: 9,
+                color: "#202534",
                 fontSize: 19,
                 fontWeight: 900,
               }}
@@ -3041,10 +3039,8 @@ const handleDragEndItem =
                     minWidth: 60,
                     height: 50,
                     borderRadius: 8,
-                    border: "2px solid rgba(32,37,52,0.3)",
-                    background: TIER_COLORS[tier],
-                    cursor: "pointer",
-                    boxShadow: "0 2px 4px rgba(32,37,52,0.12)",
+                    border: `1px solid ${TIER_COLORS[tier]}`,
+                    background: "#ffffff",
                     color: "#202534",
                     fontWeight: 900,
                     fontSize: 19,
@@ -3062,7 +3058,7 @@ const handleDragEndItem =
                     height: 50,
                     padding: "0 10px",
                     borderRadius: 8,
-                    border: "2px solid #9b87bd",
+                    border: "1px solid #dde2ea",
                     background: "#ffffff",
                     color: "#202534",
                     fontWeight: 900,
@@ -6377,6 +6373,7 @@ if (editingTierListId) {
 
           </div>
         )}
+        {isPresetEntry&&!editTierListId&&!cloneTierListId&&<TemplateDiscovery cup={selectedCup} kind="tier" lang={lang}/>}
       </div>
     </div>
     </>

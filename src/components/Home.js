@@ -1,3 +1,4 @@
+import cardPreview from '../utils/worldcupCardPreview';
 import {loadRecentContentActivity,formatRecentActivity} from '../utils/recentContentActivity';
 import ContentLanguageSelect from "./ContentLanguageSelect";
 import {localizeExtraUi} from "../utils/newLanguageUi";
@@ -1446,47 +1447,7 @@ const scrollCategoryRow = async (
 
 
 
-  function getTop2Winners(winStats, cupData) {
-
-    if (!winStats?.length) return [cupData?.[0] || null, cupData?.[1] || null];
-
-    const sorted = [...winStats]
-
-      .map((row, i) => ({ ...row, _originIdx: i }))
-
-      .sort((a, b) => {
-
-        if ((b.win_count || 0) !== (a.win_count || 0))
-
-          return (b.win_count || 0) - (a.win_count || 0);
-
-        if ((b.match_wins || 0) !== (a.match_wins || 0))
-
-          return (b.match_wins || 0) - (a.match_wins || 0);
-
-        return a._originIdx - b._originIdx;
-
-      });
-
-    const first =
-
-      cupData?.find((c) => c.id === sorted[0]?.candidate_id) ||
-
-      cupData?.[0] ||
-
-      null;
-
-    const second =
-
-      cupData?.find((c) => c.id === sorted[1]?.candidate_id) ||
-
-      cupData?.[1] ||
-
-      null;
-
-    return [first, second];
-
-  }
+  const {getTop2Winners}=cardPreview;
 
   function getCandidateName(candidate) {
     return (

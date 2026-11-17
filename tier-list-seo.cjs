@@ -1,3 +1,4 @@
+const discovery=require('./src/seo/templateDiscovery.js');
 const { loadSeoTemplate } = require('./seo-template.cjs');
 const { getListSeo } = require('./src/seo/listSeo.js');
 const COPY = require('./src/seo/tierListSeoData.json');
@@ -45,6 +46,15 @@ module.exports = (app, supabase, origin) => {
         const title = translations?.[lang] || translations?.en || item.title || 'Tier List';
         return `<li><a href="${origin}/${lang}/tier-list/${encodeURIComponent(item.id)}">${escape(title)}</a></li>`;
       }).join('');
+      let presetLinks=[],presetError=false;
+      if(meta.indexable){
+        try{
+          const query=supabase.from('worldcups').select('id,title,title_translations,tier_preset_title_translations').is('deleted_at',null).eq('is_tier_preset',true).order('tier_preset_order',{ascending:true,nullsFirst:false}).order('id').limit(48);
+          const result=await (query.abortSignal?query.abortSignal(AbortSignal.timeout(2200)):query);
+          if(!result.error)presetLinks=discovery.homeLinks(result.data,'tier',lang);else presetError=true;
+        }catch{presetError=true;/* Keep the public list usable when optional preset metadata is unavailable. */}
+      }
+      const presetSection=presetLinks.length?'<section><h2>'+escape((discovery.COPY[lang]||discovery.COPY.en).presets)+'</h2><ul>'+presetLinks.map(link=>'<li><a href="'+escape(origin+link.href)+'">'+escape(link.label)+'</a></li>').join('')+'</ul></section>':'';
       const alternates = meta.indexable ? LANGS.map(language => `<link data-rh="true" rel="alternate" hreflang="${language}" href="${escape(`${origin}/${language}/${meta.slug}`)}">`).join('')
         + `<link data-rh="true" rel="alternate" hreflang="x-default" href="${escape(`${origin}/en/${meta.slug}`)}">` : '';
       const jsonLd = { '@context': 'https://schema.org', '@type': 'CollectionPage', name: meta.title, description: meta.description, url: canonical, inLanguage: lang, isPartOf: { '@type': 'WebSite', name: 'OnePickGame', url: origin } };
@@ -66,7 +76,7 @@ ${alternates}
 <meta data-rh="true" name="twitter:description" content="${escape(meta.description)}">
 <meta data-rh="true" name="twitter:image" content="${image}">
 <script data-rh="true" type="application/ld+json">${safeJson(jsonLd)}</script>`;
-      const body = `<main id="seo-content" style="max-width:900px;margin:40px auto;padding:24px;font-family:Arial,sans-serif"><h1>${escape(heading)}</h1><p>${escape(meta.description)}</p>${links ? `<ul>${links}</ul>` : ''}</main>`;
+      const body = `<main id="seo-content" style="max-width:900px;margin:40px auto;padding:24px;font-family:Arial,sans-serif"><h1>${escape(heading)}</h1><p>${escape(meta.description)}</p>${presetSection}${links ? `<ul>${links}</ul>` : ''}</main>`;
       const bootHead = `<style>
 .tier-boot-spinner{display:none}
 html.tier-booting .tier-seo-content{display:none}
@@ -83,7 +93,7 @@ html.tier-booting .tier-boot-spinner{display:flex;align-items:center;justify-con
       const root = /<div\s+id=["']root["']>\s*(?:<div\s+class=["']loading-screen["']>\s*Loading\.\.\.\s*<\/div>\s*)?<\/div>/i;
       if (!root.test(html)) throw new Error('SEO template root missing');
       html = html.replace(root, () => `<div id="root"><div class="tier-seo-content">${body}</div><div class="tier-boot-spinner" role="status" aria-label="Loading"><span aria-hidden="true"></span></div></div>`).replace('</head>', () => `${head}${bootHead}\n</head>`);
-      res.setHeader('Cache-Control', meta.indexable ? 'public, s-maxage=300, stale-while-revalidate=3600' : 'no-store');
+      res.setHeader('Cache-Control', meta.indexable && !presetError ? 'public, s-maxage=300, stale-while-revalidate=3600' : 'no-store');
       res.setHeader('Content-Type', 'text/html; charset=utf-8');
       if (!meta.indexable) res.setHeader('X-Robots-Tag', 'noindex, follow');
       return res.status(200).send(html);
