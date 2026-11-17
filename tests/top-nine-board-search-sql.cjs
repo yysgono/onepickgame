@@ -1,0 +1,20 @@
+const fs=require('fs'),assert=require('node:assert/strict'),{PGlite}=require('../../sql-verification/node_modules/@electric-sql/pglite');
+const source='00000000-0000-4000-8000-000000000001';
+(async()=>{const db=new PGlite();await db.exec(`CREATE ROLE anon;CREATE ROLE authenticated;
+ CREATE TABLE worldcups(id uuid PRIMARY KEY,title text,title_translations jsonb,deleted_at timestamptz);
+ CREATE TABLE top_nine_templates(source_worldcup_id uuid,title_translations jsonb);
+ CREATE TABLE top_nine_public_boards(id uuid PRIMARY KEY,title text,slots jsonb,show_names bool,show_ranks bool,created_at timestamptz,author_id uuid,guest_nickname text,source_worldcup_ids uuid[],category text,view_count bigint,deleted_at timestamptz,unlisted bool DEFAULT false,secret_proof text);
+ ALTER TABLE top_nine_public_boards ENABLE ROW LEVEL SECURITY;
+ CREATE POLICY public_boards ON top_nine_public_boards FOR SELECT TO anon,authenticated USING(secret_proof<>'private');
+ GRANT SELECT ON worldcups,top_nine_templates,top_nine_public_boards TO anon,authenticated;`);
+ await db.query('INSERT INTO worldcups VALUES($1,$2,$3,NULL)',[source,'원본 게임',JSON.stringify({en:'Original games'})]);await db.query('INSERT INTO top_nine_templates VALUES($1,$2)',[source,JSON.stringify({en:'My Top 9 Roblox Games',ja:'ロブロックス'})]);
+ const board='10000000-0000-4000-8000-000000000001';await db.query(`INSERT INTO top_nine_public_boards VALUES($1,'최애 게임 - admin',$2,true,false,now(),NULL,'Creator',$3,'game',10,NULL,false,'hash-not-public')`,[board,JSON.stringify([{name:'브룩헤이븐',name_translations:{en:'Brookhaven'},src:'https://img.example.com/onlyurl.jpg'}]),[source]]);
+ await db.exec(fs.readFileSync('supabase/20261117_search_top_nine_public_boards.sql','utf8'));await db.exec(fs.readFileSync('supabase/20261117_search_top_nine_public_boards.sql','utf8'));
+ for(let i=2;i<=17;i++)await db.query(`INSERT INTO top_nine_public_boards VALUES($1,$2,'[]',false,false,now()+$3::interval,NULL,'Guest','{}','game',$4,NULL,false,'ok')`,['10000000-0000-4000-8000-'+String(i).padStart(12,'0'),'Page item '+i,i+' minutes',i]);
+ for(const [suffix,extra] of [['90',"'private',NULL,false"],['91',"'ok',now(),false"],['92',"'ok',NULL,true"]]){const [proof,deleted,unlisted]=extra.split(',');await db.exec(`INSERT INTO top_nine_public_boards(id,title,slots,created_at,category,view_count,secret_proof,deleted_at,unlisted) VALUES('10000000-0000-4000-8000-${suffix.padStart(12,'0')}','Page private','[]',now(),'game',999,${proof},${deleted},${unlisted})`);}
+ await db.exec('SET ROLE anon');const search=async(q,category='all',sort='latest',offset=0)=>(await db.query('SELECT search_top_nine_public_boards($1,$2,$3,$4) result',[q,category,sort,offset])).rows[0].result;
+ for(const term of ['최애 게임','creator','Brookhaven','브룩헤이븐','Roblox','ロブロックス','original games'])assert.equal((await search(term))[0].id,board,term);
+ assert.equal((await search('onlyurl.jpg')).length,0);assert.equal((await search('%')).length,0);assert.equal((await search('" OR 1=1')).length,0);assert.equal((await search('Roblox','food')).length,0);assert.equal((await search('Page private')).length,0);
+ const first=await search('Page','all','popular');assert.equal(first.length,12);assert.equal(first[0].view_count,17);const second=await search('Page','all','popular',12);assert.equal(second.length,4);assert(!first.some(a=>second.some(b=>a.id===b.id)));assert(!('secret_proof' in (await search('Roblox'))[0]));
+ await assert.rejects(search('Page','all','evil',0),/INVALID_SEARCH/);await assert.rejects(search('Page','all','latest',-1),/INVALID_SEARCH/);await db.close();console.log('PASS: public-board title/author/candidate/translated-template search, literal punctuation, 12-row sorting/paging, category filters, RLS, soft-delete/private exclusions and explicit safe response fields.');
+})().catch(error=>{console.error(error);process.exitCode=1});

@@ -1,0 +1,142 @@
+{
+  "ko": {
+    "placeholder": "프리셋·공개 구절판 검색",
+    "templates": "프리셋 검색 결과",
+    "boards": "공개 구절판 검색 결과",
+    "search": "검색",
+    "community": "다른 사람들이 만든 구절판 취향표"
+  },
+  "en": {
+    "placeholder": "Search presets and public Top 9 collages",
+    "templates": "Preset search results",
+    "boards": "Public Top 9 results",
+    "search": "Search",
+    "community": "Community Top 9 collages"
+  },
+  "ja": {
+    "placeholder": "プリセット・公開Top 9を検索",
+    "templates": "プリセットの検索結果",
+    "boards": "公開Top 9の検索結果",
+    "search": "検索",
+    "community": "みんなのTop 9"
+  },
+  "zh": {
+    "placeholder": "搜索预设和公开Top 9",
+    "templates": "预设搜索结果",
+    "boards": "公开Top 9搜索结果",
+    "search": "搜索",
+    "community": "大家制作的Top 9"
+  },
+  "es": {
+    "placeholder": "Buscar presets y Top 9 públicos",
+    "templates": "Resultados de presets",
+    "boards": "Resultados de Top 9 públicos",
+    "search": "Buscar",
+    "community": "Top 9 de la comunidad"
+  },
+  "fr": {
+    "placeholder": "Rechercher des modèles et Top 9 publics",
+    "templates": "Résultats des modèles",
+    "boards": "Résultats des Top 9 publics",
+    "search": "Rechercher",
+    "community": "Top 9 de la communauté"
+  },
+  "de": {
+    "placeholder": "Vorlagen und öffentliche Top 9 suchen",
+    "templates": "Gefundene Vorlagen",
+    "boards": "Gefundene öffentliche Top 9",
+    "search": "Suchen",
+    "community": "Top 9 der Community"
+  },
+  "pt": {
+    "placeholder": "Buscar modelos e Top 9 públicos",
+    "templates": "Resultados de modelos",
+    "boards": "Resultados de Top 9 públicos",
+    "search": "Buscar",
+    "community": "Top 9 da comunidade"
+  },
+  "ru": {
+    "placeholder": "Поиск шаблонов и публичных Top 9",
+    "templates": "Найденные шаблоны",
+    "boards": "Найденные публичные Top 9",
+    "search": "Поиск",
+    "community": "Top 9 сообщества"
+  },
+  "id": {
+    "placeholder": "Cari preset dan Top 9 publik",
+    "templates": "Hasil pencarian preset",
+    "boards": "Hasil Top 9 publik",
+    "search": "Cari",
+    "community": "Top 9 komunitas"
+  },
+  "vi": {
+    "placeholder": "Tìm mẫu và Top 9 công khai",
+    "templates": "Kết quả tìm mẫu",
+    "boards": "Kết quả Top 9 công khai",
+    "search": "Tìm kiếm",
+    "community": "Top 9 của cộng đồng"
+  },
+  "it": {
+    "placeholder": "Cerca modelli e Top 9 pubblici",
+    "templates": "Risultati dei modelli",
+    "boards": "Risultati dei Top 9 pubblici",
+    "search": "Cerca",
+    "community": "Top 9 della comunità"
+  },
+  "pl": {
+    "placeholder": "Szukaj szablonów i publicznych Top 9",
+    "templates": "Znalezione szablony",
+    "boards": "Znalezione publiczne Top 9",
+    "search": "Szukaj",
+    "community": "Top 9 społeczności"
+  },
+  "nl": {
+    "placeholder": "Zoek sjablonen en openbare Top 9",
+    "templates": "Gevonden sjablonen",
+    "boards": "Gevonden openbare Top 9",
+    "search": "Zoeken",
+    "community": "Top 9 van de community"
+  },
+  "cs": {
+    "placeholder": "Hledat šablony a veřejné Top 9",
+    "templates": "Nalezené šablony",
+    "boards": "Nalezené veřejné Top 9",
+    "search": "Hledat",
+    "community": "Top 9 komunity"
+  },
+  "hi": {
+    "placeholder": "प्रीसेट और सार्वजनिक Top 9 खोजें",
+    "templates": "प्रीसेट खोज परिणाम",
+    "boards": "सार्वजनिक Top 9 परिणाम",
+    "search": "खोजें",
+    "community": "समुदाय के Top 9"
+  },
+  "bn": {
+    "placeholder": "প্রিসেট ও প্রকাশ্য Top 9 খুঁজুন",
+    "templates": "প্রিসেট অনুসন্ধানের ফল",
+    "boards": "প্রকাশ্য Top 9 ফলাফল",
+    "search": "খুঁজুন",
+    "community": "কমিউনিটির Top 9"
+  },
+  "ar": {
+    "placeholder": "ابحث عن القوالب وTop 9 العامة",
+    "templates": "نتائج البحث عن القوالب",
+    "boards": "نتائج Top 9 العامة",
+    "search": "بحث",
+    "community": "Top 9 للمجتمع"
+  },
+  "tr": {
+    "placeholder": "Şablon ve herkese açık Top 9 ara",
+    "templates": "Şablon arama sonuçları",
+    "boards": "Herkese açık Top 9 sonuçları",
+    "search": "Ara",
+    "community": "Topluluğun Top 9 kolajları"
+  },
+  "th": {
+    "placeholder": "ค้นหาเทมเพลตและ Top 9 สาธารณะ",
+    "templates": "ผลการค้นหาเทมเพลต",
+    "boards": "ผลการค้นหา Top 9 สาธารณะ",
+    "search": "ค้นหา",
+    "community": "Top 9 ของชุมชน"
+  }
+}
