@@ -27,7 +27,7 @@ export default function ResultRecommendations({kind,id,lang='en',category='',sou
    const path=kind==='nine'?'mytop9':kind==='tier'?'tier-list':'select-round';
    return <Link className="result-recommendation-card" key={row.id} to={`/${lang}/${path}/${row.id}`}>
     <div className="result-recommendation-image">{kind==='nine'?<div className="result-recommendation-nine">{(row.slots||[]).slice(0,9).map((slot,index)=><div key={index}>{slot?.src&&<MediaRenderer url={slot.src} alt="" playable={false} style={{width:'100%',height:'100%',objectFit:'cover'}}/>}</div>)}</div>:row.thumbnail_url?<MediaRenderer url={row.thumbnail_url} alt="" playable={false} style={{width:'100%',height:'100%',objectFit:'cover'}}/>:<span aria-hidden="true">{kind==='worldcup'?'🏆':'📊'}</span>}</div>
-    <div className="result-recommendation-text"><strong title={title}>{title}</strong>{kind!=='worldcup'&&<small>{c.views} {new Intl.NumberFormat(lang).format(Number(row.view_count)||0)}</small>}</div>
+    <div className="result-recommendation-text"><strong title={title}>{title}</strong></div>
    </Link>;
   })}</div>
  </section>;

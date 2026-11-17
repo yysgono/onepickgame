@@ -22,7 +22,7 @@
 
 /* Result-page source cards are a compact invitation below the finished work. */
 .template-discovery.result-source-worldcups{max-width:560px;margin:24px auto}
-.result-source-worldcups .td-group{padding:18px 16px 14px;margin-bottom:0}
+.result-source-worldcups .td-group{padding:18px 16px 14px;margin-bottom:0;border:2px solid #8b5cf6;box-shadow:0 3px 14px #7c3aed12}
 .template-discovery.result-source-worldcups h2{font-size:28px;line-height:1.35;margin-bottom:16px;overflow-wrap:anywhere}
 .result-source-worldcups .td-card-caption strong{font-size:16px}
 .template-discovery .td-card-media .td-versus-badge{position:absolute;z-index:2;left:50%;top:50%;transform:translate(-50%,-50%);width:88px;height:88px;object-fit:contain;filter:drop-shadow(0 2px 2px #fff) drop-shadow(0 3px 5px #0009);pointer-events:none}
