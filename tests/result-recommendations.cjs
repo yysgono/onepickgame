@@ -18,5 +18,7 @@ const client={from(table){const q={table,filters:[],orders:[],cap:100,fields:''}
   calls=[];rows=await recommend.loadResultRecommendations(client,{kind,id:'self',category:'game',sourceId:'template',sourceIds:['template']});assert.deepEqual(rows.map(r=>r.id),['same-high','same-low','category','other']);assert(calls.every(q=>!q.fields.split(',').includes('candidates')&&!q.fields.split(',').includes('data')));
  }
  calls=[];rows=await recommend.loadResultRecommendations(client,{kind:'tier',id:'self',category:'game',presetName:'template'});assert.equal(rows[0].id,'same-high');assert.equal(new Set(rows.map(r=>r.id)).size,rows.length);
+ rows=await recommend.loadResultRecommendations(client,{kind:'tier',id:'self',category:'game',sourceId:'template',topicOnly:true});assert.deepEqual(rows.map(r=>r.id),['same-high','same-low','category']);
+ rows=await recommend.loadResultRecommendations(client,{kind:'tier',id:'self',topicOnly:true});assert.deepEqual(rows,[]);
  console.log('PASS: repeated worldcup/quiz events, relative 24-hour timestamps, unique recent worldcup recommendations, same-template popularity/category fallback, self/deleted exclusion and bounded metadata queries.');
 })().catch(error=>{console.error(error);process.exitCode=1});

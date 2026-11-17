@@ -7,7 +7,7 @@ import {BoardThumbnail} from '../topNine/PublicBoards';
 import layout from '../topNine/collageLayout';
 import './templateDiscovery.css';
 function bootstrap(id,kind,lang){try{const value=JSON.parse(document.getElementById('template-discovery-data')?.textContent||'null');return value?.id===id&&value.kind===kind&&value.lang===lang?value.groups:null;}catch{return null;}}
-function Card({row,source=false,kind}){
+export function Card({row,source=false,kind}){
  const collage=row.slots?.some(Boolean);
  return <Link className={'td-card'+(source?' td-source-card':'')} to={row.href}>
   <div className={'td-card-media'+(collage?' td-card-media--collage':'')}>

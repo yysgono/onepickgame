@@ -17,3 +17,5 @@
 @media(prefers-reduced-motion:reduce){.template-discovery .td-card{transition:none}}
 
 .template-discovery .td-page-count{margin:8px 0 0;text-align:center;font-size:12px;font-weight:700;color:#7a6e91}
+
+.result-source-worldcup-grid{display:flex;flex-wrap:wrap;justify-content:center;gap:16px}.result-source-worldcup-grid .td-source-card{margin:0;max-width:100%}

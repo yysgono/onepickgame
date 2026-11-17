@@ -1,6 +1,7 @@
 import useTopNineLiveSearch from '../hooks/useTopNineLiveSearch';
 import searchCopy from './topNine/searchCopy.json';
 import TemplateDiscovery from './templates/TemplateDiscovery';
+import SourceWorldcupCards from './templates/SourceWorldcupCards';
 import ResultRecommendations from './recommendations/ResultRecommendations';
 import {guestPhotoAllowed,guestUploadCopy} from '../utils/guestContentUpload';
 import SocialShareButtons from './sharing/SocialShareButtons';
@@ -342,6 +343,7 @@ export default function TopNinePage({publicBoard=null,publicId='',templateSource
  {draftNotice&&<p className="tn-draft-notice" role="status">{draftNotice}</p>}
  {editRequest&&<GuestEditPrompt id={publicId} nickname={publicBoard?.authorNickname} lang={lang} onClose={()=>setEditRequest(null)} onVerified={()=>{const request=editRequest;setEditRequest(null);if(request.loadDraft)loadDraft();else editBoard(request.draft);}}/>}
  {templateSource&&stage==='pick'&&<TemplateDiscovery cup={templateSource} kind="nine" lang={lang}/>}
+ {stage==='preview'&&sourceIds.length>0&&<SourceWorldcupCards sourceIds={sourceIds} lang={lang}/>}
  {publicId&&!publicBoard?.unlisted&&stage==='preview'&&<ResultRecommendations kind="nine" id={publicId} lang={lang} category={category} sourceIds={sourceIds}/>}
  {publicId&&!publicBoard?.unlisted&&stage==='preview'&&<CommentBox cupId={publicId} kind="top-nine"/>}
  {sitePicker&&<SiteCandidatePicker lang={lang} onAdd={addSiteCandidates} onClose={()=>setSitePicker(false)}/>}

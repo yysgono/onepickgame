@@ -3,120 +3,140 @@
     "worldcup": "최근 플레이된 이상형 월드컵",
     "tier": "추천 티어표",
     "nine": "추천 구절판 취향표",
-    "views": "조회"
+    "views": "조회",
+    "tierTopic": "같은 주제의 다른 티어표"
   },
   "en": {
     "worldcup": "Recently played brackets",
     "tier": "Recommended tier lists",
     "nine": "Recommended Top 9 collages",
-    "views": "Views"
+    "views": "Views",
+    "tierTopic": "More tier lists on this topic"
   },
   "ja": {
     "worldcup": "最近プレイされたトーナメント",
     "tier": "おすすめティア表",
     "nine": "おすすめTop 9",
-    "views": "閲覧"
+    "views": "閲覧",
+    "tierTopic": "同じテーマの他のティア表"
   },
   "zh": {
     "worldcup": "最近游玩的淘汰赛",
     "tier": "推荐等级表",
     "nine": "推荐Top 9",
-    "views": "浏览"
+    "views": "浏览",
+    "tierTopic": "同一主题的其他等级表"
   },
   "es": {
     "worldcup": "Torneos jugados recientemente",
     "tier": "Tier lists recomendadas",
     "nine": "Top 9 recomendados",
-    "views": "Visitas"
+    "views": "Visitas",
+    "tierTopic": "Más listas de niveles sobre este tema"
   },
   "fr": {
     "worldcup": "Tournois joués récemment",
     "tier": "Tier lists recommandées",
     "nine": "Top 9 recommandés",
-    "views": "Vues"
+    "views": "Vues",
+    "tierTopic": "Autres tier lists sur ce thème"
   },
   "de": {
     "worldcup": "Zuletzt gespielte Turniere",
     "tier": "Empfohlene Tierlisten",
     "nine": "Empfohlene Top 9",
-    "views": "Aufrufe"
+    "views": "Aufrufe",
+    "tierTopic": "Weitere Tier-Listen zu diesem Thema"
   },
   "pt": {
     "worldcup": "Torneios jogados recentemente",
     "tier": "Tier lists recomendadas",
     "nine": "Top 9 recomendados",
-    "views": "Visualizações"
+    "views": "Visualizações",
+    "tierTopic": "Mais tier lists sobre este tema"
   },
   "ru": {
     "worldcup": "Недавно сыгранные турниры",
     "tier": "Рекомендуемые тир-листы",
     "nine": "Рекомендуемые Top 9",
-    "views": "Просмотры"
+    "views": "Просмотры",
+    "tierTopic": "Другие тир-листы на эту тему"
   },
   "id": {
     "worldcup": "Turnamen yang baru dimainkan",
     "tier": "Tier list rekomendasi",
     "nine": "Top 9 rekomendasi",
-    "views": "Tayangan"
+    "views": "Tayangan",
+    "tierTopic": "Tier list lain dengan topik ini"
   },
   "vi": {
     "worldcup": "Giải đấu được chơi gần đây",
     "tier": "Bảng xếp hạng đề xuất",
     "nine": "Top 9 đề xuất",
-    "views": "Lượt xem"
+    "views": "Lượt xem",
+    "tierTopic": "Các bảng xếp hạng khác cùng chủ đề"
   },
   "it": {
     "worldcup": "Tornei giocati di recente",
     "tier": "Tier list consigliate",
     "nine": "Top 9 consigliati",
-    "views": "Visualizzazioni"
+    "views": "Visualizzazioni",
+    "tierTopic": "Altre tier list su questo tema"
   },
   "pl": {
     "worldcup": "Ostatnio rozegrane turnieje",
     "tier": "Polecane rankingi",
     "nine": "Polecane Top 9",
-    "views": "Wyświetlenia"
+    "views": "Wyświetlenia",
+    "tierTopic": "Inne tier listy na ten temat"
   },
   "nl": {
     "worldcup": "Onlangs gespeelde toernooien",
     "tier": "Aanbevolen tierlijsten",
     "nine": "Aanbevolen Top 9",
-    "views": "Weergaven"
+    "views": "Weergaven",
+    "tierTopic": "Meer tierlijsten over dit onderwerp"
   },
   "cs": {
     "worldcup": "Nedávno hrané turnaje",
     "tier": "Doporučené žebříčky",
     "nine": "Doporučené Top 9",
-    "views": "Zobrazení"
+    "views": "Zobrazení",
+    "tierTopic": "Další žebříčky na toto téma"
   },
   "hi": {
     "worldcup": "हाल में खेले गए टूर्नामेंट",
     "tier": "सुझाई गई टियर सूचियाँ",
     "nine": "सुझाए गए Top 9",
-    "views": "दृश्य"
+    "views": "दृश्य",
+    "tierTopic": "इस विषय पर अन्य टियर सूचियाँ"
   },
   "bn": {
     "worldcup": "সম্প্রতি খেলা টুর্নামেন্ট",
     "tier": "প্রস্তাবিত টিয়ার তালিকা",
     "nine": "প্রস্তাবিত Top 9",
-    "views": "দেখা হয়েছে"
+    "views": "দেখা হয়েছে",
+    "tierTopic": "এই বিষয়ে আরও টিয়ার তালিকা"
   },
   "ar": {
     "worldcup": "البطولات التي لُعبت مؤخرًا",
     "tier": "قوائم المستويات المقترحة",
     "nine": "Top 9 مقترحة",
-    "views": "المشاهدات"
+    "views": "المشاهدات",
+    "tierTopic": "قوائم تصنيف أخرى حول هذا الموضوع"
   },
   "tr": {
     "worldcup": "Son oynanan turnuvalar",
     "tier": "Önerilen seviye listeleri",
     "nine": "Önerilen Top 9",
-    "views": "Görüntülenme"
+    "views": "Görüntülenme",
+    "tierTopic": "Bu konudaki diğer seviye listeleri"
   },
   "th": {
     "worldcup": "ทัวร์นาเมนต์ที่เล่นล่าสุด",
     "tier": "รายการจัดอันดับแนะนำ",
     "nine": "Top 9 แนะนำ",
-    "views": "ยอดดู"
+    "views": "ยอดดู",
+    "tierTopic": "รายการจัดอันดับอื่นในหัวข้อนี้"
   }
 }

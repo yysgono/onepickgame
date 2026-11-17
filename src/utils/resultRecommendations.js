@@ -1,6 +1,6 @@
 import {loadRecentContentActivity} from './recentContentActivity';
 const compact=rows=>[...new Map(rows.filter(row=>row?.id).map(row=>[String(row.id),row])).values()];
-export async function loadResultRecommendations(client,{kind,id,category,sourceId,sourceIds=[],presetName}){
+export async function loadResultRecommendations(client,{kind,id,category,sourceId,sourceIds=[],presetName,topicOnly=false}){
  if(kind==='worldcup'){
   const events=await loadRecentContentActivity(client,'worldcup',60);
   const recent=compact(events.map(item=>item.cup).filter(row=>String(row.id)!==String(id)));
@@ -34,6 +34,6 @@ export async function loadResultRecommendations(client,{kind,id,category,sourceI
  }else if(sourceId)await collect(q=>q.eq('source_worldcup_id',sourceId));
  else if(presetName)await collect(q=>q.eq('tier_labels->>_sourcePresetName',presetName));
  if(category)await collect(q=>q.eq('category',category));
- await collect();
+ if(!topicOnly)await collect();
  return rows.slice(0,4);
 }

@@ -10,7 +10,7 @@ import { hasBadword } from "../badwords-multilang";
 import { addGuestComment, manageGuestComment } from "../utils/guestComments";
 import "./tierCandidateLabels.css";
 import NavigationLink from "./NavigationLink";
-import RelatedContentLinks from "./RelatedContentLinks";
+import SourceWorldcupCards from "./templates/SourceWorldcupCards";
 import tierDetailSeo from "../seo/tierDetailSeo";
 import { socialImage } from "../seo/quizSeo";
 import { TierTags, PresetTitle } from "./TierTagTools";
@@ -1884,11 +1884,14 @@ padding: isMobile
           {renderResultActions()}
         </div>
 
+        <SourceWorldcupCards sourceIds={tierList.source_worldcup_id ? [tierList.source_worldcup_id] : []} lang={lang}/>
+        <ResultRecommendations kind="tier" id={tierList.id} lang={lang} category={tierList.category} sourceId={tierList.source_worldcup_id} presetName={sourcePresetName} topicOnly/>
+
         {/* =============================================
             댓글
             ============================================= */}
 
-        <div
+        <div className="tier-result-comments"
           style={{
             marginTop:
               isMobile
@@ -2291,8 +2294,7 @@ padding: isMobile
             )}
           </div>
         </div>
-        <ResultRecommendations kind="tier" id={tierList.id} lang={lang} category={tierList.category} sourceId={tierList.source_worldcup_id} presetName={sourcePresetName}/>
-        <RelatedContentLinks lang={lang} category={tierList.category} sourceWorldcupId={tierList.source_worldcup_id} />
+
       </div>
     </div>
     </>
