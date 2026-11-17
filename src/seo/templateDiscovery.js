@@ -24,7 +24,7 @@ async function load(client,cup,kind,lang){
   const [previews,thumbs,topicWorks]=await Promise.all([
    ids.length?read(client.from('worldcups').select('id,title,title_translations,preview:data->0,second:data->1').is('deleted_at',null).in('id',ids)):Promise.resolve([]),
    related.length?read(client.from(kind==='tier'?'tier_preset_thumbnails':'top_nine_thumbnails').select('source_worldcup_id,image_url').in('source_worldcup_id',related.map(r=>r.id))):Promise.resolve([]),
-   works.length<12&&cup.category?read(popular(worksBase().eq('category',kind==='tier'?({anime_manga:'animation',person:'entertainment',korea:'entertainment',music:'entertainment',etc:'other'}[cup.category]||cup.category):cup.category))):Promise.resolve([])
+   kind==='nine'&&works.length<12&&cup.category?read(popular(worksBase().eq('category',kind==='tier'?({anime_manga:'animation',person:'entertainment',korea:'entertainment',music:'entertainment',etc:'other'}[cup.category]||cup.category):cup.category))):Promise.resolve([])
   ]);
   const byId=new Map(previews.map(r=>[String(r.id),r])),custom=new Map(thumbs.map(r=>[String(r.source_worldcup_id),media(r.image_url)]));
   works=[...new Map([...works,...topicWorks].filter(r=>UUID.test(String(r.id))).map(r=>[String(r.id),r])).values()].slice(0,12);
