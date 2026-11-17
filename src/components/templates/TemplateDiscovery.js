@@ -33,14 +33,13 @@ function CardRail({title,rows,kind,lang,copy}){
 export default function TemplateDiscovery({cup,kind,lang}){
  const id=cup?.id,category=cup?.category,key=JSON.stringify([id,kind,lang]);
  const [state,setState]=useState(()=>({key,groups:bootstrap(id,kind,lang)}));
- const candidates=cup?.data,complete=!cup?._homeCardOnly&&Array.isArray(candidates)&&candidates.length>0;
  const [sourcePreview,setSourcePreview]=useState(null);
  useEffect(()=>{
-  if(!complete||typeof discovery.loadSourcePreview!=='function')return;
+  if(!id||typeof discovery.loadSourcePreview!=='function')return;
   let alive=true;
-  discovery.loadSourcePreview(supabase,cup).then(result=>{if(alive&&['ready','empty'].includes(result.status))setSourcePreview({key,candidates,images:result.images});}).catch(()=>{});
+  discovery.loadSourcePreview(supabase,cup).then(result=>{if(alive&&result.status==='stored')setSourcePreview({key,images:result.images});}).catch(()=>{});
   return()=>{alive=false;};
- },[key,id,candidates,complete]);
+ },[key,id]);
 
  useEffect(()=>{
   let alive=true;const initial=bootstrap(id,kind,lang);
@@ -50,7 +49,7 @@ export default function TemplateDiscovery({cup,kind,lang}){
  },[id,category,kind,lang,key]);
  const groups=state.key===key?state.groups:null,c=discovery.COPY[lang]||discovery.COPY.en;if(!groups)return null;
  return <section className="template-discovery" aria-label={c.title} dir={lang==='ar'?'rtl':undefined}>
-  {groups.source&&<div className="td-group td-source-group"><h2>{c.source}</h2><Card row={{...groups.source,images:sourcePreview?.key===key&&sourcePreview.candidates===candidates?sourcePreview.images:groups.source.images}} source kind={kind}/></div>}
+  {groups.source&&<div className="td-group td-source-group"><h2>{c.source}</h2><Card row={{...groups.source,images:sourcePreview?.key===key?sourcePreview.images:(groups.source.rankingStatus==='stored'?groups.source.images:[])}} source kind={kind}/></div>}
   <CardRail title={c[kind+'Works']} rows={groups.works} kind={kind} lang={lang} copy={c}/>
   <CardRail title={c.related} rows={groups.templates} kind={kind} lang={lang} copy={c}/>
  </section>;

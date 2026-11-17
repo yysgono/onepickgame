@@ -1,0 +1,20 @@
+const fs=require('fs'),assert=require('node:assert/strict'),{PGlite}=require('../../sql-verification/node_modules/@electric-sql/pglite');
+const id='00000000-0000-4000-8000-000000000001',other='00000000-0000-4000-8000-000000000002';
+(async()=>{
+ const db=new PGlite();await db.exec('CREATE ROLE anon;CREATE ROLE authenticated;CREATE TABLE worldcups(id uuid PRIMARY KEY,data jsonb,deleted_at timestamptz);CREATE TABLE winner_stats(id serial PRIMARY KEY,cup_id uuid,candidate_id text,win_count int,match_wins int);GRANT SELECT ON worldcups TO anon,authenticated;');
+ const pool=[1,2,3,4].map(n=>({id:n,image:'https://example.com/'+n+'.jpg'}));await db.query('INSERT INTO worldcups(id,data) VALUES($1,$2)',[id,JSON.stringify(pool)]);await db.query('INSERT INTO winner_stats(cup_id,candidate_id,win_count,match_wins) VALUES($1,\'4\',8,5),($1,\'3\',7,6)',[id]);
+ const sql=fs.readFileSync('supabase/20261117_worldcup_card_previews.sql','utf8');await db.exec(sql);await db.exec(sql);
+ const images=async cup=>(await db.query('SELECT image_urls FROM worldcup_card_previews WHERE cup_id=$1',[cup])).rows[0]?.image_urls;
+ assert.deepEqual(await images(id),['https://example.com/4.jpg','https://example.com/3.jpg']);
+ await db.query('INSERT INTO winner_stats(cup_id,candidate_id,win_count,match_wins) VALUES($1,\'2\',4,1),($1,\'2\',5,2)',[id]);assert.deepEqual(await images(id),['https://example.com/2.jpg','https://example.com/4.jpg']);
+ await db.query("UPDATE winner_stats SET win_count=20 WHERE cup_id=$1 AND candidate_id='3'",[id]);assert.equal((await images(id))[0],'https://example.com/3.jpg');
+ await db.query("DELETE FROM winner_stats WHERE cup_id=$1 AND candidate_id='3'",[id]);assert.equal((await images(id))[0],'https://example.com/2.jpg');
+ const changed=pool.map(c=>({...c,image:c.image.replace('.jpg','-new.jpg')}));await db.query('UPDATE worldcups SET data=$2 WHERE id=$1',[id,JSON.stringify(changed)]);assert.deepEqual(await images(id),['https://example.com/2-new.jpg','https://example.com/4-new.jpg']);
+ await db.query('INSERT INTO worldcups(id,data) VALUES($1,$2)',[other,JSON.stringify(pool)]);assert.deepEqual(await images(other),['https://example.com/1.jpg','https://example.com/2.jpg']);
+ await db.exec('SET ROLE anon');assert.equal((await db.query('SELECT count(*)::int n FROM worldcup_card_previews')).rows[0].n,2);await assert.rejects(db.query('DELETE FROM worldcup_card_previews'),/permission denied/);await assert.rejects(db.query('SELECT refresh_worldcup_card_preview($1)',[id]),/permission denied/);await db.exec('RESET ROLE');
+ await db.query('UPDATE worldcups SET deleted_at=now() WHERE id=$1',[id]);assert.equal(await images(id),undefined);await db.query('UPDATE worldcups SET deleted_at=NULL WHERE id=$1',[id]);assert.equal((await images(id))[0],'https://example.com/2-new.jpg');
+ await db.query('DELETE FROM worldcups WHERE id=$1',[other]);assert.equal(await images(other),undefined);assert.equal((await db.query('SELECT count(*)::int n FROM winner_stats')).rows[0].n,3);
+ await db.query('INSERT INTO worldcups(id,data) VALUES($1,$2)',[other,JSON.stringify([{image:'https://example.com/legacy-a.jpg'},{image:'https://example.com/legacy-b.jpg'}])]);assert.deepEqual(await images(other),['https://example.com/legacy-a.jpg','https://example.com/legacy-b.jpg']);
+ await db.exec('GRANT INSERT ON winner_stats TO authenticated;SET ROLE authenticated');await db.query('INSERT INTO winner_stats(id,cup_id,candidate_id,win_count,match_wins) VALUES(999,$1,$2,50,50)',[id,'1']);await db.exec('RESET ROLE');assert.equal((await images(id))[0],'https://example.com/1-new.jpg');
+ await db.close();console.log('PASS: repeat migration, existing-data backfill, stats insert/update/delete refresh, image edits, no-stat fallback, soft-delete/restore, public read-only access and unchanged source records.');
+})().catch(error=>{console.error(error);process.exitCode=1});

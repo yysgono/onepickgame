@@ -1,3 +1,4 @@
+import sharedCards from '../utils/sharedWorldcupCards';
 import cardPreview from '../utils/worldcupCardPreview';
 import {loadRecentContentActivity,formatRecentActivity} from '../utils/recentContentActivity';
 import ContentLanguageSelect from "./ContentLanguageSelect";
@@ -971,6 +972,7 @@ const recordSearch = async (value) => {
 
 
 const [winStatsMap, setWinStatsMap] = useState({});
+const [storedCardImages,setStoredCardImages]=useState({});
 
 const [playCountMap, setPlayCountMap] = useState({});
 
@@ -1872,13 +1874,8 @@ const totalPlays =
 
 
 
-  const [first, second] = getTop2Winners(
-
-    winStats,
-
-    cup.data
-
-  );
+  const storedImages=storedCardImages[String(cup.id)];
+  const [first,second]=storedImages?.length?storedImages.map(image=>({image})):getTop2Winners(winStats,cup.data);
 
 
 
@@ -3658,6 +3655,10 @@ useEffect(() => {
 
 
 
+  let live=true;
+  sharedCards.loadCards(supabase,uniqueCups.map(cup=>cup.id)).then(rows=>{
+    if(live&&rows.length)setStoredCardImages(previous=>{const next={...previous};rows.forEach(row=>{next[row.cup_id]=row.images;});return next;});
+  }).catch(()=>{});
   uniqueCups.forEach((cup) => {
 
     const key = String(cup.id);
@@ -3724,8 +3725,10 @@ useEffect(() => {
 
   });
 
+  return()=>{live=false;};
 }, [
 
+  homePages.rows,
   rowVisibleCounts,
 
   otherVisibleCount,

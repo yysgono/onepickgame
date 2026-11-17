@@ -1,4 +1,4 @@
-const cardPreview=require('../utils/worldcupCardPreview.js');
+const sharedCards=require('../utils/sharedWorldcupCards.js');
 const {localizedBoardTitle}=require('../components/topNine/localizedBoardTitleCore.js');
 // Shared public, read-only card metadata for the first HTML and React UI.
 const COPY=require('./templateDiscoveryCopy.json');
@@ -17,12 +17,12 @@ async function load(client,cup,kind,lang){
  const popular=q=>q.order('view_count',{ascending:false,nullsFirst:false}).order('created_at',{ascending:false}).limit(12);
  try{
   const templatesQuery=kind==='tier'?client.from('worldcup_tier_preset_cards').select('id,title,title_translations,tier_preset_title_translations,tier_preset_thumbnail_url,category').neq('id',id).order('tier_preset_order',{ascending:true,nullsFirst:false}).order('id').limit(30):client.rpc('search_top_nine_sources',{p_query:'',p_offset:0,p_recommended:true});
-  let [works,templates,sourcePreview]=await Promise.all([read(popular(kind==='tier'?worksBase().eq('source_worldcup_id',id):worksBase().contains('source_worldcup_ids',[id]))),read(templatesQuery),cardPreview.loadSourcePreview(client,cup)]);
+  let [works,templates,sourcePreview]=await Promise.all([read(popular(kind==='tier'?worksBase().eq('source_worldcup_id',id):worksBase().contains('source_worldcup_ids',[id]))),read(templatesQuery),sharedCards.loadSourcePreview(client,cup)]);
   if(kind==='nine'&&!works.length&&!controller.signal.aborted)works=await read(popular(worksBase().contains('source_worldcup_ids',JSON.stringify([id]))));
   const related=templates.filter(r=>String(r.id)!==id&&UUID.test(String(r.id))).sort((a,b)=>Number(b.category===cup.category)-Number(a.category===cup.category)).slice(0,12);
-  const ids=[id,...related.map(r=>r.id)];
+  const ids=related.map(r=>r.id);
   const [previews,thumbs,topicWorks]=await Promise.all([
-   read(client.from('worldcups').select('id,title,title_translations,preview:data->0,second:data->1').is('deleted_at',null).in('id',ids)),
+   ids.length?read(client.from('worldcups').select('id,title,title_translations,preview:data->0,second:data->1').is('deleted_at',null).in('id',ids)):Promise.resolve([]),
    related.length?read(client.from(kind==='tier'?'tier_preset_thumbnails':'top_nine_thumbnails').select('source_worldcup_id,image_url').in('source_worldcup_id',related.map(r=>r.id))):Promise.resolve([]),
    works.length<12&&cup.category?read(popular(worksBase().eq('category',kind==='tier'?({anime_manga:'animation',person:'entertainment',korea:'entertainment',music:'entertainment',etc:'other'}[cup.category]||cup.category):cup.category))):Promise.resolve([])
   ]);
@@ -43,8 +43,7 @@ async function load(client,cup,kind,lang){
    }
   }
   const source=byId.get(id)||cup;
-  const sourceCandidates=Array.isArray(cup.data)&&cup.data.length?cup.data:[source.preview,source.second].filter(Boolean);
-  const sourceImages=['ready','empty'].includes(sourcePreview.status)?sourcePreview.images:sourceCandidates.slice(0,2).map(image).filter(Boolean);
+  const sourceImages=sourcePreview.status==='stored'?sourcePreview.images:[];
   return {
    source:{href:`/${lang}/select-round/${id}`,label:String(map(source.title_translations)[lang]||source.title||c.source),action:c.source,images:sourceImages,rankingStatus:sourcePreview.status},
    works:works.map(r=>({href:`/${lang}/${kind==='tier'?'tier-list':'mytop9'}/${r.id}`,label:kind==='nine'?localizedBoardTitle(r,Array.from(titleSources.values()),lang):String(map(r.title_translations)[lang]||r.title||''),image:media(r.thumbnail_url),views:Number(r.view_count)||0,slots:kind==='nine'?(Array.isArray(r.slots)?r.slots:[]).slice(0,9).map(s=>s?.id==='tn-empty-cell'||!media(s?.src)?null:{src:media(s.src),zoom:s.zoom,x:s.x,y:s.y}):undefined})),
@@ -60,4 +59,4 @@ function render(groups,kind,lang,origin=''){
  const list=(heading,rows)=>rows?.length?'<div class="td-group"><h2>'+e(heading)+'</h2><div class="td-rail-frame"><ul class="td-card-rail">'+rows.slice(0,5).map(r=>'<li>'+card(r)+'</li>').join('')+'</ul></div></div>':'';
  return '<section class="template-discovery" aria-label="'+e(c.title)+'">'+(groups.source?'<div class="td-group td-source-group"><h2>'+e(c.source)+'</h2>'+card(groups.source,true)+'</div>':'')+list(c[kind+'Works'],groups.works)+list(c.related,groups.templates)+'</section>';
 }
-module.exports={load,render,title,homeLinks,COPY,loadSourcePreview:cardPreview.loadSourcePreview};
+module.exports={load,render,title,homeLinks,COPY,loadSourcePreview:sharedCards.loadSourcePreview};

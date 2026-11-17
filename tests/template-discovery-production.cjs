@@ -4,7 +4,7 @@ const build=path.resolve(process.argv[2]||'../template-discovery-build'),id='b11
 const cup={id,title:'Source bracket',category:'game',is_tier_preset:true,tier_preset_title_translations:{en:'My tier preset',ko:'내 티어표 프리셋'},top_nine_title_translations:{en:'My grid template',ko:'내 구절판 템플릿'},data:Array.from({length:20},(_,i)=>({id:i,name:'Candidate '+i,image:'https://example.com/'+i+'.jpg'}))};
 class Local extends ResourceLoader{fetch(url){const p=new URL(url).pathname;if(p.startsWith('/static/'))return Promise.resolve(fs.readFileSync(path.join(build,p)));return null;}}
 async function run(kind,lang){
- const groups={source:{href:`/${lang}/select-round/${id}`,label:'Source bracket',images:['https://example.com/a.jpg','https://example.com/b.jpg']},works:[{href:`/${lang}/${kind==='nine'?'mytop9':'tier-list'}/${other}`,label:'Same template work',image:'https://example.com/work.jpg',slots:kind==='nine'?Array.from({length:9},()=>({src:'https://example.com/slot.jpg'})):undefined}],templates:[{href:`/${lang}/${kind==='nine'?'mytop9/templates':'tier-list/create'}/${other}`,label:'Related template',image:'https://example.com/template.jpg'}]};
+ const groups={source:{href:`/${lang}/select-round/${id}`,label:'Source bracket',rankingStatus:'stored',images:['https://example.com/a.jpg','https://example.com/b.jpg']},works:[{href:`/${lang}/${kind==='nine'?'mytop9':'tier-list'}/${other}`,label:'Same template work',image:'https://example.com/work.jpg',slots:kind==='nine'?Array.from({length:9},()=>({src:'https://example.com/slot.jpg'})):undefined}],templates:[{href:`/${lang}/${kind==='nine'?'mytop9/templates':'tier-list/create'}/${other}`,label:'Related template',image:'https://example.com/template.jpg'}]};
  const html=renderTemplateHtml(fs.readFileSync(path.join(build,'index.html'),'utf8'),'https://www.onepickgame.com',lang,cup,kind,groups);
  const first=new JSDOM(html);assert.equal(first.window.document.querySelectorAll('.template-discovery a').length,3);first.window.close();
  const errors=[],vc=new VirtualConsole();vc.on('jsdomError',e=>{if(e.type!=='not implemented')errors.push(e.message)});let optionalReads=0;
@@ -12,7 +12,8 @@ async function run(kind,lang){
   Object.defineProperty(w,'crypto',{value:require('node:crypto').webcrypto,configurable:true});w.fetch=async input=>{const u=new URL(String(input),'https://www.onepickgame.com');let data=[];
    if(u.pathname.endsWith('/worldcups')&&u.searchParams.get('id')==='eq.'+id){assert.equal(kind,'tier','Nine template must reuse server candidates');data=cup;}
    else if(u.pathname.endsWith('/rpc/get_tier_source_catalogue'))data=[cup];
-   else if(u.pathname.endsWith('/winner_stats'))data=[{candidate_id:4,win_count:9,match_wins:20},{candidate_id:3,win_count:8,match_wins:19}];
+   else if(u.pathname.endsWith('/worldcup_card_previews'))data=[{cup_id:id,image_urls:['https://example.com/4.jpg','https://example.com/3.jpg'],candidate_ids:['4','3']}];
+   else if(u.pathname.endsWith('/winner_stats'))assert.fail('Preset source must not request winner_stats');
    else if(u.pathname.endsWith('/worldcups')&&u.searchParams.get('select')==='id,title,title_translations,tier_preset_title_translations,category')optionalReads++;
    else if(u.pathname.endsWith('/top_nine_templates')&&u.searchParams.get('source_worldcup_id'))data={enabled:true,title_translations:cup.top_nine_title_translations};
    else if(u.pathname.endsWith('/top_nine_template_categories'))data={category:'game'};

@@ -2,7 +2,7 @@
   "ko": {
     "source": "이 후보로 이상형 월드컵 하기",
     "nineWorks": "같은 주제의 다른 구절판",
-    "tierWorks": "같은 주제의 다른 티어표",
+    "tierWorks": "해당 주제로 다른 사람들이 만든 티어표",
     "related": "비슷한 주제의 다른 템플릿",
     "title": "이 주제로 더 즐기기",
     "presets": "추천 티어표 프리셋",
@@ -12,7 +12,7 @@
   "en": {
     "source": "Play a bracket with these candidates",
     "nineWorks": "More Top 9 collages on this topic",
-    "tierWorks": "More tier lists on this topic",
+    "tierWorks": "Tier lists made by others for this topic",
     "related": "Explore related templates",
     "title": "Explore this topic",
     "presets": "Featured tier list presets",
@@ -22,7 +22,7 @@
   "ja": {
     "source": "この候補でトーナメントを遊ぶ",
     "nineWorks": "同じテーマのほかのTop 9",
-    "tierWorks": "同じテーマのほかのティア表",
+    "tierWorks": "このテーマでほかの人が作ったティア表",
     "related": "関連テンプレート",
     "title": "このテーマをもっと楽しむ",
     "presets": "おすすめティア表プリセット",
@@ -32,7 +32,7 @@
   "zh": {
     "source": "用这些候选玩淘汰赛",
     "nineWorks": "同主题的其他Top 9",
-    "tierWorks": "同主题的其他等级表",
+    "tierWorks": "其他人围绕此主题制作的等级表",
     "related": "浏览相关模板",
     "title": "探索此主题",
     "presets": "推荐等级表预设",
@@ -42,7 +42,7 @@
   "es": {
     "source": "Juega un torneo con estos candidatos",
     "nineWorks": "Más Top 9 sobre este tema",
-    "tierWorks": "Más tier lists sobre este tema",
+    "tierWorks": "Tier lists de otros usuarios sobre este tema",
     "related": "Explora plantillas relacionadas",
     "title": "Explora este tema",
     "presets": "Presets de tier lists destacados",
@@ -52,7 +52,7 @@
   "fr": {
     "source": "Jouer un tournoi avec ces candidats",
     "nineWorks": "Autres Top 9 sur ce thème",
-    "tierWorks": "Autres tier lists sur ce thème",
+    "tierWorks": "Tier lists créées par les autres sur ce thème",
     "related": "Explorer les modèles associés",
     "title": "Explorer ce thème",
     "presets": "Modèles de tier lists recommandés",
@@ -62,7 +62,7 @@
   "de": {
     "source": "Turnier mit diesen Kandidaten spielen",
     "nineWorks": "Weitere Top 9 zu diesem Thema",
-    "tierWorks": "Weitere Tierlisten zu diesem Thema",
+    "tierWorks": "Tierlisten anderer Nutzer zu diesem Thema",
     "related": "Ähnliche Vorlagen entdecken",
     "title": "Dieses Thema entdecken",
     "presets": "Empfohlene Tierlisten-Vorlagen",
@@ -72,7 +72,7 @@
   "pt": {
     "source": "Jogue um torneio com estes candidatos",
     "nineWorks": "Mais Top 9 sobre este tema",
-    "tierWorks": "Mais tier lists sobre este tema",
+    "tierWorks": "Tier lists de outras pessoas sobre este tema",
     "related": "Explore modelos relacionados",
     "title": "Explore este tema",
     "presets": "Modelos de tier lists em destaque",
@@ -82,7 +82,7 @@
   "ru": {
     "source": "Турнир с этими кандидатами",
     "nineWorks": "Другие Top 9 по этой теме",
-    "tierWorks": "Другие тир-листы по этой теме",
+    "tierWorks": "Тир-листы других пользователей по этой теме",
     "related": "Похожие шаблоны",
     "title": "Ещё по этой теме",
     "presets": "Рекомендуемые шаблоны тир-листов",
@@ -92,7 +92,7 @@
   "id": {
     "source": "Mainkan turnamen dengan kandidat ini",
     "nineWorks": "Top 9 lain tentang topik ini",
-    "tierWorks": "Tier list lain tentang topik ini",
+    "tierWorks": "Tier list buatan pengguna lain untuk topik ini",
     "related": "Jelajahi templat terkait",
     "title": "Jelajahi topik ini",
     "presets": "Preset tier list pilihan",
@@ -102,7 +102,7 @@
   "vi": {
     "source": "Chơi giải đấu với các ứng viên này",
     "nineWorks": "Top 9 khác cùng chủ đề",
-    "tierWorks": "Bảng xếp hạng khác cùng chủ đề",
+    "tierWorks": "Bảng xếp hạng do người khác tạo về chủ đề này",
     "related": "Khám phá mẫu liên quan",
     "title": "Khám phá chủ đề này",
     "presets": "Mẫu bảng xếp hạng nổi bật",
@@ -112,7 +112,7 @@
   "it": {
     "source": "Gioca un torneo con questi candidati",
     "nineWorks": "Altri Top 9 su questo tema",
-    "tierWorks": "Altre tier list su questo tema",
+    "tierWorks": "Tier list create da altri su questo tema",
     "related": "Esplora modelli simili",
     "title": "Esplora questo tema",
     "presets": "Modelli di tier list consigliati",
@@ -122,7 +122,7 @@
   "pl": {
     "source": "Zagraj w turniej z tymi kandydatami",
     "nineWorks": "Inne Top 9 na ten temat",
-    "tierWorks": "Inne rankingi na ten temat",
+    "tierWorks": "Rankingi innych użytkowników na ten temat",
     "related": "Przeglądaj podobne szablony",
     "title": "Poznaj ten temat",
     "presets": "Polecane szablony rankingów",
@@ -132,7 +132,7 @@
   "nl": {
     "source": "Speel een toernooi met deze kandidaten",
     "nineWorks": "Meer Top 9 over dit onderwerp",
-    "tierWorks": "Meer tierlijsten over dit onderwerp",
+    "tierWorks": "Tierlijsten van anderen over dit onderwerp",
     "related": "Ontdek verwante sjablonen",
     "title": "Ontdek dit onderwerp",
     "presets": "Aanbevolen tierlijstsjablonen",
@@ -142,7 +142,7 @@
   "cs": {
     "source": "Hrát turnaj s těmito kandidáty",
     "nineWorks": "Další Top 9 na toto téma",
-    "tierWorks": "Další žebříčky na toto téma",
+    "tierWorks": "Žebříčky ostatních uživatelů na toto téma",
     "related": "Prozkoumat podobné šablony",
     "title": "Prozkoumat toto téma",
     "presets": "Doporučené šablony žebříčků",
@@ -152,7 +152,7 @@
   "hi": {
     "source": "इन उम्मीदवारों के साथ टूर्नामेंट खेलें",
     "nineWorks": "इस विषय पर अन्य Top 9",
-    "tierWorks": "इस विषय पर अन्य टियर सूचियाँ",
+    "tierWorks": "इस विषय पर दूसरों की बनाई टियर सूचियाँ",
     "related": "संबंधित टेम्पलेट देखें",
     "title": "इस विषय को और देखें",
     "presets": "चुनिंदा टियर सूची प्रीसेट",
@@ -162,7 +162,7 @@
   "bn": {
     "source": "এই প্রার্থীদের নিয়ে টুর্নামেন্ট খেলুন",
     "nineWorks": "এই বিষয়ে আরও Top 9",
-    "tierWorks": "এই বিষয়ে আরও টিয়ার তালিকা",
+    "tierWorks": "এই বিষয়ে অন্যদের তৈরি টিয়ার তালিকা",
     "related": "সম্পর্কিত টেমপ্লেট দেখুন",
     "title": "এই বিষয় আরও দেখুন",
     "presets": "বাছাই করা টিয়ার তালিকা প্রিসেট",
@@ -172,7 +172,7 @@
   "ar": {
     "source": "العب بطولة بهؤلاء المرشحين",
     "nineWorks": "المزيد من Top 9 حول هذا الموضوع",
-    "tierWorks": "المزيد من قوائم المستويات حول هذا الموضوع",
+    "tierWorks": "قوائم مستويات أنشأها الآخرون حول هذا الموضوع",
     "related": "استكشف قوالب مشابهة",
     "title": "استكشف هذا الموضوع",
     "presets": "قوالب قوائم مستويات مميزة",
@@ -182,7 +182,7 @@
   "tr": {
     "source": "Bu adaylarla turnuva oyna",
     "nineWorks": "Bu konudaki diğer Top 9",
-    "tierWorks": "Bu konudaki diğer seviye listeleri",
+    "tierWorks": "Bu konuda başkalarının oluşturduğu seviye listeleri",
     "related": "İlgili şablonları keşfet",
     "title": "Bu konuyu keşfet",
     "presets": "Öne çıkan seviye listesi şablonları",
@@ -192,7 +192,7 @@
   "th": {
     "source": "เล่นทัวร์นาเมนต์ด้วยตัวเลือกเหล่านี้",
     "nineWorks": "Top 9 อื่นในหัวข้อนี้",
-    "tierWorks": "รายการจัดอันดับอื่นในหัวข้อนี้",
+    "tierWorks": "รายการจัดอันดับที่ผู้อื่นสร้างในหัวข้อนี้",
     "related": "ดูเทมเพลตที่เกี่ยวข้อง",
     "title": "สำรวจหัวข้อนี้",
     "presets": "เทมเพลตจัดอันดับแนะนำ",
