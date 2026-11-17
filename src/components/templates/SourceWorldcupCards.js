@@ -27,5 +27,5 @@ export default function SourceWorldcupCards({sourceIds=[],lang='en'}){
  },[key]);
  if(state.key!==key||!state.rows.length)return null;
  const copy=discovery.COPY[lang]||discovery.COPY.en;
- return <section className="template-discovery result-source-worldcups" aria-label={copy.source} dir={lang==='ar'?'rtl':undefined}><div className="td-group td-source-group"><h2>{copy.source}</h2><div className="result-source-worldcup-grid">{state.rows.map(row=><Card key={row.href} row={row} source/>)}</div></div></section>;
+ return <section className="template-discovery result-source-worldcups" aria-label={copy.source} dir={lang==='ar'?'rtl':undefined}><div className="td-group td-source-group"><h2>{copy.source}</h2><div className="result-source-worldcup-grid">{state.rows.map(row=><Card key={row.href} row={row} source versusImage/>)}</div></div></section>;
 }
