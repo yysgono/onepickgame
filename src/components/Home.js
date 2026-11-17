@@ -3667,7 +3667,17 @@ useEffect(() => {
 
   let live=true;
   sharedCards.loadCards(supabase,uniqueCups.map(cup=>cup.id)).then(rows=>{
-    if(live&&rows.length)setStoredCardImages(previous=>{const next={...previous};rows.forEach(row=>{next[row.cup_id]=row.images;});return next;});
+    if (live && rows.length) setStoredCardImages(previous => {
+      let next = previous;
+      rows.forEach(row => {
+        const before = previous[row.cup_id];
+        if (Array.isArray(before) && before.length === row.images.length &&
+            before.every((url, index) => url === row.images[index])) return;
+        if (next === previous) next = { ...previous };
+        next[row.cup_id] = row.images;
+      });
+      return next;
+    });
   }).catch(()=>{});
   uniqueCups.forEach((cup) => {
 
@@ -3739,6 +3749,7 @@ useEffect(() => {
 }, [
 
   homePages.rows,
+  vw,
   rowVisibleCounts,
 
   otherVisibleCount,

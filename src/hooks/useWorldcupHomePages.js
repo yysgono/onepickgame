@@ -1,5 +1,5 @@
 import {subscribeContentChanges} from "../utils/contentTrashApi";
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { createWorldcupHomePager, HOME_ROW_KEYS, PRIMARY_HOME_ROWS } from '../utils/worldcupHomePager';
 import { fetchWorldcupHomeRows } from '../utils/worldcupHomeApi';
 
@@ -47,6 +47,8 @@ export default function useWorldcupHomePages({ enabled, search, creator, sorts, 
   }, [enabled, queryKey, pageSize, retryTick]);
   const loadMore = useCallback((key, desired) => pagerRef.current?.loadMore(key, desired) || Promise.resolve(false), []);
   const retry = useCallback(() => setRetryTick(value => value + 1), []);
-  const cups = [...new Map(Object.values(state.rows).flatMap(row => row.items).map(cup => [String(cup.id), cup])).values()];
+  // Keep the same list identity until actual page data changes. Thumbnail state and
+  // resize renders must not restart consumers' effects with an identical new array.
+  const cups = useMemo(() => [...new Map(Object.values(state.rows).flatMap(row => row.items).map(cup => [String(cup.id), cup])).values()], [state.rows]);
   return { ...state, cups, loadMore, retry };
 }
