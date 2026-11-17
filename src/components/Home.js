@@ -5,6 +5,7 @@ import ContentLanguageSelect from "./ContentLanguageSelect";
 import {localizeExtraUi} from "../utils/newLanguageUi";
 import { useAdsAllowed } from "../ads/AdExclusionProvider";
 import "../styles/activityPanels.css";
+import "../styles/homeResponsive.css";
 import useClickTargetDebug from "../hooks/useClickTargetDebug";
 import trashCopy from "../utils/contentTrashCopy.json";
 import NavigationLink from "./NavigationLink";
@@ -1118,11 +1119,20 @@ useEffect(() => {
 
     if (typeof window === "undefined") return;
 
-    const onResize = () => setVw(window.innerWidth);
-
+    let frame = null;
+    const onResize = () => {
+      if (frame !== null) return;
+      frame = window.requestAnimationFrame(() => {
+        frame = null;
+        setVw(window.innerWidth);
+      });
+    };
     window.addEventListener("resize", onResize);
-
-    return () => window.removeEventListener("resize", onResize);
+    onResize();
+    return () => {
+      window.removeEventListener("resize", onResize);
+      if (frame !== null) window.cancelAnimationFrame(frame);
+    };
 
   }, []);
 
@@ -1130,7 +1140,7 @@ useEffect(() => {
 
 const CARD_WIDTH = isMobile
 
-  ? Math.min(360, window.innerWidth - 32)
+  ? Math.max(1, Math.min(360, vw - 32))
 
   : 504;
 
@@ -3774,23 +3784,18 @@ return (
   )}
 
   <div
-    className="home-top-layout"
+    className={`home-top-layout${showHomeActivityPanels ? " has-activity-panels" : ""}`}
     style={{
       width: "100%",
-      maxWidth: showHomeActivityPanels ? 1900 : isMobile ? 430 : 1000,
+      maxWidth: showHomeActivityPanels ? undefined : isMobile ? 430 : 1000,
       margin: "0 auto",
-      padding: showHomeActivityPanels ? "0 32px" : isMobile ? "0 12px" : "0 16px",
+      padding: showHomeActivityPanels ? undefined : isMobile ? "0 12px" : "0 16px",
       boxSizing: "border-box",
-      display: showHomeActivityPanels ? "grid" : "block",
-      gridTemplateColumns: showHomeActivityPanels
-        ? "minmax(280px, 1fr) minmax(660px, 860px) minmax(280px, 1fr)"
-        : undefined,
-      gap: showHomeActivityPanels ? 28 : undefined,
-      alignItems: showHomeActivityPanels ? "start" : undefined,
+
     }}
   >
     {showHomeActivityPanels && (
-      <div style={{ paddingTop: 18 }}>
+      <div className="home-activity-column" style={{ paddingTop: 18 }}>
         {renderHomeActivityPanel({
           title: sidePanelCopy.recentCreated,
           items: recentCreatedCups,
@@ -3799,7 +3804,7 @@ return (
       </div>
     )}
 
-    <div style={{ minWidth: 0 }}>
+    <div className="home-intro-column" style={{ minWidth: 0 }}>
       <PageIntro icon="🏆" title={SITE_HOME_COPY[lang]?.heading || t('gameModeNav.worldcup')} description={homeSeoSummary} hideDescription={Boolean(search.trim())} buttonLabel={t('create_worldcup')} createTo={`/${lang}/worldcup-maker`} onCreate={() => onMakeWorldcup ? onMakeWorldcup() : goto(`/${lang}/worldcup-maker`)} personal={false} accentColor="#F97316" />
 
       {/* 언어 선택 / 검색 */}
@@ -3947,7 +3952,7 @@ return (
     </div>
 
     {showHomeActivityPanels && (
-      <div style={{ paddingTop: 18 }}>
+      <div className="home-activity-column" style={{ paddingTop: 18 }}>
         {renderHomeActivityPanel({
           title: sidePanelCopy.recentPlayed,
           items: recentPlayedCups,
