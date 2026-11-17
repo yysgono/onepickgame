@@ -12,6 +12,7 @@ async function run(kind,lang){
   Object.defineProperty(w,'crypto',{value:require('node:crypto').webcrypto,configurable:true});w.fetch=async input=>{const u=new URL(String(input),'https://www.onepickgame.com');let data=[];
    if(u.pathname.endsWith('/worldcups')&&u.searchParams.get('id')==='eq.'+id){assert.equal(kind,'tier','Nine template must reuse server candidates');data=cup;}
    else if(u.pathname.endsWith('/rpc/get_tier_source_catalogue'))data=[cup];
+   else if(u.pathname.endsWith('/winner_stats'))data=[{candidate_id:4,win_count:9,match_wins:20},{candidate_id:3,win_count:8,match_wins:19}];
    else if(u.pathname.endsWith('/worldcups')&&u.searchParams.get('select')==='id,title,title_translations,tier_preset_title_translations,category')optionalReads++;
    else if(u.pathname.endsWith('/top_nine_templates')&&u.searchParams.get('source_worldcup_id'))data={enabled:true,title_translations:cup.top_nine_title_translations};
    else if(u.pathname.endsWith('/top_nine_template_categories'))data={category:'game'};
@@ -24,7 +25,7 @@ async function run(kind,lang){
   const d=dom.window.document;for(let i=0;i<300;i++){if((kind==='nine'?d.querySelector('.tn-candidates'):d.querySelector('.tier-editor-board'))&&d.querySelectorAll('.template-discovery a').length===3)break;await new Promise(r=>setTimeout(r,35));}
   assert(kind==='nine'?d.querySelector('.tn-candidates'):d.querySelector('.tier-editor-board'),d.body.textContent.slice(-700)+' '+errors.join('\n'));
   await new Promise(resolve=>setTimeout(resolve,120));
-  assert.equal(d.querySelectorAll('.template-discovery a').length,3);assert.equal(d.querySelectorAll('.td-card').length,3);assert.equal(d.querySelectorAll('.td-source-images img').length,2);if(kind==='nine')assert.equal(d.querySelectorAll('.td-collage img').length,9);assert.equal(d.querySelector('.template-discovery a').getAttribute('href'),groups.source.href);assert.equal(d.querySelectorAll('.template-discovery h2').length,3);assert.equal(optionalReads,0,'React must reuse server link metadata');assert.equal(d.querySelectorAll('meta[name=robots][content*=noindex]').length,0);assert.equal(errors.length,0,errors.join('\n'));
+  assert.equal(d.querySelectorAll('.template-discovery a').length,3);assert.equal(d.querySelectorAll('.td-card').length,3);assert.equal(d.querySelectorAll('.td-source-images img').length,2);assert.deepEqual([...d.querySelectorAll('.td-source-images img')].map(img=>img.src),['https://example.com/4.jpg','https://example.com/3.jpg']);if(kind==='nine')assert.equal(d.querySelectorAll('.td-collage img').length,9);assert.equal(d.querySelector('.template-discovery a').getAttribute('href'),groups.source.href);assert.equal(d.querySelectorAll('.template-discovery h2').length,3);assert.equal(optionalReads,0,'React must reuse server link metadata');assert.equal(d.querySelectorAll('meta[name=robots][content*=noindex]').length,0);assert.equal(errors.length,0,errors.join('\n'));
   console.log('PASS built '+kind+'/'+lang+': source, same-template works and related-template links persist after React; server metadata reused; indexable and editor works.');
  }finally{dom.window.close();}
 }
