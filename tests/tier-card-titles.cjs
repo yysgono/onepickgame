@@ -1,0 +1,21 @@
+const assert=require('node:assert/strict');
+const {localizedTierCardTitle:title,loadTierCardTitleSources:load}=require('../src/seo/tierCardTitles');
+const discovery=require('../src/seo/templateDiscovery');
+const id='11111111-1111-4111-8111-111111111111',work='22222222-2222-4222-8222-222222222222';
+const source={id,title:'원신 캐릭터 이상형 월드컵',title_translations:{ko:'원신 캐릭터 이상형 월드컵',en:'Genshin Impact Character Bracket'},tier_preset_title_translations:{ko:'원신 캐릭터 티어표 만들기',en:'Genshin Impact Character Tier List',ja:'原神キャラクターティア表'}};
+const row={id:work,source_worldcup_id:id,title:'원신 캐릭터 티어표 만들기 - admin',tier_labels:{_sourcePresetName:'원신 캐릭터 티어표 만들기',_originalLanguage:'ko',_titleTranslations:{ko:'원신 캐릭터 티어표 만들기 - admin'}}};
+assert.equal(title(row,[source],'en'),'Genshin Impact Character Tier List - admin');
+assert.equal(title(row,[source],'ja'),'原神キャラクターティア表 - admin');
+assert.equal(title(row,[source],'ko'),row.title);
+assert.equal(title({...row,title:'나만의 순위',tier_labels:{_customPublicTitle:'나만의 순위'}},[source],'en'),'나만의 순위');
+assert.equal(title({...row,title:'한국 힙합 명반 앨범 티어표'},[source],'en'),'한국 힙합 명반 앨범 티어표');
+assert.equal(title({...row,title_translations:{en:'My translated ranking'}},[source],'en'),'My translated ranking');
+assert.equal(title({...row,title:'원신 캐릭터 이상형 월드컵 - user'},[source],'en'),'Genshin Impact Character Tier List - user');
+assert.equal(title(row,[],'en'),row.title);
+let calls=[];const client={from(table){const q={table,filters:[],fields:''};return {select(fields){q.fields=fields;return this},is(){return this},in(k,v){q.ids=v;return this},eq(){return this},neq(){return this},order(){return this},limit(){return this},abortSignal(){return this},then(resolve,reject){calls.push(q);const data=table==='worldcups'?[source]:table==='tier_lists'?[row]:[];return Promise.resolve({data}).then(resolve,reject);}}}};
+(async()=>{
+ const sources=await load(client,[row,row]);assert.equal(sources.length,1);assert.deepEqual(calls[0].ids,[id]);assert(!calls[0].fields.includes('data'));
+ const groups=await discovery.load(client,source,'tier','en');assert.equal(groups.works[0].label,'Genshin Impact Character Tier List - admin');
+ assert(discovery.render(groups,'tier','en').includes('Genshin Impact Character Tier List - admin'));
+ console.log('PASS: automatic tier-card titles use template translations and preserve authors; custom/original and explicit translations are respected; batched metadata only; first HTML and card titles agree.');
+})().catch(e=>{console.error(e);process.exitCode=1});

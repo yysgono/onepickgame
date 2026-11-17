@@ -1,4 +1,5 @@
 const sharedCards=require('../utils/sharedWorldcupCards.js');
+const tierCardTitles=require('./tierCardTitles.js');
 const {localizedBoardTitle}=require('../components/topNine/localizedBoardTitleCore.js');
 // Shared public, read-only card metadata for the first HTML and React UI.
 const COPY=require('./templateDiscoveryCopy.json');
@@ -12,7 +13,7 @@ async function load(client,cup,kind,lang){
  const c=COPY[lang]||COPY.en,id=String(cup?.id||'');if(!UUID.test(id))return null;
  const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),3500);
  const read=async query=>{try{if(query.abortSignal)query=query.abortSignal(controller.signal);const {data,error}=await query;return !error&&Array.isArray(data)?data:[];}catch{return [];}};
- const worksFields=kind==='tier'?'id,title,title_translations,thumbnail_url,view_count':'id,title,slots,view_count,source_worldcup_ids';
+ const worksFields=kind==='tier'?'id,title,title_translations,tier_labels,source_worldcup_id,thumbnail_url,view_count':'id,title,slots,view_count,source_worldcup_ids';
  const worksBase=()=>{let q=client.from(kind==='tier'?'tier_lists':'top_nine_public_boards').select(worksFields);return kind==='tier'?q.is('deleted_at',null):q;};
  const popular=q=>q.order('view_count',{ascending:false,nullsFirst:false}).order('created_at',{ascending:false}).limit(12);
  try{
@@ -28,6 +29,7 @@ async function load(client,cup,kind,lang){
   ]);
   const byId=new Map(previews.map(r=>[String(r.id),r])),custom=new Map(thumbs.map(r=>[String(r.source_worldcup_id),media(r.image_url)]));
   works=[...new Map([...works,...topicWorks].filter(r=>UUID.test(String(r.id))).map(r=>[String(r.id),r])).values()].slice(0,12);
+  const tierSources=kind==='tier'?await tierCardTitles.loadTierCardTitleSources(client,works,controller.signal):[];
   const titleSources=new Map();
   if(kind==='nine'){
    previews.concat(related,[cup]).forEach(row=>titleSources.set(String(row.id),Object.assign({},titleSources.get(String(row.id)),row)));
@@ -46,7 +48,7 @@ async function load(client,cup,kind,lang){
   const sourceImages=sourcePreview.status==='stored'?sourcePreview.images:[];
   return {
    source:{href:`/${lang}/select-round/${id}`,label:String(map(source.title_translations)[lang]||source.title||c.source),action:c.source,images:sourceImages,rankingStatus:sourcePreview.status},
-   works:works.map(r=>({href:`/${lang}/${kind==='tier'?'tier-list':'mytop9'}/${r.id}`,label:kind==='nine'?localizedBoardTitle(r,Array.from(titleSources.values()),lang):String(map(r.title_translations)[lang]||r.title||''),image:media(r.thumbnail_url),views:Number(r.view_count)||0,slots:kind==='nine'?(Array.isArray(r.slots)?r.slots:[]).slice(0,9).map(s=>s?.id==='tn-empty-cell'||!media(s?.src)?null:{src:media(s.src),zoom:s.zoom,x:s.x,y:s.y}):undefined})),
+   works:works.map(r=>({href:`/${lang}/${kind==='tier'?'tier-list':'mytop9'}/${r.id}`,label:kind==='nine'?localizedBoardTitle(r,Array.from(titleSources.values()),lang):tierCardTitles.localizedTierCardTitle(r,tierSources.concat([cup]),lang),image:media(r.thumbnail_url),views:Number(r.view_count)||0,slots:kind==='nine'?(Array.isArray(r.slots)?r.slots:[]).slice(0,9).map(s=>s?.id==='tn-empty-cell'||!media(s?.src)?null:{src:media(s.src),zoom:s.zoom,x:s.x,y:s.y}):undefined})),
    templates:homeLinks(related.map(r=>Object.assign({},r,{thumbnail:custom.get(String(r.id))||r.thumbnail||image(byId.get(String(r.id))?.preview),tier_preset_thumbnail_url:custom.get(String(r.id))||r.tier_preset_thumbnail_url})),kind,lang)
   };
  }finally{clearTimeout(timer);}
