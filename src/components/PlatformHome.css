@@ -69,3 +69,9 @@
  .platform-modes .platform-mode{transition:none}
  .platform-modes .platform-mode:hover,.platform-modes .platform-mode:focus-visible{transform:none}
 }
+
+/* Stretch the heading link across each section; cards and controls stay above it. */
+.platform-section{position:relative;isolation:isolate;border:2px solid var(--mode-color)}
+.platform-section-main-link::after{content:"";position:absolute;inset:0;z-index:1;border-radius:14px;cursor:pointer}
+.platform-section-heading>a,.platform-section .platform-rail,.platform-section .platform-retry,.platform-section .platform-page-status{position:relative;z-index:2}
+.platform-section-main-link:focus-visible::after{outline:3px solid var(--mode-color);outline-offset:3px}
