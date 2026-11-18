@@ -3777,6 +3777,14 @@ return (
 
 
 
+        {category !== "all" && (
+          <div className="quiz-category-search" role="search" aria-label={`${c[category] || c.other} · ${c.search}`}>
+            <input type="search" value={search} onChange={e => setSearch(e.target.value)}
+              placeholder={`${c[category] || c.other} · ${c.search}`} aria-label={c.search} />
+            <span aria-hidden="true">🔍</span>
+          </div>
+        )}
+
         {/* 오류 */}
 
 

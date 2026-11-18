@@ -1,0 +1,4 @@
+.resurrection-page .resurrection-skip:hover:not(:disabled){background:#f5f0ff!important;border-color:#6d28d9!important}
+.resurrection-page .resurrection-skip:focus-visible{outline:3px solid #c4b5fd;outline-offset:3px}
+.resurrection-page .resurrection-candidate-panel{box-sizing:border-box;border:2px solid #a78bfa;border-radius:18px;padding:24px;background:#fff;box-shadow:0 4px 18px #7c3aed0a}
+@media(max-width:700px){.resurrection-page .resurrection-candidate-panel{flex-direction:column;gap:24px!important;padding:16px 12px}.resurrection-candidate-panel>div{width:100%}.resurrection-page .resurrection-instructions{max-width:calc(100% - 24px)!important}}

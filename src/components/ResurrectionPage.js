@@ -1,6 +1,7 @@
 // src/components/ResurrectionPage.js
 import React, { useState, useMemo } from "react";
 import { useTranslation } from "react-i18next";
+import "./ResurrectionPage.css";
 
 function cleanInstructionText(value = "") {
   return String(value)
@@ -30,6 +31,8 @@ function ResurrectionPage({
   saveInProgressMsg = "",
 }) {
   const { t } = useTranslation();
+
+  const note = t("resurrection.note", { defaultValue: "" });
 
   const [queryElim, setQueryElim] = useState("");
   const [queryAdv, setQueryAdv] = useState("");
@@ -85,7 +88,9 @@ function ResurrectionPage({
   const noticeStyle = {
     fontSize: 19,
     color: "#202534",
-    background: "rgba(0,0,0,0.07)",
+    background: "#f8f6ff",
+    border: "2px solid #a78bfa",
+    boxSizing: "border-box",
     padding: "12px 16px 10px 16px",
     borderRadius: 16,
     marginBottom: 20,
@@ -97,7 +102,7 @@ function ResurrectionPage({
   };
 
   return (
-    <div
+    <div className="resurrection-page"
       style={{
         width: "100%",
         minHeight: "80vh",
@@ -126,6 +131,7 @@ function ResurrectionPage({
         }}
       >
         <button
+          className="resurrection-skip"
           onClick={onCancel}
           disabled={isSaving}
           style={{
@@ -135,7 +141,7 @@ function ResurrectionPage({
             borderRadius: 13,
             fontWeight: 700,
             fontSize: 22,
-            border: "none",
+            border: "2px solid #8b5cf6",
             cursor: isSaving ? "not-allowed" : "pointer",
             letterSpacing: "0.7px",
           }}
@@ -200,7 +206,7 @@ function ResurrectionPage({
         {t("resurrection.title")}
       </div>
 
-      <div style={noticeStyle}>
+      <div className="resurrection-instructions" style={noticeStyle}>
         <div
           style={{
             whiteSpace: "pre-line",
@@ -211,19 +217,19 @@ function ResurrectionPage({
           {instructionText}
         </div>
 
-        <div
+        {note && <div
           style={{
             color: "#5542b8",
             fontWeight: 400,
             marginTop: 10,
           }}
         >
-          {t("resurrection.note")}
-        </div>
+          {note}
+        </div>}
       </div>
 
       {/* 좌우 선택 영역 */}
-      <div
+      <div className="resurrection-candidate-panel"
         style={{
           display: "flex",
           gap: 24,
