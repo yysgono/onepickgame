@@ -1976,7 +1976,7 @@ const worldcupTitle =
     translatedTitle ||
     worldcup.title ||
     worldcup.name ||
-    "Tournament"
+    "Tournament Bracket Games"
   )
     .replace(/\s+/g, " ")
     .trim();
