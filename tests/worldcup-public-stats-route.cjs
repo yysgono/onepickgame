@@ -10,10 +10,15 @@ const server=app.listen(0,'127.0.0.1',async()=>{
  const base='http://127.0.0.1:'+server.address().port;
  try{
   for(const lang of Object.keys(copy))for(const kind of ['result','stats']){
-   const response=await fetch(`${base}/${lang}/${kind}/${id}`),doc=new JSDOM(await response.text()).window.document;
-   assert.equal(response.status,200);assert.equal(doc.querySelectorAll('tbody tr').length,2);assert.equal(doc.querySelector('tbody th').textContent,lang==='ko'?'실제 우승 후보':'Winner');assert.equal(doc.querySelectorAll('tbody tr')[0].querySelectorAll('td')[2].textContent,'4.4%');assert.equal(doc.querySelector('link[rel=canonical]').href,`https://www.onepickgame.com/${lang}/${kind}/${id}`);assert(response.headers.get('cache-control').includes('s-maxage=300'));assert.equal(doc.querySelector('script[src]').getAttribute('src'),'/static/js/app.js');assert.equal(doc.querySelectorAll('meta[name=robots]').length,1);
+   if(kind==='stats'){
+    const before=calls,redirect=await fetch(`${base}/${lang}/stats/${id}`,{redirect:'manual'});
+    assert.equal(redirect.status,301);assert.equal(redirect.headers.get('location'),`https://www.onepickgame.com/${lang}/result/${id}`);assert.equal(calls,before);
+   }
+   const response=await fetch(`${base}/${lang}/result/${id}`),doc=new JSDOM(await response.text()).window.document;
+   assert.equal(response.status,200);assert.equal(doc.querySelectorAll('tbody tr').length,2);assert.equal(doc.querySelector('tbody th').textContent,lang==='ko'?'실제 우승 후보':'Winner');assert.equal(doc.querySelectorAll('tbody tr')[0].querySelectorAll('td')[2].textContent,'4.4%');assert.equal(doc.querySelector('link[rel=canonical]').href,`https://www.onepickgame.com/${lang}/result/${id}`);assert(response.headers.get('cache-control').includes('s-maxage=300'));assert.equal(doc.querySelector('script[src]').getAttribute('src'),'/static/js/app.js');assert.equal(doc.querySelectorAll('meta[name=robots]').length,1);
   }
   const before=calls,match=await fetch(`${base}/ko/match/${id}/16`),matchHtml=await match.text();assert.equal(calls,before);assert(!matchHtml.includes('<table'));assert.equal(match.headers.get('x-robots-tag'),'noindex,follow');assert.equal(match.headers.get('cache-control'),'no-store');
+  const redirectRewrite=await fetch(`${base}/?seo=worldcup-view&lang=ko&view=stats&id=${id}&period=month`,{redirect:'manual'});assert.equal(redirectRewrite.status,301);assert.equal(redirectRewrite.headers.get('location'),`https://www.onepickgame.com/ko/result/${id}?period=month`);
   const rewrite=await fetch(`${base}/?seo=worldcup-view&lang=ko&view=result&id=${id}`);assert.equal(rewrite.status,200);assert((await rewrite.text()).includes('실제 우승 후보'));
   for(mode of ['error','reject','invalid']){
    const response=await fetch(`${base}/ko/result/${id}`),html=await response.text();assert.equal(response.status,200);assert(html.includes(copy.ko.unavailable));assert(!html.includes('<table'));assert(html.includes('Worldcup'));assert(html.includes('/static/js/app.js'));assert.equal(response.headers.get('cache-control'),'no-store');
@@ -21,6 +26,6 @@ const server=app.listen(0,'127.0.0.1',async()=>{
   mode='empty';const empty=await fetch(`${base}/ko/result/${id}`);assert((await empty.text()).includes(copy.ko.empty));
   missing=true;const count=calls,notFound=await fetch(`${base}/ko/result/${id}`);assert.equal(notFound.status,404);assert.equal(calls,count);
   missing=false;const invalid=await fetch(`${base}/ko/result/not-a-uuid`);assert.equal(invalid.status,404);assert.equal(calls,count);
-  console.log('PASS: actual Express routes for 20 languages, result/stats/rewrite, existing canonical/cache/scripts, no match RPC, graceful unavailable/empty states and missing/invalid IDs.');
+  console.log('PASS: actual Express routes for 20 languages, result canonical, legacy stats 301, preserved public query, rewrite/cache/scripts, no match RPC, graceful unavailable/empty states and missing/invalid IDs.');
  }catch(error){console.error(error);process.exitCode=1;}finally{server.close();}
 });

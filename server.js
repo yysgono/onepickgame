@@ -1,3 +1,4 @@
+const { renderWorldcupEntryInfo } = require('./src/seo/worldcupEntryInfo.cjs');
 const { initialTranslationsMiddleware } = require("./initial-translations.cjs");
 const { insertRoot, makePopularLoader, renderHomeBody, verifyHome } = require("./home-seo-support.cjs");
 const SITE_HOME_COPY = require("./src/seo/siteHomeCopy.json");
@@ -2440,7 +2441,7 @@ ${safeJson(jsonLd)}
     max-width:900px;
     margin:40px auto;
     padding:24px;
-    color:#ffffff;
+    color:#202534;
     font-family:Arial,sans-serif;
   "
 >
@@ -2458,6 +2459,7 @@ ${safeJson(jsonLd)}
       )}
     </p>
 
+    ${renderWorldcupEntryInfo(worldcup, lang, SITE_URL)}
     ${candidateList}
 
   </article>
@@ -2469,10 +2471,7 @@ ${safeJson(jsonLd)}
      * 서버 SEO 콘텐츠로 교체
      */
 
-    html = html.replace(
-      /<div\s+id=["']root["']>\s*<div\s+class=["']loading-screen["']>\s*Loading\.\.\.\s*<\/div>\s*<\/div>/i,
-      `<div id="root">${seoBody}</div>`
-    );
+    html = insertRoot(html, seoBody);
 
     /*
      * head 삽입

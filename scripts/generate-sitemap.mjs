@@ -373,6 +373,12 @@ export function generateLanguageSitemap(
 
       priority: "0.8",
     });
+    // Public cumulative stats have one canonical URL. Legacy /stats URLs redirect here.
+    xml += makeUrlEntry({
+      loc: `${BASE_URL}/${lang}/result/${cup.id}`,
+      changefreq: "weekly",
+      priority: "0.6",
+    });
   }
 
   // ====================================================
