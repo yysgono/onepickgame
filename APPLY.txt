@@ -1,3 +1,4 @@
-이전 결과 페이지 원본 카드 수정이 적용된 프로젝트에 src 및 public 파일을 같은 경로로 덮어쓰고 빌드·배포하세요.
-새 SQL·환경 변수는 없습니다. 아직 실서비스에는 배포하지 않았습니다.
-상세: docs/result-source-compact.md
+src/components/topNine/PublicBoards.js를 같은 경로로 덮어쓰고 프런트엔드를 빌드·배포하세요.
+회원은 등록하기에서 즉시 등록하며 비회원은 안내문 없이 닉네임·비밀번호만 입력합니다.
+새 SQL·환경 변수는 없습니다. 아직 실서비스에 배포하지 않았습니다.
+상세: docs/top-nine-direct-publish.md
