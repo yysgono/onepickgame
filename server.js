@@ -1234,6 +1234,7 @@ ko: {
 const homePublicClient = SUPABASE_ANON_KEY ? createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {auth:{persistSession:false,autoRefreshToken:false}}) : null;
 const loadPopularHome = homePublicClient ? makePopularLoader(homePublicClient) : async () => [];
 const loadPlatformHome = homePublicClient ? platformHome.makeLoader(homePublicClient) : async lang => platformHome.empty(lang);
+// Optional presentation files must not prevent the function from starting.
 function readHomeStyles(read) {
   try { return read(); }
   catch (error) {
@@ -2600,5 +2601,4 @@ if (require.main === module) {
  */
 
 module.exports = app;
-
 

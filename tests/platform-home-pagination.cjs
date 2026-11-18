@@ -4,14 +4,15 @@ const id=i=>'80000000-0000-4000-8000-'+String(i).padStart(12,'0');
 const overrides={};
 for(const [table,original]of [['quizzes',fixture.tables.quizzes[0]],['tier_list_home_cards',fixture.tables.tier_lists[0]],['tier_lists',fixture.tables.tier_lists[0]],['top_nine_public_boards',fixture.tables.top_nine_public_boards[0]]])overrides[table]=Array.from({length:35},(_,i)=>Object.assign({},original,{id:id(i),play_count:100-i,view_count:100-i}));
 (async()=>{
+ assert.equal(home.LIMIT,5);
  for(const [kind,table]of [['quiz','quizzes'],['tier','tier_list_home_cards'],['nine','top_nine_public_boards']]){
   const client=fixture.client(new Set(),overrides),seen=[];
-  for(const offset of [0,12,24]){
-   const data=await home.load(client,'ko',{kind,offset,limit:12}),group=data.groups.find(group=>group.kind===kind);
-   assert.equal(group.rows.length,offset===24?11:12);assert.equal(group.hasMore,offset!==24);assert.equal(group.nextOffset,Math.min(offset+12,35));
+  for(const offset of [0,5,10,15,20,25,30]){
+   const data=await home.load(client,'ko',{kind,offset}),group=data.groups.find(group=>group.kind===kind);
+   assert.equal(group.rows.length,5);assert.equal(group.hasMore,offset!==30);assert.equal(group.nextOffset,offset+5);
    seen.push(...group.rows.map(row=>row.href));
   }
-  assert.equal(new Set(seen).size,35);assert.equal(client.calls.filter(q=>q.table===table).length,3);
+  assert.equal(new Set(seen).size,35);assert.equal(client.calls.filter(q=>q.table===table).length,7);
   assert(!client.calls.some(q=>q.table==='get_worldcup_play_counts'||kind!=='quiz'&&q.table==='quizzes'));
  }
  const configured=fixture.cup.tier_preset_title_translations.ko;
@@ -25,6 +26,6 @@ for(const [table,original]of [['quizzes',fixture.tables.quizzes[0]],['tier_list_
  assert.equal(d.querySelector('.platform-section-quiz .quiz-category-play').textContent,'지금 풀기 →');
  for(const copy of Object.values(home.COPY))for(let i=0;i<5;i++)assert(copy.summaries[i].length<copy.descriptions[i].length);
  assert.throws(()=>home.optionsFor({kind:'invalid'}));assert.throws(()=>home.optionsFor({offset:-1}));assert.throws(()=>home.optionsFor({limit:41}));
- const cached=home.makeLoader(fixture.client(new Set(),overrides));const first=await cached('ko',{kind:'quiz',offset:0}),second=await cached('ko',{kind:'quiz',offset:12});assert.notEqual(first.groups[1].rows[0].href,second.groups[1].rows[0].href);
+ const cached=home.makeLoader(fixture.client(new Set(),overrides));const first=await cached('ko',{kind:'quiz',offset:0}),second=await cached('ko',{kind:'quiz',offset:5});assert.notEqual(first.groups[1].rows[0].href,second.groups[1].rows[0].href);
  console.log('PASS: 35 registered quizzes/tier lists/collages paginate without gaps or duplicates; per-kind requests, correct cursors/cache keys, configured tier titles, original worldcup content, short summaries, quiz CTA and brand-only H1.');
 })().catch(error=>{console.error(error);process.exitCode=1});

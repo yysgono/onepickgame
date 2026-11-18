@@ -84,4 +84,3 @@
 .quiz-category-search{position:relative;width:calc(100% - 24px);max-width:760px;margin:0 auto 20px;box-sizing:border-box}
 .quiz-category-search input[type=search]{width:100%;min-width:0;min-height:48px;box-sizing:border-box;border:2px solid #ef4444!important;border-radius:12px;padding:10px 42px 10px 14px;font:inherit;font-weight:700;color:#202534;background:#fff}
 .quiz-category-search>span{position:absolute;inset-inline-end:14px;top:50%;transform:translateY(-50%);pointer-events:none}
-

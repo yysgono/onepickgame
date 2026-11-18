@@ -12,4 +12,3 @@
 .tier-card-preview-candidate>img{width:100%;height:100%;object-fit:cover}
 .tier-card-preview--mobile{--tier-cell:24px;--tier-row:32px;min-height:150px}.tier-card-preview--mobile .tier-card-preview-cover{min-height:150px}.tier-card-preview--mobile .tier-card-preview-label{font-size:12px}
 @media(max-width:600px){.platform-home .tier-card-preview{--tier-cell:24px;--tier-row:32px;min-height:150px}.platform-home .tier-card-preview-cover{min-height:150px}.platform-home .tier-card-preview-label{font-size:12px}}
-

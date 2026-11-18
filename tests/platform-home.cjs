@@ -6,7 +6,7 @@ const assert=require('node:assert/strict'),{JSDOM}=require('jsdom'),home=require
  assert(home.COPY.ko.descriptions[4].includes('룰렛'));
  assert(home.COPY.ko.descriptions[3].includes('9개'));
  for(const lang of Object.keys(home.COPY)){
-  const c=fixture.client(),data=await home.load(c,lang);assert.equal(data.groups.length,5);assert.deepEqual(data.groups.map(g=>g.kind),['worldcup','quiz','tier','nine','random']);assert.equal(data.groups[0].href,`/${lang}/ideal-type-world-cup`);assert(data.groups.every(g=>g.rows.length<=12));assert.equal(data.groups[0].rows[0].href,`/${lang}/select-round/${fixture.id}`);assert.equal(data.groups[0].rows[0].images[0],'https://example.com/winner.jpg');assert.equal(data.groups[4].rows[0].mode,'pinball');
+  const c=fixture.client(),data=await home.load(c,lang);assert.equal(data.groups.length,5);assert.deepEqual(data.groups.map(g=>g.kind),['worldcup','quiz','tier','nine','random']);assert.equal(data.groups[0].href,`/${lang}/ideal-type-world-cup`);assert(data.groups.every(g=>g.rows.length<=5));assert.equal(data.groups[0].rows[0].href,`/${lang}/select-round/${fixture.id}`);assert.equal(data.groups[0].rows[0].images[0],'https://example.com/winner.jpg');assert.equal(data.groups[4].rows[0].mode,'pinball');
   assert(c.calls.every(q=>q.fields!=='*'));assert(!JSON.stringify(data).includes('\"data\":'));assert.equal(data.groups[0].rows[0].candidateCount,2);assert.equal(data.groups[0].rows[0].description,'A · B');
   if(lang==='en'){assert.equal(data.groups[2].rows[0].label,'Football Tier List');assert.equal(data.groups[3].rows[0].label,'Football Top 9 - admin');}
   assert(c.calls.find(q=>q.table==='tier_lists').fields.includes('original_language'));

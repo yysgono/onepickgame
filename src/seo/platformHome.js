@@ -11,7 +11,7 @@ const languageCopy = require('../components/communityUiCopy.json');
 const sharedCards = require('../utils/sharedWorldcupCards.js');
 const { localizedBoardTitle } = require('../components/topNine/localizedBoardTitleCore.js');
 const randomCopy = require('../components/randomPick/randomPickCopy.json');
-const VERSION = 4, LIMIT = 12;
+const VERSION = 5, LIMIT = 5;
 const LANGUAGES = [['en','English'],['ko','한국어'],['ja','日本語'],['zh','简体中文'],['es','Español'],['fr','Français'],['vi','Tiếng Việt'],['de','Deutsch'],['ru','Русский'],['id','Bahasa Indonesia'],['pt','Português'],['hi','हिन्दी'],['tr','Türkçe'],['th','ภาษาไทย'],['ar','العربية'],['bn','বাংলা'],['it','Italiano'],['pl','Polski'],['nl','Nederlands'],['cs','Čeština']];
 const RANDOM_MODES = ['wheel','lotto','pinball','ladder','boxes','cards','order','dice','teams'];
 const uuid = /^[a-f0-9]{8}-(?:[a-f0-9]{4}-){3}[a-f0-9]{12}$/i;
