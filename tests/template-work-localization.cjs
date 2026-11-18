@@ -1,6 +1,11 @@
 const assert=require('node:assert/strict'),{JSDOM}=require('jsdom');
 const core=require('../src/components/topNine/localizedBoardTitleCore'),server=require('../src/components/topNine/localizedTitle.cjs'),discovery=require('../src/seo/templateDiscovery');
 const id='00000000-0000-4000-8000-000000000001',other='00000000-0000-4000-8000-000000000002';
+// Configured titles must not be expanded, even for old saved title variants.
+const configured={id:'configured',top_nine_title_translations:{ko:'카드파이트 뱅가드 카드 구절판',en:'Cardfight Vanguard Cards Top 9'}};
+assert.equal(core.localizedBoardTitle({title:'카드파이트 뱅가드 카드 구절판 - admin',source_worldcup_ids:['configured']},[configured],'ko'),'카드파이트 뱅가드 카드 구절판 - admin');
+assert.equal(core.localizedBoardTitle({title:'카드파이트 뱅가드 카드 구절판 취향표 - admin',source_worldcup_ids:['configured']},[configured],'ko'),'카드파이트 뱅가드 카드 구절판 - admin');
+assert.equal(require('../src/components/topNine/templateIntro.cjs').templatePageTitle(configured,'ko'),'카드파이트 뱅가드 카드 구절판');
 const sources=[{id,title:'최고의 게임 이상형 월드컵',title_translations:{en:'Best Games Bracket'},top_nine_title_translations:{ko:'최애 게임 구절판 취향표 만들기',en:'My Top 9 Games Template'}},{id:other,title:'가수 월드컵',top_nine_title_translations:{ko:'최애 가수 구절판 취향표',en:'My Top 9 Singers'}}];
 const boards=[{id:'00000000-0000-4000-8000-000000000003',title:'최애 게임 구절판 만들기 - admin',source_worldcup_ids:[id],category:'game',view_count:10},{id:'00000000-0000-4000-8000-000000000004',title:'최애 가수 구절판 - user',source_worldcup_ids:[other],category:'game',view_count:5}];
 let sourceReads=0;

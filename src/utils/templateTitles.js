@@ -6,7 +6,7 @@ export function templateTitle(cup, kind, language, fallback = '') {
   const original = readTranslationMap(cup?.title_translations);
   const text = value => typeof value === 'string' ? value.trim() : '';
   const title = text(own[lang]) || text(own.en) || text(original[lang]) || text(original.en) || text(cup?.title) || fallback;
-  return kind !== 'tier' && lang === 'ko' ? title.replace(/구절판(?! 취향표)/g, '구절판 취향표') : title;
+  return title;
 }
 export const TEMPLATE_LANGUAGES = [
  ['en','English'],['ko','한국어'],['ja','日本語'],['zh','简体中文'],['es','Español'],['fr','Français'],['vi','Tiếng Việt'],['de','Deutsch'],['ru','Русский'],['id','Bahasa Indonesia'],['pt','Português'],['hi','हिन्दी'],['tr','Türkçe'],['th','ภาษาไทย'],['ar','العربية'],['bn','বাংলা'],['it','Italiano'],['pl','Polski'],['nl','Nederlands'],['cs','Čeština']
