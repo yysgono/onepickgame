@@ -3,7 +3,14 @@
   "builds": [
     {
       "src": "server.js",
-      "use": "@vercel/node"
+      "use": "@vercel/node",
+      "config": {
+        "includeFiles": [
+          "src/components/PlatformHome.css",
+          "src/components/tierList/TierCardPreview.css",
+          "src/components/QuizCategorySections.css"
+        ]
+      }
     },
     {
       "src": "package.json",
@@ -278,3 +285,4 @@
     }
   ]
 }
+

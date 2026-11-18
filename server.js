@@ -1234,7 +1234,19 @@ ko: {
 const homePublicClient = SUPABASE_ANON_KEY ? createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {auth:{persistSession:false,autoRefreshToken:false}}) : null;
 const loadPopularHome = homePublicClient ? makePopularLoader(homePublicClient) : async () => [];
 const loadPlatformHome = homePublicClient ? platformHome.makeLoader(homePublicClient) : async lang => platformHome.empty(lang);
-const platformHomeCss = require('node:fs').readFileSync(require.resolve('./src/components/PlatformHome.css'),'utf8')+'\n'+require('node:fs').readFileSync(require.resolve('./src/components/tierList/TierCardPreview.css'),'utf8')+'\n'+require('node:fs').readFileSync(require.resolve('./src/components/QuizCategorySections.css'),'utf8');
+function readHomeStyles(read) {
+  try { return read(); }
+  catch (error) {
+    if (error.code !== 'MODULE_NOT_FOUND' && error.code !== 'ENOENT') throw error;
+    console.warn('Home CSS unavailable; continuing with the client stylesheet.');
+    return '';
+  }
+}
+const platformHomeCss = [
+  () => require('node:fs').readFileSync(require.resolve('./src/components/PlatformHome.css'), 'utf8'),
+  () => require('node:fs').readFileSync(require.resolve('./src/components/tierList/TierCardPreview.css'), 'utf8'),
+  () => require('node:fs').readFileSync(require.resolve('./src/components/QuizCategorySections.css'), 'utf8'),
+].map(readHomeStyles).join('\n');
 app.get('/api/platform-home',async(req,res)=>{
  const lang=String(req.query.lang||'en');
  if(!SUPPORTED_LANGS.includes(lang))return res.status(400).json({error:'UNSUPPORTED_LANGUAGE'});
@@ -2588,4 +2600,5 @@ if (require.main === module) {
  */
 
 module.exports = app;
+
 
