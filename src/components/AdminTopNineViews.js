@@ -1,15 +1,27 @@
 import React,{useEffect,useState} from 'react';
 import {Link} from 'react-router-dom';
 import {supabase} from '../utils/supabaseClient';
+import {localizedBoardTitle,loadBoardTitleSources} from './topNine/localizedTitle';
 const count=value=>Number.isSafeInteger(Number(value))&&Number(value)>=0&&value!==null&&value!==undefined;
 export default function AdminTopNineViews({refreshTick=0}){
  const [data,setData]=useState(null),[loading,setLoading]=useState(true),[error,setError]=useState(''),[retry,setRetry]=useState(0);
  useEffect(()=>{
   let live=true;setLoading(true);setError('');setData(null);
-  Promise.resolve().then(()=>supabase.rpc('get_admin_top_nine_views_v1')).then(({data,error})=>{
+  Promise.resolve().then(()=>supabase.rpc('get_admin_top_nine_views_v1')).then(async({data,error})=>{
    if(error)throw error;
    if(!data||!count(data.total)||!count(data.today)||!Array.isArray(data.recent))throw Error('통계 응답을 확인하지 못했습니다.');
-   if(live)setData(data);
+   let recent=data.recent;
+   const ids=[...new Set(recent.map(row=>row.board_id).filter(Boolean))];
+   if(ids.length){
+    try{
+     const result=await supabase.from('top_nine_public_boards').select('id,title,source_worldcup_ids').in('id',ids);
+     if(!result.error&&Array.isArray(result.data)){
+      const boards=result.data,sources=await loadBoardTitleSources(supabase,boards),byId=new Map(boards.map(board=>[String(board.id),board]));
+      recent=recent.map(row=>{const board=byId.get(String(row.board_id));return board?{...row,title:localizedBoardTitle({...board,title:row.title||board.title},sources,'ko')}:row;});
+     }
+    }catch{ /* Keep statistics available if optional title metadata cannot be read. */ }
+   }
+   if(live)setData({...data,recent});
   }).catch(failure=>{if(live)setError(['PGRST202','42883','42P01'].includes(failure.code)?'구절판 열람 통계 SQL을 먼저 적용해 주세요.':'구절판 열람 통계를 불러오지 못했습니다. 관리자 권한과 연결 상태를 확인해 주세요.');}).finally(()=>{if(live)setLoading(false);});
   return()=>{live=false;};
  },[refreshTick,retry]);
