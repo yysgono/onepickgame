@@ -1,3 +1,4 @@
+import worldcupCardContent from '../seo/worldcupCardContent';
 import sharedCards from '../utils/sharedWorldcupCards';
 import cardPreview from '../utils/worldcupCardPreview';
 import {loadRecentContentActivity,formatRecentActivity} from '../utils/recentContentActivity';
@@ -9,7 +10,8 @@ import "../styles/homeResponsive.css";
 import useClickTargetDebug from "../hooks/useClickTargetDebug";
 import trashCopy from "../utils/contentTrashCopy.json";
 import NavigationLink from "./NavigationLink";
-import SITE_HOME_COPY from "../seo/siteHomeCopy.json";
+import SITE_HOME_COPY from "../seo/worldcupHomeCopy.json";
+import sitePaths from "../seo/sitePaths";
 import useWorldcupHomePages from "../hooks/useWorldcupHomePages";
 import PageIntro from "./PageIntro";
 
@@ -431,7 +433,7 @@ const location = useLocation();
 
 
 const lang = (i18n.language || "en").split("-")[0];
-const remoteHome = !personalView && /^\/(?:en|it|pl|nl|cs|ko|ja|zh|es|fr|vi|de|ru|id|pt|hi|tr|th|ar|bn)?\/?$/.test(location.pathname);
+const remoteHome = !personalView && sitePaths.isWorldcupHome(location.pathname);
 
 const worldcupInfoCopy = WORLDCUP_INFO_COPY[lang] || WORLDCUP_INFO_COPY.en;
 
@@ -1461,58 +1463,9 @@ const scrollCategoryRow = async (
 
   const {getTop2Winners}=cardPreview;
 
-  function getCandidateName(candidate) {
-    return (
-      candidate?.name_translations?.[lang] ||
-      candidate?.name_translations?.en ||
-      candidate?.name ||
-      candidate?.title ||
-      ""
-    ).toString().trim();
-  }
-
   function getPopularCandidateLine(cup, winStats) {
-    const candidates = Array.isArray(cup?.data) ? cup.data : [];
-
-    if (!candidates.length) {
-      return getWorldcupDescription(cup, lang);
-    }
-
-    const rankedFromStats = Array.isArray(winStats) && winStats.length
-      ? [...winStats]
-          .map((row, index) => ({ ...row, _originIdx: index }))
-          .sort((a, b) => {
-            if ((b.win_count || 0) !== (a.win_count || 0)) {
-              return (b.win_count || 0) - (a.win_count || 0);
-            }
-            if ((b.match_wins || 0) !== (a.match_wins || 0)) {
-              return (b.match_wins || 0) - (a.match_wins || 0);
-            }
-            return a._originIdx - b._originIdx;
-          })
-          .map((row) =>
-            candidates.find((candidate) => String(candidate.id) === String(row.candidate_id))
-          )
-          .filter(Boolean)
-      : [];
-
-    const rankedIds = new Set(rankedFromStats.map((candidate) => String(candidate.id)));
-    const ranked = [
-      ...rankedFromStats,
-      ...candidates.filter((candidate) => !rankedIds.has(String(candidate.id))),
-    ];
-
-    const names = ranked
-      .map(getCandidateName)
-      .filter(Boolean);
-
-    if (!names.length) {
-      return getWorldcupDescription(cup, lang);
-    }
-
-    return names.join(" · ");
+    return worldcupCardContent.candidateLine(cup, winStats, lang, getWorldcupDescription);
   }
-
 
 
   function isMine(cup) {

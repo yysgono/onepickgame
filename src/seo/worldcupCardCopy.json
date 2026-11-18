@@ -1,0 +1,102 @@
+{
+  "ko": {
+    "candidates": "후보",
+    "plays": "플레이",
+    "updated": "수정"
+  },
+  "en": {
+    "candidates": "Candidates",
+    "plays": "Plays",
+    "updated": "Updated"
+  },
+  "ja": {
+    "candidates": "候補",
+    "plays": "プレイ",
+    "updated": "更新"
+  },
+  "zh": {
+    "candidates": "候选",
+    "plays": "游玩",
+    "updated": "更新"
+  },
+  "es": {
+    "candidates": "Candidatos",
+    "plays": "Partidas",
+    "updated": "Actualizado"
+  },
+  "fr": {
+    "candidates": "Candidats",
+    "plays": "Parties",
+    "updated": "Mis à jour"
+  },
+  "vi": {
+    "candidates": "Ứng viên",
+    "plays": "Lượt chơi",
+    "updated": "Cập nhật"
+  },
+  "de": {
+    "candidates": "Kandidaten",
+    "plays": "Spiele",
+    "updated": "Aktualisiert"
+  },
+  "ru": {
+    "candidates": "Кандидаты",
+    "plays": "Игры",
+    "updated": "Обновлено"
+  },
+  "id": {
+    "candidates": "Kandidat",
+    "plays": "Main",
+    "updated": "Diperbarui"
+  },
+  "pt": {
+    "candidates": "Candidatos",
+    "plays": "Jogadas",
+    "updated": "Atualizado"
+  },
+  "hi": {
+    "candidates": "उम्मीदवार",
+    "plays": "खेल",
+    "updated": "अपडेट"
+  },
+  "tr": {
+    "candidates": "Aday",
+    "plays": "Oynama",
+    "updated": "Güncellendi"
+  },
+  "th": {
+    "candidates": "ผู้สมัคร",
+    "plays": "เล่น",
+    "updated": "อัปเดต"
+  },
+  "ar": {
+    "candidates": "المرشحون",
+    "plays": "مرات اللعب",
+    "updated": "تحديث"
+  },
+  "bn": {
+    "candidates": "প্রার্থী",
+    "plays": "খেলা",
+    "updated": "আপডেট"
+  },
+  "it": {
+    "candidates": "Candidati",
+    "plays": "Riproduzioni",
+    "updated": "Aggiornato"
+  },
+  "pl": {
+    "candidates": "Kandydaci",
+    "plays": "Odtwarzanie",
+    "updated": "Zaktualizowano"
+  },
+  "nl": {
+    "candidates": "Kandidaten",
+    "plays": "Afspeelt",
+    "updated": "Bijgewerkt"
+  },
+  "cs": {
+    "candidates": "Kandidáti",
+    "plays": "Hraje",
+    "updated": "Aktualizováno"
+  }
+}

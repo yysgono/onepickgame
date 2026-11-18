@@ -16,6 +16,7 @@ async function run(lang,route){
    else if(u.pathname.endsWith('/worldcups'))data=eq?cup:[route.startsWith('result/')?{...cup,id:other,preview:{image:slots[0].src}}:cup];
    else if(u.pathname.endsWith('/quizzes'))data=[{...cup,is_published:true}];
    else if(u.pathname.endsWith('/top_nine_public_boards'))data=eq?board:[{...board,id:other,title:'Recommended Top 9',view_count:42}];
+   else if(u.pathname.endsWith('/tier_list_home_cards'))data=[{...tier,id:other}];
    else if(u.pathname.endsWith('/tier_lists'))data=eq?tier:[{...tier,id:other,title:'원신 캐릭터 티어표 만들기 - admin',view_count:42}];
    return new Response(JSON.stringify(data),{headers:{'content-type':'application/json'}});
   };
@@ -29,7 +30,7 @@ async function run(lang,route){
   }else if(route==='signup'){
    await wait(()=>[...d.querySelectorAll('aside')].some(el=>el.textContent.includes('NAVER')));const notice=[...d.querySelectorAll('aside')].find(el=>el.textContent.includes('NAVER'));assert(notice.querySelector('p br'));
   }else if(route==='tier-list'){
-   await wait(()=>d.querySelector('#tier-original-title'));assert.equal(d.querySelector('#tier-original-title').style.borderWidth,'2px');
+   await wait(()=>d.querySelector('.tier-cards-grid .tier-card-preview--ranked')&&d.querySelector('.tier-cards-grid .tier-card-preview-candidate img'));assert.equal(d.querySelectorAll('.tier-cards-grid .tier-card-preview-label').length,4);assert(d.querySelector('.tier-cards-grid .tier-card-preview-candidate img'));assert(d.querySelector('.onepick-header-modes'));assert(!d.querySelector('.onepick-header--platform'));
   }else{
    await wait(()=>d.querySelector('.result-recommendation-card'));const cards=d.querySelectorAll('.result-recommendation-card');assert.equal(cards.length,1);assert(cards[0].getAttribute('href').endsWith('/'+other));assert(!cards[0].getAttribute('href').endsWith('/'+id));
    if(route.startsWith('tier-list/')){assert.equal(cards[0].querySelector('strong').textContent,lang==='ko'?'원신 캐릭터 티어표 만들기 - admin':'Genshin Impact Character Tier List - admin');assert.equal(d.querySelector('.result-recommendations h2').textContent,lang==='ko'?'같은 주제의 다른 티어표':'More tier lists on this topic');const comments=d.querySelector('.tier-result-comments');assert(comments);assert(d.querySelector('.result-recommendations').compareDocumentPosition(comments)&4);assert(!d.querySelector('.related-content-links'));}
@@ -39,4 +40,4 @@ async function run(lang,route){
   assert.equal(errors.length,0,errors.join('\n'));console.log('PASS built '+lang+'/'+route+' activity, recommendation or requested layout.');
  }finally{dom.window.close();}
 }
-(async()=>{for(const lang of ['ko','en'])for(const route of ['mytop9/'+id,'tier-list/'+id])await run(lang,route)})().catch(e=>{console.error(e);process.exitCode=1});
+(async()=>{for(const lang of ['ko','en'])for(const route of ['tier-list','mytop9/'+id,'tier-list/'+id])await run(lang,route)})().catch(e=>{console.error(e);process.exitCode=1});

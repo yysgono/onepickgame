@@ -1,0 +1,102 @@
+{
+  "ko": {
+    "questions": "문제",
+    "plays": "플레이",
+    "playNow": "지금 풀기"
+  },
+  "en": {
+    "questions": "questions",
+    "plays": "plays",
+    "playNow": "Play now"
+  },
+  "ja": {
+    "questions": "問",
+    "plays": "プレイ",
+    "playNow": "今すぐ挑戦"
+  },
+  "zh": {
+    "questions": "题",
+    "plays": "次游玩",
+    "playNow": "立即挑战"
+  },
+  "es": {
+    "questions": "preguntas",
+    "plays": "partidas",
+    "playNow": "Jugar ahora"
+  },
+  "fr": {
+    "questions": "questions",
+    "plays": "parties",
+    "playNow": "Jouer maintenant"
+  },
+  "vi": {
+    "questions": "câu hỏi",
+    "plays": "lượt chơi",
+    "playNow": "Chơi ngay"
+  },
+  "de": {
+    "questions": "Fragen",
+    "plays": "Spiele",
+    "playNow": "Jetzt spielen"
+  },
+  "ru": {
+    "questions": "вопросов",
+    "plays": "игр",
+    "playNow": "Играть"
+  },
+  "id": {
+    "questions": "pertanyaan",
+    "plays": "permainan",
+    "playNow": "Main sekarang"
+  },
+  "pt": {
+    "questions": "perguntas",
+    "plays": "jogadas",
+    "playNow": "Jogar agora"
+  },
+  "hi": {
+    "questions": "प्रश्न",
+    "plays": "बार खेला",
+    "playNow": "अभी खेलें"
+  },
+  "tr": {
+    "questions": "soru",
+    "plays": "oynama",
+    "playNow": "Hemen oyna"
+  },
+  "th": {
+    "questions": "ข้อ",
+    "plays": "ครั้ง",
+    "playNow": "เล่นเลย"
+  },
+  "ar": {
+    "questions": "أسئلة",
+    "plays": "مرات اللعب",
+    "playNow": "العب الآن"
+  },
+  "bn": {
+    "questions": "প্রশ্ন",
+    "plays": "বার খেলা",
+    "playNow": "এখন খেলুন"
+  },
+  "it": {
+    "questions": "domande",
+    "plays": "partite",
+    "playNow": "Gioca ora"
+  },
+  "pl": {
+    "questions": "pytań",
+    "plays": "rozgrywek",
+    "playNow": "Graj teraz"
+  },
+  "nl": {
+    "questions": "vragen",
+    "plays": "spellen",
+    "playNow": "Speel nu"
+  },
+  "cs": {
+    "questions": "otázek",
+    "plays": "her",
+    "playNow": "Hrát nyní"
+  }
+}

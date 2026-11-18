@@ -273,6 +273,8 @@ export function generateLanguageSitemap(
     priority: "1.0",
   });
 
+  xml += makeUrlEntry({loc: `${BASE_URL}/${lang}/ideal-type-world-cup`, changefreq: "daily", priority: "0.9"});
+
   // These documents have a single English canonical; omit redirected language aliases.
   if (lang === "en") {
     for (const slug of ["privacy-policy", "terms-of-service"]) {

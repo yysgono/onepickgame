@@ -1,0 +1,16 @@
+const assert=require('node:assert/strict'),{JSDOM}=require('jsdom'),preview=require('../src/seo/tierCardPreview');
+const candidates=Array.from({length:40},(_,i)=>({id:String(i),name:i===0?'<script>not executable</script>':'Candidate '+i,image:'https://example.com/'+i+'.jpg',privateMarker:'omit from card'}));
+const item={thumbnail_url:'https://example.com/cover.jpg',candidates,tiers:{S:['0','1','2','3','4','5','6'],'A+':['8'],A:['9','10'],B:['11'],C:['12']}};
+const data=preview.snapshot(item);
+assert.equal(data.previewImage,item.thumbnail_url);
+assert.deepEqual(data.tierPreview.map(row=>row.tier),['S','A+','A','B']);
+assert.equal(data.tierPreview[0].candidates.length,5);assert.equal(data.tierPreview[0].remaining,2);
+assert(!JSON.stringify(data).includes('privateMarker'));
+const d=new JSDOM(preview.render(data)).window.document;
+assert.equal(d.querySelectorAll('.tier-card-preview-label').length,4);
+assert.equal(d.querySelectorAll('.tier-card-preview-candidate img').length,9);
+assert.equal(d.querySelector('script'),null);
+assert.equal(preview.snapshot({...item,thumbnail_url:''}).previewImage,'https://example.com/0.jpg');
+assert.equal(preview.snapshot({candidates,tiers:{}}).hasTierPreview,false);
+assert(!preview.render(preview.snapshot({thumbnail_url:'javascript:alert(1)',candidates:[],tiers:{}})).includes('javascript:'));
+console.log('PASS: published tier placements produce the same four-row card preview, at most five images per tier, preserved cover/fallback, bounded public data and safe escaped HTML.');

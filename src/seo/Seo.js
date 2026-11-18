@@ -72,6 +72,7 @@ function normalizeCanonical(
       : normalizedBase;
   }
 
+  if (!normalizedSlug && normalizedLang === "en") return `${normalizedBase}/`;
   return normalizedSlug
     ? `${normalizedBase}/${normalizedLang}/${normalizedSlug}`
     : `${normalizedBase}/${normalizedLang}`;

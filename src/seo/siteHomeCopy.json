@@ -1,7 +1,7 @@
 {
   "ko": {
-    "heading": "이상형 월드컵",
-    "title": "이상형 월드컵·최애 구절판·티어표·퀴즈·랜덤 뽑기 | 원픽게임",
+    "heading": "내 취향을 고르고, 만들고, 공유하세요",
+    "title": "이상형 월드컵·구절판·티어표·퀴즈·랜덤 뽑기 | 원픽게임",
     "description": "원픽게임에서 이상형 월드컵과 퀴즈를 즐기고, 티어표와 최애 구절판 취향표를 만들거나 랜덤 뽑기를 해보세요.",
     "siteIntro": "원픽게임에서 이상형 월드컵과 퀴즈를 즐기고, 티어표와 최애 구절판 취향표를 만들거나 랜덤 뽑기를 해보세요.",
     "modeIntro": "애니 캐릭터, 아이돌, 음식 등 다양한 주제로 이상형 월드컵을 즐겨보세요."
@@ -9,103 +9,103 @@
   "en": {
     "title": "Tournament Brackets, Tier Lists & My Top 9 | OnePickGame",
     "description": "Play tournaments and quizzes, make tier lists and Top 9 collages (3x3 Grid), or try a random picker on OnePickGame.",
-    "heading": "Tournament Bracket Games",
+    "heading": "Pick, create and share your favorites",
     "siteIntro": "Play tournaments and quizzes, make tier lists and Top 9 collages (3x3 Grid), or try a random picker on OnePickGame.",
     "modeIntro": "Play tournament bracket games with anime characters, K-pop idols, songs and food."
   },
   "ja": {
-    "heading": "好きなものを選ぶトーナメント",
+    "heading": "好きを選んで、作って、シェアしよう",
     "title": "推しトーナメント・Top 9・ティア表・クイズ | OnePickGame",
     "description": "OnePickGameで推しトーナメントやクイズを楽しもう。ティア表やマイトップ9、ランダム抽選も。",
     "siteIntro": "OnePickGameで推しトーナメントやクイズを楽しもう。ティア表やマイトップ9、ランダム抽選も。",
     "modeIntro": "アニメキャラやアイドル、食べ物を二択で選んで、あなたの一番を決めよう。"
   },
   "zh": {
-    "heading": "二选一淘汰赛",
+    "heading": "选择、创作并分享你的喜好",
     "title": "人气淘汰赛·Top 9·等级表·趣味问答 | OnePickGame",
     "description": "来 OnePickGame 玩二选一淘汰赛和趣味问答，制作分级排行榜和九宫格，或试试随机抽签。",
     "siteIntro": "来 OnePickGame 玩二选一淘汰赛和趣味问答，制作分级排行榜和九宫格，或试试随机抽签。",
     "modeIntro": "从动漫角色、偶像和美食中每轮二选一，选出你的最爱。"
   },
   "es": {
-    "heading": "Torneos para elegir tus favoritos",
+    "heading": "Elige, crea y comparte tus favoritos",
     "title": "Torneos, Top 9, tier lists y quizzes | OnePickGame",
     "description": "Juega torneos y quizzes, crea tier lists y collages de tus 9 favoritos o haz un sorteo en OnePickGame.",
     "siteIntro": "Juega torneos y quizzes, crea tier lists y collages de tus 9 favoritos o haz un sorteo en OnePickGame.",
     "modeIntro": "Elige entre personajes de anime, ídolos del K-pop, canciones y comida hasta encontrar tu favorito."
   },
   "fr": {
-    "heading": "Tournois pour choisir vos favoris",
+    "heading": "Choisissez, créez et partagez vos favoris",
     "title": "Tournois, Top 9, tier lists et quiz | OnePickGame",
     "description": "Jouez à des tournois et à des quiz, créez des tier lists et des collages Top 9 ou faites un tirage au sort sur OnePickGame.",
     "siteIntro": "Jouez à des tournois et à des quiz, créez des tier lists et des collages Top 9 ou faites un tirage au sort sur OnePickGame.",
     "modeIntro": "Départagez personnages d’anime, stars de K-pop, chansons et plats pour choisir votre favori."
   },
   "vi": {
-    "heading": "Đấu loại chọn mục yêu thích",
+    "heading": "Chọn, tạo và chia sẻ sở thích của bạn",
     "title": "Đấu loại, Top 9, tier list và đố vui | OnePickGame",
     "description": "Chơi đấu loại, giải đố, làm tier list, ghép ảnh Top 9 hoặc bốc thăm trên OnePickGame.",
     "siteIntro": "Chơi đấu loại, giải đố, làm tier list, ghép ảnh Top 9 hoặc bốc thăm trên OnePickGame.",
     "modeIntro": "Chọn giữa hai nhân vật anime, thần tượng K-pop, bài hát hay món ăn để tìm ra lựa chọn yêu thích nhất."
   },
   "de": {
-    "heading": "Wähle deine Favoriten im Turnier",
+    "heading": "Wähle, erstelle und teile deine Favoriten",
     "title": "Turniere, Top 9, Tier Lists & Quiz | OnePickGame",
     "description": "Spiele Turniere und Quizze, erstelle Tierlisten und Top-9-Collagen oder lose auf OnePickGame.",
     "siteIntro": "Spiele Turniere und Quizze, erstelle Tierlisten und Top-9-Collagen oder lose auf OnePickGame.",
     "modeIntro": "Anime-Figuren, K-Pop-Stars, Songs oder Essen: Wähle in jeder Runde deinen Favoriten bis zum Finale."
   },
   "ru": {
-    "heading": "Турниры: выберите своего фаворита",
+    "heading": "Выбирайте, создавайте и делитесь любимым",
     "title": "Турниры, Top 9, тир-листы и викторины | OnePickGame",
     "description": "На OnePickGame можно играть в турниры и викторины, делать тир-листы и коллажи «Мой топ-9» или проводить жеребьёвки.",
     "siteIntro": "На OnePickGame можно играть в турниры и викторины, делать тир-листы и коллажи «Мой топ-9» или проводить жеребьёвки.",
     "modeIntro": "Выбирайте любимых персонажей аниме, K-pop-исполнителей, песни и блюда в парных сравнениях."
   },
   "id": {
-    "heading": "Turnamen Pilih Favoritmu",
+    "heading": "Pilih, buat, dan bagikan favoritmu",
     "title": "Turnamen, Top 9, Tier List & Kuis | OnePickGame",
     "description": "Main turnamen dan kuis, bikin tier list dan kolase 9 favorit, atau coba undian di OnePickGame.",
     "siteIntro": "Main turnamen dan kuis, bikin tier list dan kolase 9 favorit, atau coba undian di OnePickGame.",
     "modeIntro": "Pilih satu dari dua karakter anime, idola K-pop, lagu, atau makanan hingga menemukan favoritmu."
   },
   "pt": {
-    "heading": "Torneios para escolher seus favoritos",
+    "heading": "Escolha, crie e partilhe os seus favoritos",
     "title": "Torneios, Top 9, tier lists e quizzes | OnePickGame",
     "description": "Jogue torneios e quizzes, crie tier lists e colagens com seus 9 favoritos ou faça um sorteio no OnePickGame.",
     "siteIntro": "Jogue torneios e quizzes, crie tier lists e colagens com seus 9 favoritos ou faça um sorteio no OnePickGame.",
     "modeIntro": "Escolha entre personagens de anime, ídolos do K-pop, músicas e comidas até encontrar seu favorito."
   },
   "hi": {
-    "heading": "मुकाबलों में चुनें अपना पसंदीदा",
+    "heading": "अपने पसंदीदा चुनें, बनाएँ और साझा करें",
     "title": "टूर्नामेंट, Top 9, टियर लिस्ट और क्विज़ | OnePickGame",
     "description": "OnePickGame पर टूर्नामेंट और क्विज़ खेलें, टियर लिस्ट और टॉप 9 कोलाज बनाएँ या रैंडम चुनाव करें।",
     "siteIntro": "OnePickGame पर टूर्नामेंट और क्विज़ खेलें, टियर लिस्ट और टॉप 9 कोलाज बनाएँ या रैंडम चुनाव करें।",
     "modeIntro": "एनीमे किरदारों, K-pop कलाकारों, गानों और खाने में से हर मुकाबले में अपनी पसंद चुनें।"
   },
   "tr": {
-    "heading": "Favorini Seç: Eleme Turnuvaları",
+    "heading": "Favorilerini seç, oluştur ve paylaş",
     "title": "Turnuvalar, Top 9, Tier List ve Quiz | OnePickGame",
     "description": "OnePickGame’de turnuvaya katıl, quiz çöz, tier list ve ilk 9 kolajı hazırla ya da kura çek.",
     "siteIntro": "OnePickGame’de turnuvaya katıl, quiz çöz, tier list ve ilk 9 kolajı hazırla ya da kura çek.",
     "modeIntro": "Anime karakterleri, K-pop yıldızları, şarkılar ve yemekler arasından her turda birini seçerek favorini bul."
   },
   "th": {
-    "heading": "โหวตเลือกสิ่งที่ชอบแบบทัวร์นาเมนต์",
+    "heading": "เลือก สร้าง และแชร์สิ่งที่คุณชอบ",
     "title": "ทัวร์นาเมนต์ · Top 9 · Tier List · ควิซ | OnePickGame",
     "description": "เล่นทัวร์นาเมนต์และควิซ จัดเทียร์ลิสต์ ทำภาพรวม 9 อันดับโปรด หรือสุ่มตัวเลือกบน OnePickGame",
     "siteIntro": "เล่นทัวร์นาเมนต์และควิซ จัดเทียร์ลิสต์ ทำภาพรวม 9 อันดับโปรด หรือสุ่มตัวเลือกบน OnePickGame",
     "modeIntro": "เลือกตัวละครอนิเมะ ไอดอล K-pop เพลง หรืออาหารที่ชอบในแต่ละรอบจนได้ผู้ชนะในใจ"
   },
   "ar": {
-    "heading": "بطولات لاختيار المفضّل لديك",
+    "heading": "اختر مفضلاتك وأنشئها وشاركها",
     "title": "بطولات، Top 9، قوائم تصنيف واختبارات | OnePickGame",
     "description": "العب البطولات والمسابقات، وأنشئ قوائم تصنيف وصورًا لأفضل 9 اختيارات، أو جرّب القرعة على OnePickGame.",
     "siteIntro": "العب البطولات والمسابقات، وأنشئ قوائم تصنيف وصورًا لأفضل 9 اختيارات، أو جرّب القرعة على OnePickGame.",
     "modeIntro": "اختر المفضّل لديك بين شخصيات الأنمي ونجوم الكيبوب والأغاني والأطعمة في مواجهات ثنائية."
   },
   "bn": {
-    "heading": "মুখোমুখি বাছাইয়ে খুঁজুন আপনার পছন্দের সেরা",
+    "heading": "পছন্দ বেছে নিন, তৈরি করুন ও শেয়ার করুন",
     "title": "টুর্নামেন্ট, Top 9, টিয়ার লিস্ট ও কুইজ | OnePickGame",
     "description": "OnePickGame-এ টুর্নামেন্ট ও কুইজ খেলুন, টিয়ার লিস্ট ও সেরা ৯-এর কোলাজ বানান, কিংবা লটারিতে বেছে নিন।",
     "siteIntro": "OnePickGame-এ টুর্নামেন্ট ও কুইজ খেলুন, টিয়ার লিস্ট ও সেরা ৯-এর কোলাজ বানান, কিংবা লটারিতে বেছে নিন।",
@@ -114,28 +114,28 @@
   "it": {
     "title": "Tornei, Top 9, tier list e quiz | OnePickGame",
     "description": "Su OnePickGame puoi giocare a tornei e quiz, creare tier list e collage dei tuoi 9 preferiti o fare un sorteggio.",
-    "heading": "Giochi a torneo",
+    "heading": "Scegli, crea e condividi i tuoi preferiti",
     "siteIntro": "Su OnePickGame puoi giocare a tornei e quiz, creare tier list e collage dei tuoi 9 preferiti o fare un sorteggio.",
     "modeIntro": "Scegli i tuoi preferiti in tornei tra personaggi degli anime, idoli del K-pop, canzoni e piatti."
   },
   "pl": {
     "title": "Turnieje, Top 9, rankingi i quizy | OnePickGame",
     "description": "Na OnePickGame zagrasz w turnieje i quizy, stworzysz tier listy i kolaże z ulubioną dziewiątką albo zdasz się na losowanie.",
-    "heading": "Gry turniejowe",
+    "heading": "Wybieraj, twórz i udostępniaj ulubione",
     "siteIntro": "Na OnePickGame zagrasz w turnieje i quizy, stworzysz tier listy i kolaże z ulubioną dziewiątką albo zdasz się na losowanie.",
     "modeIntro": "Wybieraj ulubione postacie z anime, gwiazdy K-popu, piosenki i potrawy w turniejach."
   },
   "nl": {
     "title": "Toernooien, Top 9, tierlijsten en quizzen | OnePickGame",
     "description": "Speel toernooien en quizzen, maak tierlijsten en top 9-collages of laat het lot beslissen op OnePickGame.",
-    "heading": "Toernooispellen",
+    "heading": "Kies, maak en deel je favorieten",
     "siteIntro": "Speel toernooien en quizzen, maak tierlijsten en top 9-collages of laat het lot beslissen op OnePickGame.",
     "modeIntro": "Kies je favorieten in toernooien met animepersonages, K-popidolen, liedjes en gerechten."
   },
   "cs": {
     "title": "Turnaje, Top 9, žebříčky a kvízy | OnePickGame",
     "description": "Na OnePickGame si zahrajete turnaje a kvízy, vytvoříte žebříčky a koláže z devíti oblíbenců nebo necháte rozhodnout los.",
-    "heading": "Turnajové hry",
+    "heading": "Vybírejte, tvořte a sdílejte své oblíbence",
     "siteIntro": "Na OnePickGame si zahrajete turnaje a kvízy, vytvoříte žebříčky a koláže z devíti oblíbenců nebo necháte rozhodnout los.",
     "modeIntro": "Vyberte si své favority v turnajích s anime postavami, idoly K-popu, písněmi a jídly."
   }

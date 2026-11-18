@@ -4,6 +4,8 @@ const uuid=/^[a-f0-9]{8}-(?:[a-f0-9]{4}-){3}[a-f0-9]{12}$/i;
 function map(value){if(typeof value==='string'){try{return JSON.parse(value)||{};}catch{return {};}}return value&&typeof value==='object'&&!Array.isArray(value)?value:{};}
 function localizedTierCardTitle(row,sources,language){
  const lang=String(language||'en').split(/[-_]/)[0],meta=map(row.tier_labels);
+ const originalLanguage=String(meta._originalLanguage||row.original_language||'').split(/[-_]/)[0];
+ if(lang===originalLanguage)return detail.getTierListTitle(row,lang);
  const explicit=Object.assign({},map(row.title_translations),map(meta._titleTranslations));
  if(explicit[lang]||meta._customPublicTitle)return detail.getTierListTitle(row,lang);
  const source=(sources||[]).find(cup=>String(cup.id)===String(row.source_worldcup_id||meta._sourceWorldcupId));

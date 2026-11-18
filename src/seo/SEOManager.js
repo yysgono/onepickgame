@@ -23,6 +23,7 @@ export default function SEOManager() {
   const INDEX_ALLOW = new Set([
     "",
     "blog",
+    "ideal-type-world-cup",
     "worldcup-maker",
     "privacy-policy",
     "terms-of-service",

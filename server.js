@@ -1,3 +1,7 @@
+const platformHome = require('./src/seo/platformHome.js');
+const worldcupHomeCopy = require('./src/seo/worldcupHomeCopy.json');
+const sitePaths = require('./src/seo/sitePaths.js');
+const publicSupabaseConfig = require('./src/utils/publicSupabaseConfig.js');
 const { renderWorldcupEntryInfo } = require('./src/seo/worldcupEntryInfo.cjs');
 const { initialTranslationsMiddleware } = require("./initial-translations.cjs");
 const { insertRoot, makePopularLoader, renderHomeBody, verifyHome } = require("./home-seo-support.cjs");
@@ -37,7 +41,11 @@ const SUPABASE_URL =
 const SUPABASE_ANON_KEY =
   process.env.REACT_APP_SUPABASE_ANON_KEY ||
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
-  process.env.SUPABASE_ANON_KEY;
+  process.env.SUPABASE_ANON_KEY ||
+  process.env.REACT_APP_SUPABASE_PUBLISHABLE_KEY ||
+  process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ||
+  process.env.SUPABASE_PUBLISHABLE_KEY ||
+  (String(SUPABASE_URL || '').replace(/\/+$/, '') === publicSupabaseConfig.url ? publicSupabaseConfig.key : '');
 
 const SUPABASE_SERVICE_ROLE_KEY =
   process.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -1225,9 +1233,19 @@ ko: {
 // Public client respects RLS; never use the service role for this extra home query.
 const homePublicClient = SUPABASE_ANON_KEY ? createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {auth:{persistSession:false,autoRefreshToken:false}}) : null;
 const loadPopularHome = homePublicClient ? makePopularLoader(homePublicClient) : async () => [];
+const loadPlatformHome = homePublicClient ? platformHome.makeLoader(homePublicClient) : async lang => platformHome.empty(lang);
+const platformHomeCss = require('node:fs').readFileSync(require.resolve('./src/components/PlatformHome.css'),'utf8')+'\n'+require('node:fs').readFileSync(require.resolve('./src/components/tierList/TierCardPreview.css'),'utf8')+'\n'+require('node:fs').readFileSync(require.resolve('./src/components/QuizCategorySections.css'),'utf8');
+app.get('/api/platform-home',async(req,res)=>{
+ const lang=String(req.query.lang||'en');
+ if(!SUPPORTED_LANGS.includes(lang))return res.status(400).json({error:'UNSUPPORTED_LANGUAGE'});
+ let options;try{options=platformHome.optionsFor({kind:req.query.kind,offset:req.query.offset,limit:req.query.limit});}catch{return res.status(400).json({error:'INVALID_HOME_PAGE'});}
+ try{const value=await loadPlatformHome(lang,options);res.setHeader('Cache-Control',value.groups.some(group=>group.unavailable)?'no-store':'public,s-maxage=60,stale-while-revalidate=300');return res.json(value);}catch{return res.status(503).json({error:'HOME_UNAVAILABLE'});}
+});
+
 
 app.use(async (req, res, next) => {
-  if (req.query?.seo !== "home") {
+  const isWorldcupHome=req.query?.seo==='worldcup-home';
+  if (req.query?.seo !== "home" && !isWorldcupHome) {
     return next();
   }
 
@@ -1243,7 +1261,12 @@ app.use(async (req, res, next) => {
       .send("Unsupported language");
   }
 
-  const seo = { ...(HOME_SEO[lang] || HOME_SEO.en), ...(SITE_HOME_COPY[lang] || SITE_HOME_COPY.en) };
+  if(!isWorldcupHome&&['search','creator','focus'].some(key=>Object.hasOwn(req.query,key))){
+    const query=new URLSearchParams();
+    for(const [key,value] of Object.entries(req.query))if(!['seo','lang','path'].includes(key))for(const item of Array.isArray(value)?value:[value])if(typeof item==='string')query.append(key,item);
+    return res.redirect(302,SITE_URL+sitePaths.worldcupHome(lang)+(query.toString()?'?'+query:'') );
+  }
+  const seo = { ...(HOME_SEO[lang] || HOME_SEO.en), ...((isWorldcupHome?worldcupHomeCopy:SITE_HOME_COPY)[lang]) };
 
   try {
     let html = await loadSeoTemplate(SITE_URL);
@@ -1329,7 +1352,7 @@ html = html.replace(
 );
 
     const canonical =
-      lang === "en" ? `${SITE_URL}/` : `${SITE_URL}/${lang}`;
+      SITE_URL + (isWorldcupHome ? sitePaths.worldcupHome(lang) : sitePaths.siteHome(lang));
 
     const image =
       `${SITE_URL}/ogimg.png`;
@@ -1340,7 +1363,7 @@ html = html.replace(
 <link data-rh="true"
   rel="alternate"
   hreflang="${language}"
-  href="${language === "en" ? `${SITE_URL}/` : `${SITE_URL}/${language}`}"
+  href="${SITE_URL + (isWorldcupHome ? sitePaths.worldcupHome(language) : sitePaths.siteHome(language))}"
 />`
       ).join("");
 
@@ -1349,7 +1372,7 @@ html = html.replace(
         "https://schema.org",
 
       "@type":
-        "WebSite",
+        isWorldcupHome ? "CollectionPage" : "WebSite",
 
       name:
         "OnePickGame",
@@ -1367,7 +1390,7 @@ html = html.replace(
             ],
 
       url:
-        SITE_URL,
+        canonical,
 
       inLanguage:
         lang,
@@ -1400,7 +1423,7 @@ ${hreflangTags}
 <link data-rh="true"
   rel="alternate"
   hreflang="x-default"
-  href="${SITE_URL}/"
+  href="${SITE_URL + (isWorldcupHome ? sitePaths.worldcupHome('en') : '/')}"
 />
 
 <meta data-rh="true"
@@ -1485,9 +1508,10 @@ ${safeJson(jsonLd)}
      * =====================================================
      */
 
-const popularHomeRows = await loadPopularHome();
-const seoBody = renderHomeBody(popularHomeRows, lang, seo);
+let platformData=null;
+const seoBody = isWorldcupHome ? renderHomeBody(await loadPopularHome(),lang,seo) : platformHome.render(platformData=await loadPlatformHome(lang),lang,platformHomeCss);
 html = insertRoot(html, seoBody);
+if(platformData)html=html.replace('</body>',()=>'<script type="application/json" id="platform-home-data">'+safeJson(platformData)+'</script></body>');
 
     /*
      * SEO head 삽입

@@ -206,3 +206,19 @@
 .onepick-header-mode:not(.is-active) .onepick-header-mode-main{color:var(--mode-color,#343c4d)}
 .onepick-header-mode-main .header-mode-symbol{display:block;flex:0 0 auto;font-size:32px;line-height:1.15;white-space:nowrap}
 @media(max-width:600px){.onepick-header-mode-main .header-mode-symbol{font-size:25px}}
+
+/* Platform home uses one game navigation in its content, with a centered brand. */
+.onepick-header--platform .onepick-header-main{grid-template-columns:minmax(0,1fr) auto minmax(0,1fr)!important;align-items:center;min-height:112px}
+.onepick-header--platform .onepick-header-brand-area{margin:0;grid-column:2!important;grid-row:1!important;justify-content:center;padding:16px 12px!important}
+.onepick-header--platform .onepick-header-account{grid-column:3!important;grid-row:1!important;align-self:center;padding:10px 0 10px 16px;max-width:270px}
+@media(max-width:1000px){
+ .onepick-header--platform .onepick-header-main{grid-template-columns:minmax(0,1fr)!important;padding:0 16px}
+ .onepick-header--platform .onepick-header-brand-area{grid-column:1!important;grid-row:1!important;justify-content:center;padding:16px 0!important}
+ .onepick-header--platform .onepick-header-account{display:flex!important;grid-column:1!important;grid-row:2!important;flex-direction:row!important;align-items:center!important;justify-content:center;justify-self:center;max-width:560px;width:100%;gap:12px!important;padding:0 0 14px!important}
+ .onepick-header--platform .onepick-header-tools{display:flex!important;flex:1;min-width:0;padding:0!important}
+ .onepick-header--platform .onepick-header-user{flex:1;width:auto!important;justify-content:stretch!important}
+ .onepick-header--platform .header-language-control{width:100%;max-width:none;justify-content:space-between}
+ .onepick-header--platform .header-language-control select{width:auto;max-width:65%;font-size:15px}
+ .onepick-header--platform .header-language-label{font-size:14px}
+ .onepick-header--platform .onepick-header-user>a,.onepick-header--platform .onepick-profile-menu{width:100%}
+}

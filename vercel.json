@@ -198,6 +198,10 @@
       "dest": "/server.js"
     },
     {
+      "src": "/(ko|en|ja|zh|ru|pt|es|fr|id|hi|de|vi|ar|bn|th|tr|it|pl|nl|cs)/ideal-type-world-cup/?$",
+      "dest": "/server.js?seo=worldcup-home&lang=$1"
+    },
+    {
       "src": "/?$",
       "dest": "/server.js?seo=home&lang=en"
     },

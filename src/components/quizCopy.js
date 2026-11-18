@@ -1,3 +1,4 @@
+import cardCopy from '../seo/quizCardCopy.json';
 const EN = {
   title: "Quiz", intro: "Play quizzes about your favorite topics or create your own.", create: "Create Quiz",
   search: "Search quizzes", popular: "Popular", latest: "Latest", empty: "No quizzes match these filters.", loading: "Loading...",
@@ -43,5 +44,5 @@ const COPY = {
 
 export function getQuizCopy(lang) {
   const code = String(lang || "en").split("-")[0];
-  return { ...EN, ...DETAIL_EN, ...(COPY[code] || {}), ...(code === "ko" ? DETAIL_KO : {}) };
+  return { ...EN, ...DETAIL_EN, ...(COPY[code] || {}), ...(code === "ko" ? DETAIL_KO : {}), ...(cardCopy[code] || cardCopy.en) };
 }

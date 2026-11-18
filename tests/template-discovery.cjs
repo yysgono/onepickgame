@@ -7,6 +7,7 @@ const client={rpc:async name=>{assert.equal(name,'search_top_nine_sources');retu
  const q={table,fields:'',filters:[],single:false,cap:99},api={select(v){q.fields=v;return this},is(k,v){q.filters.push(r=>r[k]==v);return this},eq(k,v){q.filters.push(r=>r[k]===v);return this},in(k,v){q.filters.push(r=>v.includes(r[k]));return this},neq(k,v){q.filters.push(r=>r[k]!==v);return this},order(){return this},contains(k,v){assert.equal(k,'source_worldcup_ids');assert.deepEqual(typeof v==='string'?JSON.parse(v):v,[id]);return this},limit(n){q.cap=n;return this},abortSignal(){return this},maybeSingle(){q.single=true;return this},then(resolve,reject){
   calls.push(q);let data=[];
   if(table==='worldcups')data=q.single?[cup]:[{...cup,preview:cup.data[0]},{...cup,id:related,title:'Other',tier_preset_title_translations:{en:'Other tier'},preview:cup.data[0]},{...cup,id:'not-a-uuid'}];
+  else if(table==='worldcup_card_previews')data=[{cup_id:id,image_urls:['https://example.com/p.jpg','https://example.com/q.jpg']}];
   else if(table==='worldcup_tier_preset_cards')data=[{...cup,id:related,title:'Other',tier_preset_title_translations:{en:'Other tier'},tier_preset_thumbnail_url:'https://example.com/tier.jpg'}];
   else if(table.endsWith('_thumbnails'))data=[{source_worldcup_id:related,image_url:'https://example.com/custom.jpg'}];
   else if(table==='top_nine_templates')data=[{title_translations:{en:'Source grid'},enabled:true}];

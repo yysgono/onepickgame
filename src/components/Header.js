@@ -1,3 +1,5 @@
+import sitePaths from "../seo/sitePaths";
+import platformModes from "../seo/platformModes";
 import CoupangHeaderBanner from '../ads/CoupangHeaderBanner';
 import ContentHomeLink from "./ContentHomeLink";
 import TopNineIcon from "./TopNineIcon";
@@ -643,18 +645,20 @@ export default function Header({
   const pathParts = location.pathname.split('/').filter(Boolean);
   const modePath = pathParts[languages.some(item => item.code === pathParts[0]) ? 1 : 0] || '';
   const headerSearchParams = new URLSearchParams(location.search);
+  const isPlatformHome = sitePaths.isSiteHome(location.pathname) && !['search','creator','focus'].some(key=>headerSearchParams.has(key));
+  const BrandArea = isPlatformHome ? 'h1' : 'div';
   const personalPage =
     modePath === 'my-worldcups' ||
     (modePath === 'tier-list' && headerSearchParams.get('mine') === '1') ||
     (modePath === 'quiz' && headerSearchParams.get('mine') === '1');
-  const activeMode = personalPage ? '' : ['mytop9','top-nine'].includes(modePath) ? 'top-nine' : modePath === 'random-pick' ? 'random-pick' : modePath.startsWith('tier-list') ? 'tier-list' : modePath.startsWith('quiz') ? 'quiz' : ['','category','select-round','match','result','worldcup-maker','edit-worldcup','stats'].some(key => modePath === key || (key && modePath.startsWith(key))) ? 'worldcup' : '';
+  const activeMode = personalPage ? '' : ['mytop9','top-nine'].includes(modePath) ? 'top-nine' : modePath === 'random-pick' ? 'random-pick' : modePath.startsWith('tier-list') ? 'tier-list' : modePath.startsWith('quiz') ? 'quiz' : ['ideal-type-world-cup','category','select-round','match','result','worldcup-maker','edit-worldcup','stats'].some(key => modePath === key || (key && modePath.startsWith(key))) ? 'worldcup' : '';
   const headerModes = [
-    {key:'worldcup',icon:'trophy',label:t('gameModeNav.worldcup'),path:currentLang === 'en' ? '/' : `/${currentLang}`},
+    {key:'worldcup',icon:'trophy',label:t('gameModeNav.worldcup'),path:sitePaths.worldcupHome(currentLang)},
     {key:'quiz',icon:'question',label:currentLang === 'ko' ? '퀴즈 맞히기' : t('gameModeNav.quiz'),path:`/${currentLang}/quiz`},
     {key:'tier-list',icon:'chart',label:t('gameModeNav.tierList'),path:`/${currentLang}/tier-list`},
     {key:'random-pick',icon:'dice',label:randomPickLabels[currentLang] || randomPickLabels.en,path:`/${currentLang}/random-pick`},
     {key:'top-nine',icon:'grid',label:(topNineCopy[currentLang] || topNineCopy.en).nav,path:`/${currentLang}/mytop9`},
-  ];
+  ].sort((a,b)=>platformModes.MODES.findIndex(mode=>mode.headerKey===a.key)-platformModes.MODES.findIndex(mode=>mode.headerKey===b.key));
   useEffect(() => {
     document.querySelectorAll('.onepick-header details[open]').forEach(el => el.removeAttribute('open'));
   }, [location.pathname, location.search]);
@@ -669,7 +673,7 @@ export default function Header({
     return () => { document.removeEventListener('pointerdown', closeMenus); document.removeEventListener('keydown', closeMenus); };
   }, []);
   return (
-    <header className="onepick-header">
+    <header className={'onepick-header'+(isPlatformHome?' onepick-header--platform':'')}>
       <style>{`
         .onepick-header-modes {
           grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
@@ -695,7 +699,7 @@ export default function Header({
         }
       `}</style>
       <div className="onepick-header-main">
-          <div className="onepick-header-brand-area">
+          <BrandArea className="onepick-header-brand-area">
 <Link
   to={currentLang === "en" ? "/" : `/${currentLang}`}
   style={{ textDecoration: "none" }}
@@ -716,6 +720,7 @@ export default function Header({
   style={{
     color: "#111111",
     fontStyle: "italic",
+    fontSize: "1.14em",
     fontWeight: 900,
     letterSpacing: "-0.035em",
     display: "inline-block",
@@ -729,8 +734,8 @@ export default function Header({
 </span>
 </Link>
 
-</div>
-<nav className="onepick-header-modes" aria-label={t('lightUi.gameModes', 'Game modes')}>
+</BrandArea>
+{!isPlatformHome&&<nav className="onepick-header-modes" aria-label={t('lightUi.gameModes', 'Game modes')}>
           {headerModes.map(mode => <div key={mode.key} className={`onepick-header-mode mode-${mode.key}${activeMode === mode.key ? ' is-active' : ''}${mode.pending ? ' is-pending' : ''}`}>
             {mode.pending ? <div className="onepick-header-mode-main" aria-disabled="true">
               <HeaderIcon name={mode.icon} /><span>{mode.label}</span><small>{t('gameModeNav.comingSoon')}</small>
@@ -738,7 +743,7 @@ export default function Header({
               <HeaderIcon name={mode.icon} /><span>{mode.label}</span>
             </ContentHomeLink>}
           </div>)}
-        </nav>
+        </nav>}
         <div className="onepick-header-account">
           <div className="onepick-header-tools">
             <label className="header-language-control"><span className="header-language-label">🌐 {ui.language}</span><select value={currentLang} onChange={e=>changeLanguageAndKeepPath(e.target.value)} aria-label={t('language_select','Select language')}>

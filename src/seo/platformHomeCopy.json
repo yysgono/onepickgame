@@ -1,0 +1,1057 @@
+{
+  "ko": {
+    "intro": "원픽게임에서 이상형 월드컵과 퀴즈를 즐기고, 티어표와 최애 구절판 취향표를 만들거나 랜덤 뽑기를 해보세요.",
+    "all": "전체보기",
+    "loading": "불러오는 중…",
+    "empty": "아직 표시할 콘텐츠가 없어요.",
+    "retry": "다시 시도",
+    "titles": [
+      "이상형 월드컵",
+      "퀴즈 맞히기",
+      "티어표",
+      "최애 구절판 취향표",
+      "랜덤 뽑기"
+    ],
+    "descriptions": [
+      "아이돌, 캐릭터, 음식 등 다양한 후보를 둘씩 비교해보세요. 선택을 거듭해 최종 우승자를 고르고 다른 사람들의 순위도 확인할 수 있어요.",
+      "사진과 이름 등 주제별 문제를 풀며 얼마나 알고 있는지 확인해보세요. 퀴즈를 직접 만들고 친구들과 함께 도전할 수도 있어요.",
+      "후보를 S·A·B 등 원하는 등급에 배치해 나만의 순위를 만들어보세요. 완성한 티어표를 이미지로 저장하거나 링크로 공유할 수 있어요.",
+      "좋아하는 후보 9개를 골라 한 장의 구절판 취향표로 꾸며보세요. 사진과 배치를 조정해 내 취향을 담고 이미지나 링크로 공유할 수 있어요.",
+      "룰렛, 핀볼, 사다리 등 다양한 방식으로 선택을 맡겨보세요. 메뉴 고르기나 순서 정하기처럼 고민되는 순간에 간편하게 사용할 수 있어요."
+    ],
+    "failed": "콘텐츠를 불러오지 못했어요. 다시 시도해 주세요.",
+    "stats": "통계/댓글",
+    "start": "시작",
+    "summaries": [
+      "둘 중 하나를 골라 최애를 찾아보세요.",
+      "얼마나 알고 있는지 퀴즈로 도전해보세요.",
+      "후보를 등급별로 배치해 나만의 순위를 만드세요.",
+      "좋아하는 9개를 골라 한 장에 담아보세요.",
+      "룰렛과 핀볼 등으로 고민 없이 뽑아보세요."
+    ],
+    "descriptionLines": [
+      [
+        "아이돌, 캐릭터, 음식 등 다양한 후보를 둘씩 비교해보세요.",
+        "선택을 거듭해 최종 우승자를 고르고 다른 사람들의 순위도 확인할 수 있어요."
+      ],
+      [
+        "사진과 이름 등 주제별 문제를 풀며 얼마나 알고 있는지 확인해보세요.",
+        "퀴즈를 직접 만들고 친구들과 함께 도전할 수도 있어요."
+      ],
+      [
+        "후보를 S·A·B 등 원하는 등급에 배치해 나만의 순위를 만들어보세요.",
+        "완성한 티어표를 이미지로 저장하거나 링크로 공유할 수 있어요."
+      ],
+      [
+        "좋아하는 후보 9개를 골라 한 장의 구절판 취향표로 꾸며보세요.",
+        "사진과 배치를 조정해 내 취향을 담고 이미지나 링크로 공유할 수 있어요."
+      ],
+      [
+        "룰렛, 핀볼, 사다리 등 다양한 방식으로 선택을 맡겨보세요.",
+        "메뉴 고르기나 순서 정하기처럼 고민되는 순간에 간편하게 사용할 수 있어요."
+      ]
+    ]
+  },
+  "en": {
+    "intro": "Play tournaments and quizzes, make tier lists and Top 9 collages (3x3 Grid), or try a random picker on OnePickGame.",
+    "all": "View all",
+    "loading": "Loading…",
+    "empty": "No content to show yet.",
+    "retry": "Try again",
+    "titles": [
+      "Tournament",
+      "Quiz",
+      "Tier List",
+      "My Top 9",
+      "Random Picker"
+    ],
+    "descriptions": [
+      "Compare idols, characters, food and more in pairs. Keep choosing until you find your winner, then explore how other people ranked the candidates.",
+      "Test what you know with quizzes about photos, names and many other topics. You can also create your own quiz and challenge your friends.",
+      "Place candidates in tiers such as S, A and B to build your own ranking. Download the finished tier list as an image or share its link.",
+      "Choose nine favorites and arrange them in a Top 9 collage. Adjust the photos and layout to show your taste, then share an image or link.",
+      "Let a wheel, pinball, a ladder or another random tool make the choice. Use them to pick a meal, decide an order or settle everyday decisions."
+    ],
+    "failed": "Could not load content. Please try again.",
+    "stats": "Stats & Comments",
+    "start": "Start",
+    "summaries": [
+      "Choose between two candidates to find your favorite.",
+      "Test what you know with a quiz.",
+      "Arrange candidates into tiers and make your ranking.",
+      "Choose nine favorites and bring them together.",
+      "Let wheels, pinball and other random tools decide."
+    ],
+    "descriptionLines": [
+      [
+        "Compare idols, characters, food and more in pairs.",
+        "Keep choosing until you find your winner, then explore how other people ranked the candidates."
+      ],
+      [
+        "Test what you know with quizzes about photos, names and many other topics.",
+        "You can also create your own quiz and challenge your friends."
+      ],
+      [
+        "Place candidates in tiers such as S, A and B to build your own ranking.",
+        "Download the finished tier list as an image or share its link."
+      ],
+      [
+        "Choose nine favorites and arrange them in a Top 9 collage.",
+        "Adjust the photos and layout to show your taste, then share an image or link."
+      ],
+      [
+        "Let a wheel, pinball, a ladder or another random tool make the choice.",
+        "Use them to pick a meal, decide an order or settle everyday decisions."
+      ]
+    ]
+  },
+  "ja": {
+    "intro": "OnePickGameで推しトーナメントやクイズを楽しもう。ティア表やマイトップ9、ランダム抽選も。",
+    "all": "すべて見る",
+    "loading": "読み込み中…",
+    "empty": "表示するコンテンツはまだありません。",
+    "retry": "再試行",
+    "titles": [
+      "トーナメント",
+      "クイズ",
+      "Tier表",
+      "マイトップ9",
+      "ランダム抽選"
+    ],
+    "descriptions": [
+      "アイドルやキャラクター、食べ物などを二択で比べましょう。選択を重ねて一番を決めたら、ほかの人のランキングも確認できます。",
+      "写真や名前など、さまざまなテーマのクイズで知識を試しましょう。自分でクイズを作って友達に挑戦してもらうこともできます。",
+      "候補をS・A・Bなどのランクに並べて、自分だけのランキングを作りましょう。完成したTier表は画像で保存したり、リンクで共有したりできます。",
+      "お気に入りを9つ選んで、1枚のマイトップ9にまとめましょう。写真や配置を調整して、自分の好みを画像やリンクで共有できます。",
+      "ルーレットやピンボール、あみだくじなどに選択を任せましょう。食事選びや順番決めなど、迷ったときに手軽に使えます。"
+    ],
+    "failed": "コンテンツを読み込めませんでした。もう一度お試しください。",
+    "stats": "統計・コメント",
+    "start": "開始",
+    "summaries": [
+      "二択を繰り返して一番のお気に入りを見つけよう。",
+      "クイズで知識を試してみよう。",
+      "候補をランク別に並べて自分だけのランキングを作ろう。",
+      "お気に入り9つを選んで1枚にまとめよう。",
+      "ルーレットやピンボールでランダムに選ぼう。"
+    ],
+    "descriptionLines": [
+      [
+        "アイドルやキャラクター、食べ物などを二択で比べましょう。",
+        "選択を重ねて一番を決めたら、ほかの人のランキングも確認できます。"
+      ],
+      [
+        "写真や名前など、さまざまなテーマのクイズで知識を試しましょう。",
+        "自分でクイズを作って友達に挑戦してもらうこともできます。"
+      ],
+      [
+        "候補をS・A・Bなどのランクに並べて、自分だけのランキングを作りましょう。",
+        "完成したTier表は画像で保存したり、リンクで共有したりできます。"
+      ],
+      [
+        "お気に入りを9つ選んで、1枚のマイトップ9にまとめましょう。",
+        "写真や配置を調整して、自分の好みを画像やリンクで共有できます。"
+      ],
+      [
+        "ルーレットやピンボール、あみだくじなどに選択を任せましょう。",
+        "食事選びや順番決めなど、迷ったときに手軽に使えます。"
+      ]
+    ]
+  },
+  "zh": {
+    "intro": "来 OnePickGame 玩二选一淘汰赛和趣味问答，制作分级排行榜和九宫格，或试试随机抽签。",
+    "all": "查看全部",
+    "loading": "加载中…",
+    "empty": "暂无可展示的内容。",
+    "retry": "重试",
+    "titles": [
+      "二选一",
+      "竞猜",
+      "等级榜",
+      "我的九宫格",
+      "随机抽签"
+    ],
+    "descriptions": [
+      "将偶像、角色、美食等候选项两两比较。不断选择直到选出冠军，还可以查看其他玩家的排名。",
+      "通过照片、名字等不同主题的问答测试你的知识。你也可以创建自己的题目，邀请朋友一起挑战。",
+      "将候选项放入S、A、B等等级，制作自己的排行榜。完成后可以保存为图片，或通过链接分享。",
+      "挑选九个最爱，组合成一张专属九宫格。调整照片和布局来展现你的喜好，再分享图片或链接。",
+      "让转盘、弹球、爬梯等随机工具帮你做选择。无论挑选食物还是决定顺序，都能轻松解决日常纠结。"
+    ],
+    "failed": "无法加载内容，请重试。",
+    "stats": "统计与评论",
+    "start": "开始",
+    "summaries": [
+      "通过二选一找出你的最爱。",
+      "通过问答挑战你的知识。",
+      "将候选项目按等级排列，创建你的排名。",
+      "选出九个最爱，组合成一张图。",
+      "用轮盘、弹球等工具随机选择。"
+    ],
+    "descriptionLines": [
+      [
+        "将偶像、角色、美食等候选项两两比较。",
+        "不断选择直到选出冠军，还可以查看其他玩家的排名。"
+      ],
+      [
+        "通过照片、名字等不同主题的问答测试你的知识。",
+        "你也可以创建自己的题目，邀请朋友一起挑战。"
+      ],
+      [
+        "将候选项放入S、A、B等等级，制作自己的排行榜。",
+        "完成后可以保存为图片，或通过链接分享。"
+      ],
+      [
+        "挑选九个最爱，组合成一张专属九宫格。",
+        "调整照片和布局来展现你的喜好，再分享图片或链接。"
+      ],
+      [
+        "让转盘、弹球、爬梯等随机工具帮你做选择。",
+        "无论挑选食物还是决定顺序，都能轻松解决日常纠结。"
+      ]
+    ]
+  },
+  "es": {
+    "intro": "Juega torneos y quizzes, crea tier lists y collages de tus 9 favoritos o haz un sorteo en OnePickGame.",
+    "all": "Ver todo",
+    "loading": "Cargando…",
+    "empty": "Todavía no hay contenido para mostrar.",
+    "retry": "Reintentar",
+    "titles": [
+      "Torneos",
+      "Quiz",
+      "Tier List",
+      "Mis 9 favoritos",
+      "Sorteo aleatorio"
+    ],
+    "descriptions": [
+      "Compara ídolos, personajes, comida y mucho más por parejas. Sigue eligiendo hasta encontrar a tu ganador y descubre las clasificaciones de otros jugadores.",
+      "Pon a prueba tus conocimientos con quizzes de fotos, nombres y muchos otros temas. También puedes crear tu propio quiz y retar a tus amigos.",
+      "Coloca los candidatos en niveles como S, A y B para crear tu clasificación. Descarga la tier list como imagen o comparte su enlace.",
+      "Elige nueve favoritos y organízalos en un collage Top 9. Ajusta las fotos y la distribución para mostrar tus gustos y comparte la imagen o el enlace.",
+      "Deja que una ruleta, el pinball, una escalera u otra herramienta aleatoria decida. Úsalas para elegir comida, establecer un orden o resolver dudas cotidianas."
+    ],
+    "failed": "No se pudo cargar el contenido. Inténtalo de nuevo.",
+    "stats": "Estadísticas",
+    "start": "Empezar",
+    "summaries": [
+      "Elige entre dos candidatos hasta encontrar tu favorito.",
+      "Pon a prueba tus conocimientos con un quiz.",
+      "Ordena candidatos por niveles y crea tu clasificación.",
+      "Elige nueve favoritos y reúnelos en una imagen.",
+      "Deja que la ruleta, el pinball y el azar decidan."
+    ],
+    "descriptionLines": [
+      [
+        "Compara ídolos, personajes, comida y mucho más por parejas.",
+        "Sigue eligiendo hasta encontrar a tu ganador y descubre las clasificaciones de otros jugadores."
+      ],
+      [
+        "Pon a prueba tus conocimientos con quizzes de fotos, nombres y muchos otros temas.",
+        "También puedes crear tu propio quiz y retar a tus amigos."
+      ],
+      [
+        "Coloca los candidatos en niveles como S, A y B para crear tu clasificación.",
+        "Descarga la tier list como imagen o comparte su enlace."
+      ],
+      [
+        "Elige nueve favoritos y organízalos en un collage Top 9.",
+        "Ajusta las fotos y la distribución para mostrar tus gustos y comparte la imagen o el enlace."
+      ],
+      [
+        "Deja que una ruleta, el pinball, una escalera u otra herramienta aleatoria decida.",
+        "Úsalas para elegir comida, establecer un orden o resolver dudas cotidianas."
+      ]
+    ]
+  },
+  "fr": {
+    "intro": "Jouez à des tournois et à des quiz, créez des tier lists et des collages Top 9 ou faites un tirage au sort sur OnePickGame.",
+    "all": "Tout voir",
+    "loading": "Chargement…",
+    "empty": "Aucun contenu à afficher pour le moment.",
+    "retry": "Réessayer",
+    "titles": [
+      "Tournois",
+      "Quiz",
+      "Tier List",
+      "Mes 9 favoris",
+      "Tirage au sort"
+    ],
+    "descriptions": [
+      "Comparez deux par deux des idoles, personnages, plats et bien plus. Continuez jusqu’à trouver votre gagnant, puis découvrez les classements des autres joueurs.",
+      "Testez vos connaissances avec des quiz sur les photos, les noms et bien d’autres sujets. Vous pouvez aussi créer votre quiz et défier vos amis.",
+      "Placez les candidats dans des niveaux comme S, A et B pour créer votre classement. Téléchargez la tier list en image ou partagez son lien.",
+      "Choisissez neuf favoris et réunissez-les dans un collage Top 9. Ajustez les photos et leur disposition, puis partagez vos goûts avec une image ou un lien.",
+      "Laissez une roue, un flipper, une échelle ou un autre outil aléatoire décider. Choisissez un repas, définissez un ordre ou tranchez les petits dilemmes du quotidien."
+    ],
+    "failed": "Impossible de charger le contenu. Réessayez.",
+    "stats": "Statistiques",
+    "start": "Commencer",
+    "summaries": [
+      "Départagez deux candidats pour trouver votre favori.",
+      "Testez vos connaissances avec un quiz.",
+      "Classez les candidats par niveaux et créez votre classement.",
+      "Réunissez vos neuf favoris dans une seule image.",
+      "Laissez la roue, le flipper et le hasard choisir."
+    ],
+    "descriptionLines": [
+      [
+        "Comparez deux par deux des idoles, personnages, plats et bien plus.",
+        "Continuez jusqu’à trouver votre gagnant, puis découvrez les classements des autres joueurs."
+      ],
+      [
+        "Testez vos connaissances avec des quiz sur les photos, les noms et bien d’autres sujets.",
+        "Vous pouvez aussi créer votre quiz et défier vos amis."
+      ],
+      [
+        "Placez les candidats dans des niveaux comme S, A et B pour créer votre classement.",
+        "Téléchargez la tier list en image ou partagez son lien."
+      ],
+      [
+        "Choisissez neuf favoris et réunissez-les dans un collage Top 9.",
+        "Ajustez les photos et leur disposition, puis partagez vos goûts avec une image ou un lien."
+      ],
+      [
+        "Laissez une roue, un flipper, une échelle ou un autre outil aléatoire décider.",
+        "Choisissez un repas, définissez un ordre ou tranchez les petits dilemmes du quotidien."
+      ]
+    ]
+  },
+  "vi": {
+    "intro": "Chơi đấu loại, giải đố, làm tier list, ghép ảnh Top 9 hoặc bốc thăm trên OnePickGame.",
+    "all": "Xem tất cả",
+    "loading": "Đang tải…",
+    "empty": "Chưa có nội dung để hiển thị.",
+    "retry": "Thử lại",
+    "titles": [
+      "Đấu loại",
+      "Đố vui",
+      "Tier List",
+      "Top 9 của tôi",
+      "Bốc thăm ngẫu nhiên"
+    ],
+    "descriptions": [
+      "So sánh từng cặp thần tượng, nhân vật, món ăn và nhiều chủ đề khác. Tiếp tục chọn đến khi tìm ra người thắng và xem bảng xếp hạng của mọi người.",
+      "Thử kiến thức với các câu đố về hình ảnh, tên gọi và nhiều chủ đề khác. Bạn cũng có thể tự tạo câu đố để thách thức bạn bè.",
+      "Xếp các ứng viên vào hạng S, A, B hoặc hạng bạn muốn để tạo bảng xếp hạng riêng. Lưu tier list thành ảnh hoặc chia sẻ bằng liên kết.",
+      "Chọn chín mục yêu thích và ghép thành một ảnh Top 9. Điều chỉnh ảnh và bố cục để thể hiện sở thích, rồi chia sẻ ảnh hoặc liên kết.",
+      "Để vòng quay, pinball, thang hoặc công cụ ngẫu nhiên khác đưa ra lựa chọn. Dùng chúng khi chọn món ăn, sắp xếp thứ tự hay phân vân trong cuộc sống."
+    ],
+    "failed": "Không tải được nội dung. Vui lòng thử lại.",
+    "stats": "Thống kê",
+    "start": "Bắt đầu",
+    "summaries": [
+      "Chọn giữa hai ứng viên để tìm ra người bạn thích nhất.",
+      "Thử kiến thức của bạn qua các câu đố.",
+      "Xếp ứng viên vào các hạng và tạo bảng xếp hạng riêng.",
+      "Chọn chín mục yêu thích và ghép vào một ảnh.",
+      "Để vòng quay, pinball và các công cụ ngẫu nhiên quyết định."
+    ],
+    "descriptionLines": [
+      [
+        "So sánh từng cặp thần tượng, nhân vật, món ăn và nhiều chủ đề khác.",
+        "Tiếp tục chọn đến khi tìm ra người thắng và xem bảng xếp hạng của mọi người."
+      ],
+      [
+        "Thử kiến thức với các câu đố về hình ảnh, tên gọi và nhiều chủ đề khác.",
+        "Bạn cũng có thể tự tạo câu đố để thách thức bạn bè."
+      ],
+      [
+        "Xếp các ứng viên vào hạng S, A, B hoặc hạng bạn muốn để tạo bảng xếp hạng riêng.",
+        "Lưu tier list thành ảnh hoặc chia sẻ bằng liên kết."
+      ],
+      [
+        "Chọn chín mục yêu thích và ghép thành một ảnh Top 9.",
+        "Điều chỉnh ảnh và bố cục để thể hiện sở thích, rồi chia sẻ ảnh hoặc liên kết."
+      ],
+      [
+        "Để vòng quay, pinball, thang hoặc công cụ ngẫu nhiên khác đưa ra lựa chọn.",
+        "Dùng chúng khi chọn món ăn, sắp xếp thứ tự hay phân vân trong cuộc sống."
+      ]
+    ]
+  },
+  "de": {
+    "intro": "Spiele Turniere und Quizze, erstelle Tierlisten und Top-9-Collagen oder lose auf OnePickGame.",
+    "all": "Alle ansehen",
+    "loading": "Wird geladen…",
+    "empty": "Noch keine Inhalte vorhanden.",
+    "retry": "Erneut versuchen",
+    "titles": [
+      "Turniere",
+      "Quiz",
+      "Tier-Liste",
+      "Meine Top 9",
+      "Zufallsauswahl"
+    ],
+    "descriptions": [
+      "Vergleiche Idole, Figuren, Essen und mehr in Zweierduellen. Wähle weiter, bis dein Gewinner feststeht, und entdecke die Ranglisten anderer Spieler.",
+      "Teste dein Wissen mit Quizzen über Bilder, Namen und viele weitere Themen. Du kannst auch eigene Quizze erstellen und deine Freunde herausfordern.",
+      "Ordne Kandidaten in Stufen wie S, A und B ein und erstelle deine eigene Rangliste. Lade die fertige Tierliste als Bild herunter oder teile ihren Link.",
+      "Wähle neun Favoriten und ordne sie in einer Top-9-Collage an. Passe Fotos und Anordnung an und teile deinen Geschmack als Bild oder Link.",
+      "Lass Glücksrad, Pinball, Leiter oder andere Zufallstools entscheiden. Nutze sie für die Essenswahl, die Reihenfolge oder kleine Entscheidungen im Alltag."
+    ],
+    "failed": "Die Inhalte konnten nicht geladen werden. Bitte versuche es erneut.",
+    "stats": "Statistik",
+    "start": "Starten",
+    "summaries": [
+      "Wähle zwischen zwei Kandidaten, bis dein Favorit feststeht.",
+      "Teste dein Wissen mit einem Quiz.",
+      "Ordne Kandidaten in Stufen und erstelle deine Rangliste.",
+      "Vereine deine neun Favoriten in einem Bild.",
+      "Lass Glücksrad, Pinball und Zufall entscheiden."
+    ],
+    "descriptionLines": [
+      [
+        "Vergleiche Idole, Figuren, Essen und mehr in Zweierduellen.",
+        "Wähle weiter, bis dein Gewinner feststeht, und entdecke die Ranglisten anderer Spieler."
+      ],
+      [
+        "Teste dein Wissen mit Quizzen über Bilder, Namen und viele weitere Themen.",
+        "Du kannst auch eigene Quizze erstellen und deine Freunde herausfordern."
+      ],
+      [
+        "Ordne Kandidaten in Stufen wie S, A und B ein und erstelle deine eigene Rangliste.",
+        "Lade die fertige Tierliste als Bild herunter oder teile ihren Link."
+      ],
+      [
+        "Wähle neun Favoriten und ordne sie in einer Top-9-Collage an.",
+        "Passe Fotos und Anordnung an und teile deinen Geschmack als Bild oder Link."
+      ],
+      [
+        "Lass Glücksrad, Pinball, Leiter oder andere Zufallstools entscheiden.",
+        "Nutze sie für die Essenswahl, die Reihenfolge oder kleine Entscheidungen im Alltag."
+      ]
+    ]
+  },
+  "ru": {
+    "intro": "На OnePickGame можно играть в турниры и викторины, делать тир-листы и коллажи «Мой топ-9» или проводить жеребьёвки.",
+    "all": "Смотреть всё",
+    "loading": "Загрузка…",
+    "empty": "Пока нет материалов для показа.",
+    "retry": "Повторить",
+    "titles": [
+      "Турниры",
+      "Викторина",
+      "Тир-лист",
+      "Мои топ-9",
+      "Случайный выбор"
+    ],
+    "descriptions": [
+      "Сравнивайте попарно кумиров, персонажей, блюда и многое другое. Выбирайте, пока не определится победитель, а затем смотрите рейтинги других игроков.",
+      "Проверьте знания в викторинах по фотографиям, именам и другим темам. Можно также создать свою викторину и предложить друзьям пройти её.",
+      "Распределите кандидатов по уровням S, A, B и другим, чтобы составить свой рейтинг. Сохраните готовый тир-лист как изображение или поделитесь ссылкой.",
+      "Выберите девять любимых вариантов и соберите коллаж «Мой топ-9». Настройте фотографии и расположение, затем поделитесь изображением или ссылкой.",
+      "Пусть колесо, пинбол, лесенка или другой случайный инструмент сделает выбор. Используйте их для выбора еды, порядка участников и повседневных решений."
+    ],
+    "failed": "Не удалось загрузить материалы. Попробуйте ещё раз.",
+    "stats": "Статистика",
+    "start": "Начать",
+    "summaries": [
+      "Выбирайте из двух кандидатов, пока не останется любимый.",
+      "Проверьте свои знания в викторине.",
+      "Распределяйте кандидатов по уровням и создавайте свой рейтинг.",
+      "Соберите девять любимых вариантов в одном изображении.",
+      "Пусть колесо, пинбол и случай сделают выбор."
+    ],
+    "descriptionLines": [
+      [
+        "Сравнивайте попарно кумиров, персонажей, блюда и многое другое.",
+        "Выбирайте, пока не определится победитель, а затем смотрите рейтинги других игроков."
+      ],
+      [
+        "Проверьте знания в викторинах по фотографиям, именам и другим темам.",
+        "Можно также создать свою викторину и предложить друзьям пройти её."
+      ],
+      [
+        "Распределите кандидатов по уровням S, A, B и другим, чтобы составить свой рейтинг.",
+        "Сохраните готовый тир-лист как изображение или поделитесь ссылкой."
+      ],
+      [
+        "Выберите девять любимых вариантов и соберите коллаж «Мой топ-9».",
+        "Настройте фотографии и расположение, затем поделитесь изображением или ссылкой."
+      ],
+      [
+        "Пусть колесо, пинбол, лесенка или другой случайный инструмент сделает выбор.",
+        "Используйте их для выбора еды, порядка участников и повседневных решений."
+      ]
+    ]
+  },
+  "id": {
+    "intro": "Main turnamen dan kuis, bikin tier list dan kolase 9 favorit, atau coba undian di OnePickGame.",
+    "all": "Lihat semua",
+    "loading": "Memuat…",
+    "empty": "Belum ada konten untuk ditampilkan.",
+    "retry": "Coba lagi",
+    "titles": [
+      "Turnamen",
+      "Kuis",
+      "Tier List",
+      "9 Favorit Saya",
+      "Pilihan Acak"
+    ],
+    "descriptions": [
+      "Bandingkan idola, karakter, makanan, dan lainnya secara berpasangan. Terus pilih sampai menemukan pemenangmu, lalu lihat peringkat pemain lain.",
+      "Uji pengetahuanmu lewat kuis tentang foto, nama, dan beragam topik lainnya. Kamu juga bisa membuat kuis sendiri untuk menantang teman.",
+      "Susun kandidat ke tingkat S, A, B, atau tingkat lain untuk membuat peringkatmu. Unduh tier list sebagai gambar atau bagikan tautannya.",
+      "Pilih sembilan favorit dan susun menjadi kolase Top 9. Atur foto dan tata letaknya untuk menunjukkan seleramu, lalu bagikan gambar atau tautannya.",
+      "Biarkan roda, pinball, tangga, atau alat acak lain yang memilih. Gunakan untuk memilih makanan, menentukan urutan, atau memutuskan hal sehari-hari."
+    ],
+    "failed": "Konten tidak dapat dimuat. Silakan coba lagi.",
+    "stats": "Statistik",
+    "start": "Mulai",
+    "summaries": [
+      "Pilih di antara dua kandidat hingga menemukan favoritmu.",
+      "Uji pengetahuanmu lewat kuis.",
+      "Susun kandidat menurut tingkat dan buat peringkatmu.",
+      "Pilih sembilan favorit dan gabungkan dalam satu gambar.",
+      "Biarkan roda, pinball, dan alat acak menentukan pilihan."
+    ],
+    "descriptionLines": [
+      [
+        "Bandingkan idola, karakter, makanan, dan lainnya secara berpasangan.",
+        "Terus pilih sampai menemukan pemenangmu, lalu lihat peringkat pemain lain."
+      ],
+      [
+        "Uji pengetahuanmu lewat kuis tentang foto, nama, dan beragam topik lainnya.",
+        "Kamu juga bisa membuat kuis sendiri untuk menantang teman."
+      ],
+      [
+        "Susun kandidat ke tingkat S, A, B, atau tingkat lain untuk membuat peringkatmu.",
+        "Unduh tier list sebagai gambar atau bagikan tautannya."
+      ],
+      [
+        "Pilih sembilan favorit dan susun menjadi kolase Top 9.",
+        "Atur foto dan tata letaknya untuk menunjukkan seleramu, lalu bagikan gambar atau tautannya."
+      ],
+      [
+        "Biarkan roda, pinball, tangga, atau alat acak lain yang memilih.",
+        "Gunakan untuk memilih makanan, menentukan urutan, atau memutuskan hal sehari-hari."
+      ]
+    ]
+  },
+  "pt": {
+    "intro": "Jogue torneios e quizzes, crie tier lists e colagens com seus 9 favoritos ou faça um sorteio no OnePickGame.",
+    "all": "Ver tudo",
+    "loading": "A carregar…",
+    "empty": "Ainda não há conteúdo para mostrar.",
+    "retry": "Tentar novamente",
+    "titles": [
+      "Torneios",
+      "Quiz",
+      "Tier List",
+      "Meus 9 favoritos",
+      "Sorteio aleatório"
+    ],
+    "descriptions": [
+      "Compare ídolos, personagens, comidas e muito mais em pares. Continue escolhendo até encontrar o vencedor e veja como outras pessoas classificaram os candidatos.",
+      "Teste seus conhecimentos com quizzes sobre fotos, nomes e muitos outros temas. Você também pode criar seu próprio quiz e desafiar os amigos.",
+      "Distribua os candidatos por níveis como S, A e B para criar seu ranking. Salve a tier list como imagem ou compartilhe o link.",
+      "Escolha nove favoritos e monte uma colagem Top 9. Ajuste as fotos e a disposição para mostrar seu gosto e compartilhe a imagem ou o link.",
+      "Deixe uma roleta, o pinball, uma escada ou outra ferramenta aleatória decidir. Use para escolher uma refeição, definir uma ordem ou resolver dúvidas do dia a dia."
+    ],
+    "failed": "Não foi possível carregar o conteúdo. Tente novamente.",
+    "stats": "Estatísticas",
+    "start": "Começar",
+    "summaries": [
+      "Escolha entre dois candidatos até encontrar o seu favorito.",
+      "Teste os seus conhecimentos num quiz.",
+      "Organize candidatos por níveis e crie a sua classificação.",
+      "Reúna nove favoritos numa só imagem.",
+      "Deixe a roleta, o pinball e o acaso decidir."
+    ],
+    "descriptionLines": [
+      [
+        "Compare ídolos, personagens, comidas e muito mais em pares.",
+        "Continue escolhendo até encontrar o vencedor e veja como outras pessoas classificaram os candidatos."
+      ],
+      [
+        "Teste seus conhecimentos com quizzes sobre fotos, nomes e muitos outros temas.",
+        "Você também pode criar seu próprio quiz e desafiar os amigos."
+      ],
+      [
+        "Distribua os candidatos por níveis como S, A e B para criar seu ranking.",
+        "Salve a tier list como imagem ou compartilhe o link."
+      ],
+      [
+        "Escolha nove favoritos e monte uma colagem Top 9.",
+        "Ajuste as fotos e a disposição para mostrar seu gosto e compartilhe a imagem ou o link."
+      ],
+      [
+        "Deixe uma roleta, o pinball, uma escada ou outra ferramenta aleatória decidir.",
+        "Use para escolher uma refeição, definir uma ordem ou resolver dúvidas do dia a dia."
+      ]
+    ]
+  },
+  "hi": {
+    "intro": "OnePickGame पर टूर्नामेंट और क्विज़ खेलें, टियर लिस्ट और टॉप 9 कोलाज बनाएँ या रैंडम चुनाव करें।",
+    "all": "सभी देखें",
+    "loading": "लोड हो रहा है…",
+    "empty": "अभी दिखाने के लिए कोई सामग्री नहीं है।",
+    "retry": "फिर कोशिश करें",
+    "titles": [
+      "टूर्नामेंट",
+      "क्विज़",
+      "टियर लिस्ट",
+      "मेरे टॉप 9",
+      "रैंडम चयन"
+    ],
+    "descriptions": [
+      "आइडल, किरदार, खाने और अन्य विकल्पों की जोड़ों में तुलना करें। अपना विजेता मिलने तक चुनते रहें और फिर दूसरे खिलाड़ियों की रैंकिंग देखें।",
+      "तस्वीरों, नामों और कई अन्य विषयों के क्विज़ से अपना ज्ञान परखें। अपना क्विज़ बनाकर दोस्तों को चुनौती भी दे सकते हैं।",
+      "विकल्पों को S, A और B जैसी श्रेणियों में रखकर अपनी रैंकिंग बनाएँ। तैयार टियर लिस्ट को तस्वीर के रूप में डाउनलोड करें या उसका लिंक साझा करें।",
+      "नौ पसंदीदा चुनें और उन्हें टॉप 9 कोलाज में सजाएँ। तस्वीरों और लेआउट को अपनी पसंद के अनुसार बदलें, फिर तस्वीर या लिंक साझा करें।",
+      "व्हील, पिनबॉल, सीढ़ी या दूसरे रैंडम टूल को चुनाव करने दें। खाने का चुनाव, क्रम तय करना और रोज़मर्रा के फैसले आसान बनाएँ।"
+    ],
+    "failed": "सामग्री लोड नहीं हो सकी। कृपया फिर कोशिश करें।",
+    "stats": "आँकड़े",
+    "start": "शुरू करें",
+    "summaries": [
+      "दो विकल्पों में से चुनते हुए अपना पसंदीदा खोजें।",
+      "क्विज़ से अपने ज्ञान को परखें।",
+      "विकल्पों को श्रेणियों में रखकर अपनी रैंकिंग बनाएँ।",
+      "नौ पसंदीदा चुनकर एक तस्वीर में सजाएँ।",
+      "व्हील, पिनबॉल और अन्य रैंडम टूल को चुनने दें।"
+    ],
+    "descriptionLines": [
+      [
+        "आइडल, किरदार, खाने और अन्य विकल्पों की जोड़ों में तुलना करें।",
+        "अपना विजेता मिलने तक चुनते रहें और फिर दूसरे खिलाड़ियों की रैंकिंग देखें।"
+      ],
+      [
+        "तस्वीरों, नामों और कई अन्य विषयों के क्विज़ से अपना ज्ञान परखें।",
+        "अपना क्विज़ बनाकर दोस्तों को चुनौती भी दे सकते हैं।"
+      ],
+      [
+        "विकल्पों को S, A और B जैसी श्रेणियों में रखकर अपनी रैंकिंग बनाएँ।",
+        "तैयार टियर लिस्ट को तस्वीर के रूप में डाउनलोड करें या उसका लिंक साझा करें।"
+      ],
+      [
+        "नौ पसंदीदा चुनें और उन्हें टॉप 9 कोलाज में सजाएँ।",
+        "तस्वीरों और लेआउट को अपनी पसंद के अनुसार बदलें, फिर तस्वीर या लिंक साझा करें।"
+      ],
+      [
+        "व्हील, पिनबॉल, सीढ़ी या दूसरे रैंडम टूल को चुनाव करने दें।",
+        "खाने का चुनाव, क्रम तय करना और रोज़मर्रा के फैसले आसान बनाएँ।"
+      ]
+    ]
+  },
+  "tr": {
+    "intro": "OnePickGame’de turnuvaya katıl, quiz çöz, tier list ve ilk 9 kolajı hazırla ya da kura çek.",
+    "all": "Tümünü gör",
+    "loading": "Yükleniyor…",
+    "empty": "Henüz gösterilecek içerik yok.",
+    "retry": "Tekrar dene",
+    "titles": [
+      "Turnuvalar",
+      "Quiz",
+      "Tier Listesi",
+      "İlk 9 Favorim",
+      "Rastgele Seçim"
+    ],
+    "descriptions": [
+      "İdolleri, karakterleri, yemekleri ve daha fazlasını ikili karşılaştır. Kazananını bulana kadar seçim yap, ardından diğer oyuncuların sıralamalarına göz at.",
+      "Fotoğraflar, isimler ve daha birçok konudaki testlerle bilgini sına. Kendi testini oluşturup arkadaşlarına da meydan okuyabilirsin.",
+      "Adayları S, A ve B gibi seviyelere yerleştirerek kendi sıralamanı yap. Hazırladığın tier listesini görsel olarak indir veya bağlantısını paylaş.",
+      "Dokuz favorini seçerek bir İlk 9 kolajı oluştur. Fotoğrafları ve yerleşimi zevkine göre düzenle, ardından görseli veya bağlantıyı paylaş.",
+      "Çark, pinball, merdiven veya başka bir rastgele araç senin için seçsin. Yemek seçmek, sıra belirlemek ve günlük kararsızlıkları çözmek için kullan."
+    ],
+    "failed": "İçerik yüklenemedi. Lütfen tekrar dene.",
+    "stats": "İstatistikler",
+    "start": "Başlat",
+    "summaries": [
+      "İki aday arasında seçim yaparak favorini bul.",
+      "Bir testle bilgini sına.",
+      "Adayları seviyelere ayır ve kendi sıralamanı oluştur.",
+      "Dokuz favorini seç ve tek görselde birleştir.",
+      "Çark, pinball ve rastgele araçlar senin için seçsin."
+    ],
+    "descriptionLines": [
+      [
+        "İdolleri, karakterleri, yemekleri ve daha fazlasını ikili karşılaştır.",
+        "Kazananını bulana kadar seçim yap, ardından diğer oyuncuların sıralamalarına göz at."
+      ],
+      [
+        "Fotoğraflar, isimler ve daha birçok konudaki testlerle bilgini sına.",
+        "Kendi testini oluşturup arkadaşlarına da meydan okuyabilirsin."
+      ],
+      [
+        "Adayları S, A ve B gibi seviyelere yerleştirerek kendi sıralamanı yap.",
+        "Hazırladığın tier listesini görsel olarak indir veya bağlantısını paylaş."
+      ],
+      [
+        "Dokuz favorini seçerek bir İlk 9 kolajı oluştur.",
+        "Fotoğrafları ve yerleşimi zevkine göre düzenle, ardından görseli veya bağlantıyı paylaş."
+      ],
+      [
+        "Çark, pinball, merdiven veya başka bir rastgele araç senin için seçsin.",
+        "Yemek seçmek, sıra belirlemek ve günlük kararsızlıkları çözmek için kullan."
+      ]
+    ]
+  },
+  "th": {
+    "intro": "เล่นทัวร์นาเมนต์และควิซ จัดเทียร์ลิสต์ ทำภาพรวม 9 อันดับโปรด หรือสุ่มตัวเลือกบน OnePickGame",
+    "all": "ดูทั้งหมด",
+    "loading": "กำลังโหลด…",
+    "empty": "ยังไม่มีเนื้อหาให้แสดง",
+    "retry": "ลองอีกครั้ง",
+    "titles": [
+      "ทัวร์นาเมนต์",
+      "ควิซ",
+      "Tier List",
+      "9 อันดับของฉัน",
+      "สุ่มเลือก"
+    ],
+    "descriptions": [
+      "เปรียบเทียบไอดอล ตัวละคร อาหาร และตัวเลือกอื่น ๆ ทีละคู่ เลือกต่อไปจนได้ผู้ชนะที่ชอบที่สุด แล้วดูอันดับของผู้เล่นคนอื่นได้ด้วย",
+      "ทดสอบความรู้ด้วยควิซเกี่ยวกับรูปภาพ ชื่อ และหัวข้ออีกมากมาย คุณยังสร้างควิซของตัวเองเพื่อท้าทายเพื่อนได้ด้วย",
+      "จัดตัวเลือกไว้ในระดับ S, A, B หรือระดับที่ต้องการเพื่อสร้างอันดับของคุณ บันทึกเทียร์ลิสต์ที่เสร็จแล้วเป็นรูปภาพหรือแชร์ลิงก์ได้",
+      "เลือกเก้าสิ่งที่ชอบแล้วจัดเป็นภาพรวม Top 9 ปรับรูปภาพและการจัดวางให้แสดงรสนิยมของคุณ แล้วแชร์เป็นรูปภาพหรือลิงก์ได้",
+      "ให้วงล้อ พินบอล บันได หรือเครื่องมือสุ่มอื่น ๆ ช่วยเลือก ใช้เลือกอาหาร จัดลำดับ หรือช่วยตัดสินใจเรื่องเล็ก ๆ ในชีวิตประจำวัน"
+    ],
+    "failed": "โหลดเนื้อหาไม่ได้ โปรดลองอีกครั้ง",
+    "stats": "สถิติ",
+    "start": "เริ่ม",
+    "summaries": [
+      "เลือกจากสองตัวเลือกจนพบสิ่งที่ชอบที่สุด",
+      "ทดสอบความรู้ของคุณด้วยควิซ",
+      "จัดตัวเลือกตามระดับและสร้างอันดับของคุณ",
+      "เลือกเก้าสิ่งที่ชอบแล้วรวมไว้ในภาพเดียว",
+      "ให้วงล้อ พินบอล และเครื่องมือสุ่มช่วยตัดสินใจ"
+    ],
+    "descriptionLines": [
+      [
+        "เปรียบเทียบไอดอล ตัวละคร อาหาร และตัวเลือกอื่น ๆ ทีละคู่ เลือกต่อไปจนได้ผู้ชนะที่ชอบที่สุด แล้วดูอันดับของผู้เล่นคนอื่นได้ด้วย"
+      ],
+      [
+        "ทดสอบความรู้ด้วยควิซเกี่ยวกับรูปภาพ ชื่อ และหัวข้ออีกมากมาย คุณยังสร้างควิซของตัวเองเพื่อท้าทายเพื่อนได้ด้วย"
+      ],
+      [
+        "จัดตัวเลือกไว้ในระดับ S, A, B หรือระดับที่ต้องการเพื่อสร้างอันดับของคุณ บันทึกเทียร์ลิสต์ที่เสร็จแล้วเป็นรูปภาพหรือแชร์ลิงก์ได้"
+      ],
+      [
+        "เลือกเก้าสิ่งที่ชอบแล้วจัดเป็นภาพรวม Top 9 ปรับรูปภาพและการจัดวางให้แสดงรสนิยมของคุณ แล้วแชร์เป็นรูปภาพหรือลิงก์ได้"
+      ],
+      [
+        "ให้วงล้อ พินบอล บันได หรือเครื่องมือสุ่มอื่น ๆ ช่วยเลือก ใช้เลือกอาหาร จัดลำดับ หรือช่วยตัดสินใจเรื่องเล็ก ๆ ในชีวิตประจำวัน"
+      ]
+    ]
+  },
+  "ar": {
+    "intro": "العب البطولات والمسابقات، وأنشئ قوائم تصنيف وصورًا لأفضل 9 اختيارات، أو جرّب القرعة على OnePickGame.",
+    "all": "عرض الكل",
+    "loading": "جارٍ التحميل…",
+    "empty": "لا يوجد محتوى لعرضه بعد.",
+    "retry": "حاول مجددًا",
+    "titles": [
+      "البطولات",
+      "اختبار",
+      "قائمة مستويات",
+      "أفضل 9 لديّ",
+      "اختيار عشوائي"
+    ],
+    "descriptions": [
+      "قارن بين الآيدولز والشخصيات والأطعمة وغيرها في مواجهات ثنائية. واصل الاختيار حتى تصل إلى الفائز المفضل لديك، ثم اطّلع على تصنيفات اللاعبين الآخرين.",
+      "اختبر معلوماتك بمسابقات عن الصور والأسماء وموضوعات أخرى كثيرة. يمكنك أيضًا إنشاء اختبارك الخاص وتحدي أصدقائك.",
+      "وزّع المرشحين على مستويات مثل S وA وB لإنشاء ترتيبك الخاص. نزّل القائمة المكتملة كصورة أو شارك رابطها.",
+      "اختر تسعة من مفضلاتك ورتبها في صورة لأفضل 9 اختيارات. عدّل الصور والتخطيط لإظهار ذوقك، ثم شارك الصورة أو الرابط.",
+      "دع العجلة أو البنبال أو السلم أو أداة عشوائية أخرى تختار لك. استخدمها لاختيار وجبة أو تحديد الترتيب أو حسم القرارات اليومية."
+    ],
+    "failed": "تعذّر تحميل المحتوى. يُرجى المحاولة مجددًا.",
+    "stats": "الإحصاءات",
+    "start": "ابدأ",
+    "summaries": [
+      "اختر بين مرشحين حتى تصل إلى المفضل لديك.",
+      "اختبر معلوماتك من خلال الاختبارات.",
+      "رتب المرشحين في مستويات وأنشئ تصنيفك.",
+      "اختر تسعة من مفضلاتك واجمعها في صورة واحدة.",
+      "دع العجلة والبنبال وأدوات الاختيار العشوائي تقرر."
+    ],
+    "descriptionLines": [
+      [
+        "قارن بين الآيدولز والشخصيات والأطعمة وغيرها في مواجهات ثنائية.",
+        "واصل الاختيار حتى تصل إلى الفائز المفضل لديك، ثم اطّلع على تصنيفات اللاعبين الآخرين."
+      ],
+      [
+        "اختبر معلوماتك بمسابقات عن الصور والأسماء وموضوعات أخرى كثيرة.",
+        "يمكنك أيضًا إنشاء اختبارك الخاص وتحدي أصدقائك."
+      ],
+      [
+        "وزّع المرشحين على مستويات مثل S وA وB لإنشاء ترتيبك الخاص.",
+        "نزّل القائمة المكتملة كصورة أو شارك رابطها."
+      ],
+      [
+        "اختر تسعة من مفضلاتك ورتبها في صورة لأفضل 9 اختيارات.",
+        "عدّل الصور والتخطيط لإظهار ذوقك، ثم شارك الصورة أو الرابط."
+      ],
+      [
+        "دع العجلة أو البنبال أو السلم أو أداة عشوائية أخرى تختار لك.",
+        "استخدمها لاختيار وجبة أو تحديد الترتيب أو حسم القرارات اليومية."
+      ]
+    ]
+  },
+  "bn": {
+    "intro": "OnePickGame-এ টুর্নামেন্ট ও কুইজ খেলুন, টিয়ার লিস্ট ও সেরা ৯-এর কোলাজ বানান, কিংবা লটারিতে বেছে নিন।",
+    "all": "সব দেখুন",
+    "loading": "লোড হচ্ছে…",
+    "empty": "এখনও দেখানোর মতো কোনো বিষয় নেই।",
+    "retry": "আবার চেষ্টা করুন",
+    "titles": [
+      "টুর্নামেন্ট",
+      "কুইজ",
+      "Tier List",
+      "আমার সেরা ৯",
+      "এলোমেলো বাছাই"
+    ],
+    "descriptions": [
+      "আইডল, চরিত্র, খাবারসহ নানা বিকল্প জোড়ায় জোড়ায় তুলনা করুন। নিজের বিজয়ী পাওয়া পর্যন্ত বেছে যান, তারপর অন্যদের র‍্যাঙ্কিংও দেখুন।",
+      "ছবি, নাম ও আরও নানা বিষয়ের কুইজে নিজের জ্ঞান যাচাই করুন। নিজেও কুইজ তৈরি করে বন্ধুদের চ্যালেঞ্জ জানাতে পারেন।",
+      "বিকল্পগুলো S, A ও B-এর মতো স্তরে সাজিয়ে নিজের র‍্যাঙ্কিং তৈরি করুন। তৈরি টিয়ার লিস্ট ছবি হিসেবে নামান বা লিংক শেয়ার করুন।",
+      "নয়টি পছন্দ বেছে নিয়ে একটি সেরা ৯ কোলাজে সাজান। ছবি ও বিন্যাস নিজের মতো করে বদলে ছবিটি বা লিংক শেয়ার করুন।",
+      "চাকা, পিনবল, মই বা অন্য র‍্যান্ডম টুলকে বেছে নিতে দিন। খাবার বাছাই, ক্রম নির্ধারণ বা দৈনন্দিন সিদ্ধান্ত নিতে এগুলো ব্যবহার করুন।"
+    ],
+    "failed": "বিষয়বস্তু লোড করা যায়নি। আবার চেষ্টা করুন।",
+    "stats": "পরিসংখ্যান",
+    "start": "শুরু করুন",
+    "summaries": [
+      "দুটি বিকল্প থেকে বেছে নিয়ে আপনার প্রিয়টি খুঁজুন।",
+      "কুইজের মাধ্যমে নিজের জ্ঞান যাচাই করুন।",
+      "বিকল্পগুলো স্তরে সাজিয়ে নিজের র‍্যাঙ্কিং তৈরি করুন।",
+      "নয়টি পছন্দ বেছে একটি ছবিতে সাজান।",
+      "চাকা, পিনবল ও র‍্যান্ডম টুলকে বেছে নিতে দিন।"
+    ],
+    "descriptionLines": [
+      [
+        "আইডল, চরিত্র, খাবারসহ নানা বিকল্প জোড়ায় জোড়ায় তুলনা করুন।",
+        "নিজের বিজয়ী পাওয়া পর্যন্ত বেছে যান, তারপর অন্যদের র‍্যাঙ্কিংও দেখুন।"
+      ],
+      [
+        "ছবি, নাম ও আরও নানা বিষয়ের কুইজে নিজের জ্ঞান যাচাই করুন।",
+        "নিজেও কুইজ তৈরি করে বন্ধুদের চ্যালেঞ্জ জানাতে পারেন।"
+      ],
+      [
+        "বিকল্পগুলো S, A ও B-এর মতো স্তরে সাজিয়ে নিজের র‍্যাঙ্কিং তৈরি করুন।",
+        "তৈরি টিয়ার লিস্ট ছবি হিসেবে নামান বা লিংক শেয়ার করুন।"
+      ],
+      [
+        "নয়টি পছন্দ বেছে নিয়ে একটি সেরা ৯ কোলাজে সাজান।",
+        "ছবি ও বিন্যাস নিজের মতো করে বদলে ছবিটি বা লিংক শেয়ার করুন।"
+      ],
+      [
+        "চাকা, পিনবল, মই বা অন্য র‍্যান্ডম টুলকে বেছে নিতে দিন।",
+        "খাবার বাছাই, ক্রম নির্ধারণ বা দৈনন্দিন সিদ্ধান্ত নিতে এগুলো ব্যবহার করুন।"
+      ]
+    ]
+  },
+  "it": {
+    "intro": "Su OnePickGame puoi giocare a tornei e quiz, creare tier list e collage dei tuoi 9 preferiti o fare un sorteggio.",
+    "all": "Vedi tutto",
+    "loading": "Caricamento…",
+    "empty": "Non ci sono ancora contenuti da mostrare.",
+    "retry": "Riprova",
+    "titles": [
+      "Torneo",
+      "Quiz",
+      "Classifica a livelli",
+      "I miei 9 preferiti",
+      "Estrattore casuale"
+    ],
+    "descriptions": [
+      "Confronta a coppie idoli, personaggi, cibi e molto altro. Continua a scegliere fino a trovare il vincitore, poi scopri le classifiche degli altri giocatori.",
+      "Metti alla prova le tue conoscenze con quiz su foto, nomi e tanti altri temi. Puoi anche creare un quiz e sfidare i tuoi amici.",
+      "Disponi i candidati in livelli come S, A e B per creare la tua classifica. Scarica la tier list come immagine oppure condividi il link.",
+      "Scegli nove preferiti e disponili in un collage Top 9. Regola foto e disposizione per mostrare i tuoi gusti, poi condividi immagine o link.",
+      "Lascia scegliere a ruota, flipper, scala o altri strumenti casuali. Usali per decidere un pasto, stabilire un ordine o risolvere i dubbi quotidiani."
+    ],
+    "failed": "Impossibile caricare i contenuti. Riprova.",
+    "stats": "Statistiche",
+    "start": "Inizia",
+    "summaries": [
+      "Scegli tra due candidati fino a trovare il tuo preferito.",
+      "Metti alla prova ciò che sai con un quiz.",
+      "Ordina i candidati per livello e crea la tua classifica.",
+      "Riunisci nove preferiti in una sola immagine.",
+      "Lascia decidere a ruota, flipper e strumenti casuali."
+    ],
+    "descriptionLines": [
+      [
+        "Confronta a coppie idoli, personaggi, cibi e molto altro.",
+        "Continua a scegliere fino a trovare il vincitore, poi scopri le classifiche degli altri giocatori."
+      ],
+      [
+        "Metti alla prova le tue conoscenze con quiz su foto, nomi e tanti altri temi.",
+        "Puoi anche creare un quiz e sfidare i tuoi amici."
+      ],
+      [
+        "Disponi i candidati in livelli come S, A e B per creare la tua classifica.",
+        "Scarica la tier list come immagine oppure condividi il link."
+      ],
+      [
+        "Scegli nove preferiti e disponili in un collage Top 9.",
+        "Regola foto e disposizione per mostrare i tuoi gusti, poi condividi immagine o link."
+      ],
+      [
+        "Lascia scegliere a ruota, flipper, scala o altri strumenti casuali.",
+        "Usali per decidere un pasto, stabilire un ordine o risolvere i dubbi quotidiani."
+      ]
+    ]
+  },
+  "pl": {
+    "intro": "Na OnePickGame zagrasz w turnieje i quizy, stworzysz tier listy i kolaże z ulubioną dziewiątką albo zdasz się na losowanie.",
+    "all": "Zobacz wszystkie",
+    "loading": "Wczytywanie…",
+    "empty": "Brak treści do wyświetlenia.",
+    "retry": "Spróbuj ponownie",
+    "titles": [
+      "Turniej",
+      "Quiz",
+      "Ranking poziomów",
+      "Moje top 9",
+      "Losowanie"
+    ],
+    "descriptions": [
+      "Porównuj parami idoli, postacie, jedzenie i wiele innych propozycji. Wybieraj aż do wyłonienia zwycięzcy, a potem sprawdź rankingi innych graczy.",
+      "Sprawdź swoją wiedzę w quizach o zdjęciach, imionach i wielu innych tematach. Możesz też stworzyć własny quiz i rzucić wyzwanie znajomym.",
+      "Umieść kandydatów na poziomach takich jak S, A i B, aby stworzyć swój ranking. Pobierz gotową tier listę jako obraz lub udostępnij link.",
+      "Wybierz dziewięć ulubionych elementów i ułóż kolaż Top 9. Dopasuj zdjęcia i układ do swojego gustu, a potem udostępnij obraz lub link.",
+      "Niech koło, pinball, drabinka lub inne narzędzie losujące wybierze za Ciebie. Używaj ich do wyboru posiłku, ustalania kolejności i codziennych decyzji."
+    ],
+    "failed": "Nie udało się wczytać treści. Spróbuj ponownie.",
+    "stats": "Statystyki",
+    "start": "Rozpocznij",
+    "summaries": [
+      "Wybieraj spośród dwóch kandydatów, aż znajdziesz ulubieńca.",
+      "Sprawdź swoją wiedzę w quizie.",
+      "Ułóż kandydatów w poziomy i stwórz własny ranking.",
+      "Wybierz dziewięć ulubionych elementów i połącz je w jeden obraz.",
+      "Niech koło, pinball i narzędzia losujące zdecydują."
+    ],
+    "descriptionLines": [
+      [
+        "Porównuj parami idoli, postacie, jedzenie i wiele innych propozycji.",
+        "Wybieraj aż do wyłonienia zwycięzcy, a potem sprawdź rankingi innych graczy."
+      ],
+      [
+        "Sprawdź swoją wiedzę w quizach o zdjęciach, imionach i wielu innych tematach.",
+        "Możesz też stworzyć własny quiz i rzucić wyzwanie znajomym."
+      ],
+      [
+        "Umieść kandydatów na poziomach takich jak S, A i B, aby stworzyć swój ranking.",
+        "Pobierz gotową tier listę jako obraz lub udostępnij link."
+      ],
+      [
+        "Wybierz dziewięć ulubionych elementów i ułóż kolaż Top 9.",
+        "Dopasuj zdjęcia i układ do swojego gustu, a potem udostępnij obraz lub link."
+      ],
+      [
+        "Niech koło, pinball, drabinka lub inne narzędzie losujące wybierze za Ciebie.",
+        "Używaj ich do wyboru posiłku, ustalania kolejności i codziennych decyzji."
+      ]
+    ]
+  },
+  "nl": {
+    "intro": "Speel toernooien en quizzen, maak tierlijsten en top 9-collages of laat het lot beslissen op OnePickGame.",
+    "all": "Alles bekijken",
+    "loading": "Laden…",
+    "empty": "Er is nog geen inhoud om te tonen.",
+    "retry": "Opnieuw proberen",
+    "titles": [
+      "Toernooi",
+      "Quiz",
+      "Tierlijst",
+      "Mijn top 9",
+      "Willekeurige kiezer"
+    ],
+    "descriptions": [
+      "Vergelijk idolen, personages, eten en meer in tweetallen. Blijf kiezen tot je winnaar overblijft en bekijk daarna de ranglijsten van andere spelers.",
+      "Test je kennis met quizzen over foto’s, namen en allerlei andere onderwerpen. Je kunt ook zelf een quiz maken en je vrienden uitdagen.",
+      "Plaats kandidaten in niveaus zoals S, A en B om je eigen ranglijst te maken. Download de tierlijst als afbeelding of deel de link.",
+      "Kies negen favorieten en maak er een Top 9-collage van. Pas foto’s en indeling aan om je smaak te tonen en deel de afbeelding of link.",
+      "Laat een rad, pinball, ladder of andere willekeurige tool kiezen. Gebruik ze om eten te kiezen, een volgorde te bepalen of dagelijkse knopen door te hakken."
+    ],
+    "failed": "De inhoud kon niet worden geladen. Probeer het opnieuw.",
+    "stats": "Statistieken",
+    "start": "Starten",
+    "summaries": [
+      "Kies tussen twee kandidaten tot je favoriet overblijft.",
+      "Test wat je weet met een quiz.",
+      "Verdeel kandidaten over niveaus en maak je eigen ranglijst.",
+      "Breng negen favorieten samen in één afbeelding.",
+      "Laat het rad, pinball en andere willekeurige tools kiezen."
+    ],
+    "descriptionLines": [
+      [
+        "Vergelijk idolen, personages, eten en meer in tweetallen.",
+        "Blijf kiezen tot je winnaar overblijft en bekijk daarna de ranglijsten van andere spelers."
+      ],
+      [
+        "Test je kennis met quizzen over foto’s, namen en allerlei andere onderwerpen.",
+        "Je kunt ook zelf een quiz maken en je vrienden uitdagen."
+      ],
+      [
+        "Plaats kandidaten in niveaus zoals S, A en B om je eigen ranglijst te maken.",
+        "Download de tierlijst als afbeelding of deel de link."
+      ],
+      [
+        "Kies negen favorieten en maak er een Top 9-collage van.",
+        "Pas foto’s en indeling aan om je smaak te tonen en deel de afbeelding of link."
+      ],
+      [
+        "Laat een rad, pinball, ladder of andere willekeurige tool kiezen.",
+        "Gebruik ze om eten te kiezen, een volgorde te bepalen of dagelijkse knopen door te hakken."
+      ]
+    ]
+  },
+  "cs": {
+    "intro": "Na OnePickGame si zahrajete turnaje a kvízy, vytvoříte žebříčky a koláže z devíti oblíbenců nebo necháte rozhodnout los.",
+    "all": "Zobrazit vše",
+    "loading": "Načítání…",
+    "empty": "Zatím není co zobrazit.",
+    "retry": "Zkusit znovu",
+    "titles": [
+      "Turnaj",
+      "Kvíz",
+      "Žebříček",
+      "Mých top 9",
+      "Náhodný výběr"
+    ],
+    "descriptions": [
+      "Porovnávejte ve dvojicích idoly, postavy, jídla a další možnosti. Vybírejte až do určení vítěze a pak si prohlédněte žebříčky ostatních hráčů.",
+      "Otestujte své znalosti v kvízech o fotografiích, jménech a mnoha dalších tématech. Můžete také vytvořit vlastní kvíz a vyzvat přátele.",
+      "Rozdělte kandidáty do úrovní jako S, A a B a sestavte vlastní žebříček. Hotový žebříček stáhněte jako obrázek nebo sdílejte jeho odkaz.",
+      "Vyberte devět oblíbenců a uspořádejte je do koláže Top 9. Upravte fotografie a rozložení podle svého vkusu a sdílejte obrázek nebo odkaz.",
+      "Nechte rozhodnout kolo, pinball, žebřík nebo jiný náhodný nástroj. Použijte je při výběru jídla, určování pořadí i každodenním rozhodování."
+    ],
+    "failed": "Obsah se nepodařilo načíst. Zkuste to znovu.",
+    "stats": "Statistiky",
+    "start": "Spustit",
+    "summaries": [
+      "Vybírejte ze dvou kandidátů, dokud nenajdete svého favorita.",
+      "Ověřte své znalosti v kvízu.",
+      "Rozdělte kandidáty do úrovní a vytvořte vlastní žebříček.",
+      "Spojte devět oblíbených položek do jednoho obrázku.",
+      "Nechte rozhodnout kolo, pinball a náhodné nástroje."
+    ],
+    "descriptionLines": [
+      [
+        "Porovnávejte ve dvojicích idoly, postavy, jídla a další možnosti.",
+        "Vybírejte až do určení vítěze a pak si prohlédněte žebříčky ostatních hráčů."
+      ],
+      [
+        "Otestujte své znalosti v kvízech o fotografiích, jménech a mnoha dalších tématech.",
+        "Můžete také vytvořit vlastní kvíz a vyzvat přátele."
+      ],
+      [
+        "Rozdělte kandidáty do úrovní jako S, A a B a sestavte vlastní žebříček.",
+        "Hotový žebříček stáhněte jako obrázek nebo sdílejte jeho odkaz."
+      ],
+      [
+        "Vyberte devět oblíbenců a uspořádejte je do koláže Top 9.",
+        "Upravte fotografie a rozložení podle svého vkusu a sdílejte obrázek nebo odkaz."
+      ],
+      [
+        "Nechte rozhodnout kolo, pinball, žebřík nebo jiný náhodný nástroj.",
+        "Použijte je při výběru jídla, určování pořadí i každodenním rozhodování."
+      ]
+    ]
+  }
+}

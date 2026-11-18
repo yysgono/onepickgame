@@ -1,8 +1,8 @@
+import QuizCard from './QuizCard';
 import React,{useEffect,useRef,useState} from 'react';
 import {Link} from 'react-router-dom';
 import {getQuizPage} from '../utils/supabaseQuizApi';
 import {createQuizListPager} from '../utils/quizListPager';
-import MediaRenderer from './MediaRenderer';
 import COPY from './quizCategoryHomeCopy.json';
 import './QuizCategorySections.css';
 const CATEGORIES=['knowledge','animation','game','entertainment','sports','food','other'];
@@ -34,9 +34,7 @@ function CategoryRow({category,index,columns,lang,contentLanguage,sort,copy,c,mo
  <div className="quiz-category-carousel">
  {items.length>0&&<button type="button" className="quiz-category-arrow quiz-category-arrow-prev" aria-label={copy.previous} disabled={busy||(mobile?mobileIndex===0:start===0)} onClick={()=>mobile?scrollMobile(Math.max(0,mobileIndex-1)):setStart(value=>Math.max(0,value-columns))}>‹</button>}
  <div ref={track} onScroll={onMobileScroll} className="quiz-category-cards" style={{'--quiz-columns':items.length?Math.min(columns,Math.max(1,items.length-start)):columns}}>
- {(mobile?items:items.slice(start,start+columns)).map(q=>{const title=local(q.title_translations,q.title,lang);return <Link key={q.id} className="quiz-category-card" to={`/${lang}/quiz/${q.id}`}>
- <div className="quiz-category-image">{q.thumbnail_url?<MediaRenderer url={q.thumbnail_url} alt={title} style={{width:'100%',height:'100%',objectFit:'cover',objectPosition:'center 35%'}}/>:<span aria-hidden="true">❓</span>}</div>
- <div className="quiz-category-card-body"><h3 title={title}>{title}</h3><p>{Number(q.question_count)||0} {c.questions} · {Number(q.play_count)||0} {c.plays}</p><span className="quiz-category-play">{c.playNow} →</span></div></Link>;})}
+ {(mobile?items:items.slice(start,start+columns)).map(q=>{const title=local(q.title_translations,q.title,lang);return <QuizCard key={q.id} href={`/${lang}/quiz/${q.id}`} title={title} image={q.thumbnail_url} questionCount={q.question_count} plays={q.play_count} copy={c}/>;})}
  {!items.length&&(!active||busy)&&Array.from({length:columns},(_,i)=><div key={i} className="quiz-category-placeholder" aria-hidden="true"/>)}
  </div>
  {items.length>0&&<button type="button" className="quiz-category-arrow quiz-category-arrow-next" aria-label={copy.next} disabled={busy||!(mobile?(mobileIndex+1<items.length||state?.hasMore):hasNext)} onClick={next}>›</button>}

@@ -1,4 +1,5 @@
-import NewLanguageHome from "./pages/NewLanguageHome";
+import PlatformHome from "./components/PlatformHome";
+import worldcupHomeCopy from "./seo/worldcupHomeCopy.json";
 import GoogleAuthCallback from "./components/GoogleAuthCallback";
 import DeferredPageBoundary from "./components/DeferredPageBoundary";
 import { getPrivatePageSeo } from "./seo/privatePageSeo";
@@ -37,22 +38,6 @@ import {
   getWorldcupTitle,
 } from "./utils/localization";
 
-import DePage from "./pages/de";
-import EnPage from "./pages/en";
-import EsPage from "./pages/es";
-import FrPage from "./pages/fr";
-import HiPage from "./pages/hi";
-import IdPage from "./pages/id";
-import JaPage from "./pages/ja";
-import KoPage from "./pages/ko";
-import PtPage from "./pages/pt";
-import RuPage from "./pages/ru";
-import ViPage from "./pages/vi";
-import ZhPage from "./pages/zh";
-import ArPage from "./pages/ar";
-import BnPage from "./pages/bn";
-import ThPage from "./pages/th";
-import TrPage from "./pages/tr";
 
 import {
   getWorldcupGames,
@@ -158,65 +143,11 @@ function LanguageWrapper(props) {
     }
   }, [lang, i18n, navigate]);
 
-  const homeProps = {
-    ...props,
-  };
-
-  switch (lang) {
-    case "it": case "pl": case "nl": case "cs":
-      return <NewLanguageHome {...homeProps} language={lang} />;
-    case "ko":
-      return <KoPage {...homeProps} />;
-
-    case "en":
-      return <EnPage {...homeProps} />;
-
-    case "ru":
-      return <RuPage {...homeProps} />;
-
-    case "ja":
-      return <JaPage {...homeProps} />;
-
-    case "zh":
-      return <ZhPage {...homeProps} />;
-
-    case "pt":
-      return <PtPage {...homeProps} />;
-
-    case "es":
-      return <EsPage {...homeProps} />;
-
-    case "fr":
-      return <FrPage {...homeProps} />;
-
-    case "id":
-      return <IdPage {...homeProps} />;
-
-    case "hi":
-      return <HiPage {...homeProps} />;
-
-    case "de":
-      return <DePage {...homeProps} />;
-
-    case "vi":
-      return <ViPage {...homeProps} />;
-
-    case "ar":
-      return <ArPage {...homeProps} />;
-
-    case "bn":
-      return <BnPage {...homeProps} />;
-
-    case "th":
-      return <ThPage {...homeProps} />;
-
-    case "tr":
-      return <TrPage {...homeProps} />;
-
-    default:
-      return <EnPage {...homeProps} />;
-  }
+  const copy=worldcupHomeCopy[lang];
+  if(!copy)return <NotFoundPage/>;
+  return <><Seo lang={lang} slug="ideal-type-world-cup" title={copy.title} description={copy.description}/><Home {...props}/></>;
 }
+
 
 /* =====================================================
    페이지 이동 시 스크롤 최상단
@@ -906,8 +837,9 @@ function handleMakeWorldcup() {
   path="/:lang/quiz/:id"
   element={<QuizDetailPage />}
 />
+<Route path="/:lang" element={Object.prototype.hasOwnProperty.call(categoryLabels,location.pathname.split("/")[1])?<PlatformHome/>:<NotFoundPage/>}/>
 <Route
-  path="/:lang"
+  path="/:lang/ideal-type-world-cup"
   element={Object.prototype.hasOwnProperty.call(categoryLabels, location.pathname.split("/")[1]) ? (
                 <>
                                     <LanguageWrapper
@@ -1171,92 +1103,7 @@ function handleMakeWorldcup() {
     );
   }
 
-function HomeWrapper() {
-  const { fetchWorldcups, fixedWorldcups, handleWorldcupDelete, isAdmin, nickname, t, user, worldcupList } = useContext(AppShellContext);
-
-  const { handleMakeWorldcup, i18n, navigate } = useContext(AppRoutesContext);
-
-      return (
-        <EnPage
-          worldcupList={
-            worldcupList
-          }
-          fetchWorldcups={
-            fetchWorldcups
-          }
-          onSelect={(cup) => {
-            let recent = [];
-
-            try {
-              recent =
-                JSON.parse(
-                  localStorage.getItem(
-                    "onepickgame_recentWorldcups"
-                  ) || "[]"
-                );
-            } catch (error) {
-              console.error(
-                "최근 목록 파싱 실패:",
-                error
-              );
-            }
-
-            localStorage.setItem(
-              "onepickgame_recentWorldcups",
-              JSON.stringify(
-                [
-                  cup.id,
-                  ...recent.filter(
-                    (id) =>
-                      id !== cup.id
-                  ),
-                ].slice(
-                  0,
-                  30
-                )
-              )
-            );
-
-            navigate(
-              getLangPath(
-                i18n,
-                `select-round/${cup.id}`
-              )
-            );
-          }}
-          onMakeWorldcup={
-            handleMakeWorldcup
-          }
-          onDelete={async (id) => {
-            try {
-              await handleWorldcupDelete(
-                id
-              );
-            } catch (e) {
-              console.error(
-                "홈 삭제 실패:",
-                e
-              );
-
-              alert(
-                (t(
-                  "delete_failed"
-                ) ||
-                  "Delete failed!") +
-                  " " +
-                  (e.message || e)
-              );
-            }
-          }}
-          user={user}
-          nickname={nickname}
-          isAdmin={isAdmin}
-          fixedWorldcups={
-            fixedWorldcups
-          }
-        />
-      );
-    }
+function HomeWrapper() { return <PlatformHome language="en"/>; }
 
 function SelectRoundPageWrapper() {
   const { handleWorldcupDelete, isAdmin, relatedWorldcupsById, t, user, worldcupList } = useContext(AppShellContext);

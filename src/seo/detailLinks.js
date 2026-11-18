@@ -11,7 +11,7 @@ function getDetailLinks(language, category, sourceWorldcupId) {
   const validList = ['game', 'sports', 'food', 'animation', 'entertainment', 'other'].includes(listCategory);
   const quizCategory = listCategory === 'knowledge' ? 'knowledge' : validList ? listCategory : '';
   const links = [
-    { href: validWorldcup ? `/${lang}/category/${worldcupCategory}` : (lang === 'en' ? '/' : `/${lang}`), label: copy[1] },
+    { href: validWorldcup ? `/${lang}/category/${worldcupCategory}` : `/${lang}/ideal-type-world-cup`, label: copy[1] },
     { href: `/${lang}/tier-list` + (validList ? `?category=${listCategory}` : ''), label: copy[2] },
     { href: `/${lang}/quiz` + (quizCategory ? `?category=${quizCategory}` : ''), label: copy[3] },
   ];

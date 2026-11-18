@@ -42,7 +42,7 @@ const HOME_SHELL_COPY = require('./src/seo/homeShellCopy.json');
 const TOP_NINE_COPY = require('./src/components/topNine/copy.json');
 function renderHomeBody(rows, lang, copy) {
   const ui = HOME_SHELL_COPY[lang] || HOME_SHELL_COPY.en;
-  const paths = [lang === 'en' ? '/' : `/${lang}`, `/${lang}/quiz`, `/${lang}/tier-list`, `/${lang}/random-pick`, `/${lang}/mytop9`];
+  const paths = [`/${lang}/ideal-type-world-cup`, `/${lang}/quiz`, `/${lang}/tier-list`, `/${lang}/random-pick`, `/${lang}/mytop9`];
   const icons = ['🏆', '?', '▥', '⚄', '▦'];
   const navLabels = [ui.modes[0], ui.modes[2], ui.modes[1], ui.modes[3], (TOP_NINE_COPY[lang] || TOP_NINE_COPY.en).nav];
   const links = rows.filter(row => /^[0-9a-f-]{36}$/i.test(row.id)).map(row => {
@@ -66,7 +66,7 @@ function renderHomeBody(rows, lang, copy) {
 @media(max-width:1100px){.home-shell-header{flex-direction:column;padding:0 24px}.home-shell-brand{padding:16px 0}.home-shell-brand img{width:56px;height:56px}.home-shell-nav{width:100%}.home-shell-nav a{font-size:19px;min-height:100px}}
 @media(max-width:600px){.home-shell-header{padding:0 12px}.home-shell-brand{justify-content:center;font-size:24px}.home-shell-brand img{width:40px;height:40px}.home-shell-nav a{font-size:15px;padding:12px 5px;min-height:90px}.home-shell-nav span{font-size:27px}.home-shell-summary{padding:0 4px;font-size:16px;min-height:72px;margin:10px auto 18px}.home-shell-main{padding:26px 12px 36px}.home-shell-intro h1{font-size:30px}.home-shell-create{font-size:18px;min-height:52px}.home-shell-list{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.home-shell-card-preview{height:130px}.home-shell-list strong{font-size:14px;padding:12px}}
 </style>
-<header class="home-shell-header"><a class="home-shell-brand" href="${paths[0]}"><img src="/ui/onepick-logo-v78.webp" alt="OnePickGame" width="72" height="72">One Pick Game</a><nav class="home-shell-nav">${navLabels.map((name,i)=>`<a href="${paths[i]}"${i===0?' aria-current="page"':''}><span aria-hidden="true">${icons[i]}</span>${escape(name)}</a>`).join('')}</nav></header>
+<header class="home-shell-header"><a class="home-shell-brand" href="${lang === 'en' ? '/' : `/${lang}`}"><img src="/ui/onepick-logo-v78.webp" alt="OnePickGame" width="72" height="72">One Pick Game</a><nav class="home-shell-nav">${navLabels.map((name,i)=>`<a href="${paths[i]}"${i===0?' aria-current="page"':''}><span aria-hidden="true">${icons[i]}</span>${escape(name)}</a>`).join('')}</nav></header>
 <main class="home-shell-main">${copy.siteIntro ? `<p class="home-shell-site-intro">${escape(copy.siteIntro)}</p>` : ''}<section class="home-shell-intro"><h1>🏆 ${escape(copy.heading || ui.modes[0])}</h1><p class="home-shell-summary">${escape(copy.modeIntro || copy.description || "")}</p><a class="home-shell-create" href="/${lang}/worldcup-maker">＋ ${escape(ui.create)}</a></section>${links?`<div><h2 class="home-shell-list-title">${escape(ui.popular)}</h2><ul class="home-shell-list">${links}</ul></div>`:''}</main></div>`;
 }
 function verifyHome(html) {

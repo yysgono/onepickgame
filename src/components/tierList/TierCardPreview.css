@@ -1,0 +1,14 @@
+.tier-card-preview{display:grid;grid-template-columns:minmax(0,1fr);min-height:196px;border-bottom:1px solid #dbeafe;background:#fff;--tier-cell:30px;--tier-row:42px}
+.tier-card-preview--ranked{grid-template-columns:38% minmax(0,1fr)}
+.tier-card-preview-cover{position:relative;min-height:196px;background:#fff;overflow:hidden}
+.tier-card-preview-cover>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 20%}
+.tier-card-preview-cover>span{position:absolute;inset:0;display:grid;place-items:center;color:#607086;font-weight:900}
+.tier-card-preview-rows{padding:7px 6px;min-width:0;background:#f8fbff;border-left:1px solid #dbeafe;display:grid;align-content:center;gap:4px}
+.tier-card-preview-row{min-height:var(--tier-row);display:flex;align-items:center;gap:5px;min-width:0}
+.tier-card-preview-label{width:var(--tier-cell);min-width:var(--tier-cell);height:var(--tier-cell);border-radius:5px;background:#ffd93d;color:#111;display:grid;place-items:center;font-size:16px;font-weight:950}
+.tier-card-preview-label[data-tier="S"]{background:#ff6b6b}.tier-card-preview-label[data-tier="A+"]{background:#ff8052}.tier-card-preview-label[data-tier="A"]{background:#ff9f43}
+.tier-card-preview-candidates{min-width:0;flex:1;display:flex;align-items:center;gap:4px;overflow:hidden}
+.tier-card-preview-candidate{width:min(var(--tier-cell),calc((100% - 16px)/5));aspect-ratio:1;box-sizing:border-box;flex-shrink:0;border-radius:5px;overflow:hidden;background:#fff;border:1px solid #dde2ea}
+.tier-card-preview-candidate>img{width:100%;height:100%;object-fit:cover}
+.tier-card-preview--mobile{--tier-cell:24px;--tier-row:32px;min-height:150px}.tier-card-preview--mobile .tier-card-preview-cover{min-height:150px}.tier-card-preview--mobile .tier-card-preview-label{font-size:12px}
+@media(max-width:600px){.platform-home .tier-card-preview{--tier-cell:24px;--tier-row:32px;min-height:150px}.platform-home .tier-card-preview-cover{min-height:150px}.platform-home .tier-card-preview-label{font-size:12px}}

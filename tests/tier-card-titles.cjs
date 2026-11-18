@@ -12,6 +12,10 @@ assert.equal(title({...row,title:'한국 힙합 명반 앨범 티어표'},[sourc
 assert.equal(title({...row,title_translations:{en:'My translated ranking'}},[source],'en'),'My translated ranking');
 assert.equal(title({...row,title:'원신 캐릭터 이상형 월드컵 - user'},[source],'en'),'Genshin Impact Character Tier List - user');
 assert.equal(title(row,[],'en'),row.title);
+const legacy={...row,original_language:'ko',tier_labels:{},title:'한국 힙합 래퍼 티어표',title_translations:{ko:'한국 힙합 래퍼 티어표 – 국힙 래퍼 순위',en:'Korean Hip Hop Rapper Tier List'}};
+assert.equal(title(legacy,[source],'ko'),'한국 힙합 래퍼 티어표');
+assert.equal(title(legacy,[source],'en'),'Korean Hip Hop Rapper Tier List');
+assert.equal(title({...legacy,title:'내가 정한 캐릭터 순위'},[source],'ko'),'내가 정한 캐릭터 순위');
 let calls=[];const client={from(table){const q={table,filters:[],fields:''};return {select(fields){q.fields=fields;return this},is(){return this},in(k,v){q.ids=v;return this},eq(){return this},neq(){return this},order(){return this},limit(){return this},abortSignal(){return this},then(resolve,reject){calls.push(q);const data=table==='worldcups'?[source]:table==='tier_lists'?[row]:[];return Promise.resolve({data}).then(resolve,reject);}}}};
 (async()=>{
  const sources=await load(client,[row,row]);assert.equal(sources.length,1);assert.deepEqual(calls[0].ids,[id]);assert(!calls[0].fields.includes('data'));
