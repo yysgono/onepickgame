@@ -91,7 +91,7 @@ export function getQuizCopy(lang) {
     ...(code === "ja" ? DETAIL_JA : {}),
     ...(DETAIL_ALL[code] || {}),
   };
-  if (code === "ko") result.create = "퀴즈 만들기";
+  if (code === "ko") { result.create = "퀴즈 만들기"; result.entertainment = "엔터"; }
   if (PLAY_NOW[code]) result.playNow = PLAY_NOW[code];
   return {...result, ...contentCategories.quizCategoryLabels(code)};
 }

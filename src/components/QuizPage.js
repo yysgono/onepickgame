@@ -1648,7 +1648,7 @@ export default function QuizPage({ user = null }) {
 
 
 
-            {CATEGORIES.map(
+            {['all', ...contentCategories.QUIZ_HOME_CATEGORIES].map(
 
 
 
