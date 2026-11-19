@@ -1,3 +1,4 @@
+const worldcupMetadataRules=require('./src/seo/worldcupMetadata.js');
 const siteBrand=require('./src/seo/siteBrand.js');
 const {loadPublicStats,renderPublicStats}=require('./worldcup-public-stats.cjs');
 const COPY=require('./src/seo/worldcupViewSeoCopy.json');
@@ -9,7 +10,7 @@ function renderWorldcupViewHtml(shell,origin,lang,kind,cup,round='',publicStats=
  kind=kind==='stats'?'result':kind;
  const words=COPY[lang],name=localize(cup.title_translations,lang,cup.title);
  const heading=name+' · '+(kind==='match'?words.start:words[kind]);
- const description=localize(cup.description_translations,lang,cup.description)||name;
+ const description=worldcupMetadataRules.worldcupDescription(cup,lang);
  const indexable=kind!=='match';
  const canonical=origin+'/'+lang+'/'+kind+'/'+cup.id+(kind==='match'?'/'+round:'');
  const candidates=(Array.isArray(cup.data)?cup.data:[]).map(c=>c?.name||c?.title).filter(v=>typeof v==='string'&&v.trim()).slice(0,24);
@@ -26,7 +27,7 @@ module.exports=function(app,supabase,origin){app.use(async(req,res,next)=>{
  const lang=String(req.query?.lang||match?.[1]||'en'),kind=String(req.query?.view||match?.[2]||''),id=String(req.query?.id||match?.[3]||''),round=String(req.query?.round||match?.[4]||'');
  if(!COPY[lang]||!['stats','result','match'].includes(kind)||!UUID.test(id)||kind==='match'&&!/^[0-9]+$/.test(round)||kind==='stats'&&round)return res.status(404).send('Not found');
  try{
-  const {data,error}=await supabase.from('worldcups').select('id,title,title_translations,description,description_translations,data').eq('id',id).is('deleted_at',null).maybeSingle();
+  const {data,error}=await supabase.from('worldcups').select('id,title,title_translations,description,description_translations,original_language,data').eq('id',id).is('deleted_at',null).maybeSingle();
   if(error)throw error;if(!data)return res.status(404).send('Not found');
   if(kind==='stats'){
    const extras=new URLSearchParams();

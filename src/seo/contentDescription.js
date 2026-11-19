@@ -17,6 +17,10 @@ function join(values, max = 400) {
   }
   return result;
 }
+function isGeneratedList(value, values) {
+ const saved=text(value),names=[...new Set(values.map(text).filter(Boolean))];
+ return Boolean(saved&&names.length&&(saved===join(names,400)||saved===names.join(', ')));
+}
 const DETAIL_COPY = require('./detailCopy.json');
 function tierDescriptionFields(tier) {
   const labels = tier?.tier_labels;
@@ -31,7 +35,7 @@ function tierDescription(tier, language) {
   const lang = String(language || 'en').toLowerCase().split(/[-_]/)[0];
   const fields = tierDescriptionFields(tier);
   const saved = localized(fields.description_translations, fields.description, lang);
-  if (saved) return saved;
+  if (saved&&!isGeneratedList(saved,list(tier?.candidates).map(c=>c?.name||c?.title))) return saved;
   const copy = DETAIL_COPY[lang] || DETAIL_COPY.en;
   const title = localized(tier?.title_translations, tier?.title, lang) || copy[5];
   const candidates = list(tier?.candidates);
@@ -69,14 +73,10 @@ const QUIZ_INTRO = {
 function quizDescription(quiz, questions, language) {
   const lang = String(language || 'en').toLowerCase().split(/[-_]/)[0];
   const saved = localized(quiz?.description_translations, quiz?.description, lang);
-  if (saved) return saved;
+  const prompts=list(questions).map(q=>localized(q?.question_translations,q?.question_text,lang)).filter(Boolean);
+  if (saved&&!isGeneratedList(saved,prompts)) return saved;
   // Use the same bounded sample as the server, without reading answer fields.
   const rows = list(questions).slice(0, 20);
-  const names = rows.map(q => localized(q?.question_translations, q?.question_text, lang)).filter(Boolean);
-  const unique = new Set(names);
-  const repetitive = names.length > 1 && unique.size <= names.length / 2;
-  const short = !names.length || names.every(name => [...name].length < 12);
-  if (!repetitive && !short) return join(names);
   const copy = QUIZ_INTRO[lang] || QUIZ_INTRO.en;
   const title = localized(quiz?.title_translations, quiz?.title, lang) || copy[0];
   const rawCount = Number(quiz?.question_count);
@@ -87,4 +87,4 @@ function quizDescription(quiz, questions, language) {
   return [title + '.', count > 0 ? copy[1].replace('{n}', String(count)) : '',
     rows.some(q => text(q?.image_url)) ? copy[3] : '', copy[mode]].filter(Boolean).join(' ');
 }
-module.exports = { tierDescription, tierDescriptionFields, quizDescription };
+module.exports = { tierDescription, tierDescriptionFields, quizDescription, isGeneratedList };

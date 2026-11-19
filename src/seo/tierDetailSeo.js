@@ -1,6 +1,7 @@
 // Shared metadata rules for Node server HTML and React. Never writes stored content.
 const COPY = require('./tierDetailSeoCopy.json');
-const { tierDescriptionFields } = require('./contentDescription.js');
+const DETAIL_COPY=require('./detailCopy.json');
+const { tierDescriptionFields, isGeneratedList } = require('./contentDescription.js');
 const TIERS = ['S', 'A+', 'A', 'B', 'C', 'D', 'F'];
 const map = value => {
   if (typeof value === 'string') { try { value = JSON.parse(value); } catch { return {}; } }
@@ -102,10 +103,13 @@ function getTierListDetailSeo(tier, language, nickname = '') {
   const fields = tierDescriptionFields(Object.assign({}, tier, { tier_labels: meta }));
   const translations = map(fields.description_translations);
   const original = normalizeLanguage(meta._originalLanguage || tier?.original_language);
-  const saved = lang === original ? text(fields.description) || text(translations[lang])
+  let saved = lang === original ? text(fields.description) || text(translations[lang])
     : text(translations[lang]) || text(fields.description) || text(translations.en);
+  if(isGeneratedList(saved,candidates.map(c=>c?.name||c?.title)))saved='';
   const intro = fill(copy.intro, { author, title: short(getTierPresetName(tier,lang)||getTierListTitle(tier,lang,copy.fallbackTitle), 100) });
-  const parts = [saved ? short(saved, 140) : '', short(intro, saved ? 100 : 160),
+  const count=Number(tier?.candidate_count)||candidates.length;
+  const countText=count?(DETAIL_COPY[lang]||DETAIL_COPY.en)[7].replace('{n}',String(count)):'';
+  const parts = [saved ? short(saved, 140) : '', !saved?countText:'', short(intro, saved ? 100 : 160),
     summary ? `${short(summary, 150)}.` : ''].filter(Boolean);
   let description = parts.join(' ');
   if (Array.from(description + ' ' + copy.outro).length <= 400) description += ' ' + copy.outro;

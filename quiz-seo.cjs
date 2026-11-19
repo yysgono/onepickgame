@@ -167,7 +167,7 @@ module.exports = function installQuizSeo(app, db, origin, options = {}) {
 
       }
 
-      if (detail && (!localized(data.description_translations, data.description, lang) || socialImage(data.thumbnail_url, origin) === socialImage("", origin))) {
+      if (detail && (!localized(data.description_translations, data.description, lang) || localized(data.description_translations, data.description, lang).includes(',') || socialImage(data.thumbnail_url, origin) === socialImage("", origin))) {
 
         // A missing image must not prevent the public quiz page from loading.
 
