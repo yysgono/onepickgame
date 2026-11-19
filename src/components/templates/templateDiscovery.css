@@ -27,3 +27,15 @@
 .result-source-worldcups .td-card-caption strong{font-size:16px}
 .template-discovery .td-card-media .td-versus-badge{position:absolute;z-index:2;left:50%;top:50%;transform:translate(-50%,-50%);width:88px;height:88px;object-fit:contain;filter:drop-shadow(0 2px 2px #fff) drop-shadow(0 3px 5px #0009);pointer-events:none}
 @media(max-width:600px){.template-discovery.result-source-worldcups h2{font-size:24px}.result-source-worldcups .td-group{padding:16px 10px 12px}.template-discovery .td-card-media .td-versus-badge{width:72px;height:72px}}
+
+/* Keep both source actions balanced without enlarging either thumbnail. */
+.template-discovery.result-source-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;max-width:960px;padding:0 10px;box-sizing:border-box}
+.result-source-actions .td-group{min-width:0;height:100%;padding:16px 12px 12px}
+.template-discovery.result-source-actions h2{font-size:22px;line-height:1.4;margin:0 0 14px;min-height:2.8em;display:flex;align-items:center;justify-content:center}
+.result-source-actions .result-source-worldcup-grid{gap:12px}
+.result-source-actions .td-card{flex:0 1 336px;max-width:336px;margin:0 auto}
+.result-source-actions .td-card .td-card-media{aspect-ratio:16/9}
+.result-source-actions .td-card-caption{padding:10px 8px}
+.result-source-actions .td-card-caption strong{font-size:14px}
+.result-source-actions .td-source-tier-group{border-color:#8b5cf6}
+@media(max-width:680px){.template-discovery.result-source-actions{grid-template-columns:minmax(0,1fr);max-width:460px;gap:14px}.template-discovery.result-source-actions h2{min-height:0;font-size:21px}}
