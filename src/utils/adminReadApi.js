@@ -81,10 +81,17 @@ export async function getAdminRecent7Completions(today = getTodayKstDateString()
   }));
 }
 export async function getAdminRecentPlays() {
-  const { data, error } = await supabase.from('winner_logs').select('id,cup_id,winner_id,created_at,page_language')
-    .order('created_at', { ascending: false }).limit(30);
+  const { data, error } = await supabase.from('winner_logs').select('id,cup_id,winner_id,created_at,page_language,user_id,guest_id')
+    .order('created_at', { ascending: false }).limit(90);
   if (error) throw error;
-  const rows = Array.isArray(data) ? data : [];
+  const seen = new Set();
+  const rows = (Array.isArray(data) ? data : []).filter(row => {
+    const actor = row.user_id ? ['user', String(row.user_id)] : row.guest_id ? ['guest', String(row.guest_id)] : null;
+    if (!actor) return true;
+    const key = JSON.stringify([String(row.cup_id), ...actor]);
+    if (seen.has(key)) return false;
+    seen.add(key); return true;
+  }).slice(0, 30);
   const ids = [...new Set(rows.map(row => row.cup_id).filter(Boolean))];
   let titles = new Map();
   if (ids.length) {
@@ -92,7 +99,7 @@ export async function getAdminRecentPlays() {
     if (titleError) throw titleError;
     titles = new Map((cups || []).map(cup => [String(cup.id), cup]));
   }
-  return rows.map(row => {const language=normalizeActivityLanguage(row.page_language),cup=titles.get(String(row.cup_id));return {...row,page_language:language,worldcup_title:cup?adminActivityTitle(cup,language):'삭제되었거나 제목 없는 월드컵',href:cup?`/${language||'ko'}/stats/${encodeURIComponent(row.cup_id)}`:null};});
+  return rows.map(({user_id,guest_id,...row}) => {const language=normalizeActivityLanguage(row.page_language),cup=titles.get(String(row.cup_id));return {...row,page_language:language,worldcup_title:cup?adminActivityTitle(cup,language):'삭제되었거나 제목 없는 월드컵',href:cup?`/${language||'ko'}/stats/${encodeURIComponent(row.cup_id)}`:null};});
 }
 export async function getAdminRecentComments() {
   const since = new Date(Date.now() - 7 * 86400000).toISOString();
