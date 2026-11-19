@@ -1,3 +1,4 @@
+import contentCategories from "../utils/contentCategories";
 import NavigationLink from "./NavigationLink";
 import { syncSourceQuestions, sourceCandidatePool, mergeSourceQuestions } from "../utils/quizSourceSync";
 import sourceSyncCopy from "./quizSourceSyncCopy.json";
@@ -25,7 +26,7 @@ import {
   isSavedGuestMedia,
 } from "../utils/supabaseQuizApi";
 
-const CATEGORIES = ["game", "entertainment", "animation", "food", "sports", "knowledge", "other"];
+const CATEGORIES = contentCategories.QUIZ_CATEGORIES;
 const QUIZ_DRAFT_STORAGE_KEY = "onepick_quiz_draft_v1";
 const QUIZ_DRAFT_DB_NAME = "onepick_quiz_draft_assets_v1";
 const QUIZ_DRAFT_DB_STORE = "draftAssets";

@@ -1,3 +1,4 @@
+import CategoryNav from './CategoryNav';
 import searchCopy from './searchCopy.json';
 import {guestPhotoBlob,beginGuestImageUpload,completeGuestImageUpload,cancelGuestImageUpload,guestUploadCopy} from '../../utils/guestContentUpload';
 import collageLayout from './collageLayout.js';
@@ -81,10 +82,10 @@ export function BoardThumbnail({candidate,index=4}){
  }
  return <span style={{display:'block',position:'relative',width:'100%',height:'100%',overflow:'hidden',background:'#fff'}}>{isVideo(candidate.src)?<video src={candidate.src} muted playsInline preload="metadata" onLoadedMetadata={measure} style={style}/>:<img src={candidate.src} alt="" loading="lazy" onLoad={measure} style={style}/>}</span>;
 }
-export default function PublicBoards({lang,tick=0,searchTerm=''}) {
+export default function PublicBoards({lang,tick=0,searchTerm='',category='all',hideCategoryNav=false}) {
  const [moderator,setModerator]=useState(false);
  useEffect(()=>{let live=true;Promise.resolve().then(()=>supabase.rpc('is_top_nine_moderator')).then(({data,error})=>{if(live)setModerator(!error&&data===true);}).catch(()=>{});return()=>{live=false;};},[]);
- const [category,setCategory]=useState('all'),[sort,setSort]=useState('latest');
+ const [sort,setSort]=useState('latest');
  const keyword=String(searchTerm||'').normalize('NFC').trim().slice(0,100),listingKey=JSON.stringify([category,sort,tick,keyword]);
  const [paging,setPaging]=useState({key:listingKey,page:0});const page=paging.key===listingKey?paging.page:0;
  const setPage=value=>setPaging(previous=>({key:listingKey,page:typeof value==='function'?value(previous.key===listingKey?previous.page:0):value}));
@@ -101,7 +102,7 @@ export default function PublicBoards({lang,tick=0,searchTerm=''}) {
  async function remove(id){if(!window.confirm(ko?'공개 목록에서 삭제할까요?':'Delete this public collage?'))return;const {error}=await supabase.rpc(moderator?'admin_delete_top_nine_board':'delete_top_nine_board',{p_id:id});if(error)setError(true);else setRows(r=>r.filter(c=>c.id!==id));}
  async function removeGuest(e){e.preventDefault();setDeleting(true);try{const saltResult=await supabase.rpc('get_top_nine_guest_salt',{p_id:guestDelete});if(saltResult.error||!saltResult.data)throw Error('GUEST');const proof=await guestProof(deletePassword,saltResult.data);const {data,error}=await supabase.rpc('delete_top_nine_guest_board',{p_id:guestDelete,p_proof:proof});if(error||!data)throw Error('GUEST');setRows(rows=>rows.filter(r=>r.id!==guestDelete));setGuestDelete(null);setDeletePassword('');}catch{setError(true);}finally{setDeleting(false);}}
  return <section className="tn-gallery"><h2>{keyword?searchText.boards:searchText.community}</h2>
- <div className="tn-category-filters" role="group" aria-label={ko?'구절판 취향표 카테고리':'Top 9 categories'}>{Object.entries(categoryLabels[lang]||categoryLabels.en).map(([key,label])=><button key={key} type="button" aria-pressed={category===key} onClick={()=>{if(category===key)return;setCategory(key);setPage(0);setRows([]);}}>{label}</button>)}</div>
+ {!hideCategoryNav&&<CategoryNav lang={lang} category={category}/>}
  <div className="tn-sort-filters" role="group" aria-label={ko?'정렬':'Sort'}>{[['popular',ko?'인기순':'Popular'],['latest',ko?'최신순':'Latest']].map(([key,label])=><button key={key} type="button" aria-pressed={sort===key} onClick={()=>{if(sort===key)return;setSort(key);setPage(0);setRows([]);}}>{label}</button>)}</div>
  {error?<p role="alert">{ko?'목록을 불러오지 못했어요.':'Unable to load the gallery.'} <button onClick={()=>setRetry(n=>n+1)}>{ko?'다시 시도':'Retry'}</button></p>:!busy&&!rows.length?<p>{keyword?t.empty:ko?'아직 공개된 구절판 취향표가 없어요. 첫 구절판 취향표를 공유해 보세요.':'No public collages yet. Share the first one.'}</p>:null}
  {busy&&<p role="status">{t.loading}</p>}

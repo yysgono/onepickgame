@@ -1,14 +1,15 @@
+const {QUIZ_CATEGORIES,quizCategoryLabels}=require('../utils/contentCategories');
 const tierCopy = require('./tierListSeoData.json');
 const quizCopy = require('./quizSeoData.json');
 const CATEGORIES = ['all','game','entertainment','animation','food','sports','knowledge','other'];
 function getListSeo(kind, lang, search = '') {
   const language = String(lang || 'en').toLowerCase().split(/[-_]/)[0];
   const params = search instanceof URLSearchParams ? search : new URLSearchParams(search);
-  const allowed = kind === 'quiz' ? CATEGORIES : CATEGORIES.filter(c => c !== 'knowledge');
+  const allowed = kind === 'quiz' ? ['all',...QUIZ_CATEGORIES] : CATEGORIES.filter(c => c !== 'knowledge');
   const requested = params.get('category');
   const category = allowed.includes(requested) ? requested : 'all';
   const base = kind === 'quiz' ? quizCopy[language] || quizCopy.en : tierCopy[language] || tierCopy.en;
-  const label = (tierCopy[language]?.categories || {})[category] || (category === 'knowledge' ? ({ko:'상식',en:'Trivia',
+  const label = (kind === 'quiz' ? quizCategoryLabels(language)[category] : '') || (tierCopy[language]?.categories || {})[category] || (category === 'knowledge' ? ({ko:'상식',en:'Trivia',
 "it":"Trivia",
 "pl":"Ciekawostki",
 "nl":"Trivia",

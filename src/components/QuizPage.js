@@ -1,3 +1,4 @@
+import contentCategories from "../utils/contentCategories";
 import {loadRecentContentActivity,formatRecentActivity} from '../utils/recentContentActivity';
 import ContentLanguageSelect from "./ContentLanguageSelect";
 import {localizeExtraUi} from "../utils/newLanguageUi";
@@ -136,7 +137,7 @@ import { supabase } from "../utils/supabaseClient";
 
 
 
-const CATEGORIES = ['all','knowledge','animation','game','entertainment','sports','food','other'];
+const CATEGORIES = ['all', ...contentCategories.QUIZ_CATEGORIES];
 
 const SORTS = [
   "popular",

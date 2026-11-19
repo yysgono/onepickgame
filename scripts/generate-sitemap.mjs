@@ -50,15 +50,8 @@ const CATEGORY_SLUGS = [
   "etc",
 ];
 
-const QUIZ_CATEGORY_SLUGS = [
-  "game",
-  "entertainment",
-  "animation",
-  "food",
-  "sports",
-  "knowledge",
-  "other",
-];
+const QUIZ_CATEGORY_SLUGS = ['game','entertainment','animation','food','sports','knowledge','animals_plants','person','brands','movie_drama','travel','other'];
+const TOP_NINE_CATEGORY_SLUGS = ['games','books','anime','movies','sports','kpop','celebrities','brands','animals_plants','person','other'];
 
 const TIER_CATEGORY_SLUGS = [
   "game",
@@ -326,6 +319,10 @@ export function generateLanguageSitemap(
     changefreq: "daily",
     priority: "0.9",
   });
+
+  for (const category of TOP_NINE_CATEGORY_SLUGS) {
+    xml += makeUrlEntry({loc: `${BASE_URL}/${lang}/mytop9?category=${category}`, changefreq: "daily", priority: "0.82"});
+  }
 
   for (const categorySlug of QUIZ_CATEGORY_SLUGS) {
     xml += makeUrlEntry({

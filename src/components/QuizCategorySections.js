@@ -1,3 +1,4 @@
+import contentCategories from "../utils/contentCategories";
 import QuizCard from './QuizCard';
 import React,{useEffect,useRef,useState} from 'react';
 import {Link} from 'react-router-dom';
@@ -5,7 +6,7 @@ import {getQuizPage} from '../utils/supabaseQuizApi';
 import {createQuizListPager} from '../utils/quizListPager';
 import COPY from './quizCategoryHomeCopy.json';
 import './QuizCategorySections.css';
-const CATEGORIES=['knowledge','animation','game','entertainment','sports','food','other'];
+const CATEGORIES=contentCategories.QUIZ_CATEGORIES;
 function local(map,fallback,lang){if(typeof map==='string'){try{map=JSON.parse(map);}catch{map={};}}return map?.[lang]||map?.en||fallback||'';}
 function useColumns(container){
  const cardWidth=440;

@@ -35,3 +35,20 @@ export async function loadTemplatePage(id){
  if(!Array.isArray(raw.data)||!raw.data.some(c=>c?.image||c?.image_url||c?.url))throw new Error('NOT_FOUND');
  return {...raw,top_nine_title_translations:settings.data?.title_translations||{},intro_sources:intro.data?.candidate_sources||[]};
 }
+
+export async function categorySourcePage(category,term='',offset=0,options={}) {
+ let query=supabase.from('top_nine_category_cards').select('id,title,title_translations,top_nine_title_translations,category,sort_order').eq('category',category);
+ const keyword=String(term||'').trim().slice(0,100);
+ if(keyword){
+  const pattern='"%'+keyword.replace(/[\\%_]/g,'\\$&').replace(/"/g,'\\"')+'%"';
+  query=query.or(['title',...Object.keys((require('./categoryLabels.json'))).map(lang=>'title_translations->>'+lang),...Object.keys((require('./categoryLabels.json'))).map(lang=>'top_nine_title_translations->>'+lang)].map(field=>field+'.ilike.'+pattern).join(','));
+ }
+ query=query.order('sort_order',{ascending:true,nullsFirst:false}).order('id').range(offset,offset+29);
+ if(options.signal&&query.abortSignal)query=query.abortSignal(options.signal);
+ const {data,error}=await query;if(error)throw error;
+ const rows=data||[];if(!rows.length)return [];
+ let request=supabase.from('top_nine_thumbnails').select('source_worldcup_id,image_url').in('source_worldcup_id',rows.map(row=>row.id));
+ if(options.signal&&request.abortSignal)request=request.abortSignal(options.signal);
+ const thumbs=await request;const images=new Map((thumbs.data||[]).map(row=>[String(row.source_worldcup_id),row.image_url]));
+ return rows.map(row=>({...row,thumbnail:images.get(String(row.id))||''}));
+}

@@ -286,3 +286,7 @@
 /* Solid separators stay above photos and never intercept clicks or drags. */
 .top-nine .tn-collage-lines{position:absolute;inset:0;width:100%;height:100%;z-index:5;pointer-events:none;fill:none;stroke:#9878bd;stroke-width:1.2;stroke-linejoin:round}
 .top-nine .tn-mini-grid .tn-collage-lines{stroke-width:.8}
+
+.tn-category-filters a{display:inline-flex;align-items:center;padding:9px 14px;border:1px solid #d9d0ed;border-radius:9px;background:#fff;color:#543a85;text-decoration:none;font-weight:700}
+.tn-category-filters a[aria-current="page"]{background:#713bd0;border-color:#713bd0;color:#fff}
+.tn-category-filters a:focus-visible{outline:3px solid #8b5cf6;outline-offset:2px}

@@ -1,3 +1,4 @@
+import contentCategories from "../../utils/contentCategories";
 const EN = {
   title: "Quiz", intro: "Play quizzes about your favorite topics or create your own.", create: "Create Quiz",
   search: "Search quizzes", popular: "Popular", latest: "Latest", empty: "No quizzes match these filters.", loading: "Loading...",
@@ -92,5 +93,5 @@ export function getQuizCopy(lang) {
   };
   if (code === "ko") result.create = "퀴즈 만들기";
   if (PLAY_NOW[code]) result.playNow = PLAY_NOW[code];
-  return result;
+  return {...result, ...contentCategories.quizCategoryLabels(code)};
 }

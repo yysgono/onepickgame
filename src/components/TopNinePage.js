@@ -1,3 +1,5 @@
+import CategoryNav from './topNine/CategoryNav';
+import categoryLabels from './topNine/categoryLabels.json';
 import useTopNineLiveSearch from '../hooks/useTopNineLiveSearch';
 import searchCopy from './topNine/searchCopy.json';
 import TemplateDiscovery from './templates/TemplateDiscovery';
@@ -26,13 +28,13 @@ import {prepareMemberSlots} from "./topNine/memberImages";
 import SiteCandidatePicker from "./topNine/SiteCandidatePicker";
 import TopNineIcon from "./TopNineIcon";
 import ContentLanguageSelect from "./ContentLanguageSelect";
-import React,{useEffect,useLayoutEffect,useMemo,useRef,useState} from 'react';
+import React,{useCallback,useEffect,useLayoutEffect,useMemo,useRef,useState} from 'react';
 import {Link,useNavigate,useLocation,useParams} from 'react-router-dom';
 import Seo from '../seo/Seo';
 import {templateTitle} from '../utils/templateTitles';
 import copy from './topNine/copy.json';
 import PublicBoards,{PublishBoard,DeleteBoard} from './topNine/PublicBoards';
-import {listTemplates,sourcePage,searchSources,loadSource} from './topNine/api';
+import {categorySourcePage,listTemplates,sourcePage,searchSources,loadSource} from './topNine/api';
 import {insertUploadedCandidates,normalizeCandidates,candidateMatches,toggleCandidate,placeCandidate,clearSlot,swapSlots,normalizeZoom,readShared,safeMedia} from './topNine/core';
 import {importFile,mediaFrame,exportPNG,downloadBlob,isVideo} from './topNine/media';
 import {draftStore} from './topNine/draft';
@@ -48,6 +50,10 @@ function CropPhoto({candidate,frame,index}) {
 }
 export default function TopNinePage({publicBoard=null,publicId='',templateSource=null,onHome,canEdit=false}={}){
  const {lang:routeLang}=useParams(),location=useLocation(),navigate=useNavigate();const lang=copy[routeLang]?routeLang:'en',t=copy[lang];
+ const requestedCategory=new URLSearchParams(location.search).get('category');
+ const activeCategory=Object.prototype.hasOwnProperty.call(categoryLabels.en,requestedCategory)?requestedCategory:'all';
+ const categoryLabel=(categoryLabels[lang]||categoryLabels.en)[activeCategory];
+ const fetchCategorySources=useCallback((term,offset,options)=>activeCategory==='all'?searchSources(term,offset,options):categorySourcePage(activeCategory,term,offset,options),[activeCategory]);
  const registration=registrationCopy[lang]||registrationCopy.en;
  const [uploadGate,setUploadGate]=useState(false),[authSaving,setAuthSaving]=useState(false),[authSaveError,setAuthSaveError]=useState(false);
  const restoredAuth=useRef(false);
@@ -55,7 +61,7 @@ export default function TopNinePage({publicBoard=null,publicId='',templateSource
  const showRanks=false; // Ignore historical rank flags in boards, drafts and shared links.
  const [sitePicker,setSitePicker]=useState(false),[galleryTick]=useState(0),[templateMore,setTemplateMore]=useState(false),[templateOffset,setTemplateOffset]=useState(0),[stage,setStage]=useState(shared?'preview':templateSource?'pick':'home'),[slots,setSlots]=useState(shared?.slots||blank),[title,setTitle]=useState(shared?.title||(templateSource?templatePageTitle(templateSource,lang):'')),[baseTitle,setBaseTitle]=useState(shared?null:templateSource?templatePageTitle(templateSource,lang):''),[names,setNames]=useState(shared?.names||false);
  const [candidates,setCandidates]=useState(()=>templateSource&&!shared?normalizeCandidates(templateSource.data):[]),[templates,setTemplates]=useState([]),[query,setQuery]=useState(''),[searchComposing,setSearchComposing]=useState(false),[candidateQuery,setCandidateQuery]=useState(''),[limit,setLimit]=useState(CANDIDATE_PAGE_SIZE);
- const sourceSearch=useTopNineLiveSearch(query,searchSources,{enabled:stage==='home',composing:searchComposing});
+ const sourceSearch=useTopNineLiveSearch(query,fetchCategorySources,{enabled:stage==='home',composing:searchComposing});
  const sources=sourceSearch.rows,searched=Boolean(sourceSearch.term),moreSources=sourceSearch.more,searchText=searchCopy[lang]||searchCopy.en;
  const [busy,setBusy]=useState(false),[message,setMessage]=useState(''),[templateError,setTemplateError]=useState(false),[templateTick,setTemplateTick]=useState(0),[focus,setFocus]=useState(null),[draft,setDraft]=useState(null),[draftError,setDraftError]=useState(false),[shareURL,setShareURL]=useState('');
  const [editRequest,setEditRequest]=useState(null),[draftNotice,setDraftNotice]=useState(''),[draftBusy,setDraftBusy]=useState(false),[noticeTick,setNoticeTick]=useState(0);
@@ -115,7 +121,7 @@ export default function TopNinePage({publicBoard=null,publicId='',templateSource
  useEffect(()=>{if(poolListRef.current)poolListRef.current.scrollTop=0;},[candidateQuery]);
  useEffect(()=>{alive.current=true;Promise.all([draftStore(),readAuthDraft(location.search)]).then(([d,authDraft])=>{if(!alive.current)return;if(authDraft&&!publicId&&!shared){restoredAuth.current=true;setDraft(authDraft);resume(authDraft);clearAuthReturn();navigate(location.pathname,{replace:true});setDraftNotice(t.draftLoaded);return;}if(d?.v===1)setDraft(d);if(publicBoard&&canEdit&&new URLSearchParams(location.search).get('edit')==='1')requestEdit(d?.v===1?d:null);}).catch(()=>{if(alive.current&&publicBoard&&canEdit&&new URLSearchParams(location.search).get('edit')==='1')requestEdit(null);}).finally(()=>{draftReady.current=true;});return()=>{alive.current=false;operation.current++;};},[]);
  useEffect(()=>{if(!shared)return;setSlots(shared.slots);setTitle(shared.title);setBaseTitle(null);setNames(shared.names);setStage('preview');setFocus(null);setShareURL('');},[shared]);
- useEffect(()=>{let live=true;setTemplateError(false);listTemplates().then(rows=>{if(live){setTemplates(rows);setTemplateMore(rows.length===30);}}).catch(()=>{if(live)setTemplateError(true);});return()=>{live=false;};},[templateTick]);
+ useEffect(()=>{let live=true;setTemplateError(false);setTemplates([]);setTemplateMore(false);(activeCategory==='all'?listTemplates():categorySourcePage(activeCategory)).then(rows=>{if(live){setTemplates(rows);setTemplateOffset(0);setTemplateMore(rows.length===30);}}).catch(()=>{if(live)setTemplateError(true);});return()=>{live=false;};},[templateTick,activeCategory]);
  useEffect(()=>{
   if(stage==='home'||stage==='choose'||(templateSource&&!templatePoolLoaded&&!count&&!candidates.length)||!draftReady.current||shared)return;
   const timer=setTimeout(()=>draftStore({v:1,boardId:editingId,slots,title,baseTitle,names,showRanks,candidates,sourceIds,category},true).catch(()=>{if(alive.current)setDraftError(true);}),600);
@@ -287,24 +293,27 @@ export default function TopNinePage({publicBoard=null,publicId='',templateSource
  const changedSinceSave=savedBoard.current!==JSON.stringify({slots,title,names,showRanks,sourceIds,category});
  const ready=count>0&&slots.every(c=>!c||frames[c.src]?.frame);
  return <main className="top-nine" dir={lang==='ar'?'rtl':'ltr'}>
- <Seo title={`${publicId?displayTitle:templateSource?templatePageTitle(templateSource,lang):t.title} | One Pick Game`} description={publicId?publicDescription.replace(/\n/g,' '):templateSource?templatePageIntro(templateSource,lang):t.subtitle} lang={lang} slug={publicId?'mytop9/'+publicId:templateSource?'mytop9/templates/'+templateSource.id:'mytop9'} indexable={publicId?stage==='preview'&&!publicBoard?.unlisted:!location.hash}/>
- {!publicId&&<header className="tn-heading"><div className="tn-hero-icon"><TopNineIcon size={52}/></div><h1>{templateSource?templatePageTitle(templateSource,lang):t.title}</h1><p>{(templateSource?[templatePageIntro(templateSource,lang)]:(t.introLines||[t.subtitle])).map((line,i)=><span className="tn-description-line" key={i}>{line}</span>)}</p><ContentLanguageSelect /></header>}
+ <Seo title={`${publicId?displayTitle:templateSource?templatePageTitle(templateSource,lang):activeCategory==='all'?t.title:categoryLabel+' · '+t.title} | One Pick Game`} description={publicId?publicDescription.replace(/\n/g,' '):templateSource?templatePageIntro(templateSource,lang):activeCategory==='all'?t.subtitle:categoryLabel+': '+t.subtitle} lang={lang} slug={publicId?'mytop9/'+publicId:templateSource?'mytop9/templates/'+templateSource.id:'mytop9'+(activeCategory==='all'?'':'?category='+activeCategory)} indexable={publicId?stage==='preview'&&!publicBoard?.unlisted:!location.hash}/>
+ {!publicId&&<header className="tn-heading"><div className="tn-hero-icon"><TopNineIcon size={52}/></div><h1>{templateSource?templatePageTitle(templateSource,lang):activeCategory==='all'?t.title:categoryLabel+' · '+t.title}</h1><p>{(templateSource?[templatePageIntro(templateSource,lang)]:(t.introLines||[t.subtitle])).map((line,i)=><span className="tn-description-line" key={i}>{line}</span>)}</p><ContentLanguageSelect /></header>}
  {templateSource&&stage==='pick'&&<div className="tn-template-modes"><button type="button" className="tn-template-direct" disabled={busy} onClick={()=>beginTemplateMode('direct')}>{lang==='ko'?'직접 고르기':t.direct}</button><div className="tn-template-game"><button type="button" className="tn-template-play" disabled={busy||normalizeCandidates(templateSource.data).length<9} onClick={()=>beginTemplateMode('game')}>{lang==='ko'?'게임으로 고르기':t.game}</button><GameCountSelect lang={lang} value={gameCount} onChange={setGameCount} total={normalizeCandidates(templateSource.data).length} disabled={busy}/></div></div>}
  <input ref={fileRef} type="file" accept=".jpg,.jpeg,.png,.webp,.gif,.mp4,.svg" multiple hidden onChange={upload}/>
  {message&&<div role="alert" className="tn-message"><p>{message}</p></div>}
  {draftError&&<p role="status" className="tn-message">{t.draftError}</p>}
  {busy&&!quietOperation&&<p role="status" className="tn-message">{t.loading}</p>}
  {stage==='home'?<>
+ {activeCategory==='all'&&<>
  <div className={`tn-home-grid tn-grid tn-collage ${dropCell!==null?'tn-drop-active':''}`} dir="ltr" onDragOver={homeGridDragOver} onDragLeave={event=>{if(!event.currentTarget.contains(event.relatedTarget))setDropCell(null);}} onDrop={homeGridDrop}>{slots.map((c,i)=><div key={i} style={collageLayout.layouts[i].style} className={`tn-cell ${i===4?'tn-onepick':''} ${dropCell===i?'tn-drop-target':''}`}><button disabled={busy} aria-label={`${i+1}: ${c?.name||'+'}`} onClick={()=>{setFocus(i);pickUpload(i);}} onDragEnter={e=>{if(!busy&&Array.from(e.dataTransfer?.types||[]).includes('Files')){e.preventDefault();setDropCell(i);}}} onDragOver={e=>{if(!busy&&Array.from(e.dataTransfer?.types||[]).includes('Files')){e.preventDefault();e.dataTransfer.dropEffect='copy';setDropCell(i);}}} onDragLeave={e=>{if(!e.currentTarget.contains(e.relatedTarget))setDropCell(current=>current===i?null:current);}} onDrop={e=>slotDrop(e,i)}>{dropCell===i&&<span className="tn-drop-label" aria-hidden="true"><span>↓</span>{t.upload}</span>}{c&&frames[c.src]?.frame?<CropPhoto index={i} candidate={c} frame={frames[c.src].frame}/>:<span>{i===4?'One Pick': '+'}</span>}</button></div>)}<svg className="tn-collage-lines" viewBox="0 0 100 100" aria-hidden="true" focusable="false"><path d={collageLayout.boundaryPath} vectorEffect="non-scaling-stroke"/></svg></div>
  <div className="tn-actions"><button className="tn-primary tn-upload-button" disabled={busy} onClick={()=>pickUpload()}>{t.upload}</button><button className="tn-site-import" disabled={busy} onClick={()=>setSitePicker(true)}>{lang==='ko'?'사이트 내에서 골라오기':'Choose from the site'}</button><button disabled={busy||draftBusy} onClick={loadDraft}>{t.loadDraft}</button></div><p className="tn-muted">{t.uploadHelp}</p>
+ </>}
+ <CategoryNav lang={lang} category={activeCategory}/>
  <form className="tn-search" onSubmit={search}><input aria-label={searchText.placeholder} placeholder={searchText.placeholder} maxLength={100} value={query} onChange={e=>setQuery(e.target.value)} onCompositionStart={()=>setSearchComposing(true)} onCompositionEnd={e=>{setQuery(e.currentTarget.value);setSearchComposing(false);}}/><button type="submit">{searchText.search}</button></form>
  <h2>{searched?searchText.templates:t.templates}</h2>
  {sourceSearch.pending&&<p role="status">{t.loading}</p>}{sourceSearch.error&&<p role="alert">{t.error} <button onClick={()=>sourceSearch.submit()}>{t.retry}</button></p>}
  {templateError&&!searched&&<div className="tn-message">{t.error} <button onClick={()=>setTemplateTick(v=>v+1)}>{t.retry}</button></div>}
  <div className="tn-templates tn-picture-templates" aria-busy={sourceSearch.pending}>{(searched?sources:templates).map(c=><Link key={c.id} className="tn-template-link" to={'/'+lang+'/mytop9/templates/'+c.id}>{safeMedia(c.thumbnail)?<Photo candidate={{src:safeMedia(c.thumbnail)}}/>:<span className="tn-card-placeholder" aria-hidden="true">▦</span>}<strong title={templateTitle(c,'nine',lang,t.nav)}><span className="tn-template-title">{templateTitle(c,'nine',lang,t.nav)}</span></strong></Link>)}</div>
  {searched&&!sourceSearch.pending&&!sourceSearch.error&&!sources.length&&<p>{t.empty}</p>}
- {searched?moreSources&&<button disabled={sourceSearch.pending} onClick={()=>search(null,true)}>{t.more}</button>:templateMore&&<button disabled={busy} onClick={()=>work(async current=>{const offset=templateOffset+30;const rows=await sourcePage('',offset,true);if(current()){setTemplates(old=>[...old,...rows]);setTemplateOffset(offset);setTemplateMore(rows.length===30);}})}>{t.more}</button>}
- <PublicBoards lang={lang} tick={galleryTick} searchTerm={sourceSearch.term}/>
+ {searched?moreSources&&<button disabled={sourceSearch.pending} onClick={()=>search(null,true)}>{t.more}</button>:templateMore&&<button disabled={busy} onClick={()=>work(async current=>{const offset=templateOffset+30;const rows=await (activeCategory==='all'?sourcePage('',offset,true):categorySourcePage(activeCategory,'',offset));if(current()){setTemplates(old=>[...old,...rows]);setTemplateOffset(offset);setTemplateMore(rows.length===30);}})}>{t.more}</button>}
+ <PublicBoards key={activeCategory} lang={lang} category={activeCategory} tick={galleryTick} searchTerm={sourceSearch.term} hideCategoryNav/>
  </>:stage==='game'?<TopNineGame game={game} lang={lang} text={t} Photo={Photo} onChange={setGame} onNext={advanceGame} onBack={()=>{setGame(history[history.length-1]);setHistory(previous=>previous.slice(0,-1));}} onMore={moreGame} onFill={fillGame} canBack={history.length>0}/>:<>
  <div className="tn-actions"><button disabled={busy} onClick={()=>{if(onHome){onHome();return;}setStage('home');setFocus(null);setMessage('');}}>{lang==='ko'?'홈으로':'Home'}</button><button disabled={busy} onClick={reset}>{t.reset}</button>{(!publicId||canEdit)&&<><button disabled={busy||draftBusy} onClick={saveDraft}>{t.saveDraft}</button><button disabled={busy||draftBusy} onClick={loadDraft}>{t.loadDraft}</button></>}{stage==='pick'&&<><button className="tn-upload-button" disabled={busy} onClick={()=>pickUpload()}>{t.upload}</button><button className="tn-site-import" disabled={busy} onClick={()=>setSitePicker(true)}>{lang==='ko'?'사이트 내에서 골라오기':'Choose from the site'}</button></>}{stage==='preview'&&<>{(!publicId||canEdit)&&<button disabled={busy} onClick={requestEdit}>{t.edit}</button>}<button type="button" aria-pressed={showNames} onClick={()=>setPreviewNames(!showNames)}>{showNames?t.hideCandidateNames:t.showCandidateNames}</button>{publicId&&!publicBoard?.unlisted&&<DeleteBoard id={publicId} lang={lang} onDeleted={onHome}/>}</>}</div>
  {stage==='preview'&&publicId&&<div className="tn-public-intro"><h1 className="tn-result-title">{displayTitle}</h1><p className="tn-public-description">{publicDescription}</p><div className="tn-actions">{(publicBoard?.titleSources||[]).filter(source=>sourceIds.includes(source.id)).map(source=><a className="tn-reuse-template" key={source.id} href={'/'+lang+'/mytop9/templates/'+encodeURIComponent(source.id)}>{t.reuseTemplate}{sourceIds.length>1?' — '+templateTitle(source,'nine',lang):''}</a>)}</div></div>}
