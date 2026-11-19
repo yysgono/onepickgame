@@ -1,3 +1,4 @@
+import SourceWorldcupCards from "./templates/SourceWorldcupCards";
 import SocialShareButtons from './sharing/SocialShareButtons';
 import trashCopy from "../utils/contentTrashCopy.json";
 import NavigationLink from "./NavigationLink";
@@ -232,6 +233,11 @@ export default function QuizDetailPage() {
   const [allQuestions, setAllQuestions] = useState([]);
 
   const [sessionQuestions, setSessionQuestions] = useState([]);
+  const sourceWorldcupIds = useMemo(() => [...new Set([
+    ...(Array.isArray(quiz?.source_worldcup_ids) ? quiz.source_worldcup_ids : []),
+    ...allQuestions.map(question => question.source_worldcup_id),
+  ].filter(value => /^[a-f0-9]{8}-(?:[a-f0-9]{4}-){3}[a-f0-9]{12}$/i.test(String(value))))], [quiz?.source_worldcup_ids, allQuestions]);
+
 
   const [questionCount, setQuestionCount] = useState(10);
 
@@ -1522,6 +1528,8 @@ export default function QuizDetailPage() {
               </div>
 
             )}
+
+            {sourceWorldcupIds.length > 0 && <SourceWorldcupCards sourceIds={sourceWorldcupIds} lang={lang}/>}
 
             {recommended.length > 0 && (
 
