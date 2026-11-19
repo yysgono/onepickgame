@@ -1,3 +1,12 @@
+홈 카드는 게임별 처음 5개, 추가 조회도 5개씩입니다. 프런트엔드와 서버를 함께 적용하세요.
+
+긴급: Vercel CSS 파일 누락으로 인한 함수 시작 실패 수정
+
+운영 로그의 Cannot find module ./src/components/PlatformHome.css 오류를 수정했습니다.
+CSS 세 파일을 서버 배포에 명시적으로 포함하고 누락 시 서버가 종료되지 않게 했습니다.
+이 수정본을 덮어쓴 뒤 Vercel에 새로 배포해야 합니다. server.js와 vercel.json을 반드시 함께 적용하세요.
+자세한 내용: docs/vercel-missing-home-css.md
+
 종합 홈 문구·기존 카드 디자인·넓은 화면 카드 채우기 수정본
 
 이 ZIP은 전체 프로젝트가 아닙니다. 프로젝트 루트에 같은 경로로 덮어쓰세요.

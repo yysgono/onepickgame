@@ -1,6 +1,7 @@
 // src/seo/Seo.jsx
 
 import React from "react";
+import siteBrand from "./siteBrand";
 import { Helmet } from "react-helmet-async";
 
 const SITE_URL = "https://www.onepickgame.com";
@@ -107,7 +108,7 @@ export default function Seo({
 }) {
   const normalizedLang = String(lang || "en").split("-")[0];
 
-  const safeTitle = String(title || "OnePickGame")
+  const safeTitle = siteBrand.localizeTitle(title || "OnePickGame", normalizedLang)
     .replace(/\s+/g, " ")
     .trim();
 
@@ -167,7 +168,7 @@ export default function Seo({
     inLanguage: normalizedLang,
     isPartOf: {
       "@type": "WebSite",
-      name: "OnePickGame",
+      name: siteBrand.brandName(normalizedLang),
       url: SITE_URL,
     },
     ...(absoluteImage
@@ -255,7 +256,7 @@ export default function Seo({
 
       <meta
         property="og:site_name"
-        content="OnePickGame"
+        content={siteBrand.brandName(normalizedLang)}
       />
 
       <meta

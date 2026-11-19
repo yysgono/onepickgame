@@ -1,3 +1,4 @@
+const siteBrand=require('./src/seo/siteBrand.js');
 const {boardDescription}=require('./src/components/topNine/boardDescription.cjs');
 const {localizedBoardTitle,loadBoardTitleSources}=require('./src/components/topNine/localizedTitle.cjs');
 const COPY=require('./src/components/topNine/copy.json');
@@ -8,7 +9,7 @@ function publicImage(value){
  try{const url=new URL(value);return url.protocol==='https:'&&!url.username&&!url.password&&!/\/render\/image\/|\/sign\//i.test(url.pathname)&&![...url.searchParams.keys()].some(key=>/token|signature|credential|expires|key|auth/i.test(key))?url.href:'';}catch{return '';}
 }
 function renderBoardHtml(template,origin,lang,board){
- const title=board.title+' | One Pick Game',description=boardDescription(board,lang),url=origin+'/'+lang+'/mytop9/'+board.id;
+ const title=siteBrand.localizeTitle(board.title+' | One Pick Game',lang),description=boardDescription(board,lang),url=origin+'/'+lang+'/mytop9/'+board.id;
  const slots=(Array.isArray(board.slots)?board.slots:[]).filter(candidate=>candidate&&candidate.id!=='tn-empty-cell');
  const image=slots.map(candidate=>publicImage(candidate.src)).find(Boolean);
  const html=template.replace(/<title\b[^>]*>[\s\S]*?<\/title>/gi,'').replace(/<meta\b[^>]*(?:name=["'](?:description|robots|twitter:[^"']*)["']|property=["']og:[^"']*["'])[^>]*>/gi,'').replace(/<link\b[^>]*rel=["'](?:canonical|alternate)["'][^>]*>/gi,'').replace(/<html\b[^>]*>/i,'<html lang="'+lang+'" dir="'+(lang==='ar'?'rtl':'ltr')+'">');

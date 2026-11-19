@@ -1,10 +1,11 @@
+const siteBrand=require('./src/seo/siteBrand.js');
 const COPY=require('./src/components/topNine/copy.json');
 const {loadSeoTemplate}=require('./seo-template.cjs');
 const {templatePageTitle}=require('./src/components/topNine/templateIntro.cjs');
 const UUID=/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const escape=value=>String(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function renderTopNineHtml(template,origin,lang,{templates=[],boards=[]}={}){
- if(!Object.prototype.hasOwnProperty.call(COPY,lang))return null;const copy=COPY[lang];const url=`${origin}/${lang}/mytop9`,title=`${copy.title} | One Pick Game`;
+ if(!Object.prototype.hasOwnProperty.call(COPY,lang))return null;const copy=COPY[lang];const url=`${origin}/${lang}/mytop9`,title=siteBrand.localizeTitle(`${copy.title} | One Pick Game`,lang);
  const html=template.replace(/<title\b[^>]*>[\s\S]*?<\/title>/gi,'').replace(/<meta\b[^>]*(?:name=["'](?:description|robots|twitter:[^"']*)["']|property=["']og:[^"']*["'])[^>]*>/gi,'').replace(/<link\b[^>]*rel=["'](?:canonical|alternate)["'][^>]*>/gi,'').replace(/<html\b[^>]*>/i,`<html lang="${lang}" dir="${lang==='ar'?'rtl':'ltr'}">`);
  const alternates=Object.keys(COPY).map(l=>`<link data-rh="true" rel="alternate" hreflang="${l}" href="${origin}/${l}/mytop9">`).join('');
  const presets=templates.filter(row=>UUID.test(String(row.id))).slice(0,12);

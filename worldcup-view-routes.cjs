@@ -1,3 +1,4 @@
+const siteBrand=require('./src/seo/siteBrand.js');
 const {loadPublicStats,renderPublicStats}=require('./worldcup-public-stats.cjs');
 const COPY=require('./src/seo/worldcupViewSeoCopy.json');
 const {loadSeoTemplate}=require('./seo-template.cjs');
@@ -13,7 +14,7 @@ function renderWorldcupViewHtml(shell,origin,lang,kind,cup,round='',publicStats=
  const canonical=origin+'/'+lang+'/'+kind+'/'+cup.id+(kind==='match'?'/'+round:'');
  const candidates=(Array.isArray(cup.data)?cup.data:[]).map(c=>c?.name||c?.title).filter(v=>typeof v==='string'&&v.trim()).slice(0,24);
  const html=shell.replace(/<title\b[^>]*>[\s\S]*?<\/title>/gi,'').replace(/<meta\b[^>]*(?:name=["'](?:description|robots|twitter:[^"']*)["']|property=["']og:[^"']*["'])[^>]*>/gi,'').replace(/<link\b[^>]*rel=["'](?:canonical|alternate)["'][^>]*>/gi,'').replace(/<html\b[^>]*>/i,'<html lang="'+lang+'" dir="'+(lang==='ar'?'rtl':'ltr')+'">');
- const head='<title data-rh="true">'+escape(heading)+' | OnePickGame</title><meta data-rh="true" name="description" content="'+escape(description)+'"><meta data-rh="true" name="robots" content="'+(indexable?'index,follow':'noindex,follow')+'"><link data-rh="true" rel="canonical" href="'+escape(canonical)+'"><meta data-rh="true" property="og:title" content="'+escape(heading)+'"><meta data-rh="true" property="og:description" content="'+escape(description)+'"><meta data-rh="true" property="og:url" content="'+escape(canonical)+'">';
+ const head='<title data-rh="true">'+escape(siteBrand.localizeTitle(heading+' | OnePickGame',lang))+'</title><meta data-rh="true" name="description" content="'+escape(description)+'"><meta data-rh="true" name="robots" content="'+(indexable?'index,follow':'noindex,follow')+'"><link data-rh="true" rel="canonical" href="'+escape(canonical)+'"><meta data-rh="true" property="og:title" content="'+escape(heading)+'"><meta data-rh="true" property="og:description" content="'+escape(description)+'"><meta data-rh="true" property="og:url" content="'+escape(canonical)+'">';
  const body='<main style="max-width:1100px;margin:32px auto;padding:24px"><h1>'+escape(heading)+'</h1><p>'+escape(description)+'</p><nav><a href="'+escape(origin+'/'+lang+'/select-round/'+cup.id)+'">'+escape(words.start)+' · '+escape(name)+'</a> · <a href="'+escape(origin+'/'+lang+'/result/'+cup.id)+'">'+escape(words.stats)+'</a></nav>'+(kind==='match'?'':renderPublicStats(cup,lang,publicStats))+(candidates.length?'<section><h2>'+escape(words.candidates)+'</h2><ul>'+candidates.map(name=>'<li>'+escape(name)+'</li>').join('')+'</ul></section>':'')+'</main>';
  const root=/<div\b[^>]*\bid=["']root["'][^>]*>/i;if(!root.test(html))throw Error('ROOT_MISSING');
  return html.replace('</head>',()=>head+'</head>').replace(root,value=>value+body);

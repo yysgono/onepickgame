@@ -1,3 +1,4 @@
+const siteBrand=require('./src/seo/siteBrand.js');
 const PAGES=require('./src/components/randomPick/recommendationPages.json');
 const LABELS=require('./src/components/randomPick/homeRecommendationLabels.json');
 const {loadSeoTemplate}=require('./seo-template.cjs');
@@ -6,7 +7,7 @@ const MODES=['wheel','lotto','pinball','ladder','boxes','cards','order','dice','
 const escape=value=>String(value).replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
 function renderRandomHtml(template,origin,lang,mode){
  const copy=COPY[lang],topic=PAGES[mode],game=topic?.mode||mode;if(!copy||mode&&!MODES.includes(mode)&&!topic)return null;
- const path=`/${lang}/random-pick${mode?'/'+mode:''}`,url=origin+path,title=topic?`${(LABELS[lang]||LABELS.en)[topic.index]} | OnePickGame`:mode?`${copy.modes[mode]} | ${lang==='ko'?'원픽게임':'OnePickGame'}`:copy.seoTitle,description=topic?`${(LABELS[lang]||LABELS.en)[topic.index]} · ${copy.modeDescriptions[game]}`:mode?copy.modeDescriptions[mode]:copy.intro;
+ const path=`/${lang}/random-pick${mode?'/'+mode:''}`,url=origin+path,rawTitle=topic?`${(LABELS[lang]||LABELS.en)[topic.index]} | OnePickGame`:mode?`${copy.modes[mode]} | ${lang==='ko'?'원픽게임':'OnePickGame'}`:copy.seoTitle,title=siteBrand.localizeTitle(rawTitle,lang),description=topic?`${(LABELS[lang]||LABELS.en)[topic.index]} · ${copy.modeDescriptions[game]}`:mode?copy.modeDescriptions[mode]:copy.intro;
  let html=template.replace(/<title\b[^>]*>[\s\S]*?<\/title>/gi,'').replace(/<meta\b[^>]*(?:name=["'](?:description|robots|twitter:[^"']*)["']|property=["']og:[^"']*["'])[^>]*>/gi,'').replace(/<link\b[^>]*rel=["'](?:canonical|alternate)["'][^>]*>/gi,'').replace(/<html\b[^>]*>/i,`<html lang="${lang}" dir="${lang==='ar'?'rtl':'ltr'}">`);
  const alternates=Object.keys(COPY).map(l=>`<link data-rh="true" rel="alternate" hreflang="${l}" href="${origin}/${l}/random-pick${mode?'/'+mode:''}">`).join('');
  const head=`<title data-rh="true">${escape(title)}</title><meta data-rh="true" name="description" content="${escape(description)}"><meta data-rh="true" name="robots" content="index,follow"><link data-rh="true" rel="canonical" href="${url}">${alternates}<link data-rh="true" rel="alternate" hreflang="x-default" href="${origin}/en/random-pick${mode?'/'+mode:''}"><meta data-rh="true" property="og:title" content="${escape(title)}"><meta data-rh="true" property="og:description" content="${escape(description)}"><meta data-rh="true" property="og:url" content="${url}"><meta data-rh="true" property="og:type" content="website"><meta data-rh="true" property="og:image" content="${origin}/ogimg.png"><meta data-rh="true" name="twitter:card" content="summary_large_image">`;

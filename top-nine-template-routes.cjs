@@ -1,3 +1,4 @@
+const siteBrand=require('./src/seo/siteBrand.js');
 const discovery=require('./src/seo/templateDiscovery.js');
 const {loadSeoTemplate}=require('./seo-template.cjs');
 const {templatePageTitle,templatePageIntro}=require('./src/components/topNine/templateIntro.cjs');
@@ -11,7 +12,7 @@ function renderTemplateHtml(shell,origin,lang,cup,kind='nine',groups=null){
  const title=templatePageTitle(cup,lang,kind),description=templatePageIntro(cup,lang,kind),url=origin+'/'+lang+'/'+route+'/'+cup.id;
  const clean=cleanTemplateShell(shell,lang);
  const alternates=Object.keys(COPY).map(l=>'<link data-rh="true" rel="alternate" hreflang="'+l+'" href="'+escape(origin+'/'+l+'/'+route+'/'+cup.id)+'">').join('');
- const head='<title data-rh="true">'+escape(title+' | One Pick Game')+'</title><meta data-rh="true" name="description" content="'+escape(description)+'"><meta data-rh="true" name="robots" content="index,follow"><link data-rh="true" rel="canonical" href="'+escape(url)+'">'+alternates+'<meta data-rh="true" property="og:title" content="'+escape(title)+'"><meta data-rh="true" property="og:description" content="'+escape(description)+'"><meta data-rh="true" property="og:url" content="'+escape(url)+'">';
+ const head='<title data-rh="true">'+escape(siteBrand.localizeTitle(title+' | One Pick Game',lang))+'</title><meta data-rh="true" name="description" content="'+escape(description)+'"><meta data-rh="true" name="robots" content="index,follow"><link data-rh="true" rel="canonical" href="'+escape(url)+'">'+alternates+'<meta data-rh="true" property="og:title" content="'+escape(title)+'"><meta data-rh="true" property="og:description" content="'+escape(description)+'"><meta data-rh="true" property="og:url" content="'+escape(url)+'">';
  const candidates=(Array.isArray(cup.data)?cup.data:[]).map(c=>({name:String(c?.name||c?.title||'').trim(),src:c?.image||c?.image_url||c?.url||''})).filter(c=>c.name&&/^https?:\/\//i.test(c.src)).slice(0,12);
  const body='<article><h1>'+escape(title)+'</h1><p>'+escape(description)+'</p><ul>'+candidates.map(c=>'<li><img src="'+escape(c.src)+'" alt="'+escape(c.name)+'" width="120" height="120" loading="lazy">'+escape(c.name)+'</li>').join('')+'</ul>'+discovery.render(groups,kind,lang,origin)+'<a href="'+origin+'/'+lang+(kind==='tier'?'/tier-list':'/mytop9')+'">'+escape(kind==='tier'?title:COPY[lang].title)+'</a></article>';
  // Reuse the public data already fetched by the server; escape raw script delimiters.

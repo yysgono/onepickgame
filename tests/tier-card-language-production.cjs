@@ -37,6 +37,7 @@ async function run(lang,route){
    await wait(()=>d.querySelectorAll('.result-source-worldcups .td-source-images img:not(.td-versus-badge)').length===2);const source=d.querySelector('.result-source-worldcups');assert.equal(source.querySelectorAll('h2').length,1);assert.equal(source.querySelectorAll('.td-versus-badge').length,1);assert.equal(source.querySelector('.td-versus-badge').getAttribute('src'),'/ui/vs-badge-v78.webp');assert.equal(source.querySelector('.td-card').getAttribute('href'),'/'+lang+'/select-round/'+id);assert.equal(source.querySelectorAll('.td-card-caption strong').length,1);assert(!source.querySelector('.td-card-caption').textContent.includes(lang==='ko'?'이 후보로':'Play a bracket'));assert.deepEqual([...source.querySelectorAll('img:not(.td-versus-badge)')].map(e=>e.src),['https://example.com/winner-a.jpg','https://example.com/winner-b.jpg']);
    if(route.startsWith('mytop9/'))assert.equal(cards[0].querySelectorAll('.result-recommendation-nine img').length,9);
   }
+  if(lang==='ko'){assert(d.title.endsWith(' | 원픽게임'),d.title);assert.equal(d.querySelector('meta[property="og:site_name"]')?.content,'원픽게임');}
   assert.equal(errors.length,0,errors.join('\n'));console.log('PASS built '+lang+'/'+route+' activity, recommendation or requested layout.');
  }finally{dom.window.close();}
 }
