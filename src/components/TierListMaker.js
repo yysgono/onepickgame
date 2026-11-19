@@ -1,3 +1,4 @@
+import sourceTierTitleRules from "../utils/sourceTierTitle";
 import TemplateDiscovery from './templates/TemplateDiscovery';
 import {isLocalCandidate,checkGuestPhotos,guestPhotoAllowed,guestPhotoBlob,beginGuestImageUpload,completeGuestImageUpload,cancelGuestImageUpload,guestUploadCopy} from '../utils/guestContentUpload';
 import RecommendedImagePicker from './tierList/RecommendedImagePicker';
@@ -773,6 +774,7 @@ function TierListMaker({
 
 
   const queryParams = new URLSearchParams(location.search);
+  const fromSourceCandidates = !embedded && queryParams.get("from") === "source-candidates";
   const cloneTierListId = embedded ? null : queryParams.get("clone");
   const editTierListId = embedded ? null : queryParams.get("edit");
 
@@ -1706,7 +1708,17 @@ const list = keyword
   const visibleCandidateCount = candidatePageSize * visibleCandidatePages;
   const presetTitle = isPresetEntry ? getTitle(selectedCup) || text.pageTitle : "";
   const customPresetTitle = isPresetEntry && presetTitleOverride?.id === id ? presetTitleOverride.title : "";
-  const editablePresetTitle = customPresetTitle || presetTitle;
+  const editablePresetTitle = customPresetTitle || (fromSourceCandidates ? sourceTierTitleRules.sourceTierTitle(presetTitle, lang) : presetTitle);
+  const sourceTitleInitializedRef = useRef("");
+  useEffect(() => {
+    if (!fromSourceCandidates || !id || cloneTierListId || editTierListId || !selectedCup || String(selectedCup.id) !== String(id)) return;
+    const key = `${id}:${lang}`;
+    if (sourceTitleInitializedRef.current === key) return;
+    const configuredTitle = getTitle(selectedCup);
+    if (!configuredTitle) return;
+    sourceTitleInitializedRef.current = key;
+    setTierListTitle(previous => previous.trim() ? previous : sourceTierTitleRules.sourceTierTitle(configuredTitle, lang));
+  }, [fromSourceCandidates, id, lang, cloneTierListId, editTierListId, selectedCup, getTitle]);
 
   function finishPresetTitleEdit() {
     const title = editingPresetTitle?.value.trim();

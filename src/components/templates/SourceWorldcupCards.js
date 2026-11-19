@@ -37,6 +37,6 @@ export default function SourceWorldcupCards({sourceIds=[],lang='en'}){
  const tierTitle=row=>{let titles=row.tier?.tier_preset_title_translations||{};if(typeof titles==='string'){try{titles=JSON.parse(titles);}catch{titles={};}}return titles[lang]||titles.en||row.label;};
  return <section className="template-discovery result-source-worldcups result-source-actions" aria-label={copy.title} dir={lang==='ar'?'rtl':undefined}>
   <div className="td-group td-source-group"><h2>{copy.source}</h2><div className="result-source-worldcup-grid">{state.rows.map(row=><Card key={row.href} row={row} source versusImage/>)}</div></div>
-  <div className="td-group td-source-group td-source-tier-group"><h2>{tierHeading}</h2><div className="result-source-worldcup-grid">{state.rows.map(row=><Card key={row.id} row={{href:`/${lang}/tier-list/create/${row.id}`,label:tierTitle(row),image:/^https?:\/\//i.test(row.tierImage||'')?row.tierImage:row.images[0]}} kind="tier"/>)}</div></div>
+  <div className="td-group td-source-group td-source-tier-group"><h2>{tierHeading}</h2><div className="result-source-worldcup-grid">{state.rows.map(row=><Card key={row.id} row={{href:`/${lang}/tier-list/create/${row.id}?from=source-candidates`,label:tierTitle(row),image:/^https?:\/\//i.test(row.tierImage||'')?row.tierImage:row.images[0]}} kind="tier"/>)}</div></div>
  </section>;
 }
