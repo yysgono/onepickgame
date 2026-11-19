@@ -1047,6 +1047,7 @@ const [
     useState("");
 
 
+  const sourceAutoTitleRef = useRef(null);
   const [presetTitleOverride, setPresetTitleOverride] = useState(null);
   const [editingPresetTitle, setEditingPresetTitle] = useState(null);
   const [tierListDescription, setTierListDescription] = useState("");
@@ -1155,6 +1156,7 @@ const [
           );
         }
 
+        sourceAutoTitleRef.current = saved?.sourceAutoTitle || null;
         setPresetTitleOverride(saved?.presetTitleOverride || null);
 
         if (typeof saved?.tierListDescription === "string") {
@@ -1261,6 +1263,7 @@ const [
         TIER_BUILDER_UI_STORAGE_KEY,
         JSON.stringify({
           tierListTitle,
+          sourceAutoTitle: sourceAutoTitleRef.current,
           presetTitleOverride,
           tierListDescription,
           descriptionTranslations: tierListDescription.trim() === loadedDescriptionRef.current ? descriptionTranslationsRef.current : {},
@@ -1717,8 +1720,18 @@ const list = keyword
     const configuredTitle = getTitle(selectedCup);
     if (!configuredTitle) return;
     sourceTitleInitializedRef.current = key;
-    setTierListTitle(previous => previous.trim() ? previous : sourceTierTitleRules.sourceTierTitle(configuredTitle, lang));
-  }, [fromSourceCandidates, id, lang, cloneTierListId, editTierListId, selectedCup, getTitle]);
+    const previousAuto = sourceAutoTitleRef.current;
+    const metadata = presetMetadata.find(row => String(row.id) === String(id));
+    const previousLanguageTitle = sourceTierTitleRules.sourceTierTitle(templateTitle(metadata ? {...selectedCup, ...metadata} : selectedCup, "tier", originalContentLanguage), originalContentLanguage);
+    const isAutomatic = !tierListTitle.trim() ||
+      (String(previousAuto?.id) === String(id) && tierListTitle === previousAuto.title) ||
+      (!previousAuto && tierListTitle === previousLanguageTitle);
+    if (!isAutomatic) return;
+    const title = sourceTierTitleRules.sourceTierTitle(configuredTitle, lang);
+    sourceAutoTitleRef.current = {id, title, lang};
+    setTierListTitle(title);
+    setOriginalContentLanguage(lang);
+  }, [fromSourceCandidates, id, lang, cloneTierListId, editTierListId, selectedCup, getTitle, presetMetadata, originalContentLanguage, tierListTitle]);
 
   function finishPresetTitleEdit() {
     const title = editingPresetTitle?.value.trim();
