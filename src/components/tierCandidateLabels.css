@@ -290,3 +290,7 @@ a.tier-result-action {
  .tier-result-bottom-actions .tier-result-download{min-height:68px;min-width:min(220px,100%);padding:12px 22px;font-size:20px}
  .tier-result-bottom-actions .tier-result-clone small{font-size:15px}
 }
+
+.tier-result-action.tier-result-download{background:#2563eb;border-color:#2563eb;color:#fff}
+.tier-result-action.tier-result-download:hover:not(:disabled){background:#1d4ed8;border-color:#1d4ed8}
+.tier-result-action.tier-result-download:focus-visible{outline:3px solid #93c5fd;outline-offset:3px}

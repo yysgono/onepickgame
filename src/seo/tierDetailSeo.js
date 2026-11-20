@@ -20,7 +20,7 @@ const short = (value, length) => {
 const normalizeLanguage = value => String(value || '').toLowerCase().split(/[-_]/)[0];
 function metadata(tier) { return map(tier?.tier_labels); }
 function titleTranslations(tier) {
-  return Object.assign({}, map(tier?.title_translations), map(metadata(tier)._titleTranslations));
+  return Object.assign({}, map(metadata(tier)._titleTranslations), map(tier?.title_translations));
 }
 function getTierListTitle(tier, language, fallback = 'Tier List') {
   const lang = normalizeLanguage(language);
@@ -42,7 +42,19 @@ function getTierPublicTitle(tier, language, nickname='', fallback='Tier List') {
  if(customTitle)return getTierListTitle(Object.assign({},tier,{title:customTitle}),language,fallback);
  if(!tier?.source_worldcup_id&&!text(metadata(tier)._sourcePresetName))return getTierListTitle(tier,language,fallback);
  const author=text(nickname)||text(tier?.guest_nickname)||(tier?.user_id?copy.unknownAuthor:copy.guestAuthor);
- let base=getTierPresetName(tier,language)||getTierListTitle(tier,language,fallback);
+ const lang=normalizeLanguage(language),meta=metadata(tier),translations=titleTranslations(tier);
+ const original=normalizeLanguage(meta._originalLanguage||tier?.original_language);
+ let base=getTierListTitle(tier,language,fallback);
+ // A saved title or its explicit translation belongs to this work, not the source preset.
+ // Only legacy automatic names without a translation may use a localized source name.
+ if(!text(translations[lang])&&lang!==original){
+  const source=tier?._sourcePreset;
+  const variants=Object.values(map(source?.tier_preset_title_translations)).concat(
+   Object.values(map(source?.title_translations)),[source?.title,meta._sourcePresetName]
+  ).map(text).filter(Boolean);
+  const saved=text(tier?.title);
+  if(variants.some(value=>saved===value||saved.startsWith(value+' - ')))base=getTierPresetName(tier,language)||base;
+ }
  if(base.endsWith(' - '+author))base=base.slice(0,-author.length-3);
  return base+' - '+author;
 }
@@ -106,7 +118,8 @@ function getTierListDetailSeo(tier, language, nickname = '') {
   let saved = lang === original ? text(fields.description) || text(translations[lang])
     : text(translations[lang]) || text(fields.description) || text(translations.en);
   if(isGeneratedList(saved,candidates.map(c=>c?.name||c?.title)))saved='';
-  const intro = fill(copy.intro, { author, title: short(getTierPresetName(tier,lang)||getTierListTitle(tier,lang,copy.fallbackTitle), 100) });
+  const introTitle=name.endsWith(' - '+author)?name.slice(0,-author.length-3):name;
+  const intro = fill(copy.intro, { author, title: short(introTitle, 100) });
   const count=Number(tier?.candidate_count)||candidates.length;
   const countText=count?(DETAIL_COPY[lang]||DETAIL_COPY.en)[7].replace('{n}',String(count)):'';
   const parts = [saved ? short(saved, 140) : '', !saved?countText:'', short(intro, saved ? 100 : 160),
