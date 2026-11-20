@@ -80,3 +80,8 @@
   .tier-preset-carousel-track { grid-auto-columns: calc((100% - 12px) / 2); }
   .tier-preset-arrow { width: 34px; }
 }
+
+.tier-load-more-wrap{box-sizing:border-box;display:flex;justify-content:center;align-items:center;width:100%;grid-column:1/-1;margin:24px auto!important;padding:0 12px}
+.tier-load-more-wrap .tier-load-more{box-sizing:border-box;min-width:min(300px,100%)!important;max-width:100%;min-height:68px!important;padding:18px 40px!important;font-size:22px!important;line-height:1.4;border:2px solid #2563eb!important;border-radius:12px!important;background:#fff;color:#1d4ed8!important;font-weight:850;cursor:pointer}
+.tier-load-more-wrap .tier-load-more:focus-visible{outline:3px solid #93c5fd;outline-offset:3px}
+@media(max-width:700px){.tier-load-more-wrap .tier-load-more{min-height:60px!important;font-size:20px!important;padding:14px 28px!important}}

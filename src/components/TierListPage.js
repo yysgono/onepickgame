@@ -1,3 +1,4 @@
+import tierSourcePages from '../utils/tierSourcePage';
 import TierCardPreview from './tierList/TierCardPreview';
 import {tierPresetSearchFilter, tierSearchFilter} from '../utils/tierSearchFilter';
 import updatedLabels from '../locales/tierCardUpdatedLabels.json';
@@ -431,22 +432,9 @@ function TierListPage({
     setTierPresetLoaded(false);
     setPresetError("");
     if (presetPage === 0) setManagedTierPresets([]);
-    const categories = {
-      game: ["game"], animation: ["anime_manga", "animation"], entertainment: ["person", "korea", "music", "entertainment"],
-      food: ["food"], sports: ["sports"], other: ["etc", "movie_drama", "travel", "brands", "brand", "product", "other"]
-    };
-    getCachedTierListRows(`presets:${PRESET_PAGE_SIZE}:${category}:${presetPage}:${presetSearchFilter}`, async () => {
-      let query = supabase.from("worldcup_tier_preset_cards").select("id,title,title_translations,category,tier_preset_order,tier_preset_title_translations,tier_preset_thumbnail_url");
-      if (category !== "all") query = query.in("category", categories[category] || [category]);
-      if (presetSearchFilter) query = query.or(presetSearchFilter);
-      const { data, error } = await query.order("tier_preset_order", { ascending: true, nullsFirst: false }).order("id", { ascending: true }).range(presetPage * PRESET_PAGE_SIZE, (presetPage + 1) * PRESET_PAGE_SIZE);
-      if (error) throw error;
-      const rows=data||[];
-      if(!rows.length)return rows;
-      const thumbs=await supabase.from('tier_preset_thumbnails').select('source_worldcup_id,image_url').in('source_worldcup_id',rows.map(row=>row.id));
-      const images=new Map((thumbs.data||[]).map(row=>[String(row.source_worldcup_id),row.image_url]));
-      return rows.map(row=>({...row,tier_preset_thumbnail_url:images.get(String(row.id))||row.tier_preset_thumbnail_url}));
-    }).then(rows => {
+    getCachedTierListRows(`sources-v2:${PRESET_PAGE_SIZE}:${category}:${presetPage}:${presetSearchFilter}`, () =>
+      tierSourcePages.loadTierSourcePage(supabase,{filter:presetSearchFilter,category,offset:presetPage*PRESET_PAGE_SIZE,pageSize:PRESET_PAGE_SIZE})
+    ).then(rows => {
       if (!live) return;
       // One extra metadata row tells us whether the next page exists, without a count query.
       const pageRows = rows.slice(0, PRESET_PAGE_SIZE);
@@ -1186,7 +1174,7 @@ maxWidth: isMobile ? 430 : 1780,
   </div>
   {!tierPresetLoaded && <div className="tier-list-loading" role="status" aria-label={t("tierList.common.loading")}><span aria-hidden="true" /></div>}
   {presetError && <p role="alert" style={{ textAlign: "center", color: "#b42346" }}>{presetError}</p>}
-  {presetHasMore && tierPresetLoaded && <div style={{ textAlign: "center", margin: 20 }}><button className="tier-presets-more" type="button" onClick={() => setPresetPage(previous => previous + 1)} style={{ border: "2px solid #2563eb", borderRadius: 8, padding: "12px 24px", color: "#1d4ed8", background: "#fff", fontWeight: 800 }}>{t("tierList.common.loadMore", { defaultValue: lang === "ko" ? "더 보기" : localizeExtraUi("Load more") })}</button></div>}
+  {presetHasMore && tierPresetLoaded && <div className="tier-load-more-wrap" style={{ textAlign: "center", margin: 20 }}><button className="tier-presets-more tier-load-more" type="button" onClick={() => setPresetPage(previous => previous + 1)} style={{ border: "2px solid #2563eb", borderRadius: 8, padding: "12px 24px", color: "#1d4ed8", background: "#fff", fontWeight: 800 }}>{t("tierList.common.loadMore", { defaultValue: lang === "ko" ? "더 보기" : localizeExtraUi("Load more") })}</button></div>}
 </section>}
 
 <section className="tier-community-filters" aria-label={t("tierList.page.title")}>
@@ -1436,7 +1424,7 @@ maxWidth: isMobile ? 430 : 1780,
             </div>
 
             {hasMore && (
-              <div
+              <div className="tier-load-more-wrap"
                 style={{
                   textAlign:
                     "center",
@@ -1445,7 +1433,7 @@ maxWidth: isMobile ? 430 : 1780,
                     20,
                 }}
               >
-                <button
+                <button className="tier-list-more tier-load-more"
                   type="button"
                   disabled={
                     loadingMore
