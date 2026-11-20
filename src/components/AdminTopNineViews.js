@@ -14,7 +14,7 @@ export default function AdminTopNineViews({refreshTick=0}){
    const ids=[...new Set(recent.map(row=>row.board_id).filter(Boolean))];
    if(ids.length){
     try{
-     const result=await supabase.from('top_nine_public_boards').select('id,title,source_worldcup_ids').in('id',ids);
+     const result=await supabase.from('top_nine_public_boards').select('id,title,source_worldcup_ids,title_is_custom').in('id',ids);
      if(!result.error&&Array.isArray(result.data)){
       const boards=result.data,sources=await loadBoardTitleSources(supabase,boards),byId=new Map(boards.map(board=>[String(board.id),board]));
       recent=recent.map(row=>{const board=byId.get(String(row.board_id));return board?{...row,title:localizedBoardTitle({...board,title:row.title||board.title},sources,'ko')}:row;});

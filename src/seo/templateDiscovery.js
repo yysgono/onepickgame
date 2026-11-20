@@ -13,7 +13,7 @@ async function load(client,cup,kind,lang){
  const c=COPY[lang]||COPY.en,id=String(cup?.id||'');if(!UUID.test(id))return null;
  const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),3500);
  const read=async query=>{try{if(query.abortSignal)query=query.abortSignal(controller.signal);const {data,error}=await query;return !error&&Array.isArray(data)?data:[];}catch{return [];}};
- const worksFields=kind==='tier'?'id,title,title_translations,original_language,tier_labels,source_worldcup_id,thumbnail_url,view_count':'id,title,slots,view_count,source_worldcup_ids';
+ const worksFields=kind==='tier'?'id,title,title_translations,original_language,tier_labels,source_worldcup_id,thumbnail_url,view_count':'id,title,slots,view_count,source_worldcup_ids,title_is_custom';
  const worksBase=()=>{let q=client.from(kind==='tier'?'tier_lists':'top_nine_public_boards').select(worksFields);return kind==='tier'?q.is('deleted_at',null):q;};
  const popular=q=>q.order('view_count',{ascending:false,nullsFirst:false}).order('created_at',{ascending:false}).limit(12);
  try{

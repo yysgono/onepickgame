@@ -19,7 +19,7 @@ import {isVideo} from './media';
 import {hasBadword} from '../../badwords-multilang';
 // The public RPC stores nine image records. Use one shared static tile for empty positions.
 const emptyTile={id:'tn-empty-cell',name:'',src:'https://www.onepickgame.com/top-nine-empty.png',zoom:1,x:50,y:50};
-export function PublishBoard({slots,title,names,lang,onPublished,onNotice,onLocalGuest,label,disabled=false,sourceIds=[],category='',existingId=''}) {
+export function PublishBoard({slots,title,names,lang,onPublished,onNotice,onLocalGuest,label,disabled=false,sourceIds=[],category='',existingId='',autoTitle=false}) {
  const showRanks=false;
  const t=copy[lang]||copy.en,[busy,setBusy]=useState(false),[message,setMessage]=useState(''),[open,setOpen]=useState(false),[guest,setGuest]=useState(false),[nickname,setNickname]=useState(''),[password,setPassword]=useState(''),[confirm,setConfirm]=useState(''),[editSalt,setEditSalt]=useState('');
  async function saveBoard(auth){
@@ -35,7 +35,7 @@ export function PublishBoard({slots,title,names,lang,onPublished,onNotice,onLoca
     if(uploadJob)prepared=slots.map(c=>c&&!isShareable(c)?{...c,src:uploadJob.urls[locals.indexOf(c.src)]}:c);
    }else prepared=await prepareMemberSlots(slots);
    makeShareHash(prepared,title,names,showRanks);
-   const result=await publishWithTitleRetry(supabase,{p_title:authoredTitle(title,auth.nickname),p_slots:prepared.map(c=>c??emptyTile),p_names:names,p_show_ranks:showRanks,p_nickname:auth.guest?auth.nickname:null,p_salt:auth.salt||null,p_proof:auth.proof||null,p_source_worldcup_ids:sourceIds,p_category:category,...(existingId?{p_board_id:existingId}:{})});
+   const result=await publishWithTitleRetry(supabase,{p_title:authoredTitle(title,auth.nickname),p_custom_title:!autoTitle,p_slots:prepared.map(c=>c??emptyTile),p_names:names,p_show_ranks:showRanks,p_nickname:auth.guest?auth.nickname:null,p_salt:auth.salt||null,p_proof:auth.proof||null,p_source_worldcup_ids:sourceIds,p_category:category,...(existingId?{p_board_id:existingId}:{})});
    if(!result.data)throw Error('PUBLISH_FAILED');
    await completeGuestImageUpload(uploadJob);
    if(auth.guest){rememberGuestBoard(result.data);if(existingId)rememberGuestEditSession(existingId,auth);}
@@ -94,11 +94,11 @@ export default function PublicBoards({lang,tick=0,searchTerm='',category='all',h
  useEffect(()=>{let live=true;supabase.auth.getUser().then(({data})=>{if(live)setActor(data.user?.id);});return()=>{live=false;};},[]);
  useEffect(()=>{let live=true;const controller=new AbortController(),request=q=>q.abortSignal?q.abortSignal(controller.signal):q;setBusy(true);setError(false);if(page===0)setRows([]);(async()=>{
  if(keyword)return request(supabase.rpc('search_top_nine_public_boards',{p_query:keyword,p_category:category,p_sort:sort,p_offset:page*12}));
- let query=supabase.from('top_nine_public_boards').select('id,title,slots,show_names,show_ranks,created_at,author_id,guest_nickname,source_worldcup_ids,category,view_count');
+ let query=supabase.from('top_nine_public_boards').select('id,title,slots,show_names,show_ranks,created_at,author_id,guest_nickname,source_worldcup_ids,category,view_count,title_is_custom');
  if(category!=='all')query=query.eq('category',category);
  if(sort==='popular')query=query.order('view_count',{ascending:false,nullsFirst:false});
  return request(query.order('created_at',{ascending:false}).order('id').range(page*12,page*12+11));
- })().then(async({data,error})=>{if(!live)return;if(error){setError(true);return;}const titleSources=await loadBoardTitleSources(supabase,data);if(!live)return;const enriched=data.map(row=>({...row,titleSources}));setRows(old=>page?[...old,...enriched]:enriched);setMore(data.length===12);}).catch(()=>{if(live)setError(true);}).finally(()=>{if(live)setBusy(false);});return()=>{live=false;controller.abort();};},[page,tick,retry,category,sort,keyword]);
+ })().then(async({data,error})=>{if(!live)return;if(error){setError(true);return;}if(keyword&&data?.length){const flags=await supabase.from('top_nine_public_boards').select('id,title_is_custom').in('id',data.map(row=>row.id));if(!live)return;if(flags.error){setError(true);return;}const byId=new Map((flags.data||[]).map(row=>[String(row.id),row.title_is_custom]));data=data.map(row=>({...row,title_is_custom:byId.get(String(row.id))===true}));}const titleSources=await loadBoardTitleSources(supabase,data);if(!live)return;const enriched=data.map(row=>({...row,titleSources}));setRows(old=>page?[...old,...enriched]:enriched);setMore(data.length===12);}).catch(()=>{if(live)setError(true);}).finally(()=>{if(live)setBusy(false);});return()=>{live=false;controller.abort();};},[page,tick,retry,category,sort,keyword]);
  async function remove(id){if(!window.confirm(ko?'공개 목록에서 삭제할까요?':'Delete this public collage?'))return;const {error}=await supabase.rpc(moderator?'admin_delete_top_nine_board':'delete_top_nine_board',{p_id:id});if(error)setError(true);else setRows(r=>r.filter(c=>c.id!==id));}
  async function removeGuest(e){e.preventDefault();setDeleting(true);try{const saltResult=await supabase.rpc('get_top_nine_guest_salt',{p_id:guestDelete});if(saltResult.error||!saltResult.data)throw Error('GUEST');const proof=await guestProof(deletePassword,saltResult.data);const {data,error}=await supabase.rpc('delete_top_nine_guest_board',{p_id:guestDelete,p_proof:proof});if(error||!data)throw Error('GUEST');setRows(rows=>rows.filter(r=>r.id!==guestDelete));setGuestDelete(null);setDeletePassword('');}catch{setError(true);}finally{setDeleting(false);}}
  return <section className="tn-gallery"><h2>{keyword?searchText.boards:searchText.community}</h2>

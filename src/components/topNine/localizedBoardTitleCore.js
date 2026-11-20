@@ -5,6 +5,7 @@ function translations(value) {
 }
 function localizedBoardTitle(board,sources,lang) {
  const saved=String(board.title||'');
+ if(board.title_is_custom===true||board.titleIsCustom===true)return saved;
  for(const id of board.source_worldcup_ids||board.sourceIds||[]){
   const source=(sources||[]).find(item=>String(item.id)===String(id));if(!source)continue;
   const own=translations(source.top_nine_title_translations),original=translations(source.title_translations);

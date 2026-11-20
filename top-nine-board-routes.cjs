@@ -26,7 +26,7 @@ module.exports=function(app,supabase,origin){
   res.setHeader('Cache-Control','no-store');
   if(!Object.hasOwn(COPY,lang)||!uuid.test(id))return res.status(404).send('Not found');
   try{
-   const {data:publicData,error}=await supabase.from('top_nine_public_boards').select('id,title,slots,show_names,source_worldcup_ids,guest_nickname').eq('id',id).maybeSingle();
+   const {data:publicData,error}=await supabase.from('top_nine_public_boards').select('id,title,slots,show_names,source_worldcup_ids,guest_nickname,title_is_custom').eq('id',id).maybeSingle();
    if(error)throw error;
    let data=publicData;
    if(!data){

@@ -51,7 +51,7 @@ async function load(client, language, options = {}) {
       active('worldcup') ? read(client.rpc('get_worldcup_play_counts').order('play_count', { ascending: false }).order('cup_id').range(offset, offset + limit)) : skip(),
       active('tier') ? popular('tier_list_home_cards', 'id,title,title_translations,tier_labels,source_worldcup_id,thumbnail_url,view_count,created_at,candidates,tiers,tier_preview_counts', 'view_count') : skip(),
       active('quiz') ? popular('quizzes', 'id,title,title_translations,thumbnail_url,question_count,play_count,created_at', 'play_count', query => query.is('deleted_at', null).eq('is_published', true)) : skip(),
-      active('nine') ? popular('top_nine_public_boards', 'id,title,slots,source_worldcup_ids,view_count,created_at', 'view_count') : skip(),
+      active('nine') ? popular('top_nine_public_boards', 'id,title,slots,source_worldcup_ids,view_count,created_at,title_is_custom', 'view_count') : skip(),
       active('random') ? read(client.from('random_pick_play_counts').select('mode,play_count')) : skip(),
     ]);
     if (tier.error && !controller.signal.aborted) {

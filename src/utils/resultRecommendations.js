@@ -14,7 +14,7 @@ export async function loadResultRecommendations(client,{kind,id,category,sourceI
   return chosen;
  }
  const nine=kind==='nine',table=nine?'top_nine_public_boards':'tier_lists';
- const fields=nine?'id,title,slots,source_worldcup_ids,category,view_count,created_at':'id,title,title_translations,original_language,tier_labels,source_worldcup_id,category,thumbnail_url,view_count,created_at';
+ const fields=nine?'id,title,slots,source_worldcup_ids,category,view_count,created_at,title_is_custom':'id,title,title_translations,original_language,tier_labels,source_worldcup_id,category,thumbnail_url,view_count,created_at';
  const rows=[];
  async function collect(filter){
   if(rows.length>=4)return;

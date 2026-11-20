@@ -22,7 +22,7 @@ export default function PublicBoardPage(){
  },[id,result]);
  useEffect(()=>{
   let live=true;setResult(null);
-  supabase.from('top_nine_public_boards').select('id,title,slots,show_names,show_ranks,author_id,source_worldcup_ids,guest_nickname,category').eq('id',id).maybeSingle().then(async({data:publicData,error})=>{
+  supabase.from('top_nine_public_boards').select('id,title,slots,show_names,show_ranks,author_id,source_worldcup_ids,guest_nickname,category,title_is_custom').eq('id',id).maybeSingle().then(async({data:publicData,error})=>{
    if(!live)return;
    if(error){setResult({error:true});return;}
    try{
@@ -37,7 +37,7 @@ export default function PublicBoardPage(){
     if(!data.author_id&&guestOwner)rememberGuestBoard(id);
     const canEdit=!data.unlisted&&(data.author_id?!!actor&&!actor.is_anonymous&&actor.id===data.author_id:guestOwner);
     if(!live)return;
-    setResult(board?{canEdit,board:{...board,unlisted:!!data.unlisted,isGuest:!data.author_id&&!data.unlisted,category:data.category||'',authorNickname:data.guest_nickname||'',titleSources,sourceIds:data.source_worldcup_ids||[]}}:{missing:true});
+    setResult(board?{canEdit,board:{...board,unlisted:!!data.unlisted,isGuest:!data.author_id&&!data.unlisted,category:data.category||'',titleIsCustom:data.title_is_custom===true,authorNickname:data.guest_nickname||'',titleSources,sourceIds:data.source_worldcup_ids||[]}}:{missing:true});
    }catch{setResult({error:true});}
   }).catch(()=>{if(live)setResult({error:true});});
   return()=>{live=false;};
