@@ -1,3 +1,4 @@
+import sourceReconciliation from './topNine/reconcileSourceCandidates';
 import CategoryNav from './topNine/CategoryNav';
 import categoryLabels from './topNine/categoryLabels.json';
 import useTopNineLiveSearch from '../hooks/useTopNineLiveSearch';
@@ -257,25 +258,27 @@ export default function TopNinePage({publicBoard=null,publicId='',templateSource
   // Event handlers pass a click event; only explicit draft objects override state.
   const editDraft=restoredDraft?.v===1?restoredDraft:draft;
   setStage('pick');setFocus(null);setCandidateQuery('');setLimit(CANDIDATE_PAGE_SIZE);
-  if(poolWasReset.current)return;
   const occupied=slots.filter(Boolean);
   const matchingDraft=editDraft?.candidates?.length&&(editDraft.boardId===publicId&&publicId||occupied.length&&occupied.every(c=>editDraft.candidates.some(item=>item.src===c.src)));
   const draftPool=matchingDraft?editDraft.candidates.filter(c=>safeMedia(c.src)):[];
   const ids=[...new Set([...sourceIds,...(matchingDraft?editDraft.sourceIds||[]:[])])];
   const initialPool=[...new Map([...draftPool,...candidates,...occupied].map(c=>[c.src,c])).values()].slice(0,2048);
   setCandidates(initialPool);
-  const missing=ids.filter(id=>!restoredSources.current.has(id));
+  // Refresh every edit, including a second edit in the same session.
+  const missing=ids;
   if(!missing.length)return;
   work(async current=>{
-   const results=await Promise.allSettled(missing.map(id=>loadSource(id)));
+   const results=await Promise.allSettled(missing.map(async id=>{try{return await loadSource(id);}catch(error){if(error?.message==='NOT_FOUND')return {id,data:[]};throw error;}}));
    if(!current())return;
    const pool=results.flatMap((result,index)=>{
     if(result.status!=='fulfilled')return [];
     restoredSources.current.add(missing[index]);
     return normalizeCandidates(result.value.data).map(c=>({...c,id:'site:'+missing[index]+':'+c.id}));
    });
+   const reconciled=sourceReconciliation.reconcileSourceCandidates(slots,initialPool,ids,results,safeMedia);
+   setSlots(reconciled.slots);
    setSourceIds(ids);
-   setCandidates([...new Map([...pool,...initialPool].map(c=>[c.src,c])).values()].slice(0,2048));
+   setCandidates([...new Map([...(poolWasReset.current?[]:pool),...reconciled.pool].map(c=>[c.src,c])).values()].slice(0,2048));
    if(results.some(result=>result.status==='rejected'))setMessage(t.error);
   });
  }
