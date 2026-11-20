@@ -78,7 +78,7 @@ function drawMedia(ctx, media, x, y, size) {
 }
 
 export async function downloadTierListImage({
-  tiers, labels = {}, getTierCandidates, onePickCandidate, onePickTitle, untitled,
+  tiers, labels = {}, getTierCandidates, untitled,
   exportTitle, authorText, createdText,
 }) {
   const width = 1600;
@@ -98,7 +98,7 @@ export async function downloadTierListImage({
   });
 
   const canvas = document.createElement('canvas');
-  const titleHeight = onePickCandidate ? 460 : 170;
+  const titleHeight = 170;
   canvas.width = width;
   canvas.height = titleHeight + rows.reduce((total, row) => total + row.height + 12, 0) + padding;
   const ctx = canvas.getContext('2d');
@@ -113,20 +113,6 @@ export async function downloadTierListImage({
   ctx.font = '700 22px Arial, sans-serif';
   if (authorText) ctx.fillText(authorText, padding, 116);
   if (createdText) ctx.fillText(createdText, padding, 148);
-
-  if (onePickCandidate) {
-    const size = 188;
-    const media = await loadMedia(onePickCandidate);
-    ctx.textAlign = 'center';
-    ctx.fillStyle = '#182235';
-    ctx.font = '900 32px Arial, sans-serif';
-    ctx.fillText(`⭐ ${onePickTitle}`, width / 2, 192, contentWidth);
-    drawMedia(ctx, media, (width - size) / 2, 210, size);
-    ctx.textAlign = 'center';
-    ctx.fillStyle = '#182235';
-    ctx.font = '800 22px Arial, sans-serif';
-    ctx.fillText(onePickCandidate.name || untitled, width / 2, 430, contentWidth);
-  }
 
   let rowY = titleHeight;
   for (const { tier, items, height } of rows) {

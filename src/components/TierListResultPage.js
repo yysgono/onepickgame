@@ -1458,7 +1458,7 @@ const seoAuthorReady = seoAuthor.tierId === String(tierList.id);
   function renderResultActions() {
     return (
       <>
-        <button className="tier-result-action" type="button" onClick={handleDownload} disabled={downloading}>
+        <button className="tier-result-action tier-result-download" type="button" onClick={handleDownload} disabled={downloading}>
           📥 {downloading ? text.downloading : text.download}
         </button>
         <SocialShareButtons lang={lang} title={displayTitle} url={`${window.location.origin}/${lang}/tier-list/${encodeURIComponent(id)}`}/>
@@ -1884,7 +1884,7 @@ padding: isMobile
           {renderResultActions()}
         </div>
 
-        <SourceWorldcupCards sourceIds={tierList.source_worldcup_id ? [tierList.source_worldcup_id] : []} lang={lang}/>
+        <SourceWorldcupCards sourceIds={tierList.source_worldcup_id ? [tierList.source_worldcup_id] : []} lang={lang} secondaryKind="nine"/>
         <ResultRecommendations kind="tier" id={tierList.id} lang={lang} category={tierList.category} sourceId={tierList.source_worldcup_id} presetName={sourcePresetName} topicOnly/>
 
         {/* =============================================
