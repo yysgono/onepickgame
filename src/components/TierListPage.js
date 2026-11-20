@@ -937,7 +937,7 @@ const displayTitle =
 
   const renderPresetCard = (cup) => {
       const title = templateTitle(cup, "tier", lang, "Tier List");
-      return <Link className="tier-recommendation-card" key={cup.id} to={`/${lang}/tier-list/create/${cup.id}`} style={{ minWidth: 0, border: "1px solid #bfdbfe", borderRadius: 12, overflow: "hidden", background: "#fff", color: "#202534", textDecoration: "none", boxShadow: "0 8px 22px #0f172a15" }}>
+      return <Link className="tier-recommendation-card" key={cup.id} to={`/${lang}/tier-list/create/${cup.id}${presetSearchFilter ? "?from=worldcup-search" : ""}`} style={{ minWidth: 0, border: "1px solid #bfdbfe", borderRadius: 12, overflow: "hidden", background: "#fff", color: "#202534", textDecoration: "none", boxShadow: "0 8px 22px #0f172a15" }}>
         <div className="tier-recommendation-image" style={{ width: "100%", background: "#eff6ff" }}>
           {cup.tier_preset_thumbnail_url ? <MediaRenderer url={cup.tier_preset_thumbnail_url} alt={title} playable={false} loading="lazy" deferUntilVisible viewportMargin="0px" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 25%", display: "block" }} /> : <div aria-hidden="true" style={{ height: "100%", display: "grid", placeItems: "center", fontSize: 44 }}>📊</div>}
         </div>

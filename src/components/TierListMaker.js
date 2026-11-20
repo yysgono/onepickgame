@@ -774,6 +774,7 @@ function TierListMaker({
 
 
   const queryParams = new URLSearchParams(location.search);
+  const fromWorldcupSearch = !embedded && queryParams.get("from") === "worldcup-search";
   const fromSourceCandidates = !embedded && queryParams.get("from") === "source-candidates";
   const cloneTierListId = embedded ? null : queryParams.get("clone");
   const editTierListId = embedded ? null : queryParams.get("edit");
@@ -1714,24 +1715,31 @@ const list = keyword
   const editablePresetTitle = customPresetTitle || (fromSourceCandidates ? sourceTierTitleRules.sourceTierTitle(presetTitle, lang) : presetTitle);
   const sourceTitleInitializedRef = useRef("");
   useEffect(() => {
-    if (!fromSourceCandidates || !id || cloneTierListId || editTierListId || !selectedCup || String(selectedCup.id) !== String(id)) return;
+    if (!(fromSourceCandidates || (fromWorldcupSearch && !isPresetEntry)) || !id || cloneTierListId || editTierListId || !selectedCup || String(selectedCup.id) !== String(id)) return;
     const key = `${id}:${lang}`;
     if (sourceTitleInitializedRef.current === key) return;
-    const configuredTitle = getTitle(selectedCup);
+    const metadata = presetMetadata.find(row => String(row.id) === String(id));
+    const titleCup = metadata ? {...selectedCup, ...metadata} : selectedCup;
+    const generatedTitles=sourceTierTitleRules.sourceTierTitleTranslations(titleCup,isPresetEntry);
+    const configuredTitle = isPresetEntry ? getTitle(selectedCup) : (readTranslationMap(selectedCup.title_translations)[lang] || selectedCup.title);
     if (!configuredTitle) return;
     sourceTitleInitializedRef.current = key;
     const previousAuto = sourceAutoTitleRef.current;
-    const metadata = presetMetadata.find(row => String(row.id) === String(id));
     const previousLanguageTitle = sourceTierTitleRules.sourceTierTitle(templateTitle(metadata ? {...selectedCup, ...metadata} : selectedCup, "tier", originalContentLanguage), originalContentLanguage);
     const isAutomatic = !tierListTitle.trim() ||
       (String(previousAuto?.id) === String(id) && tierListTitle === previousAuto.title) ||
       (!previousAuto && tierListTitle === previousLanguageTitle);
+    const translatedInput=String(titleTranslations[lang]||'').trim();
+    const manualTranslation=translatedInput&&translatedInput!==previousAuto?.translations?.[lang]&&translatedInput!==generatedTitles[lang];
+    const generatedTitle = manualTranslation?translatedInput:(generatedTitles[lang] || sourceTierTitleRules.sourceTierTitle(configuredTitle, lang));
+    const primaryLanguage=isAutomatic?lang:originalContentLanguage;
+    setTitleTranslations(previous=>sourceTierTitleRules.mergeSourceTierTitles(previous,generatedTitles,previousAuto?.translations||{},isAutomatic?'':primaryLanguage));
+    setTitleTranslationLanguages(previous=>[...new Set([...previous,...Object.keys(generatedTitles)])].filter(code=>code!==primaryLanguage));
     if (!isAutomatic) return;
-    const title = sourceTierTitleRules.sourceTierTitle(configuredTitle, lang);
-    sourceAutoTitleRef.current = {id, title, lang};
-    setTierListTitle(title);
+    sourceAutoTitleRef.current = {id, title:generatedTitle, lang, translations:generatedTitles};
+    setTierListTitle(generatedTitle);
     setOriginalContentLanguage(lang);
-  }, [fromSourceCandidates, id, lang, cloneTierListId, editTierListId, selectedCup, getTitle, presetMetadata, originalContentLanguage, tierListTitle]);
+  }, [fromSourceCandidates, fromWorldcupSearch, isPresetEntry, id, lang, cloneTierListId, editTierListId, selectedCup, getTitle, presetMetadata, originalContentLanguage, tierListTitle, titleTranslations]);
 
   function finishPresetTitleEdit() {
     const title = editingPresetTitle?.value.trim();
@@ -3853,7 +3861,7 @@ const finalCandidates =
             // 게스트 RPC가 title_translations 컬럼을 직접 받지 않는 배포에서도
             // 수정 화면에서 번역 제목을 잃지 않도록 메타에 함께 보관합니다.
             _titleTranslations: cleanTitleTranslations,
-            _customPublicTitle: customPresetTitle || (editingTierListId && tierLabels?._customPublicTitle)
+            _customPublicTitle: customPresetTitle || (editingTierListId && tierLabels?._customPublicTitle) || (!isPresetEntry && (fromSourceCandidates || fromWorldcupSearch) && cleanTitle !== sourceAutoTitleRef.current?.title)
               ? cleanTitle
               : null,
             // 제목이 처음 작성된 언어를 별도 DB 컬럼 없이 tier_labels 메타에 보관합니다.
@@ -4070,6 +4078,8 @@ if (editingTierListId) {
   saving,
   tierListTitle,
   isPresetEntry,
+  fromSourceCandidates,
+  fromWorldcupSearch,
   editablePresetTitle,
   customPresetTitle,
   presetTitleOverride,
