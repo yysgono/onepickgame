@@ -34,7 +34,8 @@ const fit=(ctx,text,max)=>{let chars=Array.from(text);while(chars.length&&ctx.me
 export async function exportPNG(slots,title,names,frameCache={}) {
  if(slots.length!==9||!slots.some(Boolean))throw new Error('NINE_REQUIRED');
  const canvas=document.createElement('canvas'),size=1056,pad=36,top=title?100:36;
- canvas.width=1128;canvas.height=top+size+90;
+ const footerTop=top+size+6,footerHeight=54;
+ canvas.width=1128;canvas.height=footerTop+footerHeight;
  const ctx=canvas.getContext('2d');if(!ctx)throw new Error('CANVAS');
  ctx.fillStyle='#fff';ctx.fillRect(0,0,canvas.width,canvas.height);ctx.textAlign='center';ctx.fillStyle='#211638';ctx.font='bold 34px sans-serif';
  if(title)ctx.fillText(fit(ctx,title,1056),564,61);
@@ -65,7 +66,7 @@ export async function exportPNG(slots,title,names,frameCache={}) {
   ctx.lineTo(pad+to[0]*size/100,top+to[1]*size/100);
  });
  ctx.strokeStyle=collageLayout.boundaryColor;ctx.lineWidth=2;ctx.lineJoin='round';ctx.stroke();
- ctx.fillStyle='#f2eaff';ctx.fillRect(0,canvas.height-66,canvas.width,66);ctx.fillStyle='#5c229f';ctx.font='bold 32px sans-serif';ctx.fillText('OnePickGame.com',564,canvas.height-24);
+ ctx.fillStyle='#f2eaff';ctx.fillRect(0,footerTop,canvas.width,footerHeight);ctx.fillStyle='#5c229f';ctx.font='bold 32px sans-serif';ctx.textBaseline='middle';ctx.fillText('OnePickGame.com',564,footerTop+footerHeight/2);
  return new Promise((resolve,reject)=>canvas.toBlob(blob=>blob?resolve(blob):reject(new Error('EXPORT_FAILED')),'image/png'));
 }
 export function downloadBlob(blob) {const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='onepickgame-my-top-9.png';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);}
