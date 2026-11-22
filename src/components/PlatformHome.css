@@ -76,10 +76,10 @@
 .platform-home .platform-language{margin:0 0 8px}
 
 /* Light game colors on the main home, with neutral section borders. */
-.platform-home .platform-mode-worldcup,.platform-home .platform-section-worldcup{--mode-bg:#fff3e5;--section-bg:#fff5e9}
-.platform-home .platform-mode-quiz,.platform-home .platform-section-quiz{--mode-bg:#ffedef;--section-bg:#fff1f2}
-.platform-home .platform-mode-tier,.platform-home .platform-section-tier{--mode-bg:#eaf2ff;--section-bg:#eef5ff}
-.platform-home .platform-mode-nine,.platform-home .platform-section-nine{--mode-bg:#f1eaff;--section-bg:#f5efff}
-.platform-home .platform-mode-random,.platform-home .platform-section-random{--mode-bg:#e7f8ef;--section-bg:#edfaf3}
+.platform-home .platform-mode-worldcup,.platform-home .platform-section-worldcup{--mode-bg:#ffe2bf;--section-bg:#ffead1}
+.platform-home .platform-mode-quiz,.platform-home .platform-section-quiz{--mode-bg:#ffd4dc;--section-bg:#ffdde3}
+.platform-home .platform-mode-tier,.platform-home .platform-section-tier{--mode-bg:#cfe1ff;--section-bg:#dceaff}
+.platform-home .platform-mode-nine,.platform-home .platform-section-nine{--mode-bg:#dfceff;--section-bg:#e9dcff}
+.platform-home .platform-mode-random,.platform-home .platform-section-random{--mode-bg:#c9ecd9;--section-bg:#d7f2e3}
 .platform-home .platform-mode{background:var(--mode-bg,#fff)}
 .platform-home .platform-section{background:var(--section-bg,#fff)}
