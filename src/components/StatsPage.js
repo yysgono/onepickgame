@@ -1,12 +1,9 @@
+import WorldcupCreationCards from './templates/WorldcupCreationCards';
 import WorldcupReportButton from './sharing/WorldcupReportButton';
 import SocialShareButtons from './sharing/SocialShareButtons';
 import statsTableLabels from "../locales/statsTableLabels.json";
 import { statsPageWithSelected } from "../utils/statsPageWithSelected";
 import StatsCandidateName from "./StatsCandidateName";
-import {saveCandidateSet} from "./randomPick/savedCandidates";
-import savedCandidatesCopy from "./randomPick/savedCandidatesCopy.json";
-import {normalizeCandidates} from "../utils/randomPickCore";
-import {getCopy as getRandomPickCopy} from "./randomPick/copy";
 import { filterCurrentCandidateStats } from "../utils/worldcupCandidateChanges";
 import { readStatsCache, writeStatsCache } from "../utils/statsCache";
 import React, {
@@ -26,7 +23,7 @@ import React, {
 
 } from "react";
 
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 import { fetchWinnerStatsFromDB } from "../utils";
 
@@ -524,9 +521,6 @@ export default function StatsPage({
 
   const { lang } = useParams();
 
-  const navigate = useNavigate();
-  const [randomSaving,setRandomSaving]=useState(false);
-  const [randomSaveError,setRandomSaveError]=useState("");
 
 
 
@@ -1508,17 +1502,6 @@ const top3 = useMemo(() => {
        </div>
      )}
 
-     <div style={{width:"min(960px, 94vw)",margin:"18px auto",textAlign:"center",display:"grid",gridTemplateColumns:"repeat(2, minmax(0, 1fr))",gap:14}}>
-       <button type="button" disabled={randomSaving} style={{width:"100%",padding:"20px 16px",border:"2px solid #056b45",borderRadius:12,background:"#078657",color:"#fff",fontSize:18,fontWeight:800,cursor:"pointer",opacity:randomSaving?0.7:1}} onClick={async()=>{
-         if(randomSaving)return;setRandomSaving(true);setRandomSaveError("");
-         try{const candidates=normalizeCandidates(selectedCup?.data,selectedCup?.id);await saveCandidateSet(candidates,selectedCup?.id);navigate(`/${normalizedLang}/random-pick`);}
-         catch{setRandomSaveError((savedCandidatesCopy[normalizedLang]||savedCandidatesCopy.en)[5]);}
-         finally{setRandomSaving(false);}
-       }}>{getRandomPickCopy(normalizedLang).worldcupToRandom}</button>
-       <button type="button" onClick={()=>navigate(`/${normalizedLang}/tier-list/create/${selectedCup.id}`)} style={{width:"100%",padding:"20px 16px",border:"2px solid #1d4ed8",borderRadius:12,background:"#2563eb",color:"#fff",fontSize:18,fontWeight:800,cursor:"pointer"}}>{t("result_discovery_tier_title")}</button>
-       {randomSaveError&&<p role="alert" style={{gridColumn:"1 / -1",color:"#b42346",margin:0}}>{randomSaveError}</p>}
-     </div>
-
       {/* 회원/전체 탭 */}
 
       <div
@@ -2104,6 +2087,8 @@ onClick={() => {
 
 
       <Pagination />
+
+      <WorldcupCreationCards cup={selectedCup} lang={normalizedLang}/>
 
 
 

@@ -74,3 +74,12 @@
 /* Close the gap between the game choices and the language control. */
 .platform-home .platform-hero{padding-bottom:10px}
 .platform-home .platform-language{margin:0 0 8px}
+
+/* Barely tinted game choices and sections, with neutral section borders. */
+.platform-home .platform-mode-worldcup,.platform-home .platform-section-worldcup{--mode-bg:#fffaf5;--section-bg:#fffdfb}
+.platform-home .platform-mode-quiz,.platform-home .platform-section-quiz{--mode-bg:#fff8f8;--section-bg:#fffdfd}
+.platform-home .platform-mode-tier,.platform-home .platform-section-tier{--mode-bg:#f7faff;--section-bg:#fcfdff}
+.platform-home .platform-mode-nine,.platform-home .platform-section-nine{--mode-bg:#fbf8ff;--section-bg:#fdfcff}
+.platform-home .platform-mode-random,.platform-home .platform-section-random{--mode-bg:#f5fcf8;--section-bg:#fbfefc}
+.platform-home .platform-mode{background:var(--mode-bg,#fff)}
+.platform-home .platform-section{background:var(--section-bg,#fff)}
