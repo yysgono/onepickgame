@@ -1,0 +1,22 @@
+{
+ "ko":["섞는 중","출구 열림","효과음 켜기","효과음 끄기"],
+ "en":["Mixing","Gate open","Turn sound on","Turn sound off"],
+ "ja":["シャッフル中","ゲート開放","効果音オン","効果音オフ"],
+ "zh":["混合中","出口已打开","开启音效","关闭音效"],
+ "es":["Mezclando","Salida abierta","Activar sonido","Silenciar"],
+ "fr":["Mélange","Sortie ouverte","Activer le son","Couper le son"],
+ "de":["Mischen","Tor geöffnet","Ton einschalten","Ton ausschalten"],
+ "vi":["Đang trộn","Đã mở cửa","Bật âm thanh","Tắt âm thanh"],
+ "id":["Mengacak","Gerbang terbuka","Aktifkan suara","Matikan suara"],
+ "pt":["Misturando","Saída aberta","Ativar som","Desativar som"],
+ "ru":["Перемешивание","Выход открыт","Включить звук","Выключить звук"],
+ "hi":["मिलाया जा रहा है","द्वार खुला","आवाज़ चालू करें","आवाज़ बंद करें"],
+ "th":["กำลังผสม","เปิดประตูแล้ว","เปิดเสียง","ปิดเสียง"],
+ "ar":["جارٍ الخلط","البوابة مفتوحة","تشغيل الصوت","كتم الصوت"],
+ "bn":["মেশানো হচ্ছে","দরজা খোলা","শব্দ চালু করুন","শব্দ বন্ধ করুন"],
+ "tr":["Karıştırılıyor","Kapı açık","Sesi aç","Sesi kapat"],
+ "it":["Mescolamento","Uscita aperta","Attiva audio","Disattiva audio"],
+ "pl":["Mieszanie","Brama otwarta","Włącz dźwięk","Wyłącz dźwięk"],
+ "nl":["Mengen","Poort open","Geluid aan","Geluid uit"],
+ "cs":["Míchání","Brána otevřená","Zapnout zvuk","Vypnout zvuk"]
+}
