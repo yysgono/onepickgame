@@ -39,5 +39,5 @@
 .result-source-actions .td-card-caption strong{font-size:14px}
 .result-source-actions .td-source-tier-group{border-color:#8b5cf6}
 /* Look lower in portrait photos so faces fit in the statistics-page previews. */
-.worldcup-creation-actions .td-card-media>img{object-position:center 45%!important}
+.worldcup-creation-actions .td-card-media>img{object-position:center 55%!important}
 @media(max-width:680px){.template-discovery.result-source-actions{grid-template-columns:minmax(0,1fr);max-width:460px;gap:14px}.template-discovery.result-source-actions h2{min-height:0;font-size:21px}}
