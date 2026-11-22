@@ -1,0 +1,11 @@
+.stats-candidate-image-button:focus-visible{outline:3px solid #2563eb;outline-offset:3px}
+.stats-candidate-preview{position:fixed;inset:0;width:100vw;max-width:none;height:100vh;height:100dvh;max-height:none;margin:0;padding:20px;border:0;background:transparent;box-sizing:border-box;overflow:auto;color:#172033}
+.stats-candidate-preview[open]{display:flex;align-items:center;justify-content:center}
+.stats-candidate-preview::backdrop{background:#091323c9}
+.stats-candidate-preview-panel{display:flex;flex-direction:column;max-width:min(1100px,100%);max-height:100%;min-width:min(280px,100%);overflow:hidden;border:1px solid #ffffff30;border-radius:14px;background:#fff;box-shadow:0 18px 70px #0005}
+.stats-candidate-preview-panel header{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:10px 12px 10px 18px;flex-shrink:0}
+.stats-candidate-preview-panel header strong{font-size:17px;line-height:1.4;overflow-wrap:anywhere;overflow:auto;max-height:4.2em;text-align:start}
+.stats-candidate-preview-panel header button{display:grid;place-items:center;flex:0 0 42px;width:42px;height:42px;border:1px solid #dce2eb;border-radius:9px;background:#f5f7fa;color:#26364a;font-size:28px;cursor:pointer}
+.stats-candidate-preview-panel header button:focus-visible{outline:3px solid #2563eb;outline-offset:2px}
+.stats-candidate-preview-panel>img{display:block;max-width:100%;width:auto;height:auto;max-height:calc(100vh - 130px);max-height:calc(100dvh - 130px);min-height:0;object-fit:contain;background:#eef1f5;margin:auto}
+@media(max-width:600px){.stats-candidate-preview{padding:12px}.stats-candidate-preview-panel header{padding:8px 10px;gap:10px}.stats-candidate-preview-panel header strong{font-size:15px}.stats-candidate-preview-panel>img{max-height:calc(100vh - 120px);max-height:calc(100dvh - 120px)}}

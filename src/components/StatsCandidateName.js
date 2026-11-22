@@ -1,11 +1,33 @@
 import React,{useEffect,useRef,useState} from 'react';
+import {createPortal} from 'react-dom';
+import {useTranslation} from 'react-i18next';
+import './statsCandidatePreview.css';
 import {getStatsImageSource,staticCandidateImage,statsCandidateVideo,pauseStatsImageTransforms} from '../utils/statsImageSource';
 import {rememberLoadedImage} from '../utils/recentLoadedImages';
+function CandidatePreview({url,name,onClose,closeLabel,focusTarget}){
+ const dialog=useRef(null);
+ useEffect(()=>{
+  const node=dialog.current,previous=focusTarget;
+  if(typeof node.showModal==='function')node.showModal();else node.setAttribute('open','');
+  return()=>{
+   if(typeof node.close==='function'&&node.open)node.close();
+   if(previous?.isConnected)previous.focus();
+  };
+ },[focusTarget]);
+ return createPortal(<dialog ref={dialog} className="stats-candidate-preview" aria-label={name} onCancel={event=>{event.preventDefault();onClose();}} onClick={event=>{if(event.target===event.currentTarget)onClose();}}>
+  <div className="stats-candidate-preview-panel">
+   <header><strong>{name}</strong><button type="button" autoFocus onClick={onClose} aria-label={closeLabel}>×</button></header>
+   <img src={url} alt={name} decoding="async"/>
+  </div>
+ </dialog>,document.body);
+}
 export default function StatsCandidateName({image,name,selected=false,isMobile=false}){
+ const {t}=useTranslation();
+ const [preview,setPreview]=useState(null);
  const anchor=useRef(null);
  const videoRef=useRef(null);
  const [visible,setVisible]=useState(false),[failure,setFailure]=useState('');
- useEffect(()=>{setFailure('');},[image]);
+ useEffect(()=>{setFailure('');setPreview(null);},[image]);
  useEffect(()=>{
   if(visible)return undefined;
   if(typeof IntersectionObserver==='undefined'){setVisible(true);return undefined;}
@@ -24,7 +46,7 @@ export default function StatsCandidateName({image,name,selected=false,isMobile=f
  },[videoSource]);
  const size=isMobile?40:48;
  return <div style={{display:'flex',alignItems:'center',gap:isMobile?8:12,textAlign:'start',minWidth:0}}>
-  <span ref={anchor} aria-hidden="true" style={{width:size,height:size,flex:`0 0 ${size}px`,display:'grid',placeItems:'center',overflow:'hidden',borderRadius:8,background:'#edf0f5',color:'#64748b',fontSize:20,fontWeight:700}}>
+  <button ref={anchor} type="button" className="stats-candidate-image-button" aria-label={name} aria-haspopup="dialog" disabled={!source.url} onClick={event=>setPreview(event.currentTarget.querySelector('img')?.currentSrc||source.url)} style={{padding:0,border:0,cursor:source.url?'zoom-in':'default',width:size,height:size,flex:`0 0 ${size}px`,display:'grid',placeItems:'center',overflow:'hidden',borderRadius:8,background:'#edf0f5',color:'#64748b',fontSize:20,fontWeight:700}}>
    {videoSource?<video key={videoSource} ref={videoRef} src={videoSource} aria-hidden="true" width={size} height={size} muted playsInline autoPlay={false} controls={false} preload="metadata" onLoadedMetadata={event=>{
     const video=event.currentTarget;
     // Request a frame near the start without starting playback.
@@ -32,7 +54,8 @@ export default function StatsCandidateName({image,name,selected=false,isMobile=f
    }} onLoadedData={event=>event.currentTarget.pause()} onSeeked={event=>event.currentTarget.pause()} onError={()=>setFailure('all')} style={{width:'100%',height:'100%',objectFit:'contain',display:'block',pointerEvents:'none'}}/>:source.url?<img key={source.url} src={source.url} alt="" width={size} height={size} loading="lazy" decoding="async" onLoad={event=>rememberLoadedImage(event.currentTarget.currentSrc||source.url)} onError={()=>{
     if(source.transformed){pauseStatsImageTransforms();setFailure('thumbnail');}else setFailure('all');
    }} style={{width:'100%',height:'100%',objectFit:'contain',display:'block'}}/>:[...String(name||'').trim()][0]||'—'}
-  </span>
+  </button>
   <span title={name} style={{display:'-webkit-box',WebkitBoxOrient:'vertical',WebkitLineClamp:2,overflow:'hidden',overflowWrap:'anywhere',whiteSpace:'normal',lineHeight:1.4,minWidth:0}}>{selected?'✓ ':''}{name}</span>
+  {preview&&<CandidatePreview url={preview} name={name} closeLabel={t('close')} focusTarget={anchor.current} onClose={()=>setPreview(null)}/>}
  </div>;
 }
