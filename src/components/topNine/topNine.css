@@ -295,3 +295,11 @@
 .top-nine .tn-more-button:hover:not(:disabled){background:#5425a3;border-color:#5425a3}
 .top-nine .tn-more-button:focus-visible{outline:3px solid #c4b5fd;outline-offset:3px}
 @media(max-width:600px){.top-nine .tn-more-button,.top-nine .tn-gallery-more{min-height:60px;padding:14px 26px;font-size:20px}}
+
+/* Only the intended card can be dragged; labels must not start a page selection. */
+.top-nine .tn-candidates button[draggable=true],
+.top-nine .tn-candidates button[draggable=true] *,
+.top-nine .tn-cell>button[draggable=true],
+.top-nine .tn-cell>button[draggable=true] *{user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+.top-nine .tn-candidates img,.top-nine .tn-candidates video,.top-nine .tn-cell canvas{-webkit-user-drag:none}
+body.tn-internal-drag{user-select:none;-webkit-user-select:none}

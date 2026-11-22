@@ -657,7 +657,7 @@ export default function Header({
     {key:'quiz',icon:'question',label:currentLang === 'ko' ? '퀴즈 맞히기' : t('gameModeNav.quiz'),path:`/${currentLang}/quiz`},
     {key:'tier-list',icon:'chart',label:t('gameModeNav.tierList'),path:`/${currentLang}/tier-list`},
     {key:'random-pick',icon:'dice',label:randomPickLabels[currentLang] || randomPickLabels.en,path:`/${currentLang}/random-pick`},
-    {key:'top-nine',icon:'grid',label:(topNineCopy[currentLang] || topNineCopy.en).nav,path:`/${currentLang}/mytop9`},
+    {key:'top-nine',icon:'grid',label:currentLang==='ko'?'최애 구절판':(topNineCopy[currentLang] || topNineCopy.en).nav,path:`/${currentLang}/mytop9`},
   ].sort((a,b)=>platformModes.MODES.findIndex(mode=>mode.headerKey===a.key)-platformModes.MODES.findIndex(mode=>mode.headerKey===b.key));
   useEffect(() => {
     document.querySelectorAll('.onepick-header details[open]').forEach(el => el.removeAttribute('open'));
