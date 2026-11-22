@@ -285,7 +285,8 @@ function MediaRenderer({
       return undefined;
     }
 
-    setShouldRender(false);
+    // Keep visible media mounted when an asynchronously loaded thumbnail URL changes.
+    if (shouldRender) return undefined;
 
     const node =
       visibilityRef.current;
@@ -333,7 +334,7 @@ function MediaRenderer({
   }, [
     deferUntilVisible,
     viewportMargin,
-    safeUrl,
+    shouldRender,
   ]);
 
   const youtubeId =
