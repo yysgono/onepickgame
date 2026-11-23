@@ -1,4 +1,7 @@
 const languages=['en','ko','ja','zh','es','fr','vi','de','ru','id','pt','hi','tr','th','ar','bn','it','pl','nl','cs'];
+function compactTierSearch(term) {
+ return term.replace(/[\s\u200B\uFEFF]+/g,'');
+}
 function normalizeTierSearch(term) {
  return String(term||'').normalize('NFC').replace(/[%_,()"\\]/g,' ').trim();
 }
@@ -8,6 +11,7 @@ export function tierPresetSearchFilter(term) {
  if (!safe) return '';
  const match = field => `${field}.ilike.%${safe}%`;
  return [
+  ...(compactTierSearch(safe)?[`tier_search_compact.ilike.%${compactTierSearch(safe)}%`]:[]),
   match('title'),
   ...languages.flatMap(lang => [
    match('title_translations->>' + lang),
@@ -20,7 +24,7 @@ export async function tierSearchFilter(client,term){
  const safe=normalizeTierSearch(term);
  if(!safe)return '';
  const match=field=>`${field}.ilike.%${safe}%`;
- const filters=[match('title'),match('candidate_search_text'),match('tier_labels->>_tags'),match('tier_labels->>_sourcePresetName'),
+ const filters=[...(compactTierSearch(safe)?[`tier_search_compact.ilike.%${compactTierSearch(safe)}%`]:[]),match('title'),match('candidate_search_text'),match('tier_labels->>_tags'),match('tier_labels->>_sourcePresetName'),
   ...languages.flatMap(lang=>[match('title_translations->>'+lang),match('tier_labels->_titleTranslations->>'+lang)])];
  const legacy=safe.normalize('NFKC');if(legacy!==safe)filters.push(`tier_labels->>_tags.ilike.%${legacy}%`);
  // The visible title is taken from the source preset, not necessarily the saved title.
