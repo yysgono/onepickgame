@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Seo from './Seo';
+import metadata from './worldcupMetadata';
+import { fetchWinnerStatsFromDB } from '../utils.js';
 function initialImage(cup) {
   if (typeof document !== 'undefined') {
     const canonical = document.querySelector('link[rel="canonical"]')?.href;
@@ -17,14 +19,16 @@ export default function WorldcupDetailSeo({ cup, ...props }) {
   const fromServer = selected.id === id && selected.fromServer;
   useEffect(() => {
     if (fromServer) return;
-    const controller = new AbortController();
-    fetch(`/api/worldcup-seo-image?id=${encodeURIComponent(id)}`, { signal: controller.signal })
-      .then(response => response.ok ? response.json() : { image: '' })
-      .then(result => {
-        if (!controller.signal.aborted) setSelected({ id, image: typeof result.image === 'string' ? result.image : '', fromServer: false });
+    let live = true;
+    // The round page already reads this cached, in-flight-deduplicated RPC.
+    // Reuse it instead of calling the unimplemented SEO image endpoint.
+    fetchWinnerStatsFromDB(id)
+      .then(stats => {
+        if (live) setSelected({ id, image: metadata.winnerImage(cup, stats), fromServer: false });
       })
       .catch(() => {});
-    return () => controller.abort();
-  }, [id, fromServer]);
-  return <Seo {...props} image={selected.id === id ? selected.image : ''} />;
+    return () => { live = false; };
+  }, [id, fromServer, cup]);
+  const image = selected.id === id && selected.image ? selected.image : metadata.fallbackImage(cup);
+  return <Seo {...props} image={image} />;
 }

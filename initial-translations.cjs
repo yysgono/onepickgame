@@ -27,11 +27,21 @@ function languageFor(req, html) {
     /<html\b[^>]*\blang=["']([^"']+)/i.exec(html)?.[1]];
   return candidates.find(value => typeof value === 'string' && (value === 'en' || Object.hasOwn(loaders, value))) || 'en';
 }
+// Translation modules are immutable in a deployment. Reuse the escaped JSON
+// string, preserving the exact initial language content and HTML bytes.
+const serializedTranslations = new Map();
 function injectInitialTranslations(html, language) {
   // English is bundled as the existing fallback and needs no duplicate HTML copy.
   if (!Object.hasOwn(loaders, language) || !/<\/head>/i.test(html) || /id=["']onepick-initial-translations["']/.test(html)) return html;
-  const payload = JSON.stringify({ language, messages: loaders[language]() })
-    .replace(/</g, '\\u003c').replace(/\u2028/g, '\\u2028').replace(/\u2029/g, '\\u2029');
+  const messages = loaders[language]();
+  let entry = serializedTranslations.get(language);
+  if (!entry || entry.messages !== messages) {
+    const payload = JSON.stringify({ language, messages })
+      .replace(/</g, '\\u003c').replace(/\u2028/g, '\\u2028').replace(/\u2029/g, '\\u2029');
+    entry = { messages, payload };
+    serializedTranslations.set(language, entry);
+  }
+  const { payload } = entry;
   return html.replace(/<\/head>/i, () => `<script type="application/json" id="onepick-initial-translations">${payload}</script></head>`);
 }
 function initialTranslationsMiddleware(req, res, next) {

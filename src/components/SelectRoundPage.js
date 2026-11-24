@@ -16,6 +16,7 @@ import AdsenseSide from "./AdsenseSide";
 import { fetchWinnerStatsFromDB, pushRecentWorldcup } from "../utils.js"; // ✅ 통계/최근본
 
 import { supabase } from "../utils/supabaseClient";
+import { hasFreshWorldcupTags } from "../utils/supabaseWorldcupApi";
 
 import {
 
@@ -175,7 +176,7 @@ export default function SelectRoundPage({
 
   const [detailTags, setDetailTags] = useState(
 
-  Array.isArray(cup?.tags) ? cup.tags : []
+  { id: cup?.id, tags: Array.isArray(cup?.tags) ? cup.tags : [] }
 
 );
 
@@ -188,6 +189,11 @@ useEffect(() => {
   async function loadLatestTags() {
 
     if (!cup?.id) return;
+
+    if (hasFreshWorldcupTags(cup)) {
+      setDetailTags({ id: cup.id, tags: cup.tags });
+      return;
+    }
 
     try {
 
@@ -207,7 +213,7 @@ useEffect(() => {
 
         setDetailTags(
 
-          Array.isArray(data?.tags) ? data.tags : []
+          { id: cup.id, tags: Array.isArray(data?.tags) ? data.tags : [] }
 
         );
 
@@ -229,7 +235,9 @@ useEffect(() => {
 
   };
 
-}, [cup?.id]);
+}, [cup]);
+
+const visibleDetailTags = detailTags.id === cup?.id ? detailTags.tags : (Array.isArray(cup?.tags) ? cup.tags : []);
 
     const [showAllCandidates, setShowAllCandidates] =
 
@@ -2018,9 +2026,9 @@ boxShadow: "0 5px 18px rgba(84,66,184,0.08)",
 
   </div>
 
-  {Array.isArray(detailTags) &&
+  {Array.isArray(visibleDetailTags) &&
 
-detailTags.length > 0 && (
+visibleDetailTags.length > 0 && (
 
     <div
 
@@ -2040,7 +2048,7 @@ detailTags.length > 0 && (
 
     >
 
-   {detailTags.slice(0, 3).map((tag) => (
+   {visibleDetailTags.slice(0, 3).map((tag) => (
 
         <NavigationLink
 

@@ -3,6 +3,14 @@ import { invalidateStatsCache } from "./statsCache";
 import { supabase } from "./supabaseClient";
 
 const WORLDCUP_TABLE = "worldcups";
+// Only a recently fetched full record can satisfy the detail tag lookup.
+// WeakMap avoids persisting rows or retaining discarded game objects.
+const fetchedAt = new WeakMap();
+export function hasFreshWorldcupTags(cup) {
+  if (!cup || !Array.isArray(cup.tags)) return false;
+  const age = Date.now() - fetchedAt.get(cup);
+  return Number.isFinite(age) && age >= 0 && age < 30000;
+}
 /**
  * =====================================================
  * 정상 월드컵 전체 조회
@@ -51,6 +59,7 @@ export async function getWorldcupGame(id) {
     throw new Error("월드컵 데이터를 찾을 수 없습니다.");
   }
 
+  fetchedAt.set(data, Date.now());
   return data;
 }
 
