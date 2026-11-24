@@ -34,6 +34,12 @@ app.use(
 
 const SITE_URL = "https://www.onepickgame.com";
 
+// Reject malformed public detail IDs before making privileged database requests.
+const PUBLIC_DETAIL_UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+function isPublicDetailUuid(id) {
+  return typeof id === "string" && id.length === 36 && PUBLIC_DETAIL_UUID.test(id);
+}
+
 const SUPABASE_URL =
   process.env.REACT_APP_SUPABASE_URL ||
   process.env.NEXT_PUBLIC_SUPABASE_URL ||
@@ -1578,9 +1584,10 @@ app.get(
         req.params?.id || ""
       ).trim();
 
-      if (!id) {
+      if (!isPublicDetailUuid(id)) {
+        res.setHeader("Cache-Control", "no-store");
         return res.status(400).json({
-          error: "Worldcup ID required",
+          error: id ? "Invalid Worldcup ID" : "Worldcup ID required",
         });
       }
 
@@ -1651,8 +1658,9 @@ app.use(async (req, res, next) => {
   if (!SUPPORTED_LANGS.includes(lang)) {
     return res.status(400).send("Unsupported language");
   }
-  if (!id) {
-    return res.status(400).send("Tier list ID required");
+  if (!isPublicDetailUuid(id)) {
+    res.setHeader("Cache-Control", "no-store");
+    return res.status(400).send(id ? "Invalid Tier list ID" : "Tier list ID required");
   }
 
   try {
@@ -1829,10 +1837,11 @@ app.use(async (req, res, next) => {
       .send("Unsupported language");
   }
 
-  if (!id) {
+  if (!isPublicDetailUuid(id)) {
+    res.setHeader("Cache-Control", "no-store");
     return res
       .status(400)
-      .send("Worldcup ID required");
+      .send(id ? "Invalid Worldcup ID" : "Worldcup ID required");
   }
 
   try {
