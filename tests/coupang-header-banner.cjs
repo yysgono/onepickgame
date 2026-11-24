@@ -9,6 +9,7 @@ Object.assign(global,{window:dom.window,document:dom.window.document,IS_REACT_AC
 const React=require('react'),{act}=React,{createRoot}=require('react-dom/client');let listener,mobile=false,fetches=0;
 window.matchMedia=()=>({get matches(){return mobile},addEventListener:(_event,fn)=>listener=fn,removeEventListener(){}});
 function load(country){
+ window.sessionStorage.clear(); // Each fixture represents a different visitor.
  const code=babel.transformSync(fs.readFileSync('src/ads/CoupangHeaderBanner.js','utf8'),{presets:[['@babel/preset-env',{targets:{node:'current'}}],'@babel/preset-react'],configFile:false,babelrc:false}).code;
  const m={exports:{}};new Function('require','module','exports',code)(key=>key==='react'?React:key==='./amazonBannerCopy.json'?require('../src/ads/amazonBannerCopy.json'):{},m,m.exports);global.fetch=async()=>{fetches++;return{ok:true,json:async()=>({country})}};return m.exports;
 }

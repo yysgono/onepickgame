@@ -33,8 +33,8 @@ function homeTierTitle(row, sources, lang) {
   const configured = map(source?.tier_preset_title_translations);
   return String(configured[lang] || configured.en || '').trim() || tierTitles.localizedTierCardTitle(row, sources, lang);
 }
-async function load(client, language, options = {}) {
-  const lang = PATHS.language(language), page = optionsFor(options), { offset, limit } = page;
+async function loadRaw(client, page) {
+  const { offset, limit } = page;
   const active = kind => !page.kind || page.kind === kind;
   const controller = new AbortController(), timer = setTimeout(() => controller.abort(), 6000);
   const read = async query => {
@@ -74,6 +74,15 @@ async function load(client, language, options = {}) {
     const previews = await sharedCards.loadCards(client, ordered.map(row => row.cup_id));
     const byPreview = new Map(previews.map(row => [String(row.cup_id), row.images]));
     const titleSources = sources.rows.map(row => Object.assign({}, row, { top_nine_title_translations: settings.rows.find(setting => String(setting.source_worldcup_id) === String(row.id))?.title_translations }));
+    return { counts, tier, quiz, nine, random, tierRows, nineRows, originalById, byId, ordered, byPreview, titleSources,
+      partial: [counts, tier, quiz, nine, random, cups, sources, settings, originals].some(result => result.error),
+      cupsError: cups.error };
+  } finally { clearTimeout(timer); }
+}
+function localize(raw, lang, page) {
+    const { offset, limit } = page;
+    const active = kind => !page.kind || page.kind === kind;
+    const { counts, tier, quiz, nine, random, tierRows, nineRows, originalById, byId, ordered, byPreview, titleSources, cupsError } = raw;
     const countsByMode = new Map(random.rows.map(row => [row.mode, Number(row.play_count) || 0]));
     const randomModes = RANDOM_MODES.slice().sort((a, b) => (countsByMode.get(b) || 0) - (countsByMode.get(a) || 0) || RANDOM_MODES.indexOf(a) - RANDOM_MODES.indexOf(b));
     const rows = {
@@ -91,28 +100,37 @@ async function load(client, language, options = {}) {
       nine: nineRows.map(row => ({ href: `/${lang}/mytop9/${row.id}`, label: localizedBoardTitle(row, titleSources, lang), slots: (Array.isArray(row.slots) ? row.slots : []).slice(0, 9).map(slot => slot?.id === 'tn-empty-cell' || !media(slot?.src) ? null : { src: media(slot.src), zoom: slot.zoom, x: slot.x, y: slot.y }) })),
       random: active('random') ? randomModes.slice(offset, offset + limit).map(mode => ({ href: `/${lang}/random-pick/${mode}`, label: (randomCopy[lang] || randomCopy.en).modes[mode], mode })) : [],
     };
-    const errors = { worldcup: counts.error || cups.error, tier: tier.error, quiz: quiz.error, nine: nine.error, random: random.error };
+    const errors = { worldcup: counts.error || cupsError, tier: tier.error, quiz: quiz.error, nine: nine.error, random: random.error };
     const sizes = { worldcup: counts.rows.length, tier: tier.rows.length, quiz: quiz.rows.length, nine: nine.rows.length };
     const lastCupIndex = ordered.length ? counts.rows.findIndex(row => String(row.cup_id) === String(ordered[ordered.length - 1].cup_id)) + 1 : counts.rows.length;
     return { version: VERSION, lang, groups: hrefs(lang).map((href, index) => {
       const kind = modeConfig.MODES[index].kind;
       return { kind, href, rows: rows[kind], unavailable: Boolean(errors[kind]), hasMore: active(kind) && (kind === 'random' ? offset + limit < RANDOM_MODES.length : sizes[kind] > limit || kind === 'worldcup' && sizes[kind] === limit + 1), nextOffset: offset + (kind === 'worldcup' ? lastCupIndex : rows[kind].length) };
     }) };
-  } finally { clearTimeout(timer); }
+}
+async function load(client, language, options = {}) {
+  const page = optionsFor(options);
+  return localize(await loadRaw(client, page), PATHS.language(language), page);
 }
 function makeLoader(client) {
+  // Query filters and selected columns are language-independent. Keep only a
+  // small number of raw pages per client, then localize independently per call.
   const cache = new Map(), pending = new Map();
   return async (language, options = {}) => {
-    const lang = PATHS.language(language), page = optionsFor(options), key = JSON.stringify([lang, page.kind, page.offset, page.limit]);
+    const lang = PATHS.language(language), page = optionsFor(options), key = JSON.stringify([page.kind, page.offset, page.limit]);
     if (options.refresh) cache.delete(key);
-    const cached = cache.get(key); if (cached && cached.until > Date.now()) return cached.value;
-    if (pending.has(key)) return pending.get(key);
-    const promise = load(client, lang, page).then(value => {
-      cache.delete(key); cache.set(key, { until: Date.now() + (value.groups.some(group => group.unavailable) ? 5000 : 60000), value });
-      while (cache.size > 128) cache.delete(cache.keys().next().value);
-      return value;
-    }).finally(() => pending.delete(key));
-    pending.set(key, promise); return promise;
+    const cached = cache.get(key);
+    if (cached && cached.until > Date.now()) return localize(cached.value, lang, page);
+    let promise = pending.get(key);
+    if (!promise) {
+      promise = loadRaw(client, page).then(value => {
+        cache.delete(key); cache.set(key, { until: Date.now() + (value.partial ? 5000 : 60000), value });
+        while (cache.size > 8) cache.delete(cache.keys().next().value);
+        return value;
+      }).finally(() => pending.delete(key));
+      pending.set(key, promise);
+    }
+    return localize(await promise, lang, page);
   };
 }
 const escape = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
