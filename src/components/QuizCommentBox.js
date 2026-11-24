@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { supabase } from "../utils/supabaseClient";
 import { hasBadword } from "../badwords-multilang";
 import useBanCheck from "../hooks/useBanCheck";
+import useCommentWindow from "../hooks/useCommentWindow";
 import { addGuestComment, manageGuestComment } from "../utils/guestComments";
 
 export default function QuizCommentBox({ quizId }) {
@@ -13,10 +14,8 @@ export default function QuizCommentBox({ quizId }) {
   const [nickname, setNickname] = useState("");
   const [guestNickname, setGuestNickname] = useState("");
   const [guestPassword, setGuestPassword] = useState("");
-  const [comments, setComments] = useState([]);
   const [content, setContent] = useState("");
   const [error, setError] = useState("");
-  const [loading, setLoading] = useState(true);
   const { isBanned } = useBanCheck(user);
 
   useEffect(() => {
@@ -30,15 +29,11 @@ export default function QuizCommentBox({ quizId }) {
     });
   }, []);
 
-  async function load() {
-    if (!quizId) return;
-    setLoading(true);
-    const { data, error: loadError } = await supabase.from("quiz_comments").select("*").eq("quiz_id", quizId).order("created_at", { ascending: false });
-    if (loadError) setError(loadError.message);
-    setComments(data || []);
-    setLoading(false);
-  }
-  useEffect(() => { load(); }, [quizId]);
+  const { rows: comments, count, loading, loadingMore, hasMore, load, more } = useCommentWindow({
+    scope: `quiz:${quizId}`, enabled: Boolean(quizId), withCount: true,
+    query: withCount => supabase.from("quiz_comments").select("id,user_id,nickname,content,created_at", withCount ? { count: "exact" } : {}).eq("quiz_id", quizId).order("created_at", { ascending: false }).order("id", { ascending: false }),
+    onError: error => setError(error.message || t("comment.saveError")),
+  });
 
   async function submit(event) {
     event.preventDefault();
@@ -94,7 +89,7 @@ export default function QuizCommentBox({ quizId }) {
   }
 
   return <div style={{ maxWidth: 900, margin: "34px auto 50px", border: "1.5px solid #cfd8e6", borderRadius: 12, padding: 16, background: "#fff" }}>
-    <h3 style={{ margin: "0 0 14px", fontSize: 20 }}>💬 {t("comment.comments") || (ko ? "댓글" : "Comments")} <span style={{ fontSize: 14, color: "#68758a" }}>{comments.length}</span></h3>
+    <h3 style={{ margin: "0 0 14px", fontSize: 20 }}>💬 {t("comment.comments") || (ko ? "댓글" : "Comments")} <span style={{ fontSize: 14, color: "#68758a" }}>{count}</span></h3>
     <ContentCommentNotices key={`quiz-${quizId}`} kind="quiz" targetId={quizId} />
     <form onSubmit={submit} style={{ display: "grid", gridTemplateColumns: user ? "1fr" : "minmax(0,1fr) minmax(0,1fr)", gap: 8 }}>
       {!user && <><input value={guestNickname} onChange={e => setGuestNickname(e.target.value)} maxLength={20} autoComplete="nickname" placeholder={ko ? "임시 닉네임 (최대 20자)" : "Guest nickname (up to 20 characters)"} style={{ minWidth: 0, border: "1.5px solid #bccae0", borderRadius: 8, padding: 10, font: "inherit" }} /><input type="password" value={guestPassword} onChange={e => setGuestPassword(e.target.value)} minLength={4} maxLength={50} autoComplete="new-password" placeholder={ko ? "수정·삭제용 비밀번호 (4~50자)" : "Password for editing/deleting (4–50 characters)"} style={{ minWidth: 0, border: "1.5px solid #bccae0", borderRadius: 8, padding: 10, font: "inherit" }} /></>}
@@ -104,5 +99,6 @@ export default function QuizCommentBox({ quizId }) {
     {!user && <div style={{ marginTop: 6, color: "#64748b", fontSize: 12 }}>{ko ? "비밀번호를 잊으면 댓글을 수정하거나 삭제할 수 없습니다." : "Keep your password; it cannot be recovered."}</div>}
     {error && <div role="alert" style={{ color: "#b42346", marginTop: 8, fontSize: 13 }}>{error}</div>}
     <div style={{ marginTop: 16 }}>{loading ? <div style={{ padding: 18, color: "#68758a" }}>{t("comment.loading", { defaultValue: "Loading..." })}</div> : comments.map(comment => <div key={comment.id} style={{ padding: "12px 4px", borderTop: "1px solid #e1e6ee" }}><div style={{ display: "flex", justifyContent: "space-between", gap: 10 }}><strong>{comment.nickname || "User"}</strong><span style={{ fontSize: 12, color: "#7b8798" }}>{new Date(comment.created_at).toLocaleString()}</span></div><div style={{ whiteSpace: "pre-wrap", marginTop: 7, lineHeight: 1.5 }}>{comment.content}</div><div style={{ display: "flex", gap: 12, marginTop: 7 }}>{!comment.user_id && <><button type="button" onClick={() => edit(comment)} style={{ border: 0, background: "transparent", color: "#6650d8", padding: 0, cursor: "pointer" }}>{ko ? "수정" : "Edit"}</button><button type="button" onClick={() => remove(comment)} style={{ border: 0, background: "transparent", color: "#b42346", padding: 0, cursor: "pointer" }}>{t("delete") || (ko ? "삭제" : "Delete")}</button></>}{user?.id === comment.user_id && <button type="button" onClick={() => remove(comment)} style={{ border: 0, background: "transparent", color: "#b42346", padding: 0, cursor: "pointer" }}>{t("delete") || (ko ? "삭제" : "Delete")}</button>}</div></div>)}</div>
+    {!loading && hasMore && <button type="button" onClick={more} disabled={loadingMore} style={{ display: "block", margin: "12px auto 0", border: "1px solid #cfd8e6", borderRadius: 8, padding: "9px 18px", color: "#6650d8", background: "#fff", fontWeight: 700, cursor: loadingMore ? "default" : "pointer" }}>{loadingMore ? t("comment.loading") : String(i18n.language || "en").startsWith("zh") ? "加载更多" : t("load_more")}</button>}
   </div>;
 }

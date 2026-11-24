@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import { supabase } from "../utils/supabaseClient";
 import { hasBadword } from "../badwords-multilang";
 import useBanCheck from "../hooks/useBanCheck";
+import useCommentWindow from "../hooks/useCommentWindow";
 import { addGuestComment, manageGuestComment } from "../utils/guestComments";
 
 function CommentSkeleton() {
@@ -249,17 +250,13 @@ export default function CommentBox({
   const [guestNickname, setGuestNickname] = useState("");
   const [guestPassword, setGuestPassword] = useState("");
 
-  const [comments, setComments] =
-    useState([]);
-
   const [content, setContent] =
     useState("");
 
   const [error, setError] =
     useState("");
 
-  const [loading, setLoading] =
-    useState(true);
+  const [submitting, setSubmitting] = useState(false);
 
   const isMobile =
     useIsMobile();
@@ -296,36 +293,13 @@ export default function CommentBox({
     banInfo,
   } = useBanCheck(user);
 
-  useEffect(() => {
-    fetchComments();
-
-    // eslint-disable-next-line
-  }, [cupId,kind]);
-
-  async function fetchComments() {
-    setLoading(true);
-
-    const { data } =
-      await supabase
-        .from(commentTable)
-        .select("*")
-        .eq(
-          "cup_id",
-          cupId
-        )
-        .order(
-          "created_at",
-          {
-            ascending: false,
-          }
-        );
-
-    setComments(
-      data || []
-    );
-
-    setLoading(false);
-  }
+  const { rows: comments, loading, loadingMore, hasMore, load: fetchComments, more } = useCommentWindow({
+    scope: `${kind}:${cupId}`, enabled: Boolean(cupId),
+    query: () => supabase.from(commentTable)
+      .select(kind === "worldcup" ? "id,user_id,nickname,content,created_at,upvotes,downvotes" : "*")
+      .eq("cup_id", cupId).order("created_at", { ascending: false }).order("id", { ascending: false }),
+    onError: error => setError(error.message || t("comment.saveError")),
+  });
 
   function containsBadword(str) {
     return hasBadword(
@@ -421,7 +395,7 @@ export default function CommentBox({
       );
     }
 
-    setLoading(true);
+    setSubmitting(true);
 
     let insertErr = null;
     try {
@@ -434,7 +408,7 @@ export default function CommentBox({
       }
     } catch (error) { insertErr = error; }
 
-    setLoading(false);
+    setSubmitting(false);
 
     if (insertErr) {
       setError(
@@ -508,7 +482,7 @@ export default function CommentBox({
     fetchComments();
   }
 
-  if (loading) {
+  if (loading || submitting) {
     return (
       <CommentSkeleton />
     );
@@ -1369,6 +1343,9 @@ export default function CommentBox({
             </div>
           )
         )}
+        {hasMore && <button type="button" onClick={more} disabled={loadingMore} style={{ display: "block", margin: "12px auto 0", border: "1px solid #d7e0ec", background: "#fff", color: COLORS.main, borderRadius: 8, padding: "9px 18px", fontWeight: 700, cursor: loadingMore ? "default" : "pointer" }}>
+          {loadingMore ? t("comment.loading") : i18n.language.startsWith("zh") ? "加载更多" : t("load_more")}
+        </button>}
       </div>
     </div>
   );

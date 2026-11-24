@@ -35,7 +35,9 @@ module.exports=function(app,supabase,origin){
    }
    if(!data)return res.status(404).send('Not found');
    if(data.unlisted)res.setHeader('X-Robots-Tag','noindex,follow');
-   data.titleSources=data.unlisted?[]:await loadBoardTitleSources(supabase,[data]);
+   // Custom titles are returned unchanged by localizedBoardTitle. Keep
+   // the browser detail lookup (it also renders source-template links).
+   data.titleSources=data.unlisted||data.title_is_custom===true?[]:await loadBoardTitleSources(supabase,[data]);
    data.title=localizedBoardTitle(data,data.titleSources,lang);
    return res.type('html').send(renderBoardHtml(await loadSeoTemplate(origin),origin,lang,data));
   }catch{return res.status(503).send('Please try again');}

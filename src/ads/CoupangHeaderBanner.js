@@ -2,10 +2,27 @@ import React,{useEffect,useState} from 'react';
 import './CoupangHeaderBanner.css';
 import amazonCopy from './amazonBannerCopy.json';
 export const AMAZON_URL='https://www.amazon.com/?tag=onepickgamegl-20';
+const COUNTRY_CACHE_KEY='onepick-visitor-country-v1';
+const COUNTRY_CACHE_TTL=5*60*1000;
+const validCountry=value=>typeof value==='string'&&/^[A-Z]{2}$/.test(value);
+function cachedCountry(){
+ try{
+  const value=JSON.parse(window.sessionStorage.getItem(COUNTRY_CACHE_KEY)||'null');
+  const age=Date.now()-value?.at;
+  return validCountry(value?.country)&&Number.isFinite(age)&&age>=0&&age<COUNTRY_CACHE_TTL?value.country:null;
+ }catch{return null;}
+}
 let countryRequest;
 export function visitorCountry(){
- if(!countryRequest)countryRequest=fetch('/api/visitor-country',{cache:'no-store',credentials:'same-origin'})
-  .then(response=>response.ok?response.json():null).then(data=>typeof data?.country==='string'&&/^[A-Z]{2}$/.test(data.country)?data.country:null).catch(()=>null);
+ if(!countryRequest){
+  const cached=cachedCountry();
+  countryRequest=cached?Promise.resolve(cached):fetch('/api/visitor-country',{cache:'no-store',credentials:'same-origin'})
+   .then(response=>response.ok?response.json():null).then(data=>{
+    const country=validCountry(data?.country)?data.country:null;
+    if(country){try{window.sessionStorage.setItem(COUNTRY_CACHE_KEY,JSON.stringify({country,at:Date.now()}));}catch{}}
+    return country;
+   }).catch(()=>null);
+ }
  return countryRequest;
 }
 export function bannerDocument(mobile){
