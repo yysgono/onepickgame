@@ -308,7 +308,7 @@ export default function CommentBox({
     const { data } =
       await supabase
         .from(commentTable)
-        .select("*")
+        .select(kind === "worldcup" ? "id,user_id,nickname,content,created_at,upvotes,downvotes" : "*")
         .eq(
           "cup_id",
           cupId

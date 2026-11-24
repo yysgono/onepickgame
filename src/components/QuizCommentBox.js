@@ -33,7 +33,7 @@ export default function QuizCommentBox({ quizId }) {
   async function load() {
     if (!quizId) return;
     setLoading(true);
-    const { data, error: loadError } = await supabase.from("quiz_comments").select("*").eq("quiz_id", quizId).order("created_at", { ascending: false });
+    const { data, error: loadError } = await supabase.from("quiz_comments").select("id,user_id,nickname,content,created_at").eq("quiz_id", quizId).order("created_at", { ascending: false });
     if (loadError) setError(loadError.message);
     setComments(data || []);
     setLoading(false);
