@@ -22,9 +22,9 @@ test('no ETag, HTTP errors and local built files preserve prior behavior',async(
  assert.equal(await f.load(origin),shell('a'));f.advance(60001);await assert.rejects(f.load(origin),/503/);assert.equal(Object.keys(f.requests[1].options.headers).length,0);assert.equal(await f.load(origin),shell('b'));
  const local=fixture([],shell('local'));assert.equal(await local.load(origin),shell('local'));assert.equal(local.requests.length,0);
 });
-test('comment queries select all rendered fields without changing sort, scope or UI',()=>{
+test('comment queries select all rendered fields without changing primary sort or scope',()=>{
  const world=fs.readFileSync('src/components/CommentBox.js','utf8'),quiz=fs.readFileSync('src/components/QuizCommentBox.js','utf8');
  assert.match(world,/\.select\(kind === "worldcup" \? "id,user_id,nickname,content,created_at,upvotes,downvotes" : "\*"\)/);
- assert.match(quiz,/\.from\("quiz_comments"\)\.select\("id,user_id,nickname,content,created_at"\)\.eq\("quiz_id", quizId\)\.order\("created_at", \{ ascending: false \}\)/);
+ assert.match(quiz,/\.from\("quiz_comments"\)\.select\("id,user_id,nickname,content,created_at", withCount \? \{ count: "exact" \} : \{\}\)\.eq\("quiz_id", quizId\)\.order\("created_at", \{ ascending: false \}\)/);
  for(const [text,name] of [[world,'CommentBox'],[quiz,'QuizCommentBox']])assert.equal(ts.createSourceFile(name+'.jsx',text,ts.ScriptTarget.Latest,true,ts.ScriptKind.JSX).parseDiagnostics.length,0);
 });
