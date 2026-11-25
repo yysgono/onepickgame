@@ -23,11 +23,17 @@ function CandidatePreview({url,name,onClose,closeLabel,focusTarget}){
 }
 export default function StatsCandidateName({image,name,selected=false,isMobile=false}){
  const {t}=useTranslation();
- const [preview,setPreview]=useState(null);
+ const [preview,setPreview]=useState(null),[hover,setHover]=useState(null);
  const anchor=useRef(null);
  const videoRef=useRef(null);
  const [visible,setVisible]=useState(false),[failure,setFailure]=useState('');
- useEffect(()=>{setFailure('');setPreview(null);},[image]);
+ useEffect(()=>{setFailure('');setPreview(null);setHover(null);},[image]);
+ useEffect(()=>{
+  if(!hover)return undefined;
+  const close=()=>setHover(null);
+  window.addEventListener('scroll',close,true);window.addEventListener('resize',close);
+  return()=>{window.removeEventListener('scroll',close,true);window.removeEventListener('resize',close);};
+ },[hover]);
  useEffect(()=>{
   if(visible)return undefined;
   if(typeof IntersectionObserver==='undefined'){setVisible(true);return undefined;}
@@ -45,8 +51,20 @@ export default function StatsCandidateName({image,name,selected=false,isMobile=f
   return()=>{video.pause();video.removeAttribute('src');video.load();};
  },[videoSource]);
  const size=isMobile?40:48;
+ // Reuse the displayed image only. No new transform or separate original request.
+ function showHover(event){
+  if(isMobile||event.pointerType!=='mouse'||preview)return;
+  const img=event.currentTarget.querySelector('img');
+  if(!img?.complete||!img.naturalWidth)return;
+  const rect=event.currentTarget.getBoundingClientRect(),gap=12;
+  const width=Math.min(300,window.innerWidth-24),height=Math.min(300,window.innerHeight-24);
+  if(width<=0||height<=0)return;
+  const left=rect.right+gap+width<=window.innerWidth-12?rect.right+gap:Math.max(12,rect.left-gap-width);
+  const top=Math.max(12,Math.min(rect.top,window.innerHeight-height-12));
+  setHover({url:img.currentSrc||img.src,left,top,width,height});
+ }
  return <div style={{display:'flex',alignItems:'center',gap:isMobile?8:12,textAlign:'start',minWidth:0}}>
-  <button ref={anchor} type="button" className="stats-candidate-image-button" aria-label={name} aria-haspopup="dialog" disabled={!source.url} onClick={event=>setPreview(event.currentTarget.querySelector('img')?.currentSrc||source.url)} style={{padding:0,border:0,cursor:source.url?'zoom-in':'default',width:size,height:size,flex:`0 0 ${size}px`,display:'grid',placeItems:'center',overflow:'hidden',borderRadius:8,background:'#edf0f5',color:'#64748b',fontSize:20,fontWeight:700}}>
+  <button ref={anchor} type="button" className="stats-candidate-image-button" aria-label={name} aria-haspopup="dialog" disabled={!source.url} onPointerEnter={showHover} onPointerLeave={()=>setHover(null)} onClick={event=>{setHover(null);setPreview(event.currentTarget.querySelector('img')?.currentSrc||source.url);}} style={{padding:0,border:0,cursor:source.url?'zoom-in':'default',width:size,height:size,flex:`0 0 ${size}px`,display:'grid',placeItems:'center',overflow:'hidden',borderRadius:8,background:'#edf0f5',color:'#64748b',fontSize:20,fontWeight:700}}>
    {videoSource?<video key={videoSource} ref={videoRef} src={videoSource} aria-hidden="true" width={size} height={size} muted playsInline autoPlay={false} controls={false} preload="metadata" onLoadedMetadata={event=>{
     const video=event.currentTarget;
     // Request a frame near the start without starting playback.
@@ -56,6 +74,7 @@ export default function StatsCandidateName({image,name,selected=false,isMobile=f
    }} style={{width:'100%',height:'100%',objectFit:'contain',display:'block'}}/>:[...String(name||'').trim()][0]||'—'}
   </button>
   <span title={name} style={{display:'-webkit-box',WebkitBoxOrient:'vertical',WebkitLineClamp:2,overflow:'hidden',overflowWrap:'anywhere',whiteSpace:'normal',lineHeight:1.4,minWidth:0}}>{selected?'✓ ':''}{name}</span>
+  {hover&&!preview&&createPortal(<div className="stats-candidate-hover" aria-hidden="true" style={{left:hover.left,top:hover.top,width:hover.width,height:hover.height}}><img src={hover.url} alt="" decoding="async" onError={()=>setHover(null)}/></div>,document.body)}
   {preview&&<CandidatePreview url={preview} name={name} closeLabel={t('close')} focusTarget={anchor.current} onClose={()=>setPreview(null)}/>}
  </div>;
 }

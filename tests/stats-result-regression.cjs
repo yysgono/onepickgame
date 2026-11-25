@@ -1,0 +1,20 @@
+const fs=require('fs'),assert=require('node:assert/strict'),babel=require('@babel/core'),{JSDOM}=require('jsdom');
+const dom=new JSDOM('<div id="root"></div>',{url:'https://www.onepickgame.com/en/result/test'});
+global.window=dom.window;global.document=window.document;Object.defineProperty(global,'navigator',{value:window.navigator,configurable:true});global.IS_REACT_ACT_ENVIRONMENT=true;
+const React=require('react'),{act}=React,{createRoot}=require('react-dom/client'),{Simulate}=require('react-dom/test-utils');
+function load(path,mocks={}){const m={exports:{}};const code=babel.transformSync(fs.readFileSync(path,'utf8'),{presets:[['@babel/preset-env',{targets:{node:'current'}}],'@babel/preset-react'],configFile:false,babelrc:false}).code;new Function('require','module','exports',code)(name=>{assert.ok(name in mocks,name);return mocks[name]},m,m.exports);return m.exports;}
+const ids=Array.from({length:12},(_,i)=>String(i+1));
+const cup={id:'a1111111-1111-4111-8111-111111111111',title:'Long tournament title',data:ids.map(id=>({id,name:'Current '+id,image:'https://example.test/'+id+'.jpg'}))};
+const rows=[...ids,'deleted'].map((id,i)=>({candidate_id:id,name:'Old '+id,image:'https://example.test/old.jpg',win_count:30-i,total_games:100,match_count:100,match_wins:50}));
+const stub=name=>()=>React.createElement('div',{'data-test':name});const callbacks=[],navigation=[];let fetchCount=0;
+const Page=load('src/components/StatsPage.js',{
+ react:React,'react-router-dom':{useParams:()=>({lang:'en'}),useNavigate:()=>url=>navigation.push(url)},'react-i18next':{useTranslation:()=>({t:key=>key})},'../utils':{fetchWinnerStatsFromDB:async()=>{fetchCount++;return rows}},'../utils/supabaseClient':{supabase:{}},'../utils/localization':{getWorldcupTitle:cup=>cup.title},'../utils/statsCache':load('src/utils/statsCache.js'),'../utils/statsPageWithSelected':load('src/utils/statsPageWithSelected.js'),'../utils/worldcupCandidateChanges':load('src/utils/worldcupCandidateChanges.js'),'../locales/statsTableLabels.json':require('../src/locales/statsTableLabels.json'), './StatsCandidateName':({name,image})=>React.createElement('span',{'data-image':image},name),'./templates/WorldcupCreationCards':stub('creation'),'./sharing/WorldcupReportButton':stub('report'),'./sharing/SocialShareButtons':({children,url})=>React.createElement('div',{'data-share':url},children),'./MediaRenderer':stub('media'),'./CommentBox':stub('comment')
+}).default;
+(async()=>{const root=createRoot(document.getElementById('root'));
+ await act(async()=>{root.render(React.createElement(Page,{selectedCup:cup,showCommentBox:true,highlightCandidateId:'12',onWinnerStatsChange:value=>callbacks.push(value)}));});
+ const table=document.querySelector('table');assert.ok(table);assert.equal(table.querySelectorAll('tbody tr').length,11);assert.match(table.textContent,/Championship Rate/);assert.match(table.textContent,/Match Win Rate/);assert.match(table.textContent,/Current 12/);assert.doesNotMatch(table.textContent,/Old |deleted/);assert.equal(table.querySelector('[data-image]').getAttribute('data-image'),'https://example.test/1.jpg');
+ assert.deepEqual(callbacks.at(-1),{cupId:cup.id,candidateId:'12',status:'ready',rank:12,winCount:19,winRate:'19.0%',matchRate:'50%'});
+ assert.equal(document.querySelector('[data-share]').getAttribute('data-share'),`https://www.onepickgame.com/en/result/${cup.id}`);for(const name of ['creation','report','comment'])assert.ok(document.querySelector(`[data-test="${name}"]`),name);
+ const button=[...document.querySelectorAll('button')].find(b=>b.textContent.includes('result_discovery_search_title'));assert.ok(button);await act(async()=>Simulate.click(button));assert.deepEqual(navigation,['/en?focus=search']);assert.equal(fetchCount,1);
+ await act(async()=>root.unmount());dom.window.close();console.log('PASS: result integration with mocked data: 10+selected row, deleted-candidate exclusion, current name/image, distinct rates, winner summary, share/report/creation/comment, search shortcut, one stats fetch');
+})().catch(e=>{console.error(e);process.exitCode=1});

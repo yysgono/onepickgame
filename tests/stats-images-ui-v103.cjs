@@ -8,7 +8,7 @@ function load(path,mocks){const m={exports:{}};const code=babel.transformSync(fs
 const recent=load('src/utils/recentLoadedImages.js',{}),originalUrl=load('src/utils/originalStorageImageUrl.js',{}),source=load('src/utils/statsImageSource.js',{'./originalStorageImageUrl':originalUrl});
 const Mp4Media=load('src/components/Mp4Media.jsx',{react:React});
 const Renderer=load('src/components/MediaRenderer.jsx',{'./Mp4Media':Mp4Media,react:React,'react-i18next':{useTranslation:()=>({t:key=>key})},'../utils/recentLoadedImages':recent,'../utils/originalStorageImageUrl':originalUrl}).default;
-const Name=load('src/components/StatsCandidateName.js',{react:React,'../utils/statsImageSource':source,'../utils/recentLoadedImages':recent}).default;
+const Name=load('src/components/StatsCandidateName.js',{react:React,'react-dom':require('react-dom'),'react-i18next':{useTranslation:()=>({t:key=>key})},'./statsCandidatePreview.css':{},'../utils/statsImageSource':source,'../utils/recentLoadedImages':recent}).default;
 (async()=>{
  const root=createRoot(document.getElementById('root')),base='https://irfyuvuazhujtlgpkfci.supabase.co/storage/v1/object/public/candidates/';
  const original=base+'seen.jpg';await act(async()=>root.render(React.createElement(Renderer,{url:original,alt:'seen',playable:true})));
@@ -17,13 +17,25 @@ const Name=load('src/components/StatsCandidateName.js',{react:React,'../utils/st
  await act(async()=>root.render(React.createElement(Name,{key:'seen',image:original,name})));
  assert.equal(document.querySelector('img'),null);await act(async()=>observers.at(-1).callback([{isIntersecting:true}]));
  assert.equal(document.querySelector('img').getAttribute('src'),original);assert.equal(document.querySelector('img').getAttribute('width'),'48');assert.ok(document.body.textContent.includes(name));
+ // Mouse hover must reuse the visible image URL and close on leave/scroll.
+ const thumb=document.querySelector('.stats-candidate-image-button img');
+ Object.defineProperty(thumb,'complete',{value:true});Object.defineProperty(thumb,'naturalWidth',{value:1920});
+ const trigger=thumb.parentElement;
+ await act(async()=>Simulate.pointerEnter(trigger,{pointerType:'mouse'}));
+ assert.equal(document.querySelector('.stats-candidate-hover img')?.src,original);
+ await act(async()=>Simulate.pointerLeave(trigger,{pointerType:'mouse'}));assert.equal(document.querySelector('.stats-candidate-hover'),null);
+ await act(async()=>Simulate.pointerEnter(trigger,{pointerType:'mouse'}));assert.ok(document.querySelector('.stats-candidate-hover'));
+ await act(async()=>window.dispatchEvent(new window.Event('scroll')));assert.equal(document.querySelector('.stats-candidate-hover'),null);
+ await act(async()=>Simulate.pointerEnter(trigger,{pointerType:'touch'}));assert.equal(document.querySelector('.stats-candidate-hover'),null);
+ await act(async()=>Simulate.click(trigger));assert.equal(document.querySelector('dialog img')?.src,original);
+ await act(async()=>Simulate.click(document.querySelector('dialog button')));assert.equal(document.querySelector('dialog'),null);
  const unseen=base+'unseen.jpg';await act(async()=>root.render(React.createElement(Name,{key:'new',image:unseen,name})));
  assert.equal(document.querySelector('img'),null);await act(async()=>observers.at(-1).callback([{isIntersecting:true}]));
  assert.equal(document.querySelector('img').getAttribute('src'),unseen);
  await act(async()=>Simulate.error(document.querySelector('img')));assert.equal(document.querySelector('img'),null);assert.ok(document.body.textContent.includes(name));
  await act(async()=>root.render(React.createElement(Name,{key:'video',image:'https://example.test/video.mp4',name:'🍎 Apple',isMobile:true})));
  assert.equal(document.querySelector('video'),null);
- await act(async()=>observers.at(-1).callback([{isIntersecting:true}]));assert.equal(document.querySelector('img'),null);assert.ok(document.body.textContent.includes('🍎'));assert.ok(document.querySelector('[aria-hidden=true]').style.width==='40px');
+ await act(async()=>observers.at(-1).callback([{isIntersecting:true}]));assert.equal(document.querySelector('img'),null);assert.ok(document.body.textContent.includes('🍎'));assert.equal(document.querySelector('video[aria-hidden=true]').getAttribute('width'),'40');
  const statsVideo=document.querySelector('video');assert.ok(statsVideo);assert.equal(statsVideo.getAttribute('src'),'https://example.test/video.mp4');assert.equal(statsVideo.autoplay,false);assert.equal(statsVideo.controls,false);assert.equal(statsVideo.muted,true);assert.equal(statsVideo.playsInline,true);assert.equal(statsVideo.preload,'metadata');
  statsVideo.pause=()=>{};Object.defineProperty(statsVideo,'duration',{value:2});
  await act(async()=>Simulate.loadedMetadata(statsVideo));assert.equal(statsVideo.currentTime,0.01);await act(async()=>Simulate.loadedData(statsVideo));

@@ -1,10 +1,17 @@
+import WorldcupCreationCards from './templates/WorldcupCreationCards';
+import WorldcupReportButton from './sharing/WorldcupReportButton';
+import SocialShareButtons from './sharing/SocialShareButtons';
+import statsTableLabels from "../locales/statsTableLabels.json";
+import { statsPageWithSelected } from "../utils/statsPageWithSelected";
+import StatsCandidateName from "./StatsCandidateName";
+import { filterCurrentCandidateStats } from "../utils/worldcupCandidateChanges";
+import { readStatsCache, writeStatsCache } from "../utils/statsCache";
 import React, {
 
   useState,
 
   useEffect,
 
-  useCallback,
 
   useMemo,
 
@@ -53,15 +60,15 @@ const PERIODS = [
 
 
 
-const CACHE_TTL_MS = 5 * 60 * 1000; // 5분 캐시
 
 
 
-function percent(n, d) {
+
+function percent(n, d, digits = 0) {
 
   if (!d) return "-";
 
-  return Math.round((n / d) * 100) + "%";
+  return ((n / d) * 100).toFixed(digits) + "%";
 
 }
 
@@ -157,7 +164,7 @@ function normalizeStats(arr) {
 
       _display: {
 
-        winRateAll: percent(win_count, total_games),
+        winRateAll: percent(win_count, total_games, 1),
 
         matchRateAll: percent(match_wins, match_count),
 
@@ -179,243 +186,10 @@ function normalizeStats(arr) {
 
 /* ========================= 세션 캐시 ========================= */
 
-function readCache(key) {
-
-  try {
-
-    const raw = sessionStorage.getItem(key);
-
-    if (!raw) return null;
-
-    const parsed = JSON.parse(raw);
-
-    if (!parsed || typeof parsed !== "object") return null;
-
-    if (Date.now() - parsed.savedAt > CACHE_TTL_MS) return null;
-
-    return parsed.data || null;
-
-  } catch {
-
-    return null;
-
-  }
-
-}
-
-function writeCache(key, data) {
-
-  try {
-
-    const payload = JSON.stringify({ savedAt: Date.now(), data });
-
-    sessionStorage.setItem(key, payload);
-
-  } catch {}
-
-}
-
-
+const readCache = readStatsCache;
+const writeCache = writeStatsCache;
 
 /* ========================= 신고 버튼 ========================= */
-
-function ReportButton({ cupId, size = "md" }) {
-
-  const { t } = useTranslation();
-
-  const [show, setShow] = useState(false);
-
-  const [reason, setReason] = useState("");
-
-  const [ok, setOk] = useState("");
-
-  const [error, setError] = useState("");
-
-
-
-  const style =
-
-    size === "sm"
-
-      ? {
-
-          color: "#d33",
-
-          background: "#fff4f4",
-
-          border: "1.2px solid #f6c8c8",
-
-          borderRadius: 8,
-
-          padding: "3px 11px",
-
-          fontSize: 15,
-
-          fontWeight: 700,
-
-          cursor: "pointer",
-
-          minWidth: 50,
-
-        }
-
-      : {
-
-          color: "#d33",
-
-          background: "#fff4f4",
-
-          border: "1.5px solid #f6c8c8",
-
-          borderRadius: 8,
-
-          padding: "6px 18px",
-
-          fontSize: 17,
-
-          fontWeight: 700,
-
-          cursor: "pointer",
-
-          minWidth: 60,
-
-        };
-
-
-
-  const handleReport = useCallback(async () => {
-
-    setError("");
-
-    setOk("");
-
-    const { data } = await supabase.auth.getUser();
-
-    if (!data?.user?.id) return setError(t("need_login"));
-
-    const { error } = await supabase.from("reports").insert([
-
-      {
-
-        type: "worldcup",
-
-        target_id: cupId,
-
-        reporter_id: data.user.id,
-
-        reason,
-
-      },
-
-    ]);
-
-    if (error) setError(error.message);
-
-    else setOk(t("report_submit_success") || "신고가 접수되었습니다. 감사합니다.");
-
-  }, [cupId, reason, t]);
-
-
-
-  return (
-
-    <>
-
-      <button onClick={() => setShow(true)} style={style} aria-label={t("report")}>
-
-        🚩 {t("report")}
-
-      </button>
-
-      {show && (
-
-        <div
-
-          style={{
-
-            position: "fixed",
-
-            left: 0,
-
-            top: 0,
-
-            width: "100vw",
-
-            height: "100vh",
-
-            background: "#0006",
-
-            zIndex: 9999,
-
-            display: "flex",
-
-            alignItems: "center",
-
-            justifyContent: "center",
-
-          }}
-
-        >
-
-          <div
-
-            style={{
-
-              background: "#fff",
-
-              borderRadius: 14,
-
-              padding: 22,
-
-              minWidth: 270,
-
-            }}
-
-          >
-
-            <b>{t("report_reason")}</b>
-
-            <textarea
-
-              value={reason}
-
-              onChange={(e) => setReason(e.target.value)}
-
-              style={{ width: "95%", minHeight: 60, marginTop: 12 }}
-
-              placeholder={t("report_reason_placeholder")}
-
-            />
-
-            <div style={{ marginTop: 12 }}>
-
-              <button onClick={handleReport} style={{ marginRight: 10 }}>
-
-                {t("report_submit")}
-
-              </button>
-
-              <button onClick={() => setShow(false)}>{t("close")}</button>
-
-            </div>
-
-            {ok && <div style={{ color: "#1976ed", marginTop: 7 }}>{ok}</div>}
-
-            {error && <div style={{ color: "#d33", marginTop: 7 }}>{error}</div>}
-
-          </div>
-
-        </div>
-
-      )}
-
-    </>
-
-  );
-
-}
-
-
 
 /* ========================= 카드 ========================= */
 
@@ -461,9 +235,9 @@ const RankCard = React.memo(function RankCard(props) {
 
   const cardWidth = isMobile ? 285 : 390;
 
-  const cardHeight = isMobile ? 440 : 510;
+  const cardHeight = isMobile ? 475 : 550;
 
-  const thumbSize = isMobile ? 145 : 200;
+  const thumbSize = isMobile ? 180 : 240;
 
 
 
@@ -579,7 +353,7 @@ const RankCard = React.memo(function RankCard(props) {
 
         <Suspense fallback={<div style={{ width: "100%", height: "100%", background: "#f3f4f9" }} />}>
 
-          <MediaRenderer url={image} alt={name} loading="lazy" decoding="async" />
+          <MediaRenderer url={image} alt={name} loading="lazy" decoding="async" previewCrop style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center" }} />
 
         </Suspense>
 
@@ -739,14 +513,15 @@ export default function StatsPage({
   showCommentBox = false,
 
   highlightCandidateId,
+  onWinnerStatsChange,
 
 }) {
 
   const { t } = useTranslation();
 
   const { lang } = useParams();
-
   const navigate = useNavigate();
+
 
 
 
@@ -774,7 +549,7 @@ const displayCupTitle =
 
   const [userOnly, setUserOnly] = useState(false);
 
-  const [itemsPerPage, setItemsPerPage] = useState(25);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
 
   const [period, setPeriod] = useState(null);
 
@@ -785,6 +560,8 @@ const displayCupTitle =
   const [customTo, setCustomTo] = useState("");
 
   const [loading, setLoading] = useState(true);
+  const [statsLoadError, setStatsLoadError] = useState(false);
+  const [statsLoadedCupId, setStatsLoadedCupId] = useState(null);
 
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -841,6 +618,7 @@ const displayCupTitle =
       }
 
       setLoading(true);
+      setStatsLoadError(false);
 
 
 
@@ -932,11 +710,12 @@ const rowsWithCurrentNames = (rows || []).map((row) => {
 
 const normalized =
 
-  normalizeStats(rowsWithCurrentNames);
+  normalizeStats(filterCurrentCandidateStats(rowsWithCurrentNames, selectedCup?.data));
 
 
 
 setStats(normalized);
+setStatsLoadedCupId(String(selectedCup.id));
 
         setLoading(false);
 
@@ -945,6 +724,7 @@ setStats(normalized);
         if (!alive || seq !== fetchSeqRef.current) return;
 
         console.error("stats fetch error:", e);
+        setStatsLoadError(true);
 
         setLoading(false);
 
@@ -986,11 +766,11 @@ setStats(normalized);
 
     () => ({
 
-      background: "#fcf5cd",
+      background: "#fff0b3",
 
       fontWeight: 800,
 
-      color: "#998314",
+      color: "#785800",
 
       fontSize: isMobile ? 15 : 18,
 
@@ -1001,6 +781,11 @@ setStats(normalized);
     [isMobile]
 
   );
+
+  const matchCell = useMemo(() => ({
+    background: "#dcecff", color: "#174c87", fontWeight: 700,
+    padding: "9px 0", border: 0,
+  }), []);
 
   const normalCell = useMemo(
 
@@ -1128,7 +913,7 @@ const rankedStats = useMemo(() => {
 
         _display: {
 
-          winRateAll: percent(row.user_win_count || 0, row.user_total_games || 0),
+          winRateAll: percent(row.user_win_count || 0, row.user_total_games || 0, 1),
 
           matchRateAll: percent(row.user_match_wins || 0, row.user_match_count || 0),
 
@@ -1273,19 +1058,8 @@ if (sortKey === "win_count") {
   const totalPages = Math.max(1, Math.ceil(totalStats / itemsPerPage));
 
   const pagedStats = useMemo(
-
-    () =>
-
-      filteredStats.slice(
-
-        (currentPage - 1) * itemsPerPage,
-
-        currentPage * itemsPerPage
-
-      ),
-
-    [filteredStats, currentPage, itemsPerPage]
-
+    () => statsPageWithSelected(filteredStats, currentPage, itemsPerPage, highlightCandidateId),
+    [filteredStats, currentPage, itemsPerPage, highlightCandidateId]
   );
 
 
@@ -1331,6 +1105,22 @@ const top3 = useMemo(() => {
   const selectedCandidate = highlightCandidateId == null ? null : rankedStats.find(
     (row) => String(row.candidate_id) === String(highlightCandidateId)
   );
+
+  useEffect(() => {
+    if (!onWinnerStatsChange) return;
+    if (!selectedCup?.id || highlightCandidateId == null) {
+      onWinnerStatsChange(null);
+      return;
+    }
+    const identity = { cupId: String(selectedCup.id), candidateId: String(highlightCandidateId) };
+    if (loading) onWinnerStatsChange({ ...identity, status: "loading" });
+    else if (statsLoadError) onWinnerStatsChange({ ...identity, status: "error" });
+    else if (statsLoadedCupId !== String(selectedCup.id)) onWinnerStatsChange({ ...identity, status: "loading" });
+    else if (!selectedCandidate) onWinnerStatsChange({ ...identity, status: "empty" });
+    else onWinnerStatsChange({ ...identity, status: "ready", rank: selectedCandidate.rank,
+      winCount: selectedCandidate.win_count, winRate: selectedCandidate._display.winRateAll,
+      matchRate: selectedCandidate._display.matchRateAll });
+  }, [onWinnerStatsChange, selectedCup?.id, highlightCandidateId, loading, statsLoadError, statsLoadedCupId, selectedCandidate]);
 
   /* ===== 페이지네이션 UI ===== */
 
@@ -1474,89 +1264,23 @@ const top3 = useMemo(() => {
 
   /* ===== 공유/신고 바 ===== */
 
-  function ShareAndReportBar() {
+  function renderShareAndReportBar() {
 
     if (!selectedCup?.id) return null;
 
-    const shareUrl = `${window.location.origin}/${lang}/select-round/${selectedCup.id}`;
-
+    const shareUrl = `${window.location.origin}/${normalizedLang}/result/${selectedCup.id}`;
     return (
-
-      <div
-
-        style={{
-
-          display: "flex",
-
-          justifyContent: "center",
-
-          gap: 10,
-
-          marginBottom: 18,
-
-          marginTop: 0,
-
-        }}
-
-      >
-
-        <ReportButton cupId={selectedCup.id} size="md" />
-
-        <button
-
-          onClick={() => {
-
-            navigator.clipboard
-
-              .writeText(shareUrl)
-
-              .then(() => {
-
-                if (window?.toast?.success) window.toast.success(t("share_link_copied"));
-
-                else alert(t("share_link_copied"));
-
-              })
-
-              .catch(() => alert(shareUrl));
-
-          }}
-
-          style={{
-
-            color: "#1976ed",
-
-            background: "#e8f2fe",
-
-            border: "1.5px solid #b8dafe",
-
-            borderRadius: 8,
-
-            padding: "6px 18px",
-
-            fontWeight: 700,
-
-            cursor: "pointer",
-
-            fontSize: 17,
-
-            minWidth: 72,
-
-          }}
-
-        >
-
-          📢 {t("share_worldcup")}
-
-        </button>
-
-      </div>
+      <SocialShareButtons key={selectedCup.id} lang={normalizedLang} title={getWorldcupTitle(selectedCup,normalizedLang)} url={shareUrl}>
+        <WorldcupReportButton cupId={selectedCup.id} cupTitle={getWorldcupTitle(selectedCup,normalizedLang)} lang={normalizedLang}/>
+      </SocialShareButtons>
 
     );
 
   }
 
 
+
+  const tableLabels = statsTableLabels[normalizedLang] || statsTableLabels.en;
 
   /* ===== 테이블 컬럼 ===== */
 
@@ -1566,15 +1290,15 @@ const top3 = useMemo(() => {
 
     { key: "name", label: t("name") },
 
-    { key: "win_count", label: t("win_count") },
+    { key: "win_count", label: tableLabels.win_count },
 
-    { key: "win_rate", label: t("win_rate"), isIvory: true },
+    { key: "win_rate", label: tableLabels.win_rate, isIvory: true },
 
-    { key: "match_wins", label: t("match_wins") },
+    { key: "match_wins", label: tableLabels.match_wins },
 
-    { key: "match_count", label: t("duel_count") },
+    { key: "match_count", label: tableLabels.match_count },
 
-    { key: "match_win_rate", label: t("match_win_rate"), isIvory: true },
+    { key: "match_win_rate", label: tableLabels.match_win_rate, isIvory: true },
 
   ];
 
@@ -1606,9 +1330,7 @@ const top3 = useMemo(() => {
 
   style={{
 
-    width: isMobile
-  ? "min(760px, 94vw)"
-  : "min(960px, 94vw, 100%)",
+    width: isMobile ? "min(760px, 94vw)" : "min(960px, 94vw, 100%)",
 
     margin: isMobile ? "18px auto 14px" : "24px auto 16px",
 
@@ -1630,54 +1352,8 @@ const top3 = useMemo(() => {
 
 >
 
-  <div
-
-    aria-hidden="true"
-
-    style={{
-
-      fontSize: isMobile ? 23 : 26,
-
-      lineHeight: 1,
-
-      marginBottom: 9,
-
-    }}
-
-  >
-
-    🏆
-
-  </div>
-
-
-
-  <div
-
-    style={{
-
-      marginBottom: 8,
-
-      color: "#8a94a6",
-
-      fontSize: isMobile ? 11 : 12,
-
-      fontWeight: 900,
-
-      letterSpacing: isMobile ? "0.08em" : "0.11em",
-
-      textTransform: "uppercase",
-
-    }}
-
-  >
-
-    {t("gameModeNav.worldcup")}
-
-  </div>
-
-
-
+  <div aria-hidden="true" style={{fontSize:isMobile?23:26,lineHeight:1,marginBottom:9}}>🏆</div>
+  <div style={{marginBottom:8,color:"#8a94a6",fontSize:isMobile?11:12,fontWeight:900,letterSpacing:isMobile?"0.08em":"0.11em",textTransform:"uppercase"}}>{t("gameModeNav.worldcup")}</div>
   <div
 
     title={displayCupTitle}
@@ -1722,11 +1398,12 @@ const top3 = useMemo(() => {
 
     style={{
 
-      minWidth: isMobile ? 154 : 178,
+      minWidth: isMobile ? 200 : 220,
+      minHeight: isMobile ? 54 : 58,
 
       marginTop: isMobile ? 18 : 21,
 
-      padding: isMobile ? "11px 20px" : "12px 25px",
+      padding: isMobile ? "13px 24px" : "14px 30px",
 
       border: "1px solid #e85f0d",
 
@@ -1736,7 +1413,7 @@ const top3 = useMemo(() => {
 
       color: "#ffffff",
 
-      fontSize: isMobile ? 15 : 16,
+      fontSize: isMobile ? 18 : 19,
 
       fontWeight: 900,
 
@@ -1756,7 +1433,7 @@ const top3 = useMemo(() => {
 
 
 
-<ShareAndReportBar />
+{renderShareAndReportBar()}
 
 
 
@@ -1828,297 +1505,18 @@ const top3 = useMemo(() => {
        </div>
      )}
 
-     {/* 월드컵 탐색 / 티어표 전환 */}
-
-<div
-
-  style={{
-
-    width: "min(960px, 96vw)",
-
-    margin: isMobile ? "8px auto 18px" : "10px auto 22px",
-
-    display: "grid",
-
-    gridTemplateColumns: isMobile
-
-      ? "1fr"
-
-      : "repeat(2, minmax(0, 1fr))",
-
-    gap: isMobile ? 12 : 16,
-
-  }}
-
->
-
-  {[
-
-    {
-
-      icon: "🔎",
-
-      title: t("result_discovery_search_title"),
-
-      description: t("result_discovery_search_desc"),
-
-
-
-      // 🔥 기존 인기/최신 카드의 주황색 느낌을
-
-      // 월드컵 검색으로 이동
-
-      accent: "#ff9f1a",
-
-
-
-      onClick: () =>
-
-        navigate(`/${lang}?focus=search`),
-
-    },
-
-
-
-    {
-
-      icon: "📊",
-
-      title: t("result_discovery_tier_title"),
-
-      description: t("result_discovery_tier_desc"),
-
-      accent: "#19bfff",
-
-
-
-      onClick: () =>
-
-        navigate(
-
-          `/${lang}/tier-list/create/${selectedCup.id}`
-
-        ),
-
-    },
-
-  ].map((item) => (
-
-    <button
-
-      key={item.title}
-
-      type="button"
-
-      onClick={item.onClick}
-
-      style={{
-
-        minWidth: 0,
-
-
-
-        // 기존보다 크게
-
-        minHeight: isMobile ? 76 : 92,
-
-
-
-        padding: isMobile
-
-          ? "14px 16px"
-
-          : "18px 20px",
-
-
-
-        borderRadius: 14,
-
-
-
-        border:
-
-          `1px solid ${item.accent}99`,
-
-
-
-        background:
-
-          "linear-gradient(180deg, rgba(13,31,55,0.98), rgba(6,17,31,0.98))",
-
-
-
-        color: "#fff",
-
-
-
-        cursor: "pointer",
-
-
-
-        textAlign: "left",
-
-
-
-        boxShadow:
-
-          `0 8px 24px ${item.accent}25`,
-
-
-
-        display: "flex",
-
-
-
-        alignItems: "center",
-
-
-
-        gap: 14,
-
-      }}
-
-    >
-
-      <span
-
-        aria-hidden="true"
-
-        style={{
-
-          flex: "0 0 auto",
-
-
-
-          width: isMobile ? 42 : 50,
-
-          height: isMobile ? 42 : 50,
-
-
-
-          borderRadius: 12,
-
-
-
-          display: "grid",
-
-          placeItems: "center",
-
-
-
-          background:
-
-            `${item.accent}24`,
-
-
-
-          border:
-
-            `1px solid ${item.accent}66`,
-
-
-
-          fontSize:
-
-            isMobile ? 21 : 24,
-
-
-
-          boxShadow:
-
-            `0 0 18px ${item.accent}2d`,
-
-        }}
-
-      >
-
-        {item.icon}
-
-      </span>
-
-
-
-      <span style={{ minWidth: 0 }}>
-
-        <span
-
-          style={{
-
-            display: "block",
-
-
-
-            fontSize:
-
-              isMobile ? 15 : 18,
-
-
-
-            fontWeight: 900,
-
-
-
-            lineHeight: 1.25,
-
-
-
-            color: "#f8fbff",
-
-          }}
-
-        >
-
-          {item.title}
-
-        </span>
-
-
-
-        <span
-
-          style={{
-
-            display: "block",
-
-
-
-            marginTop: 4,
-
-
-
-            fontSize:
-
-              isMobile ? 11.5 : 13.5,
-
-
-
-            fontWeight: 700,
-
-
-
-            lineHeight: 1.4,
-
-
-
-            color: "#a9bfd8",
-
-          }}
-
-        >
-
-          {item.description}
-
-        </span>
-
-      </span>
-
-    </button>
-
-  ))}
-
-</div>
-
-
+      {/* Keep the discovery shortcuts introduced in the latest result-page design. */}
+      <div style={{width:"min(960px, 96vw, 100%)",margin:isMobile?"8px auto 18px":"10px auto 22px",display:"grid",gridTemplateColumns:isMobile?"1fr":"repeat(2, minmax(0, 1fr))",gap:isMobile?12:16}}>
+        {[
+          {icon:"🔎",title:t("result_discovery_search_title"),description:t("result_discovery_search_desc"),accent:"#ff9f1a",onClick:()=>navigate(`/${normalizedLang}?focus=search`)},
+          {icon:"📊",title:t("result_discovery_tier_title"),description:t("result_discovery_tier_desc"),accent:"#19bfff",onClick:()=>navigate(`/${normalizedLang}/tier-list/create/${selectedCup.id}`)},
+        ].map(item=>(
+          <button key={item.title} type="button" onClick={item.onClick} style={{minWidth:0,minHeight:isMobile?76:92,padding:isMobile?"14px 16px":"18px 20px",borderRadius:14,border:`1px solid ${item.accent}99`,background:"linear-gradient(180deg, rgba(13,31,55,0.98), rgba(6,17,31,0.98))",color:"#fff",cursor:"pointer",textAlign:"start",boxShadow:`0 8px 24px ${item.accent}25`,display:"flex",alignItems:"center",gap:14}}>
+            <span aria-hidden="true" style={{flex:"0 0 auto",width:isMobile?42:50,height:isMobile?42:50,borderRadius:12,display:"grid",placeItems:"center",background:`${item.accent}24`,border:`1px solid ${item.accent}66`,fontSize:isMobile?21:24,boxShadow:`0 0 18px ${item.accent}2d`}}>{item.icon}</span>
+            <span style={{minWidth:0}}><span style={{display:"block",fontSize:isMobile?15:18,fontWeight:900,lineHeight:1.25,color:"#f8fbff"}}>{item.title}</span><span style={{display:"block",marginTop:4,fontSize:isMobile?11.5:13.5,fontWeight:700,lineHeight:1.4,color:"#a9bfd8"}}>{item.description}</span></span>
+          </button>
+        ))}
+      </div>
 
       {/* 회원/전체 탭 */}
 
@@ -2376,7 +1774,7 @@ onClick={() => {
 
       >
 
-        {[10, 25, 50, 100].map((num) => (
+        {[10, 20, 25, 50, 100].map((num) => (
 
           <button
 
@@ -2406,7 +1804,7 @@ onClick={() => {
 
           >
 
-            {t("view_" + num)}
+            {normalizedLang === "ko" ? `${num}개씩 보기` : t("view_" + num)}
 
           </button>
 
@@ -2491,6 +1889,7 @@ onClick={() => {
           style={{
 
             width: "100%",
+            minWidth: isMobile ? 840 : 1040,
 
             borderCollapse: "collapse",
 
@@ -2516,6 +1915,12 @@ onClick={() => {
 
         >
 
+          <colgroup>
+            <col style={{ width: "6%" }} />
+            <col style={{ width: "34%" }} />
+            {Array.from({ length: 5 }, (_, index) => <col key={index} style={{ width: "12%" }} />)}
+          </colgroup>
+
           <thead>
 
             <tr>
@@ -2526,15 +1931,15 @@ onClick={() => {
 
                 { key: "name", label: t("name") },
 
-                { key: "win_count", label: t("win_count") },
+                { key: "win_count", label: tableLabels.win_count },
 
-                { key: "win_rate", label: t("win_rate"), isIvory: true },
+                { key: "win_rate", label: tableLabels.win_rate, isIvory: true },
 
-                { key: "match_wins", label: t("match_wins") },
+                { key: "match_wins", label: tableLabels.match_wins },
 
-                { key: "match_count", label: t("duel_count") },
+                { key: "match_count", label: tableLabels.match_count },
 
-                { key: "match_win_rate", label: t("match_win_rate"), isIvory: true },
+                { key: "match_win_rate", label: tableLabels.match_win_rate, isIvory: true },
 
               ].map((col) => (
 
@@ -2548,8 +1953,9 @@ onClick={() => {
 
                     cursor: col.key === "rank" ? undefined : "pointer",
 
-                    ...(col.isIvory ? ivoryCell : { background: "#fff", fontWeight: 700, color: "#333" }),
+                    ...(["win_count", "win_rate"].includes(col.key) ? ivoryCell : ["match_wins", "match_count", "match_win_rate"].includes(col.key) ? matchCell : { background: "#fff", fontWeight: 700, color: "#333" }),
 
+                    borderBottom: "2px solid #bdcce0",
                     userSelect: "none",
 
                   }}
@@ -2664,46 +2070,21 @@ onClick={() => {
 
                     <tr key={row.candidate_id} style={highlightStyle}>
 
-                      <td style={{ ...ivoryCell, ...selectedCell }}>{row.rank}</td>
+                      <td style={{ ...normalCell, background: "#f1f5f9", color: "#475569", fontWeight: 700, borderBottom: "1px solid #e2e8f0", ...selectedCell }}>{row.rank}</td>
 
-                      <td
-
-                        style={{
-
-                          ...normalCell,
-                          ...selectedCell,
-
-                          fontWeight: 700,
-
-                          fontSize: isMobile ? 13 : 15,
-
-                          overflow: "hidden",
-
-                          textOverflow: "ellipsis",
-
-                          whiteSpace: "nowrap",
-
-                          maxWidth: isMobile ? 90 : 120,
-
-                        }}
-
-                        title={row.name}
-
-                      >
-
-                        {isHighlighted ? "✓ " : ""}{row.name}
-
+                      <td style={{ ...normalCell, ...selectedCell, fontWeight: 700, fontSize: isMobile ? 13 : 15, padding: "8px 10px", borderBottom: "1px solid #e2e8f0", verticalAlign: "middle" }} title={row.name}>
+                        <StatsCandidateName key={row.image || row.candidate_id} image={row.image} name={row.name} selected={isHighlighted} isMobile={isMobile} />
                       </td>
 
-                      <td style={{ ...normalCell, ...selectedCell }}>{row.win_count}</td>
+                      <td style={{ ...ivoryCell, borderBottom: "1px solid #e8d99e", ...selectedCell }}>{row.win_count}</td>
 
-                      <td style={{ ...ivoryCell, ...selectedCell }}>{winRateStr ?? "-"}</td>
+                      <td style={{ ...ivoryCell, borderBottom: "1px solid #e8d99e", ...selectedCell }}>{winRateStr ?? "-"}</td>
 
-                      <td style={{ ...normalCell, ...selectedCell }}>{row.match_wins}</td>
+                      <td style={{ ...matchCell, borderBottom: "1px solid #bdd4ef", ...selectedCell }}>{row.match_wins}</td>
 
-                      <td style={{ ...normalCell, ...selectedCell }}>{row.match_count}</td>
+                      <td style={{ ...matchCell, borderBottom: "1px solid #bdd4ef", ...selectedCell }}>{row.match_count}</td>
 
-                      <td style={{ ...ivoryCell, ...selectedCell }}>{matchWinRateStr ?? "-"}</td>
+                      <td style={{ ...matchCell, borderBottom: "1px solid #bdd4ef", ...selectedCell }}>{matchWinRateStr ?? "-"}</td>
 
                     </tr>
 
@@ -2722,6 +2103,8 @@ onClick={() => {
 
 
       <Pagination />
+
+      <WorldcupCreationCards cup={selectedCup} lang={normalizedLang}/>
 
 
 
@@ -2808,3 +2191,10 @@ function periodBtnStyle(selected) {
   };
 
 }
+
+
+
+
+
+
+
