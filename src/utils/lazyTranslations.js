@@ -6,7 +6,11 @@ export function readInitialTranslations(doc, supported) {
   try {
     const node = doc?.getElementById('onepick-initial-translations');
     if (!node) return null;
-    const value = JSON.parse(node.textContent || '');
+    // Retain the old inline payload for mixed-version deployments.
+    const value = node.getAttribute('src')
+      ? doc.defaultView?.__onepickInitialTranslations
+      : JSON.parse(node.textContent || '');
+    if (!value || (node.dataset.language && node.dataset.language !== value.language)) return null;
     if (!supported.includes(value.language) || !value.messages || typeof value.messages !== 'object' || Array.isArray(value.messages)) return null;
     return value;
   } catch { return null; }

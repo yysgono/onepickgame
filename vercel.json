@@ -137,6 +137,13 @@
   ],
   "routes": [
     {
+      "src": "/static/initial-translations/[a-z]{2}\\.[a-f0-9]{20}\\.js$",
+      "headers": {
+        "Cache-Control": "public, max-age=31536000, immutable"
+      },
+      "continue": true
+    },
+    {
       "src": "/api/visitor-country/?$",
       "dest": "/server.js"
     },

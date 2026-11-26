@@ -114,13 +114,21 @@ async function load(client, language, options = {}) {
 }
 function makeLoader(client) {
   // Query filters and selected columns are language-independent. Keep only a
-  // small number of raw pages per client, then localize independently per call.
+  // small number of raw pages per client. Reuse each localized snapshot until
+  // the underlying page expires; a refresh automatically gets a new snapshot.
   const cache = new Map(), pending = new Map();
+  const localized = new WeakMap();
+  function localizedPage(raw, lang, page) {
+    let variants = localized.get(raw);
+    if (!variants) { variants = new Map(); localized.set(raw, variants); }
+    if (!variants.has(lang)) variants.set(lang, localize(raw, lang, page));
+    return variants.get(lang);
+  }
   return async (language, options = {}) => {
     const lang = PATHS.language(language), page = optionsFor(options), key = JSON.stringify([page.kind, page.offset, page.limit]);
     if (options.refresh) cache.delete(key);
     const cached = cache.get(key);
-    if (cached && cached.until > Date.now()) return localize(cached.value, lang, page);
+    if (cached && cached.until > Date.now()) return localizedPage(cached.value, lang, page);
     let promise = pending.get(key);
     if (!promise) {
       promise = loadRaw(client, page).then(value => {
@@ -130,7 +138,7 @@ function makeLoader(client) {
       }).finally(() => pending.delete(key));
       pending.set(key, promise);
     }
-    return localize(await promise, lang, page);
+    return localizedPage(await promise, lang, page);
   };
 }
 const escape = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));

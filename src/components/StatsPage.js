@@ -23,7 +23,7 @@ import React, {
 
 } from "react";
 
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 import { fetchWinnerStatsFromDB } from "../utils";
 
@@ -520,7 +520,6 @@ export default function StatsPage({
   const { t } = useTranslation();
 
   const { lang } = useParams();
-  const navigate = useNavigate();
 
 
 
@@ -1504,19 +1503,6 @@ const top3 = useMemo(() => {
          ✓ {selectedCandidate.name} · #{selectedCandidate.rank}
        </div>
      )}
-
-      {/* Keep the discovery shortcuts introduced in the latest result-page design. */}
-      <div style={{width:"min(960px, 96vw, 100%)",margin:isMobile?"8px auto 18px":"10px auto 22px",display:"grid",gridTemplateColumns:isMobile?"1fr":"repeat(2, minmax(0, 1fr))",gap:isMobile?12:16}}>
-        {[
-          {icon:"🔎",title:t("result_discovery_search_title"),description:t("result_discovery_search_desc"),accent:"#ff9f1a",onClick:()=>navigate(`/${normalizedLang}?focus=search`)},
-          {icon:"📊",title:t("result_discovery_tier_title"),description:t("result_discovery_tier_desc"),accent:"#19bfff",onClick:()=>navigate(`/${normalizedLang}/tier-list/create/${selectedCup.id}`)},
-        ].map(item=>(
-          <button key={item.title} type="button" onClick={item.onClick} style={{minWidth:0,minHeight:isMobile?76:92,padding:isMobile?"14px 16px":"18px 20px",borderRadius:14,border:`1px solid ${item.accent}99`,background:"linear-gradient(180deg, rgba(13,31,55,0.98), rgba(6,17,31,0.98))",color:"#fff",cursor:"pointer",textAlign:"start",boxShadow:`0 8px 24px ${item.accent}25`,display:"flex",alignItems:"center",gap:14}}>
-            <span aria-hidden="true" style={{flex:"0 0 auto",width:isMobile?42:50,height:isMobile?42:50,borderRadius:12,display:"grid",placeItems:"center",background:`${item.accent}24`,border:`1px solid ${item.accent}66`,fontSize:isMobile?21:24,boxShadow:`0 0 18px ${item.accent}2d`}}>{item.icon}</span>
-            <span style={{minWidth:0}}><span style={{display:"block",fontSize:isMobile?15:18,fontWeight:900,lineHeight:1.25,color:"#f8fbff"}}>{item.title}</span><span style={{display:"block",marginTop:4,fontSize:isMobile?11.5:13.5,fontWeight:700,lineHeight:1.4,color:"#a9bfd8"}}>{item.description}</span></span>
-          </button>
-        ))}
-      </div>
 
       {/* 회원/전체 탭 */}
 

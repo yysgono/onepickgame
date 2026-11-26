@@ -1,48 +1,21 @@
 // Server-only. Static require paths keep these resources in the server deployment,
 // without putting every language in the browser's initial JavaScript.
-const loaders = {
-  it: () => require('./src/locales/it/translation.json'),
-  pl: () => require('./src/locales/pl/translation.json'),
-  nl: () => require('./src/locales/nl/translation.json'),
-  cs: () => require('./src/locales/cs/translation.json'),
-  ko: () => require('./src/locales/ko/translation.json'),
-  ja: () => require('./src/locales/ja/translation.json'),
-  zh: () => require('./src/locales/zh/translation.json'),
-  es: () => require('./src/locales/es/translation.json'),
-  fr: () => require('./src/locales/fr/translation.json'),
-  vi: () => require('./src/locales/vi/translation.json'),
-  de: () => require('./src/locales/de/translation.json'),
-  ru: () => require('./src/locales/ru/translation.json'),
-  id: () => require('./src/locales/id/translation.json'),
-  pt: () => require('./src/locales/pt/translation.json'),
-  hi: () => require('./src/locales/hi/translation.json'),
-  tr: () => require('./src/locales/tr/translation.json'),
-  th: () => require('./src/locales/th/translation.json'),
-  ar: () => require('./src/locales/ar/translation.json'),
-  bn: () => require('./src/locales/bn/translation.json'),
-};
+const { translationAsset, languages } = require('./translation-assets.cjs');
+const supported = new Set(['en', ...languages]);
 function languageFor(req, html) {
   const candidates = [req.query?.lang,
     String(req.query?.path || req.path || '').replace(/^\//, '').split('/')[0],
     /<html\b[^>]*\blang=["']([^"']+)/i.exec(html)?.[1]];
-  return candidates.find(value => typeof value === 'string' && (value === 'en' || Object.hasOwn(loaders, value))) || 'en';
+  return candidates.find(value => typeof value === 'string' && supported.has(value)) || 'en';
 }
-// Translation modules are immutable in a deployment. Reuse the escaped JSON
-// string, preserving the exact initial language content and HTML bytes.
-const serializedTranslations = new Map();
+// A blocking classic script runs before CRA's deferred application bundle.
+// Its content-hashed URL can be reused across pages without repeating the JSON
+// in each dynamic HTML response. English is already in the fallback bundle.
 function injectInitialTranslations(html, language) {
-  // English is bundled as the existing fallback and needs no duplicate HTML copy.
-  if (!Object.hasOwn(loaders, language) || !/<\/head>/i.test(html) || /id=["']onepick-initial-translations["']/.test(html)) return html;
-  const messages = loaders[language]();
-  let entry = serializedTranslations.get(language);
-  if (!entry || entry.messages !== messages) {
-    const payload = JSON.stringify({ language, messages })
-      .replace(/</g, '\\u003c').replace(/\u2028/g, '\\u2028').replace(/\u2029/g, '\\u2029');
-    entry = { messages, payload };
-    serializedTranslations.set(language, entry);
-  }
-  const { payload } = entry;
-  return html.replace(/<\/head>/i, () => `<script type="application/json" id="onepick-initial-translations">${payload}</script></head>`);
+  if (!/<\/head>/i.test(html) || /id=["']onepick-initial-translations["']/.test(html)) return html;
+  const asset = translationAsset(language);
+  if (!asset) return html;
+  return html.replace(/<\/head>/i, () => `<script id="onepick-initial-translations" data-language="${language}" src="${asset.url}"></script></head>`);
 }
 function initialTranslationsMiddleware(req, res, next) {
   const send = res.send;

@@ -42,15 +42,15 @@ function prepare(bundle, language) {
     },
   };
 }
-// Non-executable JSON is added by the server per URL, not per user/cookie.
-// The initial language therefore needs no extra request before the first render.
+// The static initial resource is selected by URL language, never user/cookie.
+// It executes before this module; failed downloads use the existing lazy loader.
 const initial = readInitialTranslations(typeof document === "undefined" ? null : document, SUPPORTED_LANGS);
 const resources = { en: { translation: prepare(translationEN, "en") } };
 if (initial && initial.language !== "en") {
   resources[initial.language] = { translation: prepare(initial.messages, initial.language) };
 }
 
-i18n
+const initialization = i18n
   .use(LanguageDetector)
   .use(initReactI18next)
   .init({
@@ -81,9 +81,9 @@ const lazyLanguages = installLazyTranslations(i18n, { loaders,
 });
 function loadDetectedLanguage() {
   const language = String(i18n.language || "en").split(/[-_]/)[0];
-  if (SUPPORTED_LANGS.includes(language) && !lazyLanguages.isLoaded(language)) i18n.changeLanguage(language);
+  if (SUPPORTED_LANGS.includes(language) && !lazyLanguages.isLoaded(language)) return i18n.changeLanguage(language);
 }
-if (i18n.isInitialized) loadDetectedLanguage();
-else i18n.once("initialized", loadDetectedLanguage);
+// Keep server-rendered content visible until the detected language is ready.
+export const translationsReady = Promise.resolve(initialization).then(loadDetectedLanguage);
 export default i18n;
 
