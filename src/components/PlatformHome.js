@@ -54,11 +54,48 @@ function CardRail({group,index,copy,lang,current,onLoadMore,paging,pageError}){
 }
 export default function PlatformHome({language}){
  const params=useParams(),location=useLocation(),{i18n}=useTranslation(),lang=paths.language(language||params.lang||'en'),copy=home.COPY[lang];
+ const modeNav=useRef(null);
  const [retry,setRetry]=useState(0),[state,setState]=useState(()=>({lang,data:bootstrap(lang),loading:false,error:false}));
  const stateRef=useRef(state);stateRef.current=state;
  const jobs=useRef(new Map()),generation=useRef(null);
  const [paging,setPaging]=useState({}),[pageErrors,setPageErrors]=useState({});
  const query=new URLSearchParams(location.search),legacy=['search','creator','focus'].some(key=>query.has(key));
+ useLayoutEffect(()=>{
+  const nav=modeNav.current;
+  if(!nav)return;
+  const labels=[...nav.querySelectorAll('.platform-mode > strong')];
+  const range=document.createRange();
+  if(typeof range.getBoundingClientRect!=='function')return;
+  const fit=()=>{
+   // Measure at the stylesheet size so a wider card restores the original size.
+   labels.forEach(label=>{label.style.fontSize='';});
+   const sizes=labels.map(label=>{
+    range.selectNodeContents(label);
+    const width=label.getBoundingClientRect().width;
+    const textWidth=range.getBoundingClientRect().width;
+    if(width<=1||textWidth<=width)return '';
+    const size=parseFloat(window.getComputedStyle(label).fontSize);
+    return Math.floor(size*(width-1)/textWidth*100)/100+'px';
+   });
+   labels.forEach((label,index)=>{label.style.fontSize=sizes[index];});
+  };
+  let frame=0;
+  const schedule=()=>{
+   cancelAnimationFrame(frame);
+   frame=requestAnimationFrame(fit);
+  };
+  const observer=typeof ResizeObserver==='function'?new ResizeObserver(schedule):null;
+  observer?.observe(nav);
+  window.addEventListener('resize',schedule);
+  document.fonts?.addEventListener('loadingdone',schedule);
+  fit();
+  return()=>{
+   cancelAnimationFrame(frame);
+   observer?.disconnect();
+   window.removeEventListener('resize',schedule);
+   document.fonts?.removeEventListener('loadingdone',schedule);
+  };
+ },[lang,legacy]);
  useLayoutEffect(()=>{generation.current=Symbol();setPaging({});setPageErrors({});const pending=jobs.current;return()=>{generation.current=null;pending.forEach(job=>job.controller.abort());pending.clear();};},[lang,retry]);
  const loadMore=useCallback((kind,refresh=false)=>{
   const current=stateRef.current,group=current.data?.groups.find(item=>item.kind===kind),key=lang+':'+kind;
@@ -96,7 +133,7 @@ export default function PlatformHome({language}){
  const current=state.lang===lang?state:null,groups=current?.data?.groups||home.empty(lang).groups;
  return <main className="platform-home" dir={lang==='ar'?'rtl':'ltr'}>
   <Seo lang={lang} title={homeCopy[lang].title} description={copy.intro}/>
-  <header className="platform-hero"><nav className="platform-modes" aria-label={copy.titles.join(', ')}>{groups.map((group,index)=><Link key={group.kind} to={group.href} className={'platform-mode platform-mode-'+group.kind}><span aria-hidden="true">{group.kind==='nine'?<TopNineIcon size={56}/>:icons[index]}</span><strong>{copy.titles[index]}</strong></Link>)}</nav></header>
+  <header className="platform-hero"><nav ref={modeNav} className="platform-modes" aria-label={copy.titles.join(', ')}>{groups.map((group,index)=><Link key={group.kind} to={group.href} className={'platform-mode platform-mode-'+group.kind}><span aria-hidden="true">{group.kind==='nine'?<TopNineIcon size={56}/>:icons[index]}</span><strong>{copy.titles[index]}</strong></Link>)}</nav></header>
   <div className="platform-language"><ContentLanguageSelect/></div>
   {groups.map((group,index)=><section key={group.kind} className={'platform-section platform-section-'+group.kind} aria-labelledby={'platform-'+group.kind}>
    <div className="platform-section-heading"><h2 id={'platform-'+group.kind}><Link className="platform-section-main-link" to={group.href}><span aria-hidden="true">{group.kind==='nine'?<TopNineIcon size={32}/>:icons[index]} </span>{copy.titles[index]}</Link></h2><Link to={group.href}>{copy.all} <span aria-hidden="true">→</span></Link></div>
