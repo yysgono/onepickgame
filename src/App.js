@@ -1,3 +1,4 @@
+import ContentDiscoveryLinks from './components/ContentDiscoveryLinks';
 import PlatformHome from "./components/PlatformHome";
 import worldcupHomeCopy from "./seo/worldcupHomeCopy.json";
 import GoogleAuthCallback from "./components/GoogleAuthCallback";
@@ -1953,6 +1954,8 @@ overflowX: "hidden",
   <WorldcupRouteDataLoader worldcupList={worldcupList} allLoaded={worldcupAllLoaded} loadAll={fetchWorldcups} loadOne={fetchOneWorldcup}>
     <AppRoutes />
   </WorldcupRouteDataLoader>
+
+  <ContentDiscoveryLinks />
 
   <ScrollToTopButton />
 

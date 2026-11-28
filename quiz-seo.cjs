@@ -1,3 +1,4 @@
+const discoverySeo = require('./content-discovery.cjs');
 const { renderDetailLinks } = require("./src/seo/detailLinks.js");
 const { getListSeo } = require("./src/seo/listSeo.js");
 
@@ -211,7 +212,15 @@ module.exports = function installQuizSeo(app, db, origin, options = {}) {
 
       const visibleHeading = detail ? seo.name : (seo.heading || seo.name);
 
-      const body = '<main><h1>' + esc(visibleHeading) + '</h1><p>' + esc(seo.description) + '</p>' + (detail ? '<img src="' + esc(seo.image) + '" alt="' + esc(seo.name) + '" style="max-width:100%;height:auto;">' : '') + links + (detail ? renderDetailLinks(lang, data.category) : '') + '</main>';
+      let discoveryLinks = [];
+      if (options.discovery && indexable) {
+        if (detail) {
+          discoveryLinks = await discoverySeo.optional(options.discovery.current('quiz', id).then(row => row ? options.discovery.related('quiz', row, lang) : []));
+        } else if (listMeta.category === 'all' && !req.query?.sort && !new URL(req.originalUrl || '/', origin).searchParams.has('sort')) {
+          discoveryLinks = await discoverySeo.optional(options.discovery.latest('quiz', lang));
+        }
+      }
+      const body = '<main><h1>' + esc(visibleHeading) + '</h1><p>' + esc(seo.description) + '</p>' + (detail ? '<img src="' + esc(seo.image) + '" alt="' + esc(seo.name) + '" style="max-width:100%;height:auto;">' : '') + links + (detail ? renderDetailLinks(lang, data.category) : '') + discoverySeo.block(discoveryLinks, lang, detail ? 'related' : 'latest') + '</main>';
 
       const html = renderHtml(await templateLoader(), seo, body, indexable);
 

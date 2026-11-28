@@ -1,3 +1,4 @@
+const discoverySeo = require('./content-discovery.cjs');
 const siteBrand=require('./src/seo/siteBrand.js');
 const {boardDescription}=require('./src/components/topNine/boardDescription.cjs');
 const {localizedBoardTitle,loadBoardTitleSources}=require('./src/components/topNine/localizedTitle.cjs');
@@ -8,17 +9,17 @@ const uuid=/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 function publicImage(value){
  try{const url=new URL(value);return url.protocol==='https:'&&!url.username&&!url.password&&!/\/render\/image\/|\/sign\//i.test(url.pathname)&&![...url.searchParams.keys()].some(key=>/token|signature|credential|expires|key|auth/i.test(key))?url.href:'';}catch{return '';}
 }
-function renderBoardHtml(template,origin,lang,board){
+function renderBoardHtml(template,origin,lang,board,related){
  const title=siteBrand.localizeTitle(board.title+' | One Pick Game',lang),description=boardDescription(board,lang),url=origin+'/'+lang+'/mytop9/'+board.id;
  const slots=(Array.isArray(board.slots)?board.slots:[]).filter(candidate=>candidate&&candidate.id!=='tn-empty-cell');
  const image=slots.map(candidate=>publicImage(candidate.src)).find(Boolean);
  const html=template.replace(/<title\b[^>]*>[\s\S]*?<\/title>/gi,'').replace(/<meta\b[^>]*(?:name=["'](?:description|robots|twitter:[^"']*)["']|property=["']og:[^"']*["'])[^>]*>/gi,'').replace(/<link\b[^>]*rel=["'](?:canonical|alternate)["'][^>]*>/gi,'').replace(/<html\b[^>]*>/i,'<html lang="'+lang+'" dir="'+(lang==='ar'?'rtl':'ltr')+'">');
  const alternates=Object.keys(COPY).map(language=>'<link data-rh="true" rel="alternate" hreflang="'+language+'" href="'+escape(origin+'/'+language+'/mytop9/'+board.id)+'">').join('');
  const head='<title data-rh="true">'+escape(title)+'</title><meta data-rh="true" name="description" content="'+escape(description)+'"><meta data-rh="true" name="robots" content="'+(board.unlisted?'noindex,follow':'index,follow')+'"><link data-rh="true" rel="canonical" href="'+escape(url)+'">'+alternates+'<meta data-rh="true" property="og:title" content="'+escape(title)+'"><meta data-rh="true" property="og:description" content="'+escape(description)+'"><meta data-rh="true" property="og:url" content="'+escape(url)+'"><meta data-rh="true" property="og:type" content="article">'+(image?'<meta data-rh="true" property="og:image" content="'+escape(image)+'">':'');
- const content='<article><h1>'+escape(board.title)+'</h1><p>'+escape(description).replace(/\n/g,'<br>')+'</p><ul>'+slots.map(candidate=>'<li>'+escape(candidate.name)+'</li>').join('')+'</ul><a href="'+origin+'/'+lang+'/mytop9">'+escape(COPY[lang].title)+'</a></article>';
+ const content='<article><h1>'+escape(board.title)+'</h1><p>'+escape(description).replace(/\n/g,'<br>')+'</p><ul>'+slots.map(candidate=>'<li>'+escape(candidate.name)+'</li>').join('')+'</ul><a href="'+origin+'/'+lang+'/mytop9">'+escape(COPY[lang].title)+'</a>'+discoverySeo.block(related,lang,'related')+'</article>';
  return html.replace('</head>',head+'</head>').replace(/(<div\b[^>]*\bid=["']root["'][^>]*>)/i,'$1'+content);
 }
-module.exports=function(app,supabase,origin){
+module.exports=function(app,supabase,origin,contentDiscovery){
  app.use(async(req,res,next)=>{
   const path=String(req.query?.path||req.path||'').replace(/^\//,''),match=path.match(/^([a-z]{2})\/mytop9\/([^/]+)\/?$/);
   if(req.query?.seo!=='top-nine-board'&&!((!req.query?.seo||req.query?.seo==='spa')&&match))return next();
@@ -39,7 +40,8 @@ module.exports=function(app,supabase,origin){
    // the browser detail lookup (it also renders source-template links).
    data.titleSources=data.unlisted||data.title_is_custom===true?[]:await loadBoardTitleSources(supabase,[data]);
    data.title=localizedBoardTitle(data,data.titleSources,lang);
-   return res.type('html').send(renderBoardHtml(await loadSeoTemplate(origin),origin,lang,data));
+   const related = contentDiscovery && !data.unlisted ? await discoverySeo.optional(contentDiscovery.related('nine',data,lang)) : [];
+   return res.type('html').send(renderBoardHtml(await loadSeoTemplate(origin),origin,lang,data,related));
   }catch{return res.status(503).send('Please try again');}
  });
 };

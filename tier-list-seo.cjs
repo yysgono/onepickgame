@@ -12,7 +12,8 @@ const LOCALES = { en: 'en_US', ko: 'ko_KR', ja: 'ja_JP', zh: 'zh_CN', ru: 'ru_RU
 "cs":"cs_CZ"
 };
 
-module.exports = (app, supabase, origin) => {
+const discoverySeo = require('./content-discovery.cjs');
+module.exports = (app, supabase, origin, contentDiscovery) => {
   app.use(async (req, res, next) => {
     if (String(req.query?.seo || '') !== 'tier-list-list') return next();
     const lang = String(req.query?.lang || 'en').trim().toLowerCase();
@@ -76,7 +77,9 @@ ${alternates}
 <meta data-rh="true" name="twitter:description" content="${escape(meta.description)}">
 <meta data-rh="true" name="twitter:image" content="${image}">
 <script data-rh="true" type="application/ld+json">${safeJson(jsonLd)}</script>`;
-      const body = `<main id="seo-content" style="max-width:900px;margin:40px auto;padding:24px;font-family:Arial,sans-serif"><h1>${escape(heading)}</h1><p>${escape(meta.description)}</p>${presetSection}${links ? `<ul>${links}</ul>` : ''}</main>`;
+      const latest = contentDiscovery && meta.indexable && meta.category === 'all' && !params.has('sort')
+        ? await discoverySeo.optional(contentDiscovery.latest('tier', lang)) : [];
+      const body = `<main id="seo-content" style="max-width:900px;margin:40px auto;padding:24px;font-family:Arial,sans-serif"><h1>${escape(heading)}</h1><p>${escape(meta.description)}</p>${presetSection}${discoverySeo.block(latest, lang, 'latest')}${links ? `<ul>${links}</ul>` : ''}</main>`;
       const bootHead = `<style>
 .tier-boot-spinner{display:none}
 html.tier-booting .tier-seo-content{display:none}

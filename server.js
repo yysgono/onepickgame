@@ -87,9 +87,15 @@ const supabase = createClient(
   }
 );
 
+const discoverySeo = require('./content-discovery.cjs');
+// Public discovery must use the anon key so it cannot bypass row visibility.
+const homePublicClient = SUPABASE_ANON_KEY ? createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {auth:{persistSession:false,autoRefreshToken:false}}) : null;
+const contentDiscovery = discoverySeo.createDiscovery(homePublicClient);
+discoverySeo.install(app, contentDiscovery, SITE_URL);
+
 require("./community-seo-routes.cjs")(app, supabase, SITE_URL);
 
-require("./quiz-seo.cjs")(app, supabase, SITE_URL);
+require("./quiz-seo.cjs")(app, supabase, SITE_URL, { discovery: contentDiscovery });
 
 const supabaseAdmin =
   SUPABASE_SERVICE_ROLE_KEY
@@ -1237,8 +1243,6 @@ ko: {
  * =====================================================
  */
 
-// Public client respects RLS; never use the service role for this extra home query.
-const homePublicClient = SUPABASE_ANON_KEY ? createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {auth:{persistSession:false,autoRefreshToken:false}}) : null;
 const loadPopularHome = homePublicClient ? makePopularLoader(homePublicClient) : async () => [];
 const loadPlatformHome = homePublicClient ? platformHome.makeLoader(homePublicClient) : async lang => platformHome.empty(lang);
 // Optional presentation files must not prevent the function from starting.
@@ -1529,7 +1533,15 @@ ${safeJson(jsonLd)}
      */
 
 let platformData=null;
-const seoBody = isWorldcupHome ? renderHomeBody(await loadPopularHome(),lang,seo) : platformHome.render(platformData=await loadPlatformHome(lang),lang,platformHomeCss);
+let seoBody;
+if (isWorldcupHome) {
+  const [popular, latest] = await Promise.all([
+    loadPopularHome(), discoverySeo.optional(contentDiscovery.latest('worldcup', lang)),
+  ]);
+  seoBody = renderHomeBody(popular, lang, seo, discoverySeo.block(latest, lang, 'latest'));
+} else {
+  seoBody = platformHome.render(platformData=await loadPlatformHome(lang),lang,platformHomeCss);
+}
 html = insertRoot(html, seoBody);
 if(platformData)html=html.replace('</body>',()=>'<script type="application/json" id="platform-home-data">'+safeJson(platformData)+'</script></body>');
 
@@ -1637,7 +1649,7 @@ app.get(
  * =====================================================
  */
 
-require("./tier-list-seo.cjs")(app, supabase, SITE_URL);
+require("./tier-list-seo.cjs")(app, supabase, SITE_URL, contentDiscovery);
 
 
 /*
@@ -1784,6 +1796,7 @@ ${hreflangTags}${xDefault}
     <p>${escapeHtml(tierDescription)}</p>
     ${candidateList}
     ${renderDetailLinks(lang, tierList.category, tierList.source_worldcup_id)}
+    ${discoverySeo.block(await discoverySeo.optional(contentDiscovery.related('tier', tierList, lang)), lang, 'related')}
   </article>
 </main>`;
 
@@ -2449,6 +2462,7 @@ ${safeJson(jsonLd)}
 
     ${renderWorldcupEntryInfo(worldcup, lang, SITE_URL)}
     ${candidateList}
+    ${discoverySeo.block(await discoverySeo.optional(contentDiscovery.related('worldcup', worldcup, lang)), lang, 'related')}
 
   </article>
 </main>
@@ -2503,7 +2517,7 @@ ${safeJson(jsonLd)}
 require("./worldcup-view-routes.cjs")(app, supabase, SITE_URL);
 require("./tier-maker-routes.cjs")(app, SITE_URL);
 require("./top-nine-template-routes.cjs")(app, supabase, SITE_URL);
-require("./top-nine-board-routes.cjs")(app, supabase, SITE_URL);
+require("./top-nine-board-routes.cjs")(app, supabase, SITE_URL, contentDiscovery);
 require("./top-nine-routes.cjs")(app, SITE_URL, supabase);
 require("./random-pick-routes.cjs")(app, SITE_URL);
 require("./category-routes.cjs")(app, supabase, SITE_URL);
