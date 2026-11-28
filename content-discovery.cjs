@@ -2,6 +2,7 @@ const { quizLanguages } = require('./src/seo/quizSeo.cjs');
 const { getTierListDetailLanguages } = require('./src/seo/tierDetailSeo.js');
 const COPY = require('./src/seo/detailCopy.json');
 const LATEST = require('./src/seo/latestGamesCopy.json');
+const LATEST_WORLDCUPS = require('./src/seo/recentWorldcupsCopy.json');
 const UUID = /^[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}$/i;
 const LANGUAGE = new Set(Object.keys(COPY));
 const KINDS = {
@@ -86,6 +87,10 @@ function createDiscovery(client, now = Date.now) {
       return newest(q, 10);
     })).then(rows => rows.map(row => link(kind,row,lang)).filter(Boolean).slice(0,6));
   }
+  async function latestWorldcups(lang, currentId = '') {
+    const links = await latest('worldcup', lang);
+    return links.filter(item => !item.href.toLowerCase().endsWith('/' + currentId.toLowerCase())).slice(0, 4);
+  }
   const jsonSources = new Set();
   async function loadRelated(target, ids) {
     const field = KINDS[target].source;
@@ -128,7 +133,7 @@ function createDiscovery(client, now = Date.now) {
     })().finally(() => { sitemapPending = null; });
     return sitemapPending;
   }
-  return {latest,related,current,sitemap};
+  return {latest,latestWorldcups,related,current,sitemap};
 }
 function renderWorldcupSitemap(origin, rows) {
   const seen = new Set();
@@ -146,7 +151,8 @@ function renderWorldcupSitemap(origin, rows) {
 }
 function block(links, language, section) {
   if (!links?.length) return '';
-  const heading = section === 'latest' ? LATEST[language] || LATEST.en : (COPY[language] || COPY.en)[0];
+  const heading = section === 'latest-worldcups' ? LATEST_WORLDCUPS[language] || LATEST_WORLDCUPS.en :
+    section === 'latest' ? LATEST[language] || LATEST.en : (COPY[language] || COPY.en)[0];
   return '<section class="discovery-links" data-discovery="'+section+'" style="margin:20px auto;max-width:900px;padding:0 16px"><h2>'+escape(heading)+'</h2><ul>'+links.map(item=>'<li><a href="'+escape(item.href)+'">'+escape(item.label)+'</a></li>').join('')+'</ul></section>';
 }
 async function optional(work) {
@@ -171,10 +177,21 @@ function install(app, discovery, origin) {
       return res.set('Cache-Control','no-store').status(400).json({error:'INVALID_DISCOVERY_REQUEST'});
     }
     try {
-      const links = id === undefined ? await discovery.latest(kind,lang) :
-        await discovery.current(kind,id).then(row => row && link(kind,row,lang) ? discovery.related(kind,row,lang) : []);
+      let payload;
+      if (id === undefined) {
+        payload = { links: await discovery.latest(kind,lang) };
+      } else {
+        const row = await discovery.current(kind,id);
+        if (!row || !link(kind,row,lang)) payload = { links: [] };
+        else if (kind === 'worldcup') {
+          const [links, latestWorldcups] = await Promise.all([
+            optional(discovery.related(kind,row,lang)), optional(discovery.latestWorldcups(lang,id)),
+          ]);
+          payload = { links, latestWorldcups };
+        } else payload = { links: await discovery.related(kind,row,lang) };
+      }
       // IDs can later become private. Keep response caching short and public-only.
-      return res.set('Cache-Control','public, max-age=0, s-maxage=60').json({links});
+      return res.set('Cache-Control','public, max-age=0, s-maxage=60').json(payload);
     } catch {
       return res.set('Cache-Control','no-store').status(503).json({error:'DISCOVERY_UNAVAILABLE'});
     }

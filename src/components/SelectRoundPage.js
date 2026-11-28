@@ -1,5 +1,6 @@
 import {worldcupRounds} from '../utils/worldcupRounds';
 import RoundSelection from './worldcup/RoundSelection';
+import { RecentWorldcupLinks } from './ContentDiscoveryLinks';
 import NavigationLink from "./NavigationLink";
 // src/components/SelectRoundPage.js
 
@@ -1522,6 +1523,8 @@ boxShadow:
 
 
 
+
+      <RecentWorldcupLinks />
 
               {/* 설명 */}
 

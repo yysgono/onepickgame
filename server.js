@@ -1536,9 +1536,9 @@ let platformData=null;
 let seoBody;
 if (isWorldcupHome) {
   const [popular, latest] = await Promise.all([
-    loadPopularHome(), discoverySeo.optional(contentDiscovery.latest('worldcup', lang)),
+    loadPopularHome(), discoverySeo.optional(contentDiscovery.latestWorldcups(lang)),
   ]);
-  seoBody = renderHomeBody(popular, lang, seo, discoverySeo.block(latest, lang, 'latest'));
+  seoBody = renderHomeBody(popular, lang, seo, discoverySeo.block(latest, lang, 'latest-worldcups'));
 } else {
   seoBody = platformHome.render(platformData=await loadPlatformHome(lang),lang,platformHomeCss);
 }
@@ -2435,6 +2435,10 @@ ${safeJson(jsonLd)}
 `
         : "";
 
+    const [relatedLinks, latestWorldcups] = await Promise.all([
+      discoverySeo.optional(contentDiscovery.related('worldcup', worldcup, lang)),
+      discoverySeo.optional(contentDiscovery.latestWorldcups(lang, id)),
+    ]);
     const seoBody = `
 <main
   id="seo-content"
@@ -2462,7 +2466,8 @@ ${safeJson(jsonLd)}
 
     ${renderWorldcupEntryInfo(worldcup, lang, SITE_URL)}
     ${candidateList}
-    ${discoverySeo.block(await discoverySeo.optional(contentDiscovery.related('worldcup', worldcup, lang)), lang, 'related')}
+    ${discoverySeo.block(relatedLinks, lang, 'related')}
+    ${discoverySeo.block(latestWorldcups, lang, 'latest-worldcups')}
 
   </article>
 </main>

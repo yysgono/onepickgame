@@ -1687,7 +1687,6 @@ const goto = (url) => {
 const renderHomeActivityPanel = ({
   title,
   items,
-  limit = 4,
 }) => {
   return (
     <aside
@@ -1732,7 +1731,7 @@ const renderHomeActivityPanel = ({
             gap: 9,
           }}
         >
-          {items.slice(0, limit).map(({ cup, time }, eventIndex) => {
+          {items.slice(0, 4).map(({ cup, time }, eventIndex) => {
             const titleText = getDisplayTitle(cup);
 
             return (
@@ -3757,11 +3756,10 @@ return (
     }}
   >
     {showHomeActivityPanels && (
-      <div className="home-activity-column" style={{ paddingTop: 18 }}>
+      <div className="home-activity-column" style={{ paddingTop: 18, alignSelf: "stretch", display: "grid" }}>
         {renderHomeActivityPanel({
           title: sidePanelCopy.recentCreated,
           items: recentCreatedCups,
-          limit: 6,
           accentColor: "#EA580C",
         })}
       </div>
@@ -3916,12 +3914,12 @@ return (
 
     {isMobile && remoteHome && !search.trim() && !creatorFilter && recentCreatedCups.length > 0 && (
       <div style={{ margin: "8px auto 16px", width: "100%" }}>
-        {renderHomeActivityPanel({ title: sidePanelCopy.recentCreated, items: recentCreatedCups, limit: 6 })}
+        {renderHomeActivityPanel({ title: sidePanelCopy.recentCreated, items: recentCreatedCups })}
       </div>
     )}
 
     {showHomeActivityPanels && (
-      <div className="home-activity-column" style={{ paddingTop: 18 }}>
+      <div className="home-activity-column" style={{ paddingTop: 18, alignSelf: "stretch", display: "grid" }}>
         {renderHomeActivityPanel({
           title: sidePanelCopy.recentPlayed,
           items: recentPlayedCups,
