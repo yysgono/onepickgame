@@ -1,5 +1,6 @@
 // Public home cards and bounded pages, shared by the server and the anonymous browser reader.
 const COPY = require('./platformHomeCopy.json');
+const RECENT_COPY = require('./recentWorldcupsCopy.json');
 const PATHS = require('./sitePaths.js');
 const modeConfig = require('./platformModes.js');
 const tierPreview = require('./tierCardPreview.js');
@@ -142,6 +143,13 @@ function makeLoader(client) {
   };
 }
 const escape = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+function renderRecentWorldcups(items, lang) {
+  if (!items?.length) return '';
+  const links = items.map(({ href, label }) =>
+    '<li><a href="' + escape(href) + '" title="' + escape(label) + '">' + escape(label) + '</a></li>').join('');
+  return '<section class="platform-recent-worldcups" aria-labelledby="platform-recent-title">' +
+    '<h3 id="platform-recent-title">' + escape(RECENT_COPY[lang] || RECENT_COPY.en) + '</h3><ul>' + links + '</ul></section>';
+}
 function render(data, lang, css = '') {
   const copy = COPY[lang] || COPY.en, groups = data?.groups || empty(lang).groups, meta = worldcupContent.COPY[lang] || worldcupContent.COPY.en, quiz = quizCopy[lang] || quizCopy.en;
   const image = (url, name = '') => media(url) ? '<img src="'+escape(url)+'" alt="'+escape(name)+'" loading="lazy">' : '';
@@ -156,6 +164,6 @@ function render(data, lang, css = '') {
   const modeIcon = (index, size) => modeConfig.MODES[index].kind === 'nine' ? '<svg width="'+size+'" height="'+size+'" viewBox="0 0 48 48" aria-hidden="true" focusable="false"><rect x="3" y="3" width="42" height="42" rx="1" fill="white"/><rect x="17" y="17" width="14" height="14" fill="#a34eac"/><path d="M3 3H45V45H3ZM17 3V45M31 3V45M3 17H45M3 31H45" fill="none" stroke="#28222d" stroke-width="2"/></svg>' : modeConfig.MODES[index].icon;
   const brand = '<header class="onepick-header onepick-header--platform"><div class="onepick-header-main"><h1 class="onepick-header-brand-area"><a class="onepick-header-brand" href="'+PATHS.siteHome(lang)+'"><span class="onepick-logo-frame"><img src="/ui/onepick-logo-v78.webp" alt="" width="80" height="80"></span><span style="font-style:italic;font-size:1.14em;font-weight:900;white-space:nowrap">One Pick Game</span></a></h1></div></header>';
   const language = '<div class="platform-language"><div class="content-language-select"><label><span class="content-language-label">🌐 '+escape((languageCopy[lang]||languageCopy.en).language)+'</span><select aria-label="'+escape((languageCopy[lang]||languageCopy.en).language)+'">'+LANGUAGES.map(([code,label])=>'<option value="'+code+'"'+(code===lang?' selected':'')+'>'+escape(label)+'</option>').join('')+'</select></label></div></div>';
-  return '<div id="seo-content"><style>'+css+'</style>'+brand+'<main class="platform-home" dir="'+(lang==='ar'?'rtl':'ltr')+'"><header class="platform-hero"><p>'+escape(copy.intro)+'</p><nav class="platform-modes" aria-label="'+escape(copy.titles.join(', '))+'">'+groups.map((group,index)=>'<a href="'+escape(group.href)+'" class="platform-mode platform-mode-'+group.kind+'"><span aria-hidden="true">'+modeIcon(index,56)+'</span><strong>'+escape(copy.titles[index])+'</strong><small>'+escape(copy.summaries[index])+'</small></a>').join('')+'</nav></header>'+language+groups.map((group,index)=>'<section class="platform-section platform-section-'+group.kind+'"><div class="platform-section-heading"><h2><a class="platform-section-main-link" href="'+escape(group.href)+'"><span aria-hidden="true">'+modeIcon(index,32)+' </span>'+escape(copy.titles[index])+'</a></h2><a href="'+escape(group.href)+'">'+escape(copy.all)+' →</a></div><p class="platform-section-intro">'+copy.descriptionLines[index].map(line=>'<span>'+escape(line)+'</span>').join(' ')+'</p><div class="platform-cards">'+(group.rows.length?group.rows.map(row=>card(row,index)).join(''):'<p>'+escape(group.unavailable?copy.failed:copy.empty)+'</p>')+'</div></section>').join('')+'</main></div>';
+  return '<div id="seo-content"><style>'+css+'</style>'+brand+'<main class="platform-home" dir="'+(lang==='ar'?'rtl':'ltr')+'"><header class="platform-hero"><nav class="platform-modes" aria-label="'+escape(copy.titles.join(', '))+'">'+groups.map((group,index)=>'<a href="'+escape(group.href)+'" class="platform-mode platform-mode-'+group.kind+'"><span aria-hidden="true">'+modeIcon(index,56)+'</span><strong>'+escape(copy.titles[index])+'</strong><small>'+escape(copy.summaries[index])+'</small></a>').join('')+'</nav></header>'+language+groups.map((group,index)=>'<section class="platform-section platform-section-'+group.kind+'"><div class="platform-section-heading"><h2><a class="platform-section-main-link" href="'+escape(group.href)+'"><span aria-hidden="true">'+modeIcon(index,32)+' </span>'+escape(copy.titles[index])+'</a></h2><a href="'+escape(group.href)+'">'+escape(copy.all)+' →</a></div><p class="platform-section-intro">'+copy.descriptionLines[index].map(line=>'<span>'+escape(line)+'</span>').join(' ')+'</p><div class="platform-cards">'+(group.rows.length?group.rows.map(row=>card(row,index)).join(''):'<p>'+escape(group.unavailable?copy.failed:copy.empty)+'</p>')+'</div>'+(group.kind==='worldcup'?renderRecentWorldcups(data?.latestWorldcups,lang):'')+'</section>').join('')+'</main></div>';
 }
 module.exports = { load, makeLoader, render, COPY, hrefs, empty, homeTierTitle, optionsFor, VERSION, MODES: modeConfig.MODES, LIMIT, LANGUAGES };

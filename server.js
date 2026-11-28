@@ -1164,7 +1164,15 @@ ko: {
  */
 
 const loadPopularHome = homePublicClient ? makePopularLoader(homePublicClient) : async () => [];
-const loadPlatformHome = homePublicClient ? platformHome.makeLoader(homePublicClient) : async lang => platformHome.empty(lang);
+const loadPlatformHomeGroups = homePublicClient ? platformHome.makeLoader(homePublicClient) : async lang => platformHome.empty(lang);
+async function loadPlatformHome(lang, options) {
+  if (options?.kind || !homePublicClient) return loadPlatformHomeGroups(lang, options);
+  const [data, latest] = await Promise.all([
+    loadPlatformHomeGroups(lang, options),
+    discoverySeo.optional(contentDiscovery.latestWorldcups(lang)),
+  ]);
+  return { ...data, latestWorldcups: latest.map(({ href, label }) => ({ href, label })) };
+}
 // Optional presentation files must not prevent the function from starting.
 function readHomeStyles(read) {
   try { return read(); }

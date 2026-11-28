@@ -3,6 +3,7 @@ import {Link,Navigate,useLocation,useParams} from 'react-router-dom';
 import {useTranslation} from 'react-i18next';
 import Seo from '../seo/Seo';
 import homeCopy from '../seo/siteHomeCopy.json';
+import recentCopy from '../seo/recentWorldcupsCopy.json';
 import home from '../seo/platformHome';
 import paths from '../seo/sitePaths';
 import homeData from '../seo/platformHomeData';
@@ -52,6 +53,13 @@ function CardRail({group,index,copy,lang,current,onLoadMore,paging,pageError}){
  const onScroll=()=>{const node=track.current;if(node&&hasMore&&!busy&&!pageError&&node.scrollWidth-Math.abs(node.scrollLeft)-node.clientWidth<=2)onLoadMore(group.kind);};
  return <><div className="platform-rail"><button className="platform-rail-arrow" type="button" aria-label={copy.titles[index]+' ←'} disabled={group.rows.length<2&&!hasMore} onClick={()=>scroll(-1)}>{lang==='ar'?'›':'‹'}</button><div className="platform-cards" ref={track} onScroll={onScroll} aria-busy={!current||current.loading||paging}>{group.rows.length?group.rows.map(row=><Card row={row} group={group} index={index} copy={copy} lang={lang} key={row.href}/>):<p role="status">{!current||current.loading||paging?copy.loading:current.error||group.unavailable?copy.failed:copy.empty}</p>}</div><button className="platform-rail-arrow" type="button" aria-label={copy.titles[index]+' →'} disabled={group.rows.length<2&&!hasMore} onClick={()=>scroll(1)}>{lang==='ar'?'‹':'›'}</button></div>{paging&&<p className="platform-page-status" role="status">{copy.loading}</p>}{pageError&&<button className="platform-retry" onClick={()=>onLoadMore(group.kind,true)}>{copy.retry}</button>}</>;
 }
+function RecentWorldcups({items,lang}){
+ if(!items?.length)return null;
+ return <section className="platform-recent-worldcups" aria-labelledby="platform-recent-title">
+  <h3 id="platform-recent-title">{recentCopy[lang]}</h3>
+  <ul>{items.map(({href,label})=><li key={href}><Link to={href} title={label}>{label}</Link></li>)}</ul>
+ </section>;
+}
 export default function PlatformHome({language}){
  const params=useParams(),location=useLocation(),{i18n}=useTranslation(),lang=paths.language(language||params.lang||'en'),copy=home.COPY[lang];
  const [retry,setRetry]=useState(0),[state,setState]=useState(()=>({lang,data:bootstrap(lang),loading:false,error:false}));
@@ -96,12 +104,13 @@ export default function PlatformHome({language}){
  const current=state.lang===lang?state:null,groups=current?.data?.groups||home.empty(lang).groups;
  return <main className="platform-home" dir={lang==='ar'?'rtl':'ltr'}>
   <Seo lang={lang} title={homeCopy[lang].title} description={copy.intro}/>
-  <header className="platform-hero"><p>{copy.intro}</p><nav className="platform-modes" aria-label={copy.titles.join(', ')}>{groups.map((group,index)=><Link key={group.kind} to={group.href} className={'platform-mode platform-mode-'+group.kind}><span aria-hidden="true">{group.kind==='nine'?<TopNineIcon size={56}/>:icons[index]}</span><strong>{copy.titles[index]}</strong><small>{copy.summaries[index]}</small></Link>)}</nav></header>
+  <header className="platform-hero"><nav className="platform-modes" aria-label={copy.titles.join(', ')}>{groups.map((group,index)=><Link key={group.kind} to={group.href} className={'platform-mode platform-mode-'+group.kind}><span aria-hidden="true">{group.kind==='nine'?<TopNineIcon size={56}/>:icons[index]}</span><strong>{copy.titles[index]}</strong><small>{copy.summaries[index]}</small></Link>)}</nav></header>
   <div className="platform-language"><ContentLanguageSelect/></div>
   {groups.map((group,index)=><section key={group.kind} className={'platform-section platform-section-'+group.kind} aria-labelledby={'platform-'+group.kind}>
    <div className="platform-section-heading"><h2 id={'platform-'+group.kind}><Link className="platform-section-main-link" to={group.href}><span aria-hidden="true">{group.kind==='nine'?<TopNineIcon size={32}/>:icons[index]} </span>{copy.titles[index]}</Link></h2><Link to={group.href}>{copy.all} <span aria-hidden="true">→</span></Link></div>
    <p className="platform-section-intro">{copy.descriptionLines[index].map((line,i)=><span key={i}>{line}{i<copy.descriptionLines[index].length-1?' ':''}</span>)}</p>
    <CardRail group={group} index={index} copy={copy} lang={lang} current={current} onLoadMore={loadMore} paging={paging[lang+':'+group.kind]} pageError={pageErrors[lang+':'+group.kind]}/>
+   {group.kind==='worldcup'&&<RecentWorldcups items={current?.data?.latestWorldcups} lang={lang}/>}
    {!current?.loading&&(current?.error||group.unavailable)&&<button className="platform-retry" onClick={()=>setRetry(value=>value+1)}>{copy.retry}</button>}
   </section>)}
  </main>;

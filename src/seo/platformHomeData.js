@@ -9,6 +9,7 @@ const empty = home.empty;
 
 function merge(primary, fallback, lang) {
   const data = empty(lang);
+  if (Array.isArray(primary?.latestWorldcups)) data.latestWorldcups = primary.latestWorldcups;
   data.groups = data.groups.map((missing, i) => {
     const first = primary?.groups[i], second = fallback?.groups[i];
     if (first && !first.unavailable) return first;
