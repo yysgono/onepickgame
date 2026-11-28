@@ -25,7 +25,9 @@ function recentWorldcupLinks(links) {
   return validLinks(links).filter(item => detailPath.exec(item.href)?.[2] === 'select-round').slice(0, 4);
 }
 function readLinks(selector) {
-  return [...document.querySelectorAll(selector)].map(a => ({ href: a.getAttribute('href'), label: a.textContent }));
+  return [...document.querySelectorAll(selector)].map(a => ({
+    href: a.getAttribute('href'), label: a.textContent, image: a.dataset.preview,
+  }));
 }
 // Capture server-rendered links before React takes over. Direct visits need
 // no API call, and in-app navigation fetches both sections together.
@@ -65,15 +67,26 @@ export function RecentWorldcupLinks() {
   const { request, data } = useContext(DiscoveryContext) || {};
   const links = data?.latestWorldcups;
   if (request?.kind !== 'worldcup' || !request.id || !links?.length) return null;
-  return <section className="round-recent-worldcups round-detail-section" style={{
-    maxWidth: 810, margin: '14px auto 18px', padding: '12px 16px', boxSizing: 'border-box',
-    width: '100%', background: '#fffaf5', border: '1px solid #fdba74', borderRadius: 12, textAlign: 'start',
-  }}>
-    <h2 style={{margin: '0 0 8px', fontSize: 17, color: '#9a3412'}}>{recentCopy[request.lang]}</h2>
-    <ul style={{margin: 0, paddingInlineStart: 20}}>
-      {links.map(item => <li key={item.href} style={{marginBlock: 4, lineHeight: 1.45}}>
-        <Link to={item.href} style={{color: '#9a3412', fontWeight: 700, overflowWrap: 'anywhere'}}>{item.label}</Link>
-      </li>)}
+  return <section className="round-recent-worldcups round-detail-section" dir={request.lang === 'ar' ? 'rtl' : undefined}>
+    <h2>{recentCopy[request.lang]}</h2>
+    <ul className="round-recent-grid">
+      {links.map(item => (
+        <li key={item.href}>
+          <Link className="round-recent-card" to={item.href}>
+            <img
+              src={typeof item.image === 'string' && /^https?:\/\//i.test(item.image) ? item.image : '/default-thumb.png'}
+              alt=""
+              loading="lazy"
+              decoding="async"
+              onError={event => {
+                const image = event.currentTarget;
+                if (image.getAttribute('src') !== '/default-thumb.png') image.src = '/default-thumb.png';
+              }}
+            />
+            <span>{item.label}</span>
+          </Link>
+        </li>
+      ))}
     </ul>
   </section>;
 }

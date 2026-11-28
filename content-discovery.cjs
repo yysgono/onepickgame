@@ -1,3 +1,4 @@
+const { imageOf } = require('./src/seo/worldcupMetadata.js');
 const { quizLanguages } = require('./src/seo/quizSeo.cjs');
 const { getTierListDetailLanguages } = require('./src/seo/tierDetailSeo.js');
 const COPY = require('./src/seo/detailCopy.json');
@@ -17,6 +18,8 @@ const SITEMAPS = {
   nine: { file: 'sitemap-top-nine.xml', seo: 'top-nine-sitemap', fields: 'id,created_at' },
   blog: { file: 'sitemaps/sitemap-blog.xml', seo: 'blog-sitemap', aliases: ['/api/sitemap-blog'], table: 'blog_posts', fields: 'id,language,slug' },
 };
+// Only read the preview URLs. A full candidate array can be large.
+const WORLDCUP_LATEST_FIELDS = 'id,title,title_translations,first_image:data->0->>image,first_url:data->0->>url,second_image:data->1->>image,second_url:data->1->>url';
 const SITEMAP_PAGE_SIZE = 500;
 const SITEMAP_URL_LIMIT = 50000;
 const SITEMAP_CACHE_HEADERS = 'public, max-age=0, s-maxage=300';
@@ -38,6 +41,23 @@ function link(kind, row, lang) {
   if (kind === 'tier' && !getTierListDetailLanguages(row).includes(lang)) return null;
   const title = label(row, lang);
   return title && UUID.test(String(row.id)) ? { href: '/' + lang + '/' + KINDS[kind].path + '/' + row.id, label: title } : null;
+}
+function latestWorldcupImage(row) {
+  for (const value of [row.first_image, row.first_url, row.second_image, row.second_url]) {
+    if (typeof value !== 'string' || !/^https?:\/\//i.test(value.trim())) continue;
+    try {
+      const url = new URL(value);
+      if (url.username || url.password || /\.(mp4|webm|mov|m4v|m3u8|mp3|wav|ogg)$/i.test(url.pathname)) continue;
+      const host = url.hostname.replace(/^(?:www\.|m\.)/, '');
+      if (['youtube.com', 'youtube-nocookie.com', 'youtu.be'].includes(host)) {
+        const thumbnail = imageOf({ image: url.href });
+        if (thumbnail.startsWith('https://i.ytimg.com/')) return thumbnail;
+        continue;
+      }
+      return url.href;
+    } catch { /* Try the next candidate URL. */ }
+  }
+  return '';
 }
 function makeCache(now, capacity = 96) {
   const cache = new Map(), pending = new Map();
@@ -95,11 +115,17 @@ function createDiscovery(client, now = Date.now) {
   const newest = (q, size) => q.order('created_at', { ascending: false, nullsFirst: false }).order('id', { ascending: false }).limit(size);
   function latest(kind, lang, category = 'all') {
     const key = ['latest', kind, kind === 'quiz' ? lang : '', category].join(':');
-    return cache(key, () => read(kind, fields(kind,false), q => {
+    const select = kind === 'worldcup' ? WORLDCUP_LATEST_FIELDS : fields(kind,false);
+    return cache(key, () => read(kind, select, q => {
       if (category !== 'all') q = q.eq('category', category);
       if (kind === 'quiz') q = q.or('content_languages.cs.{'+lang+'},original_language.eq.'+lang);
       return newest(q, 10);
-    })).then(rows => rows.map(row => link(kind,row,lang)).filter(Boolean).slice(0,6));
+    })).then(rows => rows.flatMap(row => {
+      const item = link(kind,row,lang);
+      if (!item) return [];
+      const image = kind === 'worldcup' ? latestWorldcupImage(row) : '';
+      return [image ? { ...item, image } : item];
+    }).slice(0,6));
   }
   async function latestWorldcups(lang, currentId = '') {
     const links = await latest('worldcup', lang);
@@ -233,7 +259,12 @@ function block(links, language, section) {
   if (!links?.length) return '';
   const heading = section === 'latest-worldcups' ? LATEST_WORLDCUPS[language] || LATEST_WORLDCUPS.en :
     section === 'latest' ? LATEST[language] || LATEST.en : (COPY[language] || COPY.en)[0];
-  return '<section class="discovery-links" data-discovery="'+section+'" style="margin:20px auto;max-width:900px;padding:0 16px"><h2>'+escape(heading)+'</h2><ul>'+links.map(item=>'<li><a href="'+escape(item.href)+'">'+escape(item.label)+'</a></li>').join('')+'</ul></section>';
+  const items = links.map(item => {
+    const preview = section === 'latest-worldcups' && item.image
+      ? ' data-preview="' + escape(item.image) + '"' : '';
+    return '<li><a href="' + escape(item.href) + '"' + preview + '>' + escape(item.label) + '</a></li>';
+  }).join('');
+  return '<section class="discovery-links" data-discovery="'+section+'" style="margin:20px auto;max-width:900px;padding:0 16px"><h2>'+escape(heading)+'</h2><ul>'+items+'</ul></section>';
 }
 async function optional(work) {
   try { return await work; } catch { return []; }

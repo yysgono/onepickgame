@@ -1524,8 +1524,6 @@ boxShadow:
 
 
 
-      <RecentWorldcupLinks />
-
               {/* 설명 */}
 
               {translatedDescription && (
@@ -1830,6 +1828,8 @@ boxShadow:
             </div>
 
           </div>
+
+      <RecentWorldcupLinks />
 
 {/* 게임 이용 안내 */}
 
