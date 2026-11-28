@@ -204,6 +204,14 @@
       "dest": "/server.js?seo=random-pick&lang=$1&mode=$2"
     },
     {
+      "src": "/sitemaps/sitemap-blog[.]xml$",
+      "dest": "/server.js?seo=blog-sitemap"
+    },
+    {
+      "src": "/api/sitemap-blog/?$",
+      "dest": "/server.js?seo=blog-sitemap"
+    },
+    {
       "src": "/sitemap-worldcups[.]xml$",
       "dest": "/server.js?seo=worldcup-sitemap"
     },

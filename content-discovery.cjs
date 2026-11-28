@@ -15,6 +15,7 @@ const SITEMAPS = {
   worldcup: { file: 'sitemap-worldcups.xml', seo: 'worldcup-sitemap' },
   tier: { file: 'sitemap-tier-lists.xml', seo: 'tier-list-sitemap', fields: 'id,created_at,updated_at,original_language,title_translations,description_translations,tier_labels' },
   nine: { file: 'sitemap-top-nine.xml', seo: 'top-nine-sitemap', fields: 'id,created_at' },
+  blog: { file: 'sitemaps/sitemap-blog.xml', seo: 'blog-sitemap', aliases: ['/api/sitemap-blog'], table: 'blog_posts', fields: 'id,language,slug' },
 };
 const SITEMAP_PAGE_SIZE = 500;
 const SITEMAP_URL_LIMIT = 50000;
@@ -61,11 +62,11 @@ function createDiscovery(client, now = Date.now) {
   const missing = new Map();
   async function readRows(kind, fields, apply, signal) {
     if (!client) throw Error('Public database client unavailable');
-    const config = KINDS[kind];
+    const config = KINDS[kind] || SITEMAPS[kind];
     const absent = missing.get(kind) || new Set();
     const extra = config.visibility ? ['is_public', 'visibility'].filter(name => !absent.has(name)) : [];
     let query = client.from(config.table).select([fields, ...extra].join(','));
-    if (kind !== 'nine') query = query.is('deleted_at', null);
+    if (kind !== 'nine' && kind !== 'blog') query = query.is('deleted_at', null);
     if (kind === 'quiz') query = query.eq('is_published', true);
     // Exclude non-public rows in the query, before applying the result limit.
     if (extra.includes('is_public')) query = query.or('is_public.is.null,is_public.eq.true');
@@ -142,17 +143,21 @@ function createDiscovery(client, now = Date.now) {
       return renderWorldcupSitemap(origin,rows);
     }
     const signal = AbortSignal.timeout(6000);
-    const xml = sitemapWriter(origin, kind);
-    let after = '';
+    const blog = kind === 'blog';
+    const xml = blog ? blogSitemapWriter(origin) : sitemapWriter(origin, kind);
+    let after = null;
     for (;;) {
       const rows = await readRows(kind, SITEMAPS[kind].fields, q => {
         q = q.order('id', { ascending: true }).limit(SITEMAP_PAGE_SIZE);
-        return after ? q.gt('id', after) : q;
+        return after === null ? q : q.gt('id', after);
       }, signal);
-      rows.filter(isPublicRow).forEach(xml.add);
+      if (blog) rows.forEach(xml.add);
+      else rows.filter(isPublicRow).forEach(xml.add);
       if (rows.length < SITEMAP_PAGE_SIZE) return xml.finish();
       const next = rows[rows.length - 1]?.id;
-      if (!UUID.test(String(next)) || next <= after) throw Error('Invalid sitemap page cursor');
+      const numericId = blog && /^\d+$/.test(String(next));
+      if (!numericId && !UUID.test(String(next))) throw Error('Invalid sitemap page cursor');
+      if (after !== null && (numericId ? BigInt(next) <= BigInt(after) : String(next) <= String(after))) throw Error('Invalid sitemap page cursor');
       after = next;
     }
   }
@@ -175,27 +180,49 @@ function createDiscovery(client, now = Date.now) {
   }
   return {latest,latestWorldcups,related,current,sitemap};
 }
-function sitemapWriter(origin, kind) {
+function xmlSitemapWriter() {
   const seen = new Set(), items = [];
-  const path = KINDS[kind].path;
-  function add(row) {
-    if (!UUID.test(String(row.id)) || seen.has(row.id)) return;
-    seen.add(row.id);
-    const available = kind === 'tier' ? getTierListDetailLanguages(row) : [];
-    const languages = available.length ? available : LANGUAGE;
-    const timestamp = [row.updated_at, row.created_at].map(value => Date.parse(value || '')).find(Number.isFinite);
-    const lastmod = Number.isFinite(timestamp) ? '<lastmod>' + new Date(timestamp).toISOString() + '</lastmod>' : '';
-    for (const lang of languages) {
-      if (items.length >= SITEMAP_URL_LIMIT) throw Error('Sitemap exceeds 50,000 URLs; split before publishing');
-      items.push('<url><loc>' + escape(origin + '/' + lang + '/' + path + '/' + row.id) + '</loc>' + lastmod + '</url>');
-    }
-  }
   return {
-    add,
+    add(url, lastmod = '') {
+      if (seen.has(url)) return;
+      if (items.length >= SITEMAP_URL_LIMIT) throw Error('Sitemap exceeds 50,000 URLs; split before publishing');
+      seen.add(url);
+      items.push('<url><loc>' + escape(url) + '</loc>' + lastmod + '</url>');
+    },
     finish() {
       return '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' + items.join('') + '</urlset>';
     },
   };
+}
+function sitemapWriter(origin, kind) {
+  const xml = xmlSitemapWriter();
+  function add(row) {
+    if (!UUID.test(String(row.id))) return;
+    const available = kind === 'tier' ? getTierListDetailLanguages(row) : [];
+    const languages = available.length ? available : LANGUAGE;
+    const timestamp = [row.updated_at, row.created_at].map(value => Date.parse(value || '')).find(Number.isFinite);
+    const lastmod = Number.isFinite(timestamp) ? '<lastmod>' + new Date(timestamp).toISOString() + '</lastmod>' : '';
+    for (const lang of languages) xml.add(origin + '/' + lang + '/' + KINDS[kind].path + '/' + row.id, lastmod);
+  }
+  return {add,finish:xml.finish};
+}
+function blogSitemapWriter(origin) {
+  const xml = xmlSitemapWriter();
+  for (const lang of LANGUAGE) xml.add(origin + '/' + lang + '/blog');
+  function add(row) {
+    // Read through the anonymous public policy. Blog rows in the current
+    // publishing flow are live; no title/body or draft editor state is read.
+    const { language, slug } = row || {};
+    if (!LANGUAGE.has(language) || typeof slug !== 'string' || !slug ||
+        slug !== slug.trim() || /^[.]{1,2}$/.test(slug) || /[\\/\u0000-\u001f\u007f]/.test(slug) ||
+        slug === 'write') return;
+    let encoded;
+    try { encoded = encodeURIComponent(slug); } catch { return; }
+    // Do not use the fetch time as lastmod. The legacy blog schema does not
+    // provide a verified content edit time.
+    xml.add(origin + '/' + language + '/blog/' + encoded);
+  }
+  return {add,finish:xml.finish};
 }
 function renderWorldcupSitemap(origin, rows) {
   const xml = sitemapWriter(origin,'worldcup');
@@ -221,8 +248,8 @@ function install(app, discovery, origin) {
     }
   }
   const routeKinds = new Map();
-  for (const [kind, {file, seo}] of Object.entries(SITEMAPS)) {
-    app.get('/' + file, (_req,res) => serve(kind,res));
+  for (const [kind, {file, seo, aliases = []}] of Object.entries(SITEMAPS)) {
+    app.get(['/' + file, ...aliases], (_req,res) => serve(kind,res));
     routeKinds.set(seo, kind);
   }
   app.get('/api/content-discovery',async (req,res) => {
