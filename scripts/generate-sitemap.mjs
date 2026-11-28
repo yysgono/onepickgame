@@ -524,6 +524,13 @@ export function generateSitemapIndex() {
     <loc>${BASE_URL}/sitemap-worldcups.xml</loc>
   </sitemap>`;
 
+  for (const sitemap of ['sitemap-tier-lists.xml', 'sitemap-top-nine.xml']) {
+    xml += `
+  <sitemap>
+    <loc>${BASE_URL}/${sitemap}</loc>
+  </sitemap>`;
+  }
+
   // 네이버/검색엔진이 안정적으로 읽을 수 있도록 정적 블로그 sitemap을 광고한다.
   xml += `
   <sitemap>

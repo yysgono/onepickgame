@@ -208,6 +208,14 @@
       "dest": "/server.js?seo=worldcup-sitemap"
     },
     {
+      "src": "/sitemap-tier-lists[.]xml$",
+      "dest": "/server.js?seo=tier-list-sitemap"
+    },
+    {
+      "src": "/sitemap-top-nine[.]xml$",
+      "dest": "/server.js?seo=top-nine-sitemap"
+    },
+    {
       "src": "/api/content-discovery/?$",
       "dest": "/server.js"
     },

@@ -11,6 +11,14 @@ const KINDS = {
   tier: { table: 'tier_lists', path: 'tier-list', fields: 'original_language,tier_labels,source_worldcup_id', source: 'source_worldcup_id', visibility: true },
   nine: { table: 'top_nine_public_boards', path: 'mytop9', fields: 'source_worldcup_ids', source: 'source_worldcup_ids' },
 };
+const SITEMAPS = {
+  worldcup: { file: 'sitemap-worldcups.xml', seo: 'worldcup-sitemap' },
+  tier: { file: 'sitemap-tier-lists.xml', seo: 'tier-list-sitemap', fields: 'id,created_at,updated_at,original_language,title_translations,description_translations,tier_labels' },
+  nine: { file: 'sitemap-top-nine.xml', seo: 'top-nine-sitemap', fields: 'id,created_at' },
+};
+const SITEMAP_PAGE_SIZE = 500;
+const SITEMAP_URL_LIMIT = 50000;
+const SITEMAP_CACHE_HEADERS = 'public, max-age=0, s-maxage=300';
 const escape = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
 function map(value) {
   try { return typeof value === 'string' ? JSON.parse(value) || {} : value || {}; }
@@ -51,7 +59,7 @@ function createDiscovery(client, now = Date.now) {
   // Some older installations have neither optional visibility field. Probe
   // absent columns only; auth, timeouts and other errors always fail closed.
   const missing = new Map();
-  async function read(kind, fields, apply, signal = AbortSignal.timeout(1800)) {
+  async function readRows(kind, fields, apply, signal) {
     if (!client) throw Error('Public database client unavailable');
     const config = KINDS[kind];
     const absent = missing.get(kind) || new Set();
@@ -70,12 +78,17 @@ function createDiscovery(client, now = Date.now) {
       if (field) {
         absent.add(field);
         missing.set(kind, absent);
-        return read(kind, fields, apply, signal);
+        return readRows(kind, fields, apply, signal);
       }
       throw error;
     }
     if (!Array.isArray(data)) throw Error('Invalid discovery response');
-    return data.filter(row => UUID.test(String(row.id)) && row.deleted_at == null && row.is_public !== false && (!row.visibility || row.visibility === 'public') && row.unlisted !== true);
+    return data;
+  }
+  const isPublicRow = row => row && UUID.test(String(row.id)) && row.deleted_at == null &&
+    row.is_public !== false && (!row.visibility || row.visibility === 'public') && row.unlisted !== true;
+  async function read(kind, fields, apply, signal = AbortSignal.timeout(1800)) {
+    return (await readRows(kind, fields, apply, signal)).filter(isPublicRow);
   }
   const fields = (kind, withSources = true) => ['id,title', kind === 'nine' ? '' : 'title_translations', !withSources && kind === 'quiz' ? 'original_language,content_languages' : KINDS[kind].fields].filter(Boolean).join(',');
   const newest = (q, size) => q.order('created_at', { ascending: false, nullsFirst: false }).order('id', { ascending: false }).limit(size);
@@ -119,35 +132,75 @@ function createDiscovery(client, now = Date.now) {
     return wrapped.flatMap(item => item.status === 'fulfilled' ? item.value : []).slice(0,4);
   }
   const current = (kind,id) => cache('current:'+kind+':'+id, () => read(kind, fields(kind), q => q.eq('id',id).limit(1))).then(rows => rows[0]);
-  let lastXml, expires = 0, sitemapPending;
-  async function sitemap(origin) {
-    if (lastXml && expires > now()) return lastXml;
-    if (sitemapPending) return sitemapPending;
-    sitemapPending = (async () => {
-      // Cover recent creations in all 20 languages; the existing language
-      // sitemap files still cover older games and result routes.
+  // One XML snapshot per kind/origin, shared across concurrent requests in
+  // this instance. The CDN serves most repeats without executing a function.
+  const sitemapCache = new Map();
+  async function buildSitemap(origin, kind) {
+    if (kind === 'worldcup') {
+      // Leave the existing recent-worldcup limit and ordering intact.
       const rows = await read('worldcup','id,created_at,updated_at', q => newest(q, 1000));
-      lastXml = renderWorldcupSitemap(origin,rows);
-      expires = now() + 60000;
-      return lastXml;
-    })().finally(() => { sitemapPending = null; });
-    return sitemapPending;
+      return renderWorldcupSitemap(origin,rows);
+    }
+    const signal = AbortSignal.timeout(6000);
+    const xml = sitemapWriter(origin, kind);
+    let after = '';
+    for (;;) {
+      const rows = await readRows(kind, SITEMAPS[kind].fields, q => {
+        q = q.order('id', { ascending: true }).limit(SITEMAP_PAGE_SIZE);
+        return after ? q.gt('id', after) : q;
+      }, signal);
+      rows.filter(isPublicRow).forEach(xml.add);
+      if (rows.length < SITEMAP_PAGE_SIZE) return xml.finish();
+      const next = rows[rows.length - 1]?.id;
+      if (!UUID.test(String(next)) || next <= after) throw Error('Invalid sitemap page cursor');
+      after = next;
+    }
+  }
+  async function sitemap(origin, kind = 'worldcup') {
+    if (!Object.hasOwn(SITEMAPS, kind)) throw Error('Unknown sitemap');
+    const key = JSON.stringify([origin,kind]);
+    let entry = sitemapCache.get(key);
+    if (!entry) {
+      entry = {};
+      sitemapCache.set(key, entry);
+    }
+    if (entry.xml && entry.expires > now()) return entry.xml;
+    if (entry.pending) return entry.pending;
+    entry.pending = buildSitemap(origin,kind).then(xml => {
+      entry.xml = xml;
+      entry.expires = now() + 60000;
+      return xml;
+    }).finally(() => { entry.pending = null; });
+    return entry.pending;
   }
   return {latest,latestWorldcups,related,current,sitemap};
 }
-function renderWorldcupSitemap(origin, rows) {
-  const seen = new Set();
-  const urls = [];
-  for (const row of rows) {
-    if (!UUID.test(String(row.id)) || seen.has(row.id)) continue;
+function sitemapWriter(origin, kind) {
+  const seen = new Set(), items = [];
+  const path = KINDS[kind].path;
+  function add(row) {
+    if (!UUID.test(String(row.id)) || seen.has(row.id)) return;
     seen.add(row.id);
-    const timestamp = Date.parse(row.updated_at || row.created_at || '');
+    const available = kind === 'tier' ? getTierListDetailLanguages(row) : [];
+    const languages = available.length ? available : LANGUAGE;
+    const timestamp = [row.updated_at, row.created_at].map(value => Date.parse(value || '')).find(Number.isFinite);
     const lastmod = Number.isFinite(timestamp) ? '<lastmod>' + new Date(timestamp).toISOString() + '</lastmod>' : '';
-    for (const lang of LANGUAGE) {
-      urls.push('<url><loc>' + escape(origin + '/' + lang + '/select-round/' + row.id) + '</loc>' + lastmod + '</url>');
+    for (const lang of languages) {
+      if (items.length >= SITEMAP_URL_LIMIT) throw Error('Sitemap exceeds 50,000 URLs; split before publishing');
+      items.push('<url><loc>' + escape(origin + '/' + lang + '/' + path + '/' + row.id) + '</loc>' + lastmod + '</url>');
     }
   }
-  return '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' + urls.join('') + '</urlset>';
+  return {
+    add,
+    finish() {
+      return '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' + items.join('') + '</urlset>';
+    },
+  };
+}
+function renderWorldcupSitemap(origin, rows) {
+  const xml = sitemapWriter(origin,'worldcup');
+  rows.forEach(xml.add);
+  return xml.finish();
 }
 function block(links, language, section) {
   if (!links?.length) return '';
@@ -159,15 +212,19 @@ async function optional(work) {
   try { return await work; } catch { return []; }
 }
 function install(app, discovery, origin) {
-  async function serve(req,res) {
+  async function serve(kind,res) {
     try {
-      const xml = await discovery.sitemap(origin);
-      return res.set('Cache-Control','public, max-age=0, s-maxage=300').type('application/xml').send(xml);
+      const xml = await discovery.sitemap(origin,kind);
+      return res.set('Cache-Control',SITEMAP_CACHE_HEADERS).type('application/xml').send(xml);
     } catch {
-      return res.set('Cache-Control','no-store').status(503).type('text/plain').send('World cup sitemap temporarily unavailable');
+      return res.set('Cache-Control','no-store').status(503).type('text/plain').send('Sitemap temporarily unavailable');
     }
   }
-  app.get('/sitemap-worldcups.xml',serve);
+  const routeKinds = new Map();
+  for (const [kind, {file, seo}] of Object.entries(SITEMAPS)) {
+    app.get('/' + file, (_req,res) => serve(kind,res));
+    routeKinds.set(seo, kind);
+  }
   app.get('/api/content-discovery',async (req,res) => {
     const {kind, lang, id} = req.query;
     if (Object.keys(req.query).some(key => !['kind','lang','id'].includes(key)) ||
@@ -196,6 +253,9 @@ function install(app, discovery, origin) {
       return res.set('Cache-Control','no-store').status(503).json({error:'DISCOVERY_UNAVAILABLE'});
     }
   });
-  app.use((req,res,next) => ['GET','HEAD'].includes(req.method) && req.query?.seo === 'worldcup-sitemap' ? serve(req,res) : next());
+  app.use((req,res,next) => {
+    const kind = routeKinds.get(req.query?.seo);
+    return kind && ['GET','HEAD'].includes(req.method) ? serve(kind,res) : next();
+  });
 }
 module.exports = { createDiscovery, renderWorldcupSitemap, block, optional, install };
